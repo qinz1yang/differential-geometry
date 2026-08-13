@@ -1,18 +1,21 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnDiffCovGradBridge
-import DifferentialGeometry.Geometry.Flow.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
 import DifferentialGeometry.Tensor.Multilinear.ModelProductContinuousBilinear
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficientsFibreOperators
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficientsFieldSmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficientsLichnerowiczVelocityIdentity
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory intervalIntegral
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
 
 namespace DifferentialGeometry
@@ -22,11 +25,11 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -109,7 +112,7 @@ lemma curried_tsmdiffAt (n : ℕ)
     (v := fun y : M => Y y) hCurried hY
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma deriv0_eq_extDeriv (g : SmoothRiemannianMetric I M)
     (sc : Π y : M, Tensor0SBundle.Tensor0SSpace 0 I y) (x : M) (v : TangentSpace I x) :
     Tensor0SNabla.tensor0Iso I M x
@@ -177,7 +180,7 @@ lemma curried3_toModel_eval
   exact congrArg _ (funext fun i => by fin_cases i <;> rfl)
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma peel2_core (g : SmoothRiemannianMetric I M)
     (W : Π y : M, Tensor0SBundle.Tensor0SSpace 2 I y) {x : M}
     (hW : TensorSectionMDiffAt (I := I) 2 W x)
@@ -237,7 +240,7 @@ lemma peel2_core (g : SmoothRiemannianMetric I M)
   ring
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma peel3_core (g : SmoothRiemannianMetric I M)
     (W : Π y : M, Tensor0SBundle.Tensor0SSpace 3 I y) {x : M}
     (hW : TensorSectionMDiffAt (I := I) 3 W x)
@@ -293,7 +296,7 @@ lemma peel3_core (g : SmoothRiemannianMetric I M)
   ring
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma bridge02_eval (gA gB : SmoothRiemannianMetric I M)
     (W : Π y : M, Tensor0SBundle.Tensor0SSpace 2 I y) {x : M}
     (hW : TensorSectionMDiffAt (I := I) 2 W x)
@@ -1954,8 +1957,6 @@ private lemma lichnerowiczFib_toModel_eq_fourTrace (g₀ : SmoothRiemannianMetri
   rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
   ring
 
-set_option maxRecDepth 16000 in
-
 private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (_hδ_lt : δ < 1)
@@ -2080,31 +2081,60 @@ private theorem lichnerowicz_velocitySecondCovGrad_eq_threeArm_symm
           (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
           (iteratedCovGrad (I := I) g₀ 0 2 2
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x v from rfl]
-  rw [show Tensor0SBundle.Tensor0SSpace.toModel
-      (ricciCometricFourTraceCLM (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-        (linearizedRicciConnDiffOrder1CLM (I := I) x
-          ((connDiffSection (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀).toSection x)
-          (symmVelocityDiffCovGradBaseSec (I := I) (M := M) g₀ T T' x))) v =
+  have horder1Input :
+      ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 3 I x from
+        (iteratedCovGrad (I := I) g₀ 0 2 1
+          (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))).toSection x)
+        (unitTensor (I := I) (M := M) x)) =
+        symmVelocityDiffCovGradBaseSec (I := I) (M := M) g₀ T T' x := rfl
+  have horder1 :
       unitModel (I := I) (M := M) g₀ 2
-        (operatorFieldApply (I := I) (M := M) g₀ 3 2
-          (linearizedRicciConnDiffOrder1Coeff (I := I) g₀ T T' hδ hδ' s)
-          (iteratedCovGrad (I := I) g₀ 0 2 1
-            (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x v from rfl]
-  rw [show Tensor0SBundle.Tensor0SSpace.toModel
-      (ricciCometricFourTraceCLM (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-        (linearizedRicciConnDiffOrder0CLM (I := I) x
-          ((connDiffSection (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀).toSection x)
-          ((covGrad (I := I) (M := M) g₀ 1 2
-            (connDiffSection (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀)).toSection x)
-          (symmVelocityDiffSec (I := I) (M := M) g₀ T T' x))) v =
+          (operatorFieldApply (I := I) (M := M) g₀ 3 2
+            (linearizedRicciConnDiffOrder1Coeff (I := I) g₀ T T' hδ hδ' s)
+            (iteratedCovGrad (I := I) g₀ 0 2 1
+              (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x v =
+        Tensor0SBundle.Tensor0SSpace.toModel
+          (ricciCometricFourTraceCLM (I := I)
+            (realizedFam (I := I) g₀ T T' hδ hδ' s) x
+            (linearizedRicciConnDiffOrder1CLM (I := I) x
+              ((connDiffSection (I := I)
+                (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀).toSection x)
+              (symmVelocityDiffCovGradBaseSec (I := I) (M := M) g₀ T T' x))) v := by
+    rw [unitModel, appCc_toSection, ContinuousLinearMap.comp_apply]
+    rw [linearizedRicciConnDiffOrder1Coeff,
+      linearizedRicciConnDiffOrder1CoeffField_toSection]
+    rw [linearizedRicciConnDiffOrder1CometricTracedCLM,
+      ContinuousLinearMap.comp_apply, horder1Input]
+  have horder0Input :
+      ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 2 I x from
+        (iteratedCovGrad (I := I) g₀ 0 2 0
+          (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))).toSection x)
+        (unitTensor (I := I) (M := M) x)) =
+        symmVelocityDiffSec (I := I) (M := M) g₀ T T' x := rfl
+  have horder0 :
       unitModel (I := I) (M := M) g₀ 2
-        (operatorFieldApply (I := I) (M := M) g₀ 2 2
-          (linearizedRicciConnDiffOrder0Coeff (I := I) g₀ T T' hδ hδ' s)
-          (iteratedCovGrad (I := I) g₀ 0 2 0
-            (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x v from rfl]
+          (operatorFieldApply (I := I) (M := M) g₀ 2 2
+            (linearizedRicciConnDiffOrder0Coeff (I := I) g₀ T T' hδ hδ' s)
+            (iteratedCovGrad (I := I) g₀ 0 2 0
+              (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x v =
+        Tensor0SBundle.Tensor0SSpace.toModel
+          (ricciCometricFourTraceCLM (I := I)
+            (realizedFam (I := I) g₀ T T' hδ hδ' s) x
+            (linearizedRicciConnDiffOrder0CLM (I := I) x
+              ((connDiffSection (I := I)
+                (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀).toSection x)
+              ((covGrad (I := I) (M := M) g₀ 1 2
+                (connDiffSection (I := I)
+                  (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀)).toSection x)
+              (symmVelocityDiffSec (I := I) (M := M) g₀ T T' x))) v := by
+    rw [unitModel, appCc_toSection, ContinuousLinearMap.comp_apply]
+    rw [linearizedRicciConnDiffOrder0Coeff,
+      linearizedRicciConnDiffOrder0CoeffField_toSection]
+    rw [linearizedRicciConnDiffOrder0CometricTracedCLM,
+      ContinuousLinearMap.comp_apply, horder0Input]
+  rw [horder1, horder0]
   ring
 
 theorem linearizedRicciAt_eq_threeArm_connDiffCoeff (g₀ : SmoothRiemannianMetric I M)

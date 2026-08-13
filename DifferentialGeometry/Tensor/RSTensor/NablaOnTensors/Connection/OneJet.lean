@@ -1,21 +1,14 @@
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Derivation
 
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace TensorLieDeriv
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Set IsManifold ContinuousLinearMap VectorField Filter Tensor0SBundle Function
+open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
+    DifferentialGeometry.Tensor0SBundle Function
 open scoped Manifold Topology Bundle ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -74,8 +67,6 @@ private theorem tangentFieldModelInChart_sum_tangentConst_model
           intro i hi
           rw [map_smul, hconst i, hright]
     _ = F y := b.sum_repr (F y)
-
-
 
 omit [I.Boundaryless] in
 theorem exists_cov_zero_at
@@ -364,8 +355,6 @@ theorem exists_cov_zero_at
   refine ⟨V, hV_val, ?_⟩
   rw [hcov_congr, hcovVloc]
 
-
-
 omit [I.Boundaryless] in
 theorem exists_cov_zero_at_apply
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -387,3 +376,4 @@ end TangentOneJet
 end
 
 end TensorLieDeriv
+end DifferentialGeometry

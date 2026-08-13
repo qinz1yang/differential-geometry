@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.UniformExistence
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -33,4 +33,4 @@ noncomputable def chartLocalPicardData_of_regular
     flow := h.choose_spec.2.choose_spec.2.choose
     flow_spec := h.choose_spec.2.choose_spec.2.choose_spec }
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

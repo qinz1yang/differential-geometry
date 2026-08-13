@@ -3,19 +3,13 @@ import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 
-
-
-
-
-
-
 set_option autoImplicit false
 
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -52,8 +46,6 @@ theorem nabla0S_one_model_coord
     simp
   simpa only [Fin.sum_univ_one, hupdate] using h
 
-
-
 theorem nabla0S_one_coord
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -80,13 +72,6 @@ theorem nabla0S_one_coord
     simp
   simpa only [Fin.sum_univ_one, hupdate] using h
 
-
-
-
-
-
-
-
 theorem nabla0SFun_one_eval_coordFrame
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -105,8 +90,6 @@ theorem nabla0SFun_one_eval_coordFrame
             coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => k) := by
   simpa [coordComponent0SAt, component0S] using
     nabla0S_one_coord (I := I) cov X α x₀ hderiv j
-
-
 
 omit [IsManifold I 2 M] in
 omit [CompleteSpace 𝕜] in

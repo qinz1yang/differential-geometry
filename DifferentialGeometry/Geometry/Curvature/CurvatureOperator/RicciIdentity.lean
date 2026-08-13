@@ -1,6 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
 import DifferentialGeometry.Geometry.Operator.Laplacian
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -9,8 +13,8 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -21,6 +25,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -109,7 +114,7 @@ theorem ricci_identity_oneForm
         (fun b : M => extDerivFun (I := I) (fun b' : M => θ b' (W b')) b (Y b)) x (X x) -
       extDerivFun (I := I)
         (fun b : M => extDerivFun (I := I) (fun b' : M => θ b' (W b')) b (X b)) x (Y x) :=
-    extDerivFun_apply_mlieBracket hX_at hY_at hf_2 hx_int
+    DifferentialGeometry.Geometry.Connection.extDerivFun_apply_mlieBracket hX_at hY_at hf_2 hx_int
   rw [hpair_Y_glob, hpair_X_glob] at hfound
   have hpair_br : extDerivFun (I := I) (fun b : M => θ b (W b)) x
         (VectorField.mlieBracket I X Y x) =
@@ -582,21 +587,21 @@ theorem localConnLap_vector_eq_bochnerFormula_of_inner_form [I.Boundaryless]
     (hInner : ∀ w : TangentSpace I x,
       g.inner x (localConnLap_vector (LeviCivita (I := I) g) B
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g hf) x) w +
+        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
     localConnLap_vector (LeviCivita (I := I) g) B
         (fun b => gradFun (I := I) g f b) x =
-      gradFun (I := I) g (Δ_g (I := I) g hf) x +
+      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) := by
   rw [vector_eq_iff_inner_eq (I := I) g x]
   intro w
   rw [hInner w]
-  rw [show g.inner x (gradFun (I := I) g (Δ_g (I := I) g hf) x +
+  rw [show g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x)) w =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g hf) x) w +
+      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
         g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w from
     by rw [map_add, ContinuousLinearMap.add_apply]]
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

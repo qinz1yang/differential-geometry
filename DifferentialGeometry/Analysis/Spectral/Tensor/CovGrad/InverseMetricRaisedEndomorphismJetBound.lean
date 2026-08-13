@@ -6,26 +6,35 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulParalle
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRfnsBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulCometricRaise
 import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleProductGrid
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open TensorRSNabla
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.TensorRSNabla
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (metricCauchySchwarzBound ccTensorBilinSymm ccTensorBilinSymm_symm)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -50,7 +59,7 @@ def fullRaisedEndoField (g₀ g₁ : SmoothRiemannianMetric I M) :
     intro Y
     have hsharpY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
-          (DifferentialGeometry.Integral.DivergenceTheorem.metricSharp
+          (DifferentialGeometry.Geometry.Operator.metricSharp
             (I := I) g₁ b (g₀.inner b (Y b)).toLinearMap)) := by
       apply metricSharp_contMDiff_total (I := I) g₁
       intro γ j
@@ -615,7 +624,7 @@ private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace 
   rw [h1]
   rfl
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (smoothCcTensorBilinForm ccTensorModel ccTensorMultilinear ccTensorBilin_apply) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -1498,8 +1507,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_gInvDiffSlotCoeff_diagonalProductG
   rw [gInvDiffSlotCoeff_eq_slotInsertEndoCc (E := E) (I := I) g₀ g₁]
   exact hbnd g₁ T htie hδ_le hδ0 hbound i x
 
-end Connection
-end Integral
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

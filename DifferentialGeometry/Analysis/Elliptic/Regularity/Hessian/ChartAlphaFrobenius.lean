@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.ChartAlphaMatrix
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -19,7 +22,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPerChartWitness

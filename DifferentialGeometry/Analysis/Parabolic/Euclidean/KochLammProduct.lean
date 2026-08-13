@@ -1,15 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammSpaces
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 
-/-!
-# Quadratic products in the Koch--Lamm source space
-
-The quadratic-gradient term belongs to the ordinary Koch--Lamm source class:
-the local `L² × L²` product gives the `L¹` arm, while the late
-`L^(n+4) × L^(n+4)` product gives the `L^((n+4)/2)` arm.  Both scale factors
-cancel exactly.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -25,7 +16,6 @@ section Scaling
 variable {V : Type*}
   [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
 
-/-- The local `L¹` source scale is the square of the local `L²` flux scale. -/
 theorem klL1_eq_L2_sq {R : ℝ} (hR : 0 < R) :
     klL1Scale (V := V) R = klL2Scale (V := V) R ^ 2 := by
   unfold klL1Scale klL1ScaleR klL2Scale klL2ScaleR
@@ -44,7 +34,6 @@ theorem klL1_eq_L2_sq {R : ℝ} (hR : 0 < R) :
   rw [hre]
   exact ENNReal.ofReal_pow (Real.rpow_nonneg hR.le _) 2
 
-/-- The late ordinary-source scale is the square of the late flux scale. -/
 theorem klLq_eq_Lp_sq {R : ℝ} (hR : 0 < R) :
     klLqScale (V := V) R = klLpScale (V := V) R ^ 2 := by
   unfold klLqScale klLqScaleR klLpScale klLpScaleR
@@ -63,7 +52,6 @@ theorem klLq_eq_Lp_sq {R : ℝ} (hR : 0 < R) :
   rw [hre]
   exact ENNReal.ofReal_pow (Real.rpow_nonneg hR.le _) 2
 
-/-- The exponents `n+4`, `n+4`, and `(n+4)/2` form a Hölder triple. -/
 theorem klP_holderTriple :
     ENNReal.HolderTriple (klP V) (klP V) (klQ V) := by
   let n4 : ℕ := Module.finrank ℝ V + 4
@@ -98,8 +86,6 @@ variable {X E G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Hölder's inequality for a space-dependent uniformly bounded bilinear
-coefficient. -/
 theorem eLpNorm_bilin_le {p q r : ℝ≥0∞} [ENNReal.HolderTriple p q r]
     (B : X → E →L[ℝ] G →L[ℝ] F) (d₁ : X → E) (d₂ : X → G)
     (K : ℝ≥0) (hK : ∀ x, ‖B x‖ ≤ (K : ℝ))
@@ -166,7 +152,6 @@ variable {E G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The product of two Koch--Lamm fluxes is an ordinary Koch--Lamm source. -/
 theorem klBilin_source {T : ℝ}
     {A₂₁ Aₚ₁ A₂₂ Aₚ₂ K : ℝ≥0}
     (B : ℝ × V → E →L[ℝ] G →L[ℝ] F)
@@ -240,8 +225,6 @@ theorem klBilin_source {T : ℝ}
         · exact h₂.late_lp x R hR hRT
       _ = ((K * Aₚ₁ * Aₚ₂ : ℝ≥0) : ℝ≥0∞) := by norm_cast
 
-/-- A bounded quadratic expression in the gradient fields of two
-Koch--Lamm paths is an ordinary Koch--Lamm source. -/
 theorem klPathBilin_source {T : ℝ}
     {A₀₁ A₂₁ Aₚ₁ A₀₂ A₂₂ Aₚ₂ K : ℝ≥0}
     (B : ℝ × V → E →L[ℝ] G →L[ℝ] F)

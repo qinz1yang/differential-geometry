@@ -5,8 +5,7 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformExistence
 import DifferentialGeometry.Geometry.Geodesic.Existence
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
 import DifferentialGeometry.Geometry.Geodesic.Uniqueness
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

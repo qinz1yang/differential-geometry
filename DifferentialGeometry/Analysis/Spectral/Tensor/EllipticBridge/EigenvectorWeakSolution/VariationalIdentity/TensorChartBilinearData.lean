@@ -30,15 +30,14 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 structure TensorChartBilinearH1ComplData
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (_P₀ : TensorCompIdx (E := E) r s) where
-
   toChartData : ChartBilinearH1ComplData (I := I) (M := M) g α
 
 namespace TensorChartBilinearH1ComplData
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 def u_chart {g : SmoothRiemannianMetric I M} {r s : ℕ} {α : M}
     {P₀ : TensorCompIdx (E := E) r s}
@@ -158,7 +157,7 @@ end TensorChartBilinearH1ComplData
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor_chart_bilinear_identity_h1Compl
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {α : M}
     {P₀ : TensorCompIdx (E := E) r s}
     (D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀)
@@ -182,7 +181,7 @@ theorem tensor_chart_bilinear_identity_h1Compl
 
 section ElaborationTests
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
   (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 example (α : M) (P₀ : TensorCompIdx (E := E) r s)

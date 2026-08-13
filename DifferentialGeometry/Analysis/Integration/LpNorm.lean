@@ -2,13 +2,6 @@ import Mathlib.MeasureTheory.Function.L2Space
 
 set_option autoImplicit false
 
-/-!
-# Elementary L² integral identities
-
-This file records the real-valued conversion between the `eLpNorm` convention
-used by measure theory and the ordinary integral of a square.
--/
-
 namespace DifferentialGeometry.Analysis.Integration
 
 noncomputable section
@@ -18,8 +11,6 @@ open scoped ENNReal
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
-/-- For a real-valued `L²` function, its squared `eLpNorm` is the integral of
-its pointwise square. -/
 theorem integral_sq_eq_l2 {v : α → ℝ} (hv : MemLp v 2 μ) :
     (∫ x, v x ^ 2 ∂μ) = (eLpNorm v 2 μ).toReal ^ 2 := by
   have h_sq_lintegral :

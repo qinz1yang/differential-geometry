@@ -11,12 +11,16 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.Inn
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOpNorm.ChartLeviCivitaParallelCLM
 import DifferentialGeometry.Analysis.Integration.Measure.Rellich
 import DifferentialGeometry.Geometry.Metric.MetricBounds
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
 
 namespace DifferentialGeometry
@@ -25,9 +29,9 @@ namespace Parabolic
 namespace TensorSpectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 
 section NormedSpaceModel
 

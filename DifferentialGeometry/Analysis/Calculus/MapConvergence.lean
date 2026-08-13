@@ -11,15 +11,6 @@ import Mathlib.Topology.MetricSpace.Pseudo.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
@@ -31,9 +22,6 @@ variable {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-
-
-
 noncomputable def mapDerivNorm (r : ℕ) (Φk Φinf : E → F) (x : E) : ℝ :=
   ‖iteratedFDeriv ℝ r (fun y => Φk y - Φinf y) x‖
 
@@ -41,22 +29,12 @@ theorem mapDerivNorm_nonneg (r : ℕ) (Φk Φinf : E → F) (x : E) :
     0 ≤ mapDerivNorm r Φk Φinf x :=
   norm_nonneg _
 
-
-
-
 def MapCPConvOn (K : Set E) (p : ℕ) (Φ : ℕ → E → F) (Φinf : E → F) : Prop :=
   ∀ ε : ℝ, 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k →
     ∀ r : ℕ, r ≤ p → ∀ x ∈ K, mapDerivNorm r (Φ k) Φinf x ≤ ε
 
-
-
-
-
-
 def MapCInfConvOnCompacts (U : Set E) (Φ : ℕ → E → F) (Φinf : E → F) : Prop :=
   ∀ K : Set E, IsCompact K → K ⊆ U → ∀ p : ℕ, MapCPConvOn K p Φ Φinf
-
-
 
 theorem MapCPConvOn.mono_order {K : Set E} {p p' : ℕ} (hp : p' ≤ p)
     {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCPConvOn K p Φ Φinf) :
@@ -72,9 +50,6 @@ theorem MapCPConvOn.mono_set {K K' : Set E} (hK : K' ⊆ K) {p : ℕ}
   intro ε hε
   obtain ⟨k0, hk0⟩ := h ε hε
   exact ⟨k0, fun k hk r hr x hx => hk0 k hk r hr x (hK hx)⟩
-
-
-
 
 theorem MapCInfConvOnCompacts.cPConvOn {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
     (h : MapCInfConvOnCompacts U Φ Φinf) {K : Set E} (hK : IsCompact K)
@@ -95,8 +70,6 @@ theorem MapCInfConvOnCompacts.comp_subseq {U : Set E} {Φ : ℕ → E → F} {Φ
     MapCInfConvOnCompacts U (fun k => Φ (φ k)) Φinf :=
   fun K hK hKU p => (h K hK hKU p).comp_subseq hφ
 
-
-
 theorem tendstoUniformlyOn_of_cPConv {K : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
     (h : MapCPConvOn K 0 Φ Φinf) : TendstoUniformlyOn Φ Φinf atTop K := by
   rw [Metric.tendstoUniformlyOn_iff]
@@ -108,8 +81,6 @@ theorem tendstoUniformlyOn_of_cPConv {K : Set E} {Φ : ℕ → E → F} {Φinf :
   rw [mapDerivNorm, norm_iteratedFDeriv_zero] at hb
   rw [dist_eq_norm, norm_sub_rev]
   exact lt_of_le_of_lt hb (by linarith)
-
-
 
 theorem tendsto_of_cInf {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
     (h : MapCInfConvOnCompacts U Φ Φinf) {x : E} (hx : x ∈ U) :
@@ -123,11 +94,6 @@ theorem tendsto_of_cInf {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
   rw [mapDerivNorm, norm_iteratedFDeriv_zero] at hb
   rw [dist_eq_norm]
   exact lt_of_le_of_lt hb (by linarith)
-
-
-
-
-
 
 theorem mapCPConvOn_of_tendstoUniformly {K : Set E} {p : ℕ}
     {Φ : ℕ → E → F} {Φinf : E → F}

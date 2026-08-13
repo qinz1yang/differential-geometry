@@ -2,20 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelLinear
 import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Analysis.Matrix.Order
 
-/-!
-# Positive definite frozen-coordinate reduction
-
-The positive square root of a real positive-definite matrix gives the linear
-coordinate equivalence used to conjugate a frozen uniformly elliptic operator
-to the isotropic heat operator.  The construction is quantitative: upper and
-lower quadratic-form bounds control the operator norms of the equivalence and
-its inverse.
-
-No choice of eigenbasis is exposed.  The square root is Mathlib's canonical
-continuous-functional-calculus square root, and its square identity supplies
-the exact principal-matrix factorization.
--/
-
 noncomputable section
 
 open Matrix Real
@@ -45,8 +31,6 @@ theorem spdSqrtEquiv_apply (A : Matrix n n ℝ) (hA : A.PosDef)
       matrixCLM (CFC.sqrt A) x := by
   rfl
 
-/-- Applying the square-root equivalence twice applies the original positive
-matrix. -/
 theorem spdSqrt_comp (A : Matrix n n ℝ) (hA : A.PosDef)
     (x : EuclideanSpace ℝ n) :
     spdSqrtEquiv A hA (spdSqrtEquiv A hA x) =
@@ -55,7 +39,6 @@ theorem spdSqrt_comp (A : Matrix n n ℝ) (hA : A.PosDef)
   rw [← ContinuousLinearMap.comp_apply, ← ContinuousLinearMap.mul_def, ← map_mul,
     CFC.sqrt_mul_sqrt_self A hA.posSemidef.nonneg]
 
-/-- The square-root equivalence is self-adjoint. -/
 theorem spdSqrt_selfAdj (A : Matrix n n ℝ) (hA : A.PosDef) :
     IsSelfAdjoint
       (spdSqrtEquiv A hA : EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n) := by
@@ -87,8 +70,6 @@ theorem spdSqrt_norm_sq (A : Matrix n n ℝ) (hA : A.PosDef)
     _ = inner ℝ x (matrixCLM A x) := by
       rw [spdSqrt_comp]
 
-/-- An upper quadratic-form bound gives the corresponding pointwise bound for
-the square-root equivalence. -/
 theorem spdSqrt_apply_le (A : Matrix n n ℝ) (hA : A.PosDef)
     {ellMax : ℝ} (hMax : 0 ≤ ellMax)
     (hupper : ∀ x : EuclideanSpace ℝ n,
@@ -99,7 +80,6 @@ theorem spdSqrt_apply_le (A : Matrix n n ℝ) (hA : A.PosDef)
     spdSqrt_norm_sq, mul_pow, Real.sq_sqrt hMax]
   exact hupper x
 
-/-- Operator-norm form of `spdSqrt_apply_le`. -/
 theorem spdSqrt_norm_le (A : Matrix n n ℝ) (hA : A.PosDef)
     {ellMax : ℝ} (hMax : 0 ≤ ellMax)
     (hupper : ∀ x : EuclideanSpace ℝ n,
@@ -109,8 +89,6 @@ theorem spdSqrt_norm_le (A : Matrix n n ℝ) (hA : A.PosDef)
   exact ContinuousLinearMap.opNorm_le_bound _ (sqrt_nonneg ellMax)
     (spdSqrt_apply_le A hA hMax hupper)
 
-/-- A positive lower quadratic-form bound controls the inverse square-root
-equivalence pointwise. -/
 theorem spdSqrt_symm_le (A : Matrix n n ℝ) (hA : A.PosDef)
     {ellMin : ℝ} (hMin : 0 < ellMin)
     (hlower : ∀ x : EuclideanSpace ℝ n,
@@ -129,7 +107,6 @@ theorem spdSqrt_symm_le (A : Matrix n n ℝ) (hA : A.PosDef)
     exact hsq
   simpa [mul_comm] using hsqrt
 
-/-- Operator-norm form of the inverse estimate. -/
 theorem spdSqrt_inv_le (A : Matrix n n ℝ) (hA : A.PosDef)
     {ellMin : ℝ} (hMin : 0 < ellMin)
     (hlower : ∀ x : EuclideanSpace ℝ n,

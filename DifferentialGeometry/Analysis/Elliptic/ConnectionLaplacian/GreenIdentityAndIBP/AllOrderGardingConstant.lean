@@ -7,23 +7,27 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLine
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomFieldActionIteratedCovGradWindow
 import DifferentialGeometry.Analysis.Sobolev.Embedding.RawConnLapToHsOrderDropping
 import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorCurvFirstOrderSection
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -314,7 +318,7 @@ theorem exists_iteratedRoughLapGrad_commutator_l2Norm_le
   have h := hbound 0 S
   simpa only [iteratedCovGrad_zero, Nat.add_zero, Nat.add_zero] using h
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem rawTensorConnLapIter_rawTensorConnLapSmooth
     (g : SmoothRiemannianMetric I M) (s : ℕ) (i : ℕ) (S : SmoothCcTensor g 0 s) :
     rawTensorConnLapIter (I := I) g 0 s i (rawTensorConnLapSmooth (I := I) g 0 s S) =
@@ -943,8 +947,8 @@ theorem exists_tensorPouSobolevHsNorm_k_le_sum_rawConnLapIter
     _ = Cb * ((2 * k + 1 : ℕ) : ℝ) * Cg * LapSum := by ring
     _ = Cb * ((2 * k + 1 : ℕ) : ℝ) * Cg * toL2Sum := by rw [hsum_eq]
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

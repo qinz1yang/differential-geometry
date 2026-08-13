@@ -1,20 +1,9 @@
 import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Geodesic.LocalIsometry
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Point-data rigidity for local isometries
-
-Two metric-preserving local diffeomorphisms from a preconnected Riemannian
-manifold are equal when their values and differentials agree at one point.
-
-The proof is the normal-neighbourhood argument: a small exponential ray is a
-geodesic, local isometries send it to geodesics, and geodesic uniqueness makes
-the two image rays agree.  A tangent-bundle agreement locus then promotes the
-local propagation statement to global equality.
--/
 
 noncomputable section
 
@@ -251,8 +240,6 @@ private theorem eq_of_point_data
   exact ((mem_agree_iff (I := I) (J := J) f₁ f₂ x).mp
     (huniv ▸ Set.mem_univ x)).1
 
-/-- Two metric-preserving local diffeomorphisms that agree to first order at
-one point agree on a neighbourhood of that point. -/
 theorem localIso_eventually
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
@@ -371,8 +358,6 @@ theorem localIso_eventually
   rw [hΦexp a ha.1]
   exact hkey a (by simpa using ha.2)
 
-/-- A metric-preserving local diffeomorphism is determined by its value and
-differential at one point of a preconnected source. -/
 theorem localIso_rigid
     [PreconnectedSpace M]
     [I.Boundaryless] [J.Boundaryless]

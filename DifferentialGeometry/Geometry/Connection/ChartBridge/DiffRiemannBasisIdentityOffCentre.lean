@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.DifferentiatedRicciEndomorphism
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -8,13 +11,15 @@ noncomputable section
 open Bundle Manifold Set FiberBundle Filter
 open scoped Manifold Topology ContDiff BigOperators
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open Tensor0SBundle Tensor0SNabla
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -578,7 +583,7 @@ theorem nablaCurvSec_chartBasisVec_alpha_frame_expand
   rfl
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

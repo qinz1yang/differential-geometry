@@ -1,9 +1,10 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Mixed.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Dual
 import Mathlib.LinearAlgebra.Contraction
+open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
@@ -92,7 +93,6 @@ noncomputable def dualTensorMultilinearUntrivializeAt (r s : ℕ) (x : B) :
     (continuousLinearEquivAt (𝕜 := 𝕜) (F := F) (E := E) s x).symm.toLinearEquiv
 
 set_option backward.isDefEq.respectTransparency false in
-
 noncomputable def multilinearHomTensorEquivAt_bundle (r s : ℕ) (x : B) :
     (Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜]
        Bundle.continuousMultilinearMap 𝕜 s F E x) ≃ₗ[𝕜]

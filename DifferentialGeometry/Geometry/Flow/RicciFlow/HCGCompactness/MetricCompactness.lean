@@ -1,16 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.BoundedGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.PointedConvergence
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -27,8 +19,6 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
-
-
 
 structure PointedRiemannianCGMaps
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
@@ -160,8 +150,6 @@ theorem source_subset
   letI : TopologicalSpace L.M := L.topology
   exact Φ.source_exhausts.subset K hK
 
-
-
 def unrepoint
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : forall i : Nat, (X.obj i).M)
@@ -202,8 +190,6 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
 
 end PointedRiemannianCGMaps
 
-
-
 def metricSourceOpen
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -213,8 +199,6 @@ def metricSourceOpen
     TopologicalSpace.Opens L.M := by
   letI : TopologicalSpace L.M := L.topology
   exact ⟨Φ.source k, Φ.source_open k⟩
-
-
 
 def metricTargetOpen
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -228,7 +212,6 @@ def metricTargetOpen
     (X.obj (subseq k)).topology
   exact ⟨Φ.target k, Φ.target_open k⟩
 
-
 abbrev MetricSourceDomain
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -236,7 +219,6 @@ abbrev MetricSourceDomain
     (Φ : PointedRiemannianCGMaps (I := I) X L subseq) (k : Nat) :=
   letI : TopologicalSpace L.M := L.topology
   (metricSourceOpen (I := I) Φ k : Type _)
-
 
 abbrev MetricTargetDomain
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -246,7 +228,6 @@ abbrev MetricTargetDomain
   letI : TopologicalSpace (X.obj (subseq k)).M :=
     (X.obj (subseq k)).topology
   (metricTargetOpen (I := I) Φ k : Type _)
-
 
 @[implicit_reducible]
 noncomputable def metricSourceDomTop
@@ -258,8 +239,6 @@ noncomputable def metricSourceDomTop
   letI : TopologicalSpace L.M := L.topology
   change TopologicalSpace (metricSourceOpen (I := I) Φ k)
   infer_instance
-
-
 
 @[implicit_reducible]
 noncomputable def metricSourceDomCharted
@@ -278,8 +257,6 @@ noncomputable def metricSourceDomCharted
   exact TopologicalSpace.Opens.instChartedSpace (H := H) (M := L.M)
     (s := metricSourceOpen (I := I) Φ k)
 
-
-
 @[implicit_reducible]
 noncomputable def metricSourceDomT2
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -295,8 +272,6 @@ noncomputable def metricSourceDomT2
     metricSourceDomTop (I := I) Φ k
   change T2Space {x : L.M // x ∈ Φ.source k}
   infer_instance
-
-
 
 @[implicit_reducible]
 noncomputable def metricSourceDomSmooth
@@ -319,8 +294,6 @@ noncomputable def metricSourceDomSmooth
   change IsManifold I ∞ (metricSourceOpen (I := I) Φ k)
   exact { (metricSourceOpen (I := I) Φ k).instHasGroupoid (contDiffGroupoid ∞ I) with }
 
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem metricSourceDomSigmaOf
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -337,7 +310,6 @@ theorem metricSourceDomSigmaOf
   change SigmaCompactSpace {x : L.M // x ∈ Φ.source k}
   exact isSigmaCompact_iff_sigmaCompactSpace.mp hσ
 
-
 @[implicit_reducible]
 noncomputable def metricTargetDomTop
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -349,8 +321,6 @@ noncomputable def metricTargetDomTop
     (X.obj (subseq k)).topology
   change TopologicalSpace (metricTargetOpen (I := I) Φ k)
   infer_instance
-
-
 
 @[implicit_reducible]
 noncomputable def metricTargetDomCharted
@@ -371,8 +341,6 @@ noncomputable def metricTargetDomCharted
   exact TopologicalSpace.Opens.instChartedSpace (H := H)
     (M := (X.obj (subseq k)).M) (s := metricTargetOpen (I := I) Φ k)
 
-
-
 @[implicit_reducible]
 noncomputable def metricTargetDomT2
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -389,8 +357,6 @@ noncomputable def metricTargetDomT2
     metricTargetDomTop (I := I) Φ k
   change T2Space {x : (X.obj (subseq k)).M // x ∈ Φ.target k}
   infer_instance
-
-
 
 @[implicit_reducible]
 noncomputable def metricTargetDomSmooth
@@ -414,8 +380,6 @@ noncomputable def metricTargetDomSmooth
     metricTargetDomCharted (I := I) Φ k
   change IsManifold I ∞ (metricTargetOpen (I := I) Φ k)
   exact { (metricTargetOpen (I := I) Φ k).instHasGroupoid (contDiffGroupoid ∞ I) with }
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem metricTargetDomSigmaOf
@@ -454,8 +418,6 @@ private theorem metricContMDiffOpenCod
   · intro y
     have hy := hf.2 (y : N)
     simpa [Function.comp_def, extChartAt, TopologicalSpace.Opens.chartAt_eq] using hy
-
-
 
 noncomputable def metricSourceTargetDiff
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -549,8 +511,6 @@ theorem metricSourceTargetDiff_apply
     (metricSourceTargetDiff (I := I) Φ k x : (X.obj (subseq k)).M) =
       Φ.map k (x : L.M) := by
   rfl
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem metricSourceTargetDiff_mfderiv
@@ -688,8 +648,6 @@ def metricSourceCompactSet
     (K : Set L.M) : Set (MetricSourceDomain (I := I) Φ k) :=
   {x | (x : L.M) ∈ K}
 
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem metricSourceCompactSet_isCompact
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -719,7 +677,6 @@ theorem metricSourceCompactSet_isCompact
       exact ⟨⟨x, hKsrc hxK⟩, hxK, rfl⟩
   rw [hImage]
   exact hK
-
 
 structure MetricSourceData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -791,8 +748,6 @@ structure MetricSourceData
 
 namespace MetricSourceData
 
-
-
 def unrepoint
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : forall i : Nat, (X.obj i).M)
@@ -820,9 +775,6 @@ def unrepoint
   compact_preimage := D.compact_preimage
   limit_inner := D.limit_inner
   pullback_inner := D.pullback_inner
-
-
-
 
 noncomputable def ofCanonical
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -918,9 +870,6 @@ noncomputable def ofCanonical
     exact metricSourceCompactSet_isCompact (I := I) Φ k hK hKsrc
   limit_inner := limit_inner
   pullback_inner := pullback_inner
-
-
-
 
 noncomputable def ofRestrictPullback
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1166,8 +1115,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 
 end MetricSourceData
 
-
-
 def MetricSourceCPConvOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -1181,8 +1128,6 @@ def MetricSourceCPConvOn
     exists k0 : Nat, forall k : Nat, k0 <= k ->
       K ⊆ Φ.source k /\ (D k).derivNormSupOn (I := I) K p < ε
 
-
-
 structure MetricCGConvergenceData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -1195,9 +1140,6 @@ structure MetricCGConvergenceData
       forall p : Nat, MetricSourceCPConvOn (I := I) Φ domain K hK p
 
 namespace MetricCGConvergenceData
-
-
-
 
 def unrepoint
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1221,9 +1163,6 @@ def unrepoint
     simpa only [PointedRiemannianCGMaps.unrepoint_source,
       MetricSourceData.unrepoint_supOn] using Cd.converges K hK p ε hε
 
-
-
-
 noncomputable def of_derivNormSupOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -1245,9 +1184,6 @@ noncomputable def of_derivNormSupOn
     refine ⟨max kSrc kConv, fun k hk => ?_⟩
     refine ⟨hSrc k (le_trans (Nat.le_max_left kSrc kConv) hk), ?_⟩
     exact hConv k (le_trans (Nat.le_max_right kSrc kConv) hk)
-
-
-
 
 noncomputable def ofRestrictPullback
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1285,8 +1221,6 @@ noncomputable def ofRestrictPullback
 
 end MetricCGConvergenceData
 
-
-
 structure PointedRiemannianCGConverges
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (L : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -1295,8 +1229,6 @@ structure PointedRiemannianCGConverges
   metrics : MetricCGConvergenceData (I := I) Φ
 
 namespace PointedRiemannianCGConverges
-
-
 
 def unrepoint
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1316,8 +1248,6 @@ def unrepoint
     PointedRiemannianCGConverges (I := I) X L subseq (Φ.unrepoint b hbase) where
   metrics := C.metrics.unrepoint b hbase
 
-
-
 noncomputable def of_derivNormSupOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -1332,8 +1262,6 @@ noncomputable def of_derivNormSupOn
             (D k).derivNormSupOn (I := I) K p < ε) :
     PointedRiemannianCGConverges (I := I) X L subseq Φ where
   metrics := MetricCGConvergenceData.of_derivNormSupOn (I := I) hconv
-
-
 
 noncomputable def ofRestrictPullback
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1369,7 +1297,6 @@ noncomputable def ofRestrictPullback
 
 end PointedRiemannianCGConverges
 
-
 structure MetricCompactnessConclusion
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
   subseq : Nat -> Nat
@@ -1379,16 +1306,6 @@ structure MetricCompactnessConclusion
   maps : PointedRiemannianCGMaps (I := I) X limit subseq
   convergence : PointedRiemannianCGConverges (I := I) X limit subseq maps
 
-
-/-- **Endpoint ruling (2026-07-05):** this unconditional form is NOT the Chapter 4
-working target.  Its `sorry` decomposes as
-`C4.MetricCompactnessInputs.metricCompactness` (the now-checked conditional
-Theorem 3.9) **plus** native producers for the book-external theorems bundled
-there (Cheeger–Gromov–Taylor `lbl384`, Bishop–Gromov, and the localized [H6]
-normal-coordinate inputs) and per-member connectedness.  It stays `sorry`
-until those citations are proved natively; the Steps A→D assembly is no longer
-part of this frontier.  See `C4/MetricCompactnessEndpoint.lean` and
-`HCGCompactness/PROJECT_MAP.md`. -/
 def metricCompactness
     [I.Boundaryless]
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))

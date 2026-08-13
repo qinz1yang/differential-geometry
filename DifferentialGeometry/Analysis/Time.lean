@@ -2,7 +2,7 @@ import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.Tactic
 
 
-namespace DifferentialGeometry
+namespace DifferentialGeometry.Analysis
 
 structure TimeDerivativeData (R : Type*) (A : Type*) (Time : Type*)
     [CommRing R] [CommRing A] [Algebra R A] where
@@ -181,5 +181,7 @@ theorem dt_apply_sum (td : TimeDerivativeData R A Time) [TimeRegularFam td]
         Finset.sum_cons]
 
 end TimeDerivativeData
+
+end Analysis
 
 end DifferentialGeometry

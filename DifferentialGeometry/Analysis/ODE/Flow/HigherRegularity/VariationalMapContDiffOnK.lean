@@ -86,9 +86,6 @@ lemma partial_fderiv_eq_comp_inr_on_open
     ((hf.contDiffAt hp_open).differentiableAt one_ne_zero)
   exact fderiv_eq_comp_inr hdiff_joint
 
-
-
-
 omit [CompleteSpace E] in
 theorem contDiffOn_partial_fderiv_of_succ_local
     {k : ℕ∞} {Ω : Set (ℝ × E)} (hΩ : IsOpen Ω)

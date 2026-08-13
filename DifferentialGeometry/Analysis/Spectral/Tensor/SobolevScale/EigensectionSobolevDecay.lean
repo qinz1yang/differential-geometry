@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNor
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -9,16 +11,15 @@ open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -208,7 +209,6 @@ theorem eigenvectorSmooth_toHs_norm_le_lambda_pow
       hsq, hnn_pow]
   rw [hspec]
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNorm
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Analysis
+namespace Sobolev
 namespace HebeyBlock
 
 open Bundle Manifold MeasureTheory Set
@@ -138,6 +138,6 @@ theorem chart_frame_component_norm_bound
     _ = (tensorPouSobolevHsNorm (I := I) (M := M) g k T).toReal ^ 2 := hSq_toReal
 
 end HebeyBlock
-end RicciFlow
-end PDE
+end Sobolev
+end Analysis
 end DifferentialGeometry

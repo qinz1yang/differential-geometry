@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Basic
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Parabolic
 
 open Bundle
 open scoped Manifold ContDiff
@@ -45,4 +45,4 @@ theorem hasDerivAt_clm_apply_from_h1_time
     HasDerivAt (fun s : ℝ => L s (u s)) (L' t (u t) + L t (u' t)) t :=
   hL.clm_apply hu
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Parabolic

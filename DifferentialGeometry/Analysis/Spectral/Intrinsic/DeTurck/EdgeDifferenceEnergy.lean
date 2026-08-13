@@ -2,39 +2,31 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipal
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricRaisedEndomorphismJetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DLaCoefficientFieldTopSeparated
-
-/-!
-# Boundary Ricci--DeTurck difference energy
-
-This file isolates the genuinely small highest-order term in the difference of two
-Ricci--DeTurck equations.  The carrier metric is fixed.  If the moving metric is
-`g₀ + T`, then differentiation of its inverse metric contributes one factor of
-`∇T`; pairing the resulting first-order residual with `T` contributes the small
-`C⁰` factor.  Consequently the principal arm is bounded by `O(δ) ‖∇T‖²`, with no
-high-jet bound on the moving endpoint.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -60,9 +52,6 @@ private theorem edge_rfns_neg (g : SmoothRiemannianMetric I M)
     tensorInnerPointwise_smul_left, tensorInnerPointwise_smul_right]
   ring
 
-/-- The differentiated inverse-metric coefficient in the boundary energy
-identity is pointwise linear in the first covariant derivative of the metric
-difference.  The constant depends only on the fixed carrier metric. -/
 theorem edgeCoeff_rfns (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -245,8 +234,6 @@ private theorem edgePair_point_le
     abs_nonneg (tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
       (TensorRSSpace.toModel S) (TensorRSSpace.toModel U))]
 
-/-- The first-order residual in the principal-arm integration-by-parts
-identity is `O(δ) ‖∇T‖²`. -/
 theorem edgeArm_resid_le (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -323,8 +310,6 @@ theorem edgeArm_resid_le (g₀ : SmoothRiemannianMetric I M) :
         ‖iteratedCovGrad (I := I) g₀ 0 2 1 T‖ ^ 2 = _
       rw [SmoothCcTensor.norm_toL2]
 
-/-- The entire variable-cometric principal arm is a small perturbation of
-the fixed connection Laplacian in the boundary `L²` energy. -/
 theorem edgeArm_energy_le [Nonempty M]
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -377,9 +362,6 @@ theorem edgeArm_energy_le [Nonempty M]
   simp only [oneMinusConnLapSmoothIter_zero] at hibp
   nlinarith [hslot, hresle]
 
-/-- If the fixed-carrier `C⁰` radius is chosen so that the two principal
-error coefficients total at most `1/2`, the fixed Laplacian absorbs them and
-leaves half of the Dirichlet energy. -/
 theorem edgePrincipal_half [Nonempty M]
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -460,9 +442,8 @@ theorem edgePrincipal_half [Nonempty M]
         (iteratedCovGrad (I := I) g₀ 0 2 1 T)‖ ^ 2 := sq_nonneg _
   nlinarith [mul_le_mul_of_nonneg_right hsmall hnorm0]
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

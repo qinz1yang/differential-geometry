@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSm
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -11,9 +12,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
@@ -28,7 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable (g : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_finiteEigenComboHs_self_le (σ : ℝ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
@@ -284,7 +283,6 @@ theorem exists_timeL2EigenProjection (σ T : ℝ) :
     fun N => norm_timeL2EigenProj_le_one (I := I) (M := M) g σ T N,
     fun x => timeL2EigenProj_tendsto (I := I) (M := M) g σ T x⟩
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

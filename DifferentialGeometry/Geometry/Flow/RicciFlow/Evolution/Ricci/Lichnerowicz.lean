@@ -1,18 +1,14 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.CoordinateIdentities
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -32,17 +28,17 @@ variable {u : Set M}
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem evol_ricci_inFrame_of_variation_commutators
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (h_var : RicciVariationFormulaInFrameOn (I := I) S frame
       (nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric))
     (hcomm : RicciContractedCommutatorsInFrame
       (I := I) S Rm04 gInv frame nabla2Ric)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
       (i j : Idx) :
     HasDerivWithinAt
       (fun s : Real => ricciCompInFrame (I := I) S frame s x i j)
@@ -62,48 +58,41 @@ theorem evol_ricci_inFrame_of_variation_commutators
       t x i j
   simpa [ricciEvolutionRHSInFrame] using h
 
-
-
 def ricciTraceDerivRHSInFrame
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (rm04Dt : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (t : Real) (x : M) (i j : Idx) : Real :=
   ∑ k : Idx, ∑ l : Idx,
     (inverseMetricEvolutionRHSInFrame (I := I) S gInv frame t x k l *
-      DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 t) frame x k i j l +
+      DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x k i j l +
     gInv t x k l * rm04Dt t x k i j l)
 
-
-
-
 def RicciTraceDerivativeSimplifiesInFrame
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (rm04Dt : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real) : Prop :=
-  forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+  forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (i j : Idx),
     ricciTraceDerivRHSInFrame (I := I) S Rm04 gInv frame rm04Dt
         (t : Real) x i j =
       ricciEvolutionRHSInFrame (I := I) S Rm04 gInv frame roughLapRic
         (t : Real) x i j
 
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem ricciEvolutionEquationInFrame_of_riemann_trace
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (rm04Dt : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
@@ -118,7 +107,7 @@ theorem ricciEvolutionEquationInFrame_of_riemann_trace
   let traceComp : Real -> Real :=
     fun s => ∑ k : Idx, ∑ l : Idx,
       gInv s x k l *
-        DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 s) frame x k i j l
+        DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 s) frame x k i j l
   have htraceDeriv :
       HasDerivWithinAt traceComp
         (ricciTraceDerivRHSInFrame (I := I) S Rm04 gInv frame rm04Dt
@@ -132,12 +121,12 @@ theorem ricciEvolutionEquationInFrame_of_riemann_trace
         (A := fun k s =>
           ∑ l : Idx,
             gInv s x k l *
-              DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 s) frame x k i j l)
+              DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 s) frame x k i j l)
         (A' := fun k =>
           ∑ l : Idx,
             (inverseMetricEvolutionRHSInFrame (I := I) S gInv frame
                 (t : Real) x k l *
-              DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 (t : Real)) frame x k
+              DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 (t : Real)) frame x k
                 i j l +
             gInv (t : Real) x k l * rm04Dt (t : Real) x k i j l))
         (s := D.carrier) (x := (t : Real))
@@ -148,12 +137,12 @@ theorem ricciEvolutionEquationInFrame_of_riemann_trace
                 (u := (Finset.univ : Finset Idx))
                 (A := fun l s =>
                   gInv s x k l *
-                    DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 s) frame x k i
+                    DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 s) frame x k i
                       j l)
                 (A' := fun l =>
                   inverseMetricEvolutionRHSInFrame (I := I) S gInv frame
                       (t : Real) x k l *
-                    DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 (t : Real))
+                    DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 (t : Real))
                       frame x k i j l +
                   gInv (t : Real) x k l * rm04Dt (t : Real) x k i j l)
                 (s := D.carrier) (x := (t : Real))
@@ -175,20 +164,17 @@ theorem ricciEvolutionEquationInFrame_of_riemann_trace
         (I := I) S Rm04 gInv frame h_trace (t : Real) x i j
   exact hricci.congr_deriv (h_simplify t x i j)
 
-
-
-
 def tensorOneUpCompInFrame
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (h : Real -> M -> Idx -> Idx -> Real)
     (t : Real) (x : M) (i k : Idx) : Real :=
   ∑ a : Idx, gInv t x k a * h t x i a
 
 
 def ricciLeftActionCompInFrame
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (h : Real -> M -> Idx -> Idx -> Real)
     (t : Real) (x : M) (i j : Idx) : Real :=
@@ -198,9 +184,9 @@ def ricciLeftActionCompInFrame
 
 
 def ricciRightActionCompInFrame
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (h : Real -> M -> Idx -> Idx -> Real)
     (t : Real) (x : M) (i j : Idx) : Real :=
@@ -208,36 +194,30 @@ def ricciRightActionCompInFrame
     ricciOneUpCompInFrame (I := I) S gInv frame t x j k *
       h t x k i
 
-
-
-
-
-
-
 def lichnerowiczRHSInFrame
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapH h hRaised : Real -> M -> Idx -> Idx -> Real)
     (t : Real) (x : M) (i j : Idx) : Real :=
   roughLapH t x i j -
     2 * (∑ k : Idx, ∑ l : Idx,
-      DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 t) frame x i k j l *
+      DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l *
         hRaised t x k l) -
     ricciLeftActionCompInFrame (I := I) S gInv frame h t x i j -
     ricciRightActionCompInFrame (I := I) S gInv frame h t x i j
 
 
 def RicciLichnerowiczEquationInFrame
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real) : Prop :=
-  forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+  forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (i j : Idx),
     HasDerivWithinAt
       (fun s : Real => ricciCompInFrame (I := I) S frame s x i j)
@@ -248,18 +228,14 @@ def RicciLichnerowiczEquationInFrame
       D.carrier
       (t : Real)
 
-
-
-
-
 def RicciLichnerowiczSpecializesInFrame
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real) : Prop :=
-  forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+  forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (i j : Idx),
     lichnerowiczRHSInFrame (I := I) S Rm04 gInv frame roughLapRic
         (ricciCompInFrame (I := I) S frame)
@@ -270,21 +246,19 @@ def RicciLichnerowiczSpecializesInFrame
 
 
 def RicciSymmetricInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x) : Prop :=
   forall t x i j,
     ricciCompInFrame (I := I) S frame t x i j =
       ricciCompInFrame (I := I) S frame t x j i
 
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciLeftActionCompInFrame_eq_quadratic
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M) (i j : Idx) :
     ricciLeftActionCompInFrame (I := I) S gInv frame
@@ -292,14 +266,12 @@ theorem ricciLeftActionCompInFrame_eq_quadratic
       ricciQuadraticCompInFrame (I := I) S gInv frame t x i j := by
   rfl
 
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciRightActionCompInFrame_eq_quadratic_of_symm
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hRic : RicciSymmetricInFrameOn (I := I) S frame)
     (hInv : SymmetricInverseMetricComponentsInFrameOn gInv)
@@ -347,14 +319,12 @@ theorem ricciRightActionCompInFrame_eq_quadratic_of_symm
           ricciCompInFrame (I := I) S frame t x k j := by
           rfl
 
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciRightActionCompInFrame_eq_quadratic_at
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M) (i j : Idx)
     (hInv : forall a b : Idx, gInv t x a b = gInv t x b a)
@@ -407,9 +377,9 @@ theorem ricciRightActionCompInFrame_eq_quadratic_at
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem rightActAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M) (i j : Idx)
     (hInv : forall a b : Idx, gInv t x a b = gInv t x b a)
@@ -459,24 +429,21 @@ private theorem rightActAt
           ricciCompInFrame (I := I) S frame t x k j := by
           rfl
 
-
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciLichnerowiczSpecializesInFrame_of_actions
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
-    (h_left : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (h_left : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M) (i j : Idx),
       ricciLeftActionCompInFrame (I := I) S gInv frame
           (ricciCompInFrame (I := I) S frame) (t : Real) x i j =
         ricciQuadraticCompInFrame (I := I) S gInv frame (t : Real) x i j)
-    (h_right : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (h_right : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M) (i j : Idx),
       ricciRightActionCompInFrame (I := I) S gInv frame
           (ricciCompInFrame (I := I) S frame) (t : Real) x i j =
@@ -489,15 +456,13 @@ theorem ricciLichnerowiczSpecializesInFrame_of_actions
     h_left t x i j, h_right t x i j]
   ring
 
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciLichnerowiczSpecializesInFrame_of_symm
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hRic : RicciSymmetricInFrameOn (I := I) S frame)
@@ -513,16 +478,13 @@ theorem ricciLichnerowiczSpecializesInFrame_of_symm
       ricciRightActionCompInFrame_eq_quadratic_of_symm
         (I := I) S gInv frame hRic hInv (t : Real) x i j)
 
-
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciLichnerowiczSpecializesInFrame_regular
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hRic : RicciSymmetricInFrameOnRegular (I := I) S frame)
@@ -539,34 +501,31 @@ theorem ricciLichnerowiczSpecializesInFrame_regular
       (I := I) S gInv frame (t : Real) x i j
       (fun a b => hInv (t : Real) x a b) (hRic t x)
 
-
-
-@[deprecated "use a local or pointwise Lichnerowicz specialization instead" (since := "2026-05-22")]
 theorem ricciLichnerowiczSpecializesInFrame_lc
     [IsManifold I (∞ + 1) M]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (Rm13 : Real -> DifferentialGeometry.Integral.Connection.Tensor13Section (I := I) (M := M))
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hcover : forall x : M, x ∈ u)
-    (hTrace : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hTrace : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
-      DifferentialGeometry.Integral.Connection.RicciRealizesRm04FirstTraceAt (I := I)
+      DifferentialGeometry.Geometry.Curvature.RicciRealizesRm04FirstTraceAt (I := I)
         (S.ricci (t : Real) x) (Rm04 (t : Real) x)
         (gInv (t : Real) x)
         (hframe.toBasisAt (hcover x)))
-    (hRm13 : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I)
+    (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
+      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
-    (hLower : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
-      DifferentialGeometry.Integral.Connection.Rm04LowersRm13At (I := I)
+      DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I)
         (S.family.metric (t : Real)) x
         (Rm13 (t : Real) x) (Rm04 (t : Real) x))
     (hinv : InvMetricLocal (I := I) S gInv frame u) :
@@ -596,15 +555,13 @@ theorem ricciLichnerowiczSpecializesInFrame_lc
   exact ricciLichnerowiczSpecializesInFrame_regular
     (I := I) S Rm04 gInv frame roughLapRic hRic hInv
 
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (h_ricci : RicciEvolutionEquationInFrame
@@ -616,16 +573,13 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution
   intro t x i j
   exact (h_ricci t x i j).congr_deriv (h_spec t x i j).symm
 
-
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_and_symm
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (h_ricci : RicciEvolutionEquationInFrame
@@ -639,34 +593,31 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_and_symm
     (ricciLichnerowiczSpecializesInFrame_of_symm
       (I := I) S Rm04 gInv frame roughLapRic hRic hInv)
 
-
-
-@[deprecated "use a local or pointwise Lichnerowicz equation route instead" (since := "2026-05-22")]
 theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
     [IsManifold I (∞ + 1) M]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (Rm13 : Real -> DifferentialGeometry.Integral.Connection.Tensor13Section (I := I) (M := M))
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hcover : forall x : M, x ∈ u)
-    (hTrace : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hTrace : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
-      DifferentialGeometry.Integral.Connection.RicciRealizesRm04FirstTraceAt (I := I)
+      DifferentialGeometry.Geometry.Curvature.RicciRealizesRm04FirstTraceAt (I := I)
         (S.ricci (t : Real) x) (Rm04 (t : Real) x)
         (gInv (t : Real) x)
         (hframe.toBasisAt (hcover x)))
-    (hRm13 : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I)
+    (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
+      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
-    (hLower : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
-      DifferentialGeometry.Integral.Connection.Rm04LowersRm13At (I := I)
+      DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I)
         (S.family.metric (t : Real)) x
         (Rm13 (t : Real) x) (Rm04 (t : Real) x))
     (h_ricci : RicciEvolutionEquationInFrame
@@ -680,21 +631,16 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
       (I := I) S hS Rm13 Rm04 gInv frame roughLapRic hframe hcover
       hTrace hRm13 hLower hinv)
 
-
-
-
-
-
 omit [SigmaCompactSpace M] in
 theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_commutators
     [IsManifold I (∞ + 1) M]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (Rm13 : Real -> DifferentialGeometry.Integral.Connection.Tensor13Section (I := I) (M := M))
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
+    (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv :
-      Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M
+      Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M
         (CoordinateIdx (𝕜 := Real) E))
     (gInvDt :
       Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
@@ -715,13 +661,13 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
         (coordinateFrameSet (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Integral.Connection.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Integral.Connection.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Integral.Connection.ConnectionCurvatureCoordAt (I := I)
+      DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
         (S.family.connection s) x₀)
     (hmix :
       ChristoffelVariationMixedDerivativeInFrameOnRegular (I := I) S
@@ -731,7 +677,7 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
     (hcomm : RicciContractedCommutatorsInFrame
       (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀) nabla2Ric)
     (hRic : RicciSymmetricInFrameOn (I := I) S (coordinateFrameAt (I := I) x₀))
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (i j : CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
       (fun s : Real =>
@@ -799,19 +745,16 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
     ring
   exact hRicci.congr_deriv hSpecAt.symm
 
-
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciLichAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (roughLapRic : Real -> M -> Idx -> Idx -> Real)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) (i j : Idx)
     (hRicci : HasDerivWithinAt
       (fun s : Real => ricciCompInFrame (I := I) S frame s x i j)
@@ -846,15 +789,13 @@ theorem ricciLichAt
     ring
   exact hRicci.congr_deriv hSpec.symm
 
-
-
 theorem coordRicciLich
     [I.Boundaryless] [IsManifold I (∞ + 1) M]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (i j : CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
       (fun s : Real =>
@@ -877,10 +818,8 @@ theorem coordRicciLich
     exact coordRicSymmOn (I := I) S x₀ (t : Real)
       (coordinateFrameAt_mem (I := I) x₀) a b
 
-
-
 noncomputable def ricciPairRHS
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x₀ : M) (v w : TangentSpace I x₀) : Real :=
   ∑ i : CoordinateIdx (𝕜 := Real) E, ∑ j : CoordinateIdx (𝕜 := Real) E,
@@ -891,19 +830,17 @@ noncomputable def ricciPairRHS
           (coordRoughRic (I := I) S x₀ (coordNab2Ric (I := I) S x₀))
           t x₀ i j
 
-
-
 theorem ricciPairCoord
     [I.Boundaryless] [IsManifold I (∞ + 1) M]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (v w : TangentSpace I x₀) :
     HasDerivWithinAt
       (fun s : Real => S.ricci s x₀
-        (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w))
+        (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w))
       (ricciPairRHS (I := I) S (t : Real) x₀ v w)
       D.carrier (t : Real) := by
   classical
@@ -916,7 +853,7 @@ theorem ricciPairCoord
         (coordRoughRic (I := I) S x₀ (coordNab2Ric (I := I) S x₀))
         (t : Real) x₀ i j
   have hsum_eval : ∀ s : Real,
-      S.ricci s x₀ (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w) =
+      S.ricci s x₀ (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) =
         ∑ i : CoordinateIdx (𝕜 := Real) E, ∑ j : CoordinateIdx (𝕜 := Real) E,
           b.coord i v * b.coord j w *
             ricciCompInFrame (I := I) S frame s x₀ i j := by
@@ -924,7 +861,7 @@ theorem ricciPairCoord
     have h :=
       tensor0S_two_eval_coordFrame_sum (I := I)
         (M := M) (x₀ := x₀) (Ax := S.ricci s x₀) v w
-    simpa [b, frame, DifferentialGeometry.Integral.Connection.vec2,
+    simpa [b, frame, DifferentialGeometry.Geometry.Curvature.vec2,
       ricciCompInFrame, SolutionOn.ricci, SolutionOn.ricciAt] using h
   have hsum_deriv :
       HasDerivWithinAt

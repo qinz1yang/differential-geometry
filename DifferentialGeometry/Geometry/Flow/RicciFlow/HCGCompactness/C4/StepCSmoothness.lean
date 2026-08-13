@@ -2,42 +2,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCCente
 import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
 import DifferentialGeometry.Geometry.Exponential.DiagInvReadout
 import Mathlib.Analysis.Calculus.Implicit
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -47,21 +14,6 @@ attribute [local instance] Fintype.ofFinite Classical.propDecidable
 namespace HCGCompactness
 
 open scoped Topology
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem cmSolution_hasStrictFDerivAt
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -91,24 +43,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] [T3Space M]
 
-
-
-
-
-
-
 noncomputable def chartCmEqn (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (p : M) (z : E) (params : (ι → ℝ) × (ι → E)) : E :=
   ∑ i : ι, params.1 i •
     (NormalCoordinates.normalChartAt (I := I) g
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z)
       ((NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) : E)
-
-
-
-
-
-
 
 theorem chartCmEqn_center (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (pts : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
@@ -127,34 +67,10 @@ theorem chartCmEqn_center (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype 
   simp only [NormalCoordinates.normalChartAt_left_inv (I := I) g p hcm,
     NormalCoordinates.normalChartAt_left_inv (I := I) g p (hpts i)]
 
-
-
-
-
-
-
-
-
 def CmHessianInput (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (p : M) (z₀ : E) (params : (ι → ℝ) × (ι → E)) : Prop :=
   ∃ L : E ≃L[ℝ] E,
     HasFDerivAt (fun z : E => chartCmEqn (I := I) g p z params) (L : E →L[ℝ] E) z₀
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem implicitSol_hasStrictFDerivAt
@@ -251,9 +167,6 @@ theorem implicitSol_hasStrictFDerivAt
     have hle : φ.leftFun zp = φ.leftFun φ.pt := hGzp.trans hz₀.symm
     exact congrArg Prod.fst (hzp.mp hle).symm
 
-
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem existsPinnedDeriv
     {ι : Type} [Fintype ι]
@@ -343,9 +256,6 @@ theorem existsPinnedDeriv
     hjoint.prodMk contDiffAt_snd
   exact ⟨Deq, hΦcd.hasStrictFDerivAt' hΦ_hd hn⟩
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem existsPinnedLocal
     {ι : Type} [Fintype ι]
@@ -363,14 +273,6 @@ theorem existsPinnedLocal
           fun w => (G w.1 w.2, w.2) := by
   obtain ⟨Deq, hΦ⟩ := existsPinnedDeriv G z₀ params₀ hn hjoint hinv
   exact ⟨hΦ.toOpenPartialHomeomorph _, hΦ.mem_toOpenPartialHomeomorph_source, rfl⟩
-
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem implicitSol_contDiffAt
@@ -475,8 +377,7 @@ omit [ConnectedSpace M] in
 theorem normalChart_eq_diagExpInv_snd
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p y q : M)
     (hsrc : (diagExpInv (I := I) g hEnorm p (y, q)).snd ∈
       (NormalCoordinates.expMapDiffeo (I := I) g y).source)
@@ -495,8 +396,7 @@ omit [ConnectedSpace M] in
 theorem diagExpInv_eq_normal
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p y q : M)
     (hproj : (diagExpInv (I := I) g hEnorm p (y, q)).proj = y)
     (hsrc : (diagExpInv (I := I) g hEnorm p (y, q)).snd ∈
@@ -518,8 +418,7 @@ omit [ConnectedSpace M] in
 theorem diagInv_eq_normal_lt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p y q : M)
     (hproj : (diagExpInv (I := I) g hEnorm p (y, q)).proj = y)
     (hintr : expMapIntrinsic (I := I) g hEnorm y
@@ -544,8 +443,7 @@ omit [ConnectedSpace M] in
 theorem diagExpReadout_contMDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ContMDiffAt (I.prod I) 𝓘(ℝ, E) 1
       (fun yq : M × M =>
@@ -564,8 +462,7 @@ omit [ConnectedSpace M] in
 theorem diagExpReadout_contMDiffAt_order
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (n : ℕ) (hn : 1 ≤ n) :
     ContMDiffAt (I.prod I) 𝓘(ℝ, E) (n : ℕ∞)
       (fun yq : M × M =>
@@ -584,8 +481,7 @@ omit [ConnectedSpace M] in
 theorem diagReadout_of_md
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (yq : M × M) (n : ℕ)
     (hsm : ContMDiffAt (I.prod I) I.tangent (n : ℕ∞)
       (diagExpInv (I := I) g hEnorm p) yq)
@@ -605,8 +501,7 @@ omit [ConnectedSpace M] in
 theorem exists_readoutDom
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (n : ℕ) (hn : 1 ≤ n) :
     ∃ U : Set (M × M), IsOpen U ∧ (p, p) ∈ U ∧
       ∀ y ∈ U,
@@ -640,8 +535,7 @@ omit [ConnectedSpace M] in
 theorem exists_readoutDom_inf
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ U : Set (M × M), IsOpen U ∧ (p, p) ∈ U ∧
       ContMDiffOn (I.prod I) 𝓘(ℝ, E) ∞
@@ -688,8 +582,7 @@ omit [ConnectedSpace M] in
 theorem exists_readoutEBall
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ δ : ℝ≥0∞, 0 < δ ∧ δ < ⊤ ∧
       ContMDiffOn (I.prod I) 𝓘(ℝ, E) ∞
@@ -839,8 +732,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 noncomputable def chartCmEqnB
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z : E) (params : (ι → ℝ) × (ι → E)) : E :=
   ∑ i : ι, params.1 i •
@@ -853,8 +745,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 noncomputable def chartCmEqn'
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z : E) (params : (ι → ℝ) × (ι → E)) : E :=
   ∑ i : ι, params.1 i •
     (trivializationAt E (TangentSpace I) p
@@ -869,8 +760,7 @@ omit [ConnectedSpace M] in
 theorem chartCmEqnB_std
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z : E) (params : (ι → ℝ) × (ι → E)) :
     chartCmEqnB (I := I) g hEnorm p (stdBranch (I := I) g hEnorm p) z params =
       chartCmEqn' (I := I) g hEnorm p z params := by
@@ -884,8 +774,7 @@ omit [ConnectedSpace M] in
 theorem chartCmEqnB_cdAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (n : ℕ∞)
@@ -945,8 +834,7 @@ omit [ConnectedSpace M] in
 theorem readoutB_sum_eq
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
@@ -977,8 +865,7 @@ omit [ConnectedSpace M] in
 theorem readoutB_zero_iff
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
@@ -997,8 +884,7 @@ omit [ConnectedSpace M] in
 theorem readoutSolB_strict
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
@@ -1039,8 +925,7 @@ omit [ConnectedSpace M] in
 theorem readoutSolB_cdAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (n : ℕ) (hn : 1 ≤ n)
@@ -1077,8 +962,7 @@ omit [ConnectedSpace M] in
 theorem readout_sum_eq_clm
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
     (hpt : ∀ i, diagExpInv (I := I) g hEnorm p (y, qs i)
@@ -1109,8 +993,7 @@ omit [ConnectedSpace M] in
 theorem readout_sum_eq_zero_iff
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
     (hpt : ∀ i, diagExpInv (I := I) g hEnorm p (y, qs i)
@@ -1129,8 +1012,7 @@ omit [ConnectedSpace M] in
 theorem chartCmEqn'_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1172,8 +1054,7 @@ omit [ConnectedSpace M] in
 theorem chartCmEqn'_contDiffAt_order
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E)) (n : ℕ)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1215,8 +1096,7 @@ omit [ConnectedSpace M] in
 theorem readoutSol_hasStrictFDerivAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1251,8 +1131,7 @@ omit [ConnectedSpace M] in
 theorem readoutSol_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E)) (n : ℕ) (hn : 1 ≤ n)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1284,8 +1163,7 @@ omit [ConnectedSpace M] in
 theorem centerB_hasStrict
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
@@ -1309,7 +1187,8 @@ theorem centerB_hasStrict
       (nhds params₀) (nhds z₀)) :
     ∃ Df : ((ι → ℝ) × (ι → E)) →L[ℝ] E,
       HasStrictFDerivAt
-        (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E)) Df params₀ := by
+        (fun params => (NormalCoordinates.normalChartAt (I := I) g p
+          (c params) : E)) Df params₀ := by
   obtain ⟨f, Df, hf0, hfderiv, hsolves, huniq⟩ :=
     readoutSolB_strict (I := I) g hEnorm p B z₀ params₀ hchz hchξ hsm hinv hzero
   refine ⟨Df, ?_⟩
@@ -1327,8 +1206,7 @@ omit [ConnectedSpace M] in
 theorem centerB_contDiff
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (n : ℕ) (hn : 1 ≤ n)
@@ -1369,8 +1247,7 @@ omit [ConnectedSpace M] in
 theorem center_hasStrictFDerivAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1393,7 +1270,8 @@ theorem center_hasStrictFDerivAt
       (nhds params₀) (nhds z₀)) :
     ∃ Df : ((ι → ℝ) × (ι → E)) →L[ℝ] E,
       HasStrictFDerivAt
-        (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E)) Df params₀ := by
+        (fun params => (NormalCoordinates.normalChartAt (I := I) g p
+          (c params) : E)) Df params₀ := by
   obtain ⟨f, Df, hf0, hfderiv, hsolves, huniq⟩ :=
     readoutSol_hasStrictFDerivAt (I := I) g hEnorm p z₀ params₀ hchz hchξ hsm hinv' hz₀'
   refine ⟨Df, ?_⟩
@@ -1411,8 +1289,7 @@ omit [ConnectedSpace M] in
 theorem center_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E)) (n : ℕ) (hn : 1 ≤ n)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1449,8 +1326,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem centerOfMass_hasStrictFDerivAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (join : M → M → ℝ → M) (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
@@ -1488,7 +1364,8 @@ theorem centerOfMass_hasStrictFDerivAt
             join p r (H params)) : E)) Df params₀ :=
   center_hasStrictFDerivAt (I := I) g hEnorm p z₀ params₀ hchz hchξ hsm hinv' hz₀'
     (fun params => centerOfMass (I := I) g params.1
-      (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r (H params))
+      (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r
+        (H params))
     hc_solves hc_cont
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
@@ -1496,8 +1373,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem centerOfMass_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E)) (n : ℕ) (hn : 1 ≤ n)
     (join : M → M → ℝ → M) (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
@@ -1534,7 +1410,8 @@ theorem centerOfMass_contDiffAt
           join p r (H params)) : E)) params₀ :=
   center_contDiffAt (I := I) g hEnorm p z₀ params₀ n hn hchz hchξ hsm hinv' hz₀'
     (fun params => centerOfMass (I := I) g params.1
-      (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r (H params))
+      (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r
+        (H params))
     hc_solves hc_cont
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup

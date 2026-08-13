@@ -1,7 +1,8 @@
 import DifferentialGeometry.Geometry.Operator.NormGradSq
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenFull
 import DifferentialGeometry.Geometry.Boundary.SecondFundamentalForm
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.BoundaryLaplacian
+import DifferentialGeometry.Geometry.Operator.WithBoundary.BoundaryLaplacian
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -21,7 +22,9 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
+open DifferentialGeometry.Geometry.Operator.WithBoundary
 
 private local instance instMeasurableSpaceM : MeasurableSpace M := borel M
 
@@ -38,7 +41,7 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
 theorem reilly_identity
     (g : SmoothRiemannianMetric (I_half n) M)

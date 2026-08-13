@@ -705,7 +705,7 @@ private lemma tsupport_chartPushedRaw_pou_mul_subset_target
 
 private lemma memWkp_chartPushedRaw_pou_mul_of_memWkpChart
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp (d := Module.finrank ℝ E)
@@ -731,7 +731,7 @@ private lemma memWkp_chartPushedRaw_pou_mul_of_memWkpChart
 
 private lemma wkpNorm_chartPushedRaw_pou_mul_eq_chartPushed
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (u : M → ℝ) (α : M) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
       (d := Module.finrank ℝ E)
@@ -756,7 +756,7 @@ private lemma wkpNorm_chartPushedRaw_pou_mul_eq_chartPushed
 private theorem perChart_eLpNorm_pStar_le
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) (α : M) :
     ∃ K_α : ℝ≥0∞, K_α ≠ ⊤ ∧
       ∀ {u : M → ℝ}, Measurable u →
@@ -898,14 +898,14 @@ private theorem chartAtlasPOU_pou_decomp_subcritical
 private noncomputable def perChartConst_pStar
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) : M → ℝ≥0∞ :=
   fun α => Classical.choose (perChart_eLpNorm_pStar_le (I := I) (M := M) g hp_one hp_dim α)
 
 private lemma perChartConst_pStar_ne_top
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) (α : M) :
     perChartConst_pStar (I := I) (M := M) g hp_one hp_dim α ≠ ⊤ :=
   (Classical.choose_spec (perChart_eLpNorm_pStar_le (I := I) (M := M) g hp_one hp_dim α)).1
@@ -913,7 +913,7 @@ private lemma perChartConst_pStar_ne_top
 private lemma perChartConst_pStar_bound
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) (α : M)
     {u : M → ℝ} (hu_meas : Measurable u)
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u) :
@@ -933,7 +933,7 @@ private lemma perChartConst_pStar_bound
 private theorem sobolev_embedding_chart_subcritical_measurable
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, Measurable u →
@@ -1056,7 +1056,7 @@ private theorem sobolev_embedding_chart_subcritical_measurable
 theorem sobolev_closed
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, Measurable u →
@@ -1176,23 +1176,13 @@ theorem sobolev_closed
   rw [hD_eq] at h_max_le
   exact h_max_le
 
-
-
-
-
-
-
-
-
-
-
 theorem sobolev_embedding_subcritical_of_closed
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ))
     {u : M → ℝ} (hu_meas : Measurable u)
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u) :

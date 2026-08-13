@@ -1,17 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.ConnAddTarget
-
-/-!
-# Vertical invertibility of the harmonic-map local addition
-
-The target coordinate of the component-local exponential addition has identity
-vertical derivative at the zero section.  Its `C²` regularity therefore keeps
-that vertical derivative invertible on a small closed coordinate ball, and the
-totalized inverse operator varies continuously there.
-
-This is a fixed-chart, fixed-basepoint statement.  It does not claim that the
-radius is uniform as the chart center ranges over the compact manifold.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -51,8 +41,6 @@ private theorem connAddTarget_cd
       (contDiffWithinAt_univ.mp hcd)
   simpa only [localAddTarget] using hchart.snd
 
-/-- At the zero section, the partial derivative of the local-addition target
-with respect to its vertical coordinate is the identity operator. -/
 theorem connAdd_part_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
     partialFDeriv₂ (localAddTarget (I := I) g p)
@@ -65,8 +53,6 @@ theorem connAdd_part_zero
     ContinuousLinearMap.inr_apply, ContinuousLinearMap.id_apply] using
     localAddTarget_vert (I := I) g p 1 le_rfl v
 
-/-- The vertical derivative field of the local-addition target is `C¹` at the
-zero section. -/
 theorem connAdd_part_cd
     (g : SmoothRiemannianMetric I M) (p : M) :
     ContDiffAt ℝ 1
@@ -89,9 +75,6 @@ theorem connAdd_part_cd
   simpa only [partialFDeriv₂, restrictVert,
     ContinuousLinearMap.compL_apply] using hcomp
 
-/-- The inverse vertical derivative is `C¹` at the zero section.  The inverse
-is Mathlib's totalized operator inverse; local invertibility follows from the
-identity value at the center. -/
 theorem connAdd_inv_cd
     (g : SmoothRiemannianMetric I M) (p : M) :
     ContDiffAt ℝ 1
@@ -114,8 +97,6 @@ theorem connAdd_inv_cd
     (localAddZeroCoord (I := I) p)
     (connAdd_part_cd (I := I) g p)
 
-/-- A fixed basepoint admits a positive compact coordinate tube on which the
-vertical derivative is invertible and its inverse varies continuously. -/
 theorem exists_connAdd_tube
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r > 0,

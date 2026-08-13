@@ -2,24 +2,33 @@ import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.FrozenFramePureRC
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldContractionBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open TensorMultilinear
-open TensorRSNabla
+open DifferentialGeometry.TensorMultilinear
+open DifferentialGeometry.TensorRSNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -76,7 +85,6 @@ lemma inner_ricEndoRaisedFib (g : SmoothRiemannianMetric I M) (x : M)
   exact inner_metricSharp (I := I) g x (ricciTensor (I := I) g x v).toLinearMap w
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
@@ -128,7 +136,6 @@ theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
   rw [ricEndoRaisedFib_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-
 def ricSlotOpFib (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
     Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace (s + 1) I x) := inferInstance
@@ -148,7 +155,6 @@ def ricSlotOpFib (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
         rfl }
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -162,7 +168,6 @@ omit [SigmaCompactSpace M] in
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -183,7 +188,6 @@ lemma ricSlotOpFib_apply_eval (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricSlotOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
@@ -244,7 +248,6 @@ theorem ricSlotOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
       (ricEndoRaisedFib (I := I) g x)) hG
 
 set_option backward.isDefEq.respectTransparency false in
-
 def ricSlotOpField (g : SmoothRiemannianMetric I M) (s : ℕ) :
     SmoothCcTensor g (s + 1) (s + 1) where
   toSection :=
@@ -254,7 +257,6 @@ def ricSlotOpField (g : SmoothRiemannianMetric I M) (s : ℕ) :
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma ricSlotOpField_toSection (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
     (ricSlotOpField (I := I) (M := M) g s).toSection x =
@@ -349,8 +351,8 @@ theorem ricTraceSection_zero_apply (g : SmoothRiemannianMetric I M) (f : SmoothC
       (unitZeroSec (I := I) (M := M) x)) (ricEndoRaisedFib (I := I) g x v)
     (fun i : Fin 0 => i.elim0)]
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

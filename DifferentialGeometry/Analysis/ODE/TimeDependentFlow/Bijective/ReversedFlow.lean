@@ -1,12 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
-
-
-
-
-
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -42,4 +37,4 @@ theorem time_reversed_flow_exists
           HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Ψ s) x) (Set.Ici 0) t
             ((ContinuousLinearMap.id ℝ ℝ).smulRight (-(X t (Ψ t x))))) := h
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

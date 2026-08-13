@@ -1,30 +1,22 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSFirstDerivativeLipschitz
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped ContDiff Manifold Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
       [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRHSD_pou_lip
@@ -610,9 +602,6 @@ theorem chartRHSD_pou_lip
         (metricJet3_nonneg (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b))
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRHSD_pou_bnd
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
@@ -908,4 +897,4 @@ theorem chartRHSD_pou_bnd
   dsimp [C]
   linarith
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

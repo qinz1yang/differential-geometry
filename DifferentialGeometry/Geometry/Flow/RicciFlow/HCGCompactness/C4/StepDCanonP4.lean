@@ -1,17 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepDAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.FlowLimitUpgrade
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldInputs
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
-
-/-!
-# Canonical Step-D data at the flow-limit interface
-
-This module transports the concrete reference-metric provenance retained by
-`StepDCanonData` across the metric-to-flow comparison-map field copy.  No fact
-here is asserted for an arbitrary `MetricCompactnessConclusion`.
--/
 
 noncomputable section
 
@@ -34,8 +28,6 @@ variable {X : PointedFlowSeq.{u, uE, uH} (I := I)}
 
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
-/-- Canonical Step-D compact-open convergence, expressed in the flow-side
-source-domain notation consumed by `conv0_of_cp`. -/
 theorem canon_cp
     (D : StepDCanonData (I := I) (X.atZero (I := I)))
     (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X
@@ -76,8 +68,6 @@ theorem canon_cp
 
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
-/-- The canonical time-zero source metric is uniformly equivalent to the
-restricted limit metric, with one constant chosen before the source index. -/
 theorem canon_rel
     (D : StepDCanonData (I := I) (X.atZero (I := I)))
     (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X
@@ -112,8 +102,6 @@ theorem canon_rel
 
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
-/-- The canonical Step-D initial covariant envelope, in the exact source-flow
-form consumed by `srcCovLip_of_soln`. -/
 theorem canon_init
     (D : StepDCanonData (I := I) (X.atZero (I := I)))
     (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X

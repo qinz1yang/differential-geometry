@@ -1,20 +1,12 @@
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Real.Basic
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF
 
 
 lemma collapse {n : ℕ} (ig cg : Fin n → Fin n → ℝ)
@@ -181,4 +173,4 @@ def d1RF {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
   (∑ k1, ∑ p, ig k1 p * (∑ q, (ga1 j i q - ga0 j i q) *
     r3B ig cg f dg dig ga0 ga1 gbg gb f3 ddg dga0 dga1 dgbg dgb q p k1))
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF

@@ -1,15 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.RatioMonotonicity
 import Mathlib.Analysis.Calculus.Deriv.Pow
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-
-/-!
-# Hyperbolic radial comparison model
-
-This file defines the nonpositive-curvature radial model used by the
-Bishop--Gromov route.  The parameter `q >= 0` is the square root of the
-absolute curvature scale, so the warping function is `sinh (q r) / q`, with
-its continuous `q = 0` specialization `r`.
--/
+open DifferentialGeometry.Analysis.Calculus
 
 noncomputable section
 
@@ -21,16 +13,12 @@ namespace Geometry
 namespace Riemannian
 namespace VolumeComparison
 
-/-- Hyperbolic radial warping function, including the Euclidean `q = 0`
-case. -/
 def hypSn (q r : ℝ) : ℝ :=
   if q = 0 then r else Real.sinh (q * r) / q
 
-/-- Radial derivative of `hypSn`. -/
 def hypSnDeriv (q r : ℝ) : ℝ :=
   if q = 0 then 1 else Real.cosh (q * r)
 
-/-- The hyperbolic warping function has the expected radial derivative. -/
 theorem hasDerivAt_hypSn (q r : ℝ) :
     HasDerivAt (hypSn q) (hypSnDeriv q r) r := by
   by_cases hq : q = 0
@@ -48,8 +36,6 @@ theorem hasDerivAt_hypSn (q r : ℝ) :
     rw [hfun]
     simpa [hypSnDeriv, hq] using h
 
-/-- The radial derivative of the hyperbolic warping function satisfies the
-model Jacobi equation. -/
 theorem hasDerivAt_hypSnD (q r : ℝ) :
     HasDerivAt (hypSnDeriv q) (q ^ 2 * hypSn q r) r := by
   by_cases hq : q = 0
@@ -72,7 +58,6 @@ theorem hasDerivAt_hypSnD (q r : ℝ) :
     rw [hfun]
     simpa only [id_eq, mul_one] using h.congr_deriv hderiv'
 
-/-- Conserved energy identity for the hyperbolic warping function. -/
 theorem hypSn_energy (q r : ℝ) :
     hypSnDeriv q r ^ 2 - q ^ 2 * hypSn q r ^ 2 = 1 := by
   by_cases hq : q = 0
@@ -85,11 +70,9 @@ theorem hypSn_energy (q r : ℝ) :
         field_simp
       _ = 1 := Real.cosh_sq_sub_sinh_sq (q * r)
 
-/-- The hyperbolic radial warping function is continuous in the radius. -/
 theorem hypSn_continuous (q : ℝ) : Continuous (hypSn q) :=
   continuous_iff_continuousAt.mpr fun r => (hasDerivAt_hypSn q r).continuousAt
 
-/-- `hypSn q r` is positive at positive radius when `q` is nonnegative. -/
 theorem hypSn_pos {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) :
     0 < hypSn q r := by
   by_cases hq0 : q = 0
@@ -98,29 +81,22 @@ theorem hypSn_pos {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) :
     rw [hypSn, if_neg hq0]
     exact div_pos (Real.sinh_pos_iff.mpr (mul_pos hqpos hr)) hqpos
 
-/-- Hyperbolic radial area density in transverse dimension `d`. -/
 def hypDensity (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
   hypSn q r ^ d
 
-/-- Radial derivative of the hyperbolic area density. -/
 def hypDensityDeriv (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
   (d : ℝ) * hypSn q r ^ (d - 1) * hypSnDeriv q r
 
-/-- The hyperbolic area density has the power-rule derivative. -/
 theorem hasDerivAt_hypDen (q : ℝ) (d : ℕ) (r : ℝ) :
     HasDerivAt (hypDensity q d) (hypDensityDeriv q d r) r := by
   simpa [hypDensity, hypDensityDeriv] using (hasDerivAt_hypSn q r).pow d
 
-/-- The hyperbolic radial area density is continuous in the radius. -/
 theorem hypDen_continuous (q : ℝ) (d : ℕ) : Continuous (hypDensity q d) :=
   continuous_iff_continuousAt.mpr fun r => (hasDerivAt_hypDen q d r).continuousAt
 
-/-- Logarithmic radial derivative of the hyperbolic area density. -/
 def hypMeanCurv (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
   (d : ℝ) * hypSnDeriv q r / hypSn q r
 
-/-- The hyperbolic model mean curvature is bounded by its Euclidean pole term
-plus the curvature scale. -/
 theorem hypMeanCurv_le
     {q r : ℝ} (d : ℕ) (hq : 0 ≤ q) (hr : 0 < r) :
     hypMeanCurv q d r ≤ (d : ℝ) / r + (d : ℝ) * q := by
@@ -168,7 +144,6 @@ theorem hypMeanCurv_le
         mul_le_mul_of_nonneg_left hratio (Nat.cast_nonneg d)
       _ = (d : ℝ) / r + (d : ℝ) * q := by ring
 
-/-- The hyperbolic model mean curvature satisfies its scalar Riccati equation. -/
 theorem hasDerivAt_hypMean
     {q r : ℝ} {d : ℕ} (hq : 0 ≤ q) (hr : 0 < r) (hd : 0 < d) :
     HasDerivAt (hypMeanCurv q d)
@@ -181,8 +156,6 @@ theorem hasDerivAt_hypMean
   simp only [hypMeanCurv]
   field_simp
 
-/-- The logarithmic derivative of the model warping function has derivative
-`-1 / hypSn^2`. -/
 theorem hasDerivAt_hypLog
     {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) :
     HasDerivAt (fun x => hypSnDeriv q x / hypSn q x)
@@ -194,8 +167,6 @@ theorem hasDerivAt_hypLog
   field_simp [hsn]
   nlinarith
 
-/-- The logarithmic derivative of the model warping function diverges to
-`+∞` at the pole. -/
 theorem hypLog_tendsto {q : ℝ} (hq : 0 ≤ q) :
     Tendsto (fun r => hypSnDeriv q r / hypSn q r)
       (𝓝[>] (0 : ℝ)) atTop := by
@@ -228,7 +199,6 @@ theorem hypLog_tendsto {q : ℝ} (hq : 0 ≤ q) :
   convert hsn.inv_tendsto_nhdsGT_zero.atTop_mul_pos zero_lt_one hsd using 1
   simp only [Pi.inv_apply, inv_mul_eq_div]
 
-/-- The model warping function is asymptotic to the radius at the pole. -/
 theorem hypSnRatio_tendsto (q : ℝ) :
     Tendsto (fun r => hypSn q r / r) (𝓝[>] (0 : ℝ)) (𝓝 1) := by
   have h := (hasDerivAt_hypSn q 0).tendsto_slope_zero_right
@@ -237,7 +207,6 @@ theorem hypSnRatio_tendsto (q : ℝ) :
     simp [hypSn, div_eq_inv_mul, smul_eq_mul]
   · simp [hypSnDeriv]
 
-/-- Near the pole, the model warping function is at most twice the radius. -/
 theorem hypSn_le_two (q : ℝ) :
     ∀ᶠ r in 𝓝[>] (0 : ℝ), hypSn q r ≤ 2 * r := by
   have hratio := (hypSnRatio_tendsto q).eventually
@@ -248,7 +217,6 @@ theorem hypSn_le_two (q : ℝ) :
     hypSn q r = (hypSn q r / r) * r := (div_mul_cancel₀ _ hr.ne').symm
     _ ≤ 2 * r := mul_le_mul_of_nonneg_right hratio.le hr.le
 
-/-- The model density derivative is its mean curvature times the density. -/
 theorem hypDenDeriv_eq_mean
     {q r : ℝ} {d : ℕ} (hq : 0 ≤ q) (hr : 0 < r) :
     hypDensityDeriv q d r = hypMeanCurv q d r * hypDensity q d r := by
@@ -260,13 +228,10 @@ theorem hypDenDeriv_eq_mean
         Nat.succ_sub_one, pow_succ]
       field_simp
 
-/-- The hyperbolic area density is positive at positive radius. -/
 theorem hypDensity_pos {q r : ℝ} {d : ℕ} (hq : 0 ≤ q) (hr : 0 < r) :
     0 < hypDensity q d r := by
   exact pow_pos (hypSn_pos hq hr) d
 
-/-- A density whose logarithmic derivative is `m` has ratio derivative equal
-to the ratio times the difference from the model mean curvature. -/
 theorem hasDerivAt_hypRatio
     {j j' m : ℝ → ℝ} {q r : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (hr : 0 < r)
@@ -280,8 +245,6 @@ theorem hasDerivAt_hypRatio
   rw [hj', hypDenDeriv_eq_mean hq hr]
   field_simp [hden]
 
-/-- The model-weighted difference between a scalar Riccati subsolution and
-the hyperbolic mean curvature is antitone. -/
 theorem weightedMean_anti
     {m m' : ℝ → ℝ} {q b : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (hd : 0 < d)
@@ -362,8 +325,6 @@ theorem weightedMean_anti
       exact hFle r hr'
   simpa only [F] using hanti
 
-/-- A scalar Riccati subsolution with the radial weighted asymptotic at zero
-is bounded above by the hyperbolic model mean curvature. -/
 theorem mean_le_hyp
     {m m' : ℝ → ℝ} {q b : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (hd : 0 < d)
@@ -385,8 +346,6 @@ theorem mean_le_hyp
   have hSpos : 0 < hypSn q r ^ 2 := sq_pos_of_pos (hypSn_pos hq hr.1)
   nlinarith
 
-/-- A scalar Riccati subsolution is bounded by the hyperbolic model when the
-associated radial density ratio stays uniformly positive at the pole. -/
 theorem mean_le_hyp_of_ratio
     {m m' R : ℝ → ℝ} {q b : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (hd : 0 < d)
@@ -476,8 +435,6 @@ theorem mean_le_hyp_of_ratio
     linarith
   exact hfalse.exists.elim fun _ hx => hx
 
-/-- A radial density satisfying the Bishop cross-derivative inequality has
-antitone ratio to the hyperbolic model density. -/
 theorem hypRatio_anti
     {j j' : ℝ → ℝ} {q a b : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (ha : 0 ≤ a)
@@ -490,8 +447,6 @@ theorem hypRatio_anti
   intro r hr
   exact hypDensity_pos hq (lt_of_le_of_lt ha hr.1)
 
-/-- The Bishop cross-derivative inequality implies monotonicity of the
-cumulative radial volume ratio. -/
 theorem hypVolumeRatio_anti
     {j j' : ℝ → ℝ} {q b : ℝ} {d : ℕ}
     (hq : 0 ≤ q)

@@ -1,19 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfStateRough
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfRoughFixedPoint
 
-/-!
-# Fixed point with a state-dependent principal coefficient
-
-This file extends the abstract rough fixed point to a genuinely
-state-dependent principal flux.  Its critical rate is
-
-`4 * (eps + 2 * L * R) + K * R`.
-
-For the expected strong HMF cancellation the specialization is `L = 0`; the
-state-dependent quadratic source still needs the separate three-arm estimate
-from `HmfStateQuad.lean`.
--/
-
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 open MeasureTheory
@@ -32,8 +19,6 @@ variable {X E V G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Rough model with value differences controlled by the ambient Banach
-distance.  This is the missing value-side companion to `grad_diff`. -/
 structure HmfStateModel (T R : ℝ) (C : ℝ≥0∞)
     (path : X → ℝ × V → F) (grad : X → ℝ × V → G) : Prop
     extends HmfRoughModel T R C path grad where
@@ -41,8 +26,6 @@ structure HmfStateModel (T R : ℝ) (C : ℝ≥0∞)
   path_diff : ∀ u v,
     PathSup T ‖u - v‖ (fun z ↦ path u z - path v z)
 
-/-- Measurability of the two state-principal arms and the two quadratic
-arms in a fixed-point difference. -/
 structure HmfStateMeas
     (A : ℝ × V → F → G →L[ℝ] F)
     (Q : ℝ × V → G →L[ℝ] G →L[ℝ] F)
@@ -75,8 +58,6 @@ private theorem flux_neg
 
 omit [CompleteSpace X]
   [NormedSpace ℝ F] in
-/-- The subtraction law in `HeatRoughBound` implies addition of flux
-potentials. -/
 theorem flux_add
     (H : HeatRoughBound T tr fluxPot sourcePot) (p q : ℝ × V → F) :
     fluxPot (fun z ↦ p z + q z) = fluxPot p + fluxPot q := by
@@ -91,12 +72,9 @@ theorem flux_add
 
 end HeatRoughBound
 
-/-- Critical contraction rate for a state-dependent principal coefficient. -/
 def hmfStateRate (eps L K R : ℝ) : ℝ :=
   hmfRate (eps + 2 * L * R) K R
 
-/-- Build the repaired fixed-point data from the two state-principal arms
-and the quadratic target arm. -/
 def stateFpOfSplit
     {T eps L K R eta : ℝ} {C : ℝ≥0∞}
     {tr : X →L[ℝ] E}
@@ -180,8 +158,6 @@ def stateFpOfSplit
   rate_lt_one := by simpa only [hmfStateRate] using hrate
   seed_small := by simpa only [hmfStateRate] using hsmall
 
-/-- State-dependent-principal rough fixed point, with its realized Duhamel
-equation and rough-path bounds exposed. -/
 theorem stateSplit_fixed
     {T eps L K R eta : ℝ} {C : ℝ≥0∞}
     {tr : X →L[ℝ] E}

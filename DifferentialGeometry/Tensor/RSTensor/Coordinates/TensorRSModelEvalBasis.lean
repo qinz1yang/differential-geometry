@@ -9,7 +9,7 @@ import Mathlib.Analysis.Normed.Module.Multilinear.Curry
 import Mathlib.Analysis.Normed.Operator.Basic
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
 import Mathlib.Geometry.Manifold.ContMDiff.Constructions
-
+open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
@@ -20,7 +20,7 @@ namespace Analysis
 namespace Parabolic
 namespace TensorSpectral
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 open scoped Manifold Topology ContDiff BigOperators
 

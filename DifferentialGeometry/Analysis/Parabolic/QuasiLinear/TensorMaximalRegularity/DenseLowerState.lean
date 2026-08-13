@@ -1,15 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Topology.MetricSpace.Lipschitz
 
-/-!
-# Dense cores inside a lower-norm state ball
-
-A dense smooth core in a strong Hilbert space remains dense after restricting
-to a closed ball measured by a continuous lower-order view.  Positivity of the
-radius is essential: a boundary point is first moved a little radially into
-the open lower-order ball, where ordinary density applies.
--/
-
 noncomputable section
 
 open Set
@@ -20,16 +11,11 @@ namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
 variable {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 
-/-- The closed state ball measured through a continuous linear lower view. -/
 def lowerBall (J : X →L[ℝ] Y) (R : ℝ) : Set X := {x | ‖J x‖ ≤ R}
 
-/-- The part of an ambient core `D` which lies in the lower state ball,
-viewed as a subset of the state-ball subtype. -/
 def lowerCore (D : Set X) (J : X →L[ℝ] Y) (R : ℝ) :
     Set (lowerBall J R) := {x | (x : X) ∈ D}
 
-/-- Restricting a dense core to a positive lower-norm ball preserves density
-in the ball subtype. -/
 theorem dense_lowerCore {D : Set X} (hD : Dense D)
     (J : X →L[ℝ] Y) {R : ℝ} (hR : 0 < R) :
     Dense (lowerCore D J R) := by

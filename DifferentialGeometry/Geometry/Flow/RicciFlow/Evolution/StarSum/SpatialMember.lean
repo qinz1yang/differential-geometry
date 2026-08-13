@@ -1,31 +1,17 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.StarRouting
 import DifferentialGeometry.Geometry.Curvature.CurvatureActionLower
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Integral.Measure
 open scoped Manifold ContDiff BigOperators
 
@@ -37,7 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
@@ -130,10 +116,10 @@ private theorem tensor04_vec4_sum_last_idx
 omit [Module.Finite ℝ E] in
 private theorem slotdiffBasisEq
     [Module.Finite ℝ E]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) {x : M}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -315,12 +301,6 @@ private theorem slotdiffBasisEq
           congr 1
           exact Finset.sum_congr rfl (fun q _ => hq q)
 
-
-
-
-
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 private theorem curvactReduce
@@ -385,7 +365,7 @@ private theorem slotdiffReduce
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) {x : M}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -502,21 +482,9 @@ private theorem curvRoute
   · rw [dif_neg hq]
     simpa using (curvactStarPos (I := I) S t k q hq basis horth' I0).symm
 
-
-
-
-
-
-
-
-
-
 def commStarCost (n k : ℕ) : Real :=
   (n : Real) ^ 2 * (13 + 3 * k)
 
-/-- The canonical field representing the spatial commutator
-`[Δ,∇]∇ᵏRm`. Its definition is independent of a solution proof, a component
-index type, a point, and a choice of basis. -/
 def commStarField
     (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ) :
@@ -538,8 +506,6 @@ def commStarField
   (-1 : Real) • (TA + TB + TC)
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The cost and component specifications of the canonical spatial-commutator
-field, bundled so their shared assembly proof is checked once. -/
 private theorem commStarField_data
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
@@ -761,8 +727,6 @@ private theorem commStarField_data
     simp [T, tensor0SComponent_apply, hTAp, hTBp, hTCp, Finset.sum_add_distrib]
     ring_nf
 
-/-- The canonical spatial-commutator field has the exact constructor-tree
-cost `commStarCost`. -/
 theorem commStarField_cost
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
@@ -772,8 +736,6 @@ theorem commStarField_cost
   classical
   exact (commStarField_data (I := I) S hS t k).1
 
-/-- Components of the canonical spatial-commutator field agree with the
-intrinsic commutator expression in every orthonormal basis. -/
 theorem commStarField_spec
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
@@ -793,8 +755,6 @@ theorem commStarField_spec
   letI : Fintype Idx := Fintype.ofFinite Idx
   exact (commStarField_data (I := I) S hS t k).2 x basis horth I0
 
-/-- **Brick 4, P2 (compatibility form): the spatial commutator
-`[Δ,∇]∇ᵏRm` is a star sum.** -/
 theorem spatialCommStarSum
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)

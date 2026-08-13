@@ -13,7 +13,8 @@ variable {d : ℕ} [NeZero d]
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
 omit [NeZero d] in
-private lemma euclidean_component_norm_le (v : E) (i : Fin d) : ‖v i‖ ≤ ‖v‖ := by
+omit [NeZero d] in
+lemma euclidean_component_norm_le (v : E) (i : Fin d) : ‖v i‖ ≤ ‖v‖ := by
   rw [EuclideanSpace.norm_eq]
   have : ‖v i‖ ^ 2 ≤ ∑ j, ‖v j‖ ^ 2 := by
     refine Finset.single_le_sum (f := fun j => ‖v j‖ ^ 2)
@@ -38,7 +39,8 @@ theorem eLpNorm_weakGrad_component_le
   exact euclidean_component_norm_le (hw.weakGrad x) i
 
 omit [NeZero d] in
-private lemma fderiv_norm_le_sum_components
+omit [NeZero d] in
+lemma fderiv_norm_le_sum_components
     {φ : E → ℝ} (x : E) :
     ‖fderiv ℝ φ x‖ ≤ ∑ i : Fin d, |(fderiv ℝ φ x) (EuclideanSpace.single i 1)| := by
   classical
@@ -79,7 +81,8 @@ private lemma fderiv_norm_le_sum_components
       _ = (∑ i : Fin d, |L (EuclideanSpace.single i 1)|) * ‖v‖ := by ring
 
 omit [NeZero d] in
-private lemma eLpNorm_fderiv_le_sum_components
+omit [NeZero d] in
+lemma eLpNorm_fderiv_le_sum_components
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) :
     eLpNorm (fun x => ‖fderiv ℝ φ x‖) p volume ≤
@@ -191,7 +194,8 @@ private lemma eLpNorm_fderiv_le_sum_components
   rw [hcongr, eLpNorm_norm]
 
 omit [NeZero d] in
-private lemma eLpNorm_translate_sub_le_sum_components
+omit [NeZero d] in
+lemma eLpNorm_translate_sub_le_sum_components
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
     {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (h : E) :
     eLpNorm (fun x => φ (x - h) - φ x) p volume ≤

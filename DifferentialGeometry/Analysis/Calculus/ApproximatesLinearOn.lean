@@ -1,16 +1,7 @@
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn
 
-
-
-
-
-
-
-
 noncomputable section
-
-
 
 theorem ApproximatesLinearOn.fderiv_sub_le
     {𝕜 E F : Type*} [NontriviallyNormedField 𝕜]

@@ -646,24 +646,6 @@ theorem nirenberg_master_inequality_nonsmooth
     h_FK_diffQuot_u_bound h_v_test_sq_bound
     h_master_nonsmooth
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 theorem nirenberg_substitution_identity_nonsmooth
     {Ω : Set EuclN} (_hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {u f : EuclN → ℝ}

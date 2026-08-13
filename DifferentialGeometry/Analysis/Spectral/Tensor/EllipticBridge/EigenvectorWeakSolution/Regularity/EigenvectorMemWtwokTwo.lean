@@ -2,10 +2,11 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorArbitraryKRegularity
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartLocality
 
+open DifferentialGeometry.Analysis.Spectral
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
 namespace DifferentialGeometry
@@ -35,7 +36,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (i : TensorEigenIdx (I := I) (M := M) g r s)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 theorem eigenvectorSmooth_tensorChartComp_aeEq_chartComponentFun
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -88,7 +89,7 @@ theorem eigenvectorSmooth_tensorChartComp_aeEq_chartComponentFun
     exact h_smooth_ae.symm
   exact h_oriented
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 theorem tensorEigenvector_memWtwokTwo
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

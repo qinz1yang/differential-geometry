@@ -7,9 +7,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -32,7 +31,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a : ℝ} {T : ℝ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem forcingMass_summable_of_couple (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
@@ -44,7 +42,6 @@ private theorem forcingMass_summable_of_couple (hT : 0 ≤ T)
   hcouple σ
     (solFieldMass_summable_all (I := I) (M := M) hT f hcouple hbase (σ + 1))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem weighted_perModeConv_sq_le (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
@@ -94,7 +91,6 @@ private theorem weighted_perModeConv_sq_le (hT : 0 ≤ T)
           ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2) := by ring
     _ = T * forcingMass (I := I) (M := M) f σ i := by rw [forcingMass]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem spectralMass_sup_le_of_timeL2_allHs (hT : 0 < T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
@@ -137,9 +133,8 @@ theorem spectralMass_sup_le_of_timeL2_allHs (hT : 0 < T)
     _ = T * ∑' i, forcingMass (I := I) (M := M) f σ i := by
         rw [tsum_mul_left]
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

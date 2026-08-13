@@ -7,9 +7,8 @@ open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace MetricRealization
 
 open DifferentialGeometry.Analysis.Laplacian
@@ -50,9 +49,8 @@ theorem gInner_self_le_of_gFibreOpBound
   rwa [perturbedInner_apply] at h
 
 end MetricRealization
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -34,7 +35,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma countable_tensorEigenIdx
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -50,7 +50,6 @@ lemma ae_all_coeff_eq {ι : Type*} [Countable ι] {μ : Measure ℝ}
     ∀ᵐ t ∂μ, ∀ i, gfam i t = f i t :=
   (MeasureTheory.ae_all_iff).2 h
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorHsWeightMulCoeffSqLeNormSq {a : ℝ}
     (T : tensorHs (I := I) (M := M) g r s a)
@@ -62,7 +61,6 @@ lemma tensorHsWeightMulCoeffSqLeNormSq {a : ℝ}
     tensorSobolevWeight_nonneg (I := I) (M := M) j a
   positivity
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorHsAbsCoeffLe {a : ℝ}
     (T : tensorHs (I := I) (M := M) g r s a)
@@ -105,14 +103,12 @@ def tensorHsCoeffL {a : ℝ}
       rw [Real.norm_eq_abs]
       exact tensorHsAbsCoeffLe (I := I) (M := M) T i)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorHsCoeffL_apply {a : ℝ}
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (T : tensorHs (I := I) (M := M) g r s a) :
     tensorHsCoeffL (I := I) (M := M) i T = T.coeff i := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorHsCoeffL_opNorm_le {a : ℝ}
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -128,7 +124,6 @@ def timeModeCoeff {a : ℝ} {T : ℝ}
     timeL2 ℝ T :=
   (tensorHsCoeffL (I := I) (M := M) i).compLpL 2 (timeMeasure T) f
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_coeFn {a : ℝ} {T : ℝ}
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -140,7 +135,6 @@ theorem timeModeCoeff_coeFn {a : ℝ} {T : ℝ}
   exact h.trans
     (Eventually.of_forall fun t => tensorHsCoeffL_apply (I := I) (M := M) i (f t))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_add {a : ℝ} {T : ℝ}
     (f₁ f₂ : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -151,7 +145,6 @@ theorem timeModeCoeff_add {a : ℝ} {T : ℝ}
   unfold timeModeCoeff
   rw [map_add]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_smul {a : ℝ} {T : ℝ} (c : ℝ)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -161,7 +154,6 @@ theorem timeModeCoeff_smul {a : ℝ} {T : ℝ} (c : ℝ)
   unfold timeModeCoeff
   rw [map_smul]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_timeModeCoeff_le {a : ℝ} {T : ℝ}
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -177,7 +169,6 @@ theorem norm_timeModeCoeff_le {a : ℝ} {T : ℝ}
       (tensorHsCoeffL (I := I) (M := M) i))
     (tensorHsCoeffL_opNorm_le (I := I) (M := M) i)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem integrable_timeModeCoeff_sq {a : ℝ} {T : ℝ}
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -186,7 +177,6 @@ theorem integrable_timeModeCoeff_sq {a : ℝ} {T : ℝ}
       (timeMeasure T) :=
   (Lp.memLp (timeModeCoeff (I := I) (M := M) f i)).integrable_sq
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_timeModeCoeff_sq_eq_integral {a : ℝ} {T : ℝ}
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -198,7 +188,6 @@ theorem norm_timeModeCoeff_sq_eq_integral {a : ℝ} {T : ℝ}
   refine integral_congr_ae (Eventually.of_forall fun t => ?_)
   simp only [Real.norm_eq_abs, sq_abs]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem integrable_weight_mul_coeff_sq {a : ℝ} {T : ℝ}
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -220,7 +209,6 @@ private def planIntegrand (i : TensorEigenIdx (I := I) (M := M) g r s)
   ENNReal.ofReal
     (tensorSobolevWeight (I := I) (M := M) i a * ((f t).coeff i) ^ 2)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem aemeasurable_planIntegrand
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -235,7 +223,6 @@ private theorem aemeasurable_planIntegrand
   exact (((hmeas.pow_const 2).const_mul
     (tensorSobolevWeight (I := I) (M := M) i a))).ennreal_ofReal
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lintegral_planIntegrand
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -270,7 +257,6 @@ private theorem lintegral_planIntegrand
   filter_upwards [timeModeCoeff_coeFn (I := I) (M := M) f i] with t ht
   rw [ht]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem ennreal_tsum_weight_mul_norm_sq_ne_top
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -310,7 +296,6 @@ private theorem ennreal_tsum_weight_mul_norm_sq_ne_top
     ← hlintegral_eq, ← ofReal_integral_eq_lintegral_ofReal hf_norm_sq_int hf_nn]
   exact ENNReal.ofReal_ne_top
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem weight_mul_norm_timeModeCoeff_sq_nonneg
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -318,7 +303,6 @@ private theorem weight_mul_norm_timeModeCoeff_sq_nonneg
       ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2 :=
   mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i a) (sq_nonneg _)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem summable_weight_mul_norm_timeModeCoeff_sq
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -332,7 +316,6 @@ theorem summable_weight_mul_norm_timeModeCoeff_sq
   exact ENNReal.toReal_ofReal
     (weight_mul_norm_timeModeCoeff_sq_nonneg (I := I) (M := M) f i)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_sq_eq_tsum_timeModeCoeff
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -393,7 +376,6 @@ theorem norm_sq_eq_tsum_timeModeCoeff
 
 end PlancherelFubini
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_sq_le_of_weighted_perMode_le {a b : ℝ} {T : ℝ} {C : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -419,7 +401,6 @@ theorem norm_sq_le_of_weighted_perMode_le {a b : ℝ} {T : ℝ} {C : ℝ}
   rw [hg, hf, ← tsum_mul_left]
   exact Summable.tsum_le_tsum hbound hg_summ (hf_summ.mul_left _)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_le_of_weighted_perMode_le {a b : ℝ} {T : ℝ} {C : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -449,7 +430,6 @@ def timeModeSynthesisPointwise {b : ℝ}
   coeff := cFam
   weighted_summable := hsum
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma timeModeSynthesisPointwise_coeff {b : ℝ}
     (cFam : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
@@ -459,7 +439,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     (timeModeSynthesisPointwise (I := I) (M := M) cFam hsum).coeff i =
       cFam i := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_injective {b : ℝ} {T : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2

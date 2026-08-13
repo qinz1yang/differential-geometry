@@ -430,6 +430,15 @@ instance instHasSmoothBoundary (n : ℕ) [NeZero n] :
     change projEuclidean n (inclEuclidean n x) = x
     exact projEuclidean_inclEuclidean n x
   inwardCoordE := EuclideanSpace.single (0 : Fin n) (1 : ℝ)
+  inwardCoordE_enters := by
+    intro y hy
+    rw [frontier_range_modelWithCornersEuclideanHalfSpace_eq] at hy
+    refine ⟨1, one_pos, ?_⟩
+    intro t ht
+    rw [interior_range_modelWithCornersEuclideanHalfSpace]
+    change 0 < (y + t • EuclideanSpace.single (0 : Fin n) (1 : ℝ)) 0
+    rw [PiLp.add_apply, PiLp.smul_apply, single_zero_one_apply_zero n, hy]
+    simpa using ht.1
   inwardCoordE_transverse := single_zero_one_transverse n
   range_frontier_basis_addHaar_zero := by
     intro _

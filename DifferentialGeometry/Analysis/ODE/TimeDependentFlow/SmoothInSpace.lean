@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Variati
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ChartGlue
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -41,4 +41,4 @@ theorem time_dependent_vf_flow_smooth_in_space
     (hx_ball := Metric.mem_ball_self hρ_pos)
     (hflow_in_target := hflow_target t ht_mem)
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

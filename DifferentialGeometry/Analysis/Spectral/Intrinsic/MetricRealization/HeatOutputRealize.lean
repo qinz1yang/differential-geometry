@@ -1,75 +1,16 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace MetricRealization
 
 open DifferentialGeometry.Integral.Measure
@@ -85,9 +26,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-
-
-
 def spectralCoeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u₀ : TensorL2 r s g) :
     TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s → ℝ :=
@@ -101,10 +39,6 @@ def spectralCoeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
         u₀ i := rfl
 
-
-
-
-
 theorem heatHsWitness_support_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : ℝ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g) :
     Function.support (heatHsWitness (I := I) (M := M) g r s σ ht u₀).coeff =
@@ -117,9 +51,6 @@ theorem heatHsWitness_support_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     spectralCoeff_apply]
   exact mul_ne_zero_iff_left hexp
 
-
-
-
 theorem heatHsWitness_finite_support_of_finite
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : ℝ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
@@ -128,12 +59,6 @@ theorem heatHsWitness_finite_support_of_finite
   rw [heatHsWitness_support_eq (I := I) (M := M) g r s σ ht u₀]
   exact hu₀_fs
 
-
-
-
-
-
-
 def heatOutputSmoothRepr (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
     (hu₀_fs : (Function.support (spectralCoeff (I := I) (M := M) g r s u₀)).Finite) :
@@ -141,14 +66,6 @@ def heatOutputSmoothRepr (g : SmoothRiemannianMetric I M) (r s : ℕ)
   tensorHsSmoothRepr (I := I) (M := M)
     (heatHsWitness (I := I) (M := M) g r s 0 ht u₀)
     (heatHsWitness_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs)
-
-
-
-
-
-
-
-
 
 theorem heatOutputSmoothRepr_toL2 (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
@@ -162,10 +79,6 @@ theorem heatOutputSmoothRepr_toL2 (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (heatHsWitness_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs)]
   exact heat_semigroup_into_tensorHs (I := I) (M := M) g r s (le_refl (0 : ℝ)) ht u₀
 
-
-
-
-
 theorem heatOutputSmoothRepr_memWtwokTwo (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
     (hu₀_fs : (Function.support (spectralCoeff (I := I) (M := M) g r s u₀)).Finite)
@@ -175,11 +88,6 @@ theorem heatOutputSmoothRepr_memWtwokTwo (g : SmoothRiemannianMetric I M) (r s :
   tensorHsSmoothRepr_memWtwokTwo (I := I) (M := M)
     (heatHsWitness (I := I) (M := M) g r s 0 ht u₀)
     (heatHsWitness_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs) k
-
-
-
-
-
 
 theorem exists_smooth_heatOutput_representative (g : SmoothRiemannianMetric I M)
     (r s : ℕ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
@@ -191,16 +99,6 @@ theorem exists_smooth_heatOutput_representative (g : SmoothRiemannianMetric I M)
   ⟨heatOutputSmoothRepr (I := I) (M := M) g r s ht u₀ hu₀_fs,
     heatOutputSmoothRepr_toL2 (I := I) (M := M) g r s ht u₀ hu₀_fs,
     fun k => heatOutputSmoothRepr_memWtwokTwo (I := I) (M := M) g r s ht u₀ hu₀_fs k⟩
-
-
-
-
-
-
-
-
-
-
 
 theorem spectralSmooth_realizesAsSmooth_of_finite_support
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (u : TensorL2 r s g)
@@ -222,8 +120,6 @@ theorem spectralSmooth_realizesAsSmooth_of_finite_support
     (le_refl (0 : ℝ)) v₀ hv₀_fs]
   exact hv₀
 
-
-
 def heatOutputBilinSymm (g : SmoothRiemannianMetric I M)
     {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 0 2 g)
     (hu₀_fs : (Function.support (spectralCoeff (I := I) (M := M) g 0 2 u₀)).Finite)
@@ -231,22 +127,6 @@ def heatOutputBilinSymm (g : SmoothRiemannianMetric I M)
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
   ccTensorBilinSymm (I := I) g
     (heatOutputSmoothRepr (I := I) (M := M) g 0 2 ht u₀ hu₀_fs) x
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem exists_smooth_metric_of_heatOutput_small
     (g : SmoothRiemannianMetric I M)
@@ -263,9 +143,8 @@ theorem exists_smooth_metric_of_heatOutput_small
     (heatOutputSmoothRepr (I := I) (M := M) g 0 2 ht u₀ hu₀_fs) hδ'_lt hδ'
 
 end MetricRealization
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

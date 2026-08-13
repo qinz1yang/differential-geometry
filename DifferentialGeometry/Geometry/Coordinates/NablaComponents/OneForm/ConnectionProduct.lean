@@ -1,18 +1,12 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Pairing
 
-
-
-
-
-
-
 set_option autoImplicit false
 
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]

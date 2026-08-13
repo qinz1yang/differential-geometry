@@ -2,9 +2,10 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedNorm
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNorm
+open DifferentialGeometry.Geometry.Curvature
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 open Bundle
 open scoped Manifold ContDiff
@@ -48,4 +49,4 @@ theorem fibrewise_gram_twist_estimate
   · simp
   · simp
 
-end DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+end DifferentialGeometry.Analysis.Sobolev.HebeyBlock

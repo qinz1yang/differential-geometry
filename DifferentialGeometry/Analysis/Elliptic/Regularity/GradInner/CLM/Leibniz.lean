@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothScalar.MulLp
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
 import DifferentialGeometry.Geometry.Operator.NormGradSq
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -24,6 +25,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
@@ -36,7 +38,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def gradRhoSqSmooth
     (g : SmoothRiemannianMetric I M) (ρα : C^∞⟮I, M; ℝ⟯) :
@@ -44,14 +46,14 @@ noncomputable def gradRhoSqSmooth
   ⟨normGradSqFun (I := I) g (ρα : M → ℝ),
     normGradSqFun_contMDiff (I := I) g ρα.contMDiff⟩
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma gradRhoSqSmooth_apply
     (g : SmoothRiemannianMetric I M) (ρα : C^∞⟮I, M; ℝ⟯) (x : M) :
     (gradRhoSqSmooth (I := I) (M := M) g ρα : M → ℝ) x =
       g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g ρα x) := rfl
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gradInner_leibniz_pointwise
     (g : SmoothRiemannianMetric I M) (ρα : C^∞⟮I, M; ℝ⟯)

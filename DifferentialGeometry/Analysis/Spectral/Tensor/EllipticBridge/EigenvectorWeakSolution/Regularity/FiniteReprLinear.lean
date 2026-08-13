@@ -1,16 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorTensorHsToWtwokTwo
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
 namespace DifferentialGeometry
@@ -21,7 +15,6 @@ namespace TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
@@ -33,8 +26,6 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-
 
 private noncomputable def finiteCoeffLin
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :
@@ -48,8 +39,6 @@ private noncomputable def finiteCoeffLin
   map_smul' c v := by
     ext i
     rfl
-
-
 
 noncomputable def finiteReprLin
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) :

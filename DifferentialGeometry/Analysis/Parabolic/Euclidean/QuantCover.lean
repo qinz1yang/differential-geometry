@@ -1,14 +1,5 @@
 import DifferentialGeometry.External.DeGiorgi.FiniteCover
 
-/-!
-# Quantitative ball covers in a finite-dimensional inner-product space
-
-The De Giorgi library already proves the needed sharp-enough packing estimate
-for the standard Euclidean model.  This file transports it through the
-canonical orthonormal-coordinate isometry, so the parabolic heat-potential
-argument can stay polymorphic in its finite-dimensional chart model.
--/
-
 noncomputable section
 
 open Set
@@ -23,8 +14,6 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [Nontrivial V]
 
-/-- A metric ball of radius `r` admits a cover by radius-`rho` balls with a
-coarse cardinality bounded only by `r / rho` and the dimension. -/
 theorem exists_ball_cover {x : V} {r rho : ℝ} (hr : 0 < r)
     (hrho : 0 < rho) :
     ∃ s : Finset V,
@@ -58,9 +47,6 @@ theorem exists_ball_cover {x : V} {r rho : ℝ} (hr : 0 < r)
     rw [e.apply_symm_apply] at hdist
     rwa [← hdist]
 
-/-- Integer-radius specialization used for unit-width heat annuli.  The
-coarse constant `5` turns the ceiling expression into a literal natural
-power, which is convenient for the Gaussian series. -/
 theorem exists_shell_cover (x : V) {rho : ℝ} (hrho : 0 < rho) (k : ℕ) :
     ∃ s : Finset V,
       s.card ≤ (5 * (k + 1)) ^ Module.finrank ℝ V ∧

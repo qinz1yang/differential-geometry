@@ -6,6 +6,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.EigenvectorPouWkpNormTwinsChartWeakPartial
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.EigenvectorPouWkpNormTwinsLeibnizCross
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.EigenvectorPouWkpNormTwinsChristoffel
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -27,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -61,7 +63,6 @@ private lemma wkpNorm_sub_le
   rw [h_neg_eq]
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eigenIdx_val_pos
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -75,7 +76,7 @@ private lemma eigenIdx_val_pos
 
 section Unconditional
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 omit [CompleteSpace E] in
 theorem eigenvectorVec_pou_wkpNorm_le

@@ -1,12 +1,14 @@
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
+open DifferentialGeometry.Geometry.Curvature
+
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -16,12 +18,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
-
-
-
-
-
-
 
 section LocalFrame
 
@@ -68,8 +64,6 @@ theorem ricciTraceAt_of_frame
   simpa [RicciTensorRealizesRm04TraceInFrame, tensor02ToField, tensor04ToField,
     IsLocalFrameOn.toBasisAt_coe] using hRic x X Y
 
-
-
 def RicciTensorRealizesRm04FirstTraceInFrame
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
@@ -79,8 +73,6 @@ def RicciTensorRealizesRm04FirstTraceInFrame
     Ric x (vec2 (frame i x) (frame j x)) =
       ∑ k : Idx, ∑ l : Idx,
         gInv x k l * Rm04 x (vec4 (frame k x) (frame i x) (frame j x) (frame l x))
-
-
 
 omit [DecidableEq Idx] in
 theorem ricciFirstTraceAt_of_frame
@@ -163,4 +155,4 @@ theorem scalar_eq_trace_ricci_frame
     (gInv x) (scalarTraceAt_of_frame (I := I) scalar Ric gInv frame hframe hScalar hx)
 
 end LocalFrame
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

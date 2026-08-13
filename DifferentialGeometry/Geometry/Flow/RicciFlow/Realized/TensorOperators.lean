@@ -1,22 +1,16 @@
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Operator.Operators
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.PDE.RicciFlow
 
 noncomputable section
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -47,10 +41,6 @@ private theorem metricTraceFirstTwo0SAt_zero
     tail]
   simp [metricTrace0S2InBasis]
 
-
-
-
-
 def tensorHeat0SMetricAt
     (g : SmoothRiemannianMetric I M)
     {x : M} {s : ℕ}
@@ -70,12 +60,8 @@ theorem tensorHeat0SMetricAt_apply
       metricTraceFirstTwo0SAt (I := I) g nabla2A tail := by
   exact roughLap0STensor_apply (I := I) g nabla2A tail
 
-
-
-
-
 def tensorHeat0SAt
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) {x : M} {s : ℕ}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x) :
@@ -84,7 +70,7 @@ def tensorHeat0SAt
 
 @[simp]
 theorem tensorHeat0SAt_apply
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) {x : M} {s : ℕ}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x)
@@ -92,10 +78,6 @@ theorem tensorHeat0SAt_apply
     tensorHeat0SAt (I := I) G t nabla2A tail =
       metricTraceFirstTwo0SAt (I := I) (G.metric t) nabla2A tail := by
   exact tensorHeat0SMetricAt_apply (I := I) (G.metric t) nabla2A tail
-
-
-
-
 
 def tensorDrift0SAt
     (X : (x : M) -> TangentSpace I x)
@@ -127,8 +109,6 @@ theorem tensorDrift0SAt_apply
         (Fin.cons (X x) tail)
   rw [continuousMultilinearCurryLeftEquiv_apply]
 
-
-
 def tensorHeatWithDrift0SMetricAt
     (g : SmoothRiemannianMetric I M)
     (X : (x : M) -> TangentSpace I x)
@@ -155,10 +135,8 @@ theorem tensorHeatWithDrift0SMetricAt_apply
         nablaA (Fin.cons (X x) tail) := by
   simp [tensorHeatWithDrift0SMetricAt]
 
-
-
 def tensorHeatWithDrift0SAt
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {x : M} {s : ℕ}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -170,7 +148,7 @@ def tensorHeatWithDrift0SAt
 
 @[simp]
 theorem tensorHeatWithDrift0SAt_apply
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {x : M} {s : ℕ}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -212,7 +190,7 @@ theorem tensorHeatWithDrift2MetricAt_apply
 
 
 def tensorHeatWithDrift2At
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {x : M}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -224,7 +202,7 @@ def tensorHeatWithDrift2At
 
 @[simp]
 theorem tensorHeatWithDrift2At_apply
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {x : M}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -264,8 +242,6 @@ theorem tensorHeatWithDrift2QuadMetricAt_eq
         nablaA (Fin.cons (X x) (vec2 v v)) := by
   simp [tensorHeatWithDrift2QuadMetricAt]
 
-
-
 @[simp]
 theorem tensorHeatWithDrift2QuadMetricAt_zero_drift
     (g : SmoothRiemannianMetric I M)
@@ -289,8 +265,6 @@ theorem tensorHeatWithDrift2QuadMetricAt_zero_drift
           (0 : TangentSpace I x) (vec2 (I := I) v v))
         (0 : Fin 3)
   simpa using hzero
-
-
 
 theorem heatQuad_eq_parts
     (g : SmoothRiemannianMetric I M)
@@ -326,7 +300,7 @@ theorem tensorHeatWithDrift2QuadMetricAt_zero
 
 
 def tensorHeatWithDrift2QuadAt
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {x : M}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -338,7 +312,7 @@ def tensorHeatWithDrift2QuadAt
 
 @[simp]
 theorem tensorHeatWithDrift2QuadAt_eq
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {x : M}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -353,7 +327,7 @@ theorem tensorHeatWithDrift2QuadAt_eq
 
 @[simp]
 theorem tensorHeatWithDrift2QuadAt_zero
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (X : (x : M) -> TangentSpace I x)
     {x : M} (v : TangentSpace I x) :
     tensorHeatWithDrift2QuadAt (I := I) G t X
@@ -368,4 +342,4 @@ theorem tensorHeatWithDrift2QuadAt_zero
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.PDE.RicciFlow

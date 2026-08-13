@@ -4,17 +4,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDeri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvBridge
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Uniqueness
 import Mathlib.Topology.Instances.Matrix
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -24,7 +18,7 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Coordinates
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -41,19 +35,17 @@ variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
 omit [I.Boundaryless] [SigmaCompactSpace M] [IsManifold I 2 M]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)]
   [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-/-- Local continuity of a varying-background metric-difference norm, once all
-of its coordinate-frame components are known to be continuous. -/
 private theorem derivNorm_pair_cont
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     {t : Real} (ht : t ∈ D.regular) (x₀ : M) (a : ℕ)
     (hc : ∀ slots : Fin (a + 2) →
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
       ContinuousAt
         (fun p : (Real × Real) × M ↦
           metricDiffCovDerivAt (I := I) a
-              (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2
+              (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2
             (fun j ↦
               DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt
                 (I := I) x₀ (slots j) p.2))
@@ -61,7 +53,7 @@ private theorem derivNorm_pair_cont
     ContinuousAt
       (fun p : (Real × Real) × M ↦
         metricDerivNorm (I := I) a
-          (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2)
+          (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2)
       ((t, t), x₀) := by
   classical
   let Idx :=
@@ -82,7 +74,7 @@ private theorem derivNorm_pair_cont
         (I := I) x₀
   let Gm : (Real × Real) × M → Matrix Idx Idx Real :=
     fun p ↦ Matrix.of fun i j ↦
-      (G.metric p.1.1).inner p.2 (frame i p.2) (frame j p.2)
+      (g_fam p.1.1).inner p.2 (frame i p.2) (frame j p.2)
   have hGmEnt (i j : Idx) :
       ContinuousAt (fun p : (Real × Real) × M ↦ Gm p i j) ((t, t), x₀) := by
     have hs := (hG.frameCompSmooth frame hframe i j).contMDiffAt
@@ -94,7 +86,7 @@ private theorem derivNorm_pair_cont
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.1, p.2))
       (g := fun q : Real × M ↦
-        (G.metric q.1).inner q.2 (frame i q.2) (frame j q.2))
+        (g_fam q.1).inner q.2 (frame i q.2) (frame j q.2))
       hs.continuousAt hm
   have hGmc : ContinuousAt Gm ((t, t), x₀) :=
     continuousAt_pi.2 fun i ↦ continuousAt_pi.2 fun j ↦ hGmEnt i j
@@ -104,9 +96,9 @@ private theorem derivNorm_pair_cont
       (Matrix.exists_mulVec_eq_zero_iff (M := Gm p)).2 hdet0
     let basis := hframe.toBasisAt hp
     let w : TangentSpace I p.2 := ∑ i, c i • basis i
-    have hrow0 : ∀ i, (G.metric p.1.1).inner p.2 (basis i) w = 0 := by
+    have hrow0 : ∀ i, (g_fam p.1.1).inner p.2 (basis i) w = 0 := by
       intro i
-      have hsum : (G.metric p.1.1).inner p.2 (basis i) w =
+      have hsum : (g_fam p.1.1).inner p.2 (basis i) w =
           ∑ j, Gm p i j * c j := by
         simp only [w, map_sum, map_smul, smul_eq_mul]
         refine Finset.sum_congr rfl fun j _ ↦ ?_
@@ -114,18 +106,18 @@ private theorem derivNorm_pair_cont
         ring
       rw [hsum]
       simpa [Matrix.mulVec, dotProduct] using congrFun hcv i
-    have hinner : (G.metric p.1.1).inner p.2 w w = 0 := by
+    have hinner : (g_fam p.1.1).inner p.2 w w = 0 := by
       have hw_sum : w = ∑ i, c i • basis i := rfl
       calc
-        (G.metric p.1.1).inner p.2 w w =
-            (G.metric p.1.1).inner p.2 w (∑ i, c i • basis i) :=
-          congrArg ((G.metric p.1.1).inner p.2 w) hw_sum
-        _ = ∑ i, c i * (G.metric p.1.1).inner p.2 w (basis i) := by
+        (g_fam p.1.1).inner p.2 w w =
+            (g_fam p.1.1).inner p.2 w (∑ i, c i • basis i) :=
+          congrArg ((g_fam p.1.1).inner p.2 w) hw_sum
+        _ = ∑ i, c i * (g_fam p.1.1).inner p.2 w (basis i) := by
           rw [map_sum]
           exact Finset.sum_congr rfl fun i _ ↦ by rw [map_smul, smul_eq_mul]
-        _ = ∑ i, c i * (G.metric p.1.1).inner p.2 (basis i) w := by
+        _ = ∑ i, c i * (g_fam p.1.1).inner p.2 (basis i) w := by
           exact Finset.sum_congr rfl fun i _ ↦ by
-            rw [(G.metric p.1.1).symm p.2 w (basis i)]
+            rw [(g_fam p.1.1).symm p.2 w (basis i)]
         _ = 0 := Finset.sum_eq_zero fun i _ ↦ by rw [hrow0 i, mul_zero]
     have hwne : w ≠ 0 := by
       intro hw
@@ -133,7 +125,7 @@ private theorem derivNorm_pair_cont
       have hall := Fintype.linearIndependent_iff.1 basis.linearIndependent c
         (by simpa [w] using hw)
       exact funext hall
-    exact absurd hinner (ne_of_gt ((G.metric p.1.1).pos p.2 w hwne))
+    exact absurd hinner (ne_of_gt ((g_fam p.1.1).pos p.2 w hwne))
   have hGinvc : ContinuousAt (fun p ↦ (Gm p)⁻¹) ((t, t), x₀) := by
     have hdetc : ContinuousAt (fun p ↦ (Gm p).det) ((t, t), x₀) :=
       (continuous_id.matrix_det).continuousAt.comp hGmc
@@ -148,10 +140,10 @@ private theorem derivNorm_pair_cont
     ∑ I₀ : Fin (a + 2) → Idx, ∑ J₀ : Fin (a + 2) → Idx,
       (∏ z : Fin (a + 2), (Gm p)⁻¹ (I₀ z) (J₀ z)) *
         metricDiffCovDerivAt (I := I) a
-            (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2
+            (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2
           (fun z ↦ frame (I₀ z) p.2) *
         metricDiffCovDerivAt (I := I) a
-            (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2
+            (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2
           (fun z ↦ frame (J₀ z) p.2)
   have hq : ContinuousAt q ((t, t), x₀) := by
     refine tendsto_finset_sum _ fun I₀ _ ↦ tendsto_finset_sum _ fun J₀ _ ↦ ?_
@@ -164,7 +156,7 @@ private theorem derivNorm_pair_cont
   have heq :
       (fun p : (Real × Real) × M ↦
         metricDerivNorm (I := I) a
-          (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2) =ᶠ[𝓝 ((t, t), x₀)]
+          (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2) =ᶠ[𝓝 ((t, t), x₀)]
         fun p ↦ Real.sqrt (q p) := by
     have hregN : ((D.regular ×ˢ D.regular) ×ˢ U) ∈
         𝓝 ((t, t), x₀) :=
@@ -175,11 +167,11 @@ private theorem derivNorm_pair_cont
     filter_upwards [hregN] with p hp
     let basis := hframe.toBasisAt hp.2
     have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I)
-        (G.metric p.1.1) p.2 basis (fun i j ↦ (Gm p)⁻¹ i j) := by
+        (g_fam p.1.1) p.2 basis (fun i j ↦ (Gm p)⁻¹ i j) := by
       have hunit : IsUnit (Gm p).det := isUnit_iff_ne_zero.2 (hdetne p hp.2)
       intro i j
       have hGb (r s : Idx) :
-          (G.metric p.1.1).inner p.2 (basis r) (basis s) = Gm p r s := by
+          (g_fam p.1.1).inner p.2 (basis r) (basis s) = Gm p r s := by
         simp [basis, Gm, IsLocalFrameOn.toBasisAt_coe]
       constructor
       · rw [Finset.sum_congr rfl fun k _ ↦ by rw [hGb k j],
@@ -188,9 +180,9 @@ private theorem derivNorm_pair_cont
           ← Matrix.mul_apply, Matrix.mul_nonsing_inv (Gm p) hunit, Matrix.one_apply]
     unfold metricDerivNorm q
     rw [Tensor0SBundle.normSq0S_eq_coord (I := I)
-      (G.metric p.1.1) p.2 (a + 2) basis (fun i j ↦ (Gm p)⁻¹ i j)
+      (g_fam p.1.1) p.2 (a + 2) basis (fun i j ↦ (Gm p)⁻¹ i j)
       hinv (metricDiffCovDerivAt (I := I) a
-        (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2)]
+        (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2)]
     unfold Tensor0SBundle.coordInner0S
     refine congrArg Real.sqrt (Finset.sum_congr rfl fun I₀ _ ↦
       Finset.sum_congr rfl fun J₀ _ ↦ ?_)
@@ -202,17 +194,15 @@ private theorem derivNorm_pair_cont
 omit [I.Boundaryless] [SigmaCompactSpace M] [IsManifold I 2 M]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)]
   [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-/-- Order-zero varying-background metric-difference continuity at a diagonal
-regular spacetime point. -/
 private theorem metric0_pair_cont
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     {t : Real} (ht : t ∈ D.regular) (x₀ : M) :
     ContinuousAt
       (fun p : (Real × Real) × M ↦
         metricDerivNorm (I := I) 0
-          (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2)
+          (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2)
       ((t, t), x₀) := by
   classical
   let Idx :=
@@ -231,7 +221,7 @@ private theorem metric0_pair_cont
     simpa [frame, U] using
       DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame
         (I := I) x₀
-  apply derivNorm_pair_cont (I := I) G hG ht x₀ 0
+  apply derivNorm_pair_cont (I := I) g_fam hG ht x₀ 0
   intro slots
   let i : Idx := slots 0
   let j : Idx := slots 1
@@ -239,21 +229,21 @@ private theorem metric0_pair_cont
     (prod_mem_nhds (D.regular_isOpen.mem_nhds ht) (hUo.mem_nhds hxU))
   have hvar : ContinuousAt
       (fun p : (Real × Real) × M ↦
-        (G.metric p.1.2).inner p.2 (frame i p.2) (frame j p.2))
+        (g_fam p.1.2).inner p.2 (frame i p.2) (frame j p.2))
       ((t, t), x₀) := by
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.2, p.2))
       (g := fun q : Real × M ↦
-        (G.metric q.1).inner q.2 (frame i q.2) (frame j q.2))
+        (g_fam q.1).inner q.2 (frame i q.2) (frame j q.2))
       hs.continuousAt (continuousAt_fst.snd.prodMk continuousAt_snd)
   have hbase : ContinuousAt
       (fun p : (Real × Real) × M ↦
-        (G.metric p.1.1).inner p.2 (frame i p.2) (frame j p.2))
+        (g_fam p.1.1).inner p.2 (frame i p.2) (frame j p.2))
       ((t, t), x₀) := by
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.1, p.2))
       (g := fun q : Real × M ↦
-        (G.metric q.1).inner q.2 (frame i q.2) (frame j q.2))
+        (g_fam q.1).inner q.2 (frame i q.2) (frame j q.2))
       hs.continuousAt (continuousAt_fst.fst.prodMk continuousAt_snd)
   simpa only [metricDiffCovDerivAt, metricCovDeriv,
     Tensor0SBundle.metricTensorField_apply, Pi.sub_apply,
@@ -262,19 +252,15 @@ private theorem metric0_pair_cont
 omit [I.Boundaryless] [SigmaCompactSpace M] [IsManifold I 2 M]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)]
   [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-/-- Order-one varying-background metric-difference continuity at a diagonal
-regular spacetime point.  The proof remains fully scalar in one coordinate
-frame; the moving Levi--Civita coefficients are expanded by the Koszul
-formula and a finite inverse-Gram contraction. -/
 private theorem metric1_pair_cont
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     {t : Real} (ht : t ∈ D.regular) (x₀ : M) :
     ContinuousAt
       (fun p : (Real × Real) × M ↦
         metricDerivNorm (I := I) 1
-          (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2)
+          (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2)
       ((t, t), x₀) := by
   classical
   let Idx :=
@@ -298,16 +284,16 @@ private theorem metric1_pair_cont
       DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame_one
         (I := I) x₀
   let mb : (Real × Real) × M → Idx → Idx → Real := fun p i j ↦
-    (G.metric p.1.1).inner p.2 (frame i p.2) (frame j p.2)
+    (g_fam p.1.1).inner p.2 (frame i p.2) (frame j p.2)
   let mv : (Real × Real) × M → Idx → Idx → Real := fun p i j ↦
-    (G.metric p.1.2).inner p.2 (frame i p.2) (frame j p.2)
+    (g_fam p.1.2).inner p.2 (frame i p.2) (frame j p.2)
   let db : (Real × Real) × M → Idx → Idx → Idx → Real :=
     fun p d i j ↦ extDerivFun (I := I)
-      (fun y : M ↦ (G.metric p.1.1).inner y (frame i y) (frame j y))
+      (fun y : M ↦ (g_fam p.1.1).inner y (frame i y) (frame j y))
       p.2 (frame d p.2)
   let dv : (Real × Real) × M → Idx → Idx → Idx → Real :=
     fun p d i j ↦ extDerivFun (I := I)
-      (fun y : M ↦ (G.metric p.1.2).inner y (frame i y) (frame j y))
+      (fun y : M ↦ (g_fam p.1.2).inner y (frame i y) (frame j y))
       p.2 (frame d p.2)
   let Gm : (Real × Real) × M → Matrix Idx Idx Real :=
     fun p ↦ Matrix.of fun i j ↦ mb p i j
@@ -317,7 +303,7 @@ private theorem metric1_pair_cont
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.1, p.2))
       (g := fun q : Real × M ↦
-        (G.metric q.1).inner q.2 (frame i q.2) (frame j q.2))
+        (g_fam q.1).inner q.2 (frame i q.2) (frame j q.2))
       hs.continuousAt (continuousAt_fst.fst.prodMk continuousAt_snd)
   have hmVar (i j : Idx) : ContinuousAt (fun p ↦ mv p i j) ((t, t), x₀) := by
     have hs := (hG.frameCompSmooth frame hframe i j).contMDiffAt
@@ -325,7 +311,7 @@ private theorem metric1_pair_cont
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.2, p.2))
       (g := fun q : Real × M ↦
-        (G.metric q.1).inner q.2 (frame i q.2) (frame j q.2))
+        (g_fam q.1).inner q.2 (frame i q.2) (frame j q.2))
       hs.continuousAt (continuousAt_fst.snd.prodMk continuousAt_snd)
   have hdb (d i j : Idx) : ContinuousAt (fun p ↦ db p d i j) ((t, t), x₀) := by
     have hs := (hG.frameCompSmooth frame hframe i j).contMDiffAt
@@ -335,7 +321,7 @@ private theorem metric1_pair_cont
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.1, p.2))
       (g := fun q : Real × M ↦ extDerivFun (I := I)
-        (fun y : M ↦ (G.metric q.1).inner y (frame i y) (frame j y))
+        (fun y : M ↦ (g_fam q.1).inner y (frame i y) (frame j y))
         q.2 (frame d q.2))
       hd.continuousAt (continuousAt_fst.fst.prodMk continuousAt_snd)
   have hdv (d i j : Idx) : ContinuousAt (fun p ↦ dv p d i j) ((t, t), x₀) := by
@@ -346,7 +332,7 @@ private theorem metric1_pair_cont
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.2, p.2))
       (g := fun q : Real × M ↦ extDerivFun (I := I)
-        (fun y : M ↦ (G.metric q.1).inner y (frame i y) (frame j y))
+        (fun y : M ↦ (g_fam q.1).inner y (frame i y) (frame j y))
         q.2 (frame d q.2))
       hd.continuousAt (continuousAt_fst.snd.prodMk continuousAt_snd)
   have hGmc : ContinuousAt Gm ((t, t), x₀) :=
@@ -358,9 +344,9 @@ private theorem metric1_pair_cont
       (Matrix.exists_mulVec_eq_zero_iff (M := Gm p)).2 hdet0
     let basis := hframe.toBasisAt hp
     let w : TangentSpace I p.2 := ∑ i, c i • basis i
-    have hrow0 : ∀ i, (G.metric p.1.1).inner p.2 (basis i) w = 0 := by
+    have hrow0 : ∀ i, (g_fam p.1.1).inner p.2 (basis i) w = 0 := by
       intro i
-      have hsum : (G.metric p.1.1).inner p.2 (basis i) w =
+      have hsum : (g_fam p.1.1).inner p.2 (basis i) w =
           ∑ j, Gm p i j * c j := by
         simp only [w, map_sum, map_smul, smul_eq_mul]
         refine Finset.sum_congr rfl fun j _ ↦ ?_
@@ -369,18 +355,18 @@ private theorem metric1_pair_cont
         ring
       rw [hsum]
       simpa [Matrix.mulVec, dotProduct] using congrFun hcv i
-    have hinner : (G.metric p.1.1).inner p.2 w w = 0 := by
+    have hinner : (g_fam p.1.1).inner p.2 w w = 0 := by
       have hw_sum : w = ∑ i, c i • basis i := rfl
       calc
-        (G.metric p.1.1).inner p.2 w w =
-            (G.metric p.1.1).inner p.2 w (∑ i, c i • basis i) :=
-          congrArg ((G.metric p.1.1).inner p.2 w) hw_sum
-        _ = ∑ i, c i * (G.metric p.1.1).inner p.2 w (basis i) := by
+        (g_fam p.1.1).inner p.2 w w =
+            (g_fam p.1.1).inner p.2 w (∑ i, c i • basis i) :=
+          congrArg ((g_fam p.1.1).inner p.2 w) hw_sum
+        _ = ∑ i, c i * (g_fam p.1.1).inner p.2 w (basis i) := by
           rw [map_sum]
           exact Finset.sum_congr rfl fun i _ ↦ by rw [map_smul, smul_eq_mul]
-        _ = ∑ i, c i * (G.metric p.1.1).inner p.2 (basis i) w := by
+        _ = ∑ i, c i * (g_fam p.1.1).inner p.2 (basis i) w := by
           exact Finset.sum_congr rfl fun i _ ↦ by
-            rw [(G.metric p.1.1).symm p.2 w (basis i)]
+            rw [(g_fam p.1.1).symm p.2 w (basis i)]
         _ = 0 := Finset.sum_eq_zero fun i _ ↦ by rw [hrow0 i, mul_zero]
     have hwne : w ≠ 0 := by
       intro hw
@@ -388,7 +374,7 @@ private theorem metric1_pair_cont
       have hall := Fintype.linearIndependent_iff.1 basis.linearIndependent c
         (by simpa [w] using hw)
       exact funext hall
-    exact absurd hinner (ne_of_gt ((G.metric p.1.1).pos p.2 w hwne))
+    exact absurd hinner (ne_of_gt ((g_fam p.1.1).pos p.2 w hwne))
   have hGinvc : ContinuousAt (fun p ↦ (Gm p)⁻¹) ((t, t), x₀) := by
     have hdetc : ContinuousAt (fun p ↦ (Gm p).det) ((t, t), x₀) :=
       (continuous_id.matrix_det).continuousAt.comp hGmc
@@ -416,7 +402,7 @@ private theorem metric1_pair_cont
         (hgamma d i k).mul ((hmVar k j).sub (hmBase k j))) |>.sub
       (tendsto_finset_sum _ fun k _ ↦
         (hgamma d j k).mul ((hmVar i k).sub (hmBase i k)))
-  apply derivNorm_pair_cont (I := I) G hG ht x₀ 1
+  apply derivNorm_pair_cont (I := I) g_fam hG ht x₀ 1
   intro slots
   let d : Idx := slots 0
   let i : Idx := slots 1
@@ -431,11 +417,11 @@ private theorem metric1_pair_cont
   filter_upwards [hregN] with p hp
   let basis := hframe.toBasisAt hp.2
   have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I)
-      (G.metric p.1.1) p.2 basis (fun r s ↦ (Gm p)⁻¹ r s) := by
+      (g_fam p.1.1) p.2 basis (fun r s ↦ (Gm p)⁻¹ r s) := by
     have hunit : IsUnit (Gm p).det := isUnit_iff_ne_zero.2 (hdetne p hp.2)
     intro r s
     have hGb (u v : Idx) :
-        (G.metric p.1.1).inner p.2 (basis u) (basis v) = Gm p u v := by
+        (g_fam p.1.1).inner p.2 (basis u) (basis v) = Gm p u v := by
       simp [basis, Gm, mb, IsLocalFrameOn.toBasisAt_coe]
     constructor
     · rw [Finset.sum_congr rfl fun k _ ↦ by rw [hGb k s],
@@ -444,19 +430,19 @@ private theorem metric1_pair_cont
         ← Matrix.mul_apply, Matrix.mul_nonsing_inv (Gm p) hunit, Matrix.one_apply]
   have hchr (a b c : Idx) :
       christoffelSymbolInFrame
-          (leviCivitaConnectionOfMetric (I := I) (G.metric p.1.1))
+          (leviCivitaConnectionOfMetric (I := I) (g_fam p.1.1))
           frame hframe1 p.2 a b c = gamma p a b c := by
     simpa [gamma, db, frame, Gm, mb, basis] using
       coordinateFrame_christoffel_formula_point_of_isLeviCivita
-        (I := I) (g := G.metric p.1.1)
-        (leviCivitaConnectionOfMetric_isLeviCivita (I := I) (G.metric p.1.1))
+        (I := I) (g := g_fam p.1.1)
+        (leviCivitaConnectionOfMetric_isLeviCivita (I := I) (g_fam p.1.1))
         x₀ hp.2 (fun r s ↦ (Gm p)⁻¹ r s) hinv a b c
   have hconn (a b : Idx) :
-      ((leviCivitaConnectionOfMetric (I := I) (G.metric p.1.1))
+      ((leviCivitaConnectionOfMetric (I := I) (g_fam p.1.1))
           (frame b) p.2) (frame a p.2) =
         ∑ c : Idx, gamma p a b c • frame c p.2 := by
     rw [covariantDerivative_eq_sum_christoffel
-      (I := I) (leviCivitaConnectionOfMetric (I := I) (G.metric p.1.1))
+      (I := I) (leviCivitaConnectionOfMetric (I := I) (g_fam p.1.1))
       frame hframe1 hp.2 a b]
     exact Finset.sum_congr rfl fun c _ ↦
       congrArg (fun z : Real ↦ z • frame c p.2) (hchr a b c)
@@ -465,23 +451,23 @@ private theorem metric1_pair_cont
     funext z
     fin_cases z <;> rfl
   have hv := metricCovDeriv_one_component_localFrame (I := I)
-    (G.metric p.1.2) (G.metric p.1.1) frame hframe hUo hp.2 d i j
+    (g_fam p.1.2) (g_fam p.1.1) frame hframe hUo hp.2 d i j
   have hb := metricCovDeriv_one_component_localFrame (I := I)
-    (G.metric p.1.1) (G.metric p.1.1) frame hframe hUo hp.2 d i j
+    (g_fam p.1.1) (g_fam p.1.1) frame hframe hUo hp.2 d i j
   rw [Tensor0SBundle.component0S_apply] at hv hb
   simp only [IsLocalFrameOn.toBasisAt_coe] at hv hb
   rw [hslots]
   change
-    ((metricCovDeriv (I := I) (G.metric p.1.2) (G.metric p.1.1) 1 p.2 -
-        metricCovDeriv (I := I) (G.metric p.1.1) (G.metric p.1.1) 1 p.2)
+    ((metricCovDeriv (I := I) (g_fam p.1.2) (g_fam p.1.1) 1 p.2 -
+        metricCovDeriv (I := I) (g_fam p.1.1) (g_fam p.1.1) 1 p.2)
       (fun z ↦ frame
         ((Fin.cons d (fun q : Fin 2 ↦ if q = 0 then i else j) : Fin 3 → Idx) z) p.2)) =
       rhs p d i j
   change
-    (metricCovDeriv (I := I) (G.metric p.1.2) (G.metric p.1.1) 1 p.2)
+    (metricCovDeriv (I := I) (g_fam p.1.2) (g_fam p.1.1) 1 p.2)
         (fun z ↦ frame
           ((Fin.cons d (fun q : Fin 2 ↦ if q = 0 then i else j) : Fin 3 → Idx) z) p.2) -
-      (metricCovDeriv (I := I) (G.metric p.1.1) (G.metric p.1.1) 1 p.2)
+      (metricCovDeriv (I := I) (g_fam p.1.1) (g_fam p.1.1) 1 p.2)
         (fun z ↦ frame
           ((Fin.cons d (fun q : Fin 2 ↦ if q = 0 then i else j) : Fin 3 → Idx) z) p.2) =
       rhs p d i j
@@ -509,34 +495,32 @@ variable [CompactSpace M]
 omit [I.Boundaryless] [SigmaCompactSpace M] [IsManifold I 2 M]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)]
   [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-/-- Around one regular diagonal time, the order-zero and order-one
-varying-background seminorms are jointly small, uniformly in space. -/
 private theorem metric_pair_event
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     {t : Real} (ht : t ∈ D.regular) {ε : Real} (hε : 0 < ε) :
     ∀ᶠ q in 𝓝 (t, t), ∀ y : M, ∀ a : ℕ, a ≤ 1 →
       metricDerivNorm (I := I) a
-        (G.metric q.2) (G.metric q.1) (G.metric q.1) y < ε := by
+        (g_fam q.2) (g_fam q.1) (g_fam q.1) y < ε := by
   classical
   have hlocal : ∀ x : M,
       ∃ V : Set (Real × Real), V ∈ 𝓝 (t, t) ∧
         ∃ W : Set M, IsOpen W ∧ x ∈ W ∧
           ∀ q ∈ V, ∀ y ∈ W, ∀ a : ℕ, a ≤ 1 →
             metricDerivNorm (I := I) a
-              (G.metric q.2) (G.metric q.1) (G.metric q.1) y < ε := by
+              (g_fam q.2) (g_fam q.1) (g_fam q.1) y < ε := by
     intro x
-    have h0 := metric0_pair_cont (I := I) G hG ht x
-    have h1 := metric1_pair_cont (I := I) G hG ht x
+    have h0 := metric0_pair_cont (I := I) g_fam hG ht x
+    have h1 := metric1_pair_cont (I := I) g_fam hG ht x
     have hs0 : ∀ᶠ p : (Real × Real) × M in 𝓝 ((t, t), x),
         metricDerivNorm (I := I) 0
-          (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2 < ε := by
+          (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2 < ε := by
       exact h0.eventually_lt_const (by
         simpa only [metricDerivNorm_self] using hε)
     have hs1 : ∀ᶠ p : (Real × Real) × M in 𝓝 ((t, t), x),
         metricDerivNorm (I := I) 1
-          (G.metric p.1.2) (G.metric p.1.1) (G.metric p.1.1) p.2 < ε := by
+          (g_fam p.1.2) (g_fam p.1.1) (g_fam p.1.1) p.2 < ε := by
       exact h1.eventually_lt_const (by
         simpa only [metricDerivNorm_self] using hε)
     obtain ⟨V, W, hVo, htV, hWo, hxW, hVW⟩ :=
@@ -564,13 +548,10 @@ private theorem metric_pair_event
 omit [I.Boundaryless] [SigmaCompactSpace M] [IsManifold I 2 M]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)]
   [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-/-- A smooth metric family has one order-one metric-jet modulus on every
-compact regular-time slab, with the derivative connection and tensor norm both
-taken at the varying base time. -/
 theorem metric_c1_span
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     {a b ε : Real}
     (hab : Set.Icc a b ⊆ D.regular)
     (hε : 0 < ε) :
@@ -578,7 +559,7 @@ theorem metric_c1_span
       ∀ base ∈ Set.Icc a b, ∀ var ∈ Set.Icc a b,
         |var - base| ≤ ρ →
           metricDerivNormSupOn (I := I) Set.univ 1
-            (G.metric var) (G.metric base) (G.metric base) ≤ ε := by
+            (g_fam var) (g_fam base) (g_fam base) ≤ ε := by
   classical
   by_cases hK : Set.Icc a b = ∅
   · refine ⟨1, one_pos, ?_⟩
@@ -590,9 +571,9 @@ theorem metric_c1_span
           dist base t < r → dist var t < r →
           ∀ y : M, ∀ n : ℕ, n ≤ 1 →
             metricDerivNorm (I := I) n
-              (G.metric var) (G.metric base) (G.metric base) y < ε := by
+              (g_fam var) (g_fam base) (g_fam base) y < ε := by
     intro t ht
-    have hevent := metric_pair_event (I := I) G hG (hab ht) hε
+    have hevent := metric_pair_event (I := I) g_fam hG (hab ht) hε
     obtain ⟨Vb, Vv, hVbo, htVb, hVvo, htVv, hprod⟩ :=
       mem_nhds_prod_iff'.mp hevent
     obtain ⟨rb, hrb, hballb⟩ := Metric.isOpen_iff.mp hVbo t htVb
@@ -640,11 +621,11 @@ theorem metric_c1_span
       _ = r t t.2 := by ring
   have hpoint : ∀ n : ℕ, n ≤ 1 → ∀ y ∈ (Set.univ : Set M),
       metricDerivNorm (I := I) n
-        (G.metric var) (G.metric base) (G.metric base) y ≤ ε := by
+        (g_fam var) (g_fam base) (g_fam base) y ≤ ε := by
     intro n hn y _
     exact (hlocal t t.2 base var hb hv y n hn).le
   exact metricDerivNormSupOn_le_of_forall
-    (I := I) Set.univ 1 (G.metric var) (G.metric base) (G.metric base)
+    (I := I) Set.univ 1 (g_fam var) (g_fam base) (g_fam base)
     ε hε.le hpoint
 
 end Compact
@@ -652,14 +633,11 @@ end Compact
 omit [FiniteDimensional Real E] [I.Boundaryless] [SigmaCompactSpace M]
   [IsManifold I 2 M]
   [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-/-- A fully applied metric derivative relative to a fixed background is
-continuous at every regular spacetime point when its slots come from one
-actual smooth local frame. -/
 theorem metricCov_cont
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (q : SmoothRiemannianMetric I M) {t : Real} (ht : t ∈ D.regular)
     {Idx : Type*}
     {u : Set M} (frame : Idx → (x : M) → TangentSpace I x)
@@ -668,7 +646,7 @@ theorem metricCov_cont
     (a : ℕ) (slots : Fin (a + 2) → Idx) :
     ContinuousAt
       (fun p : Real × M =>
-        metricCovDeriv (I := I) (G.metric p.1) q a p.2
+        metricCovDeriv (I := I) (g_fam p.1) q a p.2
           (fun j => frame (slots j) p.2))
       (t, x) := by
   classical
@@ -682,7 +660,7 @@ theorem metricCov_cont
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real)
         (∞ : WithTop ℕ∞)
         (fun p : Real × M =>
-          metricCovDeriv (I := I) (G.metric p.1) q a p.2
+          metricCovDeriv (I := I) (g_fam p.1) q a p.2
             (fun j => V j p.2))
         (t, x) := by
     have hbase :
@@ -691,7 +669,7 @@ theorem metricCov_cont
           ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real)
             (∞ : WithTop ℕ∞)
             (fun p : Real × M =>
-              (Tensor0SBundle.metricTensorField (I := I) (G.metric p.1)) p.2
+              (Tensor0SBundle.metricTensorField (I := I) (g_fam p.1)) p.2
                 (fun j => W j p.2))
             (t, x) := by
       intro W
@@ -699,7 +677,7 @@ theorem metricCov_cont
         hG.pairSmoothAt (D.regular_isOpen.mem_nhds ht) W
     simpa only [metricCovDeriv_eq_covDerivOfField] using
       covDerivOfField_eval_contMDiffAt (I := I) q
-        (fun t => Tensor0SBundle.metricTensorField (I := I) (G.metric t))
+        (fun t => Tensor0SBundle.metricTensorField (I := I) (g_fam t))
         hbase a V
   have hev : ∀ᶠ y in 𝓝 x, ∀ j : Fin (a + 2),
       V j y = frame (slots j) y :=
@@ -713,8 +691,6 @@ theorem metricCov_cont
   funext j
   exact (hp j).symm
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -722,8 +698,8 @@ omit [SigmaCompactSpace M] in
 theorem metricCov_smooth
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime)
     {Idx : Type*}
     {u : Set M} (frame : Idx → (x : M) → TangentSpace I x)
@@ -732,13 +708,11 @@ theorem metricCov_smooth
     (a : ℕ) (slots : Fin (a + 2) → Idx) :
     ContinuousAt
       (fun p : Real × M =>
-        metricCovDeriv (I := I) (G.metric p.1) (G.metric (T : Real)) a p.2
+        metricCovDeriv (I := I) (g_fam p.1) (g_fam (T : Real)) a p.2
           (fun j => frame (slots j) p.2))
       ((T : Real), x) :=
-  metricCov_cont (I := I) G hG (G.metric (T : Real)) T.2
+  metricCov_cont (I := I) g_fam hG (g_fam (T : Real)) T.2
     frame hframe hu hx a slots
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
@@ -746,18 +720,18 @@ omit [SigmaCompactSpace M] in
 private theorem metric_c_patch
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) (a : ℕ) (x : M)
     {ε : Real} (hε : 0 < ε) :
     ∃ V : Set Real, V ∈ 𝓝 (T : Real) ∧
       ∃ W : Set M, IsOpen W ∧ x ∈ W ∧
         ∀ t ∈ V, ∀ y ∈ W,
           metricDerivNorm (I := I) a
-            (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y < ε := by
+            (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y < ε := by
   classical
   obtain ⟨basisE, u, Cu, huOpen, hxu, huSub, hCu, hnorm⟩ :=
-    metricDerivNorm_le_compSq_uniform (I := I) (G.metric (T : Real)) a x
+    metricDerivNorm_le_compSq_uniform (I := I) (g_fam (T : Real)) a x
   let e := trivializationAt E (TangentSpace I : M → Type _) x
   let frame := e.localFrame basisE
   have hxe : x ∈ e.baseSet := by
@@ -770,22 +744,22 @@ private theorem metric_c_patch
       (Real × M) →
         (Fin (a + 2) → Fin (Module.finrank Real E)) → Real :=
     fun p I0 =>
-      metricCovDeriv (I := I) (G.metric p.1) (G.metric (T : Real)) a p.2
+      metricCovDeriv (I := I) (g_fam p.1) (g_fam (T : Real)) a p.2
           (fun j => frame (I0 j) p.2) -
-        metricCovDeriv (I := I) (G.metric (T : Real)) (G.metric (T : Real)) a p.2
+        metricCovDeriv (I := I) (g_fam (T : Real)) (g_fam (T : Real)) a p.2
           (fun j => frame (I0 j) p.2)
   let q : Real × M → Real :=
     fun p => Cu * Real.sqrt (∑ I0, (c p I0) ^ 2)
   have hc (I0 : Fin (a + 2) → Fin (Module.finrank Real E)) :
       ContinuousAt (fun p : Real × M => c p I0) ((T : Real), x) := by
     have hmove :=
-      metricCov_smooth (I := I) G hG T frame hframe e.open_baseSet hxe a I0
+      metricCov_smooth (I := I) g_fam hG T frame hframe e.open_baseSet hxe a I0
     have hwhole :=
-      metricCov_smooth (I := I) G hG T frame hframe e.open_baseSet hxe a I0
+      metricCov_smooth (I := I) g_fam hG T frame hframe e.open_baseSet hxe a I0
     have hfix :
         ContinuousAt
           (fun p : Real × M =>
-            metricCovDeriv (I := I) (G.metric (T : Real)) (G.metric (T : Real)) a p.2
+            metricCovDeriv (I := I) (g_fam (T : Real)) (g_fam (T : Real)) a p.2
               (fun j => frame (I0 j) p.2))
           ((T : Real), x) := by
       have hconst :
@@ -800,7 +774,7 @@ private theorem metric_c_patch
       exact ContinuousAt.comp'
         (f := fun p : Real × M => ((T : Real), p.2))
         (g := fun q : Real × M =>
-          metricCovDeriv (I := I) (G.metric q.1) (G.metric (T : Real)) a q.2
+          metricCovDeriv (I := I) (g_fam q.1) (g_fam (T : Real)) a q.2
             (fun j => frame (I0 j) q.2))
         hwhole hmap
     exact hmove.sub hfix
@@ -832,16 +806,14 @@ private theorem metric_c_patch
   have hye : y ∈ e.baseSet := by
     simpa only [e] using huSub hyu
   have hle :=
-    hnorm (G.metric t) (G.metric (T : Real)) y hyu (by simpa only [e] using hye)
+    hnorm (g_fam t) (g_fam (T : Real)) y hyu (by simpa only [e] using hye)
   have hle' :
       metricDerivNorm (I := I) a
-          (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y
+          (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y
         ≤ q (t, y) := by
     simpa only [q, c, frame, e, Tensor0SBundle.component0S_apply,
       IsLocalFrameOn.toBasisAt_coe] using hle
   exact lt_of_le_of_lt hle' hpair.1
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
@@ -849,19 +821,19 @@ omit [SigmaCompactSpace M] in
 private theorem metric_c1_patch
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) (x : M)
     {ε : Real} (hε : 0 < ε) :
     ∃ V : Set Real, V ∈ 𝓝 (T : Real) ∧
       ∃ W : Set M, IsOpen W ∧ x ∈ W ∧
         ∀ t ∈ V, ∀ y ∈ W, ∀ a : ℕ, a ≤ 1 →
           metricDerivNorm (I := I) a
-            (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y < ε := by
+            (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y < ε := by
   obtain ⟨V0, hV0, W0, hW0Open, hxW0, h0⟩ :=
-    metric_c_patch (I := I) G hG T 0 x hε
+    metric_c_patch (I := I) g_fam hG T 0 x hε
   obtain ⟨V1, hV1, W1, hW1Open, hxW1, h1⟩ :=
-    metric_c_patch (I := I) G hG T 1 x hε
+    metric_c_patch (I := I) g_fam hG T 1 x hε
   refine ⟨V0 ∩ V1, Filter.inter_mem hV0 hV1,
     W0 ∩ W1, hW0Open.inter hW1Open, ⟨hxW0, hxW1⟩, ?_⟩
   intro t ht y hy a ha
@@ -871,25 +843,23 @@ private theorem metric_c1_patch
   · exact h0 t ht.1 y hy.1
   · exact h1 t ht.2 y hy.2
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 private theorem metric_b_patch
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) {t : Real} (ht : t ∈ D.regular) (a : ℕ) (x : M) :
     ∃ V : Set Real, V ∈ 𝓝 t ∧
       ∃ W : Set M, IsOpen W ∧ x ∈ W ∧
         ∃ C : Real, 0 ≤ C ∧ ∀ r ∈ V, ∀ y ∈ W,
           metricDerivNorm (I := I) a
-            (G.metric r) (G.metric (T : Real)) (G.metric (T : Real)) y ≤ C := by
+            (g_fam r) (g_fam (T : Real)) (g_fam (T : Real)) y ≤ C := by
   classical
   obtain ⟨basisE, u, Cu, huOpen, hxu, huSub, hCu, hnorm⟩ :=
-    metricDerivNorm_le_compSq_uniform (I := I) (G.metric (T : Real)) a x
+    metricDerivNorm_le_compSq_uniform (I := I) (g_fam (T : Real)) a x
   let e := trivializationAt E (TangentSpace I : M → Type _) x
   let frame := e.localFrame basisE
   have hxe : x ∈ e.baseSet := by
@@ -902,24 +872,24 @@ private theorem metric_b_patch
       (Real × M) →
         (Fin (a + 2) → Fin (Module.finrank Real E)) → Real :=
     fun p I0 =>
-      metricCovDeriv (I := I) (G.metric p.1) (G.metric (T : Real)) a p.2
+      metricCovDeriv (I := I) (g_fam p.1) (g_fam (T : Real)) a p.2
           (fun j => frame (I0 j) p.2) -
-        metricCovDeriv (I := I) (G.metric (T : Real)) (G.metric (T : Real)) a p.2
+        metricCovDeriv (I := I) (g_fam (T : Real)) (g_fam (T : Real)) a p.2
           (fun j => frame (I0 j) p.2)
   let b : Real × M → Real :=
     fun p => Cu * Real.sqrt (∑ I0, (c p I0) ^ 2)
   have hc (I0 : Fin (a + 2) → Fin (Module.finrank Real E)) :
       ContinuousAt (fun p : Real × M => c p I0) (t, x) := by
     have hmove :=
-      metricCov_cont (I := I) G hG (G.metric (T : Real)) ht
+      metricCov_cont (I := I) g_fam hG (g_fam (T : Real)) ht
         frame hframe e.open_baseSet hxe a I0
     have hwhole :=
-      metricCov_cont (I := I) G hG (G.metric (T : Real)) T.2
+      metricCov_cont (I := I) g_fam hG (g_fam (T : Real)) T.2
         frame hframe e.open_baseSet hxe a I0
     have hfix :
         ContinuousAt
           (fun p : Real × M =>
-            metricCovDeriv (I := I) (G.metric (T : Real)) (G.metric (T : Real)) a p.2
+            metricCovDeriv (I := I) (g_fam (T : Real)) (g_fam (T : Real)) a p.2
               (fun j => frame (I0 j) p.2))
           (t, x) := by
       have hconst :
@@ -934,7 +904,7 @@ private theorem metric_b_patch
       exact ContinuousAt.comp'
         (f := fun p : Real × M => ((T : Real), p.2))
         (g := fun q : Real × M =>
-          metricCovDeriv (I := I) (G.metric q.1) (G.metric (T : Real)) a q.2
+          metricCovDeriv (I := I) (g_fam q.1) (g_fam (T : Real)) a q.2
             (fun j => frame (I0 j) q.2))
         hwhole hmap
     exact hmove.sub hfix
@@ -967,10 +937,10 @@ private theorem metric_b_patch
   have hye : y ∈ e.baseSet := by
     simpa only [e] using huSub hyu
   have hle :=
-    hnorm (G.metric r) (G.metric (T : Real)) y hyu (by simpa only [e] using hye)
+    hnorm (g_fam r) (g_fam (T : Real)) y hyu (by simpa only [e] using hye)
   have hle' :
       metricDerivNorm (I := I) a
-          (G.metric r) (G.metric (T : Real)) (G.metric (T : Real)) y
+          (g_fam r) (g_fam (T : Real)) (g_fam (T : Real)) y
         ≤ b (r, y) := by
     simpa only [b, c, frame, e, Tensor0SBundle.component0S_apply,
       IsLocalFrameOn.toBasisAt_coe] using hle
@@ -980,23 +950,21 @@ section Compact
 
 variable [CompactSpace M]
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 private theorem metric_b_event
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) {t : Real} (ht : t ∈ D.regular) (a : ℕ) :
     ∃ C : Real, 0 ≤ C ∧ ∀ᶠ r in 𝓝 t, ∀ y : M,
       metricDerivNorm (I := I) a
-        (G.metric r) (G.metric (T : Real)) (G.metric (T : Real)) y ≤ C := by
+        (g_fam r) (g_fam (T : Real)) (g_fam (T : Real)) y ≤ C := by
   classical
   choose V hV W hWOpen hxW C hC hloc using
-    fun x : M => metric_b_patch (I := I) G hG T ht a x
+    fun x : M => metric_b_patch (I := I) g_fam hG T ht a x
   obtain ⟨F, _, hF⟩ :=
     (isCompact_univ : IsCompact (Set.univ : Set M)).elim_nhds_subcover W
       (fun x _ => (hWOpen x).mem_nhds (hxW x))
@@ -1017,24 +985,22 @@ private theorem metric_b_event
   exact (hloc x r (hr x hxF) y hyW).trans
     (Finset.single_le_sum (fun z _ => hC z) hxF)
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 private theorem metric_b_compact
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) {K : Set Real} (hK : IsCompact K)
     (hKreg : K ⊆ D.regular) (a : ℕ) :
     ∃ C : Real, 0 ≤ C ∧ ∀ t ∈ K, ∀ y : M,
       metricDerivNorm (I := I) a
-        (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y ≤ C := by
+        (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y ≤ C := by
   classical
   choose C hC hbound using fun t : {t : Real // t ∈ K} =>
-    metric_b_event (I := I) G hG T (hKreg t.2) a
+    metric_b_event (I := I) g_fam hG T (hKreg t.2) a
   choose O hOsub hOopen htO using fun t : {t : Real // t ∈ K} =>
     mem_nhds_iff.mp (hbound t)
   have hcover : K ⊆ ⋃ t : {t : Real // t ∈ K}, O t := by
@@ -1048,24 +1014,22 @@ private theorem metric_b_compact
   exact (hOsub r htO' y).trans
     (Finset.single_le_sum (fun z _ => hC z) hrF)
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem metric_cp_bdd
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) {K : Set Real} (hK : IsCompact K)
     (hKreg : K ⊆ D.regular) :
     ∃ C : ℕ → Real, (∀ p, 0 ≤ C p) ∧ ∀ (p : ℕ) (t : Real), t ∈ K →
       metricDerivNormSupOn (I := I) Set.univ p
-        (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) ≤ C p := by
+        (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) ≤ C p := by
   classical
   choose B hB hbound using fun a : ℕ =>
-    metric_b_compact (I := I) G hG T hK hKreg a
+    metric_b_compact (I := I) g_fam hG T hK hKreg a
   refine ⟨fun p => ∑ a ∈ Finset.range (p + 1), B a,
     fun p => Finset.sum_nonneg fun a _ => hB a, ?_⟩
   intro p t ht
@@ -1076,24 +1040,22 @@ theorem metric_cp_bdd
       (Finset.single_le_sum (fun j _ => hB j)
         (by simp only [Finset.mem_range]; omega))
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 private theorem metric_c_event
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) (a : ℕ)
     {ε : Real} (hε : 0 < ε) :
     ∀ᶠ t in 𝓝 (T : Real), ∀ y : M,
       metricDerivNorm (I := I) a
-        (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y < ε := by
+        (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y < ε := by
   classical
   choose V hV W hWOpen hxW hloc using
-    fun x : M => metric_c_patch (I := I) G hG T a x hε
+    fun x : M => metric_c_patch (I := I) g_fam hG T a x hε
   obtain ⟨F, _, hF⟩ :=
     (isCompact_univ : IsCompact (Set.univ : Set M)).elim_nhds_subcover W
       (fun x _ => (hWOpen x).mem_nhds (hxW x))
@@ -1111,21 +1073,19 @@ private theorem metric_c_event
     Set.mem_iUnion₂.mp (hF (Set.mem_univ y))
   exact hloc x t (ht x hxF) y hyW
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem metric_cp_tendsto
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) (p : ℕ) :
     Filter.Tendsto
       (fun t : Real =>
         metricDerivNormSupOn (I := I) Set.univ p
-          (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)))
+          (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)))
       (𝓝 (T : Real)) (𝓝 0) := by
   classical
   rw [Metric.tendsto_nhds]
@@ -1135,34 +1095,34 @@ theorem metric_cp_tendsto
       ∀ᶠ t in 𝓝 (T : Real),
         ∀ a ∈ Finset.range (p + 1), ∀ y : M,
           metricDerivNorm (I := I) a
-            (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y < ε / 2 := by
+            (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y < ε / 2 := by
     exact
       (Finset.eventually_all
         (I := Finset.range (p + 1))
         (l := 𝓝 (T : Real))
         (p := fun a t => ∀ y : M,
           metricDerivNorm (I := I) a
-            (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y < ε / 2)).2
-        (fun a _ => metric_c_event (I := I) G hG T a hε2)
+            (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y < ε / 2)).2
+        (fun a _ => metric_c_event (I := I) g_fam hG T a hε2)
   filter_upwards [htime] with t ht
   have hpoint :
       ∀ a : ℕ, a ≤ p → ∀ y ∈ (Set.univ : Set M),
         metricDerivNorm (I := I) a
-            (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y
+            (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y
           ≤ ε / 2 := by
     intro a ha y _
     exact (ht a (by simp only [Finset.mem_range]; omega) y).le
   have hsup :
       metricDerivNormSupOn (I := I) Set.univ p
-          (G.metric t) (G.metric (T : Real)) (G.metric (T : Real))
+          (g_fam t) (g_fam (T : Real)) (g_fam (T : Real))
         ≤ ε / 2 :=
     metricDerivNormSupOn_le_of_forall
       (I := I) Set.univ p
-      (G.metric t) (G.metric (T : Real)) (G.metric (T : Real))
+      (g_fam t) (g_fam (T : Real)) (g_fam (T : Real))
       (ε / 2) hε2.le hpoint
   have hnonneg :
       0 ≤ metricDerivNormSupOn (I := I) Set.univ p
-        (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) := by
+        (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) := by
     unfold metricDerivNormSupOn
     apply Real.sSup_nonneg
     rintro r ⟨a, ha, y, hy, rfl⟩
@@ -1170,28 +1130,26 @@ theorem metric_cp_tendsto
   simpa only [Real.dist_eq, sub_zero, abs_of_nonneg hnonneg] using
     hsup.trans_lt (half_lt_self hε)
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem metric_c1_tendsto
     [Module.Finite ℝ E]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) :
     Filter.Tendsto
       (fun t : Real =>
         metricDerivNormSupOn (I := I) Set.univ 1
-          (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)))
+          (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)))
       (𝓝 (T : Real)) (𝓝 0) := by
   classical
   rw [Metric.tendsto_nhds]
   intro ε hε
   have hε2 : 0 < ε / 2 := half_pos hε
   choose V hV W hWOpen hxW hloc using
-    fun x : M => metric_c1_patch (I := I) G hG T x hε2
+    fun x : M => metric_c1_patch (I := I) g_fam hG T x hε2
   obtain ⟨F, _, hF⟩ :=
     (isCompact_univ : IsCompact (Set.univ : Set M)).elim_nhds_subcover W
       (fun x _ => (hWOpen x).mem_nhds (hxW x))
@@ -1207,7 +1165,7 @@ theorem metric_c1_tendsto
   have hpoint :
       ∀ a : ℕ, a ≤ 1 → ∀ y ∈ (Set.univ : Set M),
         metricDerivNorm (I := I) a
-            (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) y
+            (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) y
           ≤ ε / 2 := by
     intro a ha y _
     obtain ⟨x, hxF, hyW⟩ :=
@@ -1215,15 +1173,15 @@ theorem metric_c1_tendsto
     exact (hloc x t (ht x hxF) y hyW a ha).le
   have hsup :
       metricDerivNormSupOn (I := I) Set.univ 1
-          (G.metric t) (G.metric (T : Real)) (G.metric (T : Real))
+          (g_fam t) (g_fam (T : Real)) (g_fam (T : Real))
         ≤ ε / 2 :=
     metricDerivNormSupOn_le_of_forall
       (I := I) Set.univ 1
-      (G.metric t) (G.metric (T : Real)) (G.metric (T : Real))
+      (g_fam t) (g_fam (T : Real)) (g_fam (T : Real))
       (ε / 2) hε2.le hpoint
   have hnonneg :
       0 ≤ metricDerivNormSupOn (I := I) Set.univ 1
-        (G.metric t) (G.metric (T : Real)) (G.metric (T : Real)) := by
+        (g_fam t) (g_fam (T : Real)) (g_fam (T : Real)) := by
     unfold metricDerivNormSupOn
     apply Real.sSup_nonneg
     rintro r ⟨a, ha, y, hy, rfl⟩

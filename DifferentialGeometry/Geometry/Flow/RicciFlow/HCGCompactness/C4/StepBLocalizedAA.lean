@@ -3,40 +3,6 @@ import DifferentialGeometry.Analysis.Calculus.PiDeriv
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
@@ -45,11 +11,6 @@ open Filter Topology
 variable {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-
-
-
-
-
 
 def IsometryDerivBoundsOn (U : Set E) (Φ : ℕ → E → F) : Prop :=
   ∀ r : ℕ, ∀ K : Set E, IsCompact K → K ⊆ U →
@@ -116,12 +77,6 @@ theorem comp_eq_id_of_cInf_on
   simp only [hidx] at hcomp
   exact (tendsto_nhds_unique tendsto_const_nhds hcomp).symm
 
-
-
-
-
-
-
 theorem isometry_seq_cInf_on
     {U : Set E} (hU : IsOpen U) (Φ : ℕ → E → F)
     (hΦ : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (Φ k) U) (hbdd : IsometryDerivBoundsOn U Φ) :
@@ -129,15 +84,6 @@ theorem isometry_seq_cInf_on
       StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) Φinf U ∧
         MapCInfConvOnCompacts U (fun k => Φ (φ k)) Φinf :=
   exists_cInf_subseq_on hU Φ hΦ hbdd
-
-
-
-
-
-
-
-
-
 
 theorem isometry_seq_diffeo_on
     {U : Set E} {V : Set F} (hU : IsOpen U) (hV : IsOpen V)

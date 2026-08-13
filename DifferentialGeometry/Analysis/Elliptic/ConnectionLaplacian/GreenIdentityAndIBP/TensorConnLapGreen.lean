@@ -5,25 +5,30 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2So
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorRSMetricCompatible
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
 import DifferentialGeometry.Analysis.Integration.Measure.Rellich
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle CovariantDerivative
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
+    CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Chart
-open Tensor0SNabla TensorRSNabla TensorMetricLowering
+open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.TensorRSNabla
+    DifferentialGeometry.TensorMetricLowering
 
 section PouGradientCancellation
 
@@ -224,8 +229,8 @@ theorem integral_weighted_secondOrder_combined_eq_neg_weightDeriv
   rw [hIBP]
   ring
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

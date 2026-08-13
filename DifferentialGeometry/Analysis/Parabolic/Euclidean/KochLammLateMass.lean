@@ -2,15 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateKern
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateTime
 import Mathlib.MeasureTheory.Integral.Prod
 
-/-!
-# Exact terminal heat-kernel power mass
-
-The terminal ordinary-source estimate needs the full space-time
-`L^((n+4)/(n+2))` norm of the heat kernel.  This file evaluates its power
-integral exactly by Fubini, the translated spatial heat-kernel mass, and the
-one-dimensional terminal-time formula.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -26,8 +17,6 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The exact positive-power mass of the normalized time-one heat kernel is
-strictly positive. -/
 theorem klBasePow_pos {p : ℝ} (hp : 0 < p) :
     0 < basePowMass V p := by
   unfold basePowMass
@@ -36,13 +25,10 @@ theorem klBasePow_pos {p : ℝ} (hp : 0 < p) :
     (Real.rpow_pos_of_pos
       (div_pos Real.pi_pos (mul_pos (by positivity) hp)) _)
 
-/-- The real `klQDual`-power mass of the translated heat kernel on the full
-terminal slab. -/
 def klTermPowMass (t : ℝ) (x : V) : ℝ :=
   ∫ z : ℝ × V, ‖klTermKernel t x z‖ ^ klQDual V
     ∂(klTermMeasure (V := V) t)
 
-/-- Exact Fubini evaluation of the terminal heat-kernel power mass. -/
 theorem klTermPowMass_eq {t : ℝ} (ht : 0 < t) (x : V) :
     klTermPowMass t x =
       ((t / 2) ^ (klHeatExp V + 1) / (klHeatExp V + 1)) *

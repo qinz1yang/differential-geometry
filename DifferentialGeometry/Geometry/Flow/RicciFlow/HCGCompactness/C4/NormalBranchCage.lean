@@ -4,15 +4,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalBran
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCAtomConv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCCmDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCSmoothness
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -35,8 +29,6 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem aliveSlots_tail
@@ -65,8 +57,6 @@ theorem hat_mem_live
   | none => simp [NetLimitData.hatBall, hc] at hx
   | some c => simpa [hc] using hstable.symm
 
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem hat_dist_centerD
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -82,8 +72,6 @@ theorem hat_dist_centerD
   cases hc : seqCenter hd D P (L.φ k) (gamma : Nat) with
   | none => simp [NetLimitData.hatBall, hc] at hx
   | some c => simpa [NetLimitData.hatBall, seqCenterD, hc] using hx
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem seqCenterD_dist_le
@@ -107,8 +95,6 @@ theorem seqCenterD_dist_le
   rw [← hr]
   exact (seqRadius_mem hd hD P (L.φ k) gamma).2
 
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem seqCenterD_rInf_lt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -127,8 +113,6 @@ theorem seqCenterD_rInf_lt
     ← seqCenterD_dist_eq hd P L k gamma]
   exact hk
 
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem liveCenters_rInf
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -141,8 +125,6 @@ theorem liveCenters_rInf
           (X.obj (L.φ k)).basepoint < L.rInf (gamma.1 : Nat) + 1 :=
   Filter.eventually_all.mpr fun gamma =>
     seqCenterD_rInf_lt hd P hre L (gamma.1 : Nat)
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem lamInf_lt_halfMin
@@ -167,8 +149,6 @@ theorem lamInf_lt_halfMin
     _ = ((8 * Real.exp hd.C) * hd.lambda D (L.rInf gamma + 1)) / 2 := by ring
     _ < (aMin * hd.mu (L.rInf gamma + 1)) / 2 :=
       div_lt_div_of_pos_right hhat (by norm_num)
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem exists_cage_rad
@@ -201,8 +181,6 @@ theorem exists_cage_rad
     (div_pos (mul_pos haMin (hd.mu_pos _)) (by norm_num))).2 (by
       simpa only [rho] using hreal)
 
-
-
 def HasLiveBrFull
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
@@ -219,9 +197,6 @@ def HasLiveBrFull
       (hcomplete.complete (L.φ n)) (hconn (L.φ n))
       (seqCenterD hd P L n (gamma.1 : Nat)) (q gamma) (δ gamma)
       (aMin * hd.mu (L.rInf (gamma.1 : Nat) + 1))
-
-
-
 
 theorem exists_slot_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -396,8 +371,6 @@ theorem exists_slot_min
       (X.obj (L.φ k)).t2TangentBundle
     exact hcentres (L.φ k) (seqCenterD hd P L k (gamma.1 : Nat)) (hk gamma).le
 
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem exists_rad_cage
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -438,8 +411,6 @@ theorem exists_rad_cage
   exact (ENNReal.ofReal_lt_ofReal_iff
     (div_pos (mul_pos haMin (hd.mu_pos _)) (by norm_num))).2 hreal
 
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem liveCenters_dist_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -453,8 +424,6 @@ theorem liveCenters_dist_le
         2 * hd.lambda D 0 * (gamma.1 : Real) :=
   Filter.eventually_all.mpr fun gamma =>
     seqCenterD_dist_le hd hD P hre L (gamma.1 : Nat) gamma.2
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem liveCenters_cage
@@ -473,8 +442,6 @@ theorem liveCenters_cage
   apply mul_le_mul_of_nonneg_left
   · exact_mod_cast Nat.le_of_lt gamma.1.isLt
   · exact (mul_pos (by norm_num) (hd.lambda_pos hD 0)).le
-
-
 
 theorem exists_live_dom
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -504,9 +471,6 @@ theorem exists_live_dom
   refine ⟨aρ, haρ, q, δ, ?_⟩
   filter_upwards [liveCenters_cage hd hD P hre L pb r] with k hk
   exact fun gamma => hdom (L.φ k) (seqCenterD hd P L k (gamma.1 : Nat)) (hk gamma)
-
-
-
 
 theorem exists_live_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -569,8 +533,6 @@ theorem exists_live_min
     (X.obj (L.φ k)).t2TangentBundle
   simpa only [Rlive, ρ] using
     hcentres (L.φ k) (seqCenterD hd P L k (gamma.1 : Nat)) (hk gamma)
-
-
 
 theorem HasNormalBrFull.exists_cm_eqn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -705,9 +667,6 @@ theorem HasNormalBrFull.exists_cm_eqn
   have hz := centerReadoutB_min (I := I) hb k hcomplete hconn x hq he hf
     mu xi join p r h' hρ hρq hρmetric hρexp hpairs''
   simpa only [xi, hdecode] using hz
-
-
-
 
 theorem HasNormalBrFull.exists_cm_deriv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -907,8 +866,6 @@ theorem HasNormalBrFull.exists_cm_deriv
     mu xi htgt h.μ_nonneg hsum hzero
   simpa only [c, xi] using ⟨hcSource, htgt, hzNormal, hzero, hsol⟩
 
-
-
 theorem exists_hat_cm_eqn_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real}
@@ -1063,8 +1020,6 @@ theorem exists_hat_cm_eqn_at
     mu pts join x rad (4 * L.lamInf (alpha.1 : Nat)) h hpq
     hradCage hρ hρq hρmetric hρexp
   simpa only [x0, rho0] using hresult
-
-
 
 theorem exists_hat_cm_sol_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1246,8 +1201,6 @@ theorem exists_hat_cm_sol_at
     hradCage hρ hρq hρmetric hρexp
   simpa only [x0, rho0] using hresult
 
-
-
 theorem exists_hat_cm_eqn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) {D aMin : Real}
@@ -1391,8 +1344,6 @@ theorem exists_hat_cm_eqn
   refine ⟨gammaLive, ?_⟩
   exact exists_hat_cm_eqn_at (I := I) hd P hre L pb r k hcomplete hconn
     q δ hqdata hbranch gammaLive mu pts join x rad h hxhat (hradCage gammaLive)
-
-
 
 theorem exists_cm_branch
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

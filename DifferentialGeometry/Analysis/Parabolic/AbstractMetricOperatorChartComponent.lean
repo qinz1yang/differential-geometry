@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Flow.DeTurckOperator
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckOperator
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
@@ -8,8 +8,8 @@ import Mathlib.Geometry.Manifold.ContMDiff.Basic
 noncomputable section
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Analysis
+namespace Parabolic
 
 open Bundle MeasureTheory
 open scoped Manifold ContDiff
@@ -59,6 +59,6 @@ theorem F_chart_component_symmetric
     ((trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E i))
     ((trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E j))
 
-end RicciFlow
-end PDE
+end Parabolic
+end Analysis
 end DifferentialGeometry

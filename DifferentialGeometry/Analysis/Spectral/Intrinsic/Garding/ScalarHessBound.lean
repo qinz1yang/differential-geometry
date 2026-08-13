@@ -3,29 +3,24 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.RankZeroRealizat
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInner
 import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
 import DifferentialGeometry.Geometry.Operator.LaplacianBridge
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -45,8 +40,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-
-
 private theorem rawLap_repr_delta
     (g : SmoothRiemannianMetric I M)
     (v : tensorHs (I := I) (M := M) g 0 0 2)
@@ -55,20 +48,16 @@ private theorem rawLap_repr_delta
         (tensorHsSmoothRepr (I := I) (M := M) v hv).toSection x =
       Tensor0SSpace.toRS0
         ((Tensor0SNabla.tensor0Iso I M x).symm
-          (Δ_g (I := I) g
-            (reprScalar0_smooth (I := I) (M := M) v hv) x)) := by
+          (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x)) := by
   rw [rawLap_repr_scalar (I := I) (M := M) g v hv x]
   rw [laplacian_levi_eq (I := I) g
     (reprScalar0_smooth (I := I) (M := M) v hv) x]
-
-
 
 theorem lap_energy_eq
     (g : SmoothRiemannianMetric I M)
     (v : tensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
-    ∫ x, (Δ_g (I := I) g
-        (reprScalar0_smooth (I := I) (M := M) v hv) x) ^ 2
+    ∫ x, (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ‖rawTensorConnLapSmooth (I := I) g 0 0
         (tensorHsSmoothRepr (I := I) (M := M) v hv)‖ ^ 2 := by
@@ -87,13 +76,10 @@ theorem lap_energy_eq
       (fun y : M => S.toSection y) x =
         Tensor0SSpace.toRS0
           ((Tensor0SNabla.tensor0Iso I M x).symm
-            (Δ_g (I := I) g
-              (reprScalar0_smooth (I := I) (M := M) v hv) x)) by
+            (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x)) by
       simpa only [S] using rawLap_repr_delta (I := I) (M := M) g v hv x]
   rw [inner_toRS0_scalar (I := I) (M := M) g x]
   ring
-
-
 
 private theorem repr_lap_inner
     (g : SmoothRiemannianMetric I M)
@@ -103,8 +89,7 @@ private theorem repr_lap_inner
         (rawTensorConnLapSmooth (I := I) g 0 0
           (tensorHsSmoothRepr (I := I) (M := M) v hv)).toFun
         (tensorHsSmoothRepr (I := I) (M := M) v hv).toFun =
-      ∫ x, (Δ_g (I := I) g
-          (reprScalar0_smooth (I := I) (M := M) v hv) x) *
+      ∫ x, (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) *
         reprScalar0 (I := I) (M := M) v hv x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   unfold tensorL2Inner
@@ -124,10 +109,8 @@ private theorem repr_lap_inner
   rw [inner_toRS0_zero (I := I) (M := M) g x]
   have hlap : tensor0SSpace_evalScalar x
       ((Tensor0SNabla.tensor0Iso I M x).symm
-        (Δ_g (I := I) g
-          (reprScalar0_smooth (I := I) (M := M) v hv) x)) =
-      Δ_g (I := I) g
-        (reprScalar0_smooth (I := I) (M := M) v hv) x := by
+        (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x)) =
+      Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x := by
     change Tensor0SNabla.tensor0Iso I M x
       ((Tensor0SNabla.tensor0Iso I M x).symm _) = _
     rw [ContinuousLinearEquiv.apply_symm_apply]
@@ -145,8 +128,6 @@ private theorem repr_lap_inner
       (reprScalar0 (I := I) (M := M) v hv)
       (reprScalar0_smooth (I := I) (M := M) v hv) x Fin.elim0
   rw [hlap, hrepr]
-
-
 
 theorem grad_energy_eq
     (g : SmoothRiemannianMetric I M)
@@ -166,8 +147,7 @@ theorem grad_energy_eq
           (reprScalar0 (I := I) (M := M) v hv) x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         -∫ x, reprScalar0 (I := I) (M := M) v hv x *
-          Δ_g (I := I) g
-            (reprScalar0_smooth (I := I) (M := M) v hv) x
+          Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     simpa only [normGradSqFun_def, grad_g_apply] using
       (green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
@@ -189,11 +169,9 @@ theorem grad_energy_eq
         (reprScalar0 (I := I) (M := M) v hv) x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         -∫ x, reprScalar0 (I := I) (M := M) v hv x *
-          Δ_g (I := I) g
-            (reprScalar0_smooth (I := I) (M := M) v hv) x
+          Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := hscalar
-    _ = -∫ x, (Δ_g (I := I) g
-            (reprScalar0_smooth (I := I) (M := M) v hv) x) *
+    _ = -∫ x, (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) *
           reprScalar0 (I := I) (M := M) v hv x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
       congr 1
@@ -203,14 +181,11 @@ theorem grad_energy_eq
       rw [← repr_lap_inner (I := I) (M := M) g v hv]
     _ = ‖covGrad (I := I) (M := M) g 0 0 S‖ ^ 2 := htensor.symm
 
-
-
 theorem lap_energy_le
     (g : SmoothRiemannianMetric I M)
     (v : tensorHs (I := I) (M := M) g 0 0 2)
     (hv : (Function.support v.coeff).Finite) :
-    ∫ x, (Δ_g (I := I) g
-        (reprScalar0_smooth (I := I) (M := M) v hv) x) ^ 2
+    ∫ x, (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤ ‖v‖ ^ 2 := by
   rw [lap_energy_eq (I := I) (M := M) g v hv]
   have hL := rawLap_repr_norm (I := I) (M := M) g v hv
@@ -218,8 +193,6 @@ theorem lap_energy_le
   nlinarith [norm_nonneg
     (rawTensorConnLapSmooth (I := I) g 0 0
       (tensorHsSmoothRepr (I := I) (M := M) v hv)), norm_nonneg v]
-
-
 
 theorem grad_energy_le
     (g : SmoothRiemannianMetric I M)
@@ -246,8 +219,6 @@ private theorem du_normSq
     inner0S_differential1FormFun_pair_eq_grad_inner]
   rfl
 
-
-
 theorem du_energy_le
     (g : SmoothRiemannianMetric I M)
     (v : tensorHs (I := I) (M := M) g 0 0 2)
@@ -258,9 +229,6 @@ theorem du_energy_le
           (reprScalar0_smooth (I := I) (M := M) v hv) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤ ‖v‖ ^ 2 := by
   simpa only [du_normSq] using grad_energy_le (I := I) (M := M) g v hv
-
-
-
 
 theorem hess_energy_le
     (g : SmoothRiemannianMetric I M) :
@@ -285,8 +253,7 @@ theorem hess_energy_le
     ∫ x, chartHessFrobeniusSq (I := I) g
         (reprScalar0 (I := I) (M := M) v hv) x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
-        (∫ x, (Δ_g (I := I) g
-            (reprScalar0_smooth (I := I) (M := M) v hv) x) ^ 2
+        (∫ x, (Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
             ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
           C * ∫ x, normGradSqFun (I := I) g
             (reprScalar0 (I := I) (M := M) v hv) x
@@ -294,8 +261,6 @@ theorem hess_energy_le
     _ ≤ ‖v‖ ^ 2 + C * ‖v‖ ^ 2 :=
       add_le_add hlap (mul_le_mul_of_nonneg_left hgrad hC)
     _ = (1 + C) * ‖v‖ ^ 2 := by ring
-
-
 
 theorem hessSec_energy_le
     (g : SmoothRiemannianMetric I M) :
@@ -313,9 +278,8 @@ theorem hessSec_energy_le
   intro v hv
   simpa only [hessSec_normSq] using hess v hv
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

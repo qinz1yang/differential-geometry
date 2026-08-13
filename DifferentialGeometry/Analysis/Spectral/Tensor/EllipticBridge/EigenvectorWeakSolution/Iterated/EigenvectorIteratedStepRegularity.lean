@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.DifferentiatedRHS.EigenvectorDifferentiatedRHSWkp
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

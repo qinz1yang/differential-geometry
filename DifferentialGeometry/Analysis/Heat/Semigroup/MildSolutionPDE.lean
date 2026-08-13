@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Heat.Semigroup.Duhamel
 import DifferentialGeometry.Analysis.Heat.Semigroup.Generator
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -26,7 +27,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 private lemma continuous_inner_basis_apply
     (g : SmoothRiemannianMetric I M)

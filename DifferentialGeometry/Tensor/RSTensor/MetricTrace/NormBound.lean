@@ -1,21 +1,18 @@
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Trace04
 import DifferentialGeometry.Tensor.RSTensor.NormSqProduct
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -24,8 +21,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {x : M}
-
-
 
 theorem component_le_sqrt
     (g : SmoothMetric_gen I M)
@@ -42,8 +37,6 @@ theorem component_le_sqrt
   exact Finset.single_le_sum
     (fun slots' _ => sq_nonneg (component0S (I := I) basis A slots'))
     (Finset.mem_univ slots)
-
-
 
 theorem trace_normSq_le
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -120,8 +113,6 @@ theorem trace_normSq_le
     _ = (Fintype.card (Fin s -> Idx) : Real) * (Fintype.card Idx : Real) ^ 2 *
         normSq0S (I := I) g x (s + 2) T := rfl
 
-
-
 theorem trace_normSq_rank_le
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {s : Nat} (T : Tensor0SSpace (s + 2) I x) :
@@ -156,3 +147,4 @@ theorem trace_normSq_rank_le
   simpa [basis, pow_add] using h
 
 end Tensor0SBundle
+end DifferentialGeometry

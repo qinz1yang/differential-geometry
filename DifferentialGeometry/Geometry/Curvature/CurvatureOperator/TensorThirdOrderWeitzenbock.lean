@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -9,11 +12,11 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 section General
 
@@ -21,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
@@ -31,7 +34,7 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [FiniteDimensional ℝ F]
 
 
-omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M]
     [BoundarylessManifold I M] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
     [FiniteDimensional ℝ F] in
 theorem covApply_outer_swap_eq_riemannSec
@@ -52,7 +55,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
@@ -62,7 +65,7 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [FiniteDimensional ℝ F]
 
 
-omit [CompleteSpace E] [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [T2Space M]
     [BoundarylessManifold I M] [ContMDiffVectorBundle ∞ F V I] [FiniteDimensional ℝ F] in
 theorem covApply_contMDiff
     (cov : CovariantDerivative I F V)
@@ -76,7 +79,7 @@ theorem covApply_contMDiff
   rw [show ((∞ : WithTop ℕ∞) + 1) = (∞ : WithTop ℕ∞) from by rw [ENat.coe_top_add_one]]
   exact hT
 
-omit [CompleteSpace E] [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [T2Space M]
     [BoundarylessManifold I M] [ContMDiffVectorBundle ∞ F V I] [FiniteDimensional ℝ F] in
 theorem covApply_covApply_contMDiff
     (cov : CovariantDerivative I F V)
@@ -89,7 +92,7 @@ theorem covApply_covApply_contMDiff
   covApply_contMDiff (cov := cov) hX (covApply_contMDiff (cov := cov) hY hT)
 
 
-omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
+omit [FiniteDimensional ℝ E] [T2Space M] [BoundarylessManifold I M] in
 theorem mlieBracket_contMDiff
     {X Y : Π b : M, TangentSpace I b}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
@@ -116,7 +119,7 @@ theorem mlieBracket_contMDiff
     rw [h_eq]; infer_instance
   exact hX_inf.mlieBracket_vectorField (m := (⊤ : ℕ∞)) (n := (⊤ : ℕ∞)) hY_inf hn_le
 
-omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+omit [FiniteDimensional ℝ E] [T2Space M] [BoundarylessManifold I M]
     [ContMDiffVectorBundle ∞ F V I] [FiniteDimensional ℝ F] in
 theorem riemannSec_contMDiff
     (cov : CovariantDerivative I F V)
@@ -140,7 +143,7 @@ theorem riemannSec_contMDiff
   intro b
   rfl
 
-omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M]
     [BoundarylessManifold I M] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
     [FiniteDimensional ℝ F] in
 theorem covApply_covApply_eq_section
@@ -154,7 +157,7 @@ theorem covApply_covApply_eq_section
   simp only [Pi.add_apply, covApply_apply]
   exact covApply_outer_swap_eq_riemannSec cov X Y T b
 
-omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+omit [FiniteDimensional ℝ E] [T2Space M] [BoundarylessManifold I M]
     [ContMDiffVectorBundle ∞ F V I] [FiniteDimensional ℝ F] in
 theorem secondCovDeriv_swap_outer
     (cov : CovariantDerivative I F V)
@@ -213,7 +216,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+variable [T2Space M] [BoundarylessManifold I M]
 
 noncomputable def tensorThirdOrderCurvatureDefect
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -328,6 +331,6 @@ theorem riemannSec_eq_riemannOp_tensorCov
 
 end TensorBundle
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

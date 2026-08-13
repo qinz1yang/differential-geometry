@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.ChartTransition.TensorChartTransitionTransport
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section

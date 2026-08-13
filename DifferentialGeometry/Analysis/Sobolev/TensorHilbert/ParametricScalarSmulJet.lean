@@ -2,30 +2,31 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBou
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantLeibniz
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import DifferentialGeometry.Tensor.RSTensor.RankZero
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Sobolev
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -95,17 +96,18 @@ theorem unit_init_or_empty (g : SmoothRiemannianMetric I M) :
         (∫ x,
             TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
               u0.toSection x
-          ∂(Measure.riemannianVolumeMeasure (I := I) (M := M) g)) = 1 := by
+          ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I)
+            (M := M) g)) = 1 := by
   classical
   rcases isEmpty_or_nonempty M with hM | hM
   · exact Or.inl hM
   · letI : Nonempty M := hM
-    let μ := Measure.riemannianVolumeMeasure (I := I) (M := M) g
+    let μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g
     letI : IsFiniteMeasure μ :=
-      Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
+      DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
         (I := I) (M := M) g
     letI : μ.IsOpenPosMeasure :=
-      Measure.riemannianVolumeMeasure_isOpenPosMeasure
+      DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isOpenPosMeasure
         (I := I) (M := M) g
     let vol : ℝ := (μ Set.univ).toReal
     have hvol : 0 < vol := by
@@ -228,9 +230,6 @@ theorem scalarCc_joint (g : SmoothRiemannianMetric I M)
     (fun p : M × ℝ => A p.1) hA
   exact hsmul.congr fun p _ => rfl
 
-
-
-
 theorem smul_jet_unif (g : SmoothRiemannianMetric I M)
     (zeta : ℝ → C^∞⟮I, M; ℝ⟯) {S K : Set ℝ}
     (hK : IsCompact K) (hKS : K ⊆ S)
@@ -250,8 +249,8 @@ theorem smul_jet_unif (g : SmoothRiemannianMetric I M)
   intro t ht U j
   simpa only [app_scalarCc] using hbound t ht U j
 
-end Connection
-end Integral
+end Sobolev
+end Analysis
 end DifferentialGeometry
 
 end

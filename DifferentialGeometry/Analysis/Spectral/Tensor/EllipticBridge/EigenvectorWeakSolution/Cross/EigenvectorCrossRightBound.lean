@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.EigenvectorPouWkpNormTwins
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.CutoffChartComponentWkpNorm
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -22,7 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Sobolev.Chart
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
@@ -48,7 +50,7 @@ private lemma mu_mul_inv_pow_le_inv_pow_local
 
 section Unconditional
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 omit [CompleteSpace E] in
 private lemma vec_norm_eq_one_local

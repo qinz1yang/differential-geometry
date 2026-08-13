@@ -4,23 +4,20 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity
 import DifferentialGeometry.Geometry.Operator.NormGradSqTime
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 noncomputable section
 
-open Bundle Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Evolution.Volume
@@ -39,8 +36,6 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
-
-
 
 theorem revGram_smooth
     {D : RealTimeInterval}
@@ -170,8 +165,6 @@ variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-
-
 theorem revScalar_time
     [I.Boundaryless]
     {D : RealTimeInterval}
@@ -209,9 +202,6 @@ theorem revScalar_time
     simp only [laplacianAt, reverseFamily, G, flowG, SolutionOn.family]
     ring
   simpa only [Function.comp_apply, G] using hcomp.congr_deriv hderiv
-
-
-
 
 theorem revGradSq_time
     [I.Boundaryless]

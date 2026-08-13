@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2So
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapIntrinsicL2LePouSobolevNorm
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedNorm
 import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -14,11 +17,11 @@ open Bundle Manifold Set IsManifold ContinuousLinearMap Filter MeasureTheory
 open scoped Manifold Topology Bundle ContDiff BigOperators ENNReal NNReal
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -1365,9 +1368,9 @@ private lemma sq_eLpNorm_tensorChartComp_le_pou_summand
       (I := I) (M := M) g r s T α IJ' j
   rw [h_swap_j]
 
-omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [T2Space M] [CompactSpace M] in
 theorem wtwokTwoNorm_zero_rawTensorConnLap_le_tensorPouSobolevNorm_one
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ≥0∞, C ≠ ⊤ ∧
       ∀ (T : SmoothCcTensor g r s),
@@ -1687,8 +1690,8 @@ theorem wtwokTwoNorm_zero_rawTensorConnLap_le_tensorPouSobolevNorm_one
   exact (ENNReal.pow_le_pow_left_iff (a := FS)
     (b := ENNReal.ofReal C * W₁) (n := 2) (by norm_num)).mp h_FS_sq_le
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

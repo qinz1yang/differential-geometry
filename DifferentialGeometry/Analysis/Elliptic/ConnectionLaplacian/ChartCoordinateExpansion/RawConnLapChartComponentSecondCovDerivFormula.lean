@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2So
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExpansion.ChartProjectionSecondCovDerivViaSkExt
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ComponentEuclidSkExtExpansion
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.Defs
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -13,11 +16,11 @@ open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -148,6 +151,7 @@ private noncomputable def chartPushed_rawConnLapComponent
       (rawTensorConnLapSmooth (I := I) g r s T₀) α Idx Jdx)
 
 omit [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma chartPushed_rawConnLapComponent_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -169,7 +173,7 @@ private noncomputable def lowerOrderCorrection
     chartPushed_rawConnLapComponent (I := I) (M := M) g r s α T₀ Idx Jdx y -
       principalSecondDerivSum (I := I) (M := M) g r s α T₀ Idx Jdx y
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma lowerOrderCorrection_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -183,6 +187,7 @@ private lemma lowerOrderCorrection_contDiffOn
     (principalSecondDerivSum_contDiffOn (I := I) (M := M) g r s α T₀ Idx Jdx)
 
 omit [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma chartPushed_rawConnLapComponent_eq_principal_add_LO
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -196,6 +201,7 @@ private lemma chartPushed_rawConnLapComponent_eq_principal_add_LO
   ring
 
 omit [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private lemma chartPushed_rawConnLapComponent_apply_of_good
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T₀ : SmoothCcTensor g r s)
@@ -276,8 +282,8 @@ theorem tensorChartComponentRaw_rawTensorConnLap_eq_chart_α_coord_formula
         (I := I) (M := M) g r s α T₀ Idx Jdx y]
     rfl
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

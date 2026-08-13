@@ -3,17 +3,11 @@ import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -23,13 +17,10 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M]
 
-
 def metricTimeBundleQuad
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
     (q : {t : Real // t ∈ K} × TangentBundle I M) : Real :=
   (G q.1.1).inner q.2.proj q.2.2 q.2.2
-
-
 
 def metricUnitTimeSlabRefQuad
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -57,8 +48,6 @@ theorem metricUnitTimeSlabRefQuad_cont_of_bundle
   simpa [metricUnitTimeSlabRefQuad, metricTimeBundleQuad, incl,
     MetricUnitTangent.base, MetricUnitTangent.vec] using hquad.comp hincl
 
-
-
 noncomputable def metricUnitTimeSlabScale
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
     (g₀ : SmoothRiemannianMetric I M)
@@ -81,8 +70,6 @@ theorem metricUnitTimeSlabRefQuad_pos
     (MetricUnitTangent.base (I := I) (M := M) q.2)
     (MetricUnitTangent.vec (I := I) (M := M) q.2) hv
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlabScale_cont
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -96,8 +83,6 @@ theorem metricUnitTimeSlabScale_cont
       (Real.sqrt_pos.mpr
         (metricUnitTimeSlabRefQuad_pos (I := I) (M := M) G K g₀ q)))
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlabScale_cont_of_bundle
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -106,7 +91,6 @@ theorem metricUnitTimeSlabScale_cont_of_bundle
     Continuous (metricUnitTimeSlabScale (I := I) (M := M) G K g₀) :=
   metricUnitTimeSlabScale_cont (I := I) (M := M) G K g₀
     (metricUnitTimeSlabRefQuad_cont_of_bundle (I := I) (M := M) G K g₀ hquad)
-
 
 noncomputable def metricUnitTimeSlabScaledBundle
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -155,9 +139,6 @@ theorem metricUnitTimeSlabScaledBundle_unit
             metric_smul2 (I := I) (M := M) (G q.1.1) a v
     _ = 1 := haa
 
-
-
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 private theorem tangentBundle_smul_cont :
     Continuous (fun p : Real × TangentBundle I M =>
@@ -200,9 +181,6 @@ private theorem tangentBundle_smul_cont :
       _ = (e (⟨p.2.proj, p.1 • p.2.2⟩ : TangentBundle I M)).2 := by
               rw [e.coe_linearMapAt_of_mem (R := Real) hp]
 
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlabScaledBundle_cont_of_bundle
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -222,8 +200,6 @@ theorem metricUnitTimeSlabScaledBundle_cont_of_bundle
   simpa [sourceToPair, metricUnitTimeSlabScaledBundle,
     MetricUnitTangent.base, MetricUnitTangent.vec] using
     tangentBundle_smul_cont (I := I) (M := M).comp hpair
-
-
 
 noncomputable def metricUnitTimeSlabParam
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -273,8 +249,6 @@ theorem metricUnitTimeSlabParam_time
       (metricUnitTimeSlabParam (I := I) (M := M) G K g₀ q) = q.1.1 := by
   rfl
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlabParam_cont_of_scaledBundle
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -303,8 +277,6 @@ theorem metricUnitTimeSlabParam_cont_of_scaledBundle
     metricUnitTimeSlabScale, metricUnitTimeSlabRefQuad,
     MetricUnitTangent.base, MetricUnitTangent.vec]
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlabParam_cont_of_bundle
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -313,8 +285,6 @@ theorem metricUnitTimeSlabParam_cont_of_bundle
     Continuous (metricUnitTimeSlabParam (I := I) (M := M) G K g₀) :=
   metricUnitTimeSlabParam_cont_of_scaledBundle (I := I) (M := M) G K g₀
     (metricUnitTimeSlabScaledBundle_cont_of_bundle (I := I) (M := M) G K g₀ hquad)
-
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I 1 M] in
 theorem metricUnitTimeSlabParam_surjective
@@ -380,9 +350,6 @@ theorem metricUnitTimeSlabParam_surjective
         simp
   simpa [hGtunit, hsqrtRaw] using hvecRaw
 
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlab_compact_of_param
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -400,8 +367,6 @@ theorem metricUnitTimeSlab_compact_of_param
       (Set.univ : Set (MetricUnitTangentTimeSlab (I := I) (M := M) G K)) := by
   simpa [Set.image_univ, hsurj.range_eq] using hsource.image hcont
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlab_compact_of_param_cont
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -417,8 +382,6 @@ theorem metricUnitTimeSlab_compact_of_param_cont
   metricUnitTimeSlab_compact_of_param (I := I) (M := M) G K g₀ hsource hcont
     (metricUnitTimeSlabParam_surjective (I := I) (M := M) G K g₀)
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricUnitTimeSlab_compact_of_param_cont_compactSpace
     (G : Real -> SmoothRiemannianMetric I M) (K : Set Real)
@@ -432,10 +395,8 @@ theorem metricUnitTimeSlab_compact_of_param_cont_compactSpace
   metricUnitTimeSlab_compact_of_param_cont (I := I) (M := M) G K g₀
     isCompact_univ hcont
 
-
-
 theorem metricUnitTimeSlab_icc_compact_of_param_cont
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real)
     (g₀ : SmoothRiemannianMetric I M)
     (hcont :
@@ -463,10 +424,8 @@ theorem metricUnitTimeSlab_icc_compact_of_param_cont
   exact metricUnitTimeSlab_compact_of_param_cont
     (I := I) (M := M) G (Set.Icc t0 t1) g₀ hsource hcont
 
-
-
 theorem metricUnitTimeSlab_icc_compact_of_bundle
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (G : Real -> SmoothRiemannianMetric I M) (t0 t1 : Real)
     (g₀ : SmoothRiemannianMetric I M)
     (hquad :
@@ -478,8 +437,6 @@ theorem metricUnitTimeSlab_icc_compact_of_bundle
   metricUnitTimeSlab_icc_compact_of_param_cont (I := I) (M := M) G t0 t1 g₀
     (metricUnitTimeSlabParam_cont_of_bundle (I := I) (M := M)
       G (Set.Icc t0 t1) g₀ hquad)
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem unitAbsBound_to_all
@@ -548,8 +505,6 @@ theorem unitAbsBound_to_all
       rw [hss]
       ring
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem compactUnitSlab_absBound
     (G : Real -> SmoothRiemannianMetric I M)
@@ -596,8 +551,6 @@ theorem compactUnitSlab_absBound
     intro p
     exfalso
     exact hne ⟨⟨⟨t, ht⟩, p⟩, Set.mem_univ _⟩
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem compactUnitTimeSlab_absBound
@@ -654,8 +607,6 @@ theorem compactUnitTimeSlab_absBound
       exact MetricUnitTangent.unit (I := I) (M := M) p⟩
     exact hne ⟨q, Set.mem_univ q⟩
 
-
-
 theorem timeSlabAbsQuadCont
     (G : Real -> SmoothRiemannianMetric I M)
     (A : (t : Real) -> (x : M) ->
@@ -701,6 +652,5 @@ theorem timeSlabAbsQuadCont
     (𝕜 := Real) (I := I) (M := M) (P := P) (n := 2)
     b hb T hT v hv
   simpa [quad02, P, b, T, v] using hEval.abs
-
 
 end DifferentialGeometry

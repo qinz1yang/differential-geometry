@@ -1,13 +1,5 @@
 import Mathlib.Analysis.Fourier.LpSpace
 
-/-!
-# Compatibility of the classical and `L²` Fourier transforms
-
-This file identifies Mathlib's classical Fourier transform of an integrable
-function with its Plancherel Fourier transform whenever both the function and
-its classical transform belong to `L²`.
--/
-
 noncomputable section
 
 open MeasureTheory SchwartzMap
@@ -19,9 +11,6 @@ variable {E : Type*}
   [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
   [MeasurableSpace E] [BorelSpace E]
 
-/-- On an integrable function in `L²` whose classical Fourier transform is
-also in `L²`, the classical and Plancherel Fourier transforms define the same
-`L²` element. -/
 theorem fourier_toLp_two (f : E → ℂ) (hf₁ : Integrable f)
     (hf₂ : MemLp f 2) (hF₂ : MemLp (𝓕 f) 2) :
     Lp.fourierTransformₗᵢ E ℂ (hf₂.toLp f) = hF₂.toLp (𝓕 f) := by

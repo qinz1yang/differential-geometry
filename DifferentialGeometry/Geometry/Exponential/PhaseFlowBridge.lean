@@ -1,15 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.PhaseFlowPerturbation
 import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -19,8 +12,6 @@ namespace Riemannian
 namespace Exponential
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-
-
 
 theorem freeDiag_eq_unip :
     PhaseFlow.freeDiag (E := E) =

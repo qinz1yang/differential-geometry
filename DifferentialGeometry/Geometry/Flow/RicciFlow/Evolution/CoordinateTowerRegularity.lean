@@ -1,22 +1,17 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.CoordinateRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmCoordinateRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerRegularity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff
 
@@ -29,8 +24,6 @@ variable [IsManifold I ∞ M] [IsManifold I 1 M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Every finite level of the realized coordinate-frame curvature tower is
-jointly smooth at regular spacetime points in the chart good set. -/
 theorem coordTowerSmooth
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)

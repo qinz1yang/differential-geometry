@@ -6,44 +6,23 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDeri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldInputs
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Metric.ConvexCombination
-
-/-!
-# Uniform curvature-jet bound (item-6 brick 2a)
-
-Downstream discharge of the class-uniform curvature-jet bound that the S1
-Gårding constant (`UnifBochnerGap.lean`) consumes abstractly.  This file is the
-`HCGCompactness` home of brick (2a); it imports the `Geometry/Curvature/`
-difference/fixed assets (upstream of HCG, so importable) — see
-`UnifCurvatureJetBound.md` for the ratified route (2a-0 → 2a-tel → 2a-hi → 2a-pkg)
-and the asset inventory.
-
-## This file (session 4, order-0 composition core)
-
-`unifCurvatureSup_singleLink_of_diff` — the order-0 curvature sup bound assembled
-from the order-0 Riemann *difference* bound (its conclusion, taken as a
-hypothesis `hdiff`; discharged from the class jets by the frontier layer) and the
-committed *fixed*-`gBase` curvature bound
-(`exists_uniform_riemannOp_LeviCivita_gNorm_bound`), converted from the `gBase`
-to the `g₀` inner product by `Λ`-comparability.  Explicit constant
-`F = Λ²·(Cd + √Kbase)`.
-
-The genuinely-missing infrastructure (constructing `P = g₀ − gBase` as a
-`SmoothCcTensor gBase 0 2`, its `htie`, the comparability→`gFibreOpBound` bridge,
-and the metric-jet envelope), together with the `convexComb` telescoping to the
-full class `Λ ≥ 1`, is the named frontier recorded in `UnifCurvatureJetBound.md`.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
 
 noncomputable section
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.HCGCompactness
@@ -57,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -68,10 +47,7 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
     (E := fun y : M => TensorRSSpace r s I y) x
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-/-- The `g`-norm triangle inequality on a fibre:
-`√(g(a+b,a+b)) ≤ √(g(a,a)) + √(g(b,b))`.  (Local copy of the private
-`gNorm_self_triangle` used in `PerturbedRiemannOpDifferenceBound`.) -/
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma gAddNorm_le
     (g : SmoothRiemannianMetric I M) (x : M) (a b : TangentSpace I x) :
     Real.sqrt (g.inner x (a + b) (a + b)) ≤
@@ -106,20 +82,6 @@ private lemma gAddNorm_le
   rw [hsq]
   linarith [hcs]
 
-/-- **Order-0 curvature sup bound, single-link (`Λ < 2`) regime.**
-
-Given the order-0 Riemann *difference* bound `hdiff` (the conclusion of
-`exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope` at role
-base = `gBase`, `g₁ = g₀`; discharged from the class metric jets by the frontier
-layer) and `Λ`-comparability of `g₀` with `gBase`, the absolute Riemann operator
-of `g₀` is bounded in the `g₀` inner product by `F²` with
-
-  `F = Λ² · (Cd + √Kbase)`,
-
-where `Kbase` is the fixed `gBase` curvature constant
-(`exists_uniform_riemannOp_LeviCivita_gNorm_bound`).  This is the composition
-spine of brick 2a-0; the full class `Λ ≥ 1` follows by `convexComb` telescoping
-(2a-tel). -/
 theorem unifCurvatureSup_singleLink_of_diff
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -148,14 +110,12 @@ theorem unifCurvatureSup_singleLink_of_diff
   intro x v w u
   set R0 : TangentSpace I x := riemannOp (cov := LeviCivita (I := I) g₀) x v w u with hR0
   set Rb : TangentSpace I x := riemannOp (cov := LeviCivita (I := I) gBase) x v w u with hRb
-  -- fibre quadratics in the base metric, all nonnegative
   have hbvv0 : 0 ≤ gBase.inner x v v := metric_inner_self_nonneg (I := I) (M := M) gBase x v
   have hbww0 : 0 ≤ gBase.inner x w w := metric_inner_self_nonneg (I := I) (M := M) gBase x w
   have hbuu0 : 0 ≤ gBase.inner x u u := metric_inner_self_nonneg (I := I) (M := M) gBase x u
   set P3 : ℝ := gBase.inner x v v * gBase.inner x w w * gBase.inner x u u with hP3
   have hP30 : 0 ≤ P3 := by
     rw [hP3]; exact mul_nonneg (mul_nonneg hbvv0 hbww0) hbuu0
-  -- the two committed inputs, folded to `R0`/`Rb` and the single product `P3`
   have h := hdiff x v w u
   rw [← hR0, ← hRb] at h
   have hk := hKb x v w u
@@ -170,7 +130,6 @@ theorem unifCurvatureSup_singleLink_of_diff
     calc gBase.inner x Rb Rb
         ≤ Kb * gBase.inner x v v * gBase.inner x w w * gBase.inner x u u := hk
       _ = Kb * (gBase.inner x v v * gBase.inner x w w * gBase.inner x u u) := by ring
-  -- √ of each input
   have hnDiff : Real.sqrt (gBase.inner x (R0 - Rb) (R0 - Rb)) ≤ Cd * Real.sqrt P3 := by
     calc Real.sqrt (gBase.inner x (R0 - Rb) (R0 - Rb))
         ≤ Real.sqrt (Cd ^ 2 * P3) := Real.sqrt_le_sqrt hd3
@@ -179,7 +138,6 @@ theorem unifCurvatureSup_singleLink_of_diff
     calc Real.sqrt (gBase.inner x Rb Rb)
         ≤ Real.sqrt (Kb * P3) := Real.sqrt_le_sqrt hb3
       _ = Real.sqrt Kb * Real.sqrt P3 := by rw [Real.sqrt_mul hKb0]
-  -- triangle: `R0 = (R0 - Rb) + Rb`
   have hcancel : (R0 - Rb) + Rb = R0 := by abel
   have htri : Real.sqrt (gBase.inner x R0 R0) ≤
       (Cd + Real.sqrt Kb) * Real.sqrt P3 := by
@@ -190,7 +148,6 @@ theorem unifCurvatureSup_singleLink_of_diff
             Real.sqrt (gBase.inner x Rb Rb) := htr
       _ ≤ Cd * Real.sqrt P3 + Real.sqrt Kb * Real.sqrt P3 := add_le_add hnDiff hnRb
       _ = (Cd + Real.sqrt Kb) * Real.sqrt P3 := by ring
-  -- square the triangle to get the base-metric curvature bound
   have hR0nn : 0 ≤ gBase.inner x R0 R0 :=
     metric_inner_self_nonneg (I := I) (M := M) gBase x R0
   have hbaseSq : gBase.inner x R0 R0 ≤ (Cd + Real.sqrt Kb) ^ 2 * P3 := by
@@ -201,10 +158,8 @@ theorem unifCurvatureSup_singleLink_of_diff
             ((Cd + Real.sqrt Kb) * Real.sqrt P3) := hmm
       _ = (Cd + Real.sqrt Kb) ^ 2 * (Real.sqrt P3 * Real.sqrt P3) := by ring
       _ = (Cd + Real.sqrt Kb) ^ 2 * P3 := by rw [Real.mul_self_sqrt hP30]
-  -- convert the base-metric bound to the `g₀` inner product via comparability
   have hout : g₀.inner x R0 R0 ≤ Λ * gBase.inner x R0 R0 := (hcomp x R0).2
   have hcoeff_nn : 0 ≤ (Cd + Real.sqrt Kb) ^ 2 := sq_nonneg _
-  -- input conversion: `gBase(z,z) ≤ Λ · g₀(z,z)` on the diagonal
   have hinConv : ∀ z : TangentSpace I x, gBase.inner x z z ≤ Λ * g₀.inner x z z := by
     intro z
     have hz := (hcomp x z).1
@@ -222,7 +177,6 @@ theorem unifCurvatureSup_singleLink_of_diff
     exact mul_le_mul hstep1 (hinConv u) hbuu0 (mul_nonneg hΛg0vv hΛg0ww)
   have hP3_conv : P3 ≤ Λ ^ 3 * (g₀.inner x v v * g₀.inner x w w * g₀.inner x u u) := by
     refine le_trans hstep2 (le_of_eq ?_); ring
-  -- assemble
   calc g₀.inner x R0 R0
       ≤ Λ * gBase.inner x R0 R0 := hout
     _ ≤ Λ * ((Cd + Real.sqrt Kb) ^ 2 * P3) :=
@@ -234,22 +188,10 @@ theorem unifCurvatureSup_singleLink_of_diff
     _ = (Λ ^ 2 * (Cd + Real.sqrt Kb)) ^ 2 *
           g₀.inner x v v * g₀.inner x w w * g₀.inner x u u := by ring
 
-/-! ### P-construction tie API (session 5)
-
-The metric-difference realization `metricDifferenceCcTensor gBase g₀`
-(`RicciArmResidualCoefficientFields.lean:118`, reused) supplies the perturbation
-`P` the order-0 difference asset consumes; these lemmas prove it satisfies the
-asset's `htie` shape at role base = `gBase`, `g₁ = g₀`.  The two dischargers
-(`gFibreOpBound` from comparability; the order-`≤2` jet envelope from
-`MetricCovDerivOrderBoundOn`) are the remaining frontier — see
-`UnifCurvatureJetBound.md`. -/
-
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
-/-- The metric difference `metricDifferenceCcTensor gBase g₀` extracts, before
-symmetrization, to the pointwise metric difference `g₀ − gBase`. -/
+  in
 theorem metricDiff_ccBilin (gBase g₀ : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) gBase
@@ -263,9 +205,7 @@ theorem metricDiff_ccBilin (gBase g₀ : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
-/-- The metric difference realizes `g₀ − gBase` after symmetrization as well:
-the difference of two symmetric metrics is already symmetric. -/
+  in
 theorem metricDiff_ccBilinSymm (gBase g₀ : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) gBase
@@ -278,12 +218,7 @@ theorem metricDiff_ccBilinSymm (gBase g₀ : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
-/-- **Tie identity — the asset `htie` shape (role base = `gBase`, `g₁ = g₀`).**
-`g₀` is realized as `gBase` plus the symmetric perturbation
-`ccTensorBilinSymm gBase (metricDifferenceCcTensor gBase g₀)`.  This discharges
-the `htie` hypothesis of
-`exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope`. -/
+  in
 theorem metricDiff_tie (gBase g₀ : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     g₀.inner x v w =
@@ -292,23 +227,8 @@ theorem metricDiff_tie (gBase g₀ : SmoothRiemannianMetric I M)
           (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) x v w := by
   rw [metricDiff_ccBilinSymm]; ring
 
-/-! ### Discharger 1 — comparability ⟹ `gFibreOpBound` (session 6)
-
-The perturbation `ccTensorBilinSymm gBase P` (`P = metricDifferenceCcTensor
-gBase g₀`), which realizes `g₀ − gBase`, has `gBase`-fibre operator norm at most
-`Λ − 1`.  This supplies the `hδ` hypothesis of the order-0 difference asset (with
-`δ₀ = Λ − 1 < 1`, i.e. the `Λ < 2` regime). -/
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-/-- **Off-diagonal control from a diagonal bound** (the reusable "operator norm =
-diagonal norm" fact for a symmetric fibre form): a symmetric bilinear form `D`
-on a metric fibre with `|D u u| ≤ c · gBase(u,u)` on the diagonal satisfies
-`|D v w| ≤ c · √(gBase(v,v)) · √(gBase(w,w))`.  Proof: polarization gives the
-arithmetic-mean bound `|D v w| ≤ ½c(gBase(v,v)+gBase(w,w))`; applying it to the
-`gBase`-unit rescalings `v/√(gBase(v,v))`, `w/√(gBase(w,w))` sharpens it to the
-geometric mean.  Degenerate slots (`gBase(·,·)=0 ⟹ ·=0` by positivity) are
-handled separately. -/
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma clm_offdiag_le_of_diag {x : M} (gBase : SmoothRiemannianMetric I M)
     (D : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (hDsymm : ∀ v w : TangentSpace I x, D v w = D w v)
@@ -374,9 +294,7 @@ private lemma clm_offdiag_le_of_diag {x : M} (gBase : SmoothRiemannianMetric I M
       _ = c * a * b := by ring
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-/-- The diagonal bound `|g₀(u,u) − gBase(u,u)| ≤ (Λ−1)·gBase(u,u)` from
-`Λ`-comparability (`|Λ⁻¹ − 1| = 1 − Λ⁻¹ ≤ Λ − 1` for `Λ ≥ 1`). -/
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma metricDiff_diag_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -396,10 +314,7 @@ private lemma metricDiff_diag_le (gBase g₀ : SmoothRiemannianMetric I M) {Λ :
   nlinarith [hlo, hprod]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
-/-- **Discharger 1.**  Under `Λ`-comparability, the symmetric perturbation
-`ccTensorBilinSymm gBase (metricDifferenceCcTensor gBase g₀)` realizing
-`g₀ − gBase` has `gBase`-fibre operator norm at most `Λ − 1`. -/
+  in
 theorem metricDiff_gFibreOpBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -427,35 +342,8 @@ theorem metricDiff_gFibreOpBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ :
       (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) x)
     hsymm (by linarith : (0 : ℝ) ≤ Λ - 1) hdiag v w
 
-/-! ### Discharger 2 — jet envelope: RS linearity reduction (session 7)
-
-Recon verdict (see `UnifCurvatureJetBound.md`, session 7): the covariant-derivative
-convention/slot-order/connection mismatch feared in session 6 is **resolved** —
-`covGrad` and `metricCovDeriv` differentiate against the *same* connection
-(`LeviCivita g = leviCivitaConnectionOfMetric g` by `rfl`) with the *same*
-derivative-slot-first order, and the `r = 0` RS↔0S unit-evaluation bridges exist
-(`covDeriv_unit_eval_eq_genVal`, `curry_covGrad_unit_eval_genVal`).  The whole
-order-`≤2` envelope then reduces to a **single reusable frontier lemma**, the norm
-bridge `‖(iteratedCovGrad gBase 0 2 j (metricCcTensor gBase h)).toSection x‖ =
-√(normSq0S gBase x (j+2) (metricCovDeriv h gBase j x))`, which belongs upstream
-(`CovGrad`/`Geometry`) and is proposed there rather than placed in this leaf.
-
-Everything around the frontier composes from existing API: RS linearity (below),
-`j ≥ 1` self-zero of the `metricCcTensor gBase gBase` tower (from `nabla_metric_zero`,
-applied after the bridge), and the order-0 HS bound `≤ finrank·(Λ−1)` (Discharger 1's
-operator bound plus the `normSq0S` Parseval expansion), pinning
-`B(Λ) = finrank·(Λ−1) + 2Λ`. -/
-
 omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M] in
-/-- **Envelope-summand linearity split (Discharger 2 reduction).**  At every order
-`j`, the iterated covariant gradient of the metric difference splits into the
-difference of the two metric-realizing towers, because
-`metricDifferenceCcTensor gBase g₀ = metricCcTensor gBase g₀ − metricCcTensor gBase gBase`.
-This is the design-independent first assembly step of the brick-2a jet envelope: it
-is needed whether the class-uniform curvature-jet hypothesis is discharged through the
-upstream `metricCovDeriv` norm bridge or restated directly in the RS
-`iteratedCovGrad` currency. -/
 theorem metricDiff_iterCovGrad_sub (gBase g₀ : SmoothRiemannianMetric I M) (j : ℕ) :
     iteratedCovGrad gBase 0 2 j
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀) =
@@ -466,22 +354,8 @@ theorem metricDiff_iterCovGrad_sub (gBase g₀ : SmoothRiemannianMetric I M) (j 
         metricCcTensor (I := I) (M := M) gBase gBase := rfl
   rw [h, iteratedCovGrad_sub]
 
-/-! ### Discharger 2 — the order-`≤2` jet envelope (session 9)
-
-`normBridge` (`MetricCovDerivBridge.lean`) is now proved sorry-free, so the jet
-envelope lands.  The `j = 0` term is the order-0 Hilbert–Schmidt norm of
-`g₀ − gBase`, bounded by `n·(Λ−1)` (`n = finrank`) through a `normSq0S` Parseval
-expansion of Discharger 1's operator bound on an orthonormal frame; the `j ≥ 1`
-terms reduce, through `normBridge` and the self-vanishing of the `gBase`-tower
-(`covNorm_self_succ`), to `metricCovDerivNorm j g₀ gBase x ≤ Λ` from
-`MetricCovDerivOrderBoundOn`.  The two private helpers below re-derive the
-fibre-norm ↔ `normSq0S`-of-unit-value bridge (private in `MetricCovDerivBridge`;
-re-derived here since this leaf may not edit that file). -/
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-/-- The `r = 0` index-lowering is unit-evaluation (local re-derivation of the
-private `MetricCovDerivBridge.lowerAllUpper_zero_eq_unit`). -/
+  [T2Space M] in
 private lemma lowerAllUpper_zero_eq_unit'
     (gBase : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (W : SmoothCcTensor gBase 0 s) (w : Fin (0 + s) → TangentSpace I x) :
@@ -498,10 +372,7 @@ private lemma lowerAllUpper_zero_eq_unit'
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-/-- The `gBase`-Riemannian squared fibre norm of a smooth `(0, s)`-tensor section
-equals the intrinsic `normSq0S` of its unit-value (local re-derivation of the
-private `MetricCovDerivBridge.rfns_eq_normSq0S_unit`). -/
+  [T2Space M] in
 private lemma rfns_eq_normSq0S_unit'
     (gBase : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (W : SmoothCcTensor gBase 0 s) :
     riemannianFiberNormSq (I := I) (M := M) gBase 0 s x (W.toSection x) =
@@ -538,9 +409,7 @@ private lemma rfns_eq_normSq0S_unit'
      simp)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
-/-- The intrinsic component of the unit-value of a `(0,2)`-tensor section against
-a basis pair is exactly the extracted bilinear form on the two basis vectors. -/
+  [T2Space M] in
 private lemma component0S_unit_eq_ccBilin
     (gBase : SmoothRiemannianMetric I M) (S : SmoothCcTensor gBase 0 2) (x : M)
     (basis : Module.Basis (Fin (Module.finrank ℝ (TangentSpace I x))) ℝ (TangentSpace I x))
@@ -563,13 +432,9 @@ private lemma component0S_unit_eq_ccBilin
   fin_cases k <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-/-- **Envelope term, order 0.**  The `gBase`-Riemannian fibre norm of the metric
-difference `g₀ − gBase` (as a `(0,2)` cc-tensor) is at most `n·(Λ−1)`,
-`n = finrank ℝ E`, by a `normSq0S` Parseval expansion of Discharger 1's operator
-bound on a `gBase`-orthonormal frame. -/
 theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -585,12 +450,10 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 2
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gBase x
   have hΛ1 : (0 : ℝ) ≤ Λ - 1 := by linarith
-  -- norm = √ riemannianFiberNormSq = √ normSq0S(unit-value)
   rw [norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) gBase 0 2 x
     (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)]
   rw [rfns_eq_normSq0S_unit' (I := I) gBase 2 x
     (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)]
-  -- component bound: |component| = |g₀ - gBase on ON basis| ≤ Λ - 1
   have hcompbound : ∀ slots : Fin 2 → Fin (Module.finrank ℝ (TangentSpace I x)),
       |Tensor0SBundle.component0S (I := I) basis
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -620,7 +483,6 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀).toSection x)
       (unitZeroSec (I := I) (M := M) x)) (Λ - 1) hΛ1 hcompbound
-  -- card (Fin 2 → Fin n) = n²
   have hcard : (Fintype.card (Fin 2 → Fin (Module.finrank ℝ (TangentSpace I x))) : ℝ) =
       (Module.finrank ℝ E : ℝ) ^ 2 := by
     have hc : Fintype.card (Fin 2 → Fin (Module.finrank ℝ (TangentSpace I x))) =
@@ -629,7 +491,6 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
       rw [Fintype.card_fun, Fintype.card_fin, Fintype.card_fin]
     rw [hc]; push_cast; ring
   rw [hcard] at hnormsq
-  -- √ normSq0S ≤ √ (n² (Λ-1)²) = n (Λ-1)
   calc Real.sqrt (Tensor0SBundle.normSq0S (I := I) gBase x 2
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
               (metricDifferenceCcTensor (I := I) (M := M) gBase g₀).toSection x)
@@ -641,11 +502,6 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-/-- **Envelope term, order `a + 1 ≥ 1`.**  Through the linearity split
-`metricDiff_iterCovGrad_sub`, the `metricCcTensor gBase gBase` half vanishes
-(`normBridge` + `covNorm_self_succ`), leaving the `metricCcTensor gBase g₀` half,
-whose fibre norm is `metricCovDerivNorm (a+1) g₀ gBase x ≤ Λ` by
-`MetricCovDerivOrderBoundOn`. -/
 theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (a : ℕ) (hjet : MetricCovDerivOrderBoundOn Set.univ (a + 1) g₀ gBase Λ) (x : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + (a + 1)) I b) :=
@@ -655,7 +511,6 @@ theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ 
         TensorRSSpace 0 (2 + (a + 1)) I x)‖ ≤ Λ := by
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + (a + 1)) I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + (a + 1))
-  -- the gBase-tower half has zero norm
   have hBzero : ‖((iteratedCovGrad gBase 0 2 (a + 1)
         (metricCcTensor (I := I) (M := M) gBase gBase)).toSection x :
         TensorRSSpace 0 (2 + (a + 1)) I x)‖ = 0 := by
@@ -664,7 +519,6 @@ theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ 
   have hBsec : (iteratedCovGrad gBase 0 2 (a + 1)
       (metricCcTensor (I := I) (M := M) gBase gBase)).toSection x = 0 :=
     norm_eq_zero.mp hBzero
-  -- split via linearity and drop the zero half
   have hsplit : (iteratedCovGrad gBase 0 2 (a + 1)
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)).toSection x =
       (iteratedCovGrad gBase 0 2 (a + 1)
@@ -678,9 +532,6 @@ theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ 
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-/-- **The order-`≤2` jet envelope `B(Λ) = n·(Λ−1) + 2Λ`.**  This is the metric-jet
-envelope the order-0 Riemann *difference* asset consumes at role base = `gBase`,
-`P = metricDifferenceCcTensor gBase g₀`. -/
 theorem metricDiff_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -711,17 +562,6 @@ theorem metricDiff_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : �
       if_neg (by norm_num : ¬(1 : ℕ) = 0), if_neg (by norm_num : ¬(2 : ℕ) = 0)]
     ring
 
-/-- **Order-0 curvature sup, single link (`Λ < 2` regime), from comparability and
-jets alone.**
-
-Under `Λ`-comparability of `g₀` with `gBase` (`1 ≤ Λ < 2`) and the class metric-jet
-bounds `MetricCovDerivOrderBoundOn` at orders `1` and `2`, the absolute Riemann
-operator of `g₀` is bounded in the `g₀` inner product by `F²` with an explicit
-`F = Λ² · (Cd + √Kbase)`, where `Cd` is the order-0 Riemann *difference* constant
-of `exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope` at envelope
-`B = n·(Λ−1) + 2Λ` and operator radius `δ₀ = Λ − 1 < 1`, and `Kbase` is the fixed
-`gBase` curvature constant.  This discharges brick 2a-0; the full class `Λ ≥ 1`
-follows by `convexComb` telescoping (2a-tel). -/
 theorem unifCurvatureSup_singleLink
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) (hΛ2 : Λ < 2)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -758,28 +598,6 @@ theorem unifCurvatureSup_singleLink
       (metricDiff_jetEnvelope (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2 x) v w u
   exact unifCurvatureSup_singleLink_of_diff (I := I) (M := M) gBase g₀ hΛ hcomp hCd0 hdiff
 
-/-! ### 2a-tel telescoping link lemmas (session 10)
-
-The linear interpolation path `g_t = t·g₀ + (1−t)·gBase` (`convexCombPath`, `t = 0` at
-`gBase`, `t = 1` at `g₀`) supplies the `(a)` link data of the full-class `Λ ≥ 1`
-telescoping (see `UnifCurvatureJetBound.md`, session 10):
-
-* `convexCombPath_comparable` — **(a)(i)** consecutive path metrics are mutually
-  comparable, with the explicit modulus `μ = |t − s|·Λ(Λ−1)`:
-  `|g_t(v,v) − g_s(v,v)| ≤ μ·g_s(v,v)`.  (Two-sided `(1 ± μ)` comparability, hence
-  link constant `Λ_link = (1−μ)⁻¹ < 2` when `μ < ½`.)
-* `convexCombPath_jetBound` — **(a)(ii)** metric-jet inheritance in the **fixed-`gBase`**
-  currency: `∇^{gBase,a+1} g_t = t·∇^{gBase,a+1} g₀` (the `gBase`-tower self-vanishes),
-  so the class bound `MetricCovDerivOrderBoundOn (a+1) g₀ gBase Λ` transfers to `g_t`.
-
-These discharge the FIRST link (base `= gBase`) and are the convex-combination inputs the
-telescoping bridge consumes.  The composition to the full class is NOT closed here: it
-needs the metric jets against the **moving** base `g_{t_k}` (`k ≥ 1`), i.e. the order-`≤2`
-change-of-reference-connection currency, whose order-`2` assembly is a declared frontier
-(`UnifCovSumCross.lean`, active lane) plus the ungated `∇connDiff` bound — see
-`UnifCurvatureJetBound.md`. -/
-
-/-- The constant-weight convex-combination path `g_t = t·g₀ + (1−t)·gBase`. -/
 noncomputable def convexCombPath (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
     (ht : t ∈ Set.Icc (0 : ℝ) 1) : SmoothRiemannianMetric I M :=
   g₀.convexComb gBase (fun _ => t) contMDiff_const (fun _ => ht)
@@ -789,9 +607,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [T2Space M]
-  [SigmaCompactSpace M] in
-/-- The fibre inner product of the convex-combination path is the convex combination of
-the two inner products. -/
+  in
 theorem convexCombPath_inner (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
     (ht : t ∈ Set.Icc (0 : ℝ) 1) (x : M) (v w : TangentSpace I x) :
     (convexCombPath g₀ gBase t ht).inner x v w =
@@ -803,11 +619,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [T2Space M]
-  [SigmaCompactSpace M] in
-/-- **(a)(i) Link comparability.**  For the interpolation path `g_t = t·g₀ + (1−t)·gBase`,
-consecutive metrics are mutually comparable with modulus `μ = |t − s|·Λ(Λ−1)`:
-`|g_t(v,v) − g_s(v,v)| ≤ μ·g_s(v,v)`.  With `μ < 1` this gives the two-sided bound
-`(1−μ)·g_s ≤ g_t ≤ (1+μ)·g_s`, i.e. `Λ_link`-comparability with `Λ_link = (1−μ)⁻¹`. -/
+  in
 theorem convexCombPath_comparable
     (g₀ gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -826,11 +638,9 @@ theorem convexCombPath_comparable
   have hb0 : 0 ≤ b := metric_inner_self_nonneg (I := I) (M := M) gBase x v
   have ha0 : 0 ≤ a := metric_inner_self_nonneg (I := I) (M := M) g₀ x v
   obtain ⟨hlo, hhi⟩ := hcomp x v
-  -- clear the inverse from the lower comparability: `b ≤ Λ · a`
   have hlo' : b ≤ Λ * a := by
     have h := mul_le_mul_of_nonneg_left hlo hΛ0.le
     rwa [← mul_assoc, mul_inv_cancel₀ hΛ0.ne', one_mul] at h
-  -- `|a − b| ≤ (Λ − 1)·b`
   have hab : |a - b| ≤ (Λ - 1) * b := by
     rw [abs_le]
     refine ⟨?_, ?_⟩
@@ -840,7 +650,6 @@ theorem convexCombPath_comparable
         nlinarith [mul_nonneg (sq_nonneg (Λ - 1)) ha0, hp2]
       · nlinarith [ha0, mul_nonneg (by linarith : (0 : ℝ) ≤ Λ - 2) hb0]
     · nlinarith [hhi, hb0]
-  -- `b ≤ Λ · g_s`
   obtain ⟨hs0, hs1⟩ := hs
   have hgs : b ≤ Λ * (s * a + (1 - s) * b) := by
     have hsb : s * b ≤ s * (Λ * a) := mul_le_mul_of_nonneg_left hlo' hs0
@@ -848,7 +657,6 @@ theorem convexCombPath_comparable
     have h1sb : (1 - s) * b ≤ (1 - s) * (Λ * b) :=
       mul_le_mul_of_nonneg_left hbb (by linarith)
     nlinarith [hsb, h1sb]
-  -- assemble
   have hts : 0 ≤ |t - s| := abs_nonneg _
   have hΛ1 : (0 : ℝ) ≤ Λ - 1 := by linarith
   have hGdiff : t * a + (1 - t) * b - (s * a + (1 - s) * b) = (t - s) * (a - b) := by ring
@@ -865,9 +673,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [T2Space M]
-  [SigmaCompactSpace M] in
-/-- The metric tensor field of the convex-combination path is the convex combination of the
-two metric tensor fields (linearity of `metricTensorField` in the metric argument). -/
+  in
 theorem metricTensorField_convexCombPath (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
     (ht : t ∈ Set.Icc (0 : ℝ) 1) :
     metricTensorField (convexCombPath g₀ gBase t ht) =
@@ -882,9 +688,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
-/-- Linearity of the fixed-`gBase` covariant metric derivative in the metric argument, along
-the convex-combination path: `∇^{gBase,a} g_t = t·∇^{gBase,a} g₀ + (1−t)·∇^{gBase,a} gBase`. -/
+  in
 theorem metricCovDeriv_convexCombPath (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
     (ht : t ∈ Set.Icc (0 : ℝ) 1) (a : ℕ) :
     metricCovDeriv (convexCombPath g₀ gBase t ht) gBase a =
@@ -897,9 +701,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
-/-- At every order `a + 1 ≥ 1` the `gBase`-self derivative vanishes (metric compatibility),
-so the path derivative is simply `t·∇^{gBase,a+1} g₀`. -/
+  in
 theorem metricCovDeriv_convexCombPath_succ (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
     (ht : t ∈ Set.Icc (0 : ℝ) 1) (a : ℕ) :
     metricCovDeriv (convexCombPath g₀ gBase t ht) gBase (a + 1) =
@@ -911,11 +713,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
-/-- **(a)(ii) Link jet inheritance (fixed-`gBase` currency).**  A class metric-jet bound
-`MetricCovDerivOrderBoundOn (a+1) g₀ gBase Λ` transfers verbatim to every path metric `g_t`:
-`MetricCovDerivOrderBoundOn (a+1) g_t gBase Λ`, since `‖∇^{gBase,a+1} g_t‖ = t·‖∇^{gBase,a+1}
-g₀‖ ≤ Λ` for `t ∈ [0,1]`.  This exactly discharges the FIRST telescoping link's jets. -/
+  in
 theorem convexCombPath_jetBound (g₀ gBase : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ0 : 0 ≤ Λ) (a : ℕ) (t : ℝ) (ht : t ∈ Set.Icc (0 : ℝ) 1)
     (hjet : MetricCovDerivOrderBoundOn Set.univ (a + 1) g₀ gBase Λ) :

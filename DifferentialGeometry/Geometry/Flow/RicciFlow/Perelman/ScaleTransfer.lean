@@ -2,22 +2,15 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ParabolicRescaling
 import DifferentialGeometry.Analysis.Integration.Measure.Scaling
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle MeasureTheory Set
+open Bundle DifferentialGeometry.Tensor0SBundle MeasureTheory Set
 open scoped Manifold ContDiff ENNReal
 
 universe u uE uH
@@ -33,13 +26,13 @@ variable [T2Space M] [SigmaCompactSpace M]
 
 
 def paraFlowTime
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
     (s : (paraInterval D tau R hR htau).FlowTime) : D.FlowTime :=
   ⟨paraTime tau R (s : Real), s.2⟩
 
 @[simp] theorem paraFlowTime_coe
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
     (s : (paraInterval D tau R hR htau).FlowTime) :
     (paraFlowTime tau R hR htau s : Real) = paraTime tau R (s : Real) := by
@@ -47,7 +40,7 @@ def paraFlowTime
 
 namespace Perelman
 
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 
 def paraBall
@@ -59,8 +52,6 @@ def paraBall
   center := B.center
   radius := Real.sqrt R * B.radius
   radius_pos := mul_pos (Real.sqrt_pos.2 hR) B.radius_pos
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
     [SigmaCompactSpace M] in
@@ -75,8 +66,6 @@ theorem paraBall_setAt
   simpa only [FlowMetricBall.setAt, paraBall, paraSolution_metric] using
     (_root_.DifferentialGeometry.edistBall_scale (I := I) R hR
       (S.base.metric (paraTime tau R q)) B.center B.radius)
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
     [SigmaCompactSpace M] in
@@ -113,8 +102,6 @@ theorem paraBall_volume
   exact DifferentialGeometry.Integral.Measure.volume_scale_apply
     (I := I) (M := M) R hR
       (S.base.metric (paraTime tau R (s : Real))) B.set
-
-
 
 omit [CompleteSpace E] in
 theorem paraBall_kappa
@@ -208,8 +195,6 @@ theorem paraBall_rm
               (S.base.rm04 (paraTime tau R q) x) := by rw [hscale]
       _ ≤ 1 := hold
 
-
-
 def backBall
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
@@ -235,8 +220,6 @@ theorem paraBall_back
       congr
       field_simp [ne_of_gt (Real.sqrt_pos.2 hR)]
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem backBall_setAt
@@ -252,8 +235,6 @@ theorem backBall_setAt
   rw [paraBall_back (I := I) S tau R hR htau s B] at h
   exact h.symm
 
-
-
 omit [CompleteSpace E] in
 theorem backBall_volume
     (S : SolutionOn (I := I) (M := M) D)
@@ -266,8 +247,6 @@ theorem backBall_volume
     (backBall S tau R hR htau s B)
   rw [paraBall_back (I := I) S tau R hR htau s B] at h
   exact h
-
-
 
 omit [CompleteSpace E] in
 theorem backBall_kappa
@@ -322,8 +301,6 @@ private theorem backWindow
   · simpa [paraBack, mul_comm] using hlo
   · simpa [paraBack, mul_comm] using hhi
 
-
-
 omit [SigmaCompactSpace M] in
 theorem backBall_rm
     (S : SolutionOn (I := I) (M := M) D)
@@ -367,8 +344,6 @@ theorem backBall_rm
     rw [hscale]
     simpa only [mul_assoc] using hold
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem backBall_para
@@ -399,8 +374,6 @@ theorem paraBall_rm_iff
     exact hback
   · exact paraBall_rm (I := I) S tau R hR htau s B
 
-
-
 omit [CompleteSpace E] in
 theorem paraBall_kappa_iff
     (S : SolutionOn (I := I) (M := M) D)
@@ -417,8 +390,6 @@ theorem paraBall_kappa_iff
     rw [backBall_para (I := I) S tau R hR htau s B] at hback
     exact hback
   · exact paraBall_kappa (I := I) S tau R hR htau s B kappa
-
-
 
 theorem para_noncollapse
     (S : SolutionOn (I := I) (M := M) D)
@@ -441,8 +412,6 @@ theorem para_noncollapse
   have hk := paraBall_kappa (I := I) S tau R hR htau s B₀ kappa hk₀
   rw [paraBall_back (I := I) S tau R hR htau s B] at hk
   exact hk
-
-
 
 theorem para_no_local
     (S : SolutionOn (I := I) (M := M) D)

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -39,8 +38,6 @@ lemma expMapDiffeo_apply_eq (g : SmoothRiemannianMetric I M) (p : M)
     expMapDiffeo (I := I) g p v =
       (expMap (I := I) g p (show TangentSpace I p from v) : M) :=
   (Classical.choose_spec (exists_exp_pd_chart (I := I) g p)).2.1 v hv
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma exp_target_sub_chart (g : SmoothRiemannianMetric I M) (p : M) :

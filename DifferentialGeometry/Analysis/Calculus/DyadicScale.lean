@@ -2,18 +2,8 @@ import Mathlib
 
 set_option autoImplicit false
 
-/-!
-# Dyadic scale selection
-
-This file contains the scalar first-crossing argument used to select a scale
-with controlled doubling from a normalized-volume threshold.
--/
-
 namespace DifferentialGeometry.Analysis.Calculus
 
-/-- A nonnegative sequence with a positive eventual lower bound cannot keep
-dropping by a fixed factor `q < 1`.  At the first failure of that geometric
-drop, its value is still no larger than the initial value. -/
 theorem exists_drop_lower
     (W : ℕ → ℝ) {q ε : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1)
     (hW : ∀ j : ℕ, 0 ≤ W j) (hε : 0 < ε)
@@ -60,9 +50,6 @@ theorem exists_drop_lower
         exact hstep.trans (ih (Nat.le_trans (Nat.le_succ k) hk))
   exact ⟨j, hj, hprefix j le_rfl⟩
 
-/-- If a real sequence crosses a scaled threshold, and consecutive threshold
-scales differ by a nonnegative factor `c`, then immediately before its first
-crossing the sequence has ratio strictly smaller than `c`. -/
 theorem exists_ratio_cross
     (V a : ℕ → ℝ) {κ c : ℝ} (hc : 0 ≤ c)
     (hscale : ∀ j : ℕ, a j = c * a (j + 1))
@@ -92,8 +79,6 @@ theorem exists_ratio_cross
     _ = c * (κ * a (j + 1)) := by rw [hscale]; ring
     _ ≤ c * V (j + 1) := mul_le_mul_of_nonneg_left (by simpa only [hjN] using hN) hc
 
-/-- A dyadic normalized-volume threshold crossing selects a scale whose outer
-value is strictly less than `2^n` times the next, half-scale value. -/
 theorem exists_dyadic_scale
     (V : ℕ → ℝ) (n : ℕ) {κ r : ℝ}
     (hzero : V 0 < κ * r ^ n)

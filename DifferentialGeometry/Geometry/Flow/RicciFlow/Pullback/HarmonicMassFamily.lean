@@ -1,23 +1,13 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.HarmonicMassRegularity
 import DifferentialGeometry.Analysis.ODE.StateCoerciveMass
-
-/-!
-# One-radius finite harmonic-map mass families
-
-On a compact initial time window, joint chart-Gram continuity gives one
-two-sided comparison constant for all moving volume measures.  This file
-converts that comparison into the real total-volume bound used by the finite
-state-mass Lipschitz estimate, and then chooses one coefficient radius on
-which all moving masses are Lipschitz, uniformly coercive, and continuous in
-time.
-
-The radius is selected only after all time-uniform constants have been fixed.
-There is no metric-dependent or time-dependent shrinking.
--/
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped ENNReal Manifold NNReal Topology ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
@@ -33,20 +23,14 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M]
+  [BoundarylessManifold I M] [ConnectedSpace M]
 
 private local instance : MeasurableSpace M := borel M
 
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-! ## The real total-volume consequence -/
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- The common two-sided measure comparison on a compact initial window also
-gives one real upper bound for every moving total volume.  The same comparison
-constant is retained so that its reverse inequality can subsequently provide
-the zero-state mass coercivity bound. -/
 theorem hmfVolumeReal
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b)
@@ -81,15 +65,8 @@ theorem hmfVolumeReal
   have hreal := ENNReal.toReal_mono htop hle
   simpa only [μt, μq, Measure.real, ENNReal.toReal_mul] using hreal
 
-/-! ## Operator-valued time continuity -/
-
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- On one state ball chosen before the metric family and compact time set,
-the faithful finite mass is continuous in time in operator norm.  The scalar
-moving-integral continuity from `hmfStateTime_cont` is promoted through the
-two continuous-linear-map arguments, while `hmfSpecMass_state` identifies the
-operator integral with the genuine local-addition state mass. -/
 theorem hmfSpecTime_cont
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -148,13 +125,7 @@ theorem hmfSpecTime_cont
       (hpt.continuousOn.integrableOn_compact isCompact_univ)
   exact hmfSpecMass_state (I := I) (M := M) q (g t) S u v w hmd hint
 
-/-! ## The compact-window package -/
-
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Joint chart-Gram continuity on an initial window supplies one radius for
-the entire finite faithful mass family.  On that radius the family is
-uniformly state-Lipschitz, retains half of its common zero-state coercivity,
-and is continuous in time in operator norm. -/
 theorem hmfMassFamily
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))

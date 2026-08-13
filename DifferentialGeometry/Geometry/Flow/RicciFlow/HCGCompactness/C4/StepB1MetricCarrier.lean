@@ -1,18 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.PullbackField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1ApproxIso
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1MetricIntrinsic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Step-B1 metric carriers
-
-This file performs the final generic assembly from localized intrinsic
-metric-error estimates to the existing `PreApproxIsoDataOn` interface.  The
-forward and reverse metrics are genuine smooth pullback-field extensions on a
-compact collar.  The reverse map is the exact `Function.invFunOn` of the
-forward map; an independently constructed reverse stage map is not used.
--/
 
 noncomputable section
 
@@ -29,9 +21,6 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-/-- Assemble the two localized pre-approximate-isometry carriers from a
-compact source collar, an injective local diffeomorphism, and intrinsic
-metric-error bounds for the forward map and its exact local inverse. -/
 theorem preapprox_pair
     {M N : Type u}
     [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
@@ -160,9 +149,6 @@ theorem preapprox_pair
 variable [NeZero (Module.finrank Real E)]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-/-- The stage-jet package produces the two native Step-B1 metric carriers on
-one rectangular pair-index tail.  All auxiliary partial diffeomorphisms and
-smooth pullback-field extensions remain internal to the proof. -/
 theorem HasStageJetData.preapprox_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

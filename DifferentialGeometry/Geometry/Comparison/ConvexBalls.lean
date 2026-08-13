@@ -3,31 +3,6 @@ import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 open Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
 
@@ -52,17 +27,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space (TangentBundle I M)]
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
   [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-
-
-
-
-
-
-
-
-
-
-
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in

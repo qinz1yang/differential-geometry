@@ -5,16 +5,17 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Iter
 noncomputable section
 
 
+open DifferentialGeometry.Analysis.Sobolev
 open Manifold Set Filter Topology
 open scoped Manifold Topology ContDiff BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -73,9 +74,6 @@ lemma norm_iteratedFDeriv_rawPullR_le_iteratedFDerivWithin_rawCompOnE
   have he_norm : ‖(e : EuclN →L[ℝ] E)‖ = ‖((toEuclidean (E := E)).symm : EuclN →L[ℝ] E)‖ := rfl
   rw [he_norm, mul_comm]
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma rawCompJet_le
@@ -116,9 +114,6 @@ lemma rawCompJet_le
   rw [iteratedFDerivWithin_of_isOpen (𝕜 := ℝ) m hOe_open hey]
   refine (ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _).trans ?_
   rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, mul_comm]
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -188,4 +183,4 @@ theorem bareOnE_le_bare
     _ = C * bareChartJetContent (I := I) (M := M) g 0 2 S α N
           (toEuclidean (E := E) y) := by rw [hB_def]
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Spectral

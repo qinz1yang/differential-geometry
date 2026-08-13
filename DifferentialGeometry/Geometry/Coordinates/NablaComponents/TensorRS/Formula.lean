@@ -1,11 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyInput
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
-
-
-
-
-
-
+open DifferentialGeometry.Tensor.Multilinear
 
 set_option autoImplicit false
 
@@ -13,7 +8,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -23,9 +18,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
-
-
-
 
 theorem nablaRS_coordFrame_slots {r s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -179,8 +171,6 @@ theorem nablaRS_coordFrame_slots {r s : ℕ}
     rw [← tensorRSModelAt_coordComponentRSAt (I := I) x₀ (T x₀)
       upper (Function.update lower b k)]
   rw [hupperSum, hlowerSum]
-
-
 
 theorem nablaRS_coordFrame_slots_of_smooth {r s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

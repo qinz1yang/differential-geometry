@@ -10,11 +10,14 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFibe
 import DifferentialGeometry.Analysis.Sobolev.Embedding.RawConnLapToHsOrderDropping
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Smooth.EigenvectorSmoothChartComponent
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.PouComponentBound.PouCutoffComponentBridge
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Topology Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter Topology DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
@@ -26,8 +29,8 @@ namespace TensorSpectral
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Chart
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 open DifferentialGeometry.Analysis.Sobolev.EuclideanMorrey
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -92,7 +95,7 @@ theorem exists_zeroContentR_le_fiberNorm_on_pouKernel
       Real.sqrt (tensorInnerPointwise (I := I) (M := M) g r s b
         (S.toFun b) (S.toFun b)) := by
     rw [show S.toFun b = TensorRSSpace.toModel (𝕜 := ℝ) (I := I) (S.toSection b) from rfl]
-    exact DifferentialGeometry.Integral.Connection.norm_eq_sqrt_tensorInnerPointwise
+    exact DifferentialGeometry.Analysis.Elliptic.norm_eq_sqrt_tensorInnerPointwise
       (I := I) (M := M) g r s b (S.toSection b)
   have hInner_nn : 0 ≤ tensorInnerPointwise (I := I) (M := M) g r s b
       (S.toFun b) (S.toFun b) :=
@@ -230,7 +233,7 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
         rw [(Filter.EventuallyEq.iteratedFDeriv ℝ hraw_evEq (j - l)).self_of_nhds]
         have hpeel := hCpeel D (j - l) (Nat.sub_le j l) 0 (by omega) P.1 P.2 y hyK
         have h0eq : (iteratedCovGrad g r s 0 D) = D :=
-          DifferentialGeometry.PDE.RicciFlow.iteratedCovGrad_zero (I := I) (M := M) g r s D
+          DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_zero (I := I) (M := M) g r s D
         rw [h0eq] at hpeel
         have hreindex : (∑ i ∈ Finset.range ((j - l) + 1),
               tensorComponentAbsSum (I := I) (M := M) g r (s + (0 + i))
@@ -354,7 +357,7 @@ theorem tensorChartComponent_allOrder_uniformCauchy
   obtain ⟨Cder, hCder_nn, hCder⟩ :=
     exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum (I := I) (M := M) g r s α P j
   obtain ⟨Cemb, hCemb_pos, hCemb⟩ :=
-    DifferentialGeometry.PDE.RicciFlow.iteratedCovGrad_toSobolev_embedding_Cm_singleNorm
+    DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_toSobolev_embedding_Cm_singleNorm
       (I := I) (M := M) g r s k j h_super
   have hF_cauchy_k := Metric.cauchySeq_iff.mp (hF_cauchy k)
   set δ : ℝ := ε / (Cder * Cemb + 1) with hδ_def
@@ -395,7 +398,7 @@ theorem tensorChartComponent_allOrder_uniformCauchy
   have hN2k_nn : 0 ≤ N2k := norm_nonneg _
   have hD_small : N2k < δ := by
     rw [hN2k_def, hD_def,
-      DifferentialGeometry.PDE.RicciFlow.SmoothCcTensor.toHs_sub (g := g) (2 * k) (F n') (F n'')]
+      DifferentialGeometry.Analysis.Sobolev.SmoothCcTensor.toHs_sub (g := g) (2 * k) (F n') (F n'')]
     have := hN n' hn' n'' hn''
     rwa [dist_eq_norm] at this
   have h_fibSum_le :

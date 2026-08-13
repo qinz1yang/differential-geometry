@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Yuan Liao, Jack McCarthy
+-/
 import Mathlib.LinearAlgebra.Dual.Defs
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
@@ -15,6 +15,8 @@ import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 import Mathlib.Topology.Algebra.Module.LinearMap
+
+namespace DifferentialGeometry.Tensor.Product
 
 open scoped Topology TensorProduct
 
@@ -148,3 +150,7 @@ by
     e.toLinearMap
 
 end TensorNorm
+
+end
+
+end DifferentialGeometry.Tensor.Product

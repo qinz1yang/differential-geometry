@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import Mathlib.Topology.VectorBundle.Basic
 
 open Bundle

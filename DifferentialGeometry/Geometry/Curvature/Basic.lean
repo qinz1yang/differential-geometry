@@ -7,16 +7,9 @@ import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 open Bundle
 open scoped Manifold ContDiff BigOperators
@@ -26,17 +19,11 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-
-
 abbrev RawTangentField :=
   (x : M) -> TangentSpace I x
 
-
-
 abbrev RawTwoTensorField :=
   (x : M) -> TangentSpace I x -> TangentSpace I x -> Real
-
-
 
 abbrev RawFourTensorField :=
   (x : M) -> TangentSpace I x -> TangentSpace I x -> TangentSpace I x ->
@@ -45,11 +32,6 @@ abbrev RawFourTensorField :=
 
 abbrev InverseMetricComponents (M : Type*) (Idx : Type*) :=
   M -> Idx -> Idx -> Real
-
-
-
-
-
 
 def connectionRiemannCurvatureField
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -74,9 +56,6 @@ theorem connectionRiemannCurvatureField_swap
 section MetricTrace
 
 variable {Idx : Type*} [Fintype Idx]
-
-
-
 
 def InverseMetricComponentsInFrame [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -123,8 +102,6 @@ theorem invComp_symm [DecidableEq Idx]
   have hentry := congrArg (fun B : Matrix Idx Idx Real => B j i) hAt
   simpa [A] using hentry
 
-
-
 def ricciFromRiemann04TraceInFrame
     (Riemann04 : RawFourTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
@@ -164,4 +141,4 @@ theorem scalarFromRicciTraceInFrame_apply
 
 end MetricTrace
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

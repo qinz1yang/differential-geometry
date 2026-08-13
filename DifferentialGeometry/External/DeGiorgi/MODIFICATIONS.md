@@ -157,4 +157,12 @@ declaration was added, removed or weakened:
 
 The original `LICENSE`, `README.md` and `CITATION.cff` remain unmodified.
 
+### 2026-08-12 — isolated tactic-bullet cleanup
+
+**Files**:
+- `WeakHarnack.lean`
+
+**Change**: merged two isolated tactic bullets with their following tactic lines. This is a
+semantic-preserving source-style change; no statement, proof term or declaration was changed.
+
 <!-- Add entries below as modifications occur. -->

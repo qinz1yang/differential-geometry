@@ -1,29 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.FixedDomainMetricBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ProductMFoldNorm
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -31,7 +12,7 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
-open DifferentialGeometry.Integral.Connection Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -41,15 +22,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M] [I.Boundaryless]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 
-
-
-
-
 def acEquiv : (m : ℕ) → Fin (2 + m) ≃ Fin (m + 2)
   | 0 => Equiv.refl _
   | (m + 1) => Tensor0SBundle.frontExtendEquiv (acEquiv m)
-
-
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
@@ -61,9 +36,6 @@ theorem metricCovDerivStep_eq_covStep
     metricCovDerivStep (I := I) gRef a A = covStep (I := I) gRef (a + 2) A := by
   refine DFunLike.ext _ _ (fun x => ?_)
   rw [metricCovDerivStep_apply, covStep_apply]
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
@@ -85,10 +57,6 @@ theorem covDerivOfField_eq_iterCov
       rw [covDerivOfField_succ, ih, metricCovDerivStep_eq_covStep, covStep_domDomCongr,
         ← iterCov_succ]
       rfl
-
-
-
-
 
 omit [Module.Finite ℝ E] [IsManifold I 1 M] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
@@ -112,12 +80,6 @@ theorem metricCovDerivNorm_eq_iterCov
       (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x))
   rw [normSq0S_domDomCongr (I := I) gRef x basis hinv (acEquiv N)
       (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x)]
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
@@ -157,8 +119,6 @@ theorem metricDerivNorm_eq_iterCov
         (Tensor0SBundle.metricTensorField (I := I) gk
           - Tensor0SBundle.metricTensorField (I := I) gInf) N x)]
 
-
-
 omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem diffNorm_zero_change
@@ -180,8 +140,6 @@ theorem diffNorm_zero_change
           Tensor0SBundle.metricTensorField (I := I) B x))
   exact Tensor0SBundle.sqrt_normSq0S_le_of_metric_equiv
     (I := I) gBase gNorm x 2 hC hequiv _
-
-
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in

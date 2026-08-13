@@ -3,23 +3,16 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldInpu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.LimitSolutionEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicciFromJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivContinuous
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-/-!
-# Local Ricci-flow equation for the bump-extended comparison metrics
-
-On the compact agreement region of a `BumpFamily`, the cutoff is identically
-one on an open neighborhood.  Hence `gSeqExt` has the same metric germ as the
-pulled-back source flow there.  This file transports both the time derivative
-and the Ricci tensor across that germ equality.
--/
-
 noncomputable section
 
-open Set Bundle Manifold TopologicalSpace Tensor0SBundle
+open Set Bundle Manifold TopologicalSpace DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.RicciFlow (metric_derivWithin_eq_neg_two_ricci)
 
 namespace DifferentialGeometry
@@ -71,8 +64,6 @@ private theorem ricNorm_restrict
   rw [normSq0S_restrictOpen_apply (I := I) g U 2 x, hsec]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On the agreement region, the Ricci tensor of `gSeqExt` is the Ricci tensor
-of the genuine pulled-back source flow. -/
 theorem gSeqExt_ricci
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -188,8 +179,6 @@ theorem gSeqExt_ricci
   exact hricAmbient.symm.trans hricSource.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On the agreement region, the scalar curvature of `gSeqExt` is the scalar
-curvature of the original sequence flow at the comparison-map image. -/
 theorem gSeqExt_scalar
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -356,9 +345,6 @@ theorem gSeqExt_scalar
       rw [sourceTargetDiff_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On the agreement region, the intrinsic squared Ricci norm of `gSeqExt`
-equals the squared Ricci norm of the original sequence flow at the
-comparison-map image. -/
 theorem gSeqExt_ricNorm
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -549,8 +535,6 @@ theorem gSeqExt_ricNorm
       rw [sourceTargetDiff_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On a regular time window, `gSeqExt` satisfies the scalar Ricci-flow metric
-equation at every point of its agreement region. -/
 theorem gSeqExt_pde
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -627,8 +611,6 @@ theorem gSeqExt_pde
   have hric := gSeqExt_ricci (I := I) Φ R bf hsrc htgt k t x hx v w
   exact hder.congr_deriv (congrArg (fun q : Real => (-2 : Real) * q) hric.symm)
 
-/-- The Arzelà–Ascoli limit of the bump-extended sequence satisfies the
-Ricci-flow metric equation on its closed regular-time window. -/
 theorem ConvOut.gInf_pde
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -766,9 +748,6 @@ theorem ConvOut.gInf_pde
     gSeqExt_pde (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) β ψ u hwin hu x
       (hxgrow k) v w
 
-/-- Scalar curvature of the reindexed source flow converges at one time in the
-closed convergence window.  This is the local analytic producer behind the
-carrier-wide compatibility theorem in `ConvFieldEndgame`. -/
 theorem ConvOut.scalar_conv_at
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -923,8 +902,6 @@ theorem ConvOut.scalar_conv_at
   simpa only [gTail, Function.comp_apply] using
     gSeqExt_scalar (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) t x (hxgrow k)
 
-/-- The intrinsic squared Ricci norm of the reindexed source flow converges at
-one time in the closed convergence window. -/
 theorem ConvOut.ricNorm_conv_at
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted

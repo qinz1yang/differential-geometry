@@ -1,14 +1,8 @@
 import DifferentialGeometry.Analysis.Integration.Measure.PolarEvaluation
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopRadial
 import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartMeasure
-
-/-!
-# Polar transfer for normal-coordinate volume
-
-This file transfers the normal-coordinate volume formula to the generalized
-polar decomposition of model Haar measure. It does not yet impose a cut-time
-domain or identify the polar integrand with a transverse Jacobi density.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -50,8 +44,6 @@ private lemma smul_mem_ball
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The Riemannian volume of a measurable normal-coordinate image is the
-iterated polar integral of the normal-coordinate density. -/
 theorem normalImage_polar
     (g : SmoothRiemannianMetric I M) (p : M)
     {B : Set E} (hB_meas : MeasurableSet B)
@@ -99,8 +91,6 @@ theorem normalImage_polar
       rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Polar volume formula for a model ball contained in the selected normal
-source. -/
 theorem normalBall_polar
     (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ} (hR : 0 < R)
     (hsource : ball (0 : E) R ⊆ (expMapDiffeo (I := I) g p).source) :

@@ -6,20 +6,24 @@ import Mathlib.Analysis.Convex.Integral
 import Mathlib.Analysis.Convex.Mul
 import Mathlib.Analysis.Seminorm
 import Mathlib.MeasureTheory.Integral.Prod
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open MeasureTheory Set Filter Bundle Tensor0SBundle
+open MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
 namespace Integral
 namespace L2
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (pathIntegralCoeffField
   pathIntegralCoeffField_toSection pathIntegralFib pathIntegralFib_toModel)
 
@@ -428,7 +432,7 @@ theorem tensorL2NormSq_pathIntegralCoeffField_le_intervalIntegral_normSq
         refine intervalIntegral.integral_congr (fun t _ => ?_)
         rw [hΦnormsq t]
 
-open DifferentialGeometry.PDE.RicciFlow (iteratedCovGrad)
+open DifferentialGeometry.Analysis.Sobolev (iteratedCovGrad)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in

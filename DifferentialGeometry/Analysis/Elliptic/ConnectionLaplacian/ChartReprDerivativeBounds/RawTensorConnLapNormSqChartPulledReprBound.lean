@@ -14,6 +14,9 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.IntrinsicComponent
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -24,11 +27,11 @@ open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -221,7 +224,7 @@ private lemma chartFrameNormGlobalSmooth_fderiv_repr_bound
     contMDiffOn_extChartAt (I := I) (n := ∞) (x := α)
   have hK_sub_good : K_set ⊆ chartLeviCivitaGoodSet (I := I) α := by
     have h_eq :=
-      DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source (I := I)
+      DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source (I := I)
       α
     intro y hy
     rw [h_eq, extChartAt_source_eq_chartAt_source (I := I)]
@@ -242,8 +245,8 @@ private lemma chartFrameNormGlobalSmooth_fderiv_repr_bound
   have h := hCfd_mem ⟨b, hb, rfl⟩
   exact le_trans h (le_max_left _ _)
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

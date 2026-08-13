@@ -1,17 +1,21 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTower
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -55,6 +59,6 @@ theorem l2_of_pointwise_rfns_iteratedCovGrad_perOrder
   norm_le_of_pointwise_fiberNormSq_bound_rs (I := I) (M := M) g₀ r (2 + i)
     (iteratedCovGrad (I := I) g₀ r 2 i C) Ki hpt
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Analysis.Sobolev
 
 end

@@ -39,7 +39,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def kPouCompact (α : M) : Set EuclN :=
   (toEuclidean : E ≃L[ℝ] EuclN) ''
@@ -70,7 +70,7 @@ theorem kPouCompact_isCompact (α : M) :
     h_tsupp_compact.image_of_continuousOn h_ext_cont
   exact h_ext_image_compact.image (toEuclidean (E := E)).continuous
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem kPouCompact_subset_chartTargetEuclid (α : M) :
     kPouCompact (I := I) (M := M) α ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α := by
@@ -90,7 +90,7 @@ theorem kPouCompact_subset_chartTargetEuclid (α : M) :
     rw [← hxz]; exact (extChartAt I α).map_source hxsrc
   refine ⟨z, hz_target, hzy⟩
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem smoothChartExt_support_subset_kPouCompact
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     Function.support (smoothChartExt (I := I) (M := M) g α v) ⊆

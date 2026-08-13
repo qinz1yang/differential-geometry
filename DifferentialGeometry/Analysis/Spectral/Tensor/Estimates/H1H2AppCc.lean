@@ -2,24 +2,19 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.AppCcLpProduct
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1L6
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
-/-!
-# Mixed H1-H2 product estimate for operator fields
-
-On a closed three-manifold, an operator coefficient controlled by its first
-intrinsic `L2` jet acts from spectral `H2` to spectral `H1`.  The only genuinely
-mixed product is the Leibniz arm `slotExtend Φ · ∇U`; it is estimated by
-`H1 → L6`, finite-volume `L6 → L3`, and `L6 × L3 → L2`.
--/
-
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped ContDiff Manifold Topology BigOperators ENNReal
 open MeasureTheory
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable
@@ -44,8 +39,6 @@ private theorem h1_norm_sq_jet
     ← SmoothCcTensor.norm_sq_eq_inner_self (I := I) (M := M)
       (covGrad (I := I) (M := M) g r s S)]
 
-/-- In dimension three, a mixed coefficient with an intrinsic `L2` jet
-through order one acts from spectral `H2` to spectral `H1`. -/
 theorem appCc_h1_h2_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (r c : ℕ) :
@@ -232,4 +225,4 @@ theorem appCc_h1_h2_h1
           _ = K * A * N := by dsimp [K]; ring) hCsp
     _ = (Csp * K) * A * N := by ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

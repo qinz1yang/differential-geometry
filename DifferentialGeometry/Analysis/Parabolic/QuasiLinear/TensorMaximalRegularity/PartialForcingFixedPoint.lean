@@ -1,23 +1,15 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocalNemytskii
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DenseLowerState
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckQuasilinearExistence
-
-/-!
-# A forcing fixed point for a lower-Sobolev state set
-
-The critical Ricci--DeTurck estimate is available only while the unknown is
-small in the uniformly-in-time lower Sobolev norm.  Maximal regularity gives
-that lower-norm control almost everywhere, but only an `L²` bound at the top
-Sobolev order.  This file adapts the existing mixed forcing-space contraction
-to a nonlinearity defined on precisely that lower-norm state set.
--/
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Parabolic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -32,13 +24,12 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-/-- The top-order tensors whose order-`a+1` view has norm at most `R`. -/
 def lowerState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
     Set (tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) :=
   lowerBall (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
     (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith)) R
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem zero_mem_lowerState (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {R : ℝ} (hR : 0 ≤ R) :
     (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) ∈
@@ -49,8 +40,6 @@ theorem zero_mem_lowerState (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
         (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖ ≤ R
   simpa only [map_zero, norm_zero] using hR
 
-/-- A Duhamel field driven by a forcing-space ball stays almost everywhere
-in a prescribed lower-order state ball. -/
 theorem field_mem_lower
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {T ρ R : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1) (hρR : 2 * ρ ≤ R)
@@ -92,9 +81,7 @@ theorem field_mem_lower
     _ ≤ 2 * ρ := mul_le_mul hsqrt hF (norm_nonneg F) (by positivity)
     _ ≤ R := hρR
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-/-- The mixed pointwise estimate on a lower-norm state set integrates to the
-same mixed time-`L²` estimate. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskiiOn_mixed
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 ≤ R)
     {L : ℝ≥0}
@@ -190,10 +177,6 @@ theorem nemytskiiOn_mixed
       (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (f - f'))
     (mul_nonneg C₁.coe_nonneg hR) C₂.coe_nonneg hbound
 
-/-- Quantitative forcing-space existence for a nonlinearity defined only on
-the lower-order state ball.  The state radius makes the top-order arm small;
-the horizon makes the lower-order arm and the zero-forcing displacement
-small. -/
 theorem partial_sol_const
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 < R)
     {L : ℝ≥0}
@@ -455,6 +438,6 @@ theorem partial_sol_const
       (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar]
   · simpa only [hρdef] using hFstar
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Parabolic
 
 end

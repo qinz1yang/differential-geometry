@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverseGradientProductBound
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverseChartTargetUnitFiber
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverseChartPushedWeakDerivative
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -26,6 +27,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 local notation "EuclN_E" =>
@@ -219,7 +221,7 @@ private lemma fderiv_chartSmoothExt_apply_eq_fderiv_scalarOnE
 
 private lemma sq_fderiv_chartSmoothExt_apply_le_g_inner_mul
     [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_supp_chart : tsupport f ⊆ (chartAt H α).source)
     (hf_compact : IsCompact (tsupport f))
@@ -233,9 +235,9 @@ private lemma sq_fderiv_chartSmoothExt_apply_le_g_inner_mul
           (I := I) (M := M) α f) y
         (EuclideanSpace.single i (1 : ℝ)))^2 ≤
       g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+          (DifferentialGeometry.Geometry.Operator.gradFun
             (I := I) g f x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+          (DifferentialGeometry.Geometry.Operator.gradFun
             (I := I) g f x) *
         g.inner x
           (chartTargetUnitFiber (I := I) α i x)
@@ -286,16 +288,16 @@ private lemma sq_fderiv_chartSmoothExt_apply_le_g_inner_mul
       (trivializationAt E (TangentSpace I) α).symm x v_E =
         chartTargetUnitFiber (I := I) α i x := rfl
   rw [h_combined, h_triv_symm_eq]
-  rw [← DifferentialGeometry.Integral.DivergenceTheorem.inner_gradFun
+  rw [← DifferentialGeometry.Geometry.Operator.inner_gradFun
     (I := I) g f x (chartTargetUnitFiber (I := I) α i x)]
   exact g_inner_cauchy_schwarz_sq (I := I) g x
-    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+    (DifferentialGeometry.Geometry.Operator.gradFun
       (I := I) g f x)
     (chartTargetUnitFiber (I := I) α i x)
 
 private lemma eLpNorm_chartPushed_le_const_mul_eLpNorm_u
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       eLpNorm (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
@@ -349,7 +351,7 @@ private lemma eLpNorm_chartPushed_le_const_mul_eLpNorm_u
 
 private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       ∀ (i : Fin (Module.finrank ℝ E)) (y : EuclN_E),
@@ -364,9 +366,9 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
               (fun x : M => |u x| +
                 Real.sqrt
                   (g.inner x
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+                    (DifferentialGeometry.Geometry.Operator.gradFun
                       (I := I) g u x)
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+                    (DifferentialGeometry.Geometry.Operator.gradFun
                       (I := I) g u x))) y := by
   classical
   set M_α : ℝ := chartTargetUnitSqSumSupOnPouTsupport (I := I) (M := M) g α with hM_α_def
@@ -378,9 +380,9 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
     exists_continuous_sup_of_compactSpace (M := M)
       (f := fun x : M => Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
             ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
             ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)))
       (continuous_sqrt_g_inner_gradFun_self (I := I) (M := M) g ρ.contMDiff)
       (fun _ => Real.sqrt_nonneg _)
@@ -402,13 +404,13 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
   have hK_grad_bound : ∀ x : M, Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)) ≤
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)) ≤
       K_grad *
         (|u x| + Real.sqrt
           (g.inner x
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) := by
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) := by
     intro x
     obtain ⟨K', hK'_nn, hK'_bound⟩ := sqrt_g_inner_gradFun_pou_mul_le (I := I) (M := M) g α hu
     have hρ_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x :=
@@ -418,9 +420,9 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
     have h_grad_eq := gradFun_mul_pointwise (I := I) g (ρ := (ρ : M → ℝ)) (u := u)
       (x := x) hρ_diff hu_diff
     set gu : TangentSpace I x :=
-      DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x
+      DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x
     set gρ : TangentSpace I x :=
-      DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+      DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
         ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x
     set a : TangentSpace I x := ((ρ : M → ℝ)) x • gu
     set b : TangentSpace I x := u x • gρ
@@ -525,10 +527,10 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt
           (I := I) (M := M) α f) y (EuclideanSpace.single i (1 : ℝ))| := abs_nonneg _
     have h_grad_f_nn : 0 ≤ g.inner x
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x) := by
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x) := by
       by_cases hzero :
-          DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x = 0
+          DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x = 0
       · rw [hzero]
         change ((g.inner x) (0 : TangentSpace I x)) (0 : TangentSpace I x) ≥ 0
         rw [(g.inner x).map_zero]
@@ -542,8 +544,8 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
             (EuclideanSpace.single i (1 : ℝ))| ≤
           Real.sqrt
             (g.inner x
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)) *
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)) *
             Real.sqrt
               (g.inner x
                 (chartTargetUnitFiber (I := I) α i x)
@@ -589,55 +591,55 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
         Real.sqrt_le_sqrt h_w_i_le_M
       have h_sqrt_grad_f_nn : 0 ≤ Real.sqrt
           (g.inner x
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)) :=
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)) :=
         Real.sqrt_nonneg _
       calc Real.sqrt
             (g.inner x
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)) *
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)) *
             Real.sqrt
               (g.inner x
                 (chartTargetUnitFiber (I := I) α i x)
                 (chartTargetUnitFiber (I := I) α i x))
           ≤ Real.sqrt
               (g.inner x
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)) *
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)) *
               Real.sqrt M_α :=
             mul_le_mul_of_nonneg_left h_sqrt_w_le_sqrt_M h_sqrt_grad_f_nn
         _ ≤ K_grad * (|u x| +
               Real.sqrt
                 (g.inner x
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) *
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) *
               Real.sqrt M_α :=
             mul_le_mul_of_nonneg_right (hK_grad_bound x) (Real.sqrt_nonneg _)
         _ = K_grad * Real.sqrt M_α * (|u x| +
               Real.sqrt
                 (g.inner x
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) :=
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) :=
                     by ring
         _ = K_grad * Real.sqrt M_α *
               DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α
                 (fun z : M => |u z| +
                   Real.sqrt
                     (g.inner z
-                      (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u z)
-                      (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u z)))
+                      (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z)
+                      (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z)))
                         y := by
             rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_mem
               (I := I) α (fun z : M => |u z| +
                 Real.sqrt
                   (g.inner z
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u z)
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u z)))
+                    (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z)
+                    (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z)))
                       hy_in]
     · have hx_off_f : x ∉ tsupport f :=
         fun hin => hx_pou ((tsupport_smul_subset_left
           (f := fun z : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) z) (g := u)) hin)
-      have h_grad_f_zero : DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      have h_grad_f_zero : DifferentialGeometry.Geometry.Operator.gradFun
           (I := I) g f x = 0 := by
         have hopen : IsOpen (tsupport f)ᶜ := (isClosed_tsupport _).isOpen_compl
         have h_nhds : (tsupport f)ᶜ ∈ 𝓝 x := hopen.mem_nhds hx_off_f
@@ -646,11 +648,11 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
           exact image_eq_zero_of_notMem_tsupport hy
         have h_mfd_eq : mfderiv I 𝓘(ℝ, ℝ) f x = 0 := by
           rw [heqz.mfderiv_eq]; exact mfderiv_const
-        exact DifferentialGeometry.Integral.DivergenceTheorem.gradFun_eq_zero_of_mfderiv_eq_zero
+        exact DifferentialGeometry.Geometry.Operator.gradFun_eq_zero_of_mfderiv_eq_zero
           g f h_mfd_eq
       have h_grad_f_inner_zero : g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x) = 0 := by
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x) = 0 := by
         rw [h_grad_f_zero]
         rw [(g.inner x).map_zero]
         change (0 : TangentSpace I x →L[ℝ] ℝ) (0 : TangentSpace I x) = 0
@@ -661,8 +663,8 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
         (I := I) α (fun z : M => |u z| +
           Real.sqrt
             (g.inner z
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u z)
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u z))) hy_in]
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z)
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z))) hy_in]
       exact add_nonneg (abs_nonneg _) (Real.sqrt_nonneg _)
   · have h_chartSmoothExt_smooth : ContDiff ℝ ∞
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt
@@ -730,12 +732,12 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le
       (I := I) α (fun z : M => |u z| +
         Real.sqrt
           (g.inner z
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u z)
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u z))) hy_in]
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z)
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u z))) hy_in]
 
 private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le_indicator
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       ∀ (i : Fin (Module.finrank ℝ E)) (y : EuclN_E),
@@ -753,9 +755,9 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le_indicator
                 (fun x : M => |u x| +
                   Real.sqrt
                     (g.inner x
-                      (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+                      (DifferentialGeometry.Geometry.Operator.gradFun
                         (I := I) g u x)
-                      (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+                      (DifferentialGeometry.Geometry.Operator.gradFun
                         (I := I) g u x)))) y := by
   classical
   obtain ⟨K, hK_nn, hK_bound⟩ :=
@@ -776,8 +778,8 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le_indicator
     set v : M → ℝ := fun x : M => |u x| +
       Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))
       with hv_def
     set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
     by_cases hx_Kα : x ∈ Kα
@@ -798,7 +800,7 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le_indicator
         hf_supp.trans (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
       have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
       have hx_off_f : x ∉ tsupport f := fun hin => hx_Kα (hf_supp hin)
-      have h_grad_zero : DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      have h_grad_zero : DifferentialGeometry.Geometry.Operator.gradFun
           (I := I) g f x = 0 := by
         have hopen : IsOpen (tsupport f)ᶜ := (isClosed_tsupport _).isOpen_compl
         have h_nhds : (tsupport f)ᶜ ∈ 𝓝 x := hopen.mem_nhds hx_off_f
@@ -806,14 +808,14 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le_indicator
           filter_upwards [h_nhds] with y' hy' using image_eq_zero_of_notMem_tsupport hy'
         have h_mfd_eq : mfderiv I 𝓘(ℝ, ℝ) f x = 0 := by
           rw [heqz.mfderiv_eq]; exact mfderiv_const
-        exact DifferentialGeometry.Integral.DivergenceTheorem.gradFun_eq_zero_of_mfderiv_eq_zero
+        exact DifferentialGeometry.Geometry.Operator.gradFun_eq_zero_of_mfderiv_eq_zero
           g f h_mfd_eq
       have h_sq := sq_fderiv_chartSmoothExt_apply_le_g_inner_mul (I := I) (M := M) g
         α hf_smooth hf_supp_chart hf_compact (y := y) hy_in i
       simp only at h_sq
       have h_inner_zero : g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x) = 0 := by
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x) = 0 := by
         rw [h_grad_zero]
         rw [(g.inner x).map_zero]
         change (0 : TangentSpace I x →L[ℝ] ℝ) (0 : TangentSpace I x) = 0
@@ -840,7 +842,7 @@ private lemma abs_fderiv_chartSmoothExt_apply_pou_mul_le_indicator
 
 theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       ∀ i : Fin (Module.finrank ℝ E),
@@ -858,8 +860,8 @@ theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
                 (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
               eLpNorm (fun x : M => Real.sqrt
                   (g.inner x
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                    (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                    (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
                 (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) := by
   classical
   set ρ : C^∞⟮I, M; ℝ⟯ :=
@@ -878,15 +880,15 @@ theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
   set v : M → ℝ := fun x : M => |u x| +
     Real.sqrt
       (g.inner x
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))
   set v_α : M → ℝ := Set.indicator Kα v
   have hv_meas : Measurable v := by
     have h_abs_meas : Measurable (fun x : M => |u x|) := hu.continuous.measurable.abs
     have h_grad_meas : Measurable (fun x : M => Real.sqrt
       (g.inner x
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) :=
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) :=
       (continuous_sqrt_g_inner_gradFun_self (I := I) (M := M) g hu).measurable
     exact h_abs_meas.add h_grad_meas
   have hv_α_meas : Measurable v_α :=
@@ -949,8 +951,8 @@ theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
   have h_v_α_le : ∀ x, ‖v_α x‖ ≤ |u x| +
       Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)) := by
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)) := by
     intro x
     change ‖(Set.indicator Kα v) x‖ ≤ _
     rw [Real.norm_eq_abs]
@@ -966,8 +968,8 @@ theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
       eLpNorm (fun x : M => Real.sqrt
           (g.inner x
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
     refine (eLpNorm_mono_real h_v_α_le).trans ?_
     have h_aesm_u : AEStronglyMeasurable (fun x : M => |u x|)
@@ -975,8 +977,8 @@ theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
       hu.continuous.measurable.abs.aestronglyMeasurable
     have h_aesm_grad : AEStronglyMeasurable (fun x : M => Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)))
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)))
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
       (continuous_sqrt_g_inner_gradFun_self (I := I) (M := M) g hu).aestronglyMeasurable
     refine (eLpNorm_add_le h_aesm_u h_aesm_grad hp_one).trans ?_
@@ -1005,8 +1007,8 @@ theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
                 (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
               eLpNorm (fun x : M => Real.sqrt
                   (g.inner x
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                    (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                    (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
                 (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g))) := by
         gcongr
     _ = ENNReal.ofReal (K * C_K) *
@@ -1014,8 +1016,8 @@ theorem eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
               (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
             eLpNorm (fun x : M => Real.sqrt
                 (g.inner x
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
               (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) := by
         rw [← mul_assoc, ← ENNReal.ofReal_mul hK_nn]
 
@@ -1032,7 +1034,7 @@ private lemma sum_Fin1_eq_sum_Fin (d : ℕ)
 
 private lemma wkpNorm_chartPushed_le_const_mul_per_α
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -1047,8 +1049,8 @@ private lemma wkpNorm_chartPushed_le_const_mul_per_α
               (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
             eLpNorm (fun x : M => Real.sqrt
                 (g.inner x
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
               (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) := by
   classical
   obtain ⟨C_Lp, hC_Lp_nn, hC_Lp_bound⟩ :=
@@ -1134,8 +1136,8 @@ private lemma wkpNorm_chartPushed_le_const_mul_per_α
               (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
             eLpNorm (fun x : M => Real.sqrt
                 (g.inner x
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
               (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) := by
     refine h_Lp.trans ?_; gcongr; exact le_self_add
   have h_chosenWP_eq : ∀ i : Fin (Module.finrank ℝ E),
@@ -1178,8 +1180,8 @@ private lemma wkpNorm_chartPushed_le_const_mul_per_α
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
           eLpNorm (fun x : M => Real.sqrt
               (g.inner x
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) :=
     fun i => hC_grad_bound (u := u) hu i
   have h_grad_sum_le := Finset.sum_le_sum
@@ -1190,16 +1192,16 @@ private lemma wkpNorm_chartPushed_le_const_mul_per_α
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
           eLpNorm (fun x : M => Real.sqrt
               (g.inner x
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g))) =
       ENNReal.ofReal ((Module.finrank ℝ E : ℝ) * C_grad) *
         (eLpNorm u p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
           eLpNorm (fun x : M => Real.sqrt
               (g.inner x
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) := by
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin]
     rw [nsmul_eq_mul, ← mul_assoc]
@@ -1224,8 +1226,8 @@ private lemma wkpNorm_chartPushed_le_const_mul_per_α
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
           eLpNorm (fun x : M => Real.sqrt
               (g.inner x
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) := by
     refine h_grad_sum_le.trans ?_
     rw [h_const_sum]
@@ -1255,7 +1257,7 @@ theorem wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -1265,9 +1267,9 @@ theorem wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
                 (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
               eLpNorm (fun x : M => Real.sqrt
                   (g.inner x
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+                    (DifferentialGeometry.Geometry.Operator.gradFun
                       (I := I) g u x)
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+                    (DifferentialGeometry.Geometry.Operator.gradFun
                       (I := I) g u x))) p
                 (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) := by
   classical
@@ -1337,8 +1339,8 @@ theorem wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) +
           eLpNorm (fun x : M => Real.sqrt
               (g.inner x
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) :=
     fun α _ => (Classical.choose_spec
       (wkpNorm_chartPushed_le_const_mul_per_α (I := I) (M := M) g α hp_one hp_top)).2 hu

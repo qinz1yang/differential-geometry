@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.DifferentiatedRHSEigenvalueBounds.EigenvectorChartRHSDiffWkpNormSharp
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -19,7 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
@@ -37,11 +39,10 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 section Unconditional
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (N : ℕ) where
-
   h_pou_resolv : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s) (K' : ℕ)
     (β : M) (Q : TensorCompIdx (E := E) r s),
     K' ≤ N →
@@ -52,7 +53,6 @@ structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
           β Q : Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
           EuclN → ℝ) y)
       (chartTargetEuclid (I := I) (M := M) β)
-
   Ceig : ℕ → ℝ
   eEig : ℕ → ℕ
   hCeig_nn : ∀ K', 0 ≤ Ceig K'
@@ -67,7 +67,6 @@ structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-
   CresH : ℕ → ℝ
   eResH : ℕ → ℕ
   hCresH_nn : ∀ K', 0 ≤ CresH K'
@@ -86,7 +85,6 @@ structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-
   CresL : ℕ → ℝ
   eResL : ℕ → ℕ
   hCresL_nn : ∀ K', 0 ≤ CresL K'
@@ -105,7 +103,6 @@ structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-
   Cpar : ℕ → ℝ
   ePar : ℕ → ℕ
   hCpar_nn : ∀ K', 0 ≤ Cpar K'
@@ -123,7 +120,6 @@ structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-
   Ccom : ℕ → ℝ
   eCom : ℕ → ℕ
   hCcom_nn : ∀ K', 0 ≤ Ccom K'
@@ -141,7 +137,6 @@ structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-
   CcR : ℕ → ℝ
   eCcR : ℕ → ℕ
   hCcR_nn : ∀ K', 0 ≤ CcR K'
@@ -159,7 +154,6 @@ structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
-
   Ccut : ℕ → ℝ
   eCcut : ℕ → ℕ
   hCcut_nn : ∀ K', 0 ≤ Ccut K'
@@ -178,7 +172,7 @@ structure eigenvectorChartRHSDiffSharpWkpBoundsUpToOrder
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i‖
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma sharpDiffBdd_diff_memWkp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -192,7 +186,7 @@ private lemma sharpDiffBdd_diff_memWkp
   eigenvectorChartRHSDiff_memWkp (I := I) (M := M) g r s i α P₀
     m K' l (fun β Q => H.h_pou_resolv i (m + 1 + K') β Q hN)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 lemma rhsZeroAggregate_le_energy_perK_bdd
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -885,7 +879,7 @@ lemma rhsZeroAggregate_le_energy_perK_bdd
   refine h_sum_bound.trans (le_of_eq ?_)
   rw [hRhs_eff_def, ← mul_assoc, ← ENNReal.ofReal_mul hCagg_nn]
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma sharpDiffBdd_level_zero_wkpNorm
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -950,7 +944,7 @@ private lemma sharpDiffBdd_level_zero_wkpNorm
   ring_nf
   exact le_refl _
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma sharpDiffBdd_recursion
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -1242,7 +1236,7 @@ private lemma sharpDiffBdd_recursion
       ring_nf
       exact le_refl _
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 theorem eigenvectorChartRHSDiff_wkpNorm_le_chartcpt_sharp_bdd
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

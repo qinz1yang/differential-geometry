@@ -2,16 +2,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ExtendedSolutionRe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ChartRicciJetIdentity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmRealizationBridge
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -19,11 +15,12 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
 open DifferentialGeometry.Analysis
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
-open IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -183,8 +180,6 @@ omit [CompleteSpace E]
   [SigmaCompactSpace M]
   [T2Space M]
   [BoundarylessManifold I M] in
-/-- Joint smoothness of a chart Riemann component from joint smoothness of the
-metric's chart-Gram components. -/
 theorem chartRmSmoothAt
     (g : Real -> SmoothRiemannianMetric I M)
     (a b : Real) (x0 : M)
@@ -281,8 +276,6 @@ theorem chartRmSmoothAt
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- The chart-basis components of the canonical lowered Riemann tensor are
-jointly smooth at every regular spacetime point. -/
 theorem coordRmSmoothInf
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
@@ -366,8 +359,6 @@ theorem coordRmSmoothInf
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- The coordinate-frame level-zero Riemann array is jointly smooth at every
-regular spacetime point in the chart good set. -/
 theorem coordRmFinSmooth
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)

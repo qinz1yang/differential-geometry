@@ -18,7 +18,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 def MemWkpChartGen [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (u : M → ℝ) : Prop :=
@@ -30,7 +30,7 @@ def MemWkpChartGen [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
       (chartTargetEuclid (I := I) (M := M) α)
 
 def wkpNormChartGen [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (u : M → ℝ) : ℝ≥0∞ :=
@@ -43,7 +43,7 @@ def wkpNormChartGen [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
 
 theorem MemWkpChartGen_chartAtlasPOU
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
     MemWkpChartGen (I := I) (M := M) g k p
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) u ↔
@@ -51,7 +51,7 @@ theorem MemWkpChartGen_chartAtlasPOU
 
 theorem wkpNormChartGen_chartAtlasPOU
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞) (u : M → ℝ) :
     wkpNormChartGen (I := I) (M := M) g k p
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) u =
@@ -70,7 +70,7 @@ theorem chartPushed_congr_of_pointwise_eq
 
 theorem wkpNormChartGen_congr_of_pointwise_eq
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞)
     (ρ ρ' : SmoothPartitionOfUnity M I M Set.univ)
     (h : ∀ α : M, ∀ x : M, (ρ α : C^∞⟮I, M; ℝ⟯) x = (ρ' α : C^∞⟮I, M; ℝ⟯) x)
@@ -83,7 +83,7 @@ theorem wkpNormChartGen_congr_of_pointwise_eq
 
 theorem MemWkpChartGen_congr_of_pointwise_eq
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞}
     (ρ ρ' : SmoothPartitionOfUnity M I M Set.univ)
     (h : ∀ α : M, ∀ x : M, (ρ α : C^∞⟮I, M; ℝ⟯) x = (ρ' α : C^∞⟮I, M; ℝ⟯) x)
@@ -108,7 +108,7 @@ theorem chartPushed_zero_gen
 
 theorem MemWkpChartGen_zero_fun
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ) :
     MemWkpChartGen (I := I) (M := M) g k p ρ (fun _ : M => (0 : ℝ)) := by
@@ -119,7 +119,7 @@ theorem MemWkpChartGen_zero_fun
 
 theorem wkpNormChartGen_zero_fun
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ) :
     wkpNormChartGen (I := I) (M := M) g k p ρ (fun _ : M => (0 : ℝ)) = 0 := by
@@ -155,7 +155,7 @@ theorem chartPushed_const_smul_gen
 
 theorem MemWkpChartGen_add
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u v : M → ℝ}
@@ -171,7 +171,7 @@ theorem MemWkpChartGen_add
 
 theorem MemWkpChartGen_const_smul
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (c : ℝ) {u : M → ℝ}
@@ -186,7 +186,7 @@ theorem MemWkpChartGen_const_smul
 
 theorem MemWkpChartGen_neg
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u : M → ℝ}
@@ -200,7 +200,7 @@ theorem MemWkpChartGen_neg
 
 theorem MemWkpChartGen_sub
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u v : M → ℝ}
@@ -216,7 +216,7 @@ theorem MemWkpChartGen_sub
 
 theorem wkpNormChartGen_add_le
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u v : M → ℝ}
@@ -237,7 +237,7 @@ theorem wkpNormChartGen_add_le
 
 theorem wkpNormChartGen_const_smul
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (c : ℝ) {u : M → ℝ}
@@ -256,7 +256,7 @@ theorem wkpNormChartGen_const_smul
 
 theorem MemWkpChartGen.le_succ
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞}
     {ρ : SmoothPartitionOfUnity M I M Set.univ}
     {u : M → ℝ}
@@ -267,7 +267,7 @@ theorem MemWkpChartGen.le_succ
 
 theorem MemWkpChartGen.le_of_le
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k k' : ℕ} {p : ℝ≥0∞}
     {ρ : SmoothPartitionOfUnity M I M Set.univ}
     {u : M → ℝ}
@@ -278,7 +278,7 @@ theorem MemWkpChartGen.le_of_le
 
 theorem wkpNormChartGen_lt_top_of_memWkpChartGen
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     {u : M → ℝ} (hu : MemWkpChartGen (I := I) (M := M) g k p ρ u) :
@@ -419,7 +419,7 @@ theorem chartPushed_pointwise_bound
 
 def wkpNormChartFin
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ≥0∞)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (u : M → ℝ) : ℝ≥0∞ :=
@@ -432,7 +432,7 @@ def wkpNormChartFin
 
 theorem wkpNormChartGen_eq_wkpNormChartFin
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (ρ : SmoothPartitionOfUnity M I M Set.univ)
     (u : M → ℝ) :

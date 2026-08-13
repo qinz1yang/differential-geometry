@@ -5,13 +5,6 @@ import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 namespace DifferentialGeometry.Analysis.Integration
 
 noncomputable section
@@ -19,8 +12,6 @@ noncomputable section
 open MeasureTheory Real Set
 
 variable {α : Type*} [MeasurableSpace α]
-
-
 
 theorem withDensity_prob
     (μ : Measure α) {ρ : α -> Real}
@@ -32,8 +23,6 @@ theorem withDensity_prob
   simp only [Measure.restrict_univ]
   rw [← ofReal_integral_eq_lintegral_ofReal hρi hρ0, hmass]
   norm_num
-
-
 
 theorem int_log_le_moment
     {ν : Measure α} [IsProbabilityMeasure ν]
@@ -71,11 +60,6 @@ theorem int_log_le_moment
     exact (Real.le_log_iff_exp_le hmoment_pos).2 hJ'
   rw [le_div_iff₀ hp]
   simpa only [mul_comm] using hlog_bound
-
-
-
-
-
 
 theorem entropy_le_moment
     (μ : Measure α) {v : α → Real} {q : Real} (hq : 2 < q)
@@ -147,8 +131,6 @@ theorem entropy_le_moment
     _ ≤ 2 * (Real.log (∫ x, v x ^ q ∂μ) / (q - 2)) :=
       mul_le_mul_of_nonneg_left hJ (by norm_num)
 
-/-- A unit-mass nonnegative density supported in `U` has entropy at most the
-logarithm of the measure of `U`. -/
 theorem entropy_supp_le
     (μ : Measure α) [IsFiniteMeasure μ] {w : α → Real} {U : Set α}
     (hwmeas : Measurable w) (hwi : Integrable w μ)

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHS
-import DifferentialGeometry.Geometry.Flow.RicciFlow.PrincipalSymbol
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.PrincipalSymbol
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
 import DifferentialGeometry.Analysis.Parabolic.StrictParabolicity
@@ -7,9 +7,12 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSecondOrd
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionPrincipalSymbolRemainder
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionSymbol
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartLinearization
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Parabolic
 
 open Bundle
 open scoped Manifold ContDiff
@@ -34,7 +37,7 @@ theorem deTurckRicciRHS_isPointwiseSymm
       deTurckRicciRHS (I := I) g_bg g x w v := by
   simp only [deTurckRicciRHS, ContinuousLinearMap.add_apply,
     ContinuousLinearMap.smul_apply, smul_eq_mul, lieDerivMetricClm_apply]
-  rw [DifferentialGeometry.Integral.Connection.ricciTensor_symm (I := I)
+  rw [DifferentialGeometry.Geometry.Curvature.ricciTensor_symm (I := I)
         (smoothRiemannianMetricToInfty (I := I) g) x v w,
     DeTurck.lieDerivMetric_isPointwiseSymm (I := I)
       (smoothRiemannianMetricToInfty (I := I) g)
@@ -53,6 +56,7 @@ section ReadOff
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
 
@@ -449,4 +453,4 @@ theorem bridge_symbol_equality_to_is_strictly_parabolic_metric_rhs
     IsStrictlyParabolicMetricRHS (I := I) F g₀ :=
   ⟨σ, h⟩
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Parabolic

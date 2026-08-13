@@ -1,13 +1,6 @@
 import DifferentialGeometry.Bundle.Frame
 import Mathlib.Geometry.Manifold.Algebra.Structures
 
-
-
-
-
-
-
-
 noncomputable section
 
 open Bundle Filter Set
@@ -20,8 +13,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
-
-
 
 theorem exists_smooth_germ
     {f : M → ℝ} {U : Set M} {x : M} (hU : IsOpen U) (hx : x ∈ U)

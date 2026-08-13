@@ -4,16 +4,6 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Integral.Prod
 
-/-!
-# Parabolic Hoermander estimate for the causal heat Hessian
-
-This file proves the scalar directional kernel estimate needed before the
-heat-specific Calderon--Zygmund step.  The proof is split at the parabolic
-radius of the translation.  The early slab uses a first spatial moment of
-`heatD2`; the late slab uses the actual derivatives `heatD3` and `heatD2Dt`.
-No general singular-integral structure is introduced here.
--/
-
 noncomputable section
 
 open MeasureTheory Real Set Filter
@@ -31,7 +21,6 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V]
 
-/-- First radial moment of the time-one Hessian majorant. -/
 def baseD2One (x : V) : ℝ :=
   ‖x‖ * baseD2Maj x
 
@@ -39,7 +28,6 @@ omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 theorem baseD2One_nonneg (x : V) : 0 ≤ baseD2One x :=
   mul_nonneg (norm_nonneg x) (baseD2Maj_nonneg x)
 
-/-- Integrability of the first radial Hessian moment. -/
 theorem baseD2One_int : Integrable (baseD2One : V → ℝ) := by
   have h3 := (gaussMoment_int (V := V) 3
     (by positivity : (0 : ℝ) < (4 : ℝ)⁻¹)).const_mul
@@ -58,7 +46,6 @@ theorem baseD2One_int : Integrable (baseD2One : V → ℝ) := by
   rw [heq]
   exact h3.add h1
 
-/-- Dimension-dependent first-moment constant for the heat Hessian. -/
 def heatC2One (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] : ℝ :=
   ∫ x : V, baseD2One x
@@ -67,7 +54,6 @@ omit [Nontrivial V] in
 theorem heatC2One_nonneg : 0 ≤ heatC2One V :=
   integral_nonneg baseD2One_nonneg
 
-/-- Scaled first-moment Hessian majorant. -/
 def heatD2One (t : ℝ) (x : V) : ℝ :=
   ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (heatScale t)⁻¹ *
     baseD2One ((heatScale t)⁻¹ • x)
@@ -83,8 +69,6 @@ theorem heatD2One_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     (baseD2One_nonneg _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The scaled first-moment majorant is exactly `norm x` times the ordinary
-Hessian majorant. -/
 theorem heatD2One_eq {t : ℝ} (ht : 0 < t) (x : V) :
     heatD2One t x = ‖x‖ * heatD2Maj t x := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -99,7 +83,6 @@ theorem heatD2One_eq {t : ℝ} (ht : 0 < t) (x : V) :
   rw [hnorm]
   field_simp [hr.ne']
 
-/-- Integrability of the scaled first-moment majorant. -/
 theorem heatD2One_int {t : ℝ} (ht : 0 < t) :
     Integrable (heatD2One t : V → ℝ) := by
   unfold heatD2One
@@ -107,7 +90,6 @@ theorem heatD2One_int {t : ℝ} (ht : 0 < t) :
     (inv_ne_zero (heatScale_pos ht).ne') |>.const_mul _
 
 omit [Nontrivial V] in
-/-- Exact spatial integral of the first-moment Hessian majorant. -/
 theorem integral_heatD2One {t : ℝ} (ht : 0 < t) :
     ∫ x : V, heatD2One t x = (heatScale t)⁻¹ * heatC2One V := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -118,7 +100,6 @@ theorem integral_heatD2One {t : ℝ} (ht : 0 < t) :
   field_simp [hr.ne']
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Pointwise Hessian bound after inserting one spatial moment. -/
 theorem heatD2_one_bound {t : ℝ} (ht : 0 < t) (v w x : V) :
     ‖heatD2 t v w x‖ * ‖x‖ ≤ ‖v‖ * ‖w‖ * heatD2One t x := by
   rw [heatD2One_eq ht]
@@ -128,7 +109,6 @@ theorem heatD2_one_bound {t : ℝ} (ht : 0 < t) (v w x : V) :
       mul_le_mul_of_nonneg_right (heatD2_bound ht v w x) (norm_nonneg x)
     _ = ‖v‖ * ‖w‖ * (‖x‖ * heatD2Maj t x) := by ring
 
-/-- The first-weighted spatial `L¹` norm of the Hessian. -/
 theorem integral_oneD2 {t : ℝ} (ht : 0 < t) (v w : V) :
     (∫ x : V, ‖heatD2 t v w x‖ * ‖x‖) ≤
       ‖v‖ * ‖w‖ * (heatScale t)⁻¹ * heatC2One V := by
@@ -161,7 +141,6 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V]
 
-/-- Exterior of the spatial ball of radius `R`, with the boundary included. -/
 def d2TailSet (R : ℝ) : Set V :=
   {x | R ≤ ‖x‖}
 
@@ -169,7 +148,6 @@ omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [Nontrivial V] in
 theorem d2TailSet_meas (R : ℝ) : MeasurableSet (d2TailSet (V := V) R) := by
   exact measurableSet_le measurable_const continuous_norm.measurable
 
-/-- A first moment controls the Hessian mass outside a positive radius. -/
 theorem heatD2_tail {t R : ℝ} (ht : 0 < t) (hR : 0 < R) (v w : V) :
     (∫ x : V in d2TailSet R, ‖heatD2 t v w x‖) ≤
       R⁻¹ * ‖v‖ * ‖w‖ * (heatScale t)⁻¹ * heatC2One V := by
@@ -217,9 +195,6 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V]
 
-/-- The early-time Hessian mass outside a fixed spatial ball.  The time
-singularity is exactly integrable and leaves the scale-invariant factor
-`sqrt T / R`. -/
 theorem heatD2_tail_time {T R : ℝ} (hT : 0 < T) (hR : 0 < R) (v w : V) :
     (∫ t : ℝ in Set.Ioc 0 T,
       ∫ x : V in d2TailSet R, ‖heatD2 t v w x‖) ≤
@@ -295,7 +270,6 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V]
 
-/-- Integrability of the norm of the third spatial heat-kernel derivative. -/
 theorem heatD3_norm_int {t : ℝ} (ht : 0 < t) (u v w : V) :
     Integrable (fun x : V => ‖heatD3 t u v w x‖) := by
   refine ((heatD3Maj_int (V := V) ht).const_mul
@@ -307,9 +281,7 @@ theorem heatD3_norm_int {t : ℝ} (ht : 0 < t) (u v w : V) :
     simpa [mul_assoc] using heatD3_bound ht u v w x
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Pointwise segment estimate for a spatial translate of `heatD2`. -/
-private theorem d2Space_point {t : ℝ} (ht : 0 < t)
-    (h v w x : V) :
+private theorem d2Space_point {t : ℝ} (h v w x : V) :
     ‖heatD2 t v w (x - h) - heatD2 t v w x‖ ≤
       ∫ s : ℝ in Set.Ioc 0 1,
         ‖heatD3 t h v w (x + s • (-h))‖ := by
@@ -323,7 +295,7 @@ private theorem d2Space_point {t : ℝ} (ht : 0 < t)
       HasDerivAt (fun r : ℝ => heatD2 t v w (γ r))
         (-heatD3 t h v w (γ s)) s := by
     intro s
-    have h0 := (heatD2_hasFDeriv (t := t) ht v w (γ s)).comp_hasDerivAt s (hγ s)
+    have h0 := (heatD2_hasFDeriv (t := t) v w (γ s)).comp_hasDerivAt s (hγ s)
     convert h0 using 1
     simp only [heatD3Map_apply]
     simp [heatD3, baseD3]
@@ -353,8 +325,6 @@ private theorem d2Space_point {t : ℝ} (ht : 0 < t)
       filter_upwards with s
       simp only [norm_neg, γ]
 
-/-- Spatial translation estimate at a fixed positive time.  This is the
-space arm of the late Hoermander path. -/
 theorem heatD2_space_diff {t : ℝ} (ht : 0 < t) (h v w : V) :
     (∫ x : V, ‖heatD2 t v w (x - h) - heatD2 t v w x‖) ≤
       ‖h‖ * ‖v‖ * ‖w‖ * t⁻¹ * (heatScale t)⁻¹ * heatC3 V := by
@@ -407,7 +377,7 @@ theorem heatD2_space_diff {t : ℝ} (ht : 0 < t) (h v w : V) :
     (∫ x : V, ‖heatD2 t v w (x - h) - heatD2 t v w x‖) ≤
         ∫ x : V, ∫ s : ℝ, G (s, x) ∂μ := by
       exact integral_mono hleft hright (fun x => by
-        simpa only [μ, G] using d2Space_point ht h v w x)
+        simpa only [μ, G] using d2Space_point h v w x)
     _ = ∫ s : ℝ, (∫ x : V, G (s, x)) ∂μ := by
       exact (integral_integral_swap
         (f := fun s x => G (s, x)) hGint).symm
@@ -430,7 +400,6 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V]
 
-/-- Integrability of the norm of the Hessian time derivative. -/
 theorem heatD2Dt_norm_int {t : ℝ} (ht : 0 < t) (v w : V) :
     Integrable (fun x : V => ‖heatD2Dt t v w x‖) := by
   refine ((heatD2DtMaj_int (V := V) ht).const_mul (‖v‖ * ‖w‖)).mono' ?_ ?_
@@ -441,8 +410,6 @@ theorem heatD2Dt_norm_int {t : ℝ} (ht : 0 < t) (v w : V) :
     simpa [mul_assoc] using heatD2Dt_bound ht v w x
 
 omit [MeasurableSpace V] [BorelSpace V] in
-/-- Every point on the time segment from `t` to `t-a` remains above
-`t - |a|`. -/
 private theorem timeSeg_lower {t a s : ℝ} (hta : |a| < t)
     (hs : s ∈ Set.Icc (0 : ℝ) 1) :
     0 < t - |a| ∧ t - |a| ≤ t - s * a := by
@@ -455,7 +422,6 @@ private theorem timeSeg_lower {t a s : ℝ} (hta : |a| < t)
   exact ⟨sub_pos.mpr hta, sub_le_sub_left hsa t⟩
 
 omit [MeasurableSpace V] [BorelSpace V] in
-/-- Pointwise segment estimate for a time translate of `heatD2`. -/
 private theorem d2Time_point {t a : ℝ} (hta : |a| < t)
     (v w x : V) :
     ‖heatD2 (t - a) v w x - heatD2 t v w x‖ ≤
@@ -513,8 +479,6 @@ private theorem d2Time_point {t a : ℝ} (hta : |a| < t)
       filter_upwards with s
       simp only [Real.norm_eq_abs, abs_mul, abs_neg, γ]
 
-/-- Time translation estimate at a fixed time which stays on the causal
-side.  This is the time arm of the late Hoermander path. -/
 theorem heatD2_time_diff {t a : ℝ} (hta : |a| < t) (v w : V) :
     (∫ x : V, ‖heatD2 (t - a) v w x - heatD2 t v w x‖) ≤
       |a| * ‖v‖ * ‖w‖ * ((t - |a|) ^ 2)⁻¹ * heatC2Dt V := by

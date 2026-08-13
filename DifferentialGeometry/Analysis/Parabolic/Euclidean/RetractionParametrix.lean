@@ -16,41 +16,30 @@ variable
     [NormedAddCommGroup J₂] [NormedSpace ℝ J₂]
     [NormedAddCommGroup J₁₀] [NormedSpace ℝ J₁₀]
 
-/-- Extract local forcing data, apply the diagonal local solver, and
-reassemble the resulting local solution. -/
 def localParametrix
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U) (R : U →L[ℝ] X) : Y →L[ℝ] X :=
   R.comp (H.comp E)
 
-/-- The global error arm induced by a local-to-global defect `C`. -/
 def localErrorArm
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U) (C : U →L[ℝ] Y) : Y →L[ℝ] Y :=
   C.comp (H.comp E)
 
-/-- The actual second-order error on the chosen forcing space: extract the
-forcing, solve the local frozen equation, take its Hessian jet, and multiply
-by the principal coefficient oscillation before reassembly. -/
 def principalError
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₂ : U →L[ℝ] J₂) (C₂ : J₂ →L[ℝ] Y) : Y →L[ℝ] Y :=
   C₂.comp (D₂.comp (H.comp E))
 
-/-- The actual first/zero-order cutoff-transition error on the chosen forcing
-space. -/
 def lowerError
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₁₀ : U →L[ℝ] J₁₀) (C₁₀ : J₁₀ →L[ℝ] Y) : Y →L[ℝ] Y :=
   C₁₀.comp (D₁₀.comp (H.comp E))
 
-/-- The complete factored error `B = B₂ + B₁₀` on the forcing space. -/
 def factoredError
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₂ : U →L[ℝ] J₂) (C₂ : J₂ →L[ℝ] Y)
     (D₁₀ : U →L[ℝ] J₁₀) (C₁₀ : J₁₀ →L[ℝ] Y) : Y →L[ℝ] Y :=
   principalError E H D₂ C₂ + lowerError E H D₁₀ C₁₀
 
-/-- Operator-norm control of the concrete principal error by its coefficient
-multiplier norm and the complete frozen-solver Hessian norm. -/
 theorem principalError_norm
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₂ : U →L[ℝ] J₂) (C₂ : J₂ →L[ℝ] Y) :
@@ -58,8 +47,6 @@ theorem principalError_norm
       ‖C₂‖ * ‖D₂.comp (H.comp E)‖ :=
   ContinuousLinearMap.opNorm_comp_le _ _
 
-/-- Constant form of `principalError_norm`, used after the fine-atlas
-coefficient and maximal-regularity estimates have been inserted. -/
 theorem principalError_le
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₂ : U →L[ℝ] J₂) (C₂ : J₂ →L[ℝ] Y)
@@ -69,8 +56,6 @@ theorem principalError_le
   refine (principalError_norm E H D₂ C₂).trans ?_
   exact mul_le_mul hC₂ hD₂ (norm_nonneg _) hδ₂
 
-/-- Operator-norm control of the concrete lower-order error.  The small
-time factor belongs in the bound for the full jet map `D₁₀ ∘ H ∘ E`. -/
 theorem lowerError_norm
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₁₀ : U →L[ℝ] J₁₀) (C₁₀ : J₁₀ →L[ℝ] Y) :
@@ -78,7 +63,6 @@ theorem lowerError_norm
       ‖C₁₀‖ * ‖D₁₀.comp (H.comp E)‖ :=
   ContinuousLinearMap.opNorm_comp_le _ _
 
-/-- Constant form of `lowerError_norm`. -/
 theorem lowerError_le
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₁₀ : U →L[ℝ] J₁₀) (C₁₀ : J₁₀ →L[ℝ] Y)
@@ -88,8 +72,6 @@ theorem lowerError_le
   refine (lowerError_norm E H D₁₀ C₁₀).trans ?_
   exact mul_le_mul hC₁₀ hD₁₀ (norm_nonneg _) hδ₁₀
 
-/-- The concrete split error is controlled by the two chosen-space operator
-products, with no abstract `‖B‖` hypothesis. -/
 theorem factoredError_norm
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₂ : U →L[ℝ] J₂) (C₂ : J₂ →L[ℝ] Y)
@@ -102,8 +84,6 @@ theorem factoredError_norm
     (add_le_add (principalError_norm E H D₂ C₂)
       (lowerError_norm E H D₁₀ C₁₀))
 
-/-- Constant form of `factoredError_norm`, ready for the spatial-radius and
-time-horizon choices. -/
 theorem factoredError_le
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₂ : U →L[ℝ] J₂) (C₂ : J₂ →L[ℝ] Y)
@@ -119,8 +99,6 @@ theorem factoredError_le
       (principalError_le E H D₂ C₂ hδ₂ hC₂ hD₂)
       (lowerError_le E H D₁₀ C₁₀ hδ₁₀ hC₁₀ hD₁₀))
 
-/-- A horizon chosen only from the fixed lower-order multiplier and
-zero-trace maximal-regularity constants. -/
 def lowerTime (C K : ℝ) : ℝ :=
   min 1 ((1 / (8 * (C + 1) * (K + 1))) ^ 2)
 theorem lowerTime_pos {C K : ℝ} (hC : 0 ≤ C) (hK : 0 ≤ K) :
@@ -132,12 +110,9 @@ theorem lowerTime_pos {C K : ℝ} (hC : 0 ≤ C) (hK : 0 ≤ K) :
   rw [lowerTime]
   exact lt_min one_pos (pow_pos (one_div_pos.mpr hden) 2)
 
-/-- The selected lower-order horizon never exceeds one. -/
 theorem lowerTime_le_one (C K : ℝ) : lowerTime C K ≤ 1 :=
   min_le_left _ _
 
-/-- On every shorter horizon the full coefficient times zero-trace jet gain
-is strictly smaller than one quarter. -/
 theorem lowerTime_small {C K τ : ℝ}
     (hC : 0 ≤ C) (hK : 0 ≤ K) (hτ : τ ≤ lowerTime C K) :
     C * (K * Real.sqrt τ) < (1 : ℝ) / 4 := by
@@ -165,9 +140,6 @@ theorem lowerTime_small {C K τ : ℝ}
       rw [div_lt_iff₀ hden]
       nlinarith
 
-/-- The actual factored lower-order error is quarter-small on the selected
-horizon.  Its time gain is the complete map `D₁₀ ∘ H ∘ E`, not an abstract
-error-operator hypothesis. -/
 theorem b10Error_quarter
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₁₀ : U →L[ℝ] J₁₀) (C₁₀ : J₁₀ →L[ℝ] Y)
@@ -179,27 +151,21 @@ theorem b10Error_quarter
   exact (lowerError_le E H D₁₀ C₁₀ hC hC₁₀ hD₁₀).trans_lt
     (lowerTime_small hC hK hτ)
 
-/-- A fixed reassembly map commutes exactly with differentiation in time. -/
 theorem fixedReassemble_dt
     (R : U →L[ℝ] X) {u : ℝ → U} {u' : U} {t : ℝ}
     (hu : HasDerivAt u u' t) :
     HasDerivAt (fun s => R (u s)) (R u') t :=
   R.hasFDerivAt.comp_hasDerivAt t hu
 
-/-- A fixed extraction map commutes exactly with differentiation in time. -/
 theorem fixedExtract_dt
     (E : X →L[ℝ] U) {u : ℝ → X} {u' : X} {t : ℝ}
     (hu : HasDerivAt u u' t) :
     HasDerivAt (fun s => E (u s)) (E u') t :=
   E.hasFDerivAt.comp_hasDerivAt t hu
 
-/-- Extraction after reassembly is the compatibility projection on the local
-component space. -/
 def chartProjection (E : X →L[ℝ] U) (R : U →L[ℝ] X) : U →L[ℝ] U :=
   E.comp R
 
-/-- If reassembly after extraction is the identity on genuine objects, the
-local compatibility projection is idempotent. -/
 theorem chartProjection_idem
     (E : X →L[ℝ] U) (R : U →L[ℝ] X)
     (hRE : R.comp E = ContinuousLinearMap.id ℝ X) :
@@ -212,13 +178,6 @@ theorem chartProjection_idem
   simpa only [ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.id_apply] using h
 
-/-- Exact retraction--coretraction parametrix identity.
-
-`L ∘ H = id` is the local frozen heat-solver identity, `RF ∘ E = id`
-is reassembly after extraction on genuine forcing data, and
-`T ∘ R = RF ∘ L + C` is the localized global-operator identity.  The
-conclusion computes the complete error without assuming that the local heat
-solver commutes with the compatibility projection. -/
 theorem retractParametrix
     (T : X →L[ℝ] Y) (R : U →L[ℝ] X)
     (E : Y →L[ℝ] V) (RF : V →L[ℝ] Y)
@@ -239,8 +198,6 @@ theorem retractParametrix
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at hLHy hREy
   rw [hTRy, hLHy, hREy]
 
-/-- Exact split of the parametrix error into its second-order oscillation arm
-and its first/zero-order cutoff-transition arm. -/
 theorem retractParam_split
     (T : X →L[ℝ] Y) (R : U →L[ℝ] X)
     (E : Y →L[ℝ] V) (RF : V →L[ℝ] Y)
@@ -263,8 +220,6 @@ theorem retractParam_split
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at hLHy hREy
   rw [hTRy, hLHy, hREy]
 
-/-- Exact parametrix identity with both errors factored through their actual
-jet spaces.  This is the form used for the `W^{3,p}`-to-forcing norm bound. -/
 theorem retractParam_factor
     (T : X →L[ℝ] Y) (R : U →L[ℝ] X)
     (E : Y →L[ℝ] V) (RF : V →L[ℝ] Y)
@@ -284,7 +239,6 @@ theorem retractParam_factor
 def parametrixError (T : X →L[ℝ] Y) (Q : Y →L[ℝ] X) : Y →L[ℝ] Y :=
   T.comp Q - ContinuousLinearMap.id ℝ Y
 
-/-- Definitional reconstruction of the approximate right-inverse identity. -/
 theorem parametrixError_id (T : X →L[ℝ] Y) (Q : Y →L[ℝ] X) :
     T.comp Q = ContinuousLinearMap.id ℝ Y + parametrixError T Q := by
   simp only [parametrixError]

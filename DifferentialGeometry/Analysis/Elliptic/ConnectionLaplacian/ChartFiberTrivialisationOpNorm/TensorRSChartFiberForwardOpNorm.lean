@@ -12,10 +12,10 @@ set_option backward.isDefEq.respectTransparency false
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Analysis.Elliptic
 
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -208,6 +208,6 @@ private lemma exists_opNorm_bound_on_compact_of_continuousOn_fwd
   intro b hb
   exact (hC ⟨b, hb, rfl⟩).trans (le_max_left _ _)
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Analysis.Elliptic
 
 end

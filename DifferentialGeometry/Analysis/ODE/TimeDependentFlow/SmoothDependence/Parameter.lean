@@ -6,7 +6,7 @@ open Set Function Filter Metric
 open scoped Topology NNReal ContDiff
 open DifferentialGeometry.Analysis.ODE.Flow
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 theorem augmented_field_contDiff
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -167,4 +167,4 @@ theorem exists_isLocalFlow_param_contDiffOn_top
       hΨsmooth (lam₀ := lam₀) (x₀ := x₀) (ρP := ρ / 2) (ρE := ρ / 2) hmaps
     refine hcd.mono (Set.prod_mono (le_refl _) (Set.prod_mono (le_refl _) htimeT))
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

@@ -2,17 +2,10 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotential
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.Uniform
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -21,11 +14,11 @@ open scoped Manifold Topology ContDiff ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral DifferentialGeometry.PDE.RicciFlow
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -40,8 +33,6 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-
 
 noncomputable def conjCoeff
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (t : Real) :
@@ -71,8 +62,6 @@ theorem conjCoeff_joint
   simpa only [conjCoeff_apply] using
     (scalar_joint (I := I) S hS).neg
 
-
-
 noncomputable def conjCoeffRev
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (T : Real) :
     M × Real → Real := fun p =>
@@ -99,8 +88,6 @@ theorem conjCoeff_rev
     (conjCoeff_joint (I := I) S hS).comp hmove
       (fun p hp => ⟨hp.2, Set.mem_univ p.1⟩)
 
-
-
 noncomputable def conjA1
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) (s : Real) :
@@ -108,8 +95,6 @@ noncomputable def conjA1
       tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0 :=
   scalarPotH0 (I := I) (M := M) (S.family.metric (T : Real))
     (conjCoeff (I := I) (M := M) S ((T : Real) - s))
-
-
 
 omit [BoundarylessManifold I M] in
 theorem conjA1_cont
@@ -161,9 +146,6 @@ theorem conjA1_cont
           conjA1 (I := I) (M := M) S T s0‖ ≤ eta / 2 := by
     simpa only [conjA1] using hpair
   exact hop.trans_lt (half_lt_self heta)
-
-
-
 
 omit [BoundarylessManifold I M] in
 theorem conjA1_short

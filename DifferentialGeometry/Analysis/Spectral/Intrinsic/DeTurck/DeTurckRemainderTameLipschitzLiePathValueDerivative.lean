@@ -37,20 +37,23 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGra
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefold
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmConnLapJetBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzRicciArmCoeffBallUniform
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -242,8 +245,8 @@ private theorem realizedDeTurckLiePathValue_eq_chartSum_on_Icc
   have hmem : s ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
     Icc_subset_realizedSmallSet hδ_lt hδ'_lt ⟨h0, h1⟩
   have hclamp : max 0 (min s 1) = s := by rw [min_eq_left h1, max_eq_right h0]
-  have hxgood : x ∈ DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet (I := I) x :=
-    DifferentialGeometry.Integral.Connection.self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
+  have hxgood : x ∈ DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet (I := I) x :=
+    DifferentialGeometry.Geometry.Connection.self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
   have hmetric :
       DifferentialGeometry.PDE.DeTurck.RicciLinearization.realizedMetricPath
           (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
@@ -512,6 +515,6 @@ private theorem deTurckLieArm0Field_eq_coeffField
         g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg :=
   rfl
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

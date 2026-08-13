@@ -1,63 +1,29 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Linearization
 import DifferentialGeometry.Analysis.Sobolev.Embedding.TensorSobolevEmbeddingCm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHS
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHSSection
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartFiberTrivialisationOpNorm.SmoothBilinearSectionBddAbove
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
-open Bundle ContinuousLinearMap Tensor0SBundle
+open Bundle ContinuousLinearMap DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 private def retag (g₀ : SmoothRiemannianMetric I M)
     {g : SmoothRiemannianMetric I M} (S : SmoothCcTensor g 0 2) :
@@ -71,14 +37,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
     {g : SmoothRiemannianMetric I M} (S : SmoothCcTensor g 0 2) :
     (retag (I := I) g₀ S).toFun = S.toFun := rfl
 
-
-
 private def rhsDiffSection (g_bg g g' g₀ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 0 2 :=
   retag (I := I) g₀ (deTurckRHSSection (I := I) g_bg g) -
     retag (I := I) g₀ (deTurckRHSSection (I := I) g_bg g')
-
-
 
 private def rhsDiffGNorm (g_bg g g' g₀ : SmoothRiemannianMetric I M) (y : M) : ℝ :=
   tensorPointwiseNorm (I := I) (M := M) g₀ 0 2 y
@@ -91,9 +53,6 @@ private theorem rhsDiffGNorm_nonneg
     0 ≤ rhsDiffGNorm (I := I) g_bg g g' g₀ y :=
   Real.sqrt_nonneg _
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem continuous_rhsDiffGNorm_sq
@@ -105,30 +64,12 @@ private theorem continuous_rhsDiffGNorm_sq
   SmoothCcTensor.continuous_inner_self (I := I) (M := M)
     (rhsDiffSection (I := I) g_bg g g' g₀)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem continuous_rhsDiffGNorm
     (g_bg g g' g₀ : SmoothRiemannianMetric I M) :
     Continuous (rhsDiffGNorm (I := I) g_bg g g' g₀) :=
   Real.continuous_sqrt.comp (continuous_rhsDiffGNorm_sq (I := I) g_bg g g' g₀)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -157,31 +98,6 @@ private theorem rhsDiffSection_toModel_apply
   rw [deTurckRHSSection_toModel_apply (I := I) g_bg g y v,
     deTurckRHSSection_toModel_apply (I := I) g_bg g' y v]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deturck_ricci_rhs_nonlinearity_locally_lipschitz
     (g_bg g₀ : SmoothRiemannianMetric I M) :
@@ -199,4 +115,4 @@ theorem deturck_ricci_rhs_nonlinearity_locally_lipschitz
     ⨆ z : M, rhsDiffGNorm (I := I) g_bg g g' g₀ z
   exact le_ciSup (bddAbove_gNorm_range (I := I) g_bg g g' g₀) y
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

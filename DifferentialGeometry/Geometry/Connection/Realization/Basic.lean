@@ -9,11 +9,13 @@ import Mathlib.Analysis.InnerProductSpace.Dual
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Tensor.RSTensor.Defs
 
+namespace DifferentialGeometry.Geometry.Connection.Realization
+
 
 noncomputable section
 
 open scoped Manifold ContDiff
-open Bundle
+open _root_.Bundle
 
 section SmoothRicciFlowContext
 
@@ -72,3 +74,5 @@ noncomputable instance invertible2SmoothFunctions :
 end SmoothRicciFlowContext
 
 end
+
+end DifferentialGeometry.Geometry.Connection.Realization

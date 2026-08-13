@@ -1,23 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.PartialForcingFixedPoint
 import Mathlib.Topology.UniformSpace.CompleteSeparated
-
-/-!
-# Tame forcing-space fixed points on a lower Sobolev ball
-
-At the critical three-dimensional regularity the Ricci--DeTurck remainder is
-not globally Lipschitz from the top Sobolev space to the forcing space.  Its
-correct estimate has three arms: a small top-order arm, a lower-order arm, and
-a tame arm in which the top norm of either endpoint multiplies the lower norm
-of their difference.
-
-This file supplies the abstract analytic bridges needed by that estimate.
-First, a map on a dense core which is Lipschitz on every finite state-space
-ball has a continuous dense extension, and the tame estimate both supplies
-those local constants and passes to that extension.  Second, the three-arm
-estimate contracts the Duhamel forcing map on a small forcing ball, even
-though it does not give a global Lipschitz constant for the pointwise
-nonlinearity.
--/
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -26,9 +11,6 @@ open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
 namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
-/-- A map on a dense subset which is Lipschitz on every ball about a fixed
-ambient centre has a continuous dense extension.  Global Lipschitz control
-is not required. -/
 theorem dense_cont_on_balls
     {X Y : Type*} [PseudoMetricSpace X] [NormedAddCommGroup Y]
     [CompleteSpace Y] {D : Set X} (hD : Dense D) (F : D → Y) (x₀ : X)
@@ -58,9 +40,6 @@ theorem dense_cont_on_balls
     simpa only [S, Metric.mem_closedBall, Set.mem_setOf_eq] using hpre
   exact hl.map_of_le hK.uniformContinuousOn hlS
 
-/-- A three-arm tame estimate is Lipschitz on each top-size ball.  This is the
-local input needed by `dense_cont_on_balls`; no global top-order bound is
-asserted. -/
 theorem tame_lip_balls
     {X V Y Z : Type*} [PseudoMetricSpace X]
     [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -147,11 +126,6 @@ theorem tame_lip_balls
     _ = (Real.toNNReal K₀ : ℝ) * dist u v := by
       rw [Real.coe_toNNReal _ hK₀, Subtype.dist_eq]
 
-/-- A tame estimate on a dense core passes to its continuous dense extension.
-
-The ambient state space need not be linear.  Its points are realized in a
-normed space by `e`; this is the form needed for a lower-Sobolev state-ball
-subtype. -/
 theorem dense_tame_extend
     {X V Y Z : Type*} [PseudoMetricSpace X]
     [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -247,7 +221,7 @@ theorem dense_tame_extend
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Parabolic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -262,8 +236,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-/- A four-term `L²` Minkowski estimate.  It is kept private because its public
-consumer is the three-arm fixed-point theorem below. -/
 private theorem l2_four
     {T : ℝ} {X Y Z W V : Type*}
     [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
@@ -378,8 +350,6 @@ private theorem l2_four
     ENNReal.toReal_ofReal hA, ENNReal.toReal_ofReal hB,
     ENNReal.toReal_ofReal hC, ENNReal.toReal_ofReal hD]
 
-/- A continuous state-set map satisfying the three-arm estimate sends every
-top-order `L²` field which remains in the state set to an `L²` forcing field. -/
 private theorem memLp_tame
     {T R : ℝ} {X Y Z : Type*}
     [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
@@ -451,13 +421,6 @@ private theorem memLp_tame
   rw [hu, Real.norm_eq_abs, abs_of_nonneg hmajor0]
   exact hn
 
-/-- Quantitative forcing-space existence for a continuous nonlinearity on a
-lower-order state ball satisfying the critical three-arm tame estimate.
-
-The first smallness hypothesis controls the genuinely top-order arm.  The
-second controls the high-size times lower-difference arm on the forcing ball.
-The horizon controls only the fixed lower-order arm and the displacement of
-the zero forcing. -/
 theorem partial_sol_tame
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 < R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
@@ -937,6 +900,6 @@ theorem partial_sol_tame
       (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar]
   · simpa only [hρdef] using hFstar
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Parabolic
 
 end

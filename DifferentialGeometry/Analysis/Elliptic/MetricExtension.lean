@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Family
 import DifferentialGeometry.Geometry.Operator.Hessian
 import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -22,6 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
 
 private local instance : MeasurableSpace E := borel E

@@ -1,16 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.SectionCompD2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.ConnAddVertInv
 
-/-!
-# Full-state Hessian split for the local addition
-
-This file specializes the Banach section-composition chain rule to the target
-coordinate of the component-local exponential addition.  It records only a
-fixed-chart calculus identity: the unique term containing `D²v` is multiplied
-by the vertical derivative, and the inverse vertical derivative cancels that
-factor exactly.
--/
-
 noncomputable section
 
 open Bundle Manifold Set
@@ -29,17 +19,12 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
 
-/-- The first-jet remainder in the Hessian of a local-addition section
-composition.  Its dependence on `v` is only through `v z` and `Dv z`. -/
 noncomputable def connAddD2Rem
     (g : SmoothRiemannianMetric I M) (p : M)
     (v : E → E) (z a b : E) : E :=
   fderiv ℝ (fderiv ℝ (localAddTarget (I := I) g p)) (z, v z)
     (a, fderiv ℝ v z a) (b, fderiv ℝ v z b)
 
-/-- The exact full-state Hessian split for a fixed local-addition chart.  The
-displayed vertical term is the only occurrence of the second derivative of
-`v`; `connAddD2Rem` uses only its first jet. -/
 theorem connAddD2_split
     (g : SmoothRiemannianMetric I M) (p : M)
     (v : E → E) (z a b : E)
@@ -53,8 +38,6 @@ theorem connAddD2_split
   simpa only [connAddD2Rem] using
     sectionCompD2 (localAddTarget (I := I) g p) v z a b hF hv
 
-/-- On the invertible vertical-derivative locus, subtracting the first-jet
-remainder and applying the inverse recovers `D²v` exactly. -/
 theorem connAddD2_cancel
     (g : SmoothRiemannianMetric I M) (p : M)
     (v : E → E) (z a b : E)
@@ -70,9 +53,6 @@ theorem connAddD2_cancel
   simpa only [connAddD2Rem] using
     sectionD2_cancel (localAddTarget (I := I) g p) v z a b hF hv hJ
 
-/-- A fixed chart admits one compact state tube on which the inverse vertical
-derivative is continuous and the exact Hessian cancellation holds at every
-`C²` section state in the tube. -/
 theorem exists_connAddD2
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r > 0,

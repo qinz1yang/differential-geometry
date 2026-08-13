@@ -39,32 +39,24 @@ def chartPulledWeightedMeasure (g : SmoothRiemannianMetric I M) (α : M) :
 structure ChartBilinearH1ComplData
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) where
-
   u_chart : EuclN → ℝ
-
   f_chart : EuclN → ℝ
-
   weak_partial : Fin (Module.finrank ℝ E) → EuclN → ℝ
-
   u_chart_memLp_weighted :
     MemLp u_chart 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
-
   f_chart_memLp_weighted :
     MemLp f_chart 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
-
   weak_partial_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K → K ⊆ chartTargetEuclid (I := I) (M := M) α →
       MemLp (weak_partial i) 2 ((volume : Measure EuclN).restrict K)
-
   weak_partial_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
       (weak_partial i) u_chart
       (chartTargetEuclid (I := I) (M := M) α)
-
   variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α →

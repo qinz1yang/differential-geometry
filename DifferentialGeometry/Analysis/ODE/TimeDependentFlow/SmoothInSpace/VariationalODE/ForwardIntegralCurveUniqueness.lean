@@ -3,7 +3,7 @@ import Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique
 import Mathlib.Analysis.ODE.Gronwall
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Manifold Bundle Filter
 open scoped Manifold Topology ContDiff
@@ -267,4 +267,4 @@ theorem bare_forward_flow_eqOn_of_jointC1 [CompleteSpace E]
 
 end BareForward
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

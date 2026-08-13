@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.FaithfulH1Embedd
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.AllOrderGardingConstant
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Order2SpectralIterateEquiv
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -11,13 +13,12 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 
@@ -199,7 +200,7 @@ theorem tensorPouSobolevHsNorm_le_ccSpectralEmbed (g : SmoothRiemannianMetric I 
           C * ‖ccSpectralEmbed (I := I) (M := M) g ((2 * k : ℕ) : ℝ) T‖ := by
   classical
   obtain ⟨Cg, hCg_nn, hGarding⟩ :=
-    DifferentialGeometry.Integral.Connection.exists_tensorPouSobolevHsNorm_k_le_sum_rawConnLapIter
+    DifferentialGeometry.Analysis.Elliptic.exists_tensorPouSobolevHsNorm_k_le_sum_rawConnLapIter
       (I := I) (M := M) g 2 k
   refine ⟨Cg * (k + 1), by positivity, fun T => ?_⟩
   set Nspec : ℝ := ‖ccSpectralEmbed (I := I) (M := M) g ((2 * k : ℕ) : ℝ) T‖ with hNspec_def
@@ -232,9 +233,8 @@ theorem tensorPouSobolevHsNorm_le_ccSpectralEmbed (g : SmoothRiemannianMetric I 
     _ ≤ Cg * ((k + 1 : ℝ) * Nspec) := mul_le_mul_of_nonneg_left hsum_le hCg_nn
     _ = (Cg * (k + 1)) * Nspec := by ring
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

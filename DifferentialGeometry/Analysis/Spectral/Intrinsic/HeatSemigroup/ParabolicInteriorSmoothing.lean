@@ -9,9 +9,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -45,14 +44,12 @@ def solFieldMass (hT : 0 ≤ T)
   tensorSobolevWeight (I := I) (M := M) i c *
     ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma forcingMass_nonneg (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
     (c : ℝ) (i : TensorEigenIdx (I := I) (M := M) g r s) :
     0 ≤ forcingMass (I := I) (M := M) f c i :=
   mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i c) (sq_nonneg _)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma solFieldMass_nonneg (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
@@ -60,7 +57,6 @@ lemma solFieldMass_nonneg (hT : 0 ≤ T)
     0 ≤ solFieldMass (I := I) (M := M) hT f c i :=
   mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i c) (sq_nonneg _)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_le_forcingMass (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
@@ -110,7 +106,6 @@ theorem solFieldMass_le_forcingMass (hT : 0 ≤ T)
             ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2) := by ring
   simpa [solFieldMass, forcingMass] using hbound
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_summable_of_forcingMass_summable (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
@@ -121,7 +116,6 @@ theorem solFieldMass_summable_of_forcingMass_summable (hT : 0 ≤ T)
     (fun i => solFieldMass_le_forcingMass (I := I) (M := M) hT f c i)
     (hf.mul_left ((1 + T) ^ 2))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_summable_succ (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (c : ℝ)
@@ -133,7 +127,6 @@ theorem solFieldMass_summable_succ (hT : 0 ≤ T)
   solFieldMass_summable_of_forcingMass_summable (I := I) (M := M) hT f c
     (hcouple c hc)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_summable_bootstrap (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
@@ -154,7 +147,6 @@ theorem solFieldMass_summable_bootstrap (hT : 0 ≤ T)
     rw [hrw2] at hstep
     exact hstep ih
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldMass_summable_all (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
@@ -186,7 +178,6 @@ def solFieldAtOrder (hT : 0 ≤ T)
   timeL2OfModes (I := I) (M := M) (σ := σ)
     (fun i => solModeCoeff (I := I) (M := M) (a := a) hT f i)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldAtOrder_timeModeCoeff (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) (σ : ℝ)
@@ -198,7 +189,6 @@ theorem solFieldAtOrder_timeModeCoeff (hT : 0 ≤ T)
   timeL2OfModes_timeModeCoeff (I := I) (M := M) (σ := σ)
     (fun i => solModeCoeff (I := I) (M := M) (a := a) hT f i) hσ i
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solField_into_all_tensorHs_interior (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) {b : ℝ}
@@ -215,9 +205,8 @@ theorem solField_into_all_tensorHs_interior (hT : 0 ≤ T)
     ⟨solFieldAtOrder (I := I) (M := M) hT f σ hσ,
       solFieldAtOrder_timeModeCoeff (I := I) (M := M) hT f σ hσ⟩
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

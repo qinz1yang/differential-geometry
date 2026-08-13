@@ -3,14 +3,6 @@ import Mathlib.Topology.OpenPartialHomeomorph.Continuity
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Filter Set
@@ -68,9 +60,6 @@ private theorem partial_sub_snd
   simp
 
 namespace OpenPartialHomeomorph
-
-
-
 
 theorem exists_symm_convOn_ball
     {X : Type*}
@@ -299,10 +288,6 @@ theorem exists_symm_convOn_ball
       heq_eventually (fun _ _ ↦ rfl)
   exact ⟨delta₀, hdelta₀, hdelta₀delta, hInf_maps,
     hmaps_eventually, hinv_conv⟩
-
-
-
-
 
 theorem exists_symm_cInf
     {X : Type*}

@@ -1,14 +1,16 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRSNabla
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Defs
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set IsManifold Tensor0SBundle
+open Bundle Manifold Set IsManifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
-namespace DifferentialGeometry.Integral.Connection
+
+namespace DifferentialGeometry.Geometry.Connection
 
 section ModelFiber
 
@@ -115,7 +117,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
     [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
 variable (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M]
+  [T2Space M]
 
 open scoped ContDiff
 open CovariantDerivative
@@ -222,6 +224,6 @@ theorem homTensorRSCovariantDerivative_apply_of_mdifferentiableAt (r a c : ℕ)
 
 end CovDeriv
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection
 
 end

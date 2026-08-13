@@ -4,16 +4,15 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDiffer
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

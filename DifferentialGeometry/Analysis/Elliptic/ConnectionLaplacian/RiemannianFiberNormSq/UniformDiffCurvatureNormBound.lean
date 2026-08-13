@@ -2,6 +2,9 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.DifferentiatedR
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
 import DifferentialGeometry.Geometry.Connection.ChartBridge.DiffRiemannBasisIdentityOffCentre
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.UniformRiemannOperatorNormBound
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -11,13 +14,13 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
-open Tensor0SBundle Tensor0SNabla
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -536,7 +539,7 @@ private lemma pouTsupport_subset_goodSet (α : M) :
       chartLeviCivitaGoodSet (I := I) α := by
   intro b hb
   have heq : chartLeviCivitaGoodSet (I := I) α = (chartAt H α).source := by
-    rw [DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source
+    rw [DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source
           (I := I) α]
     exact extChartAt_source_eq_chartAt_source (I := I) α
   rw [heq]
@@ -1015,8 +1018,8 @@ theorem exists_uniform_nablaCurvSec_LeviCivita_gNorm_bound
         ≤ Kw x * g.inner x u u := hKw_bound x a u
     _ ≤ max C₀ 0 * g.inner x u u := mul_le_mul_of_nonneg_right hKw_le huu_nonneg
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

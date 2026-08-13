@@ -11,16 +11,11 @@ namespace QuasiLinear
 
 structure BoundedC0Semigroup (X : Type*) [NormedAddCommGroup X]
     [NormedSpace ℝ X] where
-
   toFun : ℝ → (X →L[ℝ] X)
-
   apply_zero : toFun 0 = ContinuousLinearMap.id ℝ X
-
   apply_add : ∀ t s : ℝ, 0 ≤ t → 0 ≤ s →
     toFun (t + s) = (toFun t).comp (toFun s)
-
   opNorm_le_one : ∀ t : ℝ, 0 ≤ t → ‖toFun t‖ ≤ 1
-
   continuousOn_apply : ∀ v : X,
     ContinuousOn (fun t : ℝ => toFun t v) (Set.Ici 0)
 

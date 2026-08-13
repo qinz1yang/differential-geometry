@@ -4,13 +4,6 @@ import DifferentialGeometry.Geometry.Metric.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 
 open Bundle
@@ -35,8 +28,6 @@ theorem cball_subset_of_le
   intro y hy
   rw [Metric.mem_closedBall] at hy ⊢
   exact le_trans hy hr
-
-
 
 theorem injOn_of_return
     {X Y ι : Type*} [PseudoMetricSpace X]

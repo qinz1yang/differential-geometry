@@ -1,21 +1,15 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.ChainRule
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeFlow.ConjugatingFlowProperties
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.PushforwardSmooth
-
-/-!
-# Algebraic pullback identities for inverse diffeomorphisms
-
-This file records the composition and inverse-family identities for the
-Ricci-flow pullback metric.  They are the algebraic part of running the
-Hamilton--DeTurck pullback construction in the reverse direction.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
 
 open Bundle Filter
-open DifferentialGeometry.Integral.Connection
+
 open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -25,7 +19,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Pullback first by `Φ` and then by `Φ.symm` recovers the original metric. -/
 theorem Diffeomorph.pbMetric_symm
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M) :
     Diffeomorph.pullbackMetric
@@ -34,7 +27,6 @@ theorem Diffeomorph.pbMetric_symm
     Diffeomorph.pullbackMetric_refl]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Pullback first by `Φ.symm` and then by `Φ` recovers the original metric. -/
 theorem Diffeomorph.pbMetric_self
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M) :
     Diffeomorph.pullbackMetric
@@ -48,13 +40,6 @@ omit [FiniteDimensional ℝ E]
   [SigmaCompactSpace M]
   [T2Space M]
   [BoundarylessManifold I M] in
-/-- If the time-preserving total map of a diffeomorphism family is itself a
-local diffeomorphism, then evaluation of the inverse family is jointly smooth.
-
-The total map is automatically bijective because every time slice is a
-diffeomorphism.  Packaging it by `diffeomorphOfBijective` makes its smooth
-inverse available, and that inverse is exactly
-`(t, x) ↦ (t, (Ψ_fam t).symm x)`. -/
 theorem joint_symm_smooth
     (Ψ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hlocal : IsLocalDiffeomorph (𝓘(ℝ, ℝ).prod I)
@@ -104,14 +89,6 @@ omit [FiniteDimensional ℝ E]
   [SigmaCompactSpace M]
   [T2Space M]
   [BoundarylessManifold I M] in
-/-- Joint smoothness of the inverse evaluation map on an open time slab only
-requires the time-preserving total map to be a local diffeomorphism on that
-slab.
-
-Unlike `joint_symm_smooth`, this windowed form does not ask for any regularity
-of the family outside the interval where the gauge PDE is solved.  Slice-wise
-injectivity identifies the set-theoretic inverse family with each chosen local
-inverse of the total map. -/
 theorem joint_symm_smoothOn
     (Ψ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)) (T : ℝ)
     (hlocal : IsLocalDiffeomorphOn (𝓘(ℝ, ℝ).prod I)
@@ -161,13 +138,6 @@ theorem joint_symm_smoothOn
 omit [SigmaCompactSpace M]
   [T2Space M]
   [BoundarylessManifold I M] in
-/-- The inverse of a diffeomorphism family satisfying the negative gauge
-equation satisfies the positive pushed-forward gauge equation.
-
-This is the differential bridge from the harmonic-map heat-flow convention
-`∂ₜ Ψ = -W ∘ Ψ` to the inverse family used by the reverse DeTurck pullback.
-Joint smoothness of both evaluation families supplies the chain rule; it is
-not an existence hypothesis for the harmonic-map heat flow itself. -/
 theorem symm_gauge_vel
     (Ψ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (W : ℝ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -303,9 +273,6 @@ open DifferentialGeometry.PDE.DeTurck
 
 omit [CompactSpace M]
   [I.Boundaryless] in
-/-- At the identity gauge, the positive gauge velocity is exactly the DeTurck
-vector field of the unpulled metric.  This is the initial compatibility
-identity for a harmonic-map heat-flow gauge starting from `id`. -/
 @[simp] theorem gauge_vel_refl
     (g g_bg : SmoothRiemannianMetric I M) (x : M) :
     Diffeomorph.pushforward (Diffeomorph.refl I M ∞)
@@ -315,10 +282,6 @@ identity for a harmonic-map heat-flow gauge starting from `id`. -/
   rw [Diffeomorph.pullbackMetric_refl, Diffeomorph.pushforward_refl]
 
 omit [CompactSpace M] in
-/-- Pulling a Ricci flow back by a jointly smooth diffeomorphism family whose
-velocity is the pushforward of the DeTurck field produces the Ricci--DeTurck
-PDE.  This is the reverse gauge identity; it does not assert existence of the
-required diffeomorphism family. -/
 theorem ricci_pullback_DT
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
@@ -357,7 +320,8 @@ theorem ricci_pullback_DT
       ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun z : M => TotalSpace.mk' E (E := TangentSpace I) z
           (Diffeomorph.pushforward (Φ_fam s) (W s) z)) := fun s =>
-    ODE.flowFamily_pushforward_contMDiff (I := I) Φ_fam s (W s).contMDiff
+    DifferentialGeometry.Analysis.ODE.flowFamily_pushforward_contMDiff (I := I) Φ_fam s
+      (W s).contMDiff
   let Y : ℝ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := fun s =>
     ⟨Diffeomorph.pushforward (Φ_fam s) (W s), hPush s⟩
   have hYode : ∀ z : M, ∀ s ∈ Set.Ioo (0 : ℝ) T,

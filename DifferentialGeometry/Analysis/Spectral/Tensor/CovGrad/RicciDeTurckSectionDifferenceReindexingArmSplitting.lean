@@ -10,13 +10,18 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatu
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifferenceKoszulSecondCovGrad
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifferencePrincipalEndomorphismTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifferenceSymmetrizedReindexedCoeff
+open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
@@ -26,11 +31,13 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 
 section NormedSpaceModel
 
@@ -79,7 +86,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem appCc_smul_left (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -193,7 +199,6 @@ theorem reindexCoeffFibGen_apply (r s : ℕ) (σ' : Equiv.Perm (Fin r)) (x : M)
   congr 1
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 theorem reindexCoeffFibGen_contMDiff (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -271,7 +276,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
             R.toSection x)) := rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 theorem reindexCoeffGen_appCc_eq (g₀ : SmoothRiemannianMetric I M) (r : ℕ)
@@ -1212,7 +1216,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma inverseMetricSharpFib_lowerFlatCLM_eq_metricSharp
     (g₁ g₁' : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     inverseMetricSharpFib (I := I) g₁ x (lowerFlatCLM (I := I) g₁' x v) =
-      DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g₁ x
+      DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ x
         (g₁'.inner x v).toLinearMap := by
   rw [inverseMetricSharpFib_apply, lowerFlatCLM_apply]
   rw [show cotangentToDualLinear (I := I)
@@ -1248,22 +1252,22 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma combinedLowerRaisedEndo0_eq_metricSharp_flatDiff
     (g₁ g₁' : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     combinedLowerRaisedEndo0 (I := I) g₁ g₁' x v =
-      DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g₁ x
+      DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ x
         ((g₁'.inner x v).toLinearMap - (g₁.inner x v).toLinearMap) := by
   rw [combinedLowerRaisedEndo0_apply, inverseMetricSharpFib_lowerFlatCLM_eq_metricSharp]
-  have hv : DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g₁ x
+  have hv : DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ x
         (g₁.inner x v).toLinearMap = v := by
     rw [← inverseMetricSharpFib_lowerFlatCLM_eq_metricSharp (I := I) g₁ g₁ x v]
     exact inverseMetricSharpFib_lowerFlatCLM (I := I) g₁ x v
-  have hsharp_sub : DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g₁ x
+  have hsharp_sub : DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ x
         ((g₁'.inner x v).toLinearMap - (g₁.inner x v).toLinearMap) =
-      DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g₁ x
+      DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ x
           (g₁'.inner x v).toLinearMap
-        - DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g₁ x
+        - DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ x
           (g₁.inner x v).toLinearMap := by
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def,
-      DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def,
-      DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def, map_sub]
+    rw [DifferentialGeometry.Geometry.Operator.metricSharp_def,
+      DifferentialGeometry.Geometry.Operator.metricSharp_def,
+      DifferentialGeometry.Geometry.Operator.metricSharp_def, map_sub]
   rw [hsharp_sub, hv]
 
 
@@ -1310,7 +1314,6 @@ theorem metricFlatDiff_chartComponent_contMDiffOn_local (g₁ g₁' : SmoothRiem
   rw [LinearMap.sub_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 theorem combinedLowerRaisedEndo0_contMDiff (g₁ g₁' : SmoothRiemannianMetric I M) :
@@ -1326,16 +1329,15 @@ theorem combinedLowerRaisedEndo0_contMDiff (g₁ g₁' : SmoothRiemannianMetric 
   have hsharpY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E
         (E := fun z : M => TangentSpace I z) b
-        (DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g₁ b
+        (DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ b
           ((g₁'.inner b (Y b)).toLinearMap - (g₁.inner b (Y b)).toLinearMap))) := by
-    apply DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_contMDiff_total (I := I) g₁
+    apply DifferentialGeometry.Geometry.Operator.metricSharp_contMDiff_total (I := I) g₁
     intro γ j
     exact metricFlatDiff_chartComponent_contMDiffOn_local (I := I) g₁ g₁' Y γ j
   refine hsharpY.congr (fun x => ?_)
   rw [combinedLowerRaisedEndo0_eq_metricSharp_flatDiff (I := I) g₁ g₁' x (Y x)]
 
 set_option backward.isDefEq.respectTransparency false in
-
 def lowerSlotInsert0Fib (x : M) (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace 2 I x) := inferInstance
@@ -1356,7 +1358,6 @@ def lowerSlotInsert0Fib (x : M) (Λ : TangentSpace I x →L[ℝ] TangentSpace I 
         simp }
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma lowerSlotInsert0Fib_apply_eval (x : M)
@@ -1379,7 +1380,6 @@ lemma lowerSlotInsert0Fib_apply_eval (x : M)
   exact congrArg (fun t => Tensor0SSpace.toModel A t) hfam
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma lowerSlotInsert0Fib_curry (x : M)
@@ -1402,7 +1402,6 @@ lemma lowerSlotInsert0Fib_curry (x : M)
   rw [← hcurry, ContinuousLinearEquiv.symm_apply_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-
 def combinedLowerCoeff0Fib (g₁ g₁' : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
   lowerSlotInsert0Fib (I := I) (M := M) x (combinedLowerRaisedEndo0 (I := I) g₁ g₁' x)
@@ -1418,7 +1417,6 @@ lemma combinedLowerCoeff0Fib_apply_eval (g₁ g₁' : SmoothRiemannianMetric I M
   rw [combinedLowerCoeff0Fib, lowerSlotInsert0Fib_apply_eval]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 theorem combinedLowerCoeff0Fib_contMDiff (g₁ g₁' : SmoothRiemannianMetric I M) :
@@ -1767,7 +1765,6 @@ omit [SigmaCompactSpace M] in
     ricciArmOrder0CurvCoeffFibSlot_toModel, ricciArmOrder0CurvCoeffFibSlot_toModel]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciArmOrder0CurvCoeffFibSlot_contMDiff (g₁ : SmoothRiemannianMetric I M) (k : Fin 2) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 2 2 ℝ E)) ∞

@@ -383,7 +383,7 @@ private theorem memW1p_chartPushed_of_contMDiff
 
 theorem MemWkpChart_of_contMDiff
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     MemWkpChart (I := I) (M := M) g 1 p u := by
@@ -403,7 +403,7 @@ theorem MemWkpChart_of_contMDiff
 
 theorem MemW1pIntrinsic_of_contMDiff_explicit
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DifferentialGeometry.Analysis.Sobolev.Intrinsic.MemW1pIntrinsic
       (I := I) (M := M) g p u :=
@@ -412,7 +412,7 @@ theorem MemW1pIntrinsic_of_contMDiff_explicit
 
 theorem memWkpChart_iff_memW1pIntrinsic_of_contMDiff
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     MemWkpChart (I := I) (M := M) g 1 p u ↔
@@ -425,7 +425,7 @@ theorem memWkpChart_iff_memW1pIntrinsic_of_contMDiff
 
 theorem wkpNormChart_lt_top_of_contMDiff
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     wkpNormChart (I := I) (M := M) g 1 p u < ⊤ :=
@@ -434,7 +434,7 @@ theorem wkpNormChart_lt_top_of_contMDiff
 
 theorem w1pNormIntrinsic_lt_top_of_contMDiff
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (p : ℝ≥0∞) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     DifferentialGeometry.Analysis.Sobolev.Intrinsic.w1pNormIntrinsic
         (I := I) (M := M) g p u < ⊤ :=

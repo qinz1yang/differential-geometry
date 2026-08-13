@@ -6,12 +6,13 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 
 noncomputable section
 
+open DifferentialGeometry.Integral.DivergenceTheorem
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -89,12 +90,12 @@ theorem normGradSqFun_continuous [I.Boundaryless]
     Continuous (normGradSqFun (I := I) g f) := by
   have h :=
     TangentBundle.continuous_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g hf) (grad_g (I := I) g hf)
+      (grad_g (I := I) g ⟨_, hf⟩) (grad_g (I := I) g ⟨_, hf⟩)
   refine h.congr ?_
   intro b
-  change g.inner b ((grad_g (I := I) g hf :
+  change g.inner b ((grad_g (I := I) g ⟨_, hf⟩ :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) b)
-        ((grad_g (I := I) g hf :
+        ((grad_g (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) b) =
       normGradSqFun (I := I) g f b
   rw [grad_g_apply]
@@ -107,17 +108,17 @@ theorem normGradSqFun_contMDiff [I.Boundaryless]
     ContMDiff I 𝓘(ℝ) ∞ (normGradSqFun (I := I) g f) := by
   have h :=
     contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g hf) (grad_g (I := I) g hf)
+      (grad_g (I := I) g ⟨_, hf⟩) (grad_g (I := I) g ⟨_, hf⟩)
   refine h.congr ?_
   intro b
-  change g.inner b ((grad_g (I := I) g hf :
+  change g.inner b ((grad_g (I := I) g ⟨_, hf⟩ :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) b)
-        ((grad_g (I := I) g hf :
+        ((grad_g (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) b) =
       normGradSqFun (I := I) g f b
   rw [grad_g_apply]
   rfl
 
-end DivergenceTheorem
-end Integral
+end Operator
+end Geometry
 end DifferentialGeometry

@@ -5,15 +5,6 @@ import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory Matrix Filter
@@ -26,10 +17,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
-
-
-
-
 
 private def timeRetract (t δ w s : Real) : Real :=
   t + (s - t) * (1 - Real.smoothTransition ((s - t - δ) / w)) *
@@ -118,8 +105,6 @@ private lemma timeRetract_abs_le (t δ w : Real) (hδ : 0 ≤ δ) (hw : 0 < w)
     rw [hzero, abs_zero]
     linarith
 
-
-
 theorem exists_time_retract {U : Set Real} (hU : IsOpen U) {t : Real}
     (ht : t ∈ U) :
     ∃ ρ : Real → Real, ContDiff Real ∞ ρ ∧
@@ -144,12 +129,8 @@ theorem exists_time_retract {U : Set Real} (hU : IsOpen U) {t : Real}
     filter_upwards [hmem] with s hs
     exact timeRetract_eq_self t η η hη hs
 
-
-
-
-
 theorem first_var_local
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : Real → SmoothRiemannianMetric I M}
     {f : Real → M → Real} {U : Set Real} {t : Real}
     (hg : MetricFamilyRegularAt (I := I) g_fam t)
@@ -217,10 +198,8 @@ theorem first_var_local
     simp only [f', hρt]
   exact (hvariation.congr_deriv hvalue).congr_of_eventuallyEq hmass_eq.symm
 
-
-
 theorem first_var_joint
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : Real → SmoothRiemannianMetric I M}
     {f : Real → M → Real} {U : Set Real} {t : Real}
     (hU : IsOpen U) (ht : t ∈ U)

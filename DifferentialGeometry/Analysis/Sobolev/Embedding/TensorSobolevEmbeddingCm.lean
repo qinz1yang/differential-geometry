@@ -7,15 +7,16 @@ import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.FiberNormRiema
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.TensorSectionL2BoundByComponents
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingManifoldC0
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
+open DifferentialGeometry.Geometry.Curvature
 
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Sobolev
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 section
 
@@ -134,7 +135,7 @@ theorem tensorFiberNorm_sq_le_chartCenterComponents
     congr 1
     symm
     rw [hTmod_def]
-    exact DifferentialGeometry.PDE.RicciFlow.HebeyBlock.triv_eq_toModel_at_chartCenter
+    exact DifferentialGeometry.Analysis.Sobolev.HebeyBlock.triv_eq_toModel_at_chartCenter
       (I := I) r s x (T.toSection x)
   have h_alg :=
     Analysis.Parabolic.TensorSpectral.tensorRSModel_norm_sq_le_sum_projection_sq
@@ -146,4 +147,4 @@ theorem tensorFiberNorm_sq_le_chartCenterComponents
   refine Finset.sum_congr rfl (fun Jdx _ => ?_)
   rw [h_raw_eq Idx Jdx]
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Sobolev

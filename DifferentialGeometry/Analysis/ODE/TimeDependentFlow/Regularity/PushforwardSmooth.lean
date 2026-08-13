@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.PushforwardVF
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Pullback.PushforwardVF
 import Mathlib.Geometry.Manifold.VectorField.Pullback
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Bundle
 open scoped Manifold Topology ContDiff
@@ -47,7 +47,8 @@ private lemma pushforward_infty_ne_zero : (∞ : WithTop ℕ∞) ≠ 0 := by dec
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma flowFamily_pushforward_eq_mpullback_symm
     (Φ : M ≃ₘ⟮I, I⟯ M) (Y : ∀ x : M, TangentSpace I x) :
-    (Diffeomorph.pushforward Φ Y : ∀ x : M, TangentSpace I x)
+    (DifferentialGeometry.PDE.RicciFlow.Pullback.Diffeomorph.pushforward Φ Y : ∀ x : M,
+      TangentSpace I x)
       = (VectorField.mpullback I I (⇑Φ.symm) Y : ∀ x : M, TangentSpace I x) := by
   funext z
   have hinv : (mfderiv I I (⇑Φ.symm) z).inverse = mfderiv I I (⇑Φ) (Φ.symm z) := by
@@ -89,7 +90,7 @@ theorem flowFamily_pushforward_contMDiff
       (fun x : M => TotalSpace.mk' E (E := TangentSpace I) x (Y x))) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E (E := TangentSpace I) x
-        (Diffeomorph.pushforward (Φ_fam s) Y x)) := by
+        (DifferentialGeometry.PDE.RicciFlow.Pullback.Diffeomorph.pushforward (Φ_fam s) Y x)) := by
   haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
   set Φ := Φ_fam s with hΦ
   have hfun_eq := flowFamily_pushforward_eq_mpullback_symm (I := I) Φ Y
@@ -155,7 +156,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [CompactSpace M]
 
-open DifferentialGeometry.PDE.RicciFlow.Pullback
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [CompactSpace M] in
 theorem flowFamily_regularity_package
@@ -170,7 +170,7 @@ theorem flowFamily_regularity_package
         (fun x : M => TotalSpace.mk' E (E := TangentSpace I) x (Y x)) →
       ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M => TotalSpace.mk' E (E := TangentSpace I) x
-          (Diffeomorph.pushforward (Φ_fam s) Y x))) ∧
+          (DifferentialGeometry.PDE.RicciFlow.Pullback.Diffeomorph.pushforward (Φ_fam s) Y x))) ∧
     (∀ (s : ℝ) (x : M), MDifferentiableAt I I (Φ_fam s : M → M) x) ∧
     (∀ s : ℝ, 0 < s → s < T → ∀ x : M,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => Φ_fam u x) (Ici 0) s
@@ -185,4 +185,4 @@ theorem flowFamily_regularity_package
 
 end RegularityPackage
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

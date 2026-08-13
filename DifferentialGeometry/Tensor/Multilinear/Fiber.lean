@@ -1,8 +1,9 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Multilinear.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
+open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
@@ -27,7 +28,6 @@ instance instFunLike (s : ℕ) (x : B) :
   ContinuousMultilinearMap.funLike
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem topology_eq (s : ℕ) (x : B) :
     (inferInstance : TopologicalSpace (Bundle.continuousMultilinearMap 𝕜 s F E x)) =
     (inferInstanceAs (TopologicalSpace

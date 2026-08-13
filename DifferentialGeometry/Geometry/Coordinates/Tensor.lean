@@ -6,16 +6,6 @@ import DifferentialGeometry.Tensor.RSTensor.Components
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry.Tensor.Coordinates
 
 noncomputable section
@@ -77,12 +67,6 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
       T x (fun a => frame (vectorSlots a) x) := by
   rfl
 
-
-
-
-
-
-
 def tensor0SComponentInFrameAt {s : Nat} [Fintype Idx] [DecidableEq Idx]
     (T : FrameTensor0SField (I := I) (M := M) s)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -124,12 +108,6 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
     tensorRSComponentFromCovariantInputInFrame T input frame hframe x vectorSlots =
       (T x (input x)) (fun a => frame (vectorSlots a) x) := by
   rfl
-
-
-
-
-
-
 
 def tensorRSComponentInFrame {r s : Nat} [Fintype Idx] [DecidableEq Idx]
     (T : FrameTensorRSField (I := I) (M := M) r s)

@@ -3,21 +3,11 @@ import Mathlib.Geometry.Manifold.Metrizable
 
 set_option autoImplicit false
 
-/-!
-# Compactly supported smooth cutoffs
-
-This module strengthens the finite-dimensional plateau construction with the
-compact-support fact needed by distributional integration by parts.
--/
-
 namespace DifferentialGeometry.Analysis
 
 open Filter Set
 open scoped ContDiff Manifold Topology
 
-/-- A compact subset of an open finite-dimensional real vector-space domain
-admits a globally smooth compactly supported plateau, equal to one on the
-compact set and supported in the domain. -/
 theorem exists_bump_compact
     {E : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -52,9 +42,6 @@ theorem exists_bump_compact
         exact hx (hχzero x hxL))
       hL.isClosed).trans hLU
 
-/-- A compact subset of an open finite-dimensional real manifold admits a
-globally smooth compactly supported plateau, equal to one near the compact set
-and supported in the open set. -/
 theorem exists_mfd_bump
     {E H M : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

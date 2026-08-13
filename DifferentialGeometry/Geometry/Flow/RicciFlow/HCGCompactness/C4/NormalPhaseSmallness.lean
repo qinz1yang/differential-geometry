@@ -2,17 +2,9 @@ import DifferentialGeometry.Analysis.ODE.PhaseFlowSmallness
 import DifferentialGeometry.Analysis.ODE.PhaseEndpointInverse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.MetricCompactnessInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalPhase
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -32,8 +24,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace NormalRadiusProfile
 
-
-
 def phaseRadius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
@@ -50,8 +40,6 @@ theorem phaseRadius_pos
   dsimp only [phaseRadius]
   exact div_pos (h.floor_pos R) (by norm_num)
 
-
-
 theorem phaseRadius_metric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
@@ -66,8 +54,6 @@ theorem phaseRadius_metric
       dsimp only [phaseRadius]
       nlinarith [h.floor_pos R]
     _ ≤ hb.radius k x := h.floor_le_radius hx
-
-
 
 theorem phaseRadius_exp
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -93,8 +79,6 @@ theorem phaseRadius_exp
 
 end NormalRadiusProfile
 
-
-
 omit [NeZero (Module.finrank Real E)] in
 @[simp] theorem normalPhaseK_zero
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -102,8 +86,6 @@ omit [NeZero (Module.finrank Real E)] in
   apply NNReal.eq
   simp [normalPhaseK]
   rfl
-
-
 
 omit [NeZero (Module.finrank Real E)] in
 theorem normalPhaseK_cont
@@ -114,8 +96,6 @@ theorem normalPhaseK_cont
   apply Continuous.subtype_mk
   fun_prop
 
-
-
 omit [NeZero (Module.finrank Real E)] in
 theorem normalPhaseK_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -125,8 +105,6 @@ theorem normalPhaseK_lim
       (nhds (normalPhaseK h 0)) := (normalPhaseK_cont h).continuousAt
   simpa using hcont
 
-
-
 omit [NeZero (Module.finrank Real E)] in
 theorem normalPhaseErr_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -135,8 +113,6 @@ theorem normalPhaseErr_lim
       (nhds 0) (nhds 0) :=
   PhaseFlow.phaseErr_tendsto.comp (normalPhaseK_lim h)
 
-
-
 omit [NeZero (Module.finrank Real E)] in
 theorem normalPhaseErr_lt_ev
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -144,10 +120,6 @@ theorem normalPhaseErr_lt_ev
     {eps : NNReal} (heps : 0 < eps) :
     ∀ᶠ R in nhds 0, PhaseFlow.phaseErr (normalPhaseK h R) < eps :=
   normalPhaseErr_lim h (Iio_mem_nhds heps)
-
-
-
-
 
 omit [NeZero (Module.finrank Real E)] in
 theorem exists_normal_q_lt
@@ -208,10 +180,6 @@ theorem exists_normal_q_lt
 
 namespace NormalRadiusProfile
 
-
-
-
-
 theorem exists_phase_q
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
@@ -223,9 +191,6 @@ theorem exists_phase_q
       3 * hb.metricC 1 * (2 * (q : Real)) ^ 2 ≤ (q : Real) ∧
       PhaseFlow.phaseErr (normalPhaseK hb (2 * q)) < eps :=
   exists_normal_q_lt (I := I) hb (h.phaseRadius_pos R) heps
-
-
-
 
 theorem exists_phase_scale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

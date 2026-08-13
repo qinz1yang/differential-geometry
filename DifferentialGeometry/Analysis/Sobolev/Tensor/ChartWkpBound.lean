@@ -5,28 +5,13 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.ChartTransition.ChartTransitionTransportCLM
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Smooth.EigenvectorSmooth
-
-/-!
-# Quantitative `W^{2,p}` transport of weak tensor chart components
-
-The raw tensor transition law in `ChartWkpTransport.lean` contains a scalar
-transition coefficient which is smooth only on a chart overlap.  The existing
-spectral construction supplies its canonical globally smooth compactly
-supported extension, obtained by multiplying by the two chart-kernel cutoffs.
-This file pushes that coefficient to the source Euclidean chart and combines
-the quantitative smooth-multiplier theorem with `crossChartJointK`.
-
-The resulting estimate is deliberately fixed at order two, which is the order
-needed by the maximal-regularity Ricci--DeTurck construction.  The exponent is
-still arbitrary in the natural range `1 <= p < infinity`; in particular the
-constant is independent of the transported weak component.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -53,8 +38,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-/-- The globally smooth cutoff transition coefficient, written in source-chart
-Euclidean coordinates and extended by zero off the source chart target. -/
 def transCoeffE
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
@@ -62,7 +45,6 @@ def transCoeffE
     (transportCoeffManifold (I := I) (M := M) g r s β α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The Euclidean transition coefficient is globally smooth. -/
 theorem transCoeffE_smooth
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) :
@@ -76,7 +58,6 @@ theorem transCoeffE_smooth
       (I := I) (M := M) g r s β α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- The Euclidean transition coefficient has compact support. -/
 theorem transCoeffE_cpt
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) :
@@ -89,8 +70,6 @@ theorem transCoeffE_cpt
       (I := I) (M := M) g r s β α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- On the source chart, `transCoeffE` evaluates to the manifold transition
-coefficient at the corresponding point. -/
 theorem transCoeffE_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) {x : M}
@@ -104,8 +83,6 @@ theorem transCoeffE_apply
   rw [symm_toEuclidean_symm_toEuclidean_extChartAt
     (I := I) (M := M) β hx]
 
-/-- Multiplication by one cutoff transition coefficient is quantitatively
-bounded on `W^{2,p}` of the source chart. -/
 theorem coeffMulJoint
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -137,8 +114,6 @@ theorem coeffMulJoint
     (chartTargetEuclid_isOpen (I := I) (M := M) β)
     h_smooth (fun j hj y _ => hC_bound y j hj) hv
 
-/-- The contribution of source component `Q` in chart `β` to target
-component `P` in chart `α`. -/
 def secTransTerm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) (v : EuclN → ℝ) : EuclN → ℝ :=
@@ -146,8 +121,6 @@ def secTransTerm
     (chartPullback I β
       (fun y => transCoeffE (I := I) (M := M) g r s β α P Q y * v y))
 
-/-- A compactly POU-supported source component contributes a quantitatively
-controlled `W^{2,p}` function in every target chart. -/
 theorem secTermJoint
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)

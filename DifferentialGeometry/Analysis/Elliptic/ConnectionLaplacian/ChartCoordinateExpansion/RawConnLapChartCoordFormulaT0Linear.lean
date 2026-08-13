@@ -4,6 +4,10 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.SecondCovDerivExp
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.ChartPullbackSmoothness.ChartInvGramMatrixPullback
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.ChartPullbackSmoothness.ChartFrameCoordMatrixPullback
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.DirichletForm.FinsetSumSwap
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -13,13 +17,14 @@ open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -62,7 +67,7 @@ private noncomputable def secondCovDeriv_GlobalCorr0
         (I := I) (M := M) g r s α Idx Jdx k l)) I' J'
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma secondCovDeriv_GlobalCorr_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -80,7 +85,7 @@ private lemma secondCovDeriv_GlobalCorr_contDiffOn
           (I := I) (M := M) g r s α Idx Jdx k l))).1 I' J' m
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma secondCovDeriv_GlobalCorr0_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -96,7 +101,7 @@ private lemma secondCovDeriv_GlobalCorr0_contDiffOn
         (secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
           (I := I) (M := M) g r s α Idx Jdx k l))).2.1 I' J'
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma secondCovDeriv_GlobalCorr_pointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -292,6 +297,7 @@ private lemma invGramPull_at_b_eq
   rw [hsymm, hleft_inv]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private lemma chartFrameCoordPull_at_b_eq
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E))
@@ -311,6 +317,7 @@ private lemma chartFrameCoordPull_at_b_eq
   rw [hsymm, hleft_inv]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 private lemma chartFrameCoordDirDerivPull_at_b_eq
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k l : Fin (Module.finrank ℝ E))
@@ -1089,8 +1096,8 @@ theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula
   exact rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_pointwise
     (I := I) (M := M) g r s α Idx Jdx T₀ hb
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

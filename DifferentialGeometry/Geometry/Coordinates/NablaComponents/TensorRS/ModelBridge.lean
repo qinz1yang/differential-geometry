@@ -1,11 +1,5 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Basic
-
-
-
-
-
-
-
+open DifferentialGeometry.Tensor.Multilinear
 
 set_option autoImplicit false
 
@@ -13,7 +7,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -23,9 +17,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
@@ -133,9 +124,6 @@ private theorem model_RS_component_eq_coord_component_comp_eventually {r s : ℕ
     simpa [trivializationAt] using hy_src
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 omit [IsManifold I 2 M] in
 theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))

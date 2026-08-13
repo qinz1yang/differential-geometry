@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSymbol
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionSymbol
-import DifferentialGeometry.Geometry.Flow.DeTurckOperator
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckOperator
 
 noncomputable section
 

@@ -1,11 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Basic
-
-
-
-
-
-
-
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
@@ -13,7 +8,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -80,11 +75,6 @@ private theorem coordinateFrameAt_basis_repr_eq_trivializationAt
   ext i
   exact (congrFun (e.repr_sum_self (fun i => b.repr v i)) i).symm
 
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem constInChart_basisTensor0S_coordFrame {r : ℕ}
     (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -121,12 +111,6 @@ private theorem coordFrameRSComp_at {r s : ℕ}
         x₀ (coordinateFrameAt_mem (I := I) x₀) upper lower =
       coordComponentRSAt (I := I) (T x₀) upper lower := by
   rfl
-
-
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem applyInput_coordFrame_eventually {r s : ℕ}
@@ -233,13 +217,6 @@ theorem tensorRS_eval_constInChart_coordinateFrame_contMDiffAt {r s : ℕ}
       (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (T := fun p : M => T p) (β := βsec)
       (V := fun b : Fin s => coordinateFrameAt (I := I) x₀ (lower b)) x₀ hT hβ hV
-
-
-
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}

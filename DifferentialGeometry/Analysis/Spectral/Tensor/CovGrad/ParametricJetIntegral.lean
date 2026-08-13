@@ -1,26 +1,24 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradPathIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PathIntegralFibreNormTransfer
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyDecomposition
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -273,8 +271,6 @@ private theorem icg_norm_sq_int
   rw [heq]
   exact hcontInt.intervalIntegrable_of_Icc (by norm_num)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem icg_path_comm
     (g₀ : SmoothRiemannianMetric I M) (r s i : ℕ)
@@ -311,8 +307,6 @@ theorem icg_path_comm
         (iteratedCovGrad (I := I) g₀ r s j (Φ t)))
       (fun t => iteratedCovGrad (I := I) g₀ r s (j + 1) (Φ t)) S hS hSI hjgsucc hji
       (by funext t; rw [iteratedCovGrad_succ])
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem path_jetL2_le

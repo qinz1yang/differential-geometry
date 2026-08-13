@@ -3,17 +3,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBInput
 import DifferentialGeometry.Analysis.Calculus.RingInverseDeriv
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 namespace DifferentialGeometry
 namespace HCGCompactness
@@ -37,8 +30,6 @@ noncomputable local instance nestedBilinNormedSpace :
     NormedSpace Real (E →L[Real] E →L[Real] Real) :=
   ContinuousLinearMap.toNormedSpace
 
-
-
 theorem norm_apply_le_two
     (g : E →L[Real] E →L[Real] Real)
     (h : F →L[Real] F →L[Real] Real)
@@ -54,8 +45,6 @@ theorem norm_apply_le_two
     nlinarith
   exact le_of_sq_le_sq hsq (mul_nonneg (by norm_num) (norm_nonneg v))
 
-
-
 theorem opNorm_le_two
     (g : E →L[Real] E →L[Real] Real)
     (h : F →L[Real] F →L[Real] Real)
@@ -67,7 +56,6 @@ theorem opNorm_le_two
   refine ContinuousLinearMap.opNorm_le_bound L (by norm_num) ?_
   exact norm_apply_le_two g h L hg hh hiso
 
-
 theorem isom_first_bound
     (B : E →L[Real] E →L[Real] Real)
     (C : F →L[Real] F →L[Real] Real) (Phi : E -> F) (x : E)
@@ -78,8 +66,6 @@ theorem isom_first_bound
     ‖iteratedFDeriv Real 1 Phi x‖ <= 2 := by
   rw [norm_iteratedFDeriv_one]
   exact opNorm_le_two B C (fderiv Real Phi x) hB hC hiso
-
-
 
 theorem isom_injective
     (g : E →L[Real] E →L[Real] Real)
@@ -98,8 +84,6 @@ theorem isom_injective
     nlinarith [sq_nonneg ‖a - b‖]
   exact sub_eq_zero.mp (norm_eq_zero.mp hnorm)
 
-
-
 theorem opNorm₂_le
     (T : E →L[Real] E →L[Real] F) {C : Real} (hC : 0 <= C)
     (hT : forall u v : E, ‖T u v‖ <= C * ‖u‖ * ‖v‖) :
@@ -111,9 +95,6 @@ theorem opNorm₂_le
   intro v
   simpa only [mul_assoc] using hT u v
 
-
-
--- Nested continuous-linear-map codomains require a deep deterministic instance search.
 theorem isom_jet_one
     (B : E -> E →L[Real] E →L[Real] Real)
     (C : F -> F →L[Real] F →L[Real] Real)
@@ -161,11 +142,6 @@ section LoweredJet
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace
 
-
-
-
--- Differentiating the lowered four-linear identity needs a larger elaboration budget.
--- Its nested continuous-linear-map types also require deeper instance synthesis.
 theorem lowered_jet_next
     (C : F -> F →L[Real] F →L[Real] Real)
     (Phi : E -> F) (A : E -> E →L[Real] F)
@@ -314,14 +290,10 @@ noncomputable local instance triNormedSpace :
     NormedSpace Real (E0 →L[Real] E0 →L[Real] E0 →L[Real] Real) :=
   ContinuousLinearMap.toNormedSpace
 
-
-
 private noncomputable def gramCLM :
     (E0 →L[Real] E0 →L[Real] Real) →L[Real] (E0 →L[Real] E0) :=
   ContinuousLinearMap.compL Real E0 (E0 →L[Real] Real) E0
     (ContinuousDualEquiv.normalizedEquiv E0).symm.toContinuousLinearMap
-
-
 
 omit [CoerciveBilinInverse E0] in
 private theorem gramCLM_apply
@@ -329,7 +301,6 @@ private theorem gramCLM_apply
     gramCLM B =
       (ContinuousDualEquiv.normalizedEquiv E0).symm.toContinuousLinearMap.comp B := by
   rfl
-
 
 private theorem gram_isUnit [CompleteSpace E0]
     {B : E0 →L[Real] E0 →L[Real] Real} (hB : IsCoercive B) :
@@ -344,8 +315,6 @@ private theorem gram_isUnit [CompleteSpace E0]
   change (ContinuousDualEquiv.normalizedEquiv E0).symm.toContinuousLinearMap.comp B =
     gramCLM B
   rfl
-
-
 
 private theorem gram_inv_eq [CompleteSpace E0]
     {B : E0 →L[Real] E0 →L[Real] Real} (hB : IsCoercive B) :
@@ -370,11 +339,9 @@ private theorem gram_inv_eq [CompleteSpace E0]
   apply (ContinuousDualEquiv.normalizedEquiv E0).symm.injective
   simpa using he
 
-
 private noncomputable def gramInvBound : Real :=
   max 1 (2 * ‖((ContinuousDualEquiv.normalizedEquiv E0) :
     E0 →L[Real] (E0 →L[Real] Real))‖)
-
 
 omit [CoerciveBilinInverse E0] in
 private theorem one_le_gramInvBound :
@@ -385,7 +352,6 @@ omit [CoerciveBilinInverse E0] in
 private theorem gramInvBound_nonneg :
     0 ≤ gramInvBound (E0 := E0) :=
   zero_le_one.trans (one_le_gramInvBound (E0 := E0))
-
 
 private theorem gram_inv_norm_le [CompleteSpace E0]
     {B : E0 →L[Real] E0 →L[Real] Real} (hB : IsCoercive B)
@@ -420,7 +386,6 @@ private theorem gram_inv_norm_le [CompleteSpace E0]
       gcongr
       exact le_max_right _ _
 
-
 omit [CoerciveBilinInverse E0] in
 private theorem gram_apply_norm_le
     (B : E0 →L[Real] E0 →L[Real] Real) :
@@ -442,8 +407,6 @@ private theorem gram_apply_norm_le
     _ = ‖B v‖ := one_mul _
     _ ≤ ‖B‖ * ‖v‖ := ContinuousLinearMap.le_opNorm B v
 
-
-
 omit [CoerciveBilinInverse E0] in
 private theorem gram_comp_norm_le
     {P : Type*} [NormedAddCommGroup P] [NormedSpace Real P]
@@ -455,8 +418,6 @@ private theorem gram_comp_norm_le
   intro v
   change ‖gramCLM (T v)‖ ≤ ‖T‖ * ∏ i, ‖v i‖
   exact (gram_apply_norm_le (T v)).trans (T.le_opNorm v)
-
-
 
 omit [CoerciveBilinInverse E0] in
 private theorem gram_deriv_le
@@ -476,7 +437,6 @@ private theorem gram_deriv_le
       (gramCLM (E0 := E0)).iteratedFDeriv_comp_left hB hi'
   rw [hderiv]
   exact gram_comp_norm_le _
-
 
 omit [ContinuousDualEquiv E0] [CoerciveBilinInverse E0] in
 private theorem norm_clm_apply_le
@@ -507,7 +467,6 @@ private theorem norm_clm_apply_le
     iteratedFDerivWithin_of_isOpen (𝕜 := Real)
       (f := V) _ hs_open hxs] at h
   exact h
-
 
 private theorem norm_bilinAt_le
     {P X Y Z : Type*}
@@ -542,8 +501,6 @@ private theorem norm_bilinAt_le
     iteratedFDerivWithin_of_isOpen (𝕜 := Real)
       (f := g) _ hs_open hxs] at h
   exact h
-
-
 
 private theorem norm_compAt_le
     {P X Y : Type*}
@@ -589,8 +546,6 @@ private theorem norm_compAt_le
   rw [iteratedFDerivWithin_of_isOpen m hs_open hxs] at hcomp
   simpa only [Function.comp_apply] using hcomp
 
-
-
 private theorem gram_inv_deriv_le
     {P : Type*} [NormedAddCommGroup P] [NormedSpace Real P]
     [CompleteSpace E0]
@@ -629,8 +584,6 @@ private theorem gram_inv_deriv_le
         (gramCLM (E0 := E0)).contDiff.comp_contDiffAt x hB)
     hunit hinv hgram
   simpa only [max_eq_left (one_le_gramInvBound (E0 := E0))] using h
-
-
 
 private theorem gram_apply_deriv_le
     {P : Type*} [NormedAddCommGroup P] [NormedSpace Real P]
@@ -678,8 +631,6 @@ private theorem gram_apply_deriv_le
     (fun j hj hji => hD j hj (hji.trans him))
   gcongr
 
-
-
 private noncomputable def koszulRieszCLM (u v : E0) :
     (E0 →L[Real] E0 →L[Real] E0 →L[Real] Real) →L[Real] E0 :=
   (ContinuousDualEquiv.normalizedEquiv E0).symm.toContinuousLinearMap.comp
@@ -695,14 +646,10 @@ omit [CoerciveBilinInverse E0] in
         (MetricKoszul.koszulCov D u v) := by
   simp [koszulRieszCLM]
 
-
-
 private noncomputable def raisedKoszul [CompleteSpace E0]
     (B : E0 →L[Real] E0 →L[Real] Real)
     (D : E0 →L[Real] E0 →L[Real] E0 →L[Real] Real) (u v : E0) : E0 :=
   Ring.inverse (gramCLM B) (koszulRieszCLM u v D)
-
-
 
 private theorem raisedKoszul_eq [CompleteSpace E0]
     {B : E0 →L[Real] E0 →L[Real] Real} (hB : IsCoercive B)
@@ -716,8 +663,6 @@ private theorem raisedKoszul_eq [CompleteSpace E0]
           (MetricKoszul.koszulCov D u v))) =
     hB.sharp (MetricKoszul.koszulCov D u v)
   rw [(ContinuousDualEquiv.normalizedEquiv E0).apply_symm_apply]
-
-
 
 private noncomputable def koszulRieszOpCLM :
     (E0 →L[Real] E0 →L[Real] E0 →L[Real] Real) →L[Real]
@@ -734,7 +679,6 @@ omit [CoerciveBilinInverse E0] in
     koszulRieszOpCLM D u v = koszulRieszCLM u v D := by
   simp [koszulRieszOpCLM, koszulRieszCLM]
 
-
 private noncomputable def postBilinCLM :
     (E0 →L[Real] E0) →L[Real]
       (E0 →L[Real] E0 →L[Real] E0) →L[Real]
@@ -742,13 +686,11 @@ private noncomputable def postBilinCLM :
   (ContinuousLinearMap.compL Real E0 (E0 →L[Real] E0) (E0 →L[Real] E0)).comp
     (ContinuousLinearMap.compL Real E0 E0 E0)
 
-
 private noncomputable def preLeftCLM :
     (E0 →L[Real] E0 →L[Real] E0) →L[Real]
       (E0 →L[Real] E0) →L[Real]
         (E0 →L[Real] E0 →L[Real] E0) :=
   ContinuousLinearMap.compL Real E0 E0 (E0 →L[Real] E0)
-
 
 private noncomputable def preRightCLM :
     (E0 →L[Real] E0 →L[Real] E0) →L[Real]
@@ -756,7 +698,6 @@ private noncomputable def preRightCLM :
         (E0 →L[Real] E0 →L[Real] E0) :=
   ((ContinuousLinearMap.compL Real E0 (E0 →L[Real] E0) (E0 →L[Real] E0)).comp
     (ContinuousLinearMap.compL Real E0 E0 E0).flip).flip
-
 
 private noncomputable def postBilin
     (A : E0 →L[Real] E0) (K : E0 →L[Real] E0 →L[Real] E0) :
@@ -769,8 +710,6 @@ omit [ContinuousDualEquiv E0] [CoerciveBilinInverse E0] in
     postBilin A K u v = A (K u v) := by
   rfl
 
-
-
 private noncomputable def preBilin
     (K : E0 →L[Real] E0 →L[Real] E0) (A : E0 →L[Real] E0) :
     E0 →L[Real] E0 →L[Real] E0 :=
@@ -781,7 +720,6 @@ omit [ContinuousDualEquiv E0] [CoerciveBilinInverse E0] in
     (K : E0 →L[Real] E0 →L[Real] E0) (A : E0 →L[Real] E0) (u v : E0) :
     preBilin K A u v = K (A u) (A v) := by
   rfl
-
 
 private noncomputable def raisedKoszulOp [CompleteSpace E0]
     (B : E0 →L[Real] E0 →L[Real] Real)
@@ -795,7 +733,6 @@ omit [CoerciveBilinInverse E0] in
     (D : E0 →L[Real] E0 →L[Real] E0 →L[Real] Real) (u v : E0) :
     raisedKoszulOp B D u v = raisedKoszul B D u v := by
   rfl
-
 
 omit [CoerciveBilinInverse E0] in
 private theorem koszulRieszCLM_le (u v : E0) :
@@ -829,8 +766,6 @@ private theorem koszulRieszCLM_le (u v : E0) :
         (3 / 2 : Real) * ‖D‖ * ‖u‖ * ‖v‖ :=
       MetricKoszul.koszulCov_norm_le D (norm_nonneg D) hD u v
     _ = ((3 / 2 : Real) * ‖u‖ * ‖v‖) * ‖D‖ := by ring
-
-
 
 private theorem raised_deriv_le
     [CompleteSpace E0]
@@ -896,7 +831,6 @@ private theorem raised_deriv_le
     gramInvBound_nonneg (E0 := E0)
   positivity
 
-
 private noncomputable def raisedBudget [CompleteSpace E0]
     (D : Real) (m : Nat) : Real :=
   ‖postBilinCLM (E0 := E0)‖ *
@@ -906,19 +840,13 @@ private noncomputable def raisedBudget [CompleteSpace E0]
           gramInvBound (E0 := E0) ^ (i + 1)) * D ^ i) *
       (‖koszulRieszOpCLM (E0 := E0)‖ * D ^ (m - i + 1))
 
-
-
 private noncomputable def raisedEnvelope [CompleteSpace E0]
     (D : Real) (m : Nat) : Real :=
   ∑ i ∈ Finset.range (m + 1), raisedBudget (E0 := E0) D i
 
-
-
 private noncomputable def raisedCompBudget [CompleteSpace E0]
     (D P : Real) (m : Nat) : Real :=
   (m.factorial : Real) * raisedEnvelope (E0 := E0) D m * P ^ m
-
-
 
 private noncomputable def isomNextBudget [CompleteSpace E0]
     (D P : Real) (m : Nat) : Real :=
@@ -932,7 +860,6 @@ private noncomputable def isomNextBudget [CompleteSpace E0]
             raisedCompBudget (E0 := E0) D P j * P ^ (i - j + 1)) *
         P ^ (m - i + 1)
 
-
 private noncomputable def isomBudgetState [CompleteSpace E0]
     (D : Real) : Nat → Real × Real
   | 0 => (0, 1)
@@ -943,11 +870,9 @@ private noncomputable def isomBudgetState [CompleteSpace E0]
         | k + 1 => isomNextBudget (E0 := E0) D prev.2 k
       (next, max prev.2 next)
 
-
 private noncomputable def isomBudget [CompleteSpace E0]
     (D : Real) (n : Nat) : Real :=
   (isomBudgetState (E0 := E0) D n).1
-
 
 private noncomputable def isomEnvelope [CompleteSpace E0]
     (D : Real) (n : Nat) : Real :=
@@ -1136,7 +1061,6 @@ private lemma nonneg_of_first_iteratedFDeriv_bound
   simpa only [pow_one] using
     (norm_nonneg (iteratedFDeriv Real 1 B x)).trans h
 
-
 private theorem raisedOp_deriv_le
     [CompleteSpace E0]
     (B : E0 → E0 →L[Real] E0 →L[Real] Real) (x : E0)
@@ -1176,8 +1100,6 @@ private theorem raisedOp_deriv_le
   have him : i ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi_mem)
   exact raisedOp_deriv_summand_le B x m i D hBm hfB hlower hD hD_nonneg him
 
-
-
 private theorem raisedOp_contDiffAt
     [CompleteSpace E0]
     (B : E0 → E0 →L[Real] E0 →L[Real] Real) (x : E0) (m : Nat)
@@ -1197,8 +1119,6 @@ private theorem raisedOp_contDiffAt
     gramInverse_contDiffAt_of_lower B x m hBm hlower
   simpa only [raisedKoszulOp, postBilin] using
     (postBilinCLM (E0 := E0)).isBoundedBilinearMap.contDiff.comp₂_contDiffAt hinv hK
-
-
 
 private theorem raisedComp_deriv_le
     [CompleteSpace E0]
@@ -1240,9 +1160,6 @@ private theorem raisedComp_deriv_le
       (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr him))
   simpa only [K] using norm_compAt_le K Phi x m
     (raisedEnvelope (E0 := E0) D m) A hK hPhi hKbound hA
-
-
-
 
 omit [ContinuousDualEquiv E0] [CoerciveBilinInverse E0] in
 private theorem isom_rec_le
@@ -1308,7 +1225,6 @@ private theorem isom_rec_le
       fun y => preBilin (KC y) (A y)) x‖ ≤ _
   rw [iteratedFDeriv_sub_apply hpost hpre]
   exact (norm_sub_le _ _).trans (add_le_add hpost_bound hpre_bound)
-
 
 private theorem isom_next_le
     [CompleteSpace E0]
@@ -1491,7 +1407,6 @@ private theorem isom_next_le
                     raisedCompBudget (E0 := E0) D P j * P ^ (i - j + 1)) *
                 P ^ (m - i + 1) := by ring)
 
-
 private theorem isom_deriv_le
     [CompleteSpace E0]
     (B C : E0 → E0 →L[Real] E0 →L[Real] Real)
@@ -1551,8 +1466,6 @@ private theorem isom_deriv_le
       hPjets heq
     simpa only [P, isomBudget_succ, Nat.succ_eq_add_one] using hstep
 
-
-
 private theorem isom_pos_deriv_le
     [CompleteSpace E0]
     (B C : E0 → E0 →L[Real] E0 →L[Real] Real)
@@ -1584,8 +1497,6 @@ private theorem isom_pos_deriv_le
 
 end Gram
 
-
-
 theorem isom_koszul
     (B : E0 -> E0 →L[Real] E0 →L[Real] Real)
     (C : F0 -> F0 →L[Real] F0 →L[Real] Real)
@@ -1613,8 +1524,6 @@ theorem isom_koszul
   rw [MetricKoszul.koszulCov_apply, MetricKoszul.koszulCov_apply]
   linear_combination -(1 / 2 : Real) * h1 - (1 / 2 : Real) * h2 +
     (1 / 2 : Real) * h3
-
-
 
 theorem second_eq_koszul
     [CompleteSpace E0] [CompleteSpace F0]
@@ -1650,8 +1559,6 @@ theorem second_eq_koszul
       rw [MetricKoszul.apply_koszulVec, MetricKoszul.apply_koszulVec]
       exact hpair u v w
     _ = e sourceKoszul - targetKoszul := hCco.sharp_apply _
-
-
 
 theorem second_norm_le
     [CompleteSpace E0] [CompleteSpace F0]
@@ -1723,8 +1630,6 @@ theorem second_norm_le
         3 * CC * (2 * ‖u‖) * (2 * ‖v‖) := by gcongr
     _ = (6 * CB + 12 * CC) * ‖u‖ * ‖v‖ := by ring
 
-
-
 theorem isom_second_eq
     [CompleteSpace E0] [CompleteSpace F0]
     [CoerciveBilinInverse E0] [CoerciveBilinInverse F0]
@@ -1755,9 +1660,6 @@ theorem isom_second_eq
       (e : E0 →L[Real] F0) DA hB hC hPhi hA hiso hAx hCsymm
       hDAsymm a b c
 
-
-
-
 private theorem isom_second_inv
     [CompleteSpace E0] [CompleteSpace F0]
     [ContinuousDualEquiv E0] [ContinuousDualEquiv F0]
@@ -1784,8 +1686,6 @@ private theorem isom_second_inv
   rw [raisedKoszul_eq hBco, raisedKoszul_eq hCco]
   exact isom_second_eq B C Phi A DB DC e DA hB hC hPhi hA hiso hAx
     hCsymm hDAsymm hBco hCco u v
-
-
 
 private theorem isom_second_field
     [FiniteDimensional Real E0] [CompleteSpace E0]
@@ -1845,8 +1745,6 @@ private theorem isom_second_field
       (by simp only [e, L, ContinuousLinearEquiv.coe_ofBijective])
       hCsymm hAsymm hBco hCco u v
 
-
-
 private theorem isom_second_op
     [FiniteDimensional Real E0] [CompleteSpace E0]
     (B C : E0 -> E0 →L[Real] E0 →L[Real] Real)
@@ -1872,9 +1770,6 @@ private theorem isom_second_op
     raisedKoszulOp_apply]
   exact isom_second_field B C Phi hBsm hCsm hPhi hiso hCsymm
     hBlower hClower u v
-
-
-
 
 private theorem isom_second_on
     [FiniteDimensional Real E0] [CompleteSpace E0]
@@ -1916,9 +1811,6 @@ section IsomBounds
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace
 
-
-
--- Iterated derivatives of bilinear-form fields require deep instance synthesis.
 theorem isom_deriv_on
     [FiniteDimensional Real E0] [CompleteSpace E0]
     (B C : E0 → E0 →L[Real] E0 →L[Real] Real)
@@ -1975,10 +1867,6 @@ theorem isom_deriv_on
     heq r hr (fun i hi hir => hDB i hi hir x hx)
       (fun i hi hir => hDC i hi hir (Phi x) hPhiV)
 
-
-
-
--- The uniform family packages Pi-valued iterated derivatives of bilinear forms.
 theorem isom_bounds_on
     [FiniteDimensional Real E0] [CompleteSpace E0]
     (B C : Nat → E0 → E0 →L[Real] E0 →L[Real] Real)
@@ -2054,8 +1942,6 @@ theorem isom_bounds_on
     · exact hxU
 
 end IsomBounds
-
-
 
 theorem isom_second_bound
     [FiniteDimensional Real E0] [CompleteSpace E0]
@@ -2253,8 +2139,6 @@ theorem normalTrans_isom
   exact congrArg₂
     (fun a b => Y.metric.inner (expMapDiffeo (I := I) Y.metric x z) a b) hu hv
 
-
-
 omit [NeZero (Module.finrank Real E')] in
 theorem normal_fderiv_bij
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M)
@@ -2285,8 +2169,6 @@ theorem normal_fderiv_bij
       (fun v => (hx z hzU v).1)
       (fun v => normalTrans_isom Y x y hzx hzy v v)
   exact ⟨hinj, LinearMap.surjective_of_injective hinj⟩
-
-
 
 omit [NeZero (Module.finrank Real E')] in
 theorem normal_fderiv_le_two
@@ -2323,8 +2205,6 @@ section NormalBounds
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace
-
-
 
 theorem normal_bounds_on
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))

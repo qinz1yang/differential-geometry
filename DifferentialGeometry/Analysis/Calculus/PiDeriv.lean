@@ -2,20 +2,12 @@ import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 set_option autoImplicit false
 
-
-
-
-
-
-
 namespace DifferentialGeometry
 
 variable {𝕜 E F : Type*}
   [NontriviallyNormedField 𝕜]
   [NormedAddCommGroup E] [NormedSpace 𝕜 E]
   [NormedAddCommGroup F] [NormedSpace 𝕜 F]
-
-
 
 theorem iteratedFDeriv_pi
     {ι : Type*} [Fintype ι] {n : WithTop ℕ∞} {f : ι → E → F} {x : E}

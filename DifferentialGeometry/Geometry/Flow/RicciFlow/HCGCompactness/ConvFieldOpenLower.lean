@@ -1,21 +1,13 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldOpen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldLower
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Positive lower bounds on an open-window metric limit
-
-The coefficient may vary with the canonical compact time window.  At each
-interior time, one window therefore supplies one positive global comparison
-constant for the limit metric at that time.
--/
 
 noncomputable section
 
 open Set Bundle Manifold
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Integral.Connection
 
 namespace DifferentialGeometry
 namespace HCGCompactness
@@ -35,8 +27,6 @@ namespace OpenConvOut
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Windowwise positive lower bounds along the selected sequence give a
-positive global lower bound for the limit metric at each interior time. -/
 theorem metric_lower
     {R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted;

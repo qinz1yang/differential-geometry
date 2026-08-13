@@ -2,23 +2,29 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.CometricDifferen
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqTensorInnerBridge
 import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Operator.Gradient
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -83,12 +89,12 @@ theorem multilinear_firstSlot_pairing_le
     · simp
     · simp
   set w : TangentSpace I x :=
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp
+    DifferentialGeometry.Geometry.Operator.metricSharp
       (I := I) g₀ x φ.toLinearMap with hw_def
   have hw_inner : ∀ u : TangentSpace I x, g₀.inner x w u = φ u := by
     intro u
     rw [hw_def]
-    exact DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp
+    exact DifferentialGeometry.Geometry.Operator.inner_metricSharp
       (I := I) g₀ x φ.toLinearMap u
   have hcomp_eq : ∀ a : Fin (Module.finrank ℝ E),
       Wm (Fin.cons (e a) (fun k => e (J' k))) = g₀.inner x w (e a) := by
@@ -397,12 +403,12 @@ private theorem multi_slotAt_le
     rw [hφ_def, ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply,
       ContinuousMultilinearMap.toContinuousLinearMap_apply]
   set w : TangentSpace I x :=
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp
+    DifferentialGeometry.Geometry.Operator.metricSharp
       (I := I) g₀ x φ.toLinearMap with hw_def
   have hw_inner : ∀ u : TangentSpace I x, g₀.inner x w u = φ u := by
     intro u
     rw [hw_def]
-    exact DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp
+    exact DifferentialGeometry.Geometry.Operator.inner_metricSharp
       (I := I) g₀ x φ.toLinearMap u
   have hcomp : ∀ a : Fin (Module.finrank ℝ E),
       Wm (Function.update z j (e a)) = g₀.inner x w (e a) := by
@@ -654,8 +660,6 @@ private theorem negDiffEndo_le
         (Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x v v)) := hbnd
     _ = (δ / (1 - δ)) * g₀.inner x v v := by rw [hsq]
 
-
-
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem negDiffSlot_point_le
@@ -678,8 +682,6 @@ theorem negDiffSlot_point_le
     W e bse hbse horth
   rw [← negDiffSlot_model (I := I) g₀ g₁ s x W]
   exact hslot
-
-
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
 theorem neg_gInvDiffSlot_le
@@ -731,8 +733,6 @@ private theorem negSlotAt_model
     slotInsertEndoFib_smul_left (I := I) (M := M) r j x,
     neg_one_smul, ContinuousLinearMap.neg_comp]
   rfl
-
-
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

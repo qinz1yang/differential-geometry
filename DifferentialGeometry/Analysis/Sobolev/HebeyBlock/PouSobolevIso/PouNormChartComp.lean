@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOp
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.GramTwist
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 open Bundle
 open scoped Manifold ContDiff
@@ -31,4 +31,4 @@ theorem pou_weighted_norm_equals_chart_component_norm_up_to_constant
             C * (tensorPouSobolevNorm (I := I) (M := M) g 0 T).toReal :=
   fibrewise_gram_twist_estimate (I := I) (M := M) g r s
 
-end DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+end DifferentialGeometry.Analysis.Sobolev.HebeyBlock

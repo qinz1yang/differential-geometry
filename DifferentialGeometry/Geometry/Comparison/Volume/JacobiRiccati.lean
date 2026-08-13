@@ -1,13 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiShape
-
-/-!
-# Riccati trace comparison for Jacobi families
-
-This file identifies the inverse-Gram curvature trace of a transverse Jacobi
-family with Ricci curvature.  It is the geometric trace input for radial
-Bishop comparison.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -19,7 +13,6 @@ namespace Geometry
 namespace Riemannian
 namespace Volume
 
-open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 
@@ -78,8 +71,6 @@ private theorem linIndep_of_ortho
     exact absurd (Finset.mem_univ j) hj
 
 omit [SigmaCompactSpace M] in
-/-- The inverse-Gram trace of the radial curvature matrix is Ricci curvature,
-independently of the transverse basis used to form the Gram matrix. -/
 theorem curvTrace_eq_ricci
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -254,8 +245,6 @@ theorem curvTrace_eq_ricci
 
 omit [NeZero (Module.finrank ℝ E)]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- The square of the mean-curvature trace is bounded by the transverse
-dimension times the quadratic shape trace. -/
 theorem mean_sq_le_shape
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -447,8 +436,6 @@ theorem mean_sq_le_shape
   simpa only [Fintype.card_fin] using hineq
 
 omit [SigmaCompactSpace M] in
-/-- Under a Ricci lower bound, the radial mean curvature satisfies the scalar
-Riccati differential inequality for the hyperbolic comparison model. -/
 theorem mean_riccati_le
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     {ι : Type*} [Fintype ι] [DecidableEq ι]

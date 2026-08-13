@@ -1,11 +1,14 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmAppCc
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamChartRicciDeriv
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory intervalIntegral
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
 
 namespace DifferentialGeometry
@@ -15,11 +18,12 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -255,7 +259,7 @@ lemma realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw
     exact (extChartAt I x).map_target hy_tgt
   rw [realizedGramDeriv]
   rw
-    [IntrinsicSpectral.DeTurckCoefficients.chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness
+    [DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness
     (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b y hp]
   rw [scalarOnE_def, scalarOnE_def]
 

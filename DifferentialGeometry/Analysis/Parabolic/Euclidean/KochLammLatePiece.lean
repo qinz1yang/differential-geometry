@@ -1,15 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateBound
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammTailScale
 
-/-!
-# One far terminal piece of the Koch--Lamm ordinary-source potential
-
-An arbitrary measurable spatial piece is paired with two independent facts:
-it lies in one source cylinder, and it is far from the observation point.
-Joint space-time Hölder then combines the local source bound with the
-Gaussian tail factor.  No cover or shell decomposition is chosen here.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -26,8 +17,6 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [Nontrivial V] in
-/-- A selected terminal piece inside a radius-`R` ball has measure bounded by
-the corresponding late source cylinder. -/
 theorem klTailCyl_le {R : ℝ} {S : Set V} (c : V)
     (hS : S ⊆ Metric.ball c R) :
     klTailMeasure (V := V) R S ≤
@@ -38,7 +27,6 @@ theorem klTailCyl_le {R : ℝ} {S : Set V} (c : V)
     (Set.prod_mono (subset_refl _) hS) le_rfl
 
 omit [Nontrivial V] in
-/-- Every selected terminal piece is contained in the full terminal slab. -/
 theorem klTailTerm_le (R : ℝ) (S : Set V) :
     klTailMeasure (V := V) R S ≤ klTermMeasure (V := V) (R ^ 2) := by
   unfold klTailMeasure klTermMeasure
@@ -47,8 +35,6 @@ theorem klTailTerm_le (R : ℝ) (S : Set V) :
     (Set.prod_mono (subset_refl _) (Set.subset_univ _)) le_rfl
 
 omit [Nontrivial V] [NormedSpace ℝ F] [CompleteSpace F] in
-/-- The local late-source hypothesis supplies `MemLp` on every selected
-piece contained in its spatial ball. -/
 theorem klPieceSrc_mem {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
@@ -58,7 +44,6 @@ theorem klPieceSrc_mem {T R : ℝ} {A₁ A_q : ℝ≥0}
     (klTailCyl_le (V := V) c hS)
 
 omit [Nontrivial V] [NormedSpace ℝ F] [CompleteSpace F] in
-/-- Quantitative source Hölder factor on one selected terminal piece. -/
 theorem klPieceSrc_fac {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
@@ -89,13 +74,11 @@ theorem klPieceSrc_fac {T R : ℝ} {A₁ A_q : ℝ≥0}
   simpa only [klLqScale, ENNReal.toReal_mul, ENNReal.toReal_inv,
     ENNReal.toReal_ofReal hs.le, ENNReal.coe_toReal] using hreal
 
-/-- Contribution of one selected terminal spatial piece. -/
 def klLatePiece0 (R : ℝ) (f : ℝ × V → F) (x : V) (S : Set V) : F :=
   ∫ z : ℝ × V, klTermKernel (R ^ 2) x z • f z
     ∂klTailMeasure (V := V) R S
 
 omit [CompleteSpace F] in
-/-- Joint space-time Hölder on one selected terminal piece. -/
 theorem klLatePiece_hold {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
@@ -117,7 +100,6 @@ theorem klLatePiece_hold {T R : ℝ} {A₁ A_q : ℝ≥0}
       (klTermKernel (R ^ 2) x) f hk hf)
 
 omit [CompleteSpace F] in
-/-- Radius-independent bound for one far terminal piece. -/
 theorem klLatePiece_norm {T R k : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x c : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)

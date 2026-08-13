@@ -3,28 +3,14 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Model.TensorRS
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Model.Smoothness
 import DifferentialGeometry.Bundle.SectionRealized
-import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
-
-
-
-
-
-
 
 namespace CovariantDerivative
 
 open Bundle
 open scoped Manifold ContDiff
-
-
-
-
-
-
-
 
 def ContMDiffCovariantDerivativeLocally
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -35,12 +21,6 @@ def ContMDiffCovariantDerivativeLocally
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (k : WithTop ℕ∞) : Prop :=
   ∀ ⦃u : Set M⦄, IsOpen u → ContMDiffCovariantDerivativeOn E k cov.toFun u
-
-
-
-
-
-
 
 theorem ContMDiffCovariantDerivative.contMDiff_apply
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]

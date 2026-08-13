@@ -2,19 +2,12 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.FixedChart.Models
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
 import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvalRealized
 
-
-
-
-
-
-
-
-
 set_option autoImplicit false
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
-open Bundle Set TensorLieDeriv
+open Bundle Set DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -187,11 +180,6 @@ theorem tensorRS_eval_contMDiffAt {r s : ℕ}
   simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using hEval
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
 theorem tensor0S_eval_tangentConstInChart_contMDiffAt
     {s : ℕ}
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -237,5 +225,5 @@ theorem tensor0S_eval_tangentConstInChart_contMDiffAt
     (hv := hframe)
   simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using hEval
 
-
 end Tensor0SBundle
+end DifferentialGeometry

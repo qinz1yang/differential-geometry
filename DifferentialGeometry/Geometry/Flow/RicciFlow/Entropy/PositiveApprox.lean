@@ -3,23 +3,16 @@ import DifferentialGeometry.Analysis.Integration.EntropyMix
 import DifferentialGeometry.Analysis.Integration.L2.Basic
 import DifferentialGeometry.Geometry.Metric.MetricBounds
 import Mathlib.Analysis.SpecificLimits.Basic
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-/-!
-# Positive approximation of square-form amplitudes
-
-A smooth unit-mass amplitude may vanish.  This file mixes its squared density
-with a small uniform density, takes the positive square root, and controls the
-resulting square-form energy without differentiating through a limiting tensor.
--/
 
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 noncomputable section
 
 open MeasureTheory Filter
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Integration
 open DifferentialGeometry.Analysis.Laplacian
@@ -146,14 +139,11 @@ private theorem energy_mix_le
     (metric_inner_self_nonneg (I := I) (M := M) g x _) <|
       hcoef.trans ha1
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 variable [Nonempty M]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- A smooth unit-mass amplitude, allowed to vanish, admits strictly positive
-smooth unit-mass approximants whose square-form value is arbitrarily close
-from above. -/
 theorem exists_pos_wform
     (g : SmoothRiemannianMetric I M) {v : M → ℝ}
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v)

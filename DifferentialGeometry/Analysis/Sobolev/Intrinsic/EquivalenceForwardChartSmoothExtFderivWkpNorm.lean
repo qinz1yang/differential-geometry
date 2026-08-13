@@ -42,7 +42,7 @@ local notation "EuclN_E" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma sq_partials_scalarOnE_le_norm_fderiv_scalarOnE_sq
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (f : M → ℝ) (y : E) :
     (∑ k : Fin (Module.finrank ℝ E),
         (DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
@@ -581,7 +581,7 @@ lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm_local
 
 lemma wkpNorm_chartSmoothExt_pou_mul_le_wkpNormChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {q : ℝ≥0∞} (hq_one : 1 ≤ q) (u : M → ℝ) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 1 q

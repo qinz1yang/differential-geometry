@@ -1,15 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageComparison
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -66,8 +58,6 @@ def HasStageRefine
     HasStageJetData inp P L hr phi hphi hconn U C0 C1
       aInf Jinf Jbarinf gInf
 
-
-
 def HasStageSeed
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -94,8 +84,6 @@ theorem HasStageSeed.refine
     HasStageRefine inp P L hconn r hr :=
   hseed.2 L hstable r hr
 
-
-
 theorem HasStageSeed.subseq
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -108,9 +96,6 @@ theorem HasStageSeed.subseq
     HasStageRefine inp P (L0.subseq hψ) hconn r hr := by
   apply hseed.refine inp P L0 hconn (L0.subseq hψ) _ r hr
   exact NetLimitData.stable_subseq inp.decay P L0 hψ hseed.1
-
-
-
 
 theorem MetricCompactBase.exists_stage_seed
     (b : MetricCompactBase (I := I) X)

@@ -6,27 +6,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Bundle Manifold Set Metric ContinuousLinearMap Module
@@ -38,14 +17,9 @@ namespace Geometry
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)]
 
-
-
-
 noncomputable def dIncl (x : sphere (0 : E) 1) :
     TangentSpace (𝓡 n) x →L[ℝ] E :=
   mfderiv (𝓡 n) 𝓘(ℝ, E) ((↑) : sphere (0 : E) 1 → E) x
-
-
 
 noncomputable def roundInner (x : sphere (0 : E) 1) :
     TangentSpace (𝓡 n) x →L[ℝ] TangentSpace (𝓡 n) x →L[ℝ] ℝ :=
@@ -75,10 +49,6 @@ theorem roundInner_pos (x : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) x)
   exact mul_pos (norm_pos_iff.mpr (dIncl_ne_zero (n := n) hv))
     (norm_pos_iff.mpr (dIncl_ne_zero (n := n) hv))
 
-
-
-
-
 private theorem flatInner_comp_incl_contMDiff :
     ContMDiff (𝓡 n) (𝓘(ℝ, E).prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
       (fun x : sphere (0 : E) 1 => TotalSpace.mk'
@@ -87,9 +57,6 @@ private theorem flatInner_comp_incl_contMDiff :
         (((↑) : sphere (0 : E) 1 → E) x)
         ((riemannianMetricVectorSpace E).inner (((↑) : sphere (0 : E) 1 → E) x))) :=
   ((riemannianMetricVectorSpace E).contMDiff.of_le le_top).comp contMDiff_coe_sphere
-
-
-
 
 private theorem dIncl_apply_section_contMDiff
     (Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x)

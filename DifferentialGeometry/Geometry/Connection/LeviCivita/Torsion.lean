@@ -2,22 +2,17 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -26,8 +21,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
-
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem torsion_free_at_apply
@@ -61,7 +54,7 @@ theorem torsion_free_apply
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem torsion_free_family_apply
     {D : RealTimeInterval}
-    {G : RealizedMetricFamilyOn (I := I) (M := M) D}
+    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (htf : IsTorsionFreeFamilyOn (I := I) G)
     (t : RealTimeInterval.FlowTime D)
     {x : M} {X Y : (p : M) -> TangentSpace I p}
@@ -69,8 +62,6 @@ theorem torsion_free_family_apply
     G.connectionAt t Y x (X x) - G.connectionAt t X x (Y x) =
       VectorField.mlieBracket I X Y x :=
   torsion_free_apply (I := I) (htf t) hX hY
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem coordinate_basis_coord_eq_sum_inv_metric_inner
@@ -168,8 +159,6 @@ private theorem koszulScalar_coordinateFrame_eq_metric_derivs
   koszulScalar_coordinateFrame_eq_metric_derivs_of_mem
     (I := I) g x0 (coordinateFrameAt_mem (I := I) x0) i j l
 
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem koszulScalar_coordinateFrame_symm
     (g : SmoothRiemannianMetric I M)
@@ -185,9 +174,6 @@ theorem koszulScalar_coordinateFrame_symm
     simpa [coordinateFrameAt_bracket_zero (I := I) x0 i j] using
       koszulScalar_swap_sub (I := I) g (coordinateFrameAt (I := I) x0 i)
         (coordinateFrameAt (I := I) x0 j) Z x0)
-
-
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordinate_torsion_coeff_eq_christoffel_skew
@@ -208,8 +194,6 @@ theorem coordinate_torsion_coeff_eq_christoffel_skew
     (coordinateFrameAt_mdifferentiableAt (I := I) x0 j)
   rw [coordinateFrameAt_bracket_zero (I := I) x0 i j] at h
   simpa [hframe] using h
-
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordinate_christoffel_symm_of_torsionFree
@@ -258,8 +242,6 @@ theorem leviCivitaConnectionOfMetric_coordinateFrame_apply_symm
     (tangentConstAt (I := I) x0 v)
   simpa [metricFlatLinear_apply] using hleft.trans (hK.trans hright.symm)
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_coordinate_christoffel_symm
     (g : SmoothRiemannianMetric I M) (x0 : M) (i j k : CoordinateIdx (𝕜 := Real) E) :
@@ -271,11 +253,6 @@ theorem leviCivitaConnectionOfMetric_coordinate_christoffel_symm
         (coordinateFrameAt_isLocalFrame_one (I := I) x0) x0 j i k := by
   unfold christoffelSymbolInFrame
   rw [leviCivitaConnectionOfMetric_coordinateFrame_apply_symm (I := I) g x0 i j]
-
-
-
-
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_coordinate_christoffel_formula
@@ -411,8 +388,6 @@ theorem leviCivitaConnectionOfMetric_isTorsionFree
   simp [B, coordinateFrameAt_toBasis_apply,
     leviCivitaConnectionOfMetric_coordinate_torsion_basis_zero]
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_isLeviCivita
     (g : SmoothRiemannianMetric I M) :
@@ -421,4 +396,4 @@ theorem leviCivitaConnectionOfMetric_isLeviCivita
     (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
     (leviCivitaConnectionOfMetric_isTorsionFree (I := I) g)
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

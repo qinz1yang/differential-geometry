@@ -32,7 +32,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 lemma chartAtlasPOU_finset_sum_eq_one
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (x : M) :
     ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x = 1 := by
@@ -48,8 +48,8 @@ lemma chartAtlasPOU_finset_sum_eq_one
     (Set.mem_univ x) hsubset
 
 theorem riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    [T2Space M] [CompactSpace M]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
     {F : M → ℝ≥0∞} (hF : Measurable F)
     (hF_supp : ∀ x, x ∉ (chartAt H α).source → F x = 0) :

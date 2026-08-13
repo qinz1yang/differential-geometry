@@ -1,14 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxScale
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxTail
 
-/-!
-# Radius scaling of the terminal Koch--Lamm flux tail
-
-The split-Gaussian tail mass has the same time exponent as the global flux
-mass.  Taking the `klPDual` root therefore extracts exactly one
-`klLpScaleR`, while the far factor becomes `exp (-k^2 / 8)`.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -23,23 +15,19 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- Scalar terminal flux-tail mass before taking the dual root. -/
 def klFluxHalfCore (t : ℝ) : ℝ :=
   ((t / 2) ^ (klD1Exp V + 1) / (klD1Exp V + 1)) *
     baseD1HalfMass V (klPDual V)
 
-/-- `klPDual` root of the split terminal flux-tail mass. -/
 def klFluxHalfRoot (t : ℝ) : ℝ :=
   (klFluxHalfCore (V := V) t) ^ (1 / klPDual V)
 
-/-- Dimension-only constant in the far late-flux estimate. -/
 def klFluxTailC (V : Type*) [NormedAddCommGroup V]
     [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
     [MeasurableSpace V] [BorelSpace V] : ℝ :=
   klFluxHalfRoot (V := V) 1
 
 omit [Nontrivial V] in
-/-- The split terminal flux mass is nonnegative at positive time. -/
 theorem klFluxHalf_nonneg {t : ℝ} (ht : 0 < t) :
     0 ≤ klFluxHalfCore (V := V) t := by
   have ha : 0 ≤ klD1Exp V + 1 := by
@@ -50,8 +38,6 @@ theorem klFluxHalf_nonneg {t : ℝ} (ht : 0 < t) :
     (baseD1HalfMass_nn (V := V) (klPDual V))
 
 omit [Nontrivial V] in
-/-- Replacing terminal time by `R^2` extracts the exact Koch--Lamm flux
-radius scale to the `klPDual` power. -/
 theorem klFluxHalf_scale {R : ℝ} (hR : 0 < R) :
     klFluxHalfCore (V := V) (R ^ 2) =
       (klLpScaleR (V := V) R) ^ klPDual V *
@@ -88,7 +74,6 @@ theorem klFluxHalf_scale {R : ℝ} (hR : 0 < R) :
   ring
 
 omit [Nontrivial V] in
-/-- Taking the dual root leaves exactly one copy of `klLpScaleR`. -/
 theorem klFluxHRoot_scale {R : ℝ} (hR : 0 < R) :
     klFluxHalfRoot (V := V) (R ^ 2) =
       klFluxTailC V * klLpScaleR (V := V) R := by
@@ -106,14 +91,11 @@ theorem klFluxHRoot_scale {R : ℝ} (hR : 0 < R) :
   ring
 
 omit [Nontrivial V] in
-/-- Every selected terminal flux-tail power mass is nonnegative. -/
 theorem klFluxTailPow_nn (R : ℝ) (x : V) (S : Set V) :
     0 ≤ klFluxTailPow (V := V) R x S := by
   unfold klFluxTailPow
   exact integral_nonneg fun z ↦ Real.rpow_nonneg (norm_nonneg _) _
 
-/-- After taking the dual root, a `kR` far-field condition yields
-`exp (-k^2/8)` and exactly one compensating `klLpScaleR`. -/
 theorem klFluxTail_fac {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (x : V) {S : Set V} (hSm : MeasurableSet S)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :

@@ -1,13 +1,13 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Field
 import DifferentialGeometry.Tensor.Product.Basis
 import DifferentialGeometry.Tensor.Product.Bundle
 import DifferentialGeometry.Bundle.Section
 import Mathlib.RingTheory.TensorProduct.Finite
-
+open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
@@ -262,7 +262,6 @@ theorem fromTensor_map_ofModel {s q : ℕ} {x : B}
     exact product_fun_ofModel f g
 
 set_option backward.isDefEq.respectTransparency false in
-
 noncomputable def equiv (s q : ℕ) (x : B) :
     Bundle.continuousMultilinearMap 𝕜 (s + q) F E x ≃ₗ[𝕜]
     TensorProduct 𝕜 (Bundle.continuousMultilinearMap 𝕜 s F E x)
@@ -426,7 +425,7 @@ theorem triv_toTensor_eq_modelFromTensorEquiv_symm {d : ℕ}
 
 end Bundle.continuousMultilinearMap
 
-namespace MultilinearSection
+namespace DifferentialGeometry.MultilinearSection
 
 variable (n : WithTop ℕ∞) [ContMDiffVectorBundle n F E IB]
 
@@ -451,7 +450,6 @@ noncomputable def product
     exact (contMDiffAt_const (c := ContinuousLinearMap.mul 𝕜 𝕜).clm_apply
       (hα (σ ∘ Fin.castAdd q) x₀)).clm_apply (hβ (σ ∘ Fin.natAdd s) x₀)⟩
 
-
 @[simp] theorem product_zero (α : MultilinearSection 𝕜 F IB E n s) :
     product (IB := IB) n α (0 : MultilinearSection 𝕜 F IB E n q)
       = (0 : MultilinearSection 𝕜 F IB E n (s + q)) := by
@@ -460,7 +458,6 @@ noncomputable def product
   change Bundle.continuousMultilinearMap.product_fun (α x)
     ((0 : MultilinearSection 𝕜 F IB E n q) x) V = _
   simp [Bundle.continuousMultilinearMap.product_fun_apply, ContMDiffSection.coe_zero]
-
 
 theorem product_add_left (α β : MultilinearSection 𝕜 F IB E n s)
     (γ : MultilinearSection 𝕜 F IB E n q) :
@@ -596,7 +593,6 @@ theorem triv_fwdEquiv_eq (s q : ℕ) (x₀ x : B)
   rw [hα]
   exact (triv_toTensor_eq_modelFromTensorEquiv_symm (Module.finBasis 𝕜 F) s q x₀ x hx t).symm
 
-
 omit [ContMDiffVectorBundle n F E IB] in
 theorem multilinearTensorFiberwiseEquiv_smooth
     (_hE : ContMDiffVectorBundle n F E IB) :
@@ -635,7 +631,6 @@ theorem multilinearTensorFiberwiseEquiv_smooth
         (mem_baseSet_trivializationAt F E p₀.proj)
     ] with p hp
     exact triv_fwdEquiv_eq s q p₀.proj p.proj hp p.snd
-
 
 omit [ContMDiffVectorBundle n F E IB] in
 theorem multilinearTensorFiberwiseEquiv_symm_smooth
@@ -756,6 +751,6 @@ end BundleEquiv
 
 end TensorProductInstances
 
-end MultilinearSection
+end DifferentialGeometry.MultilinearSection
 
 end

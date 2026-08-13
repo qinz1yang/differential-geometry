@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.PouComponent
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.CompChainRuleK
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section

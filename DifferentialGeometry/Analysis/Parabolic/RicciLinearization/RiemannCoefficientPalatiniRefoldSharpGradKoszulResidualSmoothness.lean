@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientRefold
-import DifferentialGeometry.Geometry.Flow.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmCorrectionFieldBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
@@ -19,13 +19,18 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoeffic
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldLinearizedRefoldIdentity
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldMonomialRefoldL2JetWindow
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldRicciFoldWeightKernel
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
@@ -35,12 +40,12 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -122,7 +127,7 @@ private lemma bdInner_sharpKoszul_left (g₀ g₁ : SmoothRiemannianMetric I M)
     g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x a b) z =
       linearizedKoszulCovec (I := I) g₀ S x a b z := by
   rw [sharpRaisedKoszulVec]
-  exact DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp (I := I) g₁ x
+  exact DifferentialGeometry.Geometry.Operator.inner_metricSharp (I := I) g₁ x
     (linearizedKoszulCovec (I := I) g₀ S x a b) z
 
 omit [BoundarylessManifold I M] in
@@ -132,7 +137,7 @@ private lemma bdInner_sharpKoszul_right (g₀ g₁ : SmoothRiemannianMetric I M)
     g₁.inner x z (sharpRaisedKoszulVec (I := I) g₀ g₁ S x a b) =
       linearizedKoszulCovec (I := I) g₀ S x a b z := by
   rw [sharpRaisedKoszulVec]
-  exact DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp_right (I := I) g₁ x
+  exact DifferentialGeometry.Geometry.Operator.inner_metricSharp_right (I := I) g₁ x
     (linearizedKoszulCovec (I := I) g₀ S x a b) z
 
 set_option backward.isDefEq.respectTransparency false in

@@ -2,21 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.PointedRieman
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 universe u uE uH
@@ -30,9 +15,6 @@ open scoped Manifold ContDiff Bundle
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
-
-
-
 
 @[reducible] def PointedRiemannianManifold.emetricSpace
     {I : ModelWithCorners Real E H}
@@ -53,9 +35,6 @@ variable {H : Type uH} [TopologicalSpace H]
     ⟨⟨Y.metric.inner, Y.metric.contMDiff.continuous, by intro x v w; rfl⟩⟩
   exact EMetricSpace.ofRiemannianMetric I Y.M
 
-
-
-
 @[reducible] def PointedRiemannianManifold.riemBundle
     {I : ModelWithCorners Real E H}
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) :
@@ -67,8 +46,6 @@ variable {H : Type uH} [TopologicalSpace H]
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
   exact ⟨Y.metric.toRiemannianMetric⟩
-
-
 
 @[reducible] def PointedRiemannianManifold.riemInner
     {I : ModelWithCorners Real E H}
@@ -85,8 +62,6 @@ variable {H : Type uH} [TopologicalSpace H]
   letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
     Y.riemBundle (I := I)
   exact fun _ => inferInstance
-
-
 
 @[reducible] def PointedRiemannianManifold.riemBundle_cont
     {I : ModelWithCorners Real E H}

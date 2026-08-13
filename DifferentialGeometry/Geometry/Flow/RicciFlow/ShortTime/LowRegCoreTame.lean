@@ -1,34 +1,28 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegRemainderH1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegRhsOne
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegDenseN
-
-/-!
-# Tame low-regularity Ricci--DeTurck core estimate
-
-This module integrates the affine order-zero coefficient estimate and combines
-it with the affine order-one path estimate.  Substitution into the conditional
-remainder theorem gives the unconditional mixed `H3 -> H1` three-arm bound:
-the top-difference coefficient is small with the lower `H2` radius, while the
-only dependence on the endpoint `H3` sizes multiplies the lower `H2`
-difference.
--/
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+    DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+    DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -36,7 +30,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private theorem smoothHs_eq_ccHs
     (g₀ : SmoothRiemannianMetric I M) (sigma : ℝ)
@@ -47,8 +41,6 @@ private theorem smoothHs_eq_ccHs
   funext i
   rw [smoothCcToTensorHs_coeff, ccTensorToHs_coeff]
 
-/-- The affine order-zero coefficient bound passes unchanged to the `H1` jet
-of its interval-integrated coefficient field. -/
 theorem rhs0_path_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -87,10 +79,6 @@ theorem rhs0_path_tame
     (hcoeff T T' hδ hδ' R A hR hA hT2 hT2' hT3 hT3')
   simpa only [rhsLow0PathIntegral] using hpath
 
-/-- On a closed three-manifold, the smooth Ricci--DeTurck remainder satisfies
-the critical mixed three-arm estimate.  The functions `B0` and `B1` depend
-only on the lower `H2` radius.  In particular, no endpoint `H3` size occurs in
-the coefficient of the `H3` difference. -/
 theorem rem_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -185,8 +173,6 @@ theorem rem_h1_tame
       simp only [A0, A1, B0, B1]
       ring
 
-/-- Spectral form of `rem_h1_tame` for the smooth nonlinearity.  This is the
-exact three-arm estimate before restriction to the dense lower-state core. -/
 theorem smoothN_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -259,10 +245,6 @@ theorem smoothN_h1_tame
   rw [← harm, ← harm']
   exact hraw
 
-/-- The genuine smooth Ricci--DeTurck nonlinearity on the dense lower-state
-core satisfies the consumer-shaped three-arm estimate.  Both symmetrization
-and passage from smooth representatives to state coordinates are norm
-nonexpanding. -/
 theorem coreN_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -423,6 +405,6 @@ theorem coreN_tame
       _ = _ := by ring
   exact add_le_add (add_le_add htop hlow) hmixed
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.PDE.RicciFlow
 
 end

@@ -1,22 +1,16 @@
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.Core
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Ricci quadratic bound from the lowered curvature norm
-
-This file records the pointwise, arbitrary-dimensional estimate that converts
-the norm of the canonical lowered Riemann tensor of a Ricci-flow family into a
-quadratic-form bound for its Ricci tensor.
--/
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -28,8 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The Ricci quadratic form of a solution-family metric is controlled
-pointwise by the norm of its canonical lowered Riemann tensor. -/
 theorem ricci_quad_sol
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

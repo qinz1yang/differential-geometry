@@ -4,17 +4,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDeri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivPullbackCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricDerivNormFlat
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Component covariant-derivative tails for Step B1
-
-This file upgrades the moving pullback-metric coefficient convergence to the
-complete finite component covariant-derivative tower on the producer-owned
-finite source-chart cover.  Intrinsic tensor norms and pullback-field carriers
-remain downstream.
--/
 
 noncomputable section
 
@@ -66,17 +59,17 @@ private theorem constBasis_isLocalFrame_open
   · intro i
     have hsmooth : ContMDiff 𝓘(Real, E)
         (𝓘(Real, E).prod 𝓘(Real, E)) (1 : WithTop ℕ∞)
-        (T% (fun y : U => (Integral.Connection.restrictOpenTangentSection
+        (T% (fun y : U => (DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection
           (I := 𝓘(Real, E)) U (constTangentSection (E := E) (e i))) y)) :=
-      (Integral.Connection.restrictOpenTangentSection
+      (DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection
         (I := 𝓘(Real, E)) U (constTangentSection (E := E) (e i))).contMDiff.of_le
           (by simp : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
     have hsec : ContMDiffOn 𝓘(Real, E)
         (𝓘(Real, E).prod 𝓘(Real, E)) (1 : WithTop ℕ∞)
-        (T% (fun y : U => (Integral.Connection.restrictOpenTangentSection
+        (T% (fun y : U => (DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection
           (I := 𝓘(Real, E)) U (constTangentSection (E := E) (e i))) y))
         Set.univ := hsmooth.contMDiffOn
-    simpa only [Integral.Connection.restrictOpenTangentSection_apply,
+    simpa only [DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection_apply,
       constTangentSection] using hsec
 
 omit [NeZero (Module.finrank Real E)] in
@@ -91,7 +84,7 @@ private theorem metric_norm_le_comp
       |iterCovComp (I := 𝓘(Real, E)) (M := V)
           (fun i _ ↦ e i)
           (fun y ↦ Tensor.Coordinates.christoffelSymbolInFrame
-            (Integral.Connection.leviCivitaConnectionOfMetric
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
               (I := 𝓘(Real, E)) g)
             (fun i (_ : V) ↦ e i)
             (constBasis_isLocalFrame_open V e) y)
@@ -118,13 +111,13 @@ private theorem metric_norm_le_comp
   let hframe : IsLocalFrameOn 𝓘(Real, E) E (1 : WithTop ℕ∞)
       frame Set.univ := constBasis_isLocalFrame_open V e
   obtain ⟨b, hbON⟩ :=
-    DifferentialGeometry.Integral.Connection.exists_gOrthonormalBasis
+    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
       (I := 𝓘(Real, E)) g z
   have hbinv : Tensor0SBundle.MetricInverseInBasis_gen
       (I := 𝓘(Real, E)) g z b
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
-    have h := DifferentialGeometry.Integral.Connection.metricInverseInBasis_of_orthonormal
+    have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
     simpa [Tensor0SBundle.identityInvMetric,
       Tensor0SBundle.diagonalInvMetric] using h
@@ -141,7 +134,7 @@ private theorem metric_norm_le_comp
   have ht' :
       iterCovComp (I := 𝓘(Real, E)) frame
           (fun y ↦ Tensor.Coordinates.christoffelSymbolInFrame
-            (Integral.Connection.leviCivitaConnectionOfMetric
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
               (I := 𝓘(Real, E)) g) frame hframe y)
           (frameComp0S (I := 𝓘(Real, E))
             (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -
@@ -159,7 +152,7 @@ private theorem metric_norm_le_comp
         a z (fun q ↦ e (slots q))| =
         |iterCovComp (I := 𝓘(Real, E)) frame
           (fun y ↦ Tensor.Coordinates.christoffelSymbolInFrame
-            (Integral.Connection.leviCivitaConnectionOfMetric
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
               (I := 𝓘(Real, E)) g) frame hframe y)
           (frameComp0S (I := 𝓘(Real, E))
             (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -
@@ -283,7 +276,7 @@ private theorem normal_christoffel
       (z : V) (hco : IsCoercive (normalCoordMetric (I := I) Y x (z : E)))
       (i j m : Fin (Module.finrank Real E)),
       Tensor.Coordinates.christoffelSymbolInFrame
-          (Integral.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
             ((normalTotal (I := I) Y x).restrictOpen (I := 𝓘(Real, E)) V))
           (fun q (y : V) => (show TangentSpace 𝓘(Real, E) y from e q))
           (constBasis_isLocalFrame_open V e) z i j m =
@@ -304,28 +297,29 @@ private theorem normal_christoffel
       (y : V) → TangentSpace 𝓘(Real, E) y := fun q _ => e q
   let hframe : IsLocalFrameOn 𝓘(Real, E) E (1 : WithTop ℕ∞)
       frame Set.univ := constBasis_isLocalFrame_open V e
-  have hfield : Integral.Connection.restrictOpenTangentField
+  have hfield : DifferentialGeometry.Geometry.Curvature.restrictOpenTangentField
       (I := 𝓘(Real, E)) V
       (fun y : E => (constTangentSection (E := E) (e j)) y) =
         fun y : V => (show TangentSpace 𝓘(Real, E) y from e j) := by
     funext y
     simpa only [constTangentSection] using
-      (Integral.Connection.restrictOpenTangentField_apply
+      (DifferentialGeometry.Geometry.Curvature.restrictOpenTangentField_apply
         (I := 𝓘(Real, E)) V
         (fun y : E => (constTangentSection (E := E) (e j)) y) y)
-  have hres := Integral.Connection.metricCov_restrictOpen_globalSection
+  have hres := DifferentialGeometry.Geometry.Curvature.metricCov_restrictOpen_globalSection
     (I := 𝓘(Real, E)) (normalTotal (I := I) Y x) V
     (constTangentSection (E := E) (e j)) z (e i)
   rw [hfield] at hres
   have hres' :
-      ((Integral.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
+      ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
           ((normalTotal (I := I) Y x).restrictOpen (I := 𝓘(Real, E)) V)
           (frame j) z) (e i)) =
-        ((Integral.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
+        ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
           (normalTotal (I := I) Y x) (fun _ : E => e j) (z : E)) (e i)) := by
-    simpa only [Integral.Connection.metricCov, frame, constTangentSection] using hres
+    simpa only [DifferentialGeometry.Geometry.Curvature.metricCov, frame,
+      constTangentSection] using hres
   have hcov :
-      ((Integral.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
+      ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
           ((normalTotal (I := I) Y x).restrictOpen (I := 𝓘(Real, E)) V)
           (frame j) z) (frame i z)) =
         MetricKoszul.koszulVec hco
@@ -555,7 +549,7 @@ private theorem local_norm_le
       frame Set.univ := constBasis_isLocalFrame_open V e
   have hchrEq :
       (fun w ↦ Tensor.Coordinates.christoffelSymbolInFrame
-        (Integral.Connection.leviCivitaConnectionOfMetric
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
           (I := 𝓘(Real, E)) gv) frame hframe w) =
         fun (w : V) ↦ Gamma (w : E) := by
     funext w i j m
@@ -588,7 +582,7 @@ private theorem local_norm_le
     |iterCovComp (I := 𝓘(Real, E)) (M := V)
         (fun i _ ↦ e i)
         (fun w ↦ Tensor.Coordinates.christoffelSymbolInFrame
-          (Integral.Connection.leviCivitaConnectionOfMetric
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
             (I := 𝓘(Real, E)) gv)
           (fun i (_ : V) ↦ e i)
           (constBasis_isLocalFrame_open V e) w)
@@ -606,8 +600,6 @@ private theorem local_norm_le
     _ ≤ bnd := by simpa only [B, Gamma, base] using hcomp slots
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] in
-/-- Smooth coefficient fields make every level of their metric covariant
-component tower differentiable on the same open coordinate buffer. -/
 private theorem metricTower_mdiff
     (V : TopologicalSpace.Opens E)
     (e : Module.Basis (Fin (Module.finrank Real E)) Real E)
@@ -657,9 +649,6 @@ private theorem metricTower_mdiff
     (fun z s => (Q z - B z) (e (s 0)) (e (s 1)))
     hframe hchr hbase z.2 q slots
 
-/-- On a smaller source ball, one rectangular pair-index tail controls every
-component of every finite covariant-derivative tower of the actual pullback
-metric error, in a chart supplied by the finite buffered source cover. -/
 theorem HasStageJetData.cov_comp_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1145,9 +1134,6 @@ theorem HasStageJetData.cov_comp_tail
   simpa only [chiK, Yk, Lphi, afin] using
     hNaa alpha afin k hkAfin l hlAfin z hzbuffer hzSource slots
 
-/-- A pair-local smooth realization of the actual pullback metric on a larger
-source collar has uniformly small intrinsic metric-difference seminorms on
-every strictly smaller retained source ball. -/
 theorem HasStageJetData.fwd_norm_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1502,9 +1488,6 @@ theorem HasStageJetData.fwd_norm_tail
       let afin : Fin (p + 1) := ⟨a, Nat.lt_succ_iff.mpr ha⟩
       simpa only [fac, afin, mul_assoc] using hbudget afin
 
-/-- A pair-local smooth realization of the exact `invFunOn` pullback metric on
-the target image has uniformly small intrinsic metric-difference seminorms on
-the image of every strictly smaller retained source ball. -/
 theorem HasStageJetData.inv_norm_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.GramTwist
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOpNorm.UniformChartBounds
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 open Bundle DifferentialGeometry DifferentialGeometry.Integral.Measure
 open scoped Manifold ContDiff
@@ -80,4 +80,4 @@ theorem iterated_nabla_vs_iterated_partial_equivalence_H1
         _ ≤ C * P := mul_le_mul_of_nonneg_right hCfwd_le_C hP_nn
     exact ⟨hc_P_le_Hs, hHs_le_C_P⟩
 
-end DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+end DifferentialGeometry.Analysis.Sobolev.HebeyBlock

@@ -1,12 +1,11 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Alternating.Comp
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
-
 
 noncomputable section
 
@@ -15,7 +14,6 @@ open Bundle Set
 section defs
 variable (𝕜 : Type*) [NontriviallyNormedField 𝕜] (s : ℕ)
 variable {B : Type*}
-
 
 @[reducible]
 protected def Bundle.continuousMultilinearMap (_F : Type*) (E : B → Type*)
@@ -238,7 +236,6 @@ variable {𝕜 B F : Type*} {E : B → Type*} (s : ℕ)
   (n : WithTop ℕ∞)
 
 local notation "MLF" => ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜
-
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F] in
 theorem contMDiffOn_continuousMultilinearMapCoordChange

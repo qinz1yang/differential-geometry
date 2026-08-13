@@ -5,7 +5,7 @@ import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -217,4 +217,4 @@ theorem time_dependent_vf_chart_local_picard
             ((ContinuousLinearMap.id ℝ ℝ).smulRight (X t (φ t x))) := h
 
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

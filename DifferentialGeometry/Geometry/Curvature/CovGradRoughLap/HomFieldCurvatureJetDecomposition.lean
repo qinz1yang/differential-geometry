@@ -1,36 +1,39 @@
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.MetricDoubleTrace
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.TensorSlotSwapSmoothness
 import DifferentialGeometry.Geometry.Connection.TensorNabla.HomTensorRSValueLocal
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
-open TensorMultilinear
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.TensorMultilinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem ricciDefect_eval (g : SmoothRiemannianMetric I M) (r t : ℕ)
     (W : SmoothCcTensor g r t) (x : M) (D : Tensor0SSpace r I x)
@@ -86,7 +89,6 @@ private theorem ricciDefect_eval (g : SmoothRiemannianMetric I M) (r t : ℕ)
       W.toSection.contMDiff]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem ricciDefect_value_local (g : SmoothRiemannianMetric I M) (r t : ℕ)
     (W₁ W₂ : SmoothCcTensor g r t) (x : M)
@@ -116,7 +118,6 @@ private theorem ricciDefect_value_local (g : SmoothRiemannianMetric I M) (r t : 
   rw [hW]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma ricciDefect_toSection_add (g : SmoothRiemannianMetric I M) (r t : ℕ)
@@ -146,7 +147,6 @@ private lemma ricciDefect_toSection_add (g : SmoothRiemannianMetric I M) (r t : 
   abel
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma ricciDefect_toSection_smul (g : SmoothRiemannianMetric I M) (r t : ℕ)
@@ -175,7 +175,6 @@ private lemma ricciDefect_toSection_smul (g : SmoothRiemannianMetric I M) (r t :
   rw [smul_sub]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_ricciDefect_homField (g : SmoothRiemannianMetric I M) (r t : ℕ) :
     ∃ RActF : HomTensorRSField (E := E) (M := M) r t (t + 2) I,
@@ -193,9 +192,8 @@ private theorem exists_ricciDefect_homField (g : SmoothRiemannianMetric I M) (r 
     (fun W₁ W₂ x hW => ricciDefect_value_local (I := I) (M := M) g r t W₁ W₂ x hW)
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma slotExtTrace_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (V : TensorRSSpace r (s + 1 + 2) I x) (D : Tensor0SSpace r I x)
     (v0 : TangentSpace I x) (m : Fin s → TangentSpace I x) :
@@ -231,9 +229,8 @@ private lemma slotExtTrace_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x 
       (Fin.cons (smoothOrthoFrame (I := I) g x i x) m))
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma traceConj_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (V : TensorRSSpace r (s + 1 + 2) I x) (D : Tensor0SSpace r I x)
     (v0 : TangentSpace I x) (m : Fin s → TangentSpace I x) :
@@ -281,9 +278,8 @@ private lemma traceConj_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M
     D (Fin.cons (smoothOrthoFrame (I := I) g x i x) m)]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private lemma slotExtTrace_eq_traceConj (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (V : TensorRSSpace r (s + 1 + 2) I x) :
     (show TensorRSSpace r (s + 1 + 2) I x →L[ℝ] TensorRSSpace r (s + 1) I x from
@@ -304,8 +300,7 @@ private lemma slotExtTrace_eq_traceConj (g : SmoothRiemannianMetric I M) (r s : 
     traceConj_eval (I := I) (M := M) g r s x V D (v 0) (Matrix.vecTail v)]
 
 set_option backward.isDefEq.respectTransparency false in
-
-omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem appFullSec_slotExtTrace_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (V : SmoothCcTensor g r (s + 1 + 2)) :
     homTensorRSFieldApply (I := I) (M := M) g r (s + 2 + 1) (s + 1)
@@ -326,9 +321,8 @@ private theorem appFullSec_slotExtTrace_eq (g : SmoothRiemannianMetric I M) (r s
   exact slotExtTrace_eq_traceConj (I := I) (M := M) g r s x (V.toSection x)
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-    [SigmaCompactSpace M] in
+    in
 private theorem exists_appFullSec_comp (g : SmoothRiemannianMetric I M) (r a b c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r b c I)
     (Q' : HomTensorRSField (E := E) (M := M) r a b I) :
@@ -358,9 +352,8 @@ private theorem exists_appFullSec_comp (g : SmoothRiemannianMetric I M) (r a b c
       rw [hW])
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appFullSec_sub_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (W₁ W₂ : SmoothCcTensor g r a) :
     homTensorRSFieldApply (I := I) (M := M) g r a c Q (W₁ - W₂) =
@@ -376,9 +369,8 @@ private theorem appFullSec_sub_right (g : SmoothRiemannianMetric I M) (r a c : �
   rw [map_sub (show TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x from Q x)]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private theorem appFullSec_add_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (W₁ W₂ : SmoothCcTensor g r a) :
     homTensorRSFieldApply (I := I) (M := M) g r a c Q (W₁ + W₂) =
@@ -387,7 +379,6 @@ private theorem appFullSec_add_right (g : SmoothRiemannianMetric I M) (r a c : �
   appFullRS_add_right (I := I) (M := M) g r a c (fun y : M => Q y) Q.contMDiff W₁ W₂
 
 set_option backward.isDefEq.respectTransparency true in
-
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem headDifferenceDrop_bracket (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (RA_s : HomTensorRSField (E := E) (M := M) r s (s + 2) I)
@@ -496,7 +487,6 @@ private theorem headDifferenceDrop_bracket (g : SmoothRiemannianMetric I M) (r s
   rw [hR1]
 
 set_option backward.isDefEq.respectTransparency true in
-
 private theorem exists_headDifferenceDrop_metricDoubleTrace (g : SmoothRiemannianMetric I M)
     (r s : ℕ) :
     ∃ (P₀ : HomTensorRSField (E := E) (M := M) r s (s + 1) I)
@@ -553,7 +543,6 @@ private theorem exists_headDifferenceDrop_metricDoubleTrace (g : SmoothRiemannia
   abel
 
 set_option backward.isDefEq.respectTransparency false in
-
 private theorem exists_roughLapCommutatorTrace_homField
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ (Tr : (t : ℕ) → HomTensorRSField (E := E) (M := M) r (t + 2) t I)
@@ -582,7 +571,6 @@ private theorem exists_roughLapCommutatorTrace_homField
   exact roughLap_eq_metricDoubleTrace (I := I) (M := M) (E := E) g r t W
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem exists_pointwiseTensorCurvRS_homField_jetDecomposition
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ (Q₀ : HomTensorRSField (E := E) (M := M) r s (s + 1) I)
@@ -616,7 +604,6 @@ theorem exists_pointwiseTensorCurvRS_homField_jetDecomposition
   abel
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_secondCovGrad_swap_ricciDefect_homField (g : SmoothRiemannianMetric I M)
     (r t : ℕ) :
@@ -647,8 +634,8 @@ theorem exists_secondCovGrad_swap_ricciDefect_homField (g : SmoothRiemannianMetr
   · have h := hR W
     exact sub_eq_iff_eq_add'.mp h
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

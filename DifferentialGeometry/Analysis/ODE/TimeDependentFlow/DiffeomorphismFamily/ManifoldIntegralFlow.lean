@@ -7,7 +7,7 @@ import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.Analysis.Calculus.MeanValue
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Manifold Bundle
 open scoped Manifold Topology ContDiff
@@ -167,4 +167,4 @@ theorem time_dependent_vf_manifold_integral_flow_family
     rw [← hbase] at hbase_flow
     exact hbase_flow.congr_of_eventuallyEq hcurve_eq hbase
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

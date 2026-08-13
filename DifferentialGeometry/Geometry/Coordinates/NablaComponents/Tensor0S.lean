@@ -2,15 +2,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Tensor.Multilinear
 
 set_option autoImplicit false
 
@@ -18,7 +10,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -360,13 +352,6 @@ private theorem fderivWithin_tensor0S_eval_modelSlots_center_eq_extDerivFun {s :
     (I := I) X x₀ φ f hpair heq
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
-
 omit [IsManifold I ∞ M] in
 theorem nabla0SFun_eval_coordFrame_moving_raw {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -631,11 +616,6 @@ private theorem tangentFieldModelInChart_coord_mdiffAt_center_of_contMDiffAt
   exact (hscalar.congr_of_eventuallyEq heq).mdifferentiableAt (by simp)
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem tensor0S_eval_coordinateFrame_contMDiffAt
     {s : ℕ}
@@ -707,8 +687,6 @@ private theorem coordinateFrame_covariantDeriv_apply_contMDiffAt
   exact (hW_on x₀ hx₀).contMDiffAt (hu.mem_nhds hx₀)
 
 set_option backward.isDefEq.respectTransparency false in
-
-
 omit [IsManifold I 2 M] in
 theorem tensor0S_eval_coordinateFrame_covariantDerivative_slot_contMDiffAt
     {s : ℕ}
@@ -776,10 +754,6 @@ theorem tensor0S_eval_coordinateFrame_covariantDerivative_slot_contMDiffAt
     using hEval
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
 theorem nabla0SFun_eval_coordinateFrame_contMDiffAt
     {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -875,12 +849,6 @@ theorem nabla0SFun_eval_coordinateFrame_contMDiffAt
     (I := I) cov X V α p hpair_md hV_md hVmodel_p hcoord_p]
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
 theorem nabla0SFun_contMDiff_of_eval_coordinateFrame_contMDiffAt
     {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -947,13 +915,6 @@ theorem nabla0SFun_contMDiff_of_eval_coordinateFrame_contMDiffAt
   rw [hslot]
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
-
 theorem nabla0SFun_contMDiff
     {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -973,13 +934,6 @@ theorem nabla0SFun_contMDiff
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov hcov X α
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
-
 noncomputable def nabla0SCoord (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov

@@ -1,10 +1,13 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransport
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 open Set Function Filter Manifold Bundle
 open scoped Topology Manifold ContDiff
+
 
 namespace DifferentialGeometry
 namespace Geometry
@@ -18,6 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Geodesic

@@ -1,19 +1,15 @@
 import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartLieBracket
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 open scoped Manifold ContDiff Topology
 
@@ -26,9 +22,6 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 
 private lemma infty_ne_zero : (∞ : WithTop ℕ∞) ≠ 0 := by
   decide
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem SmoothRiemannianMetric.eq_of_inner_eq_gen
@@ -43,9 +36,6 @@ theorem SmoothRiemannianMetric.eq_of_inner_eq_gen
   by_contra hne
   have hne' : v - w ≠ 0 := sub_ne_zero.mpr hne
   exact (lt_irrefl (0 : Real)) (hself ▸ g.pos x _ hne')
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [IsManifold I ∞ M]
     [SigmaCompactSpace M] in
@@ -63,9 +53,6 @@ theorem extDerivFun_restrictOpen
   simpa [Function.comp_def, mfderiv_subtype_val_apply (I := I) U x v] using
     mfderiv_comp_apply (I := I) (I' := I) (I'' := 𝓘(Real, Real))
       x hf hval v
-
-
-
 
 noncomputable def restrictOpenTangentField
     (U : TopologicalSpace.Opens M)
@@ -88,8 +75,6 @@ theorem restrictOpenTangentField_apply
   rw [ContinuousLinearMap.IsInvertible.inverse_apply_eq hval_inv]
   rw [mfderiv_subtype_val (I := I) U x]
   rfl
-
-
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem mdiffAt_restrictOpen_section
@@ -115,8 +100,6 @@ theorem mdiffAt_restrictOpen_section
     (I := I) (I' := I) (f := (Subtype.val : U -> M)) (V := fun y : M => Y y)
     (x₀ := x) (n := (∞ : WithTop ℕ∞)) hY hval hval_inv hmn
 
-
-
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem contMDiff_restrictOpen_section
     (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
@@ -134,8 +117,6 @@ theorem contMDiff_restrictOpen_section
       (f := ContinuousLinearEquiv.refl Real E))
   · simp
 
-
-
 noncomputable def restrictOpenTangentSection
     (U : TopologicalSpace.Opens M) [SigmaCompactSpace U] [T2Space U]
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
@@ -151,8 +132,6 @@ theorem restrictOpenTangentSection_apply
     (x : U) :
     restrictOpenTangentSection (I := I) U Y x = Y (x : M) := by
   simp [restrictOpenTangentSection]
-
-
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem mlieBracket_restrictOpen
@@ -192,8 +171,6 @@ theorem mlieBracket_restrictOpen
       hval hmin
   simpa [restrictOpenTangentField] using hbr
 
-
-
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem directionalDeriv_restrictOpen_inner
     (g : SmoothRiemannianMetric I M)
@@ -211,15 +188,13 @@ theorem directionalDeriv_restrictOpen_inner
   have hf :
       MDifferentiableAt I 𝓘(Real, Real)
         (fun y : M => g.inner y (Y y) (Z y)) (x : M) :=
-    (DifferentialGeometry.Integral.Connection.CovariantDerivative.metric_inner_contMDiffAt
+    (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.metric_inner_contMDiffAt
       (I := I) (M := M) g
       Y.contMDiff.contMDiffAt Z.contMDiff.contMDiffAt
       (by simp)).mdifferentiableAt (by simp)
   simpa [directionalDerivAlong] using
     extDerivFun_restrictOpen (I := I) U
       (fun y : M => g.inner y (Y y) (Z y)) x (X (x : M)) hf
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem koszulScalar_restrictOpen
@@ -241,9 +216,6 @@ theorem koszulScalar_restrictOpen
     ← mlieBracket_restrictOpen (I := I) U Z X x,
     ← mlieBracket_restrictOpen (I := I) U X Y x]
   simp
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem metricCov_restrictOpen_apply_section
@@ -298,8 +270,6 @@ theorem metricCov_restrictOpen_apply_section
       (Z.contMDiff.contMDiffAt.mdifferentiableAt infty_ne_zero)
   rw [hleft, hright, koszulScalar_restrictOpen (I := I) g U X Y Z x]
 
-
-
 omit [SigmaCompactSpace M] in
 theorem metricCov_restrictOpen_globalSection
     (g : SmoothRiemannianMetric I M)
@@ -326,4 +296,4 @@ theorem metricCov_restrictOpen_globalSection
     _ = (metricCov (I := I) (M := M) g (fun y : M => Y y) (x : M)) v := by
       rw [hXx]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

@@ -1,20 +1,14 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChristoffelPerturbation
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 open scoped ContDiff Manifold Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -26,8 +20,6 @@ local notation "D3Idx" =>
   Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
     Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
       Fin (Module.finrank ℝ E)
-
-
 
 def gramD3DiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
   ∑ p : D3Idx,
@@ -72,8 +64,6 @@ theorem gramD3DiffSup_nonneg
     0 ≤ gramD3DiffSup (I := I) (M := M) g₁ g₂ α y := by
   exact Finset.sum_nonneg fun _ _ => abs_nonneg _
 
-
-
 def metricJet3DiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
   chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y +
     gramD3DiffSup (I := I) (M := M) g₁ g₂ α y
@@ -99,4 +89,4 @@ theorem gramD3_le_jet3
       metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y :=
   le_add_of_nonneg_left (chartMetricJet2DiffSup_nonneg _ _ _ _)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.VariationalIdentity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -19,7 +22,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLaplacianVariational
 open DifferentialGeometry.Analysis.Laplacian.HessianPairingChart
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainVariationalLimitGeneral
@@ -35,18 +39,18 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactS
 lemma grad_g_congr
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf₁ hf₂ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
-    (grad_g (I := I) g hf₁ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
-      (grad_g (I := I) g hf₂ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
+    (grad_g (I := I) g ⟨_, hf₁⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
+      (grad_g (I := I) g ⟨_, hf₂⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
   refine ContMDiffSection.ext (fun _ => rfl)
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [SigmaCompactSpace M] in
 lemma Δ_g_congr_func
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf₁ hf₂ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    Δ_g (I := I) g hf₁ x = Δ_g (I := I) g hf₂ x := by
+    Δ_g (I := I) g ⟨_, hf₁⟩ x = Δ_g (I := I) g ⟨_, hf₂⟩ x := by
   have h := grad_g_congr (I := I) g hf₁ hf₂
-  change divergence_g (I := I) g (grad_g (I := I) g hf₁) x =
-    divergence_g (I := I) g (grad_g (I := I) g hf₂) x
+  change divergence_g (I := I) g (grad_g (I := I) g ⟨_, hf₁⟩) x =
+    divergence_g (I := I) g (grad_g (I := I) g ⟨_, hf₂⟩) x
   rw [h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -54,21 +58,21 @@ lemma grad_g_congr_funext
     (g : SmoothRiemannianMetric I M) {f₁ f₂ : M → ℝ}
     (hf₁ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f₁) (hf₂ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f₂)
     (h_eq : f₁ = f₂) :
-    (grad_g (I := I) g hf₁ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
-      (grad_g (I := I) g hf₂ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
+    (grad_g (I := I) g ⟨_, hf₁⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
+      (grad_g (I := I) g ⟨_, hf₂⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
   refine ContMDiffSection.ext (fun x => ?_)
   change gradFun (I := I) g f₁ x = gradFun (I := I) g f₂ x
   rw [h_eq]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [SigmaCompactSpace M] in
 lemma Δ_g_congr_funext
     (g : SmoothRiemannianMetric I M) {f₁ f₂ : M → ℝ}
     (hf₁ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f₁) (hf₂ : ContMDiff I 𝓘(ℝ, ℝ) ∞ f₂)
     (h_eq : f₁ = f₂) (x : M) :
-    Δ_g (I := I) g hf₁ x = Δ_g (I := I) g hf₂ x := by
+    Δ_g (I := I) g ⟨_, hf₁⟩ x = Δ_g (I := I) g ⟨_, hf₂⟩ x := by
   have h := grad_g_congr_funext (I := I) g hf₁ hf₂ h_eq
-  change divergence_g (I := I) g (grad_g (I := I) g hf₁) x =
-    divergence_g (I := I) g (grad_g (I := I) g hf₂) x
+  change divergence_g (I := I) g (grad_g (I := I) g ⟨_, hf₁⟩) x =
+    divergence_g (I := I) g (grad_g (I := I) g ⟨_, hf₂⟩) x
   rw [h]
 
 omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -99,7 +103,7 @@ lemma gradFun_sub
     have : (fun y : M => -h y) = (-1 : ℝ) • h := by funext y; simp [Pi.smul_apply]
     rw [this]
     exact hh.const_smul (-1 : ℝ)
-  rw [DifferentialGeometry.Integral.Connection.gradFun_add (I := I) g hf h_neg_diff]
+  rw [DifferentialGeometry.Geometry.Connection.gradFun_add (I := I) g hf h_neg_diff]
   rw [gradFun_neg (I := I) g hh]
   abel
 
@@ -108,18 +112,21 @@ lemma Δ_g_neg
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ∀ (hneg : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => -f y)) (x : M),
-    Δ_g (I := I) g hneg x = -Δ_g (I := I) g hf x := by
+    Δ_g (I := I) g ⟨_, hneg⟩ x = -Δ_g (I := I) g ⟨_, hf⟩ x := by
   intro hneg x
-  have h_add := Δ_g_add (I := I) g hf hneg x
+  have h_add := Δ_g_add (I := I) g ⟨_, hf⟩ ⟨_, hneg⟩ x
   have h_sum_eq_zero : (fun y : M => f y + -f y) = (fun _ : M => (0 : ℝ)) := by
     funext y; ring
   have h_zero_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (0 : ℝ)) :=
     contMDiff_const
   have hΔ_sum_eq_zero :
-      Δ_g (I := I) g (hf.add hneg) x = 0 := by
+      Δ_g (I := I) g ⟨_, hf.add hneg⟩ x = 0 := by
     rw [Δ_g_congr_funext (I := I) g (hf.add hneg) h_zero_smooth h_sum_eq_zero x]
     exact Δ_g_const (I := I) g (0 : ℝ) x
-  linarith [h_add, hΔ_sum_eq_zero]
+  have h_sum_zero : Δ_g (I := I) g ⟨_, hf⟩ x + Δ_g (I := I) g ⟨_, hneg⟩ x = 0 := by
+    rw [← h_add]
+    exact hΔ_sum_eq_zero
+  linarith
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma Δ_g_sub
@@ -127,7 +134,7 @@ lemma Δ_g_sub
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h) :
     ∀ (hsub : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => f y - h y)) (x : M),
-    Δ_g (I := I) g hsub x = Δ_g (I := I) g hf x - Δ_g (I := I) g hh x := by
+    Δ_g (I := I) g ⟨_, hsub⟩ x = Δ_g (I := I) g ⟨_, hf⟩ x - Δ_g (I := I) g ⟨_, hh⟩ x := by
   intro hsub x
   have hneg : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => -h y) := by
     have h_const : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (-1 : ℝ)) := contMDiff_const
@@ -138,7 +145,11 @@ lemma Δ_g_sub
   have h_sub_eq_add_neg : (fun y : M => f y - h y) = (fun y : M => f y + -h y) := by
     funext y; ring
   rw [Δ_g_congr_funext (I := I) g hsub (hf.add hneg) h_sub_eq_add_neg x]
-  rw [Δ_g_add (I := I) g hf hneg x]
+  have h_add_eq : Δ_g (I := I) g ⟨_, hf⟩ x + Δ_g (I := I) g ⟨_, hneg⟩ x =
+      Δ_g (I := I) g ⟨_, hf.add hneg⟩ x := by
+    rw [← Δ_g_add (I := I) g ⟨_, hf⟩ ⟨_, hneg⟩ x]
+    rfl
+  rw [← h_add_eq]
   rw [Δ_g_neg (I := I) g hh hneg x]
   ring
 
@@ -156,7 +167,7 @@ lemma normGradSqFun_polar
     φ.contMDiff.mdifferentiable (by simp) x
   have hv_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (v : M → ℝ) x :=
     v.contMDiff.mdifferentiable (by simp) x
-  rw [DifferentialGeometry.Integral.Connection.gradFun_add (I := I) g hφ_diff hv_diff]
+  rw [DifferentialGeometry.Geometry.Connection.gradFun_add (I := I) g hφ_diff hv_diff]
   rw [gradFun_sub (I := I) g hφ_diff hv_diff]
   exact g_inner_polar (I := I) (M := M) g x
     (gradFun (I := I) g (φ : M → ℝ) x)
@@ -180,7 +191,7 @@ lemma ricciTensor_grad_polar
     φ.contMDiff.mdifferentiable (by simp) x
   have hv_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (v : M → ℝ) x :=
     v.contMDiff.mdifferentiable (by simp) x
-  rw [DifferentialGeometry.Integral.Connection.gradFun_add (I := I) g hφ_diff hv_diff]
+  rw [DifferentialGeometry.Geometry.Connection.gradFun_add (I := I) g hφ_diff hv_diff]
   rw [gradFun_sub (I := I) g hφ_diff hv_diff]
   exact ricciTensor_polar (I := I) (M := M) g x
     (gradFun (I := I) g (φ : M → ℝ) x)
@@ -194,51 +205,51 @@ lemma g_inner_grad_lap_polar
     (hφv_sub : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y)) :
     g.inner x
         (gradFun (I := I) g (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y) x)
-        (gradFun (I := I) g (Δ_g (I := I) g hφv_add) x) -
+        (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hφv_add⟩) x) -
       g.inner x
         (gradFun (I := I) g (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y) x)
-        (gradFun (I := I) g (Δ_g (I := I) g hφv_sub) x) =
+        (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hφv_sub⟩) x) =
       2 * (g.inner x
             (gradFun (I := I) g (φ : M → ℝ) x)
-            (gradFun (I := I) g (Δ_g (I := I) g v.contMDiff) x) +
+            (gradFun (I := I) g (Δ_g (I := I) g v) x) +
           g.inner x
             (gradFun (I := I) g (v : M → ℝ) x)
-            (gradFun (I := I) g (Δ_g (I := I) g φ.contMDiff) x)) := by
+            (gradFun (I := I) g (Δ_g (I := I) g φ) x)) := by
   classical
   have hφ_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (φ : M → ℝ) x :=
     φ.contMDiff.mdifferentiable (by simp) x
   have hv_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (v : M → ℝ) x :=
     v.contMDiff.mdifferentiable (by simp) x
-  rw [DifferentialGeometry.Integral.Connection.gradFun_add (I := I) g hφ_diff hv_diff]
+  rw [DifferentialGeometry.Geometry.Connection.gradFun_add (I := I) g hφ_diff hv_diff]
   rw [gradFun_sub (I := I) g hφ_diff hv_diff]
-  set Δφ : M → ℝ := Δ_g (I := I) g φ.contMDiff with hΔφ_def
-  set Δv : M → ℝ := Δ_g (I := I) g v.contMDiff with hΔv_def
+  set Δφ : M → ℝ := Δ_g (I := I) g φ with hΔφ_def
+  set Δv : M → ℝ := Δ_g (I := I) g v with hΔv_def
   have hΔφ_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ Δφ :=
-    Δ_g_contMDiff (I := I) g φ.contMDiff
+    Δ_g_contMDiff (I := I) g φ
   have hΔv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ Δv :=
-    Δ_g_contMDiff (I := I) g v.contMDiff
+    Δ_g_contMDiff (I := I) g v
   have h_Δ_add_func :
-      (fun y : M => Δ_g (I := I) g hφv_add y) = (fun y : M => Δφ y + Δv y) := by
-    funext y; exact Δ_g_add (I := I) g φ.contMDiff v.contMDiff y
+      (fun y : M => Δ_g (I := I) g ⟨_, hφv_add⟩ y) = (fun y : M => Δφ y + Δv y) := by
+    funext y; exact Δ_g_add (I := I) g φ v y
   have h_Δ_sub_func :
-      (fun y : M => Δ_g (I := I) g hφv_sub y) = (fun y : M => Δφ y - Δv y) := by
+      (fun y : M => Δ_g (I := I) g ⟨_, hφv_sub⟩ y) = (fun y : M => Δφ y - Δv y) := by
     funext y; exact Δ_g_sub (I := I) g φ.contMDiff v.contMDiff hφv_sub y
   have h_grad_Δ_add :
-      gradFun (I := I) g (Δ_g (I := I) g hφv_add) x =
+      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hφv_add⟩) x =
       gradFun (I := I) g (fun y : M => Δφ y + Δv y) x := by
-    rw [show (Δ_g (I := I) g hφv_add : M → ℝ) = (fun y : M => Δφ y + Δv y) from
+    rw [show (Δ_g (I := I) g ⟨_, hφv_add⟩ : M → ℝ) = (fun y : M => Δφ y + Δv y) from
       h_Δ_add_func]
   have h_grad_Δ_sub :
-      gradFun (I := I) g (Δ_g (I := I) g hφv_sub) x =
+      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hφv_sub⟩) x =
       gradFun (I := I) g (fun y : M => Δφ y - Δv y) x := by
-    rw [show (Δ_g (I := I) g hφv_sub : M → ℝ) = (fun y : M => Δφ y - Δv y) from
+    rw [show (Δ_g (I := I) g ⟨_, hφv_sub⟩ : M → ℝ) = (fun y : M => Δφ y - Δv y) from
       h_Δ_sub_func]
   rw [h_grad_Δ_add, h_grad_Δ_sub]
   have hΔφ_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) Δφ x :=
     hΔφ_smooth.mdifferentiable (by simp) x
   have hΔv_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) Δv x :=
     hΔv_smooth.mdifferentiable (by simp) x
-  rw [DifferentialGeometry.Integral.Connection.gradFun_add (I := I) g hΔφ_diff hΔv_diff]
+  rw [DifferentialGeometry.Geometry.Connection.gradFun_add (I := I) g hΔφ_diff hΔv_diff]
   rw [gradFun_sub (I := I) g hΔφ_diff hΔv_diff]
   set u : TangentSpace I x := gradFun (I := I) g (φ : M → ℝ) x with hu_def
   set w : TangentSpace I x := gradFun (I := I) g (v : M → ℝ) x with hw_def
@@ -269,13 +280,13 @@ theorem bochner_polarised_pointwise
         (fun y : M => g.inner y (gradFun (I := I) g (φ : M → ℝ) y)
           (gradFun (I := I) g (v : M → ℝ) y)))
     (x : M) :
-    Δ_g (I := I) g h_gphi_gv_smooth x =
+    Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
       g.inner x
           (gradFun (I := I) g (φ : M → ℝ) x)
-          (gradFun (I := I) g (Δ_g (I := I) g v.contMDiff) x) +
+          (gradFun (I := I) g (Δ_g (I := I) g v) x) +
         g.inner x
           (gradFun (I := I) g (v : M → ℝ) x)
-          (gradFun (I := I) g (Δ_g (I := I) g φ.contMDiff) x) +
+          (gradFun (I := I) g (Δ_g (I := I) g φ) x) +
         2 * hessPairingChart (I := I) g φ v x +
         2 * ricciTensor (I := I) g x
               (gradFun (I := I) g (φ : M → ℝ) x)
@@ -315,17 +326,17 @@ theorem bochner_polarised_pointwise
         (gradFun (I := I) g (v : M → ℝ) y)) := by
     funext y; exact hN_sub_eq y
   have h_Δ_N_sub_eq_Δ_4ginner :
-      Δ_g (I := I) g hN_sub_smooth x =
-      Δ_g (I := I) g h_4gphi_smooth x := by
+      Δ_g (I := I) g ⟨_, hN_sub_smooth⟩ x =
+      Δ_g (I := I) g ⟨_, h_4gphi_smooth⟩ x := by
     rw [Δ_g_def, Δ_g_def]
     have h_grad_eq :
-        (grad_g (I := I) g hN_sub_smooth :
+        (grad_g (I := I) g ⟨_, hN_sub_smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
-        (grad_g (I := I) g h_4gphi_smooth :
+        (grad_g (I := I) g ⟨_, h_4gphi_smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
       apply ContMDiffSection.coe_inj
       funext y
-      rw [grad_g_apply, grad_g_apply]
+      simp only [grad_g_apply]
       change gradFun (I := I) g (fun z : M => N1 z - N2 z) y =
         gradFun (I := I) g (fun z : M => 4 * g.inner z
           (gradFun (I := I) g (φ : M → ℝ) z)
@@ -334,44 +345,43 @@ theorem bochner_polarised_pointwise
     rw [h_grad_eq]
   have h_const_smul_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (4 : ℝ)) := contMDiff_const
   have h_Δ_4ginner_eq :
-      Δ_g (I := I) g h_4gphi_smooth x = 4 * Δ_g (I := I) g h_gphi_gv_smooth x := by
+      Δ_g (I := I) g ⟨_, h_4gphi_smooth⟩ x = 4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x := by
     have h_witness_eq :
-        Δ_g (I := I) g h_4gphi_smooth x =
-        Δ_g (I := I) g
-          (h_const_smul_smooth.mul h_gphi_gv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
+        Δ_g (I := I) g ⟨_, h_4gphi_smooth⟩ x =
+        Δ_g (I := I) g ⟨_, (h_const_smul_smooth.mul h_gphi_gv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
             (fun y : M => 4 * g.inner y
               (gradFun (I := I) g (φ : M → ℝ) y)
-              (gradFun (I := I) g (v : M → ℝ) y))) x :=
+              (gradFun (I := I) g (v : M → ℝ) y)))⟩ x :=
       Δ_g_congr_func (I := I) g h_4gphi_smooth _ x
     rw [h_witness_eq]
     rw [Δ_g_smul_eq (I := I) (M := M) g h_const_smul_smooth h_gphi_gv_smooth x]
     have h_grad_const_zero :
         gradFun (I := I) g (fun _ : M => (4 : ℝ)) x = (0 : TangentSpace I x) :=
-      DifferentialGeometry.Integral.DivergenceTheorem.gradFun_const
+      DifferentialGeometry.Geometry.Operator.gradFun_const
         (I := I) g (4 : ℝ) x
     rw [h_grad_const_zero]
     rw [show g.inner x (0 : TangentSpace I x) = (0 : TangentSpace I x →L[ℝ] ℝ) from
       map_zero _]
     have hΔ_const_4 :
-        Δ_g (I := I) g h_const_smul_smooth x = 0 := by
+        Δ_g (I := I) g ⟨_, h_const_smul_smooth⟩ x = 0 := by
       have h_witness :
-          Δ_g (I := I) g h_const_smul_smooth x =
-          Δ_g (I := I) g (contMDiff_const : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (4 : ℝ))) x :=
+          Δ_g (I := I) g ⟨_, h_const_smul_smooth⟩ x =
+          Δ_g (I := I) g ⟨_, (contMDiff_const : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (4 : ℝ)))⟩ x :=
         Δ_g_congr_func (I := I) g h_const_smul_smooth _ x
       rw [h_witness]
       exact Δ_g_const (I := I) g (4 : ℝ) x
     rw [hΔ_const_4]
     simp only [ContinuousLinearMap.zero_apply, mul_zero, add_zero]
   have h_Δ_4ginner_eq_sub :
-      4 * Δ_g (I := I) g h_gphi_gv_smooth x =
-      Δ_g (I := I) g hN1_smooth x - Δ_g (I := I) g hN2_smooth x := by
+      4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
+      Δ_g (I := I) g ⟨_, hN1_smooth⟩ x - Δ_g (I := I) g ⟨_, hN2_smooth⟩ x := by
     rw [← h_Δ_4ginner_eq]
     rw [← h_Δ_N_sub_eq_Δ_4ginner]
     exact h_Δ_N_sub
   have hN1_witness_eq : hN1_smooth = normGradSqFun_contMDiff (I := I) g hφv_add := rfl
   have hN2_witness_eq : hN2_smooth = normGradSqFun_contMDiff (I := I) g hφv_sub := rfl
   have hΔN1 :
-      Δ_g (I := I) g hN1_smooth x =
+      Δ_g (I := I) g ⟨_, hN1_smooth⟩ x =
         2 * chartHessFrobeniusSq (I := I) g
               (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y) x +
           2 * ricciTensor (I := I) g x
@@ -379,11 +389,11 @@ theorem bochner_polarised_pointwise
                 (gradFun (I := I) g (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y) x) +
           2 * g.inner x
               (gradFun (I := I) g (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y) x)
-              (gradFun (I := I) g (Δ_g (I := I) g hφv_add) x) := by
+              (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hφv_add⟩) x) := by
     rw [hN1_witness_eq]
     exact hΔ_add
   have hΔN2 :
-      Δ_g (I := I) g hN2_smooth x =
+      Δ_g (I := I) g ⟨_, hN2_smooth⟩ x =
         2 * chartHessFrobeniusSq (I := I) g
               (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y) x +
           2 * ricciTensor (I := I) g x
@@ -391,7 +401,7 @@ theorem bochner_polarised_pointwise
                 (gradFun (I := I) g (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y) x) +
           2 * g.inner x
               (gradFun (I := I) g (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y) x)
-              (gradFun (I := I) g (Δ_g (I := I) g hφv_sub) x) := by
+              (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hφv_sub⟩) x) := by
     rw [hN2_witness_eq]
     exact hΔ_sub
   have h_hessPolar :
@@ -406,21 +416,21 @@ theorem bochner_polarised_pointwise
   have h_gradLapPolar :=
     g_inner_grad_lap_polar (I := I) (M := M) g φ v x hφv_add hφv_sub
   have key :
-      4 * Δ_g (I := I) g h_gphi_gv_smooth x =
+      4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
         8 * hessPairingChart (I := I) g φ v x +
           8 * ricciTensor (I := I) g x
                 (gradFun (I := I) g (φ : M → ℝ) x)
                 (gradFun (I := I) g (v : M → ℝ) x) +
           4 * (g.inner x
                 (gradFun (I := I) g (φ : M → ℝ) x)
-                (gradFun (I := I) g (Δ_g (I := I) g v.contMDiff) x) +
+                (gradFun (I := I) g (Δ_g (I := I) g v) x) +
               g.inner x
                 (gradFun (I := I) g (v : M → ℝ) x)
-                (gradFun (I := I) g (Δ_g (I := I) g φ.contMDiff) x)) := by
+                (gradFun (I := I) g (Δ_g (I := I) g φ) x)) := by
     rw [h_Δ_4ginner_eq_sub]
     rw [hΔN1, hΔN2]
     linarith [h_hessPolar, h_ricciPolar, h_gradLapPolar]
-  linarith [key]
+  nlinarith [key]
 
 omit [CompactSpace M] in
 theorem bochner_polarised_pointwise_oneSubLap
@@ -435,16 +445,16 @@ theorem bochner_polarised_pointwise_oneSubLap
     g.inner x
         (gradFun (I := I) g (φ : M → ℝ) x)
         (gradFun (I := I) g (v : M → ℝ) x) -
-      Δ_g (I := I) g h_gphi_gv_smooth x =
+      Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
       g.inner x
           (gradFun (I := I) g (φ : M → ℝ) x)
           (gradFun (I := I) g (v : M → ℝ) x)
         - g.inner x
             (gradFun (I := I) g (v : M → ℝ) x)
-            (gradFun (I := I) g (Δ_g (I := I) g φ.contMDiff) x)
+            (gradFun (I := I) g (Δ_g (I := I) g φ) x)
         - g.inner x
             (gradFun (I := I) g (φ : M → ℝ) x)
-            (gradFun (I := I) g (Δ_g (I := I) g v.contMDiff) x)
+            (gradFun (I := I) g (Δ_g (I := I) g v) x)
         - 2 * hessPairingChart (I := I) g φ v x
         - 2 * ricciTensor (I := I) g x
               (gradFun (I := I) g (φ : M → ℝ) x)

@@ -5,26 +5,14 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Calculus.MeanValue
-
-/-!
-# Finite moving-mass systems for the harmonic-map gauge
-
-The weak harmonic-map equation has a time-dependent mass pairing because its
-domain volume measure is the volume measure of the Ricci flow.  This file
-packages the two finite-dimensional facts needed by a Galerkin construction:
-
-* restriction of the smooth HMF mass and principal forms to a fixed finite
-  trial space;
-* existence for an ODE whose velocity is obtained by raising a Lipschitz
-  covector field through a continuous uniformly coercive moving mass form.
-
-The ODE theorem keeps the right derivative on `Ico 0 T`, hence includes the
-one-sided derivative at the initial edge.
--/
+open DifferentialGeometry.Analysis.Calculus
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal
   RealInnerProductSpace InnerProductSpace
 
@@ -35,13 +23,8 @@ open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
-/-! ## A moving coercive mass ODE -/
-
-/-- A continuous family of uniformly coercive mass forms raises any
-time-continuous, globally Lipschitz covector field to a forward ODE solution.
-Only coercivity on the closed solution interval is required. -/
 theorem coerciveODE_exists
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [CompleteSpace V]
@@ -123,16 +106,6 @@ theorem coerciveODE_exists
   have ht' : t ∈ Icc (0 : ℝ) T := ⟨ht.1, le_of_lt ht.2⟩
   simpa only [f, dif_pos ht'] using hγderiv t ht
 
-/-! ## Globalization of a finite residual from one closed ball -/
-
-/-- A residual which is continuous in time and `C¹` in the state on one
-finite-dimensional closed ball can be composed with the radial retraction to
-give the global Lipschitz/affine data required by `coerciveODE_exists`.
-
-Crucially, the hypotheses ask only for joint continuity of the state
-derivative, not differentiability in time.  This keeps the statement usable at
-the initial edge of a Ricci flow, where the public uniqueness endpoint assumes
-only joint `C⁰` metric regularity. -/
 theorem retractResid_data
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     [FiniteDimensional ℝ V]
@@ -236,8 +209,6 @@ theorem retractResid_data
       _ = A + (L : ℝ) * ‖v‖ := add_comm _ _
   exact ⟨A, L, abs_nonneg C₀, hglobalLip, htime, haff⟩
 
-/-! ## Restriction of the HMF forms to a finite trial space -/
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)]
@@ -252,8 +223,6 @@ section FiniteNormed
 variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
   [FiniteDimensional ℝ V]
 
-/-- The moving HMF mass pairing restricted along a fixed finite-dimensional
-linear trial-space realization. -/
 noncomputable def hmfFinMass
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) :
@@ -274,7 +243,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
     hmfFinMass (I := I) (M := M) q h J u v =
       hmfMass (I := I) (M := M) q h (J u) (J v) := rfl
 
-/-- The moving HMF principal form restricted to the same trial space. -/
 noncomputable def hmfFinForm
     (q h : SmoothRiemannianMetric I M)
     (J : V →ₗ[ℝ] SmoothCcTensor q 0 1) :
@@ -296,8 +264,6 @@ omit [BoundarylessManifold I M] in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- Joint chart-Gram continuity gives operator-norm continuity of every
-finite HMF mass matrix. -/
 theorem hmfFinMass_cont
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
@@ -315,8 +281,6 @@ theorem hmfFinMass_cont
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-/-- A reference-orthonormal finite realization and reverse volume domination
-give the explicit lower bound for the moving mass matrix. -/
 theorem hmfFinMass_lower
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -349,8 +313,6 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
 omit [CompleteSpace V] in
-/-- The finite moving mass matrix is coercive with the same explicit lower
-constant. -/
 theorem hmfFinMass_coercive
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -366,9 +328,6 @@ theorem hmfFinMass_coercive
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- On a compact time set, the inverse finite HMF mass matrix is continuous.
-The proof uses only mass-coefficient continuity and the uniform reverse
-volume comparison. -/
 theorem hmfFinSharp_cont
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
@@ -393,10 +352,6 @@ theorem hmfFinSharp_cont
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- The finite moving-mass Galerkin system exists on the whole prescribed
-time interval once its covector residual has uniform Lipschitz and affine
-bounds.  Its equation holds on `Ico 0 T`, including the one-sided derivative
-at `t = 0`. -/
 theorem hmfFin_exists
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
@@ -441,13 +396,9 @@ theorem hmfFin_exists
 
 end FiniteHilbert
 
-/-! ## The canonical finite spectral trial spaces -/
-
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
-/-- The smooth intrinsic eigenvectors are orthonormal for the frozen HMF
-mass pairing. -/
 theorem hmfSpec_orthonormal
     (q : SmoothRiemannianMetric I M) :
     Orthonormal ℝ
@@ -473,8 +424,6 @@ theorem hmfSpec_orthonormal
   rw [orthonormal_iff_ite] at horth
   simpa only [tensorResolventHilbertEigenbasisSigma_apply] using horth i j
 
-/-- The canonical realization of a finite Euclidean coordinate vector as a
-smooth `(0,1)` eigen-tensor combination. -/
 noncomputable def hmfSpecIncl
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -498,8 +447,6 @@ omit [BoundarylessManifold I M] in
         u j • eigenvectorSmooth (I := I) (M := M) q 0 1 j.1 := rfl
 
 omit [BoundarylessManifold I M] in
-/-- The canonical finite spectral realization is exactly isometric for the
-frozen HMF mass. -/
 theorem hmfSpecIncl_orth
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -525,10 +472,6 @@ theorem hmfSpecIncl_orth
   ring
 
 omit [BoundarylessManifold I M] in
-/-- Canonical finite spectral HMF Galerkin solutions exist for every finite
-mode set once the full weak residual has the stated finite-dimensional
-Lipschitz bounds.  The orbit equation includes the initial one-sided
-derivative. -/
 theorem hmfSpec_exists
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)

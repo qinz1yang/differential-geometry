@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSPointwiseBundleModels
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -7,18 +9,16 @@ open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor
-open DifferentialGeometry.PDE.RicciFlow.HebeyBlock
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
-open Tensor0SBundle
+open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -93,20 +93,11 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
   rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
   rfl
 
-
-
-
-
-
 def metricDiff02Cov (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M) :
     TangentSpace I b →L[ℝ]
       (TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ) :=
   (tensor02Cov (LeviCivita (I := I) g₀)).toFun
     (metricDiff02 (I := I) g₁ g₂) b
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -157,11 +148,6 @@ theorem metricDiff02Cov_eq_sub
     _ = cov.toFun (metricTensor02 (I := I) g₁) b
           - cov.toFun (metricTensor02 (I := I) g₂) b := by rw [hneg]; abel
 
-
-
-
-
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricTensor02Cov_mdiffAtTensor03
@@ -187,22 +173,10 @@ theorem metricTensor02Cov_mdiffAtTensor03
     hcovOn.contMDiff (σ := metricTensor02 (I := I) g) hmetric₁
   exact (contMDiffOn_univ.mp hsmooth x).mdifferentiableAt (by simp)
 
-
-
-
-
-
 def metricDiff02CovIterate (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (b : M) :
     TangentSpace I b →L[ℝ]
       (TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ) :=
   tensor02CovIterate (LeviCivita (I := I) g₀) (metricDiff02 (I := I) g₁ g₂) b
-
-
-
-
-
-
-
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -244,13 +218,8 @@ theorem metricDiff02CovIterate_eq_sub
     _ = tensor02CovIterate cov (metricTensor02 (I := I) g₁) b
         - tensor02CovIterate cov (metricTensor02 (I := I) g₂) b := rfl
 
-
-
-
-
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

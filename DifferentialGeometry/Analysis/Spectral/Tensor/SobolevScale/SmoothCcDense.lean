@@ -1,13 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorTensorHsToWtwokTwo
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -15,7 +11,7 @@ open Bundle MeasureTheory Set
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
@@ -48,8 +44,6 @@ noncomputable def ccToHsLin
       ccTensorToHs (I := I) (M := M) g s σ S :=
   rfl
 
-
-
 theorem ccToHsLin_repr
     (g : SmoothRiemannianMetric I M) (s : ℕ) {σ : ℝ} (hσ : 0 ≤ σ)
     (v : tensorHs (I := I) (M := M) g 0 s σ)
@@ -62,8 +56,6 @@ theorem ccToHsLin_repr
   rw [SmoothCcTensor.toL2_apply,
     tensorHsSmoothRepr_toL2 (I := I) (M := M) hσ v hv,
     tensorHsToL2_tensorL2Coeff (I := I) (M := M) hσ]
-
-
 
 theorem ccToHs_eigen
     (g : SmoothRiemannianMetric I M) (s : ℕ) {σ : ℝ} (hσ : 0 ≤ σ)
@@ -94,8 +86,6 @@ theorem ccToHs_eigen
   rw [← hre, ← ccToHsLin_apply]
   exact ccToHsLin_repr (I := I) (M := M) g s hσ v hv
 
-
-
 theorem ccToHsLin_dense
     (g : SmoothRiemannianMetric I M) (s : ℕ) {σ : ℝ} (hσ : 0 ≤ σ) :
     DenseRange (ccToHsLin (I := I) (M := M) g s σ) := by
@@ -108,6 +98,6 @@ theorem ccToHsLin_dense
   exact ⟨tensorHsSmoothRepr (I := I) (M := M) v hvfs,
     ccToHsLin_repr (I := I) (M := M) g s hσ v hvfs⟩
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

@@ -1,27 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ComponentConvTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvBridge
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -29,8 +10,8 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
-open DifferentialGeometry.Integral.Connection
-open Tensor0SBundle TensorLieDeriv
+
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open Filter Topology
 open DifferentialGeometry.PDE.RicciFlow
 
@@ -41,11 +22,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
-
-
-
 
 omit [CompleteSpace E] in
 theorem exists_cInf_subseq_finiteFamily
@@ -77,13 +53,6 @@ theorem exists_cInf_subseq_finiteFamily
     · exact ⟨Φa, hΦaconv⟩
     · obtain ⟨Φinf, hΦinf⟩ := hconv p hps
       exact ⟨Φinf, hΦinf.comp_subseq hψ⟩
-
-
-
-
-
-
-
 
 theorem exists_framePairs_diag
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
@@ -178,11 +147,6 @@ theorem exists_pairs_refs
   refine ⟨ψ, χ, hψ, hχcd, htsupp, hχ1, fun i j => ?_⟩
   obtain ⟨Φinf, hΦinf⟩ := hconv (i, j) (Finset.mem_univ _)
   exact ⟨Φinf, hΦinf⟩
-
-
-
-
-
 
 theorem framePairs_pinned
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
@@ -345,11 +309,6 @@ theorem pairs_pinned_refs
   rw [hpin] at hΦinf
   exact hΦinf
 
-
-
-
-
-
 theorem exists_tower_conv
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
@@ -487,15 +446,6 @@ theorem exists_tower_refs
       (Tensor0SBundle.metricTensorField (I := I) gInf) x₀ hχcd htsupp hUopen hχU hUtarget
       hUKc Finset.univ frame hspan hpairsU V) a V
 
-
-
-
-
-
-
-
-
-
 theorem componentConv_covDeriv_of_chartCInf
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
@@ -539,11 +489,6 @@ theorem componentConv_covDeriv_of_chartCInf
   rw [hcar gInf] at htend
   exact htend.congr (fun k => hcar (gSeq (φ (ψ k))))
 
-
-
-
-
-
 omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [IsManifold I 2 M] in
 theorem tangentConst_basis_expand (x₀ : M)
@@ -559,10 +504,6 @@ theorem tangentConst_basis_expand (x₀ : M)
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_smul]
 
-
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [IsManifold I ∞ M]
     [SigmaCompactSpace M] in
 theorem bz_eq_tangentConst (x : M)
@@ -575,12 +516,6 @@ theorem bz_eq_tangentConst (x : M)
   set e := trivializationAt E (TangentSpace I : M → Type _) x with he
   rw [IsLocalFrameOn.toBasisAt_coe, e.localFrame_apply_of_mem_baseSet basisE hz]
   simp [Bundle.Trivialization.basisAt, tangentConstInChart_apply, he]
-
-
-
-
-
-
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -639,12 +574,6 @@ private def TowerExtractor
               (fun w : M => (covDerivOfField (I := I) gRef
                 (Tensor0SBundle.metricTensorField (I := I) gInf) a) w
                   (fun a => V a w)) z)
-
-
-
-
-
-
 
 omit [I.Boundaryless] in
 private theorem exists_patch_core
@@ -814,12 +743,6 @@ theorem exists_patch_refs
   apply exists_patch_core (I := I) gBase gSeq ?_ φ₀ gInf hconv x
   intro x₀ K₀ hK₀ hK₀chart φ gLim hLim
   exact exists_tower_refs (I := I) gBase gRef gSeq hbdd x₀ hK₀ hK₀chart φ gLim hLim
-
-
-
-
-
-
 
 theorem metricPreconvInf (hne : Nonempty M)
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)

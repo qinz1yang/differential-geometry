@@ -1,35 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.SolutionPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.SolutionRestrictOpen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.PointedConvergence
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-open Set Function Filter Bundle Manifold Tensor0SBundle
+open Set Function Filter Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.RicciFlow (SolutionOn IsSolutionOn)
 
 namespace DifferentialGeometry
@@ -39,11 +20,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-
-
-
-
-
 
 noncomputable def sourceFlow
     {X : PointedFlowSeq (I := I)}
@@ -117,8 +93,6 @@ noncomputable def sourceFlow
     DifferentialGeometry.PDE.RicciFlow.solutionOn_pullback (I := I)
       (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S (targetOpen (I := I) Φ k))
       (sourceTargetDiff (I := I) Φ k)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem isSolutionOn_sourceFlow
@@ -208,10 +182,6 @@ theorem isSolutionOn_sourceFlow
         (X.term (subseq k)).isSolution (targetOpen (I := I) Φ k))
       (sourceTargetDiff (I := I) Φ k)
 
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem sourceFlow_metric_eq
     {X : PointedFlowSeq (I := I)}
@@ -249,26 +219,10 @@ theorem sourceFlow_metric_eq
         gInf).pullbackMetric t := by
   rfl
 
-
-
-
-
-
-
-
-
-
-
-
 section RestrictOpenEquiv
 
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
-
-
-
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -282,9 +236,6 @@ theorem metricUniformEquivalentOn_restrictOpen
   refine ⟨hEq.1, fun x hx v => ?_⟩
   simp only [SmoothRiemannianMetric.restrictOpen_inner]
   exact hEq.2 (x : M) (hV x hx) v
-
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

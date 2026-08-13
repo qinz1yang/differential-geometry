@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientRefold
-import DifferentialGeometry.Geometry.Flow.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmCorrectionFieldBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
@@ -16,13 +16,19 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoeffic
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldLieCovDerivFamily
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldEndoArmGridWindow
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldCovDerivArmPairTrace
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
@@ -32,12 +38,13 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -219,7 +226,7 @@ private lemma lrConnDiff_linearization (g₀ : SmoothRiemannianMetric I M)
       smoothCcTensorBilinForm (I := I) g₀ T x v w = smoothCcTensorBilinForm (I := I) g₀ T x w v)
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) (x : M) (u ζ : TangentSpace I x) :
     PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ s) g₀ x u ζ =
-      s • DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+      s • DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
         (realizedFam (I := I) g₀ T 0 hδ hδZ s) x
         (linearizedKoszulCovec (I := I) g₀ T x u ζ) := by
   classical
@@ -247,7 +254,7 @@ private lemma lrConnDiff_linearization (g₀ : SmoothRiemannianMetric I M)
   calc PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ s) g₀ x u ζ
       = PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ s)
           (realizedFam (I := I) g₀ T 0 hδ hδZ 0) x u ζ := by rw [hzero]
-    _ = s • DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+    _ = s • DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
         (realizedFam (I := I) g₀ T 0 hδ hδZ s) x
           (linearizedKoszulCovec (I := I) g₀ T x u ζ) := hkey
 
@@ -265,7 +272,7 @@ private lemma lrConnDiff_inner (g₀ : SmoothRiemannianMetric I M)
       s * linearizedKoszulCovec (I := I) g₀ T x u ζ z := by
   rw [lrConnDiff_linearization (I := I) (M := M) g₀ T hδ_lt hδ hδZ hTsymm hs x u ζ,
     map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul,
-    DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp]
+    DifferentialGeometry.Geometry.Operator.inner_metricSharp]
 
 
 private def linearizedKoszulTensor (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
@@ -429,14 +436,15 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
   · subst hs0
     rw [lrRealizedFam_zero (I := I) (M := M) g₀ T hδ hδZ]
     have hker0 : connDiffCovDerivOp (I := I) g₀ g₀ x v0 p q = 0 := by
-      rw [Integral.Connection.dLaCovKernel_backgroundSplit (I := I) (M := M) g₀ g₀ g₀ x v0 p q]
+      rw [DifferentialGeometry.Analysis.Sobolev.dLaCovKernel_backgroundSplit (I := I)
+        (M := M) g₀ g₀ g₀ x v0 p q]
       simp only [bdConnDiff_self_apply (I := I) (M := M) g₀ x, sub_self, add_zero]
     rw [hker0]
     simp only [bdConnDiff_self_apply (I := I) (M := M) g₀ x, map_zero,
       ContinuousLinearMap.zero_apply, zero_mul, sub_self]
   · have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ) :=
       Icc_subset_realizedSmallSet hδ_lt hδ_lt hs
-    rw [Integral.Connection.dLaCovKernel_backgroundSplit (I := I) (M := M) g₀
+    rw [DifferentialGeometry.Analysis.Sobolev.dLaCovKernel_backgroundSplit (I := I) (M := M) g₀
       (realizedFam (I := I) g₀ T 0 hδ hδZ s) g₀ x v0 p q]
     rw [lrCovDerivConnDiff_self_zero (I := I) (M := M) g₀ x v0 p q, sub_zero]
     set gs := realizedFam (I := I) g₀ T 0 hδ hδZ s with hgs_def
@@ -449,11 +457,11 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
     have hPex : Pe x = p := smoothExtensionTangent_eq (I := I) x p
     have hQex : Qe x = q := smoothExtensionTangent_eq (I := I) x q
     set Ψ : Π b : M, TangentSpace I b := fun b =>
-      DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) gs b
+      DifferentialGeometry.Geometry.Operator.metricSharp (I := I) gs b
         (linearizedKoszulCovec (I := I) g₀ T b (Pe b) (Qe b)) with hΨ_def
     have hpoint : ∀ (b : M) (u ζ : TangentSpace I b),
         PDE.DeTurck.connDiff (I := I) gs g₀ b u ζ =
-          s • DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) gs b
+          s • DifferentialGeometry.Geometry.Operator.metricSharp (I := I) gs b
             (linearizedKoszulCovec (I := I) g₀ T b u ζ) :=
       fun b u ζ => lrConnDiff_linearization (I := I) (M := M) g₀ T hδ_lt hδ hδZ hTsymm hs b u ζ
     have hinner_cd : ∀ (b : M) (u ζ z : TangentSpace I b),
@@ -535,17 +543,17 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
       rw [h]
       abel
     rw [hZ1x] at hZ1hat
-    have hΨval : Ψ x = DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) gs x
+    have hΨval : Ψ x = DifferentialGeometry.Geometry.Operator.metricSharp (I := I) gs x
         (linearizedKoszulCovec (I := I) g₀ T x p q) := by
       rw [hΨ_def]
-      change DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) gs x
+      change DifferentialGeometry.Geometry.Operator.metricSharp (I := I) gs x
           (linearizedKoszulCovec (I := I) g₀ T x (Pe x) (Qe x)) = _
       rw [hPex, hQex]
     have hΨinner : ∀ w : TangentSpace I x, gs.inner x (Ψ x) w =
         unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
           ![w, p, q] := by
       intro w
-      rw [hΨval, DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp,
+      rw [hΨval, DifferentialGeometry.Geometry.Operator.inner_metricSharp,
         lrKT_unitModel (I := I) (M := M) g₀ T x w p q]
     set Z1s : Cₛ^(⊤ : ℕ∞)⟮I; E, (TangentSpace I : M → Type _)⟯ :=
       ⟨smoothExtensionTangent (I := I) x v1,
@@ -581,9 +589,9 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
         unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) b
           ![Z1 b, Pe b, Qe b]
       rw [hΨ_def]
-      change gs.inner b (DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) gs b
+      change gs.inner b (DifferentialGeometry.Geometry.Operator.metricSharp (I := I) gs b
           (linearizedKoszulCovec (I := I) g₀ T b (Pe b) (Qe b))) (Z1 b) = _
-      rw [DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp,
+      rw [DifferentialGeometry.Geometry.Operator.inner_metricSharp,
         lrKT_unitModel (I := I) (M := M) g₀ T b (Z1 b) (Pe b) (Qe b)]
     have hW_mdiff : TensorSectionMDiffAt (I := I) 3 KTsec x := by
       rw [hKTsec_def]
@@ -657,7 +665,7 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
         (PDE.DeTurck.connDiff (I := I) gs g₀ x v1 v0) =
         s * gs.inner x (Ψ x) (PDE.DeTurck.connDiff (I := I) gs g₀ x v1 v0) := by
       rw [hinner_cd x p q (PDE.DeTurck.connDiff (I := I) gs g₀ x v1 v0)]
-      rw [hΨval, DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp]
+      rw [hΨval, DifferentialGeometry.Geometry.Operator.inner_metricSharp]
     have hΨZ1hat : gs.inner x (Ψ x) ((LeviCivita (I := I) gs).toFun Z1 x v0) =
         unitModel (I := I) (M := M) g₀ 3 (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
             ![(LeviCivita (I := I) g₀).toFun Z1 x v0, p, q]

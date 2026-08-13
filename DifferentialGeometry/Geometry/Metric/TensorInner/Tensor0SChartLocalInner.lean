@@ -16,6 +16,8 @@ import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Normed.Operator.NormedSpace
 import Mathlib.Analysis.Normed.Module.Multilinear.Curry
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
+import DifferentialGeometry.Geometry.Operator.Gradient
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -29,7 +31,7 @@ namespace Tensor0SRiemannian
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]

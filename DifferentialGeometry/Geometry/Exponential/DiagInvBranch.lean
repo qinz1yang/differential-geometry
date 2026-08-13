@@ -1,17 +1,10 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.ExpVariationSmooth
 import DifferentialGeometry.Geometry.Exponential.ExpInvBranch
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -38,15 +31,9 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-
-
-
-
-
 structure DiagInvBranch
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) where
   hom : OpenPartialHomeomorph (TangentBundle I M) (M × M)
   zero_mem :
@@ -56,7 +43,6 @@ structure DiagInvBranch
 
 namespace DiagInvBranch
 
-
 def inv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -65,14 +51,12 @@ def inv
     M × M → TangentBundle I M :=
   B.hom.symm
 
-
 def dom
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p) : Set (M × M) :=
   B.hom.target
-
 
 theorem right_inv
     {g : SmoothRiemannianMetric I M}
@@ -87,7 +71,6 @@ theorem right_inv
       (B.hom_eq hu).symm
     _ = y := by simpa only [inv] using B.hom.right_inv hy
 
-
 theorem left_inv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -99,8 +82,6 @@ theorem left_inv
     B.inv (diagExp (I := I) g hEnorm u) = B.inv (B.hom u) :=
       congrArg B.inv (B.hom_eq hu).symm
     _ = u := by simpa only [inv] using B.hom.left_inv hu
-
-
 
 theorem inv_eq_of_exp
     {g : SmoothRiemannianMetric I M}
@@ -118,8 +99,6 @@ theorem inv_eq_of_exp
   rw [← hdiag]
   exact B.left_inv hvsrc
 
-
-
 theorem proj_eq
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -128,8 +107,6 @@ theorem proj_eq
     {y : M × M} (hy : y ∈ B.dom) :
     (B.inv y).proj = y.1 := by
   simpa only [diagExp_fst] using congrArg Prod.fst (B.right_inv hy)
-
-
 
 theorem inv_snd_inf
     {g : SmoothRiemannianMetric I M}
@@ -149,9 +126,6 @@ theorem inv_snd_inf
   refine TotalSpace.ext (B.proj_eq (hdom y hy)).symm ?_
   exact heq_of_eq rfl
 
-/-- Fixing the first point of a selected inverse branch gives a smooth
-tangent-bundle map wherever the corresponding pairs stay in the branch
-domain. -/
 theorem inv_fst_inf
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -163,12 +137,6 @@ theorem inv_fst_inf
     (contMDiff_const.prodMk contMDiff_id).contMDiffOn
   simpa only [inv, dom, Function.comp_apply] using B.inv_inf.comp hpair hdom
 
-/-- Fixing the first point of a selected inverse branch gives a smooth
-model-coordinate inverse vector on every set contained in the branch domain.
-
-This is the fixed-fiber companion of `inv_fst_inf`.  It uses the canonical
-tangent-bundle trivialization at the fixed point and hides that representation
-choice from downstream inverse-derivative arguments. -/
 theorem inv_fst_coord_inf
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -203,8 +171,6 @@ theorem inv_fst_coord_inf
   exact (Geodesic.chartFiberCoord_mk_self (I := I) p
     (show TangentSpace I p from (B.inv (p, z)).snd)).symm
 
-/-- On the selected inverse domain, exponentiating its fiber component gives
-the second point of the pair. -/
 theorem exp_eq
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -220,8 +186,6 @@ theorem exp_eq
     exact hright
   rwa [B.proj_eq hy] at h
 
-/-- Fixing the first point of a diagonal inverse branch gives the canonical
-fixed-first intrinsic-exponential branch. -/
 noncomputable def fixed
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -326,8 +290,6 @@ noncomputable def fixed
           (fun y hy => hy) }
   exact ⟨Φ, fun _ _ => rfl⟩
 
-/-- Membership in the fixed branch source is membership of the corresponding
-tangent-bundle vector in the diagonal branch source. -/
 @[simp] theorem fixed_source
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -338,8 +300,6 @@ tangent-bundle vector in the diagonal branch source. -/
         B.hom.source :=
   Iff.rfl
 
-/-- Membership in the fixed branch target is membership of the corresponding
-pair in the diagonal branch target. -/
 @[simp] theorem fixed_target
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -348,8 +308,6 @@ pair in the diagonal branch target. -/
     y ∈ (B.fixed p).dom ↔ (p, y) ∈ B.dom :=
   Iff.rfl
 
-/-- Inside the named realized-exponential radius, a selected branch inverse is
-the moving normal-coordinate inverse. -/
 theorem inv_eq_normal_lt
     [T2Space (TangentBundle I M)]
     {g : SmoothRiemannianMetric I M}
@@ -376,7 +334,6 @@ theorem inv_eq_normal_lt
   refine TotalSpace.ext (B.proj_eq hy) ?_
   exact heq_of_eq hcoord.symm
 
-
 theorem center_mem
     [T2Space (TangentBundle I M)]
     {g : SmoothRiemannianMetric I M}
@@ -395,7 +352,6 @@ theorem center_mem
     · exact expMapIntrinsic_zero (I := I) g hEnorm p
   rw [heq, hdiag] at hmap
   exact hmap
-
 
 theorem center_inv
     [T2Space (TangentBundle I M)]

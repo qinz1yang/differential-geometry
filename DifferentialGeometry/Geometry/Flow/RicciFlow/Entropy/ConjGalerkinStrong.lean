@@ -7,16 +7,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotentialT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjGalerkinLimit
 import Mathlib.Analysis.Normed.Operator.BanachSteinhaus
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -30,8 +23,8 @@ open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.ODE
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral
+
 open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -40,7 +33,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -80,8 +73,6 @@ noncomputable def galLimExt
     galLimExt hτ hlim m t = galLimHs hlim m t ht := by
   rw [galLimExt, Set.IccExtend_of_mem hτ _ ht]
   rfl
-
-
 
 theorem galLimExt_inc
     {D : RealTimeInterval}
@@ -145,8 +136,6 @@ noncomputable def galLimVel
       (galLimExt hτ hlim 2 t) +
     scalarGalPert (I := I) (M := M) S T t (galLimExt hτ hlim 2 t)
 
-
-
 noncomputable def galLimVelHs
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -178,8 +167,6 @@ noncomputable def galLimVelHs
     scalarPotHs (I := I) (M := M) q
       (conjCoeff (I := I) (M := M) S ((T : Real) - t)) m Um
 
-
-
 noncomputable def galLimVelCan
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -201,8 +188,6 @@ noncomputable def galLimVelCan
       (m : Real) ≤ ((m + 1 : Nat) : Real))
     (galLimVelHs hτ hlim (m + 1) t)
 
-
-
 theorem galLimVel_cont
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -223,8 +208,6 @@ theorem galLimVel_cont
     ((scalarScaleLap (I := I) (M := M)
         (S.family.metric (T : Real))).continuous.comp_continuousOn hU).add
       (hlim.pert_cont.clm_apply hU)
-
-
 
 theorem galLimVel_lift
     {D : RealTimeInterval}
@@ -251,13 +234,13 @@ theorem galLimVel_lift
           ∀ t, w t = galLimVelCan hτ.le hlim m (t : Real) := by
   classical
   obtain ⟨tauN, htauN, _, hregN, hnorm⟩ :=
-    lapDiffHs_norm (I := I) (M := M) S.family hS.smoothMetric T
+    lapDiffHs_norm (I := I) (M := M) S.family.metric hS.smoothMetric T
   obtain ⟨tauI, htauI, _, _, hinc⟩ :=
-    lapDiffHs_inc (I := I) (M := M) S.family hS.smoothMetric T
+    lapDiffHs_inc (I := I) (M := M) S.family.metric hS.smoothMetric T
   obtain ⟨tauE, htauE, hEq⟩ :=
     mem_nhdsGE_iff_exists_Icc_subset.mp
       (lapDiffHs_eq_A20 (I := I) (M := M)
-        S.family hS.smoothMetric T)
+        S.family.metric hS.smoothMetric T)
   let tau' : Real := min tau (min tauN (min tauI tauE))
   have htau' : 0 < tau' := by
     dsimp only [tau']
@@ -513,7 +496,7 @@ theorem galLimVel_lift
             (g := q) (r := 0) (s := 0) h0k
             (lapDiffHs (I := I) (M := M) q
               (S.family.metric ((T : Real) - t)) (m + 1) U) =
-          lapDiffA20 (I := I) (M := M) S.family T t U₂ := by
+          lapDiffA20 (I := I) (M := M) S.family.metric T t U₂ := by
       calc
         _ = tensorHs.castEquiv (I := I) (M := M)
             (g := q) (r := 0) (s := 0) hzero
@@ -527,7 +510,7 @@ theorem galLimVel_lift
               (S.family.metric ((T : Real) - t)) 0
               (tensorHs.castEquiv (I := I) (M := M)
                 (g := q) (r := 0) (s := 0) h20 U₂)) := by rw [hU0]
-        _ = lapDiffA20 (I := I) (M := M) S.family T t U₂ :=
+        _ = lapDiffA20 (I := I) (M := M) S.family.metric T t U₂ :=
           hEq (hsubE t.2) U₂
     have hPot :
         tensorHsInclusion (I := I) (M := M)
@@ -619,8 +602,6 @@ theorem galLimVel_coeff
           (galLimHs hlim 2 t ht)).coeff i := by
   simp only [galLimVel, tensorHs.add_coeff, scalarScaleLap_coeff,
     galLimExt_mem hτ hlim 2 ht, galLimHs]
-
-
 
 private lemma conjGalSubseq_mode_rhs_bounds
     {D : RealTimeInterval} {S : SolutionOn (I := I) (M := M) D}
@@ -930,8 +911,6 @@ theorem galLim_mode_ftc
       exact hn.symm)
   simpa only [q] using tendsto_nhds_unique hleft hright'
 
-
-
 theorem galLim_mode_deriv
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -1011,8 +990,6 @@ theorem galLim_mode_c1
           (galLimVel_cont hτ.le hlim)).mono Ioo_subset_Icc_self
     exact hvel.congr fun t ht ↦ (galLim_mode_deriv hτ hlim ht i).deriv
 
-
-
 theorem galLim_ftc
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -1048,8 +1025,6 @@ theorem galLim_ftc
     galLimExt_mem hτ.le hlim 2 ht, galLimHs,
     tensorHs.add_coeff, ccTensorToHs_coeff]
   rw [galLim_mode_ftc hτ hlim t ht i, hmap]
-
-
 
 theorem galLimExt_deriv
     {D : RealTimeInterval}
@@ -1158,8 +1133,6 @@ theorem galLimExt_deriv
   filter_upwards [Icc_mem_nhds ht.1 ht.2] with r hr
   exact hftc r hr
 
-
-
 theorem galLimExt_ode
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -1186,8 +1159,6 @@ theorem galLimExt_ode
   rw [hwCan t ⟨ht.1.le, ht.2.le⟩] at h
   exact h
 
-
-
 theorem galLimExt_smooth
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -1208,7 +1179,7 @@ theorem galLimExt_smooth
   obtain ⟨tauO, htauO, htauO_tau, hode⟩ :=
     galLimExt_ode (I := I) (M := M) hS hτ hlim
   obtain ⟨tauA, htauA, _htauA_one, hregA, hLap⟩ :=
-    lapDiffHs_dyn_fin (I := I) (M := M) S.family hS.smoothMetric T
+    lapDiffHs_dyn_fin (I := I) (M := M) S.family.metric hS.smoothMetric T
   let tau' : Real := min tauO tauA
   have htau' : 0 < tau' := by
     simpa only [tau'] using lt_min htauO htauA
@@ -1315,8 +1286,6 @@ theorem galLimExt_smooth
   rw [contDiffOn_infty]
   intro k
   exact hfin k m
-
-
 
 theorem scalar_gal_limit
     {D : RealTimeInterval}

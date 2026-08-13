@@ -3,27 +3,24 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Retag
 import Mathlib.Analysis.Normed.Operator.Extend
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -70,18 +67,14 @@ noncomputable def lapDiffSec
     (rawConnLapLin (I := I) g 0 0).comp
       (finiteReprLin (I := I) (M := M) g 0 0 2)
 
-
-
 theorem lapDiffSec_apply
     (g h : SmoothRiemannianMetric I M)
     (v : ScalarH2Core (I := I) (M := M) g) (x : M) :
     (lapDiffSec (I := I) (M := M) g h v).toSection x =
       Tensor0SSpace.toRS0
         ((Tensor0SNabla.tensor0Iso I M x).symm
-          (Δ_g (I := I) h
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x -
-            Δ_g (I := I) g
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x)) := by
+          (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x)) := by
   simp only [lapDiffSec, LinearMap.sub_apply, LinearMap.comp_apply,
     finiteReprLin_apply, rawConnLapLin_apply,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
@@ -101,15 +94,11 @@ theorem lapDiffSec_apply
   rw [← toRS0_sub]
   rw [map_sub]
 
-
-
 noncomputable def lapDiffCore
     (g h : SmoothRiemannianMetric I M) :
     ScalarH2Core (I := I) (M := M) g →ₗ[Real] TensorL2 0 0 g :=
   (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 0)).toLinearMap.comp
     (lapDiffSec (I := I) (M := M) g h)
-
-
 
 theorem lapDiffCore_pair
     (q h : SmoothRiemannianMetric I M)
@@ -117,10 +106,8 @@ theorem lapDiffCore_pair
     inner Real (lapDiffCore (I := I) (M := M) q h v)
         (SmoothCcTensor.toL2
           (tensorHsSmoothRepr (I := I) (M := M) w.1 w.2)) =
-      ∫ x, (Δ_g (I := I) h
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x -
-            Δ_g (I := I) q
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x) *
+      ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) *
           reprScalar0 (I := I) (M := M) w.1 w.2 x
         ∂(riemannianVolumeMeasure (I := I) (M := M) q) := by
   change inner Real
@@ -144,14 +131,10 @@ theorem lapDiffCore_pair
   have hlap :
       tensor0SSpace_evalScalar x
         ((Tensor0SNabla.tensor0Iso I M x).symm
-          (Δ_g (I := I) h
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x -
-            Δ_g (I := I) q
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x)) =
-        Δ_g (I := I) h
-            (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x -
-          Δ_g (I := I) q
-            (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x := by
+          (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x)) =
+        Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+          Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x := by
     change Tensor0SNabla.tensor0Iso I M x
       ((Tensor0SNabla.tensor0Iso I M x).symm _) = _
     rw [ContinuousLinearEquiv.apply_symm_apply]
@@ -171,16 +154,12 @@ theorem lapDiffCore_pair
       (reprScalar0_smooth (I := I) (M := M) w.1 w.2) x Fin.elim0
   rw [hlap, hrepr]
 
-
-
 theorem lapDiffCore_sq
     (g h : SmoothRiemannianMetric I M)
     (v : ScalarH2Core (I := I) (M := M) g) :
     ‖lapDiffCore (I := I) (M := M) g h v‖ ^ 2 =
-      ∫ x, (Δ_g (I := I) h
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x -
-            Δ_g (I := I) g
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x) ^ 2
+      ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   change ‖SmoothCcTensor.toL2
       (lapDiffSec (I := I) (M := M) g h v)‖ ^ 2 = _
@@ -193,8 +172,6 @@ theorem lapDiffCore_sq
   rw [lapDiffSec_apply (I := I) (M := M) g h v x]
   rw [inner_toRS0_scalar (I := I) (M := M) g x]
   ring
-
-
 
 theorem lapDiffCore_norm
     (g : SmoothRiemannianMetric I M) :
@@ -228,15 +205,11 @@ theorem lapDiffCore_norm
   nlinarith [norm_nonneg
     (lapDiffCore (I := I) (M := M) g h v)]
 
-
-
 noncomputable def lapDiffOp
     (g h : SmoothRiemannianMetric I M) :
     tensorHs (I := I) (M := M) g 0 0 2 →L[Real] TensorL2 0 0 g :=
   (lapDiffCore (I := I) (M := M) g h).extendOfNorm
     (ScalarH2Core (I := I) (M := M) g).subtype
-
-
 
 theorem lapDiffOp_core
     (g h : SmoothRiemannianMetric I M)
@@ -258,8 +231,6 @@ theorem lapDiffOp_core
   refine ⟨B, ?_⟩
   intro w
   simpa only [B, Submodule.coe_subtype] using hbound h w hsmall
-
-
 
 theorem lapDiffOp_norm
     (g : SmoothRiemannianMetric I M) :
@@ -287,9 +258,8 @@ theorem lapDiffOp_norm
   intro w
   simpa only [B, Submodule.coe_subtype] using hbound h w hsmall
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

@@ -6,23 +6,17 @@ import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Curvature.Bianchi
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
+
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -32,8 +26,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
-
-
 
 theorem oneForm_eq_sum_inv_flat
     (g : SmoothRiemannianMetric I M)
@@ -66,8 +58,6 @@ theorem oneForm_eq_sum_inv_flat
             rw [hsharp]
   simpa [tangentFlatLinear_apply_gen, cotangentToDual_apply_gen, map_sum, Finset.sum_mul,
     smul_eq_mul] using hpair
-
-
 
 theorem rm13_oneForm_apply_eq_sum_inv_flat
     (g : SmoothRiemannianMetric I M)
@@ -172,8 +162,6 @@ private theorem raised02CompAt_symm
           rw [hInv a p, hInv b q, hA p q]
           ring
 
-
-
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 private theorem ricciQuadraticAt_symm
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -215,8 +203,6 @@ private theorem ricciQuadraticAt_symm
           A (vec2 (basis p) (basis a)) := by
           simp [Finset.sum_mul, mul_assoc]
 
-
-
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 private theorem rm04RicciContractionAt_symm
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -256,8 +242,6 @@ private theorem rm04RicciContractionAt_symm
           refine Finset.sum_congr rfl fun k _ => ?_
           refine Finset.sum_congr rfl fun l _ => ?_
           rw [raised02CompAt_symm (I := I) basis gInv A hA hInv l k]
-
-
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 private theorem rm04_slot1_trace_eq_neg_ricci
@@ -300,9 +284,6 @@ private theorem rm04_slot1_trace_eq_neg_ricci
     _ = -A (vec2 (basis p) (basis a)) := by
           rw [hTrace p a]
 
-
-
-
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 theorem rm04_trace_first_third_eq_neg_ricci
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -335,8 +316,6 @@ theorem rm04_trace_first_third_eq_neg_ricci
           simp [Finset.sum_neg_distrib]
     _ = -A (vec2 (basis k) (basis l)) := by
         rw [hTrace k l]
-
-
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 private theorem contracted_slot1_eq_quadratic
@@ -460,8 +439,6 @@ private theorem contracted_slot1_eq_quadratic
                   A (vec2 (basis p) (basis b)) := by
                   simp [Finset.sum_mul, mul_assoc]
 
-
-
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 private theorem contracted_slot0_eq_neg_rm04RicciContraction
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -555,9 +532,6 @@ private theorem contracted_slot0_eq_neg_rm04RicciContraction
     _ = -rm04RicciContractionAt (I := I) basis Rm04 gInv A a b := by
           dsimp [B]
           simp [rm04RicciContractionAt, mul_comm]
-
-
-
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 theorem metricTrace_rm04RicciContractionAt_eq_neg_inner
@@ -676,13 +650,6 @@ theorem metricTrace_rm04RicciContractionAt_eq_neg_inner
         refine Finset.sum_congr rfl fun l _ => ?_
         ring
 
-
-
-
-
-
-
-
 theorem contracted_curvatureAction0SAt_vec2_eq
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -747,7 +714,7 @@ theorem contracted_curvatureAction0SAt_vec2_eq
                   Function.update (vec2 (basis b) (basis l)) 0 (basis q) =
                     vec2 (basis q) (basis l) := by
                 funext r
-                fin_cases r <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
+                fin_cases r <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
               simp [oneFormAtSlot0S_apply, hupdate]
             rw [hcoeff, (hLower (basis k) (basis a) (basis b) (basis p)).symm]
   have hslot1 : forall k l : Idx,
@@ -789,7 +756,7 @@ theorem contracted_curvatureAction0SAt_vec2_eq
                   Function.update (vec2 (basis b) (basis l)) 1 (basis q) =
                     vec2 (basis b) (basis q) := by
                 funext r
-                fin_cases r <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
+                fin_cases r <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
               simp [oneFormAtSlot0S_apply, hupdate]
             rw [hcoeff, (hLower (basis k) (basis a) (basis l) (basis p)).symm]
   have hslot0_contracted :
@@ -825,7 +792,7 @@ theorem contracted_curvatureAction0SAt_vec2_eq
           Rm13 x (oneFormAtSlot0S (I := I) A (vec2 (basis b) (basis l)) 0)
             (vec3 (basis k) (basis a) (basis b))) := by
           simp [curvatureAction0SAt, Fin.sum_univ_two, vec2,
-            DifferentialGeometry.Integral.Connection.vec2, mul_add, sub_eq_add_neg,
+            DifferentialGeometry.Geometry.Curvature.vec2, mul_add, sub_eq_add_neg,
             Finset.sum_add_distrib, Finset.sum_neg_distrib]
     _ =
       rm04RicciContractionAt (I := I) basis Rm04 gInv A a b +
@@ -853,4 +820,4 @@ theorem curvature_ricci_rhs_symm
   rw [rm04RicciContractionAt_symm (I := I) basis Rm04 gInv A hPair hA hInv a b,
     ricciQuadraticAt_symm (I := I) basis gInv A hA hInv a b]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

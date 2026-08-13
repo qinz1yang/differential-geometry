@@ -2,30 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2Interpola
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTrace
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.ForcingFixedPoint
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionFieldLink
-
-/-!
-# Reverse Duhamel representation for strong tensor heat solutions
-
-The maximal-regularity fixed-point theorem constructs solutions in Duhamel
-form.  Geometric applications, however, naturally first produce a strong pair
-
-* `u ∈ H¹([0,T]; Hᵃ)`, and
-* `field ∈ L²([0,T]; H^{a+2})`
-
-whose lower-scale representatives agree almost everywhere and which satisfies
-the tensor heat equation.  This file proves that every such pair is the
-canonical Duhamel pair.
-
-The uniqueness input is genuinely independent of the Duhamel construction.
-For a zero-initial-data homogeneous pair, the existing cross-scale trace
-identity gives, mode by mode,
-
-`cᵢ(t)² = ∫₀ᵗ -2 λᵢ cᵢ(s)² ds`.
-
-Nonnegativity of the tensor Laplacian eigenvalues forces every continuous mode
-to vanish.  The almost-everywhere cross-scale link then forces the top-scale
-field to vanish as well.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -59,9 +36,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a T : ℝ}
 
-/-- Finite-step continuation from a uniform local forward-uniqueness window.
-For each target time, divide the segment from `a` to that target into finitely
-many steps shorter than `δ` and iterate the local implication. -/
 theorem eqOn_of_step {X : Type*} {f₁ f₂ : ℝ → X} {a₀ b δ : ℝ}
     (hδ : 0 < δ) (h0 : f₁ a₀ = f₂ a₀)
     (hstep : ∀ t ∈ Icc a₀ b, f₁ t = f₂ t →
@@ -121,9 +95,6 @@ theorem eqOn_of_step {X : Type*} {f₁ f₂ : ℝ → X} {a₀ b δ : ℝ}
   rw [← hgrid_N]
   exact hgrid_eq N le_rfl
 
-/-- Package an independently supplied strong pair as a `CrossScaleField`.
-The hypothesis is equality of the two lower-scale `L²` classes, not a
-pointwise choice of representatives. -/
 def strongCross
     (field : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T)
     (u : timeH1 (tensorHs (I := I) (M := M) g r s a) T)
@@ -155,10 +126,7 @@ def strongCross
         (TimeSobolev.coeFn_ofContinuousOn u.continuousOn_toFun)
     exact hincl.symm.trans (heq.trans hfun)
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- A zero-initial-data homogeneous strong pair is zero.  This is the linear
-energy uniqueness theorem needed for reverse Duhamel realization. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem strongPair_zero (hT : 0 < T)
     (u : timeH1 (tensorHs (I := I) (M := M) g r s a) T)
     (field : timeL2 (tensorHs (I := I) (M := M) g r s (a + 2)) T)
@@ -252,10 +220,7 @@ theorem strongPair_zero (hT : 0 < T)
       (by simpa only [timeH1.deriv_zero] using hderiv)
   · exact hfield
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- The canonical top-scale Duhamel field and the canonical `timeH1` Duhamel
-map represent the same lower-scale `L²` class. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem duhField_pin (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -291,10 +256,7 @@ theorem duhField_pin (hT : 0 < T) (hT1 : T ≤ 1)
         (maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ force).toFun t at hft
   exact hit.trans (hst.trans hft.symm)
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- Reverse Duhamel realization: an arbitrary strong pair with the correct
-trace, cross-scale link, and linear equation is the canonical Duhamel pair. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem strongPair_eq_duh (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -344,11 +306,7 @@ theorem strongPair_eq_duh (hT : 0 < T) (hT1 : T ≤ 1)
       hzeroTrace hzeroLink hzeroEq with ⟨hu, hf⟩
   exact ⟨sub_eq_zero.mp hf, sub_eq_zero.mp hu⟩
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- A strong pair whose forcing is its Nemytskii nonlinearity yields exactly
-the forcing fixed-point representation consumed by
-`quasilinear_strong_unique`. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem strongNemy_fixed {L : ℝ≥0}
     {N : tensorHs (I := I) (M := M) g r s (a + 2) →
       tensorHs (I := I) (M := M) g r s a}
@@ -380,12 +338,7 @@ theorem strongNemy_fixed {L : ℝ≥0}
         (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ force) := by
       rw [hfield]
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- Two independently supplied strong pairs for the same Lipschitz
-quasilinear tensor heat equation and the same initial datum coincide.  This is
-the local strong-solution uniqueness theorem obtained by feeding the reverse
-Duhamel representations into `quasilinear_strong_unique`. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem strongPair_unique {L : ℝ≥0}
     {N : tensorHs (I := I) (M := M) g r s (a + 2) →
       tensorHs (I := I) (M := M) g r s a}

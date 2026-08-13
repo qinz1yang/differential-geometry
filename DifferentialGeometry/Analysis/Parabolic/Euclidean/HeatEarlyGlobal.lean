@@ -2,16 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatEarlyNear
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.QuantCover
 import Mathlib.Analysis.SpecialFunctions.Exp
 
-/-!
-# The global early rough heat potential
-
-The early Duhamel slab is decomposed into spatial shells of width `sqrt t`.
-On shell `k`, Gaussian decay contributes `exp (-k^2/4)`, while a quantitative
-ball cover contributes at most `(5(k+1))^n` source-Carleson cylinders.  We
-weaken the Gaussian to `exp (-k/4)` and sum it with Mathlib's canonical
-polynomial-times-exponential summability theorem.
--/
-
 noncomputable section
 
 open MeasureTheory Real Set Filter
@@ -22,13 +12,10 @@ namespace Analysis
 namespace Parabolic
 namespace Euclidean
 
-/-- The summable real majorant for the `k`-th heat shell in dimension `d`. -/
 def shellWeight (d k : ℕ) : ℝ :=
   (5 * ((k + 1 : ℕ) : ℝ)) ^ d *
     Real.exp (-(4 : ℝ)⁻¹ * (k : ℝ))
 
-/-- Polynomial shell growth is summable against the weakened exponential
-decay. -/
 theorem shellWeight_sum (d : ℕ) : Summable (shellWeight d) := by
   have hbase := Real.summable_pow_mul_exp_neg_nat_mul d
     (by norm_num : 0 < (4 : ℝ)⁻¹)
@@ -56,11 +43,9 @@ theorem shellWeight_sum (d : ℕ) : Summable (shellWeight d) := by
       ring
     _ = _ := rfl
 
-/-- The ENNReal mass of the shell majorant. -/
 def shellSeries (d : ℕ) : ℝ≥0∞ :=
   ∑' k : ℕ, ENNReal.ofReal (shellWeight d k)
 
-/-- The global early `Y⁰ -> C⁰` heat-potential constant. -/
 def earlyHeatC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] : ℝ≥0∞ :=
   nearHeatC V * shellSeries (Module.finrank ℝ V)
@@ -81,7 +66,6 @@ variable {V F : Type*}
   [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- The `k`-th spatial shell in observation-time heat units. -/
 def heatShell (t : ℝ) (x : V) (k : ℕ) : Set V :=
   {y | ((k : ℕ) : ℝ) * heatScale t ≤ ‖x - y‖ ∧
     ‖x - y‖ < (((k + 1 : ℕ) : ℝ) * heatScale t)}
@@ -94,7 +78,6 @@ private theorem heatShell_meas (t : ℝ) (x : V) (k : ℕ) :
   exact (isClosed_le continuous_const hnorm).measurableSet.inter
     (isOpen_lt hnorm continuous_const).measurableSet
 
-/-- The early space-time cylinder over one heat shell. -/
 def shellCyl (t : ℝ) (x : V) (k : ℕ) : Set (ℝ × V) :=
   Set.Ioc 0 (t / 2) ×ˢ heatShell t x k
 
@@ -108,7 +91,6 @@ omit [InnerProductSpace ℝ V]
   [MeasurableSpace V]
   [BorelSpace V]
   [Nontrivial V] in
-/-- Every spatial point lies in one integer heat shell. -/
 theorem mem_shell_union {t : ℝ} (ht : 0 < t) (x y : V) :
     y ∈ ⋃ k : ℕ, heatShell t x k := by
   let rho := heatScale t
@@ -129,7 +111,6 @@ omit [InnerProductSpace ℝ V]
   [MeasurableSpace V]
   [BorelSpace V]
   [Nontrivial V] in
-/-- The whole early Duhamel slab is covered by the shell cylinders. -/
 theorem earlySlab_sub {t : ℝ} (ht : 0 < t) (x : V) :
     (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)) ⊆
       ⋃ k : ℕ, shellCyl t x k := by
@@ -142,8 +123,6 @@ omit [InnerProductSpace ℝ V]
   [MeasurableSpace V]
   [BorelSpace V]
   [Nontrivial V] in
-/-- A time-half ball cylinder is contained in the Carleson cylinder at the
-observation-time heat radius. -/
 theorem ballCyl_sub {t : ℝ} (ht : 0 < t) (c : V) :
     (Set.Ioc 0 (t / 2) ×ˢ Metric.ball c (heatScale t)) ⊆
       paraCyl c (heatScale t) := by
@@ -152,7 +131,6 @@ theorem ballCyl_sub {t : ℝ} (ht : 0 < t) (c : V) :
   have hhalf : t / 2 ≤ t := by linarith
   simpa [heatScale, Real.sq_sqrt ht.le] using hzs.2.trans hhalf
 
-/-- The scalar ENNReal mass of the heat integrand on one shell. -/
 def shellMass (t : ℝ) (f : ℝ × V → F) (x : V) (k : ℕ) : ℝ≥0∞ :=
   ∫⁻ z in shellCyl t x k,
     ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ
@@ -167,8 +145,6 @@ theorem nat_sq_ge (k : ℕ) : (k : ℝ) ≤ (k : ℝ) ^ 2 := by
       nlinarith
 
 omit [CompleteSpace F] in
-/-- One shell is controlled by its polynomial cover count times a summable
-exponential weight. -/
 theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (hsrc : SrcCarl T C f) (k : ℕ) :
@@ -338,14 +314,12 @@ theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
     _ = nearHeatC V * C *
           ENNReal.ofReal (shellWeight (Module.finrank ℝ V) k) := rfl
 
-/-- The actual Bochner heat potential over the full early Duhamel slab. -/
 def heatEarly0 (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
   ∫ z in (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)),
     heatKernel (t - z.1) (x - z.2) • f z
       ∂(stVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
-/-- The unconditional global early `Y⁰ -> C⁰` heat-potential estimate. -/
 theorem heatEarly0_norm {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (hsrc : SrcCarl T C f) :

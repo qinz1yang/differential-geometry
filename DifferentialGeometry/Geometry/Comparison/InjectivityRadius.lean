@@ -1,65 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
 import Mathlib.Data.ENNReal.Real
-
-
-/-!
-# Injectivity radius at a point
-
-For a smooth Riemannian metric `g` on a boundaryless smooth manifold `M`
-modelled on a complete inner-product space `E`, and any base point
-`p : M`, choose a `g_p`-orthonormal linear equivalence from the fixed model
-space to `T_p M`. The resulting framed exponential map is a local
-diffeomorphism at the zero vector (see
-`Exponential/LocalDiffeomorphism.lean`). Consequently, there is an open
-ball around `0 ∈ T_p M` on which `expMap g p` is injective.
-
-The **injectivity radius at `p`** is the supremum, over `r : ℝ≥0∞`, of
-the radii of intrinsic tangent balls, represented by Euclidean model balls
-through that orthonormal frame, on which `expMap g p` is injective. We
-take the supremum in `ℝ≥0∞` so that a complete manifold (such as `ℝ^n`
-with the flat metric) can have `injRadius g p = ∞`.
-
-## Main results
-
-* `injRadius g p` — the injectivity radius at `p`, as an element of
-  `ℝ≥0∞`. The set used in the supremum is the family of radii `r` such
-  that `framedExpMap g p` is injective on the (extended) model ball of
-  radius `r` around `0 ∈ E`.
-
-* `injRadius_pos` — for every `p`, the injectivity radius is strictly
-  positive. This is the unconditional positivity statement.
-
-* `mem_injRadiusSet_iff`, `injRadiusSet_downward_closed`,
-  `injRadius_eq_sSup` and `injOn_expMap_eball_of_lt_injRadius` are the
-  shape and monotonicity lemmas characterising the members of the
-  supremum set and the defining injectivity property.
-
-* `injRadius_iInf_pos_of_compact_of_lowerSemicontinuous` — on a compact
-  manifold, when `p ↦ injRadius g p` is lower semicontinuous, the
-  infimum is strictly positive. The lower-semicontinuity hypothesis is a
-  separable assumption that follows from joint smoothness of the
-  exponential map in `(p, v)`; the joint smoothness itself is not yet
-  established at this point in the project, so we expose it as a
-  hypothesis to be discharged elsewhere.
-
-## Strategy
-
-The supremum-set
-`S g p = {r : ℝ≥0∞ | InjOn (framedExpMap g p) (Metric.eball 0 r)}`
-contains `0` (since `Metric.eball 0 0 = ∅`, on which every function is
-vacuously injective). Positivity of the supremum follows from the
-local diffeomorphism endpoint: `framedExpDiffeo g p` is an injective
-partial diffeomorphism whose source is an open neighborhood of `0`, so
-it contains some `Metric.ball 0 r₀` with `r₀ > 0`. Translating the
-real ball into an `eball` via `Metric.eball_ofReal` and using the
-agreement with `framedExpMap g p` on the source, we obtain
-`ENNReal.ofReal r₀ ∈ S g p`, hence `injRadius g p ≥ ENNReal.ofReal r₀
-> 0`.
-
-On a compact manifold, given lower semicontinuity, the infimum of a
-positive lower-semicontinuous function over a compact set is positive
-by a standard compactness argument.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -83,8 +25,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The open `Metric.ball 0` of some positive radius is contained in
-the source of `expMapDiffeo g p`. -/
 lemma exists_metric_ball_subset_expMapDiffeo_source
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r₀ : ℝ, 0 < r₀ ∧
@@ -97,8 +37,6 @@ lemma exists_metric_ball_subset_expMapDiffeo_source
   exact Metric.isOpen_iff.mp h_open (0 : E) h_mem
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On the source of `expMapDiffeo g p`, the function `expMapDiffeo g p`
-coincides with `expMap g p`; hence `expMap g p` is injective there. -/
 lemma injOn_expMap_on_expMapDiffeo_source
     (g : SmoothRiemannianMetric I M) (p : M) :
     InjOn (fun v : E =>
@@ -124,13 +62,11 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
-/-- Radii on which the exponential map is injective in the given normed model. -/
 def injRadiusSet (g : SmoothRiemannianMetric I M) (p : M) : Set ℝ≥0∞ :=
   { r : ℝ≥0∞ |
     InjOn (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M))
       (Metric.eball (0 : E) r) }
 
-/-- The injectivity radius measured in the given normed model. -/
 def injRadius (g : SmoothRiemannianMetric I M) (p : M) : ℝ≥0∞ :=
   sSup (injRadiusSet (I := I) g p)
 
@@ -301,25 +237,15 @@ section InjectivityRadius
 
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
-/-- The set of radii `r : ℝ≥0∞` such that the orthonormally framed
-exponential map is injective on `Metric.eball 0 r ⊆ E`. These model balls
-represent the intrinsic `g_p` tangent balls. -/
 def framedInjRadiusSet (g : SmoothRiemannianMetric I M) (p : M) : Set ℝ≥0∞ :=
   { r : ℝ≥0∞ |
     InjOn (framedExpMap (I := I) g p) (Metric.eball (0 : E) r) }
 
-/-- **The injectivity radius at `p ∈ M`.**
-
-This is the supremum, taken in `ℝ≥0∞`, of all radii `r` such that
-`framedExpMap g p : E → M` is injective on the open ball of radius `r`
-around the origin. We work in `ℝ≥0∞` so that `injRadius g p = ∞` is
-permitted (e.g. the flat metric on `ℝ^n`). -/
 def framedInjRadius (g : SmoothRiemannianMetric I M) (p : M) : ℝ≥0∞ :=
   sSup (framedInjRadiusSet (I := I) g p)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
-/-- Membership in `injRadiusSet` is just the injectivity condition. -/
 lemma mem_framedInjRadiusSet_iff (g : SmoothRiemannianMetric I M) (p : M)
     {r : ℝ≥0∞} :
     r ∈ framedInjRadiusSet (I := I) g p ↔
@@ -327,8 +253,6 @@ lemma mem_framedInjRadiusSet_iff (g : SmoothRiemannianMetric I M) (p : M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
-/-- `injRadiusSet` is downward closed: if injectivity holds on the ball of
-radius `r`, it holds on the ball of any smaller radius. -/
 lemma framedInjRadiusSet_downward_closed (g : SmoothRiemannianMetric I M) (p : M)
     {r r' : ℝ≥0∞} (h : r' ≤ r) (hr : r ∈ framedInjRadiusSet (I := I) g p) :
     r' ∈ framedInjRadiusSet (I := I) g p := by
@@ -337,8 +261,6 @@ lemma framedInjRadiusSet_downward_closed (g : SmoothRiemannianMetric I M) (p : M
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
-/-- The radius `0` is always in `injRadiusSet`. (The corresponding ball
-is empty, so any function is vacuously injective on it.) -/
 lemma zero_mem_framedInjRadiusSet (g : SmoothRiemannianMetric I M) (p : M) :
     (0 : ℝ≥0∞) ∈ framedInjRadiusSet (I := I) g p := by
   classical
@@ -349,22 +271,18 @@ lemma zero_mem_framedInjRadiusSet (g : SmoothRiemannianMetric I M) (p : M) :
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
-/-- `injRadiusSet` is nonempty. -/
 lemma framedInjRadiusSet_nonempty (g : SmoothRiemannianMetric I M) (p : M) :
     (framedInjRadiusSet (I := I) g p).Nonempty :=
   ⟨0, zero_mem_framedInjRadiusSet (I := I) g p⟩
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
-/-- Any element of `injRadiusSet` is below the injectivity radius. -/
 lemma le_framedInjRadius_of_mem (g : SmoothRiemannianMetric I M) (p : M)
     {r : ℝ≥0∞} (hr : r ∈ framedInjRadiusSet (I := I) g p) :
     r ≤ framedInjRadius (I := I) g p :=
   le_sSup hr
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Some positive model ball lies in the source of the orthonormally framed
-exponential partial diffeomorphism. -/
 lemma exists_framed_ball (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r₀ : ℝ, 0 < r₀ ∧
       Metric.ball (0 : E) r₀ ⊆ (framedExpDiffeo (I := I) g p).source := by
@@ -375,8 +293,6 @@ lemma exists_framed_ball (g : SmoothRiemannianMetric I M) (p : M) :
   exact Metric.isOpen_iff.mp h_open (0 : E) h_mem
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The actual framed exponential map is injective on the source of its
-selected partial diffeomorphism. -/
 lemma injOn_framed_source (g : SmoothRiemannianMetric I M) (p : M) :
     InjOn (framedExpMap (I := I) g p)
       (framedExpDiffeo (I := I) g p).source := by
@@ -390,9 +306,6 @@ lemma injOn_framed_source (g : SmoothRiemannianMetric I M) (p : M) :
   exact hvw
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- **The key positive witness**: there exists `r₀ > 0` such that
-`expMap g p` is injective on the metric ball of radius `r₀` around the
-origin. -/
 lemma exists_pos_injOn_framedExpMap_metric_ball
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r₀ : ℝ, 0 < r₀ ∧
@@ -448,10 +361,6 @@ theorem injOn_framedExpMap_ball_of_ofReal_lt_framedInjRadius
   rwa [Metric.eball_ofReal] at h
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-/-- Injectivity of the framed exponential on a model ball forces every vector
-in that ball to belong to the natural exponential domain. Outside that domain
-the totalized exponential equals the center, contradicting injectivity against
-the origin. -/
 theorem exp_dom_of_inj
     (g : SmoothRiemannianMetric I M) (p : M) {r : ℝ}
     (hinj : InjOn (framedExpMap (I := I) g p) (Metric.ball (0 : E) r))
@@ -472,8 +381,6 @@ theorem exp_dom_of_inj
       expMap_of_not_mem_expDomain (I := I) hdom, expMap_zero (I := I) g p]
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-/-- Every vector in a model ball strictly below the framed injectivity radius
-belongs to the natural exponential domain. -/
 theorem exp_dom_of_framedInjRadius
     (g : SmoothRiemannianMetric I M) (p : M) {r : ℝ}
     (hr : ENNReal.ofReal r < framedInjRadius (I := I) g p)
@@ -483,17 +390,6 @@ theorem exp_dom_of_framedInjRadius
     (injOn_framedExpMap_ball_of_ofReal_lt_framedInjRadius (I := I) g p hr) hz
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On a compact nonempty manifold, the infimum `⨅ p, injRadius g p` of the
-injectivity radius is strictly positive, under the hypothesis that
-`p ↦ injRadius g p` is lower semicontinuous.
-
-The lower-semicontinuity hypothesis is a genuine assumption on the statement:
-it is the classical regularity ingredient (it follows from joint smoothness of
-the exponential map in `(p, v)`, which is not yet available at this point in
-the project). Given it, a lower-semicontinuous function on a compact nonempty
-space attains its minimum at some `p₀` (via
-`LowerSemicontinuousOn.exists_isMinOn`), and the infimum equals the pointwise
-value there, which is positive by `injRadius_pos`. -/
 theorem framedInjRadius_iInf_pos_of_compact_of_lowerSemicontinuous
     (g : SmoothRiemannianMetric I M) [CompactSpace M] [Nonempty M]
     (h_lsc : LowerSemicontinuous (fun p : M => framedInjRadius (I := I) g p)) :

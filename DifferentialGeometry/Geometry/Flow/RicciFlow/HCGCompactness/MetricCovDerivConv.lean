@@ -1,16 +1,9 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivTower
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Compact-open convergence of component covariant-derivative towers
-
-This file records the metric-free continuity of \`iterCovComp\`: compact-open
-\`C∞\` convergence of the base component arrays and Christoffel arrays is
-preserved by every finite level of the component covariant-derivative tower.
--/
 
 noncomputable section
 
@@ -82,9 +75,6 @@ private theorem iterCovComp_succ_eq_step
   simpa only [constFrame, ContinuousLinearMap.pi_apply] using happ.symm
 
 omit [CompleteSpace E] in
-/-- Compact-open \`C∞\` convergence of both the base component array and the
-Christoffel array is preserved by every finite level of \`iterCovComp\` in a
-fixed model-space frame. -/
 theorem iter_comp_conv
     {U : Set E} (hU : IsOpen U) (e : Idx → E) {r : Nat}
     (chr : Nat → E → Idx → Idx → Idx → Real)
@@ -258,8 +248,6 @@ private theorem iterCovComp_zero_base
       rfl
 
 omit [CompleteSpace E] in
-/-- If the base arrays converge to zero, every finite component
-covariant-derivative tower converges to zero as well. -/
 theorem iter_comp_zero
     {U : Set E} (hU : IsOpen U) (e : Idx → E) {r : Nat}
     (chr : Nat → E → Idx → Idx → Idx → Real)

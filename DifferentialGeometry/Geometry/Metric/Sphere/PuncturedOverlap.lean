@@ -3,15 +3,6 @@ import Mathlib.Geometry.Manifold.Instances.Sphere
 
 set_option autoImplicit false
 
-/-!
-# Connected overlaps of punctured round spheres
-
-Stereographic projection identifies a unit sphere with two distinct points
-removed with Euclidean space with one point removed.  In dimension greater
-than one, this gives the preconnectedness needed by rigidity arguments on
-two-chart overlaps.
--/
-
 noncomputable section
 
 open Function Metric Set
@@ -23,8 +14,6 @@ namespace Geometry
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
 
-/-- A unit sphere of dimension greater than one remains preconnected after
-removing two distinct points. -/
 theorem punct2_preconn
     (hn : 1 < n) (p q : sphere (0 : E) 1) (hpq : p ≠ q) :
     IsPreconnected {x : sphere (0 : E) 1 | x ≠ p ∧ x ≠ q} := by

@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChristoffelCorrec
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Topology.MetricSpace.ProperSpace
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -21,7 +22,7 @@ namespace TensorSpectral
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -210,9 +211,9 @@ end Compactness
 section LowerBound
 
 variable [NeZero (Module.finrank ℝ E)]
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_chartTensorInnerPointwise_rs_model_lower_bound_on_compact
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)

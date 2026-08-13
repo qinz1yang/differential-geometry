@@ -2,15 +2,8 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.Lipschitz
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lp
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Closed
 import DifferentialGeometry.Geometry.Metric.LipschitzGradient
-
-/-!
-# Intrinsic weak gradients of Lipschitz functions
-
-This file promotes bounded functions that are Lipschitz for an explicit
-Riemannian distance to the intrinsic weak-gradient interface.  The proof is
-assembled from chart-local Lipschitz integration by parts and the finite
-partition of unity on a compact manifold.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -24,6 +17,7 @@ namespace IntrinsicLp
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -65,8 +59,6 @@ private lemma pull_lip_of_raw
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [IsManifold I ∞ M] in
-/-- A function Lipschitz for the extended distance of an explicit smooth
-Riemannian metric is continuous in the manifold topology. -/
 theorem intrinsic_lip_cont
     [IsManifold I ∞ M] [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L : NNReal}
@@ -250,8 +242,6 @@ private theorem global_lip_ibp
   refine ⟨htu_int, ?_⟩
   linarith
 
-/-- The pointwise metric gradient is a weak Riemannian gradient of every
-bounded function that is Lipschitz for the explicit Riemannian distance. -/
 theorem weak_grad_of_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L B : NNReal}
@@ -281,8 +271,6 @@ theorem weak_grad_of_lip
       _ = _ := hibp
 
 omit [IsManifold I ∞ M] in
-/-- The metric norm of `gradFun` is strongly measurable whenever the scalar
-function is manifold-differentiable almost everywhere. -/
 theorem grad_norm_aesm
     [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
@@ -370,8 +358,6 @@ theorem grad_norm_aesm
   filter_upwards [hqsum_eq] with x hx
   simpa only [Function.comp_apply] using congrArg Real.sqrt hx
 
-/-- Every bounded intrinsically Lipschitz real function belongs to the
-intrinsic first-order Sobolev space at every exponent. -/
 theorem memW1p_of_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : ENNReal)

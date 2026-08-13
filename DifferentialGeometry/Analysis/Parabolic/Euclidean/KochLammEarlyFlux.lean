@@ -3,15 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatEarlyFluxSeries
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammCarl
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.QuantCover
 
-/-!
-# The early divergence arm in the Koch--Lamm source space
-
-This file inserts the canonical quantitative Euclidean cover and the
-dimension-only shell series into the global early first-derivative heat
-estimate.  It then converts the local `L²` arm of `KLSource1` to the exact
-gradient-Carleson input, leaving a bound linear in the Koch--Lamm radius.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -29,8 +20,6 @@ variable {V F : Type*}
 
 omit [MeasurableSpace V]
   [BorelSpace V] in
-/-- Every heat shell has the canonical heat-scale cover with the cardinality
-used by the global shell estimate. -/
 theorem fluxShell_cover {t : ℝ} (ht : 0 < t) (x : V) (k : ℕ) :
     ∃ s : Finset V,
       s.card ≤ (5 * (k + 1)) ^ Module.finrank ℝ V ∧
@@ -41,8 +30,6 @@ theorem fluxShell_cover {t : ℝ} (ht : 0 < t) (x : V) (k : ℕ) :
   rw [Metric.mem_closedBall, dist_eq_norm, norm_sub_rev]
   exact hy.2.le
 
-/-- The initial-half divergence potential is bounded linearly by the local
-`L²` radius of a Koch--Lamm flux. -/
 theorem kl1_early_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
     (h : KLSource1 T A₂ Aₚ f) :

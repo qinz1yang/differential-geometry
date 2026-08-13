@@ -1,42 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.FixedDomainMetricBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricDerivNormRestrict
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 open Set Function
 open scoped Manifold ContDiff Topology BigOperators
-open DifferentialGeometry.Integral.Connection
+
 
 namespace DifferentialGeometry
 namespace HCGCompactness
@@ -47,8 +21,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M] [BoundarylessManifold I M]
-
-
 
 private noncomputable def orthoFrameBasis
     (gRef : SmoothRiemannianMetric I M) (z₀ : M) {y : M}
@@ -90,8 +62,6 @@ private lemma orthoFrameBasis_apply
   unfold orthoFrameBasis
   rw [coe_basisOfLinearIndependentOfCardEqFinrank]
 
-
-
 private noncomputable def orthoFrameSection
     (gRef : SmoothRiemannianMetric I M) (z₀ : M)
     (i : Fin (Module.finrank Real E)) :
@@ -106,8 +76,6 @@ private lemma orthoFrameSection_apply
     (i : Fin (Module.finrank Real E)) (y : M) :
     orthoFrameSection (I := I) gRef z₀ i y = smoothOrthoFrame (I := I) gRef z₀ i y :=
   rfl
-
-
 
 omit [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
@@ -147,8 +115,6 @@ private lemma metricCovDerivNorm_eq_sum_sq_on_nbhd
   congr 1
   funext a
   rw [orthoFrameBasis_apply]
-
-
 
 omit [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
@@ -197,9 +163,6 @@ theorem metricCovDerivNorm_continuousAt
     exact metricCovDerivNorm_eq_sum_sq_on_nbhd (I := I) q h gRef z₀ hz
   exact (hg_cont.continuousAt).congr heq.symm
 
-
-
-
 omit [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem metricCovDerivNorm_continuous
@@ -208,18 +171,12 @@ theorem metricCovDerivNorm_continuous
   continuous_iff_continuousAt.mpr
     (fun z₀ => metricCovDerivNorm_continuousAt (I := I) q h gRef z₀)
 
-
-
-
-
 omit [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem metricCovDerivNorm_bddAbove_of_isCompact
     (q : Nat) (h gRef : SmoothRiemannianMetric I M) {K : Set M} (hK : IsCompact K) :
     BddAbove ((fun z : M => metricCovDerivNorm (I := I) q h gRef z) '' K) :=
   (hK.image (metricCovDerivNorm_continuous (I := I) q h gRef)).bddAbove
-
-
 
 omit [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
@@ -229,18 +186,6 @@ theorem metricCovDerivNorm_le_of_isCompact
   obtain ⟨C, hC⟩ := metricCovDerivNorm_bddAbove_of_isCompact (I := I) q h gRef hK
   refine ⟨C, fun z hz => ?_⟩
   exact hC ⟨z, hz, rfl⟩
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [SigmaCompactSpace M] [BoundarylessManifold I M] in
@@ -253,8 +198,6 @@ theorem smoothRiemannianMetric_eq_of_inner
   have : i₁ = i₂ := hinner
   subst this
   rfl
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -270,9 +213,6 @@ theorem restrictOpen_eq_of_eqOn
   rw [SmoothRiemannianMetric.restrictOpen_inner, SmoothRiemannianMetric.restrictOpen_inner]
   exact hUeq (x : M) x.2 v w
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 theorem metricCovDeriv_eq_of_eqOn
@@ -286,9 +226,6 @@ theorem metricCovDeriv_eq_of_eqOn
   rw [← metricCovDeriv_restrictOpen_apply (I := I) h₁ gRef U a x slots,
     ← metricCovDeriv_restrictOpen_apply (I := I) h₂ gRef U a x slots,
     restrictOpen_eq_of_eqOn (I := I) h₁ h₂ U hUeq]
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in

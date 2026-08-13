@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -9,8 +10,9 @@ noncomputable section
 open Bundle Manifold Set FiberBundle NormedSpace
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -605,5 +607,5 @@ theorem riemannOp_basis_antisymm_jk (g : SmoothRiemannianMetric I M) (x : M)
     ((chartModelBasis E) j) ((chartModelBasis E) k) ((chartModelBasis E) i)
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

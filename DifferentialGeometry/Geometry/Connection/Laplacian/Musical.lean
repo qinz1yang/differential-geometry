@@ -1,39 +1,24 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.PointwiseMixed
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentCovDerivIdentification
-
-/-!
-# Musical naturality of the connection Laplacian
-
-This file supplies the two rank-one bridges needed to run a vector-valued
-parabolic equation through the existing mixed-tensor maximal-regularity
-theory.
-
-* `mixed01_connLap` identifies the mixed `(0, 1)` connection Laplacian,
-  evaluated on the unit `(0, 0)` tensor, with the cotangent connection
-  Laplacian.
-* `sharp_connLap` states that the Levi-Civita connection Laplacian commutes
-  with the metric musical sharp.
-
-Both statements are pointwise consequences of metric compatibility.  No
-coordinate frame is introduced: the proof uses the canonical smooth
-orthonormal frame already used by all three connection-Laplacian definitions.
--/
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.ConnectionLaplacian
-open Tensor0SNabla
+open DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian
+open DifferentialGeometry.Tensor0SNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -56,8 +41,6 @@ private lemma cotCLM_apply {x : M} (α : Tensor0SSpace 1 I x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-/-- A smooth abstract `(0, 1)` section has a smooth realization as a
-cotangent continuous-linear-map section. -/
 private lemma cotCLM_smooth
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞
       (fun x : M => Tensor0SSpace 1 I x)) :
@@ -88,9 +71,7 @@ private lemma cotCLM_smooth
   rw [cotCLM_apply]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- First-order agreement between the abstract `(0, 1)` tensor connection
-and the cotangent extension of the Levi-Civita connection. -/
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma covDeriv01_eq
     (g : SmoothRiemannianMetric I M)
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞
@@ -166,7 +147,7 @@ private lemma cotCLM_sum {ι : Type*} [Fintype ι] {x : M}
   rw [ContinuousLinearMap.sum_apply]
   simp only [cotCLM_apply]
   rw [ContinuousMultilinearMap.sum_apply]
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma second01_eq
     (g : SmoothRiemannianMetric I M)
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞
@@ -217,8 +198,7 @@ private lemma second01_eq
           ((LeviCivita (I := I) g).toFun B x (B x))) = _
   rw [cotCLM_sub, houter, hcorr, cotCLM_dual, cotCLM_dual, hwB]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-/-- Covariant differentiation commutes once with the metric sharp. -/
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma sharp_covDeriv
     (g : SmoothRiemannianMetric I M)
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞
@@ -239,9 +219,7 @@ private lemma sharp_covDeriv
     (hsharp.contMDiffAt.mdifferentiableAt (by simp)) v]
   rw [covDeriv01_eq (I := I) g w x v]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-/-- Per-direction second covariant derivatives commute with the metric
-sharp. -/
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma sharp_second_eq
     (g : SmoothRiemannianMetric I M)
     (w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞
@@ -301,10 +279,7 @@ private lemma sharp_second_eq
       rw [map_sub]
     _ = _ := rfl
 
-omit [CompactSpace M] in
-/-- The pointwise mixed `(0, 1)` connection Laplacian, evaluated on the
-unit `(0, 0)` tensor, is the cotangent connection Laplacian of the realized
-one-form. -/
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem mixed01_connLap
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 1) (x : M) :
     cotangentToCLM (I := I)
@@ -328,9 +303,7 @@ theorem mixed01_connLap
   simpa only [w, ccTensorOneForm, unitEvalSection] using
     second01_eq (I := I) g w (smoothOrthoFrame_smooth (I := I) g x i) x
 
-omit [CompactSpace M] in
-/-- The Levi-Civita connection Laplacian commutes with the metric musical
-sharp on a smooth one-covariant tensor section. -/
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem sharp_connLap
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 1) (x : M) :
     connLaplacian_vector (I := I) g
@@ -357,7 +330,7 @@ theorem sharp_connLap
     sharp_second_eq (I := I) g w (smoothOrthoFrame_smooth (I := I) g x i) x
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

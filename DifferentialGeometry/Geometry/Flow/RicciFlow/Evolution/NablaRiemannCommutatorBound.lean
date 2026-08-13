@@ -1,73 +1,21 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannCommutator
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -78,8 +26,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace Real (Tensor0SModel s Real E) :=
   Tensor0SBundle.tensor0SModel_normedSpace s
@@ -87,24 +33,11 @@ private local instance tensor0SModelNormedSpace_local {s : ℕ} :
 private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s Real E) := inferInstance
 
-
-
-
-
-
-
-
-
-
-
 def nabla3SlotFields
     (frame : CoordinateIdx (𝕜 := Real) E → (x : M) → TangentSpace I x)
     (d₁ d₂ : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     Fin 6 → (x : M) → TangentSpace I x :=
   Fin.cons (frame d₁) (Fin.cons (frame d₂) (fun q : Fin 4 => frame (m q)))
-
-
-
 
 omit [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
@@ -130,8 +63,6 @@ theorem nabla3SlotFields_swap
         nabla3SlotFields (I := I) frame d₁ d₂ m (Equiv.swap (0 : Fin 6) 1 (Fin.succ (Fin.succ q)))
       rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1]; rfl
 
-
-
 omit [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
 theorem nabla3FrameTuple_eq_cons_slotFields
@@ -151,8 +82,6 @@ theorem nabla3FrameTuple_eq_cons_slotFields
       · rfl
       · rfl
 
-
-
 omit [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
 theorem nabla3InnerSlots_eq_tail_slotFields
@@ -167,23 +96,10 @@ theorem nabla3InnerSlots_eq_tail_slotFields
   · rfl
   · rfl
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nabla3Rm04Field_eval_expand
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M)
     (a d₁ d₂ : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     nabla3Rm04Field (I := I) S t x₀
@@ -230,16 +146,6 @@ theorem nabla3Rm04Field_eval_expand
   rw [hX] at heval
   exact heval
 
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
 theorem nabla3SlotFields_eq_metricTraceInput
@@ -256,17 +162,13 @@ theorem nabla3SlotFields_eq_metricTraceInput
     · rfl
     · rfl
 
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nabla2Rm04Field_antisym_eq_curvatureAction_field
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     (fun p : M =>
@@ -289,13 +191,6 @@ theorem nabla2Rm04Field_antisym_eq_curvatureAction_field
     nabla3SlotFields_eq_metricTraceInput (I := I) frame p c b m]
   exact hR
 
-
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem fin6_eq_metricTraceInput {x : M} (W : Fin 6 → TangentSpace I x) :
@@ -308,8 +203,6 @@ theorem fin6_eq_metricTraceInput {x : M} (W : Fin 6 → TangentSpace I x) :
   · refine Fin.cases ?_ (fun j => ?_) j
     · rfl
     · rfl
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -331,17 +224,13 @@ theorem fin6_comp_swap_eq_metricTraceInput {x : M} (W : Fin 6 → TangentSpace I
       change W (Equiv.swap (0 : Fin 6) 1 (Fin.succ (Fin.succ j))) = _
       rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1]; rfl
 
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nabla2Rm04Field_slot01_antisym
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M) (W : Fin 6 → TangentSpace I x₀) :
     nabla2Rm04Field (I := I) S (t : Real) x₀ W -
         nabla2Rm04Field (I := I) S (t : Real) x₀ (W ∘ Equiv.swap (0 : Fin 6) 1) =
@@ -353,19 +242,10 @@ theorem nabla2Rm04Field_slot01_antisym
     ← fin6_comp_swap_eq_metricTraceInput (I := I) W] at hR
   exact hR
 
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nabla2Rm04Field_slotFields_mdifferentiableAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M)
     (d₁ d₂ : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     MDifferentiableAt I 𝓘(Real, Real)
@@ -398,19 +278,6 @@ theorem nabla2Rm04Field_slotFields_mdifferentiableAt
     (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (nabla2Rm04Field (I := I) S t) V x₀ hV_at
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 2 M]
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem correction_sum_swap_reindex {x₀ : M}
@@ -438,20 +305,8 @@ theorem correction_sum_swap_reindex {x₀ : M}
   rw [hσσ] at hupd
   exact hupd.symm
 
-
-
-
-
-
-
-
-
-
-
-
-
 def nabla3CorrectedSlots
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E)
     (q : Fin 6) : Fin 6 → TangentSpace I x₀ :=
@@ -461,27 +316,13 @@ def nabla3CorrectedSlots
         (nabla3SlotFields (I := I) (coordinateFrameAt (I := I) x₀) b c m q) x₀)
       (coordinateFrameAt (I := I) x₀ a x₀))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaLapComm_T1_eq_covDeriv_curvatureAction
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     nabla3Rm04Field (I := I) S (t : Real) x₀
@@ -541,44 +382,13 @@ theorem nablaLapComm_T1_eq_covDeriv_curvatureAction
     simp only [nabla3CorrectedSlots, hframe_def, hSbc_def] at hW ⊢
     exact hW
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaLapCommReactionTerm_eq_covDeriv_curvatureAction_add_curvatureAction
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     nablaLapCommReactionTerm (I := I) S (t : Real) x₀ a b c m =
@@ -601,149 +411,5 @@ theorem nablaLapCommReactionTerm_eq_covDeriv_curvatureAction_add_curvatureAction
           (nabla3InnerSlots (I := I) (coordinateFrameAt (I := I) x₀) x₀ b m) := by
   rw [nablaLapCommReactionTerm]
   rw [nablaLapComm_T1_eq_covDeriv_curvatureAction (I := I) S hS t x₀ a b c m]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 end DifferentialGeometry.PDE.RicciFlow

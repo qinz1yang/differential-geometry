@@ -9,32 +9,10 @@ import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Analysis.Calculus.SpaceJet
 import DifferentialGeometry.Analysis.Calculus.TimeSliceSwap
 import DifferentialGeometry.Analysis.Calculus.TimeSliceBootstrap
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -43,11 +21,12 @@ namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 open Bundle
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow (SolutionOn)
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open Filter Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -93,12 +72,6 @@ theorem chartGramBound_contOn
   exact (Real.continuous_sqrt.comp_continuousOn hii).mul
     (Real.continuous_sqrt.comp_continuousOn hjj)
 
-
-
-
-
-
-
 omit [SigmaCompactSpace M] in
 theorem chartGram_sub_le
     (gRef u u' : SmoothRiemannianMetric I M) (x₀ x : M)
@@ -138,13 +111,6 @@ theorem chartGram_sub_le
   rw [Fin.prod_univ_two]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   rfl
-
-
-
-
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem chartGramLim_contOn
@@ -231,7 +197,7 @@ theorem metricTensorContLim
     (hkcont : ∀ (k : ℕ) (x₀ : M) (i j : Fin (Module.finrank Real E)), ContinuousOn
       (fun p : ℝ × M => chartGramMatrix (I := I) (gSeq k p.1) x₀ p.2 i j)
       (Set.Icc β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    DifferentialGeometry.Integral.Connection.Tensor0SFamilyContinuousOnSet
+    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet
       (I := I) (M := M) 2 (Set.Icc β ψ)
       (fun t x => Tensor0SBundle.metricTensorField (I := I) (gInf t) x) := by
   apply metricTensorCont_of_chartGram (I := I) (K := Set.Icc β ψ) gInf
@@ -413,10 +379,10 @@ private theorem gSeqJet_contOn
     sourceDomSigmaOf (I := I) Φ k (hsrc k)
   letI sourceT2 : T2Space ↥(sourceOpen (I := I) Φ k) :=
     sourceDomT2 (I := I) Φ k
-  let Vi := @Integral.Connection.restrictOpenTangentSection E inferInstance
+  let Vi := @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection E inferInstance
     inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
     (sourceOpen (I := I) Φ k) sourceSigma sourceT2 σi
-  let Vj := @Integral.Connection.restrictOpenTangentSection E inferInstance
+  let Vj := @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection E inferInstance
     inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
     (sourceOpen (I := I) Φ k) sourceSigma sourceT2 σj
   letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
@@ -509,11 +475,13 @@ private theorem gSeqJet_contOn
     have hcorez : core p.2 = (⟨z, hps⟩ : SourceDomain (I := I) Φ k) := by
       simp only [core, dif_pos hps, z]
     have hViz : Vi (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σi z := by
-      exact @Integral.Connection.restrictOpenTangentSection_apply E inferInstance
+      exact @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection_apply E
+        inferInstance
         inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
         (sourceOpen (I := I) Φ k) sourceSigma sourceT2 σi ⟨z, hps⟩
     have hVjz : Vj (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σj z := by
-      exact @Integral.Connection.restrictOpenTangentSection_apply E inferInstance
+      exact @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection_apply E
+        inferInstance
         inferInstance inferInstance H inferInstance I P.M P.topology P.charted P.smooth
         (sourceOpen (I := I) Φ k) sourceSigma sourceT2 σj ⟨z, hps⟩
     have hV0 : V 0 (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σi z := by
@@ -535,10 +503,6 @@ private theorem gSeqJet_contOn
   simpa only [F] using hjet.continuousWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Every finite spatial chart jet of the fixed-window limit metric is jointly
-continuous in time and chart position.  This is the locally uniform limit of
-the corresponding finite-stage jets; the conversion from covariant metric
-convergence to chart jets is provided by `chartJet_sub_le`. -/
 theorem gramJets
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -685,8 +649,6 @@ theorem gramJets
     ⟨hp₀.1, interior_subset hCint⟩).mono_of_mem_nhdsWithin hmem
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The matrix-valued spatial chart jets of the limit metric are jointly
-continuous on the fixed time window and the interior chart target. -/
 private theorem gramPiJets
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -818,7 +780,6 @@ private theorem uniform_comp_cpt
   filter_upwards [h _ hlocal] with i hi x hx
   exact hi x hx ⟨x, hx, rfl⟩
 
--- Elaborating the geometric instance chain requires the larger synthesis budget.
 private theorem gramJet_tendsto
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1021,8 +982,6 @@ private theorem gramRHS_tendsto
     (isCompact_Icc.image_of_continuousOn hJinf) hop
   simpa only [J, Jinf, op] using hcomp
 
-/-- The fixed-window limit chart-Gram entries satisfy the Ricci-flow equation
-on the closed convergence window. -/
 theorem gramPDE
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1152,8 +1111,6 @@ theorem gramPDE
   exact hasDeriv_lim_tail (convex_Icc β ψ) ht f f' g h hderiv hfg hunif
 
 omit [CompleteSpace E] [NeZero (Module.finrank Real E)] in
-/-- Transfer a jointly smooth scalar chart-Gram readout on the model chart
-back to the corresponding manifold chart-Gram entry. -/
 private theorem gramModel_to_mfld
     (g : Real → letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1209,9 +1166,6 @@ private theorem gramModel_to_mfld
       ((extChartAt I x₀).symm (extChartAt I x₀ x)) i j
   rw [(extChartAt I x₀).left_inv hxsrc]
 
-/-- Fixed-window joint spacetime smoothness of the limit metric in the
-trivialization-based chart-Gram readout. This is the remaining analytic
-regularity frontier. -/
 theorem gramSmooth
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1415,8 +1369,6 @@ end ConvOut
 
 namespace OpenConvOut
 
-/-- Assemble joint smoothness of the open-interval limit metric from joint
-chart-Gram smoothness on every canonical compact window. -/
 theorem smoothMetric
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1444,7 +1396,7 @@ theorem smoothMetric
       (RealTimeInterval.openInterval a b t₀ ht₀)
       ({ base := { metric := co.gInf } } :
         SolutionOn (I := I) (M := P.M)
-          (RealTimeInterval.openInterval a b t₀ ht₀)).family := by
+          (RealTimeInterval.openInterval a b t₀ ht₀)).family.metric := by
   letI : TopologicalSpace P.M := P.topology
   letI : ChartedSpace H P.M := P.charted
   letI : T2Space P.M := P.t2
@@ -1515,8 +1467,6 @@ theorem smoothMetric
 
 variable [I.Boundaryless]
 
-/-- Joint chart-Gram smoothness of the glued limit metric on the ambient open
-time interval. -/
 theorem gramSmooth
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1556,8 +1506,6 @@ theorem gramSmooth
       ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hp.2)
   exact (hlocal.contMDiffAt hnhds).contMDiffWithinAt
 
-/-- The fixed-window analytic theorem supplies the open-interval metric
-regularity package on the one subsequence carried by `OpenConvOut`. -/
 theorem smoothMetric_of_conv
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -1576,7 +1524,7 @@ theorem smoothMetric_of_conv
       (RealTimeInterval.openInterval a b t₀ ht₀)
       ({ base := { metric := co.gInf } } :
         SolutionOn (I := I) (M := P.M)
-          (RealTimeInterval.openInterval a b t₀ ht₀)).family := by
+          (RealTimeInterval.openInterval a b t₀ ht₀)).family.metric := by
   apply OpenConvOut.smoothMetric (Φ := Φ) ht₀ co
   intro n
   apply ConvOut.gramSmooth (Φ := Φ) (co := OpenConvOut.at_window Φ co n)

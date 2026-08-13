@@ -20,23 +20,27 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HomFieldActionL2JetBo
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.CovDivergenceRoughLaplacianCommutation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SlotSwapPairingCalculus
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.HomFieldCurvatureJetDecomposition
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.Analysis.Laplacian
@@ -651,9 +655,9 @@ private lemma armResidual_arm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (DifferentialGeometry.Integral.Connection.ccOperatorFieldComp (I := I) (M := M) g₀ 4 4 2
+          (DifferentialGeometry.Analysis.Spectral.ccOperatorFieldComp (I := I) (M := M) g₀ 4 4 2
             (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
-            (DifferentialGeometry.Integral.Connection.endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
+            (DifferentialGeometry.Geometry.Connection.endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
               (gInvDiffRaisedEndoField (I := I) g₀ g₁)))
           (iteratedCovGrad (I := I) g₀ 0 2 2 u₀)).toSection b) D) m =
     Tensor0SSpace.toModel
@@ -877,8 +881,6 @@ def edgeArmCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
         (gInvDiffRaisedEndoField (I := I) g₀ g₁))))
 
--- The integration-by-parts normalization expands several bundled tensor operators.
--- Resolving the tensor-valued scalar operations in the expanded identity is instance-search heavy.
 private theorem deTurckArm_residual_ibp_zero
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ∀ (u₀ : SmoothCcTensor g₀ 0 2),
@@ -933,7 +935,8 @@ private theorem deTurckArm_residual_ibp_zero
     (DifferentialGeometry.Integral.L2.SmoothCcTensor.integrable_inner_cross
       (I := I) (M := M) u₀ (deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ u₀))
     (DifferentialGeometry.Integral.L2.SmoothCcTensor.integrable_inner_cross
-      (I := I) (M := M) u₀ (operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 0) G₀ Du))] at hgreen
+      (I := I) (M := M) u₀ (operatorFieldApply (I := I) (M := M) g₀ (2 + 1)
+        (2 + 0) G₀ Du))] at hgreen
   have hrhs : (⟪iteratedCovGrad (I := I) g₀ 0 2 0 u₀,
       operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 0) (-G₀)
         (iteratedCovGrad (I := I) g₀ 0 2 1 u₀)⟫_ℝ : ℝ) =
@@ -1041,7 +1044,7 @@ private theorem armJet_appCcRS_norm_le (g₀ : SmoothRiemannianMetric I M) (b c 
   have hVint : MeasureTheory.Integrable
       (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 0 b x (V.toSection x))
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    DifferentialGeometry.Integral.Connection.integrable_riemannianFiberNormSq_toSection
+    DifferentialGeometry.Analysis.Elliptic.integrable_riemannianFiberNormSq_toSection
       (I := I) (M := M) g₀ 0 b V
   have hZsq_le : ‖Z‖ ^ 2 ≤ Cop * ‖V‖ ^ 2 := by
     rw [hZL2, hVL2]
@@ -1471,7 +1474,8 @@ private theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric
   · exact mul_nonneg (hCfL_nn 0)
       (mul_nonneg (hCfR_nn 0) (Finset.sum_nonneg (fun q _ => hCfG_nn q)))
   · set GT : SmoothCcTensor g₀ 0 (2 + 0) :=
-      operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 0) Gf (covGrad (I := I) (M := M) g₀ 0 2 u₀)
+      operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 0) Gf (covGrad (I := I)
+        (M := M) g₀ 0 2 u₀)
       with hGT_def
     have hsym := oneMinusConnLapSmoothIter_l2Inner_sym_split (I := I) (M := M) g₀ 0 2 a b u₀ GT
     have hab : a + b = n := by omega
@@ -3239,7 +3243,7 @@ private theorem exists_oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_jetBo
     exists_iteratedCovGrad_l2NormSq_le_smoothCcToTensorHs_succ_add_lower
       (I := I) (M := M) g₀ n
   obtain ⟨Cjet, hCjet_nn, hjet⟩ :=
-    DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.exists_iteratedCovGrad_sum_le_smoothCcToTensorHs
+    DifferentialGeometry.Analysis.Spectral.exists_iteratedCovGrad_sum_le_smoothCcToTensorHs
       (I := I) (M := M) g₀ n
   refine ⟨(C + C ^ 2) * Cjet ^ 2 + (1 / 4) * Cgap, by positivity, fun u₀ => ?_⟩
   set Mtop := ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((n : ℕ) : ℝ) + 1) u₀‖ with hMtop_def
@@ -3326,8 +3330,6 @@ private theorem oneMinusConnLapIter_pairing_fold
       (I := I) (M := M) g₀ g₁ n h htie hδ_lt hδ_nn hδ
   exact ⟨Clower, hClower_nn, hbound⟩
 
--- Comparing the integral pairing with the Sobolev norm unfolds a large tensor expression.
--- Resolving scalar multiplication in the unfolded tensor model is instance-search heavy.
 omit [BoundarylessManifold I M] in
 private theorem armPrincipalSlotPairing_le_dirichlet_top
     [Nonempty M] (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
@@ -3587,9 +3589,8 @@ theorem two_mul_inner_smoothCcToTensorHs_deTurckPrincipalCometricArm_lt_one
     linarith
   refine ⟨δ / (1 - δ) + 1 / 4, Clower, by linarith, by positivity, hClower_nn, hbound⟩
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

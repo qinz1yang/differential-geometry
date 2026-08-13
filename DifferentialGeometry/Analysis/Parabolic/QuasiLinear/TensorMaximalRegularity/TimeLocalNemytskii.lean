@@ -1,14 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocalNemytskii
-
-/-!
-# Time-dependent Nemytskii operators on an almost-everywhere state set
-
-For a time-dependent nonlinearity, pointwise measurability in time does not by
-itself make its composition with an almost-everywhere state-valued field
-measurable.  This file records the exact compositional measurability needed by
-the forcing-space construction, proves that joint continuity supplies it, and
-packages the uniform three-arm growth estimate as an `L²` Nemytskii operator.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -24,10 +15,6 @@ variable {X Y : Type*}
   [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
   [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
 
-/-- Compositional strong measurability for a time-dependent state-set map on
-all slabs lying below a fixed horizon.  This is deliberately stronger than
-separate pointwise measurability: it is exactly the hypothesis consumed by a
-time-dependent Nemytskii operator. -/
 def TimeNemyMeas {S : Set X} (hzero : (0 : X) ∈ S)
     (N : ℝ → S → Y) (τ : ℝ) : Prop :=
   ∀ {T : ℝ}, T ≤ τ → ∀ (f : timeL2 X T),
@@ -35,8 +22,6 @@ def TimeNemyMeas {S : Set X} (hzero : (0 : X) ∈ S)
       AEStronglyMeasurable (fun t => N t (aeSetLift hzero f t)) (timeMeasure T)
 
 omit [NormedSpace ℝ Y] [CompleteSpace Y] in
-/-- Joint continuity of the time-state map is a sufficient producer for the
-compositional measurability used by `TimeNemyMeas`. -/
 theorem timeNemy_of_cont {S : Set X} (hzero : (0 : X) ∈ S)
     {N : ℝ → S → Y} {τ : ℝ}
     (hN : Continuous (fun p : ℝ × S => N p.1 p.2)) :
@@ -46,10 +31,6 @@ theorem timeNemy_of_cont {S : Set X} (hzero : (0 : X) ∈ S)
     (aestronglyMeasurable_id.prodMk (aeSetLift_aesm hzero f hf))
 
 omit [NormedSpace ℝ Y] [CompleteSpace Y] in
-/-- A composition-measurable time-dependent map satisfying a uniform
-three-arm estimate sends an `L²` field in the state set to an `L²` forcing
-field.  The zero bound and the tame estimate need hold only almost everywhere
-on the slab. -/
 theorem memLp_time_tame
     {T R : ℝ} {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     {S : Set X} (hzero : (0 : X) ∈ S) (hR : 0 ≤ R)
@@ -117,8 +98,6 @@ theorem memLp_time_tame
   rw [hu, Real.norm_eq_abs, abs_of_nonneg hmajor0]
   exact hn
 
-/-- The time-dependent Nemytskii field associated to the uniform three-arm
-bound on an almost-everywhere state set. -/
 def timeNemyTame
     {T R : ℝ} {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     {S : Set X} (hzero : (0 : X) ∈ S) (hR : 0 ≤ R)
@@ -138,8 +117,6 @@ def timeNemyTame
   (memLp_time_tame hzero hR J hstate N f hf hmeas A B C D hD hzeroN htame).toLp
     (fun t => N t (aeSetLift hzero f t))
 
-/-- `timeNemyTame` is represented by pointwise evaluation of the
-time-dependent nonlinearity on the canonical subtype lift. -/
 theorem timeNemyTame_ae
     {T R : ℝ} {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
     {S : Set X} (hzero : (0 : X) ∈ S) (hR : 0 ≤ R)

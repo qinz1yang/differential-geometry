@@ -1,41 +1,18 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmRealizationBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivLinear
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.HCGCompactness
-open DifferentialGeometry.Integral.Connection
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -47,14 +24,6 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
-
-
-
-
-
-
-
-
 
 def iterCovComp {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -90,12 +59,6 @@ theorem iterCovComp_succ {r : ℕ}
         (chr x)
         (iterCovComp (I := I) frame chr base a x) := rfl
 
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem iterCov_realizes
@@ -121,18 +84,6 @@ theorem iterCov_realizes
       (leviCivitaConnectionOfMetric (I := I) gRef) hcov
       (iterCov (I := I) gRef r T a))
     X x slots
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in

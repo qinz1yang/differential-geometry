@@ -1,16 +1,9 @@
 import DifferentialGeometry.Geometry.Comparison.HalfSqDistGrad
 import DifferentialGeometry.Geometry.Comparison.HalfSqDistGradVar
 import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -25,7 +18,8 @@ namespace Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -43,8 +37,7 @@ theorem halfArcLengthSq_deriv
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q pt : M) (u : TangentSpace I q) (L : ℝ) (hL : 0 < L)
     (f : ℝ → ℝ → M) (hf : IsSmoothVariation (I := I) f)
     (hfc : ∀ t : ℝ, f 0 t = intrinsicGeodesic (I := I) g hEnorm q u t)
@@ -154,8 +147,7 @@ theorem halfSqDist_dir_deriv
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [T3Space M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q pt : M) (u : TangentSpace I q) (L : ℝ) (hL : 0 < L)
     (hguu : g.inner q u u = 1)
     (hgL : intrinsicGeodesic (I := I) g hEnorm q u L = pt)
@@ -213,8 +205,7 @@ theorem grad_halfSqDist_min
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [T3Space M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q pt : M) (v : TangentSpace I q) :
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     expMapIntrinsic (I := I) g hEnorm q v = pt →
@@ -298,8 +289,7 @@ theorem halfSqDist_flat
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [T3Space M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) :
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {pt : M},
@@ -344,8 +334,7 @@ theorem grad_halfSqDist
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [T3Space M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) :
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {pt : M},
@@ -360,6 +349,54 @@ theorem grad_halfSqDist
   refine ⟨ρ, hρ, ?_⟩
   intro pt hsrc hne hsmall hdiff
   exact gradientFun_eq_of_flat (I := I) g (hflat hsrc hne hsmall hdiff)
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+theorem grad_halfSqDist_of_complete_metric
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (q : M) :
+    letI : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    letI : TopologicalSpace.MetrizableSpace M :=
+      Manifold.metrizableSpace I M
+    letI : T3Space M := inferInstance
+    letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+      ⟨g.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+    letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    letI : PseudoEMetricSpace M :=
+      (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+    letI : CompleteSpace M := hcomplete.complete
+    letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+    ∃ ρ : ℝ, 0 < ρ ∧ ∀ {pt : M},
+      pt ∈ (NormalCoordinates.normalChartAt (I := I) g q).source → pt ≠ q →
+      Real.sqrt (g.inner q (NormalCoordinates.normalChartAt (I := I) g q pt : E)
+        (NormalCoordinates.normalChartAt (I := I) g q pt : E)) < ρ →
+      MDifferentiableAt I 𝓘(ℝ, ℝ) (CenterOfMass.halfSqDist pt) q →
+      gradientFun (I := I) g (CenterOfMass.halfSqDist pt) q =
+        -(show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt) := by
+  letI : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  letI : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  letI : T3Space M := inferInstance
+  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : PseudoEMetricSpace M :=
+    (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  letI : CompleteSpace M := hcomplete.complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  exact grad_halfSqDist (I := I) (M := M) g hEnorm q
 
 end Riemannian
 end Geometry

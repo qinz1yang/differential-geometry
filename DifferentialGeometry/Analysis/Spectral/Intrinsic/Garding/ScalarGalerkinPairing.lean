@@ -1,14 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautTame
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.DirichletSpectralBochnerGap
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.FiniteSpectralPairing
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -16,12 +11,12 @@ open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -32,10 +27,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-
-
-
 
 theorem cc_finite_diss
     (q h : SmoothRiemannianMetric I M)
@@ -189,10 +180,6 @@ theorem cc_finite_diss
   rw [hpair]
   simpa only [U, A] using hmain'
 
-
-
-
-
 theorem cc_a2_closure
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -274,6 +261,6 @@ theorem cc_a2_closure
   rw [← hlhs, ← hhi, ← hlo]
   exact h
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

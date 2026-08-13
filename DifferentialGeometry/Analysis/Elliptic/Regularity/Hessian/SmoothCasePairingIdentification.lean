@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.PairingLapDom
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.LpIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Defs
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -21,7 +22,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPerChartWitness
@@ -54,6 +55,7 @@ private lemma h1ComplToLp_smoothToH1Compl_coeFn_aeEq_smooth
       =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g] v.toFun
   exact MemLp.coeFn_toLp v.memLp_two
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma h1ComplToLp_smoothToH1Compl_measurable
     (g : SmoothRiemannianMetric I M) (v : SmoothScalar g) :

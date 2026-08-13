@@ -1,26 +1,23 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.CrossMetricEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffCore
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -68,17 +65,13 @@ private theorem normSq0S_nonneg
   rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv A]
   exact Finset.sum_nonneg fun _ _ => sq_nonneg _
 
-
-
 theorem lapDiffCore_pair_sq
     (q h k : SmoothRiemannianMetric I M)
     (v : ScalarH2Core (I := I) (M := M) q) :
     ‖lapDiffCore (I := I) (M := M) q h v -
         lapDiffCore (I := I) (M := M) q k v‖ ^ 2 =
-      ∫ x, (Δ_g (I := I) h
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x -
-            Δ_g (I := I) k
-              (reprScalar0_smooth (I := I) (M := M) v.1 v.2) x) ^ 2
+      ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            Δ_g (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) q) := by
   change ‖SmoothCcTensor.toL2
       (lapDiffSec (I := I) (M := M) q h v) -
@@ -100,9 +93,6 @@ theorem lapDiffCore_pair_sq
   rw [inner_toRS0_scalar (I := I) (M := M) q x]
   ring
 
-
-
-
 theorem lapDiff_pair_energy
     (q k : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 <= C ∧
@@ -112,10 +102,8 @@ theorem lapDiff_pair_energy
         (Module.finrank Real E : Real) *
             HCGCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h k k <= (1 / 2 : Real) →
-          ∫ x, (Δ_g (I := I) h
-                  (reprScalar0_smooth (I := I) (M := M) v hv) x -
-                Δ_g (I := I) k
-                  (reprScalar0_smooth (I := I) (M := M) v hv) x) ^ 2
+          ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
+                Δ_g (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
               ∂(riemannianVolumeMeasure (I := I) (M := M) q) <=
             C *
               (HCGCompactness.metricDerivNormSupOn
@@ -142,7 +130,7 @@ theorem lapDiff_pair_energy
   let duNorm : M → Real := fun x =>
     normSq0S (I := I) k x 1 (duSec (I := I) f hf x)
   let lhs : M → Real := fun x =>
-    (Δ_g (I := I) h hf x - Δ_g (I := I) k hf x) ^ 2
+    (Δ_g (I := I) h ⟨_, hf⟩ x - Δ_g (I := I) k ⟨_, hf⟩ x) ^ 2
   let energy : M → Real := fun x => HessNorm x + duNorm x
   have hHessEq : HessNorm = fun x =>
       chartHessFrobeniusSq (I := I) k f x := by
@@ -160,8 +148,8 @@ theorem lapDiff_pair_energy
     rw [hduEq]
     exact normGradSqFun_continuous (I := I) k hf
   have hlhsCont : Continuous lhs := by
-    exact (((Δ_g_contMDiff (I := I) h hf).continuous.sub
-      (Δ_g_contMDiff (I := I) k hf).continuous).pow 2)
+    exact (((Δ_g_contMDiff (I := I) h ⟨_, hf⟩).continuous.sub
+      (Δ_g_contMDiff (I := I) k ⟨_, hf⟩).continuous).pow 2)
   have henergyCont : Continuous energy := hHessCont.add hduCont
   have hlhsInt : Integrable lhs
       (riemannianVolumeMeasure (I := I) (M := M) q) :=
@@ -211,10 +199,8 @@ theorem lapDiff_pair_energy
         CX * ‖v‖ ^ 2 := by
     simpa only [energy, HessNorm, duNorm, f, hf] using hcross v hv
   calc
-    (∫ x, (Δ_g (I := I) h
-            (reprScalar0_smooth (I := I) (M := M) v hv) x -
-          Δ_g (I := I) k
-            (reprScalar0_smooth (I := I) (M := M) v hv) x) ^ 2
+    (∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
+          Δ_g (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) q)) =
         ∫ x, lhs x ∂(riemannianVolumeMeasure (I := I) (M := M) q) := by
       rfl
@@ -232,8 +218,6 @@ theorem lapDiff_pair_energy
         (HCGCompactness.metricDerivNormSupOn
           (I := I) Set.univ 1 h k k) ^ 2 * ‖v‖ ^ 2 := by
       rfl
-
-
 
 theorem lapDiff_pair_core
     (q k : SmoothRiemannianMetric I M) :
@@ -268,9 +252,6 @@ theorem lapDiff_pair_core
   nlinarith [norm_nonneg
     (lapDiffCore (I := I) (M := M) q h v -
       lapDiffCore (I := I) (M := M) q k v)]
-
-
-
 
 theorem lapDiff_pair_norm
     (q k : SmoothRiemannianMetric I M) :
@@ -316,9 +297,8 @@ theorem lapDiff_pair_norm
       lapDiffOp_core (I := I) (M := M) q k v hqk]
     simpa only [B, rho] using hcore h v hkh
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

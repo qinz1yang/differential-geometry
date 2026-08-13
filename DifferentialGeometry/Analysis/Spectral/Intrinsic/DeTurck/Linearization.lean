@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHS
-import DifferentialGeometry.Geometry.Flow.RicciFlow.PrincipalSymbol
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.PrincipalSymbol
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSecondOrderPart
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionSymbol
 import DifferentialGeometry.Analysis.Parabolic.StrictParabolicity
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSStrictParabolic
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open Bundle
 open scoped Manifold ContDiff
@@ -36,6 +36,6 @@ theorem deturck_ricci_rhs_linearization_at_g0 [I.Boundaryless]
       (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
       (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀),
     rfl,
-    DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS_hasPrincipalSymbol_at_self g₀ g_bg⟩
+    DifferentialGeometry.Analysis.Parabolic.deTurckRicciRHS_hasPrincipalSymbol_at_self g₀ g_bg⟩
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

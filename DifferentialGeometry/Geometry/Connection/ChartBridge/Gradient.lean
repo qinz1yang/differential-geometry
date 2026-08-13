@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -8,7 +9,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -18,6 +19,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 theorem gradient_eq_gradFun
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
@@ -116,8 +118,6 @@ theorem gradFun_add
     rw [hsum, extDerivFun_add hf hh, ContinuousLinearMap.add_apply]
   rw [h_left, ← h_right]
 
-/-- The gradient of a finite sum of functions differentiable at a point is
-the finite sum of their gradients at that point. -/
 theorem gradFun_finset
     (g : SmoothRiemannianMetric I M) {ι : Type*} (s : Finset ι)
     (f : ι → M → ℝ) {x : M}
@@ -155,12 +155,6 @@ theorem gradFun_finset
       change gradFun (I := I) g (fun y => f i y + s.sum f y) x = _
       rw [gradFun_add (I := I) g hi hsum, ih hs]
 
-/-- The gradient is `ℝ`-linear in `f`: a scalar multiple `c • f` of a differentiable
-function `f : M → ℝ` has gradient `c • gradFun g f`.
-
-Stated using `Pi.smul`-shape `c • f` (the canonical Mathlib form for `mfderiv` linearity).
-For the pointwise-product form `(fun y => c * f y)`, the user can apply `funext` to rewrite
-the function to the `c • f` form. -/
 theorem gradFun_const_smul
     (g : SmoothRiemannianMetric I M) (c : ℝ) {f : M → ℝ} {x : M}
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
@@ -188,8 +182,6 @@ theorem gradFun_const_smul
     rfl
   rw [h_left, ← h_right]
 
-/-- The gradient of the negation of a differentiable scalar is the negation
-of its gradient. -/
 theorem gradFun_neg
     (g : SmoothRiemannianMetric I M) {f : M → ℝ} {x : M}
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
@@ -201,8 +193,6 @@ theorem gradFun_neg
   rw [hneg, gradFun_const_smul (I := I) g (-1 : ℝ) hf]
   simp only [neg_smul, one_smul]
 
-/-- The gradient of a difference of differentiable scalars is the difference
-of their gradients. -/
 theorem gradFun_sub
     (g : SmoothRiemannianMetric I M) {f h : M → ℝ} {x : M}
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
@@ -219,8 +209,6 @@ theorem gradFun_sub
       rw [gradFun_neg (I := I) g hh]
       rw [sub_eq_add_neg]
 
-/-- Under `[I.Boundaryless]`, the gradient of a smooth scalar function is smooth as a
-total-space section of the tangent bundle. -/
 theorem gradFun_contMDiff_total_section [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -229,5 +217,5 @@ theorem gradFun_contMDiff_total_section [I.Boundaryless]
   gradFun_contMDiff_total (I := I) g hf
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

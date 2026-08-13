@@ -54,7 +54,8 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartSideH2kBridge_mono_of_le
     (g : SmoothRiemannianMetric I M) {k j : ℕ} (hjk : j ≤ k)
     {u : M → ℝ}

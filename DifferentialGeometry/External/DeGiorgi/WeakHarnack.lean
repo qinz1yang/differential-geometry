@@ -1,5 +1,6 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
+-- Modified 2026-08-12: merged isolated tactic bullets
 import DifferentialGeometry.External.DeGiorgi.Supersolutions
 import DifferentialGeometry.External.DeGiorgi.Crossover
 import DifferentialGeometry.External.DeGiorgi.Support.MeasureBounds
@@ -151,16 +152,14 @@ private theorem essInf_add_const
     (hu_shift_bdd_below : Filter.IsBoundedUnder (· ≥ ·) (ae μ) (fun x => u x + c)) :
     essInf (fun x => u x + c) μ = essInf u μ + c := by
   apply le_antisymm
-  ·
-    have hlow : ∀ᵐ x ∂μ, essInf (fun x => u x + c) μ - c ≤ u x := by
+  · have hlow : ∀ᵐ x ∂μ, essInf (fun x => u x + c) μ - c ≤ u x := by
       have htmp := ae_essInf_le (μ := μ) (f := fun x => u x + c) (hf := hu_shift_bdd_below)
       filter_upwards [htmp] with x hx
       linarith
     have hle : essInf (fun x => u x + c) μ - c ≤ essInf u μ :=
       le_essInf_real_of_ae_le (d := d) hμ hlow
     linarith
-  ·
-    have hlow : ∀ᵐ x ∂μ, essInf u μ + c ≤ u x + c := by
+  · have hlow : ∀ᵐ x ∂μ, essInf u μ + c ≤ u x + c := by
       have htmp := ae_essInf_le (μ := μ) (f := u) (hf := hu_bdd_below)
       filter_upwards [htmp] with x hx
       linarith

@@ -5,6 +5,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Analysis.Calculus.Deriv.Slope
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -144,6 +146,253 @@ lemma abstractSpectralSemigroupDeriv_def (b : HilbertBasis ι ℝ X) (lam : ι �
     (t : ℝ) (v : X) :
     abstractSpectralSemigroupDeriv b lam t v =
       ∑' i : ι, heatDerivCoeff lam t i • ⟪b i, v⟫_ℝ • b i := rfl
+
+theorem abstractSpectralSemigroupDeriv_repr_apply (b : HilbertBasis ι ℝ X)
+    {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : 0 < t)
+    (v : X) (i : ι) :
+    (b.repr (abstractSpectralSemigroupDeriv b lam t v) : ι → ℝ) i =
+      heatDerivCoeff lam t i * (b.repr v : ι → ℝ) i := by
+  classical
+  rw [b.repr_apply_apply, b.repr_apply_apply,
+    abstractSpectralSemigroupDeriv_def]
+  have hsum := summable_heatDerivTerm b hlam ht v
+  change (innerSL (𝕜 := ℝ) (E := X) (b i))
+      (∑' j : ι, heatDerivCoeff lam t j • ⟪b j, v⟫_ℝ • b j) = _
+  rw [(innerSL (𝕜 := ℝ) (E := X) (b i)).map_tsum hsum]
+  have horth := (orthonormal_iff_ite (𝕜 := ℝ) (v := b)).mp b.orthonormal
+  simp_rw [innerSL_apply_apply, inner_smul_right, horth]
+  have heq : (fun j : ι =>
+      heatDerivCoeff lam t j * (⟪b j, v⟫_ℝ * if i = j then 1 else 0)) =
+      (fun j => if j = i then heatDerivCoeff lam t j * ⟪b j, v⟫_ℝ else 0) := by
+    funext j
+    by_cases hji : j = i
+    · subst j
+      simp
+    · simp [hji, Ne.symm hji]
+  rw [heq, tsum_ite_eq]
+
+private theorem abstractSpectralSemigroupDeriv_map_add (b : HilbertBasis ι ℝ X)
+    {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : 0 < t)
+    (v w : X) :
+    abstractSpectralSemigroupDeriv b lam t (v + w) =
+      abstractSpectralSemigroupDeriv b lam t v +
+        abstractSpectralSemigroupDeriv b lam t w := by
+  apply b.repr.injective
+  ext i
+  calc
+    (b.repr (abstractSpectralSemigroupDeriv b lam t (v + w)) : ι → ℝ) i =
+        heatDerivCoeff lam t i * (b.repr (v + w) : ι → ℝ) i :=
+      abstractSpectralSemigroupDeriv_repr_apply b hlam ht (v + w) i
+    _ = heatDerivCoeff lam t i * (b.repr v : ι → ℝ) i +
+        heatDerivCoeff lam t i * (b.repr w : ι → ℝ) i := by
+      rw [map_add]
+      change heatDerivCoeff lam t i *
+          ((b.repr v : ι → ℝ) i + (b.repr w : ι → ℝ) i) = _
+      ring
+    _ = (b.repr (abstractSpectralSemigroupDeriv b lam t v +
+        abstractSpectralSemigroupDeriv b lam t w) : ι → ℝ) i := by
+      rw [map_add]
+      change _ =
+        (b.repr (abstractSpectralSemigroupDeriv b lam t v) : ι → ℝ) i +
+          (b.repr (abstractSpectralSemigroupDeriv b lam t w) : ι → ℝ) i
+      rw [
+        abstractSpectralSemigroupDeriv_repr_apply b hlam ht,
+        abstractSpectralSemigroupDeriv_repr_apply b hlam ht]
+
+private theorem abstractSpectralSemigroupDeriv_map_smul (b : HilbertBasis ι ℝ X)
+    {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : 0 < t)
+    (c : ℝ) (v : X) :
+    abstractSpectralSemigroupDeriv b lam t (c • v) =
+      c • abstractSpectralSemigroupDeriv b lam t v := by
+  apply b.repr.injective
+  ext i
+  calc
+    (b.repr (abstractSpectralSemigroupDeriv b lam t (c • v)) : ι → ℝ) i =
+        heatDerivCoeff lam t i * (b.repr (c • v) : ι → ℝ) i :=
+      abstractSpectralSemigroupDeriv_repr_apply b hlam ht (c • v) i
+    _ = c * (heatDerivCoeff lam t i * (b.repr v : ι → ℝ) i) := by
+      rw [map_smul]
+      change heatDerivCoeff lam t i * (c * (b.repr v : ι → ℝ) i) = _
+      ring
+    _ = (b.repr (c • abstractSpectralSemigroupDeriv b lam t v) : ι → ℝ) i := by
+      rw [map_smul]
+      change _ = c *
+        (b.repr (abstractSpectralSemigroupDeriv b lam t v) : ι → ℝ) i
+      rw [abstractSpectralSemigroupDeriv_repr_apply b hlam ht]
+
+theorem norm_abstractSpectralSemigroupDeriv_le (b : HilbertBasis ι ℝ X)
+    {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : 0 < t)
+    (v : X) :
+    ‖abstractSpectralSemigroupDeriv b lam t v‖ ≤
+      (1 / (Real.exp 1 * t)) * ‖v‖ := by
+  set C : ℝ := 1 / (Real.exp 1 * t) with hC_def
+  have hC_nn : 0 ≤ C := by rw [hC_def]; positivity
+  have hcoeff_summable : Summable
+      (fun i : ι => (heatDerivCoeff lam t i * ⟪b i, v⟫_ℝ) ^ 2) := by
+    refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) (fun i => ?_)
+      ((summable_basis_coeff_sq' b v).mul_left (C ^ 2))
+    have hcoeff := abs_heatDerivCoeff_le hlam ht i
+    have hcoeff_sq : (heatDerivCoeff lam t i) ^ 2 ≤ C ^ 2 := by
+      have := sq_le_sq' (neg_le_of_abs_le hcoeff) (le_of_abs_le hcoeff)
+      simpa only [hC_def] using this
+    rw [mul_pow]
+    exact mul_le_mul_of_nonneg_right hcoeff_sq (sq_nonneg _)
+  have hderiv_sq : ‖abstractSpectralSemigroupDeriv b lam t v‖ ^ 2 =
+      ∑' i : ι, (heatDerivCoeff lam t i * ⟪b i, v⟫_ℝ) ^ 2 := by
+    rw [abstractSpectralSemigroupDeriv_def]
+    have heq : (fun i : ι =>
+        heatDerivCoeff lam t i • ⟪b i, v⟫_ℝ • b i) =
+        (fun i => (heatDerivCoeff lam t i * ⟪b i, v⟫_ℝ) • b i) := by
+      funext i
+      rw [mul_smul]
+    rw [heq]
+    exact orthonormal_norm_sq_eq_tsum_sq b _ hcoeff_summable
+  have hv_sq : ‖v‖ ^ 2 = ∑' i : ι, (⟪b i, v⟫_ℝ) ^ 2 := by
+    have hparseval := b.tsum_inner_mul_inner v v
+    have hinner : ⟪v, v⟫_ℝ = ‖v‖ ^ 2 := real_inner_self_eq_norm_sq v
+    have heq : (fun i : ι => ⟪v, b i⟫_ℝ * ⟪b i, v⟫_ℝ) =
+        (fun i => (⟪b i, v⟫_ℝ) ^ 2) := by
+      funext i
+      rw [show ⟪v, b i⟫_ℝ = ⟪b i, v⟫_ℝ from real_inner_comm _ _, sq]
+    rw [heq] at hparseval
+    linarith only [hparseval, hinner]
+  have hsum_le :
+      ∑' i : ι, (heatDerivCoeff lam t i * ⟪b i, v⟫_ℝ) ^ 2 ≤
+        ∑' i : ι, C ^ 2 * (⟪b i, v⟫_ℝ) ^ 2 := by
+    refine Summable.tsum_le_tsum (fun i => ?_) hcoeff_summable
+      ((summable_basis_coeff_sq' b v).mul_left (C ^ 2))
+    have hcoeff := abs_heatDerivCoeff_le hlam ht i
+    have hcoeff_sq : (heatDerivCoeff lam t i) ^ 2 ≤ C ^ 2 := by
+      have := sq_le_sq' (neg_le_of_abs_le hcoeff) (le_of_abs_le hcoeff)
+      simpa only [hC_def] using this
+    rw [mul_pow]
+    exact mul_le_mul_of_nonneg_right hcoeff_sq (sq_nonneg _)
+  have hsq : ‖abstractSpectralSemigroupDeriv b lam t v‖ ^ 2 ≤
+      (C * ‖v‖) ^ 2 := by
+    rw [hderiv_sq, mul_pow, hv_sq, ← tsum_mul_left]
+    exact hsum_le
+  nlinarith [norm_nonneg (abstractSpectralSemigroupDeriv b lam t v),
+    mul_nonneg hC_nn (norm_nonneg v)]
+
+def abstractSpectralSemigroupDerivCLM (b : HilbertBasis ι ℝ X)
+    {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) (t : ℝ) (ht : 0 < t) :
+    X →L[ℝ] X :=
+  LinearMap.mkContinuous
+    { toFun := abstractSpectralSemigroupDeriv b lam t
+      map_add' := abstractSpectralSemigroupDeriv_map_add b hlam ht
+      map_smul' := abstractSpectralSemigroupDeriv_map_smul b hlam ht }
+    (1 / (Real.exp 1 * t))
+    (norm_abstractSpectralSemigroupDeriv_le b hlam ht)
+
+@[simp] theorem abstractSpectralSemigroupDerivCLM_apply
+    (b : HilbertBasis ι ℝ X) {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i)
+    (t : ℝ) (ht : 0 < t) (v : X) :
+    abstractSpectralSemigroupDerivCLM b hlam t ht v =
+      abstractSpectralSemigroupDeriv b lam t v :=
+  rfl
+
+theorem abstractSpectralSemigroupDerivCLM_opNorm_le
+    (b : HilbertBasis ι ℝ X) {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i)
+    (t : ℝ) (ht : 0 < t) :
+    ‖abstractSpectralSemigroupDerivCLM b hlam t ht‖ ≤
+      1 / (Real.exp 1 * t) := by
+  refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) (fun v => ?_)
+  exact norm_abstractSpectralSemigroupDeriv_le b hlam ht v
+
+theorem abstractSpectralSemigroupDeriv_add (b : HilbertBasis ι ℝ X)
+    {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t s : ℝ}
+    (ht : 0 < t) (hs : 0 ≤ s) (v : X) :
+    abstractSpectralSemigroupDeriv b lam (t + s) v =
+      abstractSpectralSemigroup b hlam s
+        (abstractSpectralSemigroupDeriv b lam t v) := by
+  apply b.repr.injective
+  ext i
+  rw [abstractSpectralSemigroupDeriv_repr_apply b hlam (add_pos_of_pos_of_nonneg ht hs),
+    abstractSpectralSemigroup_repr_apply b hlam hs,
+    abstractSpectralSemigroupDeriv_repr_apply b hlam ht]
+  simp only [heatDerivCoeff_def, heatCoeff_def]
+  rw [show -(lam i) * (t + s) = -(lam i) * t + -(lam i) * s by ring,
+    Real.exp_add]
+  ring
+
+theorem abstractSpectralSemigroupDeriv_continuousOn (b : HilbertBasis ι ℝ X)
+    {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) (v : X) :
+    ContinuousOn (fun t : ℝ => abstractSpectralSemigroupDeriv b lam t v)
+      (Set.Ioi 0) := by
+  intro t ht
+  have ht' : 0 < t := ht
+  set a : ℝ := t / 2 with ha_def
+  have ha : 0 < a := by rw [ha_def]; linarith
+  have hat : a < t := by rw [ha_def]; linarith
+  have hta : 0 < t - a := sub_pos.mpr hat
+  set w : X := abstractSpectralSemigroupDeriv b lam a v with hw_def
+  have hsemigroup : ContinuousAt
+      (fun q : ℝ => abstractSpectralSemigroup b hlam q w) (t - a) :=
+    (abstractSpectralSemigroup_continuousOn b hlam w).continuousAt
+      (Ici_mem_nhds hta)
+  have hcomp : ContinuousAt
+      (fun q : ℝ => abstractSpectralSemigroup b hlam (q - a) w) t := by
+    have hsub : ContinuousAt (fun q : ℝ => q - a) t :=
+      continuousAt_id.sub continuousAt_const
+    exact hsemigroup.comp_of_eq hsub rfl
+  have heq : (fun q : ℝ => abstractSpectralSemigroupDeriv b lam q v) =ᶠ[𝓝 t]
+      (fun q : ℝ => abstractSpectralSemigroup b hlam (q - a) w) := by
+    filter_upwards [Ioi_mem_nhds hat] with q hq
+    calc
+      abstractSpectralSemigroupDeriv b lam q v =
+          abstractSpectralSemigroupDeriv b lam (a + (q - a)) v := by
+            congr 2
+            ring
+      _ = abstractSpectralSemigroup b hlam (q - a)
+          (abstractSpectralSemigroupDeriv b lam a v) :=
+        abstractSpectralSemigroupDeriv_add b hlam ha (sub_nonneg.mpr hq.le) v
+      _ = abstractSpectralSemigroup b hlam (q - a) w := by rw [hw_def]
+  exact (hcomp.congr_of_eventuallyEq heq).continuousWithinAt
+
+theorem abstractSpectralSemigroupDeriv_continuousOn_uncurry
+    (b : HilbertBasis ι ℝ X) {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) :
+    ContinuousOn
+      (Function.uncurry fun t : ℝ => abstractSpectralSemigroupDeriv b lam t)
+      (Set.Ioi 0 ×ˢ Set.univ) := by
+  rintro ⟨t, v⟩ ⟨ht, -⟩
+  have ht_pos : 0 < t := by simpa using ht
+  set a : ℝ := t / 2 with ha_def
+  have ha : 0 < a := by rw [ha_def]; linarith only [ht_pos]
+  have hat : a < t := by rw [ha_def]; linarith
+  have hta : 0 < t - a := sub_pos.mpr hat
+  let D := abstractSpectralSemigroupDerivCLM b hlam a ha
+  let S : QuasiLinear.BoundedC0Semigroup X :=
+    { toFun := abstractSpectralSemigroup b hlam
+      apply_zero := abstractSpectralSemigroup_apply_zero b hlam
+      apply_add := fun _ _ hq hs =>
+        abstractSpectralSemigroup_apply_add b hlam hq hs
+      opNorm_le_one := fun q _ => abstractSpectralSemigroup_opNorm_le_one b hlam q
+      continuousOn_apply := abstractSpectralSemigroup_continuousOn b hlam }
+  have hS : ContinuousAt (fun p : ℝ × X => S p.1 p.2) (t - a, D v) :=
+    S.continuousOn_uncurry.continuousAt
+      (prod_mem_nhds (Ici_mem_nhds hta) univ_mem)
+  have hinner : ContinuousAt (fun p : ℝ × X => (p.1 - a, D p.2)) (t, v) :=
+    (continuous_fst.sub continuous_const).prodMk (D.continuous.comp continuous_snd)
+      |>.continuousAt
+  have hcomp : ContinuousAt
+      (fun p : ℝ × X => S (p.1 - a) (D p.2)) (t, v) :=
+    hS.comp_of_eq hinner rfl
+  have heq :
+      (Function.uncurry fun q : ℝ => abstractSpectralSemigroupDeriv b lam q) =ᶠ[
+        𝓝 (t, v)] fun p => S (p.1 - a) (D p.2) := by
+    filter_upwards [prod_mem_nhds (Ioi_mem_nhds hat) univ_mem] with p hp
+    change abstractSpectralSemigroupDeriv b lam p.1 p.2 =
+      abstractSpectralSemigroup b hlam (p.1 - a)
+        (abstractSpectralSemigroupDeriv b lam a p.2)
+    calc
+      abstractSpectralSemigroupDeriv b lam p.1 p.2 =
+          abstractSpectralSemigroupDeriv b lam (a + (p.1 - a)) p.2 := by
+        congr 2
+        ring
+      _ = abstractSpectralSemigroup b hlam (p.1 - a)
+          (abstractSpectralSemigroupDeriv b lam a p.2) :=
+        abstractSpectralSemigroupDeriv_add b hlam ha (sub_nonneg.mpr hp.1.le) p.2
+  exact (hcomp.congr_of_eventuallyEq heq).continuousWithinAt
 
 private def slopeMinusDerivCoeff (lam : ι → ℝ) (t s : ℝ) (i : ι) : ℝ :=
   (s - t)⁻¹ * (heatCoeff lam s i - heatCoeff lam t i) - heatDerivCoeff lam t i
@@ -337,9 +586,8 @@ theorem abstractSpectralSemigroup_hasDerivAt (b : HilbertBasis ι ℝ X)
 end Parabolic
 end Analysis
 
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open Bundle Manifold MeasureTheory
 open scoped Manifold Topology ContDiff RealInnerProductSpace InnerProductSpace
@@ -374,9 +622,8 @@ theorem tensorHeatSemigroup_intrinsic_hasDerivAt
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s))
     (fun i => tensor_lambda_nonneg (I := I) (M := M) i) ht u₀
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

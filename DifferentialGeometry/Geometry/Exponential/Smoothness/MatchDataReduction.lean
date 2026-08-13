@@ -7,8 +7,6 @@ import DifferentialGeometry.Geometry.Exponential.Smoothness.UniformChartFlowBrid
 import DifferentialGeometry.Geometry.Exponential.Smoothness.ZeroSectionConstancy
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
 
-
-
 noncomputable section
 
 open Set Function Filter Metric Bundle Manifold

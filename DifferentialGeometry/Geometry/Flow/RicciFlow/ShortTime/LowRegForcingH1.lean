@@ -4,32 +4,31 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSS
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.MetricJet3Intrinsic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedCovGradJetInput
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+    DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+    DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -37,12 +36,11 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private theorem rhs_raw_eq
     (gBase g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -76,7 +74,6 @@ private theorem rhs_raw_sub_eq
     rhs_raw_eq (I := I) (M := M) gBase g₂ α hb]
   simp only [smul_eq_mul, neg_one_mul, sub_eq_add_neg]
 
-omit [SigmaCompactSpace M] in
 private theorem rhs_pull_eq
     (gBase g : SmoothRiemannianMetric I M) (α : M)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
@@ -104,7 +101,6 @@ private theorem rhs_pull_eq
   rw [rhs_raw_eq (I := I) (M := M) gBase g α hb_good]
   simp only [Function.comp_apply, hφ]
 
-omit [SigmaCompactSpace M] in
 private theorem rhs_partial_eq
     (gBase g : SmoothRiemannianMetric I M) (α : M)
     (d : Fin (Module.finrank ℝ E))
@@ -139,7 +135,7 @@ private theorem rhs_partial_eq
     _ = _ := rfl
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M] in
 private theorem rawComp_sub
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ : SmoothCcTensor g r s) (α : M)
@@ -154,6 +150,7 @@ private theorem rawComp_sub
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [T2Space M] in
 private theorem lowerTerm_sub
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ : SmoothCcTensor g r s) (α : M)
@@ -208,8 +205,6 @@ private theorem rhs_cov_raw_eq
   rw [hyround] at hderiv
   rw [hderiv] at hinv
   simpa only [d, Jdx, y] using (eq_sub_iff_add_eq.mp hinv).symm
-
-
 
 theorem rhs_raw_lip {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
@@ -289,8 +284,6 @@ theorem rhs_raw_lip {ι : Type*}
       rw [hA_def]
       dsimp [B]
       ring
-
-
 
 theorem rhs_cov_lip {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
@@ -515,8 +508,6 @@ theorem rhs_cov_lip {ι : Type*}
       dsimp [B]
       ring
 
-
-
 theorem rhs_h0_lip {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M) (D : LowRegCoeff)
@@ -571,8 +562,6 @@ theorem rhs_h0_lip {ι : Type*}
         (mul_le_mul_of_nonneg_left hinput hC₀) hCsp
     _ = (Csp * C₀ * Cin) *
           ‖ccTensorToHs (I := I) (M := M) gBase 2 (2 : ℝ) U‖ := by ring
-
-
 
 theorem rhs_h1_bdd {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
@@ -759,8 +748,6 @@ theorem rhs_h1_bdd {ι : Type*}
       rw [hsum]
     _ ≤ Csp * (C₀ + C₁) :=
       mul_le_mul_of_nonneg_left (add_le_add (hL2₀ k) (hL2₁ k)) hCsp
-
-
 
 theorem rhs_h1_lip {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)

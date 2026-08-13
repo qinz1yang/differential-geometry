@@ -4,26 +4,20 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingSharpC0Je
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffPerOrderJetEnvelopes
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
-/-!
-# Mixed H1-H2 product estimate for mixed tensor passengers
-
-On a closed three-manifold, an operator field with one intrinsic `L2` jet
-acts on a mixed tensor with two intrinsic `L2` jets to produce an `H1` mixed
-tensor.  The proof uses the mixed `H1 → L6` embedding, finite-volume
-`L6 → L3`, and the covariant Leibniz rule for `appCcRS`.
--/
-
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-
+namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped ContDiff Manifold Topology BigOperators ENNReal
 open MeasureTheory
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable
@@ -73,8 +67,6 @@ private theorem h1_norm_sq_jet
       (covGrad (I := I) (M := M) g r s S)]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- The mixed-tensor `H1` norm squared is the sum of the intrinsic zeroth and
-first covariant `L2` jets. -/
 theorem h1_jet_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
@@ -285,8 +277,6 @@ private theorem rs_l2_right
   exact hsq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-/-- The complementary `L²` composition estimate: a pointwise-bounded
-operator acts on an `L²` passenger. -/
 private theorem rs_l2_left
     (g : SmoothRiemannianMetric I M) (p r c : ℕ)
     (Φ : SmoothCcTensor g r c) (W : SmoothCcTensor g p r)
@@ -400,8 +390,6 @@ private theorem rs_l6_l3_l2
   rw [← fiber_rs_lp2 (I := I) (M := M) g p c Y]
   exact hreal
 
-/-- In dimension three, an operator field with one `L2` jet acting on a
-mixed tensor with two `L2` jets is controlled in mixed-tensor `H1`. -/
 theorem appRS_h1_h2_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -574,13 +562,6 @@ theorem appRS_h1_h2_h1
     _ ≤ Cpt * A * B + (Cpt + Ks) * A * B := add_le_add hY0 hY1
     _ = K * A * B := by dsimp [K]; ring
 
-/-- In dimension three, the complementary mixed product allocation also
-holds: an operator field with two intrinsic `L2` jets acting on a passenger
-with one intrinsic `L2` jet is controlled in mixed-tensor `H1`.
-
-This orientation is needed by nested Ricci--DeTurck coefficients: an inner
-composition is first estimated in `H1`, while the outer moving trace remains
-in the low `H2` class. -/
 theorem appRS_h2_h1_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -778,9 +759,6 @@ theorem appRS_h2_h1_h1
     _ ≤ Cpt * A * B + (Kcross + Kslot) * A * B := add_le_add hY0 hY1
     _ = K * A * B := by dsimp only [K]; ring
 
-/-- On a closed three-manifold, the intrinsic mixed-tensor `H2` jet is an
-algebra for `appCcRS`.  The middle second-derivative cell is discharged by the
-canonical two-arm Gagliardo--Nirenberg product-grid estimate. -/
 theorem appRS_h2_h2_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -939,4 +917,4 @@ theorem appRS_h2_h2_h2
       rw [mul_pow, mul_pow, show C ^ 2 = K by
         simp only [C, Real.sq_sqrt hK]]
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

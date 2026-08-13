@@ -4,24 +4,21 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Tensor
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqNormBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInner
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
 
-
-
-
-
-
-
-
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped ContDiff Manifold Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open Tensor0SBundle
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Tensor0SBundle
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -64,8 +61,6 @@ private theorem grad_jet_norm
     (iteratedCovGrad (I := I) g 0 (s + 1) j
       (covGrad (I := I) (M := M) g 0 s T)),
     norm_nonneg (iteratedCovGrad (I := I) g 0 s (j + 1) T)]
-
-
 
 theorem hsC0_fiber_sq
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
@@ -135,8 +130,6 @@ theorem scalar0_fiber_sq
     rfl
   rw [hscalar, pow_two]
 
-
-
 theorem scalar0_abs_le_hs
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (T : SmoothCcTensor g 0 0) (x : M),
@@ -159,8 +152,6 @@ theorem scalar0_abs_le_hs
               ((Module.finrank ℝ E / 2 + 1 : ℕ) : ℝ) T‖) ^ 2 := by
         ring
   exact abs_le_of_sq_le_sq hsq (mul_nonneg hC (norm_nonneg _))
-
-
 
 theorem hs2_fiber_sq
     (hDim : Module.finrank ℝ E = 3)
@@ -204,8 +195,6 @@ theorem hs2_fiber_sq
           ‖ccTensorToHs (I := I) (M := M) g s (2 : ℝ) T‖ ^ 2 := by
       ring
 
-
-
 theorem hs2_low2
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ T : SmoothCcTensor g 0 s,
@@ -222,8 +211,6 @@ theorem hs2_low2
   exact (Finset.sum_sq_le_sq_sum_of_nonneg (fun j _ => norm_nonneg _)).trans
     (pow_le_pow_left₀
       (Finset.sum_nonneg (fun j _ => norm_nonneg _)) hsum 2)
-
-
 
 theorem hs3_grad_low2
     (hDim : Module.finrank ℝ E = 3)
@@ -393,4 +380,4 @@ theorem hs2_op_bound
     _ = (C0 + 1) * N * Real.sqrt (g.inner x v v) *
           Real.sqrt (g.inner x w w) := by ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

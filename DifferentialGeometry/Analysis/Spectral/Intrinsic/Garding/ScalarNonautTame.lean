@@ -10,30 +10,29 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTowe
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.SlotTransportPairing
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnDiffCovGradBridge
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Tensor0SBundle
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff RealInnerProductSpace InnerProductSpace
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -61,14 +60,10 @@ private local instance scalarTameTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
   Tensor0SBundle.tensorRSBundle_fiber r s
 
-
-
 noncomputable def traceCast
     (q h : SmoothRiemannianMetric I M) : SmoothCcTensor q 2 0 :=
   SmoothCcTensor.retagEquiv h q 2 0
     (cometricDoubleTraceField (I := I) h 0)
-
-
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem trace_retag_eq
@@ -98,8 +93,6 @@ theorem traceCast_self (q : SmoothRiemannianMetric I M) :
   apply ContMDiffSection.ext
   intro x
   rw [traceCast, SmoothCcTensor.retag_toSection]
-
-
 
 noncomputable def scalarFluxCoeff
     (q h : SmoothRiemannianMetric I M) : SmoothCcTensor q 1 1 :=
@@ -137,8 +130,6 @@ theorem scalarFlux_eval (q h : SmoothRiemannianMetric I M) (x : M)
   rw [hself, map_add]
   ring
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem cc_flux_slot (q h : SmoothRiemannianMetric I M)
     (A : SmoothCcTensor q 0 1) :
@@ -168,8 +159,6 @@ theorem cc_flux_slot (q h : SmoothRiemannianMetric I M)
           A.toSection x) z)) w
   rw [scalarFlux_eval (I := I) (M := M),
     cotangent_slot_apply (I := I) (M := M)]
-
-
 
 omit [BoundarylessManifold I M] in
 theorem cc_top_pair
@@ -257,8 +246,6 @@ theorem cc_top_pair
     rw [hAA, real_inner_self_eq_norm_sq, SmoothCcTensor.norm_toL2]
   rw [hminus, hnorm] at hneg
   simpa only [A, B] using hneg
-
-
 
 omit [BoundarylessManifold I M] in
 theorem cc_last_pair
@@ -375,8 +362,6 @@ noncomputable def scalarTraceCoeff
     (q h : SmoothRiemannianMetric I M) : SmoothCcTensor q 2 0 :=
   traceCast (I := I) q h - cometricDoubleTraceField (I := I) q 0
 
-
-
 omit [BoundarylessManifold I M] in
 theorem scalar_trace_factor
     (q h : SmoothRiemannianMetric I M) :
@@ -388,8 +373,6 @@ theorem scalar_trace_factor
   rw [scalarTraceCoeff, scalarFluxCoeff, slotExtend_sub, ccOperatorFieldComp_sub_right]
   rw [← trace_retag_eq (I := I) (M := M) q h,
     ← trace_retag_eq (I := I) (M := M) q q, traceCast_self]
-
-
 
 theorem scalar_flux_split
     (q h : SmoothRiemannianMetric I M) (U : SmoothCcTensor q 0 0) :
@@ -416,8 +399,6 @@ theorem scalar_flux_split
   rw [htwo] at hdiv
   rw [scalar_trace_factor, hdiv]
   abel
-
-
 
 theorem cc_pair_split
     (q h : SmoothRiemannianMetric I M) (X U : SmoothCcTensor q 0 0) :
@@ -497,8 +478,6 @@ theorem cc_pair_split
       tensorL2Inner (I := I) (M := M) q 0 0 X.toFun D.toFun
   rw [← hB]
   linarith
-
-
 
 theorem cc_principal_pair
     (q h : SmoothRiemannianMetric I M)
@@ -611,8 +590,6 @@ theorem cc_principal_pair
   rw [hgreen, neg_neg] at hneg
   simpa only [A, B] using hneg
 
-
-
 theorem cc_comm_pair (q h : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ U : SmoothCcTensor q 0 0,
       |tensorL2Inner (I := I) (M := M) q 0 0
@@ -692,8 +669,6 @@ theorem cc_comm_pair (q h : SmoothRiemannianMetric I M) (n : ℕ) :
     _ ≤ Ct * J + Cd * J := add_le_add htrans hder
     _ = (Ct + Cd) * J := by ring
 
-
-
 theorem cc_energy_diss
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -758,15 +733,10 @@ theorem cc_energy_diss
   change P ≤ (δ / (1 - δ)) * ‖SmoothCcTensor.toL2 A‖ ^ 2 + C * J
   linarith
 
-
-
 noncomputable def connTraceCoeff
     (q h : SmoothRiemannianMetric I M) : SmoothCcTensor q 1 0 :=
   ccOperatorFieldComp (I := I) (M := M) q 1 2 0 (traceCast (I := I) q h)
     (connDiffSection (I := I) h q)
-
-
-
 
 noncomputable def scalarLapDiffCc
     (q h : SmoothRiemannianMetric I M) (U : SmoothCcTensor q 0 0) :
@@ -776,8 +746,6 @@ noncomputable def scalarLapDiffCc
     operatorFieldApply (I := I) (M := M) q 1 0 (connTraceCoeff (I := I) q h)
       (iteratedCovGrad (I := I) q 0 0 1 U)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarLapDiff_add
     (q h : SmoothRiemannianMetric I M) (U V : SmoothCcTensor q 0 0) :
@@ -786,16 +754,12 @@ theorem scalarLapDiff_add
   simp only [scalarLapDiffCc, iteratedCovGrad_add, appCc_add_right]
   abel
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarLapDiff_smul
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (U : SmoothCcTensor q 0 0) :
     scalarLapDiffCc (I := I) q h (c • U) = c • scalarLapDiffCc (I := I) q h U := by
   simp only [scalarLapDiffCc, iteratedCovGrad_smul, appCc_smul_right]
   module
-
-
 
 theorem cc_conn_pair (q h : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ U : SmoothCcTensor q 0 0,
@@ -811,8 +775,6 @@ theorem cc_conn_pair (q h : SmoothRiemannianMetric I M) (n : ℕ) :
   simpa only [Nat.zero_add] using
     (iterL_pair_jet_le (I := I) (M := M) q 0 n
       (connTraceCoeff (I := I) q h))
-
-
 
 theorem cc_lap_pair
     (q h : SmoothRiemannianMetric I M)
@@ -904,8 +866,6 @@ theorem traceCast_apply
     SmoothCcTensor.retag_toSection, cometricDoubleTraceField_toSection]
   rfl
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem scalarTrace_apply
     (q h : SmoothRiemannianMetric I M) (W : SmoothCcTensor q 0 2) (x : M) :
@@ -942,8 +902,6 @@ theorem scalarTrace_apply
   rw [appCc_toSection, cometricDoubleTraceField_toSection]
   rfl
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem connTrace_apply
@@ -966,8 +924,6 @@ theorem connTrace_apply
     SmoothCcTensor.retag_toSection, cometricDoubleTraceField_toSection,
     connDiffSection_toSection]
   rfl
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarLapDiff_apply
@@ -1014,6 +970,6 @@ theorem scalarLapDiff_apply
     connTrace_apply (I := I) (M := M) q h
       (iteratedCovGrad (I := I) q 0 0 1 U) x]
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

@@ -2,18 +2,21 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorBochnerFie
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.GenuineCurvatureField
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.UniformCurvatureSup
 import DifferentialGeometry.Geometry.Curvature.FiberNormParseval.Slot0CurryReconstruction
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -24,7 +27,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -320,7 +323,7 @@ private lemma genuinePureRDirCLM_apply_extend
   rw [happly]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [BoundarylessManifold I M] [T2Space M] in
 private lemma genericTensor0S_curry_covGradBundleEquiv_unit
     (s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
@@ -448,6 +451,7 @@ private lemma pureRDirCLMFixedFrame_smoothOrthoFrame
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem pureRDirCLMFixedFrame_homSection_contMDiff
+    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
@@ -485,6 +489,7 @@ private lemma genuineCurvPureRFibFixedFrame_smoothOrthoFrame
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem genuineCurvPureRFibFixedFrame_contMDiff
+    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i))) :
@@ -579,6 +584,7 @@ private lemma pureRValuedBilinAt_frame_summand
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem genuineCurvTraceFixedFramePureR_frame_independent
+    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {W : Π b : M, TangentSpace I b}
     {B C : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
@@ -672,6 +678,7 @@ private theorem genuineCurvTraceFixedFramePureR_frame_independent
 
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd
+    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x₀ : M)
     {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
     genuineCurvPureRFib (I := I) (M := M) g s S y =
@@ -701,6 +708,7 @@ private lemma genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd
 
 omit [CompactSpace M] [I.Boundaryless] in
 private theorem genuineCurvPureRFib_contMDiff
+    [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (s + 1) ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel 0 (s + 1) ℝ E)
@@ -736,7 +744,7 @@ omit [I.Boundaryless] in
       genuineCurvPureRFib (I := I) (M := M) g s S x := rfl
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
-    [SigmaCompactSpace M] in
+    in
 private lemma smoothOrthoFrame_parseval_expand
     (g : SmoothRiemannianMetric I M) (x : M) (u : TangentSpace I x) :
     u = ∑ a : Fin (Module.finrank ℝ E),
@@ -855,8 +863,8 @@ theorem GcurvSection_toSection_eventuallyEq_fixedFramePureRSection
     fixedFramePureRSection_toSection]
   exact genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd (I := I) (M := M) g s S x₀ hy
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

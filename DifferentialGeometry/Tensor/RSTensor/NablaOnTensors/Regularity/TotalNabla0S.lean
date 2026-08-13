@@ -3,20 +3,12 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
 import DifferentialGeometry.Bundle.Frame
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Geometry.Manifold.BumpFunction
+open DifferentialGeometry.Tensor.Multilinear
 
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
-open Bundle Set TensorLieDeriv
+open Bundle Set DifferentialGeometry.TensorLieDeriv
 open scoped Manifold ContDiff Topology
 
 noncomputable section
@@ -29,12 +21,6 @@ variable [T2Space M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
 theorem totalNabla0S_eval_tangentConstInChart_contMDiffAt
     {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -108,8 +94,6 @@ theorem totalNabla0S_eval_tangentConstInChart_contMDiffAt
         (b (slots a.succ)) p)
 
 set_option backward.isDefEq.respectTransparency false in
-
-
 theorem totalNabla0S_reg (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -165,8 +149,6 @@ theorem totalNabla0S_reg (s : ℕ)
     congr
   exact hsec
 
-
-
 noncomputable def CanonicalSpatialDerivs0S.of_smooth_connection {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -195,3 +177,4 @@ noncomputable def CanonicalSpatialDerivs0S.of_smooth_connection {s : ℕ}
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

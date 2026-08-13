@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralMassUniformSup
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -7,9 +8,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -97,7 +97,6 @@ private theorem perModeConv_sq_le_T_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
     _ ≤ T * ∫ s in (0 : ℝ)..T, f s ^ 2 := by
         apply mul_le_mul hmass_le hintegral_le hintegral_t_nn hT
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
     (f : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
@@ -247,9 +246,8 @@ theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
             have h2 := mul_le_mul_of_nonneg_left hlam_sq_term (by norm_num : (0 : ℝ) ≤ 2)
             linarith
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

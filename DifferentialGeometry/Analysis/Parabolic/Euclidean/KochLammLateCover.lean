@@ -1,14 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLatePiece
 
-/-!
-# Finite-cover late Koch--Lamm estimate
-
-This file sums the one-piece terminal estimate over an arbitrary finite ball
-cover.  The proof inductively splits the selected spatial set into the part in
-one ball and its complement, so overlaps in the supplied cover never cause
-double counting.  The quantitative cover itself remains a separate input.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -25,8 +16,6 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [Nontrivial V] in
-/-- Terminal product measure is additive on disjoint measurable spatial
-pieces. -/
 theorem klTail_union {R : ℝ} {S U : Set V} (hSU : Disjoint S U)
     (hUm : MeasurableSet U) :
     klTailMeasure (V := V) R (S ∪ U) =
@@ -35,8 +24,6 @@ theorem klTail_union {R : ℝ} {S U : Set V} (hSU : Disjoint S U)
   rw [Measure.restrict_union hSU hUm, Measure.prod_add]
 
 omit [CompleteSpace F] in
-/-- The heat-kernel/source product is integrable on every selected piece
-contained in one late source cylinder. -/
 theorem klLatePiece_int {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
@@ -57,8 +44,6 @@ theorem klLatePiece_int {T R : ℝ} {A₁ A_q : ℝ≥0}
   exact memLp_one_iff_integrable.mp (hf.smul hk)
 
 omit [CompleteSpace F] in
-/-- Integrability and norm bound supplied by any finite radius-`R` ball cover
-of a measurable terminal spatial set. -/
 theorem klLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
@@ -149,7 +134,6 @@ theorem klLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}
           ring
 
 omit [CompleteSpace F] in
-/-- Norm-only form of the finite-cover estimate. -/
 theorem klLateCover_norm {T R k : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)

@@ -18,7 +18,6 @@ class HasOrientableBoundary
     {I : ModelWithCorners ℝ E H} [hI : HasSmoothBoundary E H I]
     (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] : Prop
 where
-
   inwardCoord_chart_consistent :
     ∀ (α₀ α₁ : BoundaryManifold I M) (y : BoundaryManifold I M),
       (y : M) ∈ (chartAt H (α₀ : M)).source →
@@ -55,7 +54,7 @@ theorem inwardCoord_chart_consistent_self (α : BoundaryManifold I M)
 
 theorem outwardNormalAt_chart_invariance
     [HasOrientableBoundary (E := E) (H := H) (I := I) M]
-    (g : Measure.SmoothRiemannianMetric I M) (α₀ α₁ : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α₀ α₁ : BoundaryManifold I M)
     {y : BoundaryManifold I M}
     (hy_α₀ : (y : M) ∈ (chartAt H (α₀ : M)).source)
     (hy_α₁ : (y : M) ∈ (chartAt H (α₁ : M)).source) :
@@ -66,7 +65,7 @@ theorem outwardNormalAt_chart_invariance
 
 theorem outwardNormalAt_eq_outwardNormal_on_chart
     [HasOrientableBoundary (E := E) (H := H) (I := I) M]
-    (g : Measure.SmoothRiemannianMetric I M) (α₀ : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α₀ : BoundaryManifold I M)
     {y : BoundaryManifold I M}
     (hy : (y : M) ∈ (chartAt H (α₀ : M)).source) :
     outwardNormalAt (M := M) g α₀ y = outwardNormal (M := M) g y := by
@@ -78,7 +77,7 @@ theorem outwardNormalAt_eq_outwardNormal_on_chart
 
 theorem outwardNormal_contMDiff
     [HasOrientableBoundary (E := E) (H := H) (I := I) M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     ContMDiff hI.boundaryI (I.prod 𝓘(ℝ, E)) ∞
       (fun x : BoundaryManifold I M =>
         TotalSpace.mk' E (boundaryInclusion I M x)
@@ -113,7 +112,7 @@ theorem outwardNormal_contMDiff
 
 theorem outwardNormal_continuous
     [HasOrientableBoundary (E := E) (H := H) (I := I) M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     Continuous (fun x : BoundaryManifold I M =>
       TotalSpace.mk' E (boundaryInclusion I M x) (outwardNormal (M := M) g x)) :=
   (outwardNormal_contMDiff (M := M) g).continuous

@@ -21,43 +21,15 @@ import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Fiber
-import DifferentialGeometry.Tensor.Multilinear.Bundle
-import DifferentialGeometry.Tensor.Alternating.Comp
-import DifferentialGeometry.Tensor.Multilinear.Comp
-import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
-import Mathlib.Analysis.Calculus.ContDiff.Basic
-import Mathlib.Analysis.Calculus.ContDiff.Operations
-import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
-import DifferentialGeometry.Tensor.Auxiliary.LinearIsometryContDiff
-import Mathlib.Analysis.Calculus.ContDiff.Comp
-import Mathlib.Analysis.Normed.Module.FiniteDimension
-import Mathlib.Analysis.Normed.Module.Alternating.Basic
-import Mathlib.RingTheory.Finiteness.Defs
-import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
-import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Data.Bundle
-import DifferentialGeometry.Tensor.Multilinear.Basis
-import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-import Mathlib.LinearAlgebra.Dimension.Free
-import Mathlib.Topology.Algebra.Module.FiniteDimension
 import DifferentialGeometry.Tensor.Multilinear.Curry
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open Bundle Module
@@ -74,17 +46,12 @@ section ModelBasis
 variable {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] [FiniteDimensional 𝕜 V]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
-
-
 end ModelBasis
 
 section Tensor0S
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {s : Nat} {x : M}
-
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
 theorem tensor0S_sum_apply {ι : Type*} [Fintype ι]
@@ -102,9 +69,6 @@ theorem tensor0S_sum_apply {ι : Type*} [Fintype ι]
       change T a v + (∑ i ∈ S, T i) v = T a v + ∑ i ∈ S, T i v
       rw [ih]
 
-
-
-
 theorem basisTensor0S_apply
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
     (slots : Fin s -> Idx) (v : Fin s -> TangentSpace I x) :
@@ -114,8 +78,6 @@ theorem basisTensor0S_apply
     ∏ a : Fin s, basis.coord (slots a) (v a)
   rw [continuousMultilinearMapBasis_apply]
   simp [continuousMultilinearMapBasisElem]
-
-
 
 omit [DecidableEq Idx] in
 theorem tensor0S_apply_eq_sum
@@ -146,3 +108,4 @@ theorem tensor0S_apply_eq_sum
 end Tensor0S
 
 end Tensor0SBundle
+end DifferentialGeometry

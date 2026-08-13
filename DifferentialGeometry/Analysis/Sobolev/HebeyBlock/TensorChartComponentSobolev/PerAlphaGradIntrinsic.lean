@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.TensorChartComponentSobolev.PerChartGradientL2Headline
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorChartComponentSobolevBound
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -11,13 +12,14 @@ open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Analysis
+namespace Sobolev
 namespace HebeyBlock
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -214,8 +216,8 @@ theorem tensorChartComponentScalar_grad_eLpNorm_le
     exact zero_le _
 
 end HebeyBlock
-end RicciFlow
-end PDE
+end Sobolev
+end Analysis
 end DifferentialGeometry
 
 end

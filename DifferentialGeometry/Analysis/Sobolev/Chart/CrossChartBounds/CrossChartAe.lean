@@ -2,21 +2,6 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartBo
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartTransfer
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.QuasiMeasurePreserving
 
-/-!
-# Cross-chart Sobolev transfer for almost-everywhere compact support
-
-The per-chart limits used in the Banach-completeness construction have a fixed
-compact support only up to almost-everywhere equality.  This file turns such a
-limit into its closed-set indicator representative, applies the arbitrary-order
-cross-chart theorem, and transports the result back to the original
-representative.
-
-The public headline `crossChartAeJoint` returns both `MemWkp` membership and the
-quantitative `wkpNorm` estimate.  Its constant depends only on the two charts,
-the fixed compact manifold set, the metric, the Sobolev order, and the exponent;
-it is independent of the input function.
--/
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold Function
@@ -39,14 +24,10 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- Replace a Euclidean function by the representative which is pointwise zero
-off a fixed set. -/
 def compactRep (K : Set EuclN) (v : EuclN → ℝ) : EuclN → ℝ :=
   K.indicator v
 
 omit [FiniteDimensional ℝ E] in
-/-- The closed-set representative has topological support inside the fixed
-closed set. -/
 lemma compactRep_support {K : Set EuclN} (hK : IsClosed K) (v : EuclN → ℝ) :
     tsupport (compactRep K v) ⊆ K := by
   change closure (Function.support (K.indicator v)) ⊆ K
@@ -56,8 +37,6 @@ lemma compactRep_support {K : Set EuclN} (hK : IsClosed K) (v : EuclN → ℝ) :
     _ = K := hK.closure_eq
 
 omit [FiniteDimensional ℝ E] in
-/-- If `v` vanishes almost everywhere on `Ω \ K`, its closed-set indicator is
-almost everywhere equal to `v` on `Ω`. -/
 lemma compactRep_ae {Ω K : Set EuclN} (hK : MeasurableSet K)
     {v : EuclN → ℝ}
     (hv : v =ᵐ[(volume : Measure EuclN).restrict (Ω \ K)] 0) :
@@ -70,8 +49,6 @@ lemma compactRep_ae {Ω K : Set EuclN} (hK : MeasurableSet K)
       (μ := (volume : Measure EuclN).restrict Ω) hK hv')
 
 omit [IsManifold I ∞ M] in
-/-- Raw pushforward after pulling back through the same chart recovers the
-Euclidean input on that chart target. -/
 lemma rawPullback_self (α : M) (v : EuclN → ℝ) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     chartPushedRaw I α (chartPullback I α v) y = v y := by
@@ -85,9 +62,6 @@ lemma rawPullback_self (α : M) (v : EuclN → ℝ) {y : EuclN}
   rw [(extChartAt I α).right_inv hy_target,
     (toEuclidean (E := E)).apply_symm_apply]
 
-/-- Cross-chart pullback preserves almost-everywhere equality.  The proof uses
-quasi-measure preservation of the chart transition on the overlap; off the
-overlap both chart pullbacks vanish pointwise. -/
 theorem crossPullback_ae [I.Boundaryless]
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (γ α : M)
     {v w : EuclN → ℝ}
@@ -169,14 +143,10 @@ theorem crossPullback_ae [I.Boundaryless]
   rw [Set.union_diff_cancel hOγα_sub] at h_union
   exact h_union
 
-/-- **Headline a.e.-support transfer.** A `W^{k,p}` function which vanishes
-almost everywhere off the Euclidean image of a fixed compact chart kernel has
-a chart-pushed cross-pullback in `W^{k,p}` in every other chart, with a uniform
-per-pair norm bound. -/
 theorem crossChartAeJoint
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (γ α : M) {K_α : Set M} (hK_compact : IsCompact K_α)
     (hK_α_in_α : K_α ⊆ (chartAt H α).source) :

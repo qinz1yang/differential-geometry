@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartSmooth
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -12,8 +14,8 @@ open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Tensor
 open DifferentialGeometry.Integral.Measure
@@ -310,6 +312,6 @@ theorem chartFrameNormGlobalSmooth_orthonormal_on_pouTsupportGoodSet
   rw [h_eq_i, h_eq_j]
   exact chartFrameNorm_orthonormal (I := I) g α hb_base i j
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry

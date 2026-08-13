@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.ChartInvariance
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -20,7 +22,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+
 open DifferentialGeometry.Analysis.Laplacian.HessianChartInvariance
 
 private local instance : MeasurableSpace E := borel E

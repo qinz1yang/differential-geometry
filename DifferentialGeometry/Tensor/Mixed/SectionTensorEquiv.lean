@@ -1,12 +1,16 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Mixed.Field
 import DifferentialGeometry.Tensor.Mixed.DualFiber
 import DifferentialGeometry.Tensor.Mixed.Naturality
 import DifferentialGeometry.Tensor.Mixed.DualMultilinearTransition
 import DifferentialGeometry.Tensor.Product.Section
 import DifferentialGeometry.Tensor.Product.HomEquiv
+
+namespace DifferentialGeometry
+open DifferentialGeometry.Tensor.Mixed DifferentialGeometry.Tensor.Multilinear
+    DifferentialGeometry.Tensor.Product
 
 
 noncomputable section
@@ -127,7 +131,7 @@ abbrev DualTensorMultilinearSection (r s : ℕ) :=
     (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x ⊗[𝕜]
               Bundle.continuousMultilinearMap 𝕜 s F E x)
 
-noncomputable def Bundle.continuousMultilinearMap.modelMixedToTensorCLM
+noncomputable def modelMixedToTensorCLM
     (𝕜 : Type*) [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
     (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F]
     (r s : ℕ) :
@@ -149,7 +153,7 @@ noncomputable def Bundle.continuousMultilinearMap.modelMixedToTensorCLM
     (LinearEquiv.refl 𝕜 (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜))
   (e1.trans e2).toContinuousLinearMap
 
-noncomputable def Bundle.continuousMultilinearMap.modelTensorToMixedCLM
+noncomputable def modelTensorToMixedCLM
     (𝕜 : Type*) [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
     (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F]
     (r s : ℕ) :
@@ -371,7 +375,6 @@ private theorem mixedToTensorTrivTransition {r s : ℕ} (x₀ x : B)
   rw [hf_eq]
   exact dualTensorMultilinearTrivTransition x₀ x hx Φ hΦ u
 
-
 theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
     (hx : x ∈ (trivializationAt F E x₀).baseSet)
     (T : Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜]
@@ -383,7 +386,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
                   Bundle.continuousMultilinearMap 𝕜 s F E x) x₀
         ⟨x, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
               (𝕜 := 𝕜) (F := F) (E := E) r s x) T⟩).2 =
-    Bundle.continuousMultilinearMap.modelMixedToTensorCLM 𝕜 F r s
+    modelMixedToTensorCLM 𝕜 F r s
       ((trivializationAt
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜]
          ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
@@ -500,7 +503,7 @@ theorem tensorToMixed_triv_eq_bundle {r s : ℕ} (x₀ x : B)
                   Bundle.continuousMultilinearMap 𝕜 s F E x) x₀
         ⟨x, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
               (𝕜 := 𝕜) (F := F) (E := E) r s x).symm T⟩).2 =
-    Bundle.continuousMultilinearMap.modelTensorToMixedCLM 𝕜 F r s
+    modelTensorToMixedCLM 𝕜 F r s
       ((trivializationAt
         (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 ⊗[𝕜]
          ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
@@ -513,7 +516,6 @@ theorem tensorToMixed_triv_eq_bundle {r s : ℕ} (x₀ x : B)
   rw [LinearEquiv.apply_symm_apply] at hfwd
   rw [hfwd]
   exact (LinearEquiv.symm_apply_apply _ _).symm
-
 
 omit [ContMDiffVectorBundle n F E IB] in
 theorem multilinearHomTensorEquivAt_bundle_smooth {r s : ℕ} :
@@ -558,7 +560,7 @@ theorem multilinearHomTensorEquivAt_bundle_smooth {r s : ℕ} :
         p₀ :=
       (contMDiffAt_totalSpace.mp contMDiffAt_id).2
     refine ((contMDiffAt_const
-      (c := Bundle.continuousMultilinearMap.modelMixedToTensorCLM 𝕜 F r s)).clm_apply
+      (c := modelMixedToTensorCLM 𝕜 F r s)).clm_apply
         h_fiber).congr_of_eventuallyEq ?_
     filter_upwards [
       ((trivializationAt F E p₀.proj).open_baseSet.preimage
@@ -566,7 +568,6 @@ theorem multilinearHomTensorEquivAt_bundle_smooth {r s : ℕ} :
         (mem_baseSet_trivializationAt F E p₀.proj)
     ] with p hp
     exact mixedToTensor_triv_eq_bundle p₀.proj p.proj hp p.snd
-
 
 omit [ContMDiffVectorBundle n F E IB] in
 theorem multilinearHomTensorEquivAt_bundle_symm_smooth {r s : ℕ} :
@@ -611,7 +612,7 @@ theorem multilinearHomTensorEquivAt_bundle_symm_smooth {r s : ℕ} :
         p₀ :=
       (contMDiffAt_totalSpace.mp contMDiffAt_id).2
     refine ((contMDiffAt_const
-      (c := Bundle.continuousMultilinearMap.modelTensorToMixedCLM 𝕜 F r s)).clm_apply
+      (c := modelTensorToMixedCLM 𝕜 F r s)).clm_apply
         h_fiber).congr_of_eventuallyEq ?_
     filter_upwards [
       ((trivializationAt F E p₀.proj).open_baseSet.preimage
@@ -697,3 +698,4 @@ noncomputable def mixedBundle_tensorBundle_sectionEquiv {r s : ℕ} :
 end SectionTensorEquiv
 
 end
+end DifferentialGeometry

@@ -25,26 +25,13 @@ import DifferentialGeometry.Tensor.Multilinear.Curry
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.Tensoriality
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold Topology ContDiff
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 variable {K : Type*} [NontriviallyNormedField K]
@@ -62,9 +49,6 @@ variable {V : M -> Type*} [TopologicalSpace (Bundle.TotalSpace F V)]
   [∀ x, TopologicalSpace (V x)] [FiberBundle F V]
 variable [AddCommGroup A] [Module K A]
 
-
-
-
 omit [FiniteDimensional K E] [IsManifold I 1 M] in
 theorem tensorialAt_apply_linearMap {x : M} (L : V x →ₗ[K] A) :
     TensorialAt I F (fun σ : (p : M) -> V p => L (σ x)) x := by
@@ -79,11 +63,6 @@ theorem tensorialAt_apply_linearMap {x : M} (L : V x →ₗ[K] A) :
 end LinearMap
 
 namespace Tensor0SSpace
-
-
-
-
-
 
 omit [FiniteDimensional K E] in
 theorem tensorialAt_evalSlot {s : ℕ} {x : M}
@@ -112,10 +91,6 @@ end Tensor0SSpace
 
 namespace TensorRSSpace
 
-
-
-
-
 theorem tensorialAt_applyInput {r s : ℕ} {x : M}
     (T : TensorRSSpace r s I x) :
     TensorialAt I (Tensor0SModel r K E)
@@ -125,8 +100,6 @@ theorem tensorialAt_applyInput {r s : ℕ} {x : M}
     (A := Tensor0SSpace s I x)
     (T : Tensor0SSpace r I x →ₗ[K] Tensor0SSpace s I x)
 
-
-
 omit [FiniteDimensional K E] in
 theorem tensorialAt_evalOutputSlot {r s : ℕ} {x : M}
     (T : TensorRSSpace r s I x) (input : Tensor0SSpace r I x) (i : Fin s)
@@ -135,8 +108,6 @@ theorem tensorialAt_evalOutputSlot {r s : ℕ} {x : M}
       (fun X : (p : M) -> TangentSpace I p =>
         (T input) (Function.update (fun j => slots j x) i (X x))) x :=
   Tensor0SSpace.tensorialAt_evalSlot (I := I) (A := T input) i slots
-
-
 
 theorem tensorialAt_applyInput_evalOutput {r s : ℕ} {x : M}
     (T : TensorRSSpace r s I x)
@@ -164,3 +135,4 @@ theorem tensorialAt_applyInput_evalOutput {r s : ℕ} {x : M}
 end TensorRSSpace
 
 end Tensor0SBundle
+end DifferentialGeometry

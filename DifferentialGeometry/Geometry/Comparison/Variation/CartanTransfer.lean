@@ -1,15 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiCoord
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Cartan transfer in parallel-frame coordinates
-
-This file contains the scalar ODE core of Cartan's Jacobi-field transfer
-argument.  Two Jacobi fields on different manifolds have equal coefficients
-when their parallel orthonormal frames see the same curvature matrix and the
-initial value and covariant-derivative coefficients agree.
--/
 
 open Set Function Manifold Bundle
 open scoped Topology Manifold ContDiff
@@ -44,9 +36,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M]
   [NeZero (Module.finrank ℝ E')]
   [SigmaCompactSpace M'] in
-/-- Jacobi fields on two manifolds have the same parallel-frame coordinates
-when the frames see the same curvature matrix and the initial coordinates
-match. -/
 theorem jacobi_coord_xfer
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -89,22 +78,22 @@ theorem jacobi_coord_xfer
     (hJ' : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I') g' γ' Y' t)
     (hmatch : ∀ t ∈ Icc (0 : ℝ) b, ∀ i j,
       g.inner (γ t) (F i t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (γ t))
             (F j t) (curveVelocity (I := I) γ t)
             (curveVelocity (I := I) γ t))
         =
       g'.inner (γ' t) (F' i t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I') g')
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g')
               (γ' t))
             (F' j t) (curveVelocity (I := I') γ' t)
             (curveVelocity (I := I') γ' t)))
     (hCbound : ∀ t ∈ Icc (0 : ℝ) b, ∀ i j,
       |g.inner (γ t) (F i t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (F j t) (curveVelocity (I := I) γ t)
           (curveVelocity (I := I) γ t))| ≤ C)
@@ -124,13 +113,13 @@ theorem jacobi_coord_xfer
         g'.inner (γ' t) (F' i t) (covDerivAlong (I := I') g' γ' Y' t))
     (w := fun t i =>
       (- g.inner (γ t) (F i t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita
                 (I := I) g) (γ t))
             (Y t) (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t)))
         - (- g'.inner (γ' t) (F' i t)
-            ((DifferentialGeometry.Integral.Connection.riemannOp
-                (DifferentialGeometry.Integral.Connection.LeviCivita
+            ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                (DifferentialGeometry.Geometry.Connection.LeviCivita
                   (I := I') g') (γ' t))
               (Y' t) (curveVelocity (I := I') γ' t)
               (curveVelocity (I := I') γ' t))))
@@ -169,22 +158,22 @@ theorem jacobi_coord_xfer
         (hON' t hIcc) (hcard' t hIcc) i
       have hw :
           (- g.inner (γ t) (F i t)
-              ((DifferentialGeometry.Integral.Connection.riemannOp
-                  (DifferentialGeometry.Integral.Connection.LeviCivita
+              ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                  (DifferentialGeometry.Geometry.Connection.LeviCivita
                     (I := I) g) (γ t))
                 (Y t) (curveVelocity (I := I) γ t)
                 (curveVelocity (I := I) γ t)))
             - (- g'.inner (γ' t) (F' i t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                    (DifferentialGeometry.Integral.Connection.LeviCivita
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                    (DifferentialGeometry.Geometry.Connection.LeviCivita
                       (I := I') g') (γ' t))
                   (Y' t) (curveVelocity (I := I') γ' t)
                   (curveVelocity (I := I') γ' t)))
           = ∑ j, (g'.inner (γ' t) (F' j t) (Y' t) -
                   g.inner (γ t) (F j t) (Y t)) *
               g.inner (γ t) (F i t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                    (DifferentialGeometry.Integral.Connection.LeviCivita
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                    (DifferentialGeometry.Geometry.Connection.LeviCivita
                       (I := I) g) (γ t))
                   (F j t) (curveVelocity (I := I) γ t)
                   (curveVelocity (I := I) γ t)) := by
@@ -198,16 +187,16 @@ theorem jacobi_coord_xfer
         |∑ j, (g'.inner (γ' t) (F' j t) (Y' t) -
                   g.inner (γ t) (F j t) (Y t)) *
               g.inner (γ t) (F i t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                    (DifferentialGeometry.Integral.Connection.LeviCivita
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                    (DifferentialGeometry.Geometry.Connection.LeviCivita
                       (I := I) g) (γ t))
                   (F j t) (curveVelocity (I := I) γ t)
                   (curveVelocity (I := I) γ t))|
             ≤ ∑ j, |(g'.inner (γ' t) (F' j t) (Y' t) -
                     g.inner (γ t) (F j t) (Y t)) *
                 g.inner (γ t) (F i t)
-                  ((DifferentialGeometry.Integral.Connection.riemannOp
-                      (DifferentialGeometry.Integral.Connection.LeviCivita
+                  ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                      (DifferentialGeometry.Geometry.Connection.LeviCivita
                         (I := I) g) (γ t))
                     (F j t) (curveVelocity (I := I) γ t)
                     (curveVelocity (I := I) γ t))| :=

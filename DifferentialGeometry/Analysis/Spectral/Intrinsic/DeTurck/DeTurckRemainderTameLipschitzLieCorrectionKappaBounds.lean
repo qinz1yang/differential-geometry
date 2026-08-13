@@ -1,19 +1,24 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieCorrectionNormBounds
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open LieCorr0Core
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -59,12 +64,12 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   connDiffOp_homSection_contMDiff metricConnDiffLoweredFib metricConnDiffLoweredFib_toModel
   metricConnDiffLoweredFib_contMDiff domDomCongrFibRank domDomCongrFibRank_apply
   tensor0SProdKappaFib tensor0SProdKappaFib_apply)
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
 section LieCorr0BoundsB
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck (cometricRaiseSlot0Fib)
+open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricRaiseSlot0Fib)
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
@@ -250,9 +255,6 @@ private lemma lc0b_koszulCovecCc_unitModel_eq_connDiff_g1_inner
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On the self-background arm, lowering the connection difference by the moving
-metric cancels the inverse metric exactly and leaves the linear Koszul covector,
-up to a cyclic permutation of its covariant slots. -/
 theorem lc0Kappa_self_eq_koszulCovecCc (g₀ g₁ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -300,11 +302,7 @@ private lemma lc0b_unitModel_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
           (unitTensor (I := I) (M := M) x) from rfl]
   rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
 
--- The pointwise metric/connection normalization is expensive to elaborate.
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- The affine-background form of `lc0Kappa`: the self-background Koszul term
-is separated from one fixed lowered connection difference and one perturbative
-pairing with that fixed difference. -/
 theorem lc0Kappa_eq_self_sub_connDiffLowered_add_pbLow
     (g₀ g₁ gB : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -336,7 +334,6 @@ theorem lc0Kappa_eq_self_sub_connDiffLowered_add_pbLow
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Difference form of the affine-background `lc0Kappa` identity. -/
 theorem lc0Kappa_self_sub_eq_connDiffLowered_sub_pbLow
     (g₀ g₁ gB : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -631,6 +628,6 @@ end LieCorr0BoundsB
 
 end LieCorr0BoundsAll
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

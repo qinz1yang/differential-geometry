@@ -1,36 +1,11 @@
 import Mathlib.Analysis.Calculus.IteratedDeriv.FaaDiBruno
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open scoped ContDiff
 
 namespace DifferentialGeometry
 namespace Analysis
-
-
-
 
 theorem iteratedDerivWithin_clm_comp {A B : Type*}
     [NormedAddCommGroup A] [NormedSpace ℝ A] [NormedAddCommGroup B] [NormedSpace ℝ B]
@@ -56,10 +31,6 @@ theorem iteratedDerivWithin_prodMk {A B : Type*}
 variable {J F' : Type*}
     [NormedAddCommGroup J] [NormedSpace ℝ J] [NormedAddCommGroup F'] [NormedSpace ℝ F']
 
-
-
-
-
 theorem iteratedDeriv_comp_jet_eq {Φ : J → F'} {uL uR : ℝ → J} {n : ℕ}
     (hΦ : ContDiffAt ℝ n Φ (uL 0)) (huL : ContDiffAt ℝ n uL 0) (huR : ContDiffAt ℝ n uR 0)
     (hjet : ∀ a, a ≤ n → iteratedDeriv a uL 0 = iteratedDeriv a uR 0)
@@ -76,16 +47,6 @@ theorem iteratedDeriv_comp_jet_eq {Φ : J → F'} {uL uR : ℝ → J} {n : ℕ}
       = (fun j => iteratedDeriv (c.partSize j) uR 0) :=
     funext fun j => hjet (c.partSize j) (le_trans (c.partSize_le j) hi)
   rw [hp, htuple]
-
-
-
-
-
-
-
-
-
-
 
 theorem iteratedDerivWithin_comp_jet_eq {Φ : J → F'} {uL uR : ℝ → J} {sL sR : Set ℝ} {n : ℕ}
     (hΦ : ContDiffAt ℝ n Φ (uL 0))

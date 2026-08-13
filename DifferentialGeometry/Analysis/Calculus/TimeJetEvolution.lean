@@ -1,22 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.TimeJetMatch
 import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open scoped ContDiff
@@ -30,11 +14,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 def jet2 {F' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F'] (g : E → F') (w : E) :
     F' × (E →L[ℝ] F') × (E →L[ℝ] (E →L[ℝ] F')) :=
   (g w, fderiv ℝ g w, fderiv ℝ (fun y => fderiv ℝ g y) w)
-
-
-
-
-
 
 theorem curveJet_match
     {F' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F']
@@ -76,13 +55,6 @@ theorem curveJet_match
     rw [← fderiv_iteratedDerivWithin_time_comm hsL haccL hV b h0L hy hGL,
       ← fderiv_iteratedDerivWithin_time_comm hsR haccR hV b h0R hy hGR]
     exact (Filter.eventuallyEq_of_mem (hV.mem_nhds hy) (fun u hu => hval u hu)).fderiv_eq
-
-
-
-
-
-
-
 
 theorem jetMatch_of_evolution
     {F' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F']

@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.WeylSummability
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Synthesis
 import Mathlib.Analysis.Normed.Group.FunctionSeries
+open DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry
 
@@ -103,7 +104,6 @@ theorem tensorHs_continuousOn_of_coeff_of_higher_mass
     intro i
     rw [hf, hcoeff t ht i]
   exact (hsum'.tsum_eq).symm
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem mass_le_of_compact
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {σ σ' : ℝ}

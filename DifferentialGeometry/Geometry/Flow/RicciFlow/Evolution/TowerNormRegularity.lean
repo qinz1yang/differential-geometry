@@ -2,22 +2,15 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.CoordinateTowerReg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedRmTowerHeatEq
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmRealizationBridgeAllK
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Set Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle Set DifferentialGeometry.Tensor0SBundle
+
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 

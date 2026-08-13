@@ -2,15 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxBound
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxTailScale
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLatePiece
 
-/-!
-# One far terminal piece of the Koch--Lamm flux potential
-
-The directional first-derivative kernel is restricted to a measurable
-terminal spatial piece.  Its split-Gaussian tail factor is paired with the
-local `KLSource1.late_lp` estimate on one radius-scale source cylinder.  The
-two exact `klLpScaleR` factors cancel after space-time Hölder.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -26,8 +17,6 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- The directional first-derivative kernel inherits the selected radial
-Gaussian tail factor, including the norm of the chosen direction. -/
 theorem klFluxTailKern {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (w x : V) {S : Set V} (hSm : MeasurableSet S)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :
@@ -106,8 +95,6 @@ theorem klFluxTailKern {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
         (norm_nonneg w)
 
 omit [Nontrivial V] [NormedSpace ℝ F] [CompleteSpace F] in
-/-- The local late-flux source hypothesis supplies `MemLp` on each selected
-piece contained in its spatial source ball. -/
 theorem klFluxPiece_mem {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
@@ -117,7 +104,6 @@ theorem klFluxPiece_mem {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     (klTailCyl_le (V := V) c hS)
 
 omit [Nontrivial V] [NormedSpace ℝ F] [CompleteSpace F] in
-/-- Quantitative source Hölder factor on one selected terminal flux piece. -/
 theorem klFluxPiece_src {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
@@ -148,14 +134,12 @@ theorem klFluxPiece_src {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   simpa only [klLpScale, ENNReal.toReal_mul, ENNReal.toReal_inv,
     ENNReal.toReal_ofReal hs.le, ENNReal.coe_toReal] using hreal
 
-/-- Contribution of one selected terminal spatial flux piece. -/
 def klFluxPiece1 (R : ℝ) (w : V) (f : ℝ × V → F)
     (x : V) (S : Set V) : F :=
   ∫ z : ℝ × V, klFluxKernel (R ^ 2) w x z • f z
     ∂klTailMeasure (V := V) R S
 
 omit [CompleteSpace F] in
-/-- Joint space-time Hölder on one selected terminal flux piece. -/
 theorem klFluxPiece_hold {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
@@ -178,7 +162,6 @@ theorem klFluxPiece_hold {T R : ℝ} {A₂ Aₚ : ℝ≥0}
       (klFluxKernel (R ^ 2) w x) f hk hf)
 
 omit [CompleteSpace F] in
-/-- Radius-independent bound for one far terminal flux piece. -/
 theorem klFluxPiece_norm {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x c : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)

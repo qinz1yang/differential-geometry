@@ -1,14 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammExp
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
-/-!
-# Exact terminal-time power integral for Koch--Lamm
-
-This file evaluates the one-dimensional singular integral left by the
-terminal heat-kernel `L^p` calculation.  It also records the two exponent
-identities that expose the cancelling `R^(4/(n+4))` scale.
--/
-
 noncomputable section
 
 open MeasureTheory Real Set
@@ -22,8 +14,6 @@ namespace Euclidean
 variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 
-/-- Adding one to the terminal kernel-power singularity leaves exponent
-`2/(n+2)`. -/
 theorem klHeatExp_add :
     klHeatExp V + 1 =
       2 / (Module.finrank ℝ V + 2 : ℝ) := by
@@ -32,8 +22,6 @@ theorem klHeatExp_add :
   field_simp [hn2]
   ring
 
-/-- After taking the Hölder-dual root, the terminal time scale is
-`t^(2/(n+4))`. -/
 theorem klTermScale_exp :
     (klHeatExp V + 1) / klQDual V =
       2 / (Module.finrank ℝ V + 4 : ℝ) := by
@@ -43,8 +31,6 @@ theorem klTermScale_exp :
   have hn4 : (Module.finrank ℝ V : ℝ) + 4 ≠ 0 := by positivity
   field_simp [hn2, hn4]
 
-/-- Exact integral of the reflected terminal kernel-power singularity on
-the terminal half interval. -/
 theorem klTermTime_int (t : ℝ) :
     ∫ s : ℝ in t / 2..t, (t - s) ^ klHeatExp V =
       (t / 2) ^ (klHeatExp V + 1) / (klHeatExp V + 1) := by
@@ -58,7 +44,6 @@ theorem klTermTime_int (t : ℝ) :
   rw [Real.zero_rpow hexp.ne']
   ring
 
-/-- Set-integral form used by the restricted terminal product measure. -/
 theorem klTermTime_set {t : ℝ} (ht : 0 < t) :
     ∫ s : ℝ in Set.Ioc (t / 2) t, (t - s) ^ klHeatExp V =
       (t / 2) ^ (klHeatExp V + 1) / (klHeatExp V + 1) := by

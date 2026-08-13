@@ -4,16 +4,15 @@ import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
-
-
-
+namespace DifferentialGeometry
 namespace TensorLieDeriv
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Set IsManifold ContinuousLinearMap VectorField Filter Tensor0SBundle Function
+open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
+    DifferentialGeometry.Tensor0SBundle Function
 open scoped Manifold Topology Bundle ContDiff
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -44,9 +43,6 @@ theorem covariantDeriv_vectorField_contMDiff
     (CovariantDerivative.ContMDiffCovariantDerivative.contMDiff_apply
       (𝕜 := 𝕜) (I := I) (M := M) cov hcov X Y)
 
-
-
-
 noncomputable def covSection
     [VectorBundle 𝕜 E (TangentSpace I : M → Type _)]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -68,14 +64,10 @@ omit [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜] in
     covSection (I := I) cov hcov X Y p = (cov (fun q : M => Y q) p) (X p) :=
   rfl
 
-
-
 noncomputable def tangentFieldModelInChart (x₀ : M)
     (V : (x : M) → TangentSpace I x) (y : E) : E :=
   (trivializationAt E (TangentSpace I : M → Type _) x₀).continuousLinearMapAt 𝕜
     ((extChartAt I x₀).symm y) (V ((extChartAt I x₀).symm y))
-
-
 
 omit [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜] in
 theorem tangentFieldModelInChart_tangentConstInChart_apply_of_mem
@@ -90,9 +82,6 @@ theorem tangentFieldModelInChart_tangentConstInChart_apply_of_mem
   unfold tangentFieldModelInChart tangentConstInChart
   exact e.continuousLinearMapAt_symmL (R := 𝕜) hp_base v
 
-
-
-
 omit [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜] in
 theorem tangentConstInChart_self_continuousLinearMapAt
     (x : M) (v : TangentSpace I x) :
@@ -104,9 +93,6 @@ theorem tangentConstInChart_self_continuousLinearMapAt
   have hx : x ∈ e.baseSet := FiberBundle.mem_baseSet_trivializationAt' x
   rw [tangentConstInChart_apply]
   exact e.symmL_continuousLinearMapAt (R := 𝕜) hx v
-
-
-
 
 omit [CompleteSpace 𝕜] in
 theorem tangentField_eq_sum_modelCoord_tangentConst_eventually_of_mem
@@ -160,9 +146,6 @@ theorem tangentField_eq_sum_modelCoord_tangentConst_eventually_of_mem
           rw [tangentConstInChart_apply]
           rw [hmodel]
 
-
-
-
 omit [CompleteSpace 𝕜] in
 theorem tangentField_eq_sum_modelCoord_tangentConst_eventually
     (x₀ : M) (V : (x : M) → TangentSpace I x) :
@@ -201,12 +184,12 @@ end
 
 end TensorLieDeriv
 
+end DifferentialGeometry
 namespace CovariantDerivative
+open DifferentialGeometry
 
 open Bundle
 open scoped Manifold ContDiff
-
-
 
 theorem smoothSections_cov_contMDiffAt_one
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -252,12 +235,6 @@ theorem smoothSections_cov_contMDiffAt_one
         change ((1 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞)
         exact WithTop.coe_le_coe.2 le_top)).contMDiffOn
   exact (hcovY.clm_bundle_apply hX).contMDiffAt (by simp)
-
-
-
-
-
-
 
 theorem tangentConst_cov_mdiffAt
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]

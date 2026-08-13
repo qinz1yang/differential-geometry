@@ -1,32 +1,11 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartLocality
-
-/-!
-# Chart `W^{k,p}` carriers for genuine mixed-tensor sections
-
-This file gives the dimension-independent chart carrier needed by a future
-maximal-`L^p` Ricci--DeTurck construction.  Unlike the older `WtwokTwo` space,
-the underlying objects here are arbitrary genuine fiberwise `(r,s)`-tensor
-sections and the Sobolev order and exponent are arbitrary.
-
-The chart components are obtained without unfolding the tensor model: a bundle
-trivialization sends the tensor value to `TensorRSModel`, and the existing
-continuous linear projection `tensorChartComponentProjection` extracts a
-scalar component.  The canonical partition-of-unity weight is then inserted
-and the result is extended by zero with `chartPushedRaw`.
-
-The file deliberately stops short of installing global normed-space or
-completeness instances.  It supplies the genuine-section carrier, its
-componentwise `W^{k,p}` submodule, the finite chart-component norm, the natural
-component-a.e. quotient, and a quotient-valued norm function.  Completeness
-still requires the analytic theorem that chartwise Sobolev limits obey the
-tensor transition law and assemble to a genuine section.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -45,22 +24,16 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-/-- A genuine, not necessarily continuous, fiberwise `(r,s)`-tensor section. -/
 abbrev RSTensorSection
     (I : ModelWithCorners ℝ E H) (M : Type*) [TopologicalSpace M]
     [ChartedSpace H M] [IsManifold I ∞ M] (r s : ℕ) :=
   (x : M) → TensorRSSpace r s I x
 
-/-- The value of a genuine tensor section in the model fiber of the chart at
-`α`.  This is a continuous-linear operation on each fiber, including at points
-outside the chart source where the bundle API uses its canonical zero value. -/
 noncomputable def secTriv (r s : ℕ) (S : RSTensorSection I M r s)
     (α x : M) : TensorRSModel r s ℝ E :=
   (trivializationAt (TensorRSModel r s ℝ E)
     (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ x (S x)
 
-/-- The scalar `(Idx,Jdx)` chart-frame component before multiplication by the
-canonical partition of unity. -/
 noncomputable def secCompRaw (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -68,7 +41,6 @@ noncomputable def secCompRaw (r s : ℕ) (S : RSTensorSection I M r s)
   tensorChartComponentProjection (E := E) r s Idx Jdx
     (secTriv (I := I) (M := M) r s S α x)
 
-/-- The partition-of-unity-weighted scalar chart component on `M`. -/
 noncomputable def secCompPou (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -76,8 +48,6 @@ noncomputable def secCompPou (r s : ℕ) (S : RSTensorSection I M r s)
   (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x *
     secCompRaw (I := I) (M := M) r s S α Idx Jdx x
 
-/-- A POU-weighted tensor component, pushed to the Euclidean chart target and
-extended by zero outside that target. -/
 noncomputable def secChartComp (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -87,7 +57,6 @@ noncomputable def secChartComp (r s : ℕ) (S : RSTensorSection I M r s)
     (secCompPou (I := I) (M := M) r s S α Idx Jdx)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- Evaluation of a tensor chart component on the chart target. -/
 theorem secComp_apply_mem (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -101,7 +70,6 @@ theorem secComp_apply_mem (r s : ℕ) (S : RSTensorSection I M r s)
   exact chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- A tensor chart component vanishes outside the chart target. -/
 theorem secComp_apply_off (r s : ℕ) (S : RSTensorSection I M r s)
     (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -315,8 +283,6 @@ theorem secChartComp_sub (r s : ℕ) (S T : RSTensorSection I M r s)
         secChartComp (I := I) (M := M) r s T α Idx Jdx := by
   rw [sub_eq_add_neg, secChartComp_add, secChartComp_neg, ← sub_eq_add_neg]
 
-/-- Extraction of a fixed chart component as a linear map on genuine tensor
-sections. -/
 noncomputable def secChartCompLin (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -324,10 +290,8 @@ noncomputable def secChartCompLin (r s : ℕ) (α : M)
       (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ) where
   toFun S := secChartComp (I := I) (M := M) r s S α Idx Jdx
   map_add' S T := secChartComp_add (I := I) (M := M) r s S T α Idx Jdx
-
   map_smul' c S := secChartComp_smul (I := I) (M := M) r s c S α Idx Jdx
 
-/-- General chart-Sobolev membership for a genuine mixed-tensor section. -/
 def MemWkpTensor
     (_g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (p : ℝ≥0∞) (S : RSTensorSection I M r s) : Prop :=
@@ -411,7 +375,6 @@ theorem MemWkpTensor.sub
   exact MemWkpTensor.add (I := I) (M := M) g hp hS
     (MemWkpTensor.neg (I := I) (M := M) g hp hT)
 
-/-- Genuine tensor sections whose chart components belong to `W^{k,p}`. -/
 def wkpTensorSub
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) : Submodule ℝ (RSTensorSection I M r s) where
@@ -420,15 +383,11 @@ def wkpTensorSub
   add_mem' := fun hS hT => MemWkpTensor.add (I := I) (M := M) g hp hS hT
   smul_mem' := fun c _ hS => MemWkpTensor.smul (I := I) (M := M) g hp c hS
 
-/-- The unquotiented genuine-section chart `W^{k,p}` carrier.  This is an
-abbreviation so the standard submodule additive and module structures are
-reused without introducing new global instances. -/
 abbrev WkpTensor
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :=
   ↥(wkpTensorSub (I := I) (M := M) g r s k p hp)
 
-/-- The finite chart-component `W^{k,p}` norm, before taking `ENNReal.toReal`. -/
 def wkpTensorNorm
     (_g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (p : ℝ≥0∞) (S : RSTensorSection I M r s) : ℝ≥0∞ :=
@@ -516,7 +475,6 @@ theorem wkpTensorNorm_smul
     (chartTargetEuclid_isOpen (I := I) (M := M) α) (hS α Idx Jdx) c
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Off the finite support of the canonical POU, every component vanishes. -/
 theorem secComp_zero_off
     (r s : ℕ) (S : RSTensorSection I M r s) {α : M}
     (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
@@ -537,7 +495,6 @@ theorem secComp_zero_off
     rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The chart-component norm is finite on the `W^{k,p}` carrier. -/
 theorem wkpTensorNorm_lt_top
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S : RSTensorSection I M r s}
@@ -576,8 +533,6 @@ theorem wkpTensorNorm_lt_top
   intro Jdx _
   exact wkpNorm_lt_top_of_memWkp (d := Module.finrank ℝ E) (hS α Idx Jdx)
 
-/-- Componentwise a.e. equality on every canonical chart.  This is the natural
-zero-seminorm relation for raw tensor Sobolev sections. -/
 def TensorAEEq
     (_g : SmoothRiemannianMetric I M) {r s : ℕ}
     (S T : RSTensorSection I M r s) : Prop :=
@@ -661,7 +616,6 @@ theorem TensorAEEq.sub
   exact hS.add hT.neg
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-/-- The finite component norm is invariant under componentwise a.e. equality. -/
 theorem wkpTensorNorm_congr
     (g : SmoothRiemannianMetric I M) {r s k : ℕ}
     {p : ℝ≥0∞} (hp : 1 ≤ p) {S T : RSTensorSection I M r s}
@@ -678,8 +632,6 @@ theorem wkpTensorNorm_congr
   exact wkpNorm_congr_ae (d := Module.finrank ℝ E) hp
     (chartTargetEuclid_isOpen (I := I) (M := M) α) (hST α Idx Jdx)
 
-/-- The setoid on the genuine-section `W^{k,p}` carrier induced by chartwise
-component a.e. equality. -/
 def tensorChartSetoid
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -690,14 +642,11 @@ def tensorChartSetoid
     symm := fun h => h.symm
     trans := fun hST hTU => hST.trans hTU }
 
-/-- The raw tensor chart-Sobolev carrier modulo componentwise a.e. equality.
-No global normed-space instance is installed here. -/
 def WkpTensorQuot
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) : Type _ :=
   Quotient (tensorChartSetoid (I := I) (M := M) g r s k p hp)
 
-/-- The `ENNReal` chart-component norm descends to the a.e. quotient. -/
 noncomputable def wkpTensorQNorm
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :

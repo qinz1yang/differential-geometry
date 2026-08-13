@@ -4,19 +4,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammValue
 
 set_option autoImplicit false
 
-/-!
-# Finite-basis Koch--Lamm split potential
-
-A genuine Euclidean divergence source with values in `F` is a field
-`f₁ : ℝ × V → V →L[ℝ] F`.  Its heat potential is the finite sum of the
-already proved directional potentials applied to the components of `f₁` in
-the canonical orthonormal basis of `V`.
-
-This file stays at the value level.  It also records the corresponding
-CLM-valued spatial-gradient candidate, but makes no unproved pointwise or
-weak-derivative identification and no gradient-norm claim.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -34,8 +21,6 @@ variable {V F : Type*}
 
 omit [Nontrivial V]
   [CompleteSpace F] in
-/-- Evaluation of an operator-valued Koch--Lamm flux on one canonical unit
-basis vector preserves both source radii. -/
 theorem klFluxComp {T : ℝ} {A₂ Aₚ : ℝ≥0}
     (f : ℝ × V → V →L[ℝ] F) (h : KLSource1 T A₂ Aₚ f)
     (i : Fin (Module.finrank ℝ V)) :
@@ -57,9 +42,6 @@ theorem klFluxComp {T : ℝ} {A₂ Aₚ : ℝ≥0}
     (kl1_map_bound (V := V) (ε := 1) (A := fun _ : ℝ × V ↦ ev) (d := f)
       (hA := fun _ ↦ hev) (hmeas := hmeas) h)
 
-/-- The canonical finite-dimensional heat potential of
-`f₀ + div f₁`.  The ordinary source is `F`-valued, while the divergence
-source is honestly `V →L[ℝ] F`-valued. -/
 def klBasisPot (t : ℝ) (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V) : F :=
   klHeat0 t f₀ x +
@@ -67,9 +49,6 @@ def klBasisPot (t : ℝ) (f₀ : ℝ × V → F)
       klHeat1 t ((stdOrthonormalBasis ℝ V) i)
         (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i)) x
 
-/-- The finite-basis CLM-valued spatial-gradient candidate belonging to
-`klBasisPot`.  Its realization and Koch--Lamm gradient bounds are separate
-analytic theorems. -/
 def klBasisGrad (t : ℝ) (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V) : V →L[ℝ] F :=
   heatGrad0 t f₀ x +
@@ -78,8 +57,6 @@ def klBasisGrad (t : ℝ) (f₀ : ℝ × V → F)
         (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i)) x
 
 omit [CompleteSpace F] in
-/-- On controlled sources, the finite-basis realized potential is exactly
-the ordinary Duhamel potential plus the directional `heatPot1` sum. -/
 theorem klBasisPot_eq {T t : ℝ} {A₁ A_q A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V)
@@ -101,7 +78,6 @@ theorem klBasisPot_eq {T t : ℝ} {A₁ A_q A₂ Aₚ : ℝ≥0}
 
 omit [Nontrivial V]
   [CompleteSpace F] in
-/-- The canonical finite-basis split potential has zero initial value. -/
 @[simp] theorem klBasisPot_zero (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V) :
     klBasisPot 0 f₀ f₁ x = 0 := by
@@ -110,8 +86,6 @@ omit [Nontrivial V]
     klLateFull0, klFluxFull1, klTermMeasure]
 
 omit [CompleteSpace F] in
-/-- The realized ordinary value potential is linear under subtraction once
-the two input integrals are known to be integrable from their source bounds. -/
 theorem klHeat0_sub {T t : ℝ} {A₁ A_q B₁ B_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f g : ℝ × V → F) (x : V)
     (hf : KLSource0 T A₁ A_q f) (hg : KLSource0 T B₁ B_q g) :
@@ -127,8 +101,6 @@ theorem klHeat0_sub {T t : ℝ} {A₁ A_q B₁ B_q : ℝ≥0}
   abel
 
 omit [CompleteSpace F] in
-/-- The realized directional flux value potential is linear under
-subtraction once both directional integrals are controlled. -/
 theorem klHeat1_sub {T t : ℝ} {A₂ Aₚ B₂ Bₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f g : ℝ × V → F) (x : V)
     (hf : KLSource1 T A₂ Aₚ f) (hg : KLSource1 T B₂ Bₚ g) :
@@ -145,8 +117,6 @@ theorem klHeat1_sub {T t : ℝ} {A₂ Aₚ B₂ Bₚ : ℝ≥0}
   abel
 
 omit [CompleteSpace F] in
-/-- Linearity of the full finite-basis split potential under subtraction.
-The hypotheses are only the source bounds needed for Bochner integrability. -/
 theorem klBasisPot_sub {T t : ℝ}
     {A₁ A_q B₁ B_q A₂ Aₚ B₂ Bₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f₀ g₀ : ℝ × V → F)
@@ -181,14 +151,11 @@ theorem klBasisPot_sub {T t : ℝ}
   rw [hsum]
   abel
 
-/-- The already proved ordinary-source value constant. -/
 def klVal0Bound (A₁ A_q : ℝ≥0) : ℝ≥0∞ :=
   earlyHeatC V * (A₁ : ℝ≥0∞) +
     ENNReal.ofReal
       (klLateSeries (Module.finrank ℝ V) * (klLateTailC V * (A_q : ℝ)))
 
-/-- The already proved value constant for one unit directional component of
-an operator-valued flux. -/
 def klVal1Bound (A₂ Aₚ : ℝ≥0) : ℝ≥0∞ :=
   earlyFluxC V * (A₂ : ℝ≥0∞) *
       fluxShellSeries (Module.finrank ℝ V) +
@@ -196,9 +163,6 @@ def klVal1Bound (A₂ Aₚ : ℝ≥0) : ℝ≥0∞ :=
       (klFluxSeries (Module.finrank ℝ V) * (klFluxTailC V * (Aₚ : ℝ)))
 
 omit [CompleteSpace F] in
-/-- The genuine finite-dimensional divergence value bound.  The flux cost is
-the number of canonical orthonormal-basis components times the proved unit
-directional cost. -/
 theorem klBasisPot_norm {T t : ℝ} {A₁ A_q A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V)

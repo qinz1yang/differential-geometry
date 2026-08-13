@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSymbolFormula
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section

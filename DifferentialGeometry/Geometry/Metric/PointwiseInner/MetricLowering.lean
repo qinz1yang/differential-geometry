@@ -19,9 +19,10 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
+namespace DifferentialGeometry
 namespace TensorMetricLowering
 
 variable
@@ -436,4 +437,5 @@ theorem continuous_lifted_section
 
 end TensorMetricLowering
 
+end DifferentialGeometry
 end

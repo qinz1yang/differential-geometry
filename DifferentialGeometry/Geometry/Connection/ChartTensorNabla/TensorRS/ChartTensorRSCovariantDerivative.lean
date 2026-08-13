@@ -10,10 +10,10 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -594,5 +594,5 @@ example (g : SmoothRiemannianMetric I M) (α : M)
   chartTensorRSCovariantDerivative (I := I) 0 0 g α T X b
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

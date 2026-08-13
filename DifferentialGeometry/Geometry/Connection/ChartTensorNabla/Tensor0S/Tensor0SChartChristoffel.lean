@@ -9,10 +9,10 @@ set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
@@ -24,14 +24,14 @@ variable
   {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M]
+  [T2Space M]
 
 noncomputable def tensor0SChartE_section_repr (s : ℕ) (α : M)
     (T : Π b : M, Tensor0SSpace s I b) (b : M) : Tensor0SModel s ℝ E :=
   (trivializationAt (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y) α).continuousLinearMapAt ℝ b (T b)
 
-omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+omit [CompleteSpace E] [T2Space M] in
 @[simp] lemma tensor0SChartE_section_repr_apply (s : ℕ) (α : M)
     (T : Π b : M, Tensor0SSpace s I b) (b : M) :
     tensor0SChartE_section_repr (I := I) s α T b =
@@ -39,7 +39,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
           (fun y : M => Tensor0SSpace s I y) α).continuousLinearMapAt ℝ b (T b) :=
   rfl
 
-omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+omit [CompleteSpace E] [T2Space M] in
 lemma tensor0SChartE_section_repr_add (s : ℕ) (α : M)
     (T₁ T₂ : Π b : M, Tensor0SSpace s I b) :
     tensor0SChartE_section_repr (I := I) s α (T₁ + T₂) =
@@ -55,7 +55,7 @@ lemma tensor0SChartE_section_repr_add (s : ℕ) (α : M)
         (T₁ b + T₂ b) = _
   exact map_add _ (T₁ b) (T₂ b)
 
-omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+omit [CompleteSpace E] [T2Space M] in
 lemma tensor0SChartE_section_repr_smul (s : ℕ) (α : M) (c : ℝ)
     (T : Π b : M, Tensor0SSpace s I b) :
     tensor0SChartE_section_repr (I := I) s α (c • T) =
@@ -84,7 +84,7 @@ noncomputable def tensor0SIntrinsicChartCLM (s : ℕ) (α : M)
         (extChartAt I α b)).comp
       (trivToE (I := I) α b))
 
-omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+omit [CompleteSpace E] [T2Space M] in
 lemma tensor0SIntrinsicChartCLM_apply (s : ℕ) (α : M)
     (T : Π b : M, Tensor0SSpace s I b) (b : M) (v : TangentSpace I b) :
     tensor0SIntrinsicChartCLM (I := I) s α T b v =
@@ -96,7 +96,7 @@ lemma tensor0SIntrinsicChartCLM_apply (s : ℕ) (α : M)
   unfold tensor0SIntrinsicChartCLM
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
 
-omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+omit [CompleteSpace E] [T2Space M] in
 lemma tensor0SIntrinsicChartCLM_add_section (s : ℕ) (α : M)
     (T₁ T₂ : Π b : M, Tensor0SSpace s I b) (b : M)
     (h₁ : DifferentiableAt ℝ
@@ -139,7 +139,7 @@ lemma tensor0SIntrinsicChartCLM_add_section (s : ℕ) (α : M)
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
   rw [ContinuousLinearMap.add_apply, map_add]
 
-omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+omit [CompleteSpace E] [T2Space M] in
 lemma tensor0SIntrinsicChartCLM_smul_section (s : ℕ) (α : M)
     (c : ℝ) (T : Π b : M, Tensor0SSpace s I b) (b : M)
     (hT : DifferentiableAt ℝ
@@ -230,7 +230,7 @@ example
   tensor0SCovariantDerivative_chart_decomp_apply (I := I) cov s α T b v
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

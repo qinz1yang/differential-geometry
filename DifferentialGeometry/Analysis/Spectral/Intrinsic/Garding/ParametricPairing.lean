@@ -1,29 +1,24 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.BalancedPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricScalarSmulJet
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -34,8 +29,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-
 
 theorem iterL_pair_unif (g : SmoothRiemannianMetric I M) (s n : ℕ)
     (Φ : ℝ → SmoothCcTensor g (s + 1) s) {S K : Set ℝ}
@@ -58,9 +51,6 @@ theorem iterL_pair_unif (g : SmoothRiemannianMetric I M) (s n : ℕ)
   obtain ⟨CG, hCG_nn, hCG⟩ :=
     param_app_jet (I := I) (M := M) g (s + 1) s Φ hK hKS hjoint
   exact iterL_pair_jet_of (I := I) (M := M) g s n Φ K CG hCG_nn hCG
-
-
-
 
 theorem iterL_smul_unif (g : SmoothRiemannianMetric I M) (n : ℕ)
     (zeta : ℝ → C^∞⟮I, M; ℝ⟯) {S K : Set ℝ}
@@ -94,9 +84,8 @@ theorem iterL_smul_unif (g : SmoothRiemannianMetric I M) (n : ℕ)
   rw [Finset.mem_range]
   omega
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

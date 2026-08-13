@@ -1,19 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelLp
 
-/-!
-# The pointwise Euclidean heat-kernel equation
-
-The estimates in `HeatKernelLp` use the Gaussian only as an integrable
-convolution kernel.  A genuine local parametrix additionally needs the exact
-equation satisfied by that kernel.  This file proves, without an abstract
-heat-solver hypothesis, that the positive-time derivative of `heatKernel` is
-the trace of its spatial Hessian in an orthonormal basis.
-
-The normalization is the one already used by `heatKernel`: its time-one
-profile is `exp (-‖x‖² / 4)`, so the generator is the ordinary Euclidean
-Laplacian (with no extra factor).
--/
-
 noncomputable section
 
 open Real
@@ -30,7 +16,6 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [Nontrivial V]
 
-/-- The explicit positive-time derivative of the Euclidean heat kernel. -/
 def heatDt (t : ℝ) (x : V) : ℝ :=
   let r := heatScale t
   let n := Module.finrank ℝ V
@@ -39,7 +24,6 @@ def heatDt (t : ℝ) (x : V) : ℝ :=
     ((4 : ℝ)⁻¹ * ‖z‖ ^ 2 - (n : ℝ) / 2) * baseHeat z
 
 omit [Nontrivial V] in
-/-- The trace of the time-one Gaussian Hessian in an orthonormal basis. -/
 theorem sum_baseD2 (x : V) :
     (∑ i : Fin (Module.finrank ℝ V),
       baseD2 ((stdOrthonormalBasis ℝ V) i)
@@ -57,8 +41,6 @@ theorem sum_baseD2 (x : V) :
   ring
 
 omit [Nontrivial V] in
-/-- The explicit derivative is the trace of the positive-time heat-kernel
-Hessian. -/
 theorem heatDt_eq_trace {t : ℝ} (ht : 0 < t) (x : V) :
     heatDt t x =
       ∑ i : Fin (Module.finrank ℝ V),
@@ -76,8 +58,6 @@ theorem heatDt_eq_trace {t : ℝ} (ht : 0 < t) (x : V) :
   rw [← hscale]
   ring
 
-/-- At positive time the Euclidean heat kernel has the explicit time
-derivative `heatDt`. -/
 theorem heatKernel_time {t : ℝ} (ht : 0 < t) (x : V) :
     HasDerivAt (fun s : ℝ => heatKernel s x) (heatDt t x) t := by
   let n := Module.finrank ℝ V
@@ -125,8 +105,6 @@ theorem heatKernel_time {t : ℝ} (ht : 0 < t) (x : V) :
   field_simp [ht.ne']
   ring
 
-/-- Pointwise Euclidean heat equation: the positive-time time derivative of
-the Gaussian is the orthonormal trace of its spatial Hessian. -/
 theorem heatKernel_heatEq {t : ℝ} (ht : 0 < t) (x : V) :
     HasDerivAt (fun s : ℝ => heatKernel s x)
       (∑ i : Fin (Module.finrank ℝ V),

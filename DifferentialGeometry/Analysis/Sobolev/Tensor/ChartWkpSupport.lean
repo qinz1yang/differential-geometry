@@ -1,22 +1,12 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpLimit
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartAe
-
-/-!
-# Support inheritance for tensor chart-Sobolev limits
-
-Every approximating component in `ChartWkpLimit.lean` contains the canonical
-partition-of-unity weight of its chart.  This file proves that the chosen
-Euclidean Sobolev limit retains the same compact support almost everywhere.
-The argument passes from `wkpNorm` convergence to convergence in measure and
-then to an almost-everywhere convergent subsequence, exactly as in the scalar
-manifold-completeness construction.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -40,8 +30,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-/-- A POU-weighted tensor chart component vanishes pointwise, inside the chart
-target, off the fixed Euclidean image of the POU kernel. -/
 theorem secComp_zero_kernel
     (r s : ℕ) (S : RSTensorSection I M r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -57,8 +45,6 @@ theorem secComp_zero_kernel
     hy_target hy_off
   exact hzero
 
-/-- The chosen component limit vanishes almost everywhere off the same compact
-POU kernel as every member of the approximating sequence. -/
 theorem secCompLimit_ae_zero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -151,8 +137,6 @@ theorem secCompLimit_ae_zero
   exact tendsto_nhds_unique hy_tendsto
     (by simpa only [hzero] using tendsto_const_nhds)
 
-/-- The closed-kernel representative is a.e. equal, on the chart target, to
-the chosen Sobolev component limit. -/
 theorem secCompRep_ae
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -176,8 +160,6 @@ theorem secCompRep_ae
     (secCompLimit_ae_zero (I := I) (M := M)
       g r s k hp hp_top u h_cauchy α Idx Jdx)
 
-/-- The closed-kernel representative remains in the same scalar Sobolev
-space as the chosen component limit. -/
 theorem secCompRep_mem
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -200,8 +182,6 @@ theorem secCompRep_mem
     (secCompLimit_mem (I := I) (M := M)
       g r s k hp hp_top u h_cauchy α Idx Jdx)
 
-/-- The original component sequence also converges in `wkpNorm` to the
-closed-kernel representative. -/
 theorem secCompRep_tendsto
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -244,8 +224,6 @@ theorem secCompRep_tendsto
   exact secCompLimit_tendsto (I := I) (M := M)
     g r s k hp hp_top u h_cauchy α Idx Jdx
 
-/-- The closed-kernel representative has pointwise topological support in the
-fixed compact POU image. -/
 theorem secCompRep_support
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)

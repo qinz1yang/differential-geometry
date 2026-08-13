@@ -1,18 +1,12 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.ConnectionProduct
 
-
-
-
-
-
-
 set_option autoImplicit false
 
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -46,15 +40,6 @@ theorem nabla0SFun_one_eval_coordFrame_expanded
   rw [tensor0S_one_eval_coordFrame_sum (I := I)]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [nabla0SFun_one_eval_coordFrame (I := I) cov X α x₀ hderiv j]
-
-
-
-
-
-
-
-
-
 
 theorem nabla0SFun_one_eval_of_coordFrame_product
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -95,8 +80,6 @@ theorem nabla0SFun_one_eval_of_coordFrame_product
   rw [Finset.sum_sub_distrib]
   simp_rw [Finset.sum_add_distrib]
   ring
-
-
 
 theorem nabla0SFun_one_eval_of_coordFrame_product_rule
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -141,10 +124,6 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rule
       (I := I) X Z α x₀ z dz hz hdz hdiff_z hdiff_α)
     hcovZ
 
-
-
-
-
 theorem nabla0SFun_one_eval_of_coordFrame_product_rules
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -178,12 +157,6 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rules
     (oneForm_covariantDerivative_coordFrame_product_rule
       (I := I) cov X Z α x₀ z dz hz hdz hdiff_z hZ_diff)
 
-
-
-
-
-
-
 theorem nabla0SFun_one_eval_coordFrame_moving
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -213,12 +186,6 @@ theorem nabla0SFun_one_eval_coordFrame_moving
     (I := I) cov X Z α x₀ hderiv z dz (by intro j; rfl) (by intro j; rfl)
     hdiff_z hdiff_α
     (Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
-
-
-
-
-
-
 
 theorem nabla0SFun_one_eval_coordFrame_moving_raw
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

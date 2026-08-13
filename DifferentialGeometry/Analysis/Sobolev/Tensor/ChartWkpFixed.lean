@@ -1,21 +1,11 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpQuot
-
-/-!
-# Fixed-point closedness in the explicit tensor Sobolev quotient
-
-`WkpTensorQuot` deliberately has no global metric or complete-space instance.
-Its theorem-valued distance and completeness API is nevertheless enough to
-show that the fixed set of a Lipschitz endomorphism is sequentially closed.
-This is the form needed by a retraction/coretraction parametrix: a sequence of
-genuine tensor states has a genuine tensor limit.  It does not assert that a
-chartwise heat generator commutes with the chart projection.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -29,8 +19,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-/-- A `W^{k,p}` Cauchy sequence fixed by a Lipschitz endomorphism has a fixed
-quotient limit.  No `MetricSpace` or `CompleteSpace` instance is installed. -/
 theorem qfixed_limit
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)

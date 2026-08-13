@@ -419,7 +419,7 @@ private lemma exponent_nonneg
 
 theorem wkpNorm_chartPushed_mono_exponent_holder
     [CompactSpace M] [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (α : M)
     {p p' : ℝ≥0∞} (hp_one : 1 ≤ p) (hp'_one : 1 ≤ p')
     (hp'_le_p : p' ≤ p) (hp_top : p ≠ ⊤) :

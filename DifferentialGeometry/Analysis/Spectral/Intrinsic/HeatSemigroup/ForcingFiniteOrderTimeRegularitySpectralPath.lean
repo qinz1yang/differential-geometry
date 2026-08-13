@@ -6,6 +6,11 @@ import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerModeL2
 import DifferentialGeometry.Analysis.Calculus.ContDiffExtendInterval
 import DifferentialGeometry.Analysis.Integration.L2.ForcingFiniteOrderTimeRegularityParametricIntegral
+open DifferentialGeometry.Analysis.Integration DifferentialGeometry.Analysis.Sobolev.CSupTensor
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+    DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -14,9 +19,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -25,7 +29,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -64,7 +68,7 @@ private lemma continuousLinearMap_map_fintype_sum
 section FiniteOrderSpectralPathEngine
 
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (eigenvectorSmooth
   tensorChartComponentRaw tensorChartComponentProjection tensorChartBasisElement
@@ -103,7 +107,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
   set F : ℕ → SmoothCcTensor g 0 2 :=
     fun n => spectralPartialSum (I := I) (M := M) g u n with hF_def
   have hcauchy : ∀ kc : ℕ, CauchySeq (fun n =>
-      DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+      DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
         (g := g) (r := 0) (s := 2) (2 * kc) (F n)) :=
     fun kc => spectralPartialSum_toHs_cauchy (I := I) (M := M) g u hu (2 * kc)
   have hF_L2 : Filter.Tendsto (fun n => (F n : TensorL2 0 2 g)) Filter.atTop (nhds u) :=
@@ -825,9 +829,8 @@ theorem spectralPathFO_toFun_timeJet_eq_of_coeff_jets_local
 
 end FiniteOrderSpectralPathEngine
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

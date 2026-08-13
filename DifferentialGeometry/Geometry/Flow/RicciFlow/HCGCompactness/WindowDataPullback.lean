@@ -1,31 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.SolutionPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.FixedDomainMetricBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvWindowSolutions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 open Set Function Filter Bundle Manifold
 open scoped Manifold Topology ContDiff ENNReal
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow
+
 
 namespace DifferentialGeometry
 namespace HCGCompactness
@@ -35,10 +16,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boun
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M]
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
-
-
-
-
 
 omit [I.Boundaryless] in
 theorem metricUniformEquivalentOn_pullback
@@ -53,8 +30,6 @@ theorem metricUniformEquivalentOn_pullback
   rw [Diffeomorph.pullbackMetric_inner, Diffeomorph.pullbackMetric_inner]
   exact hbound (Φ x) (hV x hx) (mfderiv I I (Φ : M → N) x v)
 
-
-
 omit [I.Boundaryless] in
 theorem metricUniformEquivalentOnWindow_pullback
     (K : Set N) (β ψ : ℝ) (gRef : SmoothRiemannianMetric I N)
@@ -67,9 +42,6 @@ theorem metricUniformEquivalentOnWindow_pullback
   intro i t ht
   exact metricUniformEquivalentOn_pullback (I := I) K gRef (gSeq i t) (B t)
     (hequiv i t ht) Φ hV
-
-
-
 
 omit [I.Boundaryless] in
 theorem solLowData_pullback
@@ -85,11 +57,6 @@ theorem solLowData_pullback
   refine ⟨c, hc, fun k x v => ?_⟩
   rw [Diffeomorph.pullbackMetric_inner, Diffeomorph.pullbackMetric_inner]
   exact hbound k (Φ x) (mfderiv I I (Φ : M → N) x v)
-
-
-
-
-
 
 omit [I.Boundaryless] in
 theorem metricCovDerivNorm_pullback
@@ -111,9 +78,6 @@ theorem metricCovDerivNorm_pullback
     (metricCovDeriv (I := I) h gRef a (Φ x))
     (metricCovDeriv_pullback (I := I) h gRef Φ a x)]
 
-
-
-
 omit [I.Boundaryless] in
 theorem metricCovDerivOrderBoundOn_pullback
     [NeZero (Module.finrank ℝ E)]
@@ -131,8 +95,6 @@ theorem metricCovDerivOrderBoundOn_pullback
   rw [metricCovDerivNorm_pullback (I := I) a h gRef Φ x]
   exact hbound (Φ x) (hV x hx)
 
-
-
 omit [I.Boundaryless] in
 theorem metricCovDerivOrderBoundOnWindow_pullback
     [NeZero (Module.finrank ℝ E)]
@@ -149,10 +111,6 @@ theorem metricCovDerivOrderBoundOnWindow_pullback
       (Diffeomorph.pullbackMetric (I := I) gRef Φ) a C := by
   intro i t ht
   exact metricCovDerivOrderBoundOn_pullback (I := I) K a (gSeq i t) gRef C (hbound i t ht) Φ hV
-
-
-
-
 
 noncomputable def solLip0Data_pullback
     [NeZero (Module.finrank ℝ E)]
@@ -189,11 +147,6 @@ noncomputable def solLip0Data_pullback
     rw [key]
     exact hData.hShi0 i t ht (Φ x) hx
 
-
-
-
-
-
 noncomputable def solCovData_pullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
@@ -224,10 +177,6 @@ noncomputable def solCovData_pullback
     · intro r hr1 hrn i x hx
       rw [metricCovDerivNorm_pullback (I := I) r (gSeq i t0) gRef Φ x]
       exact hinitCbound r hr1 hrn i (Φ x) hx
-
-
-
-
 
 noncomputable def solLipData_pullback
     [NeZero (Module.finrank ℝ E)]
@@ -260,8 +209,6 @@ noncomputable def solLipData_pullback
     · exact metricCovDerivOrderBoundOnWindow_pullback (I := I) K β ψ gSeq gRef a CN hCN Φ
         (fun _x hx => hx)
 
-
-
 omit [I.Boundaryless] in
 theorem solnMetricField_pullback
     [SigmaCompactSpace N] [T2Space N]
@@ -273,8 +220,6 @@ theorem solnMetricField_pullback
   simp only [solnMetricField]
   rw [Tensor0SBundle.metricTensorField_apply, Tensor0SBundle.metricTensorField_apply]
   exact Diffeomorph.pullbackMetric_inner (I := I) (S.family.metric r) Φ y (slots 0) (slots 1)
-
-
 
 omit [I.Boundaryless] in
 theorem solnRicField_pullback
@@ -289,8 +234,6 @@ theorem solnRicField_pullback
       = solnRicField (I := I) S t (Φ y)
           (fun q : Fin 2 => mfderiv I I (Φ : M → N) y (slots q)) :=
   ricciSection_pullback (I := I) (S.family.metric t) Φ y slots
-
-
 
 omit [I.Boundaryless] in
 theorem solnEvolField_pullback
@@ -307,15 +250,6 @@ theorem solnEvolField_pullback
   simp only [solnEvolField, ContMDiffSection.coe_smul, Pi.smul_apply,
     Tensor0SBundle.Tensor0SSpace.smul_apply,
     solnRicField_pullback (I := I) S Φ t y slots]
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] in
 theorem solSwapData_pullback
@@ -386,11 +320,6 @@ theorem solSwapData_pullback
   exact hData i n p' hp' (fun a => pushFwdSection (I := I) Φ (V a)) (Φ x0) t ht (Φ x)
     (by rw [Set.mem_singleton_iff] at hx ⊢; rw [hx]) (mfderiv I I (Φ : M → N) x Vdir)
 
-
-
-
-
-
 noncomputable def solWindowData_pullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
@@ -423,10 +352,6 @@ noncomputable def solWindowData_pullback
         rwa [Φ.apply_symm_apply]
     rw [hset]
     exact hK.image Φ.symm.continuous
-
-
-
-
 
 noncomputable def winGInfOfPullback
     [NeZero (Module.finrank ℝ E)]

@@ -4,6 +4,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Separation.Basic
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -13,11 +14,11 @@ open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -178,8 +179,8 @@ private lemma exists_opNorm_bound_on_compact_of_continuousOn
   intro b hb
   exact (hC ⟨b, hb, rfl⟩).trans (le_max_left _ _)
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

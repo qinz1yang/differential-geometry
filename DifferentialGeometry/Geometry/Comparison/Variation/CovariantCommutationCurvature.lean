@@ -20,8 +20,8 @@ import Mathlib.Topology.Compactness.Compact
 import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
 import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -501,8 +501,8 @@ theorem commute_ds_dt_curvature_innerS
       - covDerivAlong (I := I) g (fun v : ℝ => f 0 v)
         (fun v : ℝ => covDerivAlong (I := I) g (fun u : ℝ => f u v)
           (fun u : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) u (1 : ℝ)) 0) t
-      = (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (f 0 t))
+      = (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (f 0 t))
           (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ))
           (mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ))
           (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ)) := by
@@ -695,8 +695,8 @@ theorem commute_ds_dt_curvature
       - covDerivAlong (I := I) g (fun v : ℝ => f 0 v)
         (fun v : ℝ => covDerivAlong (I := I) g (fun u : ℝ => f u v)
           (fun u : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f u w) v (1 : ℝ)) 0) t
-      = (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (f 0 t))
+      = (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (f 0 t))
           (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ))
           (mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ))
           (mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ)) := by

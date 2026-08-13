@@ -2,7 +2,7 @@ import Mathlib.Analysis.InnerProductSpace.Basic
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Parabolic
 
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open Set MeasureTheory
@@ -23,4 +23,4 @@ theorem lions_magenes_intermediate_trace
     have hι : 0 ≤ ‖ι‖ := norm_nonneg _
     exact h1.trans (mul_le_mul_of_nonneg_left h2 hι)
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Parabolic

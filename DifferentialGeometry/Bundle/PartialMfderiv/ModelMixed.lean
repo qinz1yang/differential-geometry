@@ -1,11 +1,5 @@
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 
-
-
-
-
-
-
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
@@ -82,8 +76,6 @@ private theorem model_hasDerivAt_fixed_snd
     · fun_prop
   simpa [hLderiv] using hcomp
 
-
-
 theorem modelLine_fst_hasDerivAt
     {A : ℝ × ℝ -> ℝ} {s t : ℝ}
     (hA : DifferentiableAt ℝ A (s, t)) :
@@ -101,8 +93,6 @@ theorem modelLine_fst_hasDerivAt
     · fun_prop
   simpa [L, hLderiv] using hcomp
 
-
-
 theorem modelLine_snd_hasDerivAt
     {A : ℝ × ℝ -> ℝ} {s t : ℝ}
     (hA : DifferentiableAt ℝ A (s, t)) :
@@ -119,12 +109,6 @@ theorem modelLine_snd_hasDerivAt
     · fun_prop
     · fun_prop
   simpa [L, hLderiv] using hcomp
-
-
-
-
-
-
 
 theorem fixedBaseFDerivTimeDerivativeAt_of_contDiff
     (F : ℝ -> E -> ℝ)
@@ -279,8 +263,6 @@ theorem fixedBaseFDerivTimeDerivativeWithinAt_of_contDiff
       t :=
   (fixedBaseFDerivTimeDerivativeAt_of_contDiff (E := E) F hF t x V).hasDerivWithinAt
 
-
-
 theorem modelMix2
     {φ : ℝ × ℝ -> ℝ} {s t : ℝ}
     (hφ : ContDiffAt ℝ 2 φ (s, t)) :
@@ -300,9 +282,6 @@ theorem modelMix2
     (by fun_prop)
   simp [VectorField.lieBracket] at hlie
   linarith
-
-
-
 
 theorem modelMix3
     {φ : ℝ × ℝ -> ℝ} {s t : ℝ}

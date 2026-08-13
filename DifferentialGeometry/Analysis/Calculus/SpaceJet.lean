@@ -2,14 +2,6 @@ import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import DifferentialGeometry.Analysis.Calculus.TimeJetEvolution
 
-/-!
-# Spatial jets of parameterized functions
-
-This file contains the basic open-domain bridge from joint smoothness of a
-function on `ℝ × E` to joint continuity of every spatial iterated Fréchet
-derivative of its time slices.
--/
-
 noncomputable section
 
 open Set
@@ -22,18 +14,12 @@ variable {E F : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- `SpaceJetDiff q G J V` means that every spatial iterated Fréchet
-derivative of the time-dependent family `G` is jointly `C^q` on `J × V`.
-This is the anisotropic finite-order invariant used by the time-space
-regularity bootstrap. -/
 def SpaceJetDiff (q : ℕ) (G : ℝ → E → F) (J : Set ℝ) (V : Set E) : Prop :=
   ∀ r : ℕ,
     ContDiffOn ℝ q
       (fun p : ℝ × E => iteratedFDeriv ℝ r (G p.1) p.2)
       (J ×ˢ V)
 
-/-- Every spatial iterated Fréchet derivative allowed by the joint regularity
-of a parameterized family is jointly continuous on the same open domain. -/
 theorem spaceJet_contOn
     {f : ℝ × E → F} {U : Set (ℝ × E)} {n : WithTop ℕ∞} (hU : IsOpen U)
     (hf : ContDiffOn ℝ n f U) (k : ℕ) (hk : (k : WithTop ℕ∞) ≤ n) :
@@ -109,8 +95,6 @@ theorem spaceJet_contOn
       ContinuousMultilinearMap.compContinuousLinearMapL_apply]
   exact hrestricted.congr (fun q hq => hslice q hq)
 
-/-- At a point with enough joint differentiability, the corresponding spatial
-jet of the time slices is jointly continuous at that point. -/
 theorem spaceJet_contAt
     {f : ℝ × E → F} {q : ℝ × E} {n : WithTop ℕ∞}
     (hf : ContDiffAt ℝ n f q) (k : ℕ) (hk : (k : WithTop ℕ∞) ≤ n) :
@@ -121,9 +105,6 @@ theorem spaceJet_contAt
   have hlocal := spaceJet_contOn hv (hfu.mono hvu) k le_rfl
   exact hlocal.continuousAt (hv.mem_nhds hqv)
 
-/-- Smooth postcomposition preserves joint finite-order regularity of every
-spatial jet.  The outer map is only required to be smooth on an open set
-containing the image of the parameterized family. -/
 theorem spaceJet_comp
     {A B : Type*}
     [NormedAddCommGroup A] [NormedSpace ℝ A]
@@ -204,8 +185,6 @@ theorem spaceJet_comp
   simpa only [FormalMultilinearSeries.taylorComp, Function.comp_def] using
     iteratedFDeriv_comp hΦp hup le_rfl
 
-/-- Taking one spatial Fréchet derivative preserves the anisotropic
-`SpaceJetDiff` invariant. -/
 theorem SpaceJetDiff.fderiv
     {G : ℝ → E → F} {J : Set ℝ} {V : Set E} {q : ℕ}
     (hG : SpaceJetDiff q G J V) :
@@ -232,8 +211,6 @@ theorem SpaceJetDiff.fderiv
   simp only [curryFun, Function.comp_apply, iteratedFDeriv_succ_eq_comp_right,
     LinearIsometryEquiv.apply_symm_apply]
 
-/-- The spatial derivative of an order-`r` spatial jet is jointly `C^q`
-whenever the full spatial jet tower is jointly `C^q`. -/
 theorem SpaceJetDiff.jet_fderiv
     {G : ℝ → E → F} {J : Set ℝ} {V : Set E} {q : ℕ}
     (hG : SpaceJetDiff q G J V) (r : ℕ) :
@@ -262,8 +239,6 @@ theorem SpaceJetDiff.jet_fderiv
   rcases p with ⟨t, x⟩
   rfl
 
-/-- Pairing two slice-wise smooth families preserves their common
-`SpaceJetDiff` order. -/
 theorem SpaceJetDiff.prodMk
     {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G]
     {f : ℝ → E → F} {g : ℝ → E → G}
@@ -287,8 +262,6 @@ theorem SpaceJetDiff.prodMk
       (by exact_mod_cast le_top)
   exact iteratedFDeriv_prodMk hfp hgp le_rfl
 
-/-- The value, first derivative, and second derivative packaged by `jet2`
-inherit the same joint finite-order anisotropic regularity. -/
 theorem SpaceJetDiff.jet2
     {G : ℝ → E → F} {J : Set ℝ} {V : Set E} {q : ℕ}
     (hV : IsOpen V) (hGs : ∀ t ∈ J, ContDiffOn ℝ ∞ (G t) V)
@@ -318,8 +291,6 @@ theorem SpaceJetDiff.jet2
     exact (hG₁s t ht).prodMk (hG₂s t ht)
   simpa only [jet2] using hG.prodMk hV hGs hderivS hderiv
 
-/-- A spatial two-jet difference is bounded by a common bound for the
-corresponding iterated Fréchet derivatives of orders zero, one, and two. -/
 theorem jet2_sub_le
     {f g : E → F} {x : E} {B : ℝ}
     (hf : ContDiffAt ℝ 2 f x) (hg : ContDiffAt ℝ 2 g x)
@@ -384,8 +355,6 @@ theorem jet2_sub_le
   simp only [jet2, Prod.norm_def, Prod.fst_sub, Prod.snd_sub, max_le_iff]
   exact ⟨hv, hd₁, hd₂⟩
 
-/-- Continuity of the first three spatial iterated derivatives of a parameterized
-family implies continuity of its spatial two-jet at the fixed spatial point. -/
 theorem jet2_contOn
     {g : ℝ → E → F} {s : Set ℝ} {x : E}
     (h₀ : ContinuousOn (fun t => iteratedFDeriv ℝ 0 (g t) x) s)

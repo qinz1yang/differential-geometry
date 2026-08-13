@@ -44,20 +44,28 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzPhiMetTotalCurvatureFold
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmOneAllOrderTameEnvelope
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciArmResidualFieldLeibnizWindow
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -94,7 +102,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck (cometricLmodel)
+open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -3666,7 +3674,6 @@ private theorem b4_refold_topSeparated_proof (g₀ : SmoothRiemannianMetric I M)
       (mul_le_mul hfr2 hfr2 (by norm_num) (by linarith)) hd4]
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem riemannianFiberNormSq_iteratedCovGrad_refoldKernelContr_symmSecondCovGrad_topAmplitude_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ}
     (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) :
@@ -3694,7 +3701,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_refoldKernelContr_symmSecondCovGra
   b4_refold_topSeparated_proof (I := I) (M := M) g₀ hδ₀ hδ₀half
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem
     riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnDiffOrder0CoeffField_topAmplitude_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ}
@@ -3719,6 +3725,6 @@ theorem
                   ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3) :=
   b4_L0_topSeparated_proof (I := I) (M := M) g₀ hδ₀ hδ₀half
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

@@ -8,8 +8,9 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
+open DifferentialGeometry.Geometry.Curvature
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open Bundle
 open scoped Manifold ContDiff
@@ -21,7 +22,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
-open DifferentialGeometry.PDE.RicciFlow.ConnectionLaplacian
+open DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian
 
 private theorem apply_eq_apply_add_of_eq
     {X Y : Type*} [Add X] [Add Y]
@@ -78,9 +79,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-/-- Maximal regularity for the connection Laplacian on tensor-valued `L²`
-paths, including the transported operator identity through the Sobolev
-equivalences. -/
 theorem connection_laplacian_l2_maximal_regularity
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {T : ℝ}
     (_hT : 0 < T) (_hT1 : T ≤ 1) :
@@ -254,4 +252,4 @@ theorem connection_laplacian_l2_maximal_regularity
       exact apply_eq_apply_add_of_eq Φ hsolves
         (ContinuousLinearMap.map_add Φ _ _) (hΦΦsymm f)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

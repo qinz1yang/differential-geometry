@@ -1,26 +1,24 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjGalerkinSpan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjWSpan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.WLower
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-/-!
-# Uniform W lower bounds on positive regular slabs
-
-This file iterates the exact-interior Galerkin W comparison with one compact-
-slab lifespan.  The induction accepts arbitrary smooth positive unit densities,
-so it applies both to cutoff data and to every evolved intermediate slice.
--/
-
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 noncomputable section
 
-open Bundle Filter MeasureTheory Set Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle Filter MeasureTheory Set DifferentialGeometry.Tensor0SBundle
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 open scoped Manifold ContDiff Topology
 
 universe u uE uH
@@ -37,8 +35,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- Perelman's W functional at one Ricci-flow time, written in the positive
-density normal form used by conjugate heat propagation. -/
 noncomputable def flowW
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (t theta : Real) (v : M → Real) : Real :=
@@ -50,8 +46,6 @@ noncomputable def flowW
       (gradientFun (I := I) g f x)
       (gradientFun (I := I) g f x)) f
 
-/-- One fixed positive base slice supplies a W lower constant uniformly over
-all compact regular slabs with that left endpoint and scale budget. -/
 theorem w_span_uniform
     [NeZero (Module.finrank Real E)] [I.Boundaryless]
     [BoundarylessManifold I M] [CompactSpace M]
@@ -231,8 +225,6 @@ theorem w_span_uniform
   have hgood := hgrid N t ht (ht.2.trans hcover)
   exact hgood theta htheta hbudget v hv hpos hmass
 
-/-- On one compact positive regular slab, a single constant bounds W below for
-every smooth positive unit density whose scale stays below a fixed budget. -/
 theorem w_span
     [NeZero (Module.finrank Real E)] [I.Boundaryless]
     [BoundarylessManifold I M] [CompactSpace M]

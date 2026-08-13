@@ -28,65 +28,65 @@ private local instance : BorelSpace (BoundaryManifold I M) := ⟨rfl⟩
 noncomputable def surfaceMeasure
     [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     MeasureTheory.Measure (BoundaryManifold I M) :=
-  Measure.riemannianVolumeMeasure
+  DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
     (I := hI.boundaryI) (M := BoundaryManifold I M) (inducedMetric g)
 
 omit [FiniteDimensional ℝ E] in
 lemma surfaceMeasure_def
     [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     surfaceMeasure (I := I) (M := M) g =
-      Measure.riemannianVolumeMeasure
+      DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
         (I := hI.boundaryI) (M := BoundaryManifold I M) (inducedMetric g) := rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem surfaceMeasure_isOpenPosMeasure
     [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     (surfaceMeasure (I := I) (M := M) g).IsOpenPosMeasure := by
   rw [surfaceMeasure_def]
-  exact Measure.riemannianVolumeMeasure_isOpenPosMeasure
+  exact DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isOpenPosMeasure
     (I := hI.boundaryI) (M := BoundaryManifold I M) (inducedMetric g)
 
 omit [FiniteDimensional ℝ E] in
 theorem surfaceMeasure_sigmaFinite
     [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     SigmaFinite (surfaceMeasure (I := I) (M := M) g) := by
   rw [surfaceMeasure_def]
-  exact Measure.riemannianVolumeMeasure_sigmaFinite
+  exact DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_sigmaFinite
     (I := hI.boundaryI) (M := BoundaryManifold I M) (inducedMetric g)
 
 omit [FiniteDimensional ℝ E] in
 theorem surfaceMeasure_isLocallyFiniteMeasure
     [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     IsLocallyFiniteMeasure (surfaceMeasure (I := I) (M := M) g) := by
   rw [surfaceMeasure_def]
-  exact Measure.riemannianVolumeMeasure_isLocallyFiniteMeasure
+  exact DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isLocallyFiniteMeasure
     (I := hI.boundaryI) (M := BoundaryManifold I M) (inducedMetric g)
 
 omit [FiniteDimensional ℝ E] in
 theorem surfaceMeasure_isFiniteMeasureOnCompacts
     [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     IsFiniteMeasureOnCompacts (surfaceMeasure (I := I) (M := M) g) := by
   rw [surfaceMeasure_def]
-  exact Measure.riemannianVolumeMeasure_isFiniteMeasureOnCompacts
+  exact DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasureOnCompacts
     (I := hI.boundaryI) (M := BoundaryManifold I M) (inducedMetric g)
 
 omit [FiniteDimensional ℝ E] in
 theorem surfaceMeasure_eq_zero_of_boundaryless
     [I.Boundaryless] [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     surfaceMeasure (I := I) (M := M) g = 0 := by
   haveI : IsEmpty hI.boundaryH :=
     HasSmoothBoundary.boundaryH_isEmpty_of_boundaryless I

@@ -1,15 +1,18 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricContractionLeibnizGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -31,11 +34,9 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
 
 structure IsPointwiseLinearLocalOperator (g : SmoothRiemannianMetric I M)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p)) : Prop where
-
   linear : ∀ (r : ℕ) (c₁ c₂ : ℝ) (W₁ W₂ : SmoothCcTensor g 0 r) (x : M),
     (op 0 r (c₁ • W₁ + c₂ • W₂)).toSection x =
       c₁ • (op 0 r W₁).toSection x + c₂ • (op 0 r W₂).toSection x
-
   local' : ∀ (r : ℕ) (W₁ W₂ : SmoothCcTensor g 0 r) (x : M),
     W₁.toSection x = W₂.toSection x → (op 0 r W₁).toSection x = (op 0 r W₂).toSection x
 
@@ -109,8 +110,8 @@ theorem riemannianFiberNormSq_clm_apply_le
           · exact φg.le_opNorm v
     _ = ‖φg‖ ^ 2 * ‖v‖ ^ 2 := by ring
 
-end Connection
-end Integral
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

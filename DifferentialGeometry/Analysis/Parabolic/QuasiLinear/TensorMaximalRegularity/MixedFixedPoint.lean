@@ -1,13 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SubcriticalSmallTime
-
-/-!
-# Mixed critical--subcritical forcing fixed point
-
-This file combines two nonlinear Nemytskii arms in the forcing-space
-maximal-regularity construction.  The top arm loses two derivatives and must
-have a small Lipschitz constant.  The lower arm loses one derivative and gains
-the short-time factor `2 * sqrt T`.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -39,8 +31,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 variable {g : SmoothRiemannianMetric I M} {r s : Nat}
 variable {a T : Real}
 
-/-- A uniform horizon for a mixed contraction when the critical Lipschitz
-constant already satisfies `2 * L2 < 1`. -/
 def mixedHorizon (L2 L1 : NNReal) : Real :=
   min 1 (((1 - 2 * (L2 : Real)) / (4 * ((L1 : Real) + 1))) ^ 2)
 
@@ -55,8 +45,6 @@ theorem mixedHorizon_le_one (L2 L1 : NNReal) :
   rw [mixedHorizon]
   exact min_le_left _ _
 
-/-- Every positive sub-horizon of `mixedHorizon` satisfies the combined
-critical--subcritical contraction inequality. -/
 theorem mixedHorizon_small {L2 L1 : NNReal}
     (hL2 : 2 * (L2 : Real) < 1) {T : Real} (_hT : 0 < T)
     (hTL : T ≤ mixedHorizon L2 L1) :
@@ -94,8 +82,6 @@ theorem mixedHorizon_small {L2 L1 : NNReal}
       _ < gap := by linarith
   nlinarith
 
-/-- The forcing map for a critical nonlinear arm and a subcritical nonlinear
-arm. -/
 def mixedMap (a : Real) {T : Real} (hT : 0 < T) (hT1 : T ≤ 1)
     (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
@@ -114,8 +100,7 @@ def mixedMap (a : Real) {T : Real} (hT : 0 < T) (hT1 : T ≤ 1)
       nemytskiiHa1 (I := I) (M := M) hN1
         (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u0 force)
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem mixedMap_apply (hT : 0 < T) (hT1 : T ≤ 1)
     (u0 : tensorHs (I := I) (M := M) g r s (a + 2))
     {L2 : NNReal}
@@ -134,10 +119,7 @@ omit [NeZero (Module.finrank ℝ E)]
           (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u0 force) :=
   rfl
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- The mixed map has contraction modulus
-`L2 * (1 + T) + L1 * (2 * sqrt T)`. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem mixedMap_dist_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -220,10 +202,7 @@ theorem mixedMap_dist_le
     _ = ((L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T)) *
           ‖force - force'‖ := by ring
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- The mixed forcing map is a contraction under its transparent combined
-smallness condition. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem mixedMap_contract
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -254,10 +233,7 @@ theorem mixedMap_contract
       force force'
     simpa only [NNReal.coe_mk] using h
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- Strong existence for the fixed reference heat equation with a mixed
-critical--subcritical nonlinear forcing. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem mixed_strong_exists
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -316,10 +292,7 @@ theorem mixed_strong_exists
       (h_compact := h_compact) (a := a) (T := T) hT hT1 u0 forceStar]
     exact congrArg₂ (fun x y => x + y) rfl hforce
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- Uniqueness of forcing-space fixed points for the same mixed nonlinear
-equation. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem mixed_strong_unique
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))

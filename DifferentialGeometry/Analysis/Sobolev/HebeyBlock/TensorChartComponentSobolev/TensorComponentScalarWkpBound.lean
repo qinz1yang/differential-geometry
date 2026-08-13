@@ -14,8 +14,8 @@ open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Analysis
+namespace Sobolev
 namespace HebeyBlock
 
 open DifferentialGeometry.Integral.Measure
@@ -129,6 +129,6 @@ theorem tensorChartComponentScalar_memWkpChart
     (chartTargetEuclid_isOpen (I := I) (M := M) β) hv_ae.symm).mp hv_mem
 
 end HebeyBlock
-end RicciFlow
-end PDE
+end Sobolev
+end Analysis
 end DifferentialGeometry

@@ -3,8 +3,6 @@ import DifferentialGeometry.Geometry.Geodesic.Existence
 import DifferentialGeometry.Geometry.Geodesic.Uniqueness
 import Mathlib.Analysis.ODE.PicardLindelof
 
-
-
 noncomputable section
 
 open Bundle Manifold Set Filter Function

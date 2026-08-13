@@ -1,18 +1,14 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.BranchRadius
 import DifferentialGeometry.Geometry.Exponential.IntrinsicGauss
 import DifferentialGeometry.Geometry.Exponential.JacobiVariation
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-/-!
-# Endpoint Jacobi fields for selected exponential branches
-
-This file names the intrinsic initial-velocity Jacobi field and records that a
-selected fixed-first inverse branch preserves linear independence at time one.
-The second-order endpoint shape identity will be built on this API.
--/
 
 noncomputable section
 
@@ -26,7 +22,8 @@ namespace Exponential
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Variation
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -44,12 +41,9 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-/-- The intrinsic Jacobi field obtained by varying the initial velocity along
-the affine line `u + r • w`. -/
 noncomputable def intrinsicJacobi
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u w : TangentSpace I p) (s : Real) :
     TangentSpace I
       (intrinsicGeodesic (I := I) g hEnorm p u s) :=
@@ -58,12 +52,9 @@ noncomputable def intrinsicJacobi
       intrinsicGeodesic (I := I) g hEnorm p (u + r • w) s)
     0 1
 
-/-- Pairing an endpoint Jacobi field with the terminal radial velocity recovers
-the corresponding launch pairing. -/
 theorem intrinsicJacobi_perp
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u w : TangentSpace I p) :
     g.inner
         (intrinsicGeodesic (I := I) g hEnorm p u 1)
@@ -120,13 +111,9 @@ private theorem launch_sq_deriv
     ring
   exact hvalue ▸ hsum
 
-/-- The covariant derivative of the terminal unit radial velocity under an
-affine change of initial velocity is the terminal Jacobi derivative, together
-with the derivative of the normalizing launch length. -/
 theorem endpointJacobi_eq
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (v : TangentSpace I y),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {u w : TangentSpace I p}
     (hu_pos : 0 < g.inner p u u) :
     let F : Real → Real → M := fun s t =>
@@ -235,9 +222,6 @@ theorem endpointJacobi_eq
   rw [hcoef, neg_smul]
   abel
 
-/-- The Hessian of the selected fixed-first branch radius at a time-one
-intrinsic endpoint is the normalized endpoint Jacobi derivative, with the
-rank-one correction coming from differentiating the launch length. -/
 theorem branchHess_jacobi
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -472,8 +456,6 @@ theorem branchHess_jacobi
   field_simp [hroot_ne]
   rfl
 
-/-- For launch directions perpendicular to the radial direction, the
-rank-one normalization correction in `branchHess_jacobi` vanishes. -/
 theorem branchHess_shape
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -502,8 +484,6 @@ theorem branchHess_shape
     (w₁ := w₁) (w₂ := w₂), hw₁, hw₂]
   ring
 
-/-- A selected fixed-first inverse branch carries a linearly independent
-initial family to a linearly independent family of endpoint Jacobi fields. -/
 theorem intrinsicJacobi_li
     {ι : Type*}
     {g : SmoothRiemannianMetric I M}

@@ -10,7 +10,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.G
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff Topology
@@ -39,4 +39,4 @@ theorem time_dependent_vf_globalflow_on_closed_mfd
             (I.symm ((hper_neg α).flow (I ((chartAt H α) x)) s))) :=
   time_dependent_vf_flow_bijective_and_inverse_smooth X hper hper_neg
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

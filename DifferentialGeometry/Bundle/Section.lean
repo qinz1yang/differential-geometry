@@ -1,13 +1,11 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Algebra.SmoothFunctions
 import Mathlib.Geometry.Manifold.VectorBundle.Tensoriality
 import DifferentialGeometry.Bundle.Equiv
 import DifferentialGeometry.Bundle.Frame
-
-
 
 open scoped Manifold ContDiff Topology
 open Bundle
@@ -64,8 +62,6 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   [FiberBundle F V] [VectorBundle 𝕜 F V]
   {n : WithTop ℕ∞}
 
-/-- Fibrewise scalar multiplication preserves smoothness for a vector-bundle
-family lying over an arbitrary smooth base map. -/
 theorem ContMDiff.smul_bundle
     {b : M → B} {f : M → 𝕜} {s : ∀ x, V (b x)}
     (hf : ContMDiff IM 𝓘(𝕜, 𝕜) n f)
@@ -86,8 +82,6 @@ theorem ContMDiff.smul_bundle
   change (e ⟨b y, f y • s y⟩).2 = f y • (e ⟨b y, s y⟩).2
   exact (e.linear 𝕜 hy).map_smul (f y) (s y)
 
-/-- The zero family over an arbitrary smooth base map is smooth as a
-vector-bundle-valued map. -/
 theorem ContMDiff.zero_bundle
     {b : M → B} (hb : ContMDiff IM IB n b) :
     ContMDiff IM (IB.prod 𝓘(𝕜, F)) n
@@ -105,8 +99,6 @@ theorem ContMDiff.zero_bundle
   change (e ⟨b y, (0 : V (b y))⟩).2 = 0
   exact (e.linear 𝕜 hy).map_zero
 
-/-- Fibrewise addition preserves smoothness for vector-bundle families over
-the same arbitrary base map. -/
 theorem ContMDiff.add_bundle
     {b : M → B} {s t : ∀ x, V (b x)}
     (hs : ContMDiff IM (IB.prod 𝓘(𝕜, F)) n
@@ -130,8 +122,6 @@ theorem ContMDiff.add_bundle
     (e ⟨b y, s y⟩).2 + (e ⟨b y, t y⟩).2
   exact (e.linear 𝕜 hy).map_add (s y) (t y)
 
-/-- A finite fibrewise sum of smooth vector-bundle families over an arbitrary
-smooth base map is smooth. -/
 theorem ContMDiff.sum_bundle
     {b : M → B} (hb : ContMDiff IM IB n b)
     {ι : Type*} {u : ι → ∀ x, V (b x)} (S : Finset ι)

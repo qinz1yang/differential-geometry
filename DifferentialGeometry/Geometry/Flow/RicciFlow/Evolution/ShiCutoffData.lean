@@ -1,21 +1,18 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.ScalarWeak
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-/-!
-# Cutoff data for complete Bernstein estimates
-
-This file owns the smooth and barrier cutoff interfaces used by complete
-noncompact Bernstein arguments.  It contains no curvature-tower estimates and
-no Ricci-flow-specific cutoff producer.
--/
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter Set
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Geometry.Connection
 open scoped Manifold ContDiff Topology Bundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -25,11 +22,8 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
-/-- Quantitative smooth spacetime cutoffs for a complete-flow Bernstein
-argument.  Each cutoff has one compact spatial support for the whole time
-slab. -/
 structure ShiCutoffData
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) where
   chi : Nat → Real → M → Real
   err : Nat → Real
@@ -64,9 +58,8 @@ structure ShiCutoffData
       parabolicOperatorWithDrift (I := I) G T
         (fun _ y => (0 : TangentSpace I y)) (chi n) t x ≤ err n
 
-/-- A smooth local lower support for a cutoff at one spacetime point. -/
 structure ShiCutoffLowerSupportAt
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T ε : Real)
     (χ : Real → M → Real)
     (t : Real) (x : M) where
@@ -92,11 +85,8 @@ structure ShiCutoffLowerSupportAt
     parabolicOperatorWithDrift (I := I) G T
       (fun _ y => (0 : TangentSpace I y)) phi t x ≤ ε
 
-/-- Point-centered barrier cutoffs for a complete-flow Bernstein argument.
-Regularity and differential inequalities are supplied only through a local
-lower support at points where the cutoff is positive. -/
 structure ShiBarrierCutoffData
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (O : M) where
   chi : Nat → Real → M → Real
@@ -126,27 +116,21 @@ structure ShiBarrierCutoffData
 
 namespace ShiCutoffData
 
-/-- The uniform spatial support produces a compact spacetime slab for each
-cutoff. -/
 theorem support_slab
-    {G : RealizedMetricFamily (I := I) (M := M) Real} {T : Real}
+    {G : MetricConnectionFamily (I := I) (M := M) Real} {T : Real}
     (cut : ShiCutoffData (I := I) G T) (n : Nat) :
     IsCompact (Set.Icc 0 T ×ˢ cut.support n) :=
   isCompact_Icc.prod (cut.support_compact n)
 
-/-- A smooth cutoff is pointwise differentiable in space on every controlled
-time slice. -/
 theorem space_diff
-    {G : RealizedMetricFamily (I := I) (M := M) Real} {T : Real}
+    {G : MetricConnectionFamily (I := I) (M := M) Real} {T : Real}
     (cut : ShiCutoffData (I := I) G T) {n : Nat} {t : Real}
     (ht : t ∈ Set.Icc 0 T) (x : M) :
     MDifferentiableAt I 𝓘(Real, Real) (cut.chi n t) x :=
   (cut.space_smooth n t ht).mdifferentiableAt (by simp)
 
-/-- The spatial gradient of a smooth cutoff is pointwise differentiable on
-every controlled time slice. -/
 theorem grad_diff
-    {G : RealizedMetricFamily (I := I) (M := M) Real} {T : Real}
+    {G : MetricConnectionFamily (I := I) (M := M) Real} {T : Real}
     (cut : ShiCutoffData (I := I) G T) {n : Nat} {t : Real}
     (ht : t ∈ Set.Icc 0 T) (x : M) :
     MDifferentiableAt I (I.prod 𝓘(Real, E))
@@ -154,10 +138,8 @@ theorem grad_diff
         gradientFun (I := I) (G.metric t) (cut.chi n t) y) x :=
   gradientFun_mdiffAt (I := I) (G.metric t) (cut.space_smooth n t ht) x
 
-/-- A smooth cutoff family gives point-centered barrier cutoff data at every
-chosen center. -/
 def toBarrierAt
-    {G : RealizedMetricFamily (I := I) (M := M) Real} {T : Real}
+    {G : MetricConnectionFamily (I := I) (M := M) Real} {T : Real}
     (cut : ShiCutoffData (I := I) G T) (O : M) :
     ShiBarrierCutoffData (I := I) G T O where
   chi := cut.chi

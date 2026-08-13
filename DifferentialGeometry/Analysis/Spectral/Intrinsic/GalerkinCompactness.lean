@@ -5,25 +5,14 @@ import Mathlib.Topology.Order.ProjIcc
 import Mathlib.Topology.Sequences
 import Mathlib.Topology.UniformSpace.UniformConvergence
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Filter Set
 open scoped BigOperators BoundedContinuousFunction NNReal Topology
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
-
-
+namespace Analysis
+namespace Spectral
 
 theorem fatou_sq_mass {ι : Type*} (S : ℕ → Finset ι)
     (hS : Tendsto S atTop atTop) (w : ι → ℝ) (hw : ∀ i, 0 ≤ w i)
@@ -50,8 +39,6 @@ theorem fatou_sq_mass {ι : Type*} (S : ℕ → Finset ι)
       exact hmono.trans (hbound N)
     exact le_of_tendsto hlim hev
   exact ⟨summable_of_sum_le hnn hpartial, Real.tsum_le_of_sum_le hnn hpartial⟩
-
-
 
 theorem right_lipschitz {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {f f' : ℝ → F} {a b : ℝ} {K : ℝ≥0}
@@ -87,8 +74,6 @@ theorem right_lipschitz {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
       hcont hderiv hnorm x (right_mem_Icc.2 hyx)
     simpa only [dist_eq_norm, Real.norm_eq_abs,
       abs_of_nonneg (sub_nonneg.2 hyx)] using hseg
-
-
 
 theorem galerkin_subseq {ι : Type*} [Countable ι] {τ : ℝ} (hτ : 0 ≤ τ)
     (u : ℕ → ℝ → ι → ℝ) (C : ι → ℝ) (hC : ∀ i, 0 ≤ C i)
@@ -157,9 +142,8 @@ theorem galerkin_subseq {ι : Type*} [Countable ι] {τ : ℝ} (hτ : 0 ≤ τ)
     change ulim (t : ℝ) i = g i t
     exact IccExtend_val hτ (fun x : J => g i x) t
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

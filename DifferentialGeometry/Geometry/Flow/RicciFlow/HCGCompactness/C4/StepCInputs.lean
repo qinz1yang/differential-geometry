@@ -2,15 +2,6 @@ import DifferentialGeometry.Geometry.Comparison.CenterOfMass
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 universe u uE uH
@@ -33,12 +24,6 @@ variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] [T3Space M]
-
-
-
-
-
-
 
 structure StrictDistInput (g : SmoothRiemannianMetric I M)
     {ι : Type} [Fintype ι] (pts : ι → M)

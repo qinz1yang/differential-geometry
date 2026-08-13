@@ -1,14 +1,13 @@
-
-
-
-
-
-
+/-
+Copyright (c) 2024 Yury Kudryashov. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yury Kudryashov
+Coauthors: Jack McCarthy
+-/
 import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
-
 
 noncomputable section Comp
 
@@ -76,6 +75,21 @@ theorem ContinuousMultilinearMap.compContinuousLinearMapL_diag_contDiff :
   change ContDiff 𝕜 ⊤ (fun p : F₁ →L[𝕜] F₁ ↦ φ (fun _ : ι ↦ p))
   rw [show (fun p : F₁ →L[𝕜] F₁ => φ (fun _ : ι => p)) =
     (φ : (ι → (F₁ →L[𝕜] F₁)) → _) ∘ (fun p : F₁ →L[𝕜] F₁ => (fun _ : ι => p)) from rfl]
+  exact (ContinuousMultilinearMap.contDiff φ).comp
+    (contDiff_pi.2 (fun _ => contDiff_id))
+
+theorem ContinuousMultilinearMap.compContinuousLinearMapL_diag_contDiff_of_space
+    {F₁' : Type*} [NormedAddCommGroup F₁'] [NormedSpace 𝕜 F₁'] :
+    ContDiff 𝕜 ⊤ (fun p : F₁ →L[𝕜] F₁' ↦
+      (ContinuousMultilinearMap.compContinuousLinearMapL (fun _ : ι ↦ p) :
+        ContinuousMultilinearMap 𝕜 (fun _ ↦ F₁') F₂ →L[𝕜]
+        ContinuousMultilinearMap 𝕜 (fun _ ↦ F₁) F₂)) := by
+  let φ : ContinuousMultilinearMap 𝕜 (fun _ : ι ↦ F₁ →L[𝕜] F₁') _ :=
+    ContinuousMultilinearMap.compContinuousLinearMapContinuousMultilinear
+    𝕜 (fun _ : ι ↦ F₁) (fun _ : ι ↦ F₁') F₂
+  change ContDiff 𝕜 ⊤ (fun p : F₁ →L[𝕜] F₁' ↦ φ (fun _ : ι ↦ p))
+  rw [show (fun p : F₁ →L[𝕜] F₁' => φ (fun _ : ι => p)) =
+    (φ : (ι → (F₁ →L[𝕜] F₁')) → _) ∘ (fun p : F₁ →L[𝕜] F₁' => (fun _ : ι => p)) from rfl]
   exact (ContinuousMultilinearMap.contDiff φ).comp
     (contDiff_pi.2 (fun _ => contDiff_id))
 

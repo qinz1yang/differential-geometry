@@ -8,49 +8,35 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Char
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedRmTowerProducer
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurckChartRegularityFromJoint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurckRicciRHSSymmetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRicciRHSSymmetric
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricDeriv
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-/-!
-# Moving-carrier energy at the initial Ricci--DeTurck edge
-
-The coercive principal estimate in `EdgeDifferenceEnergy` uses one solution as
-the carrier metric.  Consequently the natural difference energy also uses that
-moving carrier.  This file supplies the two analytic bookkeeping facts needed
-at the closed initial edge:
-
-* joint `C^0` chart-Gram control of the carrier and joint bundle continuity of a
-  covariant tensor family imply joint continuity of its moving fibre norm;
-* hence the moving `L^2` energy of the difference of two metric families is
-  continuous on a compact closed time set.
-
-The second statement uses only the exact closed-edge regularity in forward
-uniqueness.  In particular it assumes no time derivative, curvature bound, or
-maximal-regularity representation at the endpoint.
--/
-
 noncomputable section
 
-open Bundle Filter Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Filter Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -61,11 +47,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-/-! ## A closed-slab operator bound for the canonical carrier speed -/
-
-/-- The continuous bilinear form represented by a covariant two-tensor.  This
-is the component API needed by `gFibreOpBound`; no tensor representation is
-unfolded. -/
 def tensor02Bilin {x : M} (A : Tensor0SSpace 2 I x) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real :=
   (bilinFormToModel (TangentSpace I x)).symm (Tensor0SSpace.toModel A)
@@ -87,14 +68,11 @@ omit [FiniteDimensional ℝ E]
   funext i
   fin_cases i <;> simp
 
-/-- Half of minus the Ricci--DeTurck right-hand side.  If `g` solves the
-Ricci--DeTurck equation, then its metric velocity is `-2 * carrierQ`. -/
 def carrierQ (g_bg : SmoothRiemannianMetric I M)
     (g : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) :
     Tensor0SSpace 2 I x :=
   (-1 / 2 : Real) • deTurckRHSField (I := I) g_bg (g t) x
 
-/-- Bilinear realization of `carrierQ`. -/
 def carrierQBilin (g_bg : SmoothRiemannianMetric I M)
     (g : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real :=
@@ -120,7 +98,6 @@ omit [NeZero (Module.finrank ℝ E)]
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [SigmaCompactSpace M] in
-/-- The carrier half-speed is symmetric. -/
 theorem carrierQBilin_symm
     (g_bg : SmoothRiemannianMetric I M)
     (g : Real → SmoothRiemannianMetric I M) (t : Real) (x : M)
@@ -133,10 +110,6 @@ theorem carrierQBilin_symm
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [SigmaCompactSpace M] in
-/-- Joint closed-slab tensor continuity of the Ricci--DeTurck right-hand side
-along a `JointChartGramSmooth` metric family.  The proof reads the intrinsic
-field in the canonical chart frame and uses the already proved joint chart
-formula on the Levi-Civita good set. -/
 theorem deTurckRHS_cont
     (g_bg : SmoothRiemannianMetric I M) {T : Real}
     (g : Real → SmoothRiemannianMetric I M)
@@ -173,9 +146,7 @@ theorem deTurckRHS_cont
     (I := I) (g q.1.1) g_bg α (idx 0) (idx 1) hq
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The canonical carrier half-speed is bounded in one fibre-operator norm on
-the whole closed time slab.  The constant is extracted from compactness of the
-moving unit tangent slab, so it is uniform down to `t = 0`. -/
+omit [SigmaCompactSpace M] in
 theorem carrierEdge_bounds
     (g_bg : SmoothRiemannianMetric I M) {T : Real}
     (g : Real → SmoothRiemannianMetric I M)
@@ -230,23 +201,12 @@ theorem carrierEdge_bounds
   rw [carrierQBilin, tensor02Bilin_apply, eval02_self]
   simpa only [hu, mul_one] using hdiag t ht x u
 
-/-! ## Joint continuity of a moving covariant-tensor norm -/
-
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- A jointly continuous covariant tensor family has a jointly continuous
-squared fibre norm when the carrier metric has jointly continuous chart-Gram
-entries.  The time domain is already restricted to `K`; this is the exact form
-used by `integral_family_cont` after passing to the subtype.
-
-The proof is local in space.  In the tangent trivialization centred at the
-current point, `normSq0S` is the finite inverse-Gram contraction of the tensor
-components.  Bundle continuity supplies the components and Cramer's formula
-supplies continuity of the inverse Gram matrix. -/
 theorem normSq_family_cont
     {s : Nat} {K : Set Real}
     (g : Real → SmoothRiemannianMetric I M)
@@ -389,19 +349,11 @@ theorem normSq_family_cont
     simp only [hframe]
   exact hF.congr hev.symm
 
-/-! ## The closed-edge metric-difference energy -/
-
-/-- Pointwise squared norm of `g₁ - g₀`, measured in the moving carrier
-`g₀`. -/
 def movingDiffNorm
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) : Real :=
   normSq0S (I := I) (g₀ t) x 2
     (metricDiff02Field (I := I) (g₁ t) (g₀ t) x)
 
-/-- The inverse-metric reaction in the squared norm of a covariant two-tensor
-when the carrier metric satisfies `∂ₜg = -2Q`.  The finite-basis expression is
-the coordinate realization already used by `ricReactionContract`; the value is
-the intrinsic metric-variation term. -/
 def reactInBasis {Idx : Type*} [Fintype Idx]
     (g : SmoothRiemannianMetric I M) (x : M)
     (Q W : Tensor0SSpace 2 I x)
@@ -412,7 +364,6 @@ def reactInBasis {Idx : Type*} [Fintype Idx]
     (fun I₀ => tensor0SComponent (I := I) W (fun i => basis i) I₀)
     (fun J₀ => tensor0SComponent (I := I) W (fun i => basis i) J₀)
 
-/-- Canonical-basis spelling of the intrinsic moving-metric reaction. -/
 def movingMetricReact
     (g : SmoothRiemannianMetric I M) (x : M)
     (Q W : Tensor0SSpace 2 I x) : Real :=
@@ -427,10 +378,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- In any fixed tangent basis, `reactInBasis` is the derivative of the same
-intrinsic squared norm under the metric variation `-2Q`.  This is the
-basis-free route to comparing the canonical finite basis with an orthonormal
-basis; it does not compare raw component arrays by hand. -/
 theorem reactInBasis_deriv
     {Idx : Type*} [Fintype Idx]
     {x : M} {t : Real}
@@ -512,9 +459,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- `reactInBasis` is independent of the chosen basis whenever `Q` is the
-actual half-speed of the displayed metric family.  Both sides are identified
-as the derivative of one intrinsic norm. -/
 theorem reactInBasis_eq
     {Idx₁ Idx₂ : Type*}
     [Fintype Idx₁]
@@ -539,8 +483,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- Rewrite the canonical moving reaction in any basis, without a raw
-change-of-components proof. -/
 theorem movingReact_basis
     {Idx : Type*} [Fintype Idx]
     {x : M} {t : Real}
@@ -560,8 +502,6 @@ theorem movingReact_basis
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-/-- Two arrays satisfying the two-sided inverse-metric equations in the same
-basis agree. -/
 private theorem metricInv_unique
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -605,9 +545,6 @@ private theorem metricInv_unique
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
-/-- Orthonormal-component realization of the canonical moving reaction.  The
-only basis change is `movingReact_basis`; after that the inverse metric is the
-Kronecker delta and the standard reaction collapse applies verbatim. -/
 theorem movingReact_ortho
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} {t : Real}
@@ -644,9 +581,6 @@ theorem movingReact_ortho
     (fun I₀ => tensor0SComponent (I := I) W (fun i => basis i) I₀)
     (fun J₀ => tensor0SComponent (I := I) W (fun i => basis i) J₀)
 
-/-- Pure component estimate for the rank-two reaction after orthonormal
-collapse.  Deliberately keeping the finite-cardinality constant explicit makes
-this independent of any dimension-specific simplification. -/
 theorem ricReactArray_le
     {Idx : Type*} [Fintype Idx]
     (q : Idx → Idx → Real) (Wc : (Fin 2 → Idx) → Real)
@@ -702,9 +636,6 @@ theorem ricReactArray_le
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M] in
-/-- Pointwise reaction bound in intrinsic norm.  It assumes only the carrier
-metric equation at the time in question and an operator bound for `Q`; no
-spatial derivative of the comparison path occurs. -/
 theorem movingReact_le
     {x : M} {t B : Real}
     (g : Real → SmoothRiemannianMetric I M)
@@ -767,15 +698,11 @@ theorem movingReact_le
   simp only [Fintype.card_fin]
   exact le_rfl
 
-/-! ## The moving-volume trace from the same carrier bound -/
-
 omit [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- A fibre-operator bound for a covariant two-tensor controls its intrinsic
-metric trace by one factor of the tangent dimension. -/
 theorem metricTrace_op_le
     {x : M} (g : SmoothRiemannianMetric I M)
     (Q : Tensor0SSpace 2 I x) {B : Real}
@@ -837,8 +764,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- Under the metric variation `∂ₜg = -2Q`, the chart-defined volume trace is
-the intrinsic metric trace of `-2Q`. -/
 theorem traceTime_rd
     {x : M} {t : Real}
     (g : Real → SmoothRiemannianMetric I M)
@@ -926,8 +851,6 @@ theorem traceTime_rd
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M] in
-/-- The inverse-metric and moving-volume reactions are controlled together by
-the same closed-slab carrier half-speed bound. -/
 theorem movingReactVol_le
     {x : M} {t B : Real}
     (g : Real → SmoothRiemannianMetric I M)
@@ -1005,8 +928,6 @@ theorem movingReactVol_le
         (Module.finrank Real E : Real) * B) *
           normSq0S (I := I) (g t) x 2 W := by ring
 
-/-- The intrinsic `L²` energy of `g₁ - g₀`, measured in the moving carrier
-`g₀` and its moving volume measure. -/
 def movingDiffEnergy
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) (t : Real) : Real :=
   ∫ x, movingDiffNorm (I := I) (M := M) g₀ g₁ t x
@@ -1015,9 +936,6 @@ def movingDiffEnergy
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- Closed-edge continuity of the moving metric-difference energy.  This is
-the continuity input of `edgeGronwall_zero`; it follows from the two chart-Gram
-`C⁰` hypotheses and compactness, without any derivative at the edge. -/
 theorem movingEnergy_cont
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) {K : Set Real}
     (hK : IsCompact K)
@@ -1092,19 +1010,11 @@ theorem movingEnergy_cont
   simpa only [movingDiffEnergy, movingDiffNorm] using
     integral_family_cont (I := I) (M := M) hK h₀ hnorm
 
-/-! ## Interior smoothness and exact first variation -/
-
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-/-- On an open regular time set, joint smoothness of the two chart-Gram
-families implies joint smoothness of the moving pointwise difference norm.
-
-This is the smooth analogue of `normSq_family_cont`, specialized to the metric
-difference.  In a carrier chart it is the finite contraction
-`g₀⁻¹ g₀⁻¹ (g₁-g₀) (g₁-g₀)`. -/
 theorem movingNorm_smooth
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) {U : Set Real}
     (hU : IsOpen U)
@@ -1246,11 +1156,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-/-- Exact pointwise time derivative of the moving squared norm.  Only
-interior-time derivatives occur: the carrier has variation `-2Q` and the
-metric difference has variation `Wdot`.  Thus this theorem can be applied on
-`Ioo a b` while closed-edge continuity is supplied separately by
-`movingEnergy_cont`. -/
 theorem movingNorm_time {x : M} {t : Real}
     (g₀ g₁ : Real → SmoothRiemannianMetric I M)
     (Q Wdot : Tensor0SSpace 2 I x)
@@ -1350,10 +1255,6 @@ theorem movingNorm_time {x : M} {t : Real}
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [SigmaCompactSpace M] in
-/-- The pointwise moving-norm derivative specialized to two genuine
-Ricci--DeTurck equations.  The carrier reaction uses
-`Q = -(1/2) RD(g₀)`, while the tensor derivative is exactly
-`RD(g₁) - RD(g₀)`. -/
 theorem movingNorm_rd {x : M} {t : Real}
     (g_bg : SmoothRiemannianMetric I M)
     (g₀ g₁ : Real → SmoothRiemannianMetric I M)
@@ -1389,9 +1290,6 @@ theorem movingNorm_rd {x : M} {t : Real}
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- Exact first variation of the moving metric-difference energy at an interior
-regular time.  The first summand is the pointwise moving-norm derivative and
-the second is the moving-volume trace term. -/
 theorem movingEnergy_deriv
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) {U : Set Real} {t : Real}
     (hU : IsOpen U) (ht : t ∈ U)
@@ -1419,10 +1317,6 @@ theorem movingEnergy_deriv
     first_var_joint (I := I) (M := M) hU ht h₀ hsmooth
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Exact interior first variation for two Ricci--DeTurck solutions.  This is
-the energy-level form consumed by the boundary estimate: the three displayed
-terms are respectively the carrier inverse-metric reaction, the pairing with
-the Ricci--DeTurck RHS difference, and the moving-volume reaction. -/
 theorem movingEnergy_rd
     (g_bg : SmoothRiemannianMetric I M)
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) {U : Set Real} {t : Real}
@@ -1466,11 +1360,6 @@ theorem movingEnergy_rd
   rw [(movingNorm_rd (I := I) (M := M) g_bg g₀ g₁
     (hPDE₀ x) (hPDE₁ x)).deriv]
 
-/-! ## Grönwall-ready Ricci--DeTurck energy rate -/
-
-/-- The exact scalar rate in `movingEnergy_rd`, packaged so that the analytic
-pairing estimate can target one expression and `edgeGronwall_zero` can consume
-it without any endpoint derivative. -/
 def movingRate
     (g_bg : SmoothRiemannianMetric I M)
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) (t : Real) : Real :=
@@ -1487,8 +1376,6 @@ def movingRate
     ∂(riemannianMeasureFamily (I := I) (M := M) g₀ t)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On the open regular window, the moving difference energy has derivative
-`movingRate`. -/
 theorem movingEnergy_rate
     (g_bg : SmoothRiemannianMetric I M)
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) {U : Set Real} {t : Real}
@@ -1519,11 +1406,6 @@ theorem movingEnergy_rate
       hU ht h₀ h₁ hPDE₀ hPDE₁
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Exact closed-edge Grönwall closure for two Ricci--DeTurck paths.  The
-metric paths need only be jointly smooth on `Ioo 0 T` and jointly continuous
-on `Icc 0 T`; all time differentiation occurs in the open interval.  Thus the
-remaining analytic task is precisely the scalar estimate
-`movingRate t ≤ K * movingDiffEnergy t`. -/
 theorem movingEnergy_zero
     (g_bg : SmoothRiemannianMetric I M)
     (g₀ g₁ : Real → SmoothRiemannianMetric I M) {T K : Real}
@@ -1600,9 +1482,8 @@ theorem movingEnergy_zero
     (movingRate (I := I) (M := M) g_bg g₀ g₁)
     hcont hzero hnonneg hderiv hbound
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

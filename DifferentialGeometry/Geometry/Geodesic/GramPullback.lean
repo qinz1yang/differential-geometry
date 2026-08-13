@@ -2,8 +2,6 @@ import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartTransition
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 
-
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory
@@ -11,6 +9,7 @@ open scoped Manifold Topology ContDiff
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry
 namespace Geometry

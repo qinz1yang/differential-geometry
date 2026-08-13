@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartL
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SSlotShift
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor0SIntrinsicChartCurryFactor
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -11,10 +12,11 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
+
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -26,8 +28,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open Tensor0SNabla
-open Tensor0SPartialEval
+open DifferentialGeometry.Tensor0SNabla
+open DifferentialGeometry.Tensor0SPartialEval
 
 def TensorSectionMDiffAt (n : ℕ)
     (T : Π b : M, Tensor0SSpace n I b) (b : M) : Prop :=
@@ -155,5 +157,5 @@ theorem TensorSectionMDiffAt_partialEval
     hCurried_at hY_at
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

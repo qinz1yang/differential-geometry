@@ -3,14 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateSeries
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.QuantCover
 import Mathlib.Order.SuccPred.IntervalSucc
 
-/-!
-# Full terminal-slab summation for the late Koch--Lamm potential
-
-The half-open spatial shells form a measurable partition of Euclidean space.
-This file first records that geometry and the exact restricted-product-measure
-identities needed to sum the shell estimates on the full terminal slab.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -27,8 +19,6 @@ variable {V : Type*}
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- A spatial half-open shell is the preimage of the corresponding radial
-half-open interval. -/
 theorem klLateShell_eq_pre (x : V) (R : ℝ) (k : ℕ) :
     klLateShell x R k =
       (fun y : V ↦ dist x y) ⁻¹'
@@ -44,7 +34,6 @@ theorem klLateShell_eq_pre (x : V) (R : ℝ) (k : ℕ) :
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Positive-radius half-open shells are pairwise disjoint. -/
 theorem klLateShell_disj (x : V) {R : ℝ} (hR : 0 < R) :
     Pairwise (fun i j : ℕ ↦
       Disjoint (klLateShell x R i) (klLateShell x R j)) := by
@@ -58,7 +47,6 @@ theorem klLateShell_disj (x : V) {R : ℝ} (hR : 0 < R) :
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Positive-radius half-open shells exhaust Euclidean space. -/
 theorem klLateShell_union (x : V) {R : ℝ} (hR : 0 < R) :
     ⋃ k : ℕ, klLateShell x R k = Set.univ := by
   let r : ℕ → ℝ := fun k ↦ (k : ℝ) * R
@@ -88,20 +76,16 @@ theorem klLateShell_union (x : V) {R : ℝ} (hR : 0 < R) :
       simp only [mem_preimage, mem_Ici, mem_univ, iff_true]
       exact dist_nonneg
 
-/-- Space-time shell obtained by retaining the whole already-restricted time
-factor and selecting one spatial shell. -/
 def klLateStShell (x : V) (R : ℝ) (k : ℕ) : Set (ℝ × V) :=
   Set.univ ×ˢ klLateShell x R k
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [Nontrivial V] in
-/-- Every space-time shell is measurable. -/
 theorem klLateSt_mble (x : V) (R : ℝ) (k : ℕ) :
     MeasurableSet (klLateStShell x R k) :=
   MeasurableSet.univ.prod (klLateShell_mble (V := V) x R k)
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Positive-radius space-time shells are pairwise disjoint. -/
 theorem klLateSt_disj (x : V) {R : ℝ} (hR : 0 < R) :
     Pairwise (fun i j : ℕ ↦
       Disjoint (klLateStShell x R i) (klLateStShell x R j)) := by
@@ -110,7 +94,6 @@ theorem klLateSt_disj (x : V) {R : ℝ} (hR : 0 < R) :
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Positive-radius space-time shells exhaust the product space. -/
 theorem klLateSt_union (x : V) {R : ℝ} (hR : 0 < R) :
     ⋃ k : ℕ, klLateStShell x R k = Set.univ := by
   ext z
@@ -122,8 +105,6 @@ theorem klLateSt_union (x : V) {R : ℝ} (hR : 0 < R) :
   simpa only [mem_iUnion] using hz
 
 omit [Nontrivial V] in
-/-- Restricting the full terminal product measure to a spatial set gives the
-selected terminal product measure. -/
 theorem klTail_restrict (R : ℝ) (S : Set V) :
     (klTailMeasure (V := V) R Set.univ).restrict (Set.univ ×ˢ S) =
       klTailMeasure (V := V) R S := by
@@ -133,13 +114,11 @@ theorem klTail_restrict (R : ℝ) (S : Set V) :
   simp only [Measure.restrict_univ]
 
 omit [Nontrivial V] in
-/-- The full selected terminal measure is the existing terminal-slab measure. -/
 theorem klTerm_eq_tail (R : ℝ) :
     klTermMeasure (V := V) (R ^ 2) =
       klTailMeasure (V := V) R Set.univ := by
   simp only [klTermMeasure, klTailMeasure, Measure.restrict_univ]
 
-/-- The full ordinary terminal-slab potential. -/
 def klLateFull0 {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (R : ℝ) (f : ℝ × V → F) (x : V) : F :=
   ∫ z : ℝ × V, klTermKernel (R ^ 2) x z • f z
@@ -149,8 +128,6 @@ variable {F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-/-- One parameterized shell is integrable as a set integral against the full
-terminal measure. -/
 theorem klLateSt_int {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)
@@ -165,8 +142,6 @@ theorem klLateSt_int {T R : ℝ} {A₁ A_q : ℝ≥0}
     (klLateShell_far (V := V) x R k)).1
 
 omit [CompleteSpace F] in
-/-- One shell's set integral of the integrand norm has the exact summable
-Gaussian-polynomial majorant. -/
 theorem klLateSt_abs {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)
@@ -193,7 +168,6 @@ theorem klLateSt_abs {T R : ℝ} {A₁ A_q : ℝ≥0}
       ring
 
 omit [CompleteSpace F] in
-/-- The set integrals of the integrand norm over all shells are summable. -/
 theorem klLateAbs_sum {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
@@ -215,8 +189,6 @@ theorem klLateAbs_sum {T R : ℝ} {A₁ A_q : ℝ≥0}
     ((klLateWeight_sum (Module.finrank ℝ V)).mul_right C)
 
 omit [CompleteSpace F] in
-/-- The local late-source hypothesis makes the full ordinary terminal-slab
-integrand Bochner integrable. -/
 theorem klLateFull_int {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
@@ -235,7 +207,6 @@ theorem klLateFull_int {T R : ℝ} {A₁ A_q : ℝ≥0}
   simpa only [IntegrableOn, Measure.restrict_univ] using hU
 
 omit [CompleteSpace F] in
-/-- The shell integrals sum to the full ordinary terminal-slab potential. -/
 theorem klLateFull_sum {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
@@ -265,8 +236,6 @@ theorem klLateFull_sum {T R : ℝ} {A₁ A_q : ℝ≥0}
       klTerm_eq_tail (V := V) R]
 
 omit [CompleteSpace F] in
-/-- The full ordinary terminal-slab potential has the summed scale-free
-Koch--Lamm bound. -/
 theorem klLateFull_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
@@ -315,8 +284,6 @@ theorem klLateFull_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
         (klLateTailC V * (A_q : ℝ)) := rfl
 
 omit [CompleteSpace F] in
-/-- The full terminal-slab estimate with its Euclidean covering family chosen
-canonically from the finite-dimensional quantitative-cover theorem. -/
 theorem klLateFull_canon {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :

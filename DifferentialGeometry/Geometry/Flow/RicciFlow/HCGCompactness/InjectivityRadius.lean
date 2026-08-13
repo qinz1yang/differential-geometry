@@ -1,15 +1,9 @@
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.Basic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -27,15 +21,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-
-
-
-
-
-
-
-
-
 def HasInjRadiusAt
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : X.M)
     (rho : Real) : Prop :=
@@ -45,8 +30,6 @@ def HasInjRadiusAt
   letI : T2Space (TangentBundle I X.M) := X.t2TangentBundle
   0 < rho ∧
     ENNReal.ofReal rho ≤ Geometry.Riemannian.injRadius (I := I) X.metric x
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem hasInjRadiusAt_iff
@@ -60,8 +43,6 @@ theorem hasInjRadiusAt_iff
        0 < rho ∧
          ENNReal.ofReal rho ≤ Geometry.Riemannian.injRadius (I := I) X.metric x) :=
   Iff.rfl
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem hasInjRadiusAt_of_le_injRadius
@@ -85,8 +66,6 @@ theorem HasInjRadiusAt.mono
     HasInjRadiusAt (I := I) X x rho' := by
   rw [hasInjRadiusAt_iff] at h ⊢
   exact ⟨hpos, (ENNReal.ofReal_le_ofReal hle).trans h.2⟩
-
-
 
 structure BaseInjBound
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where

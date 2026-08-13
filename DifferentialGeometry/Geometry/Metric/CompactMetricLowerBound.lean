@@ -3,17 +3,6 @@ import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -28,8 +17,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M]
 
-/-- One smooth Riemannian metric has a positive lower bound relative to another
-on any compact base set. -/
 theorem metric_lower_on
     {K : Set M} (hK : IsCompact K)
     (h gRef : SmoothRiemannianMetric I M) :
@@ -124,8 +111,6 @@ theorem metric_lower_on
       exact hne ⟨⟨(⟨x, s⁻¹ • v⟩ : TangentBundle I M), hunit⟩, by
         simpa [MetricUnitTangent.base] using hx⟩
 
-/-- **Metric lower bound on a compact manifold.** For two smooth Riemannian
-metrics `h`, `gRef`, there is `c > 0` with `c·gRef(v,v) ≤ h(v,v)` for all `v`. -/
 theorem metric_lower_bound_of_compact [CompactSpace M]
     (h gRef : SmoothRiemannianMetric I M) :
     ∃ c : Real, 0 < c ∧

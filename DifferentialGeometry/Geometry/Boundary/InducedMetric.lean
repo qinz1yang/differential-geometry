@@ -237,22 +237,22 @@ lemma dincl_injective (x : BoundaryManifold I M) :
     exact (IsEmpty.false x).elim
 
 private noncomputable def innerOnE
-    (g : Measure.SmoothRiemannianMetric I M) (y : M) :
+    (g : SmoothRiemannianMetric I M) (y : M) :
     E →L[ℝ] E →L[ℝ] ℝ := g.inner y
 
 omit [FiniteDimensional ℝ E] hI in
 @[simp] private lemma innerOnE_apply
-    (g : Measure.SmoothRiemannianMetric I M) (y : M) (u v : E) :
+    (g : SmoothRiemannianMetric I M) (y : M) (u v : E) :
     innerOnE g y u v = g.inner y u v := rfl
 
 noncomputable def inducedMetricInner
-    (g : Measure.SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
     hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ :=
   (innerOnE g (x : M)).bilinearComp (boundaryInclusionMfderiv x) (boundaryInclusionMfderiv x)
 
 omit [FiniteDimensional ℝ E] in
 @[simp] lemma inducedMetricInner_apply
-    (g : Measure.SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (v w : hI.boundaryE) :
     inducedMetricInner g x v w = g.inner (x : M) (boundaryInclusionMfderiv x v)
       (boundaryInclusionMfderiv x w) :=
@@ -260,7 +260,7 @@ omit [FiniteDimensional ℝ E] in
 
 omit [FiniteDimensional ℝ E] in
 lemma inducedMetricInner_symm
-    (g : Measure.SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (v w : hI.boundaryE) :
     inducedMetricInner g x v w = inducedMetricInner g x w v := by
   rw [inducedMetricInner_apply, inducedMetricInner_apply]
@@ -268,7 +268,7 @@ lemma inducedMetricInner_symm
 
 omit [FiniteDimensional ℝ E] in
 lemma inducedMetricInner_pos
-    (g : Measure.SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (v : hI.boundaryE) (hv : v ≠ 0) :
     0 < inducedMetricInner g x v v := by
   rw [inducedMetricInner_apply]
@@ -342,7 +342,7 @@ private lemma exists_coercive_of_posDef
 
 omit [FiniteDimensional ℝ E] in
 lemma inducedMetricInner_isVonNBounded
-    (g : Measure.SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
     IsVonNBounded ℝ {v : hI.boundaryE | inducedMetricInner g x v v < 1} := by
   obtain ⟨c, hc_pos, hc_bound⟩ := exists_coercive_of_posDef
     (V := hI.boundaryE) (inducedMetricInner g x)
@@ -362,7 +362,7 @@ lemma inducedMetricInner_isVonNBounded
     _ ≤ Real.sqrt (1 / c) := Real.sqrt_le_sqrt h_v_sq_le
 
 private noncomputable def inducedMetricInnerLocal
-    (g : Measure.SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M) :
     hI.boundaryE → (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
   fun e =>
     (innerOnE g ((extChartAt I (x₀ : M)).symm (Phi I e))).bilinearComp
@@ -370,7 +370,7 @@ private noncomputable def inducedMetricInnerLocal
 
 omit [FiniteDimensional ℝ E] in
 @[simp] private lemma inducedMetricInnerLocal_apply
-    (g : Measure.SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M)
     (e : hI.boundaryE) (v w : hI.boundaryE) :
     inducedMetricInnerLocal (I := I) (M := M) g x₀ e v w =
       g.inner ((extChartAt I (x₀ : M)).symm (Phi I e))
@@ -423,14 +423,14 @@ private lemma bilinearComp_smooth_at
   rfl
 
 private noncomputable def gInnerCharted
-    (g : Measure.SmoothRiemannianMetric I M) (x₀ : M) (b : M) : E →L[ℝ] E →L[ℝ] ℝ :=
+    (g : SmoothRiemannianMetric I M) (x₀ : M) (b : M) : E →L[ℝ] E →L[ℝ] ℝ :=
   ((trivializationAt (E →L[ℝ] E →L[ℝ] ℝ)
       (fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x₀)
     ⟨b, g.inner b⟩).2
 
 omit [FiniteDimensional ℝ E] hI in
 private lemma gInnerCharted_contMDiffAt
-    (g : Measure.SmoothRiemannianMetric I M) (x₀ : M) :
+    (g : SmoothRiemannianMetric I M) (x₀ : M) :
     ContMDiffAt I 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
       (gInnerCharted (I := I) (M := M) g x₀) x₀ := by
   have h_section : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
@@ -444,7 +444,7 @@ private lemma gInnerCharted_contMDiffAt
 
 omit [FiniteDimensional ℝ E] in
 private lemma gInnerCharted_along_inclusion_contMDiffAt
-    (g : Measure.SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M) :
     ContMDiffAt hI.boundaryI 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞
       (fun b : BoundaryManifold I M =>
         gInnerCharted (I := I) (M := M) g (x₀ : M) (b : M)) x₀ := by
@@ -457,7 +457,7 @@ private lemma gInnerCharted_along_inclusion_contMDiffAt
 
 omit [FiniteDimensional ℝ E] hI in
 private lemma gInnerCharted_eval
-    (g : Measure.SmoothRiemannianMetric I M) (x₀ b : M)
+    (g : SmoothRiemannianMetric I M) (x₀ b : M)
     (hb : b ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) (v w : E) :
     gInnerCharted (I := I) (M := M) g x₀ b v w =
       g.inner b
@@ -475,7 +475,7 @@ private lemma gInnerCharted_eval
 
 omit [FiniteDimensional ℝ E] in
 private lemma inducedMetricInner_chart_eval
-    (g : Measure.SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (x₀ : BoundaryManifold I M)
     (b : BoundaryManifold I M)
     (hb_ambient : (b : M) ∈ (trivializationAt E (TangentSpace I) (x₀ : M)).baseSet)
     (hb_bdy : b ∈ (trivializationAt hI.boundaryE
@@ -584,7 +584,7 @@ private lemma dincl_chart_conjugated_contMDiffAt
 
 omit [FiniteDimensional ℝ E] in
 theorem inducedMetricInner_contMDiff
-    (g : Measure.SmoothRiemannianMetric I M) :
+    (g : SmoothRiemannianMetric I M) :
     ContMDiff hI.boundaryI
       (hI.boundaryI.prod 𝓘(ℝ, hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ)) ∞
       (fun b : BoundaryManifold I M =>
@@ -650,8 +650,8 @@ theorem inducedMetricInner_contMDiff
     intro x; exact (IsEmpty.false x).elim
 
 noncomputable def inducedMetric
-    (g : Measure.SmoothRiemannianMetric I M) :
-    Measure.SmoothRiemannianMetric hI.boundaryI (BoundaryManifold I M) where
+    (g : SmoothRiemannianMetric I M) :
+    SmoothRiemannianMetric hI.boundaryI (BoundaryManifold I M) where
   inner := inducedMetricInner g
   symm := inducedMetricInner_symm g
   pos := inducedMetricInner_pos g
@@ -660,12 +660,12 @@ noncomputable def inducedMetric
 
 omit [FiniteDimensional ℝ E] in
 @[simp] lemma inducedMetric_inner
-    (g : Measure.SmoothRiemannianMetric I M) (b : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (b : BoundaryManifold I M) :
     (inducedMetric g).inner b = inducedMetricInner g b := rfl
 
 omit [FiniteDimensional ℝ E] in
 @[simp] lemma inducedMetric_inner_apply
-    (g : Measure.SmoothRiemannianMetric I M) (b : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (b : BoundaryManifold I M)
     (v w : hI.boundaryE) :
     (inducedMetric g).inner b v w = g.inner (b : M) (boundaryInclusionMfderiv b v)
       (boundaryInclusionMfderiv b w) :=

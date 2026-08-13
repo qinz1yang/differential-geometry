@@ -670,7 +670,7 @@ private lemma dinclITC_apply
   rw [h_first, h_third]
   rfl
 
-variable (g : Measure.SmoothRiemannianMetric I M)
+variable (g : SmoothRiemannianMetric I M)
 
 private noncomputable def boundaryFlatCharted
     (x₀ : BoundaryManifold I M) (b : BoundaryManifold I M) :
@@ -932,7 +932,7 @@ private lemma ker_metricPullback_eq_normalSubspace
   intro v
   exact mem_ker_metricPullback_iff (M := M) g x v
 
-variable (g : Measure.SmoothRiemannianMetric I M)
+variable (g : SmoothRiemannianMetric I M)
 
 private noncomputable def boundaryFunOfInwardAtChartedCLM
     (α₀ : BoundaryManifold I M) (b : BoundaryManifold I M) :
@@ -1404,7 +1404,7 @@ theorem outwardNormalAt_section_contMDiffAt
       rw [T_amb.coe_linearMapAt_of_mem hb_amb_baseSet]
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma metricPullback_surjective
-    (g : Measure.SmoothRiemannianMetric I M) (y : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (y : BoundaryManifold I M) :
     Function.Surjective (metricPullback (M := M) g y) := by
   intro α
   set u : hI.boundaryE := (boundaryFlatMap (M := M) g y).symm α with hu_def
@@ -1420,7 +1420,7 @@ private lemma metricPullback_surjective
   exact congrArg (fun L : hI.boundaryE →ₗ[ℝ] ℝ => L w) h
 omit [InnerProductSpace ℝ E] in
 private lemma finrank_ker_metricPullback_eq_one
-    (g : Measure.SmoothRiemannianMetric I M) (y : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (y : BoundaryManifold I M) :
     Module.finrank ℝ (LinearMap.ker (metricPullback (M := M) g y)) = 1 := by
   by_cases hN : Nonempty hI.boundaryH
   · haveI := hN
@@ -1447,14 +1447,14 @@ private lemma finrank_ker_metricPullback_eq_one
     exact (IsEmpty.false y).elim
 omit [InnerProductSpace ℝ E] in
 theorem normalSubspace_finrank_one
-    (g : Measure.SmoothRiemannianMetric I M) (y : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (y : BoundaryManifold I M) :
     Module.finrank ℝ (normalSubspace (M := M) g y) = 1 := by
   rw [← ker_metricPullback_eq_normalSubspace (M := M) g y]
   exact finrank_ker_metricPullback_eq_one (M := M) g y
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] hI in
 private lemma unit_vectors_in_1dim_equal_or_opposite
-    (g : Measure.SmoothRiemannianMetric I M) {y : BoundaryManifold I M}
+    (g : SmoothRiemannianMetric I M) {y : BoundaryManifold I M}
     {V : Submodule ℝ (TangentSpace I (y : M))}
     (hV : Module.finrank ℝ V = 1)
     {v w : TangentSpace I (y : M)} (hv : v ∈ V) (hw : w ∈ V)
@@ -1497,7 +1497,7 @@ private lemma unit_vectors_in_1dim_equal_or_opposite
     rw [show w = c • v from hc_amb.symm, h_neg, neg_one_smul, neg_neg]
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma outwardDirAt_eq_zero_iff_inwardCoordAt_mem_range
-    (g : Measure.SmoothRiemannianMetric I M) (α y : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (α y : BoundaryManifold I M) :
     outwardDirAt (M := M) g α y = 0 ↔
       inwardCoordAt (M := M) α y ∈ Set.range (boundaryInclusionMfderiv (M := M) y) := by
   refine ⟨?_, ?_⟩
@@ -1525,7 +1525,7 @@ private lemma outwardDirAt_eq_zero_iff_inwardCoordAt_mem_range
     exact boundaryFlatLinear_injective (M := M) g y h_lin_eq
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma outwardDirAt_ne_zero_of_transverse
-    (g : Measure.SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
     (h_trans : inwardCoordAt (M := M) α y ∉ Set.range (boundaryInclusionMfderiv (M := M) y)) :
     outwardDirAt (M := M) g α y ≠ 0 := by
   intro h0
@@ -1533,14 +1533,14 @@ private lemma outwardDirAt_ne_zero_of_transverse
     ((outwardDirAt_eq_zero_iff_inwardCoordAt_mem_range (M := M) g α y).mp h0)
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma g_inner_outwardDirAt_pos_of_transverse
-    (g : Measure.SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
     (h_trans : inwardCoordAt (M := M) α y ∉ Set.range (boundaryInclusionMfderiv (M := M) y)) :
     0 < g.inner (y : M) (outwardDirAt (M := M) g α y)
         (outwardDirAt (M := M) g α y) :=
   g.pos (y : M) _ (outwardDirAt_ne_zero_of_transverse (M := M) g α y h_trans)
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma g_inner_outwardDirAt_inwardCoordAt_neg_of_transverse
-    (g : Measure.SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
     (h_trans : inwardCoordAt (M := M) α y ∉ Set.range (boundaryInclusionMfderiv (M := M) y)) :
     g.inner (y : M) (outwardDirAt (M := M) g α y)
         (inwardCoordAt (M := M) α y) < 0 := by
@@ -1558,7 +1558,7 @@ private lemma g_inner_outwardDirAt_inwardCoordAt_neg_of_transverse
   linarith
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma outwardNormalAt_norm_one_of_transverse
-    (g : Measure.SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
     (h_trans : inwardCoordAt (M := M) α y ∉ Set.range (boundaryInclusionMfderiv (M := M) y)) :
     g.inner (y : M) (outwardNormalAt (M := M) g α y)
         (outwardNormalAt (M := M) g α y) = 1 := by
@@ -1598,7 +1598,7 @@ private lemma outwardNormalAt_norm_one_of_transverse
   exact div_self hq_ne
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma outwardNormalAt_mem_normalSubspace
-    (g : Measure.SmoothRiemannianMetric I M) (α y : BoundaryManifold I M) :
+    (g : SmoothRiemannianMetric I M) (α y : BoundaryManifold I M) :
     outwardNormalAt (M := M) g α y ∈ normalSubspace (M := M) g y := by
   unfold outwardNormalAt
   classical
@@ -1611,7 +1611,7 @@ private lemma outwardNormalAt_mem_normalSubspace
     exact (normalSubspace (M := M) g y).zero_mem
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma outwardNormalAt_inner_inwardCoordAt_neg_of_transverse
-    (g : Measure.SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α y : BoundaryManifold I M)
     (h_trans : inwardCoordAt (M := M) α y ∉ Set.range (boundaryInclusionMfderiv (M := M) y)) :
     g.inner (y : M) (outwardNormalAt (M := M) g α y)
         (inwardCoordAt (M := M) α y) < 0 := by
@@ -1683,7 +1683,7 @@ private lemma inwardCoordAt_not_mem_range_iff_of_orientation
   exact inwardCoordAt_mem_range_iff_of_orientation (M := M) α₀ α₁ y c hc h_w
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private lemma g_inner_outwardNormalAt_inwardCoordAt_other_neg
-    (g : Measure.SmoothRiemannianMetric I M) (α₀ α₁ y : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α₀ α₁ y : BoundaryManifold I M)
     (h_trans₁ : inwardCoordAt (M := M) α₁ y ∉ Set.range (boundaryInclusionMfderiv (M := M) y))
     (c : ℝ) (hc : 0 < c)
     (h_w : inwardCoordAt (M := M) α₀ y - c • inwardCoordAt (M := M) α₁ y ∈
@@ -1710,7 +1710,7 @@ private lemma g_inner_outwardNormalAt_inwardCoordAt_other_neg
   exact mul_neg_of_pos_of_neg hc h_neg
 omit [InnerProductSpace ℝ E] in
 theorem outwardNormalAt_chart_invariance_of_orientation
-    (g : Measure.SmoothRiemannianMetric I M) (α₀ α₁ y : BoundaryManifold I M)
+    (g : SmoothRiemannianMetric I M) (α₀ α₁ y : BoundaryManifold I M)
     {c : ℝ} (hc : 0 < c)
     (h_w : inwardCoordAt (M := M) α₀ y - c • inwardCoordAt (M := M) α₁ y ∈
         Set.range (boundaryInclusionMfderiv (M := M) y).toLinearMap) :

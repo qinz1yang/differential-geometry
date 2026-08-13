@@ -2,20 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpQuot
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.MorreyHigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevCauchy
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
-
-/-!
-# The local `W^{3,p}` to `C^{2,alpha}` bridge
-
-The tensor quotient completeness theorem supplies a genuine `W^{3,p}` limit.
-For the quasilinear coefficient map one also needs a pointwise `C^2`
-representative whose second derivatives retain a quantitative Morrey modulus.
-This file derives exactly that local statement from the existing scalar
-Morrey representative and the recursive weak-partial API.
-
-The constant in `w3p_morrey_c2` depends only on the dimension and exponent;
-the function enters only through its `W^{3,p}` norm.  No metric or quotient
-instance is installed.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -48,8 +35,6 @@ private lemma eucl_norm_le_sum (v : EuclN) :
   exact Finset.sum_le_sum fun i _ => by simp
 
 omit [NeZero d] in
-/-- A finite-regularity version of the canonical weak/classical first-partial
-identification. -/
 private theorem chosen_cont_ae
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set EuclN} (hΩ : IsOpen Ω)
     {u : EuclN → ℝ} (huC1 : ContDiff ℝ 1 u)
@@ -95,8 +80,6 @@ private theorem weak2_norm_le
       (wkpNorm_chosenWeakPartial_le (d := d) 2 hΩ u (β 0))
 
 omit [NeZero d] in
-/-- The norm of the chosen weak gradient of a `W^{1,p}` function is bounded,
-after `toReal`, by the finite sum of its order-one Sobolev norm. -/
 private theorem weakGrad_real_le
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set EuclN}
     {v : EuclN → ℝ} (hv : MemWkp (d := d) 1 p v Ω) :
@@ -153,8 +136,6 @@ private theorem weakGrad_real_le
   exact hreal
 
 omit [NeZero d] in
-/-- For a `C^2` representative in `W^{3,p}`, the canonical order-two weak
-partials are the corresponding classical coordinate partials a.e. -/
 private theorem weak2_classical_ae
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set EuclN} (hΩ : IsOpen Ω)
     {v : EuclN → ℝ} (hv : MemWkp (d := d) 3 p v Ω)
@@ -188,12 +169,6 @@ private theorem weak2_classical_ae
     iterClassicalPartial_succ, iterClassicalPartial_zero, i₀, i₁, v₁, c₁]
     using hcongr.trans hsecond
 
-/-- Local quantitative Morrey embedding at the order used by the
-Ricci--DeTurck contraction.  A `W^{3,p}` scalar component, `p > d`, has a
-`C^2` representative on the quarter ball, and every coordinate component of
-its second derivative is `alpha = 1 - d/p` Hölder on the next quarter ball.
-The Hölder constant is a fixed dimension/exponent constant times the original
-`W^{3,p}` norm. -/
 theorem w3p_morrey_c2
     {p : ℝ} (hp_dim : (d : ℝ) < p)
     {x₀ : EuclN} {R : ℝ} (hR : 0 < R) {u : EuclN → ℝ}

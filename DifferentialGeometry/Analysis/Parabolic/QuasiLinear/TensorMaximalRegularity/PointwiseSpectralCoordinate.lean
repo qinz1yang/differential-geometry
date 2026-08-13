@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.ParabolicInteriorSmoothing
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -24,7 +27,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -34,7 +37,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a : ℝ} {T : ℝ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem homModeCoeff_zero (hT : 0 ≤ T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -49,7 +51,6 @@ private theorem homModeCoeff_zero (hT : 0 ≤ T)
       (0 : tensorHs (I := I) (M := M) g r s (a + 2)) i), hsq]
   exact norm_eq_zero.mp hnorm
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem homDerivModeCoeff_zero (hT : 0 ≤ T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -58,7 +59,6 @@ private theorem homDerivModeCoeff_zero (hT : 0 ≤ T)
   rw [homDerivModeCoeff_eq_smul (I := I) (M := M) (a := a) (T := T),
     homModeCoeff_zero (I := I) (M := M) (a := a) (T := T) hT i, smul_zero]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem maxRegDuhamelMap_zero_eq_recentredCarrier (hT : 0 < T) (hT1 : T ≤ 1)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
@@ -71,7 +71,6 @@ private theorem maxRegDuhamelMap_zero_eq_recentredCarrier (hT : 0 < T) (hT1 : T 
       recentredCarrier, TimeSobolev.timeH1.init_mk]
   · rw [recentredCarrier, TimeSobolev.timeH1.deriv_mk]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem carrier_coeff_ae_perModeConv (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -128,7 +127,6 @@ private theorem carrier_coeff_ae_perModeConv (hT : 0 < T) (hT1 : T ≤ 1)
     rw [hτD hτmem, hτH hτmem, zero_add]
   rw [hLHS, hint_eq, ← htsol, hsoldef, htconv]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem carrier_toFun_coeff_eq_perModeConv_IccExtend (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -197,7 +195,6 @@ private theorem carrier_toFun_coeff_eq_perModeConv_IccExtend (hT : 0 < T) (hT1 :
     MeasureTheory.Measure.eqOn_of_ae_eq hae_full hLHS_cont hRHS_cont hsub_clo
   exact heqOn ht
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem carrier_toFun_coeff_eq_perModeConv_IccExtend_restrict (hT : 0 < T) (hT1 : T ≤ 1)
     {d₂ : ℝ} (hd₂_pos : 0 < d₂) (hd₂_le : d₂ ≤ T)
@@ -271,7 +268,6 @@ theorem carrier_toFun_coeff_eq_perModeConv_IccExtend_restrict (hT : 0 < T) (hT1 
     MeasureTheory.Measure.eqOn_of_ae_eq hae_full hLHS_cont hRHS_cont hsub_clo
   exact heqOn ht
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id_restrict (hT : 0 < T) (hT1 : T ≤ 1)
     (ha : 0 ≤ a) {d₂ : ℝ} (hd₂_pos : 0 < d₂) (hd₂_le : d₂ ≤ T)
@@ -299,7 +295,6 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id_restrict (hT : 0 < T
     exact carrier_toFun_coeff_eq_perModeConv_IccExtend_restrict (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT hT1 hd₂_pos hd₂_le gforce hcoord hF_rep i ht
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_eq_perModeConv_forcing (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -332,7 +327,6 @@ theorem timeModeCoeff_eq_perModeConv_forcing (hT : 0 < T) (hT1 : T ≤ 1)
     rw [tensorHs.zero_coeff]
   rw [htfield, hzero, zero_add, ← hcarr_int, htcarr]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv (hT : 0 < T) (hT1 : T ≤ 1)
     (ha : 0 ≤ a)
@@ -408,7 +402,6 @@ theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv (hT : 0 < T) (hT1 : T �
     exact carrier_toFun_coeff_eq_perModeConv_IccExtend (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT hT1 gforce hcoord hF_rep i ht
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamel_toFun_tensorL2Coeff_eq_perModeConv_id (hT : 0 < T) (hT1 : T ≤ 1)
     (ha : 0 ≤ a)

@@ -2,32 +2,11 @@ import Mathlib.Analysis.ODE.Gronwall
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 
 open Set
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-
-
-
 
 lemma gronwallBound_zero_mono_eps
     {K eps₁ eps₂ x : ℝ} (hK : 0 ≤ K) (hx : 0 ≤ x) (heps : eps₁ ≤ eps₂) :
@@ -53,8 +32,6 @@ lemma gronwallBound_zero_mono_eps
       _ = eps₂ / K * (Real.exp (K * x) - 1) := by
           field_simp [hKne]
 
-
-
 lemma gronwallBound_zero_mul_eps
     {K eps x a : ℝ} :
     gronwallBound 0 K (a * eps) x = a * gronwallBound 0 K eps x := by
@@ -64,8 +41,6 @@ lemma gronwallBound_zero_mul_eps
     ring
   · simp only [gronwallBound_of_K_ne_0 hKne, zero_mul, zero_add]
     field_simp [hKne]
-
-
 
 lemma exists_gron_small
     {K D B₀ : ℝ} (hB₀ : 0 < B₀) (hK : 0 ≤ K) (hD : 0 ≤ D) :
@@ -107,8 +82,6 @@ lemma exists_gron_small
   dsimp [B]
   rw [hgb]
   linarith
-
-
 
 lemma exists_gron_smallK
     {D B₀ : ℝ} (hB₀ : 0 < B₀) (hD : 0 ≤ D) :
@@ -159,8 +132,6 @@ lemma exists_gron_smallK
   rw [hgb]
   linarith
 
-
-
 theorem norm_le_gronwall_secondOrder
     {Y Y' Y'' : ℝ → E} {K eps δ b : ℝ}
     (hK : 0 ≤ K) (heps : 0 ≤ eps)
@@ -201,11 +172,6 @@ theorem norm_le_gronwall_secondOrder
   calc ‖Y t‖ ≤ ‖Z t‖ := norm_fst_le (Z t)
     _ ≤ gronwallBound δ (max K 1) eps (t - 0) := hmain t ht
     _ = gronwallBound δ (max K 1) eps t := by rw [sub_zero]
-
-
-
-
-
 
 theorem gronwall_sub_linear
     {Y Y' Y'' : ℝ → E} {K b : ℝ} {w : E}
@@ -251,9 +217,6 @@ theorem gronwall_sub_linear
           nlinarith
   exact norm_le_gronwall_secondOrder hK heps hcZ hcZ' hdZ hdZ' hboundZ hZ0 hZ'0
 
-
-
-
 theorem gronwall_le_linear
     {Y Y' Y'' : ℝ → E} {K b : ℝ} {w : E}
     (hK : 0 ≤ K) (hb : 0 ≤ b)
@@ -275,8 +238,6 @@ theorem gronwall_le_linear
     _ ≤ gronwallBound 0 (max K 1) (K * (b * ‖w‖)) t + t * ‖w‖ := by
       exact add_le_add (hsub t ht) (le_of_eq htw)
     _ = t * ‖w‖ + gronwallBound 0 (max K 1) (K * (b * ‖w‖)) t := by ring
-
-
 
 theorem gronwall_ge_linear
     {Y Y' Y'' : ℝ → E} {K b : ℝ} {w : E}
@@ -302,12 +263,6 @@ theorem gronwall_ge_linear
       _ ≤ ‖Y t‖ + gronwallBound 0 (max K 1) (K * (b * ‖w‖)) t := by
         exact add_le_add le_rfl (hsub t ht)
   linarith
-
-
-
-
-
-
 
 theorem gronwall_ne_zero
     {Y Y' Y'' : ℝ → E} {K b : ℝ} {w : E}

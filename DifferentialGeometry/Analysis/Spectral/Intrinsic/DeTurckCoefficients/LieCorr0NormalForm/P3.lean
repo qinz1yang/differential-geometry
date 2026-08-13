@@ -1,18 +1,11 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0NormalForm.Basic
 
-
-
-
-
-
-
-
 noncomputable section
 
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF
 
 private lemma six_reindex {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
     (A B : Fin n → Fin n → Fin n → ℝ)
@@ -112,4 +105,4 @@ theorem nf_p3_swap {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
         cg i a * f b c * ga1 j d b * gbg e r a * ig c e * ig d r)) :=
   nf_p3 ig cg f ga0 ga1 gbg higs hcgs hga1s hgbgs j i
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF

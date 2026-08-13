@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Operator.Gradient
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
@@ -15,15 +16,7 @@ import Mathlib.LinearAlgebra.Trace
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -41,54 +34,11 @@ private instance tangentSpace_finiteDimensional (x : M) :
     FiniteDimensional Real (TangentSpace I x) :=
   inferInstanceAs (FiniteDimensional Real E)
 
-
-
-
-def metricFlatLinear (g : SmoothRiemannianMetric I M) (x : M) :
-    TangentSpace I x →ₗ[Real] Module.Dual Real (TangentSpace I x) where
-  toFun v := (g.inner x v).toLinearMap
-  map_add' v w := by
-    ext u
-    change g.inner x (v + w) u = g.inner x v u + g.inner x w u
-    simp
-  map_smul' c v := by
-    ext u
-    change g.inner x (c • v) u = c • g.inner x v u
-    simp
-
-omit [FiniteDimensional ℝ E] in
-@[simp] theorem metricFlatLinear_apply
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (v w : TangentSpace I x) :
-    metricFlatLinear (I := I) g x v w = g.inner x v w := by
-  rfl
-
-
-omit [FiniteDimensional ℝ E] in
-theorem metricFlatLinear_injective
-    (g : SmoothRiemannianMetric I M) (x : M) :
-    Function.Injective (metricFlatLinear (I := I) g x) := by
-  intro v w hvw
-  have hzero : forall z : TangentSpace I x, g.inner x (v - w) z = 0 := by
-    intro z
-    have h := congrArg (fun L : Module.Dual Real (TangentSpace I x) => L z) hvw
-    simp only [metricFlatLinear_apply] at h
-    have hsub : g.inner x (v - w) z = g.inner x v z - g.inner x w z := by
-      rw [map_sub]
-      rfl
-    rw [hsub, sub_eq_zero]
-    exact h
-  by_contra hne
-  have hvw_ne : v - w ≠ 0 := sub_ne_zero.mpr hne
-  have hpos : 0 < g.inner x (v - w) (v - w) := g.pos x (v - w) hvw_ne
-  exact (lt_irrefl (0 : Real)) ((hzero (v - w)) ▸ hpos)
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 private theorem metricFlatLinear_finrank_eq (x : M) :
     Module.finrank Real (TangentSpace I x) =
       Module.finrank Real (Module.Dual Real (TangentSpace I x)) :=
   Subspace.dual_finrank_eq.symm
-
 
 def metricFlatEquiv (g : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x ≃ₗ[Real] Module.Dual Real (TangentSpace I x) :=
@@ -103,41 +53,16 @@ def metricFlatEquiv (g : SmoothRiemannianMetric I M) (x : M) :
     metricFlatEquiv (I := I) g x v w = g.inner x v w := by
   rfl
 
-
-def metricSharp (g : SmoothRiemannianMetric I M) (x : M)
-    (alpha : Module.Dual Real (TangentSpace I x)) : TangentSpace I x :=
-  (metricFlatEquiv (I := I) g x).symm alpha
-
-@[simp] theorem metricSharp_eq
+theorem metricSharp_eq
     (g : SmoothRiemannianMetric I M) (x : M)
     (alpha : Module.Dual Real (TangentSpace I x)) :
     metricSharp (I := I) g x alpha =
       (metricFlatEquiv (I := I) g x).symm alpha := by
-  rfl
-
-
-theorem inner_metricSharp
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (alpha : Module.Dual Real (TangentSpace I x)) (w : TangentSpace I x) :
-    g.inner x (metricSharp (I := I) g x alpha) w = alpha w := by
-  change metricFlatEquiv (I := I) g x
-      ((metricFlatEquiv (I := I) g x).symm alpha) w = alpha w
-  have h :
-      metricFlatEquiv (I := I) g x
-          ((metricFlatEquiv (I := I) g x).symm alpha) = alpha :=
-    LinearEquiv.apply_symm_apply (metricFlatEquiv (I := I) g x) alpha
-  exact congrArg (fun L : Module.Dual Real (TangentSpace I x) => L w) h
-
-
-theorem inner_metricSharp_right
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (alpha : Module.Dual Real (TangentSpace I x)) (w : TangentSpace I x) :
-    g.inner x w (metricSharp (I := I) g x alpha) = alpha w := by
-  rw [g.symm x w (metricSharp (I := I) g x alpha)]
-  exact inner_metricSharp (I := I) g x alpha w
-
-
-
+  rw [metricSharp_def]
+  have h : metricFlatMap (I := I) g x = metricFlatEquiv (I := I) g x := by
+    ext v w
+    rw [metricFlatMap_apply, metricFlatEquiv_apply]
+  rw [h]
 
 def gradientFun (g : SmoothRiemannianMetric I M) (f : M -> Real) (x : M) :
     TangentSpace I x :=
@@ -149,7 +74,6 @@ def gradientFun (g : SmoothRiemannianMetric I M) (f : M -> Real) (x : M) :
       metricSharp (I := I) g x (mfderiv I 𝓘(Real, Real) f x).toLinearMap := by
   rfl
 
-
 theorem inner_gradientFun
     (g : SmoothRiemannianMetric I M) (f : M -> Real) (x : M)
     (v : TangentSpace I x) :
@@ -158,8 +82,6 @@ theorem inner_gradientFun
   simpa [gradientFun] using
     inner_metricSharp (I := I) g x
       (mfderiv I 𝓘(Real, Real) f x).toLinearMap v
-
-
 
 theorem gradientFun_eq_of_flat
     (g : SmoothRiemannianMetric I M) {f : M -> Real} {x : M}
@@ -170,7 +92,6 @@ theorem gradientFun_eq_of_flat
   unfold gradientFun metricSharp
   rw [hf]
   exact LinearEquiv.symm_apply_apply (metricFlatEquiv (I := I) g x) v
-
 
 theorem gradientFun_eq_zero_of_mfderiv_eq_zero
     (g : SmoothRiemannianMetric I M) (f : M -> Real) {x : M}
@@ -184,8 +105,6 @@ theorem gradientFun_eq_zero_of_mfderiv_eq_zero
     rfl
   rw [hto]
   exact LinearEquiv.map_zero (metricFlatEquiv (I := I) g x).symm
-
-
 
 theorem gradientFun_eq_zero_of_isLocalMin
     [I.Boundaryless] (g : SmoothRiemannianMetric I M)
@@ -220,13 +139,44 @@ theorem gradientFun_eq_zero_of_isLocalMin
     _ = 0 := by
       simpa [writtenInExtChartAt] using hderiv_chart
 
+theorem gradientFun_eq_zero_of_isLocalMax
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M}
+    (hmax : IsLocalMax f x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
+    gradientFun (I := I) g f x = 0 := by
+  apply gradientFun_eq_zero_of_mfderiv_eq_zero
+  have hmax_chart :
+      IsLocalMax (fun y : E => f ((extChartAt I x).symm y))
+        ((extChartAt I x) x) := by
+    have hmax' :
+        IsLocalMax f ((extChartAt I x).symm ((extChartAt I x) x)) := by
+      simpa only [mfld_simps] using hmax
+    simpa only [Function.comp_apply] using
+      hmax'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
+  have hderiv_chart :
+      fderiv Real (fun y : E => f ((extChartAt I x).symm y))
+        ((extChartAt I x) x) = 0 :=
+    hmax_chart.fderiv_eq_zero
+  have hrange : Set.range I ∈ nhds ((extChartAt I x) x) := by
+    rw [ModelWithCorners.Boundaryless.range_eq_univ (I := I)]
+    exact Filter.univ_mem
+  calc
+    mfderiv I 𝓘(Real, Real) f x =
+        fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
+          (Set.range I) ((extChartAt I x) x) := by
+      exact hf.mfderiv
+    _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
+          ((extChartAt I x) x) := by
+      exact fderivWithin_of_mem_nhds hrange
+    _ = 0 := by
+      simpa [writtenInExtChartAt] using hderiv_chart
 
 @[simp] theorem gradientFun_const
     (g : SmoothRiemannianMetric I M) (c : Real) (x : M) :
     gradientFun (I := I) g (fun _ : M => c) x = 0 := by
   apply gradientFun_eq_zero_of_mfderiv_eq_zero
   exact mfderiv_const
-
 
 theorem gradientFun_const_smul
     (g : SmoothRiemannianMetric I M) (a : Real)
@@ -240,6 +190,17 @@ theorem gradientFun_const_smul
   let e := (metricFlatEquiv (I := I) g x).symm
   exact e.map_smul a (mfderiv I 𝓘(Real, Real) f x).toLinearMap
 
+theorem gradientFun_neg
+    (g : SmoothRiemannianMetric I M)
+    {f : M -> Real} {x : M}
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
+    gradientFun (I := I) g (-f) x =
+      -gradientFun (I := I) g f x := by
+  rw [show -f = (-1 : Real) • f by
+    ext y
+    simp]
+  rw [gradientFun_const_smul (I := I) g (-1) hf]
+  simp
 
 theorem gradientFun_add
     (g : SmoothRiemannianMetric I M)
@@ -256,7 +217,6 @@ theorem gradientFun_add
   let e := (metricFlatEquiv (I := I) g x).symm
   exact e.map_add (mfderiv I 𝓘(Real, Real) f x).toLinearMap
     (mfderiv I 𝓘(Real, Real) h x).toLinearMap
-
 
 theorem gradientFun_sum {κ : Type}
     (g : SmoothRiemannianMetric I M) (s : Finset κ)
@@ -290,7 +250,6 @@ theorem gradientFun_sum {κ : Type}
               ∑ i ∈ s, gradientFun (I := I) g (f i) x := by
               rw [ih hfs]
 
-
 theorem gradientFun_sum_smul {κ : Type}
     (g : SmoothRiemannianMetric I M) (s : Finset κ) (c : κ -> Real)
     {f : κ -> M -> Real} {x : M}
@@ -310,7 +269,6 @@ theorem gradientFun_sum_smul {κ : Type}
           intro i hi
           exact gradientFun_const_smul (I := I) g (c i) (hf i hi)
 
-
 theorem gradientFun_sub
     (g : SmoothRiemannianMetric I M)
     {f h : M -> Real} {x : M}
@@ -327,7 +285,6 @@ theorem gradientFun_sub
   exact e.map_sub (mfderiv I 𝓘(Real, Real) f x).toLinearMap
     (mfderiv I 𝓘(Real, Real) h x).toLinearMap
 
-/-- Gradient chain rule for a differentiable scalar outer function. -/
 theorem gradientFun_comp
     (g : SmoothRiemannianMetric I M)
     {φ : Real -> Real} {f : M -> Real} {x : M}
@@ -361,7 +318,6 @@ theorem gradientFun_comp
   rfl
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-/-- Directional derivative product rule for scalar functions. -/
 theorem extDerivFun_mul
     {f h : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
@@ -377,8 +333,6 @@ theorem extDerivFun_mul
   simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm,
     mul_assoc] using hprod
 
-
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem extDerivFun_const_mul_apply
     (a : Real) {f : M -> Real} {x : M} (v : TangentSpace I x)
@@ -388,7 +342,6 @@ theorem extDerivFun_const_mul_apply
   have h := DifferentialGeometry.extDerivFun_const_mul (I := I) a hf
   have hv := DFunLike.congr_fun h v
   simpa [Pi.smul_apply, smul_eq_mul] using hv
-
 
 theorem gradientFun_mul
     (g : SmoothRiemannianMetric I M)
@@ -432,8 +385,6 @@ theorem gradientFun_mul
           h x • gradientFun (I := I) g f x) v := by
           simp [metricFlatLinear_apply, mul_comm]
 
-/-- Gradient chain rule for positive natural powers, without a nonvanishing
-assumption on the function. -/
 theorem gradientFun_pow
     (g : SmoothRiemannianMetric I M)
     {f : M -> Real} {x : M} (n : Nat)
@@ -469,7 +420,6 @@ theorem gradientFun_pow
               ring
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-/-- Directional derivative chain rule for real powers, valid away from zero. -/
 theorem extDerivFun_rpow
     {f : M -> Real} {x : M} (p : Real) (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
@@ -503,7 +453,6 @@ theorem extDerivFun_rpow
   rw [mul_comm]
   rfl
 
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mdifferentiableAt_rpow
     {f : M -> Real} {x : M} (p : Real)
@@ -515,7 +464,6 @@ theorem mdifferentiableAt_rpow
         (fun z : Real => z ^ p) (f x) := by
     exact (Real.differentiableAt_rpow_const_of_ne p hpos.ne').mdifferentiableAt
   exact hp.comp x hf
-
 
 theorem gradientFun_rpow
     (g : SmoothRiemannianMetric I M)
@@ -546,7 +494,6 @@ theorem gradientFun_rpow
     _ = metricFlatLinear (I := I) g x
         ((p * f x ^ (p - 1)) • gradientFun (I := I) g f x) v := by
           simp [metricFlatLinear_apply]
-
 
 theorem gradientFun_log
     (g : SmoothRiemannianMetric I M)
@@ -606,9 +553,6 @@ theorem gradientFun_log
         ((f x)⁻¹ • gradientFun (I := I) g f x) v := by
           simp [coeff, metricFlatLinear_apply]
 
-
-
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mfderiv_mul_self_toLinearMap
     {f : M -> Real} {x : M}
@@ -632,7 +576,6 @@ theorem mfderiv_mul_self_toLinearMap
   congr 1
   ring_nf
 
-
 theorem gradientFun_mul_self
     (g : SmoothRiemannianMetric I M)
     {f : M -> Real} {x : M}
@@ -652,7 +595,6 @@ theorem gradientFun_mul_self
     (2 * f x)
     ((mfderiv I 𝓘(Real, Real) f x).toLinearMap)
 
-
 def divergence
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : (x : M) -> TangentSpace I x) (x : M) : Real :=
@@ -665,7 +607,6 @@ omit [FiniteDimensional ℝ E] in
     divergence (I := I) cov X x =
       LinearMap.trace Real (TangentSpace I x) (cov X x).toLinearMap := by
   rfl
-
 
 def laplacian
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -685,14 +626,12 @@ section AlgebraicRules
 
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 
-
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem divergence_zero
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (x : M) :
     divergence (I := I) cov (0 : (x : M) -> TangentSpace I x) x = 0 := by
   simp [divergence]
-
 
 omit [FiniteDimensional ℝ E]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
@@ -708,7 +647,6 @@ theorem divergence_add
   rw [cov.isCovariantDerivativeOnUniv.add hX hY]
   simp
 
-
 omit [FiniteDimensional ℝ E]
   [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
 theorem divergence_const_smul
@@ -722,7 +660,6 @@ theorem divergence_const_smul
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hX]
   simp
-
 
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
 theorem divergence_smul
@@ -748,7 +685,6 @@ theorem divergence_smul
   rw [map_smul, LinearMap.trace_smulRight]
   simp [smul_eq_mul]
 
-
 omit [FiniteDimensional ℝ E] in
 theorem divergence_sub
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -766,7 +702,6 @@ theorem divergence_sub
   rw [map_add, map_smul]
   simp [sub_eq_add_neg]
 
-
 @[simp] theorem laplacian_const
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M) (c : Real) (x : M) :
@@ -779,9 +714,6 @@ theorem divergence_sub
   simp [laplacian, hgrad]
 
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
-/-- Adding a spatial constant does not change the Laplacian at a point, provided
-the scalar is differentiable near that point and its gradient field is
-differentiable there. -/
 theorem laplacian_add_const
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -823,7 +755,6 @@ theorem laplacian_add_const
   rw [hcov]
 
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)] in
-/-- The Laplacian is unchanged by subtracting a spatial constant. -/
 theorem laplacian_sub_const
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -845,8 +776,6 @@ theorem laplacian_sub_const
         rw [gradientFun_const]
       _ = gradientFun (I := I) g f y := by simp
   simp [laplacian, hgrad]
-
-
 
 theorem laplacian_sub
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -879,7 +808,6 @@ theorem laplacian_sub
               (Y := fun y : M => gradientFun (I := I) g h y)
               hgradf hgradh)
 
-
 theorem laplacian_const_smul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -901,8 +829,6 @@ theorem laplacian_const_smul
       rw [divergence_const_smul (I := I) cov inferInstance a hgrad]
       rfl
 
-/-- The scalar Laplacian scales at a point under multiplication by a spatial
-constant, assuming scalar differentiability only near the evaluation point. -/
 theorem laplacian_smul_at
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (g : SmoothRiemannianMetric I M)
@@ -968,8 +894,6 @@ theorem divergence_smul_gradientFun
   have hinner := inner_gradientFun (I := I) g f x (gradientFun (I := I) g f x)
   simpa [extDerivFun] using congrArg id hinner.symm
 
-
-
 theorem divergence_smul_gradientFun_pair
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -984,8 +908,6 @@ theorem divergence_smul_gradientFun_pair
   have hinner := inner_gradientFun (I := I) g f x (gradientFun (I := I) g h x)
   simpa [extDerivFun] using congrArg id hinner.symm
 
-/-- Scalar chain rule for the Laplacian:
-`Δ(φ ∘ f) = φ'(f) Δf + φ''(f) |∇f|²`. -/
 theorem laplacian_comp
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -1025,8 +947,6 @@ theorem laplacian_comp
       rw [gradientFun_comp (I := I) g hφ' (hf x)]
       simp [coeffFun]
 
-/-- Scalar product rule for the Laplacian:
-`Δ(f h) = f Δh + h Δf + 2 <∇f, ∇h>`. -/
 theorem laplacian_mul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -1087,9 +1007,6 @@ theorem laplacian_mul
           rw [g.symm x (gradientFun (I := I) g h x)
             (gradientFun (I := I) g f x)]
           ring_nf
-
-
-
 
 theorem laplacian_rpow
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -1174,8 +1091,6 @@ theorem laplacian_rpow
               (gradientFun (I := I) g f x) := by
           rw [hcoeff_ext]
 
-
-
 theorem laplacian_log
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -1242,8 +1157,6 @@ theorem laplacian_log
           rw [hcoeff_ext]
           simp only [coeffFun, Real.rpow_neg_one, sub_eq_add_neg, neg_mul]
 
-
-
 theorem half_laplacian_mul_self_eq_divergence_smul_gradientFun
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -1276,8 +1189,6 @@ theorem half_laplacian_mul_self_eq_divergence_smul_gradientFun
         (f • fun y : M => gradientFun (I := I) g f y) x := by
       ring_nf
 
-
-
 theorem half_laplacian_mul_self
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
@@ -1297,7 +1208,6 @@ theorem half_laplacian_mul_self
 
 end AlgebraicRules
 
-
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Operator

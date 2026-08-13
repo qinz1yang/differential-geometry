@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHS
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.VariationalIdentity.EigenvectorLeibnizCommutator
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -20,9 +23,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Tensor.TensorRSRiemannian
-open TensorRSNabla
+open DifferentialGeometry.TensorRSNabla
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
@@ -95,7 +98,7 @@ lemma memLp_volume_compact_contDiffOn_mul
     (eLpNorm_mono_ae (μ := (volume : Measure EuclN).restrict K) hpt)
     (hw.const_smul (C : ℝ)).2
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 def eigenvectorChartComponentFun
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -107,7 +110,7 @@ def eigenvectorChartComponentFun
             g r s) i) α P₀ :
       Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 lemma eigenvectorChartComponentFun_memLp_volume
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

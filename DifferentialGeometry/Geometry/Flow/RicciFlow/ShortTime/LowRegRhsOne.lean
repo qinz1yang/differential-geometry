@@ -3,33 +3,27 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegRicciOne
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegLieOne
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSPathIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetIntegral
-
-/-!
-# Affine low-regularity bounds for the order-one Ricci--DeTurck coefficient
-
-This file assembles the dimension-three `H2` jet bounds for the order-one
-Ricci and DeTurck Lie arms.  The lower metric radius and the single top metric
-derivative are kept separate along the convex realized path.  The resulting
-affine estimate is then transferred unchanged to the path-integrated
-coefficient field.
--/
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+    DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+    DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable
@@ -38,12 +32,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-/-- Independent endpoint spectral `H2` and `H3` radii give the complete
-affine `H2` jet bound for `rhsLow1Coeff` along the realized convex path. -/
 theorem rhs1_h2_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -151,8 +143,6 @@ theorem rhs1_h2_tame
     ring
   exact hraw.trans (hbound.trans_eq (by rw [hfactor]))
 
-/-- The affine order-one coefficient bound passes unchanged to the `H2` jet
-of its interval-integrated coefficient field. -/
 theorem rhs1_path_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -191,6 +181,6 @@ theorem rhs1_path_tame
     (hcoeff T T' hδ hδ' R A hR hA hT2 hT2' hT3 hT3')
   simpa only [rhsLow1PathIntegral] using hpath
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.PDE.RicciFlow
 
 end

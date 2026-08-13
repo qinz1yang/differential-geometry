@@ -6,7 +6,6 @@ import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 
-
 noncomputable section
 
 open Set Function Filter Bundle
@@ -78,8 +77,6 @@ theorem chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
     rw [← hmf_eq_f, hchain]; rfl
   rw [hRHS]; rfl
 
-/-- The velocity field of a pointwise `C²` curve has a differentiable
-coordinate representation in the chart pinned at the current foot. -/
 theorem velocity_coord_diff
     (γ : ℝ → M) (t : ℝ) (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t) :
     DifferentiableAt ℝ
@@ -110,8 +107,6 @@ theorem velocity_coord_diff
     simpa only [sec, α] using hbridge
   exact (heq.differentiableAt_iff).mpr (hsec.differentiableAt (by norm_num))
 
-/-- The chart-`α`-pullback `t ↦ (fderiv ℝ (extChartAt I α ∘ γ) t : ℝ → E) 1`
-is continuous on the open set `U := γ ⁻¹ ((chartAt H α).source)`. -/
 theorem continuousOn_fderiv_extChartAt_comp_curve
     {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) (α : M) :
     ContinuousOn

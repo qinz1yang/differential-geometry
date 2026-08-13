@@ -6,18 +6,26 @@ import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderHigherOrderTame
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCometricExtraction
 import Mathlib.Analysis.MeanInequalities
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+    DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -470,7 +478,7 @@ theorem diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Cemb, hCemb_nn, hCemb⟩ :=
-    IntrinsicSpectral.deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
+    DifferentialGeometry.Analysis.Spectral.deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
       (I := I) (M := M) g₀ a ha_super
   set Lam : ℝ := Cemb * Real.sqrt ((a + 1 + 1 : ℕ) : ℝ) * R with hLam
   have hLam_nn : 0 ≤ Lam := by rw [hLam]; positivity
@@ -1258,10 +1266,10 @@ theorem exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
 noncomputable def cometricDoubleTraceCastG0 (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 3 1 where
   toSection :=
-    (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.cometricDoubleTraceField
+    (DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceField
       (I := I) g₁ 1).toSection
   hasCompactSupport :=
-    (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.cometricDoubleTraceField
+    (DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceField
       (I := I) g₁ 1).hasCompactSupport
 
 set_option backward.isDefEq.respectTransparency false in
@@ -1486,7 +1494,6 @@ theorem raisedKoszul_order0sup_jetL2_ballUniform_generic
 
 section CometricCastG0Decomposition
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
@@ -1585,7 +1592,6 @@ theorem cometricCastG0_eq_doubleTrace_add_appCcRS
 
 end CometricCastG0Decomposition
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck in
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert in
 set_option backward.isDefEq.respectTransparency false in
 theorem cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
@@ -1947,6 +1953,6 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_ballUniform_generic
 
 end L2OutputFeeder
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Analysis.Sobolev
 
 end

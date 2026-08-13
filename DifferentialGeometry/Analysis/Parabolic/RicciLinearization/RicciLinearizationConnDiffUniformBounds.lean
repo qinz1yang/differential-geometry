@@ -10,12 +10,16 @@ import DifferentialGeometry.Geometry.Metric.MetricBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffUniformBoundsSlotPermutations
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffUniformBoundsJointSmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffUniformBoundsFibrePointwiseBound
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory intervalIntegral
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
 
 namespace DifferentialGeometry
@@ -25,11 +29,12 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+    DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian
@@ -73,7 +78,36 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 section UniformBound
 
-set_option maxRecDepth 16000 in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private theorem tensor0SSpace_apply_eq_toModel {s : ℕ} {x : M}
+    (T : Tensor0SBundle.Tensor0SSpace s I x) (v : Fin s → TangentSpace I x) :
+    T v = Tensor0SBundle.Tensor0SSpace.toModel T (fun i => ((v i : TangentSpace I x) : E)) := rfl
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private theorem fiberNormSqComponent_order0CometricTraced_eq
+    (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+    (A : Tensor0SBundle.TensorRSSpace 1 2 I x)
+    (DA : Tensor0SBundle.TensorRSSpace 1 3 I x)
+    (n : ℕ) (e : Fin n → TangentSpace I x) (K J : Fin 2 → Fin n) :
+    fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
+        ((ricciCometricFourTraceCLM (I := I) g₁ x).comp
+          (linearizedRicciConnDiffOrder0CLM (I := I) x A DA)) n e K J =
+      Tensor0SBundle.Tensor0SSpace.toModel
+        (ricciCometricFourTraceCLM (I := I) g₁ x
+          (linearizedRicciConnDiffOrder0CLM (I := I) x A DA
+            (coframeS (I := I) (M := M) g₀ x 2 e K)))
+        (fun j => ((e (J j) : TangentSpace I x) : E)) := by
+  unfold fiberNormSqComponent
+  rw [ContinuousLinearMap.comp_apply]
+  have hcoframe :
+      (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 2) ℝ).compContinuousLinearMap
+          (fun k => g₀.inner x (e (K k))) =
+        coframeS (I := I) (M := M) g₀ x 2 e K := rfl
+  rw [hcoframe]
+  exact tensor0SSpace_apply_eq_toModel _ _
+
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnDiffFib_of_jetEnvelope
@@ -331,7 +365,10 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnDif
             (ricciCometricFourTraceCLM (I := I) g₁ x
               (linearizedRicciConnDiffOrder0CLM (I := I) x A DAv
                 (coframeS (I := I) (M := M) g₀ x 2 e K)))
-            (fun j => ((e (J j) : TangentSpace I x) : E)) := rfl
+        (fun j => ((e (J j) : TangentSpace I x) : E)) := by
+        rw [linearizedRicciConnDiffOrder0CometricTracedCLM]
+        rw [← hAset, ← hDAset]
+        exact fiberNormSqComponent_order0CometricTraced_eq g₀ g₁ x A DAv _ e K J
       have hfpb := fibPointwiseBound_order0CLM (I := I) g₀ x e horth hrepr_v A hCA_nn hpwA'
         DAv hCcd0 hDAf (fibPointwiseBound_coframe (I := I) g₀ x 2 e horth K)
       have hb := fourTrace_toModel_bound (I := I) g₀ g₁ x e horth hrepr_v hq0 hqb hfpb

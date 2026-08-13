@@ -85,10 +85,6 @@ private lemma inner_le_opNorm_sq
     _ ≤ (‖g.inner p‖ * ‖x‖) * ‖x‖ := hmul
     _ = ‖g.inner p‖ * ‖x‖ ^ 2 := by ring
 
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
 theorem exists_unitCoeff_ge
@@ -176,8 +172,6 @@ theorem exists_unitCoeff_le
           rfl
     _ ≤ D := Real.sqrt_le_sqrt hinner_le
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
 theorem exists_unitCoeff_bounds
@@ -194,8 +188,6 @@ theorem exists_unitCoeff_bounds
   rcases exists_unitCoeff_ge (I := I) g p with ⟨B₀, hB₀_pos, hB₀⟩
   rcases exists_unitCoeff_le (I := I) g p with ⟨D, hD_nonneg, hD⟩
   exact ⟨B₀, D, hB₀_pos, hD_nonneg, hB₀, hD⟩
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma unitDirScaleSmall {r : ℝ} (hr : 0 < r) :
@@ -223,12 +215,6 @@ lemma unitDirScaleSmall {r : ℝ} (hr : 0 < r) :
           mul_lt_mul_of_pos_left hdir_lt ha_pos
     _ = r := by field_simp [ne_of_gt hden_pos]
 
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
 lemma dir_deriv_radius
@@ -248,9 +234,6 @@ lemma dir_deriv_radius
   intro v hv
   simpa [radialCurve] using
     hderivRadius x (∑ i, v i • (chartModelBasis E) i) hx (hdirSmall v hv)
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -279,10 +262,6 @@ lemma dir_init_ge
   rw [hderiv v hv]
   exact hB v hv
 
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem exists_dirInit_ge
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
@@ -303,15 +282,6 @@ theorem exists_dirInit_ge
                 (∑ i, v i • (chartModelBasis E) i)) 0)) := by
   rcases exists_unitCoeff_ge (I := I) g p with ⟨B, hBpos, hB⟩
   exact ⟨B, hBpos, dir_init_ge (I := I) g p x hB hderiv⟩
-
-
-
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -386,8 +356,6 @@ theorem radialJacobi_bounds_at
       (radialJacobiField (I := I) g p x w) hK hb hpar hON hFdiff hJdiff
       hDJdiff hODE (radialJacobi_zero (I := I) g p x w) rfl
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem radialJacobi_bounds
@@ -458,11 +426,6 @@ theorem radialJacobi_bounds
   refine radialJacobi_bounds_at (I := I) g p x w hK hb (fun t _ => ?_) hcard F
     hpar hON hFdiff hJdiff hDJdiff hODE
   exact hγ.contMDiffAt
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -536,8 +499,6 @@ theorem radialJacobi_one_bounds_at
   constructor
   · simpa using hbounds.1 1 h1
   · simpa using hbounds.2 1 h1
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -682,11 +643,6 @@ theorem radialJacobi_one_le_at
     rw [← radialCurve_one (I := I) g p x]
     exact hbounds.1
   exact hupper.trans hB
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -836,11 +792,6 @@ theorem radialJacobi_one_ge_at
     exact hbounds.2
   exact hB.trans hlower
 
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem radialJacobi_one_ge
@@ -989,11 +940,6 @@ theorem radialJacobi_sq_ge_at
     · exact (g.pos q J hJ).le
   rw [← radialCurve_one (I := I) g p x]
   simpa [hq, hJdef] using hsq.trans_eq (Real.sq_sqrt hJ_nonneg)
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1145,12 +1091,6 @@ theorem radialJacobi_dir_ge_at
     hB_nonneg hK hb h1b hγ hcard F hpar hON hFdiff (hJdiff v hv)
     (hDJdiff v hv) (hODE v hv) (hB v hv)
 
-
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem radialJacobi_dir_ge
@@ -1284,10 +1224,6 @@ theorem radialJacobi_fin_le_at
   intro k
   exact radialJacobi_one_le_at (I := I) g p x ((chartModelBasis E) k) hK hb h1b hγ
     hcard F hpar hON hFdiff (hJdiff k) (hDJdiff k) (hODE k) (hB k)
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1424,12 +1360,6 @@ theorem radialJacobi_fin_le_of_init_bound_at
           add_le_add hvA hgb
     _ ≤ B := hmodel
 
-
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem radialJacobi_fin_le_of_init_bound
@@ -1505,13 +1435,6 @@ theorem radialJacobi_fin_le_of_init_bound
           add_le_add hvA hgb
     _ ≤ B := hmodel
 
-
-
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma radialJacobi_init_le_of_deriv_eq
@@ -1532,12 +1455,6 @@ lemma radialJacobi_init_le_of_deriv_eq
   rw [radialCurve_zero (I := I) g p x]
   rw [hderiv k]
   exact hbasis k
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in

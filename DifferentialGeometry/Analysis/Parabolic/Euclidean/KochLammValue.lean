@@ -2,14 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammEarly
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateFull
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammPotential
 
-/-!
-# The full ordinary Koch--Lamm value potential
-
-This file joins the initial and terminal halves of the ordinary-source heat
-potential at an arbitrary positive time.  The terminal radius is `sqrt t`, so
-both source estimates are used on the same original horizon.
--/
-
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 open MeasureTheory Set
@@ -25,16 +17,10 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- The ordinary-source value potential, split at half of the observation
-time.  The two terms are the already realized early and full terminal
-potentials. -/
 def klHeat0 (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
   heatEarly0 t f x + klLateFull0 (Real.sqrt t) f x
 
 omit [CompleteSpace F] in
-/-- The ordinary heat integrand is Bochner integrable on the complete early
-half-slab.  This is the integrability statement needed to identify the split
-potential with the usual Duhamel integral. -/
 theorem klEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (h : KLSource0 T A₁ A_q f) :
@@ -86,8 +72,6 @@ theorem klEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
   simpa only [q] using hfinite
 
 omit [CompleteSpace F] in
-/-- The same ordinary heat integrand is Bochner integrable on the terminal
-half-slab, with the terminal radius chosen as `sqrt t`. -/
 theorem klLate0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (h : KLSource0 T A₁ A_q f) :
@@ -102,9 +86,6 @@ theorem klLate0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
   simpa only [Real.sq_sqrt ht.le] using hi
 
 omit [CompleteSpace F] in
-/-- The split ordinary potential is exactly the original Duhamel heat
-potential.  Thus the early/terminal estimates apply to the canonical linear
-solution operator, rather than to a separately defined surrogate. -/
 theorem klHeat0_eq_heatPot {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (h : KLSource0 T A₁ A_q f) :
@@ -154,8 +135,6 @@ theorem klHeat0_eq_heatPot {T t : ℝ} {A₁ A_q : ℝ≥0}
   rw [intervalIntegral.integral_of_le ht.le, ← hprod, hsplit, hlateEq]
 
 omit [CompleteSpace F] in
-/-- The full ordinary-source value potential is bounded by the sum of the
-local `L¹` and terminal `L^((n+4)/2)` Koch--Lamm radii. -/
 theorem klHeat0_norm {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (h : KLSource0 T A₁ A_q f) :

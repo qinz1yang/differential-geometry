@@ -1,5 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothing
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerModeEndpoint
+
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -10,119 +14,49 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 section Scalar
 
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 
-def duhamelKernelSqIntegral (lam t : ℝ) : ℝ :=
-  ∫ s in (0 : ℝ)..t, Real.exp (-(2 * lam * (t - s)))
+abbrev duhamelKernelSqIntegral :=
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.duhamelKernelSqIntegral
 
 theorem two_lambda_mul_duhamelKernelSqIntegral (lam t : ℝ) :
-    (2 * lam) * duhamelKernelSqIntegral lam t = 1 - Real.exp (-(2 * lam * t)) := by
-  unfold duhamelKernelSqIntegral
-  rw [← intervalIntegral.integral_const_mul]
-  exact kernelIntegral_space (2 * lam) t
+    (2 * lam) * duhamelKernelSqIntegral lam t = 1 - Real.exp (-(2 * lam * t)) :=
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.two_lambda_mul_duhamelKernelSqIntegral
+    lam t
 
 theorem duhamelKernelSqIntegral_nonneg {lam t : ℝ} (ht : 0 ≤ t) :
-    0 ≤ duhamelKernelSqIntegral lam t := by
-  unfold duhamelKernelSqIntegral
-  exact intervalIntegral.integral_nonneg ht (fun s _ => (Real.exp_pos _).le)
+    0 ≤ duhamelKernelSqIntegral lam t :=
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.duhamelKernelSqIntegral_nonneg ht
 
 theorem duhamelKernelSqIntegral_le_t {lam t : ℝ} (hlam : 0 ≤ lam) (ht : 0 ≤ t) :
-    duhamelKernelSqIntegral lam t ≤ t := by
-  unfold duhamelKernelSqIntegral
-  calc ∫ s in (0 : ℝ)..t, Real.exp (-(2 * lam * (t - s)))
-      ≤ ∫ _s in (0 : ℝ)..t, (1 : ℝ) := by
-        refine intervalIntegral.integral_mono_on ht
-          (Continuous.intervalIntegrable (by fun_prop) 0 t)
-          intervalIntegral.intervalIntegrable_const (fun s hs => ?_)
-        refine Real.exp_le_one_iff.mpr ?_
-        have : 0 ≤ 2 * lam * (t - s) := by nlinarith [hs.1, hs.2]
-        linarith
-    _ = t := by simp
+    duhamelKernelSqIntegral lam t ≤ t :=
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.duhamelKernelSqIntegral_le_t hlam ht
 
 theorem one_add_lambda_mul_duhamel_kernel_sq_integral_le {lam t : ℝ}
     (hlam : 0 ≤ lam) (ht : 0 ≤ t) :
-    (1 + lam) * duhamelKernelSqIntegral lam t ≤ t + 1 / 2 := by
-  have hmass_nn : 0 ≤ duhamelKernelSqIntegral lam t :=
-    duhamelKernelSqIntegral_nonneg ht
-  have hmass_le_t : duhamelKernelSqIntegral lam t ≤ t :=
-    duhamelKernelSqIntegral_le_t hlam ht
-  have hlam_mass : lam * duhamelKernelSqIntegral lam t ≤ 1 / 2 := by
-    have h := two_lambda_mul_duhamelKernelSqIntegral lam t
-    have hexp_nn : (0 : ℝ) ≤ Real.exp (-(2 * lam * t)) := (Real.exp_pos _).le
-    nlinarith [h, hexp_nn]
-  have hexpand : (1 + lam) * duhamelKernelSqIntegral lam t
-      = duhamelKernelSqIntegral lam t + lam * duhamelKernelSqIntegral lam t := by
-    ring
-  rw [hexpand]; linarith
+    (1 + lam) * duhamelKernelSqIntegral lam t ≤ t + 1 / 2 :=
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.one_add_lambda_mul_duhamel_kernel_sq_integral_le
+    hlam ht
 
 variable {f : ℝ → ℝ}
 
 theorem perModeConv_endpoint_sq_le (lam : ℝ) (hf : Continuous f) {t : ℝ}
     (ht : 0 ≤ t) :
     (perModeConv lam f t) ^ 2
-      ≤ duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, f s ^ 2 := by
-  set k : ℝ → ℝ := fun s => Real.exp (-(lam * (t - s))) with hk_def
-  have hconv_eq : perModeConv lam f t = ∫ s in (0 : ℝ)..t, k s * f s := rfl
-  set A : ℝ := ∫ s in (0 : ℝ)..t, f s ^ 2 with hA
-  set B : ℝ := ∫ s in (0 : ℝ)..t, k s * f s with hB
-  set C : ℝ := ∫ s in (0 : ℝ)..t, k s ^ 2 with hC
-  have hC_eq : C = duhamelKernelSqIntegral lam t := by
-    rw [hC]; unfold duhamelKernelSqIntegral
-    refine intervalIntegral.integral_congr (fun s _ => ?_)
-    rw [hk_def, ← Real.exp_nat_mul]
-    congr 1; push_cast; ring
-  have hquad : ∀ c : ℝ, 0 ≤ A * (c * c) + (-(2 * B)) * c + C := by
-    intro c
-    have hintegrand : (fun s => (k s - c * f s) ^ 2)
-        = fun s => (c * c) * f s ^ 2 + (-(2 * c)) * (k s * f s) + k s ^ 2 := by
-      funext s; ring
-    have hi_f2 : IntervalIntegrable (fun s => f s ^ 2) volume 0 t :=
-      ((hf.pow 2)).intervalIntegrable 0 t
-    have hi_kf : IntervalIntegrable (fun s => k s * f s) volume 0 t := by
-      apply Continuous.intervalIntegrable; rw [hk_def]; fun_prop
-    have hi_k2 : IntervalIntegrable (fun s => k s ^ 2) volume 0 t := by
-      apply Continuous.intervalIntegrable; rw [hk_def]; fun_prop
-    have hexpand : (∫ s in (0 : ℝ)..t, (k s - c * f s) ^ 2)
-        = (c * c) * A + (-(2 * c)) * B + C := by
-      rw [hintegrand,
-        intervalIntegral.integral_add
-          ((hi_f2.const_mul (c * c)).add (hi_kf.const_mul (-(2 * c)))) hi_k2,
-        intervalIntegral.integral_add (hi_f2.const_mul (c * c))
-          (hi_kf.const_mul (-(2 * c))),
-        intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
-    have hnonneg : 0 ≤ ∫ s in (0 : ℝ)..t, (k s - c * f s) ^ 2 :=
-      intervalIntegral.integral_nonneg ht (fun s _ => sq_nonneg _)
-    rw [hexpand] at hnonneg
-    nlinarith [hnonneg]
-  have hdiscrim : discrim A (-(2 * B)) C ≤ 0 :=
-    discrim_le_zero (fun c => by nlinarith [hquad c])
-  rw [discrim] at hdiscrim
-  rw [hC_eq] at hdiscrim
-  rw [hconv_eq]
-  nlinarith [hdiscrim]
+      ≤ duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, f s ^ 2 :=
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.perModeConv_endpoint_sq_le lam hf ht
 
 theorem one_add_lambda_mul_perModeConv_endpoint_sq_le (lam : ℝ)
     (hlam : 0 ≤ lam) (hf : Continuous f) {t : ℝ} (ht : 0 ≤ t) :
     (1 + lam) * (perModeConv lam f t) ^ 2
-      ≤ (t + 1 / 2) * ∫ s in (0 : ℝ)..t, f s ^ 2 := by
-  have hcs := perModeConv_endpoint_sq_le (f := f) lam hf ht
-  have hkernel := one_add_lambda_mul_duhamel_kernel_sq_integral_le hlam ht
-  have hf2_nn : 0 ≤ ∫ s in (0 : ℝ)..t, f s ^ 2 :=
-    intervalIntegral.integral_nonneg ht (fun s _ => sq_nonneg _)
-  have h1plus_nn : 0 ≤ 1 + lam := by linarith
-  calc (1 + lam) * (perModeConv lam f t) ^ 2
-      ≤ (1 + lam) * (duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, f s ^ 2) :=
-        mul_le_mul_of_nonneg_left hcs h1plus_nn
-    _ = ((1 + lam) * duhamelKernelSqIntegral lam t) * ∫ s in (0 : ℝ)..t, f s ^ 2 := by
-        ring
-    _ ≤ (t + 1 / 2) * ∫ s in (0 : ℝ)..t, f s ^ 2 :=
-        mul_le_mul_of_nonneg_right hkernel hf2_nn
+      ≤ (t + 1 / 2) * ∫ s in (0 : ℝ)..t, f s ^ 2 :=
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.one_add_lambda_mul_perModeConv_endpoint_sq_le
+    lam hlam hf ht
 
 end Scalar
 
@@ -145,7 +79,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem duhamel_endpoint_value_weighted_summable
     {g : SmoothRiemannianMetric I M} {r s : ℕ} (c : ℝ) {t : ℝ} (ht : 0 ≤ t)
@@ -196,7 +129,6 @@ def duhamelValueHs {g : SmoothRiemannianMetric I M} {r s : ℕ} (c : ℝ)
   weighted_summable :=
     duhamel_endpoint_value_weighted_summable (I := I) (M := M) c ht φ hφ hmass
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem duhamelValueHs_coeff {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (c : ℝ) {t : ℝ} (ht : 0 ≤ t)
@@ -209,7 +141,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     (duhamelValueHs (I := I) (M := M) c ht φ hφ hmass).coeff i =
       perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem duhamel_endpoint_value_summable_sq
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {c : ℝ} (hc : 0 ≤ c) {t : ℝ}
@@ -224,7 +155,6 @@ theorem duhamel_endpoint_value_summable_sq
   tensorHs.coeff_summable_sq_of_nonneg (I := I) (M := M) (by linarith : 0 ≤ c + 1)
     (duhamelValueHs (I := I) (M := M) c ht φ hφ hmass)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem duhamel_into_all_tensorHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {t : ℝ} (ht : 0 ≤ t)
@@ -308,11 +238,33 @@ theorem duhamel_into_all_tensorHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
     hu_coeff i]
   rfl
 
+theorem exists_smooth_tensor_representative_of_duhamel_smoothing
+    {g : SmoothRiemannianMetric I M} {r s : ℕ} {t : ℝ} (ht : 0 ≤ t)
+    (h_gate : SpectralSmoothRealizesAsSmooth (I := I) (M := M) g r s)
+    (φ : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
+    (hφ : ∀ i, Continuous (φ i))
+    (hsmooth : ∀ c : ℝ, 0 ≤ c →
+      Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
+        tensorSobolevWeight (I := I) (M := M) i c *
+          ∫ q in (0 : ℝ)..t, (φ i q) ^ 2)) :
+    ∃ T : SmoothCcTensor g r s,
+      ∀ i, tensorL2Coeff (I := I) (M := M)
+          (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
+          (T : TensorL2 r s g) i =
+        perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t := by
+  obtain ⟨u, hu_coeff, hu_all⟩ :=
+    duhamel_into_all_tensorHs (I := I) (M := M) ht
+      (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
+      φ hφ hsmooth
+  obtain ⟨T, hT⟩ := h_gate u hu_all
+  refine ⟨T, fun i => ?_⟩
+  rw [hT]
+  exact hu_coeff i
+
 end Assembly
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

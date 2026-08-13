@@ -4,17 +4,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicciFromJets
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import Mathlib.Order.Filter.AtTopBot.CountablyGenerated
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -23,9 +15,9 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Set Filter
 open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.HCGCompactness
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
@@ -34,11 +26,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
-variable [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
     [BoundarylessManifold I M]
-
-
-
 
 theorem ricci_tendsto_left
     {alpha omega : Real} {hAlphaOmega : alpha < omega}

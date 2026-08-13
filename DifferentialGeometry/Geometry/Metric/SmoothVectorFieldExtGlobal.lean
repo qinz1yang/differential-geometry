@@ -2,26 +2,6 @@ import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExt
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.BumpFunction
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 

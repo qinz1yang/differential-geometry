@@ -3,15 +3,8 @@ import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import Mathlib.Analysis.Convex.Deriv
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -22,7 +15,8 @@ namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
@@ -80,9 +74,6 @@ private theorem deriv_comp_grad
   exact (gradFun_metricDual (I := I) g f (γ t)
     ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1)).symm
 
-
-
-
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem deriv2_comp_geo
@@ -138,8 +129,6 @@ theorem deriv2_comp_geo
       simpa only [W, gradient_eq_gradFun] using
         (hessFun_eq_cov_grad (I := I) g hf (γ t) (W t) (W t)).symm
 
-
-
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem deriv2_comp_geo_on
@@ -165,8 +154,6 @@ theorem deriv2_comp_geo_on
         ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1)
         ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1) := by
       rw [hessFun_congr (I := I) g hFf]
-
-
 
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in

@@ -6,6 +6,7 @@ noncomputable section
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix
 
+open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
 namespace Integral
 namespace DivergenceTheorem

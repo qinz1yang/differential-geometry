@@ -1,29 +1,26 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegCoeffJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTower
-
-/-!
-# Low-regularity insertion-difference coefficient
-
-This file bounds the cancellation-preserving background difference of the
-two-slot `lieCorr0` insertion coefficient.  The exact refolds in
-the Lie-correction background-difference identities remove the self-background top derivative before any norm
-estimate is taken.  Consequently the complete `H1` bound depends only on the
-metric `H2` radius.
--/
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+    DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -31,7 +28,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -185,8 +182,6 @@ private theorem grid_h1_low
   exact Finset.sum_le_sum fun k hk =>
     (hgrid k (by have := Finset.mem_range.mp hk; omega)).2
 
-/-- The moving-to-frozen connection-difference section has an `H1` bound
-from only the metric `H2` jet. -/
 theorem connSec_h1
     (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -236,8 +231,6 @@ theorem connSec_h1
     simp only [B, Real.sq_sqrt (hQ R hR)]]
   exact hle
 
-/-- The lowered-connection background difference is `H2`-controlled by only
-the metric `H2` radius. -/
 theorem kappaDiff_h2
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) :
@@ -285,7 +278,7 @@ theorem kappaDiff_h2
     simp only [B, Real.sq_sqrt (hQ R)]]
   simpa only [Q, AF, Real.sq_sqrt hSF] using hle
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
 private theorem normSq_scaled
     (g : SmoothRiemannianMetric I M) (r₁ s₁ r₂ s₂ : ℕ)
@@ -336,8 +329,6 @@ private theorem slotIns_h1
       simpa only [pow_one] using h
     _ = _ := by rw [Finset.mul_sum]
 
-/-- The complete insertion background difference has a uniform intrinsic
-`H1` bound depending only on the perturbation `H2` radius. -/
 theorem insert_h1
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -518,6 +509,6 @@ theorem insert_h1
     dsimp only [B]
     ring)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.PDE.RicciFlow
 
 end

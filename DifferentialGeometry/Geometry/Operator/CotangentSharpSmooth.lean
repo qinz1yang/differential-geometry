@@ -3,78 +3,23 @@ import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
+open DifferentialGeometry.Integral.DivergenceTheorem
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Operator
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
-
-
-
-
-
-
-
-
 
 omit [InnerProductSpace ℝ E] in
 theorem cotangentSharp_gen_eq_metricSharp
@@ -89,8 +34,6 @@ theorem cotangentSharp_gen_eq_metricSharp
   rw [cotangentSharp_inner_gen (I := I) g x β w,
     inner_metricSharp (I := I) g x (cotangentToDual_gen (I := I) β) w]
 
-
-
 omit [InnerProductSpace ℝ E] in
 theorem cotangentToDual_gen_chartBasis_eval
     (α : M) (j : Fin (Module.finrank ℝ E))
@@ -98,16 +41,6 @@ theorem cotangentToDual_gen_chartBasis_eval
     cotangentToDual_gen (I := I) (β b) (chartBasisVecFiber (I := I) α j b) =
       β b (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b) :=
   cotangentToDual_apply_gen (I := I) (β b) (chartBasisVecFiber (I := I) α j b)
-
-
-
-
-
-
-
-
-
-
 
 omit [InnerProductSpace ℝ E] in
 theorem cotangentSharp_gen_contMDiff_total [I.Boundaryless]
@@ -148,11 +81,6 @@ theorem cotangentSharp_gen_contMDiff_total [I.Boundaryless]
   rw [hsection_eq]
   exact hmetric
 
-
-
-
-
-
 omit [InnerProductSpace ℝ E] in
 theorem cotangentSharp_gen_mdiffAt [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
@@ -166,6 +94,6 @@ theorem cotangentSharp_gen_mdiffAt [I.Boundaryless]
   (cotangentSharp_gen_contMDiff_total (I := I) g hβ).contMDiffAt.mdifferentiableAt
     (by simp)
 
-end DivergenceTheorem
-end Integral
+end Operator
+end Geometry
 end DifferentialGeometry

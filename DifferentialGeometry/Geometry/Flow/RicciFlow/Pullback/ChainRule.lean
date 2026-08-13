@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Metric.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.Formula
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Metric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Pullback.Cartan.Formula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.TimeDerivativeChainRule
-import DifferentialGeometry.Geometry.Flow.LieDerivativeMetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeMetric
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Calculus.Deriv.Mul

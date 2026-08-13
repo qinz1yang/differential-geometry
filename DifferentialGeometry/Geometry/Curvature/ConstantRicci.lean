@@ -1,20 +1,16 @@
 import DifferentialGeometry.Geometry.Curvature.MetricSectional
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
+open DifferentialGeometry.Geometry.Curvature
 
-/-!
-# Ricci curvature of a constant-curvature metric
-
-This file contracts the invariant constant-curvature operator formula to the
-corresponding Ricci tensor and lower bound.
--/
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 open Bundle
 open scoped Manifold ContDiff
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -27,8 +23,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-/-- The constant-curvature operator formula contracts to
-`Ric = (dim - 1) c g`. -/
 theorem ricci_of_op
     (g : SmoothRiemannianMetric I M) (x : M) (c : ℝ)
     (hOp : ∀ X Y Z : TangentSpace I x,
@@ -70,8 +64,6 @@ theorem ricci_of_op
   ring
 
 omit [SigmaCompactSpace M] in
-/-- A full lowered constant-curvature formula implies
-`Ric = (dim - 1) c g`. -/
 theorem ricci_of_rm
     (g : SmoothRiemannianMetric I M) (x : M) (c : ℝ)
     (hRm : ∀ X Y Z W : TangentSpace I x,
@@ -85,8 +77,6 @@ theorem ricci_of_rm
   · exact riemannOp_of_rm (I := I) (M := M) g x c hRm
 
 omit [SigmaCompactSpace M] in
-/-- A constant sectional-curvature numerator identity gives the exact Ricci
-tensor formula. -/
 theorem ricci_of_sec
     (g : SmoothRiemannianMetric I M) (c : ℝ)
     (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
@@ -100,8 +90,6 @@ theorem ricci_of_sec
   exact metricRm_of_sec (I := I) (M := M) g x c (hsec x)
 
 omit [SigmaCompactSpace M] in
-/-- A constant sectional-curvature numerator identity supplies the matching
-global lower Ricci bound. -/
 theorem ricciBound_of_sec
     (g : SmoothRiemannianMetric I M) (c : ℝ)
     (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
@@ -113,6 +101,6 @@ theorem ricciBound_of_sec
   intro x v
   rw [ricci_of_sec (I := I) g c hsec x v v]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature
 
 end

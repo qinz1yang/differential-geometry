@@ -1,11 +1,13 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorManifoldSobolevAggregate
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
 namespace DifferentialGeometry
@@ -37,7 +39,6 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
 open scoped Classical in
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum_basisVec_coeff_apply
     (σ : ℝ) (S : Finset (TensorEigenIdx (I := I) (M := M) g r s))
@@ -59,7 +60,6 @@ private lemma sum_basisVec_coeff_apply
 end TensorHsSmoothReprAux
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHs_eq_finset_sum_of_finite_support
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -96,7 +96,7 @@ theorem tensorHs_eq_finset_sum_of_finite_support
       · simp [h]
     rw [hzero, h_rhs_zero]
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 namespace TensorHsSmoothReprAux
 

@@ -1,13 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.EigenvectorTensorHsToWtwokTwo
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -15,11 +8,11 @@ open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -30,8 +23,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-
 
 theorem cc_iter_coeff
     (g : SmoothRiemannianMetric I M) (s n : ℕ)
@@ -88,8 +79,6 @@ theorem cc_l2_pair_tsum
   rw [show (⟪SmoothCcTensor.toL2 A, b i⟫_ℝ : ℝ) =
       ⟪b i, SmoothCcTensor.toL2 A⟫_ℝ from real_inner_comm _ _]
 
-
-
 theorem cc_pair_tsum
     (g : SmoothRiemannianMetric I M) (s n : ℕ)
     (U A : SmoothCcTensor g 0 s) :
@@ -117,8 +106,6 @@ theorem cc_pair_tsum
     rw [Real.rpow_natCast]
   rw [hweight]
   ring
-
-
 
 theorem finite_repr_norm
     (g : SmoothRiemannianMetric I M) (s m : ℕ)
@@ -160,9 +147,6 @@ theorem finite_repr_norm
         by_contra hne
         exact hi (hT.mem_toFinset.mpr (Function.mem_support.mpr hne))
       norm_num [hcoeff]
-
-
-
 
 theorem finite_cc_pair
     (g : SmoothRiemannianMetric I M) (s n : ℕ)
@@ -215,6 +199,6 @@ theorem finite_cc_pair
         (cc_pair_tsum (I := I) (M := M) g s n
           (tensorHsSmoothRepr (I := I) (M := M) T hT) A)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

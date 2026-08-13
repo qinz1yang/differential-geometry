@@ -1,18 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1Producers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCNormalBump
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCWeights
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -29,15 +20,11 @@ section AlgebraCompat
 
 variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace Real E']
 
-
-
 omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
 theorem raw_eq_normWeights {ι : Type uι} [Fintype ι]
     (num : ι → E' → Real) (z : E') (i : ι) :
     rawWeights num z i = normWeights num i z := by
   rfl
-
-
 
 omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
 theorem cutRaw_eq_bumpNum {ι : Type uι} [DecidableEq ι]
@@ -49,8 +36,6 @@ theorem cutRaw_eq_bumpNum {ι : Type uι} [DecidableEq ι]
   · subst i
     simp [cutRaw, bumpNum]
   · simp [cutRaw, bumpNum, hi]
-
-
 
 omit [NormedAddCommGroup E'] [NormedSpace ℝ E'] in
 theorem rawBump_eq_weight {ι : Type uι} [Fintype ι] [DecidableEq ι]
@@ -78,8 +63,6 @@ variable {I0 : ModelWithCorners Real E0 H0} [I0.Boundaryless]
 variable {M0 : Type u} [TopologicalSpace M0] [ChartedSpace H0 M0]
 variable [IsManifold I0 ∞ M0] [T2Space M0] [T2Space (TangentBundle I0 M0)]
 
-
-
 omit [T2Space M0] in
 omit [NeZero (Module.finrank ℝ E0)] in
 theorem normalRaw_eq_bump {ι : Type*} [DecidableEq ι]
@@ -94,8 +77,6 @@ theorem normalRaw_eq_bump {ι : Type*} [DecidableEq ι]
           ((normalChartAt (I := I0) g (p β)).symm v)) i0 i z := by
   simpa only [bumpNum] using
     (normalRaw_readout (I := I0) (z := z) g p cut f i0 β i hsrc)
-
-
 
 omit [T2Space M0] in
 omit [NeZero (Module.finrank ℝ E0)] in

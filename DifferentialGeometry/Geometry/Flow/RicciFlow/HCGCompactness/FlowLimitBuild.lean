@@ -3,27 +3,13 @@ import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -34,7 +20,8 @@ namespace DifferentialGeometry
 namespace PDE
 namespace RicciFlow
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 
 universe u uE uH
 
@@ -48,29 +35,13 @@ variable [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 variable [BoundarylessManifold I M]
 variable [IsManifold I 1 M]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem isSolutionOn_of_reg
     {D : RealTimeInterval}
     (g : Real -> SmoothRiemannianMetric I M)
     (hsmooth : MetricFamilySmoothOn (I := I) (M := M) D
-      ({ base := { metric := g } } : SolutionOn (I := I) (M := M) D).family)
+      ({ base := { metric := g } } : SolutionOn (I := I) (M := M) D).family.metric)
     (hpde : ∀ t ∈ D.regular, ∀ (x : M) (v w : TangentSpace I x),
       HasDerivAt (fun s : Real => (g s).inner x v w)
         ((-2 : Real) * ricciTensor (I := I) (g t) x v w) t)
@@ -98,7 +69,7 @@ theorem isSolutionOn_of_reg
       ricciNormGrad := ?_ }
   · intro t
     simpa [SolutionOn.family, SolutionFamily.connection,
-      RealizedMetricFamilyOn.connectionAt]
+      MetricConnectionFamilyOn.connectionAt]
       using leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I)
         (g (t : Real))
   · intro t x X Y
@@ -106,8 +77,7 @@ theorem isSolutionOn_of_reg
         ((-2 : Real) * ricciTensor (I := I) (g (t : Real)) x X Y)
         D.carrier (t : Real) :=
       (hpde (t : Real) t.2 x X Y).hasDerivWithinAt
-    simpa [SolutionFamily.ricciAt, metricRicciAt,
-      metricRicciAt_apply_eq_ricciTensor] using h
+    simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor] using h
   · exact hscalarCont.congr (fun q _ => rfl)
   · intro K t htK hKsub x
     exact (hscalarTime t (hKsub htK) x).mono hKsub
@@ -140,8 +110,6 @@ end PDE
 
 namespace HCGCompactness
 
-open DifferentialGeometry.Integral.Connection
-
 universe u uE uH
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -149,18 +117,8 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 
-
-
-
-
-
-
-
-
-
-
 def flowOfMetric
-    (D : DifferentialGeometry.Integral.Connection.RealTimeInterval)
+    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (g :
       letI : TopologicalSpace P.M := P.topology
@@ -207,10 +165,8 @@ def flowOfMetric
       DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := P.M) D)
   isSolution := hsol
 
-
-
 theorem flowOfMetric_metric
-    (D : DifferentialGeometry.Integral.Connection.RealTimeInterval)
+    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (g :
       letI : TopologicalSpace P.M := P.topology
@@ -251,12 +207,8 @@ theorem flowOfMetric_metric
     (flowOfMetric (I := I) D P g hsol).S.base.metric = g := by
   rfl
 
-
-
-
-
 theorem flowOfMetric_atTime
-    (D : DifferentialGeometry.Integral.Connection.RealTimeInterval)
+    (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (g :
       letI : TopologicalSpace P.M := P.topology

@@ -8,20 +8,8 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -42,18 +30,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
-
-
-
-
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
@@ -202,8 +183,6 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
   simp only [map_zero, ContinuousLinearMap.zero_apply, zero_add]
 
 omit [SigmaCompactSpace M] in
-/-- The Ricci trace over an orthonormal basis of the perpendicular complement
-holds for every nonzero vector, without normalizing it in the conclusion. -/
 theorem ricci_eq_sum_perp
     (g : SmoothRiemannianMetric I M) (x : M) (X : E)
     (hPos : 0 < g.inner x X X)
@@ -306,8 +285,6 @@ theorem ricci_eq_sum_perp
     _ = ricciTensor (I := I) g x X X := hric.symm
 
 omit [SigmaCompactSpace M] in
-/-- In model dimension one, every smooth Riemannian metric has Ricci curvature
-bounded below by zero. -/
 theorem ricciLower_dim1
     (g : SmoothRiemannianMetric I M)
     (h1 : Module.finrank ℝ E = 1) :
@@ -343,13 +320,6 @@ theorem ricciLower_dim1
     exact hsum.le
 
 omit [SigmaCompactSpace M] in
-/-- Pointwise integrand identity used by `sum_index_form_frame_evaluation`.
-At each `t ∈ [0, L]`, the sum of per-`i` index-form integrands for
-`V_i := sin(πt/L) • e_i` equals the trig–Ricci expression. Derivation:
-Leibniz on `chartCovDerivAlong g (γ t) γ (sin(π·/L) • e_i) t` combined
-with parallelism gives `∇_t V_i = (π/L) cos(πt/L) • e_i`; squaring via
-`hON` gives `‖∇_t V_i‖² = (π/L)² cos²(πt/L)`; the curvature sum
-collapses via `ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame`. -/
 theorem sum_index_form_integrand_eval
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     {L : ℝ} (_hL : 0 < L) (uPrime : ℝ → E)
@@ -624,19 +594,6 @@ theorem sum_index_form_integrand_eval
   rw [h_cast]
   ring
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [SigmaCompactSpace M] in
 theorem sum_index_form_frame_evaluation
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {L : ℝ} (hL : 0 < L)
@@ -747,16 +704,6 @@ theorem sum_index_form_frame_evaluation
       have hL_nonneg : (0 : ℝ) ≤ L := le_of_lt hL
       rw [Set.uIcc_of_le hL_nonneg] at ht
       exact hPointwise ht)
-
-
-
-
-
-
-
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem sum_index_form_bound_by_curvature_hypothesis
@@ -955,8 +902,7 @@ theorem bonnet_myers_length_le_of_ricci_bound
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [CompleteSpace E]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {L : ℝ} (_hL : 0 < L)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (_hγ_smooth : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
     (_hγ : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc 0 L))
     (_hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) {K : ℝ}

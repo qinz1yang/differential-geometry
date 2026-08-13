@@ -9,6 +9,14 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.ForcingFin
 import DifferentialGeometry.Analysis.Integration.L2.ForcingFiniteOrderTimeRegularityParametricIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.ForcingFiniteOrderTimeRegularitySpectralPath
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.ForcingFiniteOrderTimeRegularityEigenPairingBound
+open DifferentialGeometry.Analysis.Integration DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Sobolev.CSupTensor
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+    DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -18,9 +26,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -29,7 +36,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -333,17 +340,18 @@ private local instance tensorRSModelNormedSpace_local :
 
 section FiniteOrderReconJetEnergy
 
-open Tensor0SBundle TensorMultilinear
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorMultilinear
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 
 section FiniteOrderAnisotropicReconstruction
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (eigenvectorSmooth
   tensorChartComponentRaw tensorChartComponentProjection tensorChartBasisElement
   toEuclidean_extChartAt_mem_chartTargetEuclid)
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
 
@@ -713,7 +721,7 @@ private theorem anisoOn_chartGramOnE_realizePath
               (iteratedDeriv j (φ i) t) ^ 2 ≤ B i)
     (α : M) (a b : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T (interior (extChartAt I α).target)
-      (fun t y => Integral.DivergenceTheorem.chartGramOnE (I := I)
+      (fun t y => DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
         (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α a b y) := by
   have hV : IsOpen (interior (extChartAt I α).target) := isOpen_interior
   have hbase := DifferentialGeometry.Analysis.anisoOn_timeIndep (k := k) (T := T) hV
@@ -754,7 +762,7 @@ private theorem anisoOn_realizeGram_det
         (interior (extChartAt I α).target)
         (fun t y => (((Equiv.Perm.sign σp : ℤ) : ℝ)) *
           ∏ i : Fin (Module.finrank ℝ E),
-            Integral.DivergenceTheorem.chartGramOnE (I := I)
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α (σp i) i y) := by
     intro σp
     refine DifferentialGeometry.Analysis.AnisotropicJointContDiffOn.smul hV ?_ _
@@ -844,7 +852,7 @@ private theorem anisoOn_realizeGram_inv
               (iteratedDeriv j (φ i) t) ^ 2 ≤ B i)
     (α : M) (a b : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T (interior (extChartAt I α).target)
-      (fun t y => Integral.DivergenceTheorem.chartInvGramMatrix (I := I)
+      (fun t y => DifferentialGeometry.Geometry.Operator.chartInvGramMatrix (I := I)
         (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
         ((extChartAt I α).symm y) a b) := by
   classical
@@ -868,7 +876,8 @@ private theorem anisoOn_realizeGram_inv
   have hinv := hdet.inv hV hdet_ne
   have hadj := anisoOn_realizeGram_adjugate hT hδ_lt hδ hφ_smooth hcoeff hmodemass α a b
   refine (hinv.mul hV hadj).congr hV _ (fun t ht y hy => ?_)
-  rw [Integral.DivergenceTheorem.chartInvGramMatrix, Matrix.inv_def, Matrix.smul_apply, smul_eq_mul,
+  rw [DifferentialGeometry.Geometry.Operator.chartInvGramMatrix, Matrix.inv_def,
+    Matrix.smul_apply, smul_eq_mul,
     Ring.inverse_eq_inv]
 
 private theorem anisoOn_realize_chartChristoffel
@@ -888,7 +897,7 @@ private theorem anisoOn_realize_chartChristoffel
               (iteratedDeriv j (φ i) t) ^ 2 ≤ B i)
     (α : M) (i j c : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T (interior (extChartAt I α).target)
-      (fun t y => Integral.DivergenceTheorem.chartChristoffel (I := I)
+      (fun t y => DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
         (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j c y) := by
   classical
   have hV : IsOpen (interior (extChartAt I α).target) := isOpen_interior
@@ -899,17 +908,17 @@ private theorem anisoOn_realize_chartChristoffel
   have hterm : ∀ l : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
         (interior (extChartAt I α).target)
-        (fun t y => Integral.DivergenceTheorem.chartInvGramMatrix (I := I)
+        (fun t y => DifferentialGeometry.Geometry.Operator.chartInvGramMatrix (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
             ((extChartAt I α).symm y) c l *
           (DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E i)
-              (Integral.DivergenceTheorem.chartGramOnE (I := I)
+              (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α l j) y +
             DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E j)
-              (Integral.DivergenceTheorem.chartGramOnE (I := I)
+              (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α l i) y -
             DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E l)
-              (Integral.DivergenceTheorem.chartGramOnE (I := I)
+              (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j) y)) := by
     intro l
     refine (hinv c l).mul hV ?_
@@ -919,7 +928,7 @@ private theorem anisoOn_realize_chartChristoffel
   have hsum := (DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
     (fun l _ => hterm l)).smul hV (1 / 2 : ℝ)
   refine hsum.congr hV _ (fun t ht y hy => ?_)
-  rw [Integral.DivergenceTheorem.chartChristoffel_def]
+  rw [DifferentialGeometry.Geometry.Operator.chartChristoffel_def]
   rfl
 
 private theorem anisoOn_realize_chartDeTurckVFComp
@@ -946,18 +955,19 @@ private theorem anisoOn_realize_chartDeTurckVFComp
   have hterm : ∀ a b : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
         (interior (extChartAt I α).target)
-        (fun t y => Integral.DivergenceTheorem.chartInvGramMatrix (I := I)
+        (fun t y => DifferentialGeometry.Geometry.Operator.chartInvGramMatrix (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α
             ((extChartAt I α).symm y) a b *
-          (Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α a b c y -
-            Integral.DivergenceTheorem.chartChristoffel (I := I) g_bg α a b c y)) := by
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg α a b c y)) := by
     intro a b
     refine (anisoOn_realizeGram_inv hT hδ_lt hδ hφ_smooth hcoeff hmodemass α a b).mul hV ?_
     refine (anisoOn_realize_chartChristoffel hT hδ_lt hδ hφ_smooth hcoeff hmodemass
       α a b c).sub hV ?_
     exact DifferentialGeometry.Analysis.anisoOn_timeIndep hV
-      (Integral.DivergenceTheorem.chartChristoffel_contDiffOn_interior (I := I) g_bg α a b c)
+      (DifferentialGeometry.Geometry.Operator.chartChristoffel_contDiffOn_interior
+        (I := I) g_bg α a b c)
   have hsum := DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
     (fun a (_ : a ∈ Finset.univ) =>
       DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
@@ -999,19 +1009,19 @@ private theorem anisoOn_realize_chartRicci
         (interior (extChartAt I α).target)
         (fun t y =>
           DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E j)
-            (Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i c j) y -
           DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E c)
-            (Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j j) y +
           (∑ m : Fin (Module.finrank ℝ E),
-            (Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α j m j y *
-              Integral.DivergenceTheorem.chartChristoffel (I := I)
+              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i c m y -
-              Integral.DivergenceTheorem.chartChristoffel (I := I)
+              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α c m j y *
-              Integral.DivergenceTheorem.chartChristoffel (I := I)
+              DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
                 (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j m y))) := by
       refine (((hchr i c j).pdShift hV (chartModelBasis E j)).sub hV
         ((hchr i j j).pdShift hV (chartModelBasis E c))).add hV ?_
@@ -1057,14 +1067,14 @@ private theorem anisoOn_realize_chartLieDeTurckComp
         chartDeTurckVFComp (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) g_bg α c y *
           DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E c)
-            (Integral.DivergenceTheorem.chartGramOnE (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
               (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i j) y) :=
     DifferentialGeometry.Analysis.anisoOn_finsetSum hV Finset.univ
       (fun c _ => (hvf c).mul hV ((hgram i j).pdShift hV (chartModelBasis E c)))
   have h2 : DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
     (interior (extChartAt I α).target)
       (fun t y => ∑ c : Fin (Module.finrank ℝ E),
-        Integral.DivergenceTheorem.chartGramOnE (I := I)
+        DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α c j y *
           DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E i)
             (chartDeTurckVFComp (I := I)
@@ -1074,7 +1084,7 @@ private theorem anisoOn_realize_chartLieDeTurckComp
   have h3 : DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
     (interior (extChartAt I α).target)
       (fun t y => ∑ c : Fin (Module.finrank ℝ E),
-        Integral.DivergenceTheorem.chartGramOnE (I := I)
+        DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
             (tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hδ t)) α i c y *
           DifferentialGeometry.Analysis.dirDeriv (chartModelBasis E j)
             (chartDeTurckVFComp (I := I)
@@ -1173,7 +1183,7 @@ private lemma reconFO_raw_eq_chartRHS
         (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδS) g_bg α (Jdx 0) (Jdx 1)
         (extChartAt I α x) := by
   have hgood : x ∈ chartLeviCivitaGoodSet (I := I) α := by
-    rw [DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source
+    rw [DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source
       (I := I) α, extChartAt_source (I := I)]
     exact hx
   have hcongr := tensorChartComponentRaw_congr_toSection
@@ -1415,7 +1425,7 @@ private theorem anisoOn_pushed_oneMinusConnLapIter_reconFOPath
           chartLeviCivitaGoodSet (I := I) α := by
         constructor
         · exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hbU))
-        · rw [DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source
+        · rw [DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source
             (I := I) α]
           exact (extChartAt I α).map_target hbT
       set Qm : SmoothCcTensor g₀ 0 2 :=
@@ -2434,7 +2444,7 @@ private theorem deTurckRemainder_pathCoeff_finiteOrder_timeContDiff_withinMass
   set rawRaw : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ → ℝ :=
     fun i s => tensorL2Coeff (I := I) (M := M) hc
       (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
-        (DifferentialGeometry.Integral.Connection.rawTensorConnLapSmooth
+        (DifferentialGeometry.Analysis.Elliptic.rawTensorConnLapSmooth
           (I := I) g₀ 0 2 (F s))) i with hrawRaw_def
   set cpath : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ → ℝ :=
     fun i s => tensorL2Coeff (I := I) (M := M) hc
@@ -2445,7 +2455,7 @@ private theorem deTurckRemainder_pathCoeff_finiteOrder_timeContDiff_withinMass
     have hrem :
         deTurckSmoothRemainder (I := I) g₀ g_bg (F s) hδ_lt (hδ s)
           = deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s)
-            - DifferentialGeometry.Integral.Connection.rawTensorConnLapSmooth
+            - DifferentialGeometry.Analysis.Elliptic.rawTensorConnLapSmooth
                 (I := I) g₀ 0 2 (F s) := rfl
     simp only [hcpath_def, hreconRaw_def, hrawRaw_def]
     rw [hrem, SmoothCcTensor.toL2_sub]
@@ -3084,9 +3094,8 @@ theorem deTurckForcing_finiteOrderSmoothDriver
         hφ_cont hφ_mass hw_coeff
     exact ⟨ψ, hψ_smooth, hψ_mass, fun i => (hforce_coeff i).trans (hψ_ae i)⟩
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

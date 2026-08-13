@@ -1,13 +1,14 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Realized
 import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Topology Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -19,39 +20,25 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
 variable [SigmaCompactSpace M] [T2Space M]
 
-/-!
-# Differentiated second Bianchi identity
-
-This file differentiates the canonical lowered second Bianchi identity while
-keeping the new leading covariant-derivative slot fixed.  The result is the
-rank-six cyclic identity needed before contracting `∇²Rm04` in the
-arbitrary-dimensional Hamilton curvature evolution formula.
--/
-
-/-- Cyclically route the first three slots of a rank-five tensor. -/
 private def rmBianchiCyc : Fin 5 ≃ Fin 5 :=
   Equiv.ofBijective ![1, 2, 0, 3, 4] (by decide)
 
-/-- Apply the inverse cyclic routing to the first three rank-five slots. -/
 private def rmBianchiCyc2 : Fin 5 ≃ Fin 5 :=
   Equiv.ofBijective ![2, 0, 1, 3, 4] (by decide)
 
 omit [I.Boundaryless]
   [SigmaCompactSpace M] in
-/-- The second covariant derivative of canonical lowered Riemann satisfies the
-differentiated second Bianchi identity.  Its slots are
-`(outer derivative, inner derivative, X, Y, Z, W)`. -/
 theorem canRmSecond_nabla
     (g : SmoothRiemannianMetric I M)
     {x : M} (V A X Y Z W : TangentSpace I x) :
     let cov :=
-      DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric
+      DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
         (I := I) g
     let hcov :=
-      DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+      DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
         (I := I) (M := M) g
     let Rm04 : Tensor04Section (I := I) (M := M) :=
-      DifferentialGeometry.Integral.Connection.CovariantDerivative.rm04Section
+      DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section
         (I := I) g cov hcov
     let nablaRm04 : Tensor0SField (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5 :=
@@ -67,13 +54,13 @@ theorem canRmSecond_nabla
       nabla2Rm04 (Fin.cons V (vec5 (I := I) Y A X Z W)) = 0 := by
   classical
   let cov :=
-    DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric
+    DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
       (I := I) g
   let hcov :=
-    DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+    DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g
   let Rm04 : Tensor04Section (I := I) (M := M) :=
-    DifferentialGeometry.Integral.Connection.CovariantDerivative.rm04Section
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section
       (I := I) g cov hcov
   let nablaRm04 : Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5 :=
@@ -182,4 +169,4 @@ theorem canRmSecond_nabla
     rw [Function.comp_apply, cons_apply_frontExtendEquiv, htail]
   simpa [h1, h2] using heval
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

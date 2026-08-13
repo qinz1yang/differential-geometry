@@ -3,23 +3,15 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricKoszul
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open Bundle
@@ -72,10 +64,8 @@ private theorem tangentConst_model (z v : E) :
   simp
   rfl
 
-
-
 theorem const_flat_eq_koszul
-    (g : Measure.SmoothRiemannianMetric 𝓘(Real, E) E)
+    (g : SmoothRiemannianMetric 𝓘(Real, E) E)
     (B : E → E →L[Real] E →L[Real] Real)
     (hB : ∀ y : E, g.inner y = B y) {z : E}
     (hBdiff : DifferentiableAt Real B z) (v w : E) :
@@ -120,10 +110,8 @@ theorem const_flat_eq_koszul
   rw [MetricKoszul.koszulCov_apply]
   exact hKos
 
-
-
 theorem const_flat_eq_nhds
-    (g : Measure.SmoothRiemannianMetric 𝓘(Real, E) E)
+    (g : SmoothRiemannianMetric 𝓘(Real, E) E)
     (B : E → E →L[Real] E →L[Real] Real) {z : E}
     (hB : (fun y : E ↦ g.inner y) =ᶠ[nhds z] B)
     (hBdiff : DifferentiableAt Real B z) (v w : E) :
@@ -188,10 +176,8 @@ theorem const_flat_eq_nhds
   rw [MetricKoszul.koszulCov_apply]
   exact hKos
 
-
-
 theorem const_cov_eq_koszul
-    (g : Measure.SmoothRiemannianMetric 𝓘(Real, E) E)
+    (g : SmoothRiemannianMetric 𝓘(Real, E) E)
     (B : E → E →L[Real] E →L[Real] Real)
     (hB : ∀ y : E, g.inner y = B y) {z : E}
     (hBdiff : DifferentiableAt Real B z)
@@ -210,10 +196,8 @@ theorem const_cov_eq_koszul
       rw [const_flat_eq_koszul g B hB hBdiff v w]
     _ = MetricKoszul.koszulVec hco (fderiv Real B z) v w := rfl
 
-
-
 theorem const_cov_eq_nhds
-    (g : Measure.SmoothRiemannianMetric 𝓘(Real, E) E)
+    (g : SmoothRiemannianMetric 𝓘(Real, E) E)
     (B : E → E →L[Real] E →L[Real] Real) {z : E}
     (hB : (fun y : E ↦ g.inner y) =ᶠ[nhds z] B)
     (hBdiff : DifferentiableAt Real B z)
@@ -232,12 +216,9 @@ theorem const_cov_eq_nhds
       rw [const_flat_eq_nhds g B hB hBdiff v w]
     _ = MetricKoszul.koszulVec hco (fderiv Real B z) v w := rfl
 
-
-
-
 theorem cov_eq_fderiv_add
     [NeZero (Module.finrank Real E)]
-    (g : Measure.SmoothRiemannianMetric 𝓘(Real, E) E)
+    (g : SmoothRiemannianMetric 𝓘(Real, E) E)
     (B : E → E →L[Real] E →L[Real] Real) {z : E}
     (hB : (fun y : E ↦ g.inner y) =ᶠ[nhds z] B)
     (hBdiff : DifferentiableAt Real B z)
@@ -277,5 +258,5 @@ theorem cov_eq_fderiv_add
   exact congrArg (fun w ↦ fderiv Real V z v + w) hcorr
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

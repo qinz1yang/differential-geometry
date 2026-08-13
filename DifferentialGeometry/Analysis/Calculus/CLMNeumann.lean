@@ -4,13 +4,6 @@ import Mathlib.Topology.Algebra.Module.Equiv
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
 open scoped BigOperators
@@ -18,8 +11,6 @@ open scoped BigOperators
 namespace ContinuousLinearMap
 
 variable {ι E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-
 
 theorem invertible_of_id_sub [CompleteSpace E] {T : E →L[ℝ] E}
     (h : ‖ContinuousLinearMap.id ℝ E - T‖ < 1) : T.IsInvertible := by
@@ -33,8 +24,6 @@ theorem invertible_of_id_sub [CompleteSpace E] {T : E →L[ℝ] E}
   rw [← hu]
   ext v
   rfl
-
-
 
 theorem sum_near_neg [Fintype ι]
     (μ : ι → ℝ) (A : ι → E →L[ℝ] E) (η : ℝ)
@@ -62,8 +51,6 @@ theorem sum_near_neg [Fintype ι]
       exact mul_le_mul_of_nonneg_left (hA i) (hμ i)
     _ = η := by
       rw [← Finset.sum_mul, hsum, one_mul]
-
-
 
 theorem sum_near_neg_inv [Fintype ι] [CompleteSpace E]
     (μ : ι → ℝ) (A : ι → E →L[ℝ] E) (η : ℝ)

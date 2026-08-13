@@ -4,12 +4,12 @@ set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+
+namespace DifferentialGeometry.Geometry.Connection
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Tensor.Coordinates
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -18,14 +18,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
-
-
-
-
-
-
-
-
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metric_coordinateFrame_component_contMDiffAt_of_mem
@@ -85,8 +77,6 @@ theorem metric_coordinateFrame_component_contMDiffAt
   metric_coordinateFrame_component_contMDiffAt_of_mem
     (I := I) g x₀ (coordinateFrameAt_mem (I := I) x₀) i j
 
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metric_coordinateFrame_component_directional_contMDiffAt
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -113,4 +103,4 @@ theorem metric_coordinateFrame_component_directional_contMDiffAt
       g.inner q (coordinateFrameAt (I := I) x₀ i q)
         (coordinateFrameAt (I := I) x₀ j q))
     (X := coordinateFrameAt (I := I) x₀ a) hf ha
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

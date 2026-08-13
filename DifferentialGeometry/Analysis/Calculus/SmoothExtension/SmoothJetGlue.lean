@@ -2,35 +2,6 @@ import Mathlib.Analysis.Calculus.ContDiff.Defs
 import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import Mathlib.Analysis.Calculus.TangentCone.Real
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Set Filter Topology
@@ -41,17 +12,6 @@ namespace Analysis
 namespace SmoothExtension
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-
-
-
-
-
-
-
-
-
-
 
 theorem contDiff_if_le_of_jet_match
     (fL fR : ℝ → F)

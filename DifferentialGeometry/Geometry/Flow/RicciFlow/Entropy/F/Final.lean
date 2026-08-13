@@ -3,29 +3,17 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Producer
 
 set_option autoImplicit false
 
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 noncomputable section
 
 open Filter MeasureTheory
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {M : Type*}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem formula510_of_steps [MeasurableSpace M]
     {weightedMeasure : Measure M}
@@ -48,8 +36,6 @@ theorem formula510_of_steps [MeasurableSpace M]
   rw [hfirst]
   apply integral_congr_ae
   exact Filter.Eventually.of_forall hpoint
-
-
 
 theorem fFunctionalFirstVariation_eq_formula510_of_hasFirstVariationAt
     [MeasurableSpace M]

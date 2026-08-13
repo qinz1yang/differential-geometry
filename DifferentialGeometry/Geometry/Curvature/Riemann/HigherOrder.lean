@@ -2,14 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Pointwise
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 suppress_compilation
 
@@ -17,19 +10,16 @@ noncomputable section
 
 set_option autoImplicit false
 
-open Bundle DifferentialGeometry.Integral.Connection
+open Bundle
 open scoped Manifold ContDiff
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
 
 def nabla2VectorField
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -49,8 +39,6 @@ theorem nabla2VectorField_apply
         (cov Z x) ((cov Y x) (X x)) :=
   rfl
 
-
-
 theorem nabla2VectorField_skew_eq_curvature_sub_torsion
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
@@ -63,8 +51,6 @@ theorem nabla2VectorField_skew_eq_curvature_sub_torsion
   unfold nabla2VectorField connectionRiemannCurvatureField
   simp [sub_eq_add_neg, map_add, add_assoc, add_left_comm, add_comm]
   abel
-
-
 
 theorem connectionRiemannCurvatureField_eq_nabla2VectorField_skew_of_torsion_zero
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -80,8 +66,6 @@ theorem connectionRiemannCurvatureField_eq_nabla2VectorField_skew_of_torsion_zer
   rw [htor, map_zero, sub_zero] at h
   exact h.symm
 
-
-
 theorem riemannCurvatureAux_eq_nabla2VectorField_skew_of_torsion_zero
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
@@ -94,31 +78,28 @@ theorem riemannCurvatureAux_eq_nabla2VectorField_skew_of_torsion_zero
   exact connectionRiemannCurvatureField_eq_nabla2VectorField_skew_of_torsion_zero
     (I := I) cov hX hY htor
 
-
-
-
 theorem leviCivita_connectionRiemannCurvatureField_eq_nabla2VectorField_skew
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {X Y Z : RawTangentField (I := I) (M := M)} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) :
     connectionRiemannCurvatureField (I := I)
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) X Y Z x =
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) X Y Z x =
       nabla2VectorField (I := I)
-          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) X Y Z x
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) X Y Z x
             -
         nabla2VectorField (I := I)
-          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) Y X Z
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Y X Z
             x := by
   refine connectionRiemannCurvatureField_eq_nabla2VectorField_skew_of_torsion_zero
-    (I := I) (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) hX
+    (I := I) (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) hX
       hY ?_
   have htf :=
-    DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_isTorsionFree (I := I) g
-  change (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g).torsion
+    DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isTorsionFree (I := I) g
+  change (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g).torsion
     x
     (X x) (Y x) = 0
   rw [htf x]
   simp
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

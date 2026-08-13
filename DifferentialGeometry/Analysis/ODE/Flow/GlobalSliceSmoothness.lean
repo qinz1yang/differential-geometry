@@ -1,14 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.Cutoff
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC
 
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.ODE
 noncomputable section
 
 open Filter Function Metric Set
@@ -20,9 +13,6 @@ namespace ODE
 namespace Flow
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-
-
 
 theorem orbit_unique_on
     {Ω : Set E} (hΩ : IsOpen Ω)
@@ -71,8 +61,6 @@ theorem orbit_unique_on
       (Filter.Eventually.of_forall fun _ ↦ hlip)
       hfEventually hgEventually hfg
     exact (heq.and htime).mono fun _ h ↦ ⟨h.1, h.2⟩
-
-
 
 theorem orbit_unique_smooth
     {v : E → E} (hv : ContDiff ℝ 1 v)
@@ -196,8 +184,6 @@ theorem orbit_unique_Icc_on
     simpa only [w, hχg, one_smul] using hg t ht
   exact orbit_unique_Icc hw hfw hgw h₀
 
-
-
 theorem exists_uniform_flow
     {v : E → E} (hv : ContDiff ℝ ∞ v) {K : Set E} (hK : IsCompact K) :
     ∃ ε : ℝ, 0 < ε ∧ ∀ y ∈ K,
@@ -211,7 +197,7 @@ theorem exists_uniform_flow
     simpa only [uncurry_apply_pair] using hv.comp contDiff_snd
   choose r δ hr hδ Ψ hΨ ρ T hρ hT hρr hTδ hΨsm using
     fun y : E ↦
-      DifferentialGeometry.PDE.RicciFlow.ODE.exists_isLocalFlow_contDiffOn_top
+      DifferentialGeometry.Analysis.ODE.exists_isLocalFlow_contDiffOn_top
         (E := E) (f := fun _ : ℝ ↦ v) (t₀ := 0) (x₀ := y) hvTime
   let U : E → Set E := fun y ↦ ball y (ρ y)
   have hcover : K ⊆ ⋃ y, U y := by
@@ -252,8 +238,6 @@ theorem exists_uniform_flow
         by linarith [ht.2, hεT p hp, hTδ p]⟩
     simpa using ((hΨ p).hasDerivWithinAt z hz' t (Ioo_subset_Icc_self ht')).hasDerivAt
       (Icc_mem_nhds ht'.1 ht'.2)
-
-
 
 theorem exists_flow_on
     {Ω : Set E} (hΩ : IsOpen Ω)
@@ -347,9 +331,6 @@ theorem exists_flow_on
         exact (abs_lt.mpr ht).trans_le
           ((hετ p hp).trans (min_le_left _ _ |>.trans (half_le_self (hδ p).le)))
     exact hLΩ (interior_subset (hball p hpair))
-
-
-
 
 theorem flow_slice_right_on
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -483,9 +464,6 @@ theorem flow_slice_right_on
   rw [hgrid_N] at htargetSmooth
   exact htargetSmooth.contDiffWithinAt
 
-
-
-
 theorem flow_joint_right_on
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
     {Ω : Set E} (hΩ : IsOpen Ω)
@@ -581,9 +559,6 @@ theorem flow_joint_right_on
       ⟨hs₀s, le_rfl⟩
   exact hcand.contDiffWithinAt.congr_of_eventuallyEq_of_mem heq.symm ⟨hx, ht⟩
 
-
-
-
 theorem flow_slice_right
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
     {v : E → E} (hv : ContDiff ℝ ∞ v)
@@ -597,9 +572,6 @@ theorem flow_slice_right
     ∀ t ∈ Icc a b, ContDiffOn ℝ ∞ (fun p => γ p t) A := by
   exact flow_slice_right_on isOpen_univ hv.contDiffOn hA ha₀ hγ
     (fun _ _ _ _ => mem_univ _)
-
-
-
 
 theorem ode_slice_right_on
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -642,9 +614,6 @@ theorem ode_slice_right_on
   exact (flow_slice_right_on (E := ℝ × E) (hJ.prod hV) hw hA haAug hγAug
     hstayAug t ht).snd
 
-
-
-
 theorem contDiffOn_solutionFamily_of_stays
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
     {J : Set ℝ} (hJ : IsOpen J)
@@ -684,8 +653,6 @@ theorem contDiffOn_solutionFamily_of_stays
     hγAug hstayAug
   simpa only [γAug, uncurry_apply_pair] using haug.snd
 
-
-
 theorem ode_slice_right
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
     {v : ℝ → E → E}
@@ -700,9 +667,6 @@ theorem ode_slice_right
     ∀ t ∈ Icc a b, ContDiffOn ℝ ∞ (fun p => γ p t) A := by
   exact ode_slice_right_on isOpen_univ isOpen_univ hv.contDiffOn hA
     (subset_univ _) ha₀ hγ (fun _ _ _ _ => mem_univ _)
-
-
-
 
 theorem flow_slice_smooth
     {v : E → E} (hv : ContDiff ℝ ∞ v)

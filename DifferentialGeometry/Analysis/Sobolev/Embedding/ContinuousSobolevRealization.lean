@@ -3,20 +3,24 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCmOrderDr
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SmoothCcDense
 import Mathlib.Analysis.Normed.Operator.Extend
 import Mathlib.Analysis.Normed.Module.Completion
+open DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle Topology Metric
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle Topology Metric
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 section NormedSpaceModel
 
@@ -209,8 +213,7 @@ lemma gSupVal_smul (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     rwa [← mul_assoc, mul_inv_cancel₀ (ne_of_gt hcpos), one_mul] at h2
 
 structure CSupTensor (g : SmoothRiemannianMetric I M) (r s k : ℕ) where
-
-  toHsTensor : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)
+  toHsTensor : DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)
 
 namespace CSupTensor
 
@@ -298,7 +301,8 @@ instance : AddCommGroup (CSupTensor g r s k) :=
     toHsTensor_zsmul
 
 def toHsTensorAddHom :
-    CSupTensor g r s k →+ IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) where
+    CSupTensor g r s k →+
+      DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) where
   toFun := fun S => S.toHsTensor
   map_zero' := toHsTensor_zero
   map_add' := toHsTensor_add
@@ -307,14 +311,15 @@ instance : Module ℝ (CSupTensor g r s k) :=
   toHsTensor_injective.module ℝ toHsTensorAddHom toHsTensor_smul
 
 def ofHs :
-    IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →ₗ[ℝ] CSupTensor g r s k where
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s
+      (2 * k) →ₗ[ℝ] CSupTensor g r s k where
   toFun := fun S => ⟨S⟩
   map_add' := fun _ _ => rfl
   map_smul' := fun _ _ => rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 @[simp] lemma ofHs_apply
-    (S : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
+    (S : DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
     (ofHs (g := g) (r := r) (s := s) (k := k) S).toHsTensor = S := rfl
 
 def toCc (S : CSupTensor g r s k) : SmoothCcTensor g r s :=
@@ -426,7 +431,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
 noncomputable def smoothToC0Lin
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) :
-    IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →ₗ[ℝ]
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →ₗ[ℝ]
       CSupBanach (I := I) (M := M) g r s k hk :=
   letI := csupSeminormedAddCommGroup (I := I) (M := M) g r s k hk
   letI := csupNormedSpace (I := I) (M := M) g r s k hk
@@ -441,7 +446,7 @@ omit [BoundarylessManifold I M] in
 lemma norm_smoothToC0Lin
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E)
-    (S : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
+    (S : DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
     ‖smoothToC0Lin (I := I) (M := M) g r s k hk S‖ =
       gSupVal (I := I) (M := M) g r s S.toCcTensor := by
   letI := csupSeminormedAddCommGroup (I := I) (M := M) g r s k hk
@@ -462,13 +467,15 @@ attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma norm_coe_toCompl_eq_toHs
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
-    (S : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
+    (S : DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
     ‖(S : TensorPouSobolevHilbert g r s (2 * k))‖ =
       ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) S.toCcTensor‖ := by
   have hrhs : SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) S.toCcTensor =
-      ((⟨S.toCcTensor⟩ : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
+      ((⟨S.toCcTensor⟩ : DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+        g r s (2 * k)) :
         TensorPouSobolevHilbert g r s (2 * k)) := rfl
-  have hS : (⟨S.toCcTensor⟩ : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) = S := by
+  have hS : (⟨S.toCcTensor⟩ :
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) = S := by
     cases S; rfl
   rw [hrhs, hS]
 
@@ -479,7 +486,7 @@ lemma exists_smoothToC0Lin_norm_le
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ S : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k),
+      ∀ S : DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k),
         ‖smoothToC0Lin (I := I) (M := M) g r s k hk S‖ ≤
           C * ‖(S : TensorPouSobolevHilbert g r s (2 * k))‖ := by
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
@@ -506,7 +513,7 @@ noncomputable def tensorHsToC0
       CSupBanach (I := I) (M := M) g r s k hk :=
   (smoothToC0Lin (I := I) (M := M) g r s k hk).extendOfNorm
     (UniformSpace.Completion.toComplL :
-      IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
+      DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
         TensorPouSobolevHilbert g r s (2 * k)).toLinearMap
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
@@ -516,13 +523,15 @@ lemma denseRange_toComplL_toLinearMap
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) :
     DenseRange
       ⇑(UniformSpace.Completion.toComplL :
-        IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
+        DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
           TensorPouSobolevHilbert g r s (2 * k)).toLinearMap := by
   have hcoe : ⇑(UniformSpace.Completion.toComplL :
-        IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
+        DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
           TensorPouSobolevHilbert g r s (2 * k)).toLinearMap =
-      ((↑) : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →
-        UniformSpace.Completion (IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k))) := by
+      ((↑) : DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →
+        UniformSpace.Completion
+          (DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s
+          (2 * k))) := by
     funext S; rfl
   rw [hcoe]
   exact UniformSpace.Completion.denseRange_coe
@@ -533,7 +542,7 @@ omit [BoundarylessManifold I M] in
 theorem tensorHsToC0_coe
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E)
-    (S : IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
+    (S : DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k)) :
     tensorHsToC0 (I := I) (M := M) g r s k hk
         (S : TensorPouSobolevHilbert g r s (2 * k)) =
       smoothToC0Lin (I := I) (M := M) g r s k hk S := by
@@ -541,7 +550,7 @@ theorem tensorHsToC0_coe
   have h := LinearMap.extendOfNorm_eq
     (f := smoothToC0Lin (I := I) (M := M) g r s k hk)
     (e := (UniformSpace.Completion.toComplL :
-      IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
+      DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
         TensorPouSobolevHilbert g r s (2 * k)).toLinearMap)
     (denseRange_toComplL_toLinearMap (I := I) (M := M) g r s k)
     ⟨C, hC⟩ S
@@ -590,6 +599,6 @@ theorem tensorHsToC0_norm_le_of_norm_le
 
 end InnerProductSpaceModel
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Sobolev
 
 end

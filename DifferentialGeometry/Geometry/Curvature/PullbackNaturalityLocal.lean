@@ -1,27 +1,13 @@
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturality
 import DifferentialGeometry.Geometry.Curvature.RestrictOpenRm04
+open DifferentialGeometry.Geometry.Curvature
+
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 open scoped Manifold ContDiff Topology
 
@@ -33,12 +19,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 variable [IsManifold I 1 N]
 variable [T2Space N] [SigmaCompactSpace N]
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace N] in
@@ -59,4 +39,4 @@ theorem metricRm04StdAt_pullback_localDiffeo
       (mfderiv I I (Ψ : W → V) x X) (mfderiv I I (Ψ : W → V) x Y)
       (mfderiv I I (Ψ : W → V) x Z) (mfderiv I I (Ψ : W → V) x W')]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

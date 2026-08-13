@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplResidual
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Leibniz
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -48,6 +49,7 @@ private lemma smoothScalar_eq_sub_of_toFun_eq
   rw [h_diff]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma smoothToH1Compl_eq_sub
     (g : SmoothRiemannianMetric I M)

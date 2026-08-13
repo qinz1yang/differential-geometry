@@ -6,14 +6,16 @@ import DifferentialGeometry.Tensor.RicciIdentity.MixedComponents
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 import DifferentialGeometry.Tensor.RSTensor.Components
+open DifferentialGeometry.Geometry.Curvature
+
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -23,13 +25,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
-
-
-
-
-
-
-
 
 def slots2 (i j : Idx) : Fin 2 -> Idx :=
   fun a => if a = 0 then i else j
@@ -108,8 +103,6 @@ private theorem basisTensor0S_empty_eq_scalarOne
   rw [harg] at hcomp
   simpa [scalarOne0S] using hcomp
 
-
-
 theorem ricciCompAt_eq_contractTrace
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Rm13 : Tensor13At (I := I) (M := M) x) (i j : Idx) :
@@ -120,8 +113,6 @@ theorem ricciCompAt_eq_contractTrace
   unfold ricciCompAt componentRS_gen ricciFromRm13At
     component0S
   rw [basisTensor0S_empty_eq_scalarOne (I := I) basis Fin.elim0]
-
-
 
 omit [DecidableEq Idx] in
 theorem contract_trace13_component_basis
@@ -183,9 +174,7 @@ theorem contract_trace13_component_basis
   · rfl
   · rfl
   · change vec2 (basis i) (basis j) 1 = basis j
-    simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
-
-
+    simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
 
 omit [DecidableEq Idx] in
 theorem ricciFromRm13At_apply_basis_trace
@@ -249,5 +238,5 @@ theorem ricciFromRm13At_apply_basis_trace
   · rfl
   · rfl
   · change vec2 Y Z 1 = Z
-    simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
-end DifferentialGeometry.Integral.Connection
+    simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
+end DifferentialGeometry.Geometry.Curvature

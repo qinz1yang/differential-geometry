@@ -1,23 +1,19 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.NoncollapseSpan
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-/-!
-# No local collapsing after a positive time on a half-open flow interval
-
-This file removes the artificial finite upper endpoint from the positive-time
-noncollapsing theorem when the flow interval is `[0, ω)`.  It still starts at a
-strictly positive time.  The remaining initial-time producer is separate.
--/
-
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 noncomputable section
 
-open Bundle MeasureTheory Set Tensor0SBundle
+open Bundle MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Entropy
 
@@ -30,17 +26,13 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M]
-variable [T3Space M] [SigmaCompactSpace M] [ConnectedSpace M] [CompactSpace M]
+variable [T3Space M] [ConnectedSpace M] [CompactSpace M]
 variable [I.Boundaryless] [BoundarylessManifold I M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- A Ricci flow on `[0, ω)` is uniformly noncollapsed on every
-curvature-controlled ball below a fixed radius after any fixed positive start
-time `a`.  The constant is independent of the later time, even though the
-regular slab used in the proof ends before `ω` and is chosen around that time. -/
 theorem noncollapse_after
     [T2Space (TangentBundle I M)]
     {omega : Real} (h0omega : 0 < omega)

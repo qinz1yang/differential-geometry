@@ -3,29 +3,9 @@ import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
 import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Analysis.InnerProductSpace.PiL2
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -46,10 +26,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [InnerProductSpace ℝ E] in
@@ -219,8 +195,6 @@ theorem covGronwall_bounds_at
   · intro t ht
     simpa [hJnorm t ht, hwnorm] using hge t ht
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -262,12 +236,6 @@ theorem covGronwall_bounds
   refine covGronwall_bounds_at (I := I) g γ (fun t _ => ?_) hcard F J
     hK hb hpar hON hFdiff hJdiff hDJdiff hODE hJ0 hDJ0
   exact hγ.contMDiffAt
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [InnerProductSpace ℝ E] in
@@ -430,8 +398,6 @@ theorem covGronwall_ne_zero_at
   change (g.inner (γ b) (F i b)) 0 = (0 : EuclideanSpace ℝ ι) i
   rw [map_zero]
   rfl
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [InnerProductSpace ℝ E] in

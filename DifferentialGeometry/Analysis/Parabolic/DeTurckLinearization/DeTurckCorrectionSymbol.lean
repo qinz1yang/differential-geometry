@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionSymbolFormula
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section

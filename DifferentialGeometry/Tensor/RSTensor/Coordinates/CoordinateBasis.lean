@@ -1,10 +1,10 @@
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import DifferentialGeometry.Tensor.RSTensor.Defs
-
-
+open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open Bundle Module
@@ -136,9 +136,6 @@ theorem component0S_apply
     component0S (I := I) basis A slots = A (fun a => basis (slots a)) :=
   rfl
 
-
-
-
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
 theorem component0S_congr_slots
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
@@ -211,3 +208,4 @@ theorem basisTensor0S_component
 end Tensor0S
 
 end Tensor0SBundle
+end DifferentialGeometry

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.BallRetraction
+open DifferentialGeometry.Analysis.Calculus
 noncomputable section
 
 open scoped InnerProductSpace
@@ -11,9 +12,6 @@ variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
 variable {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 variable {Z : Type*} [NormedAddCommGroup Z]
 
-/-- A pointwise real inequality between continuous functions extends from a
-dense subset to the whole space.  This is the closure step used after proving
-a mixed estimate on smooth spectral representatives. -/
 theorem dense_le_of_cont {W : Type*} [TopologicalSpace W]
     {D : Set W} (hD : Dense D) {f q : W → ℝ}
     (hf : Continuous f) (hq : Continuous q)
@@ -23,7 +21,6 @@ theorem dense_le_of_cont {W : Type*} [TopologicalSpace W]
   have hsub : D ⊆ {z | f z ≤ q z} := fun z hz ↦ hDle z hz
   exact closure_minimal hsub hclosed (hD w)
 
-/-- A continuous linear image cannot grow under radial retraction. -/
 theorem norm_map_ball_le {R : ℝ} (hR : 0 ≤ R) (J : X →L[ℝ] Y) (x : X) :
     ‖J (ballRetraction R x)‖ ≤ ‖J x‖ := by
   have hfac0 : 0 ≤ min 1 (R / ‖x‖) :=
@@ -122,9 +119,6 @@ private theorem radial_mixed_of_ball_bound
           max ‖J x‖ ‖J y‖ * ‖x - y‖ +
         (B * cL) * ‖J (x - y)‖ := by ring
 
-/-- Transfer a mixed two-scale estimate through radial retraction in an
-arbitrary real normed space.  The factor `2` is the general Lipschitz
-constant of radial retraction. -/
 theorem radial_mixed
     (J : X →L[ℝ] Y) (N : X → Z)
     {R A B cH cL : ℝ}
@@ -164,8 +158,6 @@ variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
 variable {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 variable {Z : Type*} [NormedAddCommGroup Z]
 
-/-- In an inner-product space, the same mixed estimate has the sharp
-coefficient furnished by nonexpansiveness of radial retraction. -/
 theorem radial_mixed_one
     (J : X →L[ℝ] Y) (N : X → Z)
     {R A B cH cL : ℝ}

@@ -1,15 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.BernsteinShiSolution
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -23,18 +17,16 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+variable [CompleteSpace E] [T2Space M]
 variable [I.Boundaryless] [CompactSpace M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 
 namespace BernsteinTower
 
-
-
-
+omit [CompleteSpace E] [T2Space M] in
 theorem estimate_of_heat
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily
       (I := I) (M := M) Real)
     {w wLap : Nat -> Real -> M -> Real}
     (levelC : Nat -> Real)
@@ -48,15 +40,15 @@ theorem estimate_of_heat
     (hTK : T <= aScale / K)
     (hheat : forall k : Nat, TowerHeatBoundOn (D := D) w wLap (levelC k) k)
     (hLap : forall k : Nat, forall t : Real, t ∈ Set.Icc 0 T -> 0 < t -> forall x : M,
-      DifferentialGeometry.Integral.Connection.heatOperatorWithDrift (I := I) G t
+      DifferentialGeometry.Geometry.Curvature.heatOperatorWithDrift (I := I) G t
         (fun _y : M => (0 : TangentSpace I _y)) (w k t) x = wLap k t x)
     (hw_cont : forall k : Nat, ContinuousOn (fun p : Real × M => w k p.1 p.2)
-      (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) T))
+      (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T))
     (hw_space : forall k : Nat, forall t : Real, t ∈ Set.Icc 0 T -> 0 < t -> forall y : M,
       MDifferentiableAt I (modelWithCornersSelf Real Real) (w k t) y)
     (hw_grad : forall k : Nat, forall t : Real, t ∈ Set.Icc 0 T -> 0 < t -> forall x : M,
       MDiffAt (T% fun y : M =>
-        DifferentialGeometry.Integral.Connection.gradientFun (I := I) (G.metric t) (w k t) y) x)
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (w k t) y) x)
     (m : Nat) (c : Real) (hc : 0 <= c)
     (hlevelC : forall k : Nat, k <= m -> levelC k <= c)
     {t : Real} (htmem : t ∈ Set.Icc 0 T) (htpos : 0 < t) (x : M) :
@@ -197,10 +189,10 @@ theorem estimate_of_heat
             funext z
             rw [hw'_val_gt k hk]
           rw [hwLap'_val_gt k hk, hfun]
-          rw [DifferentialGeometry.Integral.Connection.heatOperatorWithDrift_zero_drift,
-            DifferentialGeometry.Integral.Connection.heatOperator_eq_laplacianAt,
-            DifferentialGeometry.Integral.Connection.laplacianAt_eq]
-          exact DifferentialGeometry.Integral.Connection.laplacian_const
+          rw [DifferentialGeometry.Geometry.Curvature.heatOperatorWithDrift_zero_drift,
+            DifferentialGeometry.Geometry.Curvature.heatOperator_eq_laplacianAt,
+            DifferentialGeometry.Geometry.Curvature.laplacianAt_eq]
+          exact DifferentialGeometry.Geometry.Operator.laplacian_const
             (I := I) (G.connection s) (G.metric s) 0 y
       hw_cont := by
         intro k
@@ -246,7 +238,7 @@ theorem estimate_of_heat
             (E := (TangentSpace I : M -> Type _)) (x := y)).congr_of_eventuallyEq ?_
           filter_upwards with z
           exact congrArg (fun v => (⟨z, v⟩ : TotalSpace E (TangentSpace I)))
-            (DifferentialGeometry.Integral.Connection.gradientFun_const (I := I) (G.metric s) 0 z) }
+            (DifferentialGeometry.Geometry.Operator.gradientFun_const (I := I) (G.metric s) 0 z) }
   have hkey : B.w m t x <= (towerConst B.c B.α m) ^ 2 * B.K ^ 2 / t ^ m :=
     B.estimate_div m htmem htpos x
   simp only [B] at hkey

@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.LowerOrder.EigenvectorChartLowerOrderLimits
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -12,7 +14,7 @@ namespace Analysis
 namespace Parabolic
 namespace TensorSpectral
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Chart
@@ -83,7 +85,7 @@ theorem covDerivLowerOrderTerm_pouSmul_memLp
       (eigenvectorSmoothApprox (I := I) (M := M)
         g r s i n).toCcTensor k P₀.1 P₀.2 hy)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 noncomputable def covGradChristoffelLimit
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -100,7 +102,7 @@ noncomputable def covGradChristoffelLimit
               g r s) i) α p :
           EuclN → ℝ) y
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 theorem covGradChristoffelLimit_memLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -231,7 +233,7 @@ private theorem covDerivLowerOrderTerm_pouSmul_tendsto
       g r s i α P₀ k)
     hFn_eq hFlim_eq
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma smul_componentLpLimit_coeFn_ae
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -263,7 +265,7 @@ private lemma smul_componentLpLimit_coeFn_ae
     (congrArg (fun z : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) =>
       (z : EuclN → ℝ)) h_lp_eq)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma smul_unscaledLimit_toLp_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

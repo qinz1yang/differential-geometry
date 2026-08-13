@@ -2,13 +2,6 @@ import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
 
 set_option autoImplicit false
 
-/-!
-# Local diffeomorphisms on open subtypes
-
-This file converts a local diffeomorphism on an ambient open set into a
-global local diffeomorphism whose source is the corresponding open subtype.
--/
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -24,8 +17,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
 
 omit [IsManifold I ∞ M] [IsManifold J ∞ N] in
-/-- A smooth local diffeomorphism on an open set restricts to a smooth local
-diffeomorphism whose source is the corresponding open subtype. -/
 theorem hloc_restrict_open
     {f : M → N} (U : Opens M)
     (hf : IsLocalDiffeomorphOn I J ∞ f U) :
@@ -90,7 +81,6 @@ variable {H'' : Type*} [TopologicalSpace H'']
 variable {P : Type*} [TopologicalSpace P] [ChartedSpace H'' P]
 
 omit [IsManifold I ∞ M] [IsManifold J ∞ N] in
-/-- The composite of two local diffeomorphisms is a local diffeomorphism. -/
 theorem hloc_comp
     {k : WithTop ℕ∞} {f : M → N} {g : N → P}
     (hg : IsLocalDiffeomorph J K k g)

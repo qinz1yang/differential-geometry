@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Smooth.SmoothApprox
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -42,7 +44,7 @@ theorem eigenvectorSmoothApprox_tendsto
   Classical.choose_spec
     (exists_smoothApprox (I := I) (M := M) g r s i)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma resolventL2_eq_smul_eigenvector
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -58,7 +60,7 @@ private lemma resolventL2_eq_smul_eigenvector
   have hμ_ne : i.fst.val ≠ 0 := i.fst.val_ne_zero
   rw [h_eq, smul_smul, mul_inv_cancel₀ hμ_ne, one_smul]
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma smoothApprox_coe_tendsto
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -96,7 +98,7 @@ private lemma smoothApprox_coe_tendsto
     g r s i] at h_l2
   exact h_l2
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma smoothApprox_smul_coe_tendsto
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -164,7 +166,7 @@ theorem eigenvectorChartComponentL2_approx_coeFn
     (eigenvectorSmoothApprox (I := I) (M := M) g r s i n).toCcTensor
     α P₀).const_smul (i.fst.val)⁻¹
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 theorem eigenvectorChartComponentL2_tendsto
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)

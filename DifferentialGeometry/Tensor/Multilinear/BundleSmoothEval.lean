@@ -5,15 +5,15 @@ import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.Analysis.Normed.Module.Multilinear.Curry
 
-
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
+namespace DifferentialGeometry
 namespace TensorMultilinear
 
 variable
@@ -686,4 +686,5 @@ theorem contMDiff_section_apply_prod {n : ℕ}
 
 end TensorMultilinear
 
+end DifferentialGeometry
 end

@@ -1,29 +1,16 @@
 import DifferentialGeometry.Tensor.RSTensor.CurvatureAction
 import DifferentialGeometry.Geometry.Curvature.Contractions
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
+
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -33,16 +20,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
-
-
-
-
-
-
-
-
-
-
 
 theorem curvatureAction0SAt_eq_rm04 {s : ℕ}
     (g : SmoothRiemannianMetric I M)
@@ -67,4 +44,4 @@ theorem curvatureAction0SAt_eq_rm04 {s : ℕ}
   simp only [oneFormAtSlot0S_apply]
   rw [(hLower X Y (slots q) (basis p)).symm]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

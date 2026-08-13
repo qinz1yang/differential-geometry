@@ -1,15 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.HatCompactPoints
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -169,10 +162,6 @@ theorem hatSrcPtsOfComp
           (A gamma) (Ainf gamma) (hB gamma) (hA gamma) (hBcont gamma)
           (hAcont gamma) (hid gamma) hKimg (hKU gamma) (hKV gamma) δ hδ)
 
-
-
-
-
 omit [Module.Finite ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hatSuppPtsOfComp
@@ -316,11 +305,6 @@ theorem hatSuppPtsOfComp
   refine ⟨N, fun a ha b hb x hx hmu => ?_⟩
   exact hN a ha b hb x ⟨hx, hmu⟩
 
-
-
-
-
-
 omit [Module.Finite ℝ E] in
 theorem hatSrcPtsCageComp
     [FiniteDimensional Real E]
@@ -424,8 +408,6 @@ theorem hatSrcPtsCageComp
           (hcenter gamma) (hR gamma))
       hVopen hB hA hBcont hAcont hid hKU hKV
 
-
-
 omit [Module.Finite ℝ E] in
 theorem hatPtsCasesComp
     [FiniteDimensional Real E]
@@ -525,10 +507,6 @@ theorem hatPtsCasesComp
       (NetLimitData.hatCageSub (I := I) (X := X) hd P L pb r n)
       (NetLimitData.hatCageSrcCases (I := I) (X := X) hd P L pb r n center hR)
       hVopen hB hA hBcont hAcont hid hKU hKV
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -640,9 +618,6 @@ theorem hatChartPtsOfComp
           (K := coordK gamma) (hVopen gamma) (B gamma) (Binf gamma) (A gamma)
           (Ainf gamma) (hB gamma) (hA gamma) (hBcont gamma) (hAcont gamma)
           (hid gamma) (hK gamma) (hKU gamma) (hKV gamma) δ hδ)
-
-
-
 
 end NetLimitData
 

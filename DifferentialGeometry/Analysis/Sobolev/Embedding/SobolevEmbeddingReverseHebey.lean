@@ -6,7 +6,7 @@ noncomputable section
 open Bundle Manifold MeasureTheory Set Filter Topology
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Tensor
@@ -117,6 +117,6 @@ theorem exists_tensorPouSobolevHsNorm_toReal_le_iteratedCovGrad_tensorL2Norm_sum
 
 end ReverseBridge
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Sobolev
 
 end

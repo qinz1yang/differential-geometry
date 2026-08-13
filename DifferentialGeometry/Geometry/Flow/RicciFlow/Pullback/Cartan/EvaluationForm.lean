@@ -1,15 +1,16 @@
-import DifferentialGeometry.Geometry.Metric.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.ChainRule
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciTensor
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.RicciTensor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Naturality.LieDerivativeMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.Formula
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Pullback.Cartan.Formula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.TimeDerivativeChainRule
-import DifferentialGeometry.Geometry.Flow.LieDerivativeMetric
-import DifferentialGeometry.Geometry.Flow.VectorField
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeMetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.VectorField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Mul
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -21,7 +22,7 @@ namespace Pullback
 open Bundle
 open scoped Manifold Topology ContDiff
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.DeTurck
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

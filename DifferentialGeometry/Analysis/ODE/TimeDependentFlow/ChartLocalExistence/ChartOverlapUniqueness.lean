@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.U
 import Mathlib.Analysis.ODE.Gronwall
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -389,4 +389,4 @@ theorem chart_overlap_chart_alpha_coord_ode
   rw [h_lhs_eq, h_rhs_eq]
   exact h_chain'
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

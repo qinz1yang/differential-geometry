@@ -1,13 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradParametricJointSmooth
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -15,10 +8,10 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow
-open Tensor0SBundle TensorRSNabla
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorRSNabla
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -104,8 +97,6 @@ theorem joint_rfns_cont
     (I := I) (M := M) g₀ r s x ((Φ t).toSection x),
     DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM_apply]
 
-
-
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covGrad_iter_joint
@@ -128,8 +119,6 @@ theorem covGrad_iter_joint
   | succ j ih =>
       exact covGrad_step_jointContMDiffOn (I := I) (M := M) g₀ r (s + j)
         (fun t => iteratedCovGrad (I := I) g₀ r s j (Φ t)) S ih
-
-
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -196,9 +185,6 @@ private theorem joint_small
   obtain ⟨x, hxF, hyW⟩ := Set.mem_iUnion₂.mp (hF (Set.mem_univ y))
   exact hloc x t (ht x hxF) y hyW
 
-
-
-
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem joint_jet_small
@@ -253,9 +239,6 @@ theorem joint_jet_small
   filter_upwards [htime] with t ht
   intro i hip x
   exact ht i (by simp only [Finset.mem_range]; omega) x
-
-
-
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in

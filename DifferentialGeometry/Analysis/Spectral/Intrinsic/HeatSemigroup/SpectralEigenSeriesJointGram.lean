@@ -10,7 +10,7 @@ import DifferentialGeometry.Analysis.Calculus.ContDiffOnTsum
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.CompactChartJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.WeylSummability
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.EigensectionSobolevDecay
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.DirichletForm.RotatedTestSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.SmoothTensorAllOrderCompleteness
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.Representation.TensorReprFromFrame
@@ -19,6 +19,12 @@ import DifferentialGeometry.Analysis.Calculus.SpectralEigenSeriesJointGramProjec
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralEigenSeriesJointGramSobolevWeightSummability
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralEigenSeriesJointGramRawComponentJetBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralEigenSeriesJointGramEigenChartIncrementMajorant
+open DifferentialGeometry.Analysis.Calculus DifferentialGeometry.Analysis.Sobolev.CSupTensor
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+    DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -27,20 +33,20 @@ open Bundle Manifold MeasureTheory Set Filter Topology
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Tensor
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -1282,9 +1288,9 @@ lemma chartGramOnE_realize_eq_add_half_rawCompOnE
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g S) δ)
     (α : M) (a b : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    Integral.DivergenceTheorem.chartGramOnE (I := I)
+    DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
         (tensorSectionRealizeMetric (I := I) g S hδ_lt hδ) α a b y =
-      Integral.DivergenceTheorem.chartGramOnE (I := I) g α a b y +
+      DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α a b y +
         (1 / 2 : ℝ) * (tensorChartComponentOnModel (I := I) (M := M) g S α ![a, b] y +
           tensorChartComponentOnModel (I := I) (M := M) g S α ![b, a] y) := by
   classical
@@ -1292,7 +1298,8 @@ lemma chartGramOnE_realize_eq_add_half_rawCompOnE
   have hp_src : (extChartAt I α).symm y ∈ (chartAt H α).source := by
     have := (extChartAt I α).map_target hy_t
     rwa [extChartAt_source] at this
-  rw [Integral.DivergenceTheorem.chartGramOnE_def, Integral.DivergenceTheorem.chartGramOnE_def,
+  rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def,
+    DifferentialGeometry.Geometry.Operator.chartGramOnE_def,
     chartGramMatrix_apply, chartGramMatrix_apply, tensorSectionRealizeMetric_inner]
   have hhalf := ccTensorBilinSymm_eq_half_rawComponent (I := I) (M := M) g S α a b hp_src
   rw [hhalf]
@@ -1300,9 +1307,8 @@ lemma chartGramOnE_realize_eq_add_half_rawCompOnE
 
 end FiniteOrderEigenSeries
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

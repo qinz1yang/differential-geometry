@@ -1,9 +1,10 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
 import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
 import DifferentialGeometry.Geometry.Geodesic.AffineReparam
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -38,8 +39,7 @@ def diagExp
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))) :
+    (hEnorm : IsMetricNorm (I := I) (M := M) g) :
     TangentBundle I M → M × M :=
   fun u => (u.proj, expMapIntrinsic (I := I) g hEnorm u.proj u.snd)
 
@@ -51,8 +51,7 @@ omit [ConnectedSpace M] in
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (u : TangentBundle I M) :
     diagExp (I := I) g hEnorm u =
       (u.proj, expMapIntrinsic (I := I) g hEnorm u.proj u.snd) := rfl
@@ -65,8 +64,7 @@ omit [ConnectedSpace M] in
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (u : TangentBundle I M) :
     (diagExp (I := I) g hEnorm u).1 = u.proj := rfl
 
@@ -78,8 +76,7 @@ omit [ConnectedSpace M] in
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (u : TangentBundle I M) :
     (diagExp (I := I) g hEnorm u).2 =
       expMapIntrinsic (I := I) g hEnorm u.proj u.snd := rfl
@@ -247,8 +244,7 @@ theorem expMapIntrinsic_eq_chartFlow_proj_residual
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (α : M) (n : ℕ) (_hn : 1 ≤ n)
     (Φ : (E × E) × ℝ → E × E) (ρ T t' : ℝ)
     (hΦ : 0 < ρ ∧ 0 < T ∧ t' ∈ Set.Ioo (-T) T ∧ 0 < t' ∧
@@ -740,8 +736,7 @@ theorem expMapIntrinsic_variation_contMDiff
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (V₀ : ℝ → TangentBundle I M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hV₀ : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞ V₀)
@@ -837,8 +832,7 @@ theorem expMapIntrinsic_variation_contMDiffAt
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (V₀ : ℝ → TangentBundle I M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hV₀ : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞ V₀)
@@ -941,8 +935,7 @@ theorem expMapIntrinsic_variation_contMDiffAt_of_smallField
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (V₀ : ℝ → TangentBundle I M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hV₀ : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞ V₀)
@@ -1024,8 +1017,7 @@ theorem diagExp_variation_contMDiffAt_of_smallField
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (V₀ : ℝ → TangentBundle I M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (hV₀ : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞ V₀)
@@ -1066,8 +1058,7 @@ theorem diagExp_contMDiffAt_zero
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (n : ℕ) (hn : 1 ≤ n) :
     ContMDiffAt I.tangent (I.prod I) (n : ℕ∞) (diagExp (I := I) g hEnorm)
       (⟨p, (0 : E)⟩ : TangentBundle I M) := by

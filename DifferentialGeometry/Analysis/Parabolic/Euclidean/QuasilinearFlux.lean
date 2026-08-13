@@ -2,27 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelSup
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.RoughCarleson
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 
-/-!
-# Divergence refold and sup-norm bounds for a quasilinear flux
-
-The rough Ricci--DeTurck equation contains the genuinely quasilinear arm
-
-`A(u) · D²w`.
-
-It cannot be discarded when proving `C⁰` stability.  This file records the
-exact Euclidean divergence refold
-
-`A(u) D_p D_q w = D_p (A(u) D_q w) - DA(u)[D_p u] D_q w`
-
-and the corresponding coefficient-flux difference estimate in the spatial
-supremum norm.  The first term is acted on by a first derivative of the heat
-kernel; the second, compensating quadratic-gradient term is retained and gets
-its own three-arm difference estimate below.
-
-These lemmas are dimension- and fibre-generic.  They require no bound on a
-spatial derivative of the initial slice.
--/
-
 noncomputable section
 
 open Real
@@ -39,11 +18,6 @@ variable {V U F : Type*}
   [NormedAddCommGroup U] [NormedSpace ℝ U]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Exact directional divergence refold for a quasilinear second-order arm.
-
-The scalar coefficient is written as `c ∘ u`; for Ricci--DeTurck, `u` is the
-array of metric coefficients and `c` is one inverse-metric coefficient.  The
-last term is the compensating `Dc(u)[Du] · Dw` arm and is not suppressed. -/
 theorem coeffD2_refold
     (c : U → ℝ) (u : V → U) (w : V → F) (x p q : V)
     (hc : DifferentiableAt ℝ c (u x))
@@ -73,9 +47,6 @@ variable {V U G F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 omit [NormedSpace ℝ U] in
-/-- Pointwise two-arm difference estimate for a nonlinear coefficient acting
-on a first derivative.  This is the algebraic estimate used for the divergence
-flux `A(u) Du`. -/
 theorem fluxDiff_norm (A : U → G →L[ℝ] F)
     (u₁ u₂ : U) (d₁ d₂ : G) {L K : ℝ}
     (hA : ‖A u₁ - A u₂‖ ≤ L * ‖u₁ - u₂‖)
@@ -99,8 +70,6 @@ theorem fluxDiff_norm (A : U → G →L[ℝ] F)
         (mul_le_mul_of_nonneg_right hA (norm_nonneg _))
         (mul_le_mul_of_nonneg_right hK (norm_nonneg _))
 
-/-- A continuous coefficient flux, packaged as a bounded continuous function.
-Only a zeroth-order bound for the coefficient along the chosen path is used. -/
 def coeffBCF (A : U → G →L[ℝ] F) (hA : Continuous A)
     (K : ℝ) (hK0 : 0 ≤ K) (u : V →ᵇ U) (d : V →ᵇ G)
     (hK : ∀ x, ‖A (u x)‖ ≤ K) : V →ᵇ F :=
@@ -117,7 +86,6 @@ def coeffBCF (A : U → G →L[ℝ] F) (hA : Continuous A)
           mul_le_mul_of_nonneg_left (d.norm_coe_le_norm x) hK0)
 
 omit [NormedSpace ℝ U] in
-/-- Supremum norm of the packaged coefficient flux. -/
 theorem coeffBCF_norm (A : U → G →L[ℝ] F) (hA : Continuous A)
     (K : ℝ) (hK0 : 0 ≤ K) (u : V →ᵇ U) (d : V →ᵇ G)
     (hK : ∀ x, ‖A (u x)‖ ≤ K) :
@@ -133,11 +101,6 @@ theorem coeffBCF_norm (A : U → G →L[ℝ] F) (hA : Continuous A)
           mul_le_mul_of_nonneg_left (d.norm_coe_le_norm x) hK0)
 
 omit [NormedSpace ℝ U] in
-/-- Supremum-norm nonlinear difference estimate for coefficient fluxes.
-
-For the Ricci--DeTurck principal arm, `A` is the inverse-metric coefficient
-map restricted to a small positive-definite `C⁰` ball.  The estimate uses only
-its zeroth-order bound and Lipschitz dependence on the metric value. -/
 theorem coeffBCF_diff (A : U → G →L[ℝ] F) {L : ℝ≥0}
     (hA : LipschitzWith L A) (K : ℝ) (hK0 : 0 ≤ K)
     (u₁ u₂ : V →ᵇ U) (d₁ d₂ : V →ᵇ G)
@@ -184,10 +147,6 @@ omit [NormedAddCommGroup V]
   [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V]
   [NormedSpace ℝ U] in
-/-- `C⁰` stability of the divergence flux in the weighted pointwise part
-of the rough norm.  The coefficient variation is controlled only by the
-`C⁰` state difference; both first-derivative factors retain their
-`sqrt(t)` weights. -/
 theorem fluxDiffWt (A : U → G →L[ℝ] F) {L : ℝ≥0}
     (hA : LipschitzWith L A) {T K D A₁ AΔ : ℝ}
     (hK0 : 0 ≤ K) (hD0 : 0 ≤ D)
@@ -239,10 +198,6 @@ variable {V U G F : Type*}
 
 omit [CompleteSpace F]
   [NormedSpace ℝ U] in
-/-- Difference estimate for the spatial integrand of the divergence-form
-Ricci--DeTurck Duhamel arm.  Time integration is intentionally left to the
-rough parabolic solution norm; this lemma is the exact `D H * (A(u) Du)`
-estimate at one positive time separation. -/
 theorem heatCoeff_diff (A : U → G →L[ℝ] F) {L : ℝ≥0}
     (hA : LipschitzWith L A) (K : ℝ) (hK0 : 0 ≤ K)
     {t : ℝ} (ht : 0 < t) (v : V)
@@ -281,12 +236,6 @@ variable {U G H F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 omit [NormedSpace ℝ U] in
-/-- Three-arm difference estimate for the compensating quadratic-gradient
-term `DA(u)[Du] Dw` produced by `coeffD2_refold`.
-
-Here `C u` is the bilinear map `(Du,Dw) ↦ DA(u)[Du] Dw`.  The hypotheses are
-the pointwise Lipschitz bound for `DA` and a pointwise operator bound at the
-second state. -/
 theorem corrDiff_norm (C : U → G →L[ℝ] H →L[ℝ] F)
     (u₁ u₂ : U) (d₁ d₂ : G) (e₁ e₂ : H) {L K : ℝ}
     (hC : ‖C u₁ - C u₂‖ ≤ L * ‖u₁ - u₂‖)
@@ -348,9 +297,6 @@ omit [NormedAddCommGroup V]
   [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V]
   [NormedSpace ℝ U] in
-/-- `C⁰` stability of the compensating quadratic-gradient arm in the
-weighted source norm.  This is the time-weighted counterpart of
-`corrDiff_norm`; none of its three arms is dropped. -/
 theorem corrDiffWt (C : U → G →L[ℝ] H →L[ℝ] F) {L : ℝ≥0}
     (hC : LipschitzWith L C)
     {T K D A₁ A₂ AΔ E₁ EΔ : ℝ}

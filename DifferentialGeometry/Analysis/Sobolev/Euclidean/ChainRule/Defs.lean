@@ -13,35 +13,20 @@ namespace Sobolev
 namespace Euclidean
 
 structure SmoothDiffeoBounded (d : ℕ) (Ω Ω' : Set (EuclideanSpace ℝ (Fin d))) where
-
   toFun : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)
-
   invFun : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)
-
   toFun_smooth : ContDiff ℝ (⊤ : ℕ∞) toFun
-
   invFun_smooth : ContDiff ℝ (⊤ : ℕ∞) invFun
-
   bijOn : Set.BijOn toFun Ω Ω'
-
   invFun_bijOn : Set.BijOn invFun Ω' Ω
-
   left_inv : Set.LeftInvOn invFun toFun Ω
-
   right_inv : Set.RightInvOn invFun toFun Ω'
-
   deriv_bound : ℝ
-
   deriv_bound_pos : 0 < deriv_bound
-
   iter_deriv_bounded : ∀ k : ℕ, ∀ x, ‖iteratedFDeriv ℝ k toFun x‖ ≤ deriv_bound
-
   iter_deriv_invFun_bounded : ∀ k : ℕ, ∀ x, ‖iteratedFDeriv ℝ k invFun x‖ ≤ deriv_bound
-
   jacobian_lower_bound : ℝ
-
   jacobian_lower_bound_pos : 0 < jacobian_lower_bound
-
   jacobian_lower : ∀ x ∈ Ω, jacobian_lower_bound ≤ |(fderiv ℝ toFun x).det|
 
 namespace SmoothDiffeoBounded

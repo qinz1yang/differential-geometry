@@ -1,12 +1,14 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor03CovariantDerivative
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 open Bundle Manifold Set FiberBundle
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -264,7 +266,7 @@ theorem tensor03Cov_sub
   rw [sub_eq_add_neg, tensor03Cov_add cov hT hT'neg, hneg, sub_eq_add_neg]
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

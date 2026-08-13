@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -57,7 +58,6 @@ private theorem perModeConv_sq_le_time_mul_integral (lam : ℝ) (hlam : 0 ≤ la
     _ ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 := by
         exact mul_le_mul_of_nonneg_left hk_sq_int ht
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHs_smallTime_norm_le_of_perModeConv
     (a : ℝ) {T : ℝ} (hT : 0 < T)

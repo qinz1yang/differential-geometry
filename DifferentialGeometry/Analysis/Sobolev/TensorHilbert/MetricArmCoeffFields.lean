@@ -1,14 +1,18 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricInverseDifferenceSlotCoefficient
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Sobolev
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -17,9 +21,9 @@ open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open TensorRSNabla
-open TensorMultilinear
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.TensorRSNabla
+open DifferentialGeometry.TensorMultilinear
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (metricCauchySchwarzBound ccTensorBilinSymm)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -426,8 +430,8 @@ lemma curry_armSlotFib_eq_slotInsert (s : ℕ) (x : M)
   simp only [Fin.cons_zero]
   rfl
 
-end Connection
-end Integral
+end Sobolev
+end Analysis
 end DifferentialGeometry
 
 end

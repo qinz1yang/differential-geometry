@@ -1,23 +1,13 @@
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Tensor.RSTensor.ContractionLeibniz
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open scoped Manifold ContDiff BigOperators
@@ -29,7 +19,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [IsManifold I (∞ : WithTop ℕ∞) M]
 variable [T2Space M]
-
 
 omit [IsManifold I 2 M] [T2Space M] in
 theorem normSq0S_product {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -83,13 +72,6 @@ theorem normSq0S_product {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   rw [hprod, mul_pow]
   rfl
 
-
-
-
-
-
-
-
 omit [IsManifold I 2 M] [T2Space M] in
 theorem normSq0S_domDomCongr {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothMetric_gen I M) (x : M) {s s' : ℕ}
@@ -108,3 +90,4 @@ theorem normSq0S_domDomCongr {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   rw [Tensor0SSpace.domDomCongr_apply]
 
 end Tensor0SBundle
+end DifferentialGeometry

@@ -2,15 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelHolder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxKern
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateNear
 
-/-!
-# Near terminal-cylinder Koch--Lamm flux estimate
-
-This file restricts the full terminal first-derivative kernel class to one
-late Koch--Lamm cylinder and pairs it with `KLSource1.late_lp`.  The estimate
-is genuinely space-time Hölder; it does not extract an unavailable
-uniform-in-time spatial source norm.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -27,8 +18,6 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [Nontrivial V] [NormedSpace ℝ F] [CompleteSpace F] in
-/-- The finite late-cylinder flux estimate supplies the local `MemLp` fact
-needed for space-time Hölder. -/
 theorem klFluxSrc_memLp {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
@@ -46,8 +35,6 @@ theorem klFluxSrc_memLp {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   exact ENNReal.lt_top_of_mul_ne_top_right hmul.ne hs0
 
 omit [Nontrivial V] [NormedSpace ℝ F] [CompleteSpace F] in
-/-- Quantitative late-cylinder flux estimate, with the positive
-Koch--Lamm scale divided out. -/
 theorem klFluxSrc_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
@@ -61,15 +48,11 @@ theorem klFluxSrc_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   exact (ENNReal.mul_le_iff_le_inv hs0 hsT).mp
     (h.late_lp x R hR hRT)
 
-/-- Contribution of one late Koch--Lamm cylinder to a directional
-divergence-source heat potential. -/
 def klFluxNear1 (R : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
   ∫ z in klLateCyl x R,
     klFluxKernel (R ^ 2) w x z • f z ∂(klVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
-/-- Space-time Hölder controls the near terminal-cylinder directional
-flux potential in the exact conjugate exponents. -/
 theorem klFluxNear_holder {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :

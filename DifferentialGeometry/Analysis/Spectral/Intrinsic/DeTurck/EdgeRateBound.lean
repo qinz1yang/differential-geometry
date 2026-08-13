@@ -1,41 +1,29 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.CovDivergenceRoughLaplacianCommutation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgePartnerBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MovingEdgeEnergy
-
-/-!
-# Ricci--DeTurck rate bound at the closed initial edge
-
-This file assembles the fixed-time analytic estimate behind the moving
-difference energy.  The top nonlinear coefficient is never differentiated as
-an opaque coefficient.  Instead the Palatini--DeTurck refold exposes its
-formal partner, whose zeroth and first covariant derivatives both retain the
-small metric-difference factor.
-
-The principal estimate is applied to `s • W`, because the metric at slope
-parameter `s` is `g + s W`.  Dividing the resulting quadratic inequality by
-`s ^ 2` is essential; applying the principal theorem directly to `W` would
-use the wrong realization identity.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-
-open Bundle Manifold MeasureTheory Tensor0SBundle
+open Bundle Manifold MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -64,28 +52,17 @@ private local instance edgeRateTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
   Tensor0SBundle.tensorRSBundle_fiber r s
 
-/-! ## A refold normal form which retains the formal-partner data -/
-
-/-- The complete order-zero field left after the top refold. -/
 def edgeRate0 (g gm g_bg : SmoothRiemannianMetric I M)
     (C0 : SmoothCcTensor g 2 2) : SmoothCcTensor g 2 2 :=
   edgeCarry0 (I := I) (M := M) g g_bg +
     (-2 : Real) • edgeRicciHalf (I := I) (M := M) g gm + C0 +
     edgeFold0 (I := I) (M := M) g gm g_bg
 
-/-- The complete order-one field left after the top refold. -/
 def edgeRate1 (g gm g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 3 2 :=
   edgeCarry1 (I := I) (M := M) g g_bg +
     edgeQuad1 (I := I) (M := M) g gm g_bg
 
-/-- Closed-edge slope refold retaining the permutations and signs which define
-the formal top partner.
-
-Unlike `exists_edgeSlopeRef`, this theorem deliberately returns `qA`, `qB`,
-`q`, and `epsilon`.  They are required by `edgeTop_zero` and `edgeTop_one`, so
-hiding them behind an existential coefficient would make the sharp top-order
-energy estimate impossible to consume. -/
 theorem exists_edgePairRef
     (g g_bg : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -236,8 +213,6 @@ theorem exists_edgePairRef
       g g_bg W hWsymm hdelta_lt hdelta x v w hs
     rw [hslope, hnormal s hscc]
 
-/-! ## Principal absorption on the genuine slope segment -/
-
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [SigmaCompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem edge_unit_smul
@@ -293,11 +268,6 @@ private lemma edge_bound_mono
     (mul_le_mul_of_nonneg_right hab (Real.sqrt_nonneg _))
     (Real.sqrt_nonneg _))
 
-/-- Principal and lower-order absorption at a genuine slope parameter.
-
-The realization identity for `edgeMetric g W hdelta s` is tied to `s • W`.
-Accordingly the proof applies `edgeCore_pair_le` to that scaled tensor and
-then cancels the positive factor `s ^ 2`. -/
 theorem edgeCore_path_le [Nonempty M]
     (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
@@ -392,8 +362,6 @@ theorem edgeCore_path_le [Nonempty M]
       (edgeCoreArm (I := I) (M := M) g gm C0 C1 W).toFun ≤ _
   nlinarith
 
-/-! ## Formal-partner absorption -/
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem edge_l2_of_rfns
     (g : SmoothRiemannianMetric I M) (ra sa rb sb : Nat)
@@ -422,9 +390,6 @@ private theorem edge_l2_of_rfns
   have hright : 0 ≤ c * ‖B‖ := mul_nonneg hc (norm_nonneg B)
   nlinarith [norm_nonneg A]
 
-/-- The complete top refold pairing is absorbed by one quarter of the
-Dirichlet energy on a radius chosen from the carrier metric alone.  The
-remaining coefficient multiplies only the `L²` energy of `W`. -/
 theorem edgeTop_pair_le
     (g : SmoothRiemannianMetric I M) :
     ∃ delta0 K : Real, 0 < delta0 ∧ delta0 < 1 / 2 ∧ 0 ≤ K ∧
@@ -605,13 +570,6 @@ theorem edgeTop_pair_le
           ‖iteratedCovGrad (I := I) g 0 2 1 W‖ ^ 2 +
         K * ‖W‖ ^ 2 := by linarith
 
-/-! ## Fixed-time slope pairing -/
-
-/-- Conditional fixed-time pairing estimate once the supplied lower
-coefficient fields have pointwise bounds.  This is generic refold glue, not
-the missing bound producer for the concrete `edgeRate0` and `edgeRate1`.
-The negative quarter from the principal/lower arm cancels the positive
-quarter used to absorb the formal top partner. -/
 theorem edgePair_pair_le [Nonempty M]
     (g : SmoothRiemannianMetric I M) :
     ∃ C delta0 K : Real,
@@ -701,9 +659,8 @@ theorem edgePair_pair_le [Nonempty M]
   rw [hadd]
   nlinarith
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

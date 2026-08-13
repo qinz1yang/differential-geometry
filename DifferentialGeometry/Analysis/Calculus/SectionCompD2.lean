@@ -2,15 +2,6 @@ import DifferentialGeometry.Analysis.Calculus.MovingImplicit
 
 set_option autoImplicit false
 
-/-!
-# Second derivative of a section composition
-
-This file isolates the Banach-calculus identity behind the full-state
-local-addition formula.  For a map `F (p, x)` composed with a section
-`p ↦ (p, v p)`, its second derivative splits into the vertical derivative
-of `F` applied to `D²v` and a term depending only on the first jet of `v`.
--/
-
 noncomputable section
 
 open Filter
@@ -30,8 +21,6 @@ private theorem fderiv_clm_const
   rw [fderiv_clm_apply hc (differentiableAt_const x)]
   simp [ContinuousLinearMap.flip_apply]
 
-/-- The second derivative of `p ↦ F (p, v p)` has exactly one term
-containing `D²v`: the vertical derivative of `F` applied to `D²v`. -/
 theorem sectionCompD2
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P]
@@ -142,9 +131,6 @@ theorem sectionCompD2
     _ = fderiv Real (fun z ↦ A z (U z)) p a := hderivEq
     _ = _ := hright
 
-/-- If the vertical derivative is invertible, subtracting the first-jet
-remainder and applying its inverse recovers the top derivative of the
-section exactly. -/
 theorem sectionD2_cancel
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P]

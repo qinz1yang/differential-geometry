@@ -1,27 +1,15 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
 import DifferentialGeometry.Tensor.RSTensor.Components
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -30,22 +18,15 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-
-
-
 def metricVariationComponent
     (v : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (x : M) (X Y : TangentSpace I x) : Real :=
   v x (fun q : Fin 2 => if q = 0 then X else Y)
 
-
-
-
-
 structure MetricPotentialVariationPath
     (g : SmoothRiemannianMetric I M) (potential : M -> Real) where
-  G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real
+  G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real
   potentialPath : Real -> M -> Real
   base : Real
   metricBase : G.metric base = g
@@ -69,11 +50,6 @@ omit [FiniteDimensional ℝ E] in
 
 end MetricPotentialVariationPath
 
-
-
-
-
-
 structure IsMetricPotentialVariationPath
     {g : SmoothRiemannianMetric I M} {potential : M -> Real}
     (path : MetricPotentialVariationPath (I := I) g potential)
@@ -83,7 +59,7 @@ structure IsMetricPotentialVariationPath
     (potentialVariation : M -> Real) : Prop where
   leviCivita :
     ∀ s : Real,
-      DifferentialGeometry.Integral.Connection.IsLeviCivita (I := I) (path.G.connection s)
+      DifferentialGeometry.Geometry.Connection.IsLeviCivita (I := I) (path.G.connection s)
         (path.G.metric s)
   metric_deriv :
     ∀ x : M, ∀ X Y : TangentSpace I x,
@@ -96,4 +72,4 @@ structure IsMetricPotentialVariationPath
       HasDerivAt (fun s : Real => path.potentialPath s x)
         (potentialVariation x) path.base
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

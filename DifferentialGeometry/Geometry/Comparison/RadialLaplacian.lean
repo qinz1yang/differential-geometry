@@ -7,21 +7,16 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiShape
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialGronwall
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.LineSplit
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-/-!
-# Laplacian of a selected branch radius
-
-This file is the comparison-facing assembly for the fixed-first selected
-inverse branch.  The first checked brick records that the branch radius has
-zero second derivative along every positive intrinsic radial ray that remains
-in the selected branch.
--/
-
 noncomputable section
 
-open Bundle Filter Function Manifold Tensor0SBundle
+open Bundle Filter Function Manifold DifferentialGeometry.Tensor0SBundle
 open scoped ContDiff Manifold Matrix Topology
 
 namespace DifferentialGeometry
@@ -32,7 +27,8 @@ open Exponential
 open Variation
 open VolumeComparison
 open CovariantDerivativeAlong
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -50,8 +46,6 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-/-- The selected branch radius restricts to an affine function on a positive
-intrinsic radial ray, so its ordinary second derivative there vanishes. -/
 theorem branchDeriv2_zero
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -84,8 +78,6 @@ theorem branchDeriv2_zero
           ((hasDerivAt_id s).mul_const a).deriv
       rw [hfirst, deriv_const]
 
-/-- The Hessian of the selected branch radius vanishes on the terminal radial
-velocity of its time-one intrinsic geodesic. -/
 theorem branchHess_radial
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -133,14 +125,10 @@ theorem branchHess_radial
   rw [htrace] at hzero
   simpa only [curveVelocity] using hzero
 
-/-- The scalar Laplacian of the fixed-first branch radius at a time-one
-intrinsic endpoint is the transverse Jacobi mean curvature divided by the
-launch speed. -/
 theorem branchLap_eq_mean
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {p : M}
     (B : ExpInvBranch (I := I) g hEnorm p)
     (u : TangentSpace I p)
@@ -291,8 +279,7 @@ private lemma metric_smul_right
 
 private theorem radialCurve_eq_intr
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x : E) {t : Real}
     (htx : ‖t • x‖ < expMapC2Radius (I := I) g p) :
     radialCurve (I := I) g p x =ᶠ[𝓝 t]
@@ -306,8 +293,7 @@ private theorem radialCurve_eq_intr
 
 private theorem radialJacobi_eq_intr
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x w : E) {t : Real}
     (htx : ‖t • x‖ < expMapC2Radius (I := I) g p) :
     ∀ᶠ s in 𝓝 t,
@@ -358,8 +344,7 @@ private theorem radialJacobi_eq_intr
 
 private theorem intrJacobi_smul
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x w : E) (t s : Real) :
     (intrinsicJacobi (I := I) g hEnorm p
         (show TangentSpace I p from t • x)
@@ -404,14 +389,10 @@ private theorem intrJacobi_smul
   rw [hfun]
   rfl
 
-/-- The scalar Laplacian of the selected branch radius along the chart-fixed
-raw radial family is the raw transverse Jacobi mean divided by the unscaled
-launch speed. -/
 theorem radialLap_eq_mean
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {p : M}
     (B : ExpInvBranch (I := I) g hEnorm p)
     (x : E) (v : ι → E) (t : Real)

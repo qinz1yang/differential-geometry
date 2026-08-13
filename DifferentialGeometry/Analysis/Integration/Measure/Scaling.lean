@@ -1,15 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 namespace DifferentialGeometry.Integral.Measure
 
@@ -39,16 +32,12 @@ private theorem sqrt_pow (c : Real) (hc : 0 ≤ c) (n : Nat) :
   | succ n ih =>
       rw [pow_succ, Real.sqrt_mul (pow_nonneg hc n), ih, pow_succ]
 
-
-
 theorem chartGram_scale (c : Real) (hc : 0 < c)
     (g : SmoothRiemannianMetric I M) (x₀ x : M) :
     chartGramMatrix (scaleMetric (I := I) c hc g) x₀ x =
       c • chartGramMatrix g x₀ x := by
   ext i j
   simp [chartGramMatrix_apply, scaleMetric_inner]
-
-
 
 theorem chartDensity_scale (c : Real) (hc : 0 < c)
     (g : SmoothRiemannianMetric I M) (x₀ x : M) :
@@ -58,8 +47,6 @@ theorem chartDensity_scale (c : Real) (hc : 0 < c)
   rw [chartGram_scale (I := I) c hc g x₀ x, Matrix.det_smul]
   simp only [Fintype.card_fin]
   rw [Real.sqrt_mul (pow_nonneg hc.le _)]
-
-
 
 theorem chartLocal_scale (c : Real) (hc : 0 < c)
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
@@ -81,8 +68,6 @@ theorem chartLocal_scale (c : Real) (hc : 0 < c)
   have ha : a ≠ (∞ : ℝ≥0∞) := by simp [a]
   unfold chartLocalMeasure
   rw [hdensity, withDensity_smul' a _ ha, Measure.map_smul]
-
-
 
 theorem riemMeasure_scale [T2Space M] [SigmaCompactSpace M]
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
@@ -107,8 +92,6 @@ theorem riemMeasure_scale [T2Space M] [SigmaCompactSpace M]
   rw [Measure.sum_apply _ hs, Measure.smul_apply, Measure.sum_apply _ hs]
   exact ENNReal.tsum_const_smul a
 
-
-
 theorem volume_scaleMetric [T2Space M] [SigmaCompactSpace M]
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) :
     riemannianVolumeMeasure (I := I) (M := M)
@@ -118,8 +101,6 @@ theorem volume_scaleMetric [T2Space M] [SigmaCompactSpace M]
   simpa only [sqrt_pow c hc.le,
     ENNReal.ofReal_pow (Real.sqrt_nonneg c)] using
     riemMeasure_scale (I := I) (M := M) c hc g (chartAtlasPOU I M)
-
-
 
 theorem volume_scale_apply [T2Space M] [SigmaCompactSpace M]
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (s : Set M) :

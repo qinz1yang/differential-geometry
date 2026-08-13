@@ -2,23 +2,6 @@ import DifferentialGeometry.Geometry.Exponential.JacobiVariation
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Set Function Manifold Bundle
@@ -34,9 +17,6 @@ section LinearAlgebra
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-
-
 
 theorem injective_of_ball_ne_zero (L : E →L[ℝ] F) {r : ℝ} (hr : 0 < r)
     (h : ∀ w : E, 0 < ‖w‖ → ‖w‖ < r → L w ≠ 0) : Function.Injective L := by
@@ -65,13 +45,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
   [T2Space M] [SigmaCompactSpace M]
-
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem mfderiv_exp_injective_of_jacobi

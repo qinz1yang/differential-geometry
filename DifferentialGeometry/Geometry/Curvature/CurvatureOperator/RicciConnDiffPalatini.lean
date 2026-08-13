@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifferenceCurvature
-import DifferentialGeometry.Geometry.Flow.ConnectionDifference
+import DifferentialGeometry.Geometry.Connection.ConnectionDifference
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -7,8 +10,8 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.DeTurck
@@ -61,6 +64,6 @@ theorem ricciTensor_sub_eq_connDiff_palatini (g₀ g₁ : SmoothRiemannianMetric
                   (smoothExtensionTangent (I := I) x v x))) i :=
   ricciTensor_sub_eq_basisSum_difference (I := I) g₀ g₁ x v w
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

@@ -2,21 +2,6 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
 import Mathlib.Analysis.ODE.PicardLindelof
 import Mathlib.Analysis.Calculus.MeanValue
 
-/-!
-# ODEs with a state-dependent coercive mass
-
-Finite-dimensional geometric Galerkin equations have the form
-
-`M(t, u(t)) u'(t) = R(t, u(t))`.
-
-The mass form is nonlinear in the state when the geometric unknown is written
-in a local-addition coordinate.  This file supplies the local
-Picard--Lindelof theorem for that faithful equation.  It deliberately asks
-for continuity only in time at each fixed state and for uniform Lipschitz
-bounds only in the state variable, matching the hypotheses of mathlib's
-time-dependent Picard theorem.
--/
-
 noncomputable section
 
 open Set Metric
@@ -24,10 +9,6 @@ open scoped NNReal Topology
 
 namespace DifferentialGeometry.Analysis.ODE
 
-/-- A uniform Lipschitz bound for a bilinear family transfers a quantitative
-coercivity bound at the origin to the whole closed state ball.  The radius is
-explicit, so this lemma can be used uniformly in an additional time
-parameter. -/
 theorem coerOn_of_lip
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (B : V → V →L[ℝ] V →L[ℝ] ℝ) {c R : ℝ} {K : ℝ≥0}
@@ -73,11 +54,6 @@ theorem coerOn_of_lip
         c * ‖v‖ * ‖v‖ - (c / 2) * ‖v‖ * ‖v‖ := by ring
     _ ≤ B 0 v v + D v v := add_le_add (hB_zero v) hDlow
 
-/-- Local existence for an ODE whose velocity is obtained by raising a
-covector through a uniformly coercive, state-dependent bilinear form.
-
-The returned trajectory remains in the input state ball, so its equation is
-the genuine untruncated equation throughout the produced interval. -/
 theorem stateMass_exists
     {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [CompleteSpace V]

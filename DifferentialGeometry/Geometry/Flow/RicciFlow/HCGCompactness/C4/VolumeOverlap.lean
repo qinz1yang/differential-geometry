@@ -1,46 +1,11 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentCount
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.VolumeComparisonBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.GoodCovering
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# A0′ `VolumeComparisonInput` producer (brick B7, sequence assembly)
-
-This file assembles the honest producer of the unconditional-Theorem-3.9 Step A
-input **A0′** (`HCGCompactness/C4/A0PRIME_VOLUME_PLAN.md`).  For a bounded-geometry
-pointed Riemannian sequence it packages the member-level Bishop–Gromov packing
-count `segBall_card` (`Comparison/Volume/SegmentCount.lean`) as the deep
-`ballMult` field of `VolumeComparisonInput`, for the supplied distance.
-
-## Main result
-
-* `volInput_of_bg` — from `SeqBoundedGeometry`, a supplied realized distance
-  (`InjRadiusDecayInput` + `RealizesEdist`), per-member completeness and
-  connectedness, and a positive cap `r0`, produces
-  `{ vc : VolumeComparisonInput X // vc.dist = hd.dist }`.  The subtype equation
-  discharges `MetricCompactBase.dist_eq`.  Only `hd.dist`/`hreal` are consumed;
-  `hd.decay` is never used, so A0′ is independent of the CGT input.
-
-## Transitive-`sorry` status
-
-This file adds **no** `sorry` of its own.  `volInput_of_bg` nonetheless remains
-transitively `sorry`'d through `segBall_card`'s dependence on the two intended
-frontier `sorry`s in `Comparison/Volume/SegmentPolar.lean` (the manifold-valued
-non-injective area inequality and its truncated polar companion).  Per plan §7,
-the A0′ endpoint stays at 0% until those close (bricks B5b/B5c); this brick only
-lands the assembly, whose own content is `sorry`-free.
-
-## Ricci input
-
-The counting theorem wants `Ric ≥ -(n-1)q²`.  With `q := n·√(bg.C 0)` this is
-derived per member from the zeroth-order curvature bound
-(`rm04Bound_of_seq` → `ricciLower_of_rm`, giving `Ric ≥ -(n²·C₀)`) by
-antitonicity in the constant when `n ≥ 2`.  In dimension one the target constant
-is `0` and antitonicity fails; there `ricciTensor` vanishes identically
-(`ricci_dim1_bddBelow`, from antisymmetry of the Riemann operator on a
-one-dimensional space), giving `Ric ≥ 0` outright.
--/
 
 noncomputable section
 
@@ -54,15 +19,13 @@ open scoped Manifold ContDiff Topology Bundle
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners Real E H}
   [I.Boundaryless]
-
-/-! ## Dimension-one Ricci vanishing -/
 
 section Dim1
 
@@ -72,9 +35,6 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)] in
-/-- In dimension one the Levi-Civita Riemann operator vanishes identically: it is
-antisymmetric in its first two arguments, which both lie in a one-dimensional
-space and are therefore proportional. -/
 theorem riemannOp_dim1_zero (h1 : Module.finrank ℝ E = 1)
     (g : SmoothRiemannianMetric I M) (x : M) (u v w : TangentSpace I x) :
     riemannOp (LeviCivita (I := I) g) x u v w = 0 := by
@@ -86,7 +46,6 @@ theorem riemannOp_dim1_zero (h1 : Module.finrank ℝ E = 1)
   have hspan := (finrank_eq_one_iff_of_nonzero' e he).mp hfr
   obtain ⟨a, ha⟩ := hspan u
   obtain ⟨b, hb⟩ := hspan v
-  -- `R(e, e, w) = 0` from antisymmetry in the first two slots.
   have hee : riemannOp (LeviCivita (I := I) g) x e e w = 0 := by
     have hsw := riemannOp_swap (LeviCivita (I := I) g) x e e w
     have h2 : (2 : ℝ) • riemannOp (LeviCivita (I := I) g) x e e w = 0 := by
@@ -101,7 +60,6 @@ theorem riemannOp_dim1_zero (h1 : Module.finrank ℝ E = 1)
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)] in
-/-- In dimension one the Ricci tensor vanishes, so `Ric ≥ 0`. -/
 theorem ricci_dim1_bddBelow (h1 : Module.finrank ℝ E = 1)
     (g : SmoothRiemannianMetric I M) :
     RicciBoundedBelow (I := I) g 0 := by
@@ -117,15 +75,8 @@ theorem ricci_dim1_bddBelow (h1 : Module.finrank ℝ E = 1)
 
 end Dim1
 
-/-! ## The sequence-level producer -/
-
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- **A0′ producer.**  Uniform bounded geometry plus a supplied realized distance,
-per-member completeness, and connectedness produce the Step A bounded-overlap
-input for that distance.  Only `hd.dist` and `hreal` are used (`hd.decay` is not),
-so the output is independent of the injectivity-radius decay input; the subtype
-equation `vc.dist = hd.dist` discharges `MetricCompactBase.dist_eq`. -/
 def volInput_of_bg
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (bg : SeqBoundedGeometry (I := I) X)
@@ -143,7 +94,6 @@ def volInput_of_bg
             Imult := fun m => segImult (Module.finrank ℝ E) q r0 m,
             ballMult := ?_ }, rfl⟩
   intro m k α _ _ centers r hr hcap hsep z J hJz
-  -- Install the member instances for `X.obj k`.
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
   letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
   letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -165,7 +115,6 @@ def volInput_of_bg
   letI : ConnectedSpace (X.obj k).M := hconn k
   haveI : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (X.obj k) (hcpl.complete k)
-  -- Per-member Ricci lower bound `Ric ≥ -(n-1)q²`.
   have hRic : RicciBoundedBelow (I := I) (X.obj k).metric
       (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2)) := by
     by_cases hn1 : Module.finrank ℝ E = 1
@@ -202,13 +151,11 @@ def volInput_of_bg
               * (X.obj k).metric.inner x v v :=
             mul_le_mul_of_nonneg_right hkappa hinner
         _ ≤ ricciTensor (I := I) (X.obj k).metric x v v := hsrc x v
-  -- Norm bridge: the tangent enorm is `√⟨·,·⟩`.
   have hEnorm : ∀ (y : (X.obj k).M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt ((X.obj k).metric.inner y w w)) := by
     intro y w
     simpa using
       tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) (X.obj k).metric y w
-  -- Distance bridge: the supplied distance realizes `riemannianEDist`.
   have hbridge : ∀ x y : (X.obj k).M,
       riemannianEDist I x y = ENNReal.ofReal (hd.dist k x y) := by
     intro x y

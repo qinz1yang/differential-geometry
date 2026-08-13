@@ -2,21 +2,10 @@ import DifferentialGeometry.Geometry.Comparison.InjectivityRadius
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-/-!
-* `exists_expBall_diffeo` — the Step A item-3a assembly: for `r` below the
-  injectivity radius, `framedExpMap g p` restricts to a `C^1` partial
-  diffeomorphism with source the Euclidean model ball `ball 0 r`. Through the
-  chosen `g_p`-orthonormal frame this is exactly the intrinsic tangent ball.
-  Injectivity is
-  `injOn_expMap_ball_of_ofReal_lt_injRadius`; the local-diffeomorphism input on
-  the ball (nonsingularity of `d exp` — the no-conjugate-points content, true
-  below `c/√C₀` by the Jacobi/parallel-frame Grönwall estimate of the B0 route)
-  is taken as a hypothesis here and is the B3 frontier of `ConvexBalls.md`.
--/
 
 open Set Function Manifold
 open scoped Topology Manifold ContDiff
@@ -37,10 +26,6 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {I : ModelWithCorners 𝕜 E H} {J : ModelWithCorners 𝕜 F G}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   {N : Type*} [TopologicalSpace N] [ChartedSpace G N] {n : WithTop ℕ∞}
-
-
-
-
 
 theorem exists_diffeo_of_injOn [Nonempty M]
     {f : M → N} {s : Set M} (hf : IsLocalDiffeomorphOn I J n f s)
@@ -169,10 +154,6 @@ open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
-/-- **MSM135 `lbl383` item 3a, assembly form.**  For `r` below the injectivity
-radius at `p`, given the local-diffeomorphism input on the ball,
-`framedExpMap g p` restricts to a `C^1` partial diffeomorphism with source
-`Metric.ball (0 : E) r`. -/
 theorem exists_framedExpBall_diffeo
     (g : SmoothRiemannianMetric I M) (p : M) {r : ℝ}
     (hr : ENNReal.ofReal r < framedInjRadius (I := I) g p)
@@ -187,11 +168,6 @@ theorem exists_framedExpBall_diffeo
   exists_diffeo_of_injOn hloc Metric.isOpen_ball
     (injOn_framedExpMap_ball_of_ofReal_lt_framedInjRadius (I := I) g p hr)
 
-/-- **The nonsingularity input, discharged from framed normal coordinates.**
-For `r ≤ expRadiusGp g p`, the framed exponential is a `C^1` local
-diffeomorphism at every point of `Metric.ball 0 r`. The intrinsic radius and
-`normalFrame_sqrt` place the corresponding tangent vector in the source of the
-selected exponential partial diffeomorphism. -/
 theorem framedExp_isLocalDiffeomorphOn_ball
     (g : SmoothRiemannianMetric I M) (p : M) {r : ℝ}
     (hr : r ≤ expRadiusGp (I := I) g p) :
@@ -214,9 +190,6 @@ theorem framedExp_isLocalDiffeomorphOn_ball
   exact ⟨framedExpDiffeo (I := I) g p, hsrc,
     fun y hy => (framedExp_eq_expMap (I := I) g p hy).symm⟩
 
-/-- **MSM135 `lbl383` item 3a, unconditional form.** For `r` below both the
-injectivity radius and `expRadiusGp g p`, `framedExpMap g p` restricts to a
-`C^1` partial diffeomorphism with source `Metric.ball 0 r`. -/
 theorem exists_framedExpBall_diffeo_of_lt
     (g : SmoothRiemannianMetric I M) (p : M) {r : ℝ}
     (hrinj : ENNReal.ofReal r < framedInjRadius (I := I) g p)

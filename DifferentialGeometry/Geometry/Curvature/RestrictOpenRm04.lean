@@ -1,31 +1,15 @@
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 open scoped Manifold ContDiff Topology
-open DifferentialGeometry.Integral.Connection.CovariantDerivative
+open DifferentialGeometry.Geometry.Curvature.CovariantDerivative
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -34,11 +18,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M]
 variable [T2Space M] [SigmaCompactSpace M]
-
-
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem connectionRiemannCurvatureField_restrictOpen
@@ -98,9 +77,6 @@ theorem connectionRiemannCurvatureField_restrictOpen
     metricCov_restrictOpen_globalSection (I := I) g U Zs x
       (VectorField.mlieBracket I (fun p : M => Xs p) (fun p : M => Ys p) (x : M))]
   rfl
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem metricRm04StdAt_restrictOpen
@@ -170,4 +146,4 @@ theorem metricRm04StdAt_restrictOpen
       (connectionRiemannCurvatureField_restrictOpen (I := I) g U Xs Ys Zs x)
   rw [hL, hR]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

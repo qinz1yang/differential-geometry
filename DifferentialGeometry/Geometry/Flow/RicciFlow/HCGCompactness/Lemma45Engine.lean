@@ -1,39 +1,19 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.AkMFold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.Lemma45CovariantAbstract
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.KoszulDifference
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.HCGCompactness
-open DifferentialGeometry.Integral.Connection
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -45,9 +25,6 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
 
 noncomputable def claim1MulConst (C0 KR L : Real) (m : ℕ) : Real :=
   Nat.strongRecOn' m fun n C =>
@@ -62,8 +39,6 @@ theorem claim1MulConst_eq (C0 KR L : Real) (m : ℕ) :
   rw [claim1MulConst, Nat.strongRecOn'_beta, ← Fin.sum_univ_eq_sum_range]
   rfl
 
-
-
 theorem claim1MulConst_nonneg {C0 KR L : Real} (hL : 0 ≤ L) (m : ℕ) :
     0 ≤ claim1MulConst C0 KR L m := by
   induction m using Nat.strong_induction_on with
@@ -72,9 +47,6 @@ theorem claim1MulConst_nonneg {C0 KR L : Real} (hL : 0 ≤ L) (m : ℕ) :
       refine mul_nonneg (le_max_right C0 0) (add_nonneg (mul_nonneg (le_max_right KR 0) hL) ?_)
       exact Finset.sum_nonneg fun c hc =>
         mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (ih c (Finset.mem_range.mp hc))) hL
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
 theorem claim1_eps_mul_bound {u : Set M} (hu : IsOpen u)
@@ -212,12 +184,6 @@ theorem claim1_eps_mul_bound {u : Set M} (hu : IsOpen u)
         rw [claim1MulConst_eq, hSdef]
         ring
 
-
-
-
-
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
 theorem claim1_eps_mul {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -248,8 +214,6 @@ theorem claim1_eps_mul {u : Set M} (hu : IsOpen u)
   exact ⟨claim1MulConst C0 KR L m, claim1MulConst_nonneg hL m,
     claim1_eps_mul_bound hu frame chr hframe hchr g hg Ginv A hA hinv C0 KR L eps
       hL heps0 heps1 hGinv m hK hrelB⟩
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
 theorem claim1_eps {u : Set M} (hu : IsOpen u)
@@ -282,29 +246,15 @@ theorem claim1_eps {u : Set M} (hu : IsOpen u)
     zero_le_one heps0 heps1 hGinv m ?_
   simpa only [one_mul] using hK
 
-
-
-
-
-
-
-
-
-
-
 def chrDiffField (chrG chrH : M → Idx → Idx → Idx → Real) :
     M → (Fin (2 + 1) → Idx) → Real :=
   fun y v => chrG y (v 0) (v 1) (v 2) - chrH y (v 0) (v 1) (v 2)
-
-
 
 def chrCorrField (D : M → Idx → Idx → Idx → Real) {r : ℕ}
     (X : M → (Fin r → Idx) → Real) (s : Fin r) :
     M → (Fin (r + 1) → Idx) → Real :=
   fun y n => ∑ p : Idx,
     D y (n 0) (Fin.tail n s) p * X y (Function.update (Fin.tail n) s p)
-
-
 
 def slotRotEquiv {r' : ℕ} (s : Fin (r' + 1)) : Fin (r' + 1) ≃ Fin (r' + 1) :=
   (finSuccEquiv' s).trans (finSuccEquiv' (Fin.last r')).symm
@@ -317,10 +267,6 @@ theorem slotRotEquiv_succAbove {r' : ℕ} (s : Fin (r' + 1)) (i : Fin r') :
     slotRotEquiv s (s.succAbove i) = i.castSucc := by
   simp only [slotRotEquiv, Equiv.trans_apply, finSuccEquiv'_succAbove,
     finSuccEquiv'_symm_some, Fin.succAbove_last]
-
-
-
-
 
 def corrSlotMap {r' : ℕ} (s : Fin (r' + 1)) : Fin (2 + r') → Fin (r' + 1 + 1) :=
   Fin.addCases (fun i : Fin 2 => if i = 0 then 0 else s.succ)
@@ -366,9 +312,6 @@ theorem corrSlotMap_bijective {r' : ℕ} (s : Fin (r' + 1)) :
 def corrSlotEquiv {r' : ℕ} (s : Fin (r' + 1)) : Fin (2 + r') ≃ Fin (r' + 1 + 1) :=
   Equiv.ofBijective (corrSlotMap s) (corrSlotMap_bijective s)
 
-
-
-
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
 omit [DecidableEq Idx] in
 theorem chrCorrField_eq_contrTail {r' : ℕ}
@@ -413,9 +356,6 @@ theorem chrCorrField_eq_contrTail {r' : ℕ}
       rfl
   rw [h0, h1, h2, hX]
 
-
-
-
 omit [DecidableEq Idx] in
 theorem covDerivStepComp_chr_sub {r : ℕ}
     (ext : (Fin r → Idx) → Idx → Real) (chrG chrH : Idx → Idx → Idx → Real)
@@ -428,9 +368,6 @@ theorem covDerivStepComp_chr_sub {r : ℕ}
   unfold covDerivStepComp
   simp only [sub_mul, Finset.sum_sub_distrib]
   ring
-
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -446,8 +383,6 @@ theorem iterCov_one_chr_change {r : ℕ}
   change covDerivStepComp (frameExtData (I := I) frame X y) (chrG y) (X y) n = _
   rw [covDerivStepComp_chr_sub (frameExtData (I := I) frame X y) (chrG y) (chrH y) (X y) n]
   rfl
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -548,8 +483,6 @@ private theorem compL2_finsetSum_le {ι : Type*} {r : ℕ} (t : Finset ι)
     rw [hrw, Finset.sum_insert hb]
     exact le_trans (compL2_add_le _ _) (by linarith [ih])
 
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
 theorem compL2_iterCov_chrCorr_le {r' : ℕ} {u : Set M} (hu : IsOpen u)
@@ -611,13 +544,6 @@ theorem iterCovComp_sub {r : ℕ} {u : Set M} (hu : IsOpen u)
       (fun m => contMDiffOn_const.mul (hf₂ m)) a y hy n,
     iterCovComp_smul hu frame chr (-1) f₂ hframe hchr hf₂ a y hy n]
   ring
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -776,15 +702,6 @@ theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
         rw [hshift]
         linarith [hcorrBound]
 
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
 theorem lemma45_component {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
@@ -830,8 +747,6 @@ theorem lemma45_component {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       (iterCovComp (I := I) frame chrG T i') k x))
     (fun i' k => compL2_nonneg _) hOne
 
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
 theorem lemma45_component₀ {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
@@ -858,12 +773,6 @@ theorem lemma45_component₀ {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
   rw [zero_add] at h
   exact h
 
-
-
-
-
-
-
 omit [I.Boundaryless] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
@@ -874,35 +783,35 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
     contrTail
       (chrDiffField
         (fun z => christoffelSymbolInFrame
-          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
           frame hframe z)
         (fun z => christoffelSymbolInFrame
-          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
           frame hframe z) y)
       (frameComp0S (I := I) (metricTensorField (I := I) g) frame y) =
     fun idx : Fin 3 → Idx =>
       (1 / 2 : Real) * iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z)
           (frameComp0S (I := I) (metricTensorField (I := I) g) frame) 1 y
           (fun j => idx (Equiv.refl (Fin 3) j)) +
       ((1 / 2 : Real) * iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z)
           (frameComp0S (I := I) (metricTensorField (I := I) g) frame) 1 y
           (fun j => idx (Equiv.swap (0 : Fin 3) 1 j)) +
         (-(1 / 2) : Real) * iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z)
           (frameComp0S (I := I) (metricTensorField (I := I) g) frame) 1 y
           (fun j => idx ((finRotate 3).symm j))) := by
   classical
-  set covG := DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g
+  set covG := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     with hcovG
-  set covH := DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef
+  set covH := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef
     with hcovH
   funext idx
   obtain ⟨Xa, hXa⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
@@ -1030,11 +939,11 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
       rw [hq']
       rfl
   have hK := Tensor0SBundle.koszul_difference (I := I) covG covH g
-    (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
+    (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
       (I := I) g)
-    ((DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_isTorsionFree
+    ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isTorsionFree
       (I := I) g) y)
-    ((DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_isTorsionFree
+    ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isTorsionFree
       (I := I) gRef) y)
     Xa Xb Xe
   rw [hXa, hXb, hXe] at hK
@@ -1054,15 +963,6 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
     (((CovariantDerivative.difference covG covH y) (frame (idx 1) y)) (frame (idx 0) y))
   rw [hLHS, h1, h2, h3]
   linarith [hK, hsymmg]
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
 theorem claim1_koszul_bound {u : Set M} (hu : IsOpen u)
@@ -1193,8 +1093,6 @@ theorem claim1_koszul_mul {u : Set M} (hu : IsOpen u)
   exact claim1_koszul_bound hu frame chr hframe hchr g hg Ginv A hA hinv
     c₁ c₂ c₃ P₁ P₂ P₃ hkoszul C0 L eps hL heps0 heps1 hGinv m hK
 
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
 theorem claim1_eps_koszul {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -1226,9 +1124,6 @@ theorem claim1_eps_koszul {u : Set M} (hu : IsOpen u)
   refine claim1_koszul_mul hu frame chr hframe hchr g hg Ginv A hA hinv
     c₁ c₂ c₃ P₁ P₂ P₃ hkoszul C0 1 eps zero_le_one heps0 heps1 hGinv m ?_
   simpa only [one_mul] using hK
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -1276,14 +1171,6 @@ theorem lemma45_component_bdd {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       (iterCovComp (I := I) frame chrG T i') k x))
     (fun i' k => compL2_nonneg _) hOne
 
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem lemma45_F3_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
@@ -1294,11 +1181,11 @@ theorem lemma45_F3_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (frame d y)) u)
     (hchrG : ∀ d i j : Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => christoffelSymbolInFrame
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
         frame hframe y d i j) u)
     (hchrH : ∀ d i j : Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => christoffelSymbolInFrame
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
         frame hframe y d i j) u)
     (hgsm : ∀ k : Fin (1 + 1) → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => frameComp0S (I := I) (metricTensorField (I := I) g) frame y k) u)
@@ -1315,17 +1202,17 @@ theorem lemma45_F3_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (hgK : ∀ x ∈ u, ∀ j, 1 ≤ j → j ≤ p →
       compL2 (iterCovComp (I := I) frame
         (fun z => christoffelSymbolInFrame
-          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
           frame hframe z)
         (frameComp0S (I := I) (metricTensorField (I := I) g) frame) j x) ≤ L * eps) :
     ∀ x ∈ u, ∀ ρ : ℕ, 0 < ρ → ρ ≤ p →
       compL2 (iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
             frame hframe z) T ρ x) ≤
         compL2 (iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z) T ρ x) +
         eps * lemma45Const
           (fun c => claim1MulConst C0 (|(1 / 2 : Real)| + |(1 / 2 : Real)| + |-(1 / 2 : Real)|) L c)
@@ -1333,15 +1220,15 @@ theorem lemma45_F3_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
           ∑ j ∈ Finset.range ρ,
             compL2 (iterCovComp (I := I) frame
               (fun z => christoffelSymbolInFrame
-                (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I)
+                (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
                   gRef)
                 frame hframe z) T j x) := by
   classical
   set chrG : M → Idx → Idx → Idx → Real := fun z => christoffelSymbolInFrame
-    (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+    (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
     frame hframe z with hchrGdef
   set chrH : M → Idx → Idx → Idx → Real := fun z => christoffelSymbolInFrame
-    (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+    (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
     frame hframe z with hchrHdef
   have hDsm : ∀ k : Fin (2 + 1) → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => chrDiffField chrG chrH y k) u :=
@@ -1377,11 +1264,11 @@ theorem lemma45_F3_mul {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (frame d y)) u)
     (hchrG : ∀ d i j : Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => christoffelSymbolInFrame
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
         frame hframe y d i j) u)
     (hchrH : ∀ d i j : Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => christoffelSymbolInFrame
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
         frame hframe y d i j) u)
     (hgsm : ∀ k : Fin (1 + 1) → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => frameComp0S (I := I) (metricTensorField (I := I) g) frame y k) u)
@@ -1398,23 +1285,23 @@ theorem lemma45_F3_mul {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (hgK : ∀ x ∈ u, ∀ j, 1 ≤ j → j ≤ p →
       compL2 (iterCovComp (I := I) frame
         (fun z => christoffelSymbolInFrame
-          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
           frame hframe z)
         (frameComp0S (I := I) (metricTensorField (I := I) g) frame) j x) ≤ L * eps) :
     ∃ C : Real, 0 ≤ C ∧ ∀ x ∈ u, ∀ ρ : ℕ, 0 < ρ → ρ ≤ p →
       compL2 (iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
             frame hframe z) T ρ x) ≤
         compL2 (iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z) T ρ x) +
         eps * C *
           ∑ j ∈ Finset.range ρ,
             compL2 (iterCovComp (I := I) frame
               (fun z => christoffelSymbolInFrame
-                (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I)
+                (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
                   gRef)
                 frame hframe z) T j x) := by
   let B : ℕ → Real := fun c =>
@@ -1423,8 +1310,6 @@ theorem lemma45_F3_mul {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     lemma45Const_nonneg (fun c => claim1MulConst_nonneg hL c) p r₀, ?_⟩
   simpa only [B] using lemma45_F3_bound hu g gRef frame hframe hframeS hchrG hchrH
     hgsm T hT Ginv hinv C0 L eps hL heps0 heps1 hGinv p hgK
-
-
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -1436,11 +1321,11 @@ theorem lemma45_F3 {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (frame d y)) u)
     (hchrG : ∀ d i j : Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => christoffelSymbolInFrame
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
         frame hframe y d i j) u)
     (hchrH : ∀ d i j : Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => christoffelSymbolInFrame
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
         frame hframe y d i j) u)
     (hgsm : ∀ k : Fin (1 + 1) → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => frameComp0S (I := I) (metricTensorField (I := I) g) frame y k) u)
@@ -1457,23 +1342,23 @@ theorem lemma45_F3 {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (hgK : ∀ x ∈ u, ∀ j, 1 ≤ j → j ≤ p →
       compL2 (iterCovComp (I := I) frame
         (fun z => christoffelSymbolInFrame
-          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
           frame hframe z)
         (frameComp0S (I := I) (metricTensorField (I := I) g) frame) j x) ≤ eps) :
     ∃ C : Real, 0 ≤ C ∧ ∀ x ∈ u, ∀ ρ : ℕ, 0 < ρ → ρ ≤ p →
       compL2 (iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
             frame hframe z) T ρ x) ≤
         compL2 (iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
-            (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
+            (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z) T ρ x) +
         eps * C *
           ∑ j ∈ Finset.range ρ,
             compL2 (iterCovComp (I := I) frame
               (fun z => christoffelSymbolInFrame
-                (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I)
+                (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
                   gRef)
                 frame hframe z) T j x) := by
   refine lemma45_F3_mul hu g gRef frame hframe hframeS hchrG hchrH hgsm T hT Ginv hinv

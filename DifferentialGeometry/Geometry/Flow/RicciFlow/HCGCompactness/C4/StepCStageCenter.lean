@@ -1,15 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCInvVelConv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalCoordDistance
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -27,9 +21,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-
-
-
 
 theorem HasSuppConvData.exists_invVel_core
     (inp : MetricCompactnessInputs (I := I) X)
@@ -170,8 +161,6 @@ theorem cfg_snd_conv
     (ContinuousLinearMap.snd Real (ι → Real) (ι → E))
     hcfg hcfgC hcfgInfC
 
-
-
 noncomputable def stageInvVelSub
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -183,8 +172,6 @@ noncomputable def stageInvVelSub
   invVelSum (e n)
     (stageCfgSub inp P L hr phi hphi alpha k l q.1).1
     (stageCfgSub inp P L hr phi hphi alpha k l q.1).2 q.2
-
-
 
 noncomputable def stageRootSub
     (inp : MetricCompactnessInputs (I := I) X)
@@ -199,8 +186,6 @@ noncomputable def stageRootSub
         stageInvVelSub inp P L hr phi hphi alpha e n k l (z, x) = 0
     then Classical.choose h
     else PhiInf z
-
-
 
 theorem stageRootSub_eq
     (inp : MetricCompactnessInputs (I := I) X)
@@ -223,8 +208,6 @@ theorem stageRootSub_eq
     exact (huniq (Classical.choose h) (Classical.choose_spec h).1).mp
       (Classical.choose_spec h).2
   next h => exact False.elim (h ⟨x, hx, hroot⟩)
-
-
 
 def HasStageRootCube
     (inp : MetricCompactnessInputs (I := I) X)
@@ -257,9 +240,6 @@ def HasStageRootCube
     ∀ x, dist x (PhiInf z) < rho →
       (stageInvVelSub inp P L hr phi hphi alpha e n k l (z, x) = 0 ↔
         x = Phi3 n k l z)
-
-
-
 
 theorem HasSuppConvData.exists_stage_root
     (inp : MetricCompactnessInputs (I := I) X)
@@ -423,8 +403,6 @@ theorem HasSuppConvData.exists_stage_root
       (Nat.le_max_left Nroot (max Nmap Nstage)).trans hm
     exact huniq m hmRoot z hz x hx
 
-
-
 theorem HasSuppConvData.exists_stage_cube
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -520,9 +498,6 @@ theorem HasSuppConvData.exists_stage_cube
   refine ⟨W, PhiInf, rho, Phi3, ?_⟩
   exact ⟨hW, hWcpt, hC1W, hrho, hPhiInf, htriple, N, hN⟩
 
-
-
-
 theorem HasStageRootCube.map_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -558,8 +533,6 @@ theorem HasStageRootCube.map_tail
       rfl
     · exact (hPhiInf.mono interior_subset).symm
   exact MapCInfConvOnCompacts.three_tail hconvId hK hKC1 p eps heps
-
-
 
 theorem HasStageRootCube.at_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -612,8 +585,6 @@ theorem HasStageRootCube.at_tail
       simp only [mapDerivNorm]
       rw [(Filter.EventuallyEq.iteratedFDeriv Real hsub j).eq_of_nhds]
     _ ≤ eps := hmap l hlMap k hkMap l hlMap j hj z hz
-
-
 
 theorem HasStageRootCube.symm_dist_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -709,8 +680,6 @@ theorem HasStageRootCube.symm_dist_tail
       _ ≤ 2 * (eps / 4) := mul_le_mul_of_nonneg_left hdeltaEps (by norm_num)
       _ < eps := by linarith
   exact hman.trans_lt hscaled
-
-
 
 theorem HasSuppConvData.pts_dist_tail
     (inp : MetricCompactnessInputs (I := I) X)

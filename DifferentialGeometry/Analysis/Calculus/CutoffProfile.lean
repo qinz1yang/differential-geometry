@@ -5,15 +5,6 @@ import Mathlib.Topology.Instances.ENNReal.Lemmas
 
 set_option autoImplicit false
 
-/-!
-# A quantitative scalar cutoff profile
-
-This file provides the one-dimensional smooth profile used by geometric
-cutoff constructions.  Squaring the transition is important: it makes the
-square of the first derivative bounded by the profile itself, which is the
-form needed to absorb gradient cross terms in parabolic estimates.
--/
-
 noncomputable section
 
 namespace DifferentialGeometry.Analysis.CutoffProfile
@@ -21,17 +12,12 @@ namespace DifferentialGeometry.Analysis.CutoffProfile
 open Filter Set
 open scoped ContDiff Topology
 
-/-- The decreasing smooth transition from `1` on `(-∞, 1]` to `0` on
-`[2, ∞)`. -/
 def stem (s : ℝ) : ℝ :=
   1 - Real.smoothTransition (s - 1)
 
-/-- The squared decreasing transition.  Squaring gives the quantitative
-estimate `(η')² ≤ C η`. -/
 def value (s : ℝ) : ℝ :=
   stem s ^ 2
 
-/-- The cutoff profile is smooth to every order. -/
 theorem contDiff : ContDiff ℝ ∞ value := by
   have hlin : ContDiff ℝ ∞ (fun s : ℝ => s - 1) :=
     contDiff_id.sub contDiff_const
@@ -40,7 +26,6 @@ theorem contDiff : ContDiff ℝ ∞ value := by
       (contDiff_const.sub (Real.smoothTransition.contDiff.comp hlin))
   simpa [value] using hstem.pow 2
 
-/-- The cutoff profile takes values in `[0, 1]`. -/
 theorem mem_Icc (s : ℝ) : value s ∈ Icc (0 : ℝ) 1 := by
   have hσ0 : 0 ≤ Real.smoothTransition (s - 1) :=
     Real.smoothTransition.nonneg _
@@ -51,19 +36,16 @@ theorem mem_Icc (s : ℝ) : value s ∈ Icc (0 : ℝ) 1 := by
   · unfold value stem
     nlinarith [sq_nonneg (Real.smoothTransition (s - 1))]
 
-/-- The cutoff is identically one on the inner half-line. -/
 theorem one_of_le_one {s : ℝ} (hs : s ≤ 1) : value s = 1 := by
   have hzero : Real.smoothTransition (s - 1) = 0 :=
     Real.smoothTransition.zero_of_nonpos (by linarith)
   simp [value, stem, hzero]
 
-/-- The cutoff vanishes on the outer half-line. -/
 theorem zero_of_two_le {s : ℝ} (hs : 2 ≤ s) : value s = 0 := by
   have hone : Real.smoothTransition (s - 1) = 1 :=
     Real.smoothTransition.one_of_one_le (by linarith)
   simp [value, stem, hone]
 
-/-- The cutoff profile is antitone. -/
 theorem antitone_value : Antitone value := by
   have hstem_nonneg : ∀ y : ℝ, 0 ≤ stem y := by
     intro y
@@ -79,24 +61,18 @@ theorem antitone_value : Antitone value := by
   rw [value, value]
   nlinarith [hstem_antitone hab, hstem_nonneg a, hstem_nonneg b]
 
-/-- The cutoff profile extended continuously to `ℝ≥0∞`, with the infinite
-endpoint sent to zero. -/
 noncomputable def evalue (s : ENNReal) : Real :=
   value (ENNReal.truncateToReal (2 : ENNReal) s)
 
-/-- The extended profile vanishes at and beyond its outer cutoff. -/
 theorem evalue_zero_of_ge {s : ENNReal} (hs : 2 ≤ s) :
     evalue s = 0 := by
   simp only [evalue, ENNReal.truncateToReal, min_eq_left hs,
     ENNReal.toReal_ofNat]
   exact zero_of_two_le le_rfl
 
-/-- The extended profile vanishes at infinity. -/
 @[simp] theorem evalue_top : evalue ⊤ = 0 :=
   evalue_zero_of_ge le_top
 
-/-- Away from infinity, the extended profile agrees with the real profile
-applied to `ENNReal.toReal`. -/
 theorem evalue_eq_value {s : ENNReal} (hs : s ≠ ⊤) :
     evalue s = value s.toReal := by
   by_cases hle : s ≤ 2
@@ -106,17 +82,14 @@ theorem evalue_eq_value {s : ENNReal} (hs : s ≠ ⊤) :
     rw [evalue_zero_of_ge htwo, zero_of_two_le]
     simpa using ENNReal.toReal_mono hs htwo
 
-/-- The extended cutoff profile is continuous on `ℝ≥0∞`. -/
 theorem continuous_evalue : Continuous evalue :=
   contDiff.continuous.comp
     (ENNReal.continuous_truncateToReal (by norm_num))
 
-/-- The extended cutoff profile takes values in `[0,1]`. -/
 theorem evalue_mem_Icc (s : ENNReal) :
     evalue s ∈ Set.Icc (0 : Real) 1 :=
   mem_Icc _
 
-/-- The extended cutoff equals one on its inner zone. -/
 theorem evalue_one_of_le {s : ENNReal} (hs : s ≤ 1) :
     evalue s = 1 := by
   rw [evalue,
@@ -125,13 +98,11 @@ theorem evalue_one_of_le {s : ENNReal} (hs : s ≤ 1) :
   apply one_of_le_one
   simpa using ENNReal.toReal_mono (by norm_num : (1 : ENNReal) ≠ ⊤) hs
 
-/-- The extended cutoff profile is antitone. -/
 theorem antitone_evalue : Antitone evalue := by
   intro a b hab
   exact antitone_value
     ((ENNReal.monotone_truncateToReal (by norm_num)) hab)
 
-/-- The first derivative of the unsquared transition is globally bounded. -/
 private theorem exists_stem_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℝ, |deriv stem s| ≤ C := by
   have hstem : ContDiff ℝ 1 stem :=
@@ -169,7 +140,6 @@ private theorem exists_stem_bound :
       simpa [Real.norm_eq_abs] using
         (Filter.eventually_principal.mp hsMax s (Set.mem_Icc.2 ⟨hs1, hs2⟩))
 
-/-- The derivative of the squared profile has the expected product form. -/
 theorem deriv_eq (s : ℝ) :
     deriv value s = 2 * stem s * deriv stem s := by
   have hstem : DifferentiableAt ℝ stem s := by
@@ -183,11 +153,9 @@ theorem deriv_eq (s : ℝ) :
   rw [deriv_pow hstem 2]
   ring
 
-/-- The cutoff profile is decreasing. -/
 theorem deriv_nonpos (s : ℝ) : deriv value s ≤ 0 := by
   exact antitone_value.deriv_nonpos
 
-/-- The first derivative vanishes throughout the inner constant zone. -/
 theorem deriv_zero_of_le {s : Real} (hs : s ≤ 1) :
     deriv value s = 0 := by
   apply IsLocalMax.deriv_eq_zero
@@ -195,7 +163,6 @@ theorem deriv_zero_of_le {s : Real} (hs : s ≤ 1) :
   rw [one_of_le_one hs]
   exact (mem_Icc y).2
 
-/-- The first derivative vanishes throughout the outer constant zone. -/
 theorem deriv_zero_of_ge {s : Real} (hs : 2 ≤ s) :
     deriv value s = 0 := by
   apply IsLocalMin.deriv_eq_zero
@@ -203,7 +170,6 @@ theorem deriv_zero_of_ge {s : Real} (hs : 2 ≤ s) :
   rw [zero_of_two_le hs]
   exact (mem_Icc y).1
 
-/-- The second derivative vanishes throughout the inner constant zone. -/
 theorem deriv2_zero_of_le {s : Real} (hs : s ≤ 1) :
     deriv (deriv value) s = 0 := by
   apply IsLocalMax.deriv_eq_zero
@@ -211,7 +177,6 @@ theorem deriv2_zero_of_le {s : Real} (hs : s ≤ 1) :
   rw [deriv_zero_of_le hs]
   exact deriv_nonpos y
 
-/-- The second derivative vanishes throughout the outer constant zone. -/
 theorem deriv2_zero_of_ge {s : Real} (hs : 2 ≤ s) :
     deriv (deriv value) s = 0 := by
   apply IsLocalMax.deriv_eq_zero
@@ -219,7 +184,36 @@ theorem deriv2_zero_of_ge {s : Real} (hs : 2 ≤ s) :
   rw [deriv_zero_of_ge hs]
   exact deriv_nonpos y
 
-/-- The squared first derivative is bounded by a constant times the profile. -/
+theorem deriv3_zero_of_le {s : Real} (hs : s ≤ 1) :
+    deriv (deriv (deriv value)) s = 0 := by
+  have hle3 : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
+    have h : ((3 : ℕ∞) : WithTop ℕ∞) ≤
+        (∞ : WithTop ℕ∞) := by
+      exact_mod_cast (le_top : (3 : ℕ∞) ≤ ⊤)
+    exact h
+  have hdiff : DifferentiableAt ℝ (deriv (deriv value)) s :=
+    (((contDiff.of_le hle3).deriv' (n := 2)).deriv' (n := 1)).differentiable
+      (by simp) s
+  exact (uniqueDiffOn_Iic 1 s hs).eq_deriv _
+    hdiff.hasDerivAt.hasDerivWithinAt
+    ((hasDerivWithinAt_const (x := s) (s := Iic 1) (c := (0 : ℝ))).congr_of_mem
+      (fun y hy ↦ deriv2_zero_of_le hy) hs)
+
+theorem deriv3_zero_of_ge {s : Real} (hs : 2 ≤ s) :
+    deriv (deriv (deriv value)) s = 0 := by
+  have hle3 : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
+    have h : ((3 : ℕ∞) : WithTop ℕ∞) ≤
+        (∞ : WithTop ℕ∞) := by
+      exact_mod_cast (le_top : (3 : ℕ∞) ≤ ⊤)
+    exact h
+  have hdiff : DifferentiableAt ℝ (deriv (deriv value)) s :=
+    (((contDiff.of_le hle3).deriv' (n := 2)).deriv' (n := 1)).differentiable
+      (by simp) s
+  exact (uniqueDiffOn_Ici 2 s hs).eq_deriv _
+    hdiff.hasDerivAt.hasDerivWithinAt
+    ((hasDerivWithinAt_const (x := s) (s := Ici 2) (c := (0 : ℝ))).congr_of_mem
+      (fun y hy ↦ deriv2_zero_of_ge hy) hs)
+
 theorem exists_deriv_sq :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℝ, (deriv value s) ^ 2 ≤ C * value s := by
   obtain ⟨C, hC, hbound⟩ := exists_stem_bound
@@ -231,8 +225,6 @@ theorem exists_deriv_sq :
   rw [deriv_eq, value]
   nlinarith [sq_nonneg (stem s)]
 
-/-- Both the first and second derivatives of the profile admit one global
-absolute bound. -/
 theorem exists_deriv_bounds :
     ∃ C : ℝ, 0 ≤ C ∧
       (∀ s : ℝ, |deriv value s| ≤ C) ∧
@@ -309,5 +301,56 @@ theorem exists_deriv_bounds :
             (Filter.eventually_principal.mp hs₂ s
               (Set.mem_Icc.2 ⟨hs0, hs3⟩))
         exact hmax.trans (le_max_right _ _)
+
+noncomputable def derivBound : ℝ :=
+  Classical.choose exists_deriv_bounds
+
+theorem derivBound_nonneg : 0 ≤ derivBound :=
+  (Classical.choose_spec exists_deriv_bounds).1
+
+theorem abs_deriv_le_derivBound (s : ℝ) :
+    |deriv value s| ≤ derivBound :=
+  (Classical.choose_spec exists_deriv_bounds).2.1 s
+
+theorem abs_deriv2_le_derivBound (s : ℝ) :
+    |deriv (deriv value) s| ≤ derivBound :=
+  (Classical.choose_spec exists_deriv_bounds).2.2 s
+
+theorem exists_deriv3_bound :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ s : ℝ, |deriv (deriv (deriv value)) s| ≤ C := by
+  have hle3 : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
+    have h : ((3 : ℕ∞) : WithTop ℕ∞) ≤
+        (∞ : WithTop ℕ∞) := by
+      exact_mod_cast (le_top : (3 : ℕ∞) ≤ ⊤)
+    exact h
+  have hvalue3 : ContDiff ℝ 3 value := contDiff.of_le hle3
+  have hderiv3 : Continuous (deriv (deriv (deriv value))) :=
+    ((hvalue3.deriv' (n := 2)).deriv' (n := 1)).continuous_deriv_one
+  obtain ⟨sMax, -, hsMax⟩ :=
+    (isCompact_Icc (a := (1 : ℝ)) (b := 2)).exists_isMaxOn
+      (Set.nonempty_Icc.2 (by norm_num)) hderiv3.norm.continuousOn
+  refine ⟨|deriv (deriv (deriv value)) sMax|, abs_nonneg _, ?_⟩
+  intro s
+  by_cases hs1 : s < (1 : ℝ)
+  · rw [deriv3_zero_of_le hs1.le, abs_zero]
+    exact abs_nonneg _
+  · by_cases hs2 : (2 : ℝ) < s
+    · rw [deriv3_zero_of_ge hs2.le, abs_zero]
+      exact abs_nonneg _
+    · push Not at hs1 hs2
+      simpa [Real.norm_eq_abs] using
+        (Filter.eventually_principal.mp hsMax s
+          (Set.mem_Icc.2 ⟨hs1, hs2⟩))
+
+noncomputable def deriv3Bound : ℝ :=
+  Classical.choose exists_deriv3_bound
+
+theorem deriv3Bound_nonneg : 0 ≤ deriv3Bound :=
+  (Classical.choose_spec exists_deriv3_bound).1
+
+theorem abs_deriv3_le_deriv3Bound (s : ℝ) :
+    |deriv (deriv (deriv value)) s| ≤ deriv3Bound :=
+  (Classical.choose_spec exists_deriv3_bound).2 s
 
 end DifferentialGeometry.Analysis.CutoffProfile

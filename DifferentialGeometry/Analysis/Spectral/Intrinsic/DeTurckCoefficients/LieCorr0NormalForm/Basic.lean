@@ -3,20 +3,12 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF
 
 variable {n : ℕ}
 
@@ -365,4 +357,4 @@ theorem stage_a3
     rw [hga1s al i c, hga0s al i c, hga1s m a d, hgbgs m a d]
     ring]
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF

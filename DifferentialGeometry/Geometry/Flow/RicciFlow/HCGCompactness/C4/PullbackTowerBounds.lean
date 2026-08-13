@@ -1,19 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.PullbackCovariantNaturality
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -33,9 +22,6 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
 section PartialTrans
-
-
-
 
 noncomputable def PartialDiffeomorph.trans {P : Type u} [TopologicalSpace P]
     [ChartedSpace H P] [IsManifold I ∞ P]
@@ -79,7 +65,6 @@ end PartialTrans
 section TowerZero
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [SigmaCompactSpace M] in
 theorem covStep_zero (gRef : SmoothRiemannianMetric I M) (s : Nat)
     [SigmaCompactSpace M] :
@@ -94,11 +79,6 @@ theorem covStep_zero (gRef : SmoothRiemannianMetric I M) (s : Nat)
   exact add_left_cancel h2
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
 theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
     iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) (a + 1) = 0 := by
   induction a with
@@ -116,7 +96,7 @@ theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
         Tensor0SBundle.totalNabla0SFun_apply_section (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) 2 _ X (Tensor0SBundle.metricTensorField (I := I) g) x _,
         Tensor0SBundle.nabla_metric_zero (I := I) _ g
-          (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
+          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
             (I := I) g) X x]
       simp
   | succ a ih =>
@@ -127,7 +107,6 @@ theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
       rw [ih, covStep_zero]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [SigmaCompactSpace M] in
 theorem iterCov_sub (gRef : SmoothRiemannianMetric I M) (r : Nat)
     (A0 B0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -141,7 +120,6 @@ theorem iterCov_sub (gRef : SmoothRiemannianMetric I M) (r : Nat)
   abel
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [SigmaCompactSpace M] in
 theorem covDOF_zero (gRef : SmoothRiemannianMetric I M) (a : Nat) :
     covDerivOfField (I := I) gRef
@@ -152,10 +130,6 @@ theorem covDOF_zero (gRef : SmoothRiemannianMetric I M) (a : Nat) :
   simpa using h
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
 omit [SigmaCompactSpace M] in
 theorem t02Norm_eq_iterCov [I.Boundaryless] {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -181,11 +155,6 @@ end TowerZero
 
 section C0Equiv
 
-
-
-
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem inner_le_of_c0
     (Gm g : SmoothRiemannianMetric I M) {K : Set M} {ε : ℝ}
@@ -197,7 +166,7 @@ theorem inner_le_of_c0
   classical
   intro x hx v
   obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Integral.Connection.exists_gOrthonormalBasis (I := I) g x
+    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
   have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
     g x 2 basis (fun i j => hON i j)
     ((Tensor0SBundle.metricTensorField (I := I) Gm) x
@@ -238,9 +207,6 @@ theorem inner_le_of_c0
   · nlinarith [abs_le.mp habs]
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem sqrt_normSq_two_le
     {K : Set M} {g h : SmoothRiemannianMetric I M} {C : Real}

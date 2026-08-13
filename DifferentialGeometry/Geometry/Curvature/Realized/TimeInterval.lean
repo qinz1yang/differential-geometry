@@ -11,18 +11,7 @@ set_option autoImplicit false
 
 open scoped Topology
 
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
-
-
-
+namespace DifferentialGeometry.Geometry.Curvature
 
 inductive TimeEndpoint where
   | negInf
@@ -31,15 +20,11 @@ inductive TimeEndpoint where
 
 namespace TimeEndpoint
 
-
-
 def lowerLt (a : TimeEndpoint) (t : Real) : Prop :=
   match a with
   | negInf => True
   | finite s => s < t
   | posInf => False
-
-
 
 def lowerLe (a : TimeEndpoint) (t : Real) : Prop :=
   match a with
@@ -47,15 +32,11 @@ def lowerLe (a : TimeEndpoint) (t : Real) : Prop :=
   | finite s => s <= t
   | posInf => False
 
-
-
 def upperLt (t : Real) (b : TimeEndpoint) : Prop :=
   match b with
   | negInf => False
   | finite s => t < s
   | posInf => True
-
-
 
 def upperLe (t : Real) (b : TimeEndpoint) : Prop :=
   match b with
@@ -63,16 +44,12 @@ def upperLe (t : Real) (b : TimeEndpoint) : Prop :=
   | finite s => t <= s
   | posInf => True
 
-
-
 def lowerMem (closed : Bool) (a : TimeEndpoint) (t : Real) : Prop :=
   match closed, a with
   | _, negInf => True
   | true, finite s => s <= t
   | false, finite s => s < t
   | _, posInf => False
-
-
 
 def upperMem (closed : Bool) (t : Real) (b : TimeEndpoint) : Prop :=
   match closed, b with
@@ -110,8 +87,6 @@ theorem upperLt_to_mem (closed : Bool) {b : TimeEndpoint} {t : Real}
     | posInf => simp [upperMem]
 
 end TimeEndpoint
-
-
 
 structure RealTimeInterval where
   carrier : Set Real
@@ -158,16 +133,12 @@ private theorem endpointCarrier_mem_nhds
         ⟨TimeEndpoint.lowerLt_to_mem lowerClosed hs.1,
           TimeEndpoint.upperLt_to_mem upperClosed hs.2⟩)
 
-
 abbrev FlowTime (D : RealTimeInterval) : Type := {t : Real // t ∈ D.carrier}
-
 
 abbrev RegularTime (D : RealTimeInterval) : Type := {t : Real // t ∈ D.regular}
 
-
 def initialTime (D : RealTimeInterval) : D.FlowTime :=
   ⟨D.initial, D.initial_mem⟩
-
 
 def regularToFlow {D : RealTimeInterval} (t : D.RegularTime) : D.FlowTime :=
   ⟨t.1, D.regular_subset t.2⟩
@@ -180,8 +151,6 @@ def regularToFlow {D : RealTimeInterval} (t : D.RegularTime) : D.FlowTime :=
     (D.regularToFlow t : Real) = (t : Real) := by
   rfl
 
-/-- Every regular time lies in the interior of a compact time window that is
-still contained in the regular set. -/
 theorem exists_Icc_regular (D : RealTimeInterval) {t : Real}
     (ht : t ∈ D.regular) :
     ∃ a b : Real, t ∈ Set.Ioo a b ∧ Set.Icc a b ⊆ D.regular := by
@@ -189,7 +158,6 @@ theorem exists_Icc_regular (D : RealTimeInterval) {t : Real}
     exists_Icc_mem_subset_of_mem_nhds (D.regular_isOpen.mem_nhds ht)
   exact ⟨a, b, Icc_mem_nhds_iff.mp hIcc, hsub⟩
 
-/-- Time translation of an interval. -/
 def timeShift (D : RealTimeInterval) (τ : Real) : RealTimeInterval where
   carrier := {s : Real | s + τ ∈ D.carrier}
   regular := {s : Real | s + τ ∈ D.regular}
@@ -231,11 +199,6 @@ def timeShift (D : RealTimeInterval) (τ : Real) : RealTimeInterval where
     ((D.timeShift D.initial).initialTime : Real) = 0 := by
   simp [timeShift]
 
-
-
-
-
-
 def ofEndpoints
     (a b : TimeEndpoint) (lowerClosed upperClosed : Bool)
     (initial : Real)
@@ -269,7 +232,6 @@ def ofEndpoints
     intro t ht
     exact endpointCarrier_mem_nhds a b lowerClosed upperClosed ht
 
-
 def closed (a b : Real) (hab : a ≤ b) : RealTimeInterval where
   carrier := Set.Icc a b
   regular := Set.Ioo a b
@@ -282,7 +244,6 @@ def closed (a b : Real) (hab : a ≤ b) : RealTimeInterval where
   regular_mem_nhds := by
     intro t ht
     exact Icc_mem_nhds ht.1 ht.2
-
 
 def closedOpen (a b : Real) (hab : a < b) : RealTimeInterval where
   carrier := Set.Ico a b
@@ -297,8 +258,6 @@ def closedOpen (a b : Real) (hab : a < b) : RealTimeInterval where
     intro t ht
     exact Ico_mem_nhds ht.1 ht.2
 
-
-
 theorem timeShift_closedOpen_carrier
     {a b : Real} (hab : a < b) :
     ((closedOpen a b hab).timeShift a).carrier = Set.Ico 0 (b - a) := by
@@ -311,8 +270,6 @@ theorem timeShift_closedOpen_carrier
     rcases hs with ⟨hleft, hright⟩
     exact ⟨by linarith, by linarith⟩
 
-
-
 theorem timeShift_closedOpen_regular
     {a b : Real} (hab : a < b) :
     ((closedOpen a b hab).timeShift a).regular = Set.Ioo 0 (b - a) := by
@@ -324,7 +281,6 @@ theorem timeShift_closedOpen_regular
   · intro hs
     rcases hs with ⟨hleft, hright⟩
     exact ⟨by linarith, by linarith⟩
-
 
 def openInterval (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioo a b) : RealTimeInterval where
   carrier := Set.Ioo a b
@@ -339,22 +295,15 @@ def openInterval (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioo a b) : RealTimeInte
     intro t ht
     exact Ioo_mem_nhds ht.1 ht.2
 
-/-- Left endpoint of the `n`th compact window exhausting `(a,b)` while
-retaining the distinguished time `t₀`. -/
 noncomputable def openWindowLeft (a t₀ : Real) (n : Nat) : Real :=
   a + (t₀ - a) / ((n : Real) + 2)
 
-/-- Right endpoint of the `n`th compact window exhausting `(a,b)` while
-retaining the distinguished time `t₀`. -/
 noncomputable def openWindowRight (b t₀ : Real) (n : Nat) : Real :=
   b - (b - t₀) / ((n : Real) + 2)
 
-/-- The canonical nested compact windows exhausting an open time interval. -/
 def openWindow (a b t₀ : Real) (n : Nat) : Set Real :=
   Set.Icc (openWindowLeft a t₀ n) (openWindowRight b t₀ n)
 
-/-- Every canonical compact window lies strictly inside the ambient open
-interval. -/
 theorem openWindow_subset {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b) (n : Nat) :
     openWindow a b t₀ n ⊆ Set.Ioo a b := by
   intro t ht
@@ -371,7 +320,6 @@ theorem openWindow_subset {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b) (n : 
     linarith
   exact ⟨hleft.trans_le ht.1, ht.2.trans_lt hright⟩
 
-/-- The distinguished time belongs to every canonical compact window. -/
 theorem initial_mem_window {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b) (n : Nat) :
     t₀ ∈ openWindow a b t₀ n := by
   have hden : (0 : Real) < (n : Real) + 2 := by positivity
@@ -398,7 +346,6 @@ theorem initial_mem_window {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b) (n :
     linarith
   exact ⟨hleft, hright⟩
 
-/-- The canonical compact windows are increasing with their index. -/
 theorem openWindow_mono {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     {n m : Nat} (hnm : n ≤ m) :
     openWindow a b t₀ n ⊆ openWindow a b t₀ m := by
@@ -421,7 +368,6 @@ theorem openWindow_mono {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     linarith
   exact ⟨hleft.trans ht.1, ht.2.trans hright⟩
 
-/-- Every point of `(a,b)` lies in one canonical compact window. -/
 theorem mem_openWindow {a b t₀ t : Real} (ht : t ∈ Set.Ioo a b) :
     ∃ n : Nat, t ∈ openWindow a b t₀ n := by
   have hta : 0 < t - a := sub_pos.mpr ht.1
@@ -460,7 +406,6 @@ theorem mem_openWindow {a b t₀ t : Real} (ht : t ∈ Set.Ioo a b) :
     simp only [openWindowRight]
     linarith
 
-/-- The canonical compact windows exhaust the open interval. -/
 theorem iUnion_openWindow {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b) :
     (⋃ n : Nat, openWindow a b t₀ n) = Set.Ioo a b := by
   apply Set.Subset.antisymm
@@ -471,8 +416,6 @@ theorem iUnion_openWindow {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b) :
     obtain ⟨n, hn⟩ := mem_openWindow ht
     exact Set.mem_iUnion.mpr ⟨n, hn⟩
 
-/-- Every compact interval contained in `(a,b)` is contained in one canonical
-compact window. -/
 theorem exists_window_superset {a b t₀ c d : Real}
     (ht₀ : t₀ ∈ Set.Ioo a b) (hcd : Set.Icc c d ⊆ Set.Ioo a b) :
     ∃ n : Nat, Set.Icc c d ⊆ openWindow a b t₀ n := by
@@ -492,8 +435,6 @@ theorem exists_window_superset {a b t₀ c d : Real}
     intro t ht
     exact (hle (ht.1.trans ht.2)).elim
 
-/-- Every point of the ambient open interval has one canonical compact window
-as a neighborhood, not merely as a containing set. -/
 theorem exists_window_nhds {a b t₀ t : Real}
     (ht₀ : t₀ ∈ Set.Ioo a b) (ht : t ∈ Set.Ioo a b) :
     ∃ n : Nat, openWindow a b t₀ n ∈ 𝓝 t := by
@@ -502,7 +443,6 @@ theorem exists_window_nhds {a b t₀ t : Real}
   obtain ⟨n, hn⟩ := exists_window_superset ht₀ hsub
   exact ⟨n, Filter.mem_of_superset hmem hn⟩
 
-/-- Open-closed interval `(a,b]`, with a chosen initial time inside it. -/
 def openClosed (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioc a b) : RealTimeInterval where
   carrier := Set.Ioc a b
   regular := Set.Ioo a b
@@ -515,7 +455,6 @@ def openClosed (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioc a b) : RealTimeInterv
   regular_mem_nhds := by
     intro t ht
     exact Ioc_mem_nhds ht.1 ht.2
-
 
 def closedInfinite (a : Real) : RealTimeInterval where
   carrier := Set.Ici a
@@ -531,7 +470,6 @@ def closedInfinite (a : Real) : RealTimeInterval where
     intro t ht
     exact Ici_mem_nhds (Set.mem_Ioi.mp ht)
 
-
 def openInfinite (a t₀ : Real) (ht₀ : a < t₀) : RealTimeInterval where
   carrier := Set.Ioi a
   regular := Set.Ioi a
@@ -544,7 +482,6 @@ def openInfinite (a t₀ : Real) (ht₀ : a < t₀) : RealTimeInterval where
   regular_mem_nhds := by
     intro t ht
     exact Ioi_mem_nhds ht
-
 
 def infiniteClosed (b t₀ : Real) (ht₀ : t₀ ≤ b) : RealTimeInterval where
   carrier := Set.Iic b
@@ -559,7 +496,6 @@ def infiniteClosed (b t₀ : Real) (ht₀ : t₀ ≤ b) : RealTimeInterval where
     intro t ht
     exact Iic_mem_nhds (Set.mem_Iio.mp ht)
 
-
 def infiniteOpen (b t₀ : Real) (ht₀ : t₀ < b) : RealTimeInterval where
   carrier := Set.Iio b
   regular := Set.Iio b
@@ -572,7 +508,6 @@ def infiniteOpen (b t₀ : Real) (ht₀ : t₀ < b) : RealTimeInterval where
   regular_mem_nhds := by
     intro t ht
     exact Iio_mem_nhds ht
-
 
 def univ (t₀ : Real) : RealTimeInterval where
   carrier := Set.univ
@@ -589,4 +524,4 @@ def univ (t₀ : Real) : RealTimeInterval where
 
 end RealTimeInterval
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Boundary.OutwardNormal
 import DifferentialGeometry.Geometry.Operator.Hessian
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -19,6 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 
 def normalFieldComp (νChart : E → E) (k : Fin (Module.finrank ℝ E)) : E → ℝ :=

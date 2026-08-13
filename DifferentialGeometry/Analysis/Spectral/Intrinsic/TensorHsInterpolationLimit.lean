@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.FractionalPower
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -43,7 +44,7 @@ theorem tensorEigenIdx_one_add_lambda_lt_finite
           μ.val)
       · refine Set.Finite.subset
           (tensorResolvent_eigenvalues_finite_above (I := I) (M := M) g r s
-            (PDE.RicciFlow.IntrinsicSpectral.tensorResolventL2_isCompactOperator
+            (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
               (I := I) (M := M) g r s)
             (show (0 : ℝ) < 1 / Λ by positivity)) ?_
         rintro x ⟨μ, hμB, rfl⟩
@@ -142,7 +143,6 @@ namespace tensorHs
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weight_mul_coeff_sq_le_normSq {σ : ℝ}
     (T : tensorHs (I := I) (M := M) g r s σ)
@@ -155,7 +155,6 @@ lemma weight_mul_coeff_sq_le_normSq {σ : ℝ}
   positivity
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma coeff_tendsto_zero_of_norm_tendsto_zero {σ : ℝ}
     (d : ℕ → tensorHs (I := I) (M := M) g r s σ)
@@ -447,7 +446,6 @@ theorem tensorHs_norm_tendsto_zero_of_low_tendsto_of_uniform
   exact tendsto_of_coeff (I := I) (M := M) hσ'σ'' d hC hCbd hcoeff0
 
 omit [CompleteSpace E] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_le_sqrt_of_weightedMass_le
     {g : SmoothRiemannianMetric I M} {r s : ℕ} {σ'' : ℝ}

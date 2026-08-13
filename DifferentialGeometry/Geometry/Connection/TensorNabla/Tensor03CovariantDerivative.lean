@@ -1,12 +1,14 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor03Tensoriality
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 open Bundle Manifold Set FiberBundle
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -342,7 +344,7 @@ lemma tensor03Cov_toFun
     (tensor03Cov cov).toFun = tensor03CovFun cov := rfl
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

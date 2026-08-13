@@ -7,8 +7,6 @@ import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 
-
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory
@@ -16,6 +14,7 @@ open scoped Manifold Topology ContDiff
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry
 namespace Geometry

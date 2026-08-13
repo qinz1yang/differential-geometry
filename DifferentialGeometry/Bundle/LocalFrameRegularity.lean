@@ -4,14 +4,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Hom
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -19,7 +11,7 @@ namespace DifferentialGeometry
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
 
 open Bundle
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -27,14 +19,6 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem covariantDerivative_finset_sum_tangent
@@ -172,12 +156,6 @@ theorem covariantDerivative_localFrame_coeff_eq
   rw [hderiv_sum, hchristoffel_sum]
   rfl
 
-
-
-
-
-
-
 omit [CompleteSpace E] in
 theorem covariantDerivative_localFrame_coeff_eq_along
     {ι : Type*} [Finite ι]
@@ -212,16 +190,6 @@ theorem covariantDerivative_localFrame_coeff_eq_along
     simpa [lhs, rhs, f, hframe, Finset.sum_apply] using hbase
   have happly := congrArg (fun L : TangentSpace I x →ₗ[Real] Real => L v) hlin
   simpa [lhs, rhs, f, Finset.sum_apply] using happly
-
-
-
-
-
-
-
-
-
-
 
 noncomputable def homModelCoeff
     {ι : Type*} (b : Module.Basis ι Real E) (i k : ι) :
@@ -365,8 +333,6 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt
     exact ContMDiffAt.sum fun j _ => (hcoeff j).mul (hchristoffel j)
   exact hRhs.congr_of_eventuallyEq hEq
 
-
-
 omit [CompleteSpace E] in
 theorem covariantDerivative_localHomCoeff_contMDiffAt_one
     {ι : Type*} [Finite ι]
@@ -401,21 +367,6 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt_one
     refine hderiv.add ?_
     exact ContMDiffAt.sum fun j _ => (hcoeff j).mul (hchristoffel j)
   exact hRhs.congr_of_eventuallyEq hEq
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem extDerivFun_apply_contMDiffAt_of_section
@@ -488,12 +439,6 @@ theorem extDerivFun_apply_contMDiffAt_of_section
   change (mfderiv I 𝓘(Real, Real) f p) (X p) =
     (mfderiv I 𝓘(Real, Real) f p) (e.symmL Real p (Xcoord p))
   rw [hcancel]
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem extDerivFun_apply_contMDiffAt_of_section_one
@@ -592,8 +537,6 @@ theorem localFrameCoeff_extDeriv_contMDiffAt
     (f := (LinearMap.piApply (e.localFrame_coeff I b k)) σ)
     (X := e.localFrame b i) hcoeff hframe
 
-
-
 omit [CompleteSpace E] in
 theorem localFrameCoeff_extDeriv_contMDiffAt_one
     {ι : Type*}
@@ -647,8 +590,6 @@ theorem covariantDerivative_localHomCoeff_contMDiffAt_of_section
     exact contMDiffAt_localFrame_coeff
       (I := I) (V := TangentSpace I) (e := e) (b := b) (s := σ)
       (k := (∞ : WithTop ℕ∞)) hx hσ j
-
-
 
 omit [CompleteSpace E] in
 theorem covariantDerivative_localHomCoeff_contMDiffAt_of_section_one
@@ -721,8 +662,6 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff
     filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
     exact homLocalFrameCoeff_eq_localHomCoeff (I := I) e b hy (cov σ y) i k
   exact hlocal.congr_of_eventuallyEq heq
-
-
 
 omit [CompleteSpace E] in
 theorem covariantDerivative_homSection_contMDiffAt_of_coeff_one

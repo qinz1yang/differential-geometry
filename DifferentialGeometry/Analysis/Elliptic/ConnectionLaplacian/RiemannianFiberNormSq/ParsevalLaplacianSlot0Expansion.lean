@@ -3,18 +3,21 @@ import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqTensorInnerBridge
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.L2
 
@@ -30,7 +33,7 @@ private local instance : NormedSpace ℝ E := InnerProductSpace.toNormedSpace
 private local instance : Module.Finite ℝ E := inferInstance
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem rawTensorConnLapSmooth_toSection_eq_parseval_secondCovDeriv_sum
     (g : SmoothRiemannianMetric I M) {N : ℕ}
     (V : Fin N → Π b : M, TangentSpace I b)
@@ -267,8 +270,8 @@ theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
               ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x B₀) (V a x)))) :=
         Finset.sum_congr rfl (fun a _ => hBval (V a x) (V a x))
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

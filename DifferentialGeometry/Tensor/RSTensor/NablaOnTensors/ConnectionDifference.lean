@@ -3,19 +3,9 @@ import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 set_option backward.isDefEq.respectTransparency false
@@ -105,10 +95,6 @@ private noncomputable def connDiffSlotCLM
         rw [map_smul]
         exact tensor0S_one_apply_smul (I := I) α c ((A Y) X) }
 
-
-
-
-
 noncomputable def connectionDifferenceOutput
     (A :
       TangentSpace I x →L[Real]
@@ -172,9 +158,6 @@ theorem connectionDifferenceOutput_apply_slots
       α (fun _ : Fin 1 => (A Y) X) := by
   rw [connectionDifferenceOutput_apply]
   simp
-
-
-
 
 noncomputable def connectionDifferenceTensorAt
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -243,8 +226,6 @@ theorem connectionDifferenceTensorAt_apply_slots
   rw [connectionDifferenceTensorAt_apply]
   simp
 
-
-
 theorem componentRS_connectionDifferenceTensorAt
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
@@ -261,3 +242,4 @@ theorem componentRS_connectionDifferenceTensorAt
   simp [basisTensor0S_apply]
 
 end Tensor0SBundle
+end DifferentialGeometry

@@ -11,11 +11,11 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -96,6 +96,6 @@ theorem riemannianFiberNormSq_zero
   refine Finset.sum_eq_zero (fun J _ => ?_)
   exact fiberNormSqSummand_zero (I := I) (M := M) g b r s _ _ K J
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry

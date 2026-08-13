@@ -7,13 +7,6 @@ import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -80,12 +73,6 @@ theorem oneStep_partial_to_full
         eps * E * Finset.sum (Finset.range (p + 1)) (fun i => N i) := by
     exact mul_le_mul_of_nonneg_left hsum hcoef
   linarith
-
-
-
-
-
-
 
 theorem oneStep_from_leibniz
     {eps G : Real} {B A T N : Nat -> Real} {k s : Nat}
@@ -161,11 +148,6 @@ theorem oneStep_from_leibniz
             ring
   linarith
 
-
-
-
-
-
 theorem oneStep_from_antidiagonal
     {eps G : Real} {B A T N : Nat -> Real} {k s : Nat}
     (heps0 : 0 <= eps)
@@ -209,11 +191,6 @@ private theorem sum_eps_E_mul
   apply Finset.sum_congr rfl
   intro k _hk
   ring
-
-
-
-
-
 
 theorem main_step_algebra
     {eps C A : Real} {E N G : Nat -> Real} {p : Nat}
@@ -301,12 +278,6 @@ theorem main_step_coeff_le_lemma45Const
   simp [lemma45Const]
   linarith
 
-
-
-
-
-
-
 theorem main_step_to_lemma45Const
     {eps A : Real} {B N G : Nat -> Real} {p s : Nat}
     (heps0 : 0 <= eps)
@@ -356,8 +327,6 @@ theorem main_step_to_lemma45Const
           mul_le_mul_of_nonneg_left hcoef hepsS_nonneg
       _ = eps * lemma45Const B (p + 1) s * S := by ring
   linarith
-
-
 
 theorem main_step_to_lemma45Const_of_partials
     {eps A : Real} {B N G : Nat -> Real} {p s : Nat}

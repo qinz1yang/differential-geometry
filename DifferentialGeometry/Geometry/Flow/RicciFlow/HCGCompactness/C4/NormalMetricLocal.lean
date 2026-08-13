@@ -1,16 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalMetricExtend
 import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.PullbackCross
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -32,8 +25,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-
-
 def normalQuarter
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -47,8 +38,6 @@ def normalQuarter
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact ⟨Metric.ball (0 : E)
     (expMapC2Radius (I := I) Y.metric x / 4), Metric.isOpen_ball⟩
-
-
 
 theorem normalQuarter_sub
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -82,8 +71,6 @@ def normalQuarterImage
     image_opens_isOpen (normalExpPD (I := I) Y x)
       (normalQuarter_sub (I := I) Y x)⟩
 
-
-
 noncomputable def normalQuarterDiffeo
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -99,8 +86,6 @@ noncomputable def normalQuarterDiffeo
   simpa only [normalQuarterImage] using
     PartialDiffeomorph.toOpensDiffeoCross (normalExpPD (I := I) Y x)
       (normalQuarter_sub (I := I) Y x)
-
-
 
 @[implicit_reducible] noncomputable def normalQuarterSigma
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -139,8 +124,6 @@ noncomputable def normalQuarterDiffeo
   rw [← hrange]
   exact isSigmaCompact_range (normalQuarterDiffeo (I := I) Y x).continuous
 
-
-
 theorem quarterDiffeo_apply
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : normalQuarter (I := I) Y x) :
@@ -152,8 +135,6 @@ theorem quarterDiffeo_apply
       normalQuarterImage (I := I) Y x) : Y.M) =
       expMapDiffeo (I := I) Y.metric x (z : E) := by
   rfl
-
-
 
 theorem quarterDiffeo_mfd
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
@@ -191,8 +172,6 @@ private theorem metric_ext
   subst hi
   rfl
 
-
-
 theorem normalTotal_quarter
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -229,9 +208,6 @@ theorem normalTotal_quarter
   rw [normalTotal_inner (I := I) Y x (z : E) z.2 v w]
   exact normalCoordMetric_apply (I := I) Y x (z : E) v w
 
-
-
-
 theorem normal_cov_map
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -250,21 +226,21 @@ theorem normal_cov_map
           (TangentSpace I : Y.M → Type _))
       (z : normalQuarter (I := I) Y x) (v : E),
     (fun y : normalQuarterImage (I := I) Y x =>
-        Integral.Connection.restrictOpenTangentSection (I := I)
+        DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection (I := I)
           (normalQuarterImage (I := I) Y x) Z y) =ᶠ[
       nhds (normalQuarterDiffeo (I := I) Y x z)]
       (fun y : normalQuarterImage (I := I) Y x =>
-        Integral.Connection.pushFwdSectionCross
+        DifferentialGeometry.Geometry.Curvature.pushFwdSectionCross
           (I := 𝓘(Real, E)) (J := I)
           (normalQuarterDiffeo (I := I) Y x)
-          (Integral.Connection.restrictOpenTangentSection
+          (DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection
             (I := 𝓘(Real, E)) (normalQuarter (I := I) Y x) V) y) →
     mfderiv 𝓘(Real, E) I
         (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E)
-        (((Integral.Connection.metricCov (I := 𝓘(Real, E))
+        (((DifferentialGeometry.Geometry.Curvature.metricCov (I := 𝓘(Real, E))
           (M := E) (normalTotal (I := I) Y x)).toFun
           (fun u : E => V u) (z : E)) v) =
-      ((Integral.Connection.metricCov (I := I) (M := Y.M) Y.metric).toFun
+      ((DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := Y.M) Y.metric).toFun
         (fun y : Y.M => Z y)
         (expMapDiffeo (I := I) Y.metric x (z : E)))
         (mfderiv 𝓘(Real, E) I
@@ -284,38 +260,38 @@ theorem normal_cov_map
   let U := normalQuarter (I := I) Y x
   let W := normalQuarterImage (I := I) Y x
   let Phi := normalQuarterDiffeo (I := I) Y x
-  let VU := Integral.Connection.restrictOpenTangentSection
+  let VU := DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection
     (I := 𝓘(Real, E)) U V
-  let PW := Integral.Connection.pushFwdSectionCross
+  let PW := DifferentialGeometry.Geometry.Curvature.pushFwdSectionCross
     (I := 𝓘(Real, E)) (J := I) Phi VU
-  have hres := Integral.Connection.metricCov_restrictOpen_globalSection
+  have hres := DifferentialGeometry.Geometry.Curvature.metricCov_restrictOpen_globalSection
     (I := 𝓘(Real, E)) (normalTotal (I := I) Y x) U V z v
   rw [normalTotal_quarter (I := I) Y x] at hres
-  have hpull := Integral.Connection.metricCov_pullbackCross
+  have hpull := DifferentialGeometry.Geometry.Curvature.metricCov_pullbackCross
     (I := 𝓘(Real, E)) (J := I)
     (Y.metric.restrictOpen (I := I) W) Phi VU z v
   have hfield :
-      (Integral.Connection.metricCov (I := I) (M := W)
+      (DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := W)
         (Y.metric.restrictOpen (I := I) W)).toFun
-          (Integral.Connection.restrictOpenTangentField (I := I) W
+          (DifferentialGeometry.Geometry.Curvature.restrictOpenTangentField (I := I) W
             (fun y : Y.M => Z y)) (Phi z) =
-        (Integral.Connection.metricCov (I := I) (M := W)
+        (DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := W)
           (Y.metric.restrictOpen (I := I) W)).toFun
             (fun y : W => PW y) (Phi z) := by
-    apply Integral.Connection.metricCov_congr_nhds
+    apply DifferentialGeometry.Geometry.Curvature.metricCov_congr_nhds
       (I := I) (M := W) (Y.metric.restrictOpen (I := I) W)
-      (Integral.Connection.mdiffAt_restrictOpen_section (I := I) W Z (Phi z))
+      (DifferentialGeometry.Geometry.Curvature.mdiffAt_restrictOpen_section (I := I) W Z (Phi z))
       (PW.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
-    simpa only [Integral.Connection.restrictOpenTangentSection] using hEq
-  have htgt := Integral.Connection.metricCov_restrictOpen_globalSection
+    simpa only [DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection] using hEq
+  have htgt := DifferentialGeometry.Geometry.Curvature.metricCov_restrictOpen_globalSection
     (I := I) Y.metric W Z (Phi z)
       (mfderiv 𝓘(Real, E) I (Phi : U → W) z v)
   have htoAmbient :
-      ((Integral.Connection.metricCov (I := I) (M := W)
+      ((DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := W)
           (Y.metric.restrictOpen (I := I) W)).toFun
         (fun y : W => PW y) (Phi z))
         (mfderiv 𝓘(Real, E) I (Phi : U → W) z v) =
-      ((Integral.Connection.metricCov (I := I) (M := Y.M) Y.metric).toFun
+      ((DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := Y.M) Y.metric).toFun
         (fun y : Y.M => Z y) (Phi z : Y.M))
         (mfderiv 𝓘(Real, E) I (Phi : U → W) z v) := by
     rw [← hfield]
@@ -323,16 +299,13 @@ theorem normal_cov_map
   have hpbAmbient := htoAmbient
   rw [← hpull] at hpbAmbient
   have hleft := quarterDiffeo_mfd (I := I) Y x z
-    (((Integral.Connection.metricCov (I := 𝓘(Real, E))
+    (((DifferentialGeometry.Geometry.Curvature.metricCov (I := 𝓘(Real, E))
       (M := E) (normalTotal (I := I) Y x)).toFun
       (fun u : E => V u) (z : E)) v)
   have hdir := quarterDiffeo_mfd (I := I) Y x z v
   have hbase := quarterDiffeo_apply (I := I) Y x z
   rw [← hleft, ← hres, ← hdir, ← hbase]
   exact hpbAmbient
-
-
-
 
 theorem normalGeo_map
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)

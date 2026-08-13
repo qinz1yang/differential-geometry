@@ -1,18 +1,12 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SmoothParametricCoeffIntegral
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Tensor0SBundle
+open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
@@ -21,7 +15,7 @@ namespace Parabolic
 namespace TensorSpectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 
 universe u
 
@@ -268,10 +262,6 @@ private theorem timeDeriv_joint
     exact coord_deriv_eq (I := I) (M := M) g b c Φ hS hjoint p₀.1 p hp hpbase
   · exact coord_deriv_eq (I := I) (M := M) g b c Φ hS hjoint p₀.1 p₀ hp₀
       (mem_baseSet_trivializationAt _ _ _)
-
-
-
-
 
 theorem exists_timeDerivCc
     (g : SmoothRiemannianMetric I M) (b c : ℕ)

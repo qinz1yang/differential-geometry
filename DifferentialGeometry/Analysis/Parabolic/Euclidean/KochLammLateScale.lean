@@ -1,14 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateMass
 
-/-!
-# Radius scaling of the terminal Koch--Lamm kernel norm
-
-This file isolates the real-power algebra after the exact terminal kernel
-mass calculation.  At observation time `t = R^2`, the Hölder-dual kernel
-norm has exactly the factor `R^(4/(n+4))` needed to cancel the inverse scale
-in `KLSource0.late_lq`.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -22,22 +13,17 @@ namespace Euclidean
 variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 
-/-- Scalar mass factor in `klTermPowMass_eq`, before taking the Hölder-dual
-root. -/
 def klTermMassCore (t : ℝ) : ℝ :=
   ((t / 2) ^ (klHeatExp V + 1) / (klHeatExp V + 1)) *
     basePowMass V (klQDual V)
 
-/-- Hölder-dual root of the scalar terminal mass factor. -/
 def klTermRoot (t : ℝ) : ℝ :=
   (klTermMassCore (V := V) t) ^ (1 / klQDual V)
 
-/-- Dimension-only constant in the late ordinary-source heat estimate. -/
 def klLate0C (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] : ℝ :=
   klTermRoot (V := V) 1
 
-/-- The scalar terminal mass factor is positive at positive time. -/
 theorem klTermCore_pos {t : ℝ} (ht : 0 < t) :
     0 < klTermMassCore (V := V) t := by
   have ha : 0 < klHeatExp V + 1 := by
@@ -47,8 +33,6 @@ theorem klTermCore_pos {t : ℝ} (ht : 0 < t) :
     (div_pos (Real.rpow_pos_of_pos (half_pos ht) _) ha)
     (klBasePow_pos (V := V) (klQ_holder (V := V)).pos)
 
-/-- Before taking the dual root, replacing `t` by `R^2` extracts the
-`klLqScaleR R` factor to the power `klQDual`. -/
 theorem klTermCore_scale {R : ℝ} (hR : 0 < R) :
     klTermMassCore (V := V) (R ^ 2) =
       (klLqScaleR (V := V) R) ^ klQDual V *
@@ -84,8 +68,6 @@ theorem klTermCore_scale {R : ℝ} (hR : 0 < R) :
   norm_num only [one_div, one_pow]
   ring
 
-/-- Taking the Hölder-dual root turns the extracted power into exactly one
-copy of the Koch--Lamm late-source scale. -/
 theorem klTermRoot_scale {R : ℝ} (hR : 0 < R) :
     klTermRoot (V := V) (R ^ 2) =
       klLate0C V * klLqScaleR (V := V) R := by
@@ -106,7 +88,6 @@ section Measured
 
 variable [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- Exact global terminal kernel factor at observation time `R^2`. -/
 theorem klTermNorm_scale {R : ℝ} (hR : 0 < R) (x : V) :
     (klTermPowMass (V := V) (R ^ 2) x) ^ (1 / klQDual V) =
       klLate0C V * klLqScaleR (V := V) R := by

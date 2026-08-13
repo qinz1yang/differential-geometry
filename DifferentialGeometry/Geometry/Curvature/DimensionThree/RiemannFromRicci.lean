@@ -9,26 +9,15 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Realized
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open DifferentialGeometry.Integral.Connection Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -43,8 +32,6 @@ def OrthonormalBasisAt
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x)) : Prop :=
   forall i j : Fin 3, g.inner x (basis i) (basis j) = delta3 i j
-
-
 
 def standardRmCompAt
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
@@ -152,7 +139,7 @@ private theorem vec2_update_zero {x : M}
     Function.update (vec2 (I := I) X Y) (0 : Fin 2) X' =
       vec2 (I := I) X' Y := by
   funext a
-  fin_cases a <;> simp [DifferentialGeometry.Integral.Connection.vec2, Function.update]
+  fin_cases a <;> simp [DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 private theorem vec2_update_one {x : M}
@@ -160,7 +147,7 @@ private theorem vec2_update_one {x : M}
     Function.update (vec2 (I := I) X Y) (1 : Fin 2) Y' =
       vec2 (I := I) X Y' := by
   funext a
-  fin_cases a <;> simp [DifferentialGeometry.Integral.Connection.vec2, Function.update]
+  fin_cases a <;> simp [DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
 
 
 omit [FiniteDimensional ℝ E] in
@@ -233,7 +220,7 @@ theorem ricciSym_of_basis
             basis ((fun a : Fin 2 => if a = 0 then j else i) a)) =
         vec2 (I := I) (cx j • basis j) (cy i • basis i) := by
     funext a
-    fin_cases a <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases a <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   have hright :
       (fun a : Fin 2 =>
         (if a = 0
@@ -242,7 +229,7 @@ theorem ricciSym_of_basis
             basis ((fun a : Fin 2 => if a = 0 then i else j) a)) =
         vec2 (I := I) (cy i • basis i) (cx j • basis j) := by
     funext a
-    fin_cases a <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases a <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   rw [hleft, hright]
   have hL :
       Ric (vec2 (I := I) (cx j • basis j) (cy i • basis i)) =
@@ -258,12 +245,12 @@ theorem ricciSym_of_basis
       Ric (vec2 (I := I) (cx j • basis j) (cy i • basis i))
           = (cx j) *
               Ric (vec2 (I := I) (basis j) (cy i • basis i)) := by
-              simpa only [vec2, DifferentialGeometry.Integral.Connection.vec2, vec2_update_zero,
+              simpa only [vec2, DifferentialGeometry.Geometry.Curvature.vec2, vec2_update_zero,
                 smul_eq_mul] using h0
       _ = (cx j) * ((cy i) *
               Ric (vec2 (I := I) (basis j) (basis i))) := by
               congr 1
-              simpa only [vec2, DifferentialGeometry.Integral.Connection.vec2, vec2_update_one,
+              simpa only [vec2, DifferentialGeometry.Geometry.Curvature.vec2, vec2_update_one,
                 smul_eq_mul] using h1
       _ = (cx j) * (cy i) *
               Ric (vec2 (I := I) (basis j) (basis i)) := by ring
@@ -281,12 +268,12 @@ theorem ricciSym_of_basis
       Ric (vec2 (I := I) (cy i • basis i) (cx j • basis j))
           = (cy i) *
               Ric (vec2 (I := I) (basis i) (cx j • basis j)) := by
-              simpa only [vec2, DifferentialGeometry.Integral.Connection.vec2, vec2_update_zero,
+              simpa only [vec2, DifferentialGeometry.Geometry.Curvature.vec2, vec2_update_zero,
                 smul_eq_mul] using h0
       _ = (cy i) * ((cx j) *
               Ric (vec2 (I := I) (basis i) (basis j))) := by
               congr 1
-              simpa only [vec2, DifferentialGeometry.Integral.Connection.vec2, vec2_update_one,
+              simpa only [vec2, DifferentialGeometry.Geometry.Curvature.vec2, vec2_update_one,
                 smul_eq_mul] using h1
       _ = (cy i) * (cx j) *
               Ric (vec2 (I := I) (basis i) (basis j)) := by ring
@@ -312,13 +299,13 @@ def ricciCovAt
     have hleft :
         Function.update m (1 : Fin 2) (Y + Z) = vec2 X (Y + Z) := by
       funext i
-      fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hY : Function.update m (1 : Fin 2) Y = vec2 X Y := by
       funext i
-      fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hZ : Function.update m (1 : Fin 2) Z = vec2 X Z := by
       funext i
-      fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     simpa [hleft, hY, hZ] using hmap
   map_smul' := by
     intro c Y
@@ -328,10 +315,10 @@ def ricciCovAt
     have hleft :
         Function.update m (1 : Fin 2) (c • Y) = vec2 X (c • Y) := by
       funext i
-      fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hY : Function.update m (1 : Fin 2) Y = vec2 X Y := by
       funext i
-      fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     simpa [hleft, hY] using hmap
 
 omit [FiniteDimensional ℝ E] in
@@ -347,13 +334,13 @@ private theorem ricciCovAt_add
   have hleft :
       Function.update m (0 : Fin 2) (X + Y) = vec2 (X + Y) Z := by
     funext i
-    fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+    fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
   have hX : Function.update m (0 : Fin 2) X = vec2 X Z := by
     funext i
-    fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+    fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
   have hY : Function.update m (0 : Fin 2) Y = vec2 Y Z := by
     funext i
-    fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+    fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
   simpa [ricciCovAt, hleft, hX, hY] using hmap
 
 omit [FiniteDimensional ℝ E] in
@@ -369,10 +356,10 @@ private theorem ricciCovAt_smul
   have hleft :
       Function.update m (0 : Fin 2) (c • X) = vec2 (c • X) Z := by
     funext i
-    fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+    fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
   have hX : Function.update m (0 : Fin 2) X = vec2 X Z := by
     funext i
-    fin_cases i <;> simp [m, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+    fin_cases i <;> simp [m, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
   simpa [ricciCovAt, hleft, hX] using hmap
 
 
@@ -434,13 +421,6 @@ theorem standardRmCompAt_apply
     standardRmCompAt basis Rm04 i j k l =
       rm04CompAt (I := I) basis Rm04 i j k l := rfl
 
-
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
@@ -459,8 +439,6 @@ theorem rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries
     displayedRiemannFromRicci3D_of_algebraic_curvature_symmetries
       h i j k l
   simpa [displayedRiemannFromRicciRhs3, standardRmCompAt_apply] using hformula
-
-
 
 theorem rm04Comp_displayedRiemannFromRicci3D_frame_of_curvature_symmetries
     {Rm04 : Tensor04Section (I := I) (M := M)}
@@ -486,25 +464,23 @@ theorem rm04Comp_displayedRiemannFromRicci3D_frame_of_curvature_symmetries
   rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries
     (I := I) h
 
-
-
 theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
     [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x)) :
     AlgebraicCurvatureSymmetries3 (standardRmCompAt (I := I) basis (Rm04 x)) := by
   refine ⟨?_, ?_, ?_⟩
   · intro i j k l
     simpa [standardRmCompAt_apply] using
-      (DifferentialGeometry.Integral.Connection.rm04InputSkewAt_of_leviCivita_realizes
+      (DifferentialGeometry.Geometry.Connection.rm04InputSkewAt_of_leviCivita_realizes
         (I := I) g Rm04 hRm04 (basis i) (basis j) (basis k) (basis l))
   · intro i j k l
     have h :=
-      DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
+      DifferentialGeometry.Geometry.Connection.rm04OutputSkewAt_of_leviCivita_realizes
         (I := I) g Rm04 hRm04 (basis i) (basis j) (basis k) (basis l)
     have h' :
         (Rm04 x) (vec4 (basis i) (basis j) (basis l) (basis k)) =
@@ -513,10 +489,8 @@ theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
     simpa [standardRmCompAt_apply] using h'
   · intro i j k l
     simpa [standardRmCompAt_apply] using
-      (DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
+      (DifferentialGeometry.Geometry.Connection.rm04PairSymmAt_of_leviCivita_realizes
         (I := I) g Rm04 hRm04 (basis i) (basis j) (basis k) (basis l)).symm
-
-
 
 theorem rm04Comp_displayedRiemannFromRicci3D_at_of_leviCivita_realizes
     [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
@@ -524,7 +498,7 @@ theorem rm04Comp_displayedRiemannFromRicci3D_at_of_leviCivita_realizes
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
     {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x)) :
     forall i j k l : Fin 3,
       rm04CompAt (I := I) basis (Rm04 x) i j l k =
@@ -537,11 +511,6 @@ theorem rm04Comp_displayedRiemannFromRicci3D_at_of_leviCivita_realizes
   rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries (I := I)
     (algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
       (I := I) g Rm04 hRm04 basis)
-
-
-
-
-
 
 structure RiemannFromRicci3DTraceDataAt
     (g : SmoothRiemannianMetric I M)
@@ -557,12 +526,6 @@ structure RiemannFromRicci3DTraceDataAt
       stdRicci3 (standardRmCompAt basis Rm04) i j
   scalar_trace :
     scalar = stdScalar3 (standardRmCompAt basis Rm04)
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem firstTrace_delta3_eq_neg_stdRicci3
@@ -607,12 +570,6 @@ theorem firstTrace_delta3_eq_neg_stdRicci3
   unfold stdRicci3
   simp [standardRmCompAt_apply, rm04CompAt_apply]
   ring
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem traceDataOfFirst
@@ -663,12 +620,6 @@ theorem traceDataOfFirst
     simp [stdScalar3, Fin.sum_univ_three, delta3, hdiag0, hdiag1, hdiag2]
     ring
 
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem rm04Comp_displayedRiemannFromRicci3D_at
     {g : SmoothRiemannianMetric I M}
@@ -695,9 +646,6 @@ theorem rm04Comp_displayedRiemannFromRicci3D_at
   rw [← h.ricci_trace i l, ← h.ricci_trace j l, ← h.ricci_trace i k,
     ← h.ricci_trace j k, ← h.scalar_trace]
 
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem rm04Comp_einstein3_at
     {g : SmoothRiemannianMetric I M}
@@ -718,9 +666,6 @@ theorem rm04Comp_einstein3_at
   rw [hEin i l, hEin j l, hEin i k, hEin j k]
   fin_cases i <;> fin_cases j <;> fin_cases k <;> fin_cases l <;>
     simp [delta3] <;> ring
-
-
-
 
 theorem rm04_einstein3_at
     {g : SmoothRiemannianMetric I M}
@@ -761,15 +706,9 @@ theorem rm04_einstein3_at
   rw [sum_fin_four_fun]
   rw [hXX, hYY, hXY]
   simp_rw [hcompSlots]
-  simp [slots4, DifferentialGeometry.Integral.Connection.vec4, delta3, Fin.sum_univ_three,
+  simp [slots4, DifferentialGeometry.Geometry.Curvature.vec4, delta3, Fin.sum_univ_three,
     Fin.prod_univ_four]
   ring
-
-
-
-
-
-
 
 theorem rm04_firstTrace_einstein3_at
     {g : SmoothRiemannianMetric I M}
@@ -823,7 +762,7 @@ theorem rm04Std_ein3_at
       ricciCompAt (I := I) basis Ric i j =
         (scalar / 3) * delta3 i j)
     (X Y : TangentSpace I x) :
-    DifferentialGeometry.Integral.Connection.tensor04StdAt (I := I) (M := M) Rm04 X Y Y X =
+    DifferentialGeometry.Geometry.Curvature.tensor04StdAt (I := I) (M := M) Rm04 X Y Y X =
       (scalar / 6) *
         (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y) :=
@@ -850,11 +789,6 @@ theorem rm04Comp_displayedRiemannFromRicci3D_frame
           - (1 / 2 : Real) * scalar x *
               (delta3 i l * delta3 j k - delta3 j l * delta3 i k) :=
   rm04Comp_displayedRiemannFromRicci3D_at (I := I) h
-
-
-
-
-
 
 theorem rm04_kn_gform
     {g : SmoothRiemannianMetric I M}
@@ -894,12 +828,12 @@ theorem rm04_kn_gform
     intro P Q
     rw [tensor0S_apply_eq_sum (I := I) basis Ric (vec2 (I := I) P Q), sum_fin_two_fun]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => ?_
-    simp [ricciCompAt, slots2, DifferentialGeometry.Integral.Connection.vec2,
+    simp [ricciCompAt, slots2, DifferentialGeometry.Geometry.Curvature.vec2,
       Fin.prod_univ_two, Module.Basis.coord_apply, mul_comm, mul_assoc]
   rw [tensor0S_apply_eq_sum (I := I) basis Rm04 (vec4 (I := I) X Y Z W), sum_fin_four_fun]
   simp_rw [hcomp, hg, hric]
-  simp [DifferentialGeometry.Integral.Connection.vec4, slots4, Fin.prod_univ_four,
+  simp [DifferentialGeometry.Geometry.Curvature.vec4, slots4, Fin.prod_univ_four,
     Module.Basis.coord_apply, delta3, Fin.sum_univ_three]
   ring
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

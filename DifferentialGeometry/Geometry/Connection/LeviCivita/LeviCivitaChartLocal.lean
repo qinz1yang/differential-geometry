@@ -3,6 +3,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -11,7 +12,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -21,6 +22,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 def chartLeviCivitaGoodSet (α : M) : Set M :=
   (extChartAt I α).source ∩
@@ -511,5 +513,5 @@ theorem chartLeviCivita_isCovariantDerivativeOn (g : SmoothRiemannianMetric I M)
   leibniz hσ hf hx := chartLeviCivita_leibniz (I := I) g α hσ hf hx
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

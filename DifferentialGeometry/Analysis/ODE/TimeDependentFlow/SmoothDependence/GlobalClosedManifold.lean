@@ -8,7 +8,7 @@ noncomputable section
 open Set Function Filter Bundle
 open scoped Topology Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 section GlobalClosed
 
@@ -196,4 +196,4 @@ theorem global_flow_jointContMDiffOn_on_closed_manifold
 
 end GlobalClosed
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

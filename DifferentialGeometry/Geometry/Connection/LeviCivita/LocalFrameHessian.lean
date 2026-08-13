@@ -1,28 +1,15 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Realized
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
 
-open Bundle Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
+
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open scoped BigOperators Manifold ContDiff
 
@@ -33,11 +20,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M]
 variable [SigmaCompactSpace M] [T2Space M]
-
-
-
-
-
 
 def scalHessFrame
     (g : SmoothRiemannianMetric I M)
@@ -51,7 +33,7 @@ def scalHessFrame
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g
   let Ric : Tensor02Section (I := I) (M := M) :=
-    DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection (I := I) (M := M) cov
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection (I := I) (M := M) cov
       hcov
   let nablaRic :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -65,12 +47,6 @@ def scalHessFrame
       gInv k l *
         nabla2Ric (vec4 (I := I) (F.basisAt hx i) (F.basisAt hx j)
           (F.basisAt hx k) (F.basisAt hx l))
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem scalHessFrameSymm
@@ -86,13 +62,8 @@ theorem scalHessFrameSymm
     scalHessFrame (I := I) (M := M) g F hx gInv i j =
       scalHessFrame (I := I) (M := M) g F hx gInv j i := by
   simpa [scalHessFrame] using
-    DifferentialGeometry.Integral.Connection.canScalHess (I := I) (M := M) (g := g)
+    DifferentialGeometry.Geometry.Connection.canScalHess (I := I) (M := M) (g := g)
       (basis := F.basisAt hx) gInv hinv i j
-
-
-
-
-
 
 def frameInvMetric
     (g : SmoothRiemannianMetric I M)
@@ -100,8 +71,6 @@ def frameInvMetric
     {x : M} (hx : x ∈ F.domain)
     (i j : CoordinateIdx (𝕜 := Real) E) : Real :=
   basisInvMetric (I := I) (M := M) g x (F.basisAt hx) i j
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [SigmaCompactSpace M] [T2Space M] in
@@ -125,8 +94,6 @@ def frameScalHess
   scalHessFrame (I := I) (M := M) g F hx
     (frameInvMetric (I := I) (M := M) g F hx) i j
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem frameScalHess_symm
     [FiniteDimensional Real E]
@@ -141,4 +108,4 @@ theorem frameScalHess_symm
       (frameInvMetric (I := I) (M := M) g F hx)
       (frameInvMetric_real (I := I) (M := M) g F hx) i j
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

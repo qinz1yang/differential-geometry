@@ -1,19 +1,16 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnDiffCovGradBridge
-import DifferentialGeometry.Geometry.Flow.DeTurckVFChartCoord
-
-
-
-
-
-
-
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFChartCoord
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators InnerProductSpace
 
 namespace DifferentialGeometry
@@ -21,7 +18,8 @@ namespace Analysis
 namespace Parabolic
 namespace TensorSpectral
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow
@@ -129,27 +127,27 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem conn_pair_joint
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (q : SmoothRiemannianMetric I M)
     (om : Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, fun x : M => Tensor0SSpace 1 I x⟯)
     (α : M) (j k : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ =>
         ((show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
-            connDiffFib (I := I) (G.metric p.2) q p.1) (om p.1))
+            connDiffFib (I := I) (g_fam p.2) q p.1) (om p.1))
           ![chartBasisVecFiber (I := I) α j p.1,
             chartBasisVecFiber (I := I) α k p.1])
       ((chartAt H α).source ×ˢ D.regular) := by
   classical
   have hsum : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => ∑ a : Fin (Module.finrank ℝ E),
-        (chartChristoffel (I := I) (G.metric p.2) α k j a (extChartAt I α p.1) -
+        (chartChristoffel (I := I) (g_fam p.2) α k j a (extChartAt I α p.1) -
           chartChristoffel (I := I) q α k j a (extChartAt I α p.1)) *
         (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α a p.1))
       ((chartAt H α).source ×ˢ D.regular) := by
     refine contMDiffOn_finset_sum (fun a _ => ?_)
-    exact ((christ_of_family (I := I) G hG α k j a).sub
+    exact ((christ_of_family (I := I) g_fam hG α k j a).sub
       (christ_const_joint (I := I) q α k j a)).mul
         (covComp_joint (I := I) om α a)
   refine hsum.congr (fun p hp => ?_)
@@ -161,7 +159,7 @@ private theorem conn_pair_joint
   rw [connDiffFib_apply_eval]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   rw [DifferentialGeometry.PDE.DeTurck.connDiff_chartBasis_pair_eq_sum
-    (I := I) (G.metric p.2) q α hxgood j k]
+    (I := I) (g_fam p.2) q α hxgood j k]
   set φ : TangentSpace I p.1 →L[ℝ] ℝ :=
     continuousMultilinearCurryFin1 ℝ (TangentSpace I p.1) ℝ (om p.1) with hφ
   have hφapply : ∀ v : TangentSpace I p.1,
@@ -177,15 +175,15 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem connDiff_app_joint
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (q : SmoothRiemannianMetric I M)
     (om : Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, fun x : M => Tensor0SSpace 1 I x⟯) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun x : M => Tensor0SSpace 2 I x) p.1
         ((show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
-          (connDiffSection (I := I) (G.metric p.2) q).toSection p.1) (om p.1)))
+          (connDiffSection (I := I) (g_fam p.2) q).toSection p.1) (om p.1)))
       ((Set.univ : Set M) ×ˢ D.regular) := by
   classical
   letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
@@ -210,33 +208,33 @@ private theorem connDiff_app_joint
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Bcmm.repr
           (e ⟨p.1, (show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
-            (connDiffSection (I := I) (G.metric p.2) q).toSection p.1) (om p.1)⟩).2 σ)
+            (connDiffSection (I := I) (g_fam p.2) q).toSection p.1) (om p.1)⟩).2 σ)
         ((Set.univ : Set M) ×ˢ D.regular) p₀ := by
     intro σ
-    have hscal := conn_pair_joint (I := I) G hG q om α (σ 0) (σ 1)
+    have hscal := conn_pair_joint (I := I) g_fam hG q om α (σ 0) (σ 1)
     have hscalAt := (hscal p₀ ⟨by simpa only [α] using hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
     have hreadout : ∀ {z : M × ℝ}, z.1 ∈ e.baseSet →
         Bcmm.repr
             (e ⟨z.1, (show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
-              (connDiffSection (I := I) (G.metric z.2) q).toSection z.1) (om z.1)⟩).2 σ =
+              (connDiffSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1)⟩).2 σ =
           ((show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
-              connDiffFib (I := I) (G.metric z.2) q z.1) (om z.1))
+              connDiffFib (I := I) (g_fam z.2) q z.1) (om z.1))
             ![chartBasisVecFiber (I := I) α (σ 0) z.1,
               chartBasisVecFiber (I := I) α (σ 1) z.1] := by
       intro z hzbase
       rw [continuousMultilinearMap_basis_repr]
       have hcoe :
           (e ⟨z.1, (show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
-            (connDiffSection (I := I) (G.metric z.2) q).toSection z.1) (om z.1)⟩).2 =
+            (connDiffSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1)⟩).2 =
             (e.linearMapAt ℝ z.1)
               ((show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
-                (connDiffSection (I := I) (G.metric z.2) q).toSection z.1) (om z.1)) :=
+                (connDiffSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1)) :=
         (congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e) hzbase) _).symm
       rw [hcoe]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem
         (I := I) α z.1 hzbase
         ((show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from
-          (connDiffSection (I := I) (G.metric z.2) q).toSection z.1) (om z.1))
+          (connDiffSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1))
         (fun a => (chartModelBasis E) (σ a))
       rw [tensor0SSpace_continuousLinearEquiv_symm_apply] at happly
       rw [happly]
@@ -262,19 +260,19 @@ private theorem connDiff_app_joint
       (fun p : M × ℝ => fun σ : Fin 2 → Fin (Module.finrank ℝ E) =>
         Bcmm.repr
           (e ⟨p.1, (show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
-            (connDiffSection (I := I) (G.metric p.2) q).toSection p.1) (om p.1)⟩).2 σ)
+            (connDiffSection (I := I) (g_fam p.2) q).toSection p.1) (om p.1)⟩).2 σ)
       ((Set.univ : Set M) ×ˢ D.regular) p₀ :=
     contMDiffWithinAt_pi_space.mpr (fun σ => hcoordEach σ)
   have hfinal : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SModel 2 ℝ E) ∞
       (fun p : M × ℝ =>
         (e ⟨p.1, (show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
-          (connDiffSection (I := I) (G.metric p.2) q).toSection p.1) (om p.1)⟩).2)
+          (connDiffSection (I := I) (g_fam p.2) q).toSection p.1) (om p.1)⟩).2)
       ((Set.univ : Set M) ×ˢ D.regular) p₀ := by
     have hequiv :=
       (Bcmm.equivFun.symm.toContinuousLinearEquiv.toContinuousLinearMap.contMDiffAt
         (x := Bcmm.equivFun
           (e ⟨p₀.1, (show Tensor0SSpace 1 I p₀.1 →L[ℝ] Tensor0SSpace 2 I p₀.1 from
-            (connDiffSection (I := I) (G.metric p₀.2) q).toSection p₀.1)
+            (connDiffSection (I := I) (g_fam p₀.2) q).toSection p₀.1)
               (om p₀.1)⟩).2)).comp_contMDiffWithinAt
         p₀ hcoordVec
     refine hequiv.congr_of_eventuallyEq ?_ ?_
@@ -283,29 +281,27 @@ private theorem connDiff_app_joint
     · exact (Bcmm.equivFun.symm_apply_apply _).symm
   exact hfinal
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem connDiff_joint
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (q : SmoothRiemannianMetric I M) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, TensorRSModel 1 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel 1 2 ℝ E)
         (E := fun x : M => TensorRSSpace 1 2 I x) p.1
-        ((connDiffSection (I := I) (G.metric p.2) q).toSection p.1))
+        ((connDiffSection (I := I) (g_fam p.2) q).toSection p.1))
       ((Set.univ : Set M) ×ˢ D.regular) := by
   apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
     (F₁ := Tensor0SModel 1 ℝ E) (V₁ := fun x : M => Tensor0SSpace 1 I x)
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
       (show Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
-        (connDiffSection (I := I) (G.metric p.2) q).toSection p.1))
+        (connDiffSection (I := I) (g_fam p.2) q).toSection p.1))
     (S := D.regular)
   intro om
-  exact connDiff_app_joint (I := I) G hG q om
+  exact connDiff_app_joint (I := I) g_fam hG q om
 
 end TensorSpectral
 end Parabolic

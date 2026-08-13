@@ -5,15 +5,9 @@ import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.BoundedGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.PointedEmetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBInputs
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# H6 normal-coordinate metric bridges
-
-This file connects the radial Jacobi estimates from the comparison-geometry
-layer to the normal-coordinate metric package consumed by Chapter 4.
--/
 
 noncomputable section
 
@@ -37,8 +31,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-/-- Uniform Euclidean quadratic-form equivalence for the metric pulled back
-through an orthonormally framed exponential chart. -/
 def FramedNormalCoordMetricEquivOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) (U : Set E) :
@@ -57,8 +49,6 @@ def FramedNormalCoordMetricEquivOn
       NormalCoordinates.framedMetric (I := I) Y.metric x z v v ≤
         2 * ‖v‖ ^ 2
 
-/-- The framed model-space radius corresponding to the canonical clamped
-Jacobi launch radius. -/
 def framedJacobiRadius
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -74,7 +64,6 @@ def framedJacobiRadius
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact expRadiusGp (I := I) Y.metric x / 26
 
-/-- The framed Jacobi radius is positive at every center. -/
 lemma framedJacobiRadius_pos
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -89,8 +78,6 @@ lemma framedJacobiRadius_pos
   rw [framedJacobiRadius]
   exact div_pos (expRadiusGp_pos (I := I) Y.metric x) (by norm_num)
 
-/-- Framed model smallness at `expRadiusGp / 26` is exactly the raw tangent
-smallness required by the explicit radial Rm04 package. -/
 lemma normalFrame_lt_jac
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     {z : E} :
@@ -111,8 +98,6 @@ lemma normalFrame_lt_jac
   apply norm_lt_exp_div (I := I) Y.metric x (by norm_num)
   simpa only [normalFrame_sqrt] using hz
 
-/-- A radial Riemann-tensor norm bound along the geodesic launched by one
-framed normal-coordinate point. -/
 def FramedRm04Bound
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : E) (R : Real) : Prop :=
@@ -126,15 +111,13 @@ def FramedRm04Bound
     Real.sqrt (Tensor0SBundle.normSq0S (I := I) Y.metric
       (radialCurve (I := I) Y.metric x
         (normalFrame (I := I) Y.metric x z) t) 4
-      (DifferentialGeometry.Integral.Connection.metricRm04At
+      (DifferentialGeometry.Geometry.Curvature.metricRm04At
         (I := I) (M := Y.M) Y.metric
         (radialCurve (I := I) Y.metric x
           (normalFrame (I := I) Y.metric x z) t))) ≤ R
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Uniform bounded geometry supplies the radial Rm04 bound along every
-framed normal-coordinate ray in every sequence member. -/
 theorem framed_rm04_of_seq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hX : SeqBoundedGeometry (I := I) X) (k : Nat)
@@ -152,8 +135,6 @@ theorem framed_rm04_of_seq
     (radialCurve (I := I) (X.obj k).metric x
       (normalFrame (I := I) (X.obj k).metric x z) t)
 
-/-- The public normal-coordinate metric is the endpoint Gram form of radial
-Jacobi fields launched through its orthonormal frame. -/
 theorem framed_metric_jacobi
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z v w : E) :
@@ -215,9 +196,6 @@ theorem framed_metric_jacobi
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The explicit radial Rm04 package, together with the existing smooth radial
-extension frame, gives two-sided endpoint bounds directly in framed normal
-coordinates. -/
 theorem framed_rm04_bounds
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -320,7 +298,7 @@ theorem framed_rm04_bounds
   have hRmRaw : ∀ t ∈ Set.Ioo (0 : Real) 1,
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) Y.metric
         (radialCurve (I := I) Y.metric x xRaw t) 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := Y.M) Y.metric
           (radialCurve (I := I) Y.metric x xRaw t))) ≤ R := by
     simpa only [FramedRm04Bound, xRaw] using hRm
@@ -389,10 +367,6 @@ private lemma quarter_models {K s : Real} (hs : 0 ≤ s)
   rw [hscale]
   constructor <;> nlinarith
 
-/-- A uniform zeroth-order curvature bound gives one model-space radius on
-which every framed normal-coordinate metric in the sequence satisfies the
-book's half/two quadratic-form estimate.  The usable radius is still clamped
-by the pointwise Jacobi source radius. -/
 theorem exists_rm04_radii
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -517,8 +491,6 @@ theorem exists_rm04_radii
   rw [Real.sq_sqrt hmetricNonneg] at hlowerSq hupperSq
   constructor <;> nlinarith [sq_nonneg ‖v‖]
 
-/-- Jacobi endpoint comparison in a `g_x`-orthonormal frame gives the genuine
-Euclidean half/two estimate for the framed normal-coordinate metric. -/
 theorem framed_equiv_jacobi
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (U : Set E) :
@@ -584,8 +556,6 @@ private lemma half_two_of_close
   constructor <;> nlinarith [sq_nonneg ‖v‖]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On the framed exponential source, the framed metric is the pullback of the
-raw tangent-model normal-coordinate metric by the fixed orthonormal frame. -/
 theorem framedMetric_eq_pullback_normalCoordMetric
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : E)
@@ -612,7 +582,6 @@ theorem framedMetric_eq_pullback_normalCoordMetric
     framedExp_apply, mfderiv_framedExp (I := I) Y.metric x hz]
   rfl
 
-/-- The framed normal-coordinate metric is continuous at the chart center. -/
 theorem framedMetric_continuousAt_zero
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -672,9 +641,6 @@ private lemma exists_close_ball
   rw [dist_eq_norm] at hnear
   exact hnear.le
 
-/-- Every framed normal chart has a positive ball, contained in its intrinsic
-source-radius ball, on which the public normal-coordinate metric is uniformly
-equivalent to the fixed model inner product. -/
 theorem exists_equiv_ball
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -709,8 +675,6 @@ theorem exists_equiv_ball
       _ = ‖w‖ ^ 2 := real_inner_self_eq_norm_sq w
   exact half_two_of_close (E := E) (f z) (f 0) (hclose z hz₀) hzero_eval v
 
-/-- The pointwise framed equivalence balls can be chosen simultaneously for a
-pointed sequence.  This is pointwise radius data, not a uniform H6 profile. -/
 theorem exists_equiv_radii
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) :
     ∃ radius : (k : Nat) → (X.obj k).M → Real,

@@ -3,25 +3,6 @@ import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
@@ -30,13 +11,6 @@ open Filter Topology
 variable {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-
-
-
-
-
-
-
 
 def IsometryDerivBounds (Φ : ℕ → E → F) : Prop :=
   ∀ r : ℕ, ∀ K : Set E, IsCompact K →
@@ -48,11 +22,6 @@ theorem IsometryDerivBounds.comp_subseq {Φ : ℕ → E → F} (h : IsometryDeri
   intro r K hK
   obtain ⟨M, hM⟩ := h r K hK
   exact ⟨M, fun k x hx => hM (φ k) x hx⟩
-
-
-
-
-
 
 theorem isometry_seq_cInf
     (Φ : ℕ → E → F) (hΦ : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (Φ k))
@@ -81,12 +50,6 @@ theorem comp_eq_id_of_cInf
     hΦunif.tendsto_comp hΦc.continuousWithinAt hΨxK
   simp only [hid] at hcomp
   exact (tendsto_nhds_unique tendsto_const_nhds hcomp).symm
-
-
-
-
-
-
 
 theorem isometry_seq_diffeo
     (Φ : ℕ → E → F) (Ψ : ℕ → F → E)

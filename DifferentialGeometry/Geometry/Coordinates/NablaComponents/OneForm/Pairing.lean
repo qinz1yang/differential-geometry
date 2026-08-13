@@ -1,18 +1,12 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Basic
 
-
-
-
-
-
-
 set_option autoImplicit false
 
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -75,12 +69,6 @@ theorem oneForm_pair_coordFrame_eventually
             α y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j y) := by
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [hupdate]
-
-
-
-
-
-
 
 omit [IsManifold I 2 M] in
 omit [CompleteSpace 𝕜] in

@@ -1,15 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBTransition
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -33,10 +25,6 @@ variable [NormedSpace Real E] [FiniteDimensional Real E]
 variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-
-
-
 
 theorem existsTransRefH6
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -128,11 +116,6 @@ theorem existsTransRefH6
     hleft, hright⟩
   · simpa [PointedRiemannianSeq.subseq] using hconv
   · simpa [PointedRiemannianSeq.subseq] using hconvbar
-
-
-
-
-
 
 theorem existsTransFinite
     {ι : Type*} (s : Finset ι)
@@ -284,13 +267,6 @@ theorem existsTransFinite
         · simpa [Function.comp_apply] using hconv.comp_subseq hphi1
         · simpa [Function.comp_apply] using hconvbar.comp_subseq hphi1
 
-
-
-
-
-
-
-
 theorem existsTransUniv
     {ι : Type*} [Finite ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -435,12 +411,6 @@ theorem existsTransUniv
     dsimp [Jinf, Jbarinf] at hwU ⊢
     exact hright w hw hwU
 
-
-
-
-
-
-
 structure NormalTransAt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)} {ι : Type*}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
@@ -494,10 +464,6 @@ structure NormalTransAt
   right : ∀ w, w ∈ V i →
     normalTransition (I := I) (X.obj k) (x i k) (y i k)
       (normalTransition (I := I) (X.obj k) (y i k) (x i k) w) = w
-
-
-
-
 
 theorem existsTransTail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)} {ι : Type*} [Finite ι]

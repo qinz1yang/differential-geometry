@@ -3,22 +3,10 @@ import DifferentialGeometry.Geometry.Geodesic.ChartRegularity
 import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.PullbackCross
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
-import DifferentialGeometry.Geometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.SigmaCompactOpen
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Local isometries preserve geodesics
-
-A smooth local diffeomorphism whose differential preserves a pair of smooth
-Riemannian metrics sends geodesics to geodesics.  The proof chooses a local
-partial diffeomorphism at the time under consideration, restricts it to open
-subtypes, and reuses the cross-model diffeomorphism naturality theorem.
-
-No separate local-isometry predicate is introduced: the public theorem takes
-the standard `IsLocalDiffeomorph` hypothesis and the fiberwise metric identity
-directly.
--/
 
 noncomputable section
 
@@ -59,8 +47,6 @@ private theorem metric_ext
 
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
-/-- A metric-preserving local diffeomorphism transports the geodesic equation
-at a time where the source curve is smooth. -/
 theorem geoEq_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
@@ -189,8 +175,6 @@ theorem geoEq_map_localIso
     (I := J) (g := g') hmap_eq.eq_of_nhds hmap_eq hgeo_target
 
 omit [NeZero (Module.finrank ℝ F)] in
-/-- A metric-preserving local diffeomorphism sends a continuous geodesic on
-an open time set to a geodesic on the same set. -/
 theorem geoOn_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]

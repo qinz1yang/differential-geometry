@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Connection.Realization.TensorNabla
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Connection.Realization.Connection
 import Mathlib.Geometry.Manifold.VectorBundle.Tensoriality
+open DifferentialGeometry.Geometry.Connection.Realization
 
 
 noncomputable section
@@ -11,6 +12,7 @@ set_option backward.isDefEq.respectTransparency false
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
 
+namespace DifferentialGeometry
 namespace HomConnectionGen
 
 variable
@@ -336,6 +338,7 @@ private theorem homBundleCovariantDerivativeGenFun_isCovOn
     rw [smul_sub]
     abel
 
+omit [SigmaCompactSpace M] in
 noncomputable def homBundleCovariantDerivativeGen
     (cov_U : CovariantDerivative I E_U U)
     (cov_V : CovariantDerivative I F V) :
@@ -512,4 +515,5 @@ theorem homBundleCovariantDerivativeGen_apply
 
 end HomConnectionGen
 
+end DifferentialGeometry
 end

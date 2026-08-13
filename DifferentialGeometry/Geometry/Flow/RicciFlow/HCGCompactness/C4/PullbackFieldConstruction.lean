@@ -6,21 +6,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDeri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MovingShiRestrictOpen
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.OpensRestrict
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -38,14 +26,6 @@ variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
-
-
-
-
-
-
-
-
 
 omit [CompleteSpace E] in
 theorem exists_pullbackField

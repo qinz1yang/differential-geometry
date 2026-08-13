@@ -9,27 +9,31 @@ import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqNormBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradFibreNormPermutationInvariance
 import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleProductGrid
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Sobolev
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open TensorRSNabla
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.TensorRSNabla
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (metricCauchySchwarzBound ccTensorBilinSymm)
 
 section NormedSpaceModel
@@ -73,7 +77,7 @@ theorem inverseMetricSharpFib_g0FlatY_contMDiff
         (inverseMetricSharpFib (I := I) g₁ b (g0FlatCLM (I := I) g₀ b (Y b)))) := by
   have hsharpY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
-        (DifferentialGeometry.Integral.DivergenceTheorem.metricSharp
+        (DifferentialGeometry.Geometry.Operator.metricSharp
           (I := I) g₁ b ((g₀.inner b (Y b)).toLinearMap))) := by
     apply metricSharp_contMDiff_total (I := I) g₁
     intro γ j
@@ -423,8 +427,8 @@ theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
 
 end InnerProductSpaceModel
 
-end Connection
-end Integral
+end Sobolev
+end Analysis
 end DifferentialGeometry
 
 end

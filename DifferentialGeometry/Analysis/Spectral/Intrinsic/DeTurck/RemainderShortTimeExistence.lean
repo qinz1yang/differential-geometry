@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.NonlinearitySpectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -8,7 +10,7 @@ open Bundle MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
@@ -62,7 +64,6 @@ def DuhamelMildSolutionData (g : SmoothRiemannianMetric I M) (a : ℝ) (T : ℝ)
     ((gforce : ℝ → tensorHs (I := I) (M := M) g 0 2 a)
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] gtraj)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem DuhamelMildSolutionData.mono {g : SmoothRiemannianMetric I M} {a : ℝ} {T T' : ℝ}
     {u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2)}
@@ -77,7 +78,6 @@ theorem DuhamelMildSolutionData.mono {g : SmoothRiemannianMetric I M} {a : ℝ} 
     fun s hs => hid s ⟨hs.1, le_trans hs.2 hTT'⟩, hforce, hball, ?_⟩
   exact ae_restrict_of_ae_restrict_of_subset (Set.Icc_subset_Icc le_rfl hTT') htraj
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem DuhamelMildSolutionData.congr_gtraj {g : SmoothRiemannianMetric I M} {a : ℝ} {T : ℝ}
     {u₂ : ℝ → tensorHs (I := I) (M := M) g 0 2 (a + 2)}
@@ -163,6 +163,6 @@ theorem firstOrderRemainderCLM_strong_shortTime_exists
   obtain ⟨u, gforce, hduh, hforce, htrace, hderiv, _hball⟩ := hsol hT hTT₀ hT1
   exact ⟨u, gforce, hduh, hforce, htrace, hderiv⟩
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

@@ -6,11 +6,11 @@ noncomputable section
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
-open Tensor0SBundle
-open Tensor0SPartialEval
+open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Tensor0SPartialEval
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -210,7 +210,7 @@ theorem chartTensor0SSlotCorrection_succ_eq_partialEval_of_mem
     g s α T X b v k m
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

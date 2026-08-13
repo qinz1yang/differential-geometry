@@ -2,13 +2,6 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.ENNReal.Operations
 
-/-!
-# Finite weighted bounds for fine tensor arrays
-
-This is the elementary finite-sum step used to turn coordinatewise Sobolev
-reassembly estimates into one operator bound.
--/
-
 noncomputable section
 
 open scoped ENNReal BigOperators
@@ -18,8 +11,6 @@ namespace Analysis
 namespace Sobolev
 namespace Tensor
 
-/-- A finite family of nonnegative real weights is dominated by its sum in
-an `ENNReal`-weighted finite sum. -/
 theorem weight_sum_bound
     {A : Type*} [Fintype A] (K : A → ℝ) (hK : ∀ a, 0 ≤ K a)
     (v : A → ℝ≥0∞) :
@@ -36,8 +27,6 @@ theorem weight_sum_bound
     _ = ENNReal.ofReal (∑ b, K b) * ∑ a, v a := by
       rw [Finset.mul_sum]
 
-/-- The sum of a nonempty finite family of strictly positive weights is
-strictly positive. -/
 theorem weight_sum_pos
     {A : Type*} [Fintype A] [Nonempty A] (K : A → ℝ)
     (hK : ∀ a, 0 < K a) :

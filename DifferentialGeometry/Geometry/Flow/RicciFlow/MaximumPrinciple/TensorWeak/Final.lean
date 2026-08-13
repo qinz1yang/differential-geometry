@@ -1,14 +1,18 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Certification
+import DifferentialGeometry.Geometry.Operator.Operators
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.PDE.RicciFlow
 
 noncomputable section
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -17,13 +21,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem tensorBarrier_first_null_of_failure
@@ -40,12 +37,6 @@ theorem tensorBarrier_first_null_of_failure
     Nonempty (TensorFirstNullData (I := I) (M := M) G S epsilon delta t0) := by
   exact hcompact.firstNull_of_failure hinit_pos hfail
 
-
-
-
-
-
-
 private theorem firstNullOrder
     {timeDeriv laplacian drift reaction : Real}
     (htime : timeDeriv ≤ 0)
@@ -61,10 +52,6 @@ private theorem firstNullOrder
   have htarget_nonpos : timeDeriv - laplacian ≤ 0 := by
     simpa [sub_eq_add_neg] using add_nonpos htime (neg_nonpos.mpr hlap)
   exact (not_lt_of_ge htarget_nonpos) htarget_pos
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem tensor_first_null_contradiction
@@ -135,9 +122,6 @@ theorem tensor_first_null_contradiction
       htime_nonpos, hlaplacian_nonneg, hdrift_zero, hreaction_nonneg, hstrict_ineq⟩
   exact firstNullOrder htime_nonpos hlaplacian_nonneg hdrift_zero
     hreaction_nonneg hstrict_ineq
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem shortSlab_cert
@@ -216,9 +200,6 @@ theorem tensorBarrier_nonnegative_on_short_slab
       ht0 ht0T hreg hparabolic)
     hnull hinit
 
-
-
-
 omit [IsManifold I 2 M] in
 theorem tensor_wmp_of_barrier_limit
     {G : Real -> SmoothRiemannianMetric I M}
@@ -270,12 +251,6 @@ theorem wmp_of_cert
         (G := G) (S := S) (X := X) (N := N)
         ht0 ht0T hreg (hcert t0 ht0 ht0T) hnull hinit_t0)
 
-
-
-
-
-
-
 theorem wmp_section_sec
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -304,7 +279,7 @@ theorem wmp_section_sec
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (cov t) (∞ : WithTop ℕ∞))
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) := by
@@ -317,11 +292,6 @@ theorem wmp_section_sec
         (nablaS := nablaS) (nabla2S := nabla2S) (cov := cov)
         ht0 ht0T hreg hparabolic hcov1 hcovInf hmc hS)
     hnull hinit
-
-
-
-
-
 
 structure TensorWMPInput
     (G : Real -> SmoothRiemannianMetric I M)
@@ -349,7 +319,7 @@ structure TensorWMPInput
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov t) (∞ : WithTop ℕ∞)
   hmc : ∀ t : Real,
-    DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t)
   spatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S
 
 
@@ -375,11 +345,6 @@ theorem tensor_wmp
     data.hT data.reg data.parabolic data.null data.initial
     data.hcov1 data.hcovInf data.hmc data.spatial
 
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem hamilton_tensor_wmp
     {G : Real -> SmoothRiemannianMetric I M}
@@ -403,11 +368,6 @@ theorem hamilton_tensor_wmp
         (G := G) (S := S) (X := X) (N := N)
         ht0 ht0T hreg _hparabolic)
     _hnull _hinit
-
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem hamilton_tensor_wmp_section
@@ -439,4 +399,4 @@ theorem hamilton_tensor_wmp_section
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.PDE.RicciFlow

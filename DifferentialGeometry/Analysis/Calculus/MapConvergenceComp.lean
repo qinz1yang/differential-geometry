@@ -6,16 +6,6 @@ import Mathlib.Topology.MetricSpace.Thickening
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
@@ -26,9 +16,6 @@ variable {E F G : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
   [NormedAddCommGroup G] [NormedSpace ℝ G]
-
-
-
 
 theorem MapCPConvOn.tendstoUniformlyOn_iteratedFDeriv
     {U K : Set E} {p : ℕ} {Φ : ℕ → E → F} {Φinf : E → F}
@@ -96,8 +83,6 @@ theorem mapCInf_pair_tail
   exact not_lt_of_ge
     (hN N le_rfl (j N) (hj N) (x N) (hx N)) (hbad N)
 
-
-
 theorem exists_three_tail {P : Nat → Nat → Nat → Prop}
     (h : ∀ an bn cn : Nat → Nat,
       Tendsto an atTop atTop → Tendsto bn atTop atTop →
@@ -119,8 +104,6 @@ theorem exists_three_tail {P : Nat → Nat → Nat → Prop}
   obtain ⟨N, hN⟩ := eventually_atTop.mp (h a b c ha_top hb_top hc_top)
   exact hbad N (hN N le_rfl)
 
-
-
 theorem MapCInfConvOnCompacts.eventually_mapsTo
     {U : Set E} {Φ : Nat → E → F} {Φinf : E → F}
     (hconv : MapCInfConvOnCompacts U Φ Φinf)
@@ -141,9 +124,6 @@ theorem MapCInfConvOnCompacts.eventually_mapsTo
   rw [Metric.mem_thickening_iff]
   exact ⟨Φinf x, ⟨x, hx, rfl⟩, by
     simpa only [dist_comm] using hn x hx⟩
-
-
-
 
 theorem MapCInfConvOnCompacts.three_tail
     {U : Set E} {Φ : ℕ → ℕ → ℕ → E → F} {Φinf : E → F}
@@ -174,9 +154,6 @@ theorem MapCInfConvOnCompacts.three_tail
   obtain ⟨N, hN⟩ := hΦ K hK hKU p ε hε
   exact not_lt_of_ge
     (hN N le_rfl (r N) (hr N) (x N) (hx N)) (hbad N)
-
-
-
 
 theorem exists_cInf_finite
     {ι : Type*} [Finite ι]
@@ -360,8 +337,6 @@ theorem MapCInfConvOnCompacts.tendstoUniformlyOn_iteratedFDeriv_comp_moving
         exact add_lt_add (hNB k hkB x hx) (hNA k hkA (B k x) hBxK')
     _ = ε := by ring
 
-
-
 theorem MapCPConvOn.comp_cInf
     {U K : Set E} {V : Set F} {p : ℕ} (hU : IsOpen U) (hV : IsOpen V)
     [ProperSpace F]
@@ -513,8 +488,6 @@ theorem MapCPConvOn.comp_cInf
   exact htail.mono fun k hk x hx => by
     simpa [dist_eq_norm, norm_sub_rev] using hk x hx
 
-
-
 theorem MapCInfConvOnCompacts.comp
     {U : Set E} {V : Set F} (hU : IsOpen U) (hV : IsOpen V)
     [ProperSpace F]
@@ -538,15 +511,11 @@ variable {E' P Q : Type*}
   [NormedAddCommGroup P] [NormedSpace ℝ P]
   [NormedAddCommGroup Q] [NormedSpace ℝ Q]
 
-
-
 theorem mapCInfConv_const {U : Set E'} (Φ : E' → P) :
     MapCInfConvOnCompacts U (fun _ : ℕ => Φ) Φ := by
   intro K _ _ p ε hε
   exact ⟨0, fun k _ r _ x _ => by
     simpa [mapDerivNorm, sub_self] using hε.le⟩
-
-
 
 theorem MapCInfConvOnCompacts.precomp
     {D : Set E'} {U : Set P} (hD : IsOpen D) (hU : IsOpen U)
@@ -561,8 +530,6 @@ theorem MapCInfConvOnCompacts.precomp
       (fun n x => A n (f x)) (fun x => Ainf (f x)) :=
   MapCInfConvOnCompacts.comp hD hU (mapCInfConv_const f) hA
     (fun _ => hf) hf hAc hAinfC hmap (fun _ => hmap)
-
-
 
 theorem MapCPConvOn.prodMk {U K : Set E'} {p : ℕ} (hU : IsOpen U) (hKU : K ⊆ U)
     {u : ℕ → E' → P} {uinf : E' → P} {v : ℕ → E' → Q} {vinf : E' → Q}
@@ -594,8 +561,6 @@ theorem MapCPConvOn.prodMk {U K : Set E'} {p : ℕ} (hU : IsOpen U) (hKU : K ⊆
   exact max_le (hk1 k (le_trans (le_max_left k1 k2) hk) r hr x hx)
     (hk2 k (le_trans (le_max_right k1 k2) hk) r hr x hx)
 
-
-
 theorem mapCInfConv_prodMk {U : Set E'} (hU : IsOpen U)
     {u : ℕ → E' → P} {uinf : E' → P} {v : ℕ → E' → Q} {vinf : E' → Q}
     (hu : MapCInfConvOnCompacts U u uinf) (hv : MapCInfConvOnCompacts U v vinf)
@@ -607,9 +572,6 @@ theorem mapCInfConv_prodMk {U : Set E'} (hU : IsOpen U)
   intro K hK hKU p
   exact MapCPConvOn.prodMk hU hKU (hu K hK hKU p) (hv K hK hKU p)
     huc huinfc hvc hvinfc
-
-
-
 
 theorem mapCInfConv_pi {ι : Type*} [Fintype ι] {U : Set E'} (hU : IsOpen U)
     {v : ι → ℕ → E' → Q} {vinf : ι → E' → Q}
@@ -633,10 +595,6 @@ theorem mapCInfConv_pi {ι : Type*} [Fintype ι] {U : Set E'} (hU : IsOpen U)
   rw [hkey, pi_norm_le_iff_of_nonneg hε.le]
   intro i
   exact hk0 i k (le_trans (Finset.le_sup (Finset.mem_univ i)) hk) r hr x hx
-
-
-
-
 
 theorem mapCInfConv_clm {F' G' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F']
     [NormedAddCommGroup G'] [NormedSpace ℝ G']
@@ -666,8 +624,6 @@ theorem mapCInfConv_clm {F' G' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ
     _ ≤ (‖L‖ + 1) * (ε / (‖L‖ + 1)) := by
         refine mul_le_mul (by linarith [norm_nonneg L]) hbase (norm_nonneg _) hL1.le
     _ = ε := mul_div_cancel₀ ε (ne_of_gt hL1)
-
-
 
 theorem MapCInfConvOnCompacts.pullbackForm
     {V W : Type*}
@@ -700,8 +656,6 @@ theorem MapCInfConvOnCompacts.pullbackForm
   · exact fun _ _ _ => Set.mem_univ _
 
 end BasicClosures
-
-
 
 theorem MapCInfConvOnCompacts.ringInv
     {E R : Type*}

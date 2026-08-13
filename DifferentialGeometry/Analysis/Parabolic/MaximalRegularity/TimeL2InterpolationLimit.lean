@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLimit
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -37,7 +38,6 @@ def timeL2Inclusion {τ σ : ℝ} {T : ℝ} (hτσ : τ ≤ σ) :
   (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s) hτσ).compLpL 2
     (timeMeasure T)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_timeL2Inclusion {τ σ : ℝ} {T : ℝ} (hτσ : τ ≤ σ)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s σ) T)
@@ -61,7 +61,6 @@ theorem timeModeCoeff_timeL2Inclusion {τ σ : ℝ} {T : ℝ} (hτσ : τ ≤ σ
   filter_upwards [hincl] with t ht
   rw [ht, tensorHsInclusion_coeff_apply]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma weight_mul_norm_timeModeCoeff_sq_le_normSq {a : ℝ} {T : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -78,9 +77,9 @@ private lemma weight_mul_norm_timeModeCoeff_sq_le_normSq {a : ℝ} {T : ℝ}
     tensorSobolevWeight_nonneg (I := I) (M := M) j a
   positivity
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma norm_timeModeCoeff_tendsto_zero_of_norm_tendsto_zero {a : ℝ} {T : ℝ}
+private lemma norm_timeModeCoeff_tendsto_zero_of_norm_tendsto_zero
+    [NeZero (Module.finrank ℝ E)] {a : ℝ} {T : ℝ}
     (d : ℕ → timeL2 (tensorHs (I := I) (M := M) g r s a) T)
     (hd : Tendsto (fun n => ‖d n‖) atTop (𝓝 0))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -96,8 +95,9 @@ private lemma norm_timeModeCoeff_tendsto_zero_of_norm_tendsto_zero {a : ℝ} {T 
     simpa using this
   exact squeeze_zero (fun n => norm_nonneg _) hbd hupper
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem timeL2_norm_tendsto_zero_of_low_tendsto_of_uniform
-    {σ σ' σ'' : ℝ} {T : ℝ}
+    [NeZero (Module.finrank ℝ E)] {σ σ' σ'' : ℝ} {T : ℝ}
     (hσσ' : σ ≤ σ') (hσ'σ'' : σ' < σ'')
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -324,7 +324,6 @@ theorem timeL2_norm_tendsto_zero_of_low_tendsto_of_uniform
       hσ'σ''.le (d n)‖ ^ 2 := sq_nonneg _
   rwa [abs_of_nonneg hnn]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma norm_le_sqrt_of_weightedMass_le {σ'' : ℝ} {T : ℝ}
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -339,8 +338,9 @@ private lemma norm_le_sqrt_of_weightedMass_le {σ'' : ℝ} {T : ℝ}
   have h := Real.sqrt_le_sqrt hsq
   rwa [Real.sqrt_sq (norm_nonneg f)] at h
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem timeL2_tendsto_of_tendsto_of_uniform_weightedMass
-    {σ σ' σ'' : ℝ} {T : ℝ}
+    [NeZero (Module.finrank ℝ E)] {σ σ' σ'' : ℝ} {T : ℝ}
     (hσσ' : σ ≤ σ') (hσ'σ'' : σ' < σ'')
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))

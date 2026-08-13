@@ -3,6 +3,11 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartFiberTriv
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqTensorInnerBridge
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorCurvatureUnitEvalBridge
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -13,11 +18,11 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E]
   [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -125,7 +130,8 @@ private lemma orthonormal_rfns_exists_basis
     rw [hrfns0] at hpd
     have hTm0 : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
         (r := 0) (s := t) (x := x) T = 0 :=
-      (L2.tensorInnerPointwise_eq_zero_iff (I := I) (M := M) g 0 t x _).mp hpd.symm
+      (DifferentialGeometry.Integral.L2.tensorInnerPointwise_eq_zero_iff (I := I)
+        (M := M) g 0 t x _).mp hpd.symm
     have hT0model : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
         (r := 0) (s := t) (x := x) T =
       TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
@@ -157,6 +163,7 @@ private lemma orthonormal_rfns_exists_basis
   intro i
   rw [coe_basisOfLinearIndependentOfCardEqFinrank]
 
+omit [SigmaCompactSpace M] in
 theorem exists_uniform_riemannOp_tensorCovS_dualFrameEnergy_single_term_bound
     (g : SmoothRiemannianMetric I M) (t : ℕ) :
     ∃ K : ℝ, 0 ≤ K ∧
@@ -169,6 +176,7 @@ theorem exists_uniform_riemannOp_tensorCovS_dualFrameEnergy_single_term_bound
   exists_uniform_riemannOp_tensorCovS_dualFrameEnergy_single_term_bound_of_leviCivitaGNormBound
     (I := I) (M := M) g t
 
+omit [SigmaCompactSpace M] in
 theorem exists_uniform_riemannOp_tensorCovS_dualFrameEnergy_const
     (g : SmoothRiemannianMetric I M) (t : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -226,6 +234,7 @@ theorem exists_uniform_riemannOp_tensorCovS_dualFrameEnergy_const
   refine mul_le_mul_of_nonneg_right ?_ hK_nonneg
   exact pow_le_pow_left₀ (Nat.cast_nonneg n) (by exact_mod_cast hn_le_d) (t + 2)
 
+omit [SigmaCompactSpace M] in
 theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
     (g : SmoothRiemannianMetric I M) (t : ℕ) :
     ∃ Ccurv : M → ℝ, Continuous Ccurv ∧ (∀ x : M, 0 ≤ Ccurv x) ∧
@@ -282,7 +291,8 @@ theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
       rw [hrfns0] at hpd
       have hSm0 : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
           (r := 0) (s := 0) (x := x) S = 0 :=
-        (L2.tensorInnerPointwise_eq_zero_iff (I := I) (M := M) g 0 0 x _).mp hpd.symm
+        (DifferentialGeometry.Integral.L2.tensorInnerPointwise_eq_zero_iff (I := I)
+          (M := M) g 0 0 x _).mp hpd.symm
       have : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
           (r := 0) (s := 0) (x := x) S =
         TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
@@ -346,8 +356,8 @@ theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
       _ ≤ C * riemannianFiberNormSq (I := I) (M := M) g 0 t x T :=
             mul_le_mul_of_nonneg_right hCx_le_C hrfns_nonneg
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

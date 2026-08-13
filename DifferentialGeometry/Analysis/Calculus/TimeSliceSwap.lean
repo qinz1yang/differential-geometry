@@ -2,15 +2,6 @@ import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
-/-!
-# Commuting time evolution with spatial Fréchet derivatives
-
-This file proves a local mixed-derivative theorem for a family `G : ℝ → E → F`.
-It assumes smooth spatial slices, a pointwise time evolution equation `∂ₜ G = R`, and
-joint continuity of the finitely many spatial derivatives of `R` that are needed.  No joint
-differentiability of `G` is assumed.
--/
-
 noncomputable section
 
 open Filter MeasureTheory Set
@@ -24,8 +15,6 @@ variable {E F : Type*}
     [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-/-- Continuity of a joint spatial-jet family restricts to continuity along a fixed
-spatial point and a compact time interval. -/
 private theorem jet_time_cont
     {R : ℝ → E → F} {J : Set ℝ} {V : Set E} {m : ℕ}
     (hjet : ContinuousOn
@@ -36,8 +25,6 @@ private theorem jet_time_cont
     (fun t ht => ⟨hab ht, hx⟩)
 
 omit [NormedSpace ℝ E] in
-/-- A jointly continuous family is uniformly bounded on a compact time interval and
-one common spatial neighborhood.  Compactness is used only in the time variable. -/
 private theorem tube_bound
     {W : Type*} [NormedAddCommGroup W]
     {Φ : ℝ × E → W} {J : Set ℝ} {V : Set E}
@@ -65,8 +52,6 @@ private theorem tube_bound
   filter_upwards [hall, hV.mem_nhds hx] with y hyall hyV
   exact ⟨hyV, hyall⟩
 
-/-- Spatial iterated Fréchet derivatives commute with a parameter interval integral
-when all required spatial jets are jointly continuous. -/
 private theorem iterF_integral
     {R : ℝ → E → F} {J : Set ℝ} {V : Set E}
     (hJ : IsOpen J) (hV : IsOpen V)
@@ -190,9 +175,6 @@ private theorem iterF_integral
           intro t _
           rfl
 
-/-- If `G` satisfies the pointwise time equation `∂ₜ G = R`, then every spatial
-iterated Fréchet derivative satisfies the differentiated time equation, provided the
-required spatial jets of `R` are jointly continuous. -/
 theorem hasDerivAt_iterF
     {G R : ℝ → E → F}
     {J : Set ℝ} {V : Set E}

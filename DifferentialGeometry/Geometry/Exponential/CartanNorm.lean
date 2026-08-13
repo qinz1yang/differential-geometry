@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Comparison.Variation.CartanTransfer
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
@@ -5,16 +6,9 @@ import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
 import DifferentialGeometry.Geometry.Exponential.JacobiVariation
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Constant-curvature exponential differential norm transfer
-
-The scalar Cartan transfer theorem is applied to the intrinsic Jacobi
-variations of two curvature-one manifolds.  A metric-preserving linear
-equivalence at the launch points seeds matching parallel orthonormal frames.
--/
 
 noncomputable section
 
@@ -61,13 +55,9 @@ variable
 
 omit [T2Space (TangentBundle I M)]
     [T2Space (TangentBundle I' M')] [ConnectedSpace M] [ConnectedSpace M'] in
-/-- A linear isometry between the launch tangent metrics transfers the squared
-norm of the intrinsic exponential differential between curvature-one
-manifolds. -/
 theorem expDiff_sq_xfer
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (v : TangentSpace I x),
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (v : TangentSpace I' x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x v v)))
@@ -75,13 +65,13 @@ theorem expDiff_sq_xfer
     (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
-      (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) x)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
         X Y Z =
           g.inner x Y Z • X - g.inner x X Z • Y)
     (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
-      (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I') g') x)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
         X Y Z =
           g'.inner x Y Z • X - g'.inner x X Z • Y) :
     g'.inner
@@ -173,7 +163,7 @@ theorem expDiff_sq_xfer
       intrinsicGeodesic_zero (I := I') g' hEnorm' p'
         (show TangentSpace I' p' from i u)
   obtain ⟨basis, hbasis⟩ :=
-    DifferentialGeometry.Integral.Connection.exists_gOrthonormalBasis
+    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
       (I := I) g p
   have hseed : ∀ a b,
       g.inner (γ 0) (basis a) (basis b) =
@@ -276,8 +266,8 @@ theorem expDiff_sq_xfer
       g.inner p (basis b) u * g.inner p (basis a) u
   have hcoef : ∀ t ∈ Icc (0 : ℝ) 1, ∀ a b,
       g.inner (γ t) (frame a t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (γ t))
             (frame b t) (V t) (V t))
         = a0 a b := by
@@ -287,8 +277,8 @@ theorem expDiff_sq_xfer
     rw [hspeed t, hframeON t ht a b, hvelCoord t ht b, hvelCoord t ht a]
   have hcoef' : ∀ t ∈ Icc (0 : ℝ) 1, ∀ a b,
       g'.inner (γ' t) (frame' a t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I') g')
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g')
               (γ' t))
             (frame' b t) (V' t) (V' t))
         = a0 a b := by
@@ -301,8 +291,8 @@ theorem expDiff_sq_xfer
     Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _
   have hCbound : ∀ t ∈ Icc (0 : ℝ) 1, ∀ a b,
       |g.inner (γ t) (frame a t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (frame b t) (V t) (V t))| ≤ C := by
     intro t ht a b

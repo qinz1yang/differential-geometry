@@ -1,20 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivLinear
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.CoordFrameStep
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -22,9 +11,9 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Tensor.Coordinates
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -33,9 +22,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
-
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -48,13 +34,6 @@ theorem metricCovDeriv_succ_apply_section
         (a + 2) (leviCivitaConnectionOfMetric (I := I) gRef) X
         (metricCovDeriv (I := I) h gRef a) x slots := by
   rw [metricCovDeriv_succ, metricCovDerivStep_apply, totalNabla0SFun_apply_section]
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -77,13 +56,6 @@ theorem metricCovDeriv_succ_eval_smooth_slots
   rw [metricCovDeriv_succ_apply_section]
   exact nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (leviCivitaConnectionOfMetric (I := I) gRef) X V (metricCovDeriv (I := I) h gRef a) x
-
-
-
-
-
-
-
 
 omit [IsManifold I 1 M] in
 omit [I.Boundaryless] in

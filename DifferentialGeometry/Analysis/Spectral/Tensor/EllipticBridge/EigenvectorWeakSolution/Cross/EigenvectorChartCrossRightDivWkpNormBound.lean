@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSMemWkp
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -15,7 +16,7 @@ namespace Analysis
 namespace Parabolic
 namespace TensorSpectral
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Chart
@@ -210,7 +211,6 @@ end OffKernelCoefBoundUniform
 
 section MainBoundUnconditional
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
 omit [CompleteSpace E] in
 theorem wkpNorm_crossRightGradCoeffDivLimit_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -522,7 +522,6 @@ end MainBoundUnconditional
 
 section MainBoundUniformUnconditional
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
 omit [CompleteSpace E] in
 theorem wkpNorm_crossRightGradCoeffDivLimit_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

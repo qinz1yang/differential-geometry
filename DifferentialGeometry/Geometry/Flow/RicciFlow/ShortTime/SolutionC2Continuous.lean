@@ -10,26 +10,23 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.PDE.RicciFlow.Pullback
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
@@ -42,7 +39,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 theorem deturck_solution_c2_continuous_icc0
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
@@ -64,7 +61,7 @@ theorem deturck_solution_c2_continuous_icc0
       ∀ i j : Fin (Module.finrank ℝ E), ∀ k : ℕ, k ≤ 2 →
         ContinuousOn
           (fun s : ℝ => iteratedFDeriv ℝ k
-            (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT s) α i j)
+            (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT s) α i j)
             (extChartAt I α y))
           (Set.Icc 0 T)) :
     (∀ (x : M) (v w : TangentSpace I x),

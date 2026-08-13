@@ -93,7 +93,7 @@ lemma chartPushed_sub
 
 theorem MemWkpChart_finset_sum
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {ι : Type*} (S : Finset ι) (f : ι → M → ℝ)
     (hf : ∀ i ∈ S, MemWkpChart (I := I) (M := M) g k p (f i)) :
@@ -118,7 +118,7 @@ theorem MemWkpChart_finset_sum
 
 theorem wkpNormChart_finset_sum_le
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {ι : Type*} (S : Finset ι) (f : ι → M → ℝ)
     (hf : ∀ i ∈ S, MemWkpChart (I := I) (M := M) g k p (f i)) :
@@ -161,7 +161,7 @@ theorem chartPushed_eq_zero_off_compact
 
 theorem wkpNormChart_eq_finset_sum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (u : M → ℝ) :
     wkpNormChart (I := I) (M := M) g k p u =
       ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset

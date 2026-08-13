@@ -1,20 +1,20 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.VariationalEquation.FlatPairing
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatToCovariant
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.Transport
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Analysis
 namespace ODE
 
 open Bundle Set
 open scoped Manifold Topology ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.DeTurck
 open DifferentialGeometry.PDE.RicciFlow.Pullback
 
@@ -201,6 +201,5 @@ theorem variational_flow_flat_paired_residual_hasDerivAt
 end MainPairing
 
 end ODE
-end RicciFlow
-end PDE
+end Analysis
 end DifferentialGeometry

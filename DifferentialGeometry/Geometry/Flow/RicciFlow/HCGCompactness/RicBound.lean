@@ -6,46 +6,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicBoundClaim
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicBoundGoodFrame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivArityBridge
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# `ric_bound` — the `(A_N)` endpoint of MSM135 Lemma 3.11 (eq. 3.4 input); PROVED
-
-THE target theorem of the ric_bound track, stated intrinsically: on a compact
-set `K` (with the hypotheses on an open `U ⊇ K`, the book's nested-set shape)
-and a time window, for a sequence of metrics `gSeq i t` that is uniformly
-equivalent to the fixed reference `gRef` (eq. 3.3, with a window-uniform
-majorant `Bmax`), has uniformly bounded lower-order `gRef`-derivatives
-(`(B_r)`, `r < N`), and satisfies the Shi-type bounds on the moving-metric
-covariant derivatives of its Ricci tensor up to order `N`, the `N`-th
-`gRef`-covariant derivative of the Ricci tensor is bounded by the `N`-th
-`gRef`-covariant derivative of the metric, uniformly in `(i, t)`:
-
-`|∇_gRef^N Ric(g)|_gRef ≤ Cpp · |∇_gRef^N g|_gRef + Cppp`  on `K × [β, ψ]`.
-
-This is the `ric_bound` field of `MetricCovOrderEvolutionInput`
-(`AllTimesBounds.lean`), whose Grönwall assembly
-(`metricCovOrderWindow_of_evolution`) converts it into the `(B_N)` window
-bound — the stage-`N` step of MSM135 Lemma 3.11, Step 4.
-
-## Proof architecture (all sorry-free)
-
-* `perDomain` — the constants-first per-domain engine: on a good-frame domain
-  `w` (`exists_goodFrame_compBound`, `RicBoundGoodFrame.lean`), constants
-  `Cpp, Cppp` depending only on the frame data and numeric bounds work for
-  EVERY metric `g` satisfying the bounds.  Inside: the uniform (constants-first)
-  `claim1_LC` → `aN_component` chain (`RicBoundClaims.lean`/`AkMFold.lean`),
-  fed by `compL2_tower_le` (intrinsic `(B_r)` → component `hgB`), `movingGinv_le`
-  (eq. 3.3 → the `g`-inverse bound), `normSq0S_le_of_metric_equiv` (the moving
-  Shi conversion), and the `lcChrist`/`gCompField`/`ricCompField` smoothness
-  producers (with `chrInFrame_mono` for the frame-domain restriction).
-* `ric_bound` — choose good frames per point, take a finite subcover of `K`,
-  obtain the per-centre `perDomain` constants, and convert at each `x ∈ K`:
-  LHS via `sqrt_tower_le_compL2` (reverse good-frame bound), RHS via
-  `compL2_tower_le` + the `metricCovDerivNorm` arity bridge (`mcdNorm_eq_at`);
-  the assembled constants are nonnegative sums over the finite cover.
--/
 
 noncomputable section
 
@@ -55,9 +20,9 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.RicciFlow
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -70,13 +35,10 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
 
-open DifferentialGeometry.PDE.RicciFlow in
 omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-/-- Pointwise nonnegativity of the squared tensor norm (via a pointwise
-orthonormal basis). -/
 private theorem normSq0S_nonneg'
     [Module.Finite ℝ E]
     (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
@@ -97,9 +59,6 @@ omit [Module.Finite ℝ E] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     [IsManifold I 1 M] [I.Boundaryless] [IsManifold I 2 M]
     [SigmaCompactSpace M] in
-/-- `metricCovDerivNorm` equals the intrinsic norm of the `iterCov` tower at
-every point (the R4f arity bridge, with the pointwise orthonormal basis chosen
-internally). -/
 private theorem mcdNorm_eq_at
     [Module.Finite ℝ E]
     (h gRef : SmoothRiemannianMetric I M) (N : Nat) (x : M) :
@@ -117,34 +76,17 @@ private theorem mcdNorm_eq_at
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h' i j
   exact metricCovDerivNorm_eq_iterCov (I := I) h gRef N basis hinv
 
-/-- The `s`-fold `gRef`-covariant derivative tower of the Ricci tensor of `g`:
-`∇_gRef^s Ric(g)` as a smooth `(0, 2+s)`-tensor field.  The base is the
-realized Ricci section of the Levi-Civita connection of `g`; the steps are the
-background Levi-Civita derivative of `gRef` (`iterCov`). -/
 noncomputable def ricCovTower
     (g gRef : SmoothRiemannianMetric I M) (s : Nat) :
     Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (2 + s) :=
   iterCov (I := I) gRef 2
-    (DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection
+    (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
       (I := I) (M := M)
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
         (I := I) (M := M) g)) s
 
-/-- **The moving-metric Shi bound** (MSM135 Lemma 3.11 hypothesis (3.5)): on the
-window `[β,ψ] × U`, the order-`≤ N` covariant-derivative towers of the Ricci
-tensor of each `gSeq i t`, measured in the *moving* metric `gSeq i t`, are
-uniformly bounded by `KShi`.
-
-This is the single honest analytic FRONTIER of the eq.(3.4) track: it is the
-Bernstein–Bando–Shi estimate, consumed as a hypothesis here and realized
-elsewhere by the BBS / iterated-`Rm`-tower producer (StarSum track).  It is
-named (rather than left as a raw `∀`-formula) so it is the one greppable target
-the BBS realization must discharge, and so every downstream consumer
-(`ric_bound_field`, `covOrderBound_of_soln`, the window-Lipschitz producers)
-shares one canonical interface.  Definitionally the underlying `∀`-bound, so
-callers supplying the raw formula and consumers applying it both work. -/
 def MovingShiBoundOn
     (U : Set M) (β ψ : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
@@ -180,13 +122,10 @@ private noncomputable def ricCompC
 private noncomputable def ricFrameC (d : Nat) : Real :=
   (3 / 2) * ((d : Real) + 1)
 
-/-- Explicit affine coefficients for the fixed-reference Ricci-tower estimate.
-They depend only on dimension, derivative order, and the numeric input bounds. -/
 structure RicTowerCoeffs where
   slope : Real
   offset : Real
 
-/-- The numeric slope and offset in the order-`N` Ricci-tower estimate. -/
 noncomputable def ricTowerCoeffs
     (d N : Nat) (Bmax : Real) (Cg : Nat → Real) (KShi : Real) :
     RicTowerCoeffs :=
@@ -232,8 +171,6 @@ private theorem ricCompC_snd_nonneg
     (ricCL_nonneg d N Bmax Cg (N - 1))
     (ricShiC_nonneg hBmax1 hKShi0)
 
-/-- Both explicit Ricci-tower coefficients are nonnegative under the natural
-numeric bounds. -/
 theorem ricCoeffs_nonneg
     (d N : Nat) (Bmax : Real) (Cg : Nat → Real) (KShi : Real)
     (hBmax1 : 1 ≤ Bmax) (hKShi0 : 0 ≤ KShi) :
@@ -252,9 +189,6 @@ theorem ricCoeffs_nonneg
 
 set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- **The fixed-witness per-domain `(A_N)` engine.** On a good-frame domain,
-the explicit component coefficients work for every metric satisfying the
-numeric equivalence, lower-order, and moving-Shi bounds. -/
 private theorem perDomain_bound
     [Module.Finite ℝ E]
     (gRef : SmoothRiemannianMetric I M)
@@ -319,7 +253,6 @@ private theorem perDomain_bound
   have hKg0 : 0 ≤ ricKg N Cg := ricKg_nonneg N Cg
   have hKShiC0 : 0 ≤ ricShiC N Bmax KShi :=
     ricShiC_nonneg hBmax1 hKShi0
-  -- The Claim-1 witnesses are numeric before the frame and metric arguments.
   have hCLb := fun c : ℕ => claim1_LC_bound (I := I) hwopen gRef
     (fun a y' => e₀.localFrame basisE a y')
     ((e₀.isLocalFrameOn_localFrame_baseSet I 1 basisE).mono hwsub)
@@ -347,7 +280,6 @@ private theorem perDomain_bound
     (ricCL (Module.finrank Real E) N Bmax Cg (N - 1))
     (ricShiC N Bmax KShi) hKShiC0
   intro g hequivW hmcd hShiPt x hx
-  -- per-`g` smoothness producers (restricted, with the frame-domain congr)
   have hchrGw : ∀ d i j : Fin (Module.finrank Real E), ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => christoffelSymbolInFrame
         (leviCivitaConnectionOfMetric (I := I) g)
@@ -359,7 +291,6 @@ private theorem perDomain_bound
         (e₀.isLocalFrameOn_localFrame_baseSet I 1 basisE) hwsub hz d i j)
   have hgsmW := fun k => (gCompField_mdiffOn e₀ g basisE k).mono hwsub
   have hRicSmW := fun k => (ricCompField_mdiffOn e₀ g basisE k).mono hwsub
-  -- the moving inverse-Gram data
   have hGinvW : ∀ z ∈ w, compL2 (ginvCompField (I := I) e₀ g basisE z) ≤
       ricInvC (Module.finrank Real E) Bmax := by
     intro z hz
@@ -373,7 +304,6 @@ private theorem perDomain_bound
         ginvCompField (I := I) e₀ g basisE z (Fin.snoc (fun _ : Fin 1 => e) l)) =
       if c = e then 1 else 0 :=
     fun z hz c e => ginv_hinv (I := I) e₀ g basisE (hwsub hz) c e
-  -- the metric-tower bounds from the intrinsic `(B_r)` inputs
   have hgB : ∀ z ∈ w, ∀ j : ℕ, 1 ≤ j → j ≤ N - 1 →
       compL2 (iterCovComp (I := I)
         (fun a y' => e₀.localFrame basisE a y')
@@ -412,7 +342,6 @@ private theorem perDomain_bound
       _ ≤ 2 ^ (2 + j) * max (Cg j) 0 :=
           mul_le_mul_of_nonneg_left (le_trans hcg (le_max_left _ _)) h2p
       _ ≤ ricKg N Cg := hKgterm
-  -- the lower-order difference bounds and the top bound from uniform Claim 1
   have hDlow : ∀ c : ℕ, c < N - 1 → ∀ z ∈ w,
       compL2 (iterCovCompU (I := I)
         (fun a y' => e₀.localFrame basisE a y')
@@ -475,7 +404,6 @@ private theorem perDomain_bound
       hinvW hGinvW (fun z' hz' j h1 h2 => hgB z' hz' j h1 h2) z hz
     rw [show N - 1 + 1 = N from by omega] at h
     simpa only [ricCL] using h
-  -- the moving Shi component bounds
   have hShiComp : ∀ z ∈ w, ∀ s : ℕ, s ≤ N →
       compL2 (iterCovComp (I := I)
         (fun a y' => e₀.localFrame basisE a y')
@@ -599,7 +527,6 @@ private theorem perDomain_bound
             _ ≤ 2 ^ (2 + N) * (Bmax ^ (2 + N) * KShi) :=
                 mul_le_mul_of_nonneg_left hb (by positivity)
       _ = ricShiC N Bmax KShi := by rw [ricShiC]; ring
-  -- discharge the engine
   exact haN
     (fun y' => christoffelSymbolInFrame
       (leviCivitaConnectionOfMetric (I := I) g)
@@ -618,8 +545,6 @@ private theorem perDomain_bound
     hDtop hShiComp x hx
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- Pointwise order-`N` Ricci-tower estimate on an open set. Each point may use
-its own good frame because the affine coefficients are fixed numeric data. -/
 theorem ric_tower_on
     [Module.Finite ℝ E]
     {U : Set M} (hU : IsOpen U)
@@ -792,10 +717,6 @@ theorem ric_tower_on
       ring
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- Constants-first form of the raw Ricci-tower estimate on a compact set.
-
-The constants depend on the spatial data, order, equivalence majorant, lower-order
-constants, and Shi constant, but are chosen before the time window and metric sequence. -/
 private theorem ric_tower_const
     [Module.Finite ℝ E]
     {K U : Set M}
@@ -821,14 +742,11 @@ private theorem ric_tower_const
                 (ricCovTower (I := I) (gSeq i t) gRef N x)) <=
               Cpp * metricCovDerivNorm (I := I) N (gSeq i t) gRef x + Cppp := by
   classical
-  -- the per-point good frames
   choose basisE u' eps hopen hxu hsubB heps0 hepsSm hGnear hON hFwd hRev using
     fun x : M => exists_goodFrame_compBound (I := I) gRef x
-  -- finite subcover of `K` by good-frame domains inside `U`
   obtain ⟨tF, htF⟩ := hKc.elim_finite_subcover (fun x : M => u' x ∩ U)
     (fun x => (hopen x).inter hU)
     (fun z hz => Set.mem_iUnion.mpr ⟨z, ⟨hxu z, hKU hz⟩⟩)
-  -- per-centre constants from the per-domain engine
   let Cpp' : M → Real :=
     fun _ => (ricCompC (Module.finrank Real E) N Bmax Cg KShi).1
   let Cppp' : M → Real :=
@@ -845,7 +763,6 @@ private theorem ric_tower_const
     (fun z hz i j => hGnear x₀ z hz.1 i j)
     (fun z hz hzw s A => hFwd x₀ z hz hzw.1 s A)
     N hN Bmax hBmax1 Cg KShi hKShi0
-  -- the assembled constants
   set Cu : Real :=
     (3 / 2) * ((Fintype.card (Fin (Module.finrank Real E)) : Real) + 1) with hCudef
   have hCu1 : (1 : Real) ≤ Cu := by
@@ -862,11 +779,9 @@ private theorem ric_tower_const
     mul_nonneg hCuP0 (hppp0 x₀)
   refine ⟨CppF, CpppF, hCppF0, hCpppF0, ?_⟩
   intro β ψ gSeq B hequiv hBmax hBprev hShi i t ht x hxK
-  -- pick a covering centre
   have hxcov := htF hxK
   rw [Set.mem_iUnion₂] at hxcov
   obtain ⟨x₀, hx₀F, hxw⟩ := hxcov
-  -- the pointwise metric-equivalence package on the domain
   have hequivIt := hequiv i t ht
   have hBt1 : (1 : Real) ≤ B t := hequivIt.1
   have hBtBm : B t ≤ Bmax := hBmax t ht
@@ -904,7 +819,6 @@ private theorem ric_tower_const
           _ ≤ B t * (gSeq i t).inner z v v :=
               mul_le_mul_of_nonneg_left h2.1 hBt0.le
       nlinarith [hg0, hBtBm, hstep]
-  -- the (B_r) and moving-Shi inputs on the domain
   have hmcdW : ∀ z ∈ (u' x₀ ∩ U), ∀ j : ℕ, 1 ≤ j → j < N →
       metricCovDerivNorm (I := I) j (gSeq i t) gRef z ≤ Cg j :=
     fun z hz j h1 hj => hBprev j h1 hj i t ht z hz.2
@@ -916,14 +830,11 @@ private theorem ric_tower_const
             (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
               (I := I) (M := M) (gSeq i t))) s z)) ≤ KShi :=
     fun z hz s hs => hShi s hs i t ht z hz.2
-  -- the per-domain component `(A_N)` at `x`
   have hAN := hPDb x₀ (gSeq i t) hpack hmcdW hShiW x hxw
-  -- final conversions at `x`
   have hxbase : x ∈ (trivializationAt E (TangentSpace I : M → Type _) x₀).baseSet :=
     ((Set.inter_subset_left).trans (hsubB x₀)) hxw
   have hwsub₀ : (u' x₀ ∩ U) ⊆ (trivializationAt E (TangentSpace I : M → Type _) x₀).baseSet :=
     (Set.inter_subset_left).trans (hsubB x₀)
-  -- LHS: the intrinsic Ricci-tower norm is bounded by `Cu^{2+N}` times its components
   have hLHS := sqrt_tower_le_compL2 (I := I) gRef
     (CovariantDerivative.ricciSection (I := I) (M := M)
       (leviCivitaConnectionOfMetric (I := I) (gSeq i t))
@@ -934,7 +845,6 @@ private theorem ric_tower_const
         I 1 (basisE x₀)).mono hwsub₀)
     ((hopen x₀).inter hU) hxw Cu hCu1
     (fun s A => hRev x₀ x hxbase hxw.1 s A) N
-  -- RHS: the metric-tower components are bounded by the textbook norm
   have hRHS := compL2_tower_le (I := I) gRef gRef
     (Tensor0SBundle.metricTensorField (I := I) (gSeq i t))
     (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')
@@ -946,7 +856,6 @@ private theorem ric_tower_const
   have hmcd0 : 0 ≤ metricCovDerivNorm (I := I) N (gSeq i t) gRef x := by
     rw [hmc]
     exact Real.sqrt_nonneg _
-  -- the per-centre constants embed into the assembled sums
   have hppF : Cu ^ (2 + N) * Cpp' x₀ * 2 ^ (2 + N) ≤ CppF := by
     rw [hCppFdef]
     exact Finset.single_le_sum
@@ -957,41 +866,51 @@ private theorem ric_tower_const
     exact Finset.single_le_sum
       (f := fun x₁ => Cu ^ (2 + N) * Cppp' x₁)
       (fun x₁ _ => mul_nonneg hCuP0 (hppp0 x₁)) hx₀F
-  -- assemble
   have hcompRic0 : 0 ≤ compL2 (iterCovComp (I := I)
-      (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')
+      (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+        (basisE x₀) a y')
       (fun y' => christoffelSymbolInFrame
         (leviCivitaConnectionOfMetric (I := I) gRef)
-        (fun a y'' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y'')
+        (fun a y'' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+          (basisE x₀) a y'')
         (((trivializationAt E (TangentSpace I : M → Type _) x₀).isLocalFrameOn_localFrame_baseSet
             I 1 (basisE x₀)).mono hwsub₀) y')
       (frameComp0S (I := I) (metricTensorField (I := I) (gSeq i t))
-        (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')) N x) :=
+        (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+          (basisE x₀) a y')) N x) :=
     compL2_nonneg _
   calc Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
         (ricCovTower (I := I) (gSeq i t) gRef N x))
       ≤ Cu ^ (2 + N) * compL2 (iterCovComp (I := I)
-          (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')
+          (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+            (basisE x₀) a y')
           (fun y' => christoffelSymbolInFrame
             (leviCivitaConnectionOfMetric (I := I) gRef)
-            (fun a y'' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y'')
-            (((trivializationAt E (TangentSpace I : M → Type _) x₀).isLocalFrameOn_localFrame_baseSet
+            (fun a y'' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+              (basisE x₀) a y'')
+            (((trivializationAt E
+              (TangentSpace I : M → Type _) x₀).isLocalFrameOn_localFrame_baseSet
                 I 1 (basisE x₀)).mono hwsub₀) y')
           (frameComp0S (I := I)
             (CovariantDerivative.ricciSection (I := I) (M := M)
               (leviCivitaConnectionOfMetric (I := I) (gSeq i t))
               (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
                 (I := I) (M := M) (gSeq i t)))
-            (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')) N x) := hLHS
+            (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+              (basisE x₀) a y')) N x) := hLHS
     _ ≤ Cu ^ (2 + N) * (Cpp' x₀ * compL2 (iterCovComp (I := I)
-          (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')
+          (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+            (basisE x₀) a y')
           (fun y' => christoffelSymbolInFrame
             (leviCivitaConnectionOfMetric (I := I) gRef)
-            (fun a y'' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y'')
-            (((trivializationAt E (TangentSpace I : M → Type _) x₀).isLocalFrameOn_localFrame_baseSet
+            (fun a y'' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+              (basisE x₀) a y'')
+            (((trivializationAt E
+              (TangentSpace I : M → Type _) x₀).isLocalFrameOn_localFrame_baseSet
                 I 1 (basisE x₀)).mono hwsub₀) y')
           (frameComp0S (I := I) (metricTensorField (I := I) (gSeq i t))
-            (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')) N x) + Cppp' x₀) :=
+            (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+              (basisE x₀) a y')) N x) + Cppp' x₀) :=
         mul_le_mul_of_nonneg_left hAN hCuP0
     _ ≤ Cu ^ (2 + N) * (Cpp' x₀ * (2 ^ (2 + N) *
           metricCovDerivNorm (I := I) N (gSeq i t) gRef x) + Cppp' x₀) := by
@@ -999,14 +918,18 @@ private theorem ric_tower_const
         refine add_le_add ?_ le_rfl
         refine mul_le_mul_of_nonneg_left ?_ (hpp0 x₀)
         calc compL2 (iterCovComp (I := I)
-              (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')
+              (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+                (basisE x₀) a y')
               (fun y' => christoffelSymbolInFrame
                 (leviCivitaConnectionOfMetric (I := I) gRef)
-                (fun a y'' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y'')
-                (((trivializationAt E (TangentSpace I : M → Type _) x₀).isLocalFrameOn_localFrame_baseSet
+                (fun a y'' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+                  (basisE x₀) a y'')
+                (((trivializationAt E
+                  (TangentSpace I : M → Type _) x₀).isLocalFrameOn_localFrame_baseSet
                     I 1 (basisE x₀)).mono hwsub₀) y')
               (frameComp0S (I := I) (metricTensorField (I := I) (gSeq i t))
-                (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame (basisE x₀) a y')) N x)
+                (fun a y' => (trivializationAt E (TangentSpace I : M → Type _) x₀).localFrame
+                  (basisE x₀) a y')) N x)
             ≤ 2 ^ (2 + N) * Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
                 (iterCov (I := I) gRef 2
                   (Tensor0SBundle.metricTensorField (I := I) (gSeq i t)) N x)) := hRHS
@@ -1019,10 +942,6 @@ private theorem ric_tower_const
         add_le_add (mul_le_mul_of_nonneg_right hppF hmcd0) hpppF
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- **`ric_bound` — MSM135 Lemma 3.11, Step 4 `(A_N)` (the eq. 3.4 engine).**
-
-On a fixed time window, lower-order metric bounds and moving Shi bounds imply the
-uniform order-`N` Ricci-tower estimate. -/
 theorem ric_bound
     [Module.Finite ℝ E]
     {K U : Set M} {β ψ : Real}
@@ -1051,9 +970,6 @@ theorem ric_bound
   exact ⟨Cpp, Cppp, hCpp, hCppp,
     hfield (β := β) (ψ := ψ) (gSeq := gSeq) B hequiv hBmax hBprev hShi⟩
 
-/-- The realized `nablaRic` data of `MetricCovOrderEvolutionInput`: the
-order-`p` background Ricci tower `ricCovTower`, reindexed from its native
-`2 + p` arity to the Grönwall arity `p + 2`. -/
 noncomputable def nablaRicReal
     (gSeq : Nat → Real → SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) (p : Nat) :
@@ -1067,7 +983,6 @@ omit [Module.Finite ℝ E] [I.Boundaryless]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     [IsManifold I 2 M] [SigmaCompactSpace M] in
-/-- Norm invariance of the `nablaRicReal` reindex. -/
 theorem nablaRicReal_normSq
     [Module.Finite ℝ E]
     (gSeq : Nat → Real → SmoothRiemannianMetric I M)
@@ -1088,8 +1003,6 @@ theorem nablaRicReal_normSq
     (ricCovTower (I := I) (gSeq i s) gRef p x)
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- Constants-first Ricci-tower field bound on an open set, with coefficients
-chosen before the sequence index, time, point, and manifold instantiation. -/
 theorem ric_bound_field_on
     [Module.Finite ℝ E]
     {U : Set M} {β ψ : Real}
@@ -1120,10 +1033,6 @@ theorem ric_bound_field_on
     (fun s hs z hz => hShi s hs i t ht z hz) x hx
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- Constants-first `ric_bound` field for the order-`N` evolution input.
-
-The same `Cpp, Cppp` work on every admissible time window and metric sequence with
-the fixed spatial, equivalence, lower-order, and Shi bounds. -/
 theorem ric_bound_const
     [Module.Finite ℝ E]
     {K U : Set M}
@@ -1156,9 +1065,6 @@ theorem ric_bound_const
   exact hfield B hequiv hBmax hBprev hShi i s hs x hx
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- **The `ric_bound` field of `MetricCovOrderEvolutionInput`, realized.**  The
-proved `ric_bound`, restated with `nablaRic := nablaRicReal` in the exact
-Grönwall field shape (`p + 2` arity). -/
 theorem ric_bound_field
     [Module.Finite ℝ E]
     {K U : Set M} {β ψ : Real}
@@ -1191,12 +1097,6 @@ omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     [SigmaCompactSpace M] in
-/-- **The `normsq_evol` field from pointwise-evaluated evolution data**: if the
-order-`p` metric derivative tower evolves by `-2·nablaRic` under every fixed
-slot evaluation (an ℝ-valued `HasDerivAt` family — the natural output of the
-componentwise flow-evolution producer), then the squared-norm evolution bound
-holds.  Proof: componentwise differentiation in a fixed pointwise
-`gRef`-orthonormal basis; no fibre calculus is needed. -/
 theorem normsq_evol_of_comp
     [Module.Finite ℝ E]
     {K : Set M} {β ψ : Real}
@@ -1220,7 +1120,6 @@ theorem normsq_evol_of_comp
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
     intro i' j'
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h' i' j'
-  -- componentwise differentiation through the fixed-slot evaluation CLM
   have hcomp : ∀ I0 : Fin (p + 2) → Fin (Module.finrank Real (TangentSpace I x)),
       HasDerivAt
         (fun r => Tensor0SBundle.component0S (I := I) basis
@@ -1230,7 +1129,6 @@ theorem normsq_evol_of_comp
     intro I0
     have happ := hev i x hx s hs (fun q => basis (I0 q))
     simpa [Tensor0SBundle.component0S_apply] using happ
-  -- the squared norm as a fixed finite sum of squared components
   have hU_eq : (fun r : Real => metricCovDerivNorm (I := I) p (gSeq i r) gRef x ^ 2) =
       (fun r : Real => ∑ I0 : Fin (p + 2) → Fin (Module.finrank Real (TangentSpace I x)),
         Tensor0SBundle.component0S (I := I) basis
@@ -1240,7 +1138,6 @@ theorem normsq_evol_of_comp
       (metricCovDeriv (I := I) (gSeq i r) gRef p x)
     rw [metricCovDerivNorm, Real.sq_sqrt hnn,
       Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gRef x (p + 2) basis hinv]
-  -- the derivative of the sum of squares
   have hders : HasDerivAt
       (fun r : Real => ∑ I0 : Fin (p + 2) → Fin (Module.finrank Real (TangentSpace I x)),
         Tensor0SBundle.component0S (I := I) basis
@@ -1280,8 +1177,7 @@ theorem normsq_evol_of_comp
       ((-2 : Real) • nablaRic i s x) I0, ?_, ?_⟩
   · rw [hU_eq]
     exact hders
-  · -- `|∑ 2ab| ≤ ∑ a² + ∑ b² = U s + normSq0S((-2)•nablaRic)`
-    have habs : |∑ I0 : Fin (p + 2) → Fin (Module.finrank Real (TangentSpace I x)),
+  · have habs : |∑ I0 : Fin (p + 2) → Fin (Module.finrank Real (TangentSpace I x)),
         2 * Tensor0SBundle.component0S (I := I) basis
           (metricCovDeriv (I := I) (gSeq i s) gRef p x) I0 *
         Tensor0SBundle.component0S (I := I) basis
@@ -1368,13 +1264,6 @@ set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] [I.Boundaryless]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     [SigmaCompactSpace M] in
-/-- **The `hevComp` family from Ricci-flow solutions.**  If each `gSeq i` is
-the moving metric of a flow solution `S i` whose regular times contain the
-window, and the per-level mixed-derivative swaps hold (the regularity input,
-`hswap`), then the realized evolution family `∂ₜ∇ᴺg = -2·∇ᴺRc` consumed by
-`covOrderBound_stage` holds: the solution-level tower evolution
-`solnTower_hasDerivAt`, with the value identified through
-`covDerivOfField_smul` + `covDerivOfField_eq_iterCov`. -/
 theorem hevComp_of_solutions
     [Module.Finite ℝ E]
     {K : Set M} {β ψ : Real}
@@ -1435,8 +1324,6 @@ theorem hevComp_of_solutions
   exact h
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- Noncompact stage-`N` metric-derivative bound with an explicit output
-constant. The proof is the existing affine Grönwall assembly on the open set. -/
 theorem covOrderBound_stage_on
     [Module.Finite ℝ E]
     {U : Set M} {β ψ t0 : Real}
@@ -1487,13 +1374,6 @@ theorem covOrderBound_stage_on
       time_abs_le := htime }
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- **The stage-`N` `(B_N)` assembly** (MSM135 Lemma 3.11, Step 4, one stage).
-From the `ric_bound` inputs (eq. 3.3 on `U ⊇ K`, the `(B_r)` bounds for
-`r < N`, the moving Shi bounds), the pointwise-evaluated evolution data for the
-realized `nablaRicReal` (`hevComp` — the `∂ₜ∇ᵖg = -2∇ᵖRc` family, produced by
-the `covDerivOfField_eval_hasDerivWithinAt` induction from the flow equation
-and the per-level swaps), and the initial-time bound, the order-`N` window
-bound `(B_N)` follows by the Grönwall assembly. -/
 theorem covOrderBound_stage
     [Module.Finite ℝ E]
     {K U : Set M} {β ψ t0 : Real}
@@ -1542,14 +1422,6 @@ theorem covOrderBound_stage
       time_abs_le := htime }
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M] in
-/-- **The `(B_r)` tower** (MSM135 Lemma 3.11, Step 4, all stages).  From the
-window inputs on a single open `U ⊇ K` — eq. (3.3) equivalence with majorant,
-the moving Shi bounds up to order `N`, the evolution families at every order,
-and the initial-time bounds — every exact order `1 ≤ r ≤ N` admits a window
-bound on `K`.  Each stage is `covOrderBound_stage` on an interpolated pair
-`K' ⊆ interior L ⊆ L ⊆ U'` (`exists_compact_between`, local compactness of
-`M`), with the lower-order `(B_q)` constants supplied by strong induction on
-the compact `L`. -/
 theorem covOrderBound_tower
     [Module.Finite ℝ E]
     {K U : Set M} {β ψ t0 : Real}
@@ -1592,7 +1464,6 @@ theorem covOrderBound_tower
     obtain ⟨L, hLc, hKL, hLU⟩ := exists_compact_between hK'c hU' hK'U'
     have hLsubU : (interior L : Set M) ⊆ U := fun x hx =>
       hU'U (hLU (interior_subset hx))
-    -- the lower-order `(B_q)` constants on `interior L`, by strong induction
     have hex : ∀ q : Nat, ∃ Cq : Real, 1 ≤ q → q < r →
         MetricCovDerivOrderBoundOnWindow (I := I) (interior L) β ψ gSeq gRef q Cq := by
       intro q
@@ -1617,16 +1488,6 @@ theorem covOrderBound_tower
 
 set_option backward.isDefEq.respectTransparency false in
 omit [Module.Finite ℝ E] [SigmaCompactSpace M] in
-/-- **The P2 capstone: all `(B_r)` window bounds from a sequence of Ricci-flow
-solutions** (MSM135 Lemma 3.11, eq. (3.4) → Step 4 output).  The evolution
-families are produced internally: `hevComp_of_solutions` from the flow
-equations, with the mixed-derivative swaps FULLY discharged from the solution
-data (`solnTowerSwap_reg`: joint tower smoothness from
-`MetricFamilySmoothOn.frameCompSmooth`).  The remaining hypotheses are the
-honest analytic inputs: eq. (3.3) equivalence with majorant (P1), the moving
-Shi bounds (the BBS realization track), the initial-time bounds, and `hDreg`
-(regular times are interior to the regular set — true for every concrete flow
-interval). -/
 theorem covOrderBound_of_soln
     [Module.Finite ℝ E]
     {K U : Set M} {β ψ t0 : Real}

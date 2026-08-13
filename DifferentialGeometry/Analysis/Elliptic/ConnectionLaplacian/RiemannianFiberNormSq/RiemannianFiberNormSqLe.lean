@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFibe
 import DifferentialGeometry.Geometry.Metric.MetricBounds
 import DifferentialGeometry.Tensor.RSTensor.TensorRSSpaceOperatorNorm
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic
+open DifferentialGeometry.Analysis.Elliptic
 
 
 noncomputable section
@@ -12,12 +13,12 @@ open Bundle Set IsManifold ContinuousLinearMap Function
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [InnerProductSpace ℝ E]
@@ -357,8 +358,8 @@ lemma riemannianFiberNormSq_le_pointwise_witness
   rw [h_eq]
   exact riemannianFiberNormSq_sum_le_pointwise (I := I) (M := M) g r s b T n e
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

@@ -1,14 +1,8 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -128,8 +122,6 @@ theorem scaleMetric_mul
   ext v w
   simp [scaleMetric_inner, mul_assoc]
 
-
-
 theorem scaleMetric_inv_mul
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) :
     (scaleMetric (I := I) c⁻¹ (inv_pos.mpr hc)
@@ -139,14 +131,12 @@ theorem scaleMetric_inv_mul
   simp only [scaleMetric_inner]
   rw [← mul_assoc, inv_mul_cancel₀ (ne_of_gt hc), one_mul]
 
-
-
 theorem mc_scaleMetric
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
     {c : Real} (hc : 0 < c)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g) :
-    DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g) :
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov
       (scaleMetric (I := I) c hc g) := by
   intro x X Y Z hX hY hZ
   let f : M -> Real := fun y : M => g.inner y (Y y) (Z y)
@@ -176,15 +166,13 @@ theorem mc_scaleMetric
   rw [smul_eq_mul]
   ring
 
-
-
 theorem lc_scaleMetric
     [FiniteDimensional Real E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
     {c : Real} (hc : 0 < c)
-    (hLC : DifferentialGeometry.Integral.Connection.IsLeviCivita (I := I) cov g) :
-    DifferentialGeometry.Integral.Connection.IsLeviCivita (I := I) cov
+    (hLC : DifferentialGeometry.Geometry.Connection.IsLeviCivita (I := I) cov g) :
+    DifferentialGeometry.Geometry.Connection.IsLeviCivita (I := I) cov
       (scaleMetric (I := I) c hc g) :=
   ⟨mc_scaleMetric (I := I) hc hLC.1, hLC.2⟩
 

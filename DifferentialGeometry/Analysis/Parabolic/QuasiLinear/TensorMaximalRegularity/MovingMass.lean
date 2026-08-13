@@ -1,29 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperator
 import Mathlib.Topology.MetricSpace.Contracting
-
-/-!
-# A small moving-mass perturbation of tensor maximal regularity
-
-Consider the frozen tensor heat equation written in the form
-
-`rho * u_t - Delta u = f`.
-
-If `B = 1 - rho` acts boundedly on the forcing Sobolev space, this is
-equivalently
-
-`u_t - Delta u = f + B u_t`.
-
-This file proves the corresponding Neumann fixed point in the existing
-maximal-regularity graph space.  The crucial point is that the graph norm
-already controls `u_t`, so a merely measurable time family of spatial
-operators with small essential operator norm can be absorbed without taking
-any derivative of `rho`.
-
-This is the exact mass arm needed by a moving-measure parabolic construction.
-It does not turn a divergence-form rough flux into an `L2` forcing term; that
-separate spatial estimate must remain in divergence form.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -67,8 +46,6 @@ noncomputable def massForce
     (timeH1.timeDeriv
       (Ha (I := I) (M := M) (g := g) (r := r) (s := s) a) T u)
 
-/-- The affine Duhamel map for the frozen heat equation with a small moving
-mass coefficient. -/
 noncomputable def massDuh
     (hT : 0 < T) (hT1 : T ≤ 1)
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
@@ -82,8 +59,7 @@ noncomputable def massDuh
   maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀
     (massForce B hB C hC f u)
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem massForce_sub
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
@@ -98,10 +74,7 @@ theorem massForce_sub
   simp only [massForce, map_sub]
   abel
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- The moving-mass forcing arm has exactly the small pointwise operator
-bound; no time or spatial derivative of the coefficient occurs. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem massForce_bound
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]
       Ha (I := I) (M := M) (g := g) (r := r) (s := s) a)
@@ -129,9 +102,7 @@ theorem massForce_bound
       exact mul_le_mul_of_nonneg_left
         (timeH1.norm_deriv_le (u - v)) C.coe_nonneg
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- Difference estimate for the moving-mass Duhamel map. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem massDuh_diff
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -157,10 +128,7 @@ theorem massDuh_diff
       exact massForce_bound B hB C hC f u v
     _ = (2 * (C : ℝ)) * ‖u - v‖ := by ring
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- The moving-mass Duhamel map is a contraction when the essential mass
-perturbation is smaller than the explicit maximal-regularity threshold. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem massDuh_contract
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -182,10 +150,7 @@ theorem massDuh_contract
     simpa only [NNReal.coe_mul, NNReal.coe_ofNat] using
       massDuh_diff h_compact hT hT1 B hB C hC u₀ f u v
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- Existence and uniqueness for the small moving-mass perturbation of the
-frozen tensor heat equation. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem massDuh_exists
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
@@ -207,9 +172,7 @@ theorem massDuh_exists
   intro v hv
   exact ContractingWith.fixedPoint_unique hcontr hv
 
-omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M] in
-/-- Every moving-mass fixed point has the prescribed initial trace. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem massDuh_trace
     (hT : 0 < T) (hT1 : T ≤ 1)
     (B : ℝ → Ha (I := I) (M := M) (g := g) (r := r) (s := s) a →L[ℝ]

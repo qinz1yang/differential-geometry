@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorConnLapGreenDivergenceIdentityAnySection
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Smooth.EigenvectorSmoothToL2
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -13,13 +16,12 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 
@@ -42,7 +44,7 @@ noncomputable def oneMinusConnLapSmooth
     SmoothCcTensor g r s :=
   T - rawTensorConnLapSmooth (I := I) g r s T
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma oneMinusConnLapSmooth_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (x : M) :
@@ -60,12 +62,12 @@ noncomputable def oneMinusConnLapSmoothIter
   | k + 1, T => oneMinusConnLapSmooth (I := I) g r s
                   (oneMinusConnLapSmoothIter g r s k T)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem oneMinusConnLapSmoothIter_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s 0 T = T := rfl
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem oneMinusConnLapSmoothIter_succ
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) (T : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s (k + 1) T =
@@ -154,7 +156,6 @@ theorem oneMinusConnLapSmooth_toL2_inner_eq_h1
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorParseval_l2Coeff_ofCompact_sq
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -170,7 +171,6 @@ theorem tensorParseval_l2Coeff_ofCompact_sq
     Real.norm_eq_abs, sq_abs]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorL2Coeff_ofCompact_summable_sq'
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -183,7 +183,6 @@ theorem tensorL2Coeff_ofCompact_summable_sq'
   tensorL2Coeff_summable_sq (I := I) (M := M) h_compact u
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem summable_tensorSobolevWeight_of_even
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -205,9 +204,8 @@ theorem summable_tensorSobolevWeight_of_even
       tensorSobolevWeight_mono (I := I) (M := M) i hak
     exact mul_le_mul_of_nonneg_right hmono (sq_nonneg _)
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

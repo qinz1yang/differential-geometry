@@ -1,12 +1,14 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHS
-import DifferentialGeometry.Geometry.Metric.Defs
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciTensor
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.RicciTensor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.EvaluationForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.TimeDerivativeChainRule
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.VariationalEquation.VariationalFlow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.PushforwardSmooth
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import Mathlib.Analysis.Calculus.Deriv.Basic
+open DifferentialGeometry.Analysis.ODE
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -17,10 +19,10 @@ namespace RicciFlow
 open Bundle Set
 open scoped Manifold Topology ContDiff
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.DeTurck
 open DifferentialGeometry.PDE.RicciFlow.Pullback
-open DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Analysis.ODE
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

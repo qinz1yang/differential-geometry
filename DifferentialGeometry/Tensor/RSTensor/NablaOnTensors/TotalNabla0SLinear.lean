@@ -3,29 +3,12 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
-open Bundle Set IsManifold ContinuousLinearMap TensorLieDeriv
+open Bundle Set IsManifold ContinuousLinearMap DifferentialGeometry.TensorLieDeriv
 open scoped Manifold Topology Bundle ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -35,8 +18,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [IsManifold I (∞ : WithTop ℕ∞) M]
 variable [T2Space M]
-
-
 
 omit [CompleteSpace E] in
 theorem totalNabla0SFun_smul {s : ℕ}
@@ -74,8 +55,6 @@ theorem totalNabla0SFun_smul {s : ℕ}
   rw [Tensor0SSpace.smul_apply, totalNabla0SFun_apply_section,
     totalNabla0SFun_apply_section, nabla0SFun_smul]
   rw [Tensor0SSpace.smul_apply]
-
-
 
 omit [CompleteSpace E] in
 theorem totalNabla0SFun_add {s : ℕ}
@@ -116,3 +95,4 @@ theorem totalNabla0SFun_add {s : ℕ}
   rw [Tensor0SSpace.add_apply]
 
 end Tensor0SBundle
+end DifferentialGeometry

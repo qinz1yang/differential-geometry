@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.Candidate
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Ricci.DualNorm
 import Mathlib.Analysis.Normed.Operator.Extend
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -21,7 +24,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLpIdentity
@@ -75,7 +79,7 @@ lemma ricciPairingSmooth_pt_add
       gradFun (I := I) g v.toFun b + gradFun (I := I) g w.toFun b := by
     have hfun : (v + w).toFun = v.toFun + w.toFun := rfl
     rw [hfun]
-    exact DifferentialGeometry.Integral.DivergenceTheorem.gradFun_add (I := I) g
+    exact DifferentialGeometry.Geometry.Operator.gradFun_add (I := I) g
       (v.smooth.mdifferentiable (by simp) b)
       (w.smooth.mdifferentiable (by simp) b)
   rw [hgrad_add, ContinuousLinearMap.map_add]
@@ -168,6 +172,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     ricciPairingCLMOnSmoothOfBound (I := I) (M := M) g φ C hC_nn hC_bound v =
       ricciPairingSmooth (I := I) (M := M) g φ v := rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma denseRange_toComplL_smoothScalar
     (g : SmoothRiemannianMetric I M) :
@@ -178,6 +183,7 @@ private lemma denseRange_toComplL_smoothScalar
       UniformSpace.Completion.coe_toComplL]
   exact UniformSpace.Completion.denseRange_coe
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma isUniformInducing_toComplL_smoothScalar
     (g : SmoothRiemannianMetric I M) :

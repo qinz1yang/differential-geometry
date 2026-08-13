@@ -2,14 +2,10 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSUniformFamily
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSFirstDerivativeUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.GramInvUniformEigenvalueLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconv
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Spectral
+    DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -18,9 +14,10 @@ open DifferentialGeometry
 open DifferentialGeometry.HCGCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -28,9 +25,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M] [SigmaCompactSpace M]
-
-
+      [T2Space M]
 
 structure LowRegCoeff where
   ellMin : ℝ
@@ -43,10 +38,6 @@ structure LowRegCoeff where
   rhsD1Bound : ℝ
   rhsLip : ℝ
   rhsD1Lip : ℝ
-
-
-
-
 
 structure IsLowRegCoeff {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
@@ -141,9 +132,6 @@ structure IsLowRegCoeff {ι : Type*}
                 (extChartAt I α b)| ≤
               D.rhsD1Lip * metricJet3DiffSup (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
-
-
-
 
 theorem exists_low_reg_coeff {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)

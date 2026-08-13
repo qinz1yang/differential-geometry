@@ -1,24 +1,18 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffMeas
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricC1Continuity
-
-/-!
-# Compact-span moving scalar Laplacian
-
-This file packages the fixed-scale moving scalar Laplacian on every requested
-short backward interval in a compact regular-time slab.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 
@@ -35,32 +29,29 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- A compact regular-time slab has one backward radius on which the genuine
-`H² → H⁰` scalar Laplacian perturbation is continuous, uniformly bounded,
-and agrees with its finite spectral core on every requested interval. -/
 theorem lapA20_span
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     {a b : Real} (hab : Set.Icc a b ⊆ D.regular) :
     ∃ ρ : Real, 0 < ρ ∧ ρ ≤ 1 ∧
       ∀ (T : D.RegularTime), (T : Real) ∈ Set.Icc a b →
         ∀ h : Real, 0 < h → h ≤ ρ → a ≤ (T : Real) - h →
           (∀ s ∈ Set.Icc (0 : Real) h, (T : Real) - s ∈ D.regular) ∧
           ContinuousOn
-            (fun s : Real ↦ lapDiffA20 (I := I) (M := M) G T s)
+            (fun s : Real ↦ lapDiffA20 (I := I) (M := M) g_fam T s)
             (Set.Icc (0 : Real) h) ∧
           ∃ C2 : NNReal,
             (∀ s ∈ Set.Icc (0 : Real) h,
-              ‖lapDiffA20 (I := I) (M := M) G T s‖ ≤ (C2 : Real)) ∧
+              ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ (C2 : Real)) ∧
             ∀ s ∈ Set.Icc (0 : Real) h,
-              ∀ v : ScalarH2Core (I := I) (M := M) (G.metric (T : Real)),
+              ∀ v : ScalarH2Core (I := I) (M := M) (g_fam (T : Real)),
                 tensorHsZeroEquivL2 (I := I) (M := M)
                     (tensorResolventL2_isCompactOperator
-                      (I := I) (M := M) (G.metric (T : Real)) 0 0)
-                    (lapDiffA20 (I := I) (M := M) G T s v.1) =
-                  lapDiffCore (I := I) (M := M) (G.metric (T : Real))
-                    (G.metric ((T : Real) - s)) v := by
+                      (I := I) (M := M) (g_fam (T : Real)) 0 0)
+                    (lapDiffA20 (I := I) (M := M) g_fam T s v.1) =
+                  lapDiffCore (I := I) (M := M) (g_fam (T : Real))
+                    (g_fam ((T : Real) - s)) v := by
   classical
   let d : Real := Module.finrank Real E
   have hd : 0 < d := by
@@ -71,7 +62,7 @@ theorem lapA20_span
     dsimp only [ε]
     positivity
   obtain ⟨ρ₀, hρ₀, hmetric⟩ :=
-    HCGCompactness.metric_c1_span (I := I) G hG hab hε
+    HCGCompactness.metric_c1_span (I := I) g_fam hG hab hε
   let ρ : Real := min 1 ρ₀
   have hρ : 0 < ρ := lt_min zero_lt_one hρ₀
   have hρone : ρ ≤ 1 := min_le_left _ _
@@ -79,12 +70,12 @@ theorem lapA20_span
   refine ⟨ρ, hρ, hρone, ?_⟩
   intro T hT h hh hhρ hleft
   letI : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (G.metric (T : Real)) 0 0 2 →L[Real]
-        TensorL2 0 0 (G.metric (T : Real))) :=
+      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+        TensorL2 0 0 (g_fam (T : Real))) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   letI : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (G.metric (T : Real)) 0 0 2 →L[Real]
-        tensorHs (I := I) (M := M) (G.metric (T : Real)) 0 0 0) :=
+      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+        tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   have hvar (s : Real) (hs : s ∈ Set.Icc (0 : Real) h) :
       (T : Real) - s ∈ Set.Icc a b := by
@@ -96,20 +87,20 @@ theorem lapA20_span
     exact hs.2.trans (hhρ.trans hρle)
   have hmod (s : Real) (hs : s ∈ Set.Icc (0 : Real) h) :
       HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
-          (G.metric ((T : Real) - s))
-          (G.metric (T : Real)) (G.metric (T : Real)) ≤ ε :=
+          (g_fam ((T : Real) - s))
+          (g_fam (T : Real)) (g_fam (T : Real)) ≤ ε :=
     hmetric (T : Real) hT (T - s) (hvar s hs) (hdist s hs)
   have hsmall (s : Real) (hs : s ∈ Set.Icc (0 : Real) h) :
       (Module.finrank Real E : Real) *
           HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
-            (G.metric ((T : Real) - s))
-            (G.metric (T : Real)) (G.metric (T : Real)) ≤
+            (g_fam ((T : Real) - s))
+            (g_fam (T : Real)) (g_fam (T : Real)) ≤
         (1 / 2 : Real) := by
     calc
       (Module.finrank Real E : Real) *
           HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
-            (G.metric ((T : Real) - s))
-            (G.metric (T : Real)) (G.metric (T : Real)) ≤
+            (g_fam ((T : Real) - s))
+            (g_fam (T : Real)) (g_fam (T : Real)) ≤
           d * ε := by
             simpa only [d] using mul_le_mul_of_nonneg_left (hmod s hs) hd.le
       _ = 1 / 2 := by
@@ -119,39 +110,39 @@ theorem lapA20_span
     intro s hs
     exact hab (hvar s hs)
   have hA2cont : ContinuousOn
-      (fun s : Real ↦ lapDiffA2 (I := I) (M := M) G T s)
+      (fun s : Real ↦ lapDiffA2 (I := I) (M := M) g_fam T s)
       (Set.Icc (0 : Real) h) :=
-    lapDiffA2_cont (I := I) (M := M) G hG T hreg hsmall
+    lapDiffA2_cont (I := I) (M := M) g_fam hG T hreg hsmall
   have hA20cont : ContinuousOn
-      (fun s : Real ↦ lapDiffA20 (I := I) (M := M) G T s)
+      (fun s : Real ↦ lapDiffA20 (I := I) (M := M) g_fam T s)
       (Set.Icc (0 : Real) h) :=
-    lapDiffA20_cont_of (I := I) (M := M) G T hA2cont
+    lapDiffA20_cont_of (I := I) (M := M) g_fam T hA2cont
   have hnorm : ContinuousOn
-      (fun s : Real ↦ ‖lapDiffA20 (I := I) (M := M) G T s‖)
+      (fun s : Real ↦ ‖lapDiffA20 (I := I) (M := M) g_fam T s‖)
       (Set.Icc (0 : Real) h) :=
     continuous_norm.comp_continuousOn hA20cont
   obtain ⟨C, hC⟩ := isCompact_Icc.bddAbove_image hnorm
   let C2 : NNReal := ⟨max C 0, le_max_right _ _⟩
   have hbound : ∀ s ∈ Set.Icc (0 : Real) h,
-      ‖lapDiffA20 (I := I) (M := M) G T s‖ ≤ (C2 : Real) := by
+      ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ (C2 : Real) := by
     intro s hs
-    change ‖lapDiffA20 (I := I) (M := M) G T s‖ ≤ max C 0
+    change ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ max C 0
     exact (hC ⟨s, hs, rfl⟩).trans (le_max_left _ _)
   have hcore : ∀ s ∈ Set.Icc (0 : Real) h,
-      ∀ v : ScalarH2Core (I := I) (M := M) (G.metric (T : Real)),
+      ∀ v : ScalarH2Core (I := I) (M := M) (g_fam (T : Real)),
         tensorHsZeroEquivL2 (I := I) (M := M)
             (tensorResolventL2_isCompactOperator
-              (I := I) (M := M) (G.metric (T : Real)) 0 0)
-            (lapDiffA20 (I := I) (M := M) G T s v.1) =
-          lapDiffCore (I := I) (M := M) (G.metric (T : Real))
-            (G.metric ((T : Real) - s)) v := by
+              (I := I) (M := M) (g_fam (T : Real)) 0 0)
+            (lapDiffA20 (I := I) (M := M) g_fam T s v.1) =
+          lapDiffCore (I := I) (M := M) (g_fam (T : Real))
+            (g_fam ((T : Real) - s)) v := by
     intro s hs v
     rw [lapDiffA20_apply, LinearIsometryEquiv.apply_symm_apply]
     simpa only [lapDiffA2] using
       lapDiffOp_core (I := I) (M := M)
-        (G.metric (T : Real)) (G.metric ((T : Real) - s)) v (hsmall s hs)
+        (g_fam (T : Real)) (g_fam ((T : Real) - s)) v (hsmall s hs)
   exact ⟨hreg, hA20cont, C2, hbound, hcore⟩
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

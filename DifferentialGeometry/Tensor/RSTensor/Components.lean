@@ -67,15 +67,9 @@ import DifferentialGeometry.Bundle.SectionRealized
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open Bundle Module
@@ -134,7 +128,6 @@ theorem component0S_nsmul
       n • component0S (I := I) basis A slots := by
   rfl
 
-
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
 theorem component0S_product_gen
     (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x)
@@ -157,10 +150,6 @@ section Mixed
 variable {r s : Nat}
 variable (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
 
-
-
-
-
 def componentRS_gen
     (T : TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) : 𝕜 :=
@@ -175,8 +164,6 @@ theorem componentRS_apply_gen
         (fun a => basis (lower a)) :=
   rfl
 
-
-
 theorem componentRS_gen_congr_slots
     (T : TensorRSSpace r s I x)
     {upper upper' : Fin r -> Idx} {lower lower' : Fin s -> Idx}
@@ -184,8 +171,6 @@ theorem componentRS_gen_congr_slots
     componentRS_gen (I := I) basis T upper lower =
       componentRS_gen (I := I) basis T upper' lower' := by
   rw [hu, hl]
-
-
 
 theorem componentRS_apply_input_eq_sum
     (T : TensorRSSpace r s I x) (input : Tensor0SSpace r I x)
@@ -222,7 +207,6 @@ theorem componentRS_apply_input_eq_sum
           rw [map_sum]
           simp [map_smul]
 
-
 theorem extRS_basis_gen
     {A B : TensorRSSpace r s I x}
     (h : ∀ upper : Fin r -> Idx, ∀ lower : Fin s -> Idx,
@@ -250,3 +234,4 @@ theorem extRS_basis_gen
 end Mixed
 
 end Tensor0SBundle
+end DifferentialGeometry

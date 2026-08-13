@@ -1,31 +1,32 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0Core
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+    DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff Matrix
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -39,7 +40,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
     deTurckVFCovDeriv connDiffOp_homSection_contMDiff metricConnDiffLoweredFib
     metricConnDiffLoweredFib_toModel metricConnDiffLoweredFib_contMDiff domDomCongrFibRank
     domDomCongrFibRank_apply tensor0SProdKappaFib tensor0SProdKappaFib_apply)
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
 open LieCorr0Core
@@ -151,8 +152,8 @@ private lemma lieArm_inner_chartBasis_center (g : SmoothRiemannianMetric I M) (x
         ((chartModelBasis E) q : TangentSpace I x) =
       DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x p q := by
   rw [DifferentialGeometry.Integral.Measure.chartGramMatrix_apply,
-    DifferentialGeometry.Integral.Connection.chartBasisVecFiber_self (I := I) x p,
-    DifferentialGeometry.Integral.Connection.chartBasisVecFiber_self (I := I) x q]
+    DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x p,
+    DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x q]
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -162,22 +163,22 @@ private lemma lieArm_connDiff_chartBasis_center (gA gB : SmoothRiemannianMetric 
         ((chartModelBasis E) j : TangentSpace I x)
         ((chartModelBasis E) k : TangentSpace I x) =
       ∑ p : Fin (Module.finrank ℝ E),
-        (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) gA x k j p
+        (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gA x k j p
             (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) gB x k j p
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) gB x k j p
             (extChartAt I x x)) •
           ((chartModelBasis E) p : TangentSpace I x) := by
   rw [show ((chartModelBasis E) j : TangentSpace I x) =
       DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x j x from
-    (DifferentialGeometry.Integral.Connection.chartBasisVecFiber_self (I := I) x j).symm]
+    (DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x j).symm]
   rw [show ((chartModelBasis E) k : TangentSpace I x) =
       DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) x k x from
-    (DifferentialGeometry.Integral.Connection.chartBasisVecFiber_self (I := I) x k).symm]
+    (DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x k).symm]
   rw [PDE.DeTurck.connDiff_chartBasis_pair_eq_sum (I := I) gA gB x
-    (DifferentialGeometry.Integral.Connection.self_mem_chartLeviCivitaGoodSet (I := I) (α := x))
+    (DifferentialGeometry.Geometry.Connection.self_mem_chartLeviCivitaGoodSet (I := I) (α := x))
     j k]
   refine Finset.sum_congr rfl (fun p _ => ?_)
-  rw [DifferentialGeometry.Integral.Connection.chartBasisVecFiber_self (I := I) x p]
+  rw [DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x p]
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma lieArm_chartGramMatrix_symm (g : SmoothRiemannianMetric I M) (x : M)
@@ -199,19 +200,21 @@ private lemma lieArm_realizedGramDeriv_symm (g₀ : SmoothRiemannianMetric I M)
     realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b
     = realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x b a := by
   funext y
-  change DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I)
+  change DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x a b y
-    - DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I)
+    - DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
       (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') x a b y
-    = DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I)
+    = DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x b a y
-    - DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I)
+    - DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
       (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') x b a y
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_symm (I := I) _ x a b,
-    DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_symm (I := I) _ x a b]
+  rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_symm (I := I) _ x a b,
+    DifferentialGeometry.Geometry.Operator.chartGramOnE_symm (I := I) _ x a b]
 section LieCorr0Eval
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartInvGramMatrix partialDeriv chartChristoffel)
+  (partialDeriv)
+open DifferentialGeometry.Geometry.Operator
+  (chartInvGramMatrix chartChristoffel)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieCovDerivW_chartBasis_eq)
 variable (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
@@ -332,7 +335,7 @@ private lemma lieCorr0NEndo_chartBasis (x : M) (i : Fin (Module.finrank ℝ E)) 
               (extChartAt I x x)) •
         ((chartModelBasis E) p : TangentSpace I x) from
     Finset.sum_congr rfl (fun p _ => by
-      rw [DifferentialGeometry.Integral.Connection.chartBasisVecFiber_self (I := I) x p])]
+      rw [DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x p])]
   rw [← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun p _ => ?_)
   rw [lieCorr0NScalar, sub_smul, sub_smul]
@@ -1099,15 +1102,15 @@ private lemma lieCorr0_riemLowered_basis_value (x : M) (i j ml kl : Fin (Module.
   rw [show Tensor0SSpace.toModel (lieCorr0RiemLoweredFib (I := I) g₀ x)
       ![(chartModelBasis E) i, (chartModelBasis E) j, (chartModelBasis E) ml,
         (chartModelBasis E) kl] =
-    g₀.inner x (Integral.Connection.riemannOp (LeviCivita (I := I) g₀) x
+    g₀.inner x (DifferentialGeometry.Geometry.Curvature.riemannOp (LeviCivita (I := I) g₀) x
       ((chartModelBasis E) i : TangentSpace I x)
       ((chartModelBasis E) j : TangentSpace I x)
       ((chartModelBasis E) ml : TangentSpace I x))
       ((chartModelBasis E) kl : TangentSpace I x) from by
     rw [lieCorr0RiemLoweredFib_toModel]
     rfl]
-  rw [Integral.Connection.riemannOp_eq_chartRiemannCLM_apply (I := I) g₀ x]
-  rw [Integral.Connection.chartRiemannCLM_basis_apply (I := I) g₀ x ml i j]
+  rw [DifferentialGeometry.Geometry.Connection.riemannOp_eq_chartRiemannCLM_apply (I := I) g₀ x]
+  rw [DifferentialGeometry.Geometry.Connection.chartRiemannCLM_basis_apply (I := I) g₀ x ml i j]
   rw [map_sum (g₀.inner x), ContinuousLinearMap.sum_apply]
   refine Finset.sum_congr rfl (fun ρ _ => ?_)
   rw [map_smul (g₀.inner x), ContinuousLinearMap.smul_apply, smul_eq_mul,
@@ -1263,7 +1266,9 @@ end LieCorr0AMixEval
 end LieCorr0Eval
 section LieCorr0Value
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartInvGramMatrix partialDeriv chartChristoffel)
+  (partialDeriv)
+open DifferentialGeometry.Geometry.Operator
+  (chartInvGramMatrix chartChristoffel)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (ccTensor02Symm unitModel unitTensor deTurckLieCoeffField deTurckLieCoeffField_apply_eq
@@ -1354,7 +1359,7 @@ private lemma lieCorr0_dLa_inner_basis (g₁ g_bg : SmoothRiemannianMetric I M) 
       lieCorr0CovASc (I := I) (M := M) g₁ g_bg x a m k p •
         ((chartModelBasis E) p : TangentSpace I x) from
     Finset.sum_congr rfl (fun p _ => by
-      rw [DifferentialGeometry.Integral.Connection.chartBasisVecFiber_self (I := I) x p]
+      rw [DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x p]
       rfl)]
   rw [map_sum (g₁.inner x), ContinuousLinearMap.sum_apply]
   refine Finset.sum_congr rfl (fun p _ => ?_)
@@ -1381,7 +1386,7 @@ private lemma lieCorr0_covW_basis (g₁ g_bg : SmoothRiemannianMetric I M) (x : 
           ((chartModelBasis E) p : TangentSpace I x) := by
   rw [deTurckLieCovDerivW_chartBasis_eq (I := I) g₁ g_bg x a]
   refine Finset.sum_congr rfl (fun p _ => ?_)
-  rw [DifferentialGeometry.Integral.Connection.chartBasisVecFiber_self (I := I) x p]
+  rw [DifferentialGeometry.Geometry.Connection.chartBasisVecFiber_self (I := I) x p]
   rfl
 omit [BoundarylessManifold I M] in
 private lemma lieCorr0_icg0_readout (hδ_lt : δ < 1)
@@ -1706,15 +1711,17 @@ private lemma lieCorr0_pd_vfcomp_center (gA gB : SmoothRiemannianMetric I M) (x 
 section LieCorr0MasterValue
 set_option backward.isDefEq.respectTransparency false
 open DifferentialGeometry.Integral.DivergenceTheorem
-  (chartInvGramMatrix partialDeriv chartChristoffel chartGramOnE chartInvGramOnE chartRiemannTensor
-  chartChristoffel_symm chartGramOnE_symm chartInvGramOnE_symm partialDeriv_chartInvGramOnE_eq
+  (partialDeriv chartRiemannTensor chartInvGramOnE_symm
   extChartAt_target_subset_interior_of_boundaryless)
+open DifferentialGeometry.Geometry.Operator
+  (chartInvGramMatrix chartChristoffel chartGramOnE chartInvGramOnE
+  chartChristoffel_symm chartGramOnE_symm partialDeriv_chartInvGramOnE_eq)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (ccTensor02Symm unitModel unitTensor deTurckLieCoeffField arm2ReadoutCovDerivPair
   arm1ReadoutCovDeriv)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedGramDeriv realizedFam)
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
   (gramBracket gramBracketDeriv chartChristoffel_eq_sum_invGramOnE_bracket
   partialDeriv_chartChristoffel_eq partialDeriv_gramBracket_eq)
 private noncomputable def lc0Ig (g₁ : SmoothRiemannianMetric I M) (x : M) :
@@ -1782,7 +1789,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma lc0_gramBracket_symm (g₁ : SmoothRiemannianMetric I M) (x : M)
     (a b l : Fin (Module.finrank ℝ E)) (y : E) :
     gramBracket (I := I) g₁ x a b l y = gramBracket (I := I) g₁ x b a l y := by
-  unfold DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.gramBracket
+  unfold DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.gramBracket
   rw [show chartGramOnE (I := I) g₁ x a b = chartGramOnE (I := I) g₁ x b a from
     funext fun y' => chartGramOnE_symm (I := I) g₁ x a b y']
   ring
@@ -2401,7 +2408,6 @@ private lemma lc0_committed (hδ_lt : δ < 1)
   simp only [DeTurckCoefficients.LieCorr0NF.v0F, DeTurckCoefficients.LieCorr0NF.covAF,
     DeTurckCoefficients.LieCorr0NF.covWF, DeTurckCoefficients.LieCorr0NF.dvfbF,
     DeTurckCoefficients.LieCorr0NF.vfbF, lc0Ig, lc0Cg, lc0Ev, lc0Dig, lc0Ga, lc0DGa,
-      
     ]
   refine congrArg₂ (fun t₁ t₂ : ℝ => t₁ + t₂) (congrArg Neg.neg
     (Finset.sum_congr rfl (fun m _ => Finset.sum_congr rfl (fun ml _ => ?_))))
@@ -2442,9 +2448,9 @@ private lemma lc0_d1r (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![i, m, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l₁ j q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2454,17 +2460,17 @@ private lemma lc0_d1r (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![i, m, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g_bg x k₁ l₁ q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q j))))
         - (∑ w : Fin (Module.finrank ℝ E),
           (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix
           (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x a b *
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x a b w (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x a b w
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x a b w
           (extChartAt I x x))) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![i, j, w])
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2474,17 +2480,17 @@ private lemma lc0_d1r (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![m, j, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x k₁ i q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j i q
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![p, q, k₁]))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2494,9 +2500,9 @@ private lemma lc0_d1r (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![m, j, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l₁ i q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q k₁)))))
       + ((∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2506,9 +2512,9 @@ private lemma lc0_d1r (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![j, m, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l₁ i q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2518,17 +2524,17 @@ private lemma lc0_d1r (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![j, m, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g_bg x k₁ l₁ q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q i))))
         - (∑ w : Fin (Module.finrank ℝ E),
           (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix
           (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x a b *
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x a b w (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x a b w
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x a b w
           (extChartAt I x x))) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![j, i, w])
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2538,17 +2544,17 @@ private lemma lc0_d1r (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![m, i, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x k₁ j q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x i j q (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x i j q
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j q
           (extChartAt I x x)) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![p, q, k₁]))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2558,17 +2564,17 @@ private lemma lc0_d1r (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![m, i, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l₁ j q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q k₁)))))
       + (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j i q
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![q, p, k₁]))) =
       DeTurckCoefficients.LieCorr0NF.d1RF (lc0Ig (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x)
@@ -2754,9 +2760,9 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![i, m, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l₁ j q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2766,17 +2772,17 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![i, m, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g_bg x k₁ l₁ q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q j))))
         - (∑ w : Fin (Module.finrank ℝ E),
           (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix
           (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x a b *
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x a b w (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x a b w
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x a b w
           (extChartAt I x x))) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![i, j, w])
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2786,17 +2792,17 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![m, j, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x k₁ i q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x k₁ i q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ i q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j i q
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![p, q, k₁]))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2806,9 +2812,9 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![m, j, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l₁ i q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q k₁)))))
       + ((∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2818,9 +2824,9 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![j, m, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x l₁ i q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l₁ i q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ i q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q k₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2830,17 +2836,17 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![j, m, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x k₁ l₁ q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g_bg x k₁ l₁ q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g_bg x k₁ l₁ q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q i))))
         - (∑ w : Fin (Module.finrank ℝ E),
           (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), chartInvGramMatrix
           (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x a b *
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x a b w (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x a b w
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x a b w
           (extChartAt I x x))) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![j, i, w])
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2850,17 +2856,17 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![m, i, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x k₁ j q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x k₁ j q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x k₁ j q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q l₁))))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x i j q (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x i j q
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j q
           (extChartAt I x x)) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![p, q, k₁]))
         - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E), ∑ l₁ : Fin
@@ -2870,80 +2876,80 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
           (arm1ReadoutCovDeriv (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x
           ![m, i, p] *
           (∑ q : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+            (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x l₁ j q (extChartAt I x x) -
-            DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l₁ j q
+            DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l₁ j q
             (extChartAt I x x)) * DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) x x q k₁)))))
       + (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x k₁ p *
           (∑ q : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I)
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) x j i q (extChartAt I x x) -
-          DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j i q
+          DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i q
           (extChartAt I x x)) * arm1ReadoutCovDeriv (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![q, p, k₁])))
           - (∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E), chartInvGramMatrix
             (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x k₁ l *
         ((-(∑ r : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l j r
+          (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l j r
           (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv (E := E)
           i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁) (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l k₁ r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l k₁ r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j r)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x i l r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i l r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j k₁)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x i j r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x i k₁ r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i k₁ r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x j r)
             (extChartAt I x x))))
          + (-(∑ r : Fin (Module.finrank ℝ E),
-           (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l i r
+           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l i r
            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
            (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
            (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x l k₁ r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x l k₁ r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i r)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j l r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j l r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i k₁)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j i r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j i r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j k₁ r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j k₁ r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) l (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x i r)
             (extChartAt I x x))))
          - (-(∑ r : Fin (Module.finrank ℝ E),
-           (DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j l r
+           (DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j l r
            (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
            (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
            (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x j k₁ r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x j k₁ r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) i (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l r)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x i j r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i j r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) r (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l k₁)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x i l r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i l r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x r k₁)
             (extChartAt I x x)
-          + DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel (I := I) g₀ x i k₁ r
+          + DifferentialGeometry.Geometry.Operator.chartChristoffel (I := I) g₀ x i k₁ r
             (extChartAt I x x) * DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
             (E := E) j (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x l r)
             (extChartAt I x x))))))) := by
@@ -2971,6 +2977,6 @@ theorem lie0_order0_eq (hδ_lt : δ < 1)
 
 end LieCorr0MasterValue
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

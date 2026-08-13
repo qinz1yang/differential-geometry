@@ -313,7 +313,7 @@ lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
 theorem MemWkpChart_smooth_mul
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (φ : C^∞⟮I, M; ℝ⟯) {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k p u) :

@@ -1,16 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLinear
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammProduct
 
-/-!
-# Koch--Lamm source assembly for harmonic-map heat flow
-
-The local-addition harmonic-map heat equation has two analytically different
-right-hand-side arms.  A small bounded coefficient multiplies the gradient in
-the divergence arm, while a bounded bilinear coefficient produces an ordinary
-quadratic-gradient source.  This file packages the two already-proved
-Koch--Lamm estimates into the exact split source consumed by a heat potential.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -31,10 +21,6 @@ variable {U G F H : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F]
   [NormedAddCommGroup H] [NormedSpace ℝ H]
 
-/-- The principal flux and quadratic-gradient term of a harmonic-map heat
-iterate form one Koch--Lamm split source.  The principal radii retain the
-small coefficient `ε`; the quadratic radii are genuinely quadratic in the
-two gradient controls. -/
 theorem klHmf_split {T : ℝ} {A₀ A₂ Aₚ ε K : ℝ≥0}
     (A : ℝ × V → G →L[ℝ] H)
     (Q : ℝ × V → G →L[ℝ] G →L[ℝ] F)

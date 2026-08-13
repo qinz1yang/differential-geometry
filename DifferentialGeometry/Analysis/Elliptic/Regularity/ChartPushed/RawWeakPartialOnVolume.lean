@@ -37,7 +37,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def chartPushedRawPartial
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -46,7 +46,7 @@ noncomputable def chartPushedRawPartial
     (fderiv ℝ (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α v.toFun) y)
       (EuclideanSpace.single j 1)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
 @[simp] lemma chartPushedRawPartial_def
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -58,29 +58,23 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactS
 structure ChartPushedRawPartialLipschitz
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) where
-
   C : ℝ
-
   C_nonneg : 0 ≤ C
-
   memLp : ∀ v : SmoothScalar g,
     MemLp (chartPushedRawPartial (I := I) (M := M) g α j v) 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
-
   bound : ∀ v : SmoothScalar g,
     eLpNorm (chartPushedRawPartial (I := I) (M := M) g α j v) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) ≤
       ENNReal.ofReal C * (‖v‖₊ : ℝ≥0∞)
-
   add : ∀ v w : SmoothScalar g,
     chartPushedRawPartial (I := I) (M := M) g α j (v + w) =ᵐ[
         (chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
       fun y => chartPushedRawPartial (I := I) (M := M) g α j v y +
         chartPushedRawPartial (I := I) (M := M) g α j w y
-
   smul : ∀ (c : ℝ) (v : SmoothScalar g),
     chartPushedRawPartial (I := I) (M := M) g α j (c • v) =ᵐ[
         (chartPulledWeightedMeasure (I := I) g α).restrict

@@ -30,7 +30,7 @@ open DifferentialGeometry.Tensor.Tensor0SRiemannianBundle
 open DifferentialGeometry.Tensor.Tensor0SInnerSectionContinuity
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Tensor.TensorRSRiemannianBundle
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -370,7 +370,7 @@ open DifferentialGeometry.Tensor.Tensor0SInnerSectionContinuity
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Tensor.TensorRSRiemannianBundle
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]

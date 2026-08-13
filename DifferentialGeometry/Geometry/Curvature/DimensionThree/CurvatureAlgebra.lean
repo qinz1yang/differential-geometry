@@ -1,27 +1,8 @@
 import Mathlib.Tactic
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 open scoped BigOperators
 
@@ -38,12 +19,6 @@ def stdRicci3 (R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real)
 def stdScalar3 (R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real) : Real :=
   stdRicci3 R 0 0 + stdRicci3 R 1 1 + stdRicci3 R 2 2
 
-
-
-
-
-
-
 def stdRiemannFromRicciRhs3
     (R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real)
     (i j k l : Fin 3) : Real :=
@@ -53,11 +28,6 @@ def stdRiemannFromRicciRhs3
     + delta3 j l * stdRicci3 R i k
     - (1 / 2 : Real) * stdScalar3 R *
         (delta3 i k * delta3 j l - delta3 i l * delta3 j k)
-
-
-
-
-
 
 def displayedRiemannFromRicciRhs3
     (R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real)
@@ -74,8 +44,6 @@ def stdRiemannFromRicciResidual3
     (R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real)
     (i j k l : Fin 3) : Real :=
   R i j k l - stdRiemannFromRicciRhs3 R i j k l
-
-
 
 structure AlgebraicCurvatureSymmetries3
     (R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real) : Prop where
@@ -135,8 +103,6 @@ private theorem displayedRiemannFromRicciRhs3_eq_neg_stdRhs
     simp [displayedRiemannFromRicciRhs3, stdRiemannFromRicciRhs3, stdScalar3,
       delta3, hRic_symm] <;> ring
 
-
-
 theorem tensor04_fin3_eq_zero_of_ordered_pair_components
     (T : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real)
     (h_anti_first : forall i j k l, T j i k l = -T i j k l)
@@ -166,9 +132,6 @@ theorem tensor04_fin3_eq_zero_of_ordered_pair_components
       have hlast := h_anti_last j i l k
       have h0 := h_components j i l k hji_lt hlk_lt
       linarith
-
-
-
 
 theorem tensor04_fin3_eq_zero_of_ordered_block_components
     (T : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real)
@@ -200,11 +163,6 @@ theorem tensor04_fin3_eq_zero_of_ordered_block_components
         exact (h_block i j k l).symm
       _ = 0 := h_components k l i j hkl hij hswap_lex
 
-
-
-
-
-
 structure RiemannFromRicci3DResidualPackage
     (R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real) : Prop where
   anti_first : forall i j k l,
@@ -222,9 +180,6 @@ structure RiemannFromRicci3DResidualPackage
   c0202 : stdRiemannFromRicciResidual3 R 0 2 0 2 = 0
   c0212 : stdRiemannFromRicciResidual3 R 0 2 1 2 = 0
   c1212 : stdRiemannFromRicciResidual3 R 1 2 1 2 = 0
-
-
-
 
 theorem residual_package_of_algebraic_curvature_symmetries3
     {R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real}
@@ -309,8 +264,6 @@ private theorem residual_ordered_components_of_package
     | simpa using pkg.c0212
     | simpa using pkg.c1212
 
-
-
 theorem stdRiemannFromRicci3D_of_residual_package
     {R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real}
     (pkg : RiemannFromRicci3DResidualPackage R) :
@@ -325,21 +278,12 @@ theorem stdRiemannFromRicci3D_of_residual_package
   unfold stdRiemannFromRicciResidual3 at hz
   linarith
 
-
-
 theorem stdRiemannFromRicci3D_of_algebraic_curvature_symmetries
     {R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real}
     (h : AlgebraicCurvatureSymmetries3 R) :
     forall i j k l, R i j k l = stdRiemannFromRicciRhs3 R i j k l :=
   stdRiemannFromRicci3D_of_residual_package
     (residual_package_of_algebraic_curvature_symmetries3 h)
-
-
-
-
-
-
-
 
 theorem displayedRiemannFromRicci3D_of_algebraic_curvature_symmetries
     {R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real}
@@ -353,4 +297,4 @@ theorem displayedRiemannFromRicci3D_of_algebraic_curvature_symmetries
   have hrhs := displayedRiemannFromRicciRhs3_eq_neg_stdRhs hRic_symm i j k l
   linarith
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

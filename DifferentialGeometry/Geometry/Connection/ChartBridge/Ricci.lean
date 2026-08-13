@@ -1,14 +1,16 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Riemann
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 open Bundle Manifold Set FiberBundle
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -306,5 +308,5 @@ theorem ricciFun_eq_ricciTensor_of_basis_identity [I.Boundaryless]
   exact ricciTensor_symm (I := I) g x w v
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

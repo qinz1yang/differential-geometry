@@ -1,15 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Metric comparison along a Ricci flow
-
-This file gives the closed-time-slab metric comparison needed to transport
-Riemannian completeness from the left endpoint of a Ricci-flow slab.
--/
 
 noncomputable section
 
@@ -17,8 +13,8 @@ universe u uE uH
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Set Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle Set DifferentialGeometry.Tensor0SBundle
+
 open scoped Manifold ContDiff Bundle Topology
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -72,8 +68,6 @@ private theorem deriv_Ici_start
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- A Ricci-flow solution satisfies the metric PDE on a closed slab, with a
-one-sided derivative at its left endpoint. -/
 theorem metricPDE_Icc
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -123,18 +117,16 @@ theorem metricPDE_Icc
       let τ : RealTimeInterval.RegularTime D :=
         ⟨s, hreg ⟨hs.1, hs.2.le⟩⟩
       have hraw := metricDerivAt (I := I) S hS τ x v w
-      simpa [SolutionFamily.ricciAt, metricRicciAt,
-        metricRicciAt_apply_eq_ricciTensor] using hraw.hasDerivWithinAt
+      simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor,
+        DifferentialGeometry.ricciCurvatureAt_leviCivita_apply_eq_ricciTensor] using
+        hraw.hasDerivWithinAt
     exact (deriv_Ici_start hab _ _ (hmetricCont x v w) hecont hint).mono
       (fun _ hs ↦ hs.1)
   · let τ : RealTimeInterval.RegularTime D :=
       ⟨t, hreg ⟨hat, ht.2⟩⟩
     have hraw := metricDerivAt (I := I) S hS τ x v w
-    simpa [SolutionFamily.ricciAt, metricRicciAt,
-      metricRicciAt_apply_eq_ricciTensor] using hraw.hasDerivWithinAt
+    simpa [SolutionFamily.ricciAt, metricRicciAt_apply_eq_ricciTensor] using hraw.hasDerivWithinAt
 
-/-- A bound on the logarithmic ratio of two positive numbers gives
-multiplicative exponential bounds. -/
 theorem exp_bounds_log
     {fa fb R : Real} (hfa : 0 < fa) (hfb : 0 < fb)
     (hlog : |Real.log fb - Real.log fa| ≤ R) :
@@ -160,8 +152,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompleteSpace E]
   [IsManifold I 1 M]
   [SigmaCompactSpace M] in
-/-- A quadratic Ricci bound gives pointwise exponential comparison with the
-metric at the left endpoint of a closed time slab. -/
 theorem metricEquiv_Icc
     (g : Real → SmoothRiemannianMetric I M)
     {a b K : Real}
@@ -276,8 +266,6 @@ private theorem metric_pair_Icc
       And.intro hleft hright
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-/-- On a Ricci-bounded closed time slab, Riemannian extended distance from a
-fixed point is jointly continuous in time and the moving endpoint. -/
 theorem edistCont_Icc
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -354,8 +342,6 @@ theorem edistCont_Icc
       (Real.exp_pos _) (fun y v ↦ (hpair y v).2) O q.2
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- A globally Ricci-bounded solution remains complete on every slice of a
-closed time slab when its left endpoint is complete. -/
 theorem complete_of_ricBound
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

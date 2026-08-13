@@ -2,17 +2,9 @@ import DifferentialGeometry.Geometry.Comparison.HalfSqDistGrad
 import DifferentialGeometry.Geometry.Comparison.Variation.MinimalGeodesicNoConjugate
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Nonconjugacy along a shifted minimizing tail
-
-This module transports the interior no-conjugate theorem to a fixed early point
-of a minimizing intrinsic geodesic.  The endpoint case is obtained by reversing
-the tail; the closed-tail statement combines it with ordinary interior
-nonconjugacy.
--/
 
 open Set Function Manifold Bundle
 open scoped Manifold ContDiff ENNReal
@@ -75,8 +67,7 @@ private theorem tailCurve_eq
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (O : M) (v : TangentSpace I O) (s₀ : ℝ) :
     let γ := intrinsicGeodesic (I := I) g hEnorm O v
     let z := intrinsicVelocityLift (I := I) g hEnorm O v s₀
@@ -128,8 +119,7 @@ private theorem tailVel_one
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (O : M) (v : TangentSpace I O) (s₀ : ℝ) :
     let z := intrinsicVelocityLift (I := I) g hEnorm O v s₀
     let uTail : TangentSpace I z.proj := (1 - s₀) • z.snd
@@ -162,15 +152,12 @@ omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space (TangentBundle I M)] in
-/-- Every initial segment of a finite-distance minimizing intrinsic radial
-geodesic has the expected fraction of the total endpoint distance. -/
 theorem minSeg_edist
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {O x : M} {r : ℝ} (v : TangentSpace I O)
     (hexp : expMapIntrinsic (I := I) g hEnorm O v = x)
     (hlen : Real.sqrt (g.inner O v v) = r)
@@ -235,8 +222,7 @@ private theorem minTail_edist
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {O x : M} {r : ℝ} (v : TangentSpace I O)
     (hexp : expMapIntrinsic (I := I) g hEnorm O v = x)
     (hlen : Real.sqrt (g.inner O v v) = r)
@@ -287,15 +273,12 @@ private theorem minTail_edist
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The shifted tail of a finite-distance minimizing intrinsic geodesic is
-nonconjugate at its terminal vector. -/
 theorem tail_not_conj_of_min
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {O x : M} (v : TangentSpace I O)
     (hexp : expMapIntrinsic (I := I) g hEnorm O v = x)
     (hlen :
@@ -433,15 +416,12 @@ theorem tail_not_conj_of_min
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Every positive radial vector on the closed shifted tail of a
-finite-distance minimizing intrinsic geodesic is nonconjugate. -/
 theorem tail_no_conj
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {O x : M} (v : TangentSpace I O)
     (hexp : expMapIntrinsic (I := I) g hEnorm O v = x)
     (hlen :

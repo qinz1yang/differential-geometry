@@ -5,16 +5,16 @@ noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Topology Metric Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter Topology Metric DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -139,6 +139,6 @@ theorem iteratedCovGrad_toSobolev_embedding_C2_of_rankBound
   exact iteratedCovGrad_toSobolev_embedding_Cm_of_rankBound (I := I) (M := M)
     g 0 2 k 2 h_super' Cred h_rank
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Sobolev
 
 end

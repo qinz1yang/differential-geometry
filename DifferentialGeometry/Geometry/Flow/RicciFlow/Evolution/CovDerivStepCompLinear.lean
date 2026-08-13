@@ -1,16 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedNablaRmTower
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 

@@ -1,26 +1,13 @@
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
+open DifferentialGeometry.Geometry.Curvature
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Integral.Connection
+
 open CovariantDerivative
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -29,10 +16,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [I.Boundaryless]
-
-
-
-
 
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in

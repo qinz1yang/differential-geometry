@@ -1,13 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautUniform
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotentialPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjPotential
-
-
-
-
-
-
-
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -18,9 +13,9 @@ namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -28,13 +23,9 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
-
-
-
-
 
 theorem scalar_crit_tame
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
@@ -77,7 +68,7 @@ theorem scalar_crit_tame
                         (v.coeff i) ^ 2) := by
   classical
   obtain ⟨tau, htau, htau_one, hreg, hA2⟩ :=
-    cc_a2_unif (I := I) (M := M) S.family hS.smoothMetric T
+    cc_a2_unif (I := I) (M := M) S.family.metric hS.smoothMetric T
   let K : Set Real := Set.Icc (0 : Real) tau
   let R : Set Real := {s : Real | (T : Real) - s ∈ D.regular}
   let zeta : Real → C^∞⟮I, M; Real⟯ := fun s =>

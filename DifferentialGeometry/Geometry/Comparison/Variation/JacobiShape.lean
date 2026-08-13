@@ -1,13 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MatrixRiccati
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
-
-/-!
-# Shape matrices of Jacobi families
-
-This file packages the shape matrix of a linearly independent Jacobi family
-and derives its trace Riccati equation.  The remaining geometric projection
-identity is kept as an explicit hypothesis of the final theorem.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -31,29 +24,25 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-/-- Gram matrix of the covariant derivatives of a finite field family. -/
 def curveDerivGram (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : Matrix ι ι ℝ :=
   Matrix.of fun i j =>
     g.inner (γ t) (covDerivAlong (I := I) g γ (V i) t)
       (covDerivAlong (I := I) g γ (V j) t)
 
-/-- Curvature matrix of a finite family along a curve. -/
 def curveCurvGram (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : Matrix ι ι ℝ :=
   Matrix.of fun i j =>
     g.inner (γ t)
-      ((DifferentialGeometry.Integral.Connection.riemannOp
-        (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+      ((DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
         (V i t) (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t))
       (V j t)
 
-/-- Shape matrix of a linearly independent field family. -/
 def curveShape (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : Matrix ι ι ℝ :=
   (curveGram (I := I) g γ V t)⁻¹ * curveMixedGram (I := I) g γ V t
 
-/-- Mean-curvature trace of a linearly independent field family. -/
 def curveMean (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : ℝ :=
   trace (curveShape (I := I) g γ V t)
@@ -61,8 +50,6 @@ def curveMean (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
 omit [Fintype ι] [DecidableEq ι] in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- For pointwise Jacobi fields, the mixed Gram derivative is curvature plus
-the derivative-field Gram matrix. -/
 theorem mixedDeriv_eq
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -77,8 +64,6 @@ theorem mixedDeriv_eq
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
-/-- If the covariant derivatives have coefficient matrix `a`, Wronskian
-symmetry identifies the mixed Gram matrix with `G * aᵀ`. -/
 theorem mixed_eq_gram_mul
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -100,8 +85,6 @@ theorem mixed_eq_gram_mul
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- The shape matrix is the transpose of any coefficient matrix expanding the
-covariant derivatives in a linearly independent Wronskian-symmetric family. -/
 theorem shape_eq_coeff
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -118,9 +101,6 @@ theorem shape_eq_coeff
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- If the covariant derivatives remain in the span of a linearly independent
-Wronskian-symmetric family, their Gram matrix is the shape projection
-`M G⁻¹ M`. -/
 theorem derivGram_eq_proj
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -158,8 +138,6 @@ theorem derivGram_eq_proj
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
-/-- A maximal linearly independent family in the orthogonal complement of a
-nonzero vector spans every vector perpendicular to that vector. -/
 theorem exists_perp_coeff
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -216,7 +194,6 @@ theorem exists_perp_coeff
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
-/-- Covariant-derivative specialization of `exists_perp_coeff`. -/
 theorem exists_deriv_coeff
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -235,8 +212,6 @@ theorem exists_deriv_coeff
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- Trace Riccati equation for a Jacobi family, conditional only on the exact
-projection identity for its derivative-field Gram matrix. -/
 theorem hasDerivAt_mean
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -286,8 +261,6 @@ theorem hasDerivAt_mean
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- Trace Riccati equation when the Jacobi family and its covariant derivative
-fill the orthogonal complement of a nonzero vector. -/
 theorem hasDerivAt_mean_perp
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)

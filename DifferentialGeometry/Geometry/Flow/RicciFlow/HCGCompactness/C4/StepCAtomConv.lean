@@ -1,14 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1Producers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBLocalMetrics
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCAtoms
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -24,9 +18,6 @@ section QuadraticReadout
 
 variable {X : Type uX} [NormedAddCommGroup X] [NormedSpace Real X]
 variable {V : Type uV} [NormedAddCommGroup V] [NormedSpace Real V]
-
-
-
 
 theorem mapCInf_comp_fd {Y Z : Type*}
     [NormedAddCommGroup Y] [NormedSpace Real Y] [FiniteDimensional Real Y]
@@ -46,8 +37,6 @@ theorem mapCInf_comp_fd {Y Z : Type*}
   letI : ProperSpace Y := FiniteDimensional.proper Real Y
   exact MapCInfConvOnCompacts.comp hU hW hB hA hBc hBinfc hAc hAinfc hmap hmapk
 
-
-
 theorem mapCInf_constArg {Y F : Type*}
     [NormedAddCommGroup Y] [NormedSpace Real Y] [ProperSpace Y]
     [NormedAddCommGroup F] [NormedSpace Real F]
@@ -64,19 +53,15 @@ theorem mapCInf_constArg {Y F : Type*}
     (fun _ => contDiffOn_const) contDiffOn_const hAc hAinfc
     (fun _ _ => hy0) (fun _ _ _ => hy0)
 
-
 def quadRead (B : X -> (V →L[Real] V →L[Real] Real))
     (v : X -> V) (x : X) : Real :=
   B x (v x) (v x)
-
 
 theorem quadRead_contDiff {B : X -> (V →L[Real] V →L[Real] Real)}
     {v : X -> V} {n : WithTop ℕ∞}
     (hB : ContDiff Real n B) (hv : ContDiff Real n v) :
     ContDiff Real n (quadRead B v) := by
   exact (hB.clm_apply hv).clm_apply hv
-
-
 
 theorem quadRead_conv
     [FiniteDimensional Real V]
@@ -104,8 +89,6 @@ theorem quadRead_conv
     (fun _ => heval.contDiffOn) heval.contDiffOn
     (Set.mapsTo_univ _ _) (fun _ => Set.mapsTo_univ _ _)
   exact hcomp
-
-
 
 theorem quadBump_conv
     [FiniteDimensional Real V]
@@ -135,8 +118,6 @@ theorem quadBump_conv
     hqc hqinfc (fun _ => hf.contDiffOn) hf.contDiffOn
     (Set.mapsTo_univ _ _) (fun _ => Set.mapsTo_univ _ _)
 
-
-
 theorem mapCInf_apply {ι Q : Type*} [Fintype ι]
     [NormedAddCommGroup Q] [NormedSpace Real Q]
     {U : Set X} (hU : IsOpen U)
@@ -162,9 +143,6 @@ theorem mapCInf_apply {ι Q : Type*} [Fintype ι]
   rw [iteratedFDeriv_pi hcd le_rfl, ContinuousMultilinearMap.opNorm_pi] at hbase
   exact (norm_le_pi_norm (fun j =>
     iteratedFDeriv Real r (fun y => u k y j - uinf y j) x) i).trans hbase
-
-
-
 
 theorem quadPiBump_conv {ι : Type*} [Fintype ι]
     [FiniteDimensional Real V]
@@ -282,9 +260,6 @@ theorem cutRaw_sum_half {a : ι -> X -> Real} {i0 : ι} {x : X}
     exact hjraw.trans
       (Finset.single_le_sum (fun q _ => hrawnn q) (Finset.mem_univ j))
 
-
-
-
 theorem cutWeights_conv {U : Set X} (hU : IsOpen U)
     {a : Nat -> ι -> X -> Real} {ainf : ι -> X -> Real}
     (hconv : forall i, MapCInfConvOnCompacts U (fun k => a k i) (ainf i))
@@ -345,9 +320,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On a normal-chart overlap, the intrinsic quadratic bump is the
-scalar bump applied to the origin metric coefficient and the normal
-transition vector. -/
 theorem quadNormal_readout
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
     (f : ContDiffBump (0 : Real)) {z : E}
@@ -377,7 +349,6 @@ theorem quadNormal_readout
     normalMetric_zero (I := I) Y gamma]
   rfl
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem stepCAtom_readout
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
@@ -402,7 +373,6 @@ theorem stepCAtom_readout
           (normalTransition (I := I) Y beta gamma z)) := by
   exact quadNormal_readout (I := I) Y beta gamma (stepCBump lam hlam) hsrc
 
-/-- Pull one Step-C atom back by the exponential-side chart at `beta`. -/
 noncomputable def stepCAtomChart
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
     (lam : Real) (hlam : 0 < lam) (z : E) : Real :=
@@ -413,19 +383,12 @@ noncomputable def stepCAtomChart
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   stepCAtom Y gamma lam hlam (expMapDiffeo (I := I) Y.metric beta z)
 
-
-
-
-
-
 noncomputable def seqCenterD
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (k gamma : Nat) : (X.obj (L.φ k)).M :=
   (seqCenter hd D P (L.φ k) gamma).getD (X.obj (L.φ k)).basepoint
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem seqCenterD_dist_eq
@@ -442,8 +405,6 @@ theorem seqCenterD_dist_eq
   cases OrderedNet.netCenter (X.obj (L.φ k)).basepoint (hd.lambda D)
       (hd.lambda_continuous D) gamma <;> simp
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 @[simp] theorem seqCenterD_subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -453,15 +414,12 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
     (k gamma : Nat) :
     seqCenterD hd P (L.subseq hψ) k gamma = seqCenterD hd P L (ψ k) gamma := rfl
 
-
-
 def LiveSlot
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) :=
   {gamma : Fin (pb.A r) // L.alive (gamma : Nat) = true}
-
 
 noncomputable instance liveSlotFintype
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -472,8 +430,6 @@ noncomputable instance liveSlotFintype
   letI : Finite (LiveSlot L pb r) :=
     Finite.of_injective (fun gamma : LiveSlot L pb r => gamma.1) Subtype.val_injective
   exact Fintype.ofFinite (LiveSlot L pb r)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem seqCenterD_some
@@ -487,8 +443,6 @@ theorem seqCenterD_some
   | none => simp [hc] at h
   | some c => simp [seqCenterD, hc]
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem seqCenterD_live
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -499,7 +453,6 @@ theorem seqCenterD_live
       seqCenter hd D P (L.φ k) gamma = some (seqCenterD hd P L k gamma) :=
   (L.alive_eventually gamma).mono fun k hk =>
     seqCenterD_some hd P L k gamma (hk.trans hgamma)
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem seqCenter_dead
@@ -513,9 +466,6 @@ theorem seqCenter_dead
     | none => rfl
     | some c => simp [hc, hgamma] at hk
 
-/-- Pull one ordered-net atom back by the exponential-side chart at
-`beta`. The wrapper installs the bundled manifold instances hidden in the
-sequence. -/
 noncomputable def seqAtomChart
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
@@ -531,7 +481,6 @@ noncomputable def seqAtomChart
     (X.obj (L.φ k)).t2TangentBundle
   seqAtom hd hD P L pb r k gamma
     (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem seqAtomChart_subseq
@@ -553,8 +502,6 @@ omit [NeZero (Module.finrank ℝ E)] in
       rfl
   | some c => congr
 
-/-- Pulling a globally smooth ordered-net atom back by an exponential-side
-chart is smooth on every set contained in its intrinsic source-radius ball. -/
 theorem seqAtomChart_smooth
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
@@ -584,8 +531,6 @@ theorem seqAtomChart_smooth
     (seqAtom_contMDiff (I := I) hd hD P L pb r k hgp gamma).comp_contMDiffOn
       ((expMapDiffeo_contMDiffOn_expBall (I := I) (X.obj (L.φ k)) (beta k)).mono hUx)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem seqAtom_live_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -614,8 +559,6 @@ theorem seqAtom_live_conv
     (seqAtom_some hd hD P L pb r k gamma hk)
     (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem seqAtom_dead_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -634,8 +577,6 @@ theorem seqAtom_dead_conv
   filter_upwards [seqCenter_dead hd P L (gamma : Nat) hgamma] with k hk
   intro z _hz
   simp [seqAtomChart, seqAtom_none hd hD P L pb r k gamma hk]
-
-
 
 theorem atom_disjoint_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -671,10 +612,6 @@ theorem atom_disjoint_conv
     (seqAtom_mem_hat hd hD P L pb r k hgpK gamma (by
       simpa only [seqAtomChart] using hne))
 
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem seqAtoms_conv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -701,9 +638,6 @@ theorem seqAtoms_conv
       simpa only [hgamma, ↓reduceIte] using
         seqAtom_live_conv (I := I) hd hD P L pb r beta gamma hU hgamma
           (hlive gamma hgamma)
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem stepCAtom_conv {ι : Type*} [Fintype ι]
@@ -744,10 +678,6 @@ theorem stepCAtom_conv {ι : Type*} [Fintype ι]
   simpa only [stepCAtomChart] using
     (stepCAtom_readout (I := I) (X.obj k) (beta k) (center i k)
       (lam i) (hlam i) (hsrc i k z hz))
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem existsOriginMetric
@@ -790,9 +720,6 @@ theorem existsOriginMetric
   simpa only [g0, Set.mem_univ, forall_const] using
     (exists_metricLimit_on (E := E) isOpen_univ g0 hsmooth hbdd hequiv)
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem existsMetric0Univ {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -831,9 +758,6 @@ theorem existsMetric0Univ {ι : Type*} [Fintype ι]
     exists_cInf_subseq_on isOpen_univ g0 hsmooth hbdd
   simpa only [g0] using ⟨phi, gInf, hphi, hginf, hconv⟩
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem existsLiveMetric0
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -857,8 +781,6 @@ theorem existsLiveMetric0
     existsMetric0Univ (I := I) input' c
   refine ⟨psi, gInf, hpsi, hginf, ?_⟩
   simpa only [X', c, PointedRiemannianSeq.subseq] using hconv
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem liveMetric0_equiv

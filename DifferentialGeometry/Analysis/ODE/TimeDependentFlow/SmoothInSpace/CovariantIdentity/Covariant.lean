@@ -1,12 +1,13 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.Transport
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Bundle
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 
 section OrbitValue
@@ -92,4 +93,4 @@ theorem rawVariationalIdentity_of_chartFlow_innerCLM
 
 end Assembly
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

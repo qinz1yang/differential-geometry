@@ -1,17 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.TimeRecursion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.ResidualLedger
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Hamilton
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Arbitrary-dimensional curvature-residual costs
-
-Explicit constructor-tree costs for the direct curvature-tower producer.  The
-definitions generalize the checked dimension-three recurrence without claiming
-that the corresponding arbitrary-dimensional residual theorem is already
-proved.
--/
 
 noncomputable section
 
@@ -19,12 +12,10 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped Manifold ContDiff BigOperators
 
-/-- Direct reaction coefficient obtained from the whole residual estimate. -/
 def rmTowerCost (d k : ℕ) : Real :=
   2 * Real.sqrt (Fintype.card (Fin (4 + k) -> Fin d) : Real) *
     (((4 + k : Nat) : Real) * (d : Real) ^ 2 + rmResidualCost d k)
 
-/-- The direct tower reaction coefficient is nonnegative. -/
 theorem rmTowerCost_nonneg (d k : ℕ) :
     0 ≤ rmTowerCost d k := by
   have hres := rmResidualCost_nonneg d k
@@ -38,13 +29,11 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless]
   [SigmaCompactSpace M] in
-/-- The level-zero curvature reaction has the same explicit constructor cost
-for every finite orthonormal-frame index type. -/
 theorem e0Field_cost_any {Idx : Type*} [Fintype Idx]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     StarSum2Cost (I := I) Idx S t 0 (e0Field (I := I) S t)
@@ -63,17 +52,13 @@ theorem e0Field_cost_any {Idx : Type*} [Fintype Idx]
   norm_num
   ring
 
-/-- Compatibility alias for the canonical Hamilton reaction encoded by the
-eight generators of `e0Field`. -/
 def rmBaseReact {Idx : Type*} [Fintype Idx]
     (R : (Fin 4 -> Idx) -> Real) (m : Fin 4 -> Idx) : Real :=
-  DifferentialGeometry.Integral.Connection.hamiltonRmReact R m
+  DifferentialGeometry.Geometry.Connection.hamiltonRmReact R m
 
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless]
   [SigmaCompactSpace M] in
-/-- In every finite orthonormal frame, `e0Field` realizes the explicit
-arbitrary-dimensional quadratic curvature reaction. -/
 theorem e0Field_comp_any {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -101,13 +86,10 @@ theorem e0Field_comp_any {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     drStar4 (I := I) S t basis horth m]
   rfl
 
-/-- The generic gamma cost specializes to the checked dimension-three cost. -/
 theorem rmGammaCost_three (k : ℕ) :
     rmGammaCost 3 k = gammaStarCost k := by
   norm_num [rmGammaCost, gammaStarCost]
 
-/-- The generic residual ledger specializes exactly to the checked
-dimension-three constructor ledger. -/
 theorem rmResidualCost_three (k : ℕ) :
     rmResidualCost 3 k = resStarCost k := by
   induction k with

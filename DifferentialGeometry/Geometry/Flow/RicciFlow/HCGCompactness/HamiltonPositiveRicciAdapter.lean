@@ -1,18 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicciFlowConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivPullbackCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonPositiveRicci
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -32,9 +25,6 @@ variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
-
-
-
 
 def cghToHam3
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
@@ -74,8 +64,6 @@ def cghToHam3
   cgh := hconv
   sourceToOrig := toOrig
   limitComplete := hcomplete
-
-
 
 structure Ham3SourceLink
     {g0 : SmoothRiemannianMetric I M}
@@ -122,8 +110,6 @@ structure Ham3SourceLink
     (X.term i).S.scalar 0 (X.term i).basepoint =
       ham3RescaledScalar (I := I) P Q (origIndex i) 0 (Q.point (origIndex i))
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem Ham3SourceLink.realizes
     {g0 : SmoothRiemannianMetric I M}
@@ -150,9 +136,6 @@ theorem Ham3SourceLink.realizes
   · intro i t ht
     simpa [cghToHam3] using hsource.metric_eq i t ht
 
-
-
-
 def HamCGHConclusion
     {g0 : SmoothRiemannianMetric I M}
     (P : Ham3FlowPackage (I := I) (M := M) g0)
@@ -172,11 +155,6 @@ def HamCGHConclusion
        Ham3RicNonnegTransfer (I := I) (M := M) P Q hsel Lh /\
          LimitScalarPos (I := I) (M := M) Lh /\
          Ham3PinchTransfer (I := I) (M := M) P Q hsel Lh)
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem baseScalarConv_of_smoothCGH
@@ -223,14 +201,12 @@ theorem baseScalarConv_of_smoothCGH
           simpa using hsource.baseScalar (subseq k)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Smooth CGH convergence transfers the time-zero improved-pinching decay to
-the limit trace-free Ricci norm. -/
 theorem tf_decay0_of_cgh
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
     (P : Ham3FlowPackage (I := I) (M := M) g0)
     (hD : P.D =
-      DifferentialGeometry.Integral.Connection.RealTimeInterval.closedOpen
+      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : Ham3BlowupData M)
     (hsel : Ham3PointSel (I := I) P Q)
@@ -345,16 +321,13 @@ theorem tf_decay0_of_cgh
   exact hsmall 0 h0
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The genuine time-zero smooth-CGH scalar and Ricci-norm convergence,
-Hamilton's improved pinching estimate, and the basepoint normalization make
-the retained limit slice a positive constant-curvature metric. -/
 theorem round0_of_cgh
     {omega : Real} (h0omega : 0 < omega)
     (hdim : Module.finrank Real E = 3)
     {g0 : SmoothRiemannianMetric I M}
     (P : Ham3FlowPackage (I := I) (M := M) g0)
     (hD : P.D =
-      DifferentialGeometry.Integral.Connection.RealTimeInterval.closedOpen
+      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : Ham3BlowupData M)
     (hsel : Ham3PointSel (I := I) P Q)
@@ -398,8 +371,6 @@ theorem round0_of_cgh
         h0 hsubseq hconv hcomplete)
   have hbaseOne : LimitBaseScalarOne (I := I) (M := M) Lh :=
     limit_base_scalar_one (I := I) (M := M) P Q hsel hbaseConv
-  -- `Lh` is `let`-bound, so its instance-implicit structure fields are not picked
-  -- up by synthesis; install them explicitly for the evaluations below.
   letI : TopologicalSpace Lh.N := Lh.topology
   letI : ChartedSpace H Lh.N := Lh.charted
   letI : IsManifold I ∞ Lh.N := Lh.smooth
@@ -421,8 +392,6 @@ theorem round0_of_cgh
     hbasePos heinstein
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- A compactness conclusion from the new HCG interface supplies the old
-Hamilton Section 12 black-box conclusion. -/
 theorem toHam3Exists
     {g0 : SmoothRiemannianMetric I M}
     (P : Ham3FlowPackage (I := I) (M := M) g0)

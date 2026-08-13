@@ -1,21 +1,23 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculusRS
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SecondOrderHomBundle
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensorRSRiemannian
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -49,7 +51,6 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
   exact ContinuousLinearMap.instT2Space
 
 set_option backward.isDefEq.respectTransparency false in
-
 def homTensorRSApplyFib (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (Ψ : Π x : M, TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x)
     (W : SmoothCcTensor g r a) (x : M) :
@@ -57,7 +58,6 @@ def homTensorRSApplyFib (g : SmoothRiemannianMetric I M) (r a c : ℕ)
   Ψ x (W.toSection x)
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem appFullRSFib_contMDiff (g : SmoothRiemannianMetric I M) (r a c : ℕ)
@@ -73,7 +73,6 @@ theorem appFullRSFib_contMDiff (g : SmoothRiemannianMetric I M) (r a c : ℕ)
   ContMDiff.clm_bundle_apply (b := id) hΨ W.toSection.contMDiff
 
 set_option backward.isDefEq.respectTransparency false in
-
 def homTensorRSApply (g : SmoothRiemannianMetric I M) (r a c : ℕ)
     (Ψ : Π x : M, TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x)
     (hΨ : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r a ℝ E →L[ℝ] TensorRSModel r c ℝ E)) ∞
@@ -86,7 +85,6 @@ def homTensorRSApply (g : SmoothRiemannianMetric I M) (r a c : ℕ)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 @[simp] lemma appFullRS_toSection (g : SmoothRiemannianMetric I M) (r a c : ℕ)
@@ -98,7 +96,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     (homTensorRSApply (I := I) (M := M) g r a c Ψ hΨ W).toSection x = Ψ x (W.toSection x) := rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem appFullRS_add_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
@@ -123,7 +120,6 @@ theorem appFullRS_add_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
   rw [map_add (Ψ x)]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem appFullRS_smul_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
@@ -145,7 +141,6 @@ theorem appFullRS_smul_right (g : SmoothRiemannianMetric I M) (r a c : ℕ)
   rw [map_smul (Ψ x)]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem appFullRSFib_add_left (g : SmoothRiemannianMetric I M) (r a c : ℕ)
@@ -157,7 +152,6 @@ theorem appFullRSFib_add_left (g : SmoothRiemannianMetric I M) (r a c : ℕ)
   rw [homTensorRSApplyFib, homTensorRSApplyFib, homTensorRSApplyFib, ContinuousLinearMap.add_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-
 noncomputable def slotInsertHomTensorRSFib (_g : SmoothRiemannianMetric I M) (r a c : ℕ) (x : M)
     (A : TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x) :
     TensorRSSpace r (a + 1) I x →L[ℝ] TensorRSSpace r (c + 1) I x :=
@@ -178,7 +172,6 @@ noncomputable def slotInsertHomTensorRSFib (_g : SmoothRiemannianMetric I M) (r 
         rfl }
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma slotExtendFullFib_apply (g : SmoothRiemannianMetric I M) (r a c : ℕ) (x : M)
@@ -189,7 +182,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma slotExtendFullFib_apply_eval (g : SmoothRiemannianMetric I M) (r a c : ℕ) (x : M)
@@ -210,7 +202,6 @@ lemma slotExtendFullFib_apply_eval (g : SmoothRiemannianMetric I M) (r a c : ℕ
   rw [htail, hhead, ContinuousLinearMap.comp_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem slotExtendFullFib_apply_apply_contMDiff (r a c : ℕ)
@@ -251,7 +242,6 @@ private theorem slotExtendFullFib_apply_apply_contMDiff (r a c : ℕ)
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem slotExtendFullFib_apply_contMDiff (r a c : ℕ)
@@ -289,7 +279,6 @@ private theorem slotExtendFullFib_apply_contMDiff (r a c : ℕ)
   exact slotExtendFullFib_apply_apply_contMDiff (I := I) (M := M) r a c Ψ hΨ D Y
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem covGradBundleEquiv_section_contMDiff (r c : ℕ)
@@ -317,7 +306,6 @@ theorem covGradBundleEquiv_section_contMDiff (r c : ℕ)
     covGradBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r c x (G x)]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 theorem slotExtendFullFib_contMDiff (g : SmoothRiemannianMetric I M) (r a c : ℕ)
@@ -342,7 +330,7 @@ theorem slotExtendFullFib_contMDiff (g : SmoothRiemannianMetric I M) (r a c : �
   rfl
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

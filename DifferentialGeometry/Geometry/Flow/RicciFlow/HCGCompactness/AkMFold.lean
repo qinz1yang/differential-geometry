@@ -3,35 +3,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.CovDerivStepCompCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.CovDerivStepCompContrNorm
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSectionsLocal
 import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.HCGCompactness
-open DifferentialGeometry.Integral.Connection
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -44,18 +29,9 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
-
-
 def shiftEquivC (r : ℕ) : (m : ℕ) → Fin ((r + 1) + m) ≃ Fin (r + (m + 1))
   | 0 => Equiv.refl _
   | (m + 1) => frontExtendEquiv (shiftEquivC r m)
-
-
-
-
-
 
 omit [DecidableEq Idx] in
 theorem covDerivStepComp_compReindex {s s' : ℕ} (e : Fin s ≃ Fin s')
@@ -80,13 +56,6 @@ theorem covDerivStepComp_compReindex {s s' : ℕ} (e : Fin s ≃ Fin s')
     · rw [Function.update_of_ne (fun he => h (e.injective he)),
         Function.update_of_ne h]
   rw [hupd]
-
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
@@ -121,9 +90,6 @@ theorem iterCovComp_shift {r : ℕ}
       covDerivStepComp_compReindex (shiftEquivC r m), ← iterCovComp_succ]
     rfl
 
-
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem compL2_iterCovComp_shift {r : ℕ}
@@ -138,19 +104,13 @@ theorem compL2_iterCovComp_shift {r : ℕ}
     (iterCovComp (I := I) frame chr (fun y => iterCovComp (I := I) frame chr base 1 y) m x)
     (shiftEquivC r m)
 
-
 def frontExtendIterC {s s' : ℕ} (e : Fin s ≃ Fin s') :
     (m : ℕ) → Fin (s + m) ≃ Fin (s' + m)
   | 0 => e
   | (m + 1) => frontExtendEquiv (frontExtendIterC e m)
 
-
-
-
 def rotEquiv (p q : ℕ) : Fin (p + (q + 1)) ≃ Fin (p + q + 1) :=
   (finCongr (by omega)).trans (Fin.cycleRange ⟨p, by omega⟩)
-
-
 
 omit [Fintype Idx] [DecidableEq Idx] in
 private theorem slotId1 {p q : ℕ} (d : Idx) (aPart : Fin p → Idx) (bPart : Fin q → Idx) :
@@ -173,9 +133,6 @@ private theorem slotId1 {p q : ℕ} (d : Idx) (aPart : Fin p → Idx) (bPart : F
       apply Fin.ext
       simp only [Fin.val_cast, Fin.val_natAdd, Fin.val_succ]
       omega, Fin.cons_succ, Fin.append_right]
-
-
-
 
 omit [Fintype Idx] [DecidableEq Idx] in
 private theorem slotId2 {p q : ℕ} (d : Idx) (aPart : Fin p → Idx) (bPart : Fin q → Idx) :
@@ -206,8 +163,6 @@ private theorem slotId2 {p q : ℕ} (d : Idx) (aPart : Fin p → Idx) (bPart : F
           omega,
         Fin.cons_succ, Fin.append_right]
 
-
-
 def extendLastEquiv {p p' : ℕ} (e₀ : Fin p ≃ Fin p') : Fin (p + 1) ≃ Fin (p' + 1) :=
   finSuccEquivLast.trans (e₀.optionCongr.trans finSuccEquivLast.symm)
 
@@ -227,7 +182,6 @@ def extendLastEquiv {p p' : ℕ} (e₀ : Fin p ≃ Fin p') : Fin (p + 1) ≃ Fin
   · rw [extendLastEquiv_last]; rfl
   · rw [extendLastEquiv_castSucc]; rfl
 
-
 theorem extendLast_frontExtend_comm {p p' : ℕ} (e : Fin p ≃ Fin p') :
     frontExtendEquiv (extendLastEquiv e) = extendLastEquiv (frontExtendEquiv e) := by
   apply Equiv.ext
@@ -244,8 +198,6 @@ theorem extendLast_frontExtend_comm {p p' : ℕ} (e : Fin p ≃ Fin p') :
           (Fin.succ_castSucc j').symm,
         frontExtendEquiv_succ, extendLastEquiv_castSucc, Fin.succ_castSucc]
 
-
-
 omit [Fintype Idx] [DecidableEq Idx] in
 private theorem update_comp_equiv' {α β : Type*} [DecidableEq α] [DecidableEq β]
     (g : β → Idx) (e : α ≃ β) (s : α) (sv : β) (hsv : e s = sv) (a : Idx) :
@@ -255,10 +207,6 @@ private theorem update_comp_equiv' {α β : Type*} [DecidableEq α] [DecidableEq
   by_cases h : i = s
   · subst h; simp only [Function.update_self]
   · rw [Function.update_of_ne (fun he => h (e.injective he)), Function.update_of_ne h]
-
-
-
-
 
 omit [DecidableEq Idx] in
 theorem covDerivStepCompU_compReindex {p p' : ℕ} (e₀ : Fin p ≃ Fin p')
@@ -282,10 +230,6 @@ theorem covDerivStepCompU_compReindex {p p' : ℕ} (e₀ : Fin p ≃ Fin p')
   · refine Finset.sum_congr rfl fun a _ => ?_
     rw [update_comp_equiv' (Fin.tail n) (extendLastEquiv e₀) (Fin.last p)
       (Fin.last p') (extendLastEquiv_last e₀) a]
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
@@ -316,11 +260,6 @@ theorem iterCovComp_compReindex {s s' : ℕ} (e : Fin s ≃ Fin s')
               (fun i => m' (frontExtendIterC e m i)) d from rfl,
       covDerivStepComp_compReindex (frontExtendIterC e m), ← iterCovComp_succ]
     rfl
-
-
-
-
-
 
 def iterCovCompU {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -355,10 +294,6 @@ omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold
           (fun y : M => iterCovCompU (I := I) frame chr base a y) x)
         (chr x)
         (iterCovCompU (I := I) frame chr base a x) := rfl
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -396,7 +331,6 @@ theorem iterCovCompU_shift {r : ℕ}
       extendLast_frontExtend_comm]
     rfl
 
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [DecidableEq Idx] in
@@ -411,14 +345,6 @@ theorem compL2_iterCovCompU_shift {r : ℕ}
   exact compL2_comp_equiv
     (iterCovCompU (I := I) frame chr (fun y => iterCovCompU (I := I) frame chr base 1 y) m x)
     (extendLastEquiv (shiftEquivC r m))
-
-
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -453,9 +379,6 @@ theorem frameExtData_contrTail {p q : ℕ}
     (fun c _ => hB (Fin.snoc (fun j : Fin q => idx (Fin.natAdd p j)) c))]
   exact Finset.sum_congr rfl fun c _ => by ring
 
-
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx]
     [DecidableEq Idx] in
@@ -476,7 +399,6 @@ theorem frameExtData_add {r : ℕ}
     mfderiv_add (hf₁ m) (hf₂ m)]
   rfl
 
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx]
     [DecidableEq Idx] in
@@ -494,15 +416,6 @@ theorem frameExtData_smul {r : ℕ}
     const_smul_mfderiv (hf m) c]
   rfl
 
-
-
-
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem contMDiffOn_finsetSum {ι : Type*} {u : Set M} (t : Finset ι)
@@ -518,9 +431,6 @@ private theorem contMDiffOn_finsetSum {ι : Type*} {u : Set M} (t : Finset ι)
       funext y; rw [Finset.sum_insert has]
     rw [hsum]
     exact (hF a (by simp)).add (ih fun i hi => hF i (by simp [hi]))
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -559,9 +469,6 @@ theorem iterCovComp_contMDiffOn {r : ℕ} {u : Set M} (hu : IsOpen u)
     · refine contMDiffOn_finsetSum _ _ fun s _ => ?_
       refine contMDiffOn_finsetSum _ _ fun p _ => ?_
       exact (hchr (n 0) (Fin.tail n s) p).mul (ih (Function.update (Fin.tail n) s p))
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -610,8 +517,6 @@ theorem iterCovCompU_contMDiffOn {r : ℕ} {u : Set M} (hu : IsOpen u)
       exact (hchr (n 0) c (Fin.tail n (Fin.last (r + a)))).mul
         (ih (Function.update (Fin.tail n) (Fin.last (r + a)) c))
 
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
 theorem iterCovComp_mdiffAt {r : ℕ} {u : Set M} (hu : IsOpen u)
@@ -626,8 +531,6 @@ theorem iterCovComp_mdiffAt {r : ℕ} {u : Set M} (hu : IsOpen u)
     MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => iterCovComp (I := I) frame chr base a y n) x :=
   ((iterCovComp_contMDiffOn hu frame chr base hframe hchr hbase a n).contMDiffAt
     (hu.mem_nhds hx)).mdifferentiableAt (by simp)
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -644,7 +547,6 @@ theorem iterCovCompU_mdiffAt {r : ℕ} {u : Set M} (hu : IsOpen u)
   ((iterCovCompU_contMDiffOn hu frame chr base hframe hchr hbase a n).contMDiffAt
     (hu.mem_nhds hx)).mdifferentiableAt (by simp)
 
-
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -657,10 +559,6 @@ private theorem frameExtData_congr_nhds {r : ℕ}
   refine extDerivFun_eventuallyEq_congr (I := I) (frame d y) ?_
   filter_upwards [h] with z hz
   rw [hz]
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -703,8 +601,6 @@ theorem iterCovComp_add {r : ℕ} {u : Set M} (hu : IsOpen u)
     rw [iterCovComp_succ, iterCovComp_succ, iterCovComp_succ, hext, harr,
       covDerivStepComp_add]
 
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
 theorem iterCovComp_smul {r : ℕ} {u : Set M} (hu : IsOpen u)
@@ -739,11 +635,6 @@ theorem iterCovComp_smul {r : ℕ} {u : Set M} (hu : IsOpen u)
         fun k => c * iterCovComp (I := I) frame chr f a y k := funext (ih y hy)
     rw [iterCovComp_succ, iterCovComp_succ, hext, harr, covDerivStepComp_smul]
 
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [DecidableEq Idx] in
@@ -767,13 +658,6 @@ theorem covDerivStepComp_frameExtData_contrTail {p q : ℕ}
     (chr x) (A x) (B x)
     (frameExtData_contrTail (I := I) frame A B x hA hB)
     d aPart bPart
-
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -810,12 +694,6 @@ theorem covStep_contrTail_field {p q : ℕ}
     slotId1 d aPart bPart, slotId2 d aPart bPart, ← hn]
   simp only [finCongr_apply]
 
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem compL2_iterCovComp_compReindex {s s' : ℕ} (e : Fin s ≃ Fin s')
@@ -827,10 +705,6 @@ theorem compL2_iterCovComp_compReindex {s s' : ℕ} (e : Fin s ≃ Fin s')
       compL2 (iterCovComp (I := I) frame chr F m x) := by
   rw [iterCovComp_compReindex]
   exact compL2_comp_equiv (iterCovComp (I := I) frame chr F m x) (frontExtendIterC e m)
-
-
-
-
 
 omit [DecidableEq Idx] in
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
@@ -851,8 +725,6 @@ theorem iterCovComp_congr_on {r : ℕ} {u : Set M} (hu : IsOpen u)
       exact ih z hz
     rw [iterCovComp_succ, iterCovComp_succ, frameExtData_congr_nhds frame hfield, ih x hx]
 
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem contMDiffOn_contrTail {p q : ℕ} {u : Set M}
@@ -867,15 +739,6 @@ theorem contMDiffOn_contrTail {p q : ℕ} {u : Set M}
         B y (Fin.snoc (fun j : Fin q => m (Fin.natAdd p j)) c)) from by funext y; rw
                                                                           [contrTail_apply]]
   exact contMDiffOn_finsetSum Finset.univ _ (fun c _ => (hA _).mul (hB _))
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -987,14 +850,6 @@ theorem compL2_iterCovComp_contrTail_le {u : Set M} (hu : IsOpen u)
             compL2 (iterCovComp (I := I) frame chr B (m + 1 - c) x) :=
           Finset.sum_congr rfl fun c _ => (mul_assoc _ _ _).symm
 
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
 theorem iterCovComp_contrTail_succ {p q : ℕ} {u : Set M} (hu : IsOpen u)
@@ -1045,15 +900,9 @@ theorem iterCovComp_contrTail_succ {p q : ℕ} {u : Set M} (hu : IsOpen u)
       iterCovComp_compReindex (rotEquiv p q) frame chr HR m x]
     simp only [Equiv.trans_apply]
 
-
-
-
 def isoReindex (p q m : ℕ) : Fin (p + 1 + q + m) ≃ Fin (p + q + (m + 1)) :=
   (frontExtendIterC (finCongr (show p + 1 + q = p + q + 1 by omega)) m).trans
     (shiftEquivC (p + q) m)
-
-
-
 
 def isoTop {q : ℕ} (g : M → (Fin (q + 1) → Idx) → Real)
     (frame : Idx → (x : M) → TangentSpace I x) (chr : M → Idx → Idx → Idx → Real) :
@@ -1079,12 +928,6 @@ omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold
     isoTop (I := I) g frame chr (m + 1) A x =
       fun n => isoTop (I := I) g frame chr m (fun z => iterCovCompU (I := I) frame chr A 1 z) x
         (fun j => n (isoReindex p q m j)) := rfl
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -1211,10 +1054,6 @@ theorem compL2_isoResidual_le {q : ℕ} {u : Set M} (hu : IsOpen u)
         simp only [Finset.mem_range] at hc; omega
       rw [hsub]; ring
 
-
-
-
-
 def blockLeftEquiv {a a' : ℕ} (e₀ : Fin a ≃ Fin a') (b : ℕ) : Fin (a + b) ≃ Fin (a' + b) :=
   finSumFinEquiv.symm.trans ((e₀.sumCongr (Equiv.refl (Fin b))).trans finSumFinEquiv)
 
@@ -1225,9 +1064,6 @@ def blockLeftEquiv {a a' : ℕ} (e₀ : Fin a ≃ Fin a') (b : ℕ) : Fin (a + b
 @[simp] theorem blockLeftEquiv_natAdd {a a' : ℕ} (e₀ : Fin a ≃ Fin a') (b : ℕ) (j : Fin b) :
     blockLeftEquiv e₀ b (Fin.natAdd a j) = Fin.natAdd a' j := by
   simp [blockLeftEquiv]
-
-
-
 
 omit [DecidableEq Idx] in
 theorem contrTail_extendLast {pT pF q : ℕ} (e₀ : Fin pT ≃ Fin pF)
@@ -1251,9 +1087,6 @@ theorem contrTail_extendLast {pT pF q : ℕ} (e₀ : Fin pT ≃ Fin pF)
   refine Fin.lastCases ?_ (fun i => ?_) j
   · rw [extendLastEquiv_last, Fin.snoc_last, Fin.snoc_last]
   · rw [extendLastEquiv_castSucc, Fin.snoc_castSucc, Fin.snoc_castSucc]
-
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -1289,8 +1122,6 @@ theorem compL2_isoTop_eq {q : ℕ}
         (fun y => iterCovCompU (I := I) frame chr A 1 y) m x) (g x))
       (blockLeftEquiv (shiftEquivC p m) q)).symm
 
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
 theorem compL2_contrTail_topU_le {q : ℕ} {u : Set M} (hu : IsOpen u)
@@ -1319,11 +1150,6 @@ theorem compL2_contrTail_topU_le {q : ℕ} {u : Set M} (hu : IsOpen u)
       funext fun n => (sub_sub_cancel _ _).symm]
   exact le_trans (compL2_sub_le _ _)
     (add_le_add le_rfl (compL2_isoResidual_le hu frame chr hframe hchr g hg m A hA hx))
-
-
-
-
-
 
 theorem contrTail_contrTail_inv {P : ℕ}
     (T : (Fin (P + 1) → Idx) → Real) (G Ginv : (Fin (1 + 1) → Idx) → Real)
@@ -1384,8 +1210,6 @@ theorem contrTail_contrTail_inv {P : ℕ}
         · rw [Fin.snoc_castSucc]
           rfl
 
-
-
 theorem compL2_le_contrTail_inv {P : ℕ}
     (T : (Fin (P + 1) → Idx) → Real) (G Ginv : (Fin (1 + 1) → Idx) → Real)
     (hinv : ∀ c e : Idx,
@@ -1396,15 +1220,12 @@ theorem compL2_le_contrTail_inv {P : ℕ}
         rw [contrTail_contrTail_inv T G Ginv hinv]
     _ ≤ compL2 (contrTail T G) * compL2 Ginv := compL2_contrTail_le _ _
 
-
-/-- The data-independent constant in the abstract Claim 1 induction. -/
 noncomputable def claim1Const (C0 KR K : Real) (m : ℕ) : Real :=
   Nat.strongRecOn' m fun n C =>
     max C0 0 * (max KR 0 +
       ∑ c : Fin n, (n.choose c : Real) *
         (C c c.isLt * (1 + max K 0)) * max K 0)
 
-/-- Unfolding equation for `claim1Const`. -/
 theorem claim1Const_eq (C0 KR K : Real) (m : ℕ) :
     claim1Const C0 KR K m =
       max C0 0 * (max KR 0 +
@@ -1413,7 +1234,6 @@ theorem claim1Const_eq (C0 KR K : Real) (m : ℕ) :
   rw [claim1Const, Nat.strongRecOn'_beta, ← Fin.sum_univ_eq_sum_range]
   rfl
 
-/-- The abstract Claim 1 constant is nonnegative. -/
 theorem claim1Const_nonneg (C0 KR K : Real) (m : ℕ) :
     0 ≤ claim1Const C0 KR K m := by
   induction m using Nat.strong_induction_on with
@@ -1427,15 +1247,6 @@ theorem claim1Const_nonneg (C0 KR K : Real) (m : ℕ) :
           (le_max_right K 0)
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-/-- **Abstract Claim 1**: on the smooth frame domain, if the contraction field `A∗g`
-norm-realizes the metric derivative up to a constant (`hrelB`, the Koszul/eq-3.7 input:
-`|∇^{m'}(A∗g)| ≤ KR·|∇^{m'+1}g|` — geometrically `Ǎ = A∗g` is a constant slot-permutation
-combination of `∇g`), `Ginv` is the pointwise inverse array of `g` (`hinv`), and the window
-bounds `|Ginv| ≤ C0`, `|∇^j g| ≤ K (1 ≤ j ≤ m)` hold, then
-`|∇_U^m A| ≤ C·(1 + |∇^{m+1} g|)` for a constant `C = C(m, C0, KR, K)`.  Strong induction:
-invert (`compL2_le_contrTail_inv`) + isolated-top (`compL2_contrTail_topU_le`) + `hrelB`
-turn `|∇_U^m A|` into `C0·(KR·|∇^{m+1}g| + Σ_{c<m} binom·|∇_U^c A|·|∇^{m-c}g|)`; the IH
-bounds each `|∇_U^c A|`. -/
 theorem claim1_abstract_bound {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
@@ -1533,7 +1344,6 @@ theorem claim1_abstract_bound {u : Set M} (hu : IsOpen u)
             mul_le_mul_of_nonneg_left hgmc
               (mul_nonneg (Nat.cast_nonneg _)
                 (mul_nonneg (claim1Const_nonneg C0 KR K c) (by linarith)))
-    -- assemble
     have hbr : max KR 0 * compL2 (iterCovComp (I := I) frame chr g (m + 1) x) +
           (∑ c ∈ Finset.range m, (m.choose c : Real) *
             compL2 (iterCovCompU (I := I) frame chr A c x) *
@@ -1563,7 +1373,6 @@ theorem claim1_abstract_bound {u : Set M} (hu : IsOpen u)
           ring
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-/-- Existential compatibility form of `claim1_abstract_bound`. -/
 theorem claim1_abstract {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
@@ -1593,14 +1402,6 @@ theorem claim1_abstract {u : Set M} (hu : IsOpen u)
     claim1_abstract_bound hu frame chr hframe hchr C0 KR K m⟩
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-/-- **Claim 1** (component form, with the lowered-Koszul relation explicit).  The connection
-difference `A` lowered by `g` (`contrTail A g`) is, on `u`, a fixed three-term slot
-combination of `∇g` (`hkoszul` — the eq-3.7 / `connDiffCompEq` content in this frame, with
-coefficients `½,½,−½` and the Koszul slot permutations).  Together with the pointwise
-inverse property of `g`/`Ginv` (`hinv`) and the window bounds, this gives the textbook
-estimate `|∇^m A| ≤ C·(1 + |∇^{m+1}g|)`.  Proof: discharge `claim1_abstract`'s `hrelB`
-(`|∇^{m'}(A∗g)| ≤ KR·|∇^{m'+1}g|`, `KR = |c₁|+|c₂|+|c₃| = 3/2`) from `hkoszul` via tower
-linearity (`iterCovComp_smul`/`_add`), the reindex norm-invariance, and the bottom shift. -/
 theorem claim1_bound {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
@@ -1698,7 +1499,6 @@ theorem claim1_bound {u : Set M} (hu : IsOpen u)
   nlinarith [abs_nonneg c₁, abs_nonneg c₂, abs_nonneg c₃, hG0, h23]
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-/-- Existential compatibility form of `claim1_bound`. -/
 theorem claim1 {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)

@@ -1,14 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopPolar
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
-
-/-!
-# Polar transfer in orthonormally framed normal coordinates
-
-This file replaces the fixed model norm in raw normal coordinates by the
-center metric through `normalFrame`.  The resulting model balls are therefore
-the tangent balls for `g p`, while the density changes only by a positive
-factor depending on the center.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -141,8 +134,6 @@ omit [Nontrivial E] in
 omit [T2Space M]
   [SigmaCompactSpace M]
   [NeZero (Module.finrank ℝ E)] in
-/-- The framed exponential density differs from the raw normal density by one
-positive factor depending only on the center. -/
 theorem exists_framed_den
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ c : Real, 0 < c ∧ ∀ z ∈ (framedExpDiffeo (I := I) g p).source,
@@ -162,8 +153,6 @@ omit [Nontrivial E]
   [T2Space M]
   [SigmaCompactSpace M]
   [NeZero (Module.finrank ℝ E)] in
-/-- Antitonicity of a raw normal-density ratio transfers to the corresponding
-ratio in orthonormally framed normal coordinates. -/
 theorem framedRatio_anti
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
     (q : Real) (d : Nat) {b : Real}
@@ -210,8 +199,6 @@ private lemma smul_mem_ball
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The Riemannian volume of a measurable framed-normal image is the polar
-integral of its parametrized density. -/
 theorem framedImage_polar
     (g : SmoothRiemannianMetric I M) (p : M)
     {B : Set E} (hB_meas : MeasurableSet B)
@@ -259,8 +246,6 @@ theorem framedImage_polar
       rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Polar volume formula for a center-metric tangent ball contained in the
-selected framed normal source. -/
 theorem framedBall_polar
     (g : SmoothRiemannianMetric I M) (p : M) {R : Real} (hR : 0 < R)
     (hsource : ball (0 : E) R ⊆ (framedExpDiffeo (I := I) g p).source) :

@@ -6,49 +6,7 @@ import Mathlib.Analysis.Calculus.Deriv.Prod
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -60,30 +18,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-
-
-
-
-
-
-
 section Coord
 
 variable {Idx : Type*} [Fintype Idx]
-
-
-
 
 def coordContract {s : Nat}
     (gInv : Idx -> Idx -> Real)
     (cA cB : (Fin s -> Idx) -> Real) : Real :=
   ∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
     (∏ a : Fin s, gInv (I0 a) (J0 a)) * cA I0 * cB J0
-
-
-
-
-
 
 def coordContractDt {s : Nat}
     (gInv gInvDt : Idx -> Idx -> Real)
@@ -93,17 +36,6 @@ def coordContractDt {s : Nat}
         (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b, gInv (I0 a) (J0 a)) *
           gInvDt (I0 b) (J0 b)) *
       cA I0 * cB J0
-
-
-
-
-
-
-
-
-
-
-
 
 theorem hasDerivWithinAt_coordContract {s : Nat}
     {u : Set Real} {t : Real}
@@ -172,8 +104,6 @@ theorem hasDerivWithinAt_coordContract {s : Nat}
   simp only [Pi.mul_apply]
   ring
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem coordContract_eq_coordInner0S {s : Nat} {x : M}
     (gInv : Idx -> Idx -> Real)
@@ -185,23 +115,6 @@ theorem coordContract_eq_coordInner0S {s : Nat} {x : M}
       coordInner0S (I := I) (x := x) s gInv A B basis := by
   rfl
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def ricReactionContract {s : Nat}
     (gInv ric : Idx -> Idx -> Real)
     (cA cB : (Fin s -> Idx) -> Real) : Real :=
@@ -210,12 +123,6 @@ def ricReactionContract {s : Nat}
         (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b, gInv (I0 a) (J0 a)) *
           (∑ p : Idx, ∑ q : Idx, gInv (I0 b) p * gInv (J0 b) q * ric p q)) *
       cA I0 * cB J0
-
-
-
-
-
-
 
 theorem coordContractDt_eq_ricReactionContract {s : Nat}
     (gInv gInvDt ric : Idx -> Idx -> Real)
@@ -344,8 +251,6 @@ private theorem eval2_sum_right {Idx : Type*} [Fintype Idx] {x : M}
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [hupdate]
 
-
-
 theorem ricReact_one {x : M}
     (g : SmoothMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -427,23 +332,9 @@ theorem ricReact_one {x : M}
 
 end Coord
 
-
-
-
-
-
-
-
-
-
-
 section Intrinsic
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
-
 
 private noncomputable def bmat :
     (Idx → Idx → Real) →L[Real]
@@ -643,30 +534,6 @@ theorem basisInv_time {x : M} {t : Real}
   rw [hInvEq t] at hcanon
   simpa [B, ContinuousLinearMap.mulLeftRight_apply, bmat_inv_entry] using hcanon
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 theorem hasDerivWithinAt_normSq0S_coord {s : Nat} {x : M}
     {u : Set Real} {t : Real}
     (g : Real -> SmoothMetric I M)
@@ -711,22 +578,6 @@ theorem hasDerivWithinAt_normSq0S_coord {s : Nat} {x : M}
   refine hderiv.congr ?_ ?_
   · intro r _; exact hpt r
   · exact hpt t
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem hasDerivWithinAt_normSq0S {s : Nat} {x : M}
     {u : Set Real} {t : Real}
@@ -783,24 +634,6 @@ theorem hasDerivWithinAt_normSq0S {s : Nat} {x : M}
     exact (tensor0SMetricData (I := I) (g t) x s).symm (T t) Tdot
   rw [hsymm]; ring
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 theorem hasDerivWithinAt_normSq0S_ricciFlow {s : Nat} {x : M}
     {u : Set Real} {t : Real}
     (g : Real -> SmoothMetric I M)
@@ -838,11 +671,6 @@ theorem hasDerivWithinAt_normSq0S_ricciFlow {s : Nat} {x : M}
   exact hbase
 
 end Intrinsic
-
-
-
-
-
 
 theorem normSq_one_time {x : M} {t : Real}
     (g : Real -> SmoothMetric I M)
@@ -944,3 +772,4 @@ theorem normSq_one_time {x : M} {t : Real}
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

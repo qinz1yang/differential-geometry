@@ -1,26 +1,11 @@
 import DifferentialGeometry.Geometry.Curvature.Tensor
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 open scoped Manifold ContDiff BigOperators Topology
 
@@ -54,10 +39,6 @@ private theorem metric_inner_smul_self
   rw [h1 (c • v), g.symm x v (c • v), h1 v]
   ring
 
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem tensor02_quadForm_le_of_unit_bound
     (g : SmoothRiemannianMetric I M) (Q : Tensor02At (I := I) (M := M) x) {Λ : Real}
@@ -89,10 +70,6 @@ theorem tensor02_quadForm_le_of_unit_bound
     rw [hQv, mul_comm Λ (g.inner x v v)]
     exact mul_le_mul_of_nonneg_left hQunit hpos.le
 
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem tensor02_quadForm_abs_le_of_unit_bound
     (g : SmoothRiemannianMetric I M) (Q : Tensor02At (I := I) (M := M) x) {Λ : Real}
@@ -111,4 +88,4 @@ theorem tensor02_quadForm_abs_le_of_unit_bound
     intro u hu
     exact le_trans (le_abs_self _) (hunit u hu)
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

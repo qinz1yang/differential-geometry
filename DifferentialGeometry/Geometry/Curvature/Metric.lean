@@ -13,22 +13,22 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Model
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Operator.Gradient
+import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.Operators
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -42,7 +42,7 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 noncomputable def metricCov (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I E (TangentSpace I : M -> Type _) :=
-  DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g
+  DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
 
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -52,8 +52,6 @@ theorem metricCov_smooth (g : SmoothRiemannianMetric I M) :
   simpa [metricCov] using
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g
-
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricCov_congr_nhds
@@ -70,14 +68,14 @@ theorem metricCov_congr_nhds
 
 noncomputable def metricRm13At (g : SmoothRiemannianMetric I M) (x : M) :
     Tensor13At (I := I) (M := M) x :=
-  DifferentialGeometry.Integral.Connection.CovariantDerivative.riemannCurvatureAt
+  DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvatureAt
     (metricCov (I := I) (M := M) g)
     (metricCov_smooth (I := I) (M := M) g) x
 
 
 noncomputable def metricRm04At (g : SmoothRiemannianMetric I M) (x : M) :
     Tensor04At (I := I) (M := M) x :=
-  DifferentialGeometry.Integral.Connection.CovariantDerivative.riemannCurvature04At
+  DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At
     (I := I) g
     (metricCov (I := I) (M := M) g)
     (metricCov_smooth (I := I) (M := M) g) x
@@ -85,7 +83,7 @@ noncomputable def metricRm04At (g : SmoothRiemannianMetric I M) (x : M) :
 
 noncomputable def metricRicciAt (g : SmoothRiemannianMetric I M) (x : M) :
     Tensor02At (I := I) (M := M) x :=
-  DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciCurvatureAt
+  DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciCurvatureAt
     (I := I)
     (metricCov (I := I) (M := M) g)
     (metricCov_smooth (I := I) (M := M) g) x
@@ -93,47 +91,34 @@ noncomputable def metricRicciAt (g : SmoothRiemannianMetric I M) (x : M) :
 
 noncomputable def metricScalarAt (g : SmoothRiemannianMetric I M) (x : M) :
     Real :=
-  DifferentialGeometry.Integral.Connection.metricTracePair0SAt (I := I) g
+  DifferentialGeometry.Geometry.Operator.metricTracePair0SAt (I := I) g
     (metricRicciAt (I := I) (M := M) g x)
-
-
-
-
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricRicciAt_eq_trace (g : SmoothRiemannianMetric I M) (x : M) :
     metricRicciAt (I := I) g x
-      = DifferentialGeometry.Integral.Connection.ricciFromRm13At
+      = DifferentialGeometry.Geometry.Curvature.ricciFromRm13At
           (metricRm13At (I := I) (M := M) g x) := rfl
-
-
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricScalarAt_def (g : SmoothRiemannianMetric I M) (x : M) :
     metricScalarAt (I := I) g x
-      = DifferentialGeometry.Integral.Connection.metricTracePair0SAt (I := I) g
+      = DifferentialGeometry.Geometry.Operator.metricTracePair0SAt (I := I) g
           (metricRicciAt (I := I) (M := M) g x) := rfl
 
 
 noncomputable def metricRm04 (g : SmoothRiemannianMetric I M) :
-    DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M) :=
-  DifferentialGeometry.Integral.Connection.CovariantDerivative.rm04Section
+    DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M) :=
+  DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section
     (I := I) g (metricCov (I := I) (M := M) g)
     (metricCov_smooth (I := I) (M := M) g)
 
 
 noncomputable def metricRm13 (g : SmoothRiemannianMetric I M) :
-    DifferentialGeometry.Integral.Connection.Tensor13Section (I := I) (M := M) :=
-  DifferentialGeometry.Integral.Connection.CovariantDerivative.rm13Section
+    DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M) :=
+  DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm13Section
     (I := I) (M := M) (metricCov (I := I) (M := M) g)
     (metricCov_smooth (I := I) (M := M) g)
-
-
-
-
-
 
 noncomputable def metricRm04StdAt
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -143,8 +128,8 @@ noncomputable def metricRm04StdAt
 
 
 noncomputable def metricRicci (g : SmoothRiemannianMetric I M) :
-    DifferentialGeometry.Integral.Connection.Tensor02Section (I := I) (M := M) :=
-  DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection
+    DifferentialGeometry.Geometry.Curvature.Tensor02Section (I := I) (M := M) :=
+  DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
     (I := I) (M := M) (metricCov (I := I) (M := M) g)
     (metricCov_smooth (I := I) (M := M) g)
 
@@ -162,8 +147,6 @@ omit [SigmaCompactSpace M] [T2Space M] in
     metricRm04StdAt (I := I) (M := M) g x X Y Z W =
       metricRm04At (I := I) (M := M) g x (vec4 X Y Z W) := by
   rfl
-
-
 
 noncomputable def metricRm04LastDualAt
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -218,28 +201,24 @@ omit [SigmaCompactSpace M] in
 
 noncomputable def metricCurvData
     (g : SmoothRiemannianMetric I M) :
-    DifferentialGeometry.Integral.Connection.CurvatureSectionProducerData (I := I)
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g) g where
+    DifferentialGeometry.Geometry.Curvature.CurvatureSectionProducerData (I := I)
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) g where
   rm13 := metricRm13 (I := I) (M := M) g
   rm04 := metricRm04 (I := I) (M := M) g
   ricci := metricRicci (I := I) (M := M) g
   h_rm13 := by
     simpa [metricRm13, metricCov] using
-      (DifferentialGeometry.Integral.Connection.rm13Section_realizes (I := I) (M := M)
+      (DifferentialGeometry.Geometry.Curvature.rm13Section_realizes (I := I) (M := M)
         (cov := metricCov (I := I) (M := M) g)
         (hcov := metricCov_smooth (I := I) (M := M) g))
   h_rm04 := by
     simpa [metricRm04, metricCov] using
-      (DifferentialGeometry.Integral.Connection.rm04Section_realizes (I := I) (M := M) g
+      (DifferentialGeometry.Geometry.Curvature.rm04Section_realizes (I := I) (M := M) g
         (cov := metricCov (I := I) (M := M) g)
         (hcov := metricCov_smooth (I := I) (M := M) g))
   h_ricci13 := by
     intro x
     simp [metricRicci, metricRm13]
-
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem metricScalar_smooth
@@ -247,18 +226,15 @@ theorem metricScalar_smooth
     ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (fun x : M => metricScalarAt (I := I) (M := M) g x) := by
   simpa [metricScalarAt] using
-    DifferentialGeometry.Integral.Connection.trace02_smooth (I := I) (M := M) g
+    DifferentialGeometry.Tensor.RSTensor.trace02_smooth (I := I) (M := M) g
       (metricRicci (I := I) (M := M) g)
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem metricScalar_const_of_dScalar_zero
     [I.Boundaryless] [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hzero : ∀ x : M, ∀ X : TangentSpace I x,
-      DifferentialGeometry.Integral.Connection.differential1FormFun (I := I)
+      DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I)
           (fun y : M => metricScalarAt (I := I) (M := M) g y)
           x (fun _ : Fin 1 => X) = 0) :
     ∃ R0 : Real, ∀ x : M,
@@ -271,7 +247,7 @@ theorem metricScalar_const_of_dScalar_zero
     intro x
     ext X
     have hx := hzero x X
-    rw [DifferentialGeometry.Integral.Connection.differential1FormFun_apply_eq_extDerivFun] at hx
+    rw [DifferentialGeometry.Geometry.Operator.differential1FormFun_apply_eq_extDerivFun] at hx
     rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv] at hx
     simpa [scalar] using hx
   have hloc : IsLocallyConstant scalar :=
@@ -286,18 +262,12 @@ theorem metricScalar_const_of_dScalar_zero
     intro x
     exact False.elim (hne ⟨x⟩)
 
-
-
-
-
-
-
 omit [SigmaCompactSpace M] in
 theorem nablaRic_ein3
     (g : SmoothRiemannianMetric I M)
     (hEin : ∀ x : M, ∀ v w : TangentSpace I x,
       metricRicciAt (I := I) (M := M) g x
-        (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w) =
+        (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) =
         (metricScalarAt (I := I) (M := M) g x / 3) * g.inner x v w)
     (x : M) :
     let cov := metricCov (I := I) (M := M) g
@@ -305,9 +275,9 @@ theorem nablaRic_ein3
     let scalar := fun y : M => metricScalarAt (I := I) (M := M) g y
     let nablaRic := totalNabla0SFun (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov Ric x
-    let dScalar := DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) scalar x
+    let dScalar := DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
     ∀ A B C : TangentSpace I x,
-      nablaRic (DifferentialGeometry.Integral.Connection.vec3 (I := I) A B C) =
+      nablaRic (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) A B C) =
         (1 / 3 : Real) * dScalar (fun _ : Fin 1 => A) * g.inner x B C := by
   classical
   dsimp
@@ -324,7 +294,7 @@ theorem nablaRic_ein3
     (I := I) (M := M) (s := 1)
   let dScalarSec : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (n := (∞ : WithTop ℕ∞)) 1 :=
-    DifferentialGeometry.Integral.Connection.duSec (I := I) scalar hscalar
+    DifferentialGeometry.Geometry.Operator.duSec (I := I) scalar hscalar
   let df3 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (n := (∞ : WithTop ℕ∞)) 1 :=
     tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
@@ -349,11 +319,11 @@ theorem nablaRic_ein3
     calc
       df3 y (fun _ : Fin 1 => v)
           = (1 / 3 : Real) *
-              DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) scalar y
+              DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar y
                 (fun _ : Fin 1 => v) := by
             simp [df3, dScalarSec]
       _ = (1 / 3 : Real) * extDerivFun (I := I) scalar y v := by
-            rw [DifferentialGeometry.Integral.Connection.differential1FormFun_apply_eq_extDerivFun]
+            rw [DifferentialGeometry.Geometry.Operator.differential1FormFun_apply_eq_extDerivFun]
        _ = extDerivFun (I := I) f3 y v := by
              simpa [f3, Pi.smul_apply, smul_eq_mul] using hv.symm
   have hRicEq : Ric = smulSec := by
@@ -361,18 +331,18 @@ theorem nablaRic_ein3
     intro y
     apply ContinuousMultilinearMap.ext
     intro slots
-    have hslots : slots = DifferentialGeometry.Integral.Connection.vec2 (I := I) (slots 0)
+    have hslots : slots = DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (slots 0)
       (slots 1) := by
       funext i
       fin_cases i <;> rfl
     have hEin_y := hEin y (slots 0) (slots 1)
     rw [hslots]
     change metricRicciAt (I := I) (M := M) g y
-        (DifferentialGeometry.Integral.Connection.vec2 (I := I) (slots 0) (slots 1)) =
+        (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (slots 0) (slots 1)) =
       f3 y * metricSec y
-        (DifferentialGeometry.Integral.Connection.vec2 (I := I) (slots 0) (slots 1))
+        (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (slots 0) (slots 1))
     simpa [Ric, smulSec, metricSec, f3, scalar, metricRicci_apply,
-      smul_eq_mul, metricTensorField_apply, DifferentialGeometry.Integral.Connection.vec2,
+      smul_eq_mul, metricTensorField_apply, DifferentialGeometry.Geometry.Curvature.vec2,
         div_eq_mul_inv,
       mul_assoc, mul_comm, mul_left_comm] using hEin_y
   letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
@@ -389,11 +359,11 @@ theorem nablaRic_ein3
   have hX : X x = A :=
     (ContMDiffSection.exists_eq_at_gen
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose_spec
-  let slots : Fin 2 -> TangentSpace I x := DifferentialGeometry.Integral.Connection.vec2 (I := I) B
+  let slots : Fin 2 -> TangentSpace I x := DifferentialGeometry.Geometry.Curvature.vec2 (I := I) B
     C
   have hreal :=
     nabla_smul_metric (I := I) (M := M) cov g
-      (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       f3 hf3 df3 hdf3
   have happly :=
@@ -419,11 +389,11 @@ theorem nablaRic_ein3
         totalNabla0SFun (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) 2 cov smulSec x (Fin.cons (X x) slots) := by
           exact hsection.symm
-  have hslots3 : Fin.cons A slots = DifferentialGeometry.Integral.Connection.vec3 (I := I) A B
+  have hslots3 : Fin.cons A slots = DifferentialGeometry.Geometry.Curvature.vec3 (I := I) A B
     C := by
     funext i
     fin_cases i <;> rfl
-  have hslots3X : Fin.cons (X x) slots = DifferentialGeometry.Integral.Connection.vec3 (I := I) A B
+  have hslots3X : Fin.cons (X x) slots = DifferentialGeometry.Geometry.Curvature.vec3 (I := I) A B
     C := by
     rw [hX, hslots3]
   have hprodEval :
@@ -431,12 +401,12 @@ theorem nablaRic_ein3
           (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
           df3 metricSec) x (Fin.cons (X x) slots) =
         (1 / 3 : Real) *
-          DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) scalar x
+          DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
             (fun _ : Fin 1 => A) * g.inner x B C := by
     change (Bundle.continuousMultilinearMap.product_fun
         (df3 x) (metricSec x)) (Fin.cons (X x) slots) =
       (1 / 3 : Real) *
-        DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) scalar x
+        DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
           (fun _ : Fin 1 => A) * g.inner x B C
     rw [Bundle.continuousMultilinearMap.product_fun_apply]
     have hleft :
@@ -452,14 +422,14 @@ theorem nablaRic_ein3
     rw [hleft, hright]
     simp only [df3, tensor0SField_smulByFun_apply]
     change ((1 / 3 : Real) * dScalarSec x (fun _ : Fin 1 => A)) * metricSec x slots = _
-    simp [dScalarSec, metricSec, slots, DifferentialGeometry.Integral.Connection.vec2, mul_assoc]
+    simp [dScalarSec, metricSec, slots, DifferentialGeometry.Geometry.Curvature.vec2, mul_assoc]
   calc
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H)
-        (I := I) (M := M) 2 cov Ric x (DifferentialGeometry.Integral.Connection.vec3 (I := I) A B C)
+        (I := I) (M := M) 2 cov Ric x (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) A B C)
         =
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 2 cov smulSec x
-          (DifferentialGeometry.Integral.Connection.vec3 (I := I) A B C) := by
+          (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) A B C) := by
           rw [hRicEq]
     _ =
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
@@ -468,12 +438,8 @@ theorem nablaRic_ein3
           rw [← hslots3X, ← htot]
     _ =
       (1 / 3 : Real) *
-        DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) scalar x
+        DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
           (fun _ : Fin 1 => A) * g.inner x B C := hprodEval
-
-
-
-
 
 theorem dScalar_zero_ein3_at
     [I.Boundaryless]
@@ -483,10 +449,10 @@ theorem dScalar_zero_ein3_at
     (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
     (hEin : ∀ y : M, ∀ v w : TangentSpace I y,
       metricRicciAt (I := I) (M := M) g y
-        (DifferentialGeometry.Integral.Connection.vec2 (I := I) v w) =
+        (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) =
         (metricScalarAt (I := I) (M := M) g y / 3) * g.inner y v w) :
     let scalar := fun y : M => metricScalarAt (I := I) (M := M) g y
-    let dScalar := DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) scalar x
+    let dScalar := DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
     ∀ X : TangentSpace I x, dScalar (fun _ : Fin 1 => X) = 0 := by
   classical
   dsimp
@@ -495,42 +461,42 @@ theorem dScalar_zero_ein3_at
   let hcov :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g
-  let Ric : DifferentialGeometry.Integral.Connection.Tensor02Section (I := I) (M := M) :=
-    DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection (I := I) (M := M) cov
+  let Ric : DifferentialGeometry.Geometry.Curvature.Tensor02Section (I := I) (M := M) :=
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection (I := I) (M := M) cov
       hcov
   let scalar : M -> Real :=
-    fun y => DifferentialGeometry.Integral.Connection.metricTracePair0SAt (I := I) g (Ric y)
+    fun y => DifferentialGeometry.Geometry.Operator.metricTracePair0SAt (I := I) g (Ric y)
   let nablaRic :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       2 cov Ric x
-  let dScalar := DifferentialGeometry.Integral.Connection.differential1FormFun (I := I) scalar x
+  let dScalar := DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
   obtain ⟨nablaRm04, hsecond, hRmSymm, hRicTrace, hScalar⟩ :=
-    DifferentialGeometry.Integral.Connection.metricBianchiAt (I := I) (M := M) g basis gInv hinv
+    DifferentialGeometry.Geometry.Connection.metricBianchiAt (I := I) (M := M) g basis gInv hinv
   have hInv : ∀ i j : Fin 3, gInv i j = gInv j i :=
     invMetric_symm (I := I) (M := M) g x basis gInv hinv
   have hEinNabla : ∀ A B C : TangentSpace I x,
-      nablaRic (DifferentialGeometry.Integral.Connection.vec3 (I := I) A B C) =
+      nablaRic (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) A B C) =
         (1 / 3 : Real) * dScalar (fun _ : Fin 1 => A) * g.inner x B C := by
     simpa [cov, hcov, Ric, scalar, nablaRic, dScalar, metricCov,
       metricRicci, metricScalarAt] using
       nablaRic_ein3 (I := I) (M := M) g hEin x
-  have hNablaSymm : DifferentialGeometry.Integral.Connection.NablaRicSymmAt (I := I) nablaRic := by
+  have hNablaSymm : DifferentialGeometry.Geometry.Curvature.NablaRicSymmAt (I := I) nablaRic := by
     intro A B C
     rw [hEinNabla A B C, hEinNabla A C B]
     rw [g.symm x C B]
   have hcontract :
-      DifferentialGeometry.Integral.Connection.ContractedBianchiOfSecondAt (I := I) basis gInv
+      DifferentialGeometry.Geometry.Curvature.ContractedBianchiOfSecondAt (I := I) basis gInv
         nablaRm04
         nablaRic dScalar :=
-    DifferentialGeometry.Integral.Connection.contractOfSecond (I := I) basis gInv nablaRm04
+    DifferentialGeometry.Geometry.Curvature.contractOfSecond (I := I) basis gInv nablaRm04
       nablaRic dScalar hRmSymm hRicTrace hScalar hNablaSymm hInv
-  have hBianchi : DifferentialGeometry.Integral.Connection.ContractedBianchiAt (I := I) basis gInv
+  have hBianchi : DifferentialGeometry.Geometry.Curvature.ContractedBianchiAt (I := I) basis gInv
     nablaRic
       dScalar :=
-    DifferentialGeometry.Integral.Connection.contracted_bianchi_of_second (I := I) basis gInv
+    DifferentialGeometry.Geometry.Curvature.contracted_bianchi_of_second (I := I) basis gInv
       nablaRm04
       nablaRic dScalar hcontract hsecond
-  exact DifferentialGeometry.Integral.Connection.dR_zero_nablaEin3 (I := I) (M := M) g basis gInv
+  exact DifferentialGeometry.Geometry.Curvature.dR_zero_nablaEin3 (I := I) (M := M) g basis gInv
     hinv
     nablaRic dScalar hBianchi hEinNabla X
 
@@ -543,25 +509,25 @@ theorem metricRicciSymm
     (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
     (i j : Idx) :
     metricRicciAt (I := I) (M := M) g x
-        (DifferentialGeometry.Integral.Connection.vec2 (I := I) (basis i) (basis j)) =
+        (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis i) (basis j)) =
       metricRicciAt (I := I) (M := M) g x
-        (DifferentialGeometry.Integral.Connection.vec2 (I := I) (basis j) (basis i)) := by
+        (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis j) (basis i)) := by
   let K := metricCurvData (I := I) (M := M) g
   have hLower :
-      DifferentialGeometry.Integral.Connection.Rm04LowersRm13At (I := I) g x
+      DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x
         (metricRm13 (I := I) (M := M) g x)
         (metricRm04 (I := I) (M := M) g x) :=
-    DifferentialGeometry.Integral.Connection.rm04LowersRm13At_of_realizes
+    DifferentialGeometry.Geometry.Curvature.rm04LowersRm13At_of_realizes
       (I := I) g (metricCov (I := I) (M := M) g)
       (metricRm13 (I := I) (M := M) g)
       (metricRm04 (I := I) (M := M) g)
       K.h_rm13 K.h_rm04 x
   have hTrace :
-      DifferentialGeometry.Integral.Connection.RicciRealizesRm04FirstTraceAt (I := I)
+      DifferentialGeometry.Geometry.Curvature.RicciRealizesRm04FirstTraceAt (I := I)
         (metricRicciAt (I := I) (M := M) g x)
         (metricRm04At (I := I) (M := M) g x) gInv basis := by
     have hTrace' :=
-      DifferentialGeometry.Integral.Connection.ricciFirstTraceAt_of_rm13_section
+      DifferentialGeometry.Geometry.Curvature.ricciFirstTraceAt_of_rm13_section
         (I := I) g basis gInv hinv
         (metricRicci (I := I) (M := M) g)
         (metricRm13 (I := I) (M := M) g)
@@ -572,45 +538,43 @@ theorem metricRicciSymm
   have hcov1 :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (I := I) (E := E) (M := M)
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric (I := I) g)
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g)
         (1 : WithTop ℕ∞) :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
       (I := I) (M := M) g
   have hPair :
       ∀ X Y Z W : TangentSpace I x,
         metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) X Y Z W) =
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z W) =
           metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) Z W X Y) := by
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) Z W X Y) := by
     simpa using
-      (DifferentialGeometry.Integral.Connection.rm04PairSymmAt_of_leviCivita_realizes
+      (DifferentialGeometry.Geometry.Connection.rm04PairSymmAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04
         (x := x))
   have hOutput :
-      DifferentialGeometry.Integral.Connection.Rm04OutputSkewAt (I := I)
+      DifferentialGeometry.Geometry.Curvature.Rm04OutputSkewAt (I := I)
         (metricRm04At (I := I) (M := M) g x) := by
     simpa using
-      (DifferentialGeometry.Integral.Connection.rm04OutputSkewAt_of_leviCivita_realizes
+      (DifferentialGeometry.Geometry.Connection.rm04OutputSkewAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04
         (x := x))
   have hInput :
       ∀ X Y Z W : TangentSpace I x,
         metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) Y X Z W) =
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) Y X Z W) =
           -metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) X Y Z W) := by
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z W) := by
     simpa using
-      (DifferentialGeometry.Integral.Connection.rm04InputSkewAt_of_leviCivita_realizes
+      (DifferentialGeometry.Geometry.Connection.rm04InputSkewAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04
         (x := x))
   exact
-    DifferentialGeometry.Integral.Connection.ricciSymm_of_rm04 (I := I) basis gInv
+    DifferentialGeometry.Geometry.Curvature.ricciSymm_of_rm04 (I := I) basis gInv
       (metricRicciAt (I := I) (M := M) g x)
       (metricRm04At (I := I) (M := M) g x)
       hTrace hPair hOutput hInput
       (invMetric_symm (I := I) (M := M) g x basis gInv hinv) i j
-
-
 
 theorem metricNablaSymm
     (g : SmoothRiemannianMetric I M) (x : M) :
@@ -678,11 +642,6 @@ theorem metricNablaSymm
   rw [hleft, hright]
   exact hsymm
 
-
-
-
-
-
 theorem metricRicci_velocity_eq_sum_rm04_frame
     (g : SmoothRiemannianMetric I M) {m : Nat} {x : M}
     (basis : Module.Basis (Fin (m + 1)) Real (TangentSpace I x))
@@ -696,16 +655,16 @@ theorem metricRicci_velocity_eq_sum_rm04_frame
   classical
   let K := metricCurvData (I := I) (M := M) g
   have hLower :
-      DifferentialGeometry.Integral.Connection.Rm04LowersRm13At (I := I) g x
+      DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x
         (metricRm13 (I := I) (M := M) g x)
         (metricRm04 (I := I) (M := M) g x) :=
-    DifferentialGeometry.Integral.Connection.rm04LowersRm13At_of_realizes
+    DifferentialGeometry.Geometry.Curvature.rm04LowersRm13At_of_realizes
       (I := I) g (metricCov (I := I) (M := M) g)
       (metricRm13 (I := I) (M := M) g)
       (metricRm04 (I := I) (M := M) g)
       K.h_rm13 K.h_rm04 x
   have hTrace :=
-    DifferentialGeometry.Integral.Connection.ricci_diag_eq_sum_rm04_diag_of_orthonormal
+    DifferentialGeometry.Geometry.Curvature.ricci_diag_eq_sum_rm04_diag_of_orthonormal
       (I := I) (M := M) (Idx := Fin (m + 1)) g basis
       (metricRicci (I := I) (M := M) g)
       (metricRm13 (I := I) (M := M) g)
@@ -714,41 +673,41 @@ theorem metricRicci_velocity_eq_sum_rm04_frame
       (0 : Fin (m + 1)) (0 : Fin (m + 1))
   have hTraceSplit :
       metricRicci (I := I) (M := M) g x
-          (DifferentialGeometry.Integral.Connection.vec2 (I := I) (basis 0) (basis 0)) =
+          (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis 0) (basis 0)) =
         metricRm04 (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) (basis 0) (basis 0) (basis 0)
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (basis 0) (basis 0) (basis 0)
               (basis 0)) +
           ∑ i : Fin m,
             metricRm04 (I := I) (M := M) g x
-              (DifferentialGeometry.Integral.Connection.vec4 (I := I)
+              (DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
                 (basis i.succ) (basis 0) (basis 0) (basis i.succ)) := by
     simpa [Fin.sum_univ_succ] using hTrace
   have hInput :
       forall X Y Z W : TangentSpace I x,
         metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) Y X Z W) =
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) Y X Z W) =
           -metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) X Y Z W) := by
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z W) := by
     simpa using
-      (DifferentialGeometry.Integral.Connection.rm04InputSkewAt_of_leviCivita_realizes
+      (DifferentialGeometry.Geometry.Connection.rm04InputSkewAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.h_rm04
         (x := x))
   have hzero :
       metricRm04 (I := I) (M := M) g x
-          (DifferentialGeometry.Integral.Connection.vec4 (I := I) (basis 0) (basis 0) (basis 0)
+          (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (basis 0) (basis 0) (basis 0)
             (basis 0)) =
         0 := by
     have hself :
         metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) (basis 0) (basis 0) (basis 0)
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (basis 0) (basis 0) (basis 0)
               (basis 0)) =
           -metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) (basis 0) (basis 0) (basis 0)
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (basis 0) (basis 0) (basis 0)
               (basis 0)) :=
       hInput (basis 0) (basis 0) (basis 0) (basis 0)
     have hzeroAt :
         metricRm04At (I := I) (M := M) g x
-            (DifferentialGeometry.Integral.Connection.vec4 (I := I) (basis 0) (basis 0) (basis 0)
+            (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (basis 0) (basis 0) (basis 0)
               (basis 0)) =
           0 := by
       linarith
@@ -756,10 +715,8 @@ theorem metricRicci_velocity_eq_sum_rm04_frame
   have hTail := hTraceSplit
   rw [hzero, zero_add] at hTail
   simpa [h0, hSucc, metricRm04_apply, metricRm04StdAt_apply,
-    vec2, vec4, DifferentialGeometry.Integral.Connection.vec2,
-      DifferentialGeometry.Integral.Connection.vec4] using hTail
-
-
+    vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
+      DifferentialGeometry.Geometry.Curvature.vec4] using hTail
 
 theorem metricRicci_velocity_eq_sum_inner_curv_frame
     (g : SmoothRiemannianMetric I M) {m : Nat} {x : M}
@@ -771,14 +728,14 @@ theorem metricRicci_velocity_eq_sum_inner_curv_frame
     (hSucc : forall i : Fin m, basis i.succ = E i) :
     metricRicci (I := I) (M := M) g x (vec2 (I := I) T T) =
       ∑ i, g.inner x
-        (DifferentialGeometry.Integral.Connection.metricSharp (I := I) g x
+        (DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g x
           (metricRm04LastDualAt (I := I) (M := M) g x (E i) T T))
         (E i) := by
   rw [metricRicci_velocity_eq_sum_rm04_frame
     (I := I) (M := M) g basis hON h0 hSucc]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [DifferentialGeometry.Integral.Connection.inner_metricSharp]
+  rw [DifferentialGeometry.Geometry.Operator.inner_metricSharp]
   rfl
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

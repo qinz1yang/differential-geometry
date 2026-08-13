@@ -2,33 +2,30 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoeffic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedCovGradJetInput
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0Readout
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0NormalForm.RzMaster
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff Matrix
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -42,7 +39,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
     deTurckVFCovDeriv connDiffOp_homSection_contMDiff metricConnDiffLoweredFib
     metricConnDiffLoweredFib_toModel metricConnDiffLoweredFib_contMDiff domDomCongrFibRank
     domDomCongrFibRank_apply tensor0SProdKappaFib tensor0SProdKappaFib_apply)
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
 namespace LieCorr0Core
@@ -189,7 +186,7 @@ noncomputable def lieCorr0RiemQuadlin
       (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
       (ContinuousLinearMap.compL ℝ (TangentSpace I x) (TangentSpace I x)
         (TangentSpace I x →L[ℝ] ℝ) (g₀.inner x))).comp
-    (Integral.Connection.riemannOp (LeviCivita (I := I) g₀) x)
+    (DifferentialGeometry.Geometry.Curvature.riemannOp (LeviCivita (I := I) g₀) x)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -198,7 +195,8 @@ theorem lieCorr0RiemQuadlin_apply
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v0 v1 u w : TangentSpace I x) :
     lieCorr0RiemQuadlin (I := I) g₀ x v0 v1 u w =
-      g₀.inner x (Integral.Connection.riemannOp (LeviCivita (I := I) g₀) x v0 v1 u) w :=
+      g₀.inner x (DifferentialGeometry.Geometry.Curvature.riemannOp (LeviCivita
+        (I := I) g₀) x v0 v1 u) w :=
   rfl
 
 noncomputable def lieCorr0Quadlin4ToModel
@@ -232,7 +230,7 @@ omit [SigmaCompactSpace M] in
 theorem lieCorr0RiemLoweredFib_toModel
     (g₀ : SmoothRiemannianMetric I M) (x : M) (v : Fin 4 → TangentSpace I x) :
     Tensor0SSpace.toModel (lieCorr0RiemLoweredFib (I := I) g₀ x) v =
-      g₀.inner x (Integral.Connection.riemannOp (LeviCivita (I := I) g₀) x
+      g₀.inner x (DifferentialGeometry.Geometry.Curvature.riemannOp (LeviCivita (I := I) g₀) x
         (v 0) (v 1) (v 2)) (v 3) := by
   rw [lieCorr0RiemLoweredFib, Tensor0SSpace.toModel_ofModel]
   exact lieCorr0Quadlin4ToModel_apply (TangentSpace I x) (lieCorr0RiemQuadlin (I := I) g₀ x) v
@@ -507,9 +505,9 @@ theorem lieCorr0RiemLoweredFib_section_contMDiff
   obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
   have hscalar : ContMDiff I 𝓘(ℝ) ∞
       (fun x : M => g₀.inner x
-        (Integral.Connection.riemannOp (LeviCivita (I := I) g₀) x
+        (DifferentialGeometry.Geometry.Curvature.riemannOp (LeviCivita (I := I) g₀) x
           ((Y (σ 0)) x) ((Y (σ 1)) x) ((Y (σ 2)) x)) ((Y (σ 3)) x)) :=
-    Integral.Connection.mixedKernelScalar_global (I := I) g₀ g₀
+    DifferentialGeometry.Analysis.Spectral.mixedKernelScalar_global (I := I) g₀ g₀
       (Y (σ 0)).contMDiff (Y (σ 3)).contMDiff (Y (σ 1)).contMDiff (Y (σ 2)).contMDiff
   refine hscalar.contMDiffAt.congr_of_eventuallyEq ?_
   have h_base₁ : ∀ᶠ x in nhds x₀, x ∈ e₁.baseSet := e₁.open_baseSet.mem_nhds he₁
@@ -609,8 +607,6 @@ end LieCorr0Core
 
 open LieCorr0Core
 
-
-
 def lieCorr0Field (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
@@ -629,6 +625,6 @@ theorem lieCorr0Field_apply
         TensorRSSpace.ofCLM (lieCorr0TotalFib (I := I) g₀ g₁ g_bg x)) :=
   rfl
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

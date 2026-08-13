@@ -1,18 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.PointedRiemannian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -29,14 +20,9 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 
-
-
-
-
-
 structure PointedFlowData
     (I : ModelWithCorners Real E H)
-      (D : DifferentialGeometry.Integral.Connection.RealTimeInterval) where
+      (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) where
   M : Type u
   [topology : TopologicalSpace M]
   [charted : ChartedSpace H M]
@@ -65,9 +51,7 @@ structure PointedFlowData
 namespace PointedFlowData
 
 variable {I : ModelWithCorners Real E H}
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-
-
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 def atTime (F : PointedFlowData.{u, uE, uH} (I := I) D) (t : Real) :
     PointedRiemannianManifold.{u, uE, uH} (I := I) where
@@ -90,7 +74,6 @@ def atTime (F : PointedFlowData.{u, uE, uH} (I := I) D) (t : Real) :
     letI : T2Space F.M := F.t2
     exact F.S.family.metric t
 
-
 def rmNormSq (F : PointedFlowData (I := I) D) (t : Real) (x : F.M) : Real :=
   letI : TopologicalSpace F.M := F.topology
   letI : ChartedSpace H F.M := F.charted
@@ -105,35 +88,27 @@ def rmNormSq (F : PointedFlowData (I := I) D) (t : Real) (x : F.M) : Real :=
 
 end PointedFlowData
 
-
-
 structure PointedFlowSeq (I : ModelWithCorners Real E H) where
-  D : DifferentialGeometry.Integral.Connection.RealTimeInterval
+  D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval
   term : Nat -> PointedFlowData.{u, uE, uH} (I := I) D
 
 namespace PointedFlowSeq
 
 variable {I : ModelWithCorners Real E H}
 
-
 def basepoint (X : PointedFlowSeq.{u, uE, uH} (I := I)) (i : Nat) :
     (X.term i).M :=
   (X.term i).basepoint
 
-
 def atTime (X : PointedFlowSeq.{u, uE, uH} (I := I)) (t : Real) :
     PointedRiemannianSeq.{u, uE, uH} (I := I) where
   obj := fun i => (X.term i).atTime (I := I) t
-
-
 
 def atZero (X : PointedFlowSeq.{u, uE, uH} (I := I)) :
     PointedRiemannianSeq.{u, uE, uH} (I := I) :=
   X.atTime (I := I) 0
 
 end PointedFlowSeq
-
-
 
 structure CompleteInput {I : ModelWithCorners Real E H}
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
@@ -143,8 +118,6 @@ structure CompleteInput {I : ModelWithCorners Real E H}
 
 namespace CompleteInput
 
-/-- Completeness of a pointed flow sequence restricts to completeness of every
-chosen time-slice sequence. -/
 def at_time {I : ModelWithCorners Real E H}
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}
     (h : CompleteInput (I := I) X) {t : Real} (ht : t ∈ X.D.carrier) :
@@ -153,9 +126,6 @@ def at_time {I : ModelWithCorners Real E H}
 
 end CompleteInput
 
-/-- Uniform curvature bound on every compact time window inside the common
-time interval.  The bound is stated for the squared norm of the canonical
-lowered Riemann tensor. -/
 structure CurvBoundInput {I : ModelWithCorners Real E H}
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) : Prop where
   bound_on_window :
@@ -164,12 +134,6 @@ structure CurvBoundInput {I : ModelWithCorners Real E H}
         forall i : Nat, forall t : Real, t ∈ Set.Icc a b ->
           forall x : (X.term i).M,
             (X.term i).rmNormSq (I := I) t x <= C
-
-
-
-
-
-
 
 structure InjInput {I : ModelWithCorners Real E H}
     (_X : PointedFlowSeq.{u, uE, uH} (I := I)) where

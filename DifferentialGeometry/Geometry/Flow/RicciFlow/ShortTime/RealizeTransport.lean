@@ -9,6 +9,8 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -16,13 +18,12 @@ open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.PDE.RicciFlow.Pullback
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
@@ -37,46 +38,10 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 private noncomputable def eigenRealizeEval (g_bg : SmoothRiemannianMetric I M)
     (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g_bg 0 2)
     (x : M) (v w : TangentSpace I x) : ℝ :=
   ccTensorBilinSymm (I := I) g_bg (eigenSmooth (I := I) (M := M) g_bg i) x v w
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 private theorem eigenRealizeEval_weight_summable
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -88,20 +53,6 @@ private theorem eigenRealizeEval_weight_summable
         (eigenRealizeEval (I := I) (M := M) g_bg i x v w *
           (tensorSobolevWeight (I := I) (M := M) i (a : ℝ))⁻¹) ^ 2) :=
   ((weyl_pointwise_diagonalKernel_bound_of_closed (I := I) (M := M) g_bg 0 2).2 a ha).1 x v w
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 private theorem ccTensorBilinSymm_hasSum_eigenRealizeEval
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -164,7 +115,6 @@ theorem realize_eval_carrier_factorization
     (I := I) (M := M) g_bg a ha T_z x v w).tsum_eq
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem pointwise_deriv_through_realize
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
@@ -197,33 +147,6 @@ theorem pointwise_deriv_through_realize
   refine (hℓderiv.const_add (g_bg.inner x v w)).congr (fun s _ => ?_) ?_
   · exact hval s
   · exact hval t
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem rhs_matches_deturck_at_solution
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}

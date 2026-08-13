@@ -5,8 +5,7 @@ import DifferentialGeometry.Geometry.Exponential.Smoothness.UniformChartFlowBrid
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformUniqueness
 import DifferentialGeometry.Geometry.Geodesic.GeodesicEquationFromIntegralCurve
 import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

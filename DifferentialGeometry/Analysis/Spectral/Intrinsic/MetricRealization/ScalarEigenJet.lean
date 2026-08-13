@@ -1,20 +1,13 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.CompactChartJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.EigensectionSobolevDecay
 
-
-
-
-
-
-
-
-
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Topology Tensor0SBundle
+open DifferentialGeometry.Analysis.Sobolev
+open Bundle Manifold MeasureTheory Set Filter Topology DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -31,9 +24,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
-
-
-
 
 theorem scalarEig_jet_le
     (g : SmoothRiemannianMetric I M) (α : M) (m k : ℕ)
@@ -66,7 +56,7 @@ theorem scalarEig_jet_le
           (eigenvectorSmooth (I := I) (M := M) g 0 0 i) α
           Fin.elim0 Fin.elim0) y‖
         ≤ Cjet *
-            ‖IntrinsicSobolev.SmoothCcTensor.toHs
+            ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
               (g := g) (r := 0) (s := 0) (2 * k)
               (eigenvectorSmooth (I := I) (M := M) g 0 0 i)‖ :=
           hjet (eigenvectorSmooth (I := I) (M := M) g 0 0 i) y hy
@@ -77,4 +67,4 @@ theorem scalarEig_jet_le
           (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (2 * k) := by
       ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.LpDecomp
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMul
 import DifferentialGeometry.Analysis.Sobolev.Manifold.RellichManifold
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -23,6 +26,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
@@ -321,7 +325,6 @@ noncomputable def fHLeibnizResidualSmoothRep
       (gradFun (I := I) g v.toFun x)) -
     (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x * v.toFun x
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fHLeibnizResidualSmoothRep_contMDiff
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
@@ -335,13 +338,12 @@ lemma fHLeibnizResidualSmoothRep_contMDiff
     have hα_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff
-    have h := DifferentialGeometry.Integral.DivergenceTheorem.contMDiff_g_inner_of_smooth_sections
+    have h := DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections
       (I := I) (M := M) g
-      (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g hα_smooth)
-      (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g v.smooth)
+      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hα_smooth⟩)
+      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨v.toFun, v.smooth⟩)
     refine h.congr (fun x => ?_)
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply,
-        DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply]
+    simp [DifferentialGeometry.Geometry.Operator.grad_g_apply]
   have h_piece1 : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun x : M => -((2 : ℝ) * g.inner x (gradFun (I := I) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x)
@@ -357,7 +359,7 @@ lemma fHLeibnizResidualSmoothRep_contMDiff
     (laplacianOfChartPOU (I := I) (M := M) g α).contMDiff.mul v.smooth
   exact h_piece1.sub h_piece2
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma fHLeibnizResidualSmoothRep_tsupport_subset
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     tsupport (fHLeibnizResidualSmoothRep (I := I) (M := M) g α v) ⊆
@@ -384,8 +386,8 @@ lemma fHLeibnizResidualSmoothRep_tsupport_subset
       rw [laplacianOfChartPOU_apply]
       rw [Δ_g_def]
       have h_grad_ev : ∀ᶠ y in 𝓝 x,
-          (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g
-            (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff :
+          (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g
+            (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y =
           (0 : TangentSpace I y) := by
         filter_upwards [h_open.mem_nhds hx_off] with y hy
@@ -395,7 +397,7 @@ lemma fHLeibnizResidualSmoothRep_tsupport_subset
           by_contra hne
           exact hz (subset_tsupport _ hne)
         have h_g := gradFun_eq_zero_of_eventuallyEq_zero (I := I) g h_y_ev
-        rw [DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply]
+        rw [DifferentialGeometry.Geometry.Operator.grad_g_apply]
         exact h_g
       exact DifferentialGeometry.Integral.DivergenceTheorem.divergence_g_zero_of_eventuallyEq_zero
         (I := I) g _ h_grad_ev

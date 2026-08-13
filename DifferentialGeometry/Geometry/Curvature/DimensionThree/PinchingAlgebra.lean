@@ -3,15 +3,7 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {R : Type*}
 
@@ -88,8 +80,6 @@ theorem tracefreeRicciEigenNormSq3_nonneg
   unfold tracefreeRicciEigenNormSq3
   exact div_nonneg hpair (by norm_num)
 
-
-
 theorem tracefreeRicciEigenNormSq3_eq_zero_iff
     (l1 l2 l3 : Real) :
     tracefreeRicciEigenNormSq3 l1 l2 l3 = 0 <->
@@ -114,8 +104,6 @@ theorem tracefreeRicciEigenNormSq3_eq_zero_iff
     subst l2
     subst l3
     simp [tracefreeRicciEigenNormSq3, ricciEigenPairwiseGapSq3]
-
-
 
 def hamiltonCubicQOrderedGaps3 [CommRing R] (a b z : R) : R :=
   a ^ 2 * (z + a + 2 * b) ^ 2 +
@@ -155,8 +143,6 @@ theorem hamiltonCubicQOrderedGaps3_ge_zSq_pairwise
     positivity
   nlinarith
 
-
-
 theorem hamiltonCubicQOrderedGaps3_lower_bound
     [Field R] [LinearOrder R] [IsStrictOrderedRing R]
     (a b z delta scalar ricciNormSq : R)
@@ -190,10 +176,6 @@ theorem hamiltonCubicQOrderedGaps3_lower_bound
     ring_nf
   rw [hthree] at hscaled
   exact le_trans hscaled hgap_ge
-
-
-
-
 
 theorem hamiltonCubicQ3_lower_bound_ordered_eigenvalues
     [Field R] [LinearOrder R] [IsStrictOrderedRing R]
@@ -240,8 +222,6 @@ theorem hamiltonCubicQ3_lower_bound_ordered_eigenvalues
   rw [htf_gap, hQ_gap]
   exact hgap_lower
 
-
-
 theorem hamiltonCubicQ3_lower_bound_ordered_nonnegative_eigenvalues
     [Field R] [LinearOrder R] [IsStrictOrderedRing R]
     (l1 l2 l3 delta : R)
@@ -258,10 +238,6 @@ theorem hamiltonCubicQ3_lower_bound_ordered_nonnegative_eigenvalues
       nlinarith)
     hpinch
     (ricciEigenNormSq3_le_scalar_sq_of_nonnegative l1 l2 l3 h1 h2 h3)
-
-
-
-
 
 theorem hamQ3_sub_nonneg
     (l1 l2 l3 delta epsilon : Real)
@@ -310,9 +286,6 @@ theorem hamQ3_sub_nonneg
           tracefreeRicciEigenNormSq3 l1 l2 l3 := by ring
   nlinarith
 
-
-
-
 structure PinchEigen3 (l1 l2 l3 delta : Real) : Prop where
   ord12 : l2 <= l1
   ord23 : l3 <= l2
@@ -357,9 +330,6 @@ theorem q_sub_nonneg {l1 l2 l3 delta epsilon : Real}
     h.delta_nonneg hepsilon h.scalar_nonneg h.lower h.norm_le_scalar_sq
 
 end PinchEigen3
-
-
-
 
 structure PinchEigen3Unordered (l1 l2 l3 delta : Real) : Prop where
   nonneg1 : 0 <= l1
@@ -537,4 +507,4 @@ theorem q_sub_nonneg {l1 l2 l3 delta epsilon : Real}
 
 end PinchEigen3Unordered
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

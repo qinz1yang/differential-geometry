@@ -3,13 +3,6 @@ import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
 open Manifold Set TopologicalSpace
@@ -27,8 +20,6 @@ variable {I : ModelWithCorners 𝕜 E H} {J : ModelWithCorners 𝕜 E' H'}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J 1 N]
 variable {n : WithTop ℕ∞}
-
-
 
 def tangentHome (Φ : PartialDiffeomorph I J M N n) (hn : 1 ≤ n) :
     OpenPartialHomeomorph (TangentBundle I M) (TangentBundle J N) where
@@ -95,8 +86,6 @@ def tangentHome (Φ : PartialDiffeomorph I J M N n) (hn : 1 ≤ n) :
     Φ.contMDiffOn_invFun.continuousOn_tangentMapWithin hn
       Φ.open_target.uniqueMDiffOn
 
-/-- Applying the differential of a partial diffeomorphism to a continuous
-tangent-bundle input is continuous when its base stays in the source. -/
 theorem mfderiv_cont
     (Φ : PartialDiffeomorph I J M N n) (hn : 1 ≤ n)
     {P : Type*} [TopologicalSpace P]

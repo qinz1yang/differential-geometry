@@ -1,13 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxShell
 
-/-!
-# Absolute-integral bounds for terminal Koch--Lamm flux shells
-
-The full directional terminal potential requires summability of integrals of
-the integrand norm, not merely of norms of shell integrals.  This file proves
-the one-piece, finite-cover, and shell absolute estimates.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -24,8 +16,6 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-/-- Absolute integral of the directional kernel/source product on one far
-selected terminal piece. -/
 theorem klFluxPiece_abs {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x c : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
@@ -104,7 +94,6 @@ theorem klFluxPiece_abs {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
           ring
 
 omit [CompleteSpace F] in
-/-- Absolute-integral form of the arbitrary finite-cover flux estimate. -/
 theorem klFluxCover_abs {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
@@ -180,8 +169,6 @@ theorem klFluxCover_abs {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
           ring
 
 omit [CompleteSpace F] in
-/-- Absolute-integral shell flux bound under parameterized canonical-cover
-data. -/
 theorem klFluxShell_abs {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)

@@ -2,5 +2,3 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Compone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Pairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Christoffel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Producers
-
-set_option autoImplicit false

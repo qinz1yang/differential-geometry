@@ -2,6 +2,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -10,7 +11,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -21,6 +22,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma chartLeviCivitaGoodSet_image_isOpen (α : M) :
@@ -405,5 +407,5 @@ theorem chartLeviCivita_contMDiffCovariantDerivativeOn
       rw [htriv, hcov]
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

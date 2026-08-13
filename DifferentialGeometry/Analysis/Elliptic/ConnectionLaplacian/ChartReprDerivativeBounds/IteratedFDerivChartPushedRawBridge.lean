@@ -11,8 +11,8 @@ open MeasureTheory Set Filter Topology Bundle Manifold Function
 open scoped Manifold ContDiff ENNReal NNReal
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -207,8 +207,8 @@ theorem iteratedFDeriv_two_chartPushedRaw_sq_le_compIterSq
   rw [hf_def, hL_def]
   ring
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

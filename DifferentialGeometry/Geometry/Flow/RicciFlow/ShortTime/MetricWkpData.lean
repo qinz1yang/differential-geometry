@@ -6,27 +6,12 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.LowerOrder.ChartL2BoundedConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.MetricWkpTerms
-
-/-!
-# Uniform `W^{3,p}` data for bounded metric families
-
-The order-at-most-three intrinsic metric bounds used by uniform short-time
-existence also control the fixed-background metric differences in the concrete
-chart-Sobolev model.  This file packages that implication in two steps:
-
-* `metricDiff_comp_jet` gives one pointwise bound for all derivatives through
-  order three of every POU-weighted scalar chart component;
-* `metricDiff_wkp3_bdd` converts those bounds into `MemWkpTensor 3 p` and one
-  common finite `wkpTensorNorm` radius.
-
-The ellipticity hypothesis used by the later Ricci--DeTurck solver is not
-needed for this data-size estimate.  It enters separately in uniform
-parabolicity.
--/
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -40,7 +25,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -48,13 +32,13 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
 private lemma secComp_to_smooth
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -65,10 +49,6 @@ private lemma secComp_to_smooth
       tensorChartComp (I := I) (M := M) g r s S α Idx Jdx := rfl
 
 omit [BoundarylessManifold I M] in
-/-- Uniform intrinsic metric bounds through order three give one uniform
-Frechet-jet bound for every POU-weighted scalar component of the
-fixed-background metric difference.  The bound is also valid at inactive
-chart centres, where the component is identically zero. -/
 theorem metricDiff_comp_jet
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
@@ -86,10 +66,6 @@ theorem metricDiff_comp_jet
             α (![] : Fin 0 → Fin (Module.finrank ℝ E)) Jdx) y‖ ≤ C := by
   exact metricDiff_fam_jet (I := I) (M := M) gBase gSeq B hbdd
 omit [BoundarylessManifold I M] in
-/-- The intrinsic `C^3` metric-family bound gives one real radius containing
-all fixed-background metric differences in chartwise `W^{3,p}`.  In
-particular, the conclusion includes both the concrete tensor-Sobolev
-membership and an explicit uniform bound for `wkpTensorNorm`. -/
 theorem metricDiff_wkp3_bdd
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)

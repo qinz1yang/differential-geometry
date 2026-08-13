@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.Candidate
 import DifferentialGeometry.Geometry.Operator.Gradient
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -20,7 +23,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -143,7 +147,7 @@ theorem chartRicciDualNormSq_bdd_on_compact
 
 noncomputable def ricciSharp (g : SmoothRiemannianMetric I M)
     (φ : C^∞⟮I, M; ℝ⟯) (b : M) : TangentSpace I b :=
-  DifferentialGeometry.Integral.Connection.metricSharp (I := I) g b
+  DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g b
     (ricciTensor (I := I) g b (gradFun (I := I) g φ b)).toLinearMap
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -151,7 +155,7 @@ omit [SigmaCompactSpace M] in
 @[simp] lemma ricciSharp_def (g : SmoothRiemannianMetric I M)
     (φ : C^∞⟮I, M; ℝ⟯) (b : M) :
     ricciSharp (I := I) g φ b =
-      DifferentialGeometry.Integral.Connection.metricSharp (I := I) g b
+      DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g b
         (ricciTensor (I := I) g b (gradFun (I := I) g φ b)).toLinearMap := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -161,7 +165,7 @@ lemma inner_ricciSharp (g : SmoothRiemannianMetric I M)
     g.inner b (ricciSharp (I := I) g φ b) w =
       ricciTensor (I := I) g b (gradFun (I := I) g φ b) w := by
   rw [ricciSharp_def]
-  exact DifferentialGeometry.Integral.Connection.inner_metricSharp (I := I) g b
+  exact DifferentialGeometry.Geometry.Operator.inner_metricSharp (I := I) g b
     (ricciTensor (I := I) g b (gradFun (I := I) g φ b)).toLinearMap w
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -307,7 +311,7 @@ lemma ricciSharpChartLocal_eq_ricciSharp
     ricciSharpChartLocal (I := I) g α φ b =
       ricciSharp (I := I) g φ b := by
   classical
-  apply DifferentialGeometry.Integral.Connection.metricFlatLinear_injective (I := I) g b
+  apply DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective (I := I) g b
   ext v
   change g.inner b (ricciSharpChartLocal (I := I) g α φ b) v =
     g.inner b (ricciSharp (I := I) g φ b) v

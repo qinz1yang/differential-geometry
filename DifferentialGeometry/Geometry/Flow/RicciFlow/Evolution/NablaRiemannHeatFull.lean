@@ -1,82 +1,22 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannHeatFrameInvariant
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricDeriv
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SBochnerProduct
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -87,8 +27,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
   Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
@@ -96,37 +34,23 @@ private local instance tensor0SModelNormedSpace_local {s : ℕ} :
 private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
 
-
-
-
-
 section Fields
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 
 def nablaRm04NormSqIntrinsic
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) : Real -> M -> Real :=
   fun t x => normSq0S (I := I) (S.base.metric t) x 5 (nablaRm04Field (I := I) S t x)
 
-
-
 def nabla2Rm04NormSqIntrinsic
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) : Real -> M -> Real :=
   fun t x => normSq0S (I := I) (S.base.metric t) x 6 (nabla2Rm04Field (I := I) S t x)
 
-
-
-
-
-
-
-
-
 def nablaRm04ReactionIntrinsic
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
     (gInv : Real -> M -> Idx -> Idx -> Real)
@@ -149,39 +73,16 @@ def nablaRm04ReactionIntrinsic
 
 end Fields
 
-
-
-
-
-
 section HeatEquation
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaRm04NormHeatEquationOn_intrinsic
     [FiniteDimensional Real E]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
     (gInv : Real -> M -> Idx -> Idx -> Real)
@@ -209,7 +110,7 @@ theorem nablaRm04NormHeatEquationOn_intrinsic
       nablaRmNormLap t x =
         metricTrace0S2InBasis (I := I) (basis x) (gInv t x)
           (normSecond t x) Fin.elim0)
-    (hT : ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hT : ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M) (I0 : Fin 5 -> Idx),
       HasDerivWithinAt
         (fun r : Real =>
@@ -217,7 +118,7 @@ theorem nablaRm04NormHeatEquationOn_intrinsic
             (fun i => basis x i) I0)
         (tensor0SComponent (I := I) (Tdot (t : Real) x) (fun i => basis x i) I0)
         D.carrier (t : Real))
-    (hgInvDt : ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hgInvDt : ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M) (i j : Idx),
       HasDerivWithinAt (fun r : Real => gInv r x i j)
         (2 * (∑ p : Idx, ∑ q : Idx,
@@ -282,21 +183,14 @@ theorem nablaRm04NormHeatEquationOn_intrinsic
 
 end HeatEquation
 
-
-
-
-
-
 section Producer
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nabla2Rm04NormSqIntrinsic_nonneg
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
     0 ≤ nabla2Rm04NormSqIntrinsic (I := I) S t x := by
   unfold nabla2Rm04NormSqIntrinsic
@@ -304,31 +198,12 @@ theorem nabla2Rm04NormSqIntrinsic_nonneg
   exact (tensor0SMetricData (I := I) (S.base.metric t) x 6).inner_nonneg
     (nabla2Rm04Field (I := I) S t x)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaRm04NormHeatBoundOn_intrinsic
     [FiniteDimensional Real E]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x))
     (gInv : Real -> M -> Idx -> Idx -> Real)
@@ -357,7 +232,7 @@ theorem nablaRm04NormHeatBoundOn_intrinsic
       nablaRmNormLap t x =
         metricTrace0S2InBasis (I := I) (basis x) (gInv t x)
           (normSecond t x) Fin.elim0)
-    (hT : ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hT : ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M) (I0 : Fin 5 -> Idx),
       HasDerivWithinAt
         (fun r : Real =>
@@ -365,13 +240,13 @@ theorem nablaRm04NormHeatBoundOn_intrinsic
             (fun i => basis x i) I0)
         (tensor0SComponent (I := I) (Tdot (t : Real) x) (fun i => basis x i) I0)
         D.carrier (t : Real))
-    (hgInvDt : ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hgInvDt : ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M) (i j : Idx),
       HasDerivWithinAt (fun r : Real => gInv r x i j)
         (2 * (∑ p : Idx, ∑ q : Idx,
           gInv (t : Real) x i p * gInv (t : Real) x j q * ric (t : Real) x p q))
         D.carrier (t : Real))
-    (hreact_bound : ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hreact_bound : ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
       nablaRm04ReactionIntrinsic (I := I) S basis gInv ric Tdot (t : Real) x ≤
         cReact *

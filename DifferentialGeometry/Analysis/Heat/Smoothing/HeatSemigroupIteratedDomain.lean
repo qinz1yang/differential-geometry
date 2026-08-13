@@ -12,6 +12,30 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace HeatEquation
 
+private lemma one_add_pow_mul_resolvent_pow_cancel
+    (r lam x : ℝ) (k : ℕ) (h : r * (1 + lam) = 1) :
+    (1 + lam) ^ k * x * r ^ k = x := by
+  have hpow : (1 + lam) ^ k * r ^ k = 1 := by
+    rw [← mul_pow, mul_comm, h, one_pow]
+  calc
+    (1 + lam) ^ k * x * r ^ k = ((1 + lam) ^ k * r ^ k) * x := by ring
+    _ = x := by rw [hpow, one_mul]
+
+private theorem map_eq_of_hilbertBasis_diagonal
+    {ι X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
+    (b : HilbertBasis ι ℝ X) (T : X →L[ℝ] X) (d : ι → ℝ) (u v : X)
+    (hbasis : ∀ i, T (b i) = d i • b i)
+    (hcoeff : ∀ i, (b.repr v) i * d i = (b.repr u) i) :
+    T v = u := by
+  have hmap : HasSum (fun i => (b.repr v) i • T (b i)) (T v) := by
+    simpa only [map_smul] using (b.hasSum_repr v).mapL T
+  have hsummand : (fun i => (b.repr v) i • T (b i)) =
+      fun i => (b.repr u) i • b i := by
+    funext i
+    rw [hbasis i, smul_smul, hcoeff i]
+  rw [hsummand] at hmap
+  exact HasSum.unique hmap (b.hasSum_repr u)
+
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -26,10 +50,10 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma mul_one_add_lambda_eq_one
+theorem resolventEigenvalue_mul_one_add_laplacianEigenvalue
     (g : SmoothRiemannianMetric I M) (i : EigenIdx (I := I) (M := M) g) :
     i.1.val * (1 + EigenIdx.lambda (I := I) (M := M) i) = 1 := by
   unfold EigenIdx.lambda laplacianEigenvalueOf
@@ -38,7 +62,7 @@ private lemma mul_one_add_lambda_eq_one
   field_simp
   linarith
 
-private lemma iteratedResolventL2_apply_basis
+theorem iteratedResolventL2_apply_basis
     (g : SmoothRiemannianMetric I M) (k : ℕ)
     (i : EigenIdx (I := I) (M := M) g) :
     iteratedResolventL2 (I := I) (M := M) g k
@@ -70,6 +94,75 @@ private lemma iteratedResolventL2_apply_basis
     rw [h_basis]
     rw [smul_smul]
     rw [show i.1.val ^ k * i.1.val = i.1.val ^ (k + 1) from by ring]
+
+theorem exists_iteratedResolventL2_preimage_of_weighted_coeff_summable
+    (g : SmoothRiemannianMetric I M)
+    (u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
+    (k : ℕ)
+    (hsum : Summable (fun i : EigenIdx (I := I) (M := M) g =>
+      (1 + EigenIdx.lambda (I := I) (M := M) i) ^ (2 * k) *
+        ⟪resolventHilbertEigenbasisSigma (I := I) (M := M) g i, u⟫_ℝ ^ 2)) :
+    ∃ v : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g),
+      iteratedResolventL2 (I := I) (M := M) g k v = u := by
+  classical
+  set b := resolventHilbertEigenbasisSigma (I := I) (M := M) g
+  let c : EigenIdx (I := I) (M := M) g → ℝ := fun i =>
+    (1 + EigenIdx.lambda (I := I) (M := M) i) ^ k * (b.repr u) i
+  have hc_sq : Summable (fun i => (c i) ^ 2) := by
+    have heq : (fun i => (c i) ^ 2) = fun i =>
+        (1 + EigenIdx.lambda (I := I) (M := M) i) ^ (2 * k) *
+          ⟪b i, u⟫_ℝ ^ 2 := by
+      funext i
+      simp only [c]
+      rw [b.repr_apply_apply, mul_pow]
+      rw [← pow_mul]
+      congr 2
+      omega
+    rw [heq]
+    exact hsum
+  have hc_mem : Memℓp c 2 := by
+    apply memℓp_gen
+    have hpr : (2 : ℝ≥0∞).toReal = 2 := by norm_num
+    have heq : (fun i => ‖c i‖ ^ (2 : ℝ≥0∞).toReal) =
+        fun i => (c i) ^ 2 := by
+      funext i
+      rw [hpr, Real.norm_eq_abs, ← sq_abs]
+      norm_num
+    rw [heq]
+    exact hc_sq
+  let v : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
+    b.repr.symm ⟨c, hc_mem⟩
+  have hv_coeff : ∀ i, (b.repr v) i = c i := by
+    intro i
+    rw [show b.repr v = ⟨c, hc_mem⟩ from LinearIsometryEquiv.apply_symm_apply _ _]
+  refine ⟨v, map_eq_of_hilbertBasis_diagonal b
+    (iteratedResolventL2 (I := I) (M := M) g k) (fun i => i.1.val ^ k) u v
+    (iteratedResolventL2_apply_basis (I := I) (M := M) g k) ?_⟩
+  intro i
+  rw [hv_coeff i]
+  exact one_add_pow_mul_resolvent_pow_cancel i.1.val
+    (EigenIdx.lambda (I := I) (M := M) i) ((b.repr u) i) k
+    (resolventEigenvalue_mul_one_add_laplacianEigenvalue (I := I) (M := M) g i)
+
+theorem exists_laplacianDomainPow_succ_lift_of_weighted_coeff_summable
+    (g : SmoothRiemannianMetric I M)
+    (u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
+    (k : ℕ)
+    (hsum : Summable (fun i : EigenIdx (I := I) (M := M) g =>
+      (1 + EigenIdx.lambda (I := I) (M := M) i) ^ (2 * (k + 1)) *
+        ⟪resolventHilbertEigenbasisSigma (I := I) (M := M) g i, u⟫_ℝ ^ 2)) :
+    ∃ u_h : H1Compl (I := I) (M := M) g,
+      u_h ∈ laplacianDomainPow (I := I) (M := M) g (k + 1) ∧
+        H1ComplToLp (I := I) (M := M) g u_h = u := by
+  obtain ⟨v, hv⟩ := exists_iteratedResolventL2_preimage_of_weighted_coeff_summable
+    (I := I) (M := M) g u (k + 1) hsum
+  refine ⟨resolvent (I := I) (M := M) g
+      (iteratedResolventL2 (I := I) (M := M) g k v), ?_, ?_⟩
+  · rw [laplacianDomainPow_succ_mem_iff]
+    exact ⟨v, rfl⟩
+  · rw [← resolventL2_apply]
+    rw [← iteratedResolventL2_succ_apply]
+    exact hv
 
 noncomputable def oneMinusLapHeat (g : SmoothRiemannianMetric I M) (k : ℕ)
     (t : ℝ) :
@@ -142,7 +235,7 @@ private lemma iteratedResolventL2_oneMinusLapHeat_basis
   rw [iteratedResolventL2_apply_basis (I := I) (M := M) g k i]
   rw [smul_smul]
   have h_inv : i.1.val * (1 + lam) = 1 :=
-    mul_one_add_lambda_eq_one (I := I) (M := M) g i
+    resolventEigenvalue_mul_one_add_laplacianEigenvalue (I := I) (M := M) g i
   have h_pow_inv : i.1.val ^ k * (1 + lam) ^ k = 1 := by
     rw [← mul_pow, h_inv, one_pow]
   have h_pow_inv' : (1 + lam) ^ k * i.1.val ^ k = 1 := by

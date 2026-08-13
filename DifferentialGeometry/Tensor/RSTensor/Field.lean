@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Yuan Liao, Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Bundle
@@ -33,37 +33,12 @@ import Mathlib.LinearAlgebra.Dual.Defs
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Dimension.Finrank
-import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.LinearAlgebra.Contraction
-import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
 import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
-import Mathlib.Topology.Algebra.Module.FiniteDimension
 import Mathlib.Topology.Algebra.Module.LinearMap
-import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Tensor.Multilinear.Fiber
-import DifferentialGeometry.Tensor.Multilinear.Bundle
-import DifferentialGeometry.Tensor.Alternating.Comp
-import DifferentialGeometry.Tensor.Multilinear.Comp
-import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
-import Mathlib.Analysis.Calculus.ContDiff.Basic
-import Mathlib.Analysis.Calculus.ContDiff.Operations
-import DifferentialGeometry.Tensor.Auxiliary.LinearIsometryContDiff
-import Mathlib.Analysis.Calculus.ContDiff.Comp
-import Mathlib.Analysis.Normed.Module.FiniteDimension
-import Mathlib.Analysis.Normed.Module.Alternating.Basic
-import Mathlib.RingTheory.Finiteness.Defs
-import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
-import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Data.Bundle
-import DifferentialGeometry.Tensor.Multilinear.Basis
-import DifferentialGeometry.Tensor.Multilinear.Curry
-import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Alternating.Flip
 import DifferentialGeometry.Tensor.Multilinear.Flip
@@ -82,87 +57,11 @@ import Mathlib.Tactic.Group
 import Mathlib.Analysis.Normed.Module.Alternating.Curry
 import Mathlib.LinearAlgebra.Alternating.Uncurry.Fin
 import Mathlib.Tactic.Cases
-import DifferentialGeometry.Tensor.Multilinear.Basis
-import DifferentialGeometry.Tensor.Multilinear.Bundle
-import DifferentialGeometry.Tensor.Alternating.Comp
-import DifferentialGeometry.Tensor.Multilinear.Comp
-import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
-import Mathlib.Analysis.Calculus.ContDiff.Basic
-import Mathlib.Analysis.Calculus.ContDiff.Operations
-import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
-import DifferentialGeometry.Tensor.Auxiliary.LinearIsometryContDiff
-import Mathlib.Analysis.Calculus.ContDiff.Comp
-import Mathlib.Analysis.Normed.Module.FiniteDimension
-import Mathlib.Analysis.Normed.Module.Alternating.Basic
-import Mathlib.RingTheory.Finiteness.Defs
-import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
-import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Data.Bundle
-import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-import Mathlib.LinearAlgebra.Dimension.Free
-import Mathlib.Topology.Algebra.Module.FiniteDimension
 import DifferentialGeometry.Tensor.Multilinear.Tensor
-import DifferentialGeometry.Tensor.Multilinear.Fiber
-import DifferentialGeometry.Tensor.Multilinear.Bundle
-import DifferentialGeometry.Tensor.Alternating.Comp
-import DifferentialGeometry.Tensor.Multilinear.Comp
-import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
-import Mathlib.Analysis.Calculus.ContDiff.Basic
-import Mathlib.Analysis.Calculus.ContDiff.Operations
-import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
-import DifferentialGeometry.Tensor.Auxiliary.LinearIsometryContDiff
-import Mathlib.Analysis.Calculus.ContDiff.Comp
-import Mathlib.Analysis.Normed.Module.FiniteDimension
-import Mathlib.Analysis.Normed.Module.Alternating.Basic
-import Mathlib.RingTheory.Finiteness.Defs
-import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
-import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Data.Bundle
-import DifferentialGeometry.Tensor.Multilinear.Basis
-import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-import Mathlib.LinearAlgebra.Dimension.Free
-import Mathlib.Topology.Algebra.Module.FiniteDimension
 import DifferentialGeometry.Tensor.Multilinear.Field
 import DifferentialGeometry.Tensor.Product.Basis
 import DifferentialGeometry.Tensor.Product.Bundle
 import DifferentialGeometry.Tensor.Product.Pretrivialization
-import DifferentialGeometry.Tensor.Product.Defs
-import DifferentialGeometry.Tensor.Product.HomEquiv
-import Mathlib.LinearAlgebra.Dual.Defs
-import Mathlib.LinearAlgebra.Dual.Lemmas
-import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
-import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-import Mathlib.LinearAlgebra.Dimension.Finrank
-import Mathlib.LinearAlgebra.Contraction
-import Mathlib.RingTheory.TensorProduct.Finite
-import Mathlib.Analysis.Normed.Operator.Banach
-import Mathlib.Topology.Algebra.Module.Equiv
-import Mathlib.Topology.Algebra.Module.LinearMap
-import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Tensor.Multilinear.Curry
-import Mathlib.Geometry.Manifold.VectorBundle.Hom
-import DifferentialGeometry.Tensor.Alternating.Curry
-import DifferentialGeometry.Tensor.Alternating.Flip
-import DifferentialGeometry.Tensor.Multilinear.Flip
-import Mathlib.Analysis.Normed.Module.Multilinear.Basic
-import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
-import Mathlib.Analysis.Normed.Operator.Mul
-import DifferentialGeometry.Tensor.Alternating.Congr
-import Mathlib.LinearAlgebra.Alternating.Basic
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Decomposition
-import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Split
-import Mathlib.GroupTheory.Perm.Option
-import Mathlib.LinearAlgebra.Alternating.DomCoprod
-import Mathlib.GroupTheory.Perm.Finite
-import Mathlib.Logic.Equiv.Fin.Basic
-import Mathlib.Tactic.Group
-import Mathlib.Analysis.Normed.Module.Alternating.Curry
-import Mathlib.LinearAlgebra.Alternating.Uncurry.Fin
-import Mathlib.Tactic.Cases
 import Mathlib.Topology.FiberBundle.Basic
 import DifferentialGeometry.Tensor.Product.Fiber
 import Mathlib.Topology.VectorBundle.Basic
@@ -170,23 +69,7 @@ import Mathlib.LinearAlgebra.TensorProduct.Basis
 import DifferentialGeometry.Bundle.SectionRealized
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 noncomputable section
 
@@ -204,16 +87,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M]
 variable (n : WithTop ℕ∞) [IsManifold I (n + 1) M]
 
-
-
-
-
-
 section ApplyInput
 
 variable {r s : ℕ} [CompleteSpace 𝕜]
-
-
 
 noncomputable def model_applyInput_bilinear (r s : ℕ) :
     Tensor0SModel r 𝕜 E →L[𝕜]
@@ -226,8 +102,6 @@ omit [CompleteSpace 𝕜] in
 theorem model_applyInput_bilinear_apply (r s : ℕ)
     (θ : Tensor0SModel r 𝕜 E) (T : TensorRSModel r s 𝕜 E) :
     model_applyInput_bilinear (𝕜 := 𝕜) (E := E) r s θ T = T θ := rfl
-
-
 
 omit [CompleteSpace 𝕜] in
 theorem tensor0SModelAt_applyInput_eq
@@ -271,7 +145,6 @@ theorem tensor0SModelAt_applyInput_eq
         (R := 𝕜) hx θ
   rw [hθ]
 
-
 noncomputable def tensorRSField_applyInput_fun
     (T : (x : M) ->
       TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s x)
@@ -280,8 +153,6 @@ noncomputable def tensorRSField_applyInput_fun
     (x : M) ->
       Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s x :=
   fun x => T x (θ x)
-
-
 
 noncomputable def tensorRSField_applyInput
     (T : TensorRSField n r s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
@@ -328,32 +199,11 @@ theorem tensorRSField_applyInput_apply
 
 end ApplyInput
 
-
-
-
-
-
-
-
-
 section SmulByFun
 
 variable {r s : ℕ} [CompleteSpace 𝕜]
 
-
-
-
 end SmulByFun
-
-
-
-
-
-
-
-
-
-
 
 noncomputable def Tensor0SField.one0 [CompleteSpace 𝕜] :
     Tensor0SField n 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) :=
@@ -368,23 +218,8 @@ theorem Tensor0SField.one0_apply [CompleteSpace 𝕜]
   exact Tensor0SField.fromScalarField_apply n (fun _ : M => (1 : 𝕜))
     contMDiff_const x v
 
-
-
-
-
-
-
-
-
-
-
-
 end
 end Tensor0SBundle
-
-
-
-
 
 namespace Tensor0SBundle
 noncomputable section
@@ -404,6 +239,6 @@ variable {s q : ℕ}
 
 variable (n : WithTop ℕ∞)
 
-
 end
 end Tensor0SBundle
+end DifferentialGeometry

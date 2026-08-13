@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MovingShiProducer
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
 
@@ -6,8 +9,8 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
+
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -16,11 +19,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
-variable [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
   [BoundarylessManifold I M]
-
-
-
 
 theorem bbsAllMBounds
     {alpha omega : Real} {hAlphaOmega : alpha < omega}

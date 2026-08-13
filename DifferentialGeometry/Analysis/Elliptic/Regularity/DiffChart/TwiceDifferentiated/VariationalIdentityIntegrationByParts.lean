@@ -9,6 +9,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.Iter
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityTestFunctionCalculus
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityBaseDataLocalRegularity
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -275,6 +276,7 @@ lemma per_pair_ibp_base_weak_partial
   rw [hLeibniz1_eq, hLeibniz2_eq] at h_ibp_ext
   exact h_ibp_ext
 
+omit [SigmaCompactSpace M] in
 lemma per_pair_ibp_base_u_chart
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}

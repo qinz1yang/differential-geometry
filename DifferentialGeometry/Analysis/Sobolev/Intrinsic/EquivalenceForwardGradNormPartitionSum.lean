@@ -10,6 +10,7 @@ import DifferentialGeometry.Geometry.Operator.Laplacian
 import DifferentialGeometry.Analysis.Integration.Measure.Family
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -34,17 +35,18 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Intrinsic
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicLp
 
 private lemma gradFun_eq_zero_off_tsupport_smooth
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {f : M → ℝ} (_hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {x : M}
     (hx : x ∉ tsupport f) :
-    DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x =
+    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x =
       (0 : TangentSpace I x) := by
-  apply DifferentialGeometry.Integral.DivergenceTheorem.gradFun_eq_zero_of_mfderiv_eq_zero
+  apply DifferentialGeometry.Geometry.Operator.gradFun_eq_zero_of_mfderiv_eq_zero
   have hopen : IsOpen (tsupport f)ᶜ := (isClosed_tsupport _).isOpen_compl
   have hx_mem : x ∈ (tsupport f)ᶜ := hx
   have h_nhds : (tsupport f)ᶜ ∈ 𝓝 x := hopen.mem_nhds hx_mem
@@ -58,23 +60,23 @@ private lemma gradFun_eq_zero_off_tsupport_smooth
   exact mfderiv_const
 
 noncomputable def gNormGrad
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (u : M → ℝ) (x : M) : ℝ :=
   Real.sqrt
     (g.inner x
-      (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      (DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g u x)
-      (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      (DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g u x))
 
 lemma gNormGrad_nonneg
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (u : M → ℝ) (x : M) :
     0 ≤ gNormGrad (I := I) (M := M) g u x :=
   Real.sqrt_nonneg _
 
 lemma gNormGrad_eq_zero_of_notMem_tsupport
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {x : M}
     (hx : x ∉ tsupport f) :
     gNormGrad (I := I) (M := M) g f x = 0 := by
@@ -105,18 +107,18 @@ private lemma mdifferentiableAt_finset_sum
     exact (hh_β x).add (ihB hh_rest)
 
 private lemma gradFun_finset_sum
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {ι : Type*} (S : Finset ι) (h : ι → M → ℝ)
     (hh : ∀ α ∈ S, ∀ x : M, MDifferentiableAt I 𝓘(ℝ, ℝ) (h α) x) (x : M) :
-    DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
         (fun y => ∑ α ∈ S, h α y) x =
-      ∑ α ∈ S, DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      ∑ α ∈ S, DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g (h α) x := by
   classical
   induction S using Finset.induction_on with
   | empty =>
     simp only [Finset.sum_empty]
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.gradFun_const
+    rw [DifferentialGeometry.Geometry.Operator.gradFun_const
       (I := I) g 0 x]
   | insert α₀ S₀ hα₀_notMem ih =>
     have hh_α₀ : ∀ x, MDifferentiableAt I 𝓘(ℝ, ℝ) (h α₀) x :=
@@ -130,18 +132,18 @@ private lemma gradFun_finset_sum
       funext y
       simp [Finset.sum_insert hα₀_notMem]
     rw [h_eq_sum]
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.gradFun_add
+    rw [DifferentialGeometry.Geometry.Operator.gradFun_add
       (I := I) g (hh_α₀ x) (hsum_diff x)]
     rw [ih hh_rest]
     rw [Finset.sum_insert hα₀_notMem]
 
 private lemma gradFun_eq_sum_gradFun_pou_mul
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
-    DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x =
+    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x =
       ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
-        DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+        DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
           (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) y * u y) x := by
   classical
@@ -168,19 +170,19 @@ private lemma gradFun_eq_sum_gradFun_pou_mul
   have h_mfderiv_eq : mfderiv I 𝓘(ℝ, ℝ) u x =
       mfderiv I 𝓘(ℝ, ℝ) (fun y => ∑ α ∈ S, h α y) x :=
     Filter.EventuallyEq.mfderiv_eq hu_eq_local
-  have h_gradFun_eq : DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+  have h_gradFun_eq : DifferentialGeometry.Geometry.Operator.gradFun
       (I := I) g u x =
-      DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+      DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
         (fun y => ∑ α ∈ S, h α y) x := by
-    unfold DifferentialGeometry.Integral.DivergenceTheorem.gradFun
-    unfold DifferentialGeometry.Integral.DivergenceTheorem.metricSharp
+    unfold DifferentialGeometry.Geometry.Operator.gradFun
+    unfold DifferentialGeometry.Geometry.Operator.metricSharp
     rw [h_mfderiv_eq]
   rw [h_gradFun_eq]
   exact gradFun_finset_sum (I := I) (M := M) g S h hh_diff x
 
 lemma gNormGrad_le_finset_sum_pou_mul
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     gNormGrad (I := I) (M := M) g u x ≤
       ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
@@ -191,7 +193,7 @@ lemma gNormGrad_le_finset_sum_pou_mul
   unfold gNormGrad
   rw [gradFun_eq_sum_gradFun_pou_mul (I := I) (M := M) g hu x]
   set v : M → TangentSpace I x := fun α =>
-    DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
       (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) y * u y) x with hv_def
   set S : Finset M :=

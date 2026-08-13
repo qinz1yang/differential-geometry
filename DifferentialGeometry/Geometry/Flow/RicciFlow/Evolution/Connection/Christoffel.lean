@@ -1,12 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Pairing
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
 
 noncomputable section
 
@@ -30,12 +26,12 @@ variable {u : Set M}
 
 
 def ChristoffelVariationEquationInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (rhs : Real -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
-  forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M), x ∈
+  forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M), x ∈
     u ->
     forall i j k : Idx,
       HasDerivWithinAt
@@ -46,15 +42,8 @@ def ChristoffelVariationEquationInFrameOn
         D.carrier
         (t : Real)
 
-
-
-
-
-
-
-
 def ChristoffelVariationMixedDerivativeInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -66,13 +55,8 @@ def ChristoffelVariationMixedDerivativeInFrameOn
           (S.family.connection s) frame hframe x i j k)
       (fun s x => rhs s x i j k)
 
-
-
-
-
-
 def ChristoffelVariationMixedDerivativeInFrameOnRegular
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -85,12 +69,10 @@ def ChristoffelVariationMixedDerivativeInFrameOnRegular
           (S.family.connection s) frame hframe x i j k)
       (fun s x => rhs s x i j k)
 
-
-
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ChristoffelVariationMixedDerivativeInFrameOn.toRegular
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -105,9 +87,9 @@ theorem ChristoffelVariationMixedDerivativeInFrameOn.toRegular
 
 
 def ChristoffelMetricVariationEquationInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (metricCovDerivDt : Real -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
@@ -118,16 +100,16 @@ def ChristoffelMetricVariationEquationInFrameOn
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffelMetricVariation_hasDerivWithinAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (metricCovDerivDt : Real -> M -> Idx -> Idx -> Idx -> Real)
     (h :
       ChristoffelMetricVariationEquationInFrameOn
         (I := I) S gInv frame hframe metricCovDerivDt)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
       (hx : x ∈ u)
     (i j k : Idx) :
     HasDerivWithinAt
@@ -142,13 +124,13 @@ theorem christoffelMetricVariation_hasDerivWithinAt
 
 
 def ChristoffelEvolutionEquationInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
-  forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M), x ∈
+  forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M), x ∈
     u ->
     forall i j k : Idx,
       HasDerivWithinAt
@@ -162,9 +144,9 @@ def ChristoffelEvolutionEquationInFrameOn
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem frameCoeff_eq_sum_inv_metricPairing
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
@@ -185,17 +167,15 @@ theorem frameCoeff_eq_sum_inv_metricPairing
         simp [IsLocalFrameOn.coeff, hx]
     _ = ∑ l : Idx, gInv t x k l * (S.family.metric t).inner x (frame l x) V := by
         simpa [IsLocalFrameOn.toBasisAt_coe] using
-          DifferentialGeometry.Integral.Connection.basis_coord_eq_sum_inv_inner
+          DifferentialGeometry.Geometry.Curvature.basis_coord_eq_sum_inv_inner
             (I := I) (M := M) (S.family.metric t) (hframe.toBasisAt hx)
             (fun i j : Idx => gInv t x i j) hinvAt k V
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem frameCoeffLocal
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
@@ -218,23 +198,21 @@ theorem frameCoeffLocal
         simp [IsLocalFrameOn.coeff, hx]
     _ = ∑ l : Idx, gInv t x k l * (S.family.metric t).inner x (frame l x) V := by
         simpa [IsLocalFrameOn.toBasisAt_coe] using
-          DifferentialGeometry.Integral.Connection.basis_coord_eq_sum_inv_inner
+          DifferentialGeometry.Geometry.Curvature.basis_coord_eq_sum_inv_inner
             (I := I) (M := M) (S.family.metric t) (hframe.toBasisAt hx)
             (fun i j : Idx => gInv t x i j) hinvAt k V
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffelVariationEquationInFrameOn_of_pairing_local
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (loweredRHS : Real -> M -> Idx -> Idx -> Idx -> Real)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (hpair :
-      forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M),
+      forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
         x ∈ u ->
         forall i j l : Idx,
           HasDerivWithinAt
@@ -281,13 +259,11 @@ theorem christoffelVariationEquationInFrameOn_of_pairing_local
       (I := I) S gInv frame hframe hinv (t : Real) hx k
       ((S.family.connection (t : Real) (frame j) x) (frame i x))).symm
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffelSymbol_sub_eq_sum_inv_connectionDiff
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
@@ -345,9 +321,9 @@ theorem christoffelSymbol_sub_eq_sum_inv_connectionDiff
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem gammaSubLocal
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
@@ -405,9 +381,9 @@ theorem gammaSubLocal
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffelEvolutionEquationInFrameOn_of_pairing
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real)
@@ -452,13 +428,11 @@ theorem christoffelEvolutionEquationInFrameOn_of_pairing
       (I := I) S gInv frame hframe hinv (t : Real) hx k
       ((S.family.connection (t : Real) (frame j) x) (frame i x))).symm
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffelEvolutionEquationInFrameOn_of_pairing_local
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real)

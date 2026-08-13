@@ -1,11 +1,14 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
@@ -15,9 +18,10 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow
-open TensorRSNabla
+
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.TensorRSNabla
 
 section NormedReindexing
 
@@ -122,10 +126,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma section_tensorSectionMDiffAt {n : ℕ}
     (w : Cₛ^∞⟮I; Tensor0SModel n ℝ E, (fun y : M => Tensor0SSpace n I y)⟯) (x : M) :
-    DifferentialGeometry.Integral.Connection.TensorSectionMDiffAt (I := I) n (fun y => w y) x :=
+    DifferentialGeometry.Geometry.Connection.TensorSectionMDiffAt (I := I) n (fun y => w y) x :=
   (w.contMDiff.contMDiffAt).mdifferentiableAt (by simp)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma tensorCovDerivAt_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (R : SmoothCcTensor g r s) (σ' : Equiv.Perm (Fin r)) (x : M) (v0 : E) :
     (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
@@ -153,10 +157,10 @@ lemma tensorCovDerivAt_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : �
     have hŵx : ŵ x = Tensor0SSpace.ofModel
         (ContinuousMultilinearMap.domDomCongr σ' (Tensor0SSpace.toModel (w x))) := hŵ_apply x
     have hL1 := TensorRSNabla.tensorRSCovariantDerivative_apply (I := I) (M := M) (r' + 1) s
-      (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
       (reindexCoeffGen (I := I) (M := M) g (r' + 1) s R σ').toSection w x v0
     have hL2 := TensorRSNabla.tensorRSCovariantDerivative_apply (I := I) (M := M) (r' + 1) s
-      (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
       R.toSection ŵ x v0
     have hF : (fun y : M =>
           (show Tensor0SSpace (r' + 1) I y →L[ℝ] Tensor0SSpace s I y from
@@ -167,11 +171,11 @@ lemma tensorCovDerivAt_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : �
       funext y
       rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, hŵ_apply]
     have hcomm : Tensor0SNabla.tensor0SCovariantDerivative I M (r' + 1)
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (fun y => ŵ y) x v0 =
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (fun y => ŵ y) x v0 =
         Tensor0SSpace.ofModel (ContinuousMultilinearMap.domDomCongr σ'
           (Tensor0SSpace.toModel
             (Tensor0SNabla.tensor0SCovariantDerivative I M (r' + 1)
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (fun y => w y) x v0))) := by
       have hrel : ∀ y : M, (fun z => ŵ z) y =
           ContinuousMultilinearMap.domDomCongr σ'
@@ -189,16 +193,16 @@ lemma tensorCovDerivAt_reindexCoeffGen (g : SmoothRiemannianMetric I M) (r s : �
         hrel
       exact hd.trans (ofModel_domDomCongr_toModel_eq (I := I) σ'
         (Tensor0SNabla.tensor0SCovariantDerivative I M (r' + 1)
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
           (fun y => w y) x v0)).symm
     rw [← hw, ← hŵx]
     change (show Tensor0SSpace (r' + 1) I x →L[ℝ] Tensor0SSpace s I x from
           TensorRSNabla.tensorRSCovariantDerivative I M (r' + 1) s
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (reindexCoeffGen (I := I) (M := M) g (r' + 1) s R σ').toSection x v0) (w x) =
         (show Tensor0SSpace (r' + 1) I x →L[ℝ] Tensor0SSpace s I x from
           TensorRSNabla.tensorRSCovariantDerivative I M (r' + 1) s
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             R.toSection x v0) (ŵ x)
     rw [hL1, hL2, hF]
     congr 1

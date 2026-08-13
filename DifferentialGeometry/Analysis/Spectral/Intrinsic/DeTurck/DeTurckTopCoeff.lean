@@ -1,28 +1,20 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieHigherOrderCoeffField
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Tensor0SBundle
+open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -31,7 +23,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
-
 
 def deTurckPhiMetTotal (g₀ g_bg g : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
@@ -76,8 +67,6 @@ private theorem lieTrace_reindex (g₀ g₁ : SmoothRiemannianMetric I M)
   rw [harg]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- The combined top coefficient is the two reindexed trace-Hessian
-coefficients minus the doubled Ricci principal coefficient. -/
 theorem phiMet_reindex (g₀ g_bg g : SmoothRiemannianMetric I M) :
     deTurckPhiMetTotal (I := I) (M := M) g₀ g_bg g =
       reindexCoeffGen (I := I) (M := M) g₀ 4 2
@@ -105,8 +94,6 @@ theorem phiMet_reindex (g₀ g_bg g : SmoothRiemannianMetric I M) :
   abel
 
 omit [BoundarylessManifold I M] in
-/-- Along the realized affine metric path, the complete top coefficient is the
-DeTurck coefficient minus the two Lichnerowicz-form Ricci coefficients. -/
 theorem phi_realized_eq
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -136,4 +123,4 @@ theorem phi_realized_eq
   rw [hgroup, hhalf]
   abel
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

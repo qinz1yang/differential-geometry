@@ -3,32 +3,12 @@ import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry.HCGCompactness
 
 open scoped BigOperators
 open Matrix
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
-
-
 
 private lemma isHermitian_entry
     {A : Matrix n n ℝ} (hA : A.IsHermitian) (i j : n) :
@@ -104,8 +84,6 @@ theorem sum_posSemidef_mul_posSemidef_nonneg
   rw [hquad]
   exact hG.dotProduct_mulVec_nonneg _
 
-
-
 section KroneckerPow
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -144,7 +122,6 @@ private lemma prod_fin_succ_Q (s : ℕ) (Q : Idx → Idx → ℝ)
   rw [Fin.prod_univ_succ]
   simp
 
-
 private lemma diag_pairing {ι : Type*} [Fintype ι] [DecidableEq ι]
     (α : ℝ) (G : ι → ι → ℝ) :
     (∑ i : ι, ∑ j : ι, (α * (if i = j then (1 : ℝ) else 0)) * G i j)
@@ -157,7 +134,6 @@ private lemma diag_pairing {ι : Type*} [Fintype ι] [DecidableEq ι]
     simp [Ne.symm hj]
   · intro h
     exact absurd (Finset.mem_univ i) h
-
 
 private lemma matrix_posSemidef_of_quad_nonneg {ι : Type*} [Fintype ι]
     (A : ι → ι → ℝ)
@@ -175,7 +151,6 @@ private lemma matrix_posSemidef_of_quad_nonneg {ι : Type*} [Fintype ι]
         Finset.sum_congr rfl fun j _ => by ring
     rw [hstar, hexp]
     exact hquad x
-
 
 private lemma shifted_posSemidef
     (Q : Idx → Idx → ℝ) (α : ℝ)
@@ -232,7 +207,6 @@ private lemma kron_kernel_posSemidef_of_ih (s : ℕ) (Q : Idx → Idx → ℝ) (
       (mul_nonneg (pow_nonneg hαnonneg s)
         (Finset.sum_nonneg fun I _ => sq_nonneg (w I)))
       (ih w)
-
 
 private lemma sandwich_entry {ι κ : Type*} [Fintype ι]
     (P : Matrix ι ι ℝ) (V : Matrix ι κ ℝ) (k l : κ) :
@@ -353,12 +327,6 @@ theorem quadForm_id_le_pow
         _ = ∑ I0 : Fin (s + 1) → Idx, ∑ J0 : Fin (s + 1) → Idx,
               (∏ a, Q (I0 a) (J0 a)) * (c I0 * c J0) := hRHS.symm
 
-
-
-
-
-
-
 theorem quad_lb_of_near_id {ι : Type*} [Fintype ι] [DecidableEq ι]
     (Q : ι → ι → ℝ) (ε : ℝ) (hε0 : 0 ≤ ε)
     (hnear : ∀ i j, |Q i j - (if i = j then (1 : ℝ) else 0)| ≤ ε)
@@ -426,10 +394,6 @@ theorem quad_lb_of_near_id {ι : Type*} [Fintype ι] [DecidableEq ι]
   have hElb := (abs_le.mp herr).1
   rw [hsplit]
   linarith
-
-
-
-
 
 theorem quad_ub_of_near_id {ι : Type*} [Fintype ι] [DecidableEq ι]
     (Q : ι → ι → ℝ) (ε : ℝ) (hε0 : 0 ≤ ε)

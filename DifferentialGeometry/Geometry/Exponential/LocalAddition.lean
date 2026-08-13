@@ -1,39 +1,8 @@
 import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
-import DifferentialGeometry.Geometry.Topology.FiberBundleT2
+import DifferentialGeometry.Topology.FiberBundleT2
 import Mathlib.Topology.Connected.LocallyConnected
-
-
-/-!
-# Component-local exponential addition
-
-The intrinsic diagonal exponential developed in `DiagExpDerivative.lean` is
-stated for a connected manifold.  Ricci-flow uniqueness, however, is stated on
-an arbitrary compact manifold.  This file records the componentwise form needed
-by an exponential-section chart without adding `ConnectedSpace M` to the
-ambient theorem.
-
-For `p : M`, its connected component is open because a manifold is locally
-connected, and closed by general topology.  Hence on a compact manifold that
-component is itself a compact connected manifold.  Restricting a smooth metric
-to this open subtype therefore lets us reuse the already proved intrinsic
-diagonal exponential, its zero-section smoothness, and its unipotent derivative.
-
-This is deliberately a component-local producer.  It does not assert joint
-smoothness of the chart-fixed `expMap g q` as `q` varies: that object uses the
-arbitrarily selected chart at each `q`, so it is not the canonical moving-base
-exponential.  The intrinsic `diagExp` on the connected component is the faithful
-geometric object.
-
-## Main declarations
-
-* `connCompOpen` is the open connected component of a point.
-* `connCompConnected` and `connCompCompact` provide local component instances
-  to downstream consumers without installing global instances.
-* `connDiagExp` is the intrinsic diagonal exponential for the restricted metric.
-* `connAdd_cd` gives finite-order smoothness at the zero section.
-* `connAdd_fderiv` gives the unipotent chart derivative used by Banach IFT.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -53,32 +22,25 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 
-/-- The connected component of `p`, regarded as an open subtype. -/
 def connCompOpen (p : M) : Opens M := by
   letI : LocallyConnectedSpace H := I.toHomeomorph.locallyConnectedSpace
   letI : LocallyConnectedSpace M := ChartedSpace.locallyConnectedSpace H M
   exact ⟨connectedComponent p, isOpen_connectedComponent⟩
 
-/-- The point `p` in its open connected component. -/
 def connCompPt (p : M) : connCompOpen (I := I) p :=
   ⟨p, mem_connectedComponent⟩
 
-/-- The connected-space structure on `connCompOpen p`, exported as an explicit
-producer rather than installed as a global instance. -/
 @[reducible] noncomputable def connCompConnected (p : M) :
     ConnectedSpace (connCompOpen (I := I) p) := by
   apply Subtype.connectedSpace
   simpa only [connCompOpen] using (isConnected_connectedComponent (x := p))
 
-/-- The compact-space structure on `connCompOpen p`, exported as an explicit
-producer rather than installed as a global instance. -/
 @[reducible] noncomputable def connCompCompact (p : M) :
     CompactSpace (connCompOpen (I := I) p) := by
   apply isCompact_iff_compactSpace.mp
   simpa only [connCompOpen] using
     (isClosed_connectedComponent (x := p)).isCompact
 
-/-- Restriction of a smooth metric to the open connected component of `p`. -/
 noncomputable def connCompMetric
     (g : SmoothRiemannianMetric I M) (p : M) :
     SmoothRiemannianMetric I (connCompOpen (I := I) p) := by
@@ -157,11 +119,6 @@ private theorem connComp_enorm
   rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
   rfl
 
-/-- The intrinsic diagonal exponential of the restricted metric on the open
-connected component of `p`.
-
-All metric and completeness instances are local to this definition.  In
-particular, it introduces no ambient `ConnectedSpace M` instance. -/
 noncomputable def connDiagExp
     (g : SmoothRiemannianMetric I M) (p : M) :
     TangentBundle I (connCompOpen (I := I) p) →
@@ -183,7 +140,6 @@ noncomputable def connDiagExp
 
 end
 
-/-- The chart expression of `connDiagExp` at the zero vector over `p`. -/
 noncomputable def connAddChart
     (g : SmoothRiemannianMetric I M) (p : M) : E × E → E × E :=
   let z : TangentBundle I (connCompOpen (I := I) p) :=
@@ -195,8 +151,6 @@ noncomputable def connAddChart
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- On the connected component, the diagonal exponential sends the zero vector
-over `p` to `(p,p)`. -/
 @[simp] theorem connAdd_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
     connDiagExp (I := I) g p
@@ -227,8 +181,6 @@ over `p` to `(p,p)`. -/
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Finite-order smoothness of the component-local diagonal exponential at the
-zero vector over `p`. -/
 theorem connAdd_cd
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
     ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
@@ -259,9 +211,6 @@ theorem connAdd_cd
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The chart derivative of the component-local diagonal exponential at the
-zero vector over `p` is the unipotent block equivalence
-`(a,b) ↦ (a,a+b)`. -/
 theorem connAdd_fderiv
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
     HasFDerivAt (connAddChart (I := I) g p)

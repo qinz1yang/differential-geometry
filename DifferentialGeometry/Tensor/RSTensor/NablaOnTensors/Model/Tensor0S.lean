@@ -30,16 +30,15 @@ import DifferentialGeometry.Tensor.RSTensor.Basis
 import Mathlib.Analysis.Calculus.FDeriv.ContinuousMultilinearMap
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 
-
-
-
+namespace DifferentialGeometry
 namespace TensorLieDeriv
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Set IsManifold ContinuousLinearMap VectorField Filter Tensor0SBundle Function
+open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
+    DifferentialGeometry.Tensor0SBundle Function
 open scoped Manifold Topology Bundle ContDiff
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -53,15 +52,6 @@ variable {x x₀ : M} {s : Set M}
 variable [CompleteSpace 𝕜]
 
 section ModelCovariantDerivative
-
-
-
-
-
-
-
-
-
 
 omit [CompleteSpace 𝕜] in
 theorem covariantDeriv_tensor0SModelAt_apply_slots {s : ℕ}
@@ -97,7 +87,6 @@ theorem covariantDeriv_tensor0SModelWithin_apply_slots {s : ℕ}
   exact covariantDeriv_tensor0SModelAt_apply_slots (𝕜 := 𝕜) (E := E)
     (fderivWithin 𝕜 α u x (X x)) (ΓX x) (α x) slots
 
-
 theorem lieDeriv_correctionL_apply_slots {s : ℕ}
     (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s)
@@ -116,10 +105,6 @@ theorem lieDeriv_correctionL_apply_slots {s : ℕ}
   · subst hb
     simp
   · simp [Function.update, hb]
-
-
-
-
 
 omit [CompleteSpace 𝕜] in
 theorem fderivWithin_tensor0SModel_eval_linear_slots {s : ℕ}
@@ -177,8 +162,6 @@ theorem fderivWithin_tensor0SModel_eval_linear_slots {s : ℕ}
   · subst hb
     simp
   · simp [Function.update, hb]
-
-
 
 omit [CompleteSpace 𝕜] in
 theorem fderivWithin_tensor0SModel_eval_slots {s : ℕ}
@@ -242,3 +225,4 @@ end ModelCovariantDerivative
 end
 
 end TensorLieDeriv
+end DifferentialGeometry

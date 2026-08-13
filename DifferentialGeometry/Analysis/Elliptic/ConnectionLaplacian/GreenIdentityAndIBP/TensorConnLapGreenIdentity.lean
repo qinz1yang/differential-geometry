@@ -1,22 +1,26 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorCovGradL2InnerDirichletBridge
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle CovariantDerivative
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
+    CovariantDerivative
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open Tensor0SNabla TensorRSNabla TensorMetricLowering
+open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.TensorRSNabla
+    DifferentialGeometry.TensorMetricLowering
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -54,6 +58,7 @@ lemma toModel_liftedTensorSection_zero_eq_apply_unit_reindex
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem tensorInnerPointwise_covDeriv_eq_tensorInnerPointwise_0s_lowered_two
     (g : SmoothRiemannianMetric I M)
     (W S : SmoothCcTensor g 0 2) (x : M) (a b : TangentSpace I x) :
@@ -81,7 +86,7 @@ theorem tensorInnerPointwise_covDeriv_eq_tensorInnerPointwise_0s_lowered_two
         (loweredCovDerivAt (I := I) (M := M) g 0 2 S.toSection x b) from
     (loweredCovDerivAt_eq_lower_tensorCovDerivAt (I := I) (M := M) g S.toSection x b).symm]
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem tensorCovDerivPointwiseInner_eq_lowered_orthoFrame_diag_sum_two
     (g : SmoothRiemannianMetric I M)
     (T v : SmoothCcTensor g 0 2) (b : M)
@@ -139,8 +144,8 @@ theorem tensorCovDerivPointwiseInner_eq_lowered_orthoFrame_diag_sum_two
   exact tensorInnerPointwise_covDeriv_eq_tensorInnerPointwise_0s_lowered_two
     (I := I) (M := M) g T v b (B i b) (B i b)
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

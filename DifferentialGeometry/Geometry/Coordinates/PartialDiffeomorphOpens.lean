@@ -3,15 +3,6 @@ import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -63,8 +54,6 @@ theorem image_opens_isOpen
     Φ.open_target U.2
 
 namespace PartialDiffeomorph
-
-
 
 noncomputable def toOpensDiffeoCross
     (Φ : PartialDiffeomorph I J M N (∞ : WithTop ℕ∞))

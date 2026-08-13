@@ -7,17 +7,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCHatRe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCSupportCapstone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalMetricExtend
 import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoIFT
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -40,9 +33,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-
-
-
 
 theorem uniqueStage_of_fill
     (inp : MetricCompactnessInputs (I := I) X)
@@ -102,8 +92,6 @@ theorem uniqueStage_of_fill
   have huniq := centerAverage.uniqueMin_activeFill (I := I) Y.metric mu
     (stageTarget inp P L s k l) qstar join p rad x hcm
   simpa only [HasUniqueStageCenter, i0, mu] using huniq
-
-
 
 theorem stageCompare_eq_cm
     (inp : MetricCompactnessInputs (I := I) X)
@@ -197,8 +185,6 @@ theorem stageCompare_eq_cm
       ← centerAverage.energy_activeFill (I := I) Y.metric mu
         (stageTarget inp P L s k l) qstar x z]
     exact centerOfMass.min hcm z
-
-
 
 theorem HasSuppConvData.pts_target_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -378,9 +364,6 @@ theorem HasSuppConvData.pts_target_tail
     stageTarget_chart (I := I) inp P Lphi r k l
       alpha.1 target.1.1 z⟩
 
-
-
-
 theorem HasSuppConvData.pts_target_dist
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
@@ -447,9 +430,6 @@ theorem HasSuppConvData.pts_target_dist
   dsimp only at heq ⊢
   rw [← heq.1]
   exact hclose
-
-
-
 
 theorem HasSuppConvData.actual_cm_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -848,8 +828,6 @@ theorem HasSuppConvData.actual_cm_tail
   · simpa only [mu, stagePts, qstar, pts, p, join] using hout
   · simpa only [mu, stagePts, qstar, pts, p, join, c] using hcoord
 
-
-
 def HasStageRootReadout
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -889,8 +867,6 @@ def HasStageRootReadout
         stageComparisonMap inp P Lphi r hr hconn k l (chiK.symm z) ∈
           (normalExpPD (I := I) Yl
             (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))).target
-
-
 
 theorem HasSuppConvData.stage_root_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1172,9 +1148,6 @@ theorem HasSuppConvData.stage_root_tail
     simpa only [normalExpPD, chiL, x0, Yl, Lphi] using hout
   exact ⟨hchartReadout, hrootBall, hmapDecode, htarget⟩
 
-
-
-
 theorem HasSuppConvData.stage_jet_of_root
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1344,8 +1317,6 @@ theorem HasSuppConvData.stage_jet_of_root
   · simpa only [chiK, Yk, Lphi] using htarget
   · simpa only [Psi] using hout
 
-
-
 def HasStageJetTail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1385,8 +1356,6 @@ def HasStageJetTail
           ContDiffAt Real ∞ Fkl z ∧
           ∀ j ≤ p, mapDerivNorm j Fkl id z ≤ eps
 
-
-
 theorem HasStageJetTail.subseq
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1418,8 +1387,6 @@ theorem HasStageJetTail.subseq
   rw [hmap, hball]
   simpa only [NetLimitData.subseq_phi, Function.comp_apply,
     seqCenterD_subseq] using hN (ψ k) hkψ (ψ l) hlψ alpha z hz
-
-
 
 theorem HasSuppConvData.stage_jet_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1491,9 +1458,6 @@ theorem HasSuppConvData.stage_jet_tail
   have hAlpha : N alpha ≤ Finset.univ.sup N :=
     Finset.le_sup (f := N) (Finset.mem_univ alpha)
   exact hN alpha k (hAlpha.trans hk) l (hAlpha.trans hl) z hz
-
-
-
 
 theorem HasSuppConvData.exists_stage_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1628,8 +1592,6 @@ theorem HasSuppConvData.exists_stage_tail
   exact hdata.stage_jet_tail inp P L hr phi hphi U C0 C1 aInf Jinf
     Jbarinf hconn e W PhiInf rootRho Phi3 hroot hread R hRr p eps heps
 
-
-
 def HasStageBaseTail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1643,8 +1605,6 @@ def HasStageBaseTail
     stageComparisonMap inp P Lphi r hr hconn k l
         (X.obj (Lphi.φ k)).basepoint =
       (X.obj (Lphi.φ l)).basepoint
-
-
 
 theorem HasStageBaseTail.subseq
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1668,9 +1628,6 @@ theorem HasStageBaseTail.subseq
     r hr hconn hψ k l
   rw [hmap]
   simpa only [NetLimitData.subseq_phi, Function.comp_apply] using hk (ψ l)
-
-
-
 
 def HasStageJetData
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1708,8 +1665,6 @@ def HasStageJetData
     HasStageJetTail inp P L hr phi hphi hconn C0 R p eps) ∧
   HasStageBaseTail inp P L hr phi hphi hconn
 
-
-
 theorem HasStageJetData.subseq
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1738,8 +1693,6 @@ theorem HasStageJetData.subseq
     exact ⟨hC1, hgInf, hconv.comp_tendsto_atTop hψ.tendsto_atTop, hequiv⟩
   · intro R hR p eps heps
     exact (hjets R hR p eps heps).subseq inp P L hr hphi hconn C0 R p eps hψ
-
-
 
 theorem HasStageJetData.hloc_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1927,8 +1880,6 @@ theorem HasStageJetData.hloc_tail
     simpa only [F, c, d, normalExpPD, chiK, chiL, xk0, xl0, Yk, Yl,
       Lphi] using hout
   exact Coordinates.hlocAt_of_coord c d hV hxc hcxV hmap hG hinv
-
-
 
 theorem MetricCompactBase.exists_stage_data
     (b : MetricCompactBase (I := I) X)

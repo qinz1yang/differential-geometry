@@ -2,15 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelLpPower
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammExp
 import Mathlib.MeasureTheory.Integral.Prod
 
-/-!
-# Terminal-slab Koch--Lamm heat-kernel integrability
-
-The late ordinary-source estimate must use Hölder on space-time, not an
-unavailable uniform-in-time spatial source norm.  This file proves the kernel
-half of that space-time pairing: on `(t/2,t] × V`, the translated heat kernel
-belongs to `L^((n+4)/(n+2))`.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -25,26 +16,19 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- Product measure on the terminal half of a Duhamel interval and all of
-space. -/
 def klTermMeasure (t : ℝ) : Measure (ℝ × V) :=
   (volume.restrict (Ioc (t / 2) t)).prod (volume : Measure V)
 
-/-- Translated heat kernel on the terminal space-time slab. -/
 def klTermKernel (t : ℝ) (x : V) (z : ℝ × V) : ℝ :=
   heatKernel (t - z.1) (x - z.2)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The terminal kernel is globally nonnegative, including the null terminal
-slice where its heat-time argument is zero. -/
 theorem klTermKernel_nonneg (t : ℝ) (x : V) (z : ℝ × V) :
     0 ≤ klTermKernel t x z := by
   unfold klTermKernel heatKernel
   exact mul_nonneg (inv_nonneg.mpr (pow_nonneg (Real.sqrt_nonneg _) _))
     (baseHeat_nonneg _)
 
-/-- The terminal translated heat kernel is in the exact Hölder-dual
-space-time class needed by the late ordinary-source estimate. -/
 theorem klTermKernel_memLp {t : ℝ} (ht : 0 < t) (x : V) :
     MemLp (klTermKernel t x) (ENNReal.ofReal (klQDual V))
       (klTermMeasure (V := V) t) := by

@@ -15,11 +15,11 @@ open MeasureTheory
 open scoped Manifold Topology Bundle ContDiff BigOperators ENNReal NNReal
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -179,8 +179,8 @@ private lemma ennreal_sq_finset_sum_le_card_mul_finset_sum_sq
     rw [h_double_sum] at h_nn
     nlinarith
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

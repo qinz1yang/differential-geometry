@@ -1,16 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.ChartRicciJet
 
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open scoped ContDiff
@@ -28,9 +17,6 @@ def matEntryCLM (l m : Fin n) : (Fin n → Fin n → ℝ) →L[ℝ] ℝ :=
 @[simp] theorem matEntryCLM_apply (l m : Fin n) (M : Fin n → Fin n → ℝ) :
     matEntryCLM l m M = M l m := rfl
 
-
-
-
 theorem fderiv_matEntry {G : E → (Fin n → Fin n → ℝ)} {y : E} (hG : DifferentiableAt ℝ G y)
     (v : E) (l m : Fin n) :
     (fderiv ℝ G y) v l m = fderiv ℝ (fun w => G w l m) y v := by
@@ -38,10 +24,6 @@ theorem fderiv_matEntry {G : E → (Fin n → Fin n → ℝ)} {y : E} (hG : Diff
     ((matEntryCLM l m).hasFDerivAt.comp y hG.hasFDerivAt).fderiv
   rw [hL]
   rfl
-
-
-
-
 
 theorem fderiv2_matEntry {G : E → (Fin n → Fin n → ℝ)} {y : E}
     (hG : DifferentiableAt ℝ (fun w => fderiv ℝ G w) y) (u v : E) (l m : Fin n) :

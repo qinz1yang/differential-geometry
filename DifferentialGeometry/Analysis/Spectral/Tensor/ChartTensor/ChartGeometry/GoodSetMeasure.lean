@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -18,7 +19,6 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 

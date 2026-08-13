@@ -1,23 +1,12 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.FineTensorProject
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpBoundK
-
-/-!
-# Sobolev reassembly from fine tensor blocks
-
-This file supplies the analytic form of the exact fine-chart retraction.  A
-local heat output is first multiplied by the middle cutoff `chi` in its source
-Euclidean chart and then pulled back as a genuine tensor.  The outer cutoff
-`psi`, which is one on `tsupport chi`, produces a globally smooth compactly
-supported extension of every tensor transition coefficient.  Consequently
-the transition formula is both exact and bounded without assuming that a heat
-output remains in the smaller canonical POU support.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -39,10 +28,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-/-! ## The middle and outer cutoff geometry -/
-
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The middle fine cutoff has compact support on the closed manifold. -/
 theorem canonChi_cpt
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
@@ -52,7 +38,6 @@ theorem canonChi_cpt
   (isClosed_tsupport _).isCompact
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The middle fine cutoff is supported inside its source chart. -/
 theorem canonChi_src
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
@@ -69,7 +54,6 @@ theorem canonChi_src
   exact ((canonFineData (I := I) (M := M) rFine hr z.1.1).chi_supp z.2 hx).1
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The outer fine cutoff has compact support on the closed manifold. -/
 theorem canonPsi_cpt
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
@@ -79,7 +63,6 @@ theorem canonPsi_cpt
   (isClosed_tsupport _).isCompact
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The outer fine cutoff is supported inside its source chart. -/
 theorem canonPsi_src
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
@@ -96,7 +79,6 @@ theorem canonPsi_src
   exact ((canonFineData (I := I) (M := M) rFine hr z.1.1).psi_supp z.2 hx).1
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The outer cutoff is one on the topological support of the middle cutoff. -/
 theorem canonPsi_one
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -112,10 +94,6 @@ theorem canonPsi_one
   exact ((canonFineData (I := I) (M := M) rFine hr z.1.1).psi_one z.2)
     |>.self_of_nhdsSet x hx
 
-/-! ## Euclidean middle-cutoff multiplication -/
-
-/-- The middle cutoff pushed to its whole Euclidean source chart and extended
-by zero. -/
 def canonCutE
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) : EuclN → ℝ :=
@@ -125,7 +103,6 @@ def canonCutE
       C^∞⟮I, M; ℝ⟯) : M → ℝ))
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The Euclidean middle cutoff is globally smooth. -/
 theorem canonCut_smooth
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
@@ -140,7 +117,6 @@ theorem canonCut_smooth
     (canonChi_src (I := I) (M := M) rFine hr z)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The Euclidean middle cutoff has compact support. -/
 theorem canonCut_cpt
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
@@ -153,8 +129,6 @@ theorem canonCut_cpt
     (canonChi_src (I := I) (M := M) rFine hr z)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The Euclidean middle cutoff is supported in the coordinate image of the
-manifold middle support. -/
 theorem canonCut_support
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
@@ -172,8 +146,6 @@ theorem canonCut_support
     (canonChi_src (I := I) (M := M) rFine hr z)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Evaluation of the Euclidean middle cutoff at the coordinate of a source
-point. -/
 theorem canonCut_coord
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -194,7 +166,6 @@ theorem canonCut_coord
       (I := I) (M := M)
       (canonFlatBase (I := I) (M := M) rFine hr z) hx]
 
-/-- Multiplication by the Euclidean middle cutoff. -/
 def canonCutMul
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -202,8 +173,6 @@ def canonCutMul
   fun y => canonCutE (I := I) (M := M) rFine hr z y * u y
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Middle-cutoff multiplication localizes every input into the coordinate
-image of `tsupport chi`. -/
 theorem canonCutMul_supp
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -218,7 +187,6 @@ theorem canonCutMul_supp
     (f := canonCutE (I := I) (M := M) rFine hr z) (g := u)).trans
       (canonCut_support (I := I) (M := M) rFine hr z)
 
-/-- Middle-cutoff multiplication is bounded on every `W^{k,p}(ℝⁿ)`. -/
 theorem canonCut_joint
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -248,10 +216,7 @@ theorem canonCut_joint
       k hp isOpen_univ hsmooth (fun j hj y _ => hCbound y j hj) hu
   · exact hKbound hu
 
-/-! ## Euclidean-cutoff reassembly and the exact retraction -/
-
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Scalar multiplication can be moved through model-fibre repacking. -/
 theorem modelRepack_mul
     (r s : ℕ) (c : EuclN → ℝ)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ) (y : EuclN) :
@@ -267,8 +232,6 @@ theorem modelRepack_mul
   intro Jdx _
   rw [smul_smul]
 
-/-- Reassemble a flat fine array by applying the Euclidean middle cutoff
-before each chart pullback. -/
 noncomputable def canonERepack
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ)
@@ -283,8 +246,6 @@ noncomputable def canonERepack
             (u ⟨a, z⟩ P)) x
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- One Euclidean-cutoff chart pullback equals multiplication by the same
-middle cutoff after pullback. -/
 theorem chartRepack_cut
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -311,8 +272,6 @@ theorem chartRepack_cut
     simp only [dif_neg hx, smul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Euclidean-cutoff reassembly agrees pointwise with the manifold-side
-middle-cutoff reassembly. -/
 theorem canonERepack_eq
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ)
@@ -331,8 +290,6 @@ theorem canonERepack_eq
     (chartRepack_cut (I := I) (M := M) rFine hr r s ⟨a, z⟩ (u ⟨a, z⟩)) x
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The Euclidean-cutoff reassembly is an exact left inverse of canonical
-fine extraction on genuine tensor sections. -/
 theorem canonE_retract
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
@@ -342,10 +299,6 @@ theorem canonE_retract
   rw [canonERepack_eq (I := I) (M := M)]
   exact canonCut_retract (I := I) (M := M) rFine hr r s S
 
-/-! ## The outer-cutoff transition coefficient -/
-
-/-- The tensor transition coefficient localized by the target canonical
-kernel and the source fine outer cutoff. -/
 def fineTransCoeff
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -358,7 +311,6 @@ def fineTransCoeff
         transitionCoeff (E := E) (I := I) (M := M) r s
           (canonFlatBase (I := I) (M := M) rFine hr z) α P Q x
 
-/-- The compact carrier used to globalize one fine transition coefficient. -/
 private def fineTransSupport
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) (α : M) : Set M :=
@@ -415,8 +367,6 @@ private theorem fineTrans_zero_right
   rw [fineTransCoeff, hx, mul_zero, zero_mul]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The fine transition coefficient is supported in the compact intersection
-of the target kernel support and source outer-cutoff support. -/
 theorem fineTrans_support
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -437,7 +387,6 @@ theorem fineTrans_support
       rFine hr r s z α P Q (image_eq_zero_of_notMem_tsupport hright))
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The fine transition coefficient has compact support. -/
 theorem fineTrans_cpt
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -450,7 +399,6 @@ theorem fineTrans_cpt
       rFine hr r s z α P Q (subset_tsupport _ hx))
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The fine transition coefficient is globally smooth. -/
 theorem fineTrans_smooth
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -494,8 +442,6 @@ theorem fineTrans_smooth
     by_contra hne
     exact hyoff hne
 
-/-- The fine transition coefficient written in source Euclidean coordinates
-and extended by zero. -/
 def fineCoeffE
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -505,7 +451,6 @@ def fineCoeffE
     (fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The source-Euclidean fine transition coefficient is globally smooth. -/
 theorem fineCoeff_smooth
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -522,7 +467,6 @@ theorem fineCoeff_smooth
         (fineTransSupport_src (I := I) (M := M) rFine hr z α)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The source-Euclidean fine transition coefficient has compact support. -/
 theorem fineCoeff_cpt
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -538,8 +482,6 @@ theorem fineCoeff_cpt
         (fineTransSupport_src (I := I) (M := M) rFine hr z α)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On the source chart, the Euclidean fine coefficient evaluates to its
-manifold counterpart. -/
 theorem fineCoeff_apply
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -560,8 +502,6 @@ theorem fineCoeff_apply
       (I := I) (M := M)
       (canonFlatBase (I := I) (M := M) rFine hr z) hx]
 
-/-- Multiplication by one fixed outer-cutoff transition coefficient is
-bounded on `W^{k,p}` of the source chart. -/
 theorem fineCoeff_joint
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s k : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -608,8 +548,6 @@ theorem fineCoeff_joint
       (canonFlatBase (I := I) (M := M) rFine hr z))
     hsmooth (fun j hj y _ => hCbound y j hj) hv
 
-/-- The contribution of source component `Q` in one fine block to target
-component `P`, using the source outer cutoff and the target chart kernel. -/
 def fineSecTerm
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -621,9 +559,6 @@ def fineSecTerm
       (fun y => fineCoeffE (I := I) (M := M)
         rFine hr r s z α P Q y * v y))
 
-/-- A source component supported in the coordinate image of the middle
-fine cutoff contributes a quantitatively controlled `W^{k,p}` function in
-every target chart. -/
 theorem fineTerm_joint
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -707,9 +642,6 @@ theorem fineTerm_joint
       simp only [mul_assoc]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On a middle-cutoff-supported source component, the outer-cutoff
-coefficient is exactly the raw transition coefficient after multiplication
-by the target POU weight. -/
 theorem fineCoeffEq
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -786,8 +718,6 @@ theorem fineCoeffEq
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Every target-chart component of one middle-localized repacked fine block
-is the finite sum of its outer-cutoff transition terms. -/
 theorem finePullEq
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)

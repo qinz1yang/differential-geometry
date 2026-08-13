@@ -27,6 +27,7 @@ variable {M : Type*} [TopologicalSpace M]
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
+open DifferentialGeometry.Geometry.Operator.WithBoundary
 
 private local instance : MeasurableSpace (EuclideanSpace ℝ (Fin n)) :=
   borel _
@@ -38,7 +39,7 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
 abbrev H1ComplInterior (g : SmoothRiemannianMetric (I_half n) M) : Type _ :=
   UniformSpace.Completion (InteriorSmoothScalar g)

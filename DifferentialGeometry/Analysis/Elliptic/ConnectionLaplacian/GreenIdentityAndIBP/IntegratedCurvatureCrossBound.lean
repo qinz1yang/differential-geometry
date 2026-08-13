@@ -8,16 +8,19 @@ import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.MovingFrameBracke
 import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorCurvFirstOrderBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldContractionBound
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.CauchySchwarz
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -74,7 +77,7 @@ theorem exists_genuineCurvPureRSection_l2Norm_le_covGrad
     rw [Real.sq_sqrt (hkappa_nn 0 (s + 1)), hsec]
     have h := hkappa 0 (s + 1) (covGrad (I := I) (M := M) g 0 s S) x
     rw [Finset.sum_range_one,
-      DifferentialGeometry.PDE.RicciFlow.iteratedCovGrad_zero] at h
+      DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_zero] at h
     exact h
   have hbound := tensorL2Norm_le_of_pointwise_fiberNormSq_bound_two (I := I) (M := M) g
     (covGrad (I := I) (M := M) g 0 s S) (0 : SmoothCcTensor g 0 (s + 1))
@@ -245,8 +248,8 @@ theorem exists_integrated_curvatureCrossBound
     _ ≤ (C * (nGrad + nS)) * nGrad := mul_le_mul_of_nonneg_right hL2 hnGrad_nn
     _ = C * (nGrad ^ 2 + nS * nGrad) := by ring
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

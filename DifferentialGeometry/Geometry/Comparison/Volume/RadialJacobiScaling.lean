@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialJacobiBounds
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -65,13 +66,6 @@ private lemma le_sqrt_inner_of_smul_ge
   rw [hscale, hsqrt] at h
   exact le_of_mul_le_mul_left h ha
 
-
-
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma radialJacobi_one_le_of_smul
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
@@ -89,9 +83,6 @@ lemma radialJacobi_one_le_of_smul
   exact sqrt_inner_le_of_smul_le (I := I) g
     (expMap (I := I) g p (show TangentSpace I p from x))
     (radialJacobiField (I := I) g p x w 1) ha hscaled
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma radialJacobi_one_ge_of_smul
@@ -138,8 +129,6 @@ private lemma norm_basis_le_sup
     (f := fun k => ‖(chartModelBasis E) k‖)
     (Finset.mem_univ _)
 
-
-
 lemma basisScaleSmall {r : ℝ} (hr : 0 < r) :
     ∃ a : ℝ, 0 < a ∧
       ∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r := by
@@ -172,8 +161,6 @@ private lemma scaleSmall_of_le {a b r : ℝ} {v : E}
     exact hab
   exact lt_of_le_of_lt (mul_le_mul_of_nonneg_right habs (norm_nonneg v)) hsmall
 
-
-
 lemma basisUnitScaleSmall {r : ℝ} (hr : 0 < r) :
     ∃ a : ℝ, 0 < a ∧
       (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < r) ∧
@@ -196,8 +183,6 @@ lemma basisUnitScaleSmall {r : ℝ} (hr : 0 < r) :
       (le_of_lt had_pos)
       (min_le_right ab ad)
       (hdir v hv)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
@@ -225,8 +210,6 @@ lemma basisInit_smul_le
     rw [Real.sqrt_mul (sq_nonneg a), Real.sqrt_sq_eq_abs, abs_of_pos ha]
   rw [hscale, hsqrt]
   exact mul_le_mul_of_nonneg_left (hbasis k) ha.le
-
-
 
 lemma model_le_smul {a K b A B : ℝ} (ha : 0 < a)
     (hmodel : A + gronwallBound 0 (max K 1) (K * (b * A)) 1 ≤ B) :
@@ -309,13 +292,6 @@ theorem radialJacobi_fin_le_of_deriv_eq_at
   radialJacobi_fin_le_of_init_bound_at (I := I) g p x hK hb h1b hγ hcard F hpar hON
     hFdiff hJdiff hDJdiff hODE
     (radialJacobi_init_le_of_deriv_eq (I := I) g p x hderiv hbasis) hmodel
-
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -431,11 +407,6 @@ theorem radialJacobi_fin_le_of_radius_deriv_at
     (fin_deriv_radius (I := I) g p x hderivRadius hx hbasisSmall)
     hbasis hmodel
 
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem radialJacobi_fin_le_of_radius_deriv
@@ -492,13 +463,6 @@ theorem radialJacobi_fin_le_of_radius_deriv
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON
     hFdiff hJdiff hDJdiff hODE
     hderivRadius hx hbasisSmall hbasis hmodel
-
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radialJacobi_one_le_of_scaled_radius_at
@@ -592,13 +556,6 @@ theorem radialJacobi_one_le_of_scaled_radius_at
       _ ≤ a * B := hmodel
   exact radialJacobi_one_le_of_smul (I := I) g p x w ha hxrad hscaled
 
-
-
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radialJacobi_one_le_of_scaled_radius
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
@@ -651,12 +608,6 @@ theorem radialJacobi_one_le_of_scaled_radius
   radialJacobi_one_le_of_scaled_radius_at (I := I) g p x w ha hK hb h1b
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hJdiff hDJdiff hODE
     hderivRadius hx hwsmall hinit hmodel hxrad
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radialJacobi_one_ge_of_scaled_radius_at
@@ -724,12 +675,6 @@ theorem radialJacobi_one_ge_of_scaled_radius_at
     exact hmodel
   exact radialJacobi_one_ge_of_smul (I := I) g p x w ha hxrad hscaled
 
-
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radialJacobi_one_ge_of_scaled_radius
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
@@ -783,13 +728,6 @@ theorem radialJacobi_one_ge_of_scaled_radius
   radialJacobi_one_ge_of_scaled_radius_at (I := I) g p x w ha hK hb h1b
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hJdiff hDJdiff hODE
     hderivRadius hx hwsmall hmodel hxrad
-
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radialJacobi_dir_ge_of_scaled_radius_at
@@ -885,13 +823,6 @@ theorem radialJacobi_dir_ge_of_scaled_radius_at
     · exact (g.pos q J hJ).le
   simpa [q, J, hw] using hsq.trans_eq (Real.sq_sqrt hJ_nonneg)
 
-
-
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radialJacobi_dir_ge_of_scaled_radius
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
@@ -964,11 +895,6 @@ theorem radialJacobi_dir_ge_of_scaled_radius
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hJdiff hDJdiff hODE
     hderivRadius hx hscaledSmall hmodel hxrad
 
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 lemma model_ge_of_smul
@@ -1029,8 +955,6 @@ lemma dirModel_ge_smul
   exact model_ge_of_smul (I := I) g p (∑ i, v i • (chartModelBasis E) i) ha
     (hmodel v hv)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
 lemma dirModel_ge_of_bounds
@@ -1071,8 +995,6 @@ lemma dirModel_ge_of_bounds
     gronwallBound_zero_mono_eps hmax (by norm_num) heps
   nlinarith
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
 lemma exists_dirModel_ge
@@ -1092,8 +1014,6 @@ lemma exists_dirModel_ge
   rcases exists_gron_small hB₀_pos hK hD_nonneg with ⟨b, B, hb_pos, hB_pos, hsmall⟩
   refine ⟨b, B, hb_pos, hB_pos, ?_⟩
   exact dirModel_ge_of_bounds (I := I) g p hK hb_pos.le hlo hhi hsmall
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in
@@ -1131,11 +1051,6 @@ lemma exists_dirModel_ge1
         gronwallBound 0 (max k 1) (k * D) 1 :=
     gronwallBound_zero_mono_eps hmax (by norm_num) heps
   nlinarith
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radialJacobi_fin_le_of_scaled_radius_at
@@ -1195,11 +1110,6 @@ theorem radialJacobi_fin_le_of_scaled_radius_at
   exact radialJacobi_one_le_of_scaled_radius_at (I := I) g p x ((chartModelBasis E) k)
     ha hK hb h1b hγ hcard F hpar hON hFdiff (hJdiff k) (hDJdiff k) (hODE k)
     hderivRadius hx (hscaledSmall k) (hinit k) hmodel hxrad
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radialJacobi_fin_le_of_scaled_radius
@@ -1266,8 +1176,7 @@ theorem exists_fin_le_rm04_at
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b → b ≤ 1 →
@@ -1279,7 +1188,7 @@ theorem exists_fin_le_rm04_at
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       (∀ t ∈ Icc (0 : ℝ) b,
         ContMDiffAt 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p x) t) →
@@ -1323,8 +1232,7 @@ theorem exists_fin_le_rm04
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b → b ≤ 1 →
@@ -1336,7 +1244,7 @@ theorem exists_fin_le_rm04
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       ContMDiff 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p x) →
       ∀ {ι : Type*}, [Fintype ι] → [DecidableEq ι] → [Nonempty ι] →
@@ -1374,8 +1282,7 @@ theorem exists_dir_ge_rm04_at
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -1388,7 +1295,7 @@ theorem exists_dir_ge_rm04_at
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       (∀ t ∈ Icc (0 : ℝ) b,
         ContMDiffAt 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p x) t) →
@@ -1459,8 +1366,7 @@ theorem exists_dir_ge_rm04
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -1473,7 +1379,7 @@ theorem exists_dir_ge_rm04
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       ContMDiff 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p x) →
       ∀ {ι : Type*}, [Fintype ι] → [DecidableEq ι] → [Nonempty ι] →

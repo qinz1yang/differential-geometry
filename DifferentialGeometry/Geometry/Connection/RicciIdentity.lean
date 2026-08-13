@@ -5,23 +5,17 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
 
-open Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
+
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -30,12 +24,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [T2Space M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
-
-
-
-
 
 def nablaDualEval {R V : Type*} [CommRing R] [AddCommGroup V] [Module R V]
     (act : V -> R -> R) (conn : V -> V -> V)
@@ -47,11 +35,6 @@ def connectionRmRaw {V : Type*} [Sub V]
     (bracket : V -> V -> V) (conn : V -> V -> V)
     (X Y Z : V) : V :=
   conn X (conn Y Z) - conn Y (conn X Z) - conn (bracket X Y) Z
-
-
-
-
-
 
 theorem oneFormRicciIdentity_algebra
     {R V : Type*} [CommRing R] [AddCommGroup V] [Module R V]
@@ -73,14 +56,6 @@ theorem oneFormRicciIdentity_algebra
   simp only [map_sub]
   abel
 
-
-
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
 theorem oneFormRicciIdentity_of_connection
     [FiniteDimensional Real E]
@@ -99,11 +74,6 @@ theorem oneFormRicciIdentity_of_connection
     OneFormThirdCovDerivCommAt (I := I) Rm13 alpha nabla2Alpha :=
   one_form_third_comm_coord_of_christoffelCurv (I := I) inferInstance cov hcov Rm13 x alpha
     nabla2Alpha hRm hcurv hcoord
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 omit [IsManifold I 2 M] in
@@ -175,4 +145,4 @@ theorem oneFormRicciIdentity_of_smooth_connection_apply
     (oneFormRicciIdentity_of_smooth_connection (I := I) cov Rm13 x alpha
       nabla2Alpha hRm hcov hcov_one hcoord) X Y Z
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

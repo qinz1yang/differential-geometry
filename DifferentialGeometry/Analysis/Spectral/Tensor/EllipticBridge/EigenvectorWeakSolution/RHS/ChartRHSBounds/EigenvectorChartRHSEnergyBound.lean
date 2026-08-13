@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSMemWkp
 
 
+open DifferentialGeometry.Analysis.Spectral
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -22,7 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -36,7 +37,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma eigenvalue_mem_Ioc
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -243,7 +244,6 @@ section AtomBoundsUnconditional
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 omit [CompleteSpace E] in
 private lemma eigenvectorChartComponentFun_eLpNorm_le_energy
@@ -524,7 +524,7 @@ private lemma ofReal_mul_muPow_le_ofReal {C μ : ℝ} (hC : 0 ≤ C)
   · calc C * μ ≤ C * 1 := mul_le_mul_of_nonneg_left hμ_le hC
       _ = C := mul_one C
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 theorem eigenvectorChartRHS_eLpNorm_le_energy
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

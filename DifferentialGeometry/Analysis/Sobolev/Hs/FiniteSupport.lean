@@ -47,6 +47,7 @@ def ofFiniteSupport (g : SmoothRiemannianMetric I M) (σ : ℝ)
     rw [hfi]
     ring
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma ofFiniteSupport_coeff (g : SmoothRiemannianMetric I M)
     (σ : ℝ) (f : EigenIdx (I := I) (M := M) g → ℝ)
@@ -67,6 +68,7 @@ def basisVec (g : SmoothRiemannianMetric I M) (σ : ℝ)
       simpa using hj)
 
 open scoped Classical in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma basisVec_coeff (g : SmoothRiemannianMetric I M) (σ : ℝ)
     (i j : EigenIdx (I := I) (M := M) g) :
@@ -99,12 +101,14 @@ def finiteSupportSubmodule (g : SmoothRiemannianMetric I M) (σ : ℝ) :
     intro hcon
     exact hi (by rw [hcon, mul_zero])
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma mem_finiteSupportSubmodule
     (T : scalarHs (I := I) (M := M) g σ) :
     T ∈ finiteSupportSubmodule (I := I) (M := M) g σ ↔
       (Function.support T.coeff).Finite := Iff.rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasSum_smul_basisVec_of_finite
     (T : scalarHs (I := I) (M := M) g σ)
@@ -138,6 +142,7 @@ theorem hasSum_smul_basisVec_of_finite
     simp [hzero]
 
 open scoped Classical in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma rescaleEquivL2_smul_basisVec
     (T : scalarHs (I := I) (M := M) g σ)
@@ -156,6 +161,7 @@ lemma rescaleEquivL2_smul_basisVec
   · subst h; simp
   · simp [h]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasSum_smul_basisVec
     (T : scalarHs (I := I) (M := M) g σ) :
@@ -182,6 +188,7 @@ theorem hasSum_smul_basisVec
   rw [LinearIsometryEquiv.coe_toContinuousLinearEquiv,
     rescaleEquivL2_smul_basisVec]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem mem_closure_finiteSupportSubmodule
     (T : scalarHs (I := I) (M := M) g σ) :
@@ -203,6 +210,7 @@ theorem mem_closure_finiteSupportSubmodule
 
 end scalarHs
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHs.finiteSupportSubmodule_topologicalClosure_eq_top
     {g : SmoothRiemannianMetric I M} {σ : ℝ} :
@@ -213,6 +221,7 @@ theorem scalarHs.finiteSupportSubmodule_topologicalClosure_eq_top
   rw [← SetLike.mem_coe, Submodule.topologicalClosure_coe]
   exact scalarHs.mem_closure_finiteSupportSubmodule (I := I) (M := M) T
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHs.finiteSupportSubmodule_dense
     {g : SmoothRiemannianMetric I M} {σ : ℝ} :

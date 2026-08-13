@@ -1,43 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenvalueTailSummableFromCounting
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -45,9 +7,8 @@ open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace MetricRealization
 
 open DifferentialGeometry.Analysis.Parabolic
@@ -60,21 +21,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def EigenvalueCountingBound (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop :=
   ∃ (q : ℕ) (A : ℝ), 0 ≤ A ∧
     ∃ count : ℝ → Finset (TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s),
@@ -82,18 +28,6 @@ def EigenvalueCountingBound (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop 
         1 + TensorEigenIdx.lambda (I := I) (M := M) i < Λ → i ∈ count Λ) ∧
       (∀ Λ : ℝ, ((count Λ).card : ℝ) ≤ A * Λ ^ q)
 
-
-
-
-
-
-
-
-
-
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem eigenvalueTailSummable_of_countingBound
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -109,31 +43,12 @@ theorem eigenvalueTailSummable_of_countingBound
     congr 1
     rw [← pow_mul]
 
-
-
-
-
-
-
 theorem spectralChartRegularity_of_countingBound
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (h : EigenvalueCountingBound (I := I) (M := M) g r s) :
     SpectralChartRegularity (I := I) (M := M) g r s :=
   spectralChartRegularity_of_eigenvalueTailSummable (I := I) (M := M) g r s
     (eigenvalueTailSummable_of_countingBound (I := I) (M := M) g r s h)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem spectralSmoothRealizesAsSmooth_of_countingBound
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -143,9 +58,8 @@ theorem spectralSmoothRealizesAsSmooth_of_countingBound
     (eigenvalueTailSummable_of_countingBound (I := I) (M := M) g r s h)
 
 end MetricRealization
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

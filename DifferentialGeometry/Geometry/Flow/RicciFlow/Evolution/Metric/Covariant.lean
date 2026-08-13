@@ -1,15 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -32,12 +25,8 @@ section Components
 variable {Idx : Type*} [Fintype Idx]
 variable {u : Set M}
 
-
-
-
-
 def inverseMetricCovDerivCompInFrame
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -59,12 +48,12 @@ private theorem metric_localFrame_mdiffAt
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricCompInFrame_extDerivFun_eq_christoffel
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (t : Real)
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (hg : g = S.family.metric t)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -85,7 +74,7 @@ theorem metricCompInFrame_extDerivFun_eq_christoffel
   have ha := metric_localFrame_mdiffAt (I := I) frame hframe hu hx a
   have hb := metric_localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmetric :=
-    DifferentialGeometry.Integral.Connection.metric_compatible_apply
+    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
       (I := I) hmc (frame d) (frame a) (frame b) hd ha hb
   have hmetric' :
       extDerivFun (I := I)
@@ -185,18 +174,18 @@ private theorem metric_extDerivFun_congr_eventually
 omit [SigmaCompactSpace M] in
 theorem inverseMetric_derivative_row_eq
     [DecidableEq Idx]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (gInvDt : Real -> M -> Idx -> Idx -> Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {u : Set M}
     (hdt : InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
-    (hunique : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
+    (hunique : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real))
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) (hx : x ∈ u) (i j : Idx) :
     (∑ a : Idx,
         (gInvDt (t : Real) x i a *
@@ -356,24 +345,18 @@ theorem inverseMetric_derivative_solve
                           rw [hsymm b j]
                           ring
 
-
-
-
-
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem inverseMetricCovDerivCompInFrame_eq_zero
     [DecidableEq Idx]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
       cov (S.family.metric t))
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
@@ -662,20 +645,18 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
   rw [hDU]
   ring
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem invCovZeroLocal
     [DecidableEq Idx]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
       cov (S.family.metric t))
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,

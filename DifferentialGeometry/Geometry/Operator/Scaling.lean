@@ -1,15 +1,10 @@
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Operator.Operators
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -38,15 +33,15 @@ private theorem metricSharp_scaleMetric
         (scaleMetric (I := I) c hc g).inner x
           (c⁻¹ • metricSharp (I := I) g x alpha) w := by
           have hinner :
-              ((g.inner x) ((metricFlatEquiv (I := I) g x).symm alpha)) w =
+              ((g.inner x) (metricSharp (I := I) g x alpha)) w =
                 alpha w := by
-            simpa [metricSharp] using inner_metricSharp (I := I) g x alpha w
+            exact inner_metricSharp (I := I) g x alpha w
           symm
           calc
             (scaleMetric (I := I) c hc g).inner x
                 (c⁻¹ • metricSharp (I := I) g x alpha) w =
                 c * (c⁻¹ *
-                  ((g.inner x) ((metricFlatEquiv (I := I) g x).symm alpha)) w) := by
+                  ((g.inner x) (metricSharp (I := I) g x alpha)) w) := by
                   rw [scaleMetric_inner]
                   simp only [metricSharp, map_smul, ContinuousLinearMap.coe_smul',
                     Pi.smul_apply, smul_eq_mul]
@@ -64,8 +59,6 @@ theorem gradientFun_scale
   simpa [gradientFun] using
     metricSharp_scaleMetric (I := I) c hc g x
       (mfderiv I 𝓘(Real, Real) f x).toLinearMap
-
-
 
 theorem laplacian_scaleMetric
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -88,8 +81,6 @@ theorem laplacian_scaleMetric
     _ = c⁻¹ * laplacian (I := I) cov g f x := by
           simpa [laplacian] using
             divergence_const_smul (I := I) cov inferInstance c⁻¹ hgrad
-
-
 
 theorem laplacian_scaleMetric_const_smul
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -133,4 +124,4 @@ theorem laplacian_scaleMetric_const_smul
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Operator

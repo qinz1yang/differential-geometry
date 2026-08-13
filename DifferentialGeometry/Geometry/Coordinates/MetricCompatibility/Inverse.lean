@@ -8,25 +8,18 @@ import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
 noncomputable section
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
-open Tensor0SBundle
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -40,8 +33,6 @@ section Components
 variable {Idx : Type*} [Fintype Idx]
 variable {u : Set M}
 
-
-
 noncomputable def metricFlatContinuousEquiv
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
     E ≃L[Real] (E →L[Real] Real) :=
@@ -54,8 +45,6 @@ theorem metricFlatContinuousEquiv_apply
     ((metricFlatContinuousEquiv (I := I) g x₀) v) w = g.inner x₀ v w := by
   change ((metricFlatEquiv (I := I) g x₀) v) w = g.inner x₀ v w
   rw [metricFlatEquiv_apply]
-
-
 
 noncomputable def metricFlatModelInChart
     (g : SmoothRiemannianMetric I M) (x₀ : M) (y : E) :
@@ -407,8 +396,6 @@ theorem inverseMetricFlatModelInChart_component_center_eq_symm
     _ = (ε j) (A.symm (ε i)) := by
           rw [A.apply_symm_apply]
     _ = (Module.finBasis Real E).coord j (A.symm (ε i)) := rfl
-
-
 
 theorem gInvChart_symm
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}

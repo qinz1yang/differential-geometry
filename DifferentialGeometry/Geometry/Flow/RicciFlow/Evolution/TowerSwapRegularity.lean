@@ -2,20 +2,14 @@ import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.TailChristoffel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.FrameTowerRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedRmTowerHeatEq
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
+
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff
 
@@ -28,9 +22,6 @@ variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Given the level-zero curvature and Christoffel time derivatives, every
-local-frame curvature-tower component satisfies the fixed-base time/spatial
-derivative swap on regular times. -/
 theorem frameTowerSwap
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
@@ -150,9 +141,6 @@ theorem frameTowerSwap
   exact (hboth k).2 m
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On a strictly positive-time tail, a Ricci-flow solution supplies the
-level-zero time derivatives and every fixed-base curvature-tower swap needed
-by the local-frame heat recursion. -/
 theorem tailTowerData
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
@@ -304,13 +292,6 @@ theorem tailTowerData
   · simpa only [S', D'] using hswap
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- At any regular time of an arbitrary Ricci-flow interval, a smooth local
-frame carries the level-zero curvature derivative, the Christoffel derivative
-and its orthonormal-frame value, and every fixed-base curvature-tower swap.
-
-The proof restricts to a compact regular time window around `t`, applies the
-positive-tail producer there, and transports the resulting germs back to the
-original solution and time carrier. -/
 theorem towerDataAt
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

@@ -1,27 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.GammaCoord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.MetricCovDerivProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.RicciNorm
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -34,17 +23,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rm13Deriv_of_solution
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
@@ -72,11 +53,11 @@ theorem rm13Deriv_of_solution
       (christoffelEvolutionRHSInFrame (M := M) (coordInv (I := I) S x₀)
         (fun t x d a b => ricciCovDerivCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t x d
           a b)))
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (i k j m : CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
       (fun s : Real =>
-        DifferentialGeometry.Integral.Connection.christoffelCurvCoeffAt (I := I)
+        DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt (I := I)
           (S.family.connection s) x₀ i k j m)
       (christoffelVariationCovDerivCoordAt (I := I)
           (S.family.connection (t : Real))

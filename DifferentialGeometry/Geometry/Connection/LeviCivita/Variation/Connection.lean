@@ -17,12 +17,14 @@ import DifferentialGeometry.Geometry.Connection.Variation.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+
+namespace DifferentialGeometry.Geometry.Connection
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
 
@@ -38,17 +40,11 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {Idx : Type*} [Fintype Idx]
 variable {u : Set M}
 
-
-
-
-
-
-
 variable {u : Set M}
 
 
 def connDiffVec
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base var : Real) (x : M) (i j : Idx) : TangentSpace I x :=
   (G.connection var (frame j) x) (frame i x) -
@@ -56,7 +52,7 @@ def connDiffVec
 
 
 def connDiffLow
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (metricTime base var : Real) (x : M) (i j l : Idx) : Real :=
   (G.metric metricTime).inner x
@@ -64,7 +60,7 @@ def connDiffLow
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
 @[simp] theorem connDiffVec_self
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (x : M) (i j : Idx) :
     connDiffVec (I := I) G frame base base x i j = 0 := by
@@ -72,17 +68,14 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
 @[simp] theorem connDiffLow_self
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (metricTime base : Real) (x : M) (i j l : Idx) :
     connDiffLow (I := I) G frame metricTime base base x i j l = 0 := by
   simp [connDiffLow]
 
-
-
-
 def metricCovAtBase
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base var : Real) (x : M) (d a b : Idx) : Real :=
   extDerivFun (I := I)
@@ -93,8 +86,6 @@ def metricCovAtBase
     (G.metric var).inner x (frame a x)
       ((G.connection base (frame b) x) (frame d x))
 
-
-
 def metricVarLowerRHS
     (metricCovDerivDt : M -> Idx -> Idx -> Idx -> Real)
     (x : M) (i j l : Idx) : Real :=
@@ -102,26 +93,20 @@ def metricVarLowerRHS
     (metricCovDerivDt x i j l + metricCovDerivDt x j i l -
       metricCovDerivDt x l i j)
 
-
-
 def metricVarGammaRHS
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (metricCovDerivDt : M -> Idx -> Idx -> Idx -> Real)
     (x : M) (i j k : Idx) : Real :=
   ∑ l : Idx, gInv x k l * metricVarLowerRHS metricCovDerivDt x i j l
 
-
-
 def metricTraceCovAt
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (metricCovDerivDt : M -> Idx -> Idx -> Idx -> Real)
     (x : M) (j : Idx) : Real :=
   ∑ p : Idx, ∑ l : Idx, gInv x p l * metricCovDerivDt x j p l
 
-
-
 def metricCovVarOn
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (u : Set M)
     (metricCovDerivDt : M -> Idx -> Idx -> Idx -> Real) : Prop :=
@@ -131,11 +116,9 @@ def metricCovVarOn
       (metricCovDerivDt x d a b)
       base
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
 theorem metricCovAtBase_symm
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base var : Real) (x : M) (d a b : Idx) :
     metricCovAtBase (I := I) G frame base var x d a b =
@@ -153,11 +136,9 @@ theorem metricCovAtBase_symm
     (frame b x) ((G.connection base (frame a) x) (frame d x))]
   ring
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
 theorem metricCovVar_symm
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (u : Set M)
     (metricCovDerivDt : M -> Idx -> Idx -> Idx -> Real)
@@ -177,7 +158,7 @@ theorem metricCovVar_symm
 
 
 def metricVarOn
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (u : Set M)
     (metricDot : M -> Idx -> Idx -> Real) : Prop :=
@@ -194,15 +175,13 @@ def metricDotFrame
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (x : M) (a b : Idx) : Real :=
-  DifferentialGeometry.Integral.Connection.metricVariationComponent (I := I) metricVariation x
+  DifferentialGeometry.Geometry.Connection.metricVariationComponent (I := I) metricVariation x
     (frame a x) (frame b x)
-
-
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
 theorem metricVar_path
     {g : SmoothRiemannianMetric I M} {potential : M -> Real}
-    (path : DifferentialGeometry.Integral.Connection.MetricPotentialVariationPath (I := I) g
+    (path : DifferentialGeometry.Geometry.Connection.MetricPotentialVariationPath (I := I) g
       potential)
     (metricVariation :
       Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -211,7 +190,7 @@ theorem metricVar_path
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (u : Set M)
     (hpath :
-      DifferentialGeometry.Integral.Connection.IsMetricPotentialVariationPath (I := I) path
+      DifferentialGeometry.Geometry.Connection.IsMetricPotentialVariationPath (I := I) path
         metricVariation
         potentialVariation) :
     metricVarOn (I := I) path.G frame path.base u
@@ -220,11 +199,8 @@ theorem metricVar_path
   simpa [metricDotFrame] using
     hpath.metric_deriv x (frame a x) (frame b x)
 
-
-
-
 def metricExtDtOn
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (u : Set M)
     (metricDot : M -> Idx -> Idx -> Real) : Prop :=
@@ -237,15 +213,9 @@ def metricExtDtOn
       (extDerivFun (I := I) (fun y : M => metricDot y a b) x (frame d x))
       base
 
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
 theorem metricExtDt_of_fixedBase
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (u : Set M)
     (metricDot : M -> Idx -> Idx -> Real)
@@ -261,12 +231,9 @@ theorem metricExtDt_of_fixedBase
       (t := base) (x := x) hx (frame d x)
   simpa using h
 
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
 theorem metricExtDt_of_fixedBaseRegular
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (u : Set M)
     (metricDot : M -> Idx -> Idx -> Real)
@@ -283,8 +250,6 @@ theorem metricExtDt_of_fixedBaseRegular
     fixedBaseExtDerivTimeDerivativeOnRegular_apply (I := I)
       (h := hmix a b) (t := base) ht (x := x) hx (frame d x)
   simpa using h
-
-
 
 def dotCovAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -310,7 +275,7 @@ private theorem localFrame_mdiffAt
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem metricVarConnLeft
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (base : Real)
@@ -366,7 +331,7 @@ private theorem metricVarConnLeft
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem metricVarConnRight
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (base : Real)
@@ -420,11 +385,9 @@ private theorem metricVarConnRight
     simp [map_sum, Γ]
   simpa [hEq, Γ] using hsum
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem covDtEqDotCov
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (base : Real)
@@ -491,14 +454,9 @@ theorem covDtEqDotCov
       simp [metricCovAtBase, Ca, Cb]
   exact (hmetric x hx d a b).unique hDeriv'
 
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricCovVar_ext
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (base : Real)
@@ -557,7 +515,7 @@ theorem metricCovVar_ext
 omit [Fintype Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem connDiffVec_symm
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -571,10 +529,10 @@ private theorem connDiffVec_symm
   have hfj : MDiffAt (T% (frame j)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx j
   have hvar_torsion :=
-    DifferentialGeometry.Integral.Connection.torsion_free_apply
+    DifferentialGeometry.Geometry.Connection.torsion_free_apply
       (I := I) (hLC var).2 (hX := hfi) (hY := hfj)
   have hbase_torsion :=
-    DifferentialGeometry.Integral.Connection.torsion_free_apply
+    DifferentialGeometry.Geometry.Connection.torsion_free_apply
       (I := I) (hLC base).2 (hX := hfi) (hY := hfj)
   have hdiff :
       (G.connection var (frame j) x) (frame i x) -
@@ -601,7 +559,7 @@ private theorem connDiffVec_symm
 omit [Fintype Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem connDiffLow_symm
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -613,12 +571,9 @@ private theorem connDiffLow_symm
   unfold connDiffLow
   rw [connDiffVec_symm (I := I) G hLC frame hframe hu hx base var i j]
 
-
-
-
 omit [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
 theorem metricCovAtBase_eq_connDiff
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -636,7 +591,7 @@ theorem metricCovAtBase_eq_connDiff
   have hfb : MDiffAt (T% (frame b)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmc :=
-    DifferentialGeometry.Integral.Connection.metric_compatible_apply
+    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
       (I := I) (hLC var).1 (frame d) (frame a) (frame b) hfd hfa hfb
   unfold metricCovAtBase connDiffLow connDiffVec
   have hmc' :
@@ -652,12 +607,10 @@ theorem metricCovAtBase_eq_connDiff
   simp
   ring
 
-
-
 omit [Fintype Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem finiteDiffKoszul
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -690,11 +643,9 @@ theorem finiteDiffKoszul
   rw [hji, hli, hlj, hsym1]
   ring
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem connDiffLow_eq_sum_gammaSub
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     {x : M} (hx : x ∈ u)
@@ -793,15 +744,9 @@ theorem connDiffLow_eq_sum_gammaSub
           refine Finset.sum_congr rfl fun k _ => ?_
           rw [(G.metric metricTime).symm x (frame l x) (frame k x)]
 
-
-
-
-
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricCov_gammaSub
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -836,24 +781,18 @@ theorem metricCov_gammaSub
   rw [connDiffLow_eq_sum_gammaSub
     (I := I) G frame hframe hx var base var d b a]
 
-
-
-
-
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem covCombo_gammaSub [DecidableEq Idx]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (base var : Real)
     (hinv :
-      DifferentialGeometry.Integral.Connection.InverseMetricComponentsInFrame
+      DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) (G.metric var) gInv frame)
     (a b e : Idx) :
     (∑ l : Idx, gInv x e l *
@@ -957,8 +896,6 @@ theorem covCombo_gammaSub [DecidableEq Idx]
     _ = 2 * D e := by
           simp [D]
 
-
-
 def componentL2Sq3 (A : Idx -> Idx -> Idx -> Real) : Real :=
   ∑ p : Idx × Idx × Idx, (A p.1 p.2.1 p.2.2) ^ 2
 
@@ -968,8 +905,6 @@ theorem componentL2Sq3_nonneg
   classical
   unfold componentL2Sq3
   exact Finset.sum_nonneg fun p _ => sq_nonneg _
-
-
 
 theorem componentL2Sq3_eq_sum
     (A : Idx -> Idx -> Idx -> Real) :
@@ -981,8 +916,6 @@ theorem componentL2Sq3_eq_sum
   apply Finset.sum_congr rfl
   intro i _
   rw [Fintype.sum_prod_type]
-
-
 
 theorem componentL2Sq3_eq_sum_upper_first
     (A : Idx -> Idx -> Idx -> Real) :
@@ -998,8 +931,6 @@ theorem componentL2Sq3_eq_sum_upper_first
           rw [Finset.sum_comm]
     _ = ∑ k : Idx, ∑ i : Idx, ∑ j : Idx, (A i j k) ^ 2 := by
           rw [Finset.sum_comm]
-
-
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem normSq0S_three_eq_componentL2Sq3_of_components [DecidableEq Idx]
@@ -1121,9 +1052,6 @@ private theorem componentL2Sq3_swap23
         rcases p with ⟨a, b, c⟩
         rfl)
 
-
-
-
 theorem gammaSub_l2Sq_le
     (A D : Idx -> Idx -> Idx -> Real)
     (hcombo :
@@ -1187,11 +1115,6 @@ theorem gammaSub_l2_le
   have habs := (sq_le_sq.mp hsquares)
   simpa [abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg hrhs_nonneg] using habs
 
-
-
-
-
-
 theorem gammaEvol_l2Sq_le
     (A D : Idx -> Idx -> Idx -> Real)
     (hcombo :
@@ -1245,8 +1168,6 @@ theorem gammaEvol_l2Sq_le
           rw [componentL2Sq3_swap12, componentL2Sq3_cyc]
     _ = 9 * componentL2Sq3 A := by ring
 
-
-
 theorem gammaEvol_l2_le
     (A D : Idx -> Idx -> Idx -> Real)
     (hcombo :
@@ -1270,9 +1191,6 @@ theorem gammaEvol_l2_le
 private theorem two_sq_le (x y : Real) :
     (x + y) ^ 2 <= 2 * (x ^ 2 + y ^ 2) := by
   nlinarith [sq_nonneg (x - y)]
-
-
-
 
 theorem metricCov_l2Sq_le
     (A D : Idx -> Idx -> Idx -> Real)
@@ -1336,22 +1254,18 @@ theorem metricCov_l2_le
   have habs := (sq_le_sq.mp hsquares)
   simpa [abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg hrhs_nonneg] using habs
 
-
-
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem covCombo_l2_le [DecidableEq Idx]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (base var : Real)
     (hinv :
-      DifferentialGeometry.Integral.Connection.InverseMetricComponentsInFrame
+      DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) (G.metric var) gInv frame)
     (hinv_id : ∀ e l : Idx, gInv x e l = if e = l then 1 else 0) :
     Real.sqrt
@@ -1381,11 +1295,9 @@ theorem covCombo_l2_le [DecidableEq Idx]
     simp [hinv_id]
   exact h37.symm.trans hleft
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricCovGeom_l2_le [DecidableEq Idx]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -1412,19 +1324,16 @@ theorem metricCovGeom_l2_le [DecidableEq Idx]
   simpa [hmetric_id] using
     metricCov_gammaSub (I := I) G hLC frame hframe hu hx base var a b c
 
-
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem normSqRS_connDiff_eq_componentL2Sq3 [DecidableEq Idx]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (base var : Real)
     (hinv :
-      DifferentialGeometry.Integral.Connection.InverseMetricComponentsInFrame
+      DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) (G.metric var) gInv frame)
     (hinv_id : ∀ e l : Idx, gInv x e l = if e = l then 1 else 0) :
     Tensor0SBundle.normSqRS (I := I) (g := G.metric var) (x := x) 1 2
@@ -1463,24 +1372,18 @@ theorem normSqRS_connDiff_eq_componentL2Sq3 [DecidableEq Idx]
     (I := I) (G.connection var) (G.connection base) frame hframe i j k
     ((hframe.contMDiffAt hu hx j).mdifferentiableAt one_ne_zero)
 
-
-
-
-
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem covGamma_l2_equiv [DecidableEq Idx]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (base var : Real)
     (hinv :
-      DifferentialGeometry.Integral.Connection.InverseMetricComponentsInFrame
+      DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) (G.metric var) gInv frame)
     (hinv_id : ∀ e l : Idx, gInv x e l = if e = l then 1 else 0)
     (hmetric_id : ∀ i j : Idx,
@@ -1520,7 +1423,7 @@ theorem covGamma_l2_equiv [DecidableEq Idx]
 
 
 def gammaDerivOn
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (base : Real) (u : Set M)
@@ -1533,11 +1436,9 @@ def gammaDerivOn
       (gammaDot x k i j)
       base
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem varLowDeriv
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (base : Real)
@@ -1596,18 +1497,16 @@ theorem varLowDeriv
 
 
 def gammaVarEqOn
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (metricCovDerivDt gammaDot : M -> Idx -> Idx -> Idx -> Real)
     (u : Set M) : Prop :=
   ∀ x : M, x ∈ u -> ∀ i j k : Idx,
     gammaDot x k i j =
       metricVarGammaRHS gInv metricCovDerivDt x i j k
 
-
-
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
 theorem gammaTraceVar
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (metricCovDerivDt gammaDot : M -> Idx -> Idx -> Idx -> Real)
     (u : Set M)
     (hgInv_symm : ∀ x : M, x ∈ u -> ∀ i j : Idx,
@@ -1672,16 +1571,14 @@ theorem gammaTraceVar
     _ = (1 / 2 : Real) * metricTraceCovAt gInv metricCovDerivDt x j := by
         simp [B, metricTraceCovAt, Finset.mul_sum, mul_comm, mul_assoc]
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem coeff_invMetric [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv :
-      DifferentialGeometry.Integral.Connection.InverseMetricComponentsInFrame
+      DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) g gInv frame)
     {x : M} (hx : x ∈ u)
     (k : Idx) (V : TangentSpace I x) :
@@ -1726,11 +1623,8 @@ theorem coeff_invMetric [DecidableEq Idx]
     _ = ∑ l : Idx, gInv x k l * g.inner x (frame l x) V := by
       simpa [basis, IsLocalFrameOn.toBasisAt_coe] using hcoord
 
-
-
-
 def lowerPairDerivOn
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (u : Set M)
     (lowerDot : M -> Idx -> Idx -> Idx -> Real) : Prop :=
@@ -1744,23 +1638,21 @@ def lowerPairDerivOn
 
 
 def gammaFromLower
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (lowerDot : M -> Idx -> Idx -> Idx -> Real)
     (x : M) (i j k : Idx) : Real :=
   ∑ l : Idx, gInv x k l * lowerDot x i j l
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem gammaDerivOfLower [DecidableEq Idx]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (base : Real)
     (lowerDot : M -> Idx -> Idx -> Idx -> Real)
     (hinv :
-      DifferentialGeometry.Integral.Connection.InverseMetricComponentsInFrame
+      DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) (G.metric base) gInv frame)
     (hlower : lowerPairDerivOn (I := I) G frame base u lowerDot) :
     gammaDerivOn (I := I) G frame hframe base u
@@ -1796,12 +1688,10 @@ theorem gammaDerivOfLower [DecidableEq Idx]
           ((G.connection s (frame j) x) (frame i x))
   simpa [gammaFromLower, pair] using hsum.congr_of_eventuallyEq hEq
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem gammaEqOfDeriv
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (base : Real)
@@ -1816,18 +1706,12 @@ theorem gammaEqOfDeriv
   have huniq := (hformula x hx i j k).unique (hgamma x hx i j k)
   simpa [metricVarGammaRHS, gammaFromLower] using huniq.symm
 
-
-
-
-
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem lcGammaVar [DecidableEq Idx]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (_hu : IsOpen u)
@@ -1835,7 +1719,7 @@ theorem lcGammaVar [DecidableEq Idx]
     (metricDot : M -> Idx -> Idx -> Real)
     (metricCovDerivDt gammaDot : M -> Idx -> Idx -> Idx -> Real)
     (_hinv :
-      DifferentialGeometry.Integral.Connection.InverseMetricComponentsInFrame
+      DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) (G.metric base) gInv frame)
     (hmetricVar :
       metricVarOn (I := I) G frame base u metricDot)
@@ -1952,10 +1836,10 @@ theorem lcGammaVar [DecidableEq Idx]
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem gammaTraceVar_of_lcGammaVar [DecidableEq Idx]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
-    (gInv : DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u)
@@ -1963,7 +1847,7 @@ theorem gammaTraceVar_of_lcGammaVar [DecidableEq Idx]
     (metricDot : M -> Idx -> Idx -> Real)
     (metricCovDerivDt gammaDot : M -> Idx -> Idx -> Idx -> Real)
     (hinv :
-      DifferentialGeometry.Integral.Connection.InverseMetricComponentsInFrame
+      DifferentialGeometry.Geometry.Curvature.InverseMetricComponentsInFrame
         (I := I) (G.metric base) gInv frame)
     (hmetricVar :
       metricVarOn (I := I) G frame base u metricDot)
@@ -1981,7 +1865,7 @@ theorem gammaTraceVar_of_lcGammaVar [DecidableEq Idx]
   have hgInv_symm :
       ∀ x : M, x ∈ u -> ∀ i j : Idx, gInv x i j = gInv x j i := by
     intro x _ i j
-    exact DifferentialGeometry.Integral.Connection.invComp_symm (I := I) (g := G.metric base)
+    exact DifferentialGeometry.Geometry.Curvature.invComp_symm (I := I) (g := G.metric base)
       (gInv := gInv) frame hinv x i j
   have hmetric_symm :
       ∀ x : M, x ∈ u -> ∀ d a b : Idx,
@@ -1990,7 +1874,4 @@ theorem gammaTraceVar_of_lcGammaVar [DecidableEq Idx]
   exact gammaTraceVar gInv metricCovDerivDt gammaDot u
     hgInv_symm hmetric_symm hgammaEq
 
-
-
-
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

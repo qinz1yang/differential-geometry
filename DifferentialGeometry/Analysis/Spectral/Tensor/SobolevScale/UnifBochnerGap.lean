@@ -1,32 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.DirichletSpectralBochnerGap
-
-/-!
-# Class-uniform Dirichlet–Bochner gap (item-6 packet, spine S1)
-
-This file is the `Λ`-uniform sibling of `DirichletSpectralBochnerGap.lean`.  The
-per-metric Gårding recursion there produces its constants by `Classical.choose`
-sups of the Riemann curvature (via `exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le`);
-those constants are not trackable through the `Λ`-comparability class.  Here we
-mirror the SAME recursion structurally but take the curvature input as an
-ABSTRACT hypothesis `hcurv` in the currency the recursion consumes — the uniform
-per-order bound on the Weitzenböck defect `pointwiseTensorCurv` — with an explicit
-constant family `Fc : ℕ → ℝ`.  Downstream (brick 2a, `HCGCompactness/`) discharges
-`hcurv` from `MetricCovDerivOrderBoundOn` via `sup_x ‖∇^{g₀,a} Riemann(g₀)‖ ≤ F(Λ,n)`.
-
-**Stage α (this file): the uniform single Bochner step** `bochner_step_unif` — the
-uniform version of `iteratedCovGrad_l2NormSq_succ_le_rawConnLap_base_add_lower`,
-with an EXPLICIT constant `Cbase + Fc 0` (no `Classical.choose`).  The
-commutator-base input `hbase` (the uniform sibling of
-`rawConnLap_iteratedCovGrad_l2NormSq_le_iteratedCovGrad_rawConnLap_base_add_lower`)
-is taken as a hypothesis; expressing `Cbase` itself through `Fc` (re-deriving the
-`m`-fold commutator recursion `iteratedRoughLapGrad_commutator_l2Norm_le_local`)
-is the next sub-brick.  Route/status: `UnifBochnerGap.md`.
-
-The proof body is the structural mirror of the private `…succ_le_rawConnLap_base_add_lower`
-(`DirichletSpectralBochnerGap.lean:1220`): Weitzenböck integrated identity
-(`weitzenbock_integrated_covGrad_l2_normSq`) + Cauchy–Schwarz on the curvature
-pairing.  Only the two curvature-dependent obtains are replaced by `hcurv`/`hbase`.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -35,19 +13,18 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open Tensor0SBundle
-open TensorRSNabla
+open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.TensorRSNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -63,10 +40,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- **Composition/reindex of iterated covariant gradients under the `L²` fibre norm:**
-`‖∇^i(∇^j S)‖ = ‖∇^{j+i} S‖`.  Local inline of the `private`
-`DirichletSpectralBochnerGap.norm_iteratedCovGrad_comp_local` (that declaration is not
-importable, being `private`); the pointwise input is `rfns_iteratedCovGrad_comp`. -/
 private theorem norm_iterCovGrad_comp
     (g₀ : SmoothRiemannianMetric I M) (s j i : ℕ) (S : SmoothCcTensor g₀ 0 s) :
     ‖iteratedCovGrad (I := I) g₀ 0 (s + j) i (iteratedCovGrad (I := I) g₀ 0 s j S)‖ =
@@ -110,22 +83,6 @@ private theorem norm_add_cross_scalar_close
       base + (Cfun0 ^ 2 + 2 * (Crc * (dimR * Cfun1))) * sum ^ 2 := by
   nlinarith
 
-/-- **The class-uniform single Bochner step.**  Uniform sibling of
-`iteratedCovGrad_l2NormSq_succ_le_rawConnLap_base_add_lower`
-(`DirichletSpectralBochnerGap.lean:1220`) with an EXPLICIT constant `Cbase + Fc 0`.
-
-Hypotheses (both discharged downstream, not `Classical.choose`):
-* `hcurv` — the class-uniform Weitzenböck-defect bound, order/rank-generic, with
-  constant family `Fc`.  It is exactly the conclusion of
-  `exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le` but with the explicit `Fc`
-  in place of the choose-witness `K`.  Discharged by brick 2a from
-  `sup_x ‖∇^{g₀,a} Riemann(g₀)‖ ≤ F(Λ,n)`.
-* `hbase` — the class-uniform commutator base+lower bound (uniform sibling of
-  `rawConnLap_iteratedCovGrad_l2NormSq_le_iteratedCovGrad_rawConnLap_base_add_lower`),
-  with constant `Cbase`.  Expressing `Cbase` through `Fc` is the next sub-brick.
-
-Conclusion: for every smooth compactly-supported `(0,s)`-tensor `u`,
-`‖∇^{k+2} u‖²_{L²} ≤ ‖∇^{k}(Δ_∇ u)‖²_{L²} + (Cbase + Fc 0)·(∑_{a≤k+1} ‖∇^a u‖)²`. -/
 theorem bochner_step_unif
     (g₀ : SmoothRiemannianMetric I M) (s k : ℕ)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -273,19 +230,6 @@ theorem bochner_step_unif
       (covGrad (I := I) (M := M) g₀ 0 (s + k) P).toFun)
   exact bochner_scalar_close hbase_le hpair_bound hneg_le
 
-/-- **The class-uniform iterated rough-Laplacian / covariant-gradient commutator.**
-Uniform sibling of the `private` `iteratedRoughLapGrad_commutator_l2Norm_le_local`
-(`DirichletSpectralBochnerGap.lean:616`): the `m`-fold commutator
-`Δ_∇(∇^m S) − ∇^m(Δ_∇ S)` has an `L²`-jet bound whose constant family is built from `Fc`
-(via `hcurv`) — the recursion `Cfun p = Fc p + Cfun_{m-1}(p+1)` — with NO
-`Classical.choose` of curvature sups.  This EXPRESSES the commutator constant through the
-`Fc` family, the first half of discharging the `Cbase` input of `bochner_step_unif`.
-
-The `base+lower` assembler `rawConnLap_iteratedCovGrad_…_base_add_lower`
-(`:1085`) that turns this into `bochner_step_unif`'s `hbase` additionally needs the
-`covDivergence ≤ covGrad` bound, whose only realization is a ~130-line `private` tower in
-`DirichletSpectralBochnerGap.lean` (`:479–597`); that step awaits publicizing that tower
-(see `UnifBochnerGap.md`). -/
 theorem roughLapComm_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -434,11 +378,6 @@ theorem roughLapComm_unif
         ≤ Fc p * fullSum + Cm (p + 1) * fullSum := add_le_add harm1 harm2
       _ = (Fc p + Cm (p + 1)) * fullSum := hfinal
 
-/-- **Class-uniform iterated `∇^a ∘ Δ_∇` `L²` bound.**  Uniform sibling of the `private`
-`exists_iteratedCovGrad_rawConnLap_l2Norm_le_local` (`DirichletSpectralBochnerGap.lean:759`):
-consumes the PUBLIC dimension-only `exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen`
-(its constant `K` is a fixed dimension quantity, class-independent) and `roughLapComm_unif`
-(constant `Fc`-explicit). -/
 theorem rawConnLapIter_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -521,13 +460,6 @@ theorem rawConnLapIter_unif
           (mul_le_mul_of_nonneg_left hsub_le (hCfun_nn 0))
     _ = (K + Cfun 0) * FULL := by ring
 
-/-- **Class-uniform base+lower Bochner defect** — the `hbase` provider.  Uniform sibling of
-the `private` `rawConnLap_iteratedCovGrad_l2NormSq_le_iteratedCovGrad_rawConnLap_base_add_lower`
-(`DirichletSpectralBochnerGap.lean:1085`).  Its conclusion is EXACTLY the `hbase` hypothesis of
-`bochner_step_unif`, with an explicit constant `(Cfun 0)² + 2·Crc·√finrank·Cfun 1` built from
-`roughLapComm_unif`/`rawConnLapIter_unif` (both `Fc`-explicit) and the now-public
-`covDivergence_l2Norm_le_covGrad_local`.  Assembly: IBP
-(`tensorL2Inner_covGrad_eq_neg_tensorL2Inner_covDivergence`) on the cross term. -/
 theorem baseAddLower_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -669,11 +601,6 @@ theorem baseAddLower_unif
       linarith [this]
     exact norm_add_cross_scalar_close hcross_le hDnorm_sq
 
-/-- **The fully class-uniform single Bochner step** (`hbase` discharged).  Combines
-`baseAddLower_unif` (supplying the `Cbase` input) with `bochner_step_unif`, so the only
-remaining hypothesis is the abstract curvature bound `hcurv` (with its explicit `Fc`).  This
-is the induction-ready form consumed by the strong induction toward
-`covsum_hs_unif`/`hs_covsum_unif`. -/
 theorem bochner_step_hcurv
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -694,11 +621,7 @@ theorem bochner_step_hcurv
   exact ⟨Cbase + Fc 0, add_nonneg hCbase_nn (hFc 0),
     bochner_step_unif (I := I) (M := M) g₀ s k Fc hFc hcurv Cbase hbase⟩
 
-omit [CompactSpace M] [I.Boundaryless] in
-/-- **Reindex of the iterated rough Laplacian under one extra `Δ_∇`:**
-`Δ_∇^i(Δ_∇ S) = Δ_∇^{i+1} S`.  Local inline of the `private`
-`AllOrderGardingConstant.rawTensorConnLapIter_rawTensorConnLapSmooth` (that declaration is not
-importable, being `private`). -/
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem rawIter_lap_reindex
     (g₀ : SmoothRiemannianMetric I M) (s i : ℕ) (S : SmoothCcTensor g₀ 0 s) :
     rawTensorConnLapIter (I := I) g₀ 0 s i (rawTensorConnLapSmooth (I := I) g₀ 0 s S) =
@@ -711,9 +634,6 @@ private theorem rawIter_lap_reindex
       rawTensorConnLapIter_succ (I := I) g₀ 0 s (n + 1) S]
 
 omit [CompactSpace M] [I.Boundaryless] in
-/-- The shifted rough-Laplacian jet sum `∑_{i < m} ‖Δ_∇^{i+1} S‖` is dominated by the full jet
-sum `∑_{i < n} ‖Δ_∇^i S‖` whenever `m + 1 ≤ n`.  A curvature-free monotonicity used to fold the
-induction-hypothesis Laplacian budget of `Δ_∇ S` into the target budget of `S`. -/
 private theorem lap_shift_le
     (g₀ : SmoothRiemannianMetric I M) (s m n : ℕ) (hmn : m + 1 ≤ n)
     (S : SmoothCcTensor g₀ 0 s) :
@@ -732,15 +652,6 @@ private theorem lap_shift_le
   have hnn : 0 ≤ ‖rawTensorConnLapIter (I := I) g₀ 0 s 0 S‖ := norm_nonneg _
   linarith [key, hmono, hnn]
 
-/-- **Uniform elliptic jet engine (strong form).**  For every jet-order budget `J` there is a
-single nonnegative constant `C` such that every covariant-gradient iterate up to order `J` is
-controlled by the rough-Laplacian jet up to order `⌈a/2⌉`:
-`‖∇^a S‖ ≤ C · ∑_{i ≤ ⌈a/2⌉} ‖Δ_∇^i S‖` for all `a ≤ J`.  Proved by induction on `J` using the
-class-uniform Bochner step `bochner_step_hcurv` (top order `≥ 2`) and the curvature-free order-1
-Dirichlet-energy estimate `covGrad_l2NormSq_le_rawConnLap_mul_self_gen` (top order `1`); the
-constant chain is `Fc`-explicit (no `Classical.choose` of curvature).  This is the `Fc`-explicit
-sibling of the per-metric strong induction inside
-`exists_iteratedCovGrad_l2Norm_le_sum_rawConnLapIter`. -/
 private theorem elliptic_engine
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -884,14 +795,6 @@ private theorem elliptic_engine
       exact mul_le_mul_of_nonneg_right (le_max_right _ _)
         (Finset.sum_nonneg (fun _ _ => norm_nonneg _))
 
-/-- **Class-uniform all-orders elliptic jet bound** (the `Λ`-uniform sibling of
-`exists_iteratedCovGrad_l2Norm_le_sum_rawConnLapIter`, `AllOrderGardingConstant.lean:918`).  For
-every covariant rank `s` and rough-Laplacian budget `k` there is a single nonnegative constant
-`C`, uniform in `S`, controlling every covariant-gradient iterate up to order `2 * k` by the
-rough-Laplacian jet up to order `k`:
-`‖∇^j S‖ ≤ C · ∑_{i ≤ k} ‖Δ_∇^i S‖` for all `j ≤ 2 * k`.  The constant is `Fc`-explicit
-(threaded through `elliptic_engine`, hence `bochner_step_hcurv`), never a `Classical.choose` of a
-curvature sup — the class-uniform content the per-metric `:918` does not expose. -/
 theorem elliptic_lapSum_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -912,11 +815,6 @@ theorem elliptic_lapSum_unif
   exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono (by omega))
     (fun i _ _ => norm_nonneg _)
 
-/-- **Class-uniform even-order covariant jet ≤ spectral `H^{2k}` norm.**  The `Λ`-uniform,
-`Fc`-explicit sibling of the private `jet_even` (`IteratedCovGradHsJetBound.lean:603`): the
-covariant `L²` jet through order `2k` is bounded by the spectral `H^{2k}` norm.  Hard-direction
-(covsum ≤ `Hs`) even case; consumes `elliptic_lapSum_unif` and the curvature-free spectral bridge
-`rawIter_even` (`‖Δ_∇^i S‖ ≤ ‖ccTensorToHs (2i) S‖`) + `ccToHs_norm_mono`. -/
 theorem jetEven_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -959,13 +857,6 @@ theorem jetEven_unif
     _ = ((2 * k + 1 : ℕ) : ℝ) * (Cg * ((k : ℝ) + 1)) * Nspec := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; push_cast; ring
 
-/-- **Class-uniform iterated rough-Laplacian gradient-jet bound.**  The `Λ`-uniform,
-`Fc`-explicit sibling of `exists_iteratedCovGrad_rawConnLapIter_l2Norm_le`
-(`AllOrderGardingConstant.lean:609`): `‖∇^p(Δ_∇^i S)‖ ≤ Cfun(p)·∑_{b ≤ 2i+p} ‖∇^b S‖`, with the
-constant family `Fc`+dimension-explicit (built by iterating `rawConnLapIter_unif`, never a
-`Classical.choose` of a curvature sup).  Induction on `i`; the peel step reuses
-`rawIter_lap_reindex`.  Easy-direction (`Hs` ≤ covsum) engine, consumed at `p = 0, 1` by
-`modeLeJet_unif`. -/
 theorem iterRawLap_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1040,9 +931,6 @@ theorem iterRawLap_unif
           mul_le_mul_of_nonneg_left hinner (hCfun_nn p)
       _ = (Cfun p * ∑ a ∈ Finset.range (2 * i + p + 1), coef a) * FULL := by ring
 
-/-- Local inline of the private `mode_summable` (`IteratedCovGradHsJetBound.lean:533`): the
-eigen-mode series `∑' λ_m^j · coeff_m^2` is summable, dominated by the (public) weighted
-`H^j`-summability of `ccTensorToHs`.  Curvature-free; all dependencies are public spectral API. -/
 private theorem mode_summable_inl
     (g₀ : SmoothRiemannianMetric I M) (s j : ℕ) (S : SmoothCcTensor g₀ 0 s) :
     Summable (fun m : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
@@ -1077,11 +965,6 @@ private theorem mode_summable_inl
     exact mul_le_mul_of_nonneg_right
       (pow_le_pow_left₀ hbase_nn hbase_le j) (sq_nonneg _)
 
-/-- **Class-uniform per-order spectral mass ≤ covariant jet.**  The `Λ`-uniform, `Fc`-explicit
-sibling of the private `mode_le_jet` (`IteratedCovGradHsJetBound.lean:438`): the order-`j`
-eigen-mode mass `∑' λ_m^j · coeff_m^2` is bounded by the covariant `L²` jet through order `j`.
-Even case via `rawIter_tsum` at `iterRawLap_unif p = 0`; odd case via `covIter_tsum` at
-`iterRawLap_unif p = 1`.  Easy-direction building block for `hsCovsum_unif`. -/
 theorem modeLeJet_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1183,11 +1066,6 @@ theorem modeLeJet_unif
       _ = (Cfun 1) ^ 2 * (∑ a ∈ Finset.range (j + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 s a S‖) ^ 2 := by ring
 
-/-- **Class-uniform spectral `H^n` norm ≤ covariant jet** (endpoint `hs_covsum_unif`).  The
-`Λ`-uniform, `Fc`-explicit sibling of `hs_le_jet` (`IteratedCovGradHsJetBound.lean:855`):
-`‖ccTensorToHs g₀ s n S‖ ≤ C · ∑_{j ≤ n} ‖∇^j S‖`.  Easy direction; combines `modeLeJet_unif`
-at orders `0` and `n` through the two-mass split `(1+λ)^n ≤ 2^{n-1}(1 + λ^n)` (`add_pow_le`),
-with `mode_summable_inl` for the tsum manipulations.  Constant `√(2^{n-1}·(C₀ + Cₙ))`. -/
 theorem hsCovsum_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1304,13 +1182,6 @@ theorem hsCovsum_unif
   rw [Real.sqrt_sq hnorm_nn, Real.sqrt_sq hrhs_nn] at hsqrt
   simpa only [hSall_def] using hsqrt
 
-/-- **Class-uniform iterated-Laplacian / gradient commutator (all gradient orders).**  The
-`Λ`-uniform, `Fc`-explicit sibling of the private
-`exists_rawConnLapIter_covGrad_commutator_l2Norm_le_aux` (`AllOrderGardingConstant.lean:673`):
-`‖∇^p([Δ_∇^i, ∇] S)‖ ≤ Cfun(p)·∑_{a<2i+p} ‖∇^a S‖`.  Induction on `i`; the curvature term is the
-abstract `hcurv` (its own `Fc`), the master term is `iterRawLap_unif`, and the extra-Laplacian
-term reuses `rawConnLapIter_unif` at rank `s+1` — so the constant chain is `Fc`+dimension
-explicit, never a `Classical.choose` of a curvature sup. -/
 theorem iterLapGradComm_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1480,10 +1351,6 @@ theorem iterLapGradComm_unif
         _ = (Fc p * (∑ a ∈ Finset.range (p + 2), Cmaster a) +
               coefB p * (∑ q ∈ Finset.range (p + 3), Cfun q)) * FULL := by ring
 
-/-- **Class-uniform iterated-Laplacian / gradient commutator (order 0).**  The `p = 0` face of
-`iterLapGradComm_unif`; the `Λ`-uniform, `Fc`-explicit sibling of the public
-`exists_rawConnLapIter_covGrad_commutator_l2Norm_le` (`AllOrderGardingConstant.lean:830`).  The
-odd-order building block consumed by `jetOdd_unif`. -/
 theorem rawConnLapCovComm_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1504,19 +1371,12 @@ theorem rawConnLapCovComm_unif
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- Reindex of the covariant-jet norm under a proof of order equality (inline of the private
-`IteratedCovGradHsJetBound.norm_iteratedCovGrad_order_eq:596`). -/
 private theorem norm_icg_order_eq
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) {n n' : ℕ} (h : n = n')
     (S : SmoothCcTensor g₀ 0 s) :
     ‖iteratedCovGrad (I := I) g₀ 0 s n S‖ = ‖iteratedCovGrad (I := I) g₀ 0 s n' S‖ := by
   subst h; rfl
 
-/-- **Class-uniform odd-order covariant jet ≤ spectral `H^{2k+1}` norm.**  The `Λ`-uniform,
-`Fc`-explicit sibling of the private `jet_odd` (`IteratedCovGradHsJetBound.lean:667`).  The top
-order `∇^{2k+1}S = ∇^{2k}(∇S)` is controlled by `elliptic_lapSum_unif` at rank `s+1`, each
-`Δ_∇^i(∇S)` being converted to the odd-order `Hs`-bounded `∇(Δ_∇^i S)` (`covIter_odd`) up to the
-`Fc`-explicit commutator `rawConnLapCovComm_unif`; the lower orders reuse `jetEven_unif`. -/
 theorem jetOdd_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1667,11 +1527,6 @@ theorem jetOdd_unif
         add_le_add hlowsum htop_le
     _ = (Clow + Cgard * (((k + 1 : ℕ) : ℝ) + Ccommsum * Ceven)) * Nspec := by ring
 
-/-- **Class-uniform covariant `L²` jet ≤ spectral `H^n` norm** (endpoint `covsum_hs_unif`).  The
-`Λ`-uniform, `Fc`-explicit sibling of `hsJet_le` (`IteratedCovGradHsJetBound.lean:834`):
-`∑_{j ≤ n} ‖∇^j S‖ ≤ C · ‖ccTensorToHs g₀ s n S‖`.  Hard direction; the even case is
-`jetEven_unif`, the odd case `jetOdd_unif`.  Together with `hsCovsum_unif` these are the two
-`H^n`-norm ↔ covariant-jet endpoints of the class-uniform Sobolev comparison. -/
 theorem covsum_hs_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1697,7 +1552,6 @@ theorem covsum_hs_unif
     subst hn
     exact hC S
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

@@ -40,16 +40,13 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 structure ChartPushedPartialLipschitz
     (g : SmoothRiemannianMetric I M) (α : M)
     (j : Fin (Module.finrank ℝ E)) where
-
   C : ℝ
-
   C_nonneg : 0 ≤ C
-
   bound : ∀ v : SmoothScalar g,
     ‖chartPushedPartialLpLin (I := I) (M := M) g α j v‖ ≤ C * ‖v‖
 

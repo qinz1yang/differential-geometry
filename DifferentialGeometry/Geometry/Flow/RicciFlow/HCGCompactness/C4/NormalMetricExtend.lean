@@ -4,17 +4,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBInput
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Geometry.Metric.MetricExistence
 import DifferentialGeometry.Geometry.Metric.PullbackCross
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -36,8 +28,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-
-
 def normalBall (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -50,8 +40,6 @@ def normalBall (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact ⟨Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric x), Metric.isOpen_ball⟩
-
-
 
 noncomputable def normalExpPD
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -123,8 +111,6 @@ theorem normalExpPD_source
     (normalExpPD (I := I) Y x).source = normalBall (I := I) Y x := by
   rfl
 
-
-
 def normalImage
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -139,8 +125,6 @@ def normalImage
   exact ⟨(normalExpPD (I := I) Y x : E → Y.M) ''
       (normalBall (I := I) Y x : Set E),
     image_opens_isOpen (normalExpPD (I := I) Y x) (by simp)⟩
-
-
 
 noncomputable def normalBallDiffeo
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -224,8 +208,6 @@ private theorem ballDiffeo_mfd
     (normalExpPD (I := I) Y x) (by simp) z v
   simpa only [normalBallDiffeo, normalExpPD] using h
 
-
-
 noncomputable def normalMetric
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -248,8 +230,6 @@ noncomputable def normalMetric
   exact Diffeomorph.pullbackMetricCross
     (Y.metric.restrictOpen (I := I) (normalImage (I := I) Y x))
     (normalBallDiffeo (I := I) Y x)
-
-
 
 theorem normalMetric_inner
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
@@ -276,8 +256,6 @@ theorem normalMetric_inner
     SmoothRiemannianMetric.restrictOpen_inner]
   rw [ballDiffeo_apply, ballDiffeo_mfd, ballDiffeo_mfd]
   exact (normalCoordMetric_apply (I := I) Y x (z : E) v w).symm
-
-
 
 noncomputable def normalCut
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -321,8 +299,6 @@ theorem normalCut_range
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact ⟨(normalCut (I := I) Y x).nonneg, (normalCut (I := I) Y x).le_one⟩
-
-
 
 theorem normalCut_supp
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -379,8 +355,6 @@ theorem normalInner_sub
   exact Metric.ball_subset_ball (by
     have hR := expMapC2Radius_pos (I := I) Y.metric x
     linarith)
-
-
 
 private noncomputable def modelFlatMetric
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -443,8 +417,6 @@ noncomputable def normalTotal
     (normalCut (I := I) Y x : E → Real)
     (normalCut_smooth (I := I) Y x) (normalCut_range (I := I) Y x)
     (normalCut_supp (I := I) Y x)
-
-
 
 theorem normalTotal_inner
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -509,8 +481,6 @@ theorem normalTotal_eq
   intro w
   exact normalTotal_inner (I := I) Y x z hz v w
 
-
-
 theorem normal_cov_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -522,7 +492,7 @@ theorem normal_cov_eq
     ∀ (z : E), z ∈ Metric.ball (0 : E)
       (expMapC2Radius (I := I) Y.metric x / 4) →
     ∀ (hco : IsCoercive (normalCoordMetric (I := I) Y x z)) (v w : E),
-    (Integral.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
+    (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
         (normalTotal (I := I) Y x) (fun _ : E ↦ w) z) v =
       MetricKoszul.koszulVec hco
         (fderiv Real (normalCoordMetric (I := I) Y x) z) v w := by
@@ -541,12 +511,9 @@ theorem normal_cov_eq
   have hdiff : DifferentiableAt Real (normalCoordMetric (I := I) Y x) z := by
     exact ((normalCoordMetric_contDiffOn_expBall (I := I) Y x).contDiffAt
       (Metric.isOpen_ball.mem_nhds (hsub hz))).differentiableAt (by simp)
-  exact Integral.Connection.const_cov_eq_nhds
+  exact DifferentialGeometry.Geometry.Connection.const_cov_eq_nhds
     (normalTotal (I := I) Y x) (normalCoordMetric (I := I) Y x)
     hB hdiff hco v w
-
-
-
 
 theorem normal_cov_eq_fderiv
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -564,7 +531,7 @@ theorem normal_cov_eq_fderiv
         (𝓘(Real, E).prod 𝓘(Real, E))
         (fun y : E ↦ (⟨y, V y⟩ : TangentBundle 𝓘(Real, E) E)) z)
       (v : E),
-    (Integral.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
+    (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
         (normalTotal (I := I) Y x) V z) v =
       fderiv Real V z v +
         MetricKoszul.koszulVec hco
@@ -584,7 +551,7 @@ theorem normal_cov_eq_fderiv
   have hdiff : DifferentiableAt Real (normalCoordMetric (I := I) Y x) z := by
     exact ((normalCoordMetric_contDiffOn_expBall (I := I) Y x).contDiffAt
       (Metric.isOpen_ball.mem_nhds (hsub hz))).differentiableAt (by simp)
-  exact Integral.Connection.cov_eq_fderiv_add
+  exact DifferentialGeometry.Geometry.Connection.cov_eq_fderiv_add
     (normalTotal (I := I) Y x) (normalCoordMetric (I := I) Y x)
     hB hdiff hco V _hV v
 

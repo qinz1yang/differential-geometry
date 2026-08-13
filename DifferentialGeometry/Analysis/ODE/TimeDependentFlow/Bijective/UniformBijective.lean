@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ChartCoverBijective
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -81,4 +81,4 @@ theorem chart_cover_flow_bijective_two_sided_uniform_horizon
   obtain ⟨T, hT_pos, hT_bij⟩ := hExtracted
   exact ⟨T, hT_pos, fun s hs x => (hT_bij s hs x).1, fun s hs x => (hT_bij s hs x).2⟩
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

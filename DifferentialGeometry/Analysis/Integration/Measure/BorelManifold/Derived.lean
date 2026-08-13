@@ -15,7 +15,7 @@ noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Set MeasureTheory Bundle Manifold Tensor0SBundle
+open Set MeasureTheory Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry

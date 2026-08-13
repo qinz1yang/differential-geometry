@@ -42,33 +42,24 @@ private lemma memLp_two_of_continuous_compact_closure
 structure SmoothApproximation
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     (_u _f : E → ℝ) where
-
   u_seq : ℕ → E → ℝ
-
   f_seq : ℕ → E → ℝ
-
   u_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n)
-
   is_smooth_weak_sol :
     ∀ n, B.IsSmoothWeakSolution (u_seq n) (f_seq n)
-
   f_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
       MemLp (f_seq n) 2 (volume.restrict S)
-
   u_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
       MemLp (u_seq n) 2 (volume.restrict S)
-
   grad_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
       ∀ j : Fin d,
         MemLp (fun y : E => (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1))
           2 (volume.restrict S)
-
   data_bound : ℝ
   data_bound_nn : 0 ≤ data_bound
-
   data_integrated_bound :
     ∀ {Ω' : Set E}, IsOpen Ω' → IsCompact (closure Ω') →
       ∃ C : ℝ, 0 ≤ C ∧ ∀ n,

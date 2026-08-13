@@ -4,21 +4,23 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDe
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
 import DifferentialGeometry.Geometry.Metric.TensorInner.CotangentRiemannian
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
-open Bundle Manifold Set Filter FiberBundle Tensor0SBundle
+open Bundle Manifold Set Filter FiberBundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open Tensor0SNabla
-open TensorRSNabla
+open DifferentialGeometry.Tensor0SNabla
+open DifferentialGeometry.TensorRSNabla
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -37,7 +39,7 @@ def ccTensorOneForm (g : SmoothRiemannianMetric I M) (σ : SmoothCcTensor g 0 1)
     (unitEvalSection (I := I) (M := M) g 1 σ b)
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma tensorCovDerivAt_unitEval
     (g : SmoothRiemannianMetric I M) (σ : SmoothCcTensor g 0 1)
     (x : M) (v : TangentSpace I x) :
@@ -59,7 +61,7 @@ lemma tensorCovDerivAt_unitEval
     (LeviCivita (I := I) g) x v
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma tensor0SCovariantDerivative_one_cotangentToCLM
     (g : SmoothRiemannianMetric I M)
     (α : Π b : M, Tensor0SSpace 1 I b) {x : M}
@@ -107,7 +109,7 @@ lemma tensor0SCovariantDerivative_one_cotangentToCLM
     exact hconsEq ((LeviCivita (I := I) g).toFun (fun y => Y y) x v)
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem cotangentCov_eq_tensorCovDerivAt_ccTensor01
     (g : SmoothRiemannianMetric I M) (σ : SmoothCcTensor g 0 1) {x : M}
     (hθ : MDiffAtCotangent (ccTensorOneForm g σ) x)
@@ -154,5 +156,5 @@ theorem cotangentCov_eq_tensorCovDerivAt_ccTensor01
   exact (tensorCovDerivAt_unitEval (I := I) (M := M) g σ x v).symm
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

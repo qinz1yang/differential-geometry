@@ -1,29 +1,22 @@
 import DifferentialGeometry.Tensor.RSTensor.TensorRSRiemannian
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Tensor
+namespace RSTensor
 
-open Bundle Manifold Set Tensor0SBundle
+open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
-open TensorMetricLowering Tensor0SNabla TensorRSNabla
+open DifferentialGeometry.TensorMetricLowering DifferentialGeometry.Tensor0SNabla
+    DifferentialGeometry.TensorRSNabla
 open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -33,15 +26,11 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-
 noncomputable def lowerAllSpace
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (A : TensorRSSpace r s I x) : Tensor0SSpace (r + s) I x :=
   Tensor0SSpace.ofModel
     (lowerAllUpperIndices (I := I) (M := M) g r s x (TensorRSSpace.toModel A))
-
-
-
 
 omit [InnerProductSpace ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
@@ -125,6 +114,6 @@ theorem normSqRS_eq_normSq0S_lowerAllSpace
   rw [hsep]
   rfl
 
-end Connection
-end Integral
+end RSTensor
+end Tensor
 end DifferentialGeometry

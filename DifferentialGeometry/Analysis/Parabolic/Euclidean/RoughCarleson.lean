@@ -1,23 +1,6 @@
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 
-/-!
-# A rough parabolic Carleson norm
-
-The regularizing Ricci--DeTurck fixed-point space cannot ask for a uniformly
-bounded spatial derivative at the initial time: its input metric is only
-continuous.  The scale-invariant replacement is the space--time estimate
-
-`integral_(0,R^2) integral_(B(x,R)) |Du|^2 <= C R^n`.
-
-This file records that estimate as `GradCarl` and proves the basic product
-fact needed by the divergence refold of the quasilinear principal term.  A
-bounded bilinear expression in two Carleson-controlled gradients is a
-Carleson-controlled `L^1` source.  Thus the compensating
-`DA(u)[Du] Dw` term is retained rather than hidden behind a nonexistent
-initial-slice derivative bound.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -34,11 +17,9 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-/-- The forward parabolic cylinder `(0,R^2] x B(x,R)`. -/
 def paraCyl (x : V) (R : ℝ) : Set (ℝ × V) :=
   Set.Ioc 0 (R ^ 2) ×ˢ Metric.ball x R
 
-/-- Product Lebesgue measure on time and a Euclidean model space. -/
 def stVolume : Measure (ℝ × V) :=
   (volume : Measure ℝ).prod (volume : Measure V)
 
@@ -52,50 +33,35 @@ variable {V G F : Type*}
   [NormedAddCommGroup G]
   [NormedAddCommGroup F]
 
-/-- Space--time `L^2` mass of a gradient-like field on a parabolic cylinder. -/
 def gradMass (d : ℝ × V → G) (x : V) (R : ℝ) : ℝ≥0∞ :=
   ∫⁻ z in paraCyl x R, ENNReal.ofReal (‖d z‖ ^ 2) ∂(stVolume : Measure (ℝ × V))
 
-/-- Space--time `L^1` mass of a source on a parabolic cylinder. -/
 def srcMass (f : ℝ × V → F) (x : V) (R : ℝ) : ℝ≥0∞ :=
   ∫⁻ z in paraCyl x R, ENNReal.ofReal ‖f z‖ ∂(stVolume : Measure (ℝ × V))
 
-/-- Scale-invariant Carleson control of a gradient-like field up to time `T`.
-
-The explicit a.e.-strong measurability field is part of the analytic data; no
-measurability or derivative regularity at the initial slice is inferred. -/
 structure GradCarl (T : ℝ) (C : ℝ≥0∞) (d : ℝ × V → G) : Prop where
   ae : AEStronglyMeasurable d (stVolume : Measure (ℝ × V))
   bound : ∀ x R, 0 < R → R ^ 2 ≤ T →
     gradMass d x R ≤ C * ENNReal.ofReal (R ^ Module.finrank ℝ V)
 
-/-- Scale-invariant Carleson control of an `L^1` source up to time `T`. -/
 structure SrcCarl (T : ℝ) (C : ℝ≥0∞) (f : ℝ × V → F) : Prop where
   ae : AEStronglyMeasurable f (stVolume : Measure (ℝ × V))
   bound : ∀ x R, 0 < R → R ^ 2 ≤ T →
     srcMass f x R ≤ C * ENNReal.ofReal (R ^ Module.finrank ℝ V)
 
-/-- Uniform positive-time `C⁰` control of a space--time path. -/
 def PathSup (T A : ℝ) (u : ℝ × V → G) : Prop :=
   ∀ t x, 0 < t → t ≤ T → ‖u (t, x)‖ ≤ A
 
-/-- The scale-invariant pointwise part of the rough gradient norm. -/
 def GradWt (T A : ℝ) (d : ℝ × V → G) : Prop :=
   ∀ t x, 0 < t → t ≤ T → Real.sqrt t * ‖d (t, x)‖ ≤ A
 
-/-- The scale-invariant pointwise part of the rough quadratic-source norm. -/
 def SrcWt (T A : ℝ) (f : ℝ × V → F) : Prop :=
   ∀ t x, 0 < t → t ≤ T → t * ‖f (t, x)‖ ≤ A
 
-/-- The three components of the rough solution ball: `C⁰`, weighted
-pointwise gradient, and gradient Carleson mass.  The derivative is supplied
-as explicit data, so this definition does not manufacture a derivative at
-`t = 0`. -/
 def InRoughPath (T A₀ A₁ : ℝ) (C₁ : ℝ≥0∞)
     (u : ℝ × V → F) (d : ℝ × V → G) : Prop :=
   PathSup T A₀ u ∧ GradWt T A₁ d ∧ GradCarl T C₁ d
 
-/-- The two components of the rough nondifferentiated source class. -/
 def InRoughSrc (T A : ℝ) (C : ℝ≥0∞) (f : ℝ × V → F) : Prop :=
   SrcWt T A f ∧ SrcCarl T C f
 
@@ -112,9 +78,6 @@ variable {V G H F : Type*}
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
-/-- A uniformly small space--time dependent linear coefficient preserves the
-weighted gradient class, with its operator bound appearing as the explicit
-small factor. -/
 theorem linWt_of_bound (A : ℝ × V → G →L[ℝ] F)
     {T K C : ℝ} {d : ℝ × V → G}
     (hK : ∀ z, ‖A z‖ ≤ K) (hK0 : 0 ≤ K) (hd : GradWt T C d) :
@@ -131,9 +94,6 @@ theorem linWt_of_bound (A : ℝ × V → G →L[ℝ] F)
     _ = K * (Real.sqrt t * ‖d (t, x)‖) := by ring
     _ ≤ K * C := mul_le_mul_of_nonneg_left (hd t x ht hT) hK0
 
-/-- The local `L²` Carleson counterpart of `linWt_of_bound`.  Measurability
-of the realized flux is explicit because a merely pointwise operator field
-need not be measurable. -/
 theorem linCarl_of_bound (A : ℝ × V → G →L[ℝ] F)
     {T K : ℝ} {C : ℝ≥0∞} {d : ℝ × V → G}
     (hK : ∀ z, ‖A z‖ ≤ K) (hK0 : 0 ≤ K)
@@ -179,9 +139,6 @@ theorem linCarl_of_bound (A : ℝ × V → G →L[ℝ] F)
           ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
       ring
 
-/-- A bounded bilinear map is controlled by the sum of the two squared input
-norms.  The harmless factor `2` saved by Young's sharper inequality is not
-needed for the fixed-point norm. -/
 theorem bilin_sq_bound (B : G →L[ℝ] H →L[ℝ] F) (a : G) (b : H) :
     ‖B a b‖ ≤ ‖B‖ * (‖a‖ ^ 2 + ‖b‖ ^ 2) := by
   have hab : ‖a‖ * ‖b‖ ≤ ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
@@ -196,8 +153,6 @@ theorem bilin_sq_bound (B : G →L[ℝ] H →L[ℝ] F) (a : G) (b : H) :
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
-/-- The weighted pointwise product estimate, allowing a space--time dependent
-bilinear coefficient with a uniform operator bound. -/
 theorem bilinWt_of_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
     {T K A₁ A₂ : ℝ} {d₁ : ℝ × V → G} {d₂ : ℝ × V → H}
     (hK : ∀ z, ‖B z‖ ≤ K) (hK0 : 0 ≤ K) (hA₁ : 0 ≤ A₁)
@@ -235,7 +190,6 @@ theorem bilinWt_of_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
-/-- Constant-coefficient specialization of `bilinWt_of_bound`. -/
 theorem bilinWt (B : G →L[ℝ] H →L[ℝ] F)
     {T A₁ A₂ : ℝ} {d₁ : ℝ × V → G} {d₂ : ℝ × V → H}
     (hA₁ : 0 ≤ A₁) (h₁ : GradWt T A₁ d₁) (h₂ : GradWt T A₂ d₂) :
@@ -244,7 +198,6 @@ theorem bilinWt (B : G →L[ℝ] H →L[ℝ] F)
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [NormedSpace ℝ F] in
-/-- Addition in the weighted pointwise source class. -/
 theorem srcWt_add {T A₁ A₂ : ℝ} {f₁ f₂ : ℝ × V → F}
     (h₁ : SrcWt T A₁ f₁) (h₂ : SrcWt T A₂ f₂) :
     SrcWt T (A₁ + A₂) (fun z ↦ f₁ z + f₂ z) := by
@@ -256,9 +209,6 @@ theorem srcWt_add {T A₁ A₂ : ℝ} {f₁ f₂ : ℝ × V → F}
     _ = t * ‖f₁ (t, x)‖ + t * ‖f₂ (t, x)‖ := by ring
     _ ≤ A₁ + A₂ := add_le_add (h₁ t x ht hT) (h₂ t x ht hT)
 
-/-- The compensating quadratic-gradient term belongs to the rough source
-Carleson class.  This is the product estimate used after the exact divergence
-refold of the inverse-metric variation times `D²u`. -/
 theorem bilinCarl (B : G →L[ℝ] H →L[ℝ] F)
     {T : ℝ} {C₁ C₂ : ℝ≥0∞} {d₁ : ℝ × V → G} {d₂ : ℝ × V → H}
     (h₁ : GradCarl T C₁ d₁) (h₂ : GradCarl T C₂ d₂) :
@@ -316,9 +266,6 @@ theorem bilinCarl (B : G →L[ℝ] H →L[ℝ] F)
             ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
         ring
 
-/-- Variable-coefficient version of `bilinCarl`.  The realized source is
-required to be measurable explicitly; the coefficient field itself may be
-supplied by a geometric chart construction. -/
 theorem bilinCarl_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
     {T K : ℝ} {C₁ C₂ : ℝ≥0∞} {d₁ : ℝ × V → G} {d₂ : ℝ × V → H}
     (hK : ∀ z, ‖B z‖ ≤ K) (hK0 : 0 ≤ K)
@@ -380,7 +327,6 @@ theorem bilinCarl_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
       ring
 
 omit [NormedSpace ℝ F] in
-/-- Addition in the rough `L¹` source Carleson class. -/
 theorem srcCarl_add {T : ℝ} {C₁ C₂ : ℝ≥0∞}
     {f₁ f₂ : ℝ × V → F}
     (h₁ : SrcCarl T C₁ f₁) (h₂ : SrcCarl T C₂ f₂) :

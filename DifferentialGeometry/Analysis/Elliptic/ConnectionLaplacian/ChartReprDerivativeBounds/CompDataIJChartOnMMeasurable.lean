@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ChartFormLowerOrder
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.MeasurablePullback
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -8,8 +9,8 @@ open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Tensor
 open DifferentialGeometry.Integral.Measure
@@ -202,6 +203,6 @@ theorem measurable_tensorChartComponentRaw_iteratedFDeriv_normSq
       ((chartAt H α).source)ᶜ := continuous_const.continuousOn
   exact ContinuousOn.measurable_piecewise hf_norm_sq_cont hconst_cont hsrc_meas
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry

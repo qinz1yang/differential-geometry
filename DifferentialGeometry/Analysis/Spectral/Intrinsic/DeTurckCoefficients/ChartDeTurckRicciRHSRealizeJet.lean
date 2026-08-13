@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Char
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.IteratedChartRicciLieJetLipschitz
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartGramRealizeDiffJet
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
+open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -10,11 +12,11 @@ noncomputable section
 open Set
 open scoped Manifold Topology ContDiff BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
 
@@ -83,4 +85,4 @@ theorem chartDeTurckRicciRHS_realize_seminorm_le_bareChartJetContentOnE
     _ = (C * ((Module.finrank ℝ E) : ℝ)) *
           chartComponentJetSeminormSum (I := I) (M := M) g_bg (T - T') α (N + 2) y := by ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

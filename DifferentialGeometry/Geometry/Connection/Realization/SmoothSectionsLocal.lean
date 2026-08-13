@@ -2,34 +2,14 @@ import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import Mathlib.Geometry.Manifold.BumpFunction
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry.Geometry.Connection.Realization
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
-open Bundle
+open _root_.Bundle
 
 section SmoothSectionsLocal
 
@@ -40,26 +20,22 @@ variable
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M]
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem contMDiffOn_dual_apply
-    (α : Cₛ^∞⟮I; E →L[ℝ] ℝ, (Bundle.dual ℝ (TangentSpace I : M → Type _))⟯)
+    (α : Cₛ^∞⟮I; E →L[ℝ] ℝ, (_root_.Bundle.dual ℝ (TangentSpace I : M → Type _))⟯)
     {V : (y : M) → TangentSpace I y} {u : Set M}
     (hV : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (V y)) u) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun y => α y (V y)) u := by
   have hα : ContMDiffOn I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
       (fun y => TotalSpace.mk' (E →L[ℝ] ℝ)
-        (E := fun x : M => (TangentSpace I x →L[ℝ] (Bundle.Trivial M ℝ) x))
+        (E := fun x : M => (TangentSpace I x →L[ℝ] (_root_.Bundle.Trivial M ℝ) x))
         y (α y)) u := α.contMDiff.contMDiffOn
   have hap : ContMDiffOn I (I.prod 𝓘(ℝ, ℝ)) ∞
-      (fun y => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ) y (α y (V y))) u :=
+      (fun y => TotalSpace.mk' ℝ (E := _root_.Bundle.Trivial M ℝ) y (α y (V y))) u :=
     ContMDiffOn.clm_bundle_apply (b := id) hα hV
   intro y hy
-  exact (contMDiffWithinAt_section (F := ℝ) (E := Bundle.Trivial M ℝ)).mp (hap y hy)
-
-
+  exact (contMDiffWithinAt_section (F := ℝ) (E := _root_.Bundle.Trivial M ℝ)).mp (hap y hy)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] in
@@ -70,12 +46,6 @@ private theorem extDerivFun_congr_nhds
     DifferentialGeometry.extDerivFun_real_eq_mfderiv I g x V,
     Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(ℝ, ℝ)) h]
   rfl
-
-
-
-
-
-
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem contMDiffAt_extDerivFun_apply
@@ -102,7 +72,7 @@ theorem contMDiffAt_extDerivFun_apply
         by_contra hne
         exact hy (subset_tsupport _ hne)
       simp [hftil_def, hb0]
-  let dα : Cₛ^∞⟮I; E →L[ℝ] ℝ, (Bundle.dual ℝ (TangentSpace I : M → Type _))⟯ :=
+  let dα : Cₛ^∞⟮I; E →L[ℝ] ℝ, (_root_.Bundle.dual ℝ (TangentSpace I : M → Type _))⟯ :=
     ⟨fun y => extDerivFun (I := I) ftil y,
       contMDiff_extDerivFun_section (I := I) (M := M) ⟨ftil, hftil⟩⟩
   have hpair : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
@@ -121,3 +91,7 @@ theorem contMDiffAt_extDerivFun_apply
   simp [hftil_def, hw_one z hzw]
 
 end SmoothSectionsLocal
+
+end
+
+end DifferentialGeometry.Geometry.Connection.Realization

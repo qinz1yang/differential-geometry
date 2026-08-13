@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor0SChartParallelExtend
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SCovariantDerivative
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor0SIntrinsicChartRank0
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -9,10 +10,11 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
+
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -293,7 +295,7 @@ theorem chartTensor0SCovariantDerivative_chartTensor0SParallelExtend
         (I := I) g s α hb T₀ X
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

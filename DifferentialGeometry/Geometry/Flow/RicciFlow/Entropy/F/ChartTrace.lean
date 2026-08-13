@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.TraceAlgebra
 import DifferentialGeometry.Geometry.Connection.LeviCivita.DivergenceFrameInvariance
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
 
 
 set_option autoImplicit false
@@ -12,25 +15,10 @@ open Filter MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Coordinates
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {M : Type*}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 section GeometryFormula510
 
@@ -41,9 +29,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -68,8 +53,6 @@ def gInvFun
   fun y : M =>
     inverseMetricFlatModelInChart_component (I := I) g x i j (extChartAt I x y)
 
-
-
 def compFun
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)
@@ -84,10 +67,6 @@ def compFun
       (fun q : Fin 2 =>
         coordinateFrameAt (I := I) x (if q = 0 then i else j) y)
 
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem connTraceCoeff_one_eventually
@@ -97,7 +76,7 @@ theorem connTraceCoeff_one_eventually
     (x₀ : M) (p : CoordinateIdx (𝕜 := Real) E) :
     (fun y : M =>
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff p y
-          ((DifferentialGeometry.Integral.Connection.connTraceField (I := I) g A).toFun y))
+          ((DifferentialGeometry.Tensor.RSTensor.connTraceField (I := I) g A).toFun y))
       =ᶠ[nhds x₀]
       fun y : M =>
         ∑ i : CoordinateIdx (𝕜 := Real) E,
@@ -105,13 +84,13 @@ theorem connTraceCoeff_one_eventually
             gInvFun (I := I) g x₀ i j y * compFun (I := I) A x₀ p i j y := by
   classical
   have hcoeff :=
-    DifferentialGeometry.Integral.Connection.connTraceCoeff_eventually (I := I) g A x₀ p
+    DifferentialGeometry.Tensor.RSTensor.connTraceCoeff_eventually (I := I) g A x₀ p
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀), hcoeff] with y hy hcoeff_y
   rw [coordinateFrameAt_coeff_one_eq (I := I) x₀ hy _ p]
-  rw [show ((DifferentialGeometry.Integral.Connection.connTraceField (I := I) g A).toFun y) =
-        DifferentialGeometry.Integral.Connection.connTraceAt (I := I) g (A y) from rfl]
+  rw [show ((DifferentialGeometry.Tensor.RSTensor.connTraceField (I := I) g A).toFun y) =
+        DifferentialGeometry.Tensor.RSTensor.connTraceAt (I := I) g (A y) from rfl]
   exact hcoeff_y
 
 end GeometryFormula510

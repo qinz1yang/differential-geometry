@@ -3,13 +3,6 @@ import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
@@ -22,11 +15,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 namespace OpenPartialHomeomorph
-
-
-
-
-
 
 private theorem model_mem_contDiffGroupoid_of_contMDiffOn
     {n : WithTop ℕ∞} {e : OpenPartialHomeomorph H H}
@@ -55,8 +43,6 @@ private theorem model_mem_contDiffGroupoid_of_contMDiffOn
     OpenPartialHomeomorph.Set.EqOn.restr_eqOn_source heq_on
   exact (contDiffGroupoid n I).mem_of_eqOnSource
     (closedUnderRestriction' he'G e.open_source) hrestr
-
-
 
 theorem mem_maximalAtlas_of_contMDiffOn
     {n : WithTop ℕ∞}
@@ -91,9 +77,6 @@ theorem mem_maximalAtlas_of_contMDiffOn
 end OpenPartialHomeomorph
 
 namespace PartialDiffeomorph
-
-
-
 
 def ofOpenPartialHomeomorphRestr
     {E₁ : Type*} [NormedAddCommGroup E₁] [NormedSpace Real E₁]
@@ -161,8 +144,6 @@ theorem transDiffeomorph_toOpenPartialHomeomorph
     (transDiffeomorph (I := I) Φ Ψ).toOpenPartialHomeomorph =
       Φ.toOpenPartialHomeomorph.transHomeomorph Ψ.toHomeomorph := by
   rfl
-
-
 
 theorem toOpenPartialHomeomorph_mem_maximalAtlas
     {n : WithTop ℕ∞}

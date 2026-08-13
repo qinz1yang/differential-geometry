@@ -114,7 +114,7 @@ lemma fun_eq_finset_sum_chartPullback_chartPushed
 private lemma exists_strict_strong_support_approx_with_compact_neighborhood
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u)
     (α : M) :
@@ -287,7 +287,7 @@ lemma tightenedChartPushed_eq_chartPushed_on_target
 
 private lemma tightenedChartPushed_memWkp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M)
     {η_M : M → ℝ}
@@ -793,7 +793,7 @@ private theorem MemWkp_of_cross_chart_pushforward
 theorem contMDiff_dense_in_WkpChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u)
     {ε : ℝ} (hε : 0 < ε) :

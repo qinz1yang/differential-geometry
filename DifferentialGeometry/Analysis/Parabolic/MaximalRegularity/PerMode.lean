@@ -161,6 +161,38 @@ theorem weighted_cauchy_schwarz {w g : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
   rw [discrim] at hdiscrim
   nlinarith [hdiscrim]
 
+theorem weighted_cauchy_schwarz_on {w g : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
+    (hw : ContinuousOn w (Set.Icc a b)) (hg : ContinuousOn g (Set.Icc a b))
+    (hwpos : ∀ x ∈ Set.Icc a b, 0 ≤ w x) :
+    (∫ x in a..b, w x * g x) ^ 2
+      ≤ (∫ x in a..b, w x) * ∫ x in a..b, w x * g x ^ 2 := by
+  set A : ℝ := ∫ x in a..b, w x * g x ^ 2 with hA
+  set B : ℝ := ∫ x in a..b, w x * g x with hB
+  set C : ℝ := ∫ x in a..b, w x with hC
+  have hquad : ∀ c : ℝ, 0 ≤ C * (c * c) + (-(2 * B)) * c + A := by
+    intro c
+    have hintegrand : (fun x => w x * (g x - c) ^ 2)
+        = fun x => w x * g x ^ 2 + (-(2 * c)) * (w x * g x) + (c * c) * w x := by
+      funext x; ring
+    have hexpand : (∫ x in a..b, w x * (g x - c) ^ 2)
+        = A + (-(2 * c)) * B + (c * c) * C := by
+      rw [hintegrand]
+      rw [intervalIntegral.integral_add, intervalIntegral.integral_add]
+      · rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+      · exact (hw.mul (hg.pow 2)).intervalIntegrable_of_Icc hab
+      · exact (continuous_const.continuousOn.mul (hw.mul hg)).intervalIntegrable_of_Icc hab
+      · exact ((hw.mul (hg.pow 2)).add
+          (continuous_const.continuousOn.mul (hw.mul hg))).intervalIntegrable_of_Icc hab
+      · exact (continuous_const.continuousOn.mul hw).intervalIntegrable_of_Icc hab
+    have hnonneg : 0 ≤ ∫ x in a..b, w x * (g x - c) ^ 2 := by
+      refine intervalIntegral.integral_nonneg hab (fun x hx => ?_)
+      exact mul_nonneg (hwpos x hx) (sq_nonneg _)
+    rw [hexpand] at hnonneg
+    nlinarith [hnonneg]
+  have hdiscrim : discrim C (-(2 * B)) A ≤ 0 := discrim_le_zero hquad
+  rw [discrim] at hdiscrim
+  nlinarith [hdiscrim]
+
 section Estimate
 
 variable {f : ℝ → ℝ}

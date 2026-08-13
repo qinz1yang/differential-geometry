@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -7,8 +9,9 @@ noncomputable section
 open Bundle Manifold Set FiberBundle Filter
 open scoped Manifold Topology ContDiff BigOperators
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -20,6 +23,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma extDerivFun_comp_extChartAt_apply_basis_alpha [I.Boundaryless]
@@ -508,7 +512,7 @@ theorem ricciTensor_chartBasisVec_alpha_eq [I.Boundaryless]
   exact chartRicciTensor_symm_of_boundaryless (I := I) g α q p hxchart
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

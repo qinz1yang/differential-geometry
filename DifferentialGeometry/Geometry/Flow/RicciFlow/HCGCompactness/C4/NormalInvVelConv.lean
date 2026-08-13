@@ -1,16 +1,8 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalBranchHessian
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -45,8 +37,6 @@ theorem invVelSum_contDiff
   exact (contDiffOn_pi.mp hmu i).smul
     ((he.comp (hctr.prodMk (contDiffOn_pi.mp hxi i))
       (fun z hz => hmap z hz i)).snd)
-
-
 
 theorem invVelSum_conv
     {ι : Type*} [Fintype ι]
@@ -176,9 +166,6 @@ theorem invVelSum_conv
   simpa only [invVelSum, Lsum, ContinuousLinearMap.sum_apply,
     ContinuousLinearMap.proj_apply] using hsum
 
-
-
-
 theorem invVelCfg_conv
     {ι : Type*} [Fintype ι]
     {U : Set Q} (hU : IsOpen U)
@@ -219,9 +206,6 @@ theorem invVelCfg_conv
     (fun n ↦ (hcfgC n).fst) hcfgInfC.fst
     (fun n ↦ (hcfgC n).snd) hcfgInfC.snd
     hctrC hctrInfC hmap hmapInf
-
-
-
 
 theorem invVelCfg_tail
     {ι : Type*} [Fintype ι]

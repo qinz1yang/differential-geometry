@@ -9,15 +9,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis
 namespace DifferentialGeometry.Tensor.Coordinates
 
 noncomputable section
@@ -33,8 +25,6 @@ variable
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
   {Idx : Type*}
   {u : Set M}
-
-
 
 def christoffelSymbolInFrame
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -70,8 +60,6 @@ omit [CompleteSpace 𝕜] in
     christoffelAlongInFrame cov frame hframe x X j k =
       hframe.coeff k x ((cov (frame j) x) X) := by
   rfl
-
-
 
 omit [CompleteSpace 𝕜] in
 theorem christoffelAlongInFrame_frame
@@ -123,8 +111,6 @@ theorem covariantDerivative_eq_sum_christoffel
       ∑ k, christoffelSymbolInFrame cov frame hframe x i j k • frame k x := by
   exact hframe.coeff_sum_eq (fun y => (cov (frame j) y) (frame i y)) hx
 
-
-
 theorem torsion_coeff_eq_christoffel_skew
     [FiniteDimensional 𝕜 E] [CompleteSpace E]
     [IsManifold I 2 M]
@@ -139,10 +125,6 @@ theorem torsion_coeff_eq_christoffel_skew
           hframe.coeff k x (VectorField.mlieBracket I (frame i) (frame j) x) := by
   rw [cov.torsion_apply hi hj]
   simp [christoffelSymbolInFrame, map_sub]
-
-
-
-
 
 def IsNormalFrameForConnectionAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -176,9 +158,6 @@ theorem christoffelSymbolDifference_expansion
       ∑ k, christoffelSymbolDifferenceInFrame cov cov' frame hframe x i j k • frame k x := by
   exact hframe.coeff_sum_eq
     (fun y => ((CovariantDerivative.difference cov cov' y) (frame j y)) (frame i y)) hx
-
-
-
 
 theorem christoffelSymbolDifferenceInFrame_eq_sub
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -251,18 +230,12 @@ theorem christoffelSymbolEvolution_from_equation
       rhs t x i j k :=
   h_evol t x i j k
 
-
-
-
-
 def ricciFlowChristoffelEvolutionRHSInFrame
     (nablaRicLastRaised nablaRicDirectionRaised : Time -> M -> Idx -> Idx -> Idx -> 𝕜)
     (t : Time) (x : M) (i j k : Idx) : 𝕜 :=
   - nablaRicLastRaised t x i j k -
     nablaRicLastRaised t x j i k +
     nablaRicDirectionRaised t x i j k
-
-
 
 def RicciFlowChristoffelSymbolEvolutionEquationInFrame
     (td : TimeDerivativeData 𝕜 A Time)

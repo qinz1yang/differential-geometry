@@ -1,20 +1,13 @@
 import DifferentialGeometry.Geometry.Coordinates.Tensor
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
 
-
-
-
-
-
-
-
 set_option autoImplicit false
 
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -24,10 +17,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
-
-
-
-
 
 theorem nablaRS_coordFrame_1_2_of_smooth
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

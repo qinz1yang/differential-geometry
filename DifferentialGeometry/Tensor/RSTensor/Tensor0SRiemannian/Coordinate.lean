@@ -1,16 +1,10 @@
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Basic
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -143,8 +137,6 @@ theorem basis_repr_eq_sum_inv_inner
       · intro hi
         simp at hi
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem linearMap_trace_eq_sum_inv_inner_apply
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -163,8 +155,6 @@ theorem linearMap_trace_eq_sum_inv_inner_apply
   intro i _
   rw [LinearMap.toMatrix_apply]
   exact basis_repr_eq_sum_inv_inner (I := I) g x basis gInv hinv (A (basis i)) i
-
-
 
 theorem linearMap_trace_nonneg_of_metric_inner_apply_self_nonneg
     (g : SmoothMetric_gen I M) (x : M)
@@ -327,8 +317,9 @@ theorem homCLM_inner_eq_basis
         gInv i j * D.inner (A (basis i)) (B (basis j)) := by
   exact hom_inner_eq_basis (I := I) g x basis gInv hinv D A.toLinearMap B.toLinearMap
 
-omit [FiniteDimensional ℝ E] in
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem tensor0S_curry_one_apply
+    [IsManifold I 1 M]
     {x : M} (A : Tensor0SSpace 2 I x)
     (X Y : TangentSpace I x) :
     (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A X)
@@ -362,7 +353,6 @@ theorem tensor0S_curry_apply_cons
       ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         (Fin.cons X tail)
   rw [continuousMultilinearCurryLeftEquiv_apply]
-
 
 omit [FiniteDimensional ℝ E] in
 theorem coordInner0S_zero_eq
@@ -637,7 +627,7 @@ theorem tensor0S_curry_product_one_two
   rw [hhead, htail]
   rfl
 
-
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

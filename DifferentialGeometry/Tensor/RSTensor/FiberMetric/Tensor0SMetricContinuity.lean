@@ -7,33 +7,7 @@ import Mathlib.Topology.Instances.Matrix
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -46,10 +20,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M]
-
-
-
-
 
 theorem tensor0SField_eval_cmdAt_slots {s : ℕ}
     (α : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
@@ -68,9 +38,6 @@ theorem tensor0SField_eval_cmdAt_slots {s : ℕ}
 section NormSqContinuity
 
 variable (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-
-
-
 
 theorem normSq0S_contAt {s : ℕ}
     (T : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
@@ -213,9 +180,6 @@ theorem normSq0S_contAt {s : ℕ}
     rw [h1, h2]
   exact hF.congr hev.symm
 
-
-
-
 theorem normSq0S_cont {s : ℕ}
     (T : Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) :
@@ -227,3 +191,4 @@ end NormSqContinuity
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

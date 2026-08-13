@@ -14,6 +14,7 @@ import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForwardChartSm
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForwardGradNormPartitionSum
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -37,26 +38,27 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Intrinsic
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicLp
 
 private noncomputable def chartInvGramMatrix_l1Sum
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (x : M) : ℝ :=
   ∑ ij : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
-    |DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix
+    |DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
       (I := I) g α x ij.1 ij.2|
 
 private lemma chartInvGramMatrix_l1Sum_nonneg
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (x : M) :
     0 ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α x := by
   unfold chartInvGramMatrix_l1Sum
   exact Finset.sum_nonneg (fun _ _ => abs_nonneg _)
 
 private lemma chartInvGramMatrix_l1Sum_continuousOn
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
     ContinuousOn (chartInvGramMatrix_l1Sum (I := I) (M := M) g α)
       (chartAt H α).source := by
@@ -66,20 +68,20 @@ private lemma chartInvGramMatrix_l1Sum_continuousOn
   have h1 :
       ContMDiffOn I 𝓘(ℝ) ∞
         (fun x : M =>
-          DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix
+          DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
             (I := I) g α x ij.1 ij.2)
         (trivializationAt E (TangentSpace I) α).baseSet :=
-    DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix_entry_contMDiffOn
+    DifferentialGeometry.Geometry.Operator.chartInvGramMatrix_entry_contMDiffOn
       (I := I) g α ij.1 ij.2
   have h_cont : ContinuousOn
       (fun x : M =>
-        DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix
+        DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
           (I := I) g α x ij.1 ij.2)
       (trivializationAt E (TangentSpace I) α).baseSet :=
     h1.continuousOn
   have h_cont_src : ContinuousOn
       (fun x : M =>
-        DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix
+        DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
           (I := I) g α x ij.1 ij.2)
       (chartAt H α).source := by
     intro x hx
@@ -93,15 +95,15 @@ private lemma chartInvGramMatrix_l1Sum_continuousOn
   exact h_cont_src.abs
 
 private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {f : M → ℝ} {x : M}
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hx_int : extChartAt I α x ∈ interior (extChartAt I α).target) :
     g.inner x
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+        (DifferentialGeometry.Geometry.Operator.gradFun
           (I := I) g f x)
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+        (DifferentialGeometry.Geometry.Operator.gradFun
           (I := I) g f x)
       ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α x *
           ∑ k : Fin (Module.finrank ℝ E),
@@ -112,23 +114,23 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
               (extChartAt I α x))^2 := by
   classical
   have hgrad_eq :
-      DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      DifferentialGeometry.Geometry.Operator.gradFun
           (I := I) g f x =
-        DifferentialGeometry.Integral.DivergenceTheorem.gradChartLocal
+        DifferentialGeometry.Geometry.Operator.gradChartLocal
           (I := I) g α f x :=
-    (DifferentialGeometry.Integral.DivergenceTheorem.gradChartLocal_eq_gradFun
+    (DifferentialGeometry.Geometry.Operator.gradChartLocal_eq_gradFun
       (I := I) g α hf hx hx_int).symm
   rw [hgrad_eq]
   set c : Fin (Module.finrank ℝ E) → ℝ := fun i =>
-    DifferentialGeometry.Integral.DivergenceTheorem.gradChartCoeff
+    DifferentialGeometry.Geometry.Operator.gradChartCoeff
       (I := I) g α f i x with hc_def
   have hgcl_eq :
-      DifferentialGeometry.Integral.DivergenceTheorem.gradChartLocal
+      DifferentialGeometry.Geometry.Operator.gradChartLocal
         (I := I) g α f x =
         ∑ i, c i •
           DifferentialGeometry.Integral.Measure.chartBasisVecFiber
             (I := I) α i x := by
-    unfold DifferentialGeometry.Integral.DivergenceTheorem.gradChartLocal
+    unfold DifferentialGeometry.Geometry.Operator.gradChartLocal
     rfl
   rw [hgcl_eq]
   set Gmat : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
@@ -151,7 +153,7 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
         (I := I) α f)
       (extChartAt I α x) with hd_def
   set Ginv : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-    DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix
+    DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
       (I := I) g α x with hGinv_def
   have hc_eq : ∀ i, c i = ∑ j, Ginv i j * d j := by
     intro i
@@ -213,7 +215,7 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
           if j = k then (1 : ℝ) else 0 := by
         intro k
         rw [h_id k, hGmat_def, hGinv_def]
-        rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramMatrix_mul_chartInvGramMatrix
+        rw [DifferentialGeometry.Geometry.Operator.chartGramMatrix_mul_chartInvGramMatrix
           (I := I) g α hx]
         rw [Matrix.one_apply]
       rw [show (∑ k, d k * (∑ i, Gmat j i * Ginv i k)) =
@@ -264,7 +266,7 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
     unfold chartInvGramMatrix_l1Sum
     rw [Finset.sum_mul]
     rw [show (∑ ij : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
-            |DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix
+            |DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
               (I := I) g α x ij.1 ij.2| * D) =
           ∑ j, ∑ k, |Ginv j k| * D from ?_]
     swap
@@ -283,16 +285,16 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
   exact h_main_le
 
 private lemma norm_gradFun_le_sqrt_chartInvGramMatrix_l1Sum_mul
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {f : M → ℝ} {x : M}
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hx_int : extChartAt I α x ∈ interior (extChartAt I α).target) :
     Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+          (DifferentialGeometry.Geometry.Operator.gradFun
             (I := I) g f x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+          (DifferentialGeometry.Geometry.Operator.gradFun
             (I := I) g f x))
       ≤ Real.sqrt (chartInvGramMatrix_l1Sum (I := I) (M := M) g α x) *
           Real.sqrt
@@ -321,7 +323,7 @@ local notation "EuclN_E" =>
 
 private noncomputable def gramInvL1SumSupOnPouTsupport
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ := by
   classical
   set Kα : Set M := tsupport
@@ -339,7 +341,7 @@ private noncomputable def gramInvL1SumSupOnPouTsupport
 
 private lemma gramInvL1SumSupOnPouTsupport_nonneg
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
     0 ≤ gramInvL1SumSupOnPouTsupport (I := I) (M := M) g α := by
   classical
@@ -371,7 +373,7 @@ private lemma gramInvL1SumSupOnPouTsupport_nonneg
 
 private lemma chartInvGramMatrix_l1Sum_le_sup
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {x : M}
     (hx : x ∈ tsupport
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -520,7 +522,7 @@ private lemma contDiff_chartSmoothExt_pou_mul_local
 
 private lemma gNormGrad_pou_mul_le_sqrt_partial_sum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) {x : M}
     (hx : x ∈ tsupport
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -584,7 +586,7 @@ private lemma gNormGrad_pou_mul_le_sqrt_partial_sum
 
 private lemma gNormGrad_pou_mul_le_indicator_sqrt
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     gNormGrad (I := I) (M := M) g
         (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -633,7 +635,7 @@ private lemma gNormGrad_pou_mul_le_indicator_sqrt
 private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -1015,15 +1017,15 @@ theorem eLpNorm_g_norm_gradFun_le_const_mul_wkpNormChart_smooth_uniform
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
         eLpNorm (fun x : M => Real.sqrt
             (g.inner x
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+              (DifferentialGeometry.Geometry.Operator.gradFun
                 (I := I) g u x)
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+              (DifferentialGeometry.Geometry.Operator.gradFun
                 (I := I) g u x))) p
             (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)
           ≤ ENNReal.ofReal C *
@@ -1140,7 +1142,7 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform_full
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -1164,7 +1166,7 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform_full
   have h_u_bound :=
     hC₀_bound (u := u) hu_smooth.continuous.measurable
   have h_grad_bound := hC₁_bound (u := u) hu_smooth
-  set G : M → E := DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+  set G : M → E := DifferentialGeometry.Geometry.Operator.gradFun
     (I := I) g u with hG_def
   have hG_weak : DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.HasWeakRiemannianGradLp
       (I := I) (M := M) g u G :=
@@ -1205,9 +1207,9 @@ theorem w1pNormIntrinsicLp_le_const_mul_wkpNormChart_smooth_uniform_full
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) =
       eLpNorm (fun x : M => Real.sqrt
           (g.inner x
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+            (DifferentialGeometry.Geometry.Operator.gradFun
               (I := I) g u x)
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+            (DifferentialGeometry.Geometry.Operator.gradFun
               (I := I) g u x))) p
           (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := rfl
     rw [h_grad_eq]
@@ -1223,7 +1225,7 @@ theorem MemWkpChart_of_MemW1pIntrinsicLp_smooth
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (_hu : DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.MemW1pIntrinsicLp
@@ -1235,7 +1237,7 @@ theorem MemWkpChart_of_MemW1pIntrinsicLp_smooth
 
 private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_zero
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (h_zero : DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
@@ -1285,7 +1287,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_smooth
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (h_intr_pos : DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
@@ -1341,7 +1343,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_smooth_uniform
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       ∃ C : ℝ, 0 ≤ C ∧
@@ -1377,7 +1379,7 @@ theorem wkpNormChart_w1pNormIntrinsicLp_equiv_smooth_uniform
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ c₁ : ℝ, 0 < c₁ ∧
       (∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
@@ -1449,7 +1451,7 @@ theorem wkpNormChart_w1pNormIntrinsicLp_equiv_smooth_uniform
 
 private lemma gNormGrad_le_gNormG_aeEq_smooth_of_HasWeakRiemannianGradLp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {G : M → E}
     (hG_weak : DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.HasWeakRiemannianGradLp
@@ -1458,9 +1460,9 @@ private lemma gNormGrad_le_gNormG_aeEq_smooth_of_HasWeakRiemannianGradLp
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) :
     (fun x : M => Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+          (DifferentialGeometry.Geometry.Operator.gradFun
             (I := I) g u x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+          (DifferentialGeometry.Geometry.Operator.gradFun
             (I := I) g u x))) ≤ᵐ[
         DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g]
       (fun x : M => Real.sqrt (g.inner x (G x) (G x))) := by
@@ -1474,29 +1476,29 @@ private lemma gNormGrad_le_gNormG_aeEq_smooth_of_HasWeakRiemannianGradLp
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   set σ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g hu_smooth with hσ_def
+    DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hu_smooth⟩ with hσ_def
   have hgradFun_weak :
       DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.HasWeakRiemannianGradLp
         (I := I) (M := M) g u
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u) :=
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u) :=
     hasWeakRiemannianGradLp_gradFun (I := I) (M := M) g hu_smooth
   have hgrad_p_any : ∀ q : ℝ≥0∞, MemLp (fun x : M => Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) q
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) q
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
     intro q
     exact memLp_g_norm_gradFun_smooth (I := I) (M := M) g q hu_smooth
   have hgrad_p1 : MemLp (fun x : M => Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) 1
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) 1
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     hgrad_p_any 1
   have h_pair_zero :
       (fun x : M => g.inner x (G x) (σ x) -
         g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
           (σ x))
       =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g]
       (fun _ => 0) :=
@@ -1505,12 +1507,12 @@ private lemma gNormGrad_le_gNormG_aeEq_smooth_of_HasWeakRiemannianGradLp
   filter_upwards [h_pair_zero] with x hx
   have hσ_eq :
       (σ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
-        DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x :=
-    DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply (I := I) g hu_smooth x
+        DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x :=
+    DifferentialGeometry.Geometry.Operator.grad_g_apply (I := I) g ⟨_, hu_smooth⟩ x
   rw [hσ_eq] at hx
   set v : TangentSpace I x := G x with hv_def
   set w : TangentSpace I x :=
-    DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x with hw_def
+    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x with hw_def
   have h_inner_eq : g.inner x v w = g.inner x w w := by linarith
   have h_ww_nn : 0 ≤ g.inner x w w := by
     rcases eq_or_ne w 0 with hw0 | hw0
@@ -1626,7 +1628,7 @@ private lemma gNormGrad_le_gNormG_aeEq_smooth_of_HasWeakRiemannianGradLp
 
 private lemma eLpNorm_gradFun_le_eLpNorm_smooth_of_HasWeakRiemannianGradLp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (_hp_top : p ≠ ⊤)
     {u : M → ℝ} (hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {G : M → E}
@@ -1636,8 +1638,8 @@ private lemma eLpNorm_gradFun_le_eLpNorm_smooth_of_HasWeakRiemannianGradLp
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g)) :
     eLpNorm (fun x : M => Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) p
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) p
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) ≤
       eLpNorm (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
@@ -1666,7 +1668,7 @@ theorem wkpNormChart_le_const_mul_w1pNormIntrinsicLp_smooth_uniform_full
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →
       ∃ C : ℝ, 0 ≤ C ∧
@@ -1684,7 +1686,7 @@ theorem wkpNormChart_w1pNormIntrinsicLp_equiv_smooth_uniform_full
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     ∃ c₁ : ℝ, 0 < c₁ ∧
       (∀ {u : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u →

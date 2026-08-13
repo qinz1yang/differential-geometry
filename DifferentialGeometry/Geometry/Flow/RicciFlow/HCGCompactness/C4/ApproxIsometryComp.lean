@@ -1,28 +1,12 @@
-
-
-
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.FixedDomainMetricBounds
 import DifferentialGeometry.Bundle.ClmSectionSmooth
 import DifferentialGeometry.Geometry.Metric.MetricExistence
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -72,8 +56,6 @@ theorem metricEquiv_mono
   · calc h.inner x v v ≤ C * g.inner x v v := hup
       _ ≤ C' * g.inner x v v := mul_le_mul_of_nonneg_right hCC' hg0
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricEquiv_trans
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -102,8 +84,6 @@ theorem metricEquiv_trans
           mul_le_mul_of_nonneg_left hup₁ hC₂0
       _ = C₁ * C₂ * g.inner x v v := by ring
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricEquiv_comp_eps
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -117,9 +97,6 @@ theorem metricEquiv_comp_eps
     nlinarith [mul_le_of_le_one_left heps₁ heps₀1]
   exact metricEquiv_mono hC (metricEquiv_trans hgh hhk)
 
-
-
-
 theorem compEpsAccum {C : Real} {e δ : Nat → Real}
     (h0 : e 0 ≤ C * δ 0)
     (hstep : ∀ k : Nat, e (k + 1) ≤ e k + C * δ (k + 1)) :
@@ -132,10 +109,6 @@ theorem compEpsAccum {C : Real} {e δ : Nat → Real}
           C * Finset.sum (Finset.range (n + 1 + 1)) (fun i => δ i) := by
         conv_rhs => rw [Finset.sum_range_succ, mul_add]
       linarith [hstep n, ih]
-
-
-
-
 
 omit [CompleteSpace E] in
 theorem exists_bump_one_on {K U : Set M} (hK : IsCompact K) (hU : IsOpen U) (hKU : K ⊆ U) :
@@ -162,12 +135,6 @@ section PullbackField
 open Bundle
 
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
-
-
-
-
-
-
 
 omit [CompleteSpace E] in
 theorem exists_pullbackInner (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)) {K : Set M}
@@ -271,10 +238,6 @@ theorem exists_pullbackInner (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ
     refine hstage.congr_of_eventuallyEq ?_
     filter_upwards with y
     rfl
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] in

@@ -2,34 +2,16 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedRmTowerHea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmRealizationBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.MetricCovDerivProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.RicciNorm
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -42,12 +24,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem realizedChr_hasDerivWithinAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
@@ -69,7 +48,7 @@ theorem realizedChr_hasDerivWithinAt
         ∀ x : M, x ∈ coordinateFrameSet (I := I) x₀ ->
       MDifferentiableAt I 𝓘(Real, Real)
         (fun y : M => ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t y a b) x)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i a p : CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
@@ -84,12 +63,9 @@ theorem realizedChr_hasDerivWithinAt
     (coordinateFrameAt (I := I) x₀) (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
     (coordinateFrameSet_open (I := I) x₀) hmetricFrame hSmooth hFdiff hFtdiff t x hx i a p
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nablaKRm_timeDeriv_of_solution
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
@@ -112,7 +88,7 @@ theorem nablaKRm_timeDeriv_of_solution
         ∀ x : M, x ∈ coordinateFrameSet (I := I) x₀ ->
       MDifferentiableAt I 𝓘(Real, Real)
         (fun y : M => ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t y a b) x)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (hrm : ∀ m : Fin 4 -> CoordinateIdx (𝕜 := Real) E,
       HasDerivWithinAt
         (fun s : Real => realizedRmBase (I := I) S x₀ s x₀ m)

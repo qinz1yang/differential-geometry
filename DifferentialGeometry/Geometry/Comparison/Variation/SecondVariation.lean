@@ -22,8 +22,8 @@ import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantCommutationCurvature
 import DifferentialGeometry.Geometry.Comparison.Variation.RegularParameterFirstVariation
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -83,8 +83,8 @@ def indexFormIntegrand [Module.Finite ℝ E] [IsManifold I ∞ M]
       (I := I) g γ W t
   let gammaPrime : TangentSpace I (γ t) := mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)
   let riem : TangentSpace I (γ t) :=
-    (DifferentialGeometry.Integral.Connection.riemannOp
-        (DifferentialGeometry.Integral.Connection.LeviCivita
+    (DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita
           (I := I) g) (γ t))
       (V t) gammaPrime gammaPrime
   g.inner (γ t) nablaV nablaW - g.inner (γ t) riem (W t)
@@ -138,10 +138,10 @@ theorem riemannOp_along_curve_continuousOn
     ContinuousOn
       (fun t : ℝ => (TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _)) (γ t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
           (v t) (w t) (z t)) : TangentBundle I M)) s :=
-  ((((DifferentialGeometry.Integral.Connection.riemannOp_section_continuous
+  ((((DifferentialGeometry.Geometry.Curvature.riemannOp_section_continuous
     (I := I) g).comp_continuousOn hγ).clm_bundle_apply hv).clm_bundle_apply
       hw).clm_bundle_apply hz
 
@@ -683,8 +683,8 @@ theorem second_variation_of_arcLength_eq_indexForm
       set Bsec : ∀ t : ℝ, TangentSpace I (γ t) := fun t : ℝ =>
         covDerivAlong (I := I) g γ Asec t with hBsecdef
       set Rsec : ∀ t : ℝ, TangentSpace I (γ t) := fun t : ℝ =>
-        (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+        (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
           (V t) (γ' t) (V t) with hRsecdef
       have hcurv : ∀ t : ℝ, W2 t = Bsec t + Rsec t := by
         intro t
@@ -730,8 +730,8 @@ theorem second_variation_of_arcLength_eq_indexForm
         have hγ'eq : (mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ) : E) = γ' t := by
           rw [show (fun w : ℝ => f 0 w) = γ from hfγ]; rfl
         have hfoot : f 0 t = γ t := hfc t
-        have hR : (DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (f 0 t))
+        have hR : (DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (f 0 t))
               (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ))
               (mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ))
               (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ)) = Rsec t := by
@@ -741,22 +741,22 @@ theorem second_variation_of_arcLength_eq_indexForm
         rw [hR] at hcomm
         rw [← hcomm]; abel
       have hskew : ∀ t : ℝ, g.inner (γ t) (Rsec t) (γ' t)
-          = - g.inner (γ t) ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+          = - g.inner (γ t) ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
               (V t) (γ' t) (γ' t)) (V t) := by
         intro t
-        have hsk := DifferentialGeometry.Integral.Connection.riemannOp_metric_skew
+        have hsk := DifferentialGeometry.Geometry.Curvature.riemannOp_metric_skew
           (I := I) g (γ t) (V t) (γ' t) (V t) (γ' t)
         change g.inner (γ t) (Rsec t) (γ' t)
-          = - g.inner (γ t) ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+          = - g.inner (γ t) ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
               (V t) (γ' t) (γ' t)) (V t)
         rw [hRsecdef]
-        have hsymm : g.inner (γ t) (V t) ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+        have hsymm : g.inner (γ t) (V t) ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
               (V t) (γ' t) (γ' t))
-            = g.inner (γ t) ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+            = g.inner (γ t) ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
               (V t) (γ' t) (γ' t)) (V t) := g.symm (γ t) _ _
         rw [hsymm] at hsk
         linarith [hsk]
@@ -802,8 +802,8 @@ theorem second_variation_of_arcLength_eq_indexForm
         have hIFI : indexFormIntegrand (I := I) g γ V V t
             = g.inner (γ t) (covDerivAlong (I := I) g γ V t) (covDerivAlong (I := I) g γ V t)
               - g.inner (γ t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                  (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                  (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
                   (V t) (γ' t) (γ' t)) (V t) := rfl
         rw [hIFI, hWexp, hskew t]
         rw [hVsecfun]
@@ -843,15 +843,15 @@ theorem second_variation_of_arcLength_eq_indexForm
       have hRsec_total : ContinuousOn
           (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (γ t)
-            ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+            ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
               (V t) (γ' t) (γ' t)) : TangentBundle I M)) (Set.Icc 0 L) :=
         riemannOp_along_curve_continuousOn (I := I) g
           hγ_C1On.continuousOn hV_total hγ'_total hγ'_total
       have hRcurv_cont : ContinuousOn
           (fun t : ℝ => g.inner (γ t)
-            ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+            ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
               (V t) (γ' t) (γ' t)) (V t)) (Set.Icc 0 L) :=
         continuousOn_g_inner_along_curve (I := I) (M := M) g hRsec_total hV_total
       have hindexFormIntegrand_continuousOn :
@@ -860,8 +860,8 @@ theorem second_variation_of_arcLength_eq_indexForm
             = (fun t : ℝ => g.inner (γ t) (covDerivAlong (I := I) g γ V t)
                 (covDerivAlong (I := I) g γ V t)
               - g.inner (γ t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                  (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t))
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                  (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t))
                   (V t) (γ' t) (γ' t)) (V t)) := rfl
         rw [heq]
         refine ContinuousOn.sub ?_ hRcurv_cont
@@ -1017,8 +1017,8 @@ theorem indexFormIntegrand_intervalIntegrable
       (fun t : ℝ => (TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _))
         (γ t)
-        (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t)
+        (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
           ((e i).toFun t)
           (mfderivWithin 𝓘(ℝ, ℝ) I γ (Set.Icc (0 : ℝ) L) t (1 : ℝ))
           (mfderivWithin 𝓘(ℝ, ℝ) I γ (Set.Icc (0 : ℝ) L) t (1 : ℝ)))))
@@ -1027,8 +1027,8 @@ theorem indexFormIntegrand_intervalIntegrable
       _hγ_C1.continuousOn he_total hVW hVW
   have hB : ContinuousOn
       (fun t : ℝ => g.inner (γ t)
-        (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t)
+        (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
           ((e i).toFun t)
           (mfderivWithin 𝓘(ℝ, ℝ) I γ (Set.Icc (0 : ℝ) L) t (1 : ℝ))
           (mfderivWithin 𝓘(ℝ, ℝ) I γ (Set.Icc (0 : ℝ) L) t (1 : ℝ)))
@@ -1039,8 +1039,8 @@ theorem indexFormIntegrand_intervalIntegrable
       (fun t : ℝ =>
         (deriv c t * deriv c t) * g.inner (γ t) ((e i).toFun t) ((e i).toFun t)
         - (c t * c t) * g.inner (γ t)
-            (DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t)
+            (DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
               ((e i).toFun t)
               (mfderivWithin 𝓘(ℝ, ℝ) I γ (Set.Icc (0 : ℝ) L) t (1 : ℝ))
               (mfderivWithin 𝓘(ℝ, ℝ) I γ (Set.Icc (0 : ℝ) L) t (1 : ℝ)))
@@ -1061,8 +1061,8 @@ theorem indexFormIntegrand_intervalIntegrable
   have hmem : Set.Icc (0 : ℝ) L ∈ nhds t := Icc_mem_nhds ht.1 ht.2
   change (deriv c t * deriv c t) * g.inner (γ t) ((e i).toFun t) ((e i).toFun t)
       - (c t * c t) * g.inner (γ t)
-          (DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t)
+          (DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
             ((e i).toFun t)
             (mfderivWithin 𝓘(ℝ, ℝ) I γ (Set.Icc (0 : ℝ) L) t (1 : ℝ))
             (mfderivWithin 𝓘(ℝ, ℝ) I γ (Set.Icc (0 : ℝ) L) t (1 : ℝ)))
@@ -1089,25 +1089,25 @@ theorem indexFormIntegrand_intervalIntegrable
       ring
     exact key ((e i).toFun t) (deriv c t)
   have hfac2 : g.inner (γ t)
-      (DifferentialGeometry.Integral.Connection.riemannOp
-        (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
         (c t • (e i).toFun t)
         (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
       (c t • (e i).toFun t)
       = (c t * c t) * g.inner (γ t)
-          (DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t)
+          (DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
             ((e i).toFun t)
             (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
           ((e i).toFun t) := by
     have key : ∀ (x w : TangentSpace I (γ t)) (a : ℝ),
         g.inner (γ t)
-          (DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t)
+          (DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
             (a • x) w w) (a • x)
           = (a * a) * g.inner (γ t)
-              (DifferentialGeometry.Integral.Connection.riemannOp
-                (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) (γ t)
+              (DifferentialGeometry.Geometry.Curvature.riemannOp
+                (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) (γ t)
                 x w w) x := by
       intro x w a
       simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]

@@ -5,38 +5,9 @@ import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -46,11 +17,8 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Integral.Connection
-
-
 
 theorem sqrt_sum_sq_add_le {ι : Type*} [Fintype ι] (a b : ι → Real) :
     Real.sqrt (∑ i, (a i + b i) ^ 2) ≤
@@ -78,11 +46,6 @@ theorem sqrt_sum_sq_add_le {ι : Type*} [Fintype ι] (a b : ι → Real) :
         Real.sqrt_le_sqrt hle
     _ = Real.sqrt (∑ i, (a i) ^ 2) + Real.sqrt (∑ i, (b i) ^ 2) :=
         Real.sqrt_sq (by positivity)
-
-
-
-
-
 
 theorem sqrt_sum_sq_sub_le_of_hasDerivAt {ι : Type*} [Fintype ι] {β ψ L : Real}
     (c c' : ι → Real → Real)
@@ -136,9 +99,6 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
 
-
-
-
 omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -167,9 +127,6 @@ theorem sqrtNormSq0S_add_le
     fun slots => rfl
   simp_rw [hcomp]
   exact sqrt_sum_sq_add_le _ _
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -200,16 +157,6 @@ theorem metricDerivNormSupOn_le_of_forall
   apply Real.sSup_le _ hc
   rintro r ⟨a, hap, x, hxK, rfl⟩
   exact h a hap x hxK
-
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -261,13 +208,6 @@ theorem timeLipschitz_of_hasDerivAt
     congr 1
   rw [hmd]
   exact hkey
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in

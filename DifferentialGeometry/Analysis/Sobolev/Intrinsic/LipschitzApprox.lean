@@ -8,15 +8,9 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForward
 import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
-
-/-!
-# Chart control of gradient differences
-
-This file records the pointwise quantitative bridge used when a bounded
-intrinsically Lipschitz function is compared with a smooth chart-Sobolev
-approximant.  The constant is uniform over the finite canonical partition of
-unity and depends only on the background metric and that fixed atlas.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -30,6 +24,7 @@ namespace IntrinsicLp
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Chart.ChartTower
 
@@ -192,7 +187,7 @@ private lemma grad_eq_pou
       (by simp) |>.mul (hu.sub hv)
   change gradFun (I := I) g w x = S.sum (fun α => gradFun (I := I) g (f α) x)
   rw [hw]
-  exact DifferentialGeometry.Integral.Connection.gradFun_finset (I := I) g S f hf
+  exact DifferentialGeometry.Geometry.Connection.gradFun_finset (I := I) g S f hf
 
 omit [FiniteDimensional ℝ E] in
 private lemma gNorm_sum_le
@@ -210,8 +205,6 @@ private lemma gNorm_sum_le
           (by simpa only [add_comm] using
             add_le_add_right ih (Real.sqrt (g.inner x (v i) (v i))))
 
-/-- At a common differentiability point, the metric norm of the gradient of a
-difference is bounded by the sum of the norms of its canonical POU pieces. -/
 theorem gNorm_sub_le_sum
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
@@ -292,8 +285,6 @@ private lemma gram_le_sup
     (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKs
   exact (hKc.image_of_continuousOn hc).bddAbove.choose_spec ⟨x, hx, rfl⟩
 
-/-- The metric gradient error is bounded, on every active canonical chart, by
-a single metric-dependent constant times the coordinate partial square sum. -/
 theorem grad_sub_chart_le
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) :
@@ -561,8 +552,6 @@ private lemma local_grad_l2_le
   refine (mul_le_mul_right hchart_norm (ENNReal.ofReal Cb)).trans ?_
   rw [← mul_assoc, ← ENNReal.ofReal_mul hCb.le]
 
-/-- On a compact manifold, chart-Sobolev approximation controls the intrinsic
-`L²` norm of the metric gradient error. -/
 theorem grad_sub_l2_le
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
@@ -704,8 +693,6 @@ theorem grad_sub_l2_le
   refine hmono.trans (hsum.trans (hper.trans ?_))
   simpa only [hWsum] using hconst
 
-/-- A bounded intrinsically Lipschitz function admits smooth approximants with
-arbitrarily small intrinsic `L²` metric-gradient error. -/
 theorem exists_smooth_grad
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
@@ -745,9 +732,6 @@ theorem exists_smooth_grad
       rw [ENNReal.ofReal_mul hC]
     _ ≤ ENNReal.ofReal ε := ENNReal.ofReal_le_ofReal hmul
 
-/-- A compactly supported bounded intrinsic-Lipschitz function admits smooth
-approximants with the same prescribed open support margin and simultaneous
-`L²` function and metric-gradient control. -/
 theorem exists_smooth_supp
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]

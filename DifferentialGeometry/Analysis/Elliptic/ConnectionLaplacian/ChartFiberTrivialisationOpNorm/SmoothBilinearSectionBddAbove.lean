@@ -15,8 +15,8 @@ open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -177,6 +177,6 @@ theorem bddAbove_opNorm_range_of_continuous_opNorm
   obtain ⟨W, hW_sub, hW_open, hy₀_mem⟩ := h_pre
   exact ⟨W, hW_open, hy₀_mem, ‖Δ y₀‖ + 1, by positivity, fun b hb => hW_sub hb⟩
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry

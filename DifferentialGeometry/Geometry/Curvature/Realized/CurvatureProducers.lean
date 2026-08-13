@@ -3,25 +3,15 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Pointwise
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -29,9 +19,6 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [T2Space M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
 
 structure CurvatureSectionProducerData
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -71,40 +58,27 @@ theorem ricci_from_rm13
 
 end CurvatureSectionProducerData
 
-
-
-
-
-
-
-
-
-
-
-
 theorem rm13Section_realizes
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞) :
     Rm13RealizesConnection (I := I) cov
-      (DifferentialGeometry.Integral.Connection.CovariantDerivative.rm13Section (I := I) (M := M)
+      (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm13Section (I := I) (M := M)
         cov hcov) := by
   intro X Y Z x alpha
   exact
-    DifferentialGeometry.Integral.Connection.CovariantDerivative.rm13Section_apply_smooth
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm13Section_apply_smooth
       (I := I) (M := M) cov hcov X Y Z alpha
-
-
 
 theorem rm04Section_realizes
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞) :
     Rm04RealizesConnection (I := I) g cov
-      (DifferentialGeometry.Integral.Connection.CovariantDerivative.rm04Section (I := I) g cov
+      (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section (I := I) g cov
         hcov) := by
   intro X Y Z W x
   exact
-    DifferentialGeometry.Integral.Connection.CovariantDerivative.rm04Section_apply_smooth
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section_apply_smooth
       (I := I) (M := M) g cov hcov X Y Z W x
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

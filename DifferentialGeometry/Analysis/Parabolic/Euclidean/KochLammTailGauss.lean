@@ -1,14 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelLpPower
 
-/-!
-# Split Gaussian majorant for Koch--Lamm far shells
-
-To obtain summable far-shell decay, split the `p`-th heat-kernel power into
-two `p/2` factors.  One factor supplies the off-diagonal exponential and the
-other remains an exactly integrable Gaussian.  This preserves the same
-parabolic time power as the full `p`-mass.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -23,37 +14,29 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- The integrable Gaussian left after extracting one `p/2` far-field
-factor. -/
 def klTailGauss (p : ℝ) (x : V) : ℝ :=
   ((baseHeatMass V)⁻¹) ^ (p / 2) * (baseHeat x) ^ (p / 2)
 
-/-- Exact mass of `klTailGauss`. -/
 def klTailMass (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] (p : ℝ) : ℝ :=
   ((baseHeatMass V)⁻¹) ^ (p / 2) * basePowMass V (p / 2)
 
-/-- The split Gaussian is integrable at every positive exponent. -/
 theorem klTailGauss_mem {p : ℝ} (hp : 0 < p) :
     Integrable (klTailGauss (V := V) p) := by
   unfold klTailGauss
   exact (baseHeatPow_mem (V := V) (half_pos hp)).const_mul _
 
 omit [Nontrivial V] in
-/-- Exact integral of the split Gaussian. -/
 theorem klTailGauss_int {p : ℝ} (hp : 0 < p) :
     ∫ x : V, klTailGauss p x = klTailMass V p := by
   unfold klTailGauss klTailMass
   rw [integral_const_mul, baseHeatPow_int (V := V) (half_pos hp)]
 
-/-- Scaled split-Gaussian kernel majorant. -/
 def klTailKernel (u p : ℝ) (x : V) : ℝ :=
   ((((heatScale u) ^ Module.finrank ℝ V)⁻¹) ^ p) *
     klTailGauss p ((heatScale u)⁻¹ • x)
 
 omit [Nontrivial V] in
-/-- The translated split-Gaussian majorant has the same time power as the
-full heat-kernel `p`-mass. -/
 theorem klTailKernel_int {u p : ℝ} (hu : 0 < u) (hp : 0 < p) (x : V) :
     ∫ y : V, klTailKernel u p (x - y) =
       u ^ ((Module.finrank ℝ V : ℝ) * (1 - p) / 2) *
@@ -76,9 +59,6 @@ theorem klTailKernel_int {u p : ℝ} (hu : 0 < u) (hp : 0 < p) (x : V) :
       rw [heatPow_scale (V := V) hu]
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- If the scaled radius is at least `sqrt 2 * k`, the `p`-th heat-kernel
-power is bounded by a summable exponential times the split-Gaussian
-majorant. -/
 theorem klHeatPow_tail {u p k : ℝ} (hu : 0 < u) (hp : 0 < p)
     (hk : 0 ≤ k) {x : V}
     (hlo : Real.sqrt 2 * k ≤ ‖(heatScale u)⁻¹ • x‖) :

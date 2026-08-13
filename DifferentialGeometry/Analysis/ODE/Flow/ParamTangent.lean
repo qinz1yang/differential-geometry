@@ -6,14 +6,6 @@ import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalMapCon
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Function Set
@@ -23,8 +15,6 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace ODE
 namespace Flow
-
-
 
 def paramTangentVF
     (P : Type*) [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -41,16 +31,12 @@ def paramTangentInit
     (a : P → X) (p : P) : X × (P →L[ℝ] X) :=
   (a p, fderiv ℝ a p)
 
-
-
 def paramTangentCurve
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
     [NormedAddCommGroup X] [NormedSpace ℝ X]
     (γ : P → ℝ → X) (p : P) (t : ℝ) : X × (P →L[ℝ] X) :=
   (γ p t, fderiv ℝ (fun q => γ q t) p)
-
-
 
 theorem paramTangentInit_contDiffOn
     {P X : Type*}
@@ -63,16 +49,12 @@ theorem paramTangentInit_contDiffOn
     ha.fderiv_of_isOpen hA (by exact_mod_cast le_top)
   exact ha.prodMk hDa
 
-
-
 @[simp]
 theorem paramTangentVF_apply
     (P : Type*) [NormedAddCommGroup P] [NormedSpace ℝ P]
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     (v : ℝ → X → X) (t : ℝ) (x : X) (Z : P →L[ℝ] X) :
     paramTangentVF P v t (x, Z) = (v t x, (fderiv ℝ (v t) x).comp Z) := rfl
-
-
 
 theorem paramTangentVF_contDiffOn
     {P X : Type*}
@@ -115,9 +97,6 @@ theorem paramTangentVF_contDiffOn
     exact hcomp.contDiffOn.comp hpair (fun _ _ => mem_univ _)
   exact hfirst.prodMk hsecond
 
-
-
-
 theorem paramTangentCurve_initial
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -129,9 +108,6 @@ theorem paramTangentCurve_initial
   have heq : (fun q => γ q t₀) =ᶠ[nhds p] a :=
     Filter.eventuallyEq_of_mem (hA.mem_nhds hp) hγ
   simp only [paramTangentCurve, paramTangentInit, hγ p hp, heq.fderiv_eq]
-
-
-
 
 theorem paramTangentCurve_initial_isIntegralCurveOn
     {P X : Type*}
@@ -236,8 +212,6 @@ namespace HCGCompactness
 open Set
 open scoped ContDiff
 
-
-
 theorem MapCInfConvOnCompacts.paramTangentInit
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -260,8 +234,6 @@ theorem MapCInfConvOnCompacts.paramTangentInit
   simpa only [Analysis.ODE.Flow.paramTangentInit] using
     mapCInfConv_prodMk hA ha_conv hderiv_conv ha_cd haInf_cd
       hderiv_cd hderivInf_cd
-
-
 
 theorem MapCInfConvOnCompacts.paramTangentVF
     {P X : Type*}

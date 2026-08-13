@@ -2,28 +2,13 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpQuot
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevQuot
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
 import DifferentialGeometry.Analysis.Sobolev.Manifold.IteratedSobolevEmbedding
-
-/-!
-# A theorem-valued Banach structure on tensor chart Sobolev classes
-
-`WkpTensorQuot` already carries the explicit operations `qzero`, `qadd`,
-`qneg`, `qsub`, and `qsmul`, together with the finite quotient norm and its
-sequence-level completeness theorem.  The definitions in this file package
-those proved operations as ordinary structure values.  Nothing is registered
-as a global or scoped instance.
-
-This is the structure needed by the finite-chart Ricci--DeTurck parametrix:
-consumers install the four values below with local `letI` declarations, use
-continuous linear maps and the Neumann inverse, and then leave the local
-instance scope.  Thus the tensor quotient remains inert for unrelated
-typeclass search.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -46,8 +31,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-/-! ## Scalar-module laws for the explicit quotient operations -/
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem qone_smul
@@ -140,8 +123,6 @@ theorem qzero_smul
     Quotient.mk (tensorChartSetoid (I := I) (M := M) g r s k p hp) 0
   rw [zero_smul]
 
-/-! ## The theorem-valued algebra and normed structures -/
-
 @[reducible] private noncomputable instance tensorQZero
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -166,8 +147,6 @@ theorem qzero_smul
     Sub (WkpTensorQuot (I := I) (M := M) g r s k p hp) :=
   ⟨qsub (I := I) (M := M) g r s k p hp⟩
 
-/-- The explicit quotient operations form an additive commutative group.
-This is a structure value, not an instance. -/
 @[reducible] noncomputable def tensorQAddGroup
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -266,8 +245,6 @@ This is a structure value, not an instance. -/
       rw [ha, qnorm_zero (I := I) (M := M) g r s k hp]
       exact ENNReal.toReal_zero
 
-/-- The quotient norm and explicit group operations produce a genuine normed
-additive commutative group.  This is a structure value, not an instance. -/
 @[reducible] noncomputable def tensorQNormedGroup
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -280,8 +257,6 @@ additive commutative group.  This is a structure value, not an instance. -/
     (tensorQNorm (I := I) (M := M) g r s k p hp)
     (tensorQCore (I := I) (M := M) g r s k p hp)
 
-/-- The real scalar action and quotient norm produce a normed real vector
-space.  This is a structure value, not an instance. -/
 @[reducible] noncomputable def tensorQNormedSpace
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (p : ℝ≥0∞) (hp : 1 ≤ p) :
@@ -298,11 +273,6 @@ space.  This is a structure value, not an instance. -/
     (tensorQModule (I := I) (M := M) g r s k p hp)
     (tensorQCore (I := I) (M := M) g r s k p hp)
 
-/-! ## Completeness for the generated metric -/
-
-/-- The theorem-valued normed structure on `WkpTensorQuot` is complete when
-`1 ≤ p < ∞`.  The proof is exactly `qdist_limit`, after identifying the
-generated norm distance with the already proved explicit `qdist`. -/
 theorem tensorQComplete
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤) :
@@ -341,22 +311,14 @@ theorem tensorQComplete
   change Tendsto (fun n => dist (u n) v) atTop (𝓝 0)
   simpa only [dist_eq_norm, qdist, hnorm, hsub] using hv'
 
-/-! ## The finite full-Euclidean component carrier -/
-
-/-- The separated scalar Sobolev space on the whole Euclidean model.  Local
-chart data enter this carrier only after the strict inner cutoff has made
-their zero extension globally Sobolev. -/
 abbrev FullWkpQ (d k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) : Type _ :=
   @EuclidWkpQ d k p hp Set.univ ⟨isOpen_univ⟩
 
-/-- A finite atlas/component array of full-Euclidean Sobolev classes. -/
 abbrev FineWkpArray (ι : Type*) (r s k : ℕ) (p : ℝ≥0∞)
     (hp : 1 ≤ p) :=
   ι → TensorCompIdx (E := E) r s →
     FullWkpQ (Module.finrank ℝ E) k p hp
 
-/-- The finite component array inherits a normed additive group from the
-theorem-valued scalar quotient structure.  This is not an instance. -/
 @[reducible] noncomputable def fineWkpGroup
     (ι : Type*) [Fintype ι] (r s k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     NormedAddCommGroup (FineWkpArray (E := E) ι r s k p hp) := by
@@ -365,8 +327,6 @@ theorem-valued scalar quotient structure.  This is not an instance. -/
     @ewkpNormedGroup (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩
   infer_instance
 
-/-- The finite component array inherits a normed real vector-space structure
-from the scalar quotient.  This is not an instance. -/
 @[reducible] noncomputable def fineWkpSpace
     (ι : Type*) [Fintype ι] (r s k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p) :
     @NormedSpace ℝ (FineWkpArray (E := E) ι r s k p hp) _
@@ -382,8 +342,6 @@ from the scalar quotient.  This is not an instance. -/
   infer_instance
 
 omit [FiniteDimensional ℝ E] in
-/-- The finite component array is complete because every scalar quotient
-factor is complete.  This is a structure value, not an instance. -/
 theorem fineWkpComplete
     (ι : Type*) [Fintype ι] (r s k : ℕ) {p : ℝ≥0∞}
     (hp : 1 ≤ p) (hp_top : p ≠ ⊤) :
@@ -404,8 +362,6 @@ theorem fineWkpComplete
     fineWkpSpace (E := E) ι r s k p hp
   infer_instance
 
-/-! ## Fine localization of genuine tensor components -/
-
 local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
@@ -413,10 +369,6 @@ private local instance : Fact (IsOpen (Set.univ : Set EuclN)) :=
   ⟨isOpen_univ⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Multiplication by one fixed smooth manifold function preserves the
-Sobolev regularity of one fixed canonical chart component.  Unlike the
-manifold-level multiplication theorem, this local form assumes regularity
-only in the chart under consideration. -/
 private theorem chartMul_mem
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M) {u : M → ℝ}
@@ -482,10 +434,6 @@ private theorem chartMul_mem
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
     hp hΩ hfactor.symm).mp hprod
 
-/-- The fine localization of one tensor component.  It first takes the
-canonical POU-weighted component and then multiplies it by the additional
-fine partition weight `φ`.  The raw pushforward makes the result identically
-zero outside the chart target. -/
 noncomputable def fineLocComp
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
@@ -497,8 +445,6 @@ noncomputable def fineLocComp
           secCompRaw (I := I) (M := M) r s S α P.1 P.2 x))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- On the chart target, fine localization is ordinary scalar
-multiplication of the canonical tensor component. -/
 theorem fineLoc_apply
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
@@ -515,7 +461,6 @@ theorem fineLoc_apply
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- Fine-localized components vanish outside their chart target. -/
 theorem fineLoc_apply_off
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
@@ -527,7 +472,6 @@ theorem fineLoc_apply_off
     (I := I) (M := M) α _ hy
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- Fine localization is additive before passing to either quotient. -/
 theorem fineLoc_add
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S T : RSTensorSection I M r s) (α : M)
@@ -553,8 +497,6 @@ theorem fineLoc_add
     simp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- Fine localization commutes with real scalar multiplication before
-passing to either quotient. -/
 theorem fineLoc_smul
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯) (c : ℝ)
     (S : RSTensorSection I M r s) (α : M)
@@ -577,7 +519,6 @@ theorem fineLoc_smul
     simp
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Fine localization retains the compact canonical POU support. -/
 theorem fineLoc_support
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
@@ -591,7 +532,6 @@ theorem fineLoc_support
         secCompRaw (I := I) (M := M) r s S α P.1 P.2 x)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Fine localization has compact Euclidean support. -/
 theorem fineLoc_compact
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
@@ -635,9 +575,6 @@ private theorem secComp_target_ae
       (I := I) (M := M) (chartAtlasPOU I M) α
       (secCompRaw (I := I) (M := M) r s S α P.1 P.2))
 
-/-- Fine localization is a bounded operation from the genuine tensor norm to
-one scalar chart norm.  The constant depends only on the fixed fine weight,
-chart, Sobolev order, and exponent, never on the tensor section. -/
 theorem fineLoc_joint
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -707,8 +644,6 @@ theorem fineLoc_joint
         (wkpNorm_secComp_le (I := I) (M := M) g k p
           S.1 α P.1 P.2) _
 
-/-- The same fine-localized component, viewed on all of Euclidean space by
-zero extension, remains in `W^{k,p}`. -/
 theorem fineLoc_mem_univ
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -725,8 +660,6 @@ theorem fineLoc_mem_univ
   · exact fineLoc_support (I := I) (M := M) r s φ S.1 α P
   · exact fineLoc_compact (I := I) (M := M) r s φ S.1 α P
 
-/-- The full-space norm of a fine component is exactly its chart-target
-norm; no extension loss is paid. -/
 theorem fineLoc_norm_univ
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -746,7 +679,6 @@ theorem fineLoc_norm_univ
     (fineLoc_support (I := I) (M := M) r s φ S.1 α P)
     (fineLoc_compact (I := I) (M := M) r s φ S.1 α P)
 
-/-- A fine-localized representative in the full Euclidean Sobolev carrier. -/
 noncomputable def fineLocWkp
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -758,7 +690,6 @@ noncomputable def fineLocWkp
     fineLoc_mem_univ (I := I) (M := M) g r s k hp hp_top φ α P S⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- Tensor a.e. equality descends through every fine localization. -/
 theorem fineLoc_ae
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
@@ -784,7 +715,6 @@ theorem fineLoc_ae
     rw [fineLoc_apply_off (I := I) (M := M) r s φ S α P hy,
       fineLoc_apply_off (I := I) (M := M) r s φ T α P hy]
 
-/-- One fine block of the quotient-level extraction map. -/
 noncomputable def fineLocMap
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -804,7 +734,6 @@ noncomputable def fineLocMap
       simpa only [Measure.restrict_univ] using
         fineLoc_ae (I := I) (M := M) g r s φ α P hST))
 
-/-- A quotient-level fine block preserves addition. -/
 theorem fineLocMap_add
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -826,7 +755,6 @@ theorem fineLocMap_add
   exact Filter.Eventually.of_forall (fun y =>
     congrFun (fineLoc_add (I := I) (M := M) r s φ S.1 T.1 α P) y)
 
-/-- A quotient-level fine block preserves real scalar multiplication. -/
 theorem fineLocMap_smul
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -846,8 +774,6 @@ theorem fineLocMap_smul
   exact Filter.Eventually.of_forall (fun y =>
     congrFun (fineLoc_smul (I := I) (M := M) r s φ c S.1 α P) y)
 
-/-- The quotient norm of one fine extraction block is bounded by the genuine
-tensor quotient norm. -/
 theorem fineLocMap_bound
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -872,9 +798,6 @@ theorem fineLocMap_bound
   rw [fineLoc_norm_univ (I := I) (M := M) g r s k hp hp_top φ α P S]
   exact (hjoint S).2
 
-/-- Simultaneous quotient-level extraction into a finite family of fine
-blocks.  Continuous linearity is packaged after installing the theorem-valued
-normed structures locally. -/
 noncomputable def fineExtractMap
     {ι : Type*} (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -884,8 +807,6 @@ noncomputable def fineExtractMap
   fun a z P =>
     fineLocMap (I := I) (M := M) g r s k hp hp_top (φ z) (α z) P a
 
-/-- The finite extraction map preserves the explicit quotient additions
-coordinatewise. -/
 theorem fineExtract_add
     {ι : Type*} (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -900,8 +821,6 @@ theorem fineExtract_add
   exact fineLocMap_add (I := I) (M := M) g r s k hp hp_top
     (φ z) (α z) P a b
 
-/-- The finite extraction map preserves the explicit quotient scalar actions
-coordinatewise. -/
 theorem fineExtract_smul
     {ι : Type*} (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)

@@ -1,16 +1,6 @@
 import Mathlib.Analysis.Normed.Module.Basic
 import Mathlib.Topology.MetricSpace.Contracting
 
-/-!
-# A clean Banach core for rough harmonic-map heat flow
-
-This file isolates the part of the rough HMF construction which is only the
-Banach fixed-point theorem.  The analytic realization supplies one nonlinear
-map with a proved Lipschitz rate on a closed ball.  Keeping this core free of
-the Euclidean source classes lets both the prescribed-coefficient and the
-state-dependent quadratic realizations use the same theorem.
--/
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -22,7 +12,6 @@ variable {X E : Type*}
   [NormedAddCommGroup X] [NormedSpace ℝ X]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-/-- Data for a zero-trace fixed point on the radius-`R` ball. -/
 structure HmfCoreData (tr : X →L[ℝ] E) (R eta rate : ℝ) where
   seed : X
   nonlin : X → X
@@ -40,11 +29,9 @@ structure HmfCoreData (tr : X →L[ℝ] E) (R eta rate : ℝ) where
   rate_lt_one : rate < 1
   seed_small : eta ≤ (1 - rate) * R
 
-/-- The closed state ball used by the HMF contraction. -/
 abbrev HmfCoreBall (R : ℝ) (X : Type*) [Zero X] [PseudoMetricSpace X] :=
   Metric.closedBall (0 : X) R
 
-/-- The untruncated Duhamel self-map. -/
 def hmfCoreMap {tr : X →L[ℝ] E} {R eta rate : ℝ}
     (D : HmfCoreData tr R eta rate) (u : X) : X :=
   D.seed + D.nonlin u
@@ -77,7 +64,6 @@ theorem map_mem {u : X} (hu : u ∈ Metric.closedBall 0 R) :
     _ ≤ (1 - rate) * R + rate * R := add_le_add D.seed_small le_rfl
     _ = R := by ring
 
-/-- The Duhamel self-map restricted to the complete closed ball. -/
 def mapBall (u : HmfCoreBall R X) : HmfCoreBall R X :=
   ⟨hmfCoreMap D u, D.map_mem u.property⟩
 
@@ -100,7 +86,6 @@ private theorem map_contracting :
     intro u v
     simpa only [Subtype.dist_eq, dist_eq_norm] using D.map_diff u.property v.property
 
-/-- Banach fixed point with its zero-trace and untruncated equation. -/
 theorem core_fixed [CompleteSpace X] :
     ∃! u : X,
       u ∈ Metric.closedBall (0 : X) R ∧

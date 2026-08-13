@@ -10,9 +10,8 @@ open Set Filter
 open scoped Topology BigOperators ContDiff
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Calculus
 namespace DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -129,9 +128,8 @@ theorem norm_iteratedFDerivWithin_mul_le_uniformBound
   exact le_of_eq (by ring)
 
 end DeTurckCoefficients
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Calculus
+end Analysis
 end DifferentialGeometry
 
 end

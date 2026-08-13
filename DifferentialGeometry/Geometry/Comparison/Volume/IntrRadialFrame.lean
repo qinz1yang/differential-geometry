@@ -1,28 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.IntrinsicSmooth
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
-
-
-/-!
-# Parallel frame along the intrinsic radial geodesic, at every scale
-
-`exists_radialFrame` (`RadialGronwall.lean`) produces a parallel orthonormal
-frame along the chart-based `radialCurve`, but its `C²` input is only
-satisfiable below `expMapC2Radius` — the analytic cap of the Route B frontier.
-This file provides the un-capped replacement along the *intrinsic* geodesic:
-`intrinsicGeodesic` is globally `C^∞` in time
-(`intrinsicGeodesic_contMDiff`, `Exponential/IntrinsicSmooth.lean`), so the
-generic parallel-transport engine `exists_parallel_frame` (`PerpFrame.lean`)
-applies on `[0, b]` for **every** `b > 0` and **every** launch vector — no
-smallness hypothesis.
-
-## Main result
-
-* `exists_intrFrame` — a full parallel `g`-orthonormal frame along
-  `intrinsicGeodesic g hEnorm p v` on `[0, b]`, in the same four-clause shape
-  as `exists_radialFrame` (card bridge, chart-representation
-  differentiability, parallelism, orthonormality).
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -52,15 +31,11 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [T2Space (TangentBundle I M)]
   [ConnectedSpace M] in
-/-- **Parallel orthonormal frame along the intrinsic radial geodesic, at every
-scale.**  Un-capped analogue of `exists_radialFrame`: the interval `[0, b]` and
-the launch vector `v` are arbitrary. -/
 lemma exists_intrFrame
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) {b : ℝ} (hb : 0 < b) :
     ∃ F : Fin (Module.finrank ℝ
         (TangentSpace I (intrinsicGeodesic (I := I) g hEnorm p v 0))) →
@@ -86,7 +61,7 @@ lemma exists_intrFrame
     (intrinsicGeodesic_contMDiff (I := I) g hEnorm p v).of_le
       (by exact_mod_cast le_top)
   obtain ⟨basis, hON0⟩ :=
-    DifferentialGeometry.Integral.Connection.exists_gOrthonormalBasis
+    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
       (I := I) g (intrinsicGeodesic (I := I) g hEnorm p v 0)
   obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
     exists_parallel_frame (I := I) g (intrinsicGeodesic (I := I) g hEnorm p v)

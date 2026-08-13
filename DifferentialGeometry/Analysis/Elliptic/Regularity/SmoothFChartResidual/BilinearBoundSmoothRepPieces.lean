@@ -5,6 +5,8 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
 import DifferentialGeometry.Analysis.Sobolev.Manifold.MorreyManifoldHigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Manifold.IteratedSobolevEmbedding
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -25,6 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid chartTargetEuclid_isOpen
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
@@ -45,11 +48,13 @@ variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 noncomputable def etaTimesV (α : M) (v : M → ℝ) : M → ℝ :=
   fun x => chartStrictCutoff (I := I) (M := M) α x * v x
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma etaTimesV_apply (α : M) (v : M → ℝ) (x : M) :
     etaTimesV (I := I) (M := M) α v x =
       chartStrictCutoff (I := I) (M := M) α x * v x := rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma etaTimesV_smooth (α : M) {v : M → ℝ}
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v) :
@@ -63,12 +68,14 @@ noncomputable def etaTimesVScalar
   toFun := etaTimesV (I := I) (M := M) α v.toFun
   smooth := etaTimesV_smooth (I := I) (M := M) α v.smooth
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] lemma etaTimesVScalar_toFun (g : SmoothRiemannianMetric I M)
     (α : M) (v : SmoothScalar g) :
     (etaTimesVScalar (I := I) (M := M) g α v).toFun =
       etaTimesV (I := I) (M := M) α v.toFun := rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tsupport_etaTimesV_subset (α : M) (v : M → ℝ) :
     tsupport (etaTimesV (I := I) (M := M) α v) ⊆ (chartAt H α).source := by
@@ -95,7 +102,7 @@ noncomputable def smoothRep
       (gradFun (I := I) g v.toFun x)) -
     (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x * v.toFun x
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma smoothRep_apply (g : SmoothRiemannianMetric I M) (α : M)
     (v : SmoothScalar g) (x : M) :
     smoothRep (I := I) (M := M) g α v x =
@@ -104,7 +111,7 @@ private lemma smoothRep_apply (g : SmoothRiemannianMetric I M) (α : M)
         (gradFun (I := I) g v.toFun x)) -
       (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x * v.toFun x := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma smoothRep_eq_zero_off_tsupport_chartAtlasPOU
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) {x : M}
     (hx : x ∉ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :
@@ -125,8 +132,8 @@ private lemma smoothRep_eq_zero_off_tsupport_chartAtlasPOU
     rw [laplacianOfChartPOU_apply]
     rw [Δ_g_def]
     have h_grad_ev : ∀ᶠ y in 𝓝 x,
-        (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g
-          (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff :
+        (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I,
+          M; ℝ⟯) :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y =
         (0 : TangentSpace I y) := by
       filter_upwards [h_open.mem_nhds hx] with y hy
@@ -136,13 +143,14 @@ private lemma smoothRep_eq_zero_off_tsupport_chartAtlasPOU
         by_contra hne
         exact hz (subset_tsupport _ hne)
       have h_g := gradFun_eq_zero_of_eventuallyEq_zero (I := I) g h_y_ev
-      rw [DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply]
+      rw [DifferentialGeometry.Geometry.Operator.grad_g_apply]
       exact h_g
     exact DifferentialGeometry.Integral.DivergenceTheorem.divergence_g_zero_of_eventuallyEq_zero
       (I := I) g _ h_grad_ev
   rw [smoothRep_apply, h_grad_zero, h_lap_zero]
   simp
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma gradFun_eq_gradFun_etaTimesV_of_eventuallyOne
     (g : SmoothRiemannianMetric I M) (α : M) {v : M → ℝ} {x : M}
@@ -159,6 +167,7 @@ private lemma gradFun_eq_gradFun_etaTimesV_of_eventuallyOne
   unfold gradFun
   rw [h_mfderiv]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma etaTimesV_eq_of_eventuallyOne
     (α : M) {v : M → ℝ} {x : M}
@@ -209,8 +218,8 @@ private lemma smoothRep_eq_etaTimesV
     have h_lap_zero : (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x = 0 := by
       rw [laplacianOfChartPOU_apply, Δ_g_def]
       have h_grad_ev : ∀ᶠ y in 𝓝 x,
-          (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g
-            (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff :
+          (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g
+            (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y =
           (0 : TangentSpace I y) := by
         filter_upwards [h_open.mem_nhds hx_supp] with y hy
@@ -219,7 +228,7 @@ private lemma smoothRep_eq_etaTimesV
           filter_upwards [h_open.mem_nhds hy] with z hz
           by_contra hne
           exact hz (subset_tsupport _ hne)
-        rw [DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply]
+        rw [DifferentialGeometry.Geometry.Operator.grad_g_apply]
         exact gradFun_eq_zero_of_eventuallyEq_zero (I := I) g h_y_ev
       exact DifferentialGeometry.Integral.DivergenceTheorem.divergence_g_zero_of_eventuallyEq_zero
         (I := I) g _ h_grad_ev
@@ -245,6 +254,7 @@ noncomputable def lapPiece
   fun x => (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x *
     etaTimesV (I := I) (M := M) α v x
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma lapPiece_apply (g : SmoothRiemannianMetric I M) (α : M)
     (v : M → ℝ) (x : M) :
@@ -280,15 +290,15 @@ lemma gradInnerPiece_smooth (g : SmoothRiemannianMetric I M) (α : M)
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
         (gradFun (I := I) g
           (etaTimesV (I := I) (M := M) α v.toFun) x)) := by
-    have h := DifferentialGeometry.Integral.DivergenceTheorem.contMDiff_g_inner_of_smooth_sections
+    have h := DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections
       (I := I) (M := M) g
-      (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g hα_smooth)
-      (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g hetaV_smooth)
+      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hα_smooth⟩)
+      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hetaV_smooth⟩)
     refine h.congr (fun x => ?_)
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply,
-        DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply]
+    simp [DifferentialGeometry.Geometry.Operator.grad_g_apply]
   exact (contMDiff_const : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (2 : ℝ))).mul h_inner
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma lapPiece_smooth (g : SmoothRiemannianMetric I M) (α : M)
     (v : SmoothScalar g) :
@@ -332,6 +342,7 @@ lemma tsupport_gradInnerPiece_subset_source
   (tsupport_gradInnerPiece_subset (I := I) (M := M) g α v).trans
     (chartAtlasPOU_isSubordinate I M α)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tsupport_lapPiece_subset
     (g : SmoothRiemannianMetric I M) (α : M) (v : M → ℝ) :
@@ -350,6 +361,7 @@ private lemma tsupport_lapPiece_subset
   exact closure_minimal (h_supp_subset.trans (subset_tsupport _))
     (isClosed_tsupport _)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tsupport_lapPiece_subset_source
     (g : SmoothRiemannianMetric I M) (α : M) (v : M → ℝ) :
@@ -446,8 +458,8 @@ lemma chartPushedRaw_lapPiece_factor
         exact hw (subset_tsupport _ hne)
       rw [laplacianOfChartPOU_apply, Δ_g_def]
       have h_grad_ev : ∀ᶠ w in 𝓝 z,
-          (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g
-            (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff :
+          (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g
+            (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) w =
           (0 : TangentSpace I w) := by
         filter_upwards [h_open.mem_nhds hz_off] with w hw
@@ -456,7 +468,7 @@ lemma chartPushedRaw_lapPiece_factor
           filter_upwards [h_open.mem_nhds hw] with u hu
           by_contra hne
           exact hu (subset_tsupport _ hne)
-        rw [DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply]
+        rw [DifferentialGeometry.Geometry.Operator.grad_g_apply]
         exact gradFun_eq_zero_of_eventuallyEq_zero (I := I) g h_w_ev
       exact DifferentialGeometry.Integral.DivergenceTheorem.divergence_g_zero_of_eventuallyEq_zero
         (I := I) g _ h_grad_ev

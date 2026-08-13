@@ -4,54 +4,6 @@ set_option autoImplicit false
 set_option relaxedAutoImplicit false
 set_option maxSynthPendingDepth 3
 
-/-!
-# Time-level tame Nemytskii contraction estimate (abstract two-orientation form)
-
-This is small-lemma-frontier **item 4** of the R1τ ruling
-(`Geometry/Flow/RicciFlow/ShortTime/UNIF_N_PRO_RULING.md`): the time-integrated
-contraction estimate for a genuinely **second-order** Nemytskii operator, built
-*abstractly* over Banach carriers so the fixed-horizon representative
-(item 5) can instantiate it as a drop-in.
-
-The mechanism is the two-orientation product-Hölder split named in the ruling
-(`‖A·B‖_{L²_t} ≤ ‖A‖_{L^∞_t}·‖B‖_{L²_t}`, roles reversed in the other
-orientation).  We follow the `LowScaleCutoff.lean` carrier pattern:
-
-* `X` — the top spatial scale (think `H^{a+2}`), a Banach space;
-* `H` — the admissibility scale (think `H^{a+1}`), a normed space reached by a
-  continuous linear inclusion `ι : X →L[ℝ] H`;
-* `Y` — the codomain scale (think `H^a`), a Banach space.
-
-The pointwise hypothesis is the **second-order two-orientation tame bound**
-(no pointwise `H^{a+2}`-ball, no radius `R` in the leading constant):
-
-  `‖N x − N x'‖ ≤ K·((1 + max ‖ι x‖ ‖ι x'‖)·‖x − x'‖ + max ‖x‖ ‖x'‖·‖ι (x − x')‖)`.
-
-Only the `H^{a+1}` view (`ι`) is guarded in `L^∞`; the top-scale norms
-`‖x‖, ‖x'‖` enter **linearly** as tame factors multiplying the `H^{a+1}`
-*difference* `‖ι (x − x')‖` — exactly the shape the ruling's stop-signal marks
-as acceptable (`‖U‖_{H^{a+2}}·‖U − V‖_{H^{a+1}}`).
-
-## Main results
-
-* `timeL2_norm_le_of_ae_three_bound` — reusable **three-term** `L²` Minkowski
-  bound (the sibling of the committed two-term
-  `timeL2_norm_le_of_ae_mixed_bound`): an a.e. pointwise bound
-  `‖h t‖ ≤ A‖p t‖ + B‖q t‖ + C‖r t‖` integrates to `‖h‖ ≤ A‖p‖ + B‖q‖ + C‖r‖`.
-* `nemytskiiTame_time_bound` — the two-orientation splitting lemma: from the
-  pointwise tame bound, the `L^∞`-in-time admissibility bounds on the `H^{a+1}`
-  views, and the `L^∞`-in-time `H^{a+1}` difference bound, the time-`L²` distance
-  of the two Nemytskii images obeys
-  `‖w − w'‖ ≤ K(1+Minf)·‖u − v‖ + K·Dinf·‖u‖ + K·Dinf·‖v‖`,
-  with `‖u − v‖, ‖u‖, ‖v‖` the ambient `timeL2 X` (`L²_t H^{a+2}`) norms.  The
-  two Nemytskii images enter as arbitrary time-`L²` elements `w, w'` given by
-  their a.e. pointwise representation `w =ᵐ N ∘ u`, `w' =ᵐ N ∘ v` (house
-  currency, exactly as the committed integration core takes raw `Lp` elements).
-* `nemytskiiTame_time_bound_L2` — the `M₂`-substituted corollary matching the
-  ruling's headline shape `K((1+Minf)‖u − v‖ + 2·M₂·Dinf)` (sum-of-`u,v` in place
-  of `max`, which the ruling explicitly permits).
--/
-
 open MeasureTheory Set Filter
 open scoped ENNReal NNReal
 
@@ -59,15 +11,6 @@ namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
-/-- **Three-term time-`L²` Minkowski bound.**  If a time-`L²` field `h` obeys the
-a.e. pointwise three-term bound `‖h t‖ ≤ A‖p t‖ + B‖q t‖ + C‖r t‖` with
-nonnegative coefficients, then its `L²` norm obeys the same bound
-`‖h‖ ≤ A‖p‖ + B‖q‖ + C‖r‖`.
-
-This is the reusable sibling of the committed two-term
-`timeL2_norm_le_of_ae_mixed_bound`; it is proved by the identical
-`eLpNorm_mono_ae` / `eLpNorm_add_le` / `eLpNorm_const_smul` Minkowski route with
-one extra summand. -/
 theorem timeL2_norm_le_of_ae_three_bound
     {T : ℝ} {X Y Z W : Type*}
     [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
@@ -159,24 +102,6 @@ variable {T : ℝ}
   {H : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
   {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
 
-/-- **Time-level tame Nemytskii splitting (two-orientation form).**
-
-Let `N : X → Y` be a nonlinearity satisfying the second-order two-orientation
-tame pointwise bound through a continuous linear inclusion `ι : X →L[ℝ] H`.
-Given two time-`L²` fields `u, v : timeL2 X T` and time-`L²` elements `w, w'`
-representing `N ∘ u`, `N ∘ v` a.e., together with
-
-* `L^∞`-in-time admissibility bounds `‖ι (u t)‖, ‖ι (v t)‖ ≤ Minf` a.e., and
-* an `L^∞`-in-time `H`-difference bound `‖ι (u t − v t)‖ ≤ Dinf` a.e.,
-
-the time-`L²` distance of the two images obeys the tame contraction estimate
-
-  `‖w − w'‖ ≤ K(1+Minf)·‖u − v‖ + K·Dinf·‖u‖ + K·Dinf·‖v‖`.
-
-The leading `‖u − v‖`-coefficient `K(1+Minf)` uses only the lower-scale `L^∞`
-bound `Minf` — **no** top-scale radius; the top-scale norms `‖u‖, ‖v‖` (the ambient
-`L²_t H^{a+2}` norms) appear only as tame factors of the lower-scale difference
-`Dinf`. -/
 theorem nemytskiiTame_time_bound
     (ι : X →L[ℝ] H) {N : X → Y} {K : ℝ≥0} {Minf Dinf : ℝ}
     (hMinf : 0 ≤ Minf) (hDinf : 0 ≤ Dinf)
@@ -216,14 +141,6 @@ theorem nemytskiiTame_time_bound
   have hBC : 0 ≤ (K : ℝ) * Dinf := mul_nonneg K.coe_nonneg hDinf
   exact timeL2_norm_le_of_ae_three_bound (w - w') (u - v) u v hA hBC hBC hbound
 
-/-- **`M₂`-substituted tame contraction estimate.**  Bounding the ambient
-`L²_t H^{a+2}` norms `‖u‖, ‖v‖` by a common `M₂` in `nemytskiiTame_time_bound`
-yields the ruling's headline shape
-
-  `‖w − w'‖ ≤ K(1+Minf)·‖u − v‖ + 2·(K·Dinf·M₂)`,
-
-i.e. `K((1+Minf)‖u − v‖ + 2·M₂·Dinf)`.  The factor `2` is the `max ≤ sum`
-relaxation the ruling explicitly permits (“Sums instead of maxima fine”). -/
 theorem nemytskiiTame_time_bound_L2
     (ι : X →L[ℝ] H) {N : X → Y} {K : ℝ≥0} {Minf Dinf M₂ : ℝ}
     (hMinf : 0 ≤ Minf) (hDinf : 0 ≤ Dinf)

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSStrictParabolic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Linearization
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open Bundle
 open scoped Manifold ContDiff
@@ -60,7 +60,7 @@ theorem deturck_ricci_principal_symbol_matches_rough_laplacian_of_symm
         (fun x : M => TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
         (DifferentialGeometry.PDE.DeTurck.deTurckSymbolCoeff (I := I) g₀) x ξ t
       = - DifferentialGeometry.PDE.DeTurck.deTurckSymbol (I := I) g₀ g_bg x ξ t :=
-  DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS_principal_symbol_equals_deTurckSymbol
+  DifferentialGeometry.Analysis.Parabolic.deTurckRicciRHS_principal_symbol_equals_deTurckSymbol
     (I := I) g₀ g_bg x ξ t ht
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

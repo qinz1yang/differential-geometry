@@ -4,59 +4,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricDerivNormRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivArityBridge
-import DifferentialGeometry.Geometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvWindowSolutions
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 open Set Function Filter Bundle Manifold TopologicalSpace
 open scoped Manifold Topology ContDiff BigOperators
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.RicciFlow (SolutionOn IsSolutionOn)
 
 namespace DifferentialGeometry
@@ -74,33 +35,24 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat -> Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-
 def SrcSigma : Prop :=
   forall k : Nat, letI : TopologicalSpace P.M := P.topology; IsSigmaCompact (Φ.source k)
-
 
 def TgtSigma : Prop :=
   forall k : Nat,
     letI : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
     IsSigmaCompact (Φ.target k)
 
-/-- Reindex the source-domain sigma-compactness witnesses together with the
-comparison maps. -/
 def SrcSigma.compSubseq (hsrc : SrcSigma Φ)
     (ρ : Nat -> Nat) (hρ : StrictMono ρ) :
     SrcSigma (Φ.compSubseq ρ hρ) :=
   fun k => hsrc (ρ k)
 
-/-- Reindex the target-domain sigma-compactness witnesses together with the
-comparison maps. -/
 def TgtSigma.compSubseq (htgt : TgtSigma Φ)
     (ρ : Nat -> Nat) (hρ : StrictMono ρ) :
     TgtSigma (Φ.compSubseq ρ hρ) :=
   fun k => htgt (ρ k)
 
-/-- The metric family of the `k`th pulled-back source flow (Brick 2), as a family of
-smooth Riemannian metrics on the open source domain `SourceDomain Φ k`.  This is the
-partial metric that gets bump-extended to all of `P.M`. -/
 noncomputable def srcMetric (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ) (k : Nat) :
     letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
     letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
@@ -119,8 +71,6 @@ noncomputable def srcMetric (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ) (k : Nat) 
   fun t => (sourceFlow (I := I) Φ k (hsrc k) (htgt k)).family.metric t
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- The source-flow metric family commutes definitionally with reindexing the
-comparison maps and their sigma-compactness witnesses. -/
 @[simp] theorem srcMetric_compSubseq
     (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
     (ρ : Nat -> Nat) (hρ : StrictMono ρ) (k : Nat) :
@@ -130,10 +80,6 @@ comparison maps and their sigma-compactness witnesses. -/
       srcMetric (I := I) Φ hsrc htgt (ρ k) :=
   rfl
 
-/-- The reference metric `R` restricted to the `k`th source domain.  Implicit instance
-resolution cannot cross the `SourceDomain Φ k` vs `↥(sourceOpen Φ k)` spelling gap, so the
-`restrictOpen` instances are converted with `change` and passed explicitly — the same idiom
-as `gSeqExt`'s `bumpExtendOpen` call and `SourceDomainMetricData.ofRestrictPullback`. -/
 noncomputable def refRes (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
@@ -158,8 +104,6 @@ noncomputable def refRes (R : letI : TopologicalSpace P.M := P.topology;
     R (sourceOpen (I := I) Φ k) sourceSigma sourceT2
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Restricting the reference metric to a source domain commutes
-definitionally with reindexing the comparison maps. -/
 @[simp] theorem refRes_compSubseq
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -171,49 +115,33 @@ definitionally with reindexing the comparison maps. -/
       refRes (I := I) Φ R hsrc (ρ k) :=
   rfl
 
-/-- A coherent bump family on the limit manifold `P.M` for the comparison maps `Φ`. -/
 structure BumpFamily where
-
   grow : Nat -> Set P.M
-
   grow_compact : forall k : Nat,
     letI : TopologicalSpace P.M := P.topology
     IsCompact (grow k)
-
   grow_subset : forall k : Nat,
     letI : TopologicalSpace P.M := P.topology
     grow k ⊆ Φ.source k
-
   grow_cover : forall K : Set P.M,
     letI : TopologicalSpace P.M := P.topology
     IsCompact K -> exists k0 : Nat, forall k : Nat, k0 <= k -> K ⊆ grow k
-
   chi : Nat -> P.M -> Real
-
   chi_smooth : forall k : Nat,
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (chi k)
-
   chi01 : forall (k : Nat) (x : P.M), chi k x ∈ Set.Icc (0 : Real) 1
-
   chi_supp : forall k : Nat,
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
     tsupport (chi k) ⊆ Φ.source k
-
-
-
-
-
   chi_one : forall k : Nat,
     letI : TopologicalSpace P.M := P.topology
     exists W : Set P.M, IsOpen W /\ grow k ⊆ W /\ forall x : P.M, x ∈ W -> chi k x = 1
 
-/-- Reindex a coherent bump family along a further strictly increasing
-subsequence of the comparison maps. -/
 def BumpFamily.compSubseq (bf : BumpFamily (I := I) Φ)
     (ρ : Nat -> Nat) (hρ : StrictMono ρ) :
     BumpFamily (I := I) (Φ.compSubseq ρ hρ) where
@@ -229,12 +157,6 @@ def BumpFamily.compSubseq (bf : BumpFamily (I := I) Φ)
   chi_supp k := bf.chi_supp (ρ k)
   chi_one k := bf.chi_one (ρ k)
 
-/-- **The bump-extended sequence on the limit manifold.**  For each `k`, the pulled-back
-source flow metric `srcMetric Φ k t` (defined on the open source `sourceOpen Φ k`) is
-bump-extended by `bumpExtendOpen` against the fixed reference metric `R`, using the bump
-`bf.chi k` (supported in `Φ.source k`).  The result is a total smooth Riemannian metric
-on `P.M`, giving a single sequence `gSeqExt` feeding the Arzelà–Ascoli endpoint
-`windowGInfAll`. -/
 noncomputable def gSeqExt (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
@@ -266,8 +188,6 @@ noncomputable def gSeqExt (R : letI : TopologicalSpace P.M := P.topology;
     (bf.chi k) (bf.chi_smooth k) (bf.chi01 k) (bf.chi_supp k)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Reindexing all inputs to `gSeqExt` is definitionally the same as reading
-the original extended sequence at the reindexed stage. -/
 @[simp] theorem gSeqExt_compSubseq
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -283,7 +203,6 @@ the original extended sequence at the reindexed stage. -/
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- A coherent bump family always exists for the limit manifold `P.M`. -/
 theorem nonempty_bumpFamily : Nonempty (BumpFamily (I := I) Φ) := by
   classical
   letI : TopologicalSpace P.M := P.topology
@@ -363,16 +282,12 @@ theorem nonempty_bumpFamily : Nonempty (BumpFamily (I := I) Φ) := by
     chi_supp := hchi_supp
     chi_one := hchi_one }⟩
 
-
-
 section Eval
 
 variable (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
   (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem gSeqExt_inner_of_mem (k : Nat) (t : Real)
@@ -410,8 +325,6 @@ theorem gSeqExt_inner_of_mem (k : Nat) (t : Real)
     (srcMetric (I := I) Φ hsrc htgt k t) (bf.chi k) (bf.chi_smooth k) (bf.chi01 k)
     (bf.chi_supp k) x hx v w
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem gSeqExt_inner_of_notMem (k : Nat) (t : Real)
     (x : P.M) (hx : letI : TopologicalSpace P.M := P.topology;
@@ -441,13 +354,9 @@ theorem gSeqExt_inner_of_notMem (k : Nat) (t : Real)
 
 end Eval
 
-
-
 section Low
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Every bump-extended metric has the canonical exact lower bound
-`min cLow 1 · R`, uniformly over the full sequence and the time window. -/
 theorem gSeqExt_lower
     (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
@@ -483,7 +392,6 @@ theorem gSeqExt_lower
   have hc0 : 0 <= c := (lt_min hcLow one_pos).le
   have hc1 : c <= 1 := min_le_right _ _
   have hccLow : c <= cLow := min_le_left _ _
-  -- `R.inner x v v ≥ 0`
   have hRnn : 0 <= R.inner x v v := by
     by_cases hv : v = 0
     · subst hv; simp
@@ -497,13 +405,10 @@ theorem gSeqExt_lower
     have hχ01 := bf.chi01 k x
     have hχ0 : 0 <= χ := hχ01.1
     have hχ1 : χ <= 1 := hχ01.2
-    -- source-metric lower bound at `y := ⟨x, hx⟩`; unify the source-inner atom as `S`
     have hsrc_low := hbound k t ht ⟨x, hx⟩ v
     set S := (srcMetric (I := I) Φ hsrc htgt k t).inner ⟨x, hx⟩ v v with hSdef
     set r := R.inner x v v with hrdef
-    -- `hsrc_low : cLow * R.inner ↑⟨x,hx⟩ v v ≤ S`; `↑⟨x,hx⟩ = x` reduces `R.inner` to `r`
     have hsrc_low' : cLow * r <= S := hsrc_low
-    -- goal after `smul_eq_mul`: `c * r ≤ χ • S + (1 - χ) • r`
     rw [smul_eq_mul, smul_eq_mul]
     have h1 : χ * (cLow * r) <= χ * S := mul_le_mul_of_nonneg_left hsrc_low' hχ0
     have hterm2 : c * ((1 - χ) * r) <= (1 - χ) * r := by
@@ -519,9 +424,6 @@ theorem gSeqExt_lower
       _ = R.inner x v v := one_mul _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- **`hlow` for the bump-extended sequence.**  The canonical lower bound is positive and
-therefore supplies the existential bound required by `windowGInfAll`, along any strict
-subsequence. -/
 theorem hlow_gSeqExt
     (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
@@ -557,20 +459,9 @@ theorem hlow_gSeqExt
 
 end Low
 
-
-
 section Bdd
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- **`hbdd` for the bump-extended sequence.**  From a uniform covariant-derivative
-bound on the bump agreement regions — for each order `q`, a single constant bounding
-`metricCovDerivNorm q (gSeqExt (ρ k) t) R` on `bf.grow (ρ k)` uniformly in `k` and `t` — the
-bump-extended metrics `gSeqExt (ρ k) t` satisfy a single uniform covariant bound on every
-compact `K'`.  The tail indices (`k` large, `K' ⊆ grow (ρ k)`) inherit the supplied
-bound; the finitely many head/mid indices are bounded wholesale by
-`metricCovDerivNorm_bddOn` (each `gSeqExt (ρ k) t` is one fixed smooth metric, bounded on the
-compact `K'`), and the finite maximum combines them.  This is the `hbdd` hypothesis consumed by
-`windowGInfAll`. -/
 theorem hbdd_gSeqExt
     (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
@@ -617,11 +508,9 @@ theorem hbdd_gSeqExt
 
 end Bdd
 
-
-
 section Lip
 
-open Tensor0SBundle in
+open DifferentialGeometry.Tensor0SBundle in
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem hgLip_gSeqExt

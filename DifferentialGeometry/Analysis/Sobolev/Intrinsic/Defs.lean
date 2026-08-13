@@ -17,6 +17,7 @@ import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Set
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -35,6 +36,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 
 private local instance : MeasurableSpace E := borel E
@@ -170,13 +172,13 @@ theorem hasWeakRiemannianGrad_grad_g_of_contMDiff
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
-    HasWeakRiemannianGrad (I := I) (M := M) g u (grad_g (I := I) g hu) := by
+    HasWeakRiemannianGrad (I := I) (M := M) g u (grad_g (I := I) g ⟨_, hu⟩) := by
   intro X hX
   have hcoe : ∀ x : M,
-      ((grad_g (I := I) g hu : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-        gradFun (I := I) g u x := fun x => grad_g_apply (I := I) g hu x
+      ((grad_g (I := I) g ⟨_, hu⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+        gradFun (I := I) g u x := fun x => grad_g_apply (I := I) g ⟨_, hu⟩ x
   rw [show (fun x : M =>
-        g.inner x ((grad_g (I := I) g hu :
+        g.inner x ((grad_g (I := I) g ⟨_, hu⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) (X x)) =
         (fun x : M => g.inner x (gradFun (I := I) g u x) (X x)) from by
       funext x; rw [hcoe x]]
@@ -188,10 +190,10 @@ theorem MemW1pIntrinsic_of_contMDiff
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     MemW1pIntrinsic (I := I) (M := M) g p u := by
-  refine ⟨?_, grad_g (I := I) g hu, ?_, ?_⟩
+  refine ⟨?_, grad_g (I := I) g ⟨_, hu⟩, ?_, ?_⟩
   · exact continuous_memLp_of_compactSpace g p hu.continuous
   · exact hasWeakRiemannianGrad_grad_g_of_contMDiff (I := I) (M := M) g hu
-  · have hcont := continuous_g_norm_smooth_section g (grad_g (I := I) g hu)
+  · have hcont := continuous_g_norm_smooth_section g (grad_g (I := I) g ⟨_, hu⟩)
     exact continuous_memLp_of_compactSpace g p hcont
 
 theorem HasWeakRiemannianGrad.add

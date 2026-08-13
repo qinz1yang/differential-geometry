@@ -2,25 +2,20 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffSpa
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautCompat
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautHs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautTime
-
-/-!
-# Exact-interval scalar nonautonomous Sobolev operators
-
-This file packages the all-scale scalar Laplacian-difference estimates on a
-caller-supplied reflected regular interval.  It does not choose or shorten a
-time interval.
--/
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
@@ -33,25 +28,23 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-/-- On any prescribed reflected regular interval, every natural-order
-Laplacian difference has an operator-norm bound uniform in time. -/
 theorem lapHs_norm_on
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) {tau : ℝ}
     (hreg : ∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) :
     ∀ m : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ s ∈ Set.Icc (0 : ℝ) tau,
-        ‖lapDiffHs (I := I) (M := M) (G.metric (T : ℝ))
-          (G.metric ((T : ℝ) - s)) m‖ ≤ C := by
+        ‖lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
+          (g_fam ((T : ℝ) - s)) m‖ ≤ C := by
   classical
-  let q : SmoothRiemannianMetric I M := G.metric (T : ℝ)
+  let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let K : Set ℝ := Set.Icc (0 : ℝ) tau
   let Φ₂ : ℝ → SmoothCcTensor q 2 0 := fun s =>
-    scalarTraceCoeff (I := I) q (G.metric ((T : ℝ) - s))
+    scalarTraceCoeff (I := I) q (g_fam ((T : ℝ) - s))
   let Φ₁ : ℝ → SmoothCcTensor q 1 0 := fun s =>
-    connTraceCoeff (I := I) q (G.metric ((T : ℝ) - s))
+    connTraceCoeff (I := I) q (g_fam ((T : ℝ) - s))
   have hback : K ⊆ {s : ℝ | (T : ℝ) - s ∈ D.regular} := by
     intro s hs
     exact hreg s (by simpa only [K] using hs)
@@ -60,13 +53,13 @@ theorem lapHs_norm_on
       (S := K) (K := K) isCompact_Icc Set.Subset.rfl
       (by
         simpa only [Φ₂, K] using
-          scalarTrace_rev_on (I := I) (M := M) G hG q (T : ℝ) hback)
+          scalarTrace_rev_on (I := I) (M := M) g_fam hG q (T : ℝ) hback)
   obtain ⟨B₁, hB₁, hΦ₁⟩ :=
     joint_jet_bdd (I := I) (M := M) q 1 0 Φ₁
       (S := K) (K := K) isCompact_Icc Set.Subset.rfl
       (by
         simpa only [Φ₁, K] using
-          connTrace_rev_on (I := I) (M := M) G hG q (T : ℝ) hback)
+          connTrace_rev_on (I := I) (M := M) g_fam hG q (T : ℝ) hback)
   intro m
   obtain ⟨A₂, hA₂, hApp₂⟩ := appHs_unif (I := I) (M := M) q 2 0 m
   obtain ⟨A₁, hA₁, hApp₁⟩ := appHs_unif (I := I) (M := M) q 1 0 m
@@ -95,9 +88,9 @@ theorem lapHs_norm_on
   rw [lapHs_eq (I := I) (M := M)]
   calc
     ‖(appHs q 2 0 m (scalarTraceCoeff (I := I) q
-          (G.metric ((T : ℝ) - s)))).comp D₂ -
+          (g_fam ((T : ℝ) - s)))).comp D₂ -
         (appHs q 1 0 m (connTraceCoeff (I := I) q
-          (G.metric ((T : ℝ) - s)))).comp D₁‖ ≤
+          (g_fam ((T : ℝ) - s)))).comp D₁‖ ≤
         ‖(appHs q 2 0 m (Φ₂ s)).comp D₂‖ +
           ‖(appHs q 1 0 m (Φ₁ s)).comp D₁‖ := by
             simpa only [Φ₂, Φ₁] using norm_sub_le
@@ -111,36 +104,33 @@ theorem lapHs_norm_on
           (mul_le_mul_of_nonneg_right h₁ (norm_nonneg D₁))
     _ = C := rfl
 
-/-- If the genuine `H² → H⁰` perturbation agrees with the invariant finite
-spectral core on an interval, then it is the order-zero all-scale operator
-throughout that interval. -/
 theorem lapHs_A20_on
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
     (T : D.RegularTime) {tau : ℝ}
     (hcore : ∀ s ∈ Set.Icc (0 : ℝ) tau,
-      ∀ v : ScalarH2Core (I := I) (M := M) (G.metric (T : ℝ)),
+      ∀ v : ScalarH2Core (I := I) (M := M) (g_fam (T : ℝ)),
         tensorHsZeroEquivL2 (I := I) (M := M)
             (tensorResolventL2_isCompactOperator
-              (I := I) (M := M) (G.metric (T : ℝ)) 0 0)
-            (lapDiffA20 (I := I) (M := M) G T s v.1) =
-          lapDiffCore (I := I) (M := M) (G.metric (T : ℝ))
-            (G.metric ((T : ℝ) - s)) v) :
+              (I := I) (M := M) (g_fam (T : ℝ)) 0 0)
+            (lapDiffA20 (I := I) (M := M) g_fam T s v.1) =
+          lapDiffCore (I := I) (M := M) (g_fam (T : ℝ))
+            (g_fam ((T : ℝ) - s)) v) :
     ∀ s ∈ Set.Icc (0 : ℝ) tau,
-      ∀ u : tensorHs (I := I) (M := M) (G.metric (T : ℝ)) 0 0 2,
+      ∀ u : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 2,
         tensorHs.castEquiv (I := I) (M := M)
-            (g := G.metric (T : ℝ)) (r := 0) (s := 0)
+            (g := g_fam (T : ℝ)) (r := 0) (s := 0)
             (by norm_num : ((0 : ℕ) : ℝ) = 0)
-            (lapDiffHs (I := I) (M := M) (G.metric (T : ℝ))
-              (G.metric ((T : ℝ) - s)) 0
+            (lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
+              (g_fam ((T : ℝ) - s)) 0
               (tensorHs.castEquiv (I := I) (M := M)
-                (g := G.metric (T : ℝ)) (r := 0) (s := 0)
+                (g := g_fam (T : ℝ)) (r := 0) (s := 0)
                 (by norm_num : (2 : ℝ) = ((0 : ℕ) : ℝ) + 2) u)) =
-          lapDiffA20 (I := I) (M := M) G T s u := by
+          lapDiffA20 (I := I) (M := M) g_fam T s u := by
   classical
   intro s hs u
-  let q : SmoothRiemannianMetric I M := G.metric (T : ℝ)
-  let h : SmoothRiemannianMetric I M := G.metric ((T : ℝ) - s)
+  let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
+  let h : SmoothRiemannianMetric I M := g_fam ((T : ℝ) - s)
   let J : tensorHs (I := I) (M := M) q 0 0 2 →L[ℝ]
       tensorHs (I := I) (M := M) q 0 0 (((0 : ℕ) : ℝ) + 2) :=
     (tensorHs.castEquiv (I := I) (M := M)
@@ -152,7 +142,7 @@ theorem lapHs_A20_on
       (g := q) (r := 0) (s := 0)
       (by norm_num : ((0 : ℕ) : ℝ) = 0)).toContinuousLinearEquiv.toContinuousLinearMap
   let L := K.comp ((lapDiffHs (I := I) (M := M) q h 0).comp J)
-  let R := lapDiffA20 (I := I) (M := M) G T s
+  let R := lapDiffA20 (I := I) (M := M) g_fam T s
   change L u = R u
   have hdense : DenseRange
       (ScalarH2Core (I := I) (M := M) q).subtype :=
@@ -201,24 +191,22 @@ theorem lapHs_A20_on
   have hfun := hdense.equalizer L.continuous R.continuous heq
   exact congr_fun hfun u
 
-/-- On any prescribed reflected regular interval, the completed Laplacian
-difference preserves every finite time regularity order on the interior. -/
 theorem lapHs_dyn_on
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) {tau : ℝ}
     (hreg : ∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular)
     (m k : ℕ)
-    (U : ℝ → tensorHs (I := I) (M := M) (G.metric (T : ℝ)) 0 0
+    (U : ℝ → tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
       ((m : ℝ) + 2))
     (hU : ContDiffOn ℝ k U (Set.Ioo (0 : ℝ) tau)) :
     ContDiffOn ℝ k
-      (fun s => lapDiffHs (I := I) (M := M) (G.metric (T : ℝ))
-        (G.metric ((T : ℝ) - s)) m (U s))
+      (fun s => lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
+        (g_fam ((T : ℝ) - s)) m (U s))
       (Set.Ioo (0 : ℝ) tau) := by
   classical
-  let q : SmoothRiemannianMetric I M := G.metric (T : ℝ)
+  let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let J := tensorHsInclusion (I := I) (M := M)
     (g := q) (r := 0) (s := 0)
     (by norm_num : (m : ℝ) + ((1 : ℕ) : ℝ) ≤ (m : ℝ) + 2)
@@ -239,18 +227,18 @@ theorem lapHs_dyn_on
     intro s hs
     exact hreg s ⟨hs.1.le, hs.2.le⟩
   have h₂ := appHs_dyn_fin (I := I) (M := M) q 2 0 m k
-    (fun s => scalarTraceCoeff (I := I) q (G.metric ((T : ℝ) - s)))
+    (fun s => scalarTraceCoeff (I := I) q (g_fam ((T : ℝ) - s)))
     isOpen_Ioo
-    (scalarTrace_rev_on (I := I) (M := M) G hG q (T : ℝ) hback) V₂ hV₂
+    (scalarTrace_rev_on (I := I) (M := M) g_fam hG q (T : ℝ) hback) V₂ hV₂
   have h₁ := appHs_dyn_fin (I := I) (M := M) q 1 0 m k
-    (fun s => connTraceCoeff (I := I) q (G.metric ((T : ℝ) - s)))
+    (fun s => connTraceCoeff (I := I) q (g_fam ((T : ℝ) - s)))
     isOpen_Ioo
-    (connTrace_rev_on (I := I) (M := M) G hG q (T : ℝ) hback) V₁ hV₁
+    (connTrace_rev_on (I := I) (M := M) g_fam hG q (T : ℝ) hback) V₁ hV₁
   refine (h₂.sub h₁).congr ?_
   intro s _hs
   rw [lapHs_eq (I := I) (M := M)]
   rfl
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

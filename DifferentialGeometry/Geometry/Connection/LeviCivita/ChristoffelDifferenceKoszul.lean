@@ -1,13 +1,14 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul
-import DifferentialGeometry.Geometry.Flow.ConnectionDifference
+import DifferentialGeometry.Geometry.Connection.ConnectionDifference
 
 noncomputable section
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -16,7 +17,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-def metricCovDeriv (g : Measure.SmoothRiemannianMetric I M)
+def metricCovDeriv (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X Y Z : Π x : M, TangentSpace I x) (x : M) : ℝ :=
   directionalDeriv (I := I) (fun b => g.inner b (Y b) (Z b)) x (X x)
@@ -25,7 +26,7 @@ def metricCovDeriv (g : Measure.SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem metricCovDeriv_self_eq_zero (g : Measure.SmoothRiemannianMetric I M)
+theorem metricCovDeriv_self_eq_zero (g : SmoothRiemannianMetric I M)
     {X Y Z : Π x : M, TangentSpace I x} {x : M}
     (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
     metricCovDeriv (I := I) g (LeviCivita (I := I) g) X Y Z x = 0 := by
@@ -104,5 +105,5 @@ theorem connDiff_koszul_metricDiff (g₁ g₀ : SmoothRiemannianMetric I M)
   exact connDiff_koszul (I := I) g₁ g₀ hX hY hZ
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

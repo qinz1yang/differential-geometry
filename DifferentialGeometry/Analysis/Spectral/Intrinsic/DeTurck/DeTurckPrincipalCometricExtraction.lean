@@ -5,13 +5,18 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldDiffer
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculusRS
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.KoszulSectionParallelRaise
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqSmoothCcUniformBound
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
@@ -21,11 +26,12 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -323,9 +329,9 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpa
 lemma deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁ =
-      DifferentialGeometry.Integral.Connection.ccOperatorFieldComp (I := I) (M := M) g₀ 4 4 2
+      DifferentialGeometry.Analysis.Spectral.ccOperatorFieldComp (I := I) (M := M) g₀ 4 4 2
         (cometricDoubleTraceField (I := I) g₀ 2)
-        (DifferentialGeometry.Integral.Connection.endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
+        (DifferentialGeometry.Geometry.Connection.endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
           (gInvDiffRaisedEndoField (I := I) g₀ g₁)) := by
   classical
   apply SmoothCcTensor.ext
@@ -336,11 +342,11 @@ lemma deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   beta_reduce
   rw [deTurckCoeff_toModel_eq (I := I) (M := M) g₀ g₁ x w m,
-    DifferentialGeometry.Integral.Connection.appCcRS_toSection,
+    DifferentialGeometry.Analysis.Spectral.appCcRS_toSection,
     ContinuousLinearMap.comp_apply, cometricDoubleTraceField_toSection,
     cometricDoubleTraceFib_toModel, modelDoubleTrace_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [DifferentialGeometry.Integral.Connection.slotInsertEndoCc_toSection,
+  rw [DifferentialGeometry.Geometry.Connection.slotInsertEndoCc_toSection,
     slotInsertEndoFib_apply_eval, Fin.cons_zero, Fin.update_cons_zero]
   rfl
 
@@ -817,7 +823,6 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_ricciArmPrincipalCoeff_sub_l
   linarith [hkey, riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 4 (2 + i) x PC]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend_local
@@ -851,7 +856,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend_local
             (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ)))
           (Equiv.swap (0 : Fin (s + 1 + 1)) 1)).toSection x) D) m
-  rw [DifferentialGeometry.Integral.Connection.slotInsertEndoCc_toSection,
+  rw [DifferentialGeometry.Geometry.Connection.slotInsertEndoCc_toSection,
     slotInsertEndoFib_apply_eval]
   rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply, rsDomDomCongrSection_toSection,
     toModel_rsDomDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
@@ -863,7 +868,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend_local
     · simp only [Fin.cons_zero, Equiv.swap_apply_left]
     · simp only [Fin.cons_succ]]
   rw [slotExtendFib_apply_eval]
-  rw [DifferentialGeometry.Integral.Connection.slotInsertEndoCc_toSection,
+  rw [DifferentialGeometry.Geometry.Connection.slotInsertEndoCc_toSection,
     slotInsertEndoFib_apply_eval, TensorMultilinear.tensor0S_curry_apply_eval,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   have hswap_succ0 : (Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (0 : Fin (s + 1))) = 0 := by
@@ -1156,10 +1161,6 @@ theorem deTurckPrincipalCometricCoeff_perOrder_rfns_le_gInvDiffSlotCoeff
   · intro g₁ i x
     exact rfns_iteratedCovGrad_deTurckPrincipalCometricCoeff_le (I := I) (M := M)
       g₀ g₁ hK_nn hK_bound i x
-
-
-
-
 
 theorem coeff_grad_rfns_le
     (g₀ : SmoothRiemannianMetric I M) :

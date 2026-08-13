@@ -3,8 +3,7 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartIdentification
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartPushVFEq
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

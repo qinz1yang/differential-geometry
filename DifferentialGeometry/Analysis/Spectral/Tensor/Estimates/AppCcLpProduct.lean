@@ -3,24 +3,17 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFibe
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
-/-!
-# Holder estimate for an operator-field action
-
-This file records the intrinsic `L6 x L3 -> L2` product cell for `appCc`.
-It is independent of the Sobolev embeddings which later supply the two input
-norms.
--/
-
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-
+namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped ContDiff Manifold Topology ENNReal
 open MeasureTheory
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -73,8 +66,6 @@ private theorem l2_sq_le_integral
       (I := I) (M := M) g r s S
   exact integral_mono hint hF hpt
 
-/-- The pointwise intrinsic fibre norm of a smooth mixed tensor, viewed as a
-real-valued function for `lpNorm` estimates. -/
 noncomputable def fiberLpFun
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) : M → ℝ := fun x =>
@@ -132,8 +123,6 @@ private theorem fiber_lp2_eq_l2
 
 omit [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- Slot extension scales every intrinsic fibre `lpNorm` by the square root of
-the manifold dimension. -/
 theorem fiberLp_slotExtend
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (p : ℝ≥0∞) :
@@ -161,8 +150,6 @@ theorem fiberLp_slotExtend
   rw [coe_nnnorm, Real.norm_of_nonneg (Real.sqrt_nonneg _)]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-/-- On a closed manifold, the intrinsic fibre `L6` norm controls its `L3`
-norm.  The constant depends only on the background volume. -/
 theorem fiberLp3_le_lp6
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ S : SmoothCcTensor g r s,
@@ -198,8 +185,6 @@ theorem fiberLp3_le_lp6
   simpa only [V, mul_comm] using hreal
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-/-- An operator field in metric `L2` acting on a pointwise-bounded covariant
-tensor is bounded in metric `L2`. -/
 theorem appCc_l2_right
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r)
@@ -251,8 +236,6 @@ theorem appCc_l2_right
   exact hsq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-/-- The intrinsic `L6 x L3 -> L2` Holder estimate for an operator-field
-action. -/
 theorem appCc_l6_l3_l2
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W : SmoothCcTensor g 0 r) :
@@ -325,4 +308,4 @@ theorem appCc_l6_l3_l2
   rw [← fiber_lp2_eq_l2 (I := I) (M := M) g 0 s Y]
   exact hreal
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

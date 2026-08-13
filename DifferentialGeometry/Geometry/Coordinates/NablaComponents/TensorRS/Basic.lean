@@ -4,13 +4,9 @@ import DifferentialGeometry.Tensor.RSTensor.Components
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TensorRS
-
-
-
-
-
-
-
+import DifferentialGeometry.Geometry.Operator.Operators
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
@@ -18,7 +14,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -28,11 +24,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
-
-
-
-
-
 
 def coordDerivRSAt {r s : ℕ}
     (X : (x : M) -> TangentSpace I x) (x₀ : M)
@@ -70,8 +61,6 @@ def modelDerivRSAt {r s : ℕ}
       (X' (extChartAt I x₀ x₀))
     β₀)
     (fun b : Fin s => (Module.finBasis 𝕜 E) (lower b))
-
-
 
 def ModelDerivEqCoordDerivRSAt {r s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))

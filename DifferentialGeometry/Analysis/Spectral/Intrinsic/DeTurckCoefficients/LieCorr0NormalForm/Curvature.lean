@@ -2,20 +2,12 @@ import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Ring
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF
 
 variable {n : ℕ}
 
@@ -639,4 +631,4 @@ theorem nf_t2h (ig : Fin n → Fin n → ℝ) (ga0 : Fin n → Fin n → Fin n �
     ht16, ht17, ht18, ht19, ht20, ht21, ht22, ht23, ht24]
   ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF

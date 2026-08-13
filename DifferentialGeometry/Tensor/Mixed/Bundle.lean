@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Mixed.Fiber
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 

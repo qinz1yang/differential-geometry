@@ -2,25 +2,13 @@ import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry.Tensor.Coordinates
 
 noncomputable section
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
-open Tensor0SBundle
+
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -33,8 +21,6 @@ section Components
 
 variable {Idx : Type*} [Fintype Idx]
 variable {u : Set M}
-
-
 
 def metricCovDerivForMetricCompInFrame
     (g : SmoothRiemannianMetric I M)
@@ -51,12 +37,6 @@ def metricCovDerivForMetricCompInFrame
     (∑ p : Idx,
       christoffelSymbolInFrame cov frame hframe x d b p *
         metricCompForMetricInFrame (I := I) g frame x a p)
-
-
-
-
-
-
 
 def metricCovDeriv2ForMetricCompInFrame
     (g : SmoothRiemannianMetric I M)
@@ -81,12 +61,6 @@ def metricCovDeriv2ForMetricCompInFrame
       christoffelSymbolInFrame cov frame hframe x d c p *
         metricCovDerivForMetricCompInFrame
           (I := I) g cov frame hframe x a b p)
-
-
-
-
-
-
 
 def metricCovDeriv3ForMetricCompInFrame
     (g : SmoothRiemannianMetric I M)

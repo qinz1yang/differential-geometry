@@ -1,12 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Components
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
 
 noncomputable section
 
@@ -28,25 +24,18 @@ section Components
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {u : Set M}
 
-
-
-
 def KoszulConnectionVariationInFrame
     (pairDt nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
   forall t x i j l,
     pairDt t x i j l =
       christoffelVariationLoweredRHSInFrame nablaRic t x i j l
 
-
-
-
-
 def ConnectionVariationPairingEquationInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
-  forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+  forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (i j l : Idx),
     HasDerivWithinAt
       (fun s : Real =>
@@ -58,12 +47,12 @@ def ConnectionVariationPairingEquationInFrameOn
 
 
 def ConnectionVariationPairingEquationInFrameOnLocal
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (u : Set M)
     (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real) : Prop :=
-  forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M), x ∈
+  forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M), x ∈
     u ->
     forall i j l : Idx,
       HasDerivWithinAt
@@ -74,12 +63,10 @@ def ConnectionVariationPairingEquationInFrameOnLocal
         D.carrier
         (t : Real)
 
-
-
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem connectionPairDt_eq_metricVariationRHS
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -92,9 +79,9 @@ theorem connectionPairDt_eq_metricVariationRHS
     (hmetric :
       MetricCovDerivDerivativeComponentsInFrameOnLocal
         (I := I) S frame u metricCovDerivDt)
-    (hunique : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
+    (hunique : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real))
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
       (hx : x ∈ u)
     (i j l : Idx) :
     pairDt (t : Real) x i j l =
@@ -146,12 +133,10 @@ theorem connectionPairDt_eq_metricVariationRHS
   unfold connectionVariationLoweredRHSFromMetricVariationInFrame
   linarith
 
-
-
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem connectionVariationPairing_of_metricVariation
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -167,9 +152,9 @@ theorem connectionVariationPairing_of_metricVariation
     (hmetric :
       MetricCovDerivDerivativeComponentsInFrameOnLocal
         (I := I) S frame u metricCovDerivDt)
-    (hunique : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
+    (hunique : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real)) :
-    forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M), x
+    forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M), x
       ∈ u ->
       forall i j l : Idx,
         HasDerivWithinAt
@@ -186,12 +171,10 @@ theorem connectionVariationPairing_of_metricVariation
       (I := I) S hS frame hframe hu pairDt metricCovDerivDt
       hvarDiff hmetric hunique t x hx i j l)
 
-
-
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem connectionVariationPairing_of_ricciFlow
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -210,7 +193,7 @@ theorem connectionVariationPairing_of_ricciFlow
         (I := I) S frame u metricCovDerivDt)
     (hmetricRicci :
       MetricCovDerivDerivativeIsRicciFlowInFrame metricCovDerivDt nablaRic)
-    (hunique : forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
+    (hunique : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real)) :
     ConnectionVariationPairingEquationInFrameOnLocal
       (I := I) S frame u nablaRic := by
@@ -227,12 +210,10 @@ theorem connectionVariationPairing_of_ricciFlow
     hmetricRicci (t : Real) x l i j]
   ring
 
-
-
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem connectionVariationPairing_of_koszul
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (pairDt nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real)

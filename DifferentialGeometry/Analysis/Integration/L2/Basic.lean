@@ -5,6 +5,7 @@ import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 import Mathlib.MeasureTheory.Function.StronglyMeasurable.Basic
 import Mathlib.MeasureTheory.Function.StronglyMeasurable.AEStronglyMeasurable
 import Mathlib.MeasureTheory.Function.L1Space.Integrable
+import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.Topology.Algebra.Support
 
@@ -69,7 +70,7 @@ theorem integrable_of_contMDiff_of_hasCompactSupport
   integrable_of_continuous_of_hasCompactSupport hfc.continuous hfsup
 
 theorem integrable_of_continuous_compactSpace
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {F : Type*} [NormedAddCommGroup F]
     (g : SmoothRiemannianMetric I M)
     {f : M → F} (hf : Continuous f) :
@@ -86,6 +87,24 @@ theorem integrable_of_contMDiff_compactSpace
     {f : M → F} (hf : ContMDiff I 𝓘(ℝ, F) ∞ f) :
     MeasureTheory.Integrable f μ :=
   integrable_of_contMDiff_of_hasCompactSupport hf (HasCompactSupport.of_compactSpace f)
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+theorem lpNorm_two_sq_eq_integral_sq
+    {μ : MeasureTheory.Measure M} {f : M → ℝ}
+    (hf : MeasureTheory.AEStronglyMeasurable f μ) :
+    MeasureTheory.lpNorm f 2 μ ^ 2 = ∫ x, f x ^ 2 ∂μ := by
+  rw [MeasureTheory.lpNorm_eq_integral_norm_rpow_toReal
+    (by norm_num) (by norm_num) hf]
+  norm_num only [ENNReal.toReal_ofNat]
+  have hnonneg : 0 ≤ ∫ x, ‖f x‖ ^ (2 : ℝ) ∂μ :=
+    MeasureTheory.integral_nonneg (fun x => by positivity)
+  rw [← Real.sqrt_eq_rpow]
+  rw [sq, Real.mul_self_sqrt hnonneg]
+  congr 1
+  funext x
+  rw [Real.norm_eq_abs]
+  rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+  exact sq_abs (f x)
 
 theorem integral_add_of_riemannianVolume
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]

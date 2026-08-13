@@ -1,12 +1,5 @@
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
 
-/-!
-# Polar evaluation for additive Haar measure
-
-This file exposes the product and iterated-lintegral forms of the generalized
-polar decomposition supplied by `Measure.measurePreserving_homeomorphUnitSphereProd`.
--/
-
 noncomputable section
 
 open Metric Set
@@ -19,8 +12,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Nontrivial E]
 variable (μ : Measure E) [μ.IsAddHaarMeasure]
 
-/-- Polar product decomposition of a nonnegative integral against additive
-Haar measure. The origin is discarded as a null set. -/
 theorem lintegral_polar_prod (f : E → ℝ≥0∞) :
     ∫⁻ x, f x ∂μ =
       ∫⁻ z : sphere (0 : E) 1 × Ioi (0 : ℝ),
@@ -46,7 +37,6 @@ theorem lintegral_polar_prod (f : E → ℝ≥0∞) :
             ∂(μ.toSphere.prod (Measure.volumeIoiPow (Module.finrank ℝ E - 1))) := by
       congr 1
 
-/-- Tonelli form of `lintegral_polar_prod`. -/
 theorem lintegral_polar (f : E → ℝ≥0∞) (hf : AEMeasurable f μ) :
     ∫⁻ x, f x ∂μ =
       ∫⁻ u : sphere (0 : E) 1,

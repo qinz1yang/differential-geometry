@@ -5,28 +5,26 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreN
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RecoveryEndomorphismJetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTowerAppCcRSProductGridRankLeftBound
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
-
-/-!
-# Pointwise diagonal-grid bounds for moving trace operators
-
-This file controls the covariant jets of the moving cometric double trace,
-with arbitrary passenger rank, by the antidiagonal metric-jet grid.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -38,7 +36,6 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-/-- Pointwise product-grid control of a moving rank-`(p + 2, p)` trace. -/
 theorem lc0Tr_pointwise_antidiagonalGrid_le
     (p : ℕ) (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -209,7 +206,6 @@ theorem lc0Tr_pointwise_antidiagonalGrid_le
     _ ≤ 2 * (CQ i * G) + 2 * (S i * G) := add_le_add hQ' hfixed'
     _ = (2 * CQ i + 2 * S i) * G := by ring
 
-/-- Rank-two specialization of `lc0Tr_pointwise_antidiagonalGrid_le`. -/
 theorem lc0Tr_two_pointwise_antidiagonalGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -230,6 +226,6 @@ theorem lc0Tr_two_pointwise_antidiagonalGrid_le
   simpa only [Nat.reduceAdd] using
     lc0Tr_pointwise_antidiagonalGrid_le (I := I) (M := M) 2 g₀ hδ₀
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

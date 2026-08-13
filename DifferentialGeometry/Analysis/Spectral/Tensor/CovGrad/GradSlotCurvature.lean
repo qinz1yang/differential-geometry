@@ -3,27 +3,23 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckLineari
 import DifferentialGeometry.Geometry.Curvature.Bochner.TensorWeitzenbockIdentity
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.GradientField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.Analysis.Sobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -53,8 +49,6 @@ private theorem unitModel_sub
       rw [hsec]
       rfl]
   rw [Tensor0SSpace.toModel_sub]
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradSlot_sub_eq_curv

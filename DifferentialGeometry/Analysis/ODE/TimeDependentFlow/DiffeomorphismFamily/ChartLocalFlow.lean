@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.ChartLocalPicardRegular
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff Topology
@@ -12,6 +12,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
+omit [SigmaCompactSpace M] in
 theorem manifoldFlowFamily_of_regular
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hReg : ChartCoordPicardRegular X)
@@ -72,4 +73,4 @@ theorem manifoldFlowFamily_of_regular
     (fun α => chartLocalPicardData_of_regular (fun t x => -(X t x)) hRegNeg α)
     hSmoothX_chart hSmoothNegX_chart hLocalFwd hLocalRev hBijPerChart
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

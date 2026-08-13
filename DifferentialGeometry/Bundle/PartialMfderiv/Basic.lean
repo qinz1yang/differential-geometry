@@ -7,23 +7,12 @@ import Mathlib.Geometry.Manifold.VectorField.LieBracket
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Calculus.VectorField
 
-
-
-
-
-
-
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Topology Manifold ContDiff
 
 namespace DifferentialGeometry
-
-
-
-
-
 
 noncomputable abbrev vderiv
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -41,12 +30,6 @@ noncomputable abbrev vderiv
     (f : M -> 𝕜) (X : (x : M) -> TangentSpace I x) (x : M) :
     vderiv (I := I) f X x = extDerivFun (I := I) f x (X x) := by
   rfl
-
-
-
-
-
-
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem mfderiv_eq_fderivWithin_chart_comp
@@ -320,8 +303,6 @@ theorem extDerivFun_apply_mlieBracket
           (fun y : M => extDerivFun (I := I) f y (X y)) x (Y x) := by
   exact vderiv_mlieBracket (I := I) X Y f x hX hY hf
 
-
-
 theorem contMDiff_partial_deriv_fst_gen
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
@@ -358,8 +339,6 @@ theorem contMDiff_partial_deriv_fst_gen
       contMDiffAt_const
       le_rfl
   simpa [inTangentCoordinates_model_space] using h_apply
-
-
 
 theorem timeDeriv_smoothAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -407,11 +386,6 @@ theorem timeDeriv_smoothAt
       hF' contMDiffAt_fst contMDiffAt_id contMDiffAt_const hmn
   simpa [inTangentCoordinates_model_space] using h_apply
 
-
-
-
-
-
 theorem extDerivFun_const_mul
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
@@ -427,9 +401,6 @@ theorem extDerivFun_const_mul
     (I := I) (f := fun _ : M => c) (g := f)
     (by exact mdifferentiableAt_const (c := c)) hf v
   simpa [extDerivFun] using hmul
-
-
-
 
 theorem extDerivFun_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -449,9 +420,6 @@ theorem extDerivFun_mul_at
         f x * extDerivFun (I := I) g x v + extDerivFun (I := I) f x v * g x from by
       simpa [extDerivFun, smul_eq_mul] using hmul]
   ring
-
-
-
 
 theorem extDerivFun_finset_sum_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -522,8 +490,6 @@ theorem extDerivFun_finset_sum_mul_at
       rw [ih hUt hBt]
       rw [Finset.sum_insert hat]
 
-
-
 theorem extDerivFun_finset_sum_at'
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -572,9 +538,6 @@ theorem extDerivFun_finset_sum_at'
       rw [ih hFt]
       rw [Finset.sum_insert hat]
 
-
-
-
 theorem extDerivFun_finset_sum_sum_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -618,10 +581,6 @@ theorem extDerivFun_finset_sum_sum_mul_at
   refine Finset.sum_congr rfl fun i hi => ?_
   rw [extDerivFun_finset_sum_mul_at (I := I) t (fun j => U i j) (fun j => B i j) v
     (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)]
-
-
-
-
 
 theorem extDerivFun_apply_contMDiff
     {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -699,10 +658,6 @@ theorem extDerivFun_apply_contMDiff
       (mfderiv I 𝓘(𝕜, 𝕜) f p) (e.symmL 𝕜 p (Xcoord p))
     rw [hcancel]
 
-
-
-
-
 theorem extDerivFun_apply_contMDiffAt
     {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
@@ -779,11 +734,6 @@ theorem extDerivFun_apply_contMDiffAt
   change (mfderiv I 𝓘(𝕜, 𝕜) f p) (X p) =
     (mfderiv I 𝓘(𝕜, 𝕜) f p) (e.symmL 𝕜 p (Xcoord p))
   rw [hcancel]
-
-
-
-
-
 
 theorem prodExtDerivAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -890,8 +840,6 @@ theorem prodExtDerivAt
         (e.symmL Real p.2 (Xcoord p))
   rw [hcancel]
 
-
-
 theorem prodExtDerivAt_gen
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -992,9 +940,6 @@ theorem prodExtDerivAt_gen
       (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2)
         (e.symmL Real p.2 (Xcoord p))
   rw [hcancel]
-
-
-
 
 theorem prodExtDerivAt_inf
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

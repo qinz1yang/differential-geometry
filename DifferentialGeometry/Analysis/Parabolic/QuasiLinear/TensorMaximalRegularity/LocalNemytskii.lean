@@ -1,16 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.ForcingFixedPoint
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzExistence
-
-/-!
-# Nemytskii operators on an almost-everywhere state set
-
-Maximal regularity controls a critical quasilinear solution in a lower
-Sobolev norm uniformly in time, while retaining only an `L²` bound in the top
-Sobolev norm.  Thus a geometric nonlinearity may be defined and Lipschitz only
-on a closed lower-norm state set, even though its arguments are top-norm
-fields.  This file packages the measure-theoretic construction needed in that
-situation without extending the nonlinearity outside its genuine state set.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -27,23 +17,17 @@ variable {X Y : Type*}
   [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
 variable {T : ℝ}
 
-/-- Lift a time field to a state-set subtype, using the zero state off the
-set.  The exceptional branch is irrelevant whenever the field lies in the
-state set almost everywhere. -/
 def aeSetLift {S : Set X} (hzero : (0 : X) ∈ S) (f : timeL2 X T) : ℝ → S :=
   by
     classical
     exact fun t => if ht : f t ∈ S then ⟨f t, ht⟩ else ⟨0, hzero⟩
 
-/-- The subtype lift has the original field as its coercion almost
-everywhere. -/
 theorem aeSetLift_coe_ae {S : Set X} (hzero : (0 : X) ∈ S)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
     (fun t => ((aeSetLift hzero f t : S) : X)) =ᵐ[timeMeasure T] fun t => f t := by
   filter_upwards [hf] with t ht
   simp only [aeSetLift, dif_pos ht]
 
-/-- The subtype lift is almost-everywhere strongly measurable. -/
 theorem aeSetLift_aesm {S : Set X} (hzero : (0 : X) ∈ S)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
     AEStronglyMeasurable (aeSetLift hzero f) (timeMeasure T) := by
@@ -52,8 +36,6 @@ theorem aeSetLift_aesm {S : Set X} (hzero : (0 : X) ∈ S)
     (aeSetLift_coe_ae hzero f hf).symm
 
 omit [NormedSpace ℝ Y] [CompleteSpace Y] in
-/-- A Lipschitz map on a state-set subtype sends every top-norm time field
-which remains in that state set almost everywhere to an `L²` field. -/
 theorem memLp_on {S : Set X} (hzero : (0 : X) ∈ S)
     {N : S → Y} {L : ℝ≥0} (hN : LipschitzWith L N)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
@@ -81,16 +63,12 @@ theorem memLp_on {S : Set X} (hzero : (0 : X) ∈ S)
   rw [hfun]
   exact hsum
 
-/-- The pointwise Nemytskii field associated to a Lipschitz nonlinearity on
-an almost-everywhere state set. -/
 def nemytskiiOn {S : Set X} (hzero : (0 : X) ∈ S)
     {N : S → Y} {L : ℝ≥0} (hN : LipschitzWith L N)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
     timeL2 Y T :=
   (memLp_on hzero hN f hf).toLp (fun t => N (aeSetLift hzero f t))
 
-/-- `nemytskiiOn` is represented by the partial nonlinearity evaluated on
-the canonical subtype lift. -/
 theorem nemytskiiOn_coeFn {S : Set X} (hzero : (0 : X) ∈ S)
     {N : S → Y} {L : ℝ≥0} (hN : LipschitzWith L N)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
@@ -98,8 +76,6 @@ theorem nemytskiiOn_coeFn {S : Set X} (hzero : (0 : X) ∈ S)
       fun t => N (aeSetLift hzero f t) :=
   (memLp_on hzero hN f hf).coeFn_toLp
 
-/-- The Nemytskii field of the zero time field is the constant state-set
-value `N 0`, hence has the sharp finite-slab `L²` bound. -/
 theorem nemytskiiOn_zero_le {S : Set X} (hzero : (0 : X) ∈ S)
     {N : S → Y} {L : ℝ≥0} (hN : LipschitzWith L N) {T : ℝ}
     (hf : ∀ᵐ t ∂(timeMeasure T), ((0 : timeL2 X T) t) ∈ S) :

@@ -1,31 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.IteratedFDerivProdMatch
 import Mathlib.Analysis.Calculus.TangentCone.Real
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Set Filter Topology
@@ -37,14 +12,6 @@ namespace SmoothExtension
 
 variable {E F : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-
-
-
-
-
-
-
 
 theorem contDiffOn_glue_of_seam_param
     {V : Set E} (hV : IsOpen V) (fL fR : ℝ × E → F)
@@ -156,20 +123,6 @@ theorem contDiffOn_glue_of_seam_param
     (hasFTaylorSeriesUpToOn_top_iff' (le_refl _)).mpr
       ⟨fun x hx => hzero x hx, fun m x hx => hderiv m x hx⟩
   exact hTaylor.contDiffOn
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem iteratedFDerivWithin_seam_match {V : Set E} (hV : IsOpen V) :
     ∀ (n : ℕ) {fL fR : ℝ × E → F},
@@ -296,14 +249,6 @@ theorem iteratedFDerivWithin_seam_match {V : Set E} (hV : IsOpen V) :
       simpa only [hgL_def, hgR_def, ContinuousLinearMap.coe_comp', Function.comp_apply,
         ContinuousLinearMap.inr_apply] using happ
     rw [hsplit, map_add, map_add, map_smul, map_smul, htrans, hseam]
-
-
-
-
-
-
-
-
 
 theorem contDiffOn_glue_of_jet_param
     {V : Set E} (hV : IsOpen V) (fL fR : ℝ × E → F)

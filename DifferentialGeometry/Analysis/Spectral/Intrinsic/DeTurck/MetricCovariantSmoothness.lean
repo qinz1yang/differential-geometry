@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDifferenceJets
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -7,18 +9,16 @@ open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor
-open DifferentialGeometry.PDE.RicciFlow.HebeyBlock
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
-open Tensor0SBundle
+open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -117,11 +117,6 @@ theorem tensor03_pairing_contMDiff
   intro x
   exact (contMDiffAt_section (F := ℝ) (E := fun _ : M => ℝ) x).mp (h3 x)
 
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem tensor03Cov_quad_apply_smooth
@@ -201,12 +196,6 @@ private theorem tensor03Cov_quad_apply_smooth
     ((h_extDeriv_Y.sub h_t1).sub h_t2).sub h_t3
   exact h_combined.congr (fun x => h_eq x)
 
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private theorem tensor03Cov_output_apply3_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -237,8 +226,6 @@ private theorem tensor03Cov_output_apply3_contMDiff
       ⟨y, ((((tensor03Cov cov).toFun S y (Y y)) (Z y)) (W y)) (U y)⟩).2
   rfl
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private theorem tensor03Cov_output_apply2_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -258,8 +245,6 @@ private theorem tensor03Cov_output_apply2_contMDiff
     (φ := fun x => (tensor03Cov cov).toFun S x (Y x) (Z x))
   intro W
   exact tensor03Cov_output_apply3_contMDiff cov hS Y Z W
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private theorem tensor03Cov_output_apply_contMDiff
@@ -282,8 +267,6 @@ private theorem tensor03Cov_output_apply_contMDiff
   intro Z
   exact tensor03Cov_output_apply2_contMDiff cov hS Y Z
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private theorem tensor03Cov_output_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -305,10 +288,6 @@ private theorem tensor03Cov_output_contMDiff
     (φ := fun x => (tensor03Cov cov).toFun S x)
   intro Y
   exact tensor03Cov_output_apply_contMDiff cov hS Y
-
-
-
-
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -342,10 +321,6 @@ theorem tensor02CovIterate_metric_contMDiff
         (σ := metricTensor02 (I := I) g) h_metric₁)
   exact tensor03Cov_output_contMDiff (LeviCivita (I := I) g₀) hS₃
 
-
-
-
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor02Cov_metric_contMDiff
@@ -369,15 +344,8 @@ theorem tensor02Cov_metric_contMDiff
     ((tensor02Cov_isContMDiff (LeviCivita (I := I) g₀)).contMDiff.contMDiff
       (σ := metricTensor02 (I := I) g) h_metric₁)
 
-
-
-
-
-
-
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

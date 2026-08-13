@@ -1,41 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.SolutionRestrictOpen
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 open Set Function Filter Bundle Manifold
 open scoped Manifold Topology ContDiff ENNReal
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.Integral.Connection.CovariantDerivative
+
+open DifferentialGeometry.Geometry.Curvature.CovariantDerivative
 
 namespace DifferentialGeometry
 namespace HCGCompactness
@@ -47,11 +22,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boun
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M]
   [IsManifold I 1 M] [IsManifold I 2 M]
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
@@ -80,14 +50,6 @@ private theorem covDerivOfField_succ_eval
     (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (leviCivitaConnectionOfMetric (I := I) gRef) X V
     (covDerivOfField (I := I) gRef A0 a) x
-
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
@@ -241,11 +203,6 @@ theorem covDerivOfField_restrictOpen
       rw [hcons, hconsM] at hsmooth
       exact hsmooth
 
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [IsManifold I 2 M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -285,10 +242,6 @@ theorem ricciSection_restrictOpen
   rw [hLHS, hRHS]
   exact ricciTensor_restrictOpen (I := I) g U x (slots 0) (slots 1)
 
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
@@ -301,12 +254,6 @@ private theorem covDerivOfField_apply_eq_iterCov'
       = iterCov (I := I) gRef 2 A0 m x (slots ∘ ⇑(acEquiv m)) := by
   rw [covDerivOfField_eq_iterCov]
   rfl
-
-
-
-
-
-
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -332,11 +279,6 @@ theorem ricCovTower_restrictOpen
     · funext i
       simp only [Function.comp_apply, Equiv.symm_apply_apply]
 
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricCovTower_normSq0S_restrictOpen
@@ -357,12 +299,6 @@ theorem ricCovTower_normSq0S_restrictOpen
     ext slots
     exact ricCovTower_restrictOpen (I := I) g U s x slots
   rw [htensor]
-
-
-
-
-
-
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

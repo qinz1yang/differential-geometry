@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -37,26 +38,22 @@ def cast {σ τ : ℝ} (h : σ = τ)
   weighted_summable := by
     subst h; exact T.weighted_summable
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma cast_coeff {σ τ : ℝ} (h : σ = τ)
     (T : tensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (cast (I := I) (M := M) h T).coeff i = T.coeff i := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma cast_coeff_fun {σ τ : ℝ} (h : σ = τ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
     (cast (I := I) (M := M) h T).coeff = T.coeff := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma cast_rfl {σ : ℝ}
     (T : tensorHs (I := I) (M := M) g r s σ) :
     cast (I := I) (M := M) (rfl : σ = σ) T = T := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma cast_add {σ τ : ℝ} (h : σ = τ)
     (S T : tensorHs (I := I) (M := M) g r s σ) :
@@ -65,7 +62,6 @@ lemma cast_add {σ τ : ℝ} (h : σ = τ)
   ext i
   simp only [cast_coeff, add_coeff]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma cast_smul {σ τ : ℝ} (h : σ = τ) (c : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
@@ -74,7 +70,6 @@ lemma cast_smul {σ τ : ℝ} (h : σ = τ) (c : ℝ)
   ext i
   simp only [cast_coeff, smul_coeff]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_cast {σ τ : ℝ} (h : σ = τ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
@@ -92,7 +87,6 @@ def castEquiv {σ τ : ℝ} (h : σ = τ) :
   right_inv T := by ext i; simp only [cast_coeff]
   norm_map' := norm_cast (I := I) (M := M) h
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma castEquiv_coeff {σ τ : ℝ} (h : σ = τ)
     (T : tensorHs (I := I) (M := M) g r s σ)
@@ -105,7 +99,6 @@ namespace tensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorSobolevWeight_add (i : TensorEigenIdx (I := I) (M := M) g r s)
     (σ τ : ℝ) :
@@ -116,7 +109,6 @@ lemma tensorSobolevWeight_add (i : TensorEigenIdx (I := I) (M := M) g r s)
   exact Real.rpow_add
     (lt_of_lt_of_le one_pos (one_le_one_add_lambda (I := I) (M := M) i)) σ τ
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorSobolevWeight_neg (i : TensorEigenIdx (I := I) (M := M) g r s)
     (σ : ℝ) :
@@ -126,7 +118,6 @@ lemma tensorSobolevWeight_neg (i : TensorEigenIdx (I := I) (M := M) g r s)
   exact Real.rpow_neg
     (le_trans zero_le_one (one_le_one_add_lambda (I := I) (M := M) i)) σ
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorSobolevWeight_sub (i : TensorEigenIdx (I := I) (M := M) g r s)
     (σ τ : ℝ) :
@@ -142,7 +133,6 @@ namespace tensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fractionalPower_weight_term (i : TensorEigenIdx (I := I) (M := M) g r s)
     (θ σ : ℝ) (c : ℝ) :
@@ -169,7 +159,6 @@ lemma fractionalPower_weight_term (i : TensorEigenIdx (I := I) (M := M) g r s)
     _ = tensorSobolevWeight (I := I) (M := M) i σ * c ^ 2 := by
           rw [hsum]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fractionalPower_weighted_summable {σ : ℝ} (θ : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
@@ -193,7 +182,6 @@ def fractionalPowerFun {σ : ℝ} (θ : ℝ)
   coeff i := tensorSobolevWeight (I := I) (M := M) i θ * T.coeff i
   weighted_summable := fractionalPower_weighted_summable (I := I) (M := M) θ T
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma fractionalPowerFun_coeff {σ : ℝ} (θ : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ)
@@ -201,7 +189,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     (fractionalPowerFun (I := I) (M := M) θ T).coeff i =
       tensorSobolevWeight (I := I) (M := M) i θ * T.coeff i := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fractionalPowerFun_add {σ : ℝ} (θ : ℝ)
     (S T : tensorHs (I := I) (M := M) g r s σ) :
@@ -212,7 +199,6 @@ lemma fractionalPowerFun_add {σ : ℝ} (θ : ℝ)
   simp only [fractionalPowerFun_coeff, add_coeff]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fractionalPowerFun_smul {σ : ℝ} (θ : ℝ) (c : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
@@ -222,7 +208,6 @@ lemma fractionalPowerFun_smul {σ : ℝ} (θ : ℝ) (c : ℝ)
   simp only [fractionalPowerFun_coeff, smul_coeff]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_fractionalPowerFun {σ : ℝ} (θ : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
@@ -267,7 +252,6 @@ def tensorFractionalPower {g : SmoothRiemannianMetric I M} {r s : ℕ}
       rw [one_mul]
       exact le_of_eq (tensorHs.norm_fractionalPowerFun (I := I) (M := M) θ T))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorFractionalPower_apply {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -275,7 +259,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     tensorFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s) θ T =
       tensorHs.fractionalPowerFun (I := I) (M := M) θ T := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorFractionalPower_coeff {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -284,7 +267,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     (tensorFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s) θ T).coeff i =
       tensorSobolevWeight (I := I) (M := M) i θ * T.coeff i := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPower_opNorm_le_one {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -292,7 +274,6 @@ theorem tensorFractionalPower_opNorm_le_one {g : SmoothRiemannianMetric I M}
     ‖tensorFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s) (σ := σ) θ‖ ≤ 1 :=
   LinearMap.mkContinuous_norm_le _ zero_le_one _
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPower_norm {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -300,7 +281,6 @@ theorem tensorFractionalPower_norm {g : SmoothRiemannianMetric I M}
     ‖tensorFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s) θ T‖ = ‖T‖ :=
   tensorHs.norm_fractionalPowerFun (I := I) (M := M) θ T
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPower_inner {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -331,7 +311,6 @@ theorem tensorFractionalPower_inner {g : SmoothRiemannianMetric I M}
     _ = tensorSobolevWeight (I := I) (M := M) i σ *
           (S.coeff i * T.coeff i) := by rw [hsum]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorFractionalPower_zero_coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -342,7 +321,6 @@ omit [NeZero (Module.finrank ℝ E)] in
       T.coeff i := by
   rw [tensorFractionalPower_coeff, tensorSobolevWeight_zero, one_mul]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPower_zero
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -355,7 +333,6 @@ theorem tensorFractionalPower_zero
   funext i
   rw [tensorFractionalPower_zero_coeff, tensorHs.cast_coeff]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPower_add_apply {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -403,7 +380,6 @@ def tensorFractionalPowerEquiv {g : SmoothRiemannianMetric I M} {r s : ℕ}
     rw [← mul_assoc, mul_inv_cancel₀ hw_pos.ne', one_mul]
   norm_map' T := tensorHs.norm_fractionalPowerFun (I := I) (M := M) θ T
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorFractionalPowerEquiv_apply
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -412,7 +388,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     tensorFractionalPowerEquiv (I := I) (M := M) (g := g) (r := r) (s := s) θ σ T =
       tensorFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s) θ T := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorFractionalPowerEquiv_coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -422,7 +397,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     (tensorFractionalPowerEquiv (I := I) (M := M) (g := g) (r := r) (s := s) θ σ T).coeff i =
       tensorSobolevWeight (I := I) (M := M) i θ * T.coeff i := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPowerEquiv_toContinuousLinearMap
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -433,7 +407,6 @@ theorem tensorFractionalPowerEquiv_toContinuousLinearMap
   refine ContinuousLinearMap.ext (fun T => ?_)
   rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPowerEquiv_symm {g : SmoothRiemannianMetric I M}
     {r s : ℕ}
@@ -443,7 +416,6 @@ theorem tensorFractionalPowerEquiv_symm {g : SmoothRiemannianMetric I M}
         (by ring : σ - 2 * θ - 2 * (-θ) = σ)
         (tensorFractionalPower (I := I) (M := M) (g := g) (r := r) (s := s) (-θ) T) := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPowerEquiv_norm {g : SmoothRiemannianMetric I M}
     {r s : ℕ}
@@ -455,7 +427,6 @@ namespace tensorHs
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma lambdaPower_weighted_summable {σ : ℝ} (sh : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
@@ -474,7 +445,6 @@ def lambdaPowerFun {σ : ℝ} (sh : ℝ)
   coeff i := tensorSobolevWeight (I := I) (M := M) i (sh / 2) * T.coeff i
   weighted_summable := lambdaPower_weighted_summable (I := I) (M := M) sh T
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma lambdaPowerFun_coeff {σ : ℝ} (sh : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ)
@@ -482,7 +452,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     (lambdaPowerFun (I := I) (M := M) sh T).coeff i =
       tensorSobolevWeight (I := I) (M := M) i (sh / 2) * T.coeff i := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma lambdaPowerFun_add {σ : ℝ} (sh : ℝ)
     (S T : tensorHs (I := I) (M := M) g r s σ) :
@@ -493,7 +462,6 @@ lemma lambdaPowerFun_add {σ : ℝ} (sh : ℝ)
   simp only [lambdaPowerFun_coeff, add_coeff]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma lambdaPowerFun_smul {σ : ℝ} (sh : ℝ) (c : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
@@ -503,7 +471,6 @@ lemma lambdaPowerFun_smul {σ : ℝ} (sh : ℝ) (c : ℝ)
   simp only [lambdaPowerFun_coeff, smul_coeff]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_lambdaPowerFun {σ : ℝ} (sh : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
@@ -553,7 +520,6 @@ def tensorLambdaPower {g : SmoothRiemannianMetric I M} {r s : ℕ}
       rw [one_mul]
       exact le_of_eq (tensorHs.norm_lambdaPowerFun (I := I) (M := M) sh T))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorLambdaPower_apply {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -561,7 +527,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     tensorLambdaPower (I := I) (M := M) (g := g) (r := r) (s := s) sh T =
       tensorHs.lambdaPowerFun (I := I) (M := M) sh T := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorLambdaPower_coeff {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -570,7 +535,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     (tensorLambdaPower (I := I) (M := M) (g := g) (r := r) (s := s) sh T).coeff i =
       tensorSobolevWeight (I := I) (M := M) i (sh / 2) * T.coeff i := rfl
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorLambdaPower_norm {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -578,7 +542,6 @@ theorem tensorLambdaPower_norm {g : SmoothRiemannianMetric I M}
     ‖tensorLambdaPower (I := I) (M := M) (g := g) (r := r) (s := s) sh T‖ = ‖T‖ :=
   tensorHs.norm_lambdaPowerFun (I := I) (M := M) sh T
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorLambdaPower_opNorm_le_one {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
@@ -586,7 +549,6 @@ theorem tensorLambdaPower_opNorm_le_one {g : SmoothRiemannianMetric I M}
     ‖tensorLambdaPower (I := I) (M := M) (g := g) (r := r) (s := s) (σ := σ) sh‖ ≤ 1 :=
   LinearMap.mkContinuous_norm_le _ zero_le_one _
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorLambdaPower_eq_fractionalPower
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -601,7 +563,6 @@ theorem tensorLambdaPower_eq_fractionalPower
   rw [tensorLambdaPower_coeff, tensorHs.cast_coeff,
     tensorFractionalPower_coeff]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorLambdaPower_zero_coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -612,7 +573,6 @@ omit [NeZero (Module.finrank ℝ E)] in
       T.coeff i := by
   rw [tensorLambdaPower_coeff, zero_div, tensorSobolevWeight_zero, one_mul]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPower_tensorHsInclusion
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -629,7 +589,6 @@ theorem tensorFractionalPower_tensorHsInclusion
   rw [tensorFractionalPower_coeff, tensorHsInclusion_coeff_apply,
     tensorHsInclusion_coeff_apply, tensorFractionalPower_coeff]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorFractionalPower_comp_tensorHsInclusion
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -655,7 +614,6 @@ def tensorHsEquivOfFractionalPower {g : SmoothRiemannianMetric I M}
     (tensorHs.castEquiv (I := I) (M := M)
       (by ring : σ - 2 * ((σ - τ) / 2) = τ))
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem tensorHsEquivOfFractionalPower_coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -672,7 +630,6 @@ omit [NeZero (Module.finrank ℝ E)] in
       ((σ - τ) / 2) σ T)).coeff i = _
   rw [tensorHs.castEquiv_coeff, tensorFractionalPowerEquiv_coeff]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsEquivOfFractionalPower_norm
     {g : SmoothRiemannianMetric I M} {r s : ℕ}

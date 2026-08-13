@@ -5,19 +5,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBou
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicciTowerTrace
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-/-!
-# Complete Shi estimates on canonical open windows
-
-This file is the HCG-facing boundary of the arbitrary-dimensional complete
-Shi route.  Its lower theorem has an explicit constant depending only on the
-dimension, the curvature bound, the buffered time slab, and the requested
-order.  Consequently the sequence wrapper chooses its constant before the
-sequence member; it does not try to uniformize a family of memberwise
-existential constants.
--/
 
 noncomputable section
 
@@ -26,8 +21,11 @@ universe u uE uH
 namespace DifferentialGeometry
 namespace HCGCompactness
 
-open Bundle Set Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle Set DifferentialGeometry.Tensor0SBundle
+
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.PDE.RicciFlow
 open scoped Manifold ContDiff BigOperators Bundle
 
@@ -134,14 +132,14 @@ private theorem metric_pde_start
       let tau : RealTimeInterval.RegularTime D :=
         ⟨s, hreg ⟨hs.1, hs.2.le⟩⟩
       have hraw := metricDerivAt (I := I) S hS tau x v w
-      simpa [SolutionFamily.ricciAt, PDE.RicciFlow.metricRicciAt,
+      simpa [SolutionFamily.ricciAt,
         metricRicciAt_apply_eq_ricciTensor] using hraw.hasDerivWithinAt
     exact (deriv_Ici_start halphaPsi _ _ (hmetricCont x v w) hecont hint).mono
       (fun _ hs ↦ hs.1)
   · let tau : RealTimeInterval.RegularTime D :=
       ⟨t, hreg ⟨halphaT, ht.2⟩⟩
     have hraw := metricDerivAt (I := I) S hS tau x v w
-    simpa [SolutionFamily.ricciAt, PDE.RicciFlow.metricRicciAt,
+    simpa [SolutionFamily.ricciAt,
       metricRicciAt_apply_eq_ricciTensor] using hraw.hasDerivWithinAt
 
 private theorem exp_bounds_log
@@ -236,7 +234,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 private theorem exists_trunc_tower
     {D : RealTimeInterval}
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     {w wLap : Nat → Real → M → Real}
     (levelC : Nat → Real)
     (K aScale T : Real)
@@ -459,10 +457,9 @@ private theorem exists_trunc_tower
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Legacy fixed-order adapter to the unsupported global complete estimate. -/
 private theorem complete_of_heat
     {D : RealTimeInterval}
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     {w wLap : Nat → Real → M → Real}
     (levelC : Nat → Real)
     (K aScale T : Real)
@@ -527,11 +524,10 @@ omit [NeZero (Module.finrank ℝ E)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Fixed-order complete Bernstein adapter from a generated cutoff family and
-Kato control through the requested order. -/
+omit [SigmaCompactSpace M] [T2Space M] in
 private theorem complete_of_cutoff
     {D : RealTimeInterval}
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     {w wLap : Nat → Real → M → Real}
     (levelC : Nat → Real)
     (K aScale T : Real)
@@ -598,11 +594,10 @@ omit [NeZero (Module.finrank ℝ E)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Fixed-order complete Bernstein adapter from a point-centered barrier-cutoff
-family and Kato control through the requested order. -/
+omit [SigmaCompactSpace M] [T2Space M] in
 private theorem complete_of_barrier
     {D : RealTimeInterval}
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     {w wLap : Nat → Real → M → Real}
     (levelC : Nat → Real)
     (K aScale T : Real)
@@ -669,13 +664,6 @@ private theorem complete_of_barrier
 
 end CompleteTruncation
 
-/-- An explicit constants-first envelope for the complete Shi estimate.
-
-The sum replaces two finite maxima: first over the reaction constants through
-order `N`, then over the resulting Ricci-derivative bounds.  On a buffered slab
-`alpha < beta <= psi` every summand is nonnegative, so this sum is a valid
-common envelope.  Its important API property is that it depends on no flow or
-sequence member. -/
 noncomputable def shiOpenConst
     (d : Nat) (C alpha beta psi : Real) (N : Nat) : Real :=
   let K := max 1 C
@@ -687,7 +675,6 @@ noncomputable def shiOpenConst
         ((towerConst c (K * (psi - alpha)) k) ^ 2 * K ^ 2 /
           ((beta - alpha) / 2) ^ k))
 
-/-- The explicit complete-Shi envelope is nonnegative. -/
 theorem shiOpenConst_nonneg
     (d : Nat) (C alpha beta psi : Real) (N : Nat) :
     0 <= shiOpenConst d C alpha beta psi N := by
@@ -695,14 +682,6 @@ theorem shiOpenConst_nonneg
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Constants-first complete Shi estimate on a buffered slab.
-
-This is the unique analytic proof frontier owned by this module.  Its future
-proof assembles the arbitrary-dimensional solution tower, the complete
-noncompact Bernstein maximum principle, the Ricci trace estimate, and metric
-equivalence to the complete left-anchor metric.  The displayed constant is
-independent of the particular flow, which is what permits the sequence
-wrapper below. -/
 theorem movingShi_of_bound
     {D : RealTimeInterval}
     (F : PointedFlowData.{u, uE, uH} (I := I) D)
@@ -1048,8 +1027,6 @@ theorem movingShi_of_bound
   have hsqrt := Real.sqrt_le_sqrt (hRicTerm.trans hTermSum)
   simpa [shiOpenConst, term, levels, delta, aScale, c, levelC, K, d] using hsqrt
 
-/-- A complete Ricci flow with a curvature bound on a larger left-buffered
-slab has moving Shi bounds through every prescribed finite order. -/
 theorem movingShi_complete
     {D : RealTimeInterval}
     (F : PointedFlowData.{u, uE, uH} (I := I) D)
@@ -1085,10 +1062,6 @@ theorem movingShi_complete
 
 namespace CurvBoundInput
 
-/-- Uniform complete Shi estimates on every canonical compact window of a
-pointed Ricci-flow sequence on an open interval.  The curvature constant is
-chosen on the larger left-buffered slab before the sequence member, and the
-same explicit Shi constant is then used for every member. -/
 theorem movingShi_open
     {a b : Real} (h0 : (0 : Real) ∈ Set.Ioo a b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))

@@ -1,34 +1,31 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieThreeArmCancel
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0JointSmooth
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetIntegral
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Set Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open Set Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Topology Manifold BigOperators ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -294,8 +291,6 @@ theorem lieSum_eq_arms
         hδ_lt hδ hδ'_lt hδ' s x k i]
     _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀ W x ![v, w]
 
-
-
 def rhsLow0Coeff
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -309,8 +304,6 @@ def rhsLow0Coeff
       lieCorr0Field (I := I) (M := M) g₀
         (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)
 
-
-
 def rhsLow1Coeff
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
@@ -321,8 +314,6 @@ def rhsLow1Coeff
   (-2 : ℝ) • linearizedRicciConnDiffOrder1Coeff (I := I) g₀ T T' hδ hδ' s +
     deTurckLieArm1Coeff (I := I) (M := M) g₀
       (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg
-
-
 
 theorem rhsLow0_path_joint
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -341,8 +332,6 @@ theorem rhsLow0_path_joint
   have hLC := hjoint_add (I := I) (M := M) g₀ 2 _ _ hL hC
   have hR' := hjoint_smul (I := I) (M := M) g₀ 2 _ (-2 : ℝ) hR
   simpa only [rhsLow0Coeff] using hjoint_add (I := I) (M := M) g₀ 2 _ _ hR' hLC
-
-
 
 theorem rhsLow1_path_joint
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -460,4 +449,4 @@ theorem rhsSlope_eq_arms
   simp only [unitModel_add_app]
   ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

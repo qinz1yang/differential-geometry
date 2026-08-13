@@ -3,25 +3,6 @@ import DifferentialGeometry.Geometry.Metric.Pullback
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Bundle Manifold Set Metric Module
@@ -32,7 +13,6 @@ namespace Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)]
-
 
 noncomputable def sphereMap (e : E ≃ₗᵢ[ℝ] E) :
     sphere (0 : E) 1 → sphere (0 : E) 1 :=
@@ -50,7 +30,6 @@ theorem sphereMap_contMDiff (e : E ≃ₗᵢ[ℝ] E) :
   ContMDiff.codRestrict_sphere
     (e.toContinuousLinearMap.contMDiff.comp contMDiff_coe_sphere) _
 
-
 noncomputable def sphereDiffeo (e : E ≃ₗᵢ[ℝ] E) :
     sphere (0 : E) 1 ≃ₘ⟮𝓡 n, 𝓡 n⟯ sphere (0 : E) 1 where
   toFun := sphereMap e
@@ -63,7 +42,6 @@ noncomputable def sphereDiffeo (e : E ≃ₗᵢ[ℝ] E) :
 @[simp] theorem sphereDiffeo_coe (e : E ≃ₗᵢ[ℝ] E) (x : sphere (0 : E) 1) :
     ((sphereDiffeo (n := n) e x : sphere (0 : E) 1) : E) = e (x : E) := rfl
 
-/-- Restriction to the unit sphere determines an ambient linear isometry. -/
 theorem sphereDiffeo_inj :
     Function.Injective (sphereDiffeo (E := E) (n := n)) := by
   intro e f hef
@@ -91,17 +69,12 @@ theorem sphereDiffeo_inj :
     _ = f (‖x‖ • (y : E)) := (map_smul f ‖x‖ (y : E)).symm
     _ = f x := congrArg f hxy
 
-/-- `mfderiv` of an ambient linear isometry, applied to a vector: `d e_y w = e w`
-(the derivative of a linear map is the map itself). -/
 private theorem mfderiv_lie_apply (e : E ≃ₗᵢ[ℝ] E) (y w : E) :
     mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) (⇑e) y w = e w := by
   have h : mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) (⇑e) y = e.toContinuousLinearMap := by
     rw [mfderiv_eq_fderiv, show (⇑e : E → E) = ⇑(e.toContinuousLinearMap) from rfl]
     simp only [ContinuousLinearMap.fderiv]
   rw [h]; rfl
-
-
-
 
 theorem mfderiv_incl_sphereDiffeo (e : E ≃ₗᵢ[ℝ] E) (x : sphere (0 : E) 1)
     (v : TangentSpace (𝓡 n) x) :
@@ -128,8 +101,6 @@ theorem mfderiv_incl_sphereDiffeo (e : E ≃ₗᵢ[ℝ] E) (x : sphere (0 : E) 1
   rw [← ContinuousLinearMap.comp_apply, ← e1, hcomp, e2]
   exact mfderiv_lie_apply e _ _
 
-
-
 theorem roundInner_sphereDiffeo (e : E ≃ₗᵢ[ℝ] E) (x : sphere (0 : E) 1)
     (v w : TangentSpace (𝓡 n) x) :
     roundInner (sphereDiffeo (n := n) e x)
@@ -139,9 +110,6 @@ theorem roundInner_sphereDiffeo (e : E ≃ₗᵢ[ℝ] E) (x : sphere (0 : E) 1)
   rw [roundInner_apply, roundInner_apply,
     mfderiv_incl_sphereDiffeo, mfderiv_incl_sphereDiffeo]
   exact e.inner_map_map _ _
-
-
-
 
 theorem pullbackMetric_round_eq (e : E ≃ₗᵢ[ℝ] E) :
     Diffeomorph.pullbackMetric (roundMetric (E := E) (n := n)) (sphereDiffeo (n := n) e)

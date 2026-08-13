@@ -11,7 +11,7 @@ import Mathlib.Data.Real.Sqrt
 
 noncomputable section
 
-open Manifold MeasureTheory Set Filter Bundle Tensor0SBundle
+open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
 
 namespace DifferentialGeometry

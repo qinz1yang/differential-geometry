@@ -1,20 +1,14 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.Potential
 import DifferentialGeometry.Geometry.Operator.Operators
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
 
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 noncomputable section
 
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff
 
 universe u uE uH
@@ -25,8 +19,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
-
-
 
 theorem potential_grad
     (g : SmoothRiemannianMetric I M) (n : Nat) {tau : Real}
@@ -81,8 +73,6 @@ theorem potential_grad_sq
   simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
   field_simp [(hpos x).ne']
 
-
-
 omit [TopologicalSpace M] in
 theorem potential_square
     (n : Nat) {tau : Real} {v : M -> Real}
@@ -93,8 +83,6 @@ theorem potential_square
   rw [Real.log_div
     (mul_ne_zero (hpos x).ne' (hpos x).ne') (prefactor_pos n htau).ne']
   ring
-
-
 
 theorem square_pot_energy
     (g : SmoothRiemannianMetric I M) (n : Nat) {tau : Real}

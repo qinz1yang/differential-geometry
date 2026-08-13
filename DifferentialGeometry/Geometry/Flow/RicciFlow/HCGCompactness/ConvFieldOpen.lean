@@ -1,22 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldMain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvDiag
 import DifferentialGeometry.Geometry.Curvature.Realized.TimeInterval
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Open-time convergence for the P4 metric field
-
-This file isolates the convergence predicate needed to diagonalize the checked
-fixed-window `ConvOut` producers over the canonical compact windows of one open
-time interval.  It does not choose new bump families or add endpoint data.
--/
 
 noncomputable section
 
 open Set Function Filter Bundle Manifold TopologicalSpace
 open scoped Manifold Topology ContDiff BigOperators
-open DifferentialGeometry.Integral.Connection
 
 namespace DifferentialGeometry
 namespace HCGCompactness
@@ -31,8 +25,6 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-/-- Uniform compact-open smooth convergence of the fixed bump-extended metric
-sequence along an explicitly supplied reindexing, on one closed time window. -/
 structure BumpMetricConv
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -69,7 +61,6 @@ namespace BumpMetricConv
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Compact-window convergence persists under a further strict subsequence. -/
 theorem comp
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -99,8 +90,6 @@ theorem comp
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Read convergence proved after reindexing the comparison maps as convergence
-of the original bump-extended sequence along the composed subsequence. -/
 theorem of_compSubseq
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -131,8 +120,6 @@ theorem of_compSubseq
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- If a tail of a reindexed metric sequence converges on a compact window,
-then the whole reindexed sequence has the same asymptotic convergence. -/
 theorem of_tail
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -162,7 +149,6 @@ theorem of_tail
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Window convergence restricts to a smaller closed time interval. -/
 theorem mono
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -188,8 +174,6 @@ theorem mono
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Window convergence is unchanged by pointwise replacement of the limit
-family on that window. -/
 theorem congr
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -217,8 +201,6 @@ theorem congr
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Two window limits of the same reindexed bump-extended sequence agree at
-every time belonging to both windows. -/
 theorem unique
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -255,8 +237,6 @@ namespace ConvOut
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Forget a fixed-window `ConvOut` down to the convergence predicate used by
-the open-window diagonal. -/
 theorem bump_conv
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -269,8 +249,6 @@ theorem bump_conv
 
 end ConvOut
 
-/-- One subsequence and one limit metric family converging on every canonical
-compact window of an open time interval. -/
 structure OpenConvOut
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -291,8 +269,6 @@ structure OpenConvOut
 
 namespace OpenConvOut
 
-/-- Read an open-interval convergence output as the existing fixed-window
-`ConvOut` package on one canonical window. -/
 noncomputable def at_window
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -312,8 +288,6 @@ noncomputable def at_window
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- The open-interval output supplies the same convergence on every closed
-time interval compactly contained in the open interval. -/
 theorem conv_Icc
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -331,10 +305,6 @@ end OpenConvOut
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- Diagonalize compatible fixed-window convergence producers and glue their
-uniquely determined metric limits into one open-interval output.  The bump
-family and the underlying extended metric sequence are fixed before this
-theorem is called. -/
 theorem exists_openConv
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -405,10 +375,6 @@ theorem exists_openConv
   }⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Produce one open-interval convergence output from the four raw
-fixed-window hypotheses of `convOut`, supplied on every canonical compact
-window.  The original bump family is fixed once; each prescribed refinement
-is handled by reindexing that family and rerunning `convOut`. -/
 theorem exists_openConv_raw
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted

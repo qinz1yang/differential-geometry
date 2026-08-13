@@ -1,8 +1,7 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Product.Bundle
-
 
 noncomputable section
 

@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Integration.L2.Pairing.Defs
 
 noncomputable section
 
-open Manifold MeasureTheory Set Filter Bundle Tensor0SBundle
+open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
 
 namespace DifferentialGeometry

@@ -13,7 +13,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -393,5 +393,5 @@ theorem mfderiv_scalar_eq_chart_fderiv
   rfl
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

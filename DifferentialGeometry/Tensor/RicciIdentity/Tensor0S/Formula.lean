@@ -1,19 +1,17 @@
 import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Realization
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.Tensor.RicciIdentity
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.SlotAlgebra
 open scoped Manifold ContDiff BigOperators
 
@@ -22,13 +20,6 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
-
-
-
-
 
 private theorem tensor0S_commutator_expansion_from_realizes
     [IsManifold I 1 M] [IsManifold I 2 M]
@@ -908,9 +899,6 @@ private theorem tensor0S_commutator_expansion_from_realizes
           (fun q : Fin s => Vsec q x) := by
           ring
 
-
-
-
 theorem tensor0S_ricciIdentity_with_torsion
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -999,9 +987,6 @@ theorem tensor0S_ricciIdentity_of_torsionFree
   simp [hzero, torsionCorrection0SAt, ht] at h
   simpa using h
 
-
-
-
 def RicciIdentity0SAt {x : M} {s : ℕ}
     (comm curvatureAction :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2) x) :
@@ -1016,4 +1001,4 @@ theorem ricci_identity_0s {x : M} {s : ℕ}
     comm = curvatureAction :=
   h
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Tensor.RicciIdentity

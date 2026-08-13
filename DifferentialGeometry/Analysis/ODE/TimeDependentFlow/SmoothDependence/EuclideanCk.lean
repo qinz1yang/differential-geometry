@@ -6,7 +6,7 @@ open Set Function Filter Metric
 open scoped Topology NNReal ContDiff
 open DifferentialGeometry.Analysis.ODE.Flow
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 theorem linearizationNorm_continuousOn_box
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {f : ℝ → E → E}
@@ -171,4 +171,4 @@ theorem exists_isLocalFlow_contDiffOn_Ck
     · change R₀ / 8 ≤ (rN : ℝ); linarith
     · change Tcap / 8 ≤ εN; linarith
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

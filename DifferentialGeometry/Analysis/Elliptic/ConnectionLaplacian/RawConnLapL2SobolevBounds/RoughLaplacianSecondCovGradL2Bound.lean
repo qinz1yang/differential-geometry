@@ -2,17 +2,20 @@ import DifferentialGeometry.Geometry.Curvature.Order2Defect.MetricTraceFrame
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.PointwiseToL2Packaging
 import DifferentialGeometry.Geometry.Curvature.FiberNormParseval.Slot0CurryReconstruction
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -320,7 +323,7 @@ private theorem secondCovDeriv_unit_frame_fiberNormSq_le
       (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
       (fun y : M => S.toSection y) x) (fun m => ?_)
   exact
-    (Integral.Connection.tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
+    (DifferentialGeometry.Geometry.Curvature.tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
     (I := I) (M := M) g s S (X := smoothOrthoFrame (I := I) g x i)
     (Y := smoothOrthoFrame (I := I) g x i)
     (smoothOrthoFrame_smooth (I := I) g x i) (smoothOrthoFrame_smooth (I := I) g x i) x m).symm
@@ -442,8 +445,8 @@ theorem exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen
   rw [hHH_def] at hpack
   exact hpack
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

@@ -1,17 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivPullback
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ScalarGradient
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-/-!
-# Cross-model pullback naturality for metric covariant-derivative towers
-
-This file is the cross-model companion of `MetricCovDerivPullback`.  It keeps
-the base field metric-valued: simultaneous pullback of the metric being
-differentiated and the reference metric transports the complete covariant
-derivative tower and its pointwise norm.
--/
 
 noncomputable section
 
@@ -19,9 +13,10 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff BigOperators
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.Integral.Connection.CovariantDerivative
-open Tensor0SBundle
+
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Geometry.Curvature.CovariantDerivative
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [CompleteSpace E] [NeZero (Module.finrank Real E)]
@@ -81,8 +76,6 @@ private theorem metricCovDeriv_succ_eval_smooth_slotsC
     (metricCovDeriv (I := I') h gRef a) x
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
-/-- Cross-model naturality of the full background metric-covariant derivative
-tower under simultaneous pullback of both metrics. -/
 theorem metricCovDeriv_pullbackCross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
@@ -259,8 +252,6 @@ theorem metricCovDeriv_pullbackCross
       simpa [hX, hV, pushFwdSectionCross_apply_at_image] using hsmooth
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
-/-- Cross-model transport of the metric-covariant difference tower, evaluated
-on arbitrary source slots. -/
 theorem metricDiffCovDerivAt_pullbackCross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
@@ -303,8 +294,6 @@ theorem metricDiffCovDerivAt_pullbackCross
 
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
-/-- The Ricci tensor of a cross-model pullback metric is the evaluated
-pullback of the target Ricci tensor. -/
 theorem ricciTensor_cross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
@@ -397,8 +386,6 @@ theorem ricciTensor_cross
 
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
-/-- The canonical Ricci `(0,2)` tensor of a cross-model pullback metric
-evaluates as the pullback of the target Ricci tensor. -/
 theorem metricRicci_cross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
@@ -444,9 +431,6 @@ omit [CompleteSpace E]
   [NeZero (Module.finrank ℝ E)]
   [CompleteSpace F]
   [NeZero (Module.finrank ℝ F)] in
-/-- Squared norms of covariant tensors are preserved by a cross-model
-pullback metric when the source tensor is supplied by its evaluated pullback
-relation. -/
 theorem normSq0S_pullbackCross_eval_of_orthonormal
     [SigmaCompactSpace M] [T2Space M]
     [IsManifold I 1 M] [IsManifold J 1 N]
@@ -517,7 +501,6 @@ theorem normSq0S_pullbackCross_eval_of_orthonormal
 
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
-/-- Scalar curvature is preserved by a cross-model pullback metric. -/
 theorem metricScalar_cross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
@@ -591,8 +574,6 @@ theorem metricScalar_cross
 
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
-/-- The squared norm of the canonical Ricci tensor is preserved by a
-cross-model pullback metric. -/
 theorem ricciNormSq_cross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
@@ -619,8 +600,6 @@ theorem ricciNormSq_cross
 
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
-/-- The canonical pointwise trace-free Ricci norm square is preserved by a
-cross-model pullback metric. -/
 theorem tfRicNormSq_cross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
@@ -643,8 +622,6 @@ theorem tfRicNormSq_cross
     ricciNormSq_cross (I := I) (J := J)]
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
-/-- Pointwise metric-difference seminorms are invariant under simultaneous
-cross-model pullback of the compared metrics and the reference metric. -/
 theorem metricDerivNorm_pullbackCross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]

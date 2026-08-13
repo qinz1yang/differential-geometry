@@ -1,16 +1,16 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
-import DifferentialGeometry.Geometry.Flow.VectorField
-import DifferentialGeometry.Geometry.Flow.LieDerivativeMetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.VectorField
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeMetric
 import DifferentialGeometry.Analysis.Parabolic.StrictParabolicity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckShortTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckVFTimeFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckSolutionC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.GlobalFlowOnClosed
-import DifferentialGeometry.Geometry.Metric.Defs
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciTensor
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.RicciTensor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Naturality.LieDerivativeMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.ChainRule
 import Mathlib.Analysis.Calculus.Deriv.Basic
@@ -19,7 +19,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeAssembly.FlatInteri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeAssembly.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeFlow.ConjugatingFlowProperties
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
@@ -27,17 +30,18 @@ open scoped Manifold ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.PDE
 open DifferentialGeometry.PDE.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.PDE.RicciFlow.Pullback
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 
 theorem ricci_flow_short_time_existence
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
       [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-      [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [IsManifold I ∞ M] [CompactSpace M]
+      [I.Boundaryless] [T2Space M]
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, 0 < T ∧ ∃ g_fam : ℝ → SmoothRiemannianMetric I M,
       g_fam 0 = g₀ ∧
@@ -49,7 +53,7 @@ theorem ricci_flow_short_time_existence
       (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
           ((-2 : ℝ) *
-            DifferentialGeometry.Integral.Connection.ricciTensor
+            DifferentialGeometry.Geometry.Curvature.ricciTensor
               (I := I) (g_fam t) x v w) (Set.Ici 0) t) := by
   obtain ⟨T_DT, g_DT, hDT, hJ⟩ :=
     DifferentialGeometry.PDE.RicciFlow.deTurckRicci_solution_with_jointReg
@@ -68,7 +72,7 @@ theorem ricci_flow_short_time_existence
         (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
           HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
             ((-2 : ℝ) *
-              DifferentialGeometry.Integral.Connection.ricciTensor
+              DifferentialGeometry.Geometry.Curvature.ricciTensor
                 (I := I) (g_fam t) x v w) (Set.Ici 0) t) := by
     have hDT_deriv' : ∀ t ∈ Set.Ico (0 : ℝ) T_DT, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (g_DT s).inner x v w)
@@ -103,7 +107,7 @@ theorem ricci_flow_short_time_existence
     have h_gramOnE0_T : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun q : ℝ × M =>
-            Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j
               (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ (chartAt H α).source) := by
       intro α i j
@@ -112,7 +116,7 @@ theorem ricci_flow_short_time_existence
     have h_C2_T : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
         ContinuousOn
           (fun q : ℝ × M => iteratedFDeriv ℝ k
-            (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j)
+            (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j)
             (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α) := by
       intro α i j k hk
@@ -157,8 +161,8 @@ theorem short_time_joint
       [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-      [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [IsManifold I ∞ M] [CompactSpace M]
+      [I.Boundaryless] [T2Space M]
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, 0 < T ∧ ∃ g_fam : ℝ → SmoothRiemannianMetric I M,
       g_fam 0 = g₀ ∧
@@ -170,7 +174,7 @@ theorem short_time_joint
       (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
           ((-2 : ℝ) *
-            DifferentialGeometry.Integral.Connection.ricciTensor
+            DifferentialGeometry.Geometry.Curvature.ricciTensor
               (I := I) (g_fam t) x v w) (Set.Ici 0) t) := by
   obtain ⟨T_DT, g_DT, hDT, hJ⟩ :=
     DifferentialGeometry.PDE.RicciFlow.deTurckRicci_solution_with_jointReg
@@ -189,7 +193,7 @@ theorem short_time_joint
         (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
           HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
             ((-2 : ℝ) *
-              DifferentialGeometry.Integral.Connection.ricciTensor
+              DifferentialGeometry.Geometry.Curvature.ricciTensor
                 (I := I) (g_fam t) x v w) (Set.Ici 0) t) := by
     have hDT_deriv' : ∀ t ∈ Set.Ico (0 : ℝ) T_DT, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (g_DT s).inner x v w)
@@ -224,7 +228,7 @@ theorem short_time_joint
     have h_gramOnE0_T : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun q : ℝ × M =>
-            Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j
               (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ (chartAt H α).source) := by
       intro α i j
@@ -233,7 +237,7 @@ theorem short_time_joint
     have h_C2_T : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
         ContinuousOn
           (fun q : ℝ × M => iteratedFDeriv ℝ k
-            (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j)
+            (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j)
             (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α) := by
       intro α i j k hk

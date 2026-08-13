@@ -4,6 +4,9 @@ import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Geometry.Manifold.VectorBundle.Tensoriality
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Topology.Algebra.Module.FiniteDimension
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -12,8 +15,8 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 section RiemannOpBundling
 
@@ -799,6 +802,7 @@ private def riemannOp_Xslot
     change riemannOpFun cov x (c • v) w u = c • riemannOpFun cov x v w u
     exact riemannOpFun_smul_left (cov := cov) x c v w u
 
+omit [CompleteSpace E] [SigmaCompactSpace M] [BoundarylessManifold I M] in
 noncomputable def riemannOp
     (cov : CovariantDerivative I F V)
     [hcov : CovariantDerivative.ContMDiffCovariantDerivative cov ∞] (x : M) :
@@ -849,6 +853,6 @@ lemma riemannOp_swap
 
 end RiemannOpBundling
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

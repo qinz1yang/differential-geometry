@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientRefold
-import DifferentialGeometry.Geometry.Flow.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmCorrectionFieldBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
@@ -10,12 +10,16 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2Jet
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureRefoldMonomialFibreNormBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficients
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldInputSlotSymmetrization
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
@@ -25,12 +29,12 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -180,7 +184,7 @@ lemma linearizedKoszulCovec_zero_weight (g' : SmoothRiemannianMetric I M) (x : M
 
 def sharpRaisedKoszulVec (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (x : M) (u ζ : TangentSpace I x) : TangentSpace I x :=
-  DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g₁ x
+  DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g₁ x
     (linearizedKoszulCovec (I := I) g₀ S x u ζ)
 
 omit [BoundarylessManifold I M] in
@@ -192,9 +196,9 @@ lemma sharpRaisedKoszulVec_add_fst (g₀ g₁ : SmoothRiemannianMetric I M)
         sharpRaisedKoszulVec (I := I) g₀ g₁ S x u' ζ := by
   rw [sharpRaisedKoszulVec, sharpRaisedKoszulVec, sharpRaisedKoszulVec,
     linearizedKoszulCovec_add_fst,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def, map_add]
+    DifferentialGeometry.Geometry.Operator.metricSharp_def,
+    DifferentialGeometry.Geometry.Operator.metricSharp_def,
+    DifferentialGeometry.Geometry.Operator.metricSharp_def, map_add]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -203,8 +207,8 @@ lemma sharpRaisedKoszulVec_smul_fst (g₀ g₁ : SmoothRiemannianMetric I M)
     sharpRaisedKoszulVec (I := I) g₀ g₁ S x (c • u) ζ =
       c • sharpRaisedKoszulVec (I := I) g₀ g₁ S x u ζ := by
   rw [sharpRaisedKoszulVec, sharpRaisedKoszulVec, linearizedKoszulCovec_smul_fst,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def, map_smul]
+    DifferentialGeometry.Geometry.Operator.metricSharp_def,
+    DifferentialGeometry.Geometry.Operator.metricSharp_def, map_smul]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -215,9 +219,9 @@ lemma sharpRaisedKoszulVec_add_snd (g₀ g₁ : SmoothRiemannianMetric I M)
         sharpRaisedKoszulVec (I := I) g₀ g₁ S x u ζ' := by
   rw [sharpRaisedKoszulVec, sharpRaisedKoszulVec, sharpRaisedKoszulVec,
     linearizedKoszulCovec_add_snd,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def, map_add]
+    DifferentialGeometry.Geometry.Operator.metricSharp_def,
+    DifferentialGeometry.Geometry.Operator.metricSharp_def,
+    DifferentialGeometry.Geometry.Operator.metricSharp_def, map_add]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -226,8 +230,8 @@ lemma sharpRaisedKoszulVec_smul_snd (g₀ g₁ : SmoothRiemannianMetric I M)
     sharpRaisedKoszulVec (I := I) g₀ g₁ S x u (c • ζ) =
       c • sharpRaisedKoszulVec (I := I) g₀ g₁ S x u ζ := by
   rw [sharpRaisedKoszulVec, sharpRaisedKoszulVec, linearizedKoszulCovec_smul_snd,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def, map_smul]
+    DifferentialGeometry.Geometry.Operator.metricSharp_def,
+    DifferentialGeometry.Geometry.Operator.metricSharp_def, map_smul]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -235,7 +239,7 @@ lemma sharpRaisedKoszulVec_zero_weight (g₀ g₁ : SmoothRiemannianMetric I M) 
     (u ζ : TangentSpace I x) :
     sharpRaisedKoszulVec (I := I) g₀ g₁ (0 : SmoothCcTensor g₀ 0 2) x u ζ = 0 := by
   rw [sharpRaisedKoszulVec, linearizedKoszulCovec_zero_weight,
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_def, map_zero]
+    DifferentialGeometry.Geometry.Operator.metricSharp_def, map_zero]
 
 def sharpGradKoszulKernelBilin (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (p q : TangentSpace I x) :
@@ -527,7 +531,7 @@ lemma sharpRaisedKoszulVec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
         (sharpRaisedKoszulVec (I := I) g₀ g₁ S b (U b) (Z b))) := by
-  apply DifferentialGeometry.Integral.DivergenceTheorem.metricSharp_contMDiff_total (I := I) g₁
+  apply DifferentialGeometry.Geometry.Operator.metricSharp_contMDiff_total (I := I) g₁
     (cv := fun b : M => linearizedKoszulCovec (I := I) g₀ S b (U b) (Z b))
   intro α j
   exact linearizedKoszulCovec_basis_contMDiffOn_generic (I := I) (M := M) g₀ S Z U α j

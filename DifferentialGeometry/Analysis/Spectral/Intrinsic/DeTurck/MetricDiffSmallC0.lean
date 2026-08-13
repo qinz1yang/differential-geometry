@@ -2,34 +2,23 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
 import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-/-!
-# Endpoint smallness of a metric difference
-
-Joint `C^0` chart-Gram control up to a closed initial edge, together with
-equality to a fixed metric at that edge, makes the metric difference uniformly
-small in the fixed metric's fibre operator norm on one common positive window.
-
-The compactness step is carried out on the fixed metric's unit tangent bundle.
-Only repeated-vector evaluations are needed there.  A separate polarization
-lemma then promotes the uniform quadratic bound to the bilinear
-`gFibreOpBound` consumed by metric realization and weak parabolic coercivity.
--/
-
 noncomputable section
 
-open Bundle Filter Set Tensor0SBundle
+open Bundle Filter Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -38,9 +27,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-/-- A jointly continuous scalar family which vanishes on one compact slice is
-uniformly small on that compact factor for all parameters sufficiently close
-to the distinguished parameter. -/
 theorem jointSmall_compact
     {P X : Type*} [TopologicalSpace P] [TopologicalSpace X] [CompactSpace X]
     (f : P → X → Real) (p₀ : P)
@@ -76,9 +62,6 @@ theorem jointSmall_compact
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M] in
-/-- A uniform bound on the quadratic form of a symmetric bilinear field over
-the fixed metric's unit tangent bundle implies the intrinsic bilinear
-operator bound with the same constant. -/
 theorem gOpBound_unitQuad
     (q : SmoothRiemannianMetric I M)
     (A : ∀ x : M, TangentSpace I x →L[Real]
@@ -182,11 +165,6 @@ theorem gOpBound_unitQuad
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- Joint chart-Gram continuity at a closed initial edge and equality to the
-background metric at that edge produce one positive window on which the
-fixed-background metric difference is uniformly small in `gFibreOpBound`.
-
-The selected `T` is common to all base points and tangent vectors. -/
 theorem metricDiff_smallC0
     (g : Real → SmoothRiemannianMetric I M)
     (q : SmoothRiemannianMetric I M) {a b δ : Real}
@@ -311,16 +289,8 @@ theorem metricDiff_smallC0
       (metricDifferenceCcTensor (I := I) (M := M) q (g t)))
     hunit
 
-/-! ## Transfer from a fixed initial metric to a moving carrier -/
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-/-- If two metrics are both `Îµ`-close to `q`, then their difference is
-`2Îµ / (1 - Îµ)`-small relative to the first metric.
-
-The proof uses only quadratic forms.  A `gâ‚€`-unit vector has `q`-length at
-most `(1 - Îµ)â»Â¹`; polarization then recovers the full bilinear operator
-bound. -/
 theorem pairOpBound
     (q g₀ g₁ : SmoothRiemannianMetric I M) {ε : Real}
     (hε₀ : 0 ≤ ε) (hε₁ : ε < 1)
@@ -446,4 +416,4 @@ theorem metricPair_smallC0
     ring
   simpa only [hratio] using hp
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

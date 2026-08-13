@@ -4,7 +4,7 @@ import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -157,4 +157,4 @@ theorem chart_cover_flow_bijective_two_sided_on_short_time
     ⟨hs.1, lt_of_lt_of_le hs.2 (min_le_right _ _)⟩
   exact ⟨hBij_fwd s hs_S₁, hBij_rev s hs_S₂⟩
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

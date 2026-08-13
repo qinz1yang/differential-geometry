@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Connection.Realization.TensorNabla
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Connection.Realization.Connection
 import Mathlib.Geometry.Manifold.VectorBundle.Tensoriality
+open DifferentialGeometry.Geometry.Connection.Realization
 
 
 noncomputable section
@@ -11,6 +12,7 @@ set_option backward.isDefEq.respectTransparency false
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
 
+namespace DifferentialGeometry
 namespace HomConnection
 
 variable
@@ -436,4 +438,5 @@ theorem homBundleCovariantDerivative_apply
 
 end HomConnection
 
+end DifferentialGeometry
 end

@@ -4,14 +4,6 @@ import DifferentialGeometry.Geometry.Metric.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 universe u uE uH
@@ -25,11 +17,6 @@ open scoped Manifold ContDiff Bundle
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
-
-
-
-
-
 
 structure PointedRiemannianManifold
     (I : ModelWithCorners Real E H) where
@@ -78,8 +65,6 @@ def repoint (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     PointedRiemannianSeq.{u, uE, uH} (I := I) where
   obj i := (X.obj i).repoint (b i)
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem connected_subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -95,12 +80,6 @@ theorem connected_subseq
   simpa only [subseq] using hX (f k)
 
 end PointedRiemannianSeq
-
-
-
-
-
-
 
 def MetricComplete {I : ModelWithCorners Real E H}
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I)) : Prop :=
@@ -123,8 +102,6 @@ def MetricComplete {I : ModelWithCorners Real E H}
   CompleteSpace X.M
 
 namespace MetricComplete
-
-
 
 omit [CompleteSpace E] in
 theorem complete {I : ModelWithCorners Real E H}

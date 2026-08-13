@@ -2,15 +2,19 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.FDerivDecomp
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartComponents
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 open Bundle
 open scoped Manifold ContDiff BigOperators
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -209,4 +213,4 @@ theorem christoffel_Ck_bound_from_metric_Ck1 [I.Boundaryless]
     intro j_idx hj y hy
     exact (hCj_bd j_idx y hy).trans (hC_ge j_idx hj)
 
-end DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+end DifferentialGeometry.Analysis.Sobolev.HebeyBlock

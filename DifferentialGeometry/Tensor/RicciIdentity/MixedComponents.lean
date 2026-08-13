@@ -6,24 +6,17 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Specia
 import DifferentialGeometry.Tensor.Auxiliary.DerivationAlgebra
 import DifferentialGeometry.Tensor.RSTensor.Components
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
+open DifferentialGeometry.Tensor.Auxiliary
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Tensor.RicciIdentity
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -34,20 +27,15 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 section MixedComponentAlgebra
 
-
 def deltaMulti {Idx : Type*} {r : ℕ} [DecidableEq Idx]
     (L A : Fin r -> Idx) : Real :=
   if A = L then 1 else 0
-
-
 
 def covariantCurvAction {Idx : Type*} [Fintype Idx] {n : ℕ}
     (R : Idx -> Idx -> Idx -> Idx -> Real) (i j : Idx)
     (A : (Fin n -> Idx) -> Real) (K : Fin n -> Idx) : Real :=
   -∑ q : Fin n, ∑ m : Idx,
     R i j m (K q) * A (Function.update K q m)
-
-
 
 theorem contractUpper_components_eq_component_applyInput
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : ℕ} {x : M}
@@ -255,10 +243,6 @@ private lemma contractUpper_covariantCurvAction_deltaMulti
             intro q
             exact sum_delta_update_pair R i j L q beta K
 
-
-
-
-
 theorem contract_covariantCurvAction_deltaMulti_eq_mixedCurvAction
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : ℕ}
     (R : Idx -> Idx -> Idx -> Idx -> Real) (i j : Idx)
@@ -279,9 +263,6 @@ theorem contract_covariantCurvAction_deltaMulti_eq_mixedCurvAction
   simp_rw [contractUpper_deltaMulti]
   ring
 
-
-
-
 def mixedCurvAction {Idx : Type*} [Fintype Idx] {r s : ℕ}
     (R : Idx -> Idx -> Idx -> Idx -> Real) (i j : Idx)
     (beta : (Fin r -> Idx) -> (Fin s -> Idx) -> Real)
@@ -291,19 +272,10 @@ def mixedCurvAction {Idx : Type*} [Fintype Idx] {r s : ℕ}
   (∑ q : Fin s, ∑ m : Idx,
     R i j m (K q) * beta L (Function.update K q m))
 
-
-
 def MixedRicciIdentityCoord {Idx : Type*} [Fintype Idx] {r s : ℕ}
     (R : Idx -> Idx -> Idx -> Idx -> Real) (i j : Idx)
     (commBeta beta : (Fin r -> Idx) -> (Fin s -> Idx) -> Real) : Prop :=
   ∀ L K, commBeta L K = mixedCurvAction R i j beta L K
-
-
-
-
-
-
-
 
 theorem mixedRicciIdentityCoord_of_contract_probe_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : ℕ}
@@ -341,12 +313,6 @@ theorem mixedRicciIdentityCoord_of_contract_probe_identities
           rw [hcontractCov L K, hprobeContract]
   rw [hcomm, mixedCurvAction]
   exact contract_covariantCurvAction_deltaMulti_eq_mixedCurvAction R i j L K beta
-
-
-
-
-
-
 
 theorem mixedRicciIdentityCoord_of_second_product_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : ℕ}
@@ -416,8 +382,6 @@ theorem mixedRicciIdentityCoord_of_second_product_identities
           refine Finset.sum_congr rfl fun A _ => ?_
           rw [hcommProbe L A]
 
-
-
 omit [IsManifold I ∞ M] in
 theorem coordDeriv_applyInput_eq_contractUpper
     [IsManifold I 1 M] [IsManifold I 2 M]
@@ -454,15 +418,6 @@ theorem coordDeriv_applyInput_eq_contractUpper
   rw [DifferentialGeometry.Tensor.Coordinates.coordDeriv0SAt_applyInput_eq_sum (I := I) X T theta x₀
     K]
   rfl
-
-
-
-
-
-
-
-
-
 
 theorem mixedRicciIdentityCoord_of_coordinate_second_product
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : ℕ}
@@ -549,4 +504,4 @@ theorem mixedRicciIdentityCoord_of_coordinate_second_product
 
 end MixedComponentAlgebra
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Tensor.RicciIdentity

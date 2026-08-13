@@ -1,16 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelGaussian
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.RoughCarleson
 
-/-!
-# The near part of the early rough heat potential
-
-For `0 < s <= t / 2`, the heat kernel has scale `sqrt (t / 2)`.  Integrating
-over the spatial ball `B(x, sqrt t)`, the inverse-volume scale of the kernel
-is cancelled exactly by the `R^n` factor in the source Carleson estimate.
-The result is a time-independent `Y^0 -> C^0` bound for the actual Bochner
-heat potential on that near parabolic cylinder.
--/
-
 noncomputable section
 
 open MeasureTheory Real Set
@@ -26,7 +16,6 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- The near spatial part of the early Duhamel cylinder. -/
 def earlyCyl (t : ℝ) (x : V) : Set (ℝ × V) :=
   Set.Ioc 0 (t / 2) ×ˢ Metric.ball x (heatScale t)
 
@@ -48,13 +37,10 @@ theorem earlyCyl_sub {t : ℝ} (ht : 0 ≤ t) (x : V) :
   have hhalf : t / 2 ≤ t := by linarith
   simpa [heatScale, Real.sq_sqrt ht] using hzs.2.trans hhalf
 
-/-- The actual Bochner heat potential on the near part of the early
-parabolic cylinder. -/
 def heatEarlyNear (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
   ∫ z in earlyCyl t x,
     heatKernel (t - z.1) (x - z.2) • f z ∂(stVolume : Measure (ℝ × V))
 
-/-- The dimension-dependent constant in the near early-potential bound. -/
 def nearHeatC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] : ℝ≥0∞ :=
   ENNReal.ofReal
@@ -64,8 +50,6 @@ omit [FiniteDimensional ℝ V]
   [MeasurableSpace V]
   [BorelSpace V]
   [Nontrivial V] in
-/-- The heat-scale ratio between `t` and `t / 2`; this is the exact
-cancellation behind the uniform near-field estimate. -/
 theorem halfScale_cancel {t : ℝ} (ht : 0 < t) :
     ((heatScale (t / 2)) ^ Module.finrank ℝ V)⁻¹ *
         (heatScale t) ^ Module.finrank ℝ V =
@@ -92,8 +76,6 @@ theorem halfScale_cancel {t : ℝ} (ht : 0 < t) :
 
 omit [CompleteSpace F]
   [Nontrivial V] in
-/-- The actual near early heat potential is bounded in `C⁰` by the source
-Carleson constant, uniformly in the observation time. -/
 theorem heatEarlyNear_norm {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (hsrc : SrcCarl T C f) :

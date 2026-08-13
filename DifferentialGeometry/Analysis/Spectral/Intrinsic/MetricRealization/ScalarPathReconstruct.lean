@@ -4,24 +4,18 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Spectr
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.RankZero
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Topology Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter Topology DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -31,7 +25,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
     toEuclidean_extChartAt_mem_chartTargetEuclid
     symm_toEuclidean_symm_toEuclidean_extChartAt)
 open DifferentialGeometry.Analysis.Sobolev.Chart
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -53,8 +47,6 @@ noncomputable def scalarMode
       (eigenvectorSmooth (I := I) (M := M) g 0 0 i)
       α Fin.elim0 Fin.elim0 q.2
 
-
-
 noncomputable def scalarSpecSum
     (g : SmoothRiemannianMetric I M)
     (c : TensorEigenIdx (I := I) (M := M) g 0 0 → ℝ → ℝ) :
@@ -63,8 +55,6 @@ noncomputable def scalarSpecSum
     ∑' i : TensorEigenIdx (I := I) (M := M) g 0 0,
       c i t * TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
         (eigenvectorSmooth (I := I) (M := M) g 0 0 i).toSection x
-
-
 
 theorem scalarSpec_cc
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 0) :
@@ -195,8 +185,6 @@ lemma scalarSpec_chart
   intro i
   exact scalarMode_eq (I := I) (M := M) g c α i hy
 
-
-
 omit [BoundarylessManifold I M] in
 lemma scalarMode_smooth
     (g : SmoothRiemannianMetric I M)
@@ -224,7 +212,6 @@ lemma scalarMode_smooth
   exact ht.mul hx
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma weight_two_sq
     (g : SmoothRiemannianMetric I M)
@@ -238,7 +225,6 @@ private lemma weight_two_sq
     Real.rpow_two]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma abs_le_sqrt_wt
     (g : SmoothRiemannianMetric I M)
@@ -264,7 +250,6 @@ private lemma abs_le_sqrt_wt
   rwa [← hW_def]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sqrt_mul_tail
     (g : SmoothRiemannianMetric I M) (p : ℝ)
@@ -400,7 +385,6 @@ private lemma jet_snd_le
   simpa only [L, Function.comp_apply] using hbound
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem prodMode_majorant
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -622,8 +606,6 @@ theorem prodMode_majorant
                   tensorSobolevWeight (I := I) (M := M) i (-qTail)) := by
             rw [hcollapse]
 
-
-
 lemma scalar_jet_uniform
     (g : SmoothRiemannianMetric I M) (α : M) (n : ℕ)
     {K : Set EuclN} (hK : IsCompact K)
@@ -678,8 +660,6 @@ lemma scalar_jet_uniform
   exact ((hCmf m hm).2 i y hy).trans
     (mul_le_mul_of_nonneg_right hCm_le (pow_nonneg hbase_nn _))
 
-
-
 theorem scalarMode_majorant
     (g : SmoothRiemannianMetric I M)
     (htail : EigenvalueTailSummable (I := I) (M := M) g 0 0)
@@ -718,9 +698,6 @@ theorem scalarMode_majorant
       hU hIccU hc hmass ψ
       (chartTargetEuclid_isOpen (I := I) (M := M) α)
       hψ hKuniq hKO Csp pSp hCsp hsp)
-
-
-
 
 theorem scalarTsum_chart
     (g : SmoothRiemannianMetric I M)
@@ -777,8 +754,6 @@ theorem scalarTsum_chart
     (fun k hk => (hv k (by exact_mod_cast hk)).1)
     (fun k i q hq hk => (hv k (by exact_mod_cast hk)).2 i q hq)
     (x₀ := (a, y₀)) ⟨Set.left_mem_Icc.mpr hab.le, hy₀⟩
-
-
 
 theorem scalarTsum_smooth
     (g : SmoothRiemannianMetric I M)
@@ -840,8 +815,6 @@ theorem scalarTsum_smooth
     hU hIccU hc hmass α hBc_compact hBc_uniq hBc_conv hBc_ne hBcΩ).mono
       (Set.prod_mono (le_refl _) hBBc)
 
-
-
 theorem scalarSpec_local
     (g : SmoothRiemannianMetric I M)
     (htail : EigenvalueTailSummable (I := I) (M := M) g 0 0)
@@ -902,9 +875,6 @@ theorem scalarSpec_local
       (Set.Icc a b ×ˢ chartTargetEuclid (I := I) (M := M) α) (f q) :=
     hGEuclid.contDiffWithinAt (hmaps hq)
   exact hGf.comp_contMDiffWithinAt (hf_smooth q hq) hmaps
-
-
-
 
 theorem scalarSpec_d1
     (g : SmoothRiemannianMetric I M)
@@ -1054,9 +1024,6 @@ theorem scalarSpec_d1
   simpa only [dc] using
     (hD.congr (fun z _hz => (hchart z).symm) (hchart t).symm).congr_deriv hdchart
 
-
-
-
 theorem scalar_path_recon
     (g : SmoothRiemannianMetric I M)
     (htail : EigenvalueTailSummable (I := I) (M := M) g 0 0)
@@ -1082,4 +1049,4 @@ theorem scalar_path_recon
     scalarSpec_local (I := I) (M := M) g htail hab N c
       hU hIccU hc hmass x
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

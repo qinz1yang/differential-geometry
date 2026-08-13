@@ -1,40 +1,12 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.DiagInvBranch
 import DifferentialGeometry.Geometry.Exponential.ExpVariationSmooth
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Analysis.ODE.PhaseFlowPerturbation
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -66,8 +38,7 @@ private def chartedDiagExp
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) : E × E → E × E :=
   extChartAt (I.prod I) (diagExp (I := I) g hEnorm (⟨p, (0 : E)⟩ : TangentBundle I M)) ∘
     diagExp (I := I) g hEnorm ∘
@@ -86,8 +57,7 @@ private lemma chartedDiagExp_contDiffAt
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (n : ℕ) (hn : 1 ≤ n) :
     ContDiffAt ℝ (n : ℕ∞) (chartedDiagExp (I := I) g hEnorm p)
       (diagExpZeroPt (I := I) p) := by
@@ -107,8 +77,7 @@ private lemma diagExp_zero_eq
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     diagExp (I := I) g hEnorm (⟨p, (0 : E)⟩ : TangentBundle I M) = (p, p) := by
   rw [diagExp_apply]
@@ -137,8 +106,7 @@ private lemma exists_chartDiagInf
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ U : Set (E × E), IsOpen U ∧ diagExpZeroPt (I := I) p ∈ U ∧
       ContDiffOn ℝ ∞ (chartedDiagExp (I := I) g hEnorm p) U := by
@@ -231,9 +199,6 @@ private lemma exists_chartDiagInf
   simp only [PartialEquiv.prod_coe]
   rw [(extChartAt I p).right_inv hz1_target, (extChartAt I p).right_inv hG_target]
 
-
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private lemma chartFiberCoord_mk_zero (p q : M)
@@ -320,8 +285,7 @@ private def chartedExpIntrinsic
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) : E → E :=
   fun v => extChartAt I p (expMapIntrinsic (I := I) g hEnorm p (show TangentSpace I p from v))
 
@@ -332,8 +296,7 @@ private lemma chartedExpIntrinsic_hasFDerivAt_zero
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     HasFDerivAt (chartedExpIntrinsic (I := I) g hEnorm p)
       (ContinuousLinearMap.id ℝ E) (0 : E) := by
@@ -384,8 +347,7 @@ theorem diagExp_hasFDerivAt_zero
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (n : ℕ) (hn : 1 ≤ n) :
     HasFDerivAt (chartedDiagExp (I := I) g hEnorm p)
       ((ContinuousLinearMap.fst ℝ E E).prod
@@ -469,8 +431,6 @@ theorem diagExp_hasFDerivAt_zero
     simp
   rw [← hDL]; exact hD
 
-
-
 def unipotentCLE : (E × E) ≃L[ℝ] (E × E) :=
   DifferentialGeometry.PhaseFlow.freeDiagCLE
 
@@ -481,22 +441,11 @@ theorem diagExp_hasFDerivAt_zero_unipotent
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (n : ℕ) (hn : 1 ≤ n) :
     HasFDerivAt (chartedDiagExp (I := I) g hEnorm p)
       (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)) (diagExpZeroPt (I := I) p) :=
   diagExp_hasFDerivAt_zero (I := I) g hEnorm p n hn
-
-
-
-
-
-
-
-
-
-
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -505,8 +454,7 @@ private lemma chartedDiagExp_cdaOne
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ContDiffAt ℝ 1 (chartedDiagExp (I := I) g hEnorm p) (diagExpZeroPt (I := I) p) := by
   simpa using chartedDiagExp_contDiffAt (I := I) g hEnorm p 1 le_rfl
@@ -518,8 +466,7 @@ private def diagExpIFT
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) : OpenPartialHomeomorph (E × E) (E × E) :=
   ContDiffAt.toOpenPartialHomeomorph (𝕂 := ℝ)
     (f := chartedDiagExp (I := I) g hEnorm p)
@@ -535,8 +482,7 @@ private lemma diagExpIFT_coe
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ⇑(diagExpIFT (I := I) g hEnorm p) = chartedDiagExp (I := I) g hEnorm p := rfl
 
@@ -547,8 +493,7 @@ private lemma exists_chartInvInf
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ V : Set (E × E), IsOpen V ∧
       chartedDiagExp (I := I) g hEnorm p (diagExpZeroPt (I := I) p) ∈ V ∧
@@ -673,8 +618,7 @@ private lemma outer_center
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     extChartAt (I.prod I) (p, p) (p, p) =
       chartedDiagExp (I := I) g hEnorm p (diagExpZeroPt (I := I) p) := by
@@ -692,8 +636,7 @@ def diagExpInv
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) : M × M → TangentBundle I M :=
   fun y => (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)).symm
     ((diagExpIFT (I := I) g hEnorm p).symm (extChartAt (I.prod I) (p, p) y))
@@ -705,8 +648,7 @@ theorem diagExpInv_center
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     diagExpInv (I := I) g hEnorm p (p, p) = (⟨p, (0 : E)⟩ : TangentBundle I M) := by
   have hsrc : diagExpZeroPt (I := I) p ∈ (diagExpIFT (I := I) g hEnorm p).source :=
@@ -726,8 +668,7 @@ theorem diagExpInv_contMDiffAt
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ContMDiffAt (I.prod I) I.tangent 1 (diagExpInv (I := I) g hEnorm p) (p, p) := by
   have hsrc : diagExpZeroPt (I := I) p ∈ (diagExpIFT (I := I) g hEnorm p).source :=
@@ -772,8 +713,7 @@ theorem diagExpInv_contMDiffAt_order
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (n : ℕ) (hn : 1 ≤ n) :
     ContMDiffAt (I.prod I) I.tangent (n : ℕ∞) (diagExpInv (I := I) g hEnorm p) (p, p) := by
   have hn0 : ((n : ℕ∞) : WithTop ℕ∞) ≠ 0 := by exact_mod_cast (show n ≠ 0 by omega)
@@ -819,8 +759,7 @@ theorem diagExp_diagExpInv
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∀ᶠ y in nhds (p, p),
       diagExp (I := I) g hEnorm (diagExpInv (I := I) g hEnorm p y) = y := by
@@ -878,8 +817,7 @@ theorem diagExpInv_diagExp
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∀ᶠ u in nhds (⟨p, (0 : E)⟩ : TangentBundle I M),
       diagExpInv (I := I) g hEnorm p (diagExp (I := I) g hEnorm u) = u := by
@@ -931,8 +869,7 @@ theorem diagExpInv_proj
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∀ᶠ y in nhds (p, p), (diagExpInv (I := I) g hEnorm p y).proj = y.1 := by
   filter_upwards [diagExp_diagExpInv (I := I) g hEnorm p] with y hy
@@ -946,8 +883,7 @@ theorem expIntr_diagExpInv
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∀ᶠ y in nhds (p, p),
       expMapIntrinsic (I := I) g hEnorm (diagExpInv (I := I) g hEnorm p y).proj
@@ -963,8 +899,7 @@ theorem exists_diagInvDom
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (n : ℕ) (hn : 1 ≤ n) :
     ∃ U : Set (M × M), IsOpen U ∧ (p, p) ∈ U ∧
       ∀ y ∈ U,
@@ -1002,8 +937,7 @@ theorem exists_diagInvDom_inf
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ U : Set (M × M), IsOpen U ∧ (p, p) ∈ U ∧
       ContMDiffOn (I.prod I) I.tangent ∞
@@ -1085,8 +1019,7 @@ private def diagExpHome
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) : OpenPartialHomeomorph (TangentBundle I M) (M × M) :=
   let cO : OpenPartialHomeomorph (TangentBundle I M) (E × E) :=
     { toPartialEquiv :=
@@ -1110,8 +1043,7 @@ private theorem diagExpHome_inv
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ⇑(diagExpHome (I := I) g hEnorm p).symm =
       diagExpInv (I := I) g hEnorm p := by
@@ -1124,8 +1056,7 @@ private theorem exists_stdBranch
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ B : DiagInvBranch (I := I) g hEnorm p,
       B.inv = diagExpInv (I := I) g hEnorm p := by
@@ -1235,8 +1166,7 @@ noncomputable def stdBranch
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) : DiagInvBranch (I := I) g hEnorm p :=
   Classical.choose (exists_stdBranch (I := I) g hEnorm p)
 
@@ -1247,8 +1177,7 @@ theorem std_inv_eq
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     (stdBranch (I := I) g hEnorm p).inv =
       diagExpInv (I := I) g hEnorm p :=

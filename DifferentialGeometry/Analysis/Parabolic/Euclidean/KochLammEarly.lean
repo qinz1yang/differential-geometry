@@ -1,15 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatEarlyGlobal
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammSpaces
 
-/-!
-# The early value arm in the Koch--Lamm source space
-
-This file identifies the local `R^{-n} L¹` arm of `KLSource0` with the
-Carleson source class consumed by the global early heat-potential estimate.
-The resulting estimate is the initial-half contribution to the
-`Y_T⁰ → L∞` linear bound.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -29,8 +20,6 @@ variable {V F : Type*}
 omit [MeasurableSpace V]
   [BorelSpace V]
   [Nontrivial V] in
-/-- The inverse of the local Koch--Lamm `L¹` scale is the cylinder's
-spatial volume scale. -/
 theorem klL1Scale_inv {R : ℝ} (hR : 0 < R) :
     (klL1Scale (V := V) R)⁻¹ =
       ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
@@ -40,8 +29,6 @@ theorem klL1Scale_inv {R : ℝ} (hR : 0 < R) :
 omit [NormedSpace ℝ F]
   [CompleteSpace F]
   [Nontrivial V] in
-/-- The local `L¹` arm of a Koch--Lamm ordinary source is exactly the rough
-Carleson source estimate used by the early heat-potential theorem. -/
 theorem kl0_to_srcCarl {T : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) :
     SrcCarl T (A₁ : ℝ≥0∞) f := by
@@ -59,8 +46,6 @@ theorem kl0_to_srcCarl {T : ℝ} {A₁ A_q : ℝ≥0}
       eLpNorm_one_eq_lintegral_enorm, ofReal_norm_eq_enorm] using hi
 
 omit [CompleteSpace F] in
-/-- The initial-half ordinary-source potential obeys the Koch--Lamm value
-bound with a dimension-only constant. -/
 theorem kl0_early_norm {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (h : KLSource0 T A₁ A_q f) :

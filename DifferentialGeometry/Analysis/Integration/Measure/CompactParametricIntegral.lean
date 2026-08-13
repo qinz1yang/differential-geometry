@@ -1,16 +1,6 @@
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Topology.MetricSpace.ProperSpace
 
-/-!
-# Continuous compact parametric integrals
-
-Joint continuity on a compact parameter set times a compact measured space
-provides one uniform integrable bound.  Dominated convergence then makes the
-Bochner integral continuous in the parameter.  This small fixed-measure API is
-used by finite Galerkin mass operators before the separate moving-volume
-argument is applied.
--/
-
 noncomputable section
 
 open Filter MeasureTheory Set
@@ -18,8 +8,6 @@ open scoped Topology
 
 namespace DifferentialGeometry.Integral.Measure
 
-/-- A jointly continuous Banach-valued integrand on a compact parameter set
-and compact finite measured space has a continuous parameter integral. -/
 theorem integral_contOn_cpt
     {P X W : Type*} [TopologicalSpace P] [FirstCountableTopology P]
     [TopologicalSpace X] [CompactSpace X] [MeasurableSpace X] [BorelSpace X]

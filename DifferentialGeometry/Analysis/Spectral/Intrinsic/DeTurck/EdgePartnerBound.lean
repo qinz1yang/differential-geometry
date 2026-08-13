@@ -1,34 +1,30 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgeRefoldPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
-
-/-!
-# Closed-edge formal-partner bounds
-
-The top refold coefficient cannot be differentiated as an arbitrary
-coefficient: that loses the sharp zero at the diagonal.  This file estimates
-the explicit formal partner from `EdgeRefoldPairing`.  Every differentiated
-monomial keeps one undifferentiated metric difference, hence gains the small
-`C0` radius needed by the closed-edge energy argument.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-
-open Bundle Manifold Tensor0SBundle
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -212,8 +208,6 @@ private theorem edge_cov_full_eq
     edge_insert_add (I := I) (M := M) g s, covGrad_add,
     edge_cov_insert_id (I := I) (M := M) g s, add_zero]
 
-/-- The first derivative of a relative inverse-metric insertion is uniformly
-linear in the first derivative of the metric difference. -/
 theorem edgeFull_one (g : SmoothRiemannianMetric I M) :
     ∃ A : Real, 0 ≤ A ∧
       ∀ (gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -242,8 +236,6 @@ theorem edgeFull_one (g : SmoothRiemannianMetric I M) :
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-/-- A relative inverse-metric insertion is uniformly bounded on the half
-operator ball. -/
 theorem edgeFull_zero
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -287,8 +279,6 @@ private lemma edge_app_le (g : SmoothRiemannianMetric I M)
     (I := I) (M := M) g 0 r s x (Phi.toSection x) (W.toSection x)
 
 omit [NeZero (Module.finrank Real E)] in
-/-- Applying one relative inverse-metric slot map is uniformly bounded in
-fibre norm on the half ball. -/
 theorem edgeSlot_zero
     (g gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -335,8 +325,6 @@ theorem edgeSlot_zero
         (riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 2 x _)
     _ = _ := by rw [hp']
 
-/-- The exact product rule for one raised slot has no zeroth-order additive
-error: its derivative is controlled by `nabla T * S + nabla S`. -/
 theorem edgeSlot_one (g : SmoothRiemannianMetric I M) :
     ∃ K : Real, 0 ≤ K ∧
       ∀ (gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -460,8 +448,6 @@ theorem edgeSlot_one (g : SmoothRiemannianMetric I M) :
       nlinarith
     _ = _ := by rfl
 
-/-- Applying the relative inverse metric in both tensor slots preserves the
-`C0` smallness and costs only a uniform multiple of the first derivative. -/
 theorem edgeRaise_gen (g : SmoothRiemannianMetric I M) :
     ∃ Z D : Real, 0 ≤ Z ∧ 0 ≤ D ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -609,7 +595,6 @@ theorem edgeRaise_gen (g : SmoothRiemannianMetric I M) :
       _ = D * T1 := by simp only [D]; ring
   exact ⟨hR0', by simpa only [T1] using hR1'⟩
 
-/-- Diagonal specialization of `edgeRaise_gen`. -/
 theorem edgeRaise_bds (g : SmoothRiemannianMetric I M) :
     ∃ Z D : Real, 0 ≤ Z ∧ 0 ≤ D ∧
       ∀ (gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -654,8 +639,6 @@ private lemma edge_extend2_one (g : SmoothRiemannianMetric I M)
   rw [rfns_covGrad_slotExtend_scale (I := I) (M := M) g 0 2 T x]
   ring
 
-/-- One explicit Palatini formal partner has the sharp differentiated bound
-`O(delta^2) * |nabla T|^2`. -/
 theorem edgePartner_gen (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -788,10 +771,6 @@ theorem edgePartner_gen (g : SmoothRiemannianMetric I M) :
     _ = C * delta ^ 2 * T1 := by simp only [C]; ring
     _ = _ := by rfl
 
-/-- One explicit Palatini formal partner is pointwise quadratic in the metric
-difference.  The estimate is stated relative to the undifferentiated tensor so
-that its integral can be paired with `edgePartner_gen` in the divergence
-bound. -/
 theorem edgePartner_zero (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -866,7 +845,6 @@ theorem edgePartner_zero (g : SmoothRiemannianMetric I M) :
         riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (T.toSection x) := by simp only [C]; ring
 
-/-- Diagonal specialization of `edgePartner_gen`. -/
 theorem edgePartner_one (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -905,8 +883,6 @@ private lemma edge_bound_mono (g : SmoothRiemannianMetric I M)
     (mul_le_mul_of_nonneg_right hab (Real.sqrt_nonneg _))
     (Real.sqrt_nonneg _))
 
-/-- The complete top formal partner is pointwise quadratic in the metric
-difference on the realized segment. -/
 theorem edgeTop_zero (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -1140,8 +1116,6 @@ theorem edgeTop_zero (g : SmoothRiemannianMetric I M) :
       _ = 52 * B := by ring
   simpa only [N, B, C, T0, mul_assoc] using htop
 
-/-- The complete top formal partner returned by the refold package retains a
-small undifferentiated metric difference after one covariant derivative. -/
 theorem edgeTop_one (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -1378,9 +1352,8 @@ theorem edgeTop_one (g : SmoothRiemannianMetric I M) :
       _ = 52 * B := by ring
   simpa only [N, B, C, T1, mul_assoc] using htop
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

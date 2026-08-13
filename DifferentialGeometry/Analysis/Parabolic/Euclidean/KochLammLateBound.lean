@@ -2,15 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateNear
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateScale
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
-/-!
-# Quantitative near late-source Koch--Lamm bound
-
-This file converts the real power-integral factors in the joint space-time
-Hölder estimate into `eLpNorm`s.  The exact terminal kernel scale then
-cancels the inverse `KLSource0.late_lq` scale, giving a radius-independent
-near-field bound.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -26,8 +17,6 @@ section Factor
 variable {X F : Type*} [MeasurableSpace X]
   [NormedAddCommGroup F]
 
-/-- For a finite positive exponent, the real power-integral factor is the
-real value of `eLpNorm`. -/
 theorem realLpFactor_eq {μ : Measure X} {q : ℝ} (hq : 0 < q)
     {f : X → F} (hf : MemLp f (ENNReal.ofReal q) μ) :
     (∫ x, ‖f x‖ ^ q ∂μ) ^ (1 / q) =
@@ -50,8 +39,6 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The local terminal-cylinder kernel factor is bounded by the exact global
-factor with its extracted Koch--Lamm radius scale. -/
 theorem klLateKern_fac {R : ℝ} (hR : 0 < R) (x : V) :
     (∫ z in klLateCyl x R,
         ‖klTermKernel (R ^ 2) x z‖ ^ klQDual V
@@ -86,8 +73,6 @@ theorem klLateKern_fac {R : ℝ} (hR : 0 < R) (x : V) :
       klTermNorm_scale (V := V) hR x
 
 omit [Nontrivial V] [NormedSpace ℝ F] in
-/-- The late source power-integral factor has the inverse radius scale
-advertised by `KLSource0.late_lq`. -/
 theorem klLateSrc_fac {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
@@ -114,8 +99,6 @@ theorem klLateSrc_fac {T R : ℝ} {A₁ A_q : ℝ≥0}
   simpa only [klLqScale, ENNReal.toReal_mul, ENNReal.toReal_inv,
     ENNReal.toReal_ofReal hs.le, ENNReal.coe_toReal] using hreal
 
-/-- Radius-independent near terminal-cylinder bound for an ordinary
-Koch--Lamm source. -/
 theorem klLateNear_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :

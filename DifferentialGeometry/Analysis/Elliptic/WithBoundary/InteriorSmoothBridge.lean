@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorVariational
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -19,7 +20,9 @@ variable {M : Type*} [TopologicalSpace M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
+open DifferentialGeometry.Geometry.Operator.WithBoundary
 
 private local instance : MeasurableSpace (EuclideanSpace ℝ (Fin n)) :=
   borel _
@@ -31,9 +34,9 @@ private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [T2Space M] [CompactSpace M]
 
-omit [SigmaCompactSpace M] [CompactSpace M] in
+omit [CompactSpace M] in
 lemma InteriorSmoothScalar.oneSubLap_continuous
     {g : SmoothRiemannianMetric (I_half n) M} (u : InteriorSmoothScalar g) :
     Continuous (fun x : M =>

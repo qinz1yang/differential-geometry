@@ -1,15 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldMain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.LimitSolutionEquation
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Lower bounds inherited by a fixed-window metric limit
-
-This file records the order-zero closedness argument that transfers a uniform
-quadratic-form lower bound from the bump-extended comparison metrics to the
-metric family carried by `ConvOut`.
--/
 
 noncomputable section
 
@@ -34,8 +28,6 @@ namespace ConvOut
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- A pointwise quadratic-form lower bound that is uniform along the selected
-sequence passes to the fixed-window limit metric. -/
 theorem lower_of
     {R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted;

@@ -26,6 +26,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma scalarSobolevWeight_mono {g : SmoothRiemannianMetric I M}
     (i : EigenIdx (I := I) (M := M) g) {τ σ : ℝ} (hτσ : τ ≤ σ) :
@@ -39,6 +40,7 @@ namespace scalarHs
 
 variable {g : SmoothRiemannianMetric I M}
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma weighted_summable_of_le {τ σ : ℝ} (hτσ : τ ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ) :
@@ -61,11 +63,13 @@ def inclusionFun {τ σ : ℝ} (hτσ : τ ≤ σ)
   coeff := T.coeff
   weighted_summable := weighted_summable_of_le (I := I) (M := M) hτσ T
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma inclusionFun_coeff {τ σ : ℝ} (hτσ : τ ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ) :
     (inclusionFun (I := I) (M := M) hτσ T).coeff = T.coeff := rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma inclusionFun_add {τ σ : ℝ} (hτσ : τ ≤ σ)
     (S T : scalarHs (I := I) (M := M) g σ) :
@@ -75,6 +79,7 @@ lemma inclusionFun_add {τ σ : ℝ} (hτσ : τ ≤ σ)
   ext i
   simp only [inclusionFun_coeff, add_coeff]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma inclusionFun_smul {τ σ : ℝ} (hτσ : τ ≤ σ) (c : ℝ)
     (T : scalarHs (I := I) (M := M) g σ) :
@@ -83,6 +88,7 @@ lemma inclusionFun_smul {τ σ : ℝ} (hτσ : τ ≤ σ) (c : ℝ)
   ext i
   simp only [inclusionFun_coeff, smul_coeff]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_inclusionFun_le {τ σ : ℝ} (hτσ : τ ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ) :
@@ -134,18 +140,21 @@ namespace scalarHs
 
 variable {g : SmoothRiemannianMetric I M}
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma scalarHsInclusion_apply {τ σ : ℝ} (hτσ : τ ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ) :
     scalarHsInclusion (I := I) (M := M) (g := g) hτσ T =
       inclusionFun (I := I) (M := M) hτσ T := rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scalarHsInclusion_coeff_fun {τ σ : ℝ} (hτσ : τ ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ) :
     (scalarHsInclusion (I := I) (M := M) (g := g) hτσ T).coeff =
       T.coeff := rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scalarHsInclusion_coeff {τ σ : ℝ} (hτσ : τ ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ)
@@ -153,17 +162,20 @@ omit [NeZero (Module.finrank ℝ E)] in
     (scalarHsInclusion (I := I) (M := M) (g := g) hτσ T).coeff i =
       T.coeff i := rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHsInclusion_opNorm_le_one {τ σ : ℝ} (hτσ : τ ≤ σ) :
     ‖scalarHsInclusion (I := I) (M := M) (g := g) hτσ‖ ≤ 1 :=
   LinearMap.mkContinuous_norm_le _ zero_le_one _
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHsInclusion_norm_le {τ σ : ℝ} (hτσ : τ ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ) :
     ‖scalarHsInclusion (I := I) (M := M) (g := g) hτσ T‖ ≤ ‖T‖ :=
   norm_inclusionFun_le (I := I) (M := M) hτσ T
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHsInclusion_injective {τ σ : ℝ} (hτσ : τ ≤ σ) :
     Function.Injective
@@ -173,6 +185,7 @@ theorem scalarHsInclusion_injective {τ σ : ℝ} (hτσ : τ ≤ σ) :
   have h := congrArg (fun U => scalarHs.coeff U i) hST
   simpa only [scalarHsInclusion_coeff] using h
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scalarHsInclusion_refl {σ : ℝ} :
     scalarHsInclusion (I := I) (M := M) (g := g) (le_refl σ) =
@@ -183,6 +196,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   funext i
   rw [scalarHsInclusion_coeff, ContinuousLinearMap.id_apply]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem scalarHsInclusion_refl_apply {σ : ℝ}
     (T : scalarHs (I := I) (M := M) g σ) :
@@ -190,6 +204,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   ext i
   simp only [scalarHsInclusion_coeff]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHsInclusion_trans {τ₁ σ τ₂ : ℝ}
     (h₁ : τ₁ ≤ σ) (h₂ : σ ≤ τ₂) :
@@ -200,6 +215,7 @@ theorem scalarHsInclusion_trans {τ₁ σ τ₂ : ℝ}
   simp only [scalarHsInclusion_coeff, ContinuousLinearMap.coe_comp',
     Function.comp_apply]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarHsInclusion_trans_apply {τ₁ σ τ₂ : ℝ}
     (h₁ : τ₁ ≤ σ) (h₂ : σ ≤ τ₂)
@@ -210,6 +226,7 @@ theorem scalarHsInclusion_trans_apply {τ₁ σ τ₂ : ℝ}
   ext i
   simp only [scalarHsInclusion_coeff]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma coeff_summable_sq_of_nonneg {σ : ℝ} (hσ : 0 ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ) :
@@ -239,6 +256,7 @@ def toL2Seq {σ : ℝ} (hσ : 0 ≤ σ)
     rw [h_eq]
     exact coeff_summable_sq_of_nonneg (I := I) (M := M) hσ T⟩
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma toL2Seq_apply {σ : ℝ} (hσ : 0 ≤ σ)
     (T : scalarHs (I := I) (M := M) g σ)
@@ -260,6 +278,7 @@ def toL2Fun {σ : ℝ} (hσ : 0 ≤ σ)
   rw [LinearIsometryEquiv.apply_symm_apply]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma toL2Seq_add {σ : ℝ} (hσ : 0 ≤ σ)
     (S T : scalarHs (I := I) (M := M) g σ) :
@@ -269,6 +288,7 @@ lemma toL2Seq_add {σ : ℝ} (hσ : 0 ≤ σ)
   funext i
   simp only [toL2Seq_apply, lp.coeFn_add, Pi.add_apply, add_coeff]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma toL2Seq_smul {σ : ℝ} (hσ : 0 ≤ σ) (c : ℝ)
     (T : scalarHs (I := I) (M := M) g σ) :
@@ -296,7 +316,8 @@ lemma toL2Fun_add {σ : ℝ} (hσ : 0 ≤ σ)
   calc toL2Fun (I := I) (M := M) hσ (S + T)
       = b.repr.symm (toL2Seq (I := I) (M := M) hσ (S + T)) := rfl
     _ = b.repr.symm (toL2Seq (I := I) (M := M) hσ S +
-          toL2Seq (I := I) (M := M) hσ T) := by rw [h_seq]
+          toL2Seq (I := I) (M := M) hσ T) :=
+      congrArg (fun x => b.repr.symm x) h_seq
     _ = b.repr.symm (toL2Seq (I := I) (M := M) hσ S) +
           b.repr.symm (toL2Seq (I := I) (M := M) hσ T) := h_map
     _ = toL2Fun (I := I) (M := M) hσ S +
@@ -316,7 +337,8 @@ lemma toL2Fun_smul {σ : ℝ} (hσ : 0 ≤ σ) (c : ℝ)
     b.repr.symm.map_smul _ _
   calc toL2Fun (I := I) (M := M) hσ (c • T)
       = b.repr.symm (toL2Seq (I := I) (M := M) hσ (c • T)) := rfl
-    _ = b.repr.symm (c • toL2Seq (I := I) (M := M) hσ T) := by rw [h_seq]
+    _ = b.repr.symm (c • toL2Seq (I := I) (M := M) hσ T) :=
+      congrArg (fun x => b.repr.symm x) h_seq
     _ = c • b.repr.symm (toL2Seq (I := I) (M := M) hσ T) := h_map
     _ = c • toL2Fun (I := I) (M := M) hσ T := rfl
 

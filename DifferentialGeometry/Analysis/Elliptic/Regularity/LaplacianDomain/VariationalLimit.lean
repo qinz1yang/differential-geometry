@@ -15,6 +15,7 @@ import DifferentialGeometry.Geometry.Operator.Laplacian
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 import Mathlib.MeasureTheory.Integral.Bochner.Set
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -35,6 +36,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid
 open DifferentialGeometry.Analysis.Laplacian.ChartLocalLaplacian
@@ -56,7 +58,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def pouScalar
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g) :
@@ -65,7 +67,7 @@ noncomputable def pouScalar
   smooth :=
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff).mul v.smooth
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma pouScalar_toFun
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g) :
     (pouScalar (I := I) (M := M) α v).toFun =
@@ -77,7 +79,7 @@ private lemma pouScalar_hasCompactSupport
     HasCompactSupport (pouScalar (I := I) (M := M) α v).toFun :=
   HasCompactSupport.of_compactSpace _
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma pouScalar_tsupport_subset_chartSource
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g) :
     tsupport (pouScalar (I := I) (M := M) α v).toFun ⊆ (chartAt H α).source := by
@@ -100,7 +102,7 @@ private lemma pouScalar_tsupport_subset_chartSource
   exact h_tsupp_sub.trans
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPullback_pouScalar_eq_chartPushed
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -122,7 +124,8 @@ private theorem smooth_principal_identity
       ∂(volume : Measure EuclN) =
     -∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
-        (Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth)
+        (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+          (pouScalar (I := I) (M := M) α v).smooth⟩)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
         ψ y
       ∂(volume : Measure EuclN) := by
@@ -295,7 +298,7 @@ private theorem smooth_principal_identity
       ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
         negDensityLaplacianPullback (I := I) g hf_smooth α y * ψ y =
         - (densityOnEuclid (I := I) g α y *
-          (Δ_g (I := I) g hf_smooth)
+          (Δ_g (I := I) g ⟨_, hf_smooth⟩)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y) := by
     intro y hy
     rw [negDensityLaplacianPullback_apply_of_mem (I := I) g hf_smooth α hy]
@@ -314,7 +317,7 @@ private theorem smooth_principal_identity
       ∫ y, negDensityLaplacianPullback (I := I) g hf_smooth α y * ψ y =
       -∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityOnEuclid (I := I) g α y *
-          (Δ_g (I := I) g hf_smooth)
+          (Δ_g (I := I) g ⟨_, hf_smooth⟩)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
           ψ y := by
     rw [h_RHS_set]
@@ -322,7 +325,7 @@ private theorem smooth_principal_identity
               negDensityLaplacianPullback (I := I) g hf_smooth α y * ψ y) =
             ∫ y in chartTargetEuclid (I := I) (M := M) α,
               -(densityOnEuclid (I := I) g α y *
-                (Δ_g (I := I) g hf_smooth)
+                (Δ_g (I := I) g ⟨_, hf_smooth⟩)
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
                 ψ y) from ?_]
     · rw [MeasureTheory.integral_neg]
@@ -331,7 +334,7 @@ private theorem smooth_principal_identity
       exact h_negDens_eq y hy
   rw [← h_LHS_final, h_bilin, h_RHS_final]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushed_v_eq_chartPullback_pouScalar_on_chartTarget
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
@@ -339,14 +342,15 @@ private lemma chartPushed_v_eq_chartPullback_pouScalar_on_chartTarget
       chartPullback (I := I) α (pouScalar (I := I) (M := M) α v).toFun y :=
   (chartPullback_pouScalar_eq_chartPushed (I := I) (M := M) α v hy).symm
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 lemma pouScalar_oneSubLapClassical_eq
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g) :
     (pouScalar (I := I) (M := M) α v).oneSubLapClassical.toFun =
       (pouScalar (I := I) (M := M) α v).toFun -
-        Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth := rfl
+        Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+          (pouScalar (I := I) (M := M) α v).smooth⟩ := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 private lemma integrable_density_pull_mul_test
     {g : SmoothRiemannianMetric I M} (α : M)
     {h : M → ℝ} (hh_cont : Continuous h)
@@ -481,7 +485,8 @@ private theorem smooth_full_identity
     smooth_principal_identity (I := I) (M := M) α v hψ hψ_cs hψ_supp
   set f_pou : M → ℝ := (pouScalar (I := I) (M := M) α v).toFun with hf_pou_def
   set H : M → ℝ := f_pou -
-      Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth with hH_def
+      Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+        (pouScalar (I := I) (M := M) α v).smooth⟩ with hH_def
   have h_chartTarget_meas :
       MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
     (Sobolev.Chart.chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet
@@ -510,11 +515,14 @@ private theorem smooth_full_identity
         (chartTargetEuclid (I := I) (M := M) α) :=
     hf_pou_cont.continuousOn.comp h_symm_cont (Set.mapsTo_univ _ _)
   have h_Δ_cont : Continuous
-      (Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth) :=
-    (Δ_g_contMDiff (I := I) g (pouScalar (I := I) (M := M) α v).smooth).continuous
+      (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+        (pouScalar (I := I) (M := M) α v).smooth⟩) :=
+    (Δ_g_contMDiff (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+      (pouScalar (I := I) (M := M) α v).smooth⟩).continuous
   have h_pull_Δ_cont :
       ContinuousOn (fun y : EuclN =>
-        (Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth)
+        (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+          (pouScalar (I := I) (M := M) α v).smooth⟩)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))
         (chartTargetEuclid (I := I) (M := M) α) :=
     h_Δ_cont.continuousOn.comp h_symm_cont (Set.mapsTo_univ _ _)
@@ -526,7 +534,8 @@ private theorem smooth_full_identity
       hf_pou_cont hψ_cont hψ_cs hψ_supp
   have hint_Δ : IntegrableOn (fun y : EuclN =>
       densityOnEuclid (I := I) g α y *
-        (Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth)
+        (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+          (pouScalar (I := I) (M := M) α v).smooth⟩)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y)
       (chartTargetEuclid (I := I) (M := M) α) volume :=
     integrable_density_pull_mul_test (I := I) (M := M) α
@@ -541,25 +550,28 @@ private theorem smooth_full_identity
           f_pou ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y) -
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityOnEuclid (I := I) g α y *
-          (Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth)
+          (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+            (pouScalar (I := I) (M := M) α v).smooth⟩)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y := by
     rw [← MeasureTheory.integral_sub hint_f hint_Δ]
     apply MeasureTheory.setIntegral_congr_fun h_chartTarget_meas
     intro y _hy
     change densityOnEuclid (I := I) g α y *
         (f_pou ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) -
-          (Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth)
+          (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+            (pouScalar (I := I) (M := M) α v).smooth⟩)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) * ψ y =
       densityOnEuclid (I := I) g α y *
         f_pou ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y -
       densityOnEuclid (I := I) g α y *
-        (Δ_g (I := I) g (pouScalar (I := I) (M := M) α v).smooth)
+        (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+          (pouScalar (I := I) (M := M) α v).smooth⟩)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y
     ring
   rw [h_RHS_split]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
 private lemma exists_bound_for_invGram_mul_fderiv_psi
     {g : SmoothRiemannianMetric I M} (α : M) (i j : Fin (Module.finrank ℝ E))

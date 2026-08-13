@@ -1,15 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.HatCompositionPoints
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -46,12 +38,6 @@ noncomputable def decodedCompPts (g : SmoothRiemannianMetric I M)
     (NormalCoordinates.normalChartAt (I := I) g (center gamma)).symm
       (A gamma b
         (B gamma a ((NormalCoordinates.normalChartAt (I := I) g (center gamma)) x)))
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
@@ -106,8 +92,6 @@ theorem hatPOUDataTwo
   simpa [Finset.sum_apply] using
     (NetLimitData.hatPOU_active_data (I := I) (X := X) (hd := hd) (D := D) (P := P) (L := L)
       (pb := pb) (r := r) (k := n) (ρ := rho) (hρ := hrho) (x := x) hx)
-
-
 
 omit [Module.Finite ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
@@ -236,13 +220,6 @@ theorem exists_hat_radius
             (P := P) (L := L) (pb := pb) (r := r) (n := n) (rho := rho)
             (hrho := hrho) a b hx).2 gamma hne))
   exact ⟨radSeq, fun a b x _hx => hpos a b x, hactive, htail⟩
-
-
-
-
-
-
-
 
 end NetLimitData
 

@@ -23,54 +23,40 @@ class HasSmoothBoundary
     (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
     (H : Type*) [TopologicalSpace H]
     (I : ModelWithCorners ℝ E H) where
-
   boundaryE : Type*
-
   [boundaryENormedGroup : NormedAddCommGroup boundaryE]
   [boundaryENormedSpace : NormedSpace ℝ boundaryE]
   [boundaryEInnerProductSpace : InnerProductSpace ℝ boundaryE]
   [boundaryEFiniteDimensional : FiniteDimensional ℝ boundaryE]
   boundaryH : Type*
-
   [boundaryHTopologicalSpace : TopologicalSpace boundaryH]
   boundaryI : ModelWithCorners ℝ boundaryE boundaryH
-
   [boundaryIBoundaryless : boundaryI.Boundaryless]
   inclH : boundaryH → H
-
   inclH_continuous : Continuous inclH
-
   inclH_injective : Function.Injective inclH
-
   inclH_isInducing : IsInducing inclH
-
   inclH_isClosed_image : IsClosed (Set.range (I ∘ inclH))
-
   projE : E → boundaryE
-
   projE_continuous : Continuous projE
-
   projE_contDiff : ContDiff ℝ ∞ projE
-
   I_inclH_boundaryI_symm_contDiff : ContDiff ℝ ∞ (I ∘ inclH ∘ boundaryI.symm)
-
   range_I_inclH : Set.range (I ∘ inclH) = frontier (Set.range I)
-
   proj_inclH_compat : ∀ x : boundaryH, projE (I (inclH x)) = boundaryI x
-
   inwardCoordE : E
-
+  inwardCoordE_enters :
+    ∀ y ∈ frontier (Set.range I), ∃ ε : ℝ, 0 < ε ∧
+      ∀ t ∈ Set.Ioc 0 ε,
+        y + t • inwardCoordE ∈ interior (Set.range I)
   inwardCoordE_transverse :
     ∀ y : boundaryE, inwardCoordE ∉ Set.range
       (fderiv ℝ ((I : H → E) ∘ inclH ∘ boundaryI.symm) y)
-
   range_frontier_basis_addHaar_zero :
     ∀ [_h : FiniteDimensional ℝ E],
       letI : MeasurableSpace E := borel E
       haveI : BorelSpace E := ⟨rfl⟩
       ((Module.finBasis ℝ E).addHaar : MeasureTheory.Measure E)
           (frontier (Set.range I)) = 0
-
   finrank_boundaryE_succ :
     ∀ [_h : FiniteDimensional ℝ E],
       Module.finrank ℝ boundaryE + 1 = Module.finrank ℝ E

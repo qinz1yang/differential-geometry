@@ -1,24 +1,11 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpCompat
-
-/-!
-# Completeness of the genuine tensor chart `W^{k,p}` carrier
-
-This file assembles the exact compatibility and quantitative transport results
-of the preceding tensor chart files.  A Cauchy sequence has scalar limits in
-every POU-weighted chart component.  Those limits are pulled back as genuine
-dependent tensor sections and summed over the finite canonical active atlas.
-
-The proof never identifies a tensor section with an unconstrained array of
-scalar functions.  `tensorLimitSec` is a genuine section, `tensorLimit_mem`
-proves its chart `W^{k,p}` membership, and `wkpTensor_limit` proves convergence
-in the total tensor chart norm.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -154,8 +141,6 @@ private lemma secTerm_sub
     ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Every POU-weighted chart component has pointwise closed support in the
-fixed compact POU kernel of its chart. -/
 theorem secComp_support
     (r s : ℕ) (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) :
@@ -171,8 +156,6 @@ theorem secComp_support
     · exact secComp_apply_off (I := I) (M := M) r s S α P.1 P.2 hyΩ
   exact hy hzero
 
-/-- The scalar error between an iterate and the closed-kernel representative
-of its chosen component limit. -/
 def secCompErr
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -186,7 +169,6 @@ def secCompErr
     secCompRep (I := I) (M := M) g r s k hp hp_top u
       h_cauchy β Q.1 Q.2 y
 
-/-- Each source component error belongs to `W^{k,p}`. -/
 theorem secCompErr_mem
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -205,7 +187,6 @@ theorem secCompErr_mem
     (secCompRep_mem (I := I) (M := M) g r s k hp hp_top u
       h_cauchy β Q.1 Q.2)
 
-/-- Each source component error has the same fixed compact POU support. -/
 theorem secCompErr_supp
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -232,7 +213,6 @@ theorem secCompErr_supp
         h_cauchy β Q.1 Q.2 hs))
   exact hy (by simp only [secCompErr, hleft, hright, sub_zero])
 
-/-- Each scalar source error tends to zero in `W^{k,p}`. -/
 theorem secCompErr_tendsto
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -251,8 +231,6 @@ theorem secCompErr_tendsto
     (secCompRep_tendsto (I := I) (M := M) g r s k hp hp_top u
       h_cauchy β Q.1 Q.2)
 
-/-- Target components of the genuine assembled limit are the finite sums of
-the transported scalar source limits. -/
 theorem tensorLimit_comp
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -291,8 +269,6 @@ theorem tensorLimit_comp
     (fun β _ => secPullLimitEq (I := I) (M := M) g r s k hp hp_top u
       h_cauchy β α P)
 
-/-- The genuine finite POU assembly of the chart limits belongs to the tensor
-chart `W^{k,p}` carrier. -/
 theorem tensorLimit_mem
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -339,8 +315,6 @@ theorem tensorLimit_mem
     (tensorLimit_comp (I := I) (M := M) g r s k hp hp_top u
       h_cauchy α P)).mpr hsum
 
-/-- The target-chart error is exactly the finite transport of the scalar
-source-chart errors. -/
 theorem tensorErr_comp
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -381,8 +355,6 @@ theorem tensorErr_comp
         h_cauchy β Q.1 Q.2)) y).symm
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The chart sum defining the tensor norm is the finite sum over the
-canonical active atlas. -/
 theorem tensorNorm_eq_sum
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (S : RSTensorSection I M r s) :
@@ -405,8 +377,6 @@ theorem tensorNorm_eq_sum
   exact wkpNorm_zero_fun_zero (d := Module.finrank ℝ E) hp
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
 
-/-- Each fixed target component of the genuine assembled tensor limit is the
-limit of the corresponding component of the original Cauchy sequence. -/
 theorem targetErr_tendsto
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -524,8 +494,6 @@ theorem targetErr_tendsto
     (Filter.Eventually.of_forall (fun _ => zero_le _))
     (Filter.Eventually.of_forall h_bound)
 
-/-- The original tensor Cauchy sequence converges to the genuine finite POU
-assembly in the total tensor chart norm. -/
 theorem tensorLimit_tendsto
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -593,9 +561,6 @@ theorem tensorLimit_tendsto
     simpa using tendsto_finset_sum Sf hIdx
   simpa only [tensorNorm_eq_sum (I := I) (M := M) g r s k hp] using htotal
 
-/-- Representative-level completeness for genuine tensor `W^{k,p}` sections.
-The limit is a genuine dependent tensor section, not an arbitrary compatible
-array of chart functions. -/
 theorem wkpTensor_limit
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -613,10 +578,6 @@ theorem wkpTensor_limit
     tensorLimit_mem (I := I) (M := M) g r s k hp hp_top u h_cauchy⟩, ?_⟩
   exact tensorLimit_tendsto (I := I) (M := M) g r s k hp hp_top u h_cauchy
 
-/-- The representative completeness theorem expressed through the norm that
-already descends to `WkpTensorQuot`.  This avoids installing global quotient
-algebra or metric instances: the class of each difference has quotient norm
-tending to zero. -/
 theorem wkpTensorQ_limit
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))

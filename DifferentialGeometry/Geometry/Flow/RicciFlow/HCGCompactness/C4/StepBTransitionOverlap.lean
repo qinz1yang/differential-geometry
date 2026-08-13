@@ -1,23 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBTransition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.FramedNormalMetric
-
-/-!
-# Normal-coordinate transition overlap
-
-Raw normal-coordinate overlap adapters and their orthonormally framed
-specializations.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -39,8 +24,6 @@ variable [NormedSpace Real E] [FiniteDimensional Real E]
 variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-
 
 theorem normalOverlap_of_map
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M)
@@ -85,8 +68,6 @@ theorem normalOverlap_of_map
   rw [← hvz, ← expMapDiffeo_apply_eq (I := I) Y.metric y hvy]
   exact (expMapDiffeo (I := I) Y.metric y).map_source hvy
 
-
-
 theorem normalTrans_mapsTo
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M)
     {U V : Set E}
@@ -122,8 +103,6 @@ theorem normalTrans_mapsTo
   rw [normalChartAt_right_inv (I := I) Y.metric y hvy]
   exact hv
 
-
-
 omit [NeZero (Module.finrank Real E)] in
 theorem NormalOverlapOn.decode
     {Y : PointedRiemannianManifold.{u, uE, uH} (I := I)} {x y : Y.M}
@@ -148,8 +127,6 @@ theorem NormalOverlapOn.decode
         ((normalChartAt (I := I) Y.metric x).symm z)) =
     (normalChartAt (I := I) Y.metric x).symm z
   exact normalChartAt_left_inv (I := I) Y.metric y hzy
-
-
 
 omit [NeZero (Module.finrank Real E)] in
 theorem NormalOverlapOn.cancel
@@ -184,7 +161,6 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-/-- Chart-overlap input for orthonormally framed normal coordinates. -/
 def FramedNormalOverlapOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x y : Y.M) (U : Set E) : Prop :=
@@ -221,7 +197,6 @@ private theorem mem_framed_src
   apply norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) Y.metric x
   simpa only [normalFrame_sqrt] using hz
 
-/-- Exponential-image containment gives framed chart overlap. -/
 theorem framedOverlap_of_map
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x y : Y.M) {U V : Set E}
@@ -262,8 +237,6 @@ theorem framedOverlap_of_map
   rw [← heq]
   exact (framedExpDiffeo (I := I) Y.metric y).map_source hvy
 
-/-- Framed exponential-image containment maps a framed transition into the
-target coordinate set. -/
 theorem framedTrans_mapsTo
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x y : Y.M) {U V : Set E}

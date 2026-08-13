@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Yuan Liao, Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Product.HomEquiv
 import DifferentialGeometry.Tensor.RSTensor.Defs
 
@@ -100,6 +100,7 @@ theorem TensorProduct.mapLBilinear_contDiff :
 
 end MapL
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open Bundle Set IsManifold ContinuousLinearMap
@@ -113,6 +114,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ω M]
 
 end Tensor0SBundle
+end DifferentialGeometry
 
 namespace ContinuousAlternatingMap
 

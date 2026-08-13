@@ -2,8 +2,7 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowGeodesicLink
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Topology.Algebra.MetricSpace.Lipschitz
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

@@ -1,23 +1,15 @@
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
 noncomputable section
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
-open Tensor0SBundle
+
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -50,7 +42,7 @@ theorem invCovZeroLocal
       (fun y : M => ∑ k : Idx,
           gInv y i k * metricCompForMetricInFrame (I := I) g frame y k j) =ᶠ[𝓝 x]
         fun _ : M => if i = j then 1 else 0)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (hu : IsOpen u) (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => gInv y a b) x)
@@ -356,7 +348,7 @@ theorem gInvCovZeroAt
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (x₀ : M) (k l : CoordinateIdx (𝕜 := Real) E) :
     inverseMetricCovDerivForMetricCompAlongInFrame
         (I := I)

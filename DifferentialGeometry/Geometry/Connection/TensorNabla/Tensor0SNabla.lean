@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.Realization.Tensor0SBridge
 import DifferentialGeometry.Geometry.Connection.Realization.HomNabla
+open DifferentialGeometry.Geometry.Connection.Realization
 
 
 noncomputable section
@@ -8,8 +9,9 @@ set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
+namespace DifferentialGeometry
 namespace Tensor0SNabla
 
 variable
@@ -402,13 +404,15 @@ noncomputable instance tensor0SCovariantDerivative_succ_contMDiff {s : ℕ}
       exact contMDiff_tensor0SCov_succ_section I M cov_TM cov_s T hT_smooth
   }
 
+omit [SigmaCompactSpace M] in
 private structure SmoothCov (s : ℕ)
     (I : ModelWithCorners ℝ E H) (M : Type*) [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] where
+    [IsManifold I ∞ M] [T2Space M] where
   toCov : CovariantDerivative I (Tensor0SModel s ℝ E)
     (fun x : M => Tensor0SSpace s I x)
   smooth : ContMDiffCovariantDerivative toCov ∞
 
+omit [SigmaCompactSpace M] in
 private noncomputable def tensor0SCovariantDerivative_aux
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞] :
@@ -419,6 +423,7 @@ private noncomputable def tensor0SCovariantDerivative_aux
     haveI : ContMDiffCovariantDerivative prev.toCov ∞ := prev.smooth
     ⟨tensor0SCovariantDerivative_succ I M cov prev.toCov, inferInstance⟩
 
+omit [SigmaCompactSpace M] in
 noncomputable def tensor0SCovariantDerivative (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞] :
@@ -426,20 +431,21 @@ noncomputable def tensor0SCovariantDerivative (s : ℕ)
       (fun x : M => Tensor0SSpace s I x) :=
   (tensor0SCovariantDerivative_aux I M cov s).toCov
 
+omit [SigmaCompactSpace M] in
 noncomputable instance tensor0SCovariantDerivative_contMDiff (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞] :
     ContMDiffCovariantDerivative (tensor0SCovariantDerivative I M s cov) ∞ :=
   (tensor0SCovariantDerivative_aux I M cov s).smooth
 
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem tensor0SCovariantDerivative_zero_eq
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞] :
     tensor0SCovariantDerivative I M 0 cov =
       tensor0SCovariantDerivative_zero I M cov := rfl
 
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem tensor0SCovariantDerivative_succ_eq {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞] :
@@ -469,7 +475,7 @@ theorem tensor0SCovariantDerivative_succ_apply {s : ℕ}
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)
           cov_TM cov_s (curriedSection I M T) x v) := rfl
 
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem tensor0SCovariantDerivative_apply_zero
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞]
@@ -497,7 +503,7 @@ theorem scalarFn_unitZero :
       (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) = (1 : ℝ)
   rw [continuousMultilinearCurryFin0_apply, ContinuousMultilinearMap.constOfIsEmpty_apply]
 
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem tensor0SCovariantDerivative_unitZero_eq_zero
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [ContMDiffCovariantDerivative cov ∞]
@@ -513,20 +519,7 @@ theorem tensor0SCovariantDerivative_unitZero_eq_zero
   rw [hext]
   simp
 
-example
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞] :
-    CovariantDerivative I (Tensor0SModel 3 ℝ E)
-      (fun x : M => Tensor0SSpace 3 I x) :=
-  tensor0SCovariantDerivative I M 3 cov
-
-example
-    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    [ContMDiffCovariantDerivative cov ∞] :
-    ContMDiffCovariantDerivative
-      (tensor0SCovariantDerivative I M 3 cov) ∞ :=
-  inferInstance
-
 end Tensor0SNabla
 
+end DifferentialGeometry
 end

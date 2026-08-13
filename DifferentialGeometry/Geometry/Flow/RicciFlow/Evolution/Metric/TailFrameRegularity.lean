@@ -1,16 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.MetricCovDerivProducer
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -20,7 +15,7 @@ attribute [local instance] Fintype.ofFinite
 
 open Bundle Filter Set
 open scoped Manifold ContDiff Topology
-open DifferentialGeometry.Integral.Connection
+
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -58,8 +53,6 @@ theorem ricciFrame_mdiffAt
     filter_upwards [hsec] with y hy
     rw [hy i, hy j, metricRicciAt_apply_eq_ricciTensor]
   exact hsmooth.mdifferentiableAt (by simp)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in

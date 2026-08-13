@@ -1,9 +1,9 @@
-
-
-
-
-
-
+/-
+Copyright (c) 2024 Yury Kudryashov. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yury Kudryashov
+Coauthors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Alternating.Flip
 import DifferentialGeometry.Tensor.Alternating.Comp
 import DifferentialGeometry.Tensor.Alternating.Congr
@@ -12,7 +12,6 @@ import Mathlib.Analysis.Normed.Module.Alternating.Curry
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 import Mathlib.LinearAlgebra.Alternating.Uncurry.Fin
 import Mathlib.Tactic.Cases
-
 
 namespace ContinuousAlternatingMap
 
@@ -375,16 +374,15 @@ theorem summand_left_match
       Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap 0 k) := by
     change Equiv.Perm.sign (shuffleLeftFwd σ hσ) = _
     unfold shuffleLeftFwd
-    rw [restrictComplement_sign]
-    change Equiv.Perm.sign (normalizeLeft σ k hk) = _
+    rw [restrictComplement_sign _ (normalizeLeft_fixes σ k hk)]
     unfold normalizeLeft
     rw [Equiv.Perm.sign_mul]
     congr 1
     rw [Equiv.Perm.sign_sumCongr]; simp
   rw [uncurrySum_summand_eval, uncurrySum_summand_eval]
-  set ν := normalizeLeft σ k hk
+  set ν := normalizeLeft σ k
   have hν_fix : ν (Sum.inl 0) = Sum.inl 0 := normalizeLeft_fixes σ k hk
-  have hσ_can_eq : σ_can = restrictComplement ν hν_fix := rfl
+  have hσ_can_eq : σ_can = restrictComplement ν := rfl
   have hν_inl : ∀ a : Fin (m + 1), ν (Sum.inl a) = σ (Sum.inl ((Equiv.swap 0 k) a)) := by
     intro a; rfl
   have hν_inr : ∀ b : Fin (n + 1), ν (Sum.inr b) = σ (Sum.inr b) := by
@@ -466,16 +464,15 @@ theorem summand_right_match
       -Equiv.Perm.sign σ * Equiv.Perm.sign (Equiv.swap (0 : Fin (n + 1)) k) := by
     change Equiv.Perm.sign (shuffleRightFwd σ hσ) = _
     unfold shuffleRightFwd
-    rw [restrictComplementRight_sign]
-    change Equiv.Perm.sign (normalizeRight σ k hk) = _
+    rw [restrictComplementRight_sign _ (normalizeRight_fixes σ k hk)]
     unfold normalizeRight
     rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_mul, Equiv.Perm.sign_sumCongr,
       Equiv.Perm.sign_swap (show (Sum.inl (0 : Fin (m + 1)) : Fin (m + 1) ⊕ Fin (n + 1)) ≠
         Sum.inr 0 from by simp)]
     simp
-  set ν := normalizeRight σ k hk
+  set ν := normalizeRight σ k
   have hν_fix : ν (Sum.inr 0) = Sum.inr 0 := normalizeRight_fixes σ k hk
-  have hσ_can_eq : σ_can = restrictComplementRight ν hν_fix := rfl
+  have hσ_can_eq : σ_can = restrictComplementRight ν := rfl
   have hν_inl : ∀ a : Fin (m + 1),
       ν (Sum.inl a) =
         Equiv.swap (Sum.inl (0 : Fin (m + 1))) (Sum.inr 0) (σ (Sum.inl a)) := by

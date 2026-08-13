@@ -1,15 +1,10 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Metric.Scaling
+import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -34,8 +29,6 @@ noncomputable def riemannianEDistOf
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The extended distance induced by a fixed Riemannian metric vanishes on
-the diagonal. -/
 theorem riemannianEDistOf_self
     (g : SmoothRiemannianMetric I M) (x : M) :
     riemannianEDistOf (I := I) g x x = 0 := by
@@ -46,7 +39,7 @@ theorem riemannianEDistOf_self
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-private theorem edistOf_iInf
+theorem edistOf_iInf
     (g : SmoothRiemannianMetric I M) (x y : M) :
     riemannianEDistOf (I := I) g x y =
       ⨅ (γ : Path x y) (_ : CMDiff 1 γ),
@@ -64,8 +57,23 @@ private theorem edistOf_iInf
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Pointwise domination of Riemannian metrics implies domination of their
-extended distances. -/
+theorem riemannianEDistOf_eq_riemannianEDist
+    [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := I) (M := M) g)
+    (x y : M) :
+    riemannianEDistOf (I := I) g x y = riemannianEDist I x y := by
+  rw [edistOf_iInf (I := I) g x y]
+  rw [Manifold.riemannianEDist]
+  refine iInf_congr fun γ => ?_
+  refine iInf_congr fun hγ => ?_
+  refine lintegral_congr fun t => ?_
+  rw [hEnorm]
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
 theorem edistOf_mono
     (g h : SmoothRiemannianMetric I M)
     (hgh : ∀ x v, g.inner x v v ≤ h.inner x v v)
@@ -80,8 +88,6 @@ theorem edistOf_mono
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Positive constant metric scaling multiplies Riemannian extended distance
-by the square root of the scaling constant. -/
 theorem edistOf_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
     (x y : M) :
@@ -110,8 +116,6 @@ theorem edistOf_scale
   rw [Real.sqrt_mul hc.le]
   rw [ENNReal.ofReal_mul (Real.sqrt_nonneg c)]
 
-/-- A pointwise quadratic upper bound gives the corresponding square-root
-upper bound on Riemannian extended distance. -/
 theorem edistOf_le_of_quad
     (g h : SmoothRiemannianMetric I M) {c : Real} (hc : 0 < c)
     (hu : ∀ x v, h.inner x v v ≤ c * g.inner x v v)
@@ -130,8 +134,6 @@ theorem edistOf_le_of_quad
         riemannianEDistOf (I := I) g x y :=
       edistOf_scale c hc g x y
 
-/-- A pointwise quadratic lower bound gives the corresponding square-root
-lower bound on Riemannian extended distance. -/
 theorem le_edistOf_of_quad
     (g h : SmoothRiemannianMetric I M) {c : Real} (hc : 0 < c)
     (hl : ∀ x v, c * g.inner x v v ≤ h.inner x v v)
@@ -149,8 +151,6 @@ theorem le_edistOf_of_quad
           simpa only [scaleMetric_inner] using hl z v)
         x y
 
-/-- Scaling the metric by `c` and the radius by `√c` preserves the carrier
-of an extended-distance ball. -/
 theorem edistBall_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
     (x : M) (r : Real) :

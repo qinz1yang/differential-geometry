@@ -17,8 +17,8 @@ import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Topology.Compactness.Compact
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -108,7 +108,7 @@ private lemma speedSq_eq_chartGramAlongCurve
   rw [chartGramAlongCurve_def]
   refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
   have hroundtrip :
-      DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α i j
+      DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α i j
           (chartCurve (I := I) α (fun v : ℝ => f s v) t)
         = chartGramMatrix (I := I) g α α i j := by
     rw [chartCurve_def]

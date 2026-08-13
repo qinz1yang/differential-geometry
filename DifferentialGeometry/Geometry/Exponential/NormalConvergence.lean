@@ -3,14 +3,6 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.MetricGeodesicSpray
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -20,8 +12,6 @@ open scoped ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [CompleteSpace E] [FiniteDimensional Real E]
-
-
 
 omit [CompleteSpace E] in
 theorem normalGeodesicSpray_conv

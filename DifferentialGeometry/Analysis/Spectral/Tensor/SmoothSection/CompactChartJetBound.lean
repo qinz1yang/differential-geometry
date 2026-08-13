@@ -1,14 +1,18 @@
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseOrderPeeling
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.SmoothTensorAllOrderCompleteness
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.NormComparison
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Topology Metric Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter Topology Metric DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -16,7 +20,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
-open IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -352,7 +356,7 @@ lemma exists_zeroContentR_le_fiberNorm_on_compact
       Real.sqrt (tensorInnerPointwise (I := I) (M := M) g r s b
         (S.toFun b) (S.toFun b)) := by
     rw [show S.toFun b = TensorRSSpace.toModel (𝕜 := ℝ) (I := I) (S.toSection b) from rfl]
-    exact DifferentialGeometry.Integral.Connection.norm_eq_sqrt_tensorInnerPointwise
+    exact DifferentialGeometry.Analysis.Elliptic.norm_eq_sqrt_tensorInnerPointwise
       (I := I) (M := M) g r s b (S.toSection b)
   have hInner_nn : 0 ≤ tensorInnerPointwise (I := I) (M := M) g r s b
       (S.toFun b) (S.toFun b) :=
@@ -559,4 +563,4 @@ lemma rawPullR_jet_le
       mul_le_mul_of_nonneg_left hsum hCpeel_nn
     _ = Cpeel * (Czmax * Cemb) *
         ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) S‖ := by ring
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Spectral

@@ -3,26 +3,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -40,15 +21,12 @@ variable [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
 variable [T2Space M] [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M]
 
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem difference_symm_at
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     {x : M}
-    (htf : DifferentialGeometry.Integral.Connection.IsTorsionFreeAt (I := I) cov x)
-    (htf' : DifferentialGeometry.Integral.Connection.IsTorsionFreeAt (I := I) cov' x)
+    (htf : DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt (I := I) cov x)
+    (htf' : DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt (I := I) cov' x)
     (X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
     ((CovariantDerivative.difference cov cov' x) (Y x)) (X x) =
       ((CovariantDerivative.difference cov cov' x) (X x)) (Y x) := by
@@ -89,14 +67,11 @@ theorem difference_symm_at
   rw [h1, h2]
   linear_combination (norm := module) ht' - ht
 
-
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem nabla_metric_two_term
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
     nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 cov' X
@@ -117,17 +92,14 @@ theorem nabla_metric_two_term
     show ((1 : Fin 2) = 0) = False from by simp, if_false] at hsub
   exact neg_injective hsub
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem koszul_difference
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {x : M}
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
-    (htf : DifferentialGeometry.Integral.Connection.IsTorsionFreeAt (I := I) cov x)
-    (htf' : DifferentialGeometry.Integral.Connection.IsTorsionFreeAt (I := I) cov' x)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (htf : DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt (I := I) cov x)
+    (htf' : DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt (I := I) cov' x)
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)) :
     g.inner x (((CovariantDerivative.difference cov cov' x) (Y x)) (X x)) (Z x) =
       (1 / 2) * nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 cov' X
@@ -154,3 +126,4 @@ theorem koszul_difference
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

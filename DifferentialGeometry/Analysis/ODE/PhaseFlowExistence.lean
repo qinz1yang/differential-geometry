@@ -2,14 +2,6 @@ import DifferentialGeometry.Analysis.ODE.PhaseFlowPerturbation
 import DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.VariationalSolutionOperator
 import Mathlib.Analysis.Normed.Operator.NNNorm
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Set Metric
@@ -69,8 +61,6 @@ theorem unscale_maps_box (P V : NNReal) :
       abs_of_nonneg V.coe_nonneg]
     simpa using mul_le_mul_of_nonneg_left hz2 V.coe_nonneg
 
-
-
 theorem scale_maps_ball {P V b q : NNReal} (hP : 0 < P) (hV : 0 < V)
     (hqP : q ≤ b * P) (hqV : q ≤ b * V) :
     MapsTo (phaseScale (E := E) P V) (closedBall (0 : E × E) q)
@@ -108,8 +98,6 @@ theorem scale_maps_ball {P V b q : NNReal} (hP : 0 < P) (hV : 0 < V)
 def scaledPhase (P V : NNReal) (a : E × E → E) (z : E × E) : E × E :=
   phaseScale P V (phaseField a (phaseUnscale P V z))
 
-
-
 theorem scaledPhase_lip {P V κ : NNReal} {a : E × E → E}
     (ha : LipschitzOnWith κ a (phaseBox P V)) :
     LipschitzOnWith
@@ -123,8 +111,6 @@ theorem scaledPhase_lip {P V κ : NNReal} {a : E × E → E}
     (unscale_maps_box (E := E) P V)
   have hs := (phaseScale (E := E) P V).lipschitz.comp_lipschitzOnWith hm
   simpa only [scaledPhase, Function.comp_def, mul_assoc] using hs
-
-
 
 theorem scaledPhase_norm {P V A L : NNReal} {a : E × E → E}
     (hP : 0 < P) (hV : 0 < V)
@@ -262,9 +248,6 @@ private theorem exists_fenced_Icc [CompleteSpace E]
   · intro t ht
     exact unscale_maps_box P V (hΨmem t ht)
 
-
-
-
 theorem exists_fenced [CompleteSpace E]
     {P V A L b κ : NNReal} {a : E × E → E}
     (hP : 0 < P) (hV : 0 < V)
@@ -288,8 +271,6 @@ theorem exists_fenced [CompleteSpace E]
   intro t ht
   exact Analysis.ODE.Flow.hasDerivWithinAt_Ici_of_Icc
     (hΦderiv t ⟨ht.1, ht.2.le⟩) ht
-
-
 
 theorem exists_fenced_on [CompleteSpace E]
     {P V A L b κ : NNReal} {T : Real} {a : E × E → E}
@@ -317,10 +298,6 @@ theorem exists_fenced_on [CompleteSpace E]
   intro t ht
   exact (hΦderiv t (Ioo_subset_Icc_self ht)).hasDerivAt
     (Icc_mem_nhds ht.1 ht.2)
-
-
-
-
 
 theorem exists_fenced_sym [CompleteSpace E]
     {P V A L b κ : NNReal} {a : E × E → E}

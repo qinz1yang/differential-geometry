@@ -1,25 +1,18 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautHs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffH0
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarLapDiffCore
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
@@ -32,38 +25,35 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
-
-
 theorem lapDiffHs_eq_A20
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) :
     ∀ᶠ s in 𝓝[Set.Ici (0 : ℝ)] (0 : ℝ),
-      ∀ u : tensorHs (I := I) (M := M) (G.metric (T : ℝ)) 0 0 2,
+      ∀ u : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0 2,
         tensorHs.castEquiv (I := I) (M := M)
-            (g := G.metric (T : ℝ)) (r := 0) (s := 0)
+            (g := g_fam (T : ℝ)) (r := 0) (s := 0)
             (by norm_num : ((0 : ℕ) : ℝ) = 0)
-            (lapDiffHs (I := I) (M := M) (G.metric (T : ℝ))
-              (G.metric ((T : ℝ) - s)) 0
+            (lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
+              (g_fam ((T : ℝ) - s)) 0
               (tensorHs.castEquiv (I := I) (M := M)
-                (g := G.metric (T : ℝ)) (r := 0) (s := 0)
+                (g := g_fam (T : ℝ)) (r := 0) (s := 0)
                 (by norm_num : (2 : ℝ) = ((0 : ℕ) : ℝ) + 2) u)) =
-          lapDiffA20 (I := I) (M := M) G T s u := by
+          lapDiffA20 (I := I) (M := M) g_fam T s u := by
   classical
   obtain ⟨tau, htau, _, _, hHs⟩ :=
-    lapDiffHs_core (I := I) (M := M) G hG T
+    lapDiffHs_core (I := I) (M := M) g_fam hG T
   have hIcc : Set.Icc (0 : ℝ) tau ∈ 𝓝[Set.Ici (0 : ℝ)] (0 : ℝ) :=
     Icc_mem_nhdsGE htau
   have hle : 𝓝[Set.Ici (0 : ℝ)] (0 : ℝ) ≤ 𝓝 (0 : ℝ) :=
     nhdsWithin_le_nhds
   have hA20 :=
-    (lapDiffA20_core (I := I) (M := M) G hG T).filter_mono
+    (lapDiffA20_core (I := I) (M := M) g_fam hG T).filter_mono
       hle
   filter_upwards [hIcc, hA20] with s hs hsA20
-  let q : SmoothRiemannianMetric I M := G.metric (T : ℝ)
-  let h : SmoothRiemannianMetric I M := G.metric ((T : ℝ) - s)
+  let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
+  let h : SmoothRiemannianMetric I M := g_fam ((T : ℝ) - s)
   let J : tensorHs (I := I) (M := M) q 0 0 2 →L[ℝ]
       tensorHs (I := I) (M := M) q 0 0 (((0 : ℕ) : ℝ) + 2) :=
     (tensorHs.castEquiv (I := I) (M := M)
@@ -75,7 +65,7 @@ theorem lapDiffHs_eq_A20
       (g := q) (r := 0) (s := 0)
       (by norm_num : ((0 : ℕ) : ℝ) = 0)).toContinuousLinearEquiv.toContinuousLinearMap
   let L := K.comp ((lapDiffHs (I := I) (M := M) q h 0).comp J)
-  let R := lapDiffA20 (I := I) (M := M) G T s
+  let R := lapDiffA20 (I := I) (M := M) g_fam T s
   intro u
   change L u = R u
   have hdense : DenseRange
@@ -126,6 +116,6 @@ theorem lapDiffHs_eq_A20
   have hfun := hdense.equalizer L.continuous R.continuous heq
   exact congr_fun hfun u
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

@@ -1,16 +1,15 @@
-
-
-
-
-
-
+/-
+Copyright © 2023 Heather Macbeth. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Heather Macbeth
+Coauthors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Alternating.Comp
 import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
-
 
 noncomputable section
 
@@ -19,7 +18,6 @@ open Bundle Set ContinuousAlternatingMap
 section defs
 variable (𝕜 : Type*) [CommSemiring 𝕜] [TopologicalSpace 𝕜] (ι : Type*) [Fintype ι]
 variable {B : Type*}
-
 
 protected def Bundle.continuousAlternatingMap (_F₁ : Type*) (E₁ : B → Type*)
     [Π x, AddCommMonoid (E₁ x)] [Π x, Module 𝕜 (E₁ x)] [Π x, TopologicalSpace (E₁ x)]
@@ -321,7 +319,7 @@ open scoped Bundle Manifold
 open Bundle Pretrivialization
 
 variable {𝕜 ι B F₁ F₂ M : Type*} {E₁ : B → Type*} {E₂ : B → Type*}
-  [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+  [NontriviallyNormedField 𝕜] [CharZero 𝕜]
   [Fintype ι]
   {EB : Type*} [NormedAddCommGroup EB] [NormedSpace 𝕜 EB]
   {HB : Type*} [TopologicalSpace HB]
@@ -346,7 +344,6 @@ variable {𝕜 ι B F₁ F₂ M : Type*} {E₁ : B → Type*} {E₂ : B → Type
 variable {F₃ F₄ : Type*}
   [NormedAddCommGroup F₃] [NormedSpace 𝕜 F₃]
   [NormedAddCommGroup F₄] [NormedSpace 𝕜 F₄]
-  [FiniteDimensional 𝕜 F₁] [FiniteDimensional 𝕜 F₂]
 
 local notation "AE₁E₂" => Bundle.TotalSpace (F₁ [⋀^ι]→L[𝕜] F₂) ⋀^ι⟮𝕜; F₁, E₁; F₂, E₂⟯
 
@@ -413,6 +410,44 @@ variable
 
 open Bundle Set Function Filter
 open scoped Topology Manifold ContDiff
+
+namespace DifferentialGeometry
+
+set_option backward.isDefEq.respectTransparency false in
+@[instance_reducible]
+def seminormedAddCommGroupTangentSpace (x : M) : SeminormedAddCommGroup (TangentSpace IM x) :=
+  inferInstanceAs (SeminormedAddCommGroup EM)
+
+attribute [local instance] seminormedAddCommGroupTangentSpace
+
+set_option backward.isDefEq.respectTransparency false in
+@[instance_reducible]
+def normedAddCommGroupTangentSpace (x : M) : NormedAddCommGroup (TangentSpace IM x) :=
+  inferInstanceAs (NormedAddCommGroup EM)
+
+attribute [local instance] normedAddCommGroupTangentSpace
+
+set_option backward.isDefEq.respectTransparency false in
+@[instance_reducible]
+def normedSpaceTangentSpace (x : M) : NormedSpace ℝ (TangentSpace IM x) :=
+  inferInstanceAs (NormedSpace ℝ EM)
+
+attribute [local instance] normedSpaceTangentSpace
+
+lemma continuousAlternatingMap_trivializationAt_apply (m : ℕ) (x₀ x : M)
+    (L : Bundle.continuousAlternatingMap ℝ (Fin m) EM (TangentSpace IM) ℝ (Bundle.Trivial M ℝ) x) :
+    (trivializationAt (EM [⋀^Fin m]→L[ℝ] ℝ)
+      (Bundle.continuousAlternatingMap ℝ (Fin m) EM (TangentSpace IM) ℝ
+        (Bundle.Trivial M ℝ)) x₀ ⟨x, L⟩).2 =
+      L.compContinuousLinearMap ((trivializationAt EM (TangentSpace IM) x₀).symmL ℝ x) := by
+  change (Pretrivialization.continuousAlternatingMap ℝ (Fin m)
+      (trivializationAt EM (TangentSpace IM) x₀) (trivializationAt ℝ (Bundle.Trivial M ℝ) x₀)
+      ⟨x, L⟩).2 = L.compContinuousLinearMap ((trivializationAt EM (TangentSpace IM) x₀).symmL ℝ x)
+  rw [Pretrivialization.continuousAlternatingMap_apply]
+  ext v
+  simp
+
+end DifferentialGeometry
 
 instance ChartedSpace.alternatingBundle : ChartedSpace (ModelProd HM (EM [⋀^Fin m]→L[ℝ] ℝ))
     𝒜⟮ℝ,Fin m;EM,TangentSpace IM;ℝ,Bundle.Trivial M ℝ⟯ := inferInstance

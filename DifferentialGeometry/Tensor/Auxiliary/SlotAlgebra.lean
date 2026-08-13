@@ -5,20 +5,11 @@ import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.FinCases
 
-
-
-
-
-
-
-
-
 open scoped BigOperators
 
 namespace DifferentialGeometry
 namespace Tensor
 namespace SlotAlgebra
-
 
 lemma sum_fin3_fun_eq_triple
     {R ι : Type*} [CommSemiring R] [Fintype ι]
@@ -283,7 +274,6 @@ lemma sum_update_finCons_raw
       (F := F) (head := head) (dHead := d 0) (tail := tail)
       (dTail := fun q : Fin s => d q.succ)
 
-
 lemma sum_rotate3
     {ι κ ι' A : Type*} [Fintype ι] [Fintype κ] [Fintype ι']
     [AddCommMonoid A] (F : ι → κ → ι' → A) :
@@ -297,7 +287,6 @@ lemma sum_rotate3
           rw [Finset.sum_comm]
     _ = ∑ j : ι', ∑ i : ι, ∑ k : κ, F i k j := by
           rw [Finset.sum_comm]
-
 
 lemma sum_rotate4
     {ι κ ι' κ' A : Type*} [Fintype ι] [Fintype κ] [Fintype ι']
@@ -314,7 +303,6 @@ lemma sum_rotate4
           rw [Finset.sum_comm]
     _ = ∑ m : κ', ∑ i : ι, ∑ k : κ, ∑ l : ι', F i k l m := by
           rw [sum_rotate3]
-
 
 lemma sum_rotate4_two
     {ι κ ι' κ' A : Type*} [Fintype ι] [Fintype κ] [Fintype ι']
@@ -333,7 +321,6 @@ lemma sum_rotate4_two
           refine Finset.sum_congr rfl ?_
           intro l _
           rw [sum_rotate3]
-
 
 lemma sum_mul_right3
     {ι κ ι' R : Type*} [Fintype ι] [Fintype κ] [Fintype ι']

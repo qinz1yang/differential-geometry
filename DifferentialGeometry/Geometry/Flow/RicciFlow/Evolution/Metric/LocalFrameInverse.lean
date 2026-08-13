@@ -1,20 +1,13 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
+
 open scoped Manifold ContDiff BigOperators Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -30,14 +23,12 @@ section Components
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {n : WithTop ℕ∞} {u : Set M}
 
-
-
 noncomputable def localFrameInv
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u) :
-    Real → DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx :=
+    Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx :=
   by
     classical
     exact fun t x i j =>
@@ -49,7 +40,7 @@ noncomputable def localFrameInv
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem localFrameInv_of_mem
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -59,11 +50,9 @@ omit [SigmaCompactSpace M] [T2Space M] in
         (hframe.toBasisAt hx) i j := by
   simp [localFrameInv, hx]
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem localFrameInv_real
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u) :
@@ -77,7 +66,7 @@ theorem localFrameInv_real
 
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem frameGram_time
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (x : M) → TangentSpace I x)
     {K : Set Real} (x : M)
@@ -97,7 +86,7 @@ omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem localFrameInv_time
     [Finite Idx]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
@@ -149,7 +138,7 @@ theorem localFrameInv_time
 
 
 noncomputable def localFrameInvDt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u) :
@@ -158,17 +147,15 @@ noncomputable def localFrameInvDt
     (fun s : Real => localFrameInv (I := I) S frame hframe s x i j)
     D.carrier t
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem localFrameTimeReg
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E n frame u)
     (hmetric : ∀ x : M, x ∈ u → ∀ i j : Idx, ContDiffOn Real ∞
       (fun t : Real => metricCompInFrame (I := I) S frame t x i j) D.carrier)
-    (hunique : ∀ t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
+    (hunique : ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real)) :
     MetricFrameTimeRegularityInFrameOnLocal
       (I := I) S (localFrameInv (I := I) S frame hframe)

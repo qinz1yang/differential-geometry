@@ -6,12 +6,16 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothEmbedInj
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsMetricPerturbation
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-open Bundle Manifold Set Filter MeasureTheory Tensor0SBundle
+open Bundle Manifold Set Filter MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
@@ -19,9 +23,9 @@ open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -44,9 +48,6 @@ theorem smoothHs_zero (g : SmoothRiemannianMetric I M) (sigma : ℝ) :
     show SmoothCcTensor.toL2 (0 : SmoothCcTensor g 0 2) = 0 from map_zero _,
     tensorL2Coeff_eq_inner, inner_zero_right, tensorHs.zero_coeff]
 
-/-- A jointly smooth tensor path which vanishes at zero stays in any positive
-high-Sobolev ball on some positive closed window contained in its open
-parameter set. -/
 theorem exists_pathBall
     (g : SmoothRiemannianMetric I M) (n : ℕ)
     (Phi : ℝ → SmoothCcTensor g 0 2) {S : Set ℝ}
@@ -95,11 +96,7 @@ theorem exists_pathBall
     exact h.le
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M]
   [BoundarylessManifold I M] in
-/-- A continuous high-Sobolev path with a continuous strong derivative and a
-pointwise semilinear parabolic equation determines the exact zero-trace strong
-pair consumed by reverse Duhamel uniqueness. -/
 theorem smoothPath_strong
     (g : SmoothRiemannianMetric I M) (a : ℝ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g 0 2 (a + 2) →
@@ -216,9 +213,6 @@ theorem smoothPath_strong
     filter_upwards [hforceRep, hfieldRep, hNemy] with t hft hhit hNt
     rw [hft, hNt, hhit]
 
-/-- The Ricci--DeTurck right-hand side, recast into the fixed-background
-`SmoothCcTensor` carrier.  Only the carrier metric changes; the underlying
-mixed tensor section is unchanged. -/
 def deTurckRHSBase (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -230,9 +224,6 @@ def deTurckRHSBase (g₀ g_bg : SmoothRiemannianMetric I M)
     (deTurckRHSSection (I := I) g_bg
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)).hasCompactSupport
 
-/-- The geometric metric equation for a smooth path gives the exact
-unit-model equation for its fixed-background metric-difference tensor.  The
-realized metric in `deTurckRHSBase` is eliminated by `realize_metricDiff`. -/
 theorem metricDiff_pde
     (q g_bg : SmoothRiemannianMetric I M)
     (G : ℝ → SmoothRiemannianMetric I M) {T δ : ℝ} (hδ_lt : δ < 1)
@@ -274,8 +265,6 @@ theorem metricDiff_pde
   rw [hrhs]
   simpa only [metricDiff_unit] using hder
 
-/-- The fixed-background Ricci--DeTurck right-hand side splits exactly into
-the rough connection Laplacian and the smooth DeTurck remainder. -/
 theorem rhsBase_eq_lap_rem (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -286,7 +275,6 @@ theorem rhsBase_eq_lap_rem (g₀ g_bg : SmoothRiemannianMetric I M)
   unfold deTurckRHSBase deTurckSmoothRemainder
   abel
 
-/-- Spectral coefficients of the smooth rough connection Laplacian. -/
 theorem smoothLap_coeff (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
     (T : SmoothCcTensor g₀ 0 2)
     (i : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
@@ -316,8 +304,6 @@ theorem smoothLap_coeff (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
   rw [pow_one] at hdiag
   linear_combination -hdiag
 
-/-- The smooth rough connection Laplacian is the loss-two spectral
-Laplacian. -/
 theorem smoothLap_eq_scale (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
     (T : SmoothCcTensor g₀ 0 2) :
     tensorScaleLaplacian (I := I) (M := M) σ
@@ -329,8 +315,6 @@ theorem smoothLap_eq_scale (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
   rw [tensorScaleLaplacian_coeff, smoothLap_coeff]
   rfl
 
-/-- The smooth DeTurck nonlinearity is exactly the spectral embedding of the
-smooth remainder. -/
 theorem smoothRem_eq_N (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -342,8 +326,6 @@ theorem smoothRem_eq_N (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
   funext i
   rfl
 
-/-- A smooth geometric Ricci--DeTurck perturbation on a closed time window is
-an exact strong pair for the live symmetric Sobolev nonlinearity. -/
 theorem smoothGeom_strong
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {L : ℝ≥0}
@@ -492,10 +474,7 @@ theorem smoothGeom_strong
     hhi hD hincl hderiv hzero hpde
 
 omit [NeZero (Module.finrank ℝ E)]
-  [CompactSpace M]
   [BoundarylessManifold I M] in
-/-- A continuous high-Sobolev path has a finite uniform bound for its
-Lipschitz nonlinearity on a nonempty closed time window. -/
 theorem exists_pathNBound
     (g : SmoothRiemannianMetric I M) (a : ℝ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g 0 2 (a + 2) →
@@ -510,9 +489,6 @@ theorem exists_pathNBound
     isCompact_Icc.exists_isMaxOn (Set.nonempty_Icc.mpr hT) hcont
   exact ⟨‖Nfun (Fhi t₀)‖, norm_nonneg _, fun t ht => ht₀max ht⟩
 
-/-- The mixed Ricci--DeTurck contraction and force-ball budgets are available
-on a positive horizon depending only on the two mixed constants and a
-pointwise forcing bound. -/
 theorem exists_mixBudget (C₁ C₂ : ℝ≥0) {B : ℝ} (hB : 0 ≤ B) :
     ∃ ρ T₀ : ℝ, 0 < ρ ∧ 0 < T₀ ∧
       ∀ {T : ℝ}, 0 < T → T ≤ T₀ →
@@ -604,15 +580,6 @@ theorem exists_mixBudget (C₁ C₂ : ℝ≥0) {B : ℝ} (hB : 0 ≤ B) :
           div_nonneg hC₂ (by positivity : (0 : ℝ) ≤ (C₂ : ℝ) + 1)]
   exact ⟨hT1, hforce, by linarith⟩
 
-/-- Local uniqueness of two smooth geometric Ricci--DeTurck perturbations on
-one closed, already time-translated interior window.  Both paths use the same
-fixed initial carrier `g₀`, the same DeTurck background `g_bg`, the same
-Sobolev truncation radius, and zero perturbation at the left endpoint.
-
-The numerical hypotheses are precisely the force-ball and mixed-contraction
-budgets of `deTurckStrong_unique`.  The pointwise bound `B` implies the force
-ball bound by the honest `sqrt T` estimate.  This theorem intentionally does
-not start a window from merely `C0` data at the original flow edge. -/
 theorem smoothGeom_unique
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
@@ -730,14 +697,9 @@ theorem smoothGeom_unique
   apply ccToHs_injective (I := I) (M := M) g₀ 2 (a : ℝ)
   simpa only [ccHs_eq_smoothHs] using hu
 
-/-- Local uniqueness of two smooth Ricci--DeTurck metric families on one
-already translated regular-time window.  The common carrier `q` is their
-actual metric at the left endpoint.  Joint tensor regularity, symmetry, the
-zero initial perturbation, and the realization identity are all derived from
-the metric-difference construction rather than supplied as extra inputs. -/
 theorem metricRD_unique
     {D : RealTimeInterval}
-    (G₁ G₂ : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G₁ G₂ : ℝ → SmoothRiemannianMetric I M)
     (hG₁ : MetricFamilySmoothOn (I := I) (M := M) D G₁)
     (hG₂ : MetricFamilySmoothOn (I := I) (M := M) D G₂)
     (q g_bg : SmoothRiemannianMetric I M) (c : ℝ)
@@ -765,53 +727,53 @@ theorem metricRD_unique
     {S : Set ℝ} (hS : IsOpen S) (hIcc : Icc (0 : ℝ) T ⊆ S)
     (hmap₁ : ∀ t ∈ S, c + t ∈ D.regular)
     (hmap₂ : ∀ t ∈ S, c + t ∈ D.regular)
-    (hG₁0 : G₁.metric c = q) (hG₂0 : G₂.metric c = q)
+    (hG₁0 : G₁ c = q) (hG₂0 : G₂ c = q)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hsmall₁ : ∀ t ∈ Icc (0 : ℝ) T,
       metricCauchySchwarzBound (I := I) (M := M) q
         (ccTensorBilinSymm (I := I) q
           (metricDifferenceCcTensor (I := I) (M := M) q
-            (G₁.metric (c + t)))) δ)
+            (G₁ (c + t)))) δ)
     (hsmall₂ : ∀ t ∈ Icc (0 : ℝ) T,
       metricCauchySchwarzBound (I := I) (M := M) q
         (ccTensorBilinSymm (I := I) q
           (metricDifferenceCcTensor (I := I) (M := M) q
-            (G₂.metric (c + t)))) δ)
+            (G₂ (c + t)))) δ)
     (hball₁ : ∀ t ∈ Icc (0 : ℝ) T,
       ‖smoothCcToTensorHs (I := I) (M := M) q ((a : ℝ) + 2)
         (metricDifferenceCcTensor (I := I) (M := M) q
-          (G₁.metric (c + t)))‖ ≤
+          (G₁ (c + t)))‖ ≤
         (Classical.choose
           (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) q a ha_super)).1)
     (hball₂ : ∀ t ∈ Icc (0 : ℝ) T,
       ‖smoothCcToTensorHs (I := I) (M := M) q ((a : ℝ) + 2)
         (metricDifferenceCcTensor (I := I) (M := M) q
-          (G₂.metric (c + t)))‖ ≤
+          (G₂ (c + t)))‖ ≤
         (Classical.choose
           (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) q a ha_super)).1)
     (hPDE₁ : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
       ∀ v w : TangentSpace I x,
-        HasDerivAt (fun tau => (G₁.metric (c + tau)).inner x v w)
-          (deTurckRicciRHS (I := I) g_bg (G₁.metric (c + t)) x v w) t)
+        HasDerivAt (fun tau => (G₁ (c + tau)).inner x v w)
+          (deTurckRicciRHS (I := I) g_bg (G₁ (c + t)) x v w) t)
     (hPDE₂ : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
       ∀ v w : TangentSpace I x,
-        HasDerivAt (fun tau => (G₂.metric (c + tau)).inner x v w)
-          (deTurckRicciRHS (I := I) g_bg (G₂.metric (c + t)) x v w) t)
+        HasDerivAt (fun tau => (G₂ (c + tau)).inner x v w)
+          (deTurckRicciRHS (I := I) g_bg (G₂ (c + t)) x v w) t)
     (hNbound₁ : ∀ t ∈ Icc (0 : ℝ) T,
       ‖deTurckSobolevNonlinearitySymm (I := I) (M := M) q g_bg a
         (smoothCcToTensorHs (I := I) (M := M) q ((a : ℝ) + 2)
           (metricDifferenceCcTensor (I := I) (M := M) q
-            (G₁.metric (c + t))))‖ ≤ B)
+            (G₁ (c + t))))‖ ≤ B)
     (hNbound₂ : ∀ t ∈ Icc (0 : ℝ) T,
       ‖deTurckSobolevNonlinearitySymm (I := I) (M := M) q g_bg a
         (smoothCcToTensorHs (I := I) (M := M) q ((a : ℝ) + 2)
           (metricDifferenceCcTensor (I := I) (M := M) q
-            (G₂.metric (c + t))))‖ ≤ B) :
-    ∀ t ∈ Icc (0 : ℝ) T, G₁.metric (c + t) = G₂.metric (c + t) := by
+            (G₂ (c + t))))‖ ≤ B) :
+    ∀ t ∈ Icc (0 : ℝ) T, G₁ (c + t) = G₂ (c + t) := by
   let Phi₁ : ℝ → SmoothCcTensor q 0 2 := fun t =>
-    metricDifferenceCcTensor (I := I) (M := M) q (G₁.metric (c + t))
+    metricDifferenceCcTensor (I := I) (M := M) q (G₁ (c + t))
   let Phi₂ : ℝ → SmoothCcTensor q 0 2 := fun t =>
-    metricDifferenceCcTensor (I := I) (M := M) q (G₂.metric (c + t))
+    metricDifferenceCcTensor (I := I) (M := M) q (G₂ (c + t))
   have hPhi₁ := metricDiff_shift (I := I) (M := M) G₁ hG₁ q c hmap₁
   have hPhi₂ := metricDiff_shift (I := I) (M := M) G₂ hG₂ q c hmap₂
   have hPhi₁0 : Phi₁ 0 = 0 := by
@@ -823,17 +785,17 @@ theorem metricRD_unique
         smoothCcTensorBilinForm (I := I) q (Phi₁ t) x v w =
           smoothCcTensorBilinForm (I := I) q (Phi₁ t) x w v := by
     intro t _ x v w
-    exact metricDiff_symm (I := I) (M := M) q (G₁.metric (c + t)) x v w
+    exact metricDiff_symm (I := I) (M := M) q (G₁ (c + t)) x v w
   have hsymm₂ : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
       ∀ v w : TangentSpace I x,
         smoothCcTensorBilinForm (I := I) q (Phi₂ t) x v w =
           smoothCcTensorBilinForm (I := I) q (Phi₂ t) x w v := by
     intro t _ x v w
-    exact metricDiff_symm (I := I) (M := M) q (G₂.metric (c + t)) x v w
+    exact metricDiff_symm (I := I) (M := M) q (G₂ (c + t)) x v w
   have hunit₁ := metricDiff_pde (I := I) (M := M) q g_bg
-    (fun t => G₁.metric (c + t)) hδ_lt hsmall₁ hPDE₁
+    (fun t => G₁ (c + t)) hδ_lt hsmall₁ hPDE₁
   have hunit₂ := metricDiff_pde (I := I) (M := M) q g_bg
-    (fun t => G₂.metric (c + t)) hδ_lt hsmall₂ hPDE₂
+    (fun t => G₂ (c + t)) hδ_lt hsmall₂ hPDE₂
   have hPhiEq := smoothGeom_unique (I := I) (M := M) q g_bg a ha_super
     hLip hsingle hT hT1 hρ hB hforceBudget hcontract Phi₁ Phi₂ hS hIcc
     hPhi₁ hPhi₂ hPhi₁0 hPhi₂0 hδ_lt hsmall₁ hsmall₂ hsymm₁ hsymm₂
@@ -850,28 +812,28 @@ theorem metricRD_unique
   linarith
 theorem metricRD_local
     {D : RealTimeInterval}
-    (G₁ G₂ : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G₁ G₂ : ℝ → SmoothRiemannianMetric I M)
     (hG₁ : MetricFamilySmoothOn (I := I) (M := M) D G₁)
     (hG₂ : MetricFamilySmoothOn (I := I) (M := M) D G₂)
     (q g_bg : SmoothRiemannianMetric I M) (c : ℝ)
     {S : Set ℝ} (hS : IsOpen S) (h0S : (0 : ℝ) ∈ S)
     (hmap : ∀ t ∈ S, c + t ∈ D.regular)
-    (hG₁0 : G₁.metric c = q) (hG₂0 : G₂.metric c = q)
+    (hG₁0 : G₁ c = q) (hG₂0 : G₂ c = q)
     (hPDE₁ : ∀ t ∈ S, ∀ x : M, ∀ v w : TangentSpace I x,
-      HasDerivAt (fun tau => (G₁.metric (c + tau)).inner x v w)
-        (deTurckRicciRHS (I := I) g_bg (G₁.metric (c + t)) x v w) t)
+      HasDerivAt (fun tau => (G₁ (c + tau)).inner x v w)
+        (deTurckRicciRHS (I := I) g_bg (G₁ (c + t)) x v w) t)
     (hPDE₂ : ∀ t ∈ S, ∀ x : M, ∀ v w : TangentSpace I x,
-      HasDerivAt (fun tau => (G₂.metric (c + tau)).inner x v w)
-        (deTurckRicciRHS (I := I) g_bg (G₂.metric (c + t)) x v w) t) :
+      HasDerivAt (fun tau => (G₂ (c + tau)).inner x v w)
+        (deTurckRicciRHS (I := I) g_bg (G₂ (c + t)) x v w) t) :
     ∃ T : ℝ, 0 < T ∧
-      ∀ t ∈ Icc (0 : ℝ) T, G₁.metric (c + t) = G₂.metric (c + t) := by
+      ∀ t ∈ Icc (0 : ℝ) T, G₁ (c + t) = G₂ (c + t) := by
   classical
   let a : ℕ := 2 * Module.finrank ℝ E + 10
   have ha : 2 * Module.finrank ℝ E + 10 ≤ a := le_rfl
   let Phi₁ : ℝ → SmoothCcTensor q 0 2 := fun t =>
-    metricDifferenceCcTensor (I := I) (M := M) q (G₁.metric (c + t))
+    metricDifferenceCcTensor (I := I) (M := M) q (G₁ (c + t))
   let Phi₂ : ℝ → SmoothCcTensor q 0 2 := fun t =>
-    metricDifferenceCcTensor (I := I) (M := M) q (G₂.metric (c + t))
+    metricDifferenceCcTensor (I := I) (M := M) q (G₂ (c + t))
   have hPhi₁ := metricDiff_shift (I := I) (M := M) G₁ hG₁ q c hmap
   have hPhi₂ := metricDiff_shift (I := I) (M := M) G₂ hG₂ q c hmap
   have hPhi₁0 : Phi₁ 0 = 0 := by
@@ -989,6 +951,6 @@ theorem metricRD_local
     (fun t ht => hN₁B t (hsub ht))
     (fun t ht => hN₂B t (hsub ht))
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

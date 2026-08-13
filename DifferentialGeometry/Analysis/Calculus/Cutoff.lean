@@ -2,20 +2,10 @@ import Mathlib.Geometry.Manifold.PartitionOfUnity
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry.Analysis
 
 open Filter Set
 open scoped ContDiff Manifold Topology
-
-
 
 theorem contDiff_cutoff_smul
     {E F : Type*}
@@ -39,9 +29,6 @@ theorem contDiff_cutoff_smul
       filter_upwards [hopen] with y hy
       rw [image_eq_zero_of_notMem_tsupport hy, zero_smul]
     exact (contDiffAt_const.congr_of_eventuallyEq heq).contDiffWithinAt
-
-
-
 
 theorem exists_bump_one_on
     {E : Type*}

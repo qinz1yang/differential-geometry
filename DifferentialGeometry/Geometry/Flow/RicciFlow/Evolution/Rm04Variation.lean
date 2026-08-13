@@ -1,21 +1,15 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProducer
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Lowered-Riemann variation in second-Ricci-derivative form
-
-This module normalizes the arbitrary-dimensional lowered-Riemann time
-derivative from coordinate Christoffel variation terms to the canonical
-`nablaGammaDtFromNabla2RicInFrame` expression.  It does not perform the later
-Bianchi contraction or Ricci-commutator calculation.
--/
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators Topology
 
@@ -28,11 +22,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-/-- The arbitrary-dimensional coordinate-frame variation of lowered Riemann
-after replacing the covariant derivative of the Christoffel variation by its
-explicit `∇²Ric` expression. -/
 def rm04VarRHS
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M)
     (nabla2Ric :
@@ -48,18 +39,15 @@ def rm04VarRHS
           t x₀ (m 1) p (m 0) (m 2)) *
         metricCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀)
           t x₀ (m 3) p +
-      DifferentialGeometry.Integral.Connection.christoffelCurvCoeffAt
+      DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt
           (I := I) (S.family.connection t) x₀ (m 0) (m 1) (m 2) p *
         ((-2 : Real) *
           ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀)
             t x₀ (m 3) p))
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Along a Ricci-flow solution, the time derivative of the canonical
-coordinate component of lowered Riemann is `rm04VarRHS`, the explicit
-arbitrary-dimensional `∇²Ric` variation formula. -/
 theorem rm04Var_of_sol
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
@@ -87,12 +75,12 @@ theorem rm04Var_of_sol
           (M := M) (coordInv (I := I) S x₀)
           (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))))
     (hRm : ∀ s, s ∈ D.carrier →
-      DifferentialGeometry.Integral.Connection.Rm13RealizesConnection
+      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection
         (I := I) (S.family.connection s) (S.base.rm13 s))
     (hcurv : ∀ s, s ∈ D.carrier →
-      DifferentialGeometry.Integral.Connection.ConnectionCurvatureCoordAt
+      DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt
         (I := I) (S.family.connection s) x₀)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
       (fun s : Real ↦ realizedRmBase (I := I) S x₀ s x₀ m)

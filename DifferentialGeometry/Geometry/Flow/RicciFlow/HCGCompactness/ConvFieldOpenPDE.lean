@@ -1,22 +1,14 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldOpen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldPDE
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Ricci-flow equation for the open-window metric limit
-
-This module reads the checked fixed-window PDE through `OpenConvOut`.  It uses
-the canonical-window neighborhood property to upgrade a derivative within one
-closed window to an ordinary derivative at each regular time of the ambient
-open interval.
--/
 
 noncomputable section
 
 open Set Function Filter Bundle Manifold TopologicalSpace
 open scoped Manifold Topology ContDiff BigOperators
-open DifferentialGeometry.Integral.Connection
 
 namespace DifferentialGeometry
 namespace HCGCompactness
@@ -33,8 +25,6 @@ variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
 namespace OpenConvOut
 
-/-- The metric family glued from all canonical compact windows satisfies the
-Ricci-flow metric equation at every regular time of the ambient open interval. -/
 theorem gInf_pde
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted

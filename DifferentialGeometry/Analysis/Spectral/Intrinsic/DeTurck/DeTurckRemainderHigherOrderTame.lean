@@ -8,20 +8,25 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingManifoldC
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCmOrderDropping
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseHebeyToHs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SingleSlotOperatorFiberNormBound
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -634,7 +639,8 @@ theorem deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
       exists_toHs_norm_le_iteratedCovGrad_tensorL2Norm_sum (I := I) (M := M) g₀ 0 2 (2 * K + q)
     refine ⟨Cemb * Cit * Crev, by positivity, fun W x => ?_⟩
     have hwin : 2 * (2 * K + q) + 1 ≤ L + 1 := by rw [hL_def]; omega
-    have hrev : ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g₀) (r := 0) (s := 2)
+    have hrev : ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
+      (g := g₀) (r := 0) (s := 2)
         (2 * K + q) W‖ ≤
         Crev * ∑ j ∈ Finset.range (L + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j W‖ := by
       refine le_trans (hCrev W) ?_
@@ -649,17 +655,22 @@ theorem deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
       rw [hcongr]
       exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono hwin)
         (fun j _ _ => norm_nonneg _)
-    have hit : ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g₀) (r := 0) (s := 2 + q)
+    have hit : ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
+      (g := g₀) (r := 0) (s := 2 + q)
         (2 * K) (iteratedCovGrad (I := I) g₀ 0 2 q W)‖ ≤
-        Cit * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g₀) (r := 0) (s := 2)
+        Cit * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
+          (g := g₀) (r := 0) (s := 2)
           (2 * K + q) W‖ := hCit W
     have hemb := hCemb (iteratedCovGrad (I := I) g₀ 0 2 q W) x
     calc (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + q) I b) :=
             Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
           ‖(iteratedCovGrad (I := I) g₀ 0 2 q W).toSection x‖)
-        ≤ Cemb * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g₀) (r := 0) (s := 2 + q)
+        ≤ Cemb * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
+          (g := g₀) (r := 0) (s := 2 + q)
             (2 * K) (iteratedCovGrad (I := I) g₀ 0 2 q W)‖ := hemb
-      _ ≤ Cemb * (Cit * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g₀) (r := 0) (s := 2)
+      _ ≤ Cemb * (Cit *
+        ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g₀)
+        (r := 0) (s := 2)
             (2 * K + q) W‖) := mul_le_mul_of_nonneg_left hit hCemb_pos.le
       _ ≤ Cemb * (Cit * (Crev * ∑ j ∈ Finset.range (L + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j W‖)) :=
@@ -799,6 +810,6 @@ private theorem iteratedCovGrad_compWindow_jetSum_le
     _ ≤ ∑ i ∈ Finset.range (q + m + 1), f i :=
         Finset.sum_le_sum_of_subset_of_nonneg himg (fun i _ _ => hf_nn i)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

@@ -3,15 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxSeries
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateFull
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.QuantCover
 
-/-!
-# Full terminal-slab summation for the Koch--Lamm flux potential
-
-The existing measurable half-open shell partition is reused for the
-directional first-derivative kernel.  Absolute shell estimates imply full
-Bochner integrability, identify the shell sum, and give a scale-free terminal
-flux bound with a canonical quantitative cover.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -26,7 +17,6 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- The full directional terminal-slab flux potential. -/
 def klFluxFull1 {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (R : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
   ∫ z : ℝ × V, klFluxKernel (R ^ 2) w x z • f z
@@ -36,8 +26,6 @@ variable {F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-/-- One parameterized shell is integrable as a set integral against the full
-terminal measure. -/
 theorem klFluxSt_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)
@@ -52,8 +40,6 @@ theorem klFluxSt_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     (klLateShell_far (V := V) x R k)).1
 
 omit [CompleteSpace F] in
-/-- One shell's set integral of the integrand norm has the exact summable
-Gaussian-polynomial flux majorant. -/
 theorem klFluxSt_abs {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)
@@ -80,8 +66,6 @@ theorem klFluxSt_abs {T R : ℝ} {A₂ Aₚ : ℝ≥0}
       ring
 
 omit [CompleteSpace F] in
-/-- The set integrals of the directional integrand norm over all shells are
-summable. -/
 theorem klFluxAbs_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
@@ -103,8 +87,6 @@ theorem klFluxAbs_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     ((klFluxWeight_sum (Module.finrank ℝ V)).mul_right C)
 
 omit [CompleteSpace F] in
-/-- The local late-flux hypothesis makes the full directional terminal-slab
-integrand Bochner integrable. -/
 theorem klFluxFull_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
@@ -123,7 +105,6 @@ theorem klFluxFull_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   simpa only [IntegrableOn, Measure.restrict_univ] using hU
 
 omit [CompleteSpace F] in
-/-- The shell integrals sum to the full directional terminal-slab potential. -/
 theorem klFluxFull_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
@@ -153,8 +134,6 @@ theorem klFluxFull_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
       klTerm_eq_tail (V := V) R]
 
 omit [CompleteSpace F] in
-/-- The full directional terminal-slab flux has the summed scale-free
-Koch--Lamm bound. -/
 theorem klFluxFull_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
@@ -203,8 +182,6 @@ theorem klFluxFull_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
         (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := rfl
 
 omit [CompleteSpace F] in
-/-- The terminal flux estimate with its covering family chosen canonically
-from the finite-dimensional quantitative-cover theorem. -/
 theorem klFluxFull_canon {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :

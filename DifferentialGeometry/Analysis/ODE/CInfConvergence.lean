@@ -8,15 +8,6 @@ import Mathlib.Topology.MetricSpace.Thickening
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
@@ -273,8 +264,6 @@ private theorem ode_c0_on_compact
           (fun q : P × ℝ => γInf q.1 q.2) atTop ∅)
     · simp
 
-
-
 private theorem ode_iterated_compact
     {P : Type uP}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -474,9 +463,6 @@ private theorem ode_iterated_compact
       simpa only [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply,
         LinearIsometryEquiv.dist_map] using hsecond
 
-
-
-
 private theorem ode_iterated_any
     {P : Type uP}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -653,8 +639,6 @@ private theorem ode_iterated_any
       simpa only [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply,
         LinearIsometryEquiv.dist_map] using hsecond
 
-
-
 private theorem mapCP_of_comp_add
     {E F : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -669,8 +653,6 @@ private theorem mapCP_of_comp_add
   have hNk : N ≤ k := le_trans (Nat.le_add_left N k₀) hk
   have hb := hk₀ (k - N) (Nat.le_sub_of_add_le hk) r hr x hx
   simpa only [Nat.sub_add_cancel hNk] using hb
-
-
 
 theorem MapCInfConvOnCompacts.ode_solutionAt
     {P X : Type*}

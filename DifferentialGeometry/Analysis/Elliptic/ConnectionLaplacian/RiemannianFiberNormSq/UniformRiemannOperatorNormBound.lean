@@ -5,6 +5,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.G
 import DifferentialGeometry.Analysis.Integration.Measure.Rellich
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -14,8 +17,8 @@ open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
@@ -45,7 +48,7 @@ private lemma pouTsupport_subset_goodSet (α : M) :
       chartLeviCivitaGoodSet (I := I) α := by
   intro b hb
   have heq : chartLeviCivitaGoodSet (I := I) α = (chartAt H α).source := by
-    rw [DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source
+    rw [DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet_eq_extChartAt_source
           (I := I) α]
     exact extChartAt_source_eq_chartAt_source (I := I) α
   rw [heq]
@@ -658,8 +661,8 @@ theorem exists_uniform_riemannOp_LeviCivita_gNorm_bound
           g.inner x v v * g.inner x w w * g.inner x u u := by
         gcongr
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

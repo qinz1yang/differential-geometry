@@ -1,14 +1,15 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
+open DifferentialGeometry.Analysis.Elliptic
 
 
 noncomputable section
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -206,8 +207,8 @@ theorem riemannianFiberNormSq_sum_le_card_mul
         rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const, nsmul_eq_mul]
         ring
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

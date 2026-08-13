@@ -1,13 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxKern
 
-/-!
-# Radius scaling of the terminal Koch--Lamm flux kernel
-
-At observation time `t = R^2`, the Hölder-dual norm of the first spatial
-heat-derivative majorant has exactly the factor `R^(2/(n+4))`.  This is the
-factor required to cancel the inverse scale in `KLSource1.late_lp`.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -22,29 +14,22 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-/-- Scalar mass factor in `klFluxPowMass_eq`, before taking the
-Hölder-dual root. -/
 def klFluxMassCore (t : ℝ) : ℝ :=
   ((t / 2) ^ (klD1Exp V + 1) / (klD1Exp V + 1)) *
     baseD1PowMass V (klPDual V)
 
-/-- Hölder-dual root of the scalar terminal flux mass factor. -/
 def klFluxRoot (t : ℝ) : ℝ :=
   (klFluxMassCore (V := V) t) ^ (1 / klPDual V)
 
-/-- Dimension-only constant in the late divergence-source estimate. -/
 def klLate1C (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] : ℝ :=
   klFluxRoot (V := V) 1
 
-/-- Every real-power mass of the time-one radial first-derivative majorant
-is nonnegative. -/
 theorem baseD1Pow_nonneg (p : ℝ) :
     0 ≤ baseD1PowMass V p := by
   unfold baseD1PowMass
   exact integral_nonneg fun x ↦ Real.rpow_nonneg (baseD1Maj_nonneg x) p
 
-/-- The scalar terminal flux mass factor is nonnegative at positive time. -/
 theorem klFluxCore_nonneg {t : ℝ} (ht : 0 < t) :
     0 ≤ klFluxMassCore (V := V) t := by
   have ha : 0 ≤ klD1Exp V + 1 := by
@@ -54,8 +39,6 @@ theorem klFluxCore_nonneg {t : ℝ} (ht : 0 < t) :
     (div_nonneg (Real.rpow_nonneg (half_pos ht).le _) ha)
     (baseD1Pow_nonneg (V := V) (klPDual V))
 
-/-- Before taking the dual root, replacing `t` by `R^2` extracts the
-`klLpScaleR R` factor to the power `klPDual`. -/
 theorem klFluxCore_scale {R : ℝ} (hR : 0 < R) :
     klFluxMassCore (V := V) (R ^ 2) =
       (klLpScaleR (V := V) R) ^ klPDual V *
@@ -91,8 +74,6 @@ theorem klFluxCore_scale {R : ℝ} (hR : 0 < R) :
   norm_num only [one_div, one_pow]
   ring
 
-/-- Taking the Hölder-dual root turns the extracted power into exactly one
-copy of the late divergence-source radius scale. -/
 theorem klFluxRoot_scale {R : ℝ} (hR : 0 < R) :
     klFluxRoot (V := V) (R ^ 2) =
       klLate1C V * klLpScaleR (V := V) R := by
@@ -110,7 +91,6 @@ theorem klFluxRoot_scale {R : ℝ} (hR : 0 < R) :
   ring
 
 variable [Nontrivial V] in
-/-- Exact global terminal majorant factor at observation time `R^2`. -/
 theorem klFluxNorm_scale {R : ℝ} (hR : 0 < R) (x : V) :
     (klFluxPowMass (V := V) (R ^ 2) x) ^ (1 / klPDual V) =
       klLate1C V * klLpScaleR (V := V) R := by

@@ -4,31 +4,30 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3Principal
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCoeffH2
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzPhiMetTotalCurvatureFold
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Topology Tensor0SBundle ContinuousLinearMap
+open Bundle Manifold Set Filter Topology DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Manifold Topology ContDiff BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -608,8 +607,6 @@ theorem top_path_dev_h2
       (realizedSmallSet (δ := δ) (δ' := δ')) hSopen hSI hjdev hCR
       (fun t ht => by simpa using (hper t ht).2)
 
-
-
 theorem top_path_split
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -655,8 +652,6 @@ theorem top_path_split
   rw [appCc_add_left, appCc_sub_left,
     phiMet_curv_fold (I := I) (M := M) g₀ g_bg g₀ U]
 
-
-
 theorem fixed_curv_h1
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M) :
@@ -686,9 +681,6 @@ theorem fixed_curv_h1
     exact hKbound x
   simpa only [C, B1] using happ
     (phiMetCurvCoeff (I := I) g₀ g_bg g₀) U B0 B1 hB0 hB1 hpoint (le_refl B1)
-
-
-
 
 theorem top_path_h1
     (hDim : Module.finrank ℝ E = 3)
@@ -737,9 +729,6 @@ theorem top_path_h1
     hδ_lt hδ hδ'_lt hδ' U, ccTensorToHs_add]
   exact (norm_add_le _ _).trans (add_le_add htop' hlow')
 
-
-
-
 theorem top_path_ball_h1
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M) :
@@ -775,4 +764,4 @@ theorem top_path_ball_h1
     hA hpt hjet
   simpa only [mul_assoc] using hbound
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

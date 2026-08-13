@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Operator.NormGradSq
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Basic
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -27,6 +28,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
   hiding chartTargetEuclid
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
@@ -45,9 +47,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartPushedPartial_eq_fderiv_chartSmoothExt
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) {y : EuclN}
@@ -88,7 +90,7 @@ private lemma chartPushedPartial_eq_fderiv_chartSmoothExt
     rw [if_pos h_eq_z]
   rw [h_chartSmoothExt]
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartPushedPartial_aeEq_fderiv_chartSmoothExt
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) :
@@ -103,7 +105,7 @@ private lemma chartPushedPartial_aeEq_fderiv_chartSmoothExt
   refine Filter.Eventually.of_forall (fun y hy => ?_)
   exact chartPushedPartial_eq_fderiv_chartSmoothExt (I := I) (M := M) g α j v hy
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartPushedPartial_aeEq_fderiv_chartSmoothExt_volume
     (g : SmoothRiemannianMetric I M) (α : M) (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) :
@@ -314,9 +316,9 @@ private lemma lintegral_enorm_sqrt_grad_v_sq_eq
         ^ (2 : ℝ)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ENNReal.ofReal
-        (∫ x, g.inner x ((grad_g (I := I) g v.smooth :
+        (∫ x, g.inner x ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g v.smooth :
+            ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) := by
   classical
@@ -330,9 +332,9 @@ private lemma lintegral_enorm_sqrt_grad_v_sq_eq
   rw [ENNReal.ofReal_toReal]
   · refine MeasureTheory.lintegral_congr ?_
     intro x
-    have h_grad_eq : ((grad_g (I := I) g v.smooth :
+    have h_grad_eq : ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = gradFun (I := I) g v.toFun x := by
-      rw [grad_g_apply]
+      simp [grad_g_apply]
     rw [h_grad_eq]
     have h1 : ‖Real.sqrt (g.inner x (gradFun (I := I) g v.toFun x)
         (gradFun (I := I) g v.toFun x))‖ₑ ^ (2 : ℝ) =
@@ -377,23 +379,23 @@ private lemma eLpNorm_sqrt_grad_v_le_norm
   have h_two_toReal : (2 : ℝ≥0∞).toReal = 2 := by norm_num
   rw [h_two_toReal]
   rw [lintegral_enorm_sqrt_grad_v_sq_eq (I := I) (M := M) v]
-  have h_int_nn : 0 ≤ ∫ x, g.inner x ((grad_g (I := I) g v.smooth :
+  have h_int_nn : 0 ≤ ∫ x, g.inner x ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g v.smooth :
+        ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     v.integral_inner_grad_self_nonneg
   rw [show ENNReal.ofReal (∫ x, g.inner x _ _ ∂_) ^ ((1 : ℝ) / 2) =
-      ENNReal.ofReal (Real.sqrt (∫ x, g.inner x ((grad_g (I := I) g v.smooth :
+      ENNReal.ofReal (Real.sqrt (∫ x, g.inner x ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g v.smooth :
+            ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g))) from by
     rw [Real.sqrt_eq_rpow, ENNReal.ofReal_rpow_of_nonneg h_int_nn (by positivity)]]
   refine ENNReal.ofReal_le_ofReal ?_
-  have h_sqrt_sq_le : ∫ x, g.inner x ((grad_g (I := I) g v.smooth :
+  have h_sqrt_sq_le : ∫ x, g.inner x ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g v.smooth :
+        ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤ ‖v‖^2 := by
     rw [h_norm_sq]

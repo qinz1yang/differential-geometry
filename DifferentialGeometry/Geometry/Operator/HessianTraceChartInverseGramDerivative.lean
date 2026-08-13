@@ -6,12 +6,13 @@ import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity
 
 noncomputable section
 
+open DifferentialGeometry.Integral.DivergenceTheorem
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -741,6 +742,6 @@ lemma chartInvGramOnE_symm_pointwise
       (chartGramMatrix (I := I) g α z)⁻¹ j i from rfl] at hstar
   exact hstar.symm
 
-end DivergenceTheorem
-end Integral
+end Operator
+end Geometry
 end DifferentialGeometry

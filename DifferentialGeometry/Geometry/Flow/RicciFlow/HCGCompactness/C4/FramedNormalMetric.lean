@@ -1,17 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBInputs
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Metric coefficients in orthonormally framed normal coordinates
-
-This file contains the inner-product-space specialization of the general
-normal-coordinate metric API from `StepBInputs`.  The canonical
-`normalCoordMetric` API remains available over a normed model space; the
-definitions here record the additional normalization obtained by first
-identifying the model with the tangent space by `normalFrame`.
--/
 
 noncomputable section
 
@@ -33,7 +26,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-/-- The metric pulled back through the orthonormally framed normal exponential. -/
 noncomputable def framedCoordMetric
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     E → E →L[Real] E →L[Real] Real :=
@@ -43,7 +35,6 @@ noncomputable def framedCoordMetric
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   NormalCoordinates.framedMetric (I := I) Y.metric x
 
-/-- Uniform ellipticity of the metric in orthonormally framed coordinates. -/
 def FramedCoordMetricEquivOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) (U : Set E) : Prop :=
@@ -52,7 +43,6 @@ def FramedCoordMetricEquivOn
       framedCoordMetric (I := I) Y x z v v ≤ 2 * ‖v‖ ^ 2
 
 omit [NeZero (Module.finrank Real E)] in
-/-- Scalar evaluation of the framed normal-coordinate metric. -/
 theorem framedCoordMetric_apply
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z v w : E) :
@@ -73,7 +63,6 @@ theorem framedCoordMetric_apply
   exact NormalCoordinates.framedMetric_apply (I := I) Y.metric x z v w
 
 omit [NeZero (Module.finrank Real E)] in
-/-- At the origin, the framed metric is the fixed model inner product. -/
 @[simp] theorem framedCoordMetric_zero
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (c : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -90,7 +79,6 @@ omit [NeZero (Module.finrank Real E)] in
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Radial speed in the orthonormally framed normal coordinates. -/
 theorem radialEnorm_framed
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (v : E) :
@@ -181,8 +169,6 @@ theorem radialEnorm_framed
   dsimp only [dRaw]
   rw [hev.mfderiv_eq]
 
-/-- The framed exponential-side parametrization is smooth on its intrinsic
-source-radius ball. -/
 theorem framedExp_smoothOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -224,8 +210,6 @@ theorem framedExp_smoothOn
       exact mem_expMapDiffeo_source_of_norm_lt_radius (I := I) Y.metric x hzRaw)
 
 omit [NeZero (Module.finrank Real E)] in
-/-- Pushforward-section smoothness for a framed exponential parametrization
-that is `C∞` on an open set. -/
 private theorem framedPush_smooth
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) {U : Set E}
     (hU : IsOpen U)
@@ -276,8 +260,6 @@ private theorem framedPush_smooth
   rw [hmf]
 
 omit [NeZero (Module.finrank Real E)] in
-/-- On any open set where the framed exponential is smooth, its pulled-back
-metric is smoothly varying. -/
 theorem framedCoordMetric_contDiffOn_of_smooth
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) {S : Set E}
     (hU : IsOpen S)
@@ -346,8 +328,6 @@ theorem framedCoordMetric_contDiffOn_of_smooth
   exact (hscalar v w).congr
     (fun z _ => framedCoordMetric_apply (I := I) Y x z v w)
 
-/-- The framed coordinate metric is smooth on a positive-radius neighborhood
-inside the framed exponential source. -/
 theorem framedCoordMetric_contDiffOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -367,7 +347,6 @@ theorem framedCoordMetric_contDiffOn
   exact (framedCoordMetric_contDiffOn_of_smooth (I := I) Y x
     Metric.isOpen_ball (framedExp_smoothOn (I := I) Y x)).mono Set.inter_subset_left
 
-/-- The framed coordinate metric is smooth on some full model-space ball. -/
 theorem framedCoordMetric_contDiffOn_ball
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     ∃ r : Real, 0 < r ∧
@@ -389,8 +368,6 @@ theorem framedCoordMetric_contDiffOn_ball
   · rw [dist_zero_right]
     exact lt_of_lt_of_le hz (min_le_right _ _)
 
-/-- The framed normal-coordinate metric is smooth on the intrinsic
-source-radius ball. -/
 theorem framedCoordMetric_contDiffOn_expBall
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -406,8 +383,6 @@ theorem framedCoordMetric_contDiffOn_expBall
   exact framedCoordMetric_contDiffOn_of_smooth (I := I) Y x Metric.isOpen_ball
     (framedExp_smoothOn (I := I) Y x)
 
-/-- A common framed exponential-radius ball gives smooth framed coordinate
-metrics across a pointed sequence. -/
 theorem contDiffOn_framedCoordMetric_of_subset_expBall
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (c : ∀ k : ℕ, (X.obj k).M) {U : Set E}
@@ -423,8 +398,6 @@ theorem contDiffOn_framedCoordMetric_of_subset_expBall
   fun k =>
     (framedCoordMetric_contDiffOn_expBall (I := I) (X.obj k) (c k)).mono (hsub k)
 
-/-- The framed normal chart is smooth on the image of its intrinsic framed
-source-radius ball. -/
 theorem framedChart_smooth
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -453,8 +426,6 @@ theorem framedChart_smooth
   simpa only [framedChart_apply, framedExpMap_apply, Function.comp_apply] using
     (hframe.comp (framedExpMap (I := I) Y.metric x v) hchart).contMDiffWithinAt
 
-/-- Smoothness of a framed normal-coordinate transition on a mapped intrinsic
-source-radius ball. -/
 theorem contDiffOn_framedTransition
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) {U : Set E}
     (hUx :

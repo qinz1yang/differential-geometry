@@ -4,6 +4,7 @@ import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.Calculus.Deriv.Inverse
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

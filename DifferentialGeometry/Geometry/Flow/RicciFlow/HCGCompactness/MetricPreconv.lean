@@ -15,41 +15,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDeri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ChartRicciJetIdentity
 import DifferentialGeometry.Analysis.Calculus.PiDeriv
 import DifferentialGeometry.Analysis.Calculus.SpaceJet
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -61,12 +33,13 @@ attribute [local instance] Fintype.ofFinite Classical.propDecidable
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology
-open Bundle Tensor0SBundle TensorLieDeriv
-open DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -77,12 +50,6 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
-
-
-
-
-
-
 
 omit [CompleteSpace E] in
 theorem opNorm_le_sum_coord {n : ℕ}
@@ -105,11 +72,6 @@ theorem opNorm_le_sum_coord {n : ℕ}
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [norm_smul, Real.norm_eq_abs, mul_comm]
 
-
-
-
-
-
 omit [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [IsManifold I 2 M] in
 theorem exists_ON_tangentBasis (gRef : SmoothRiemannianMetric I M) (y : M) :
     ∃ b : Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I y),
@@ -120,13 +82,6 @@ theorem exists_ON_tangentBasis (gRef : SmoothRiemannianMetric I M) (y : M) :
   refine ⟨(e.isLocalFrameOn_localFrame_baseSet I 1 basisE).toBasisAt hy, fun i j => ?_⟩
   rw [IsLocalFrameOn.toBasisAt_coe, IsLocalFrameOn.toBasisAt_coe]
   exact hON i j
-
-
-
-
-
-
-
 
 omit [CompleteSpace E] [I.Boundaryless] [IsManifold I 2 M]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -169,9 +124,6 @@ theorem exists_section_eqOn_compact
   · filter_upwards [hχ_one] with x hx
     simp [hx]
 
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [IsManifold I 2 M] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 theorem exists_sqrtInner_bound (gRef : SmoothRiemannianMetric I M)
@@ -207,8 +159,6 @@ theorem exists_sqrtInner_bound (gRef : SmoothRiemannianMetric I M)
   obtain ⟨C, hC⟩ := hKc.bddAbove_image hcont.continuousOn
   exact ⟨max C 0, le_max_right _ _, fun y hy => le_trans (hC ⟨y, hy, rfl⟩) (le_max_left _ _)⟩
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [IsManifold I 2 M] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 theorem exists_family_bound (gRef : SmoothRiemannianMetric I M)
@@ -225,14 +175,6 @@ theorem exists_family_bound (gRef : SmoothRiemannianMetric I M)
   refine ⟨∑ i : ι, C i, Finset.sum_nonneg (fun i _ => hC0 i), fun i y hy => ?_⟩
   exact le_trans (hC i y hy)
     (Finset.single_le_sum (fun j _ => hC0 j) (Finset.mem_univ i))
-
-
-
-
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem fderiv_comp_le_tower
@@ -420,13 +362,6 @@ theorem fderiv_comp_le_tower
       ≤ CV * Cp1 + CV * Cp := add_le_add h1 h2
     _ = CV * (Cp1 + Cp) := by ring
 
-
-
-
-
-
-
-
 omit [CompleteSpace E] in
 theorem clm_eq_sum_coord {m : ℕ}
     (bE : Module.Basis (Fin m) Real E) (L : E →L[Real] Real) :
@@ -439,11 +374,6 @@ theorem clm_eq_sum_coord {m : ℕ}
   rw [map_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [map_smul, smul_eq_mul, mul_comm]
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -481,9 +411,6 @@ theorem extDerivFun_tower_step
       Tensor0SBundle.nabla0SFun_eval_smooth_slots]
   linarith [key]
 
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] [IsManifold I 1 M]
     [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -509,8 +436,6 @@ theorem contDiffAt_chartRep
     (extChartAt I x₀).map_source hysrc
   exact hcd.contDiffAt ((isOpen_extChartAt_target (I := I) x₀).mem_nhds hz)
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [IsManifold I ∞ M]
     [SigmaCompactSpace M] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -518,9 +443,6 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [I
 theorem writtenInExtChartAt_real_apply (x₀ : M) (g : M → Real) (z : E) :
     writtenInExtChartAt I 𝓘(Real, Real) x₀ g z = g ((extChartAt I x₀).symm z) := by
   simp [writtenInExtChartAt]
-
-
-
 
 noncomputable def towerStep (gRef : SmoothRiemannianMetric I M)
     (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -537,11 +459,6 @@ noncomputable def towerStep (gRef : SmoothRiemannianMetric I M)
           (Function.update (fun b : Fin (p + 2) => V b q) a
             (((leviCivitaConnectionOfMetric (I := I) gRef)
               (fun r : M => V a r) q) (X q)))
-
-
-
-
-
 
 omit [IsManifold I 2 M] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
@@ -591,8 +508,6 @@ theorem fderiv_chartRep_eq_towerStep
   rw [← hbridge, ← hzσ, writtenInExtChartAt_real_apply, ← hq, hf]
   exact extDerivFun_tower_step (I := I) gRef A0 p V σ q
 
-
-
 omit [I.Boundaryless] [IsManifold I 2 M]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
@@ -608,8 +523,6 @@ theorem covDerivOfField_eval_contMDiff
   fun x => covDerivOfField_eval_smoothAt (I := I) gRef A0
     (fun W => Tensor0SBundle.tensor0SField_eval_smooth_slots_contMDiffAt
       (I := I) A0 W x) p V
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem iteratedFDeriv_smul_const_le {rr : ℕ} {g : E → Real} {z₀ : E}
@@ -628,9 +541,6 @@ theorem iteratedFDeriv_smul_const_le {rr : ℕ} {g : E → Real} {z₀ : E}
   exact mul_le_of_le_one_left (norm_nonneg _) ContinuousLinearMap.norm_id_le
 
 omit [IsManifold I 2 M] in
-/-- Pointwise all-orders covariant-to-coordinate conversion.  The compact set
-controls the chart and slot constants, while the tensor norms on the right are
-evaluated at the same point as the chart derivative. -/
 theorem iterFDeriv_tower_le
     (gRef : SmoothRiemannianMetric I M)
     {x₀ : M} {Kc : Set M} (hKc : IsCompact Kc)
@@ -854,10 +764,6 @@ theorem iterFDeriv_tower_le
       exact Finset.sum_congr rfl (fun i _ => (mul_assoc _ _ _).symm)
 
 omit [IsManifold I 2 M] in
-/-- **All-orders covariant → coordinate conversion** (MSM135 `lbl351`, P3
-Brick A2).  This constants-first form is retained for consumers with uniform
-covariant bounds; it follows from the pointwise estimate
-`iterFDeriv_tower_le`. -/
 theorem iteratedFDeriv_comp_le_tower
     (gRef : SmoothRiemannianMetric I M)
     {x₀ : M} {Kc : Set M} (hKc : IsCompact Kc)
@@ -879,13 +785,6 @@ theorem iteratedFDeriv_comp_le_tower
   refine (hCV A0 y hy).trans (mul_le_mul_of_nonneg_left ?_ hCV0)
   exact Finset.sum_le_sum fun q _ => hb q y hy
 
-/-! ## Brick B — chart-local extraction (bump-extended components) -/
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem bumpMul_contDiff {χ g : E → Real} {U : Set E} (hU : IsOpen U)
     (hχ : ContDiff Real (∞ : WithTop ℕ∞) χ) (htsupp : tsupport χ ⊆ U)
@@ -900,11 +799,6 @@ theorem bumpMul_contDiff {χ g : E → Real} {U : Set E} (hU : IsOpen U)
     filter_upwards [(isClosed_tsupport χ).isOpen_compl.mem_nhds hx'] with z hz
     have hχz : χ z = 0 := image_eq_zero_of_notMem_tsupport hz
     simp [hχz]
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem norm_iteratedFDeriv_bumpMul_le {χ gg : E → Real} (r : ℕ)
@@ -939,9 +833,6 @@ theorem norm_iteratedFDeriv_bumpMul_le {χ gg : E → Real} (r : ℕ)
   rw [← Finset.sum_mul, ← Nat.cast_sum, Nat.sum_range_choose]
   push_cast
   ring
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem metricComp_iter_le
@@ -1008,8 +899,6 @@ theorem metricComp_iter_le
           simpa only [zero_add] using hbound
     _ = CV * ∑ q ∈ Finset.range (r + 1), B q := by rw [hsum]
 
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
@@ -1064,9 +953,6 @@ theorem chartGram_germ
   rw [hval, hzi, hzj, chartGramOnE, chartGramMatrix_apply]
   congr 1
 
-
-
-
 omit [IsManifold I 2 M] in
 theorem chartGram_iter_le
     {ι : Type*}
@@ -1106,10 +992,6 @@ theorem chartGram_iter_le
     (Finset.single_le_sum (fun p _ => hC0 p) (Finset.mem_univ (i, j)))
 
 omit [IsManifold I 2 M] in
-/-- Fixed-order chart Gram differences are controlled by the covariant metric
-difference through the same order.  The tower estimate is applied to the
-tensor-field difference before taking norms, so the constant depends only on
-the compact chart data and the reference metric. -/
 theorem chartJet_sub_le
     (gRef : SmoothRiemannianMetric I M) (x₀ : M)
     {Kc : Set M} (hKc : IsCompact Kc)
@@ -1272,8 +1154,6 @@ private theorem gramPi_sub_le
   exact hentry i j
 
 omit [IsManifold I 2 M] in
-/-- The full chart-Gram spatial `2`-jet difference is controlled by the
-covariant metric difference through order two. -/
 theorem chartJet2_sub_le
     [NeZero (Module.finrank ℝ E)]
     (gRef : SmoothRiemannianMetric I M) (x₀ : M)
@@ -1362,8 +1242,6 @@ theorem chartJet2_sub_le
     hpi₀ hpi₁ hpi₂
 
 omit [IsManifold I 2 M] in
-/-- The theorem-facing exact-order predicate supplies the fixed-order chart
-Gram bounds required by `chartGram_iter_le`. -/
 theorem chartGram_of_orders
     {ι : Type*}
     (gRef : SmoothRiemannianMetric I M)
@@ -1378,8 +1256,6 @@ theorem chartGram_of_orders
         (extChartAt I x₀ y)‖ ≤ C :=
   chartGram_iter_le (I := I) gRef gSeq x₀ hKc hKchart r
     (fun q hq => ⟨B, fun k z hz => hbdd k q hq z hz⟩)
-
-
 
 omit [IsManifold I 2 M] in
 theorem chartGram_pou_le
@@ -1428,8 +1304,6 @@ theorem chartGram_pou_le
     · exact hα
   exact (hbound α k y hy i j).trans hCα_le
 
-
-
 omit [IsManifold I 2 M] in
 theorem chartGram_pou_bnd
     [CompactSpace M]
@@ -1454,8 +1328,6 @@ theorem chartGram_pou_bnd
   intro α hα k y hy i j
   have h := hC α hα k y hy i j
   simpa only [norm_iteratedFDeriv_zero, Real.norm_eq_abs] using h
-
-
 
 omit [IsManifold I 2 M] in
 theorem chartGram_pou_d1
@@ -1495,8 +1367,6 @@ theorem chartGram_pou_d1
             (extChartAt I α y)‖ * ‖(chartModelBasis E) m‖ := by simp
     _ ≤ C * C_E := mul_le_mul (hC α hα k y hy i j) hm_le
       (norm_nonneg _) hC_nn
-
-
 
 omit [IsManifold I 2 M] in
 theorem chartGram_pou_d2
@@ -1557,8 +1427,6 @@ theorem chartGram_pou_d2
     _ ≤ C * (C_E * C_E) := mul_le_mul (hC α hα k y hy i j)
       (mul_le_mul hc_le hm_le (norm_nonneg _) hCE_nn) (mul_nonneg (norm_nonneg _) (norm_nonneg _))
       hC_nn
-
-
 
 omit [IsManifold I 2 M] in
 theorem chartGram_pou_d3
@@ -1635,11 +1503,6 @@ theorem chartGram_pou_d3
       exact mul_le_mul (hC α hα k y hy i j) hprod
         (mul_nonneg (norm_nonneg _) (mul_nonneg (norm_nonneg _) (norm_nonneg _))) hC_nn
 
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem metricComp_iteratedFDeriv_le
     (gRef : SmoothRiemannianMetric I M)
@@ -1657,10 +1520,6 @@ theorem metricComp_iteratedFDeriv_le
         (extChartAt I x₀ y)‖ ≤ Mr :=
   metricComp_iter_le (I := I) gRef gSeq x₀ hKc hKchart r
     (fun q _ => hbdd q Kc hKc) V
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem metricComp_iter_refs
@@ -1726,12 +1585,6 @@ theorem metricComp_iter_refs
       (extChartAt I x₀ y)‖ ≤ CV * ∑ q ∈ Finset.range (0 + r + 1), b q := hbound
     _ = CV * ∑ q ∈ Finset.range (r + 1), B q := by
       rw [show 0 + r + 1 = r + 1 by omega, hsum]
-
-
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem exists_chart_engineInput
@@ -1856,10 +1709,6 @@ theorem exists_chart_engineInput
       hBχ0 (Finset.sum_nonneg (fun j _ => hMr0 j)) hBχ hgbd x
   · intro y hy
     exact hχ1.self_of_nhdsSet _ ⟨y, hy, rfl⟩
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem exists_chart_cInfConv

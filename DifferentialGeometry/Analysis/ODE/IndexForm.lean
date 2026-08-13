@@ -3,39 +3,6 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 set_option autoImplicit false
 
-/-!
-# The index form of the Jacobi ODE
-
-The abstract half of the no-conjugate-point argument (brick N-d, half 1, of
-the option-1 route in `Geometry/Comparison/VOLUME_COMPARISON_PLAN.md`).  Read
-in a parallel orthonormal frame along a geodesic, a vector field becomes a
-function `y : ℝ → F` into the coefficient space, the covariant derivative
-becomes `d/dt`, and `R(·, γ̇)γ̇` becomes a continuous self-adjoint operator
-family `R : ℝ → F →L[ℝ] F`.  The index form
-
-`I((y,v),(z,w)) = ∫ₐᵇ (⟪v, w⟫ − ⟪R y, z⟫)`
-
-is then an entirely manifold-free object, developed here over an arbitrary
-real inner-product space.  Fields are carried as pairs `(y, v)` with `v` the
-(one-sided) derivative, the same currency as `IsJacobiSolOn` and the
-second-order ODE layer (`SecondOrderLinearExistence.lean`).
-
-The pivot is `IsJacobiSolOn.indexForm_eq_sub`: for a Jacobi pair the index
-integrand is literally the derivative of `t ↦ ⟪v t, z t⟫`, so integration by
-parts is the fundamental theorem of calculus and the index depends only on
-boundary data.  Consequences:
-
-* `IsJacobiSolOn.indexForm_self_eq_zero` — a Jacobi field vanishing at both
-  ends is a null direction of the index form;
-* `exists_indexForm_neg` — a null direction not index-orthogonal to some
-  test direction produces a strictly negative index value (the quadratic in
-  `c` has a nonzero linear term; no positivity of the form is needed).
-
-Together: an interior conjugate time forces the index form to be indefinite.
-Route reference: frenzymath/Poincare-Conjecture `Ch01/IndexForm.lean`
-(statement shapes; proofs re-derived here).
--/
-
 open Set intervalIntegral MeasureTheory
 open scoped RealInnerProductSpace
 
@@ -47,9 +14,6 @@ section Normed
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The pair `(y, v)` solves the Jacobi-type second-order linear ODE
-`y'' + R(t) y = 0` on `[a, b]`, in the first-order form `y' = v`,
-`v' = -R(t) y` (one-sided derivatives at the endpoints). -/
 structure IsJacobiSolOn (R : ℝ → F →L[ℝ] F) (a b : ℝ) (y v : ℝ → F) : Prop where
   deriv_fst : ∀ t ∈ Icc a b, HasDerivWithinAt y (v t) (Icc a b) t
   deriv_snd : ∀ t ∈ Icc a b, HasDerivWithinAt v (-(R t) (y t)) (Icc a b) t
@@ -72,21 +36,15 @@ section InnerProduct
 
 variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
-/-- The index-form integrand of the Jacobi ODE: for a field `y` with
-derivative `v` and a field `z` with derivative `w`,
-`⟪v t, w t⟫ − ⟪R t (y t), z t⟫`. -/
 def indexIntegrand (R : ℝ → F →L[ℝ] F) (y v z w : ℝ → F) (t : ℝ) : ℝ :=
   ⟪v t, w t⟫ - ⟪R t (y t), z t⟫
 
-/-- The index form of the Jacobi ODE on `[a, b]`. -/
 def indexForm (R : ℝ → F →L[ℝ] F) (a b : ℝ) (y v z w : ℝ → F) : ℝ :=
   ∫ t in a..b, indexIntegrand R y v z w t
 
 theorem indexForm_def (R : ℝ → F →L[ℝ] F) (a b : ℝ) (y v z w : ℝ → F) :
     indexForm R a b y v z w = ∫ t in a..b, indexIntegrand R y v z w t := rfl
 
-/-- The integrand is symmetric in the two fields once `R t` is self-adjoint
-(the curvature symmetry `⟪R(Y,X)X, Z⟫ = ⟪Y, R(Z,X)X⟫` in frame coordinates). -/
 theorem indexIntegrand_symm {R : ℝ → F →L[ℝ] F}
     (hR : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
     (y v z w : ℝ → F) (t : ℝ) :
@@ -95,21 +53,18 @@ theorem indexIntegrand_symm {R : ℝ → F →L[ℝ] F}
   rw [real_inner_comm (v t) (w t), hR t (y t) (z t),
     real_inner_comm (y t) (R t (z t))]
 
-/-- The index form is symmetric. -/
 theorem indexForm_symm {R : ℝ → F →L[ℝ] F}
     (hR : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
     (a b : ℝ) (y v z w : ℝ → F) :
     indexForm R a b y v z w = indexForm R a b z w y v :=
   intervalIntegral.integral_congr fun t _ => indexIntegrand_symm hR y v z w t
 
-/-- Continuity of the index integrand from continuity of the data. -/
 theorem contOn_indexIntegrand {R : ℝ → F →L[ℝ] F} {y v z w : ℝ → F} {s : Set ℝ}
     (hR : ContinuousOn R s) (hy : ContinuousOn y s) (hv : ContinuousOn v s)
     (hz : ContinuousOn z s) (hw : ContinuousOn w s) :
     ContinuousOn (indexIntegrand R y v z w) s :=
   (hv.inner hw).sub ((hR.clm_apply hy).inner hz)
 
-/-- Interval integrability of the index integrand on a compact interval. -/
 theorem intInt_indexIntegrand {R : ℝ → F →L[ℝ] F} {y v z w : ℝ → F} {a b : ℝ}
     (hR : ContinuousOn R (uIcc a b)) (hy : ContinuousOn y (uIcc a b))
     (hv : ContinuousOn v (uIcc a b)) (hz : ContinuousOn z (uIcc a b))
@@ -117,9 +72,6 @@ theorem intInt_indexIntegrand {R : ℝ → F →L[ℝ] F} {y v z w : ℝ → F} 
     IntervalIntegrable (indexIntegrand R y v z w) volume a b :=
   (contOn_indexIntegrand hR hy hv hz hw).intervalIntegrable
 
-/-- For a Jacobi pair `(y, v)`, the index integrand against any pair `(z, w)`
-with `z' = w` is exactly the derivative of `t ↦ ⟪v t, z t⟫`:
-`d/dt ⟪v, z⟫ = ⟪−R y, z⟫ + ⟪v, w⟫`. -/
 theorem IsJacobiSolOn.hasDerivAt_inner {R : ℝ → F →L[ℝ] F} {a b : ℝ}
     {y v z w : ℝ → F}
     (hy : IsJacobiSolOn R a b y v)
@@ -140,9 +92,6 @@ theorem IsJacobiSolOn.hasDerivAt_inner {R : ℝ → F →L[ℝ] F} {a b : ℝ}
   rw [← hcalc]
   exact h
 
-/-- **Integration by parts against a Jacobi field.**  If `(y, v)` solves the
-Jacobi ODE on `[a, b]` and `(z, w)` is a `C¹` pair, the index form depends
-only on boundary data: `I(y, z) = ⟪v b, z b⟫ − ⟪v a, z a⟫`. -/
 theorem IsJacobiSolOn.indexForm_eq_sub {R : ℝ → F →L[ℝ] F} {a b : ℝ}
     {y v z w : ℝ → F}
     (hab : a ≤ b) (hR : ContinuousOn R (Icc a b))
@@ -164,8 +113,6 @@ theorem IsJacobiSolOn.indexForm_eq_sub {R : ℝ → F →L[ℝ] F} {a b : ℝ}
   exact intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le hab hcont
     hderiv hint
 
-/-- **A Jacobi field vanishing at both endpoints has zero index** — the null
-direction that the second-variation argument perturbs. -/
 theorem IsJacobiSolOn.indexForm_self_zero {R : ℝ → F →L[ℝ] F} {a b : ℝ}
     {y v : ℝ → F}
     (hab : a ≤ b) (hR : ContinuousOn R (Icc a b))
@@ -174,8 +121,6 @@ theorem IsJacobiSolOn.indexForm_self_zero {R : ℝ → F →L[ℝ] F} {a b : ℝ
   rw [hy.indexForm_eq_sub hab hR hy.deriv_fst hy.contOn_snd, hya, hyb]
   simp
 
-/-- The index form is additive over adjacent intervals — what lets a
-piecewise field (the truncated Jacobi field) be handled at all. -/
 theorem indexForm_add_adjacent {R : ℝ → F →L[ℝ] F} {a c b : ℝ}
     {y v z w : ℝ → F}
     (h₁ : IntervalIntegrable (indexIntegrand R y v z w) volume a c)
@@ -184,13 +129,9 @@ theorem indexForm_add_adjacent {R : ℝ → F →L[ℝ] F} {a c b : ℝ}
       = indexForm R a b y v z w :=
   intervalIntegral.integral_add_adjacent_intervals h₁ h₂
 
-/-- The index form over a degenerate interval vanishes. -/
 @[simp] theorem indexForm_same (R : ℝ → F →L[ℝ] F) (a : ℝ) (y v z w : ℝ → F) :
     indexForm R a a y v z w = 0 := intervalIntegral.integral_same
 
-/-- Pointwise quadratic expansion of the integrand along the line
-`(y, v) + c • (z, w)`; needs self-adjointness of `R t` to combine the cross
-terms. -/
 theorem indexIntegrand_add_smul {R : ℝ → F →L[ℝ] F}
     (hR : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
     (y v z w : ℝ → F) (c : ℝ) (t : ℝ) :
@@ -205,8 +146,6 @@ theorem indexIntegrand_add_smul {R : ℝ → F →L[ℝ] F}
   rw [real_inner_comm (w t) (v t), hcross]
   ring
 
-/-- The index form is a quadratic polynomial in `c` along the line
-`(y, v) + c • (z, w)`: `I(y + cz) = I(y) + 2c·I(y,z) + c²·I(z)`. -/
 theorem indexForm_add_smul {R : ℝ → F →L[ℝ] F} {a b : ℝ} {y v z w : ℝ → F}
     (hR : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
     (hyy : IntervalIntegrable (indexIntegrand R y v y v) volume a b)
@@ -227,10 +166,6 @@ theorem indexForm_add_smul {R : ℝ → F →L[ℝ] F} {a b : ℝ} {y v z w : �
     intervalIntegral.integral_add hyy (hyz.const_mul (2 * c)),
     intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
 
-/-- **The negative-index lemma.**  A null direction of the index form that is
-not index-orthogonal to some test direction produces a strictly negative
-index value on the line through them: `q(c) = 2cκ + c²Q` with `κ ≠ 0` is
-negative just to one side of the origin.  No positivity of the form enters. -/
 theorem exists_indexForm_neg {R : ℝ → F →L[ℝ] F} {a b : ℝ} {y v z w : ℝ → F}
     (hR : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
     (hyy : IntervalIntegrable (indexIntegrand R y v y v) volume a b)

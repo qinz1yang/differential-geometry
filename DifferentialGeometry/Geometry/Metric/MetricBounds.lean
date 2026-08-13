@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
 import DifferentialGeometry.Analysis.Integration.Measure.Family
 import DifferentialGeometry.Tensor.RSTensor.Defs
 
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory Filter Function
@@ -129,8 +128,6 @@ lemma abs_metric_inner_le_sqrt_metric_quadratic
   exact h_le_sqrt
 
 omit [Module.Finite ℝ E] in
-/-- The square root of the metric quadratic form satisfies the triangle
-inequality on each tangent fibre. -/
 lemma gNorm_add_le
     (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
     Real.sqrt (g.inner x (v + w) (v + w)) ≤
@@ -155,7 +152,6 @@ lemma gNorm_add_le
   rw [hexpand, add_sq, Real.sq_sqrt hv, Real.sq_sqrt hw]
   linarith
 
-/-- Pointwise operator norm of `g.inner x` as a bilinear form on `TangentSpace I x`. -/
 noncomputable def metricInnerOpNorm
     (g : SmoothRiemannianMetric I M) (x : M) : ℝ :=
   ‖g.inner x‖

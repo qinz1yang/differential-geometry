@@ -28,19 +28,19 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def tensorH1ComplBilin (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorH1Compl g r s →L[ℝ] TensorH1Compl g r s →L[ℝ] ℝ :=
   innerSL ℝ
 
-omit [CompactSpace M] in
+
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorH1ComplBilin_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u v : TensorH1Compl g r s) :
     tensorH1ComplBilin (I := I) (M := M) g r s u v = ⟪u, v⟫_ℝ := rfl
 
-omit [CompactSpace M] in
+
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorH1ComplBilin_isCoercive (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     IsCoercive (tensorH1ComplBilin (I := I) (M := M) g r s) := by
@@ -62,7 +62,7 @@ noncomputable def tensorLpFunctionalCLM (g : SmoothRiemannianMetric I M) (r s : 
   ((applyL.flip) (TensorH1ComplToTensorL2 (I := I) (M := M) g r s)).comp
     (innerSL ℝ : TensorL2 r s g →L[ℝ] TensorL2 r s g →L[ℝ] ℝ)
 
-omit [CompactSpace M] in
+
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorLpFunctionalCLM_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (f : TensorL2 r s g) (v : TensorH1Compl g r s) :
@@ -79,7 +79,7 @@ noncomputable def tensorH1ComplLaxMilgramEquiv
   IsCoercive.continuousLinearEquivOfBilin
     (tensorH1ComplBilin_isCoercive (I := I) (M := M) g r s)
 
-omit [CompactSpace M] in
+
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma tensorH1ComplLaxMilgramEquiv_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -106,7 +106,7 @@ noncomputable def tensorH1ComplRieszRepr
       exact le_of_eq
         ((InnerProductSpace.toDual ℝ (TensorH1Compl g r s)).symm.norm_map φ))
 
-omit [CompactSpace M] in
+
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensorH1ComplRieszRepr_inner (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (φ : TensorH1Compl g r s →L[ℝ] ℝ) (w : TensorH1Compl g r s) :
@@ -120,7 +120,7 @@ noncomputable def tensorResolvent (g : SmoothRiemannianMetric I M) (r s : ℕ) :
   (tensorH1ComplRieszRepr (I := I) (M := M) g r s).comp
     (tensorLpFunctionalCLM (I := I) (M := M) g r s)
 
-omit [CompactSpace M] in
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolvent_inner_eq_lpFunctional
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -131,7 +131,7 @@ theorem tensorResolvent_inner_eq_lpFunctional
   rw [ContinuousLinearMap.comp_apply, tensorH1ComplRieszRepr_inner,
     tensorLpFunctionalCLM_apply]
 
-omit [CompactSpace M] in
+
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorResolvent_bilin_eq_lpFunctional
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

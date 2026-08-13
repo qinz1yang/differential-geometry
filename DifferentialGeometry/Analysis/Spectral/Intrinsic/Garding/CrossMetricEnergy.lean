@@ -2,29 +2,23 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarHessBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricLapDiff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.WindowPreconv
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -260,10 +254,6 @@ private theorem cross_point_le
             (Real.sqrt (Ce ^ 3) * R)) ^ 2) + Ce) *
           normSq0S (I := I) q x 1 (duSec (I := I) f hf x) := by ring
 
-
-
-
-
 theorem cross_energy_le
     (q k : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 <= C ∧
@@ -414,9 +404,8 @@ theorem cross_energy_le
       simp only [C]
       ring
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

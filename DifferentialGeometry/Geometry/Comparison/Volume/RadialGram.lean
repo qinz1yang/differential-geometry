@@ -1,12 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiGram
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialGronwall
-
-/-!
-# Radial Gram data for volume comparison
-
-This module connects the local radial-Jacobi producers to the Gram-matrix
-calculus used by Bishop--Gromov comparison.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -38,12 +32,6 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
-/-- Before the first selected normal-coordinate boundary, a linearly
-independent family of variation directions gives linearly independent radial
-Jacobi fields at every nonzero time.  Time scaling reduces the claim to the
-time-one differential of `expMapDiffeo`, whose local-diffeomorphism derivative
-is injective on its source.  The Gram/Riccati layer consumes this positivity
-input; no separate no-conjugate-points hypothesis is required. -/
 lemma radialJacobi_li
     {ι : Type*} {v : ι → E}
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {t : ℝ}
@@ -82,17 +70,12 @@ lemma radialJacobi_li
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- On a common small radial scale, two radial Jacobi fields that vanish at the
-center have zero Wronskian throughout every compact subinterval of `(0, 1)`.
-The direction vectors are kept inside the common local-variation radius; a
-later transverse-frame consumer may enforce this by a fixed positive scaling. -/
 theorem radial_wronsk_zero
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w z : E,
       ‖x‖ < r → ‖w‖ < r → ‖z‖ < r →
@@ -205,13 +188,13 @@ private lemma gram_det_change
     Matrix.det_transpose, Module.Basis.det_apply]
   ring
 
-private noncomputable def basisIndexEquiv
+noncomputable def basisIndexEquiv
     (B : Module.Basis (Option ι) ℝ E) :
     Option ι ≃ Fin (Module.finrank ℝ E) :=
   Fintype.equivOfCardEq (by
     simpa using (Module.finrank_eq_card_basis B).symm)
 
-private noncomputable def modelBasisFor
+noncomputable def modelBasisFor
     (B : Module.Basis (Option ι) ℝ E) : Module.Basis (Option ι) ℝ E :=
   (chartModelBasis E).reindex (basisIndexEquiv B).symm
 
@@ -473,11 +456,6 @@ private lemma density_det_eq
       rw [hcurve]
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- Polar decomposition of the normal-coordinate density.
-
-`B none` is the radial direction and `B (some i)` are transverse at the
-center.  The positive constant records the fixed change from `B` to the model
-basis used by `normalChartDensity`, and is independent of the radius. -/
 theorem normalDensity_curve
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
     (B : Module.Basis (Option ι) ℝ E)
@@ -488,10 +466,12 @@ theorem normalDensity_curve
       (expMapDiffeo (I := I) g p).source)
     (hrad : ∀ r ∈ Ioo (0 : ℝ) b,
       ‖r • u‖ < expMapC2Radius (I := I) g p) :
-    ∃ c : ℝ, 0 < c ∧ ∀ r ∈ Ioo (0 : ℝ) b,
-      r ^ Fintype.card ι * normalChartDensity (I := I) g p (r • u) =
-        c * curveDensity (I := I) g (radialCurve (I := I) g p u)
-          (fun i : ι => radialJacobiField (I := I) g p u (B (some i))) r := by
+    ∃ c : ℝ, 0 < c ∧
+      c = Real.sqrt (g.inner p u u) / |(modelBasisFor B).det B| ∧
+      ∀ r ∈ Ioo (0 : ℝ) b,
+        r ^ Fintype.card ι * normalChartDensity (I := I) g p (r • u) =
+          c * curveDensity (I := I) g (radialCurve (I := I) g p u)
+            (fun i : ι => radialJacobiField (I := I) g p u (B (some i))) r := by
   let a : ℝ := |(modelBasisFor B).det B|
   let s : ℝ := Real.sqrt (g.inner p u u)
   have hu : u ≠ 0 := by
@@ -501,7 +481,7 @@ theorem normalDensity_curve
   have ha : 0 < a := by
     simpa only [a, abs_pos] using model_det_ne (B := B)
   have hs : 0 < s := Real.sqrt_pos.2 hguu
-  refine ⟨s / a, div_pos hs ha, ?_⟩
+  refine ⟨s / a, div_pos hs ha, rfl, ?_⟩
   intro r hrIoo
   have hr : 0 < r := hrIoo.1
   have hxsrc : r • u ∈ (expMapDiffeo (I := I) g p).source := hsrc hrIoo
@@ -565,6 +545,125 @@ theorem normalDensity_curve
   rw [div_mul_eq_mul_div]
   apply (eq_div_iff ha.ne').2
   simpa only [mul_assoc, mul_left_comm, mul_comm] using hroot
+
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
+theorem normalChartDensity_zero_of_perpOrthonormal
+    (g : SmoothRiemannianMetric I M) (p : M) (u : E)
+    (B : Module.Basis (Option ι) ℝ E)
+    (hBu : B none = u)
+    (hperp : ∀ i, g.inner p u (B (some i)) = 0)
+    (hON : ∀ i j, g.inner p (B (some i)) (B (some j)) = if i = j then 1 else 0) :
+    normalChartDensity (I := I) g p 0 =
+      Real.sqrt (g.inner p u u) / |(modelBasisFor B).det B| := by
+  classical
+  have hguu_nonneg : 0 ≤ g.inner p u u := by
+    rcases eq_or_ne u 0 with hu | hu
+    · rw [hu]
+      change 0 ≤ g.inner p (0 : TangentSpace I p) (0 : TangentSpace I p)
+      have hz : (g.inner p) (0 : TangentSpace I p) = 0 := map_zero (g.inner p)
+      rw [hz]
+      rfl
+    · exact (g.pos p u hu).le
+  have ha_ne : (modelBasisFor B).det B ≠ 0 := model_det_ne (B := B)
+  have hmfd0 : mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) (0 : E) =
+      ContinuousLinearMap.id ℝ E := by
+    have h_eventually : expMapDiffeo (I := I) g p =ᶠ[nhds (0 : E)]
+        (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M)) := by
+      refine Filter.eventuallyEq_of_mem
+        ((expMapDiffeo (I := I) g p).open_source.mem_nhds
+          (zero_mem_expMapDiffeo_source (I := I) g p)) ?_
+      intro v hv
+      exact expMapDiffeo_apply_eq (I := I) g p hv
+    rw [h_eventually.mfderiv_eq]
+    exact mfderiv_expMap_at_zero (I := I) g p
+  have hparam0 :
+      paramGramMatrix (I := I) g (expMapDiffeo (I := I) g p) 0 =
+        Matrix.reindex (basisIndexEquiv B) (basisIndexEquiv B)
+          (basisGram (g.inner p) (modelBasisFor B)) := by
+    ext i j
+    simp only [paramGramMatrix_apply, Matrix.reindex_apply, Matrix.submatrix_apply,
+      basisGram, Matrix.of_apply]
+    rw [hmfd0, expMapDiffeo_zero]
+    rw [show modelBasisFor B ((basisIndexEquiv B).symm i) = chartModelBasis E i by
+      dsimp [modelBasisFor]
+      rw [Module.Basis.reindex_apply]
+      simp]
+    rw [show modelBasisFor B ((basisIndexEquiv B).symm j) = chartModelBasis E j by
+      dsimp [modelBasisFor]
+      rw [Module.Basis.reindex_apply]
+      simp]
+    rfl
+  have hdet0 :
+      (paramGramMatrix (I := I) g (expMapDiffeo (I := I) g p) 0).det =
+        (basisGram (g.inner p) (modelBasisFor B)).det := by
+    rw [hparam0, Matrix.det_reindex_self]
+  have hGramB : (basisGram (g.inner p) B).det = g.inner p u u := by
+    let e : Option ι ≃ ι ⊕ PUnit.{1} := Equiv.optionEquivSumPUnit.{0} ι
+    let D : Matrix PUnit.{1} PUnit.{1} ℝ := Matrix.of fun _ _ => g.inner p u u
+    have hblock :
+        Matrix.reindex e e (basisGram (g.inner p) B) =
+          Matrix.fromBlocks (1 : Matrix ι ι ℝ) 0 0 D := by
+      ext a b
+      rcases a with i | a
+      · rcases b with j | b
+        · simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
+            basisGram, Matrix.of_apply, Matrix.fromBlocks_apply₁₁]
+          exact hON i j
+        · cases b
+          simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
+            Equiv.optionEquivSumPUnit_symm_inl, Equiv.optionEquivSumPUnit_symm_inr,
+            basisGram, Matrix.of_apply, Matrix.fromBlocks_apply₁₂, hBu, D]
+          rw [g.symm p (B (some i)) u]
+          exact hperp i
+      · cases a
+        rcases b with j | b
+        · simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
+            Equiv.optionEquivSumPUnit_symm_inr, Equiv.optionEquivSumPUnit_symm_inl,
+            basisGram, Matrix.of_apply, Matrix.fromBlocks_apply₂₁, hBu]
+          exact hperp j
+        · cases b
+          rw [Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.fromBlocks_apply₂₂,
+            basisGram, Matrix.of_apply]
+          change g.inner p (B none) (B none) = D PUnit.unit PUnit.unit
+          rw [hBu]
+          rfl
+    have hreindexDet : (Matrix.reindex e e (basisGram (g.inner p) B)).det =
+        (basisGram (g.inner p) B).det := Matrix.det_reindex_self e _
+    have hDdet : D.det = g.inner p u u := by
+      rw [Matrix.det_unique]
+      rfl
+    rw [← hreindexDet, hblock, Matrix.det_fromBlocks_zero₂₁]
+    simp
+    rfl
+  have hdetrel : (basisGram (g.inner p) B).det =
+      ((modelBasisFor B).det B) ^ 2 * (basisGram (g.inner p) (modelBasisFor B)).det := by
+    simpa using (gram_det_change (β := g.inner p)
+      (L := (ContinuousLinearMap.id ℝ E)) (e := modelBasisFor B) (B := B))
+  have hXeq : (basisGram (g.inner p) (modelBasisFor B)).det =
+      g.inner p u u / ((modelBasisFor B).det B) ^ 2 := by
+    rw [eq_div_iff (pow_ne_zero 2 ha_ne)]
+    rw [mul_comm]
+    exact ((hGramB.symm).trans hdetrel).symm
+  have hXnonneg : 0 ≤ (basisGram (g.inner p) (modelBasisFor B)).det := by
+    rw [hXeq]
+    exact div_nonneg hguu_nonneg (sq_nonneg _)
+  have hmain :
+      Real.sqrt (g.inner p u u) / |(modelBasisFor B).det B| =
+        Real.sqrt ((basisGram (g.inner p) (modelBasisFor B)).det) := by
+    have hsq :
+        (Real.sqrt (g.inner p u u) / |(modelBasisFor B).det B|) ^ 2 =
+          (Real.sqrt ((basisGram (g.inner p) (modelBasisFor B)).det)) ^ 2 := by
+      calc
+        (Real.sqrt (g.inner p u u) / |(modelBasisFor B).det B|) ^ 2 =
+            g.inner p u u / ((modelBasisFor B).det B) ^ 2 := by
+              rw [div_pow, Real.sq_sqrt hguu_nonneg, sq_abs]
+        _ = (basisGram (g.inner p) (modelBasisFor B)).det := hXeq.symm
+        _ = (Real.sqrt ((basisGram (g.inner p) (modelBasisFor B)).det)) ^ 2 :=
+          (Real.sq_sqrt hXnonneg).symm
+    exact (sq_eq_sq₀ (div_nonneg (Real.sqrt_nonneg _) (abs_nonneg _))
+      (Real.sqrt_nonneg _)).1 hsq
+  rw [normalChartDensity_apply, paramDensity_apply, hdet0]
+  exact hmain.symm
 
 end PolarDensity
 

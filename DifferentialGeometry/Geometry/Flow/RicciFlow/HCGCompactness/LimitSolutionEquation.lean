@@ -1,32 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.Core
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvWindowAll
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-/-!
-# Limits of Ricci-flow solutions
-
-Main statements:
-* `hasDerivWithinAt_lim` — generic 1-D uniform-limit derivative passage on a
-  convex set.
-* `metricInner_tendsto` — pointwise metric-coefficient convergence from order-0
-  `metricDerivNorm` smallness (via `metricInnerApply_diff_le`).
-* `metricLimit_pde'` — plain-sequence consumer for an eventual per-index Ricci-flow
-  equation, pointwise metric convergence, and uniform Ricci convergence.
-* `metricLimit_pde` — the core bridge: solutions on windows + pointwise inner
-  convergence + uniform Ricci convergence ⟹ the limit family satisfies
-  `∂ₜ g_∞ = -2 Ric(g_∞)` on the whole closed window (`HasDerivWithinAt` on
-  `Icc β ψ`, endpoints included).
-* `metricLimit_pdeOn` — endpoint consuming the `windowGInfAll`-style pointwise
-  seminorm convergence on a compact `K ∋ x`.
--/
 
 noncomputable section
 
@@ -36,19 +15,10 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
-open DifferentialGeometry.Integral.Connection
-open Tensor0SBundle
+
+open DifferentialGeometry.Tensor0SBundle
 open Filter Topology Asymptotics
 open DifferentialGeometry.PDE.RicciFlow
-
-
-
-
-
-
-
-
-
 
 theorem hasDerivWithinAt_lim
     {s : Set Real} (hs : Convex Real s) {t : Real} (ht : t ∈ s)
@@ -119,9 +89,6 @@ theorem hasDerivWithinAt_lim
       ≤ 2 * (c / 4) * |u - t| + c / 4 * |u - t| + |u - t| * (c / 4) := by linarith
     _ = c * |u - t| := by ring
 
-/-- **Tail form of uniform-limit derivative passage.**  The same conclusion as
-`hasDerivWithinAt_lim` holds when the derivative identities are available only
-after a fixed index. -/
 theorem hasDeriv_lim_tail
     {s : Set Real} (hs : Convex Real s) {t : Real} (ht : t ∈ s)
     (f f' : Nat → Real → Real) (g h : Real → Real)
@@ -143,8 +110,6 @@ theorem hasDeriv_lim_tail
     refine ⟨k1, fun k hk u hu => hk1 (k + k0) ?_ u hu⟩
     omega
 
-/-! ## Manifold layer -/
-
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
@@ -154,10 +119,6 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
@@ -208,11 +169,6 @@ theorem metricInner_tendsto
 omit [CompleteSpace E] [SigmaCompactSpace M] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-/-- **Plain-sequence tail consumer for the limit Ricci-flow equation.**  If the
-metric sequence satisfies the coefficientwise Ricci-flow equation after a fixed
-index, its coefficients converge pointwise, and its Ricci coefficients converge
-uniformly on the closed window, then the limit coefficient satisfies the
-Ricci-flow equation within that window. -/
 theorem metricLimit_pde'
     [NeZero (Module.finrank Real E)]
     (gSeq : Nat → Real → SmoothRiemannianMetric I M)
@@ -252,11 +208,6 @@ theorem metricLimit_pde'
 omit [Module.Finite ℝ E] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
-/-- **The window limit of Ricci-flow solutions satisfies the Ricci-flow
-equation** (core bridge, fixed manifold `M`, fixed `x, v, w`).
-
-The derivative identities, pointwise metric convergence, and uniform Ricci
-convergence imply the Ricci-flow equation for the limit on the closed window. -/
 theorem metricLimit_pde
     [Module.Finite ℝ E]
     [NeZero (Module.finrank Real E)]
@@ -295,13 +246,6 @@ theorem metricLimit_pde
   refine metricLimit_pde' (fun k s => (S k).family.metric s) β ψ gInf x v w
     ?_ hinner hRicConv ht
   exact ⟨0, fun k _ => hkder k⟩
-
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]

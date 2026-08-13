@@ -1,16 +1,9 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.BallVolume
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Pointwise lower bounds for small geodesic balls
-
-This file extracts the inexpensive local consequence of normal-coordinate
-density continuity needed by dyadic scale selection.  It does not use a
-Bishop--Gromov comparison theorem.
--/
 
 noncomputable section
 
@@ -37,10 +30,8 @@ private local instance : BorelSpace M := ⟨rfl⟩
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Every positive-radius explicit-metric ball has positive finite real volume
-on a compact manifold. -/
 theorem edist_vol_pos
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     0 < (riemannianVolumeMeasure (I := I) (M := M) g
       {x : M | riemannianEDistOf (I := I) g a x < ENNReal.ofReal r}).toReal := by
@@ -66,13 +57,11 @@ theorem edist_vol_pos
       (I := I) (M := M) g
   exact ENNReal.toReal_pos (hUopen.measure_pos μ hUne).ne' (measure_ne_top μ U)
 
-variable [I.Boundaryless] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M]
+variable [I.Boundaryless] [CompleteSpace E] [T2Space M]
   [T2Space (TangentBundle I M)]
 
-omit [T2Space M] [SigmaCompactSpace M] in
+omit [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Around the centre of a normal chart, its scalar volume density has a
-strictly positive lower bound on one model ball. -/
 private theorem normal_dens_lower
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ c δ : ℝ, 0 < c ∧ 0 < δ ∧
@@ -119,7 +108,7 @@ private theorem normal_dens_lower
 
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
-  [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
+  [T2Space M] [T2Space (TangentBundle I M)] in
 private lemma sqrt_inner_le_norm
     (g : SmoothRiemannianMetric I M) (p : M) (w : E) :
     Real.sqrt (g.inner p w w) ≤ (Real.sqrt ‖g.inner p‖ + 1) * ‖w‖ := by
@@ -137,7 +126,7 @@ private lemma sqrt_inner_le_norm
 
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
-  [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
+  [T2Space M] [T2Space (TangentBundle I M)] in
 private lemma exists_inner_bound
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ w : E,
@@ -148,16 +137,13 @@ private lemma exists_inner_bound
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Every fixed centre has a positive normalized-volume lower bound on all
-sufficiently small realized geodesic balls. -/
 theorem exists_ball_vol_low
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T3Space M] [ConnectedSpace M] [CompactSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ε ρ : ℝ, 0 < ε ∧ 0 < ρ ∧ ∀ s : ℝ, 0 < s → s ≤ ρ →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
@@ -247,8 +233,6 @@ theorem exists_ball_vol_low
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Every fixed centre has a positive normalized-volume lower bound on small
-balls for an explicitly supplied smooth Riemannian metric. -/
 theorem exists_edist_vol
     [T3Space M] [ConnectedSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : M) :

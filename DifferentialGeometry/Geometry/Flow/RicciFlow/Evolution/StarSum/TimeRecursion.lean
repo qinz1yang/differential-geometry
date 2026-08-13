@@ -1,33 +1,19 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.ResidualLedger
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedRmTowerHeatEq
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Integral.Measure
 open scoped Manifold ContDiff BigOperators
 
@@ -39,12 +25,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-
-
-
-
-
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -92,16 +73,16 @@ theorem nablaRicReal_frame
     · simpa [V] using hframeAt b
   have hslots : ∀ y,
       (fun q : Fin 2 => V q y) =
-        DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame a y) (frame b y) := by
+        DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (frame a y) (frame b y) := by
     intro y
     funext q
-    fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec2]
   have heval :=
     TotalNabla0SRealizes.eval_C1_slots (I := I) (s := 2)
       (h := (derivs.first)) X V x hV_at
   have hcons :
       Fin.cons (X x) (fun q : Fin 2 => V q x) =
-        DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame d x) (frame a x)
+        DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x) (frame a x)
           (frame b x) := by
     rw [hX, hslots x]
     funext q
@@ -110,7 +91,7 @@ theorem nablaRicReal_frame
   rw [hX] at heval
   have hleft :
       derivs.nablaA x
-          (DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame d x) (frame a x)
+          (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x) (frame a x)
             (frame b x)) =
         nablaRicComp (I := I) S frame t x d a b := by
     simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection]
@@ -125,17 +106,17 @@ theorem nablaRicReal_frame
           (Function.update (fun q : Fin 2 => V q x) (0 : Fin 2)
             ((S.family.connection t) (V 0) x (frame d x))) =
         S.ricciAt t x
-          (DifferentialGeometry.Integral.Connection.vec2
+          (DifferentialGeometry.Geometry.Curvature.vec2
             ((S.family.connection t) (frame a) x (frame d x))
             (frame b x)) := by
     have harg :
         Function.update (fun q : Fin 2 => V q x) (0 : Fin 2)
             ((S.family.connection t) (V 0) x (frame d x)) =
-          DifferentialGeometry.Integral.Connection.vec2
+          DifferentialGeometry.Geometry.Curvature.vec2
             ((S.family.connection t) (frame a) x (frame d x))
             (frame b x) := by
       funext q
-      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Geometry.Curvature.vec2]
     rw [harg]
     simp [SolutionOn.ricciAt_eq]
   have hterm1 :
@@ -143,36 +124,23 @@ theorem nablaRicReal_frame
           (Function.update (fun q : Fin 2 => V q x) (1 : Fin 2)
             ((S.family.connection t) (V 1) x (frame d x))) =
         S.ricciAt t x
-          (DifferentialGeometry.Integral.Connection.vec2
+          (DifferentialGeometry.Geometry.Curvature.vec2
             (frame a x)
             ((S.family.connection t) (frame b) x (frame d x))) := by
     have harg :
         Function.update (fun q : Fin 2 => V q x) (1 : Fin 2)
             ((S.family.connection t) (V 1) x (frame d x)) =
-          DifferentialGeometry.Integral.Connection.vec2
+          DifferentialGeometry.Geometry.Curvature.vec2
             (frame a x)
             ((S.family.connection t) (frame b) x (frame d x)) := by
       funext q
-      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Geometry.Curvature.vec2]
     rw [harg]
     simp [SolutionOn.ricciAt_eq]
   rw [hleft, hfun] at heval
   rw [Fin.sum_univ_two, hterm0, hterm1] at heval
   simpa [ricciCovDerivCompInFrame, sub_eq_add_neg, add_assoc, add_comm, add_left_comm]
     using heval
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 theorem ricciCovDeriv_trace_nablaRm
@@ -221,39 +189,12 @@ theorem ricciCovDeriv_trace_nablaRm
       4 (S.family.connection t) (S.base.rm04 t) x
       (vec5 (I := I) (basis d) (basis i) (basis a) (basis b) (basis j)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def lfBase
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (y : M) → TangentSpace I y) :
     Real → M → (Fin 4 → Idx) → Real :=
   fun s => frameComp0S (I := I) (S.base.rm04 s) frame
-
-
-
 
 def lfChr
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -263,11 +204,6 @@ def lfChr
     Real → M → Idx → Idx → Idx → Real :=
   fun s y =>
     christoffelSymbolInFrame (S.family.connection s) frame hframe y
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
@@ -287,14 +223,9 @@ private theorem traceOrthoEq
     (metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth) T tail
 
 set_option backward.isDefEq.respectTransparency false in
-
-
 def gammaStarCost (k : ℕ) : Real :=
   9 * (12 + 3 * k)
 
-/-- The canonical Christoffel-time correction field.  Its construction depends
-only on the solution, time, and tower level; a local frame is used only to
-verify its component formula. -/
 def gammaStarField
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : ℕ) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -309,7 +240,6 @@ def gammaStarField
       starBaseField (I := I) S t (k + 1) 1 k 0 (sigmaRic3 k q)
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-/-- Exact constructor cost of the canonical Christoffel-time correction. -/
 theorem gammaStarField_cost
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : ℕ)
     {Idx : Type*} [Fintype Idx] :
@@ -354,15 +284,6 @@ theorem gammaStarField_cost
   ring
 
 omit [FiniteDimensional Real E] in
-/-- **The gamma correction is a `StarSum2` element, UNIFORMLY on `u`.**  ONE global witness `Tgamma`,
-with the component equality holding for every `y ∈ u` — the shape the `resStarLFU` succ assembly
-needs (`spatialCommStarSum` is already `∀x`; a fixed-`x` `∃` would give a per-`y` witness that could
-not collapse into one endpoint `T`).  The Christoffel-time correction `covDerivStepDt (∂ₜΓ) (∇ᵏRm)`
-arising in `iteratedRmCompDt_succ` is, componentwise in the orthonormal frame, the components of a
-level-`(k+1)` star sum, via the global witness `(-1)•TA + (-1)•TB + TC` (the `sigmaRic` route sums)
-with the center fixed only inside the per-`y` component proof (basis `hframe.toBasisAt hy`,
-orthonormality from `horthU y hy`).  Its exact arbitrary-index cost is
-`rmGammaCost (Fintype.card Idx) k`. -/
 private theorem gammaStarU
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : ℕ)
@@ -518,8 +439,6 @@ private theorem gammaStarU
     simp only [show Fin.tail I0 s = I0 s.succ from rfl]
     ring
 
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M]
     [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem frameExtGerm {Idx : Type*} {r : ℕ}
@@ -531,9 +450,6 @@ private theorem frameExtGerm {Idx : Type*} {r : ℕ}
   simp only [frameExtData]
   exact extDerivFun_eventuallyEq_congr (I := I) (frame d y) (hfield.mono fun z hz => congrFun hz m)
 
-/-- The canonical successor residual field.  It is fixed before any point or
-local-frame choice: differentiate the previous residual field and subtract the
-spatial-commutator and Christoffel-time correction fields. -/
 def resStarNext
     (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
@@ -545,7 +461,6 @@ def resStarNext
     (-1 : Real) • commStarField (I := I) S t k +
     (-1 : Real) • gammaStarField (I := I) S (t : Real) k
 
-/-- Exact constructor cost of the canonical successor residual field. -/
 theorem resStarNext_cost
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
@@ -565,9 +480,6 @@ theorem resStarNext_cost
   simp only [abs_neg, abs_one, one_mul, rmResidualCost]
 
 set_option backward.isDefEq.respectTransparency false in
-/-- The fixed canonical successor has the exact constructor cost and realizes
-the level-`k+1` component heat equation on every supplied orthonormal frame
-patch. -/
 theorem resStarNext_spec
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
@@ -837,8 +749,6 @@ theorem resStarNext_spec
     unfold resStarNext
     exact hderiv.congr_deriv hval.symm
 
-/-- Compatibility wrapper exposing the canonical successor as an existential
-field.  The witness is definitionally `resStarNext`. -/
 theorem resStarSucc
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
@@ -911,19 +821,14 @@ theorem resStarSucc
     baseDt chrDt hrm hchr hchrId hswap Tk hTk hIH
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 def resStarCost : ℕ → Real
   | 0 => 108
   | k + 1 => 2 * resStarCost k + commStarCost 3 k + gammaStarCost k
 
-/-- The dimension-three gamma compatibility cost is the generic cost at cardinality three. -/
 private theorem gammaCost_eq (k : ℕ) :
     gammaStarCost k = rmGammaCost 3 k := by
   norm_num [gammaStarCost, rmGammaCost]
 
-/-- The dimension-three residual compatibility cost is the generic ledger at cardinality three. -/
 private theorem resCost_eq (k : ℕ) :
     resStarCost k = rmResidualCost 3 k := by
   induction k with

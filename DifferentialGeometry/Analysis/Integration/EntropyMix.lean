@@ -1,15 +1,7 @@
 import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
 
-/-!
-# Scalar entropy mixing estimates
-
-This file records the elementary subadditivity estimate for the continuous
-extension of `x ↦ -x log x` on the nonnegative half-line.
--/
-
 namespace DifferentialGeometry.Analysis.Integration
 
-/-- The entropy integrand `-x log x` is subadditive on nonnegative inputs. -/
 theorem negMulLog_add_le {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     Real.negMulLog (a + b) ≤ Real.negMulLog a + Real.negMulLog b := by
   rcases ha.eq_or_lt with rfl | ha

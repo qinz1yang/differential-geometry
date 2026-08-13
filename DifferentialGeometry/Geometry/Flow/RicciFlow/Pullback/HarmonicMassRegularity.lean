@@ -1,32 +1,14 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.HarmonicStateMass
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
 import Mathlib.Analysis.Calculus.MeanValue
-
-/-!
-# Regularity of the finite state-dependent HMF mass
-
-The coefficient derivative of the exponential local addition takes values in
-a moving tangent fibre.  `HarmonicDensityJoint` proves that derivative as a
-jointly regular bundled section for every fixed finite coefficient direction.
-This file takes the finite minimum of those radii, pairs the resulting
-sections with the target metric, and reconstructs the whole finite bilinear
-mass map from its matrix entries.
-
-There are three outputs used by the nonlinear harmonic-map heat-flow lane:
-
-* the pointwise state mass is jointly `C¹` on one coefficient ball;
-* its fixed-volume integral is Lipschitz on one smaller closed ball;
-* against a real-time metric family, every fixed state coefficient of the
-  faithful mass is continuous in time on a compact interval.
-
-The radius in all three statements is chosen before the spatial point and,
-in the time-continuity theorem, before the metric family.  No time-dependent
-shrinking is used.
--/
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open Bundle Filter Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Filter Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ENNReal NNReal Topology ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
@@ -42,21 +24,16 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M]
+  [BoundarylessManifold I M] [ConnectedSpace M]
 
 private local instance : MeasurableSpace M := borel M
 
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-! ## Finite bilinear reconstruction -/
-
-/-- The canonical Euclidean basis, viewed as an algebraic basis so that its
-coordinate maps can be promoted to continuous linear maps. -/
 private noncomputable def hmfCBasis (ι : Type*) [Fintype ι] :
     Module.Basis ι ℝ (EuclideanSpace ℝ ι) :=
   (EuclideanSpace.basisFun ι ℝ).toBasis
 
-/-- The `i`-th coefficient functional on a finite Euclidean trial space. -/
 private noncomputable def hmfCoord (ι : Type*) [Fintype ι] (i : ι) :
     EuclideanSpace ℝ ι →L[ℝ] ℝ :=
   ((hmfCBasis ι).coord i).toContinuousLinearMap
@@ -65,7 +42,6 @@ private noncomputable def hmfCoord (ι : Type*) [Fintype ι] (i : ι) :
     (ι : Type*) [Fintype ι] (i : ι) (v : EuclideanSpace ℝ ι) :
     hmfCoord ι i v = (hmfCBasis ι).coord i v := rfl
 
-/-- A constant matrix-unit bilinear form on a finite coefficient space. -/
 private noncomputable def hmfMUnit
     (ι : Type*) [Fintype ι] (i j : ι) :
     EuclideanSpace ℝ ι →L[ℝ] EuclideanSpace ℝ ι →L[ℝ] ℝ :=
@@ -77,8 +53,6 @@ private noncomputable def hmfMUnit
       (hmfCBasis ι).coord i v * (hmfCBasis ι).coord j w := by
   simp [hmfMUnit, ContinuousLinearMap.smulRight_apply, smul_eq_mul]
 
-/-- Expansion of a finite-dimensional bilinear form in the canonical
-Euclidean basis. -/
 private theorem hmfBilinExpand
     (ι : Type*) [Fintype ι]
     (B : EuclideanSpace ℝ ι →L[ℝ] EuclideanSpace ℝ ι →L[ℝ] ℝ)
@@ -118,8 +92,6 @@ private theorem hmfBilinExpand
       rw [smul_eq_mul, smul_eq_mul, hcoord, hcoord]
       ring
 
-/-- A finite bilinear form is the sum of its basis coefficients times the
-constant matrix units. -/
 private theorem hmfBilin_eq_sum
     (ι : Type*) [Fintype ι]
     (B : EuclideanSpace ℝ ι →L[ℝ] EuclideanSpace ℝ ι →L[ℝ] ℝ) :
@@ -132,17 +104,8 @@ private theorem hmfBilin_eq_sum
     Finset.sum_congr rfl (fun j _ ↦ ?_))
   ring
 
-/-! ## Joint pointwise regularity -/
-
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- On one coefficient ball, the complete pointwise faithful mass operator is
-jointly `C¹` in the coefficient and spatial variables.  The common radius is
-the finite minimum of the radii for the zero direction and all canonical
-basis directions supplied by `hmfSpecCoeff_cd`.
-
-The zero direction is included so that the common bundled coefficient
-producer also supplies the base map needed to pull back `q.inner`. -/
 theorem hmfSpecMassPt_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -248,12 +211,8 @@ theorem hmfSpecMassPt_cd
       (hmfBilin_eq_sum ι
         (hmfSpecMassPt (I := I) (M := M) q S p.1 p.2)))
 
-/-! ## Uniform coefficient Lipschitz bounds -/
-
-omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+omit [CompactSpace M] [T2Space M]
   [ConnectedSpace M] in
-/-- Joint continuity gives continuity of every parameter slice whose
-parameter lies in the prescribed set. -/
 private theorem continuous_slice_of_continuousOn_prod
     {V W : Type*} [TopologicalSpace V] [TopologicalSpace W]
     (F : V → M → W) {s : Set V}
@@ -267,9 +226,7 @@ private theorem continuous_slice_of_continuousOn_prod
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Joint `C¹` regularity gives differentiability of every coefficient slice
-at every coefficient lying in the joint regularity domain. -/
+  [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem mdifferentiable_coeff_slice
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (F : V → M → M) {R : ℝ}
@@ -292,8 +249,6 @@ private theorem mdifferentiable_coeff_slice
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- On the joint regularity ball, every fixed-state pointwise mass field is
-continuous on the whole manifold. -/
 theorem hmfSpecMassPt_continuous
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -310,12 +265,8 @@ theorem hmfSpecMassPt_continuous
     hmass.continuousOn hu
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-  [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+  [I.Boundaryless] [CompactSpace M] [T2Space M]
   [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Joint `C¹` regularity on an open coefficient ball makes the coefficient
-Fréchet derivative jointly continuous on every strictly smaller closed ball.
-Only the coefficient factor is differentiated; the manifold point remains a
-parameter. -/
 private theorem partialFderiv_cont
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     [FiniteDimensional ℝ V]
@@ -361,11 +312,8 @@ private theorem partialFderiv_cont
   exact hD'.continuousAt.continuousWithinAt
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-  [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+  [I.Boundaryless] [T2Space M]
   [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- A jointly `C¹` Banach-valued family on a coefficient ball is uniformly
-Lipschitz in the coefficient on a smaller closed ball, uniformly in the
-compact manifold parameter. -/
 private theorem point_lip_cball
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     [FiniteDimensional ℝ V]
@@ -426,9 +374,6 @@ private theorem point_lip_cball
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- The pointwise faithful mass is uniformly Lipschitz in the state on one
-closed coefficient ball, with one Lipschitz constant valid at every spatial
-point. -/
 theorem hmfSpecMassPt_lip
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -445,10 +390,6 @@ theorem hmfSpecMassPt_lip
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- For every fixed domain metric, the integrated faithful mass is Lipschitz
-in the state on one coefficient closed ball.  The radius depends only on the
-pointwise local-addition regularity; the Lipschitz constant additionally
-contains the finite volume of the chosen domain metric. -/
 theorem hmfSpecMass_lip
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -507,10 +448,6 @@ theorem hmfSpecMass_lip
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- A uniform upper bound for the total volumes of a metric family turns the
-pointwise state estimate into one common state-Lipschitz estimate for all
-times in `K`.  The coefficient radius and the pointwise derivative constant
-are chosen before `g`, `K`, and the volume bound are used. -/
 theorem hmfMassFam_lip
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -576,8 +513,6 @@ theorem hmfMassFam_lip
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- The fixed-background specialization requested by the finite HMF solver.
-It has exactly the same state radius as the arbitrary-fixed-volume theorem. -/
 theorem hmfSpecMassQ_lip
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -587,11 +522,7 @@ theorem hmfSpecMassQ_lip
         (Metric.closedBall 0 R) :=
   hmfSpecMass_lip (I := I) (M := M) q q S
 
-/-! ## Zero-state identification and coercivity -/
-
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- At state zero, the faithful finite mass operator is exactly the older
-finite HMF mass restricted along the canonical spectral inclusion. -/
 theorem hmfSpecMass_zero
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -646,9 +577,6 @@ theorem hmfSpecMass_zero
       rw [hmfFinMass_apply]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Reverse volume domination gives the exact common zero-state lower bound
-needed by `coerOn_of_lip`.  In particular, a time-uniform comparison constant
-immediately gives a time-uniform zero-state coercivity constant. -/
 theorem hmfSpecMass_lower
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -663,14 +591,8 @@ theorem hmfSpecMass_lower
     (hmfSpecIncl (I := I) (M := M) q S)
     (hmfSpecIncl_orth (I := I) (M := M) q S) v
 
-/-! ## Real-time moving-volume continuity -/
-
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- On one state ball chosen independently of the metric family, every fixed
-faithful state-mass coefficient is continuous in real time.  Only the volume
-measure moves, so `integral_family_cont` applies directly; no parameterized
-measure-continuity wrapper is used. -/
 theorem hmfStateTime_cont
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :

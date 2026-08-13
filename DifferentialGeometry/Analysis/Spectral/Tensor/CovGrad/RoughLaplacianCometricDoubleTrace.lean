@@ -3,13 +3,17 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2So
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.GradientField
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
@@ -19,8 +23,8 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -118,7 +122,7 @@ theorem rawTensorConnLapSmooth_eq_appCc_cometricDoubleTrace
     (iteratedCovGrad (I := I) g₀ 0 2 2 S) x v]
   rw [unitModel_rawTensorConnLapSmooth_eq_frame_sum (I := I) g₀ S x v]
   exact
-    (IntrinsicSpectral.DeTurck.cometric_dualTrace_eq_orthoFrame_diag
+    (DifferentialGeometry.Analysis.Spectral.DeTurck.cometric_dualTrace_eq_orthoFrame_diag
     (I := I) g₀ (s := 2) x
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
     (unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x) v).symm

@@ -4,23 +4,12 @@ import Mathlib.Tactic.Ring
 
 set_option autoImplicit false
 
-/-!
-# Algebraic curvature forms
-
-This file records the small polarization argument saying that an algebraic
-curvature form is determined by its sectional diagonal.  It is independent of
-manifolds and curvature realizations.
--/
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {V : Type*} [AddCommGroup V] [Module Real V]
 
-/-- A real quadrilinear curvature form, presented by first-slot linearity and
-the three standard curvature identities.  The remaining slot linearities
-follow from these identities. -/
 structure IsAlgCurvForm (B : V → V → V → V → Real) : Prop where
   add_left : ∀ x₁ x₂ y z w, B (x₁ + x₂) y z w = B x₁ y z w + B x₂ y z w
   smul_left : ∀ (a : Real) x y z w, B (a • x) y z w = a * B x y z w
@@ -32,7 +21,32 @@ namespace IsAlgCurvForm
 
 variable {B B' : V → V → V → V → Real}
 
-/-- Algebraic curvature forms are symmetric under swapping the two pairs. -/
+theorem zero : IsAlgCurvForm (fun _ _ _ _ : V => 0) where
+  add_left := by simp
+  smul_left := by simp
+  anti_first := by simp
+  anti_last := by simp
+  bianchi := by simp
+
+theorem add (hB : IsAlgCurvForm B) (hB' : IsAlgCurvForm B') :
+    IsAlgCurvForm (fun x y z w => B x y z w + B' x y z w) where
+  add_left x₁ x₂ y z w := by
+    rw [hB.add_left, hB'.add_left]
+    ring
+  smul_left a x y z w := by
+    rw [hB.smul_left, hB'.smul_left]
+    ring
+  anti_first x y z w := by
+    rw [hB.anti_first, hB'.anti_first]
+    ring
+  anti_last x y z w := by
+    rw [hB.anti_last, hB'.anti_last]
+    ring
+  bianchi x y z w := by
+    have h := hB.bianchi x y z w
+    have h' := hB'.bianchi x y z w
+    linarith
+
 theorem pair_swap (hB : IsAlgCurvForm B) (x y z w : V) :
     B x y z w = B z w x y := by
   have h1 := hB.bianchi y z x w
@@ -50,28 +64,23 @@ theorem pair_swap (hB : IsAlgCurvForm B) (x y z w : V) :
   have b3 := hB.anti_first w z x y
   linarith
 
-/-- Additivity in the second slot. -/
 theorem add_two (hB : IsAlgCurvForm B) (x y₁ y₂ z w : V) :
     B x (y₁ + y₂) z w = B x y₁ z w + B x y₂ z w := by
   rw [hB.anti_first x (y₁ + y₂), hB.add_left,
     hB.anti_first y₁ x, hB.anti_first y₂ x]
   ring
 
-/-- Additivity in the third slot. -/
 theorem add_three (hB : IsAlgCurvForm B) (x y z₁ z₂ w : V) :
     B x y (z₁ + z₂) w = B x y z₁ w + B x y z₂ w := by
   rw [hB.pair_swap x y (z₁ + z₂) w, hB.add_left,
     hB.pair_swap z₁ w x y, hB.pair_swap z₂ w x y]
 
-/-- Additivity in the fourth slot. -/
 theorem add_four (hB : IsAlgCurvForm B) (x y z w₁ w₂ : V) :
     B x y z (w₁ + w₂) = B x y z w₁ + B x y z w₂ := by
   rw [hB.anti_last x y z (w₁ + w₂), hB.add_three,
     hB.anti_last x y w₁ z, hB.anti_last x y w₂ z]
   ring
 
-/-- The difference of two algebraic curvature forms is an algebraic curvature
-form. -/
 theorem sub (hB : IsAlgCurvForm B) (hB' : IsAlgCurvForm B') :
     IsAlgCurvForm (fun x y z w => B x y z w - B' x y z w) where
   add_left x₁ x₂ y z w := by
@@ -91,7 +100,6 @@ theorem sub (hB : IsAlgCurvForm B) (hB' : IsAlgCurvForm B') :
     have h' := hB'.bianchi x y z w
     linarith
 
-/-- A scalar multiple of an algebraic curvature form is one. -/
 theorem smul (hB : IsAlgCurvForm B) (c : Real) :
     IsAlgCurvForm (fun x y z w => c * B x y z w) where
   add_left x₁ x₂ y z w := by
@@ -113,7 +121,6 @@ theorem smul (hB : IsAlgCurvForm B) (c : Real) :
           c * (B x y z w + B y z x w + B z x y w) := by ring
       _ = 0 := by rw [h, mul_zero]
 
-/-- An algebraic curvature form whose sectional diagonal vanishes is zero. -/
 theorem zero_of_diag (hB : IsAlgCurvForm B)
     (hdiag : ∀ x y, B x y x y = 0) :
     ∀ x y z w, B x y z w = 0 := by
@@ -137,7 +144,6 @@ theorem zero_of_diag (hB : IsAlgCurvForm B)
   have h2 := hcyc y z x w
   linarith
 
-/-- Two algebraic curvature forms with the same sectional diagonal agree. -/
 theorem ext (hB : IsAlgCurvForm B) (hB' : IsAlgCurvForm B')
     (hdiag : ∀ x y, B x y x y = B' x y x y) :
     ∀ x y z w, B x y z w = B' x y z w := by
@@ -153,4 +159,4 @@ theorem ext (hB : IsAlgCurvForm B) (hB' : IsAlgCurvForm B')
 
 end IsAlgCurvForm
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

@@ -1,17 +1,18 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.CovariantIntegrationByParts
 import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorBochner
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Algebra
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
 namespace Integral
-namespace Connection
+namespace L2
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -80,7 +81,7 @@ theorem tensorL2Inner_movingFrameRemainder_eq_zero_of_bracketFreePairing
   rw [hpair] at hsplit
   linarith [hsplit]
 
-end Connection
+end L2
 end Integral
 end DifferentialGeometry
 

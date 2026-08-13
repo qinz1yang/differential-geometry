@@ -1,11 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjPotential
-
-/-!
-# Compact-interval conjugate potential
-
-This file packages the lower-order conjugate-heat operator on an already
-chosen reflected regular-time interval.
--/
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -16,7 +12,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -24,15 +19,13 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 omit [BoundarylessManifold I M] in
-/-- On any prescribed compact reflected regular-time interval, the
-conjugate-heat potential operator is continuous and has one finite norm bound. -/
 theorem conjA1_on
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime)
     {h : Real}
@@ -63,10 +56,8 @@ theorem conjA1_on
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- On a compact regular-time slab, the conjugate-heat scalar coefficient has
-one pointwise bound uniform in time and space. -/
 theorem conjCoeff_span
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     {a b : Real} (hab : Set.Icc a b ⊆ D.regular) :

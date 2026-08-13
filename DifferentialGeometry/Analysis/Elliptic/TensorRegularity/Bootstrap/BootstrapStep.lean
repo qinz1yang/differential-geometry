@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.InteriorRegularit
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.Iteration
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -20,7 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -39,7 +40,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 section ChartPerturbedSource
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 theorem tensorComponent_perturbedSource_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

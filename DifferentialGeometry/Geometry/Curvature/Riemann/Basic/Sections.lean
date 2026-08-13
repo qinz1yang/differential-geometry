@@ -1,13 +1,15 @@
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Pointwise
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option autoImplicit false
 
-open Bundle Tensor0SBundle DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff Topology
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type _} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [CompleteSpace E]
@@ -163,15 +165,9 @@ theorem connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst
     simpa [Xc] using hXx
   have hYval : tangentConstAt (I := I) x Y x = Ys x := by
     simpa [Yc] using hYx
-  simp only [DifferentialGeometry.Integral.Connection.connectionRiemannCurvatureField]
+  simp only [DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField]
   rw [hcovZY, hcovZX, hZ_at, hbr]
   rw [hXval, hYval]
-
-
-
-
-
-
 
 theorem riemannCurvatureAt_apply_smooth
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -209,8 +205,6 @@ theorem riemannCurvatureAt_apply_smooth
   rw [riemannCurvatureAt_apply_const]
   simpa [riemannCurvatureAux_eq_connectionRiemannCurvatureField] using
     congrArg (cotangentToDual_gen α) (hraw.trans hsmooth)
-
-
 
 theorem riemannCurvature04At_apply_smooth
     (g : SmoothRiemannianMetric I M)
@@ -364,12 +358,6 @@ private theorem riemannCurvatureAt_contMDiff
   simpa [G, e] using hG
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
 noncomputable def rm13Section
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
@@ -407,13 +395,6 @@ theorem rm13Section_apply_const
           (tangentConstAt (I := I) x Z) x) := by
   rw [rm13Section_apply, riemannCurvatureAt_apply_const]
   rfl
-
-
-
-
-
-
-
 
 theorem rm13Section_apply_smooth
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -523,8 +504,6 @@ private theorem riemannCurvature04At_contMDiff
     riemannCurvature04At_apply_smooth (I := I) g cov hcov Xs Ys Zs Ws p
 
 set_option backward.isDefEq.respectTransparency false in
-
-
 noncomputable def rm04Section
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -579,7 +558,6 @@ theorem rm04Section_apply_smooth
   exact riemannCurvature04At_apply_smooth (I := I) g cov hcov X Y Z W x
 
 set_option backward.isDefEq.respectTransparency false in
-
 noncomputable def ricciSection
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
@@ -629,4 +607,4 @@ theorem ricciSection_eq_trace
 
 end CovariantDerivative
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

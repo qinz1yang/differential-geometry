@@ -1,18 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -36,30 +26,22 @@ section Components
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {u : Set M}
 
-
-
-
-
-
-
 structure InverseMetricTimeRegularityBlackBoxInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx) where
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx) where
   gInvDt : Real -> M -> Idx -> Idx -> Real
   inverseMetricDerivative :
     InverseMetricDerivativeComponentsOn (D := D) gInv gInvDt
   uniqueTimeDerivatives :
-    forall t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D,
+    forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
       UniqueDiffWithinAt Real D.carrier (t : Real)
-
-
 
 omit [SigmaCompactSpace M] in
 theorem inverseMetricEvolution_of_timeRegularityBlackBox
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hinv : InvMetricLocal (I := I) S gInv frame Set.univ)
     (hbb : InverseMetricTimeRegularityBlackBoxInFrameOn (M := M) (Idx := Idx)
@@ -69,15 +51,8 @@ theorem inverseMetricEvolution_of_timeRegularityBlackBox
     (I := I) (u := Set.univ) S hS gInv hbb.gInvDt frame
     hbb.inverseMetricDerivative hinv hbb.uniqueTimeDerivatives
 
-
-
-
-
-
-
-
 structure ConnectionVariationBlackBoxInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (u : Set M)
@@ -89,12 +64,10 @@ structure ConnectionVariationBlackBoxInFrameOn
   metricCovDerivRicciFlow :
     MetricCovDerivDerivativeIsRicciFlowInFrame metricCovDerivDt nablaRic
 
-
-
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem variableMetricConnectionDiffDerivative_of_blackBox
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -108,14 +81,12 @@ theorem variableMetricConnectionDiffDerivative_of_blackBox
     (I := I) S hS frame hframe hu hbb.metricCovDerivDt nablaRic
     hbb.metricCovDerivDerivative hbb.metricCovDerivRicciFlow
 
-
-
 omit [SigmaCompactSpace M] in
 theorem christoffelEvolution_of_blackBox
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (gInvDt : Real -> M -> Idx -> Idx -> Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -132,17 +103,11 @@ theorem christoffelEvolution_of_blackBox
     hbb.metricCovDerivDt nablaRic hmetricFrame
     hbb.metricCovDerivDerivative hbb.metricCovDerivRicciFlow
 
-
-
-
-
-
-
 structure RicciEvolutionTimeRegularityBlackBoxInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) where
   nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real
   ricciVariation :
@@ -152,15 +117,13 @@ structure RicciEvolutionTimeRegularityBlackBoxInFrameOn
     RicciContractedCommutatorsInFrame
       (I := I) S Rm04 gInv frame nabla2Ric
 
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciEvolution_of_timeRegularityBlackBox
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hbb : RicciEvolutionTimeRegularityBlackBoxInFrameOn
       (I := I) S Rm04 gInv frame) :
@@ -170,16 +133,11 @@ theorem ricciEvolution_of_timeRegularityBlackBox
     (I := I) S Rm04 gInv frame hbb.nabla2Ric
     hbb.ricciVariation hbb.contractedCommutators
 
-
-
-
-
-
 structure Section62TimeRegularityBlackBoxInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (gInvDt : Real -> M -> Idx -> Idx -> Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (u : Set M)

@@ -1,29 +1,31 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open TensorMetricLowering
-open Tensor0SNabla
+open DifferentialGeometry.TensorMetricLowering
+open DifferentialGeometry.Tensor0SNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [CompleteSpace E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
 
 def liftedTensorSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -32,7 +34,7 @@ def liftedTensorSection
   fun y => Tensor0SSpace.ofModel
     (lowerAllUpperIndices (I := I) (M := M) g r s y (TensorRSSpace.toModel (S y)))
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 @[simp]
 lemma liftedTensorSection_apply
@@ -44,7 +46,7 @@ lemma liftedTensorSection_apply
         (lowerAllUpperIndices (I := I) (M := M) g r s y
           (TensorRSSpace.toModel (S y))) := rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 @[simp]
 lemma toModel_liftedTensorSection
@@ -56,7 +58,7 @@ lemma toModel_liftedTensorSection
         (TensorRSSpace.toModel (S y)) := by
   rw [liftedTensorSection_apply, Tensor0SSpace.toModel_ofModel]
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 lemma liftedTensorSection_contMDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -67,7 +69,7 @@ lemma liftedTensorSection_contMDiff
         (liftedTensorSection (I := I) (M := M) g r s S y)) :=
   contMDiff_lifted_section (I := I) (M := M) g r s S
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 lemma liftedTensorSection_mdiffAt
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -78,7 +80,7 @@ lemma liftedTensorSection_mdiffAt
   ((liftedTensorSection_contMDiff (I := I) (M := M) g r s S) x).mdifferentiableAt
     (by simp)
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 lemma tensorInnerPointwise_eq_liftedTensorSection_inner
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -112,7 +114,7 @@ lemma loweredCovDerivAt_def
       tensor0SCovariantDerivative I M (r + s) (LeviCivita (I := I) g)
         (liftedTensorSection (I := I) (M := M) g r s S) x v := rfl
 
-open Tensor0SNabla in
+open DifferentialGeometry.Tensor0SNabla in
 omit [CompleteSpace E] in
 theorem tensorInnerPointwise_hasMFDerivAt_metricCompatible
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -148,7 +150,7 @@ theorem tensorInnerPointwise_hasMFDerivAt_metricCompatible
     (liftedTensorSection_mdiffAt (I := I) (M := M) g r s W x)
     (liftedTensorSection_mdiffAt (I := I) (M := M) g r s S x) v
 
-open Tensor0SNabla in
+open DifferentialGeometry.Tensor0SNabla in
 omit [CompleteSpace E] in
 theorem tensorInnerPointwise_hasMFDerivAt_metricCompatible'
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -178,7 +180,7 @@ theorem tensorInnerPointwise_hasMFDerivAt_metricCompatible'
     (liftedTensorSection_mdiffAt (I := I) (M := M) g r s S x)
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

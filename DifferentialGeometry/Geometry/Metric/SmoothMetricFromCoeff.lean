@@ -2,42 +2,6 @@ import DifferentialGeometry.Geometry.Metric.MetricExistence
 import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Bundle Manifold Set ContinuousLinearMap Bornology
@@ -129,15 +93,8 @@ private lemma clm_eq_sum (φ : E →L[ℝ] E →L[ℝ] ℝ) :
   refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
   ring
 
-
-
-
 def frameVec (x₀ : M) (i : Fin (Module.finrank ℝ E)) (x : M) : TangentSpace I x :=
   (trivializationAt E (TangentSpace I) x₀).symmL ℝ x (mdlBasis E i)
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem metricCoeffInModel_apply (x₀ : M) {x : M}
@@ -216,9 +173,6 @@ private lemma metric_contMDiffOn (gm : Π x : M, TangentSpace I x →L[ℝ] Tang
   refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
   simp only [frameVec]
   rw [metricCoeffInModel_apply (I := I) x₀ hx (gm x) (mdlBasis E i) (mdlBasis E j)]
-
-
-
 
 theorem smoothMetric_of_localCoeff
     (gm : Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)

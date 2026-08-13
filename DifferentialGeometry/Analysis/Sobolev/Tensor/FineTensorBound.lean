@@ -1,20 +1,11 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.FineTensorRepack
-
-/-!
-# Quantitative Sobolev reassembly of one fine tensor block
-
-The middle cutoff makes an arbitrary full-Euclidean Sobolev component safe to
-pull back to the manifold.  This file combines the cutoff multiplier, the
-outer-cutoff transition estimate, and the exact chart-component formula into
-one bounded reassembly theorem.  It is the local analytic input for the finite
-atlas retraction in the fixed-background parametrix.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -41,8 +32,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-/-- Reassemble one fine Euclidean component block after applying its middle
-cutoff. -/
 noncomputable def fineBlock
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
@@ -73,8 +62,6 @@ private theorem memWkp_sum
         (hf a (Finset.mem_insert_self a t))
         (ih (fun b hb => hf b (Finset.mem_insert_of_mem hb)))
 
-/-- Every target component of one middle-cutoff fine block is in `W^{k,p}`.
-The input components are full-Euclidean Sobolev representatives. -/
 theorem fineBlock_comp_mem
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -124,8 +111,6 @@ theorem fineBlock_comp_mem
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M) α) heq).mpr hsum
 
-/-- One middle-cutoff fine block is a genuine global tensor `W^{k,p}`
-section. -/
 theorem fineBlock_mem
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -139,9 +124,6 @@ theorem fineBlock_mem
   exact fineBlock_comp_mem (I := I) (M := M) rFine hr g r s k hp hp_top
     z u hu α ⟨Idx, Jdx⟩
 
-/-- Quantitative componentwise bound for one middle-cutoff fine block.  The
-finite positive weights depend only on the fixed charts, cutoffs, tensor
-indices, Sobolev order, and exponent. -/
 theorem fineBlock_bound
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)

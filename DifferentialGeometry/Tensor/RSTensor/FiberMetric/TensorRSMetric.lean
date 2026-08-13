@@ -2,6 +2,7 @@ import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import Mathlib.LinearAlgebra.Trace
 
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -76,3 +77,4 @@ def tensorNormSqRS
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

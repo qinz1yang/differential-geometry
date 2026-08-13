@@ -36,6 +36,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
+omit [SigmaCompactSpace M] in
 theorem chosenFChartDeriv_memW1p_of_base_memWkp22
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -58,6 +59,7 @@ theorem chosenFChartDeriv_memW1p_of_base_memWkp22
     at h_step
   exact h_step
 
+omit [SigmaCompactSpace M] in
 theorem chosenFChartDeriv_memW1p_truly_unconditional
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -76,6 +78,7 @@ theorem chosenFChartDeriv_memW1p_truly_unconditional
   chosenFChartDeriv_memW1p_of_base_memWkp22 (I := I) (M := M) g α hu_h l₁
     h_base_f_chart_memWkp22
 
+omit [SigmaCompactSpace M] in
 theorem chosenFChartDeriv_memW1p_of_base_f_chart_memWkp22
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}

@@ -4,42 +4,19 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem inner_sum_orthonormal (g : SmoothRiemannianMetric I M) (x : M)
@@ -62,9 +39,6 @@ theorem inner_sum_orthonormal (g : SmoothRiemannianMetric I M) (x : M)
   rw [houter, ContinuousLinearMap.sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [ContinuousLinearMap.smul_apply, smul_eq_mul, hexp i, sq]
-
-
-
 
 theorem expand_orthonormal (g : SmoothRiemannianMetric I M) (x : M)
     {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
@@ -101,8 +75,6 @@ theorem expand_orthonormal (g : SmoothRiemannianMetric I M) (x : M)
     _ = ∑ i, g.inner x (v i) u • v i := by
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [hb i, hg]
-
-
 
 theorem inner_self_eq_sum_sq (g : SmoothRiemannianMetric I M) (x : M)
     {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]

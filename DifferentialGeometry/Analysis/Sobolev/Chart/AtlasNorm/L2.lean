@@ -22,7 +22,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 def wkpNormChartL2Sq [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u : M → ℝ) : ℝ≥0∞ :=
   ∑' α : M,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2Sq
@@ -33,20 +33,20 @@ def wkpNormChartL2Sq [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
       (chartTargetEuclid (I := I) (M := M) α)
 
 def wkpNormChartL2 [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u : M → ℝ) : ℝ≥0∞ :=
   wkpNormChartL2Sq (I := I) (M := M) g k u ^ ((1 : ℝ) / 2)
 
 theorem wkpNormChartL2_eq_rpow
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u : M → ℝ) :
     wkpNormChartL2 (I := I) (M := M) g k u =
       wkpNormChartL2Sq (I := I) (M := M) g k u ^ ((1 : ℝ) / 2) := rfl
 
 theorem wkpNormChartL2Sq_eq_tsum
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u : M → ℝ) :
     wkpNormChartL2Sq (I := I) (M := M) g k u =
       ∑' α : M,
@@ -59,7 +59,7 @@ theorem wkpNormChartL2Sq_eq_tsum
 
 private theorem wkpNormChartL2_eq_ofReal_sqrt_toReal
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {u : M → ℝ}
     (hSq : wkpNormChartL2Sq (I := I) (M := M) g k u ≠ (⊤ : ℝ≥0∞)) :
     wkpNormChartL2 (I := I) (M := M) g k u =
@@ -79,7 +79,7 @@ private theorem wkpNormChartL2_eq_ofReal_sqrt_toReal
 
 theorem wkpNormChartL2Sq_zero_fun
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} :
     wkpNormChartL2Sq (I := I) (M := M) g k (fun _ : M => (0 : ℝ)) = 0 := by
   unfold wkpNormChartL2Sq
@@ -100,7 +100,7 @@ theorem wkpNormChartL2Sq_zero_fun
 
 theorem wkpNormChartL2_zero_fun
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} :
     wkpNormChartL2 (I := I) (M := M) g k (fun _ : M => (0 : ℝ)) = 0 := by
   unfold wkpNormChartL2
@@ -109,7 +109,7 @@ theorem wkpNormChartL2_zero_fun
 
 theorem wkpNormChartL2Sq_lt_top_of_memWkpChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k 2 u) :
     wkpNormChartL2Sq (I := I) (M := M) g k u < ⊤ := by
@@ -192,7 +192,7 @@ theorem wkpNormChartL2Sq_lt_top_of_memWkpChart
 
 theorem wkpNormChartL2_lt_top_of_memWkpChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k 2 u) :
     wkpNormChartL2 (I := I) (M := M) g k u < ⊤ := by
@@ -202,7 +202,7 @@ theorem wkpNormChartL2_lt_top_of_memWkpChart
 
 theorem wkpNormChartL2Sq_congr_chartPushed_ae
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {u v : M → ℝ}
     (huv : ChartPushedAEEq (I := I) (M := M) g u v) :
     wkpNormChartL2Sq (I := I) (M := M) g k u =
@@ -217,7 +217,7 @@ theorem wkpNormChartL2Sq_congr_chartPushed_ae
 
 theorem wkpNormChartL2_congr_chartPushed_ae
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {u v : M → ℝ}
     (huv : ChartPushedAEEq (I := I) (M := M) g u v) :
     wkpNormChartL2 (I := I) (M := M) g k u =
@@ -227,7 +227,7 @@ theorem wkpNormChartL2_congr_chartPushed_ae
 
 theorem wkpNormChartL2Sq_const_smul
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (c : ℝ) {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k 2 u) :
     wkpNormChartL2Sq (I := I) (M := M) g k (fun x => c * u x) =
@@ -244,7 +244,7 @@ theorem wkpNormChartL2Sq_const_smul
 
 theorem wkpNormChartL2_const_smul
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (c : ℝ) {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k 2 u) :
     wkpNormChartL2 (I := I) (M := M) g k (fun x => c * u x) =
@@ -260,7 +260,7 @@ theorem wkpNormChartL2_const_smul
 
 private theorem wkpNormChartL2_add_le_aux
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ}
     {u v : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k 2 u)
@@ -633,7 +633,7 @@ private theorem wkpNormChartL2_add_le_aux
 
 theorem wkpNormChartL2_add_le
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ}
     {u v : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k 2 u)
@@ -645,7 +645,7 @@ theorem wkpNormChartL2_add_le
 
 def wkpInnerChartL2
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (_g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (_g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u v : M → ℝ) : ℝ :=
   ∑' α : M,
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2
@@ -659,7 +659,7 @@ def wkpInnerChartL2
 
 theorem wkpInnerChartL2_eq_tsum
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u v : M → ℝ) :
     wkpInnerChartL2 (I := I) (M := M) g k u v =
       ∑' α : M,
@@ -674,7 +674,7 @@ theorem wkpInnerChartL2_eq_tsum
 
 theorem wkpInnerChartL2_comm
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u v : M → ℝ) :
     wkpInnerChartL2 (I := I) (M := M) g k u v =
       wkpInnerChartL2 (I := I) (M := M) g k v u := by
@@ -686,7 +686,7 @@ theorem wkpInnerChartL2_comm
 
 theorem wkpInnerChartL2_self_nonneg
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u : M → ℝ) :
     0 ≤ wkpInnerChartL2 (I := I) (M := M) g k u u := by
   unfold wkpInnerChartL2
@@ -696,13 +696,13 @@ theorem wkpInnerChartL2_self_nonneg
 
 def WkpChartL2
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) : Type _ :=
   ↥(wkpChartSubmodule (I := I) (M := M) g k 2 (by norm_num : (1 : ℝ≥0∞) ≤ 2))
 
 instance instAddCommGroupWkpChartL2
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     AddCommGroup (WkpChartL2 (I := I) (M := M) g k) :=
   inferInstanceAs (AddCommGroup ↥(wkpChartSubmodule (I := I) (M := M) g k 2
@@ -710,7 +710,7 @@ instance instAddCommGroupWkpChartL2
 
 instance instModuleRealWkpChartL2
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     Module ℝ (WkpChartL2 (I := I) (M := M) g k) :=
   inferInstanceAs (Module ℝ ↥(wkpChartSubmodule (I := I) (M := M) g k 2
@@ -718,7 +718,7 @@ instance instModuleRealWkpChartL2
 
 def wkpChartL2Fun
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ}
     (u : WkpChartL2 (I := I) (M := M) g k) : M → ℝ :=
   Subtype.val (α := (M → ℝ))
@@ -727,7 +727,7 @@ def wkpChartL2Fun
 
 lemma wkpChartL2Fun_memWkpChart
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ}
     (u : WkpChartL2 (I := I) (M := M) g k) :
     MemWkpChart (I := I) (M := M) g k 2 (wkpChartL2Fun u) :=
@@ -739,7 +739,7 @@ lemma wkpChartL2Fun_memWkpChart
 @[simp]
 lemma wkpChartL2Fun_add
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ}
     (u v : WkpChartL2 (I := I) (M := M) g k) :
     wkpChartL2Fun (u + v) = fun x => wkpChartL2Fun u x + wkpChartL2Fun v x := by
@@ -748,7 +748,7 @@ lemma wkpChartL2Fun_add
 @[simp]
 lemma wkpChartL2Fun_smul
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ}
     (c : ℝ) (u : WkpChartL2 (I := I) (M := M) g k) :
     wkpChartL2Fun (c • u) = fun x => c * wkpChartL2Fun u x := by
@@ -757,13 +757,13 @@ lemma wkpChartL2Fun_smul
 @[simp]
 lemma wkpChartL2Fun_zero
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} :
     wkpChartL2Fun (0 : WkpChartL2 (I := I) (M := M) g k) = (fun _ => 0) := rfl
 
 instance instNormWkpChartL2
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     Norm (WkpChartL2 (I := I) (M := M) g k) where
   norm u := (wkpNormChartL2 (I := I) (M := M) g k (wkpChartL2Fun u)).toReal
@@ -771,14 +771,14 @@ instance instNormWkpChartL2
 @[simp]
 lemma norm_wkpChartL2_def
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ}
     (u : WkpChartL2 (I := I) (M := M) g k) :
     ‖u‖ = (wkpNormChartL2 (I := I) (M := M) g k (wkpChartL2Fun u)).toReal := rfl
 
 lemma wkpChartL2_seminormedSpace_core
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     SeminormedSpace.Core ℝ (WkpChartL2 (I := I) (M := M) g k) where
   norm_nonneg u := ENNReal.toReal_nonneg
@@ -812,14 +812,14 @@ lemma wkpChartL2_seminormedSpace_core
 
 instance instSeminormedAddCommGroupWkpChartL2
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     SeminormedAddCommGroup (WkpChartL2 (I := I) (M := M) g k) :=
   SeminormedAddCommGroup.ofCore (wkpChartL2_seminormedSpace_core (I := I) (M := M) g k)
 
 instance instNormedSpaceRealWkpChartL2
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     NormedSpace ℝ (WkpChartL2 (I := I) (M := M) g k) where
   norm_smul_le c u := by
@@ -832,13 +832,13 @@ instance instNormedSpaceRealWkpChartL2
 
 def WkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) : Type _ :=
   SeparationQuotient (WkpChartL2 (I := I) (M := M) g k)
 
 instance instAddCommGroupWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     AddCommGroup (WkpChartL2Quot (I := I) (M := M) g k) :=
   inferInstanceAs (AddCommGroup
@@ -846,7 +846,7 @@ instance instAddCommGroupWkpChartL2Quot
 
 instance instNormedAddCommGroupWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     NormedAddCommGroup (WkpChartL2Quot (I := I) (M := M) g k) :=
   inferInstanceAs (NormedAddCommGroup
@@ -854,7 +854,7 @@ instance instNormedAddCommGroupWkpChartL2Quot
 
 instance instModuleWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     Module ℝ (WkpChartL2Quot (I := I) (M := M) g k) :=
   inferInstanceAs (Module ℝ
@@ -862,7 +862,7 @@ instance instModuleWkpChartL2Quot
 
 instance instNormedSpaceRealWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     NormedSpace ℝ (WkpChartL2Quot (I := I) (M := M) g k) :=
   inferInstanceAs (NormedSpace ℝ
@@ -870,7 +870,7 @@ instance instNormedSpaceRealWkpChartL2Quot
 
 instance instInnerWkpChartL2
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     Inner ℝ (WkpChartL2 (I := I) (M := M) g k) where
   inner u v :=
@@ -879,7 +879,7 @@ instance instInnerWkpChartL2
 @[simp]
 lemma inner_wkpChartL2_def
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ}
     (u v : WkpChartL2 (I := I) (M := M) g k) :
     @inner ℝ _ _ u v =
@@ -922,7 +922,7 @@ private theorem chartPushed_eq_zero_off_activeChartSupp
 
 private theorem wkpInnerChartL2_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u v : M → ℝ) :
     wkpInnerChartL2 (I := I) (M := M) g k u v =
       ∑ α ∈ (activeChartSupp_finite (I := I) (M := M)).toFinset,
@@ -967,7 +967,7 @@ private theorem wkpInnerChartL2_eq_finsum
 
 private theorem wkpNormChartL2Sq_toReal_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g k 2 u) :
     (wkpNormChartL2Sq (I := I) (M := M) g k u).toReal =
       ∑ α ∈ (activeChartSupp_finite (I := I) (M := M)).toFinset,
@@ -1006,7 +1006,7 @@ private theorem wkpNormChartL2Sq_toReal_eq_finsum
 
 private theorem wkpInnerChartL2_self_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u : M → ℝ) :
     wkpInnerChartL2 (I := I) (M := M) g k u u =
       ∑ α ∈ (activeChartSupp_finite (I := I) (M := M)).toFinset,
@@ -1021,7 +1021,7 @@ private theorem wkpInnerChartL2_self_eq_finsum
 
 private theorem wkpChartL2_norm_sq_eq_inner
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u : WkpChartL2 (I := I) (M := M) g k) :
     ‖u‖ ^ 2 = wkpInnerChartL2 (I := I) (M := M) g k (wkpChartL2Fun u) (wkpChartL2Fun u) := by
   classical
@@ -1054,7 +1054,7 @@ private theorem wkpChartL2_norm_sq_eq_inner
 
 private theorem wkpInnerChartL2_apply_comm
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u v : WkpChartL2 (I := I) (M := M) g k) :
     @inner ℝ _ _ v u = @inner ℝ _ _ u v := by
   change wkpInnerChartL2 (I := I) (M := M) g k _ _ = _
@@ -1063,7 +1063,7 @@ private theorem wkpInnerChartL2_apply_comm
 
 private theorem wkpInnerChartL2_apply_add_left
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u v w : WkpChartL2 (I := I) (M := M) g k) :
     @inner ℝ _ _ (u + v) w = @inner ℝ _ _ u w + @inner ℝ _ _ v w := by
   classical
@@ -1089,7 +1089,7 @@ private theorem wkpInnerChartL2_apply_add_left
 
 private theorem wkpInnerChartL2_apply_smul_left
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (u v : WkpChartL2 (I := I) (M := M) g k) (r : ℝ) :
     @inner ℝ _ _ (r • u) v = r * @inner ℝ _ _ u v := by
   classical
@@ -1110,7 +1110,7 @@ private theorem wkpInnerChartL2_apply_smul_left
 
 instance instInnerProductSpaceRealWkpChartL2
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     InnerProductSpace ℝ (WkpChartL2 (I := I) (M := M) g k) where
   norm_sq_eq_re_inner u := by
@@ -1127,7 +1127,7 @@ instance instInnerProductSpaceRealWkpChartL2
 
 instance instInnerProductSpaceRealWkpChartL2Quot
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) :
     InnerProductSpace ℝ (WkpChartL2Quot (I := I) (M := M) g k) :=
   inferInstanceAs (InnerProductSpace ℝ

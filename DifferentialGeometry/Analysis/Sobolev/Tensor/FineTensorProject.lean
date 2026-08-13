@@ -1,31 +1,13 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpCompat
 import DifferentialGeometry.Analysis.Sobolev.Tensor.FineTensorWkp
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.FineChartCover
-
-/-!
-# Finite-chart projection through genuine tensor sections
-
-An arbitrary finite family of scalar chart components need not satisfy tensor
-transition laws on overlaps.  It is therefore not a valid state space for a
-geometric fixed-point argument.  This file gives the algebraic correction:
-
-1. repack the scalar components in each chart into the canonical tensor-model
-   basis;
-2. pull those model fields back to genuine dependent tensor fibres;
-3. combine them with a finite partition of unity;
-4. extract chart components again.
-
-The resulting endomorphism of finite chart-component arrays is idempotent.
-Its image consists, by construction, of components of a genuine global tensor
-section.  No regularity or boundedness assertion is made here; those belong to
-the Sobolev completion layer.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -50,12 +32,9 @@ local notation "EuclN" =>
 private local instance : Fact (IsOpen (Set.univ : Set EuclN)) :=
   ⟨isOpen_univ⟩
 
-/-- A finite family of scalar chart-component fields. -/
 abbrev FineCompArray (ι : Type*) (r s : ℕ) :=
   ι → TensorCompIdx (E := E) r s → EuclN → ℝ
 
-/-- Reassemble scalar components into the canonical mixed-tensor model
-basis at each Euclidean point. -/
 noncomputable def modelRepack (r s : ℕ)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
     (y : EuclN) : TensorRSModel r s ℝ E :=
@@ -65,7 +44,6 @@ noncomputable def modelRepack (r s : ℕ)
         tensorChartBasisElement (E := E) r s Idx Jdx
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Component projection is a left inverse to model-fibre repacking. -/
 theorem modelRepack_proj (r s : ℕ)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
     (P : TensorCompIdx (E := E) r s) (y : EuclN) :
@@ -96,7 +74,6 @@ theorem modelRepack_proj (r s : ℕ)
   · simp
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Repacking the component projections of a model tensor recovers it. -/
 theorem modelRepack_eq (r s : ℕ) (T : TensorRSModel r s ℝ E)
     (y : EuclN) :
     modelRepack (E := E) r s
@@ -109,16 +86,12 @@ theorem modelRepack_eq (r s : ℕ) (T : TensorRSModel r s ℝ E)
           tensorChartBasisElement (E := E) r s Idx Jdx) = T
   exact (tensorRSModel_eq_sum_basis (E := E) r s T).symm
 
-/-- Extend the raw components of a genuine section through one Euclidean
-chart, using zero outside the chart target. -/
 noncomputable def chartExtract (r s : ℕ) (α : M)
     (S : RSTensorSection I M r s) :
     TensorCompIdx (E := E) r s → EuclN → ℝ :=
   fun P => chartPushedRaw (I := I) (M := M) α
     (secCompRaw (I := I) (M := M) r s S α P.1 P.2)
 
-/-- Repack one chart-component family and pull it back to a genuine tensor
-section, extended by zero outside the chart source. -/
 noncomputable def chartRepack (r s : ℕ) (α : M)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ) :
     RSTensorSection I M r s :=
@@ -127,8 +100,6 @@ noncomputable def chartRepack (r s : ℕ) (α : M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-/-- Reading a raw component of a same-chart repacking returns the input
-component at the chart coordinate. -/
 theorem chartRepack_raw (r s : ℕ) (α : M)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
     (P : TensorCompIdx (E := E) r s) {x : M}
@@ -143,8 +114,6 @@ theorem chartRepack_raw (r s : ℕ) (α : M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-/-- Extracting at the Euclidean coordinate of a source point returns the raw
-manifold-side component. -/
 theorem chartExtract_coord (r s : ℕ) (α : M)
     (S : RSTensorSection I M r s)
     (P : TensorCompIdx (E := E) r s) {x : M}
@@ -178,8 +147,6 @@ private theorem rsTriv_base (r s : ℕ) (α : M) :
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-/-- On its source, repacking all raw components extracted from a genuine
-section recovers that section pointwise. -/
 theorem chartRepack_extract (r s : ℕ) (α : M)
     (S : RSTensorSection I M r s) {x : M}
     (hx : x ∈ (chartAt H α).source) :
@@ -215,9 +182,6 @@ theorem chartRepack_extract (r s : ℕ) (α : M)
         (R := ℝ) hxbase (S x)]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- Repacking one fine-localized canonical component returns the corresponding
-fine weight times the canonical POU weight times the original genuine tensor.
-This is the pointwise retraction identity for one fine block. -/
 theorem chartRepack_fine (r s : ℕ) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (S : RSTensorSection I M r s) (x : M) :
     chartRepack (I := I) (M := M) r s α
@@ -296,8 +260,6 @@ theorem chartRepack_fine (r s : ℕ) (α : M)
     unfold chartRepack secModelPull
     rw [dif_neg hx, hρ, mul_zero, zero_smul]
 
-/-- Reassemble all fine local blocks over the finite canonical active atlas.
-The inner type `κ α` is the finite refinement chosen inside chart `α`. -/
 noncomputable def finePouRepack
     {κ : M → Type*} [∀ α, Fintype (κ α)]
     (r s : ℕ) (φ : ∀ α, κ α → C^∞⟮I, M; ℝ⟯)
@@ -309,9 +271,6 @@ noncomputable def finePouRepack
           (fun P => fineLocComp (I := I) (M := M) r s (φ α z) S α P) x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Exact reassembly after fine extraction.  It suffices that the fine weights
-in chart `α` sum to one on the topological support of the canonical weight
-`ρ_α`; away from that support the canonical component is already zero. -/
 theorem finePou_retract
     {κ : M → Type*} [∀ α, Fintype (κ α)]
     (r s : ℕ) (φ : ∀ α, κ α → C^∞⟮I, M; ℝ⟯)
@@ -368,10 +327,6 @@ theorem finePou_retract
     _ = S x := by
       rw [chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x, one_smul]
 
-/-! ## The canonical fine family -/
-
-/-- Choose the bundled fine refinement of the canonical chart at `α` at the
-prescribed positive coordinate scale. -/
 noncomputable def canonFineData
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α) (α : M) :
     FineChartData (I := I)
@@ -389,64 +344,53 @@ noncomputable def canonFineData
       exact chartAtlasPOU_isSubordinate I M α)
     (hr α))
 
-/-- The finite refinement index type in canonical chart `α`. -/
 abbrev CanonFineIdx
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α) (α : M) : Type _ :=
   (canonFineData (I := I) (M := M) rFine hr α).S
 
-/-- The inner fine partition weight in canonical chart `α`. -/
 noncomputable def canonFineWeight
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (α : M) (z : CanonFineIdx (I := I) (M := M) rFine hr α) :
     C^∞⟮I, M; ℝ⟯ :=
   (canonFineData (I := I) (M := M) rFine hr α).rho z
 
-/-- The middle strict cutoff in canonical chart `α`. -/
 noncomputable def canonFineChi
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (α : M) (z : CanonFineIdx (I := I) (M := M) rFine hr α) :
     C^∞⟮I, M; ℝ⟯ :=
   (canonFineData (I := I) (M := M) rFine hr α).chi z
 
-/-- The outer strict cutoff in canonical chart `α`. -/
 noncomputable def canonFinePsi
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (α : M) (z : CanonFineIdx (I := I) (M := M) rFine hr α) :
     C^∞⟮I, M; ℝ⟯ :=
   (canonFineData (I := I) (M := M) rFine hr α).psi z
 
-/-- The finite canonical active-chart index type. -/
 abbrev CanonChartIdx : Type _ :=
   chartAtlasPOU_finset (I := I) (M := M)
 
-/-- The single finite index type obtained by flattening active canonical
-charts and their chosen fine refinements. -/
 abbrev CanonFineFlat
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α) : Type _ :=
   Σ a : CanonChartIdx (I := I) (M := M),
     CanonFineIdx (I := I) (M := M) rFine hr a.1
 
-/-- The canonical chart underlying one flattened fine index. -/
 def canonFlatBase
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) : M :=
   z.1.1
 
-/-- The inner weight underlying one flattened fine index. -/
 noncomputable def canonFlatWeight
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
     C^∞⟮I, M; ℝ⟯ :=
   canonFineWeight (I := I) (M := M) rFine hr z.1.1 z.2
 
-/-- The middle cutoff underlying one flattened fine index. -/
 noncomputable def canonFlatChi
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
     C^∞⟮I, M; ℝ⟯ :=
   canonFineChi (I := I) (M := M) rFine hr z.1.1 z.2
 
-/-- The outer cutoff underlying one flattened fine index. -/
 noncomputable def canonFlatPsi
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (z : CanonFineFlat (I := I) (M := M) rFine hr) :
@@ -454,8 +398,6 @@ noncomputable def canonFlatPsi
   canonFinePsi (I := I) (M := M) rFine hr z.1.1 z.2
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The middle cutoff absorbs its associated fine partition weight
-pointwise. -/
 theorem canonChi_weight
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (α : M) (z : CanonFineIdx (I := I) (M := M) rFine hr α)
@@ -481,9 +423,6 @@ theorem canonChi_weight
         |>.self_of_nhdsSet x hx
     rw [hχ, one_mul]
 
-/-- Quotient-level extraction into the single flattened canonical fine
-family.  Each block contains both the canonical atlas weight and the inner
-fine partition weight, so it is globally Sobolev after extension by zero. -/
 noncomputable def canonFineQMap
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -495,7 +434,6 @@ noncomputable def canonFineQMap
     (canonFlatWeight (I := I) (M := M) rFine hr)
     (canonFlatBase (I := I) (M := M) rFine hr)
 
-/-- Canonical fine extraction preserves the explicit quotient addition. -/
 theorem canonFineQ_add
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -510,7 +448,6 @@ theorem canonFineQ_add
     (canonFlatWeight (I := I) (M := M) rFine hr)
     (canonFlatBase (I := I) (M := M) rFine hr) a b
 
-/-- Canonical fine extraction preserves the explicit real scalar action. -/
 theorem canonFineQ_smul
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -524,7 +461,6 @@ theorem canonFineQ_smul
     (canonFlatWeight (I := I) (M := M) rFine hr)
     (canonFlatBase (I := I) (M := M) rFine hr) c a
 
-/-- Raw representatives of all canonical fine extraction blocks. -/
 noncomputable def canonFineRaw
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
@@ -534,10 +470,6 @@ noncomputable def canonFineRaw
     (canonFlatWeight (I := I) (M := M) rFine hr z) S
     (canonFlatBase (I := I) (M := M) rFine hr z) P
 
-/-- Reassemble one flattened canonical fine array after multiplying each
-local output by its middle cutoff.  The middle cutoff is essential for later
-heat outputs: unlike extracted input blocks, those outputs need not retain
-the inner partition support. -/
 noncomputable def canonCutRepack
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ)
@@ -552,11 +484,7 @@ noncomputable def canonCutRepack
           chartRepack (I := I) (M := M) r s a.1
             (u ⟨a, z⟩) x
 
--- The dependent finite-index normalization needs an enlarged elaboration budget.
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The middle-cutoff reassembly is still an exact left inverse on genuine
-tensor inputs.  This is the concrete `R E = id` identity used by the local
-heat parametrix; no compatibility projection or remainder is hidden in it. -/
 theorem canonCut_retract
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
@@ -644,8 +572,6 @@ theorem canonCut_retract
     _ = S x := by rw [hcanon, one_smul]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The chosen canonical fine family satisfies the exact raw-section
-retraction identity, with no remaining localization hypothesis. -/
 theorem canonFine_retract
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
@@ -658,14 +584,10 @@ theorem canonFine_retract
   intro α _hα x hx
   exact (canonFineData (I := I) (M := M) rFine hr α).rho_sum hx
 
-/-- Extract raw components of a genuine section in every chart of a finite
-family. -/
 noncomputable def fineExtract {ι : Type*} (r s : ℕ) (α : ι → M)
     (S : RSTensorSection I M r s) : FineCompArray (E := E) ι r s :=
   fun z => chartExtract (I := I) (M := M) r s (α z) S
 
-/-- POU-reassemble a finite chart-component array as a genuine dependent
-tensor section. -/
 noncomputable def fineRepack {ι : Type*} [Fintype ι]
     (r s : ℕ) (α : ι → M) (ρ : ι → M → ℝ)
     (u : FineCompArray (E := E) ι r s) : RSTensorSection I M r s :=
@@ -674,8 +596,6 @@ noncomputable def fineRepack {ι : Type*} [Fintype ι]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-/-- If the weights are subordinate and sum to one, reassembling the
-components of a genuine section returns that section. -/
 theorem fineRepack_extract {ι : Type*} [Fintype ι]
     (r s : ℕ) (α : ι → M) (ρ : ι → M → ℝ)
     (hsupp : ∀ z x, ρ z x ≠ 0 → x ∈ (chartAt H (α z)).source)
@@ -703,8 +623,6 @@ theorem fineRepack_extract {ι : Type*} [Fintype ι]
     _ = S x := by
       rw [hsum x, one_smul]
 
-/-- Extract after POU reassembly: the component-space projection whose image
-comes from genuine global tensor sections. -/
 noncomputable def fineProject {ι : Type*} [Fintype ι]
     (r s : ℕ) (α : ι → M) (ρ : ι → M → ℝ)
     (u : FineCompArray (E := E) ι r s) :
@@ -714,7 +632,6 @@ noncomputable def fineProject {ι : Type*} [Fintype ι]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-/-- Reassembly is unchanged after applying the component projection. -/
 theorem fineRepack_project {ι : Type*} [Fintype ι]
     (r s : ℕ) (α : ι → M) (ρ : ι → M → ℝ)
     (hsupp : ∀ z x, ρ z x ≠ 0 → x ∈ (chartAt H (α z)).source)
@@ -729,7 +646,6 @@ theorem fineRepack_project {ι : Type*} [Fintype ι]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-/-- The genuine-section component projection is idempotent. -/
 theorem fineProject_idem {ι : Type*} [Fintype ι]
     (r s : ℕ) (α : ι → M) (ρ : ι → M → ℝ)
     (hsupp : ∀ z x, ρ z x ≠ 0 → x ∈ (chartAt H (α z)).source)

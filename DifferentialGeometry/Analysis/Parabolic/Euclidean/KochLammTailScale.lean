@@ -1,14 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateScale
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateTail
 
-/-!
-# Radius scaling of the terminal Koch--Lamm tail
-
-This file takes the Hölder-dual root of the split-Gaussian tail mass.  The
-terminal radius scale is the same as for the full kernel, while the extracted
-Gaussian factor becomes `exp (-k^2 / 4)`.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -22,21 +14,17 @@ namespace Euclidean
 variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 
-/-- Scalar terminal tail mass before taking the Hölder-dual root. -/
 def klTailCore (t : ℝ) : ℝ :=
   ((t / 2) ^ (klHeatExp V + 1) / (klHeatExp V + 1)) *
     klTailMass V (klQDual V)
 
-/-- Hölder-dual root of the scalar terminal tail mass. -/
 def klTailRoot (t : ℝ) : ℝ :=
   (klTailCore (V := V) t) ^ (1 / klQDual V)
 
-/-- Dimension-only constant in the late ordinary-source tail estimate. -/
 def klLateTailC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] : ℝ :=
   klTailRoot (V := V) 1
 
-/-- The split-Gaussian mass is positive at every positive exponent. -/
 theorem klTailMass_pos {p : ℝ} (hp : 0 < p) :
     0 < klTailMass V p := by
   unfold klTailMass
@@ -44,7 +32,6 @@ theorem klTailMass_pos {p : ℝ} (hp : 0 < p) :
     (Real.rpow_pos_of_pos (inv_pos.mpr (baseHeatMass_pos (V := V))) _)
     (klBasePow_pos (V := V) (half_pos hp))
 
-/-- The scalar terminal tail mass is positive at positive time. -/
 theorem klTailCore_pos {t : ℝ} (ht : 0 < t) :
     0 < klTailCore (V := V) t := by
   have ha : 0 < klHeatExp V + 1 := by
@@ -54,8 +41,6 @@ theorem klTailCore_pos {t : ℝ} (ht : 0 < t) :
     (div_pos (Real.rpow_pos_of_pos (half_pos ht) _) ha)
     (klTailMass_pos (V := V) (klQ_holder (V := V)).pos)
 
-/-- Replacing terminal time by `R^2` extracts the late-source radius scale
-to the Hölder-dual power. -/
 theorem klTailCore_scale {R : ℝ} (hR : 0 < R) :
     klTailCore (V := V) (R ^ 2) =
       (klLqScaleR (V := V) R) ^ klQDual V *
@@ -91,7 +76,6 @@ theorem klTailCore_scale {R : ℝ} (hR : 0 < R) :
   norm_num only [one_div, one_pow]
   ring
 
-/-- Taking the dual root leaves exactly one late-source radius scale. -/
 theorem klTailRoot_scale {R : ℝ} (hR : 0 < R) :
     klTailRoot (V := V) (R ^ 2) =
       klLateTailC V * klLqScaleR (V := V) R := by
@@ -112,8 +96,6 @@ section Measured
 
 variable [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- The kernel Hölder factor over a far terminal set has Gaussian decay and
-the exact late-source radius scale. -/
 theorem klTailKern_fac {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (x : V) {S : Set V} (hSm : MeasurableSet S)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :

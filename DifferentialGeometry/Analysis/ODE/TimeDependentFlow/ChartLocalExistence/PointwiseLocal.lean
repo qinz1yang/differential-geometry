@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -36,4 +36,4 @@ theorem time_dependent_vf_pointwise_local_flow
     time_dependent_vf_chart_local_picard_with_lipschitz X x₀ hCont hLip
   exact ⟨T, hT_pos, r', hr'_pos, flow, hflow⟩
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

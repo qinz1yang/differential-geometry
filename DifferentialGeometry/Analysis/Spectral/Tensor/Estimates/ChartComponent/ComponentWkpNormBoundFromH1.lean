@@ -4,12 +4,13 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.WeakPartial.Parti
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.WeakPartial.ChosenWeakPartialFderivBridge
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.AtlasIndependence
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
@@ -45,10 +46,10 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         eLpNorm (fun x : M => Real.sqrt
             (g.inner x
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
                 (tensorChartComponentScalar (I := I) (M := M)
                   g r s S.toCcTensor α Idx Jdx) x)
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
                 (tensorChartComponentScalar (I := I) (M := M)
                   g r s S.toCcTensor α Idx Jdx) x))) 2
             (riemannianVolumeMeasure (I := I) (M := M) g) ≤
@@ -133,8 +134,8 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
       set NS : ℝ≥0∞ := (‖S‖₊ : ℝ≥0∞)
       set gradNorm : M → ℝ := fun x : M => Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))
       have hu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ u :=
         tensorChartComponentScalar_contMDiff
           (I := I) (M := M) g r s S.toCcTensor α Idx Jdx

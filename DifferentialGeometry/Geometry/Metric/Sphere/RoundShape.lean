@@ -1,23 +1,20 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundProjConnLC
 import Mathlib.Analysis.InnerProductSpace.Orthogonal
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -83,8 +80,6 @@ theorem ambDeriv_gauss {Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x}
   rw [hproj, hcomm]
   module
 
-
-
 noncomputable def ambDeriv2
     (Z W : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n), (TangentSpace (𝓡 n) : sphere (0 : E) 1 → Type _)⟯)
     (x : sphere (0 : E) 1) : TangentSpace (𝓡 n) x →L[ℝ] E :=
@@ -97,12 +92,6 @@ omit [FiniteDimensional ℝ E] in
     (x : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) x) :
     ambDeriv2 (n := n) Z W x v
       = mfderiv (𝓡 n) 𝓘(ℝ, E) (fun p => ambDeriv (n := n) (⇑Z) p (W p)) x v := rfl
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem ambDeriv_bracket_symm
@@ -171,17 +160,14 @@ theorem ambDeriv_bracket_symm
   rw [inner_sub_right]
   exact hbrx.symm
 
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem inner_dIncl_metricCov
     {S : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x} {x : sphere (0 : E) 1}
     (hS : MDifferentiableAt (𝓡 n) (𝓡 n).tangent
       (fun y => (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) y (S y))) x)
     (v W : TangentSpace (𝓡 n) x) :
-    ⟪dIncl (n := n) x (Integral.Connection.metricCov (roundMetric (E := E) (n := n)) S x v),
+    ⟪dIncl (n := n) x (DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
+      (n := n)) S x v),
         dIncl (n := n) x W⟫
       = ⟪ambDeriv (n := n) S x v, dIncl (n := n) x W⟫ := by
   rw [← projConn_eq_metricCov hS v, dIncl_projConn, ← Submodule.starProjection_apply]
@@ -222,10 +208,6 @@ theorem mfderiv_mul_innerCoordFun_of_inner_eq_zero
   change φ x • (((innerSL ℝ w).comp (dIncl (n := n) x)) v) = φ x * ⟪w, dIncl (n := n) x v⟫
   rw [ContinuousLinearMap.comp_apply, innerSL_apply_apply, smul_eq_mul]
 
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem inner_ambDeriv_nested
     (Z Yf : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n), (TangentSpace (𝓡 n) : sphere (0 : E) 1 → Type _)⟯)
@@ -233,7 +215,8 @@ theorem inner_ambDeriv_nested
     (hD : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E)
       (fun p => ambDeriv (n := n) (⇑Z) p (Yf p)) x) :
     ⟪ambDeriv (n := n)
-        (fun p => Integral.Connection.metricCov (roundMetric (E := E) (n := n)) (⇑Z) p (Yf p)) x v,
+        (fun p => DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
+          (n := n)) (⇑Z) p (Yf p)) x v,
         dIncl (n := n) x W⟫
       = ⟪dIncl (n := n) x W, ambDeriv2 (n := n) Z Yf x v⟫
         + roundInner (n := n) x (Z x) (Yf x) * ⟪dIncl (n := n) x W, dIncl (n := n) x v⟫ := by
@@ -249,7 +232,8 @@ theorem inner_ambDeriv_nested
   have hcoeM : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E) ((↑) : sphere (0 : E) 1 → E) x :=
     hcoeC.mdifferentiableAt (by simp)
   have hAfun : dInclField (n := n)
-        (fun p => Integral.Connection.metricCov (roundMetric (E := E) (n := n)) (⇑Z) p (Yf p))
+        (fun p => DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
+          (n := n)) (⇑Z) p (Yf p))
       = fun p => ambDeriv (n := n) (⇑Z) p (Yf p)
           + roundInner (n := n) p (Z p) (Yf p) • (↑p : E) := by
     funext p
@@ -268,7 +252,8 @@ theorem inner_ambDeriv_nested
       funext p; rw [roundInner_apply]; rfl
     rw [heq]; exact hb.mdifferentiableAt
   have hAd : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E) (dInclField (n := n)
-        (fun p => Integral.Connection.metricCov (roundMetric (E := E) (n := n)) (⇑Z) p (Yf p)))
+        (fun p => DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
+          (n := n)) (⇑Z) p (Yf p)))
           x := by
     rw [hAfun]; exact hD.add (hφ.smul hcoeM)
   have hψ0 : ⟪dIncl (n := n) x W, (↑x : E)⟫ = (0 : ℝ) :=
@@ -276,7 +261,8 @@ theorem inner_ambDeriv_nested
       (by rw [← range_mfderiv_coe_sphere (n := n) x]; exact ⟨W, rfl⟩)
   rw [ambDeriv_apply, real_inner_comm, ← mfderiv_inner_left (dIncl (n := n) x W) hAd v]
   have hscal : (fun p => ⟪dIncl (n := n) x W, dInclField (n := n)
-        (fun p => Integral.Connection.metricCov (roundMetric (E := E) (n := n)) (⇑Z) p (Yf p)) p⟫)
+        (fun p => DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
+          (n := n)) (⇑Z) p (Yf p)) p⟫)
       = (fun p => ⟪dIncl (n := n) x W, ambDeriv (n := n) (⇑Z) p (Yf p)⟫)
           + (fun p => roundInner (n := n) p (Z p) (Yf p)
               * (innerCoordFun (E := E) (n := n) (dIncl (n := n) x W)) p) := by
@@ -321,9 +307,6 @@ theorem inner_ambDeriv_nested
   rw [hscal, mfderiv_add hMh1 hMh2, h1CLM, h2CLM]
   rfl
 
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem ambDeriv_section_mdiffAt
     (Z Yf : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n), (TangentSpace (𝓡 n) : sphere (0 : E) 1 → Type _)⟯)
@@ -352,15 +335,18 @@ theorem ambDeriv_section_mdiffAt
       funext p; rw [roundInner_apply]; rfl
     rw [heq]; exact hb.mdifferentiableAt
   have hAd : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E) (dInclField (n := n)
-        (fun p => Integral.Connection.metricCov (roundMetric (E := E) (n := n)) (⇑Z) p (Yf p))) x :=
+        (fun p => DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
+          (n := n)) (⇑Z) p (Yf p))) x :=
     dInclField_mdifferentiableAt (n := n)
-      ((Integral.Connection.CovariantDerivative.cov_smooth_apply_contMDiffAt
-        (Integral.Connection.metricCov (roundMetric (E := E) (n := n)))
-        (Integral.Connection.metricCov_smooth (roundMetric (E := E) (n := n))) Yf Z
+      ((DifferentialGeometry.Geometry.Curvature.CovariantDerivative.cov_smooth_apply_contMDiffAt
+        (DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E) (n := n)))
+        (DifferentialGeometry.Geometry.Curvature.metricCov_smooth (roundMetric (E := E)
+          (n := n))) Yf Z
           x).mdifferentiableAt
         (by simp))
   have hAfun : dInclField (n := n)
-        (fun p => Integral.Connection.metricCov (roundMetric (E := E) (n := n)) (⇑Z) p (Yf p))
+        (fun p => DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
+          (n := n)) (⇑Z) p (Yf p))
       = fun p => ambDeriv (n := n) (⇑Z) p (Yf p)
           + roundInner (n := n) p (Z p) (Yf p) • (↑p : E) := by
     funext p
@@ -370,11 +356,6 @@ theorem ambDeriv_section_mdiffAt
   rw [eq_sub_of_add_eq hAfun.symm]
   exact hAd.sub (hφ.smul hcoeM)
 
-
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem dIncl_curv_inner
     (Z X Y : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n), (TangentSpace (𝓡 n) : sphere (0 : E) 1 → Type _)⟯)
@@ -383,8 +364,10 @@ theorem dIncl_curv_inner
       (fun p => ambDeriv (n := n) (⇑Z) p (Y p)) x)
     (hDX : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E)
       (fun p => ambDeriv (n := n) (⇑Z) p (X p)) x) :
-    ⟪dIncl (n := n) x (Integral.Connection.CovariantDerivative.riemannCurvatureAux
-        (Integral.Connection.metricCov (roundMetric (E := E) (n := n))) (⇑X) (⇑Y) (⇑Z) x),
+    ⟪dIncl (n := n) x
+      (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvatureAux
+        (DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E) (n := n))) (⇑X)
+          (⇑Y) (⇑Z) x),
         dIncl (n := n) x W⟫
       = roundInner (n := n) x (Z x) (Y x) * ⟪dIncl (n := n) x (X x), dIncl (n := n) x W⟫
         - roundInner (n := n) x (Z x) (X x) * ⟪dIncl (n := n) x (Y x), dIncl (n := n) x W⟫ := by
@@ -394,23 +377,28 @@ theorem dIncl_curv_inner
     Z.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hA : MDifferentiableAt (𝓡 n) (𝓡 n).tangent
       (fun y => (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) y
-        ((fun p => Integral.Connection.metricCov g (⇑Z) p (Y p)) y))) x :=
-    (Integral.Connection.CovariantDerivative.cov_smooth_apply_contMDiffAt
-      (Integral.Connection.metricCov g) (Integral.Connection.metricCov_smooth g) Y Z
+        ((fun p => DifferentialGeometry.Geometry.Curvature.metricCov g (⇑Z) p (Y p)) y))) x :=
+    (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.cov_smooth_apply_contMDiffAt
+      (DifferentialGeometry.Geometry.Curvature.metricCov g)
+        (DifferentialGeometry.Geometry.Curvature.metricCov_smooth g) Y Z
         x).mdifferentiableAt (by simp)
   have hB : MDifferentiableAt (𝓡 n) (𝓡 n).tangent
       (fun y => (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) y
-        ((fun p => Integral.Connection.metricCov g (⇑Z) p (X p)) y))) x :=
-    (Integral.Connection.CovariantDerivative.cov_smooth_apply_contMDiffAt
-      (Integral.Connection.metricCov g) (Integral.Connection.metricCov_smooth g) X Z
+        ((fun p => DifferentialGeometry.Geometry.Curvature.metricCov g (⇑Z) p (X p)) y))) x :=
+    (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.cov_smooth_apply_contMDiffAt
+      (DifferentialGeometry.Geometry.Curvature.metricCov g)
+        (DifferentialGeometry.Geometry.Curvature.metricCov_smooth g) X Z
         x).mdifferentiableAt (by simp)
-  rw [show Integral.Connection.CovariantDerivative.riemannCurvatureAux
-        (Integral.Connection.metricCov g) (⇑X) (⇑Y) (⇑Z) x
-      = Integral.Connection.metricCov g (fun p => Integral.Connection.metricCov g (⇑Z) p (Y p)) x
+  rw [show DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvatureAux
+        (DifferentialGeometry.Geometry.Curvature.metricCov g) (⇑X) (⇑Y) (⇑Z) x
+      = DifferentialGeometry.Geometry.Curvature.metricCov g
+        (fun p => DifferentialGeometry.Geometry.Curvature.metricCov g (⇑Z) p (Y p)) x
         (X x)
-        - Integral.Connection.metricCov g (fun p => Integral.Connection.metricCov g (⇑Z) p (X p)) x
+        - DifferentialGeometry.Geometry.Curvature.metricCov g
+          (fun p => DifferentialGeometry.Geometry.Curvature.metricCov g (⇑Z) p (X p)) x
           (Y x)
-        - Integral.Connection.metricCov g (⇑Z) x (mlieBracket (𝓡 n) (⇑X) (⇑Y) x) from rfl,
+        - DifferentialGeometry.Geometry.Curvature.metricCov g (⇑Z) x (mlieBracket (𝓡 n) (⇑X)
+          (⇑Y) x) from rfl,
     map_sub, map_sub, inner_sub_left, inner_sub_left,
     inner_dIncl_metricCov hA (X x) W, inner_dIncl_metricCov hB (Y x) W,
     inner_dIncl_metricCov hZb (mlieBracket (𝓡 n) (⇑X) (⇑Y) x) W,

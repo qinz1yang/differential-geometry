@@ -5,12 +5,13 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.FromZeroManifoldOrbit
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.FromZeroManifoldOrbitUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ForwardIntegralCurveUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.BoundaryExtension.SeeleyTimeExtension
-
+open DifferentialGeometry.Geometry.Curvature
 
 open Set Function Filter Bundle
 open scoped Topology Manifold ContDiff NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.ODE
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [CompleteSpace E]
@@ -291,7 +292,6 @@ theorem hasMFDerivWithinAt_piecewise_of_agree_at_junction
           = ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (f2 t))) by rw [hval]]
       exact hmono.congr_of_eventuallyEq heq hval
 
-
 omit [SigmaCompactSpace M] in
 theorem exists_local_flow_anchored_at_interior_time
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ)
@@ -393,14 +393,6 @@ omit [CompactSpace M]
   [I.Boundaryless]
   [SigmaCompactSpace M]
   [FiniteDimensional ℝ E] in
-/-- Two forward bare integral curves of a field which is smooth for positive
-time agree on the whole common half-open interval once the field has one
-uniform chart-Lipschitz window at each initial point.
-
-The endpoint window is handled by `bare_fromZero_local`.  After choosing one
-positive time in that window, `integralCurves_eqOn_Icc_of_agree_at_left` propagates equality to
-an arbitrary later target using only the positive-time joint smoothness of the
-field. -/
 theorem bare_fromZero_full
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ) (hT : 0 < T)
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -454,13 +446,6 @@ theorem bare_fromZero_full
           hflowIcc hflowIcc' heq t ⟨het.le, le_rfl⟩
 
 omit [CompactSpace M] in
-/-- Forward uniqueness on a half-open interval for a field which is jointly smooth on the
-closed slab.  Seeley extension turns the closed-slab field into a globally smooth field; the
-existing one-sided autonomous uniqueness theorem then applies on each compact initial segment.
-
-Unlike `bare_fromZero_full`, this theorem needs no separately supplied chart-Lipschitz datum.
-It is the shorter endpoint tool when a canonical parabolic solution already supplies joint
-smoothness of its vector field through `t = 0`. -/
 theorem bare_Ico_unique
     (X : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ) (hT : 0 < T)
     (hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -504,8 +489,6 @@ theorem bare_Ico_unique
       exact hd
     exact bare_forward_flow_eqOn_of_jointC1 Xext hXc1 Φ Φ' x x'
       hflowIcc hflowIcc' hstart t ⟨ht0.le, le_rfl⟩
-
-
 
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
@@ -776,4 +759,4 @@ private theorem existsForwardIntegralCurveUpTo_chain
     nlinarith [hn]
   have hkey := key n
   rwa [min_eq_right hn'] at hkey
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

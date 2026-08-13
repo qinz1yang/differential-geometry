@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupHs
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -32,6 +33,7 @@ def heatSemigroupHsExt (g : SmoothRiemannianMetric I M) (σ : ℝ) (t : ℝ) :
   else
     ContinuousLinearMap.id ℝ (scalarHs (I := I) (M := M) g σ)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem heatSemigroupHsExt_zero (g : SmoothRiemannianMetric I M)
     (σ : ℝ) :
@@ -40,6 +42,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   unfold heatSemigroupHsExt
   simp
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_of_pos {g : SmoothRiemannianMetric I M}
     {σ : ℝ} {t : ℝ} (ht : 0 < t) :
@@ -48,6 +51,7 @@ theorem heatSemigroupHsExt_of_pos {g : SmoothRiemannianMetric I M}
   unfold heatSemigroupHsExt
   simp [ht]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_of_neg {g : SmoothRiemannianMetric I M}
     {σ : ℝ} {t : ℝ} (ht : t < 0) :
@@ -57,6 +61,7 @@ theorem heatSemigroupHsExt_of_neg {g : SmoothRiemannianMetric I M}
   have : ¬ 0 < t := not_lt.mpr ht.le
   simp [this]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_of_nonpos {g : SmoothRiemannianMetric I M}
     {σ : ℝ} {t : ℝ} (ht : t ≤ 0) :
@@ -66,6 +71,7 @@ theorem heatSemigroupHsExt_of_nonpos {g : SmoothRiemannianMetric I M}
   have : ¬ 0 < t := not_lt.mpr ht
   simp [this]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_add {g : SmoothRiemannianMetric I M} {σ : ℝ}
     {t s : ℝ} (ht : 0 ≤ t) (hs : 0 ≤ s) :
@@ -84,6 +90,7 @@ theorem heatSemigroupHsExt_add {g : SmoothRiemannianMetric I M} {σ : ℝ}
           heatSemigroupHsExt_of_pos (I := I) (M := M) (g := g) (σ := σ) hs_pos]
       exact heatSemigroupHs_add (I := I) (M := M) (g := g) ht_pos hs_pos (a := σ)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_opNorm_le_one {g : SmoothRiemannianMetric I M}
     {σ : ℝ} {t : ℝ} (ht : 0 ≤ t) :
@@ -95,6 +102,7 @@ theorem heatSemigroupHsExt_opNorm_le_one {g : SmoothRiemannianMetric I M}
   · rw [heatSemigroupHsExt_of_pos (I := I) (M := M) (g := g) (σ := σ) ht_pos]
     exact heatSemigroupHs_opNorm_le_one (I := I) (M := M) (g := g) ht_pos
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem heatSemigroupHsExt_coeff {g : SmoothRiemannianMetric I M} {σ : ℝ}
     {t : ℝ} (ht : 0 ≤ t) (T : scalarHs (I := I) (M := M) g σ)

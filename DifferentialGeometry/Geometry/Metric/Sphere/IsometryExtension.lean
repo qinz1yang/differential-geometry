@@ -2,13 +2,6 @@ import DifferentialGeometry.Geometry.Metric.Sphere.OrthogonalAction
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundProjConn
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-/-!
-# Extending tangent isometries of the round sphere
-
-This file extends a prescribed isometry between two tangent spaces of the unit
-sphere to an ambient orthogonal transformation.
--/
-
 noncomputable section
 
 open Bundle Manifold Set Metric Module
@@ -21,8 +14,6 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)]
 
-/-- A round-metric isometry between tangent spaces at two points of the unit
-sphere is induced by an ambient orthogonal transformation. -/
 theorem ambient_iso_of_tan
     (p q : sphere (0 : E) 1)
     (L : TangentSpace (𝓡 n) p ≃L[ℝ] TangentSpace (𝓡 n) q)

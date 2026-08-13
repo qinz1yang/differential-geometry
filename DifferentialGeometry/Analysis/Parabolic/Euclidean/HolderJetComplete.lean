@@ -15,13 +15,9 @@ variable {V F : Type*}
   [NormedAddCommGroup V] [NormedSpace ℝ V]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The canonical value type of the `j`-th Fréchet jet. -/
 abbrev JetValue (j : ℕ) :=
   ContinuousMultilinearMap ℝ (fun _ : Fin j => V) F
 
-/-- Bounded continuous spatial jets through order two on a closed time slab.
-The product carries its standard sup-norm metric and complete-space structure
-when `F` is complete. -/
 abbrev ParHolderJet (τ : ℝ) :=
   ((Set.Icc (0 : ℝ) τ × V) →ᵇ (JetValue (V := V) (F := F) 0)) ×
     (((Set.Icc (0 : ℝ) τ × V) →ᵇ (JetValue (V := V) (F := F) 1)) ×
@@ -34,9 +30,6 @@ private theorem jet2_eval_cont {τ : ℝ} {z : Set.Icc (0 : ℝ) τ × V} :
   exact (BoundedContinuousFunction.evalCLM ℝ z).continuous.comp
     (continuous_snd.comp continuous_snd)
 
-/-- The closed finite-component Holder ball in the product sup-norm jet
-space.  `R` controls all three bounded jet fields, while `Cspace` and `Ctime`
-control the two parabolic seminorms of the second jet. -/
 def FinHolderSet (ι : Type*) [Fintype ι]
     (τ : ℝ) (R Cspace Ctime : ℝ≥0) :
     Set (FinHolderJet (V := V) (F := F) ι τ) :=
@@ -46,8 +39,6 @@ def FinHolderSet (ι : Type*) [Fintype ι]
     ∀ i x, HolderWith Ctime (1 / 4 : ℝ≥0)
       (fun t : Set.Icc (0 : ℝ) τ => (J i).2.2 (t, x))}
 
-/-- The finite-component parabolic Holder ball is closed in the explicit
-product sup-norm topology. -/
 theorem finHolder_closed
     (ι : Type*) [Fintype ι] (τ : ℝ) (R Cspace Ctime : ℝ≥0) :
     IsClosed (FinHolderSet (V := V) (F := F) ι τ R Cspace Ctime) := by
@@ -94,15 +85,10 @@ theorem finHolder_closed
     exact le_of_tendsto (ht.edist hs)
       (Eventually.of_forall (fun n => (hu n).2.2 i x t s))
 
-/-- The actual contraction carrier: a subtype of the finite product of
-bounded continuous jet fields. -/
 abbrev FinHolderBall (ι : Type*) [Fintype ι]
     (τ : ℝ) (R Cspace Ctime : ℝ≥0) :=
   FinHolderSet (V := V) (F := F) ι τ R Cspace Ctime
 
-/-- The Holder jet ball is complete in the inherited product sup-norm metric.
-This theorem returns the structure for local installation by a fixed-point
-consumer; it does not declare a new global instance. -/
 theorem finHolder_complete
     [CompleteSpace F]
     (ι : Type*) [Fintype ι] (τ : ℝ) (R Cspace Ctime : ℝ≥0) :
@@ -113,8 +99,6 @@ theorem finHolder_complete
   exact (finHolder_closed (V := V) (F := F)
     ι τ R Cspace Ctime).isComplete.completeSpace_coe
 
-/-- Every member of the complete ball retains the spatial `1/2` Holder bound
-for its second jet. -/
 theorem holderBall_space
     {ι : Type*} [Fintype ι] {τ : ℝ} {R Cspace Ctime : ℝ≥0}
     (J : FinHolderBall (V := V) (F := F) ι τ R Cspace Ctime)
@@ -123,8 +107,6 @@ theorem holderBall_space
       (fun x : V => (J.1 i).2.2 (t, x)) :=
   J.2.2.1 i t
 
-/-- Every member of the complete ball retains the temporal `1/4` Holder bound
-for its second jet. -/
 theorem holderBall_time
     {ι : Type*} [Fintype ι] {τ : ℝ} {R Cspace Ctime : ℝ≥0}
     (J : FinHolderBall (V := V) (F := F) ι τ R Cspace Ctime)
@@ -133,9 +115,6 @@ theorem holderBall_time
       (fun t : Set.Icc (0 : ℝ) τ => (J.1 i).2.2 (t, x)) :=
   J.2.2.2 i x
 
-/-- A finite jet family realizes actual component paths when its three fields
-are their genuine iterated Fréchet derivatives and every spatial slice is
-twice continuously differentiable. -/
 def FinJetRealizes
     {ι : Type*} [Fintype ι] {τ : ℝ}
   (J : FinHolderJet (V := V) (F := F) ι τ)
@@ -148,10 +127,6 @@ def FinJetRealizes
     ∀ i t x, (J i).2.2 (t, x) =
       iteratedFDeriv ℝ 2 (u i t) x
 
-/-- If a jet-valued map always returns realized Duhamel jets, then any fixed
-point of that map is realized.  Thus derivative compatibility is recovered
-from the fixed-point equation, while completeness is supplied by the closed
-independent-jet ball above. -/
 theorem fixed_jet_realizes
     {ι : Type*} [Fintype ι] {τ : ℝ}
     (Φ : FinHolderJet (V := V) (F := F) ι τ →

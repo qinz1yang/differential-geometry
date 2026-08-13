@@ -1,11 +1,12 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Mixed.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Field
 import DifferentialGeometry.Bundle.Section
 
 noncomputable section
+namespace DifferentialGeometry
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -192,7 +193,7 @@ end MixedSection
 
 section BundleEquiv
 
-open MixedSection
+open DifferentialGeometry.MixedSection
 
 variable {s : ℕ}
 
@@ -237,4 +238,5 @@ noncomputable def multilinearBundle_mixedBundle_equiv
 
 end BundleEquiv
 
+end DifferentialGeometry
 end

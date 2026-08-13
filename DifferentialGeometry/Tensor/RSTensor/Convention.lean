@@ -72,32 +72,9 @@ import Mathlib.LinearAlgebra.Trace
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 set_option backward.isDefEq.respectTransparency false
@@ -120,8 +97,6 @@ section Components
 
 variable (basis : Module.Basis Idx K (TangentSpace I x))
 
-
-
 @[simp]
 theorem componentRS_basisTensor_apply {r s : Nat}
     (T : TensorRSSpace r s I x)
@@ -131,7 +106,6 @@ theorem componentRS_basisTensor_apply {r s : Nat}
         (fun a => basis (lower a)) := by
   rfl
 
-
 @[simp]
 theorem component11_apply
     (T : TensorRSSpace 1 1 I x) (i j : Idx) :
@@ -139,7 +113,6 @@ theorem component11_apply
       (T (basisTensor0S (I := I) basis (fun _ : Fin 1 => i)))
         (fun _ : Fin 1 => basis j) := by
   rfl
-
 
 @[simp]
 theorem component13_apply
@@ -158,7 +131,6 @@ theorem component13_apply
     · simp [h1]
     · simp [h0, h1]
 
-
 omit [CompleteSpace K] [FiniteDimensional K E] [Fintype Idx] [DecidableEq Idx] in
 @[simp]
 theorem component02_apply
@@ -170,7 +142,6 @@ theorem component02_apply
   congr 1
   funext q
   by_cases h0 : q = 0 <;> simp [h0]
-
 
 omit [CompleteSpace K] [FiniteDimensional K E] [Fintype Idx] [DecidableEq Idx] in
 @[simp]
@@ -196,8 +167,6 @@ end Components
 
 section Contractions
 
-
-
 @[simp]
 theorem model_contract_trace_first_upper_first_lower_apply
     (r s : Nat) (T : TensorRSModel (1 + r) (s + 1) K E) :
@@ -212,8 +181,6 @@ theorem model_contract_trace_first_upper_first_lower_apply
               ((Module.finBasis K E).cDualBasis i))) T) := by
   exact model_contract_trace_apply (𝕜 := K) (E := E) r s T
 
-
-
 @[simp]
 theorem contract_contravariant_first_model_apply
     {r : Nat} (alpha : Tensor0SModel 1 K E) (beta : Tensor0SModel r K E)
@@ -227,3 +194,4 @@ theorem contract_contravariant_first_model_apply
 end Contractions
 
 end Tensor0SBundle
+end DifferentialGeometry

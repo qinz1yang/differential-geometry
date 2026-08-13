@@ -14,6 +14,10 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SmoothCoor
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralMassUniformSup
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLineParam
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.ForcingFiniteOrderTimeRegularity
+open DifferentialGeometry.Analysis.Sobolev.CSupTensor
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -22,9 +26,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -33,7 +36,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -129,7 +132,6 @@ private noncomputable def eigenBlockFinset (g₀ : SmoothRiemannianMetric I M)
     Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
   Finset.univ.map ⟨Sigma.mk i.1, sigma_mk_injective⟩
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma mem_eigenBlockFinset (g₀ : SmoothRiemannianMetric I M)
     {i j : TensorEigenIdx (I := I) (M := M) g₀ 0 2} :
@@ -293,7 +295,6 @@ private lemma tensorL2Coeff_toL2_symmS_eq_blockSum (g₀ : SmoothRiemannianMetri
   rw [htoL2, tensorL2Coeff_smul, tensorL2Coeff_add,
     tensorL2Coeff_toL2_swap_eq_blockSum (I := I) (M := M) g₀ X i]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorSobolevWeight_eq_of_block (g₀ : SmoothRiemannianMetric I M)
     {i j : TensorEigenIdx (I := I) (M := M) g₀ 0 2} (h : j.1 = i.1) (σ : ℝ) :
@@ -1218,9 +1219,8 @@ theorem deTurckForcing_smoothCoordinate_aeTimeJetSymm
     exact (timeModeCoeff_coeFn (I := I) (M := M) gforce i).symm
   exact htmc.trans (hg_ae i)
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

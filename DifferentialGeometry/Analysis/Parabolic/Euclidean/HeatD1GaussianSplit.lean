@@ -1,15 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatD1LpPower
 
-/-!
-# Split Gaussian bounds for the first heat-derivative majorant
-
-The polynomial factor in `baseD1Maj` prevents retaining its full Gaussian as
-a uniform pointwise bound.  Splitting the Gaussian exponent in half leaves an
-integrable radial factor and an off-diagonal factor.  After taking a real
-`p`-th power, the latter yields the required Gaussian decay without changing
-the parabolic scaling exponent.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -24,14 +14,11 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- The integrable half-Gaussian factor left after extracting one copy of
-`exp (-‖x‖² / 8)` from `baseD1Maj`. -/
 def baseD1Half (x : V) : ℝ :=
   ((2 : ℝ)⁻¹ * ‖x‖) *
     ((baseHeatMass V)⁻¹ * Real.exp (-(8 : ℝ)⁻¹ * ‖x‖ ^ 2))
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The half-Gaussian factor is nonnegative. -/
 theorem baseD1Half_nonneg (x : V) : 0 ≤ baseD1Half x := by
   unfold baseD1Half
   exact mul_nonneg (mul_nonneg (by positivity) (norm_nonneg x))
@@ -39,7 +26,6 @@ theorem baseD1Half_nonneg (x : V) : 0 ≤ baseD1Half x := by
       (Real.exp_pos _).le)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Exact split of the time-one radial first-derivative majorant. -/
 theorem baseD1_split (x : V) :
     baseD1Maj x =
       baseD1Half x * Real.exp (-(8 : ℝ)⁻¹ * ‖x‖ ^ 2) := by
@@ -54,7 +40,6 @@ theorem baseD1_split (x : V) :
   ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The half-Gaussian factor is a fixed dilation of `baseD1Maj`. -/
 theorem baseD1Half_scale (x : V) :
     baseD1Half x = Real.sqrt 2 *
       baseD1Maj ((Real.sqrt 2)⁻¹ • x) := by
@@ -88,8 +73,6 @@ theorem baseD1Half_scale (x : V) :
         ((baseHeatMass V)⁻¹ *
           Real.exp (-(8 : ℝ)⁻¹ * ‖x‖ ^ 2)) := by rw [hcancel, one_mul]
 
-/-- The half-Gaussian factor has an integrable real `p`-th power throughout
-the range used by the Koch--Lamm flux estimate. -/
 theorem baseD1Half_rpow {p : ℝ} (hp1 : 1 ≤ p) (hp2 : p ≤ 2) :
     Integrable (fun x : V ↦ (baseD1Half x) ^ p) := by
   have hs : 0 < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
@@ -102,8 +85,6 @@ theorem baseD1Half_rpow {p : ℝ} (hp1 : 1 ≤ p) (hp2 : p ≤ 2) :
     Real.mul_rpow hs.le (baseD1Maj_nonneg _)]
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The half-Gaussian factor is uniformly bounded by twice the heat
-normalizing constant. -/
 theorem baseD1Half_le (x : V) :
     baseD1Half x ≤ 2 * (baseHeatMass V)⁻¹ := by
   let r : ℝ := ‖x‖
@@ -141,7 +122,6 @@ theorem baseD1Half_le (x : V) :
     _ = 2 * (baseHeatMass V)⁻¹ := by ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- A global softened Gaussian bound for the first-derivative majorant. -/
 theorem baseD1Maj_gauss (x : V) :
     baseD1Maj x ≤
       2 * (baseHeatMass V)⁻¹ *
@@ -151,8 +131,6 @@ theorem baseD1Maj_gauss (x : V) :
     (Real.exp_pos _).le
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Outside radius `R`, the extracted half Gaussian gives a pointwise tail
-factor. -/
 theorem baseD1Tail_le {R : ℝ} (hR : 0 ≤ R) {x : V} (hx : R ≤ ‖x‖) :
     baseD1Maj x ≤
       Real.exp (-(8 : ℝ)⁻¹ * R ^ 2) * baseD1Half x := by
@@ -169,8 +147,6 @@ theorem baseD1Tail_le {R : ℝ} (hR : 0 ≤ R) {x : V} (hx : R ≤ ‖x‖) :
     _ = Real.exp (-(8 : ℝ)⁻¹ * R ^ 2) * baseD1Half x := mul_comm _ _
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The real `p`-th power tail bound retains one integrable half-Gaussian
-factor. -/
 theorem baseD1Tail_pow {R p : ℝ} (hR : 0 ≤ R) (hp : 0 ≤ p)
     {x : V} (hx : R ≤ ‖x‖) :
     (baseD1Maj x) ^ p ≤
@@ -182,15 +158,12 @@ theorem baseD1Tail_pow {R p : ℝ} (hR : 0 ≤ R) (hp : 0 ≤ p)
     (baseD1Half_nonneg (V := V) x)] at hpow
   exact hpow
 
-/-- Spatial mass of the real `p`-th power of the integrable half-Gaussian
-factor. -/
 def baseD1HalfMass (V : Type*) [NormedAddCommGroup V]
     [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
     [MeasurableSpace V] [BorelSpace V] (p : ℝ) : ℝ :=
   ∫ x : V, (baseD1Half x) ^ p
 
 omit [Nontrivial V] in
-/-- Every half-Gaussian power mass is nonnegative. -/
 theorem baseD1HalfMass_nn (p : ℝ) : 0 ≤ baseD1HalfMass V p := by
   unfold baseD1HalfMass
   exact integral_nonneg fun x ↦

@@ -14,6 +14,7 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.Weak
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.Bootstrap.BootstrapSource
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.DirichletForm.RotatedTestSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantLeibniz
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -36,9 +37,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Tensor.TensorRSRiemannian
-open TensorRSNabla
+open DifferentialGeometry.TensorRSNabla
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension hiding chartTargetEuclid
@@ -380,7 +381,6 @@ private lemma euclidPartial_eigenvectorPouApprox_component_memLp
     (euclidPartial_eigenvectorPouApprox_component_hasCompactSupport
       (I := I) (M := M) g r s i α P₀ k n)).restrict _
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
 omit [CompleteSpace E] in
 private lemma eigenvectorChartPartialCLM_smoothApprox_coeFn_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

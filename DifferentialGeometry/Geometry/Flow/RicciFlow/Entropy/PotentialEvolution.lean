@@ -2,22 +2,17 @@ import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.PotentialGeometry
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 noncomputable section
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff
 
 universe u uE uH
@@ -29,11 +24,9 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
-
-
 theorem potential_slice
     (D : RealTimeInterval)
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (V u : Real -> M -> Real) (n : Nat)
     (hu : DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn D G V u)
     {s : Real} (hs : s ∈ D.regular) (hspos : 0 < s)
@@ -60,11 +53,9 @@ theorem potential_slice
       (f := fun z : M => u s z / perelmanDensityPrefactor n s)
       (x := y) hquot).neg
 
-
-
 theorem potential_pde
     (D : RealTimeInterval)
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (V u : Real -> M -> Real) (n : Nat)
     (hu : DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn D G V u)
     {s : Real} (hs : s ∈ D.regular) (hspos : 0 < s)
@@ -175,11 +166,9 @@ theorem potential_pde
   convert htime using 1
   rw [hspace]
 
-
-
 theorem potential_joint
     (D : RealTimeInterval)
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (V u : Real -> M -> Real) (n : Nat)
     (hu : DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn D G V u)
     (hpos : ∀ t : Real, t ∈ D.regular ∩ Set.Ioi (0 : Real) →
@@ -250,13 +239,10 @@ theorem potential_joint
           u q.1 q.2 / perelmanDensityPrefactor n q.1) (x := p) hquot
   simpa only [perelmanPotential] using hlog.neg.contMDiffWithinAt
 
-
-
-
 theorem potential_df_time
     [I.Boundaryless]
     (D : RealTimeInterval)
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (V u : Real -> M -> Real) (n : Nat)
     (hu : DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn D G V u)
     (hpos : ∀ t : Real, t ∈ D.regular ∩ Set.Ioi (0 : Real) →

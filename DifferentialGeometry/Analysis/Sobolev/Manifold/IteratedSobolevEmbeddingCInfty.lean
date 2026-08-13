@@ -47,7 +47,7 @@ theorem memWkpChart_forall_implies_continuous_representative
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
     (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
     ∃ ũ : M → ℝ,
@@ -88,7 +88,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
     (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
     ∃ u_smooth : M → ℝ,
@@ -108,7 +108,7 @@ def ChartSobolevSuperCriticalWitness
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ) (u : M → ℝ) : Prop :=
   ∃ p : ℝ, 1 ≤ p ∧ (Module.finrank ℝ E : ℝ) < p ∧
     MemWkpChart (I := I) (M := M) g (m + 1) (ENNReal.ofReal p) u
@@ -119,7 +119,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {u : M → ℝ} (hu_meas : Measurable u)
     (h_witness : ChartSobolevSuperCriticalWitness (I := I) (M := M) g m u)
@@ -144,7 +144,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative_via_bridge
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
     (h_witness : ChartSobolevSuperCriticalWitness (I := I) (M := M) g 0 u) :
     ∃ u_smooth : M → ℝ,
@@ -321,7 +321,7 @@ variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
 variable [NeZero (Module.finrank ℝ E)]
 
 private theorem chain_to_supercritical
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ) :
     ∀ (s : ℕ) {p : ℝ}, 1 ≤ p →
       DifferentialGeometry.Analysis.Sobolev.Chart.RegularExponent.IsRegular
@@ -398,7 +398,7 @@ theorem chartSobolevSuperCriticalWitness_of_h_all
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {u : M → ℝ}
     (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
@@ -501,7 +501,7 @@ private lemma exists_ball_subset_chartTargetEuclid
   exact Metric.isOpen_iff.mp hopen y₀ hy₀
 
 theorem memWkpChart_super_critical_implies_contMDiff_m_representative
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {p : ℝ} (hp : (Module.finrank ℝ E : ℝ) < p)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -801,7 +801,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative_uncond
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {u : M → ℝ} (hu_meas : Measurable u)
     (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
@@ -822,7 +822,7 @@ theorem sobolev_smooth_representative_of_memWkpChart_forall
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
     (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) g (2 * k) 2 u) :
     ∃ u_smooth : M → ℝ,

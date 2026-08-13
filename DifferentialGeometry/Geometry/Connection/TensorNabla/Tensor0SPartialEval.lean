@@ -8,9 +8,10 @@ set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle
-open Tensor0SBundle
-open Tensor0SNabla
+open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Tensor0SNabla
 
+namespace DifferentialGeometry
 namespace Tensor0SPartialEval
 
 variable
@@ -177,4 +178,5 @@ theorem contMDiff_tensor0SPartialEval_of_smoothSections {s : ℕ}
 
 end Tensor0SPartialEval
 
+end DifferentialGeometry
 end

@@ -8,9 +8,42 @@ open Set
 open scoped Topology BigOperators ContDiff
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Calculus
+
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.DivergenceTheorem
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+
+theorem partialDeriv_eq_iteratedFDeriv_one
+    (u : E → ℝ) (i : Fin (Module.finrank ℝ E)) (y : E) :
+    partialDeriv (E := E) i u y =
+      iteratedFDeriv ℝ 1 u y ![(chartModelBasis E) i] := by
+  rw [iteratedFDeriv_one_apply]
+  rfl
+
+theorem partialDeriv_partialDeriv_eq_iteratedFDeriv_two
+    (u : E → ℝ) {y : E} (hu : ContDiffAt ℝ ∞ u y)
+    (i j : Fin (Module.finrank ℝ E)) :
+    partialDeriv (E := E) i (partialDeriv (E := E) j u) y =
+      iteratedFDeriv ℝ 2 u y
+        ![(chartModelBasis E) i, (chartModelBasis E) j] := by
+  have hfderiv_diff : DifferentiableAt ℝ (fun z : E => fderiv ℝ u z) y := by
+    have hderiv := hu.fderiv_right (m := ∞) le_rfl
+    exact hderiv.differentiableAt (by simp)
+  have hj : partialDeriv (E := E) j u =
+      fun z : E => fderiv ℝ u z ((chartModelBasis E) j) := by
+    funext z
+    rfl
+  rw [show partialDeriv (E := E) i (partialDeriv (E := E) j u) y =
+      fderiv ℝ (fun z : E => fderiv ℝ u z ((chartModelBasis E) j)) y
+        ((chartModelBasis E) i) from by rw [hj]; rfl]
+  rw [iteratedFDeriv_two_apply]
+  rw [fderiv_clm_apply hfderiv_diff (differentiableAt_const _)]
+  simp [ContinuousLinearMap.flip_apply]
+
 namespace DeTurckCoefficients
 
 open DifferentialGeometry.Integral.Measure
@@ -48,26 +81,14 @@ lemma partialDeriv_sub_eqOn
 theorem partial_eq_iter1 (u : E → ℝ) (i : Fin (Module.finrank ℝ E)) (y : E) :
     partialDeriv (E := E) i u y =
       iteratedFDeriv ℝ 1 u y ![(chartModelBasis E) i] := by
-  rw [iteratedFDeriv_one_apply]
-  rfl
+  exact DifferentialGeometry.Analysis.Calculus.partialDeriv_eq_iteratedFDeriv_one u i y
 
 theorem partial2_eq_iter2 (u : E → ℝ) {y : E} (hu : ContDiffAt ℝ ∞ u y)
     (m l : Fin (Module.finrank ℝ E)) :
     partialDeriv (E := E) m (partialDeriv (E := E) l u) y =
       iteratedFDeriv ℝ 2 u y ![(chartModelBasis E) m, (chartModelBasis E) l] := by
-  have hfderiv_diff : DifferentiableAt ℝ (fun z : E => fderiv ℝ u z) y := by
-    have hderiv := hu.fderiv_right (m := ∞) le_rfl
-    exact hderiv.differentiableAt (by simp)
-  have hl : partialDeriv (E := E) l u =
-      fun z : E => fderiv ℝ u z ((chartModelBasis E) l) := by
-    funext z
-    rfl
-  rw [show partialDeriv (E := E) m (partialDeriv (E := E) l u) y =
-      fderiv ℝ (fun z : E => fderiv ℝ u z ((chartModelBasis E) l)) y
-        ((chartModelBasis E) m) from by rw [hl]; rfl]
-  rw [iteratedFDeriv_two_apply]
-  rw [fderiv_clm_apply hfderiv_diff (differentiableAt_const _)]
-  simp [ContinuousLinearMap.flip_apply]
+  exact DifferentialGeometry.Analysis.Calculus.partialDeriv_partialDeriv_eq_iteratedFDeriv_two
+    u hu m l
 
 lemma partialDeriv_eqOn_fderivWithin_apply
     {u : E → ℝ} {s : Set E} (hs : IsOpen s) (i : Fin (Module.finrank ℝ E)) :
@@ -184,9 +205,8 @@ theorem iteratedFDerivSeminorm_partialDeriv_le
   omega
 
 end DeTurckCoefficients
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Calculus
+end Analysis
 end DifferentialGeometry
 
 end

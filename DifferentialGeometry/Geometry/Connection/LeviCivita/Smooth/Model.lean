@@ -1,15 +1,18 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+
+namespace DifferentialGeometry.Geometry.Connection
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -18,20 +21,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable def metricFlatContinuousEquiv
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
@@ -46,8 +35,6 @@ theorem metricFlatContinuousEquiv_apply
     ((metricFlatContinuousEquiv (I := I) g x₀) v) w = g.inner x₀ v w := by
   change ((metricFlatEquiv (I := I) g x₀) v) w = g.inner x₀ v w
   rw [metricFlatEquiv_apply]
-
-
 
 noncomputable def metricFlatModelInChart
     (g : SmoothRiemannianMetric I M) (x₀ : M) (y : E) :
@@ -155,8 +142,6 @@ theorem metricFlatModelInChart_contDiffWithinAt
       (x := extChartAt I x₀ x₀) hsymm
   exact hcomp.contDiffWithinAt
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricFlatModelInChart_apply_of_target
     (g : SmoothRiemannianMetric I M) (x₀ : M) {y : E}
@@ -205,8 +190,6 @@ theorem inverseMetricFlatModelInChart_contDiffWithinAt
       |>.comp_contDiffWithinAt
         (x := extChartAt I x₀ x₀)
         (metricFlatModelInChart_contDiffWithinAt (I := I) g x₀)
-
-
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem metricFlatModelInChart_contDiffWithinAt_of_mem
@@ -448,12 +431,9 @@ theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
               simp [hij, hji]
   · exact hsecond i j
 
-
-
-
 noncomputable def metricFlatModelInChart_component
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (i j : CoordinateIdx (𝕜 := Real) E) (y : E) : Real :=
   metricFlatModelInChart (I := I) g x₀ y
     ((Module.finBasis Real E) i) ((Module.finBasis Real E) j)
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

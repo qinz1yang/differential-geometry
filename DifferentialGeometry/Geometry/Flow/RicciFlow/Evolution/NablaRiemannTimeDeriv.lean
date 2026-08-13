@@ -1,65 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmRealizationBridge
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -69,14 +11,6 @@ open Bundle
 open DifferentialGeometry
 open scoped Manifold ContDiff BigOperators
 
-
-
-
-
-
-
-
-
 section StepDeriv
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -85,45 +19,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
-
-
-
-
-
-
-
-
 def covDerivStepDt {r : ℕ}
     (chrDt : Idx → Idx → Idx → Real)
     (A : (Fin r → Idx) → Real) : (Fin (r + 1) → Idx) → Real :=
   fun n =>
     ∑ s : Fin r, ∑ p : Idx,
       chrDt (n 0) (Fin.tail n s) p * A (Function.update (Fin.tail n) s p)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [DecidableEq Idx] in
 theorem covDerivStepComp_hasDerivWithinAt {r : ℕ}
@@ -191,18 +92,9 @@ theorem covDerivStepComp_hasDerivWithinAt {r : ℕ}
 
 end StepDeriv
 
-
-
-
-
-
-
-
-
-
 section Realized
 
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -213,37 +105,16 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem iteratedRmComp_one_hasDerivWithinAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M)
     (rm04Dt : Real → M → (Fin 4 → CoordinateIdx (𝕜 := Real) E) → Real)
     (chrDt : Real → M →
       CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E →
       CoordinateIdx (𝕜 := Real) E → Real)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M)
     (n : Fin 5 → CoordinateIdx (𝕜 := Real) E)
     (hrm : ∀ m : Fin 4 → CoordinateIdx (𝕜 := Real) E,

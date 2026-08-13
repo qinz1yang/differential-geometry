@@ -1,24 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.PouStrictCutoff
 import Mathlib.Topology.MetricSpace.Thickening
 
-/-!
-# Finite small-carrier chart partitions with strict outer cutoffs
-
-Let `e : OpenPartialHomeomorph M E` be one fixed chart and let `K` be a
-compact subset of its source.  For every prescribed positive coordinate
-scale `r`, this file constructs a finite smooth partition of unity on `K`
-whose carriers lie in coordinate balls of radius `epsilon`, together with
-strict outer cutoffs supported in the concentric balls of radius
-`2 * epsilon`.  The radius is chosen so that
-
-* `2 * epsilon <= r`; and
-* every closed outer ball is contained in the chart target.
-
-Thus straight coordinate segments used in frozen-coefficient estimates stay
-inside the chart target, while the outer cutoff safely localizes a Euclidean
-heat evolution before it is pulled back to the manifold.
--/
-
 noncomputable section
 
 open Set Topology Bundle Manifold Filter
@@ -36,8 +18,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
-/-- On a boundaryless manifold, the extended chart is an open partial
-homeomorphism into the ambient model vector space. -/
 def extChartOpenPartialHomeomorph (x : M) : OpenPartialHomeomorph M E where
   toPartialEquiv := extChartAt I x
   open_source := isOpen_extChartAt_source x
@@ -45,8 +25,6 @@ def extChartOpenPartialHomeomorph (x : M) : OpenPartialHomeomorph M E where
   continuousOn_toFun := continuousOn_extChartAt x
   continuousOn_invFun := continuousOn_extChartAt_symm x
 
-/-- The part of a coordinate ball which lies in the source of an open partial
-homeomorphism. -/
 def chartBall (e : OpenPartialHomeomorph M E) (z : E) (r : ℝ) : Set M :=
   e.source ∩ e ⁻¹' Metric.ball z r
 
@@ -64,10 +42,6 @@ theorem chartBall_mono (e : OpenPartialHomeomorph M E) (z : E)
   intro x hx
   exact ⟨hx.1, Metric.ball_subset_ball hrR hx.2⟩
 
-/-- Pullback of a closed coordinate ball by the inverse branch of an open
-partial homeomorphism.  Downstream coefficient estimates use this compact set
-rather than merely the support of the outer cutoff, because it also contains
-the straight coordinate segments from the freeze center. -/
 def chartClosedBall (e : PartialEquiv M E) (z : E) (r : ℝ) : Set M :=
   e.symm '' Metric.closedBall z r
 
@@ -105,9 +79,6 @@ theorem chartClosedBall_map (e : PartialEquiv M E) (z : E) (r : ℝ)
   rw [e.right_inv (hball hy)]
   exact hy
 
-/-- A fixed compact coordinate collar around `K`.  Its radius is chosen before
-any coefficient constant and is therefore the non-circular domain on which
-uniform raw coefficient bounds are first obtained. -/
 def chartBuffer (e : PartialEquiv M E) (K : Set M) (r : ℝ) : Set M :=
   e.symm '' Metric.cthickening r (e '' K)
 
@@ -141,8 +112,6 @@ theorem chartBuffer_src (e : PartialEquiv M E) (K : Set M) (r : ℝ)
   exact e.map_target (hbuffer hy)
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- A compact subset of one chart source has a positive fixed coordinate
-collar whose closed thickening stays in the chart target. -/
 theorem exists_chartBuffer_of_continuousOn
     (e : PartialEquiv M E) {K : Set M}
     (he : ContinuousOn e e.source)
@@ -165,8 +134,6 @@ theorem exists_chartBuffer_of_continuousOn
     chartBuffer_src e K r₀ hbuffer⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- The open-partial-homeomorphism specialization of
-`exists_chartBuffer_of_continuousOn`. -/
 theorem exists_chartBuffer
     (e : OpenPartialHomeomorph M E) {K : Set M}
     (hK : IsCompact K) (hKsrc : K ⊆ e.source) :
@@ -179,8 +146,6 @@ theorem exists_chartBuffer
 
 omit [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace M]
   [T2Space M] [SigmaCompactSpace M] in
-/-- Every refined outer closed ball whose radius is at most the fixed collar
-radius pulls back into the fixed chart buffer. -/
 theorem outer_subset_buffer
     (e : PartialEquiv M E) {K : Set M} {x : M} (hx : x ∈ K)
     {R r₀ : ℝ} (hR : R ≤ r₀) :
@@ -191,10 +156,6 @@ theorem outer_subset_buffer
     (Metric.cthickening_mono hR (e '' K))
 
 omit [I.Boundaryless] in
-/-- A compact subset of one chart source admits a finite smooth partition at
-any prescribed coordinate scale.  Its inner carriers have radius `epsilon`,
-the closed radius-`2 * epsilon` balls stay inside the chart target, and
-`2 * epsilon` is no larger than the prescribed scale `r`. -/
 theorem exists_fine_pou
     (e : OpenPartialHomeomorph M E) {K : Set M}
     (hK : IsCompact K) (hKsrc : K ⊆ e.source)
@@ -249,10 +210,6 @@ theorem exists_fine_pou
     ((Metric.cthickening_mono hεδ (e '' K)).trans hδtarget)
 
 omit [I.Boundaryless] in
-/-- The finite small partition from `exists_fine_pou`, together with one
-strict outer cutoff per finite index.  The partition carriers lie in the
-radius-`epsilon` chart balls, while the outer cutoffs have topological support
-in the radius-`2 * epsilon` chart balls. -/
 theorem exists_fine_cutoffs [NormalSpace M]
     (e : OpenPartialHomeomorph M E) {K : Set M}
     (hK : IsCompact K) (hKsrc : K ⊆ e.source)
@@ -289,76 +246,7 @@ theorem exists_fine_cutoffs [NormalSpace M]
   exact ⟨ε, hε, hεr, S, ρ, χ, hρ, houter, hχsmooth, hχone,
     hχrange, hχzero, hχsupp⟩
 
-/-
-/-- The finite small partition with two nested strict cutoffs.  The first is
-one near the partition carrier and the second is one near the entire support
-of the first.  Both supports remain inside the radius-`2 * epsilon` chart
-ball, so the second cutoff can extend transition coefficients without changing
-a first-cutoff-localized heat output. -/
-theorem exists_fine_tricut [NormalSpace M]
-    (e : OpenPartialHomeomorph M E) {K : Set M}
-    (hK : IsCompact K) (hKsrc : K ⊆ e.source)
-    {r : ℝ} (hr : 0 < r) :
-    ∃ ε : ℝ, 0 < ε ∧ 2 * ε ≤ r ∧
-      ∃ S : Finset K,
-        ∃ ρ : SmoothPartitionOfUnity S I M K,
-          ∃ χ ψ : S → M → ℝ,
-            ρ.IsSubordinate
-                (fun z : S => chartBall e (e (z.1 : K)) ε) ∧
-            (∀ z : S,
-              Metric.closedBall (e (z.1 : K)) (2 * ε) ⊆ e.target) ∧
-            (∀ z, ContMDiff I 𝓨(ℝ, ℝ) ∞ (χ z)) ∧
-            (∀ z, ∀ᶠ x in 𝒩ˢ
-              (tsupport ((ρ z : C^∞⟮I, M; ℝ⟯) : M → ℝ)), χ z x = 1) ∧
-            (∀ z x, χ z x ∈ Set.Icc (0 : ℝ) 1) ∧
-            (∀ z, tsupport (χ z) ⊆
-              chartBall e (e (z.1 : K)) (2 * ε)) ∧
-            (∀ z, ContMDiff I 𝓨(ℝ, ℝ) ∞ (ψ z)) ∧
-            (∀ z, ∀ᶠ x in 𝒩ˢ (tsupport (χ z)), ψ z x = 1) ∧
-            (∀ z x, ψ z x ∈ Set.Icc (0 : ℝ) 1) ∧
-            (∀ z, ∀ᶠ x in 𝒩ˢ
-              ((chartBall e (e (z.1 : K)) (2 * ε))ᶜ), ψ z x = 0) ∧
-            ∀ z, tsupport (ψ z) ⊆
-              chartBall e (e (z.1 : K)) (2 * ε) := by
-  classical
-  obtain ⟨ε, hε, hεr, S, ρ, χ, hρ, houter, hχsmooth, hχone,
-    hχrange, _hχzero, hχsupp⟩ :=
-    exists_fine_cutoffs (I := I) e hK hKsrc hr
-  have hψ : ∀ z : S, ∃ ψz : M → ℝ,
-      ContMDiff I 𝓨(ℝ, ℝ) ∞ ψz ∧
-      (∀ᶠ x in 𝒩ˢ (tsupport (χ z)), ψz x = 1) ∧
-      (∀ x, ψz x ∈ Set.Icc (0 : ℝ) 1) ∧
-      (∀ᶠ x in 𝒩ˢ
-        ((chartBall e (e (z.1 : K)) (2 * ε))ᶜ), ψz x = 0) ∧
-      tsupport ψz ⊆ chartBall e (e (z.1 : K)) (2 * ε) := by
-    intro z
-    exact exists_strict_cutoff (I := I) (χ z)
-      (chartBall e (e (z.1 : K)) (2 * ε))
-      (isOpen_chartBall e (e (z.1 : K)) (2 * ε)) (hχsupp z)
-  let ψ : S → M → ℝ := fun z => Classical.choose (hψ z)
-  have hψspec : ∀ z : S,
-      ContMDiff I 𝓨(ℝ, ℝ) ∞ (ψ z) ∧
-      (∀ᶠ x in 𝒩ˢ (tsupport (χ z)), ψ z x = 1) ∧
-      (∀ x, ψ z x ∈ Set.Icc (0 : ℝ) 1) ∧
-      (∀ᶠ x in 𝒩ˢ
-        ((chartBall e (e (z.1 : K)) (2 * ε))ᶜ), ψ z x = 0) ∧
-      tsupport (ψ z) ⊆ chartBall e (e (z.1 : K)) (2 * ε) :=
-    fun z => Classical.choose_spec (hψ z)
-  refine ⟨ε, hε, hεr, S, ρ, χ, ψ, hρ, houter, hχsmooth,
-    hχone, hχrange, hχsupp, ?_, ?_, ?_, ?_, ?_⟩
-  · exact fun z => (hψspec z).1
-  · exact fun z => (hψspec z).2.1
-  · exact fun z => (hψspec z).2.2.1
-  · exact fun z => (hψspec z).2.2.2.1
-  · exact fun z => (hψspec z).2.2.2.2
--/
-
 omit [I.Boundaryless] in
-/-- The finite small partition with two nested strict cutoffs. The first is
-one near the partition carrier and the second is one near the entire support
-of the first. Both supports remain inside the radius-`2 * epsilon` chart
-ball, so the second cutoff can extend transition coefficients without changing
-a first-cutoff-localized heat output. -/
 theorem exists_fine_tricut [NormalSpace M]
     (e : OpenPartialHomeomorph M E) {K : Set M}
     (hK : IsCompact K) (hKsrc : K ⊆ e.source)
@@ -416,11 +304,6 @@ theorem exists_fine_tricut [NormalSpace M]
   · exact fun z => (hψspec z).2.2.2.1
   · exact fun z => (hψspec z).2.2.2.2
 
-/-! ## Bundled single-chart fine data -/
-
-/-- The complete finite refinement data inside one fixed chart.  This is an
-ordinary structure value, not a class: no instance or notation is registered.
-The two bundled cutoffs are ready to be passed to Sobolev multiplier maps. -/
 structure FineChartData
     (e : OpenPartialHomeomorph M E) (K : Set M) (r : ℝ) where
   ε : ℝ
@@ -456,8 +339,6 @@ structure FineChartData
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M]
   [SigmaCompactSpace M] [I.Boundaryless] in
-/-- The finite sum of the bundled fine partition weights is one on its
-compact carrier. -/
 theorem FineChartData.rho_sum
     {e : OpenPartialHomeomorph M E} {K : Set M} {r : ℝ}
     (D : FineChartData (I := I) e K r) {x : M} (hx : x ∈ K) :
@@ -465,7 +346,6 @@ theorem FineChartData.rho_sum
   simpa only [finsum_eq_sum_of_fintype] using D.rho.sum_eq_one hx
 
 omit [I.Boundaryless] in
-/-- Package `exists_fine_tricut` as one reusable data value. -/
 theorem existsFineChart [NormalSpace M]
     (e : OpenPartialHomeomorph M E) {K : Set M}
     (hK : IsCompact K) (hKsrc : K ⊆ e.source)

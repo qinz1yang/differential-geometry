@@ -7,6 +7,8 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannianBundle
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Logic.Equiv.Fin.Basic
 import Mathlib.Data.Fin.Tuple.Basic
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -15,12 +17,12 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators Matrix RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [CompleteSpace E]
@@ -576,8 +578,8 @@ theorem tensorL2Norm_sq_eq_integral_riemannianFiberNormSq
   refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   exact (riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x (T x)).symm
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

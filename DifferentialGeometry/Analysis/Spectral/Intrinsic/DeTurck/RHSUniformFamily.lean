@@ -1,28 +1,22 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHSAbsoluteBound
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
-
-
-
-
-
-
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped ContDiff Manifold Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
       [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRHS_pou_lip
@@ -118,9 +112,6 @@ theorem chartRHS_pou_lip
         · exact hlie
     _ = (2 * Cric + Clie) * chartMetricJet2DiffSup (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by ring
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRHS_pou_bnd
@@ -363,4 +354,4 @@ theorem chartRHS_pou_bnd
     (I := I) (M := M) gBase (gSeq k) α i j (extChartAt I α b) hRic hLie
   exact hRHS.trans (by dsimp [C]; linarith)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

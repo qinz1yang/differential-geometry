@@ -2,8 +2,6 @@ import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Geodesic.Existence
 import Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique
 
-
-
 noncomputable section
 
 open Bundle Manifold Set Filter Function

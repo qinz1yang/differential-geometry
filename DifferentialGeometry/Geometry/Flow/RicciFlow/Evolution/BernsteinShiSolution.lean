@@ -1,62 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedNablaRmTower
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -70,18 +17,12 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+variable [CompleteSpace E] [T2Space M]
 variable [I.Boundaryless] [CompactSpace M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
-
-
-
-
-omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [CompactSpace M] in
+omit [TopologicalSpace M] [T2Space M] [CompactSpace M] in
 theorem towerReactionSum_mono_const
     (w : ℕ -> Real -> M -> Real) {c c' : Real} (hcc : c <= c')
     (k : ℕ) (t : Real) (x : M) :
@@ -100,8 +41,6 @@ theorem towerReactionSum_mono_const
         mul_le_mul_of_nonneg_right hcc hprod
     _ = c' * Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x) := by ring
 
-
-
 omit [DecidableEq Idx] in
 theorem towerLevelConst_mono {k m : ℕ} (hkm : k <= m) :
     2 * (Fintype.card Idx : Real) ^ (6 + k) <= 2 * (Fintype.card Idx : Real) ^ (6 + m) := by
@@ -117,25 +56,11 @@ theorem towerLevelConst_mono {k m : ℕ} (hkm : k <= m) :
       exact pow_le_pow_right₀ h1 (by omega)
   linarith [mul_le_mul_of_nonneg_left hpow (by norm_num : (0 : Real) <= 2)]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [DecidableEq Idx] in
+omit [CompleteSpace E] [T2Space M] in
 theorem bernsteinShi_solution_estimate
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {level : (k : ℕ) → Real → M → (Fin (4 + k) → Idx) → Real}
     {star : (k : ℕ) → Real → M → ℕ → (Fin (4 + k) → Idx) → Real}
     {w wLap : ℕ → Real → M → Real}
@@ -148,15 +73,15 @@ theorem bernsteinShi_solution_estimate
     (hw0_bound : ∀ t : Real, t ∈ Set.Icc 0 T -> ∀ x : M, w 0 t x <= K ^ 2)
     (hTK : T <= α / K)
     (hLap : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ x : M,
-      DifferentialGeometry.Integral.Connection.heatOperatorWithDrift (I := I) G t
+      DifferentialGeometry.Geometry.Curvature.heatOperatorWithDrift (I := I) G t
         (fun _y : M => (0 : TangentSpace I _y)) (w k t) x = wLap k t x)
     (hw_cont : ∀ k : ℕ, ContinuousOn (fun p : Real × M => w k p.1 p.2)
-      (DifferentialGeometry.Integral.Connection.spacetimeSlab (M := M) T))
+      (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T))
     (hw_space : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ y : M,
       MDifferentiableAt I 𝓘(Real, Real) (w k t) y)
     (hw_grad : ∀ k : ℕ, ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> ∀ x : M,
       MDiffAt (T% fun y : M =>
-        DifferentialGeometry.Integral.Connection.gradientFun (I := I) (G.metric t) (w k t) y) x)
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (w k t) y) x)
     (m : ℕ) {t : Real} (htmem : t ∈ Set.Icc 0 T) (htpos : 0 < t) (x : M) :
     w m t x <=
       (towerConst (2 * (Fintype.card Idx : Real) ^ (6 + m)) α m) ^ 2 * K ^ 2 / t ^ m := by
@@ -276,10 +201,10 @@ theorem bernsteinShi_solution_estimate
         · have hfun : (w' k s) = (fun _z : M => (0 : Real)) := by
             funext z; rw [hw'_val_gt k hk]
           rw [hwLap'_val_gt k hk, hfun]
-          rw [DifferentialGeometry.Integral.Connection.heatOperatorWithDrift_zero_drift,
-            DifferentialGeometry.Integral.Connection.heatOperator_eq_laplacianAt,
-            DifferentialGeometry.Integral.Connection.laplacianAt_eq]
-          exact DifferentialGeometry.Integral.Connection.laplacian_const
+          rw [DifferentialGeometry.Geometry.Curvature.heatOperatorWithDrift_zero_drift,
+            DifferentialGeometry.Geometry.Curvature.heatOperator_eq_laplacianAt,
+            DifferentialGeometry.Geometry.Curvature.laplacianAt_eq]
+          exact DifferentialGeometry.Geometry.Operator.laplacian_const
             (I := I) (G.connection s) (G.metric s) 0 y
       hw_cont := by
         intro k
@@ -312,7 +237,7 @@ theorem bernsteinShi_solution_estimate
             (E := (TangentSpace I : M -> Type _)) (x := y)).congr_of_eventuallyEq ?_
           filter_upwards with z
           exact congrArg (fun v => (⟨z, v⟩ : TotalSpace E (TangentSpace I)))
-            (DifferentialGeometry.Integral.Connection.gradientFun_const (I := I) (G.metric s) 0 z) }
+            (DifferentialGeometry.Geometry.Operator.gradientFun_const (I := I) (G.metric s) 0 z) }
     with hB_def
   have hkey : B.w m t x <= (towerConst B.c B.α m) ^ 2 * B.K ^ 2 / t ^ m :=
     B.estimate_div m htmem htpos x

@@ -8,6 +8,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import Mathlib.Analysis.InnerProductSpace.PiL2
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -17,9 +18,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.ODE
@@ -110,7 +110,6 @@ noncomputable def galerkinCoordEmbed
 
 open scoped Classical in
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma galerkinCoordEmbed_coeff
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -136,7 +135,6 @@ noncomputable def galerkinCoordRestrict
         (I := I) (M := M) (a := (a : ℝ)) j.1))
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma galerkinCoordRestrict_apply
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -168,7 +166,6 @@ noncomputable def galerkinCoordDiag
   (galerkinCoordDiagLM (I := I) (M := M) g₀ S).toContinuousLinearMap
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma galerkinCoordDiag_apply
     (g₀ : SmoothRiemannianMetric I M)
@@ -795,7 +792,7 @@ section
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (ccTensor02Symm symmS_smul domDomCongrSection)
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (smoothCcTensorBilinForm)
 
 omit [BoundarylessManifold I M] in
@@ -826,16 +823,15 @@ private lemma gscr_finiteEigenComboHs_eq_smoothCcToTensorHs
     ← SmoothCcTensor.toL2_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem deTurckSmoothRemainder_spectralCoercive_split'
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E))
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
-      PDE.RicciFlow.IntrinsicSpectral.MetricRealization.metricCauchySchwarzBound
+      DifferentialGeometry.Analysis.Spectral.MetricRealization.metricCauchySchwarzBound
         (I := I) (M := M) g₀
-        (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization.ccTensorBilinSymm
+        (DifferentialGeometry.Analysis.Spectral.MetricRealization.ccTensorBilinSymm
           (I := I) g₀ T₀) δ) :
     ∃ (Cδ₀ : ℝ) (Crem : ℕ → ℝ), 0 ≤ Cδ₀ ∧ Cδ₀ < 1 ∧ (∀ k, 0 ≤ Crem k) ∧
       ∀ (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2)) (k : ℕ)
@@ -969,7 +965,6 @@ theorem deTurckSmoothRemainder_spectralCoercive_split'
   exact le_trans hLHS_le (hker k T₀ hTsymm hball)
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem deTurckSobolevNHa2_diff_sobolevSplit_perScale'
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a)
@@ -977,9 +972,9 @@ theorem deTurckSobolevNHa2_diff_sobolevSplit_perScale'
     {δ : ℝ} (hδ_le : δ ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E))
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
-      PDE.RicciFlow.IntrinsicSpectral.MetricRealization.metricCauchySchwarzBound
+      DifferentialGeometry.Analysis.Spectral.MetricRealization.metricCauchySchwarzBound
         (I := I) (M := M) g₀
-        (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization.ccTensorBilinSymm
+        (DifferentialGeometry.Analysis.Spectral.MetricRealization.ccTensorBilinSymm
           (I := I) g₀ T₀) δ)
     (htie : ∀ (T : SmoothCcTensor g₀ 0 2),
       deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
@@ -1112,15 +1107,15 @@ theorem deTurckSobolevNHa2_diff_sobolevSplit_perScale'
           (0 : SmoothCcTensor g₀ 0 2) = (0 : SmoothCcTensor g₀ 0 2) := by
         rw [radialScaleSmooth, smul_zero]
       have hRemEq : ∀ (hp :
-        PDE.RicciFlow.IntrinsicSpectral.MetricRealization.metricCauchySchwarzBound
+        DifferentialGeometry.Analysis.Spectral.MetricRealization.metricCauchySchwarzBound
               (I := I) (M := M) g₀
-              (PDE.RicciFlow.IntrinsicSpectral.MetricRealization.ccTensorBilinSymm
+              (DifferentialGeometry.Analysis.Spectral.MetricRealization.ccTensorBilinSymm
                 (I := I) g₀ (radialScaleSmooth (I := I) (M := M) g₀ a R₀
                   (0 : SmoothCcTensor g₀ 0 2))) δ)
             (hp0 :
-              PDE.RicciFlow.IntrinsicSpectral.MetricRealization.metricCauchySchwarzBound
+              DifferentialGeometry.Analysis.Spectral.MetricRealization.metricCauchySchwarzBound
               (I := I) (M := M) g₀
-              (PDE.RicciFlow.IntrinsicSpectral.MetricRealization.ccTensorBilinSymm
+              (DifferentialGeometry.Analysis.Spectral.MetricRealization.ccTensorBilinSymm
                 (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ),
             deTurckSmoothRemainder (I := I) g₀ g_bg
                 (radialScaleSmooth (I := I) (M := M) g₀ a R₀ (0 : SmoothCcTensor g₀ 0 2))
@@ -1279,7 +1274,6 @@ private lemma deTurckSobolevNHa2Symm_zero_eq
     hsymmS_zero, ← hzero_embed]
 
 set_option backward.isDefEq.respectTransparency false in
-
 private theorem deTurckGalerkinForcingSymm_tame_diff_mass_perScale
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {T : ℝ}
@@ -1373,7 +1367,6 @@ private theorem deTurckGalerkinForcingSymm_tame_diff_mass_perScale
   exact hfinal
 
 set_option backward.isDefEq.respectTransparency false in
-
 private theorem deTurckGalerkinForcingSymm_seed_mass
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
@@ -1400,7 +1393,6 @@ private theorem deTurckGalerkinForcingSymm_seed_mass
     _ ≤ Cseed k ^ 2 := hb N k
 
 set_option backward.isDefEq.respectTransparency false in
-
 private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {T : ℝ}
@@ -1520,7 +1512,6 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
   exact hfinal
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem deTurckGalerkin_forcing_closure_perScaleSymm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {T : ℝ}
@@ -1556,9 +1547,8 @@ theorem deTurckGalerkin_forcing_closure_perScaleSymm
 
 end
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

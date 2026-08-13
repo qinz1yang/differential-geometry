@@ -3,8 +3,8 @@ import Mathlib.Analysis.Normed.Module.Multilinear.Curry
 noncomputable section
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Tensor
+namespace Multilinear
 
 section NormBridge
 
@@ -182,8 +182,8 @@ def quadFormToModelₗᵢ :
   { quadFormToModel F with norm_map' := quadFormToModel_norm_map F }
 
 end NormBridge
-end Connection
-end Integral
+end Multilinear
+end Tensor
 end DifferentialGeometry
 
 end

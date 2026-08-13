@@ -1,18 +1,12 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.TensorSectionL2BoundByComponents
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqLeRawComponents
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.PointwiseToL2Packaging
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
@@ -20,7 +14,7 @@ namespace DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -31,8 +25,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem l2_bdd_of_raw {ι : Type*}
@@ -126,10 +118,6 @@ theorem l2_bdd_of_raw {ι : Type*}
   refine Finset.sum_le_sum fun α hα => ?_
   refine Finset.sum_le_sum fun Idx _ => ?_
   exact Finset.sum_le_sum fun Jdx _ => hcomponent α hα k Idx Jdx
-
-
-
-
 
 theorem l2_le_of_raw_sum [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (c N : ℕ) (v : ℕ → ℕ)

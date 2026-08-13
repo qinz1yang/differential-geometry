@@ -2,19 +2,12 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieC
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
 
-
-
-
-
-
-
-
 noncomputable section
 
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF
 
 private lemma nf_V0_h1 {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
     (dg dig ga0 ga1 gbg gb f3 : Fin n → Fin n → Fin n → ℝ)
@@ -1520,4 +1513,4 @@ theorem nf_v0 {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
   exact h1.trans h2
 
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF

@@ -1,15 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCAtomJoin
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -28,9 +21,6 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-
-
 
 theorem atomWeight_of_atoms
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -181,8 +171,6 @@ theorem atomWeight_of_atoms
   dsimp only
   exact ⟨hdead, hatomPiSmooth, hatomInfPiSmooth, hatomPi,
     hweightPiSmooth, hweightInfPiSmooth, hweightPi⟩
-
-
 
 private theorem existsAtomWeightCore
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -465,8 +453,6 @@ private theorem existsAtomWeightCore
   exact atomWeight_of_atoms (I := I) hD P Lpsi hre pb r hr hgpPsi betapsi U hU
     hcoverPsi aInf hdead hatom hatomSmooth hatomInfSmooth
 
-
-
 theorem existsAtomWeightH6_of_innerCover
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
@@ -548,8 +534,6 @@ theorem existsAtomWeightH6_of_innerCover
     hUexp hcoverU
     (existsLiveJointH6 (I := I) metricInput P L pb r rho beta U hU
       hovlJ hUmetric hUexp hmapsJ hVmetric hVexp)
-
-
 
 theorem existsAtomWeightH6
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

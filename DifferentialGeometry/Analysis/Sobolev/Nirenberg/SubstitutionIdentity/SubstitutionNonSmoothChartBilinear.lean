@@ -831,37 +831,6 @@ lemma standardNirenbergTest_eq_diffQuot_neg_h
       (fun y => (η y)^2 * DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h D.u_chart y) := rfl
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nirenberg_substitution_identity_chartBilinear
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -998,11 +967,6 @@ theorem nirenberg_substitution_identity_chartBilinear
         ∂(volume : Measure EuclN) :=
   h_substitution_identity_holds
 
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nirenberg_substitution_identity_chartBilinear_symbolic
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -1030,8 +994,6 @@ theorem nirenberg_substitution_identity_chartBilinear_symbolic
     + f_term_chartBilinear (I := I) (M := M) D K_0 η k h
     = c_term_chartBilinear (I := I) (M := M) D K_0 η k h :=
   h_substitution_identity_holds
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nirenberg_substitution_identity_chartBilinear_compact

@@ -1,23 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.ChartGram
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 

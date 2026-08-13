@@ -19,8 +19,8 @@ import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Topology.Compactness.Compact
 import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
 import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -97,7 +97,7 @@ lemma metric_compat_hasDerivAt_inner_of_chartCurveDeriv
       rw [extChartAt_source_eq_chartAt_source (I := I)]
       rw [TangentBundle.trivializationAt_baseSet] at hs
       exact hs
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_def, hinv]
+    rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def, hinv]
   have hu_hasDerivAt : HasDerivAt (chartCurve (I := I) α γ)
       (deriv (chartCurve (I := I) α γ) t₀) t₀ :=
     hγ_chartDeriv.hasDerivAt
@@ -166,15 +166,15 @@ lemma metric_compat_hasDerivAt_inner_of_chartCurveDeriv
   have hu0_eq : u0 = extChartAt I α α := by
     rw [hu0_def, chartCurve_def, hα_def]
   have hGram_eq : ∀ l j : Fin (Module.finrank ℝ E),
-      DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α l j u0
+      DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0
         = chartGramMatrix (I := I) g α α l j := by
     intro l j
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_def, hu0_eq,
+    rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def, hu0_eq,
       (extChartAt I α).left_inv (mem_extChartAt_source α)]
   have hinnerDV :
       g.inner α (covDerivAlong (I := I) g γ V t₀) (W t₀)
         = ∑ l : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-            DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α l j u0
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0
               * chartCoord (E := E) l (chartCovDerivAlong (I := I) g α γ Vrep t₀)
               * chartCoord (E := E) j (Wrep t₀) := by
     rw [← hrtDV, ← hrtW, inner_eq_chartGramOnE_bilinear_on_baseSet (I := I) g α _ _]
@@ -183,7 +183,7 @@ lemma metric_compat_hasDerivAt_inner_of_chartCurveDeriv
   have hinnerDW :
       g.inner α (V t₀) (covDerivAlong (I := I) g γ W t₀)
         = ∑ i : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
-            DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α i l u0
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α i l u0
               * chartCoord (E := E) i (Vrep t₀)
               * chartCoord (E := E) l (chartCovDerivAlong (I := I) g α γ Wrep t₀) := by
     rw [← hrtV, ← hrtDW, inner_eq_chartGramOnE_bilinear_on_baseSet (I := I) g α _ _]

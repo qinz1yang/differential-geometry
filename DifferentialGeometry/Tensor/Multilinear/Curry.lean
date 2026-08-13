@@ -1,11 +1,13 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Multilinear.Bundle
+
+namespace DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
-open Bundle Set
+open _root_.Bundle Set
 
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -48,3 +50,5 @@ theorem continuousMultilinearMap_uncurryLeft_curryLeft (r r' : ℕ)
   exact (continuousMultilinearMap_curryEquiv r r').toContinuousLinearEquiv.symm_apply_apply f
 
 end
+
+end DifferentialGeometry.Tensor.Multilinear

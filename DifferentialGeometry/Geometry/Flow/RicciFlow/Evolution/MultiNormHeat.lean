@@ -1,47 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannHeat
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -49,19 +9,9 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped BigOperators
 
-
-
-
-
-
-
-
 section PointwiseAlgebra
 
 variable {Idx : Type*} [Fintype Idx]
-
-
-
 
 def compPairMulti {r : ℕ} (A B : (Fin r → Idx) → Real) : Real :=
   ∑ m : Fin r → Idx, A m * B m
@@ -80,15 +30,6 @@ theorem compPairMulti_comm {r : ℕ} (A B : (Fin r → Idx) → Real) :
 
 end PointwiseAlgebra
 
-
-
-
-
-
-
-
-
-
 section Producer
 
 open Bundle
@@ -102,15 +43,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
-
-
 def MultiLevelTimeDerivOn {r : ℕ}
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (level : Real -> M -> (Fin r → Idx) → Real)
     (levelDt : Real -> M -> (Fin r → Idx) → Real) : Prop :=
-  ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+  ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (m : Fin r → Idx),
     HasDerivWithinAt
       (fun s : Real => level s x m)
@@ -124,12 +61,6 @@ def MultiNormSqDef {r : ℕ}
     (normSq : Real -> M -> Real) : Prop :=
   ∀ (t : Real) (x : M), normSq t x = compNormSqMulti (level t x)
 
-
-
-
-
-
-
 def MultiNormLaplacianSplit {r : ℕ}
     (level : Real -> M -> (Fin r → Idx) → Real)
     (levelLap : Real -> M -> (Fin r → Idx) → Real)
@@ -142,25 +73,17 @@ def MultiNormLaplacianSplit {r : ℕ}
     (∀ (t : Real) (x : M),
       nextNormSq t x = compNormSqMulti (nextLevel t x))
 
-
-
-
-
 def multiReactionDown {r : ℕ}
     (level levelDt levelLap : Real -> M -> (Fin r → Idx) → Real)
     (t : Real) (x : M) : Real :=
   2 * compPairMulti (fun m => levelDt t x m - levelLap t x m) (level t x)
 
-
-
-
-
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem hasDerivWithinAt_compNormSqMulti {r : ℕ}
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (level levelDt : Real -> M -> (Fin r → Idx) → Real)
     (h_dt : MultiLevelTimeDerivOn (D := D) level levelDt)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M) :
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M) :
     HasDerivWithinAt
       (fun s : Real => compNormSqMulti (level s x))
       (2 * compPairMulti (levelDt (t : Real) x) (level (t : Real) x))
@@ -195,23 +118,9 @@ theorem hasDerivWithinAt_compNormSqMulti {r : ℕ}
   rw [hval] at hsum
   simpa [compNormSqMulti] using hsum
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem multiNormHeatEquationOn_of_components {r : ℕ}
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (level levelDt levelLap : Real -> M -> (Fin r → Idx) → Real)
     (nextLevel : Real -> M -> (Fin (r + 1) → Idx) → Real)
     (normSq normLap nextNormSq : Real -> M -> Real)
@@ -219,7 +128,7 @@ theorem multiNormHeatEquationOn_of_components {r : ℕ}
     (h_normSq : MultiNormSqDef (M := M) level normSq)
     (h_lap : MultiNormLaplacianSplit (M := M) level levelLap nextLevel
       normLap nextNormSq) :
-    ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M),
+    ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
       HasDerivWithinAt
         (fun s : Real => normSq s x)
         (normLap (t : Real) x +
@@ -276,46 +185,6 @@ theorem multiNormHeatEquationOn_of_components {r : ℕ}
     rw [this, hpair]
   rw [hval]
   exact hfun
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem multiReactionDown_eq_of_residual {r : ℕ}

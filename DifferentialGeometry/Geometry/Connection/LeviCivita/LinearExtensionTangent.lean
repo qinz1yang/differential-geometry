@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFibe
 import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelCorrectionBasepoint
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Analysis.Calculus.FDeriv.Congr
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -11,8 +12,9 @@ noncomputable section
 open Bundle Manifold Set FiberBundle NormedSpace
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
@@ -254,5 +256,5 @@ theorem covApply_linearExtensionTangent_basepoint_eq
 end Reduction
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

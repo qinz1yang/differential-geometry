@@ -2,24 +2,29 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurckRealizedSolutionFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.QuasilinearAbstractShortTimeExistence
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+    DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
@@ -32,8 +37,8 @@ variable
       [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-      [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-      [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+      [IsManifold I ∞ M] [CompactSpace M]
+      [I.Boundaryless] [T2Space M]
 
 private theorem rawTensorConnLapSmooth_symmS
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
@@ -168,13 +173,13 @@ theorem deturck_ricci_flow_parabolic_short_time_existence
       (∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
         ContinuousOn
           (fun q : ℝ × M =>
-            Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j
               (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ (chartAt H α).source)) ∧
       (∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
         ContinuousOn
           (fun q : ℝ × M => iteratedFDeriv ℝ k
-            (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j)
+            (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j)
             (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α)) := by
   obtain ⟨T, g_DT, hsol, hJ⟩ := deTurckRicci_solution_with_jointReg (I := I) g₀ g_bg

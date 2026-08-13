@@ -2,23 +2,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicBound
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.RicciFlow
 
 noncomputable section
@@ -32,8 +29,6 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
-
-
 
 def SolSwapData
     (gRef : SmoothRiemannianMetric I M)
@@ -127,8 +122,6 @@ def SolLowData
   forall rho : Nat -> Nat, StrictMono rho -> forall t, t ∈ Set.Icc beta psiT ->
     exists c : Real, 0 < c /\ forall (k : Nat) (x : M) (v : TangentSpace I x),
       c * gRef.inner x v v <= (gSeq (rho k) t).inner x v v
-
-
 
 inductive SolWindowData : Type _ where
   | mk
@@ -254,8 +247,6 @@ theorem covBddAllSol
       hDreg initC hinitC0 hinit timeRadius htime
     obtain ⟨C, hC⟩ := horders q.succ hq le_rfl
     exact ⟨C, fun k z hz => hC (rho k) t ht z hz⟩
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -394,8 +385,6 @@ theorem hgLipFinSol
     exact le_trans (hspec.2 i s hs t ht x hx)
       (mul_le_mul_of_nonneg_right hchosen habs_nonneg)
 
-
-
 theorem denseIccSeq {beta psiT : Real} (hbeta : beta <= psiT) :
     exists e : Nat -> Real,
       (forall n : Nat, e n ∈ Set.Icc beta psiT) /\
@@ -414,8 +403,6 @@ theorem denseIccSeq {beta psiT : Real} (hbeta : beta <= psiT) :
     obtain ⟨n, hn⟩ := hdenseX.exists_dist_lt tx hdelta
     refine ⟨n, ?_⟩
     simpa [tx, eX, X, Subtype.dist_eq, Real.dist_eq] using hn
-
-
 
 omit [Module.Finite ℝ E] in
 theorem winGInfOfSol

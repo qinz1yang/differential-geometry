@@ -2,16 +2,15 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.RawDefs.MCovariant
 import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvalRealized
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Set IsManifold ContinuousLinearMap VectorField Filter Function TensorLieDeriv
+open Bundle Set IsManifold ContinuousLinearMap VectorField Filter Function
+    DifferentialGeometry.TensorLieDeriv
 open scoped Manifold Topology Bundle ContDiff
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -22,7 +21,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [CompleteSpace 𝕜]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [IsManifold I (∞ : WithTop ℕ∞) M]
-
 
 omit [IsManifold I ∞ M] in
 theorem nabla0SFun_apply_selfChart_slots (s : ℕ)
@@ -53,9 +51,6 @@ theorem nabla0SFun_apply_selfChart_slots (s : ℕ)
   rw [extChartAt_to_inv]
   rfl
 
-
-
-
 end
 
 noncomputable section RealDerivationSmoothness
@@ -69,17 +64,6 @@ variable {H₀ : Type*} [TopologicalSpace H₀]
 variable {I₀ : ModelWithCorners Real E₀ H₀}
 variable {M₀ : Type*} [TopologicalSpace M₀] [ChartedSpace H₀ M₀]
 variable [IsManifold I₀ ∞ M₀]
-
-
-
-
-
-
-
-
-
-
-
 
 theorem tensor0S_eval_covariantDerivative_slot_contMDiff {s : ℕ}
     (cov : CovariantDerivative I₀ E₀ (TangentSpace I₀ : M₀ → Type _))
@@ -128,3 +112,4 @@ theorem tensor0S_eval_covariantDerivative_slot_contMDiff {s : ℕ}
 end RealDerivationSmoothness
 
 end Tensor0SBundle
+end DifferentialGeometry

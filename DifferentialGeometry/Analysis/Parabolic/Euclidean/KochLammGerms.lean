@@ -1,20 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammData
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 
-/-!
-# Realization of Koch--Lamm cylinder germs
-
-The complete ambients in `KochLammData` store *scaled* local `Lp` classes.
-This file constructs those classes from an actual measurable field satisfying
-one of the exact Koch--Lamm bounds.  In particular, none of the cylinder
-coordinates is postulated: its `MemLp` proof follows from the finite scaled
-bound and the strict positivity of the radius scale.
-
-The resulting maps are the first half of the realized-carrier construction.
-The remaining half is the closed compatibility condition between overlapping
-germs (and, for paths, the weak spatial-derivative identity).
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -33,8 +19,6 @@ variable {X I E : Type*} [MeasurableSpace X]
   {f : X → E} {mu : Measure X} {s : ℝ} {A : ℝ≥0}
 
 omit [NormedSpace ℝ E] [Fact (1 ≤ p)] in
-/-- A finite bound on a strictly positively scaled `eLpNorm` gives local
-`MemLp`. -/
 theorem klScaleMemLp (hs : 0 < s) (hf : AEStronglyMeasurable f mu)
     (h : ENNReal.ofReal s * eLpNorm f p mu ≤ (A : ℝ≥0∞)) :
     MemLp f p mu := by
@@ -44,8 +28,6 @@ theorem klScaleMemLp (hs : 0 < s) (hf : AEStronglyMeasurable f mu)
     lt_of_le_of_lt h ENNReal.coe_lt_top
   exact ENNReal.lt_top_of_mul_ne_top_right hmul.ne hs0
 
-/-- The real norm of a scaled `Lp` germ is controlled by the same finite
-`ENNReal` bound from which it was constructed. -/
 theorem klScaleToLpLe (hs : 0 < s) (hm : MemLp f p mu)
     (h : ENNReal.ofReal s * eLpNorm f p mu ≤ (A : ℝ≥0∞)) :
     ‖s • hm.toLp f‖ ≤ (A : ℝ) := by
@@ -54,8 +36,6 @@ theorem klScaleToLpLe (hs : 0 < s) (hm : MemLp f p mu)
     ENNReal.coe_toReal, norm_smul, Real.norm_eq_abs, abs_of_pos hs,
     Lp.norm_toLp] using hr
 
-/-- A bounded family of scaled local `Lp` classes, packaged in dependent
-`lp ∞`. -/
 def klMkGerm (mu : I → Measure X) (s : I → ℝ) (f : X → E)
     (hm : ∀ i, MemLp f p (mu i)) (A : ℝ≥0)
     (hA : ∀ i, ‖s i • (hm i).toLp f‖ ≤ (A : ℝ)) :
@@ -72,8 +52,6 @@ theorem klMkGerm_apply (mu : I → Measure X) (s : I → ℝ) (f : X → E)
     klMkGerm mu s f hm A hA i = s i • (hm i).toLp f :=
   rfl
 
-/-- The `lp ∞` norm of the realized germ family is the advertised uniform
-bound. -/
 theorem klMkGermNormLe (mu : I → Measure X) (s : I → ℝ) (f : X → E)
     (hm : ∀ i, MemLp f p (mu i)) (A : ℝ≥0)
     (hA : ∀ i, ‖s i • (hm i).toLp f‖ ≤ (A : ℝ)) :
@@ -149,8 +127,6 @@ def src0LqGerm (h : KLSource0 T A₁ A_q f) :
       simpa [klLqScale, klLateMeasure] using
         h.late_lq i.center i.radius i.radius_pos i.time_le
 
-/-- Realization of an actual ordinary Koch--Lamm source in the complete norm
-data ambient. -/
 def src0Data (h : KLSource0 T A₁ A_q f) :
     KLSrc0Data (V := V) (F := F) T :=
   ⟨src0L1Germ h, src0LqGerm h⟩
@@ -203,8 +179,6 @@ def src1LpGerm (h : KLSource1 T A₂ Aₚ f) :
       simpa [klLpScale, klLateMeasure] using
         h.late_lp i.center i.radius i.radius_pos i.time_le
 
-/-- Realization of an actual divergence Koch--Lamm source in the complete norm
-data ambient. -/
 def src1Data (h : KLSource1 T A₂ Aₚ f) :
     KLSrc1Data (V := V) (F := F) T :=
   ⟨src1L2Germ h, src1LpGerm h⟩
@@ -258,9 +232,6 @@ def pathLpGerm (h : KLPath T A₀ A₂ Aₚ u d) :
       simpa [klLpScale, klLateMeasure] using
         h.grad_lp i.center i.radius i.radius_pos i.time_le
 
-/-- The two realized gradient arms of a Koch--Lamm path.  The bounded
-continuous value arm is supplied separately because `KLPath` deliberately
-contains only its quantitative bound, not continuity. -/
 def pathGradData (h : KLPath T A₀ A₂ Aₚ u d) :
     KLL2Data (V := V) T G × KLLpData (V := V) T G :=
   ⟨pathL2Germ h, pathLpGerm h⟩

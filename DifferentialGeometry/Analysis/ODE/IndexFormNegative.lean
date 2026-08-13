@@ -2,14 +2,6 @@ import DifferentialGeometry.Analysis.ODE.IndexFormUniqueness
 
 set_option autoImplicit false
 
-/-!
-# Negative directions for the abstract index form
-
-This module develops the continuation lemmas used to turn an interior zero of
-a nontrivial Jacobi solution into a negative direction for the index form.
-It is independent of the geometric realization by a parallel frame.
--/
-
 open Set
 open scoped ContDiff RealInnerProductSpace
 
@@ -19,15 +11,12 @@ namespace DifferentialGeometry.Analysis.ODE
 
 variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
-/-- The endpoint-aware polynomial test field used in the interior conjugate-point argument. -/
 def indexTestFieldTo (L : ℝ) (q : F) (t : ℝ) : F :=
   (t * (L - t)) • q
 
-/-- The derivative of `indexTestFieldTo`. -/
 def indexTestDerivTo (L : ℝ) (q : F) (t : ℝ) : F :=
   (L - 2 * t) • q
 
-/-- Derivative formula for the endpoint-aware polynomial index-form test field. -/
 theorem testFieldTo_deriv (L : ℝ) (q : F) (t : ℝ) :
     HasDerivAt (indexTestFieldTo L q) (indexTestDerivTo L q t) t := by
   have hscalar :
@@ -38,52 +27,41 @@ theorem testFieldTo_deriv (L : ℝ) (q : F) (t : ℝ) :
     ring
   simpa only [indexTestFieldTo, indexTestDerivTo] using hscalar.smul_const q
 
-/-- An endpoint-aware polynomial index-form test field is continuous. -/
 theorem testFieldTo_cont (L : ℝ) (q : F) :
     Continuous (indexTestFieldTo L q) := by
   unfold indexTestFieldTo
   fun_prop
 
-/-- The derivative field of an endpoint-aware polynomial test field is continuous. -/
 theorem testDerivTo_cont (L : ℝ) (q : F) :
     Continuous (indexTestDerivTo L q) := by
   unfold indexTestDerivTo
   fun_prop
 
-/-- An endpoint-aware polynomial index-form test field is smooth. -/
 theorem testFieldTo_smooth (L : ℝ) (q : F) :
     ContDiff ℝ ∞ (indexTestFieldTo L q) := by
   unfold indexTestFieldTo
   fun_prop
 
-/-- The polynomial test field used in the interior conjugate-point argument. -/
 def indexTestField (q : F) (t : ℝ) : F :=
   indexTestFieldTo 1 q t
 
-/-- The derivative of `indexTestField`. -/
 def indexTestDeriv (q : F) (t : ℝ) : F :=
   indexTestDerivTo 1 q t
 
-/-- Derivative formula for the polynomial index-form test field. -/
 theorem indexTestField_deriv (q : F) (t : ℝ) :
     HasDerivAt (indexTestField q) (indexTestDeriv q t) t := by
   simpa only [indexTestField, indexTestDeriv] using testFieldTo_deriv 1 q t
 
-/-- The polynomial index-form test field is continuous. -/
 theorem indexTestField_cont (q : F) : Continuous (indexTestField q) := by
   simpa only [indexTestField] using testFieldTo_cont 1 q
 
-/-- The derivative field of the polynomial test field is continuous. -/
 theorem indexTestDeriv_cont (q : F) : Continuous (indexTestDeriv q) := by
   simpa only [indexTestDeriv] using testDerivTo_cont 1 q
 
-/-- A polynomial index-form test field is smooth. -/
 theorem testField_smooth (q : F) :
     ContDiff ℝ ∞ (indexTestField q) := by
   simpa only [indexTestField] using testFieldTo_smooth 1 q
 
-/-- On an open time set, a Jacobi ODE solution is as smooth as its smooth
-coefficient. -/
 theorem contDiffOn_jacobi
     {R : ℝ → F →L[ℝ] F} {y v : ℝ → F} {J : Set ℝ}
     (hJ : IsOpen J)
@@ -118,8 +96,6 @@ theorem contDiffOn_jacobi
           (contDiffOn_succ_iff_deriv_of_isOpen hJ).mpr
             ⟨hdv, by simp, hderiv_v⟩⟩
 
-/-- A Jacobi ODE pair with smooth coefficient and two-sided derivatives is
-smooth on its open time domain. -/
 theorem jacobi_pair_contDiff
     {R : ℝ → F →L[ℝ] F} {y v : ℝ → F} {J : Set ℝ}
     (hJ : IsOpen J)
@@ -150,7 +126,6 @@ private theorem exists_quad_neg {κ Q : ℝ} (hκ : 0 < κ) :
 
 namespace IsJacobiSolOn
 
-/-- A Jacobi solution restricts to every smaller closed subinterval. -/
 theorem mono
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {a b a' b' : ℝ} {y v : ℝ → F}
@@ -162,8 +137,6 @@ theorem mono
     { deriv_fst := fun t ht => (hsol.deriv_fst t (hsub ht)).mono hsub
       deriv_snd := fun t ht => (hsol.deriv_snd t (hsub ht)).mono hsub }
 
-/-- A nontrivial Jacobi solution that vanishes at an interior time has
-nonzero velocity there. -/
 theorem snd_ne_zero
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {a b c : ℝ} {y v : ℝ → F}
@@ -185,8 +158,6 @@ theorem snd_ne_zero
   obtain ⟨t, ht, hyt⟩ := hne
   exact hyt (hzero t ht).1
 
-/-- The cross term of a Jacobi solution with the endpoint-aware polynomial
-test field is its right-end velocity norm squared times `c(L-c)`. -/
 theorem indexForm_test_to
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
@@ -203,7 +174,6 @@ theorem indexForm_test_to
       fun_prop)]
   simp [indexTestFieldTo, real_inner_smul_right]
 
-/-- The cross-term formula for the unit endpoint polynomial test field. -/
 theorem indexForm_test
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
@@ -215,8 +185,6 @@ theorem indexForm_test
   simpa only [indexTestField, indexTestDeriv] using
     hsol.indexForm_test_to (L := 1) hc hR
 
-/-- At an interior time of `[0,L]`, a nonzero Jacobi velocity makes the
-endpoint-aware polynomial-test-field cross term strictly positive. -/
 theorem indexForm_pos_to
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
@@ -230,8 +198,6 @@ theorem indexForm_pos_to
   have hnorm : 0 < ‖v c‖ := norm_pos_iff.mpr hvc
   exact mul_pos (mul_pos hc.1 (sub_pos.mpr hc.2)) (sq_pos_of_pos hnorm)
 
-/-- At an interior time of `[0,1]`, a nonzero Jacobi velocity makes the
-polynomial-test-field cross term strictly positive. -/
 theorem indexForm_test_pos
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
@@ -244,9 +210,6 @@ theorem indexForm_test_pos
   simpa only [indexTestField, indexTestDeriv] using
     hsol.indexForm_pos_to (L := 1) hc hR hvc
 
-/-- An interior zero of a nontrivial Jacobi solution on `[0,L]` produces a
-negative split index direction.  The two fields agree in value at the splitting
-time. -/
 theorem exists_split_neg_on
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
@@ -423,7 +386,6 @@ theorem exists_split_neg_on
           ring
     _ < 0 := hs
 
-/-- The unit-interval compatibility form of `exists_split_neg_on`. -/
 theorem exists_split_neg
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
@@ -447,8 +409,6 @@ theorem exists_split_neg
   simpa only [indexTestField, indexTestDeriv] using
     hsol.exists_split_neg_on hc hR hSym hy0 hyc hne
 
-/-- A Jacobi solution on an open interval containing `[0,1]` produces two
-smooth, value-matching half-fields whose index forms have negative sum. -/
 theorem exists_smooth_split
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {A B c : ℝ} {y v : ℝ → F}

@@ -2,26 +2,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.TowerHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedRmTowerProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.BernsteinShiSolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannHeatFrameInvariant
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
 
-open Bundle Tensor0SBundle DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Integral.Measure
 open scoped Manifold ContDiff BigOperators
 
@@ -32,8 +20,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-
-
 
 theorem compNormSqMulti_le_card {Idx : Type*} [Fintype Idx] {r : ℕ}
     (f : (Fin r → Idx) → Real) (B : Real) (hB : ∀ m : Fin r → Idx, |f m| ≤ B) :
@@ -46,10 +32,6 @@ theorem compNormSqMulti_le_card {Idx : Type*} [Fintype Idx] {r : ℕ}
     _ ≤ ∑ _m : Fin r → Idx, B ^ 2 := Finset.sum_le_sum fun m _ => hsq m
     _ = (Fintype.card (Fin r → Idx) : Real) * B ^ 2 := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
@@ -65,12 +47,6 @@ theorem normSq0S_le_card
     normSq0S (I := I) g x s A ≤ (Fintype.card (Fin s → Idx) : Real) * B ^ 2 := by
   rw [← compNormSqMulti_orthoBasis_eq_normSq0S (I := I) g basis horth A]
   exact compNormSqMulti_le_card (fun idx : Fin s → Idx => A (fun p => basis (idx p))) B hB
-
-
-
-
-
-
 
 theorem reactionContract_le {k : ℕ} {Idx : Type*} [Fintype Idx]
     (level resid : (Fin (4 + k) → Idx) → Real) (ric : Idx → Idx → Real)
@@ -165,15 +141,13 @@ theorem reactionContract_le {k : ℕ} {Idx : Type*} [Fintype Idx]
       Ssum := by
         ring
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaKReactionAt_le
     [Module.Finite ℝ E]
     {k : ℕ} {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -216,20 +190,13 @@ theorem nablaKReactionAt_le
   refine le_of_eq (Finset.sum_congr rfl fun j _ => ?_)
   ring
 
-
-
-
-
-
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaKReaction_le
     [Module.Finite ℝ E]
     {k : ℕ} {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (basis : (x : M) → Module.Basis Idx Real (TangentSpace I x))
     (gInv : Real → M → Idx → Idx → Real)
@@ -260,24 +227,14 @@ theorem nablaKReaction_le
   exact nablaKReactionAt_le (I := I) S t x (basis x) (gInv t x) (ric t x)
     (Tdot t x) w horth hgInv hlevel hRic Cres hCres hresid
 
-
-
-
-
-
-
-
-
-
-
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
 theorem towerHeatBoundOn_of_heatReact
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {w wLap : ℕ → Real → M → Real}
     {c : Real} {k : ℕ}
     {nablaKRmNormLap reaction : Real → M → Real}
     (hHeatEq : NablaRm04NormHeatEquationOn (D := D) (w k) nablaKRmNormLap (w (k + 1)) reaction)
-    (hReact : ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hReact : ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
         (x : M),
       |reaction (t : Real) x| ≤ towerReactionSum (M := M) w c k (t : Real) x)
     (hLap : ∀ (t : Real) (x : M), nablaKRmNormLap t x = wLap k t x) :

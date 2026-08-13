@@ -4,7 +4,7 @@ import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.Diffeomorph
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Manifold Bundle
 open scoped Manifold Topology ContDiff
@@ -148,4 +148,4 @@ theorem time_dependent_vf_bare_flow_family
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X s (Φ_fam s x)))) :=
   time_dependent_vf_manifold_integral_flow_family X T hT Φ hΦ0 hdiffeo hflow
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

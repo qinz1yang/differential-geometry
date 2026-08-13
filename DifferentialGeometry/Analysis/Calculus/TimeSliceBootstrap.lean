@@ -2,35 +2,6 @@ import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open scoped ContDiff Topology
@@ -41,12 +12,6 @@ namespace Analysis
 
 variable {E F : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-
-
-
-
-
 
 theorem hasFDerivAt_of_slice {G : ℝ → E → F} {R : ℝ × E → F} {W : E →L[ℝ] F}
     {U : Set (ℝ × E)} (hU : IsOpen U) {p₀ : ℝ × E} (hp₀ : p₀ ∈ U)
@@ -108,10 +73,6 @@ theorem hasFDerivAt_of_slice {G : ℝ → E → F} {R : ℝ × E → F} {W : E �
   refine h₃.congr_of_eventuallyEq ?_
   exact Filter.Eventually.of_forall fun p => (sub_add_cancel _ _).symm
 
-
-
-
-
 theorem contDiffOn_succ_of_pde {q : ℕ}
     {G : ℝ → E → F} {R : ℝ × E → F} {W : ℝ × E → E →L[ℝ] F} {U : Set (ℝ × E)}
     (hU : IsOpen U)
@@ -140,8 +101,6 @@ theorem contDiffOn_succ_of_pde {q : ℕ}
   exact (contDiffOn_succ_iff_fderiv_of_isOpen hU).2
     ⟨hdiff, by simp, hfderiv⟩
 
-
-
 theorem contDiffOn_one_of_pde
     {G : ℝ → E → F} {R : ℝ × E → F} {W : ℝ × E → E →L[ℝ] F} {U : Set (ℝ × E)}
     (hU : IsOpen U)
@@ -152,10 +111,6 @@ theorem contDiffOn_one_of_pde
   have h := contDiffOn_succ_of_pde (q := 0) hU hpde hslice
     (contDiffOn_zero.2 hR) (contDiffOn_zero.2 hW)
   simpa using h
-
-
-
-
 
 theorem contDiffOn_inf_of_pde
     {G : ℝ → E → F} {R : ℝ × E → F} {W : ℝ × E → E →L[ℝ] F} {U : Set (ℝ × E)}

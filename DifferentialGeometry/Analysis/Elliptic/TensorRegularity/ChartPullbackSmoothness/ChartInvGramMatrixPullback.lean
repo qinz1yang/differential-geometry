@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -12,6 +13,7 @@ namespace TensorRegularity
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

@@ -1,16 +1,8 @@
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBoundFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicciOperatorNormBoundFlow
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Metric equivalence on canonical open-interval windows
-
-This file isolates the order-zero time-direction estimate used by the P4
-producer.  A uniform Riemann-curvature bound gives a uniform Ricci quadratic
-bound, and the Ricci-flow equation then compares every time-slice metric with
-the time-zero metric.  The result is independent of Shi estimates and of the
-Cheeger--Gromov comparison maps.
--/
 
 noncomputable section
 
@@ -20,7 +12,6 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology
-open DifferentialGeometry.Integral.Connection
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -30,9 +21,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 namespace CurvBoundInput
 
 omit [I.Boundaryless] in
-/-- On one canonical compact window, the time-zero metrics uniformly control
-all time-slice metrics.  The curvature/Ricci constant and the finite window
-majorant are chosen before the sequence member. -/
 theorem metricEquiv_open
     {a b : Real} (h0 : (0 : Real) ∈ Set.Ioo a b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))

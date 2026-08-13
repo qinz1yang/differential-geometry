@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartTorsio
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartMetric
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartSmooth
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -14,8 +15,9 @@ noncomputable section
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -318,5 +320,5 @@ theorem LeviCivita_unique (g : SmoothRiemannianMetric I M)
     hσ v
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

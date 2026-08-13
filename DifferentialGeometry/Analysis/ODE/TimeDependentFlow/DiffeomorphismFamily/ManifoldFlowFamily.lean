@@ -3,7 +3,7 @@ import Mathlib.Geometry.Manifold.IntegralCurve.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff Topology
@@ -46,6 +46,7 @@ theorem chartCoord_hasDerivWithinAt_to_manifold_hasMFDerivWithinAt
     (f := (extChartAt I α).symm ∘ u) (s := s)
     (t := u ⁻¹' Set.range I) hconf).mp hcomp
 
+omit [SigmaCompactSpace M] in
 theorem manifoldFlowFamily_exists
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
@@ -110,6 +111,7 @@ theorem manifoldFlowFamily_exists
     simp only [hguard, dif_pos, and_self]
     exact (hdiffeo t ht htT).choose_spec x
 
+omit [SigmaCompactSpace M] in
 theorem manifoldFlowFamily_exists_chartRepr
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
@@ -224,4 +226,4 @@ theorem manifoldFlow_hasMFDerivWithinAt_of_chartLocal
     (I := I) α u (Set.Icc 0 hper.T) t
     (X t ((chartAt H α).symm (I.symm (u t)))) htgt_t hconf hd
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

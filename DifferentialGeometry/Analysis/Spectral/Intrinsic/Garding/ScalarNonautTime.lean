@@ -2,25 +2,21 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautHs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarFluxJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IterCovGradHs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ParametricAppHsTime
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
@@ -33,42 +29,39 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
-
-
 theorem lapDiffHs_decomp
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) :
     ∃ tau : ℝ, 0 < tau ∧ tau ≤ 1 ∧
       (∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) ∧
       ∀ (m : ℕ) s, s ∈ Set.Icc (0 : ℝ) tau →
-        ∀ U : tensorHs (I := I) (M := M) (G.metric (T : ℝ)) 0 0
+        ∀ U : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
           ((m : ℝ) + 2),
-          lapDiffHs (I := I) (M := M) (G.metric (T : ℝ))
-              (G.metric ((T : ℝ) - s)) m U =
-            appHs (G.metric (T : ℝ)) 2 0 m
-                (scalarTraceCoeff (I := I) (G.metric (T : ℝ))
-                  (G.metric ((T : ℝ) - s)))
+          lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
+              (g_fam ((T : ℝ) - s)) m U =
+            appHs (g_fam (T : ℝ)) 2 0 m
+                (scalarTraceCoeff (I := I) (g_fam (T : ℝ))
+                  (g_fam ((T : ℝ) - s)))
                 (iterCovGradHs (I := I) (M := M)
-                  (G.metric (T : ℝ)) 0 2 m U) -
-              appHs (G.metric (T : ℝ)) 1 0 m
-                (connTraceCoeff (I := I) (G.metric (T : ℝ))
-                  (G.metric ((T : ℝ) - s)))
+                  (g_fam (T : ℝ)) 0 2 m U) -
+              appHs (g_fam (T : ℝ)) 1 0 m
+                (connTraceCoeff (I := I) (g_fam (T : ℝ))
+                  (g_fam ((T : ℝ) - s)))
                 (iterCovGradHs (I := I) (M := M)
-                  (G.metric (T : ℝ)) 0 1 m
+                  (g_fam (T : ℝ)) 0 1 m
                   (tensorHsInclusion (I := I) (M := M)
-                    (g := G.metric (T : ℝ)) (r := 0) (s := 0)
+                    (g := g_fam (T : ℝ)) (r := 0) (s := 0)
                     (by norm_num : (m : ℝ) + ((1 : ℕ) : ℝ) ≤
                       (m : ℝ) + 2) U)) := by
   classical
   obtain ⟨tau, htau, htau_one, hreg, hcore⟩ :=
-    lapDiffHs_core (I := I) (M := M) G hG T
+    lapDiffHs_core (I := I) (M := M) g_fam hG T
   refine ⟨tau, htau, htau_one, hreg, ?_⟩
   intro m s hs U
-  let q : SmoothRiemannianMetric I M := G.metric (T : ℝ)
-  let h : SmoothRiemannianMetric I M := G.metric ((T : ℝ) - s)
+  let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
+  let h : SmoothRiemannianMetric I M := g_fam ((T : ℝ) - s)
   let J := tensorHsInclusion (I := I) (M := M)
     (g := q) (r := 0) (s := 0)
     (by norm_num : (m : ℝ) + ((1 : ℕ) : ℝ) ≤ (m : ℝ) + 2)
@@ -138,50 +131,48 @@ theorem lapDiffHs_decomp
   simpa only [L, R, D₂, D₁, J, q, h,
     ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply] using congrFun hLR U
 
-
-
 theorem lapDiffHs_path_cd
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) :
     ∃ tau : ℝ, 0 < tau ∧ tau ≤ 1 ∧
       (∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) ∧
       ∀ (m : ℕ)
-        (U : tensorHs (I := I) (M := M) (G.metric (T : ℝ)) 0 0
+        (U : tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
           ((m : ℝ) + 2)),
         ContDiffOn ℝ ∞
-          (fun s => lapDiffHs (I := I) (M := M) (G.metric (T : ℝ))
-            (G.metric ((T : ℝ) - s)) m U)
+          (fun s => lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
+            (g_fam ((T : ℝ) - s)) m U)
           (Set.Icc (0 : ℝ) tau) := by
   classical
   obtain ⟨tau, htau, htau_one, hreg, hdec⟩ :=
-    lapDiffHs_decomp (I := I) (M := M) G hG T
+    lapDiffHs_decomp (I := I) (M := M) g_fam hG T
   refine ⟨tau, htau, htau_one, hreg, ?_⟩
   intro m U
-  let q : SmoothRiemannianMetric I M := G.metric (T : ℝ)
+  let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let J := tensorHsInclusion (I := I) (M := M)
     (g := q) (r := 0) (s := 0)
     (by norm_num : (m : ℝ) + ((1 : ℕ) : ℝ) ≤ (m : ℝ) + 2)
   let V₂ := iterCovGradHs (I := I) (M := M) q 0 2 m U
   let V₁ := iterCovGradHs (I := I) (M := M) q 0 1 m (J U)
   have h₂ := appHs_path_cd (I := I) (M := M) q 2 0 m
-    (fun t => scalarTraceCoeff (I := I) q (G.metric t))
-    D.regular_isOpen (scalarTrace_joint (I := I) (M := M) G hG q) V₂
+    (fun t => scalarTraceCoeff (I := I) q (g_fam t))
+    D.regular_isOpen (scalarTrace_joint (I := I) (M := M) g_fam hG q) V₂
   have h₁ := appHs_path_cd (I := I) (M := M) q 1 0 m
-    (fun t => connTraceCoeff (I := I) q (G.metric t))
-    D.regular_isOpen (connTrace_joint (I := I) (M := M) G hG q) V₁
+    (fun t => connTraceCoeff (I := I) q (g_fam t))
+    D.regular_isOpen (connTrace_joint (I := I) (M := M) g_fam hG q) V₁
   have hb : ContDiff ℝ ∞ (fun s : ℝ => (T : ℝ) - s) :=
     contDiff_const.sub contDiff_id
   have h₂b : ContDiffOn ℝ ∞
       (fun s => appHs q 2 0 m
-        (scalarTraceCoeff (I := I) q (G.metric ((T : ℝ) - s))) V₂)
+        (scalarTraceCoeff (I := I) q (g_fam ((T : ℝ) - s))) V₂)
       (Set.Icc (0 : ℝ) tau) := by
     simpa only [Function.comp_apply] using
       h₂.comp hb.contDiffOn (fun s hs => hreg s hs)
   have h₁b : ContDiffOn ℝ ∞
       (fun s => appHs q 1 0 m
-        (connTraceCoeff (I := I) q (G.metric ((T : ℝ) - s))) V₁)
+        (connTraceCoeff (I := I) q (g_fam ((T : ℝ) - s))) V₁)
       (Set.Icc (0 : ℝ) tau) := by
     simpa only [Function.comp_apply] using
       h₁.comp hb.contDiffOn (fun s hs => hreg s hs)
@@ -189,29 +180,27 @@ theorem lapDiffHs_path_cd
   intro s hs
   simpa only [q, J, V₂, V₁] using hdec m s hs U
 
-
-
 theorem lapDiffHs_dyn_fin
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) :
     ∃ tau : ℝ, 0 < tau ∧ tau ≤ 1 ∧
       (∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) ∧
       ∀ a, 0 < a → a ≤ tau → ∀ (m k : ℕ)
-        (U : ℝ → tensorHs (I := I) (M := M) (G.metric (T : ℝ)) 0 0
+        (U : ℝ → tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
           ((m : ℝ) + 2)),
         ContDiffOn ℝ k U (Set.Ioo (0 : ℝ) a) →
         ContDiffOn ℝ k
-          (fun s => lapDiffHs (I := I) (M := M) (G.metric (T : ℝ))
-            (G.metric ((T : ℝ) - s)) m (U s))
+          (fun s => lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
+            (g_fam ((T : ℝ) - s)) m (U s))
           (Set.Ioo (0 : ℝ) a) := by
   classical
   obtain ⟨tau, htau, htau_one, hreg, hdec⟩ :=
-    lapDiffHs_decomp (I := I) (M := M) G hG T
+    lapDiffHs_decomp (I := I) (M := M) g_fam hG T
   refine ⟨tau, htau, htau_one, hreg, ?_⟩
   intro a _ha hat m k U hU
-  let q : SmoothRiemannianMetric I M := G.metric (T : ℝ)
+  let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let J := tensorHsInclusion (I := I) (M := M)
     (g := q) (r := 0) (s := 0)
     (by norm_num : (m : ℝ) + ((1 : ℕ) : ℝ) ≤ (m : ℝ) + 2)
@@ -230,44 +219,42 @@ theorem lapDiffHs_dyn_fin
     intro s hs
     exact hreg s ⟨hs.1.le, hs.2.le.trans hat⟩
   have h₂ := appHs_dyn_fin (I := I) (M := M) q 2 0 m k
-    (fun s => scalarTraceCoeff (I := I) q (G.metric ((T : ℝ) - s)))
+    (fun s => scalarTraceCoeff (I := I) q (g_fam ((T : ℝ) - s)))
     isOpen_Ioo
-    (scalarTrace_rev_on (I := I) (M := M) G hG q (T : ℝ) hback) V₂ hV₂
+    (scalarTrace_rev_on (I := I) (M := M) g_fam hG q (T : ℝ) hback) V₂ hV₂
   have h₁ := appHs_dyn_fin (I := I) (M := M) q 1 0 m k
-    (fun s => connTraceCoeff (I := I) q (G.metric ((T : ℝ) - s)))
+    (fun s => connTraceCoeff (I := I) q (g_fam ((T : ℝ) - s)))
     isOpen_Ioo
-    (connTrace_rev_on (I := I) (M := M) G hG q (T : ℝ) hback) V₁ hV₁
+    (connTrace_rev_on (I := I) (M := M) g_fam hG q (T : ℝ) hback) V₁ hV₁
   refine (h₂.sub h₁).congr ?_
   intro s hs
   simpa only [q, J, D₂, D₁, V₂, V₁,
     ContinuousLinearMap.comp_apply] using
       hdec m s ⟨hs.1.le, hs.2.le.trans hat⟩ (U s)
 
-
-
 theorem lapDiffHs_dyn_cd
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) :
     ∃ tau : ℝ, 0 < tau ∧ tau ≤ 1 ∧
       (∀ s ∈ Set.Icc (0 : ℝ) tau, (T : ℝ) - s ∈ D.regular) ∧
       ∀ a, 0 < a → a ≤ tau → ∀ (m : ℕ)
-        (U : ℝ → tensorHs (I := I) (M := M) (G.metric (T : ℝ)) 0 0
+        (U : ℝ → tensorHs (I := I) (M := M) (g_fam (T : ℝ)) 0 0
           ((m : ℝ) + 2)),
         ContDiffOn ℝ ∞ U (Set.Ioo (0 : ℝ) a) →
         ContDiffOn ℝ ∞
-          (fun s => lapDiffHs (I := I) (M := M) (G.metric (T : ℝ))
-            (G.metric ((T : ℝ) - s)) m (U s))
+          (fun s => lapDiffHs (I := I) (M := M) (g_fam (T : ℝ))
+            (g_fam ((T : ℝ) - s)) m (U s))
           (Set.Ioo (0 : ℝ) a) := by
   obtain ⟨tau, htau, htau_one, hreg, hfin⟩ :=
-    lapDiffHs_dyn_fin (I := I) (M := M) G hG T
+    lapDiffHs_dyn_fin (I := I) (M := M) g_fam hG T
   refine ⟨tau, htau, htau_one, hreg, ?_⟩
   intro a ha hat m U hU
   rw [contDiffOn_infty] at hU ⊢
   intro k
   exact hfin a ha hat m k U (hU k)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

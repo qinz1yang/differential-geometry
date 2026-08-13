@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Iterated.EigenvectorIteratedStep
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.DifferentiatedRHS.EigenvectorDifferentiatedRHSMemW1p
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -31,7 +33,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma eigenvectorChartComponentFun_memWkp_of_pou
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -109,7 +111,7 @@ lemma eigenvectorChartRHSDiff_ae_zero_off_chartPouKernel
       exact eigenvectorChartRHSDiff_succ_eq_zero_off_chartPouKernel
         (I := I) (M := M) g r s i α P₀ m l hy.2
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 theorem exists_eigenvectorIteratedCarrier
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

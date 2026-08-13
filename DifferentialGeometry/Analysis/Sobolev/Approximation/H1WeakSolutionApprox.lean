@@ -388,18 +388,13 @@ theorem eLpNorm_partial_mollifyEps_le_of_weakPartial_univ
 
 structure H1WeakSolutionData
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) (u f : E → ℝ) where
-
   hu_l2 : MemLp u 2 (volume : Measure E)
-
   hf_l2 : MemLp f 2 (volume : Measure E)
-
   weakPartial : Fin d → (E → ℝ)
   weakPartial_l2 : ∀ j, MemLp (weakPartial j) 2 (volume : Measure E)
   weakPartial_isWeak : ∀ j,
     DeGiorgi.HasWeakPartialDeriv (d := d) j (weakPartial j) u Set.univ
-
   isWeakSolution : B.IsWeakSolution u f
-
   fseq_l2_bound : ℝ
   fseq_l2_bound_nn : 0 ≤ fseq_l2_bound
   fseq_l2_bounded : ∀ n : ℕ,

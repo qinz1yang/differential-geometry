@@ -2,44 +2,7 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.Chart
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SNabla
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SPartialEval
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
-
-/-!
-# Agreement of the chart/model `nabla0SFun` with the abstract bundled `(0, s)` covariant derivative
-
-This file supplies the repeatedly-flagged missing bridge between the two
-covariant-derivative formalisms on `(0, s)`-tensors (see
-`HCGCompactness/MetricCovDerivBridge.md`):
-
-* the **chart / model** derivative `nabla0SFun s cov X α`
-  (`Tensor/RSTensor/Derivation/NablaOnTensors.lean`), the pointwise value of
-  `totalNabla0S`/`metricCovDeriv`, built by trivialising to the model and reading the
-  local connection endomorphism; and
-* the **abstract** bundled derivative
-  `Tensor0SNabla.tensor0SCovariantDerivative I M s cov` (built recursively via the
-  curry isomorphism into the Hom-bundle).
-
-## Route
-
-Rather than reconciling the two chart parametrisations directly, we exploit that
-`nabla0SFun` already has a *closed intrinsic* evaluation formula on smooth slot
-sections, `nabla0SFun_eval_smooth_slots`:
-
-`(∇α)(V·) = ∂_X(α(V·)) − Σ_a α(…, ∇_X V_a, …)`.
-
-We prove that the abstract derivative satisfies the **same** closed formula
-(`abstractDerivEval_aux`, the tensor-derivation / Leibniz rule for
-`tensor0SCovariantDerivative`, proved by induction on `s` from the Hom-bundle
-product rule `homBundleCovariantDerivativeFun_apply_eq`).  The two closed formulas
-then match verbatim; realising an arbitrary slot tuple by smooth sections
-(`ContMDiffSection.exists_eq_at`) and using multilinear extensionality gives the
-agreement `nabla0SFun_eq_tensor0SCovariantDerivative`.
-
-## Main results
-
-* `abstractDerivEval_aux` — the abstract `(0, s)` covariant derivative on smooth slots,
-  in the intrinsic `∂ − Σ Γ` closed form.
-* `nabla0SFun_eq_tensor0SCovariantDerivative` — the headline agreement.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -47,10 +10,10 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -60,13 +23,11 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-open Tensor0SNabla
-open Tensor0SPartialEval
+open DifferentialGeometry.Tensor0SNabla
+open DifferentialGeometry.Tensor0SPartialEval
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-/-- Global-smoothness predicate for the total-space form of a `(0, s)`-tensor
-section (unbundled convenience wrapper). -/
 private def SectionSmooth (s : ℕ) (T : Π b : M, Tensor0SSpace s I b) : Prop :=
   letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x)) :=
@@ -75,15 +36,12 @@ private def SectionSmooth (s : ℕ) (T : Π b : M, Tensor0SSpace s I b) : Prop :
     (fun b : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
       (E := fun x : M => Tensor0SSpace s I x) b (T b))
 
-/-- Global-smoothness predicate for a tangent vector field (total-space form). -/
 private def VecSmooth (Y : Π b : M, TangentSpace I b) : Prop :=
   ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
     (fun b : M => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) b (Y b))
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-/-- Round-trip of `(tensor0Iso x).symm a` at the unique empty input gives `a`
-(copied from the rank-0 agreement file; kept private here). -/
 private lemma tensor0Iso_symm_apply_empty' (x : M) (a : ℝ) :
     (show ContinuousMultilinearMap ℝ (fun _ : Fin 0 => TangentSpace I x) ℝ from
         ((tensor0Iso (I := I) (M := M) x).symm a))
@@ -106,8 +64,6 @@ private lemma tensor0Iso_symm_apply_empty' (x : M) (a : ℝ) :
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-/-- Round-trip of the un-curry inverse on a `Fin.cons` tuple (copied from the
-succ agreement file; kept private here). -/
 private lemma curry_symm_cons (s : ℕ) {b : M}
     (Φ : TangentSpace I b →L[ℝ] Tensor0SSpace s I b)
     (v : TangentSpace I b) (m : Fin s → TangentSpace I b) :
@@ -135,7 +91,6 @@ private lemma curry_symm_cons (s : ℕ) {b : M}
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-/-- Evaluate `T x` on `Fin.cons v0 m` through the curried section (CMLM form). -/
 private lemma cmlm_cons_eq_curry (s : ℕ) {x : M}
     (T : Π b : M, Tensor0SSpace (s + 1) I b) (v0 : TangentSpace I x)
     (m : Fin s → TangentSpace I x) :
@@ -153,11 +108,8 @@ private lemma cmlm_cons_eq_curry (s : ℕ) {x : M}
   exact (TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     (T := T x) (v0 := v0) (vs := m)).symm
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- **Tensor-derivation (Leibniz) rule for the abstract `(0, s)` covariant
-derivative, closed intrinsic form.**  Induction on `s`; the step uses the
-Hom-bundle product rule and the rank-`s` inductive hypothesis on the partial
-evaluation of `T` along the first slot field. -/
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 theorem abstractDerivEval_aux
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [CovariantDerivative.ContMDiffCovariantDerivative cov ∞] :
@@ -204,7 +156,6 @@ theorem abstractDerivEval_aux
     simp
   | succ s ih =>
     intro T V X hT hV hX x
-    -- smoothness / differentiability facts
     have hX_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
         (fun b : M => TotalSpace.mk' E (E := fun x : M => TangentSpace I x) b (X b)) x :=
       hX.contMDiffAt.mdifferentiableAt (by simp)
@@ -214,19 +165,16 @@ theorem abstractDerivEval_aux
     have hT_at : TensorSectionMDiffAt (I := I) (s + 1) T x :=
       hT.contMDiffAt.mdifferentiableAt (by simp)
     have hτ_at := mdifferentiableAt_curriedSection_of_section (I := I) (M := M) s T hT_at
-    -- partial evaluation of `T` along the first slot field
     set PT : Π b : M, Tensor0SSpace s I b :=
       tensor0SPartialEval I M T (V 0) with hPT_def
     have hPT : SectionSmooth (I := I) s PT :=
       contMDiff_tensor0SPartialEval (I := I) (M := M) (s := s) T hT (V 0) (hV 0)
-    -- decompose the evaluation tuple through `Fin.cons`
     have htuple : (fun a : Fin (s + 1) => V a x) =
         Fin.cons (V 0 x) (fun i : Fin s => V i.succ x) := by
       funext a
       refine Fin.cases ?_ ?_ a
       · simp
       · intro i; simp
-    -- unfold the abstract successor derivative and peel slot 0
     conv_lhs => rw [htuple]
     rw [tensor0SCovariantDerivative_succ_eq (I := I) (M := M) (s := s) (cov := cov)]
     rw [tensor0SCovariantDerivative_succ_apply (I := I) (M := M) (s := s)
@@ -242,23 +190,19 @@ theorem abstractDerivEval_aux
       (cov_TM := cov) (cov_V := tensor0SCovariantDerivative I M s cov)
       (τ := curriedSection I M T) (x := x) hτ_at
       (V_field := X) (Y := V 0) hX_at hV0_at
-    -- rewrite `Φ (V 0 x)` via the Hom-bundle product rule
     rw [show HomConnection.homBundleCovariantDerivativeFun I M
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
           (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x) (V 0 x) =
         (tensor0SCovariantDerivative I M s cov)
             (fun y : M => (curriedSection I M T) y (V 0 y)) x (X x) -
           curriedSection I M T x (cov (V 0) x (X x)) from hPsi]
-    -- the paired section is exactly the partial evaluation
     have hpair : (fun y : M => (curriedSection I M T) y (V 0 y)) = PT := by
       funext y; rw [hPT_def]; rfl
     rw [hpair]
     rw [ContinuousMultilinearMap.sub_apply]
-    -- inductive hypothesis on the partial evaluation and the tail slots
     have hIH := ih PT (fun i : Fin s => V i.succ) X hPT
       (fun i => hV i.succ) hX x
     rw [hIH]
-    -- relate the intrinsic pieces (LHS ∂-piece ↦ goal ∂-piece)
     have hintr :
         (fun p : M => (show ContinuousMultilinearMap ℝ
             (fun _ : Fin s => TangentSpace I p) ℝ from PT p)
@@ -277,7 +221,6 @@ theorem abstractDerivEval_aux
       exact (cmlm_cons_eq_curry (I := I) (M := M) s T (V 0 p)
         (fun i : Fin s => V i.succ p)).symm
     rw [hintr]
-    -- relate the correction slot for the second (slot-0) term
     have hslot0 :
         (show ContinuousMultilinearMap ℝ
             (fun _ : Fin s => TangentSpace I x) ℝ from
@@ -289,7 +232,6 @@ theorem abstractDerivEval_aux
       (cmlm_cons_eq_curry (I := I) (M := M) s T (cov (V 0) x (X x))
         (fun i : Fin s => V i.succ x)).symm
     rw [hslot0]
-    -- relate the correction slots in the tail sum
     have htail :
         ∀ i : Fin s,
           (show ContinuousMultilinearMap ℝ
@@ -306,7 +248,6 @@ theorem abstractDerivEval_aux
         (Function.update (fun j : Fin s => V j.succ x) i
           ((cov (V i.succ) x) (X x)))).symm
     simp only [htail]
-    -- peel slot 0 of the goal sum and match `Fin.cons` shapes
     rw [Fin.sum_univ_succ (f := fun a : Fin (s + 1) =>
       (show ContinuousMultilinearMap ℝ
           (fun _ : Fin (s + 1) => TangentSpace I x) ℝ from T x)
@@ -335,10 +276,7 @@ theorem abstractDerivEval_aux
     simp only [hcons0, hconsSucc]
     ring
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-/-- **Headline agreement.**  The chart/model derivative `nabla0SFun s (LeviCivita g)`
-of a smooth `(0, s)`-tensor field agrees, as a fibre `(0, s)`-tensor, with the
-abstract bundled covariant derivative built from the Levi-Civita connection. -/
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem nabla0SFun_eq_tensor0SCovariantDerivative
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
@@ -352,13 +290,11 @@ theorem nabla0SFun_eq_tensor0SCovariantDerivative
   classical
   apply ContinuousMultilinearMap.ext
   intro m
-  -- realise each slot by a smooth tangent section agreeing with `m` at `x`
   choose V hVx using fun a : Fin s =>
     ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞)) (F := E)
       (V := (TangentSpace I : M → Type _)) x (m a)
   have hmV : (fun a : Fin s => V a x) = m := funext hVx
   rw [← hmV]
-  -- both sides reduce to the same intrinsic closed form
   rw [nabla0SFun_eval_smooth_slots (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
       (s := s) (LeviCivita (I := I) g) X V α x]
   rw [abstractDerivEval_aux (I := I) (M := M) (LeviCivita (I := I) g) s
@@ -366,7 +302,7 @@ theorem nabla0SFun_eq_tensor0SCovariantDerivative
       α.contMDiff (fun a => (V a).contMDiff) X.contMDiff x]
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

@@ -1,22 +1,25 @@
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseOrderPeeling
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.SmoothTensorAllOrderCompleteness
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqNormBridge
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Topology Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter Topology DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
 open DifferentialGeometry.Tensor
@@ -497,7 +500,7 @@ theorem bareJet_le_fiber
       have hmN : m ≤ N := Nat.lt_succ_iff.mp (Finset.mem_range.mp hm)
       have hpeel := hCpeel D m hmN 0 (by omega) q'.1 q'.2 y hyK'
       have h0eq : (iteratedCovGrad (I := I) g r s 0 D) = D :=
-        DifferentialGeometry.PDE.RicciFlow.iteratedCovGrad_zero (I := I) g r s D
+        DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_zero (I := I) g r s D
       rw [h0eq] at hpeel
       have hreindex : (∑ i ∈ Finset.range (m + 1),
             tensorComponentAbsSum (I := I) (M := M) g r (s + (0 + i))
@@ -556,4 +559,4 @@ lemma bareChartJetContent_le_sqrt_fiberNormSq_sum
   obtain ⟨C, hC, h⟩ := bareJet_le_fiber (I := I) (M := M) g r s α N
   exact ⟨C, hC, h D⟩
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Spectral

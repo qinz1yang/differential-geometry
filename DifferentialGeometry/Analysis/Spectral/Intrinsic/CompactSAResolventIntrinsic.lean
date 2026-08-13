@@ -4,19 +4,19 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Resolvent
 
 noncomputable section
 
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
@@ -50,9 +50,8 @@ example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s) :=
   tensorResolventL2_isCompactOperator (I := I) (M := M) g r s
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

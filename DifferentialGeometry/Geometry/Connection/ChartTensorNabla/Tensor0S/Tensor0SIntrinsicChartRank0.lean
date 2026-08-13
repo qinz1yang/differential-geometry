@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor0SChartChristoffel
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SCovariantDerivative
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.TensorSectionMDifferentiability
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -8,10 +9,11 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
-open Bundle Set Tensor0SBundle
+open Bundle Set DifferentialGeometry.Tensor0SBundle
+
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable
@@ -239,7 +241,7 @@ theorem tensor0SIntrinsicChartCLM_zero_apply_empty_eq_mfderiv
     hb_src hb_tgt_int hscalarFn_at v).symm
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

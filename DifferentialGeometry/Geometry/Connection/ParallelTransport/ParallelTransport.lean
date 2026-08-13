@@ -11,12 +11,15 @@ import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import Mathlib.Analysis.ODE.PicardLindelof
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.Calculus.MeanValue
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 open Set Function Filter Manifold Bundle
 open scoped Topology Manifold ContDiff
+
 
 namespace DifferentialGeometry
 namespace Geometry
@@ -30,6 +33,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
@@ -249,18 +253,12 @@ theorem parallel_global_extension [I.Boundaryless]
 
 structure ParallelSegmentData [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M) (a b t₀ : ℝ) : Prop where
-
   hab : a ≤ b
-
   ht₀ : t₀ ∈ Set.Ioo a b
-
   huCont : ContinuousOn (fun t => deriv (chartCurve (I := I) α γ) t) (Set.Icc a b)
-
   huCurveCont : ContinuousOn (chartCurve (I := I) α γ) (Set.Icc a b)
-
   huDeriv : ∀ t ∈ Set.Ioo a b,
     HasDerivAt (chartCurve (I := I) α γ) (deriv (chartCurve (I := I) α γ) t) t
-
   hsource : ∀ t ∈ Set.Icc a b, γ t ∈ (chartAt H α).source
 
 
@@ -714,7 +712,7 @@ theorem parallel_transport_preserves_inner_product [I.Boundaryless]
         rw [extChartAt_source_eq_chartAt_source (I := I)]
         rw [TangentBundle.trivializationAt_baseSet] at hs
         exact hs
-      rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_def, hinv]
+      rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def, hinv]
     have hu_hasDerivAt : HasDerivAt (chartCurve (I := I) α γ)
         (deriv (chartCurve (I := I) α γ) t₀) t₀ := by
       have hcd : ContDiffAt ℝ (N : ℕ∞) (chartCurve (I := I) α γ) t₀ := by

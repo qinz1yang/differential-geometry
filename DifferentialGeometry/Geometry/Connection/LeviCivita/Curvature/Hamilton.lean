@@ -1,27 +1,18 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.DifferentiatedSecondBianchi
 import DifferentialGeometry.Geometry.Curvature.CurvatureActionLower
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Topology Manifold ContDiff BigOperators
 
-/-!
-# Static Hamilton curvature identity
-
-This file derives the fixed-metric covariant-derivative identity underlying the
-arbitrary-dimensional Hamilton evolution equation for lowered Riemann
-curvature.  The first layer is pure slot algebra; the geometric layer supplies
-canonical Levi-Civita Bianchi, symmetry, trace, and Ricci-identity producers.
--/
-
-/-- Six Hessian contractions reduce to the rough trace and five derivative
-commutators using only the Riemann symmetries and differentiated second
-Bianchi identity. -/
 theorem hessian_comm_eq
     {V : Type*} (N : V -> V -> V -> V -> V -> V -> Real)
     (hOut : forall u v a b c d,
@@ -95,8 +86,6 @@ private def rmAction4
     R A B (basis p) D * R U W C (basis p) +
     R A B C (basis p) * R U W D (basis p))
 
-/-- The arbitrary-dimensional quadratic reaction in Hamilton's evolution of
-the lowered Riemann tensor, written in a finite orthonormal frame. -/
 def hamiltonRmReact {Idx : Type*} [Fintype Idx]
     (R : (Fin 4 -> Idx) -> Real) (m : Fin 4 -> Idx) : Real :=
   -2 * (∑ e : Idx, ∑ f : Idx,
@@ -556,8 +545,6 @@ private theorem canRawLowering
       rw [Finset.sum_comm]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-/-- Canonical Levi-Civita `nabla^2 Rm04` satisfies the covariant-tensor Ricci
-identity, so every derivative commutator is the curvature action on `Rm04`. -/
 theorem canRmRicci
     (g : SmoothRiemannianMetric I M) {x : M} :
     let cov := leviCivitaConnectionOfMetric (I := I) g
@@ -607,9 +594,6 @@ theorem canRmRicci
         5 cov X nablaRm04 x slots
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-/-- The six second-Ricci-derivative terms in the lowered-Riemann variation
-equal one rough-trace summand plus five curvature actions.  This is the static,
-pointwise Hamilton commutator identity before summing an orthonormal basis. -/
 theorem canRmHessComm
     (g : SmoothRiemannianMetric I M) {x : M}
     (A B C D V : TangentSpace I x) :
@@ -695,9 +679,6 @@ theorem canRmHessComm
     comm_eq B V A D C V] at hAlg
   simpa [cov, hcov, Rm13, Rm04, nablaRm04, nabla2Rm04, N] using hAlg
 
-/-- In a basis whose inverse metric is the identity matrix, the six canonical
-`nabla^2 Ric` terms in the lowered-Riemann variation are the basis trace of the
-rough Hessian and the five curvature-action terms from `canRmHessComm`. -/
 theorem canRicHessSum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -808,10 +789,6 @@ theorem canRicHessSum
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib,
     Finset.sum_neg_distrib]
 
-/-- Hamilton's fixed-metric identity for the canonical lowered Riemann tensor:
-the six second-Ricci derivatives and the metric-lowering variation equal the
-rough Hessian trace plus the explicit arbitrary-dimensional quadratic
-reaction. -/
 theorem hamiltonRm04Id
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -992,4 +969,4 @@ theorem hamiltonRm04Id
   simp [hamiltonRmReact, Rcomp, A, B, C, D]
   linear_combination hRaw
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

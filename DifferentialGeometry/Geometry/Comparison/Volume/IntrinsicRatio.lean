@@ -1,28 +1,8 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopIntrinsic
 import DifferentialGeometry.Geometry.Comparison.Variation.MinimizingNoConj
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Intrinsic Bishop ratio — consumer adapters
-
-Thin consumer-facing adapters on the whole-tail intrinsic Bishop ratio
-`exists_intrRatio`.  Along the complete intrinsic geodesic
-`γ = intrinsicGeodesic g hEnorm p u` (speed `ell = √(g.inner p u u)`) with the
-transverse Jacobi frame `V`, under a lower Ricci bound `Ric ≥ -(n-1)q²` and
-interior nonconjugacy:
-
-* `intrCross_anti` — division-free (cross-multiplicative) Bishop ratio
-  monotonicity, the form the relative Bishop--Gromov volume comparison consumes.
-* `densUB_of_pole` — antitone ratio plus a near-pole cap gives a uniform
-  pointwise upper density bound; and `intrDens_le_hyp`, its intrinsic instance
-  `curveDensity ≤ N · hypDensity`.
-* `intrNoConj_min` — the interior nonconjugacy hypothesis packaged from a
-  minimizing intrinsic tail (`tail_no_conj`).
-
-The model is scaled by the speed: comparisons are against `hypDensity (q * ell)`
-and `hypMeanCurv (q * ell)`, the true form (see `IntrinsicRatio.md`).
--/
 
 noncomputable section
 
@@ -62,14 +42,9 @@ variable [pseudoEMetricSpace : PseudoEMetricSpace M]
     IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
 omit [CompleteSpace E] in
-/-- Division-free Bishop ratio monotonicity along the complete intrinsic
-geodesic: for `s ≤ t` in the conjugate-free window,
-`curveDensity t · hypDensity s ≤ curveDensity s · hypDensity t`.  The
-cross-multiplicative form consumed by the relative Bishop--Gromov comparison. -/
 theorem intrCross_anti
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (q b : Real)
     (hq : 0 ≤ q)
     (hd : 0 < Module.finrank Real E - 1)
@@ -119,9 +94,6 @@ omit riemannianBundle
   riemannianManifold
   completeSpaceM
   continuousRiemannianBundle in
-/-- Antitone density ratio plus a near-pole cap gives a uniform pointwise upper
-density bound on the whole window.  Pure consequence of monotonicity: the ratio
-sup is attained at the pole. -/
 theorem densUB_of_pole
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (γ : Real → M)
@@ -157,11 +129,7 @@ omit [NeZero (Module.finrank ℝ E)]
   riemannianManifold
   completeSpaceM
   continuousRiemannianBundle in
-/-- A nonzero tangent vector plus an orthogonal linearly independent transverse
-family assembles into an `Option`-indexed basis of `E`, with `none ↦ u` and
-`some i ↦ v i`.  (Weaker input than `exists_scaled_basis`: only `u ⊥ vᵢ` and
-`LinearIndependent v`, not orthonormality.) -/
-private theorem exists_perp_basis
+theorem exists_perp_basis
     (g : SmoothRiemannianMetric I M) (p : M) (u : TangentSpace I p)
     (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)
     (hv : LinearIndependent Real v)
@@ -200,7 +168,6 @@ private theorem exists_perp_basis
   · exact hb none
   · intro i; exact hb (some i)
 
-/-- The hyperbolic warping function dominates the radius. -/
 private lemma hypSn_ge_id {q : Real} (hq : 0 ≤ q) {t : Real} (ht : 0 ≤ t) :
     t ≤ hypSn q t := by
   by_cases hq0 : q = 0
@@ -210,27 +177,14 @@ private lemma hypSn_ge_id {q : Real} (hq : 0 ≤ q) {t : Real} (ht : 0 ≤ t) :
     calc t * q = q * t := mul_comm _ _
       _ ≤ Real.sinh (q * t) := Real.self_le_sinh_iff.mpr (mul_nonneg hq ht)
 
-/-- The hyperbolic model density dominates the Euclidean radial density. -/
 private lemma hypDens_ge_pow {q : Real} (hq : 0 ≤ q) {d : ℕ} {t : Real}
     (ht : 0 ≤ t) : t ^ d ≤ hypDensity q d t := by
   rw [hypDensity]
   exact pow_le_pow_left₀ ht (hypSn_ge_id hq ht) d
 
-/-- Near-pole cap of the intrinsic transverse-Jacobi density ratio.
-
-FRONTIER (missing API).  For any linearly independent transverse frame the ratio
-`curveDensity / hypDensity` has a finite `t → 0⁺` limit (`= 1` for an
-orthonormal-at-pole frame), hence is eventually bounded.  The comparison tree
-currently exposes only the *lower* pole ratio (`radialRatio_auto`) and heavy
-chart-scale Gronwall *upper* density bounds; the light near-pole upper cap is not
-yet available.  Route to discharge (see `IntrinsicRatio.md`): `normalDensity_curve`
-(chart↔curve density identity) + boundedness of `normalChartDensity` near `0`
-(from `paramDensity_continuousOn_chart`) + `hypSn q t ≥ t`, transported to the
-intrinsic picture by `intrJacobi_raw`. -/
 private theorem intrPoleCap
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (q : Real) (hq : 0 ≤ q)
     (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)
     (hv : LinearIndependent Real v)
@@ -252,7 +206,6 @@ private theorem intrPoleCap
     simp at hu
   have hue_ne : ue ≠ 0 := hu_ne
   have hunorm : 0 < ‖ue‖ := norm_pos_iff.mpr hue_ne
-  -- chart window `Ioo 0 b₀`
   set b₀ : Real := expMapC2Radius (I := I) g p / ‖ue‖ with hb₀_def
   have hb₀ : 0 < b₀ :=
     div_pos (expMapC2Radius_pos (I := I) g p) hunorm
@@ -270,9 +223,8 @@ private theorem intrPoleCap
     intro i
     rw [hBsome i]
     exact hperp i
-  obtain ⟨c, hc, hdensity⟩ :=
+  obtain ⟨c, hc, _hcval, hdensity⟩ :=
     normalDensity_curve (I := I) g p ue B hBnone hBperp hsrc hrad
-  -- near-pole bound on the chart density
   have hcontAt : ContinuousAt (normalChartDensity (I := I) g p) 0 := by
     have hcont : ContinuousOn (normalChartDensity (I := I) g p)
         (expMapDiffeo (I := I) g p).source := by
@@ -300,7 +252,6 @@ private theorem intrPoleCap
         normalChartDensity (I := I) g p w < M₀ :=
       hcontAt (Iio_mem_nhds (by rw [hM₀_def]; exact lt_add_one _))
     exact htend.eventually hbnd
-  -- intrinsic density agrees with the radial one near the pole
   have hcurveEq : ∀ᶠ t in 𝓝[>] (0 : Real),
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
           (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t =
@@ -329,7 +280,6 @@ private theorem intrPoleCap
       simp only [curveGram, Matrix.of_apply]
       rw [hct, hft i, hft j]
     simp only [curveDensity, hgram]
-  -- assemble the cap `N = M₀ / c`
   refine ⟨M₀ / c, div_pos hM₀pos hc, ?_⟩
   have hwin : Set.Ioo (0 : Real) b₀ ∈ 𝓝[>] (0 : Real) :=
     Ioo_mem_nhdsGT hb₀
@@ -360,15 +310,9 @@ private theorem intrPoleCap
     _ ≤ M₀ * hypDensity (q * ell) (Module.finrank Real E - 1) t :=
         mul_le_mul_of_nonneg_left hHDge hM₀pos.le
 
-/-- Pointwise upper density along the conjugate-free intrinsic geodesic:
-`curveDensity g γ V t ≤ N · hypDensity (q·ℓ) d t` on the whole window, for a
-positive pole normalization `N`.  Priority consumer for the segment-domain
-polar-measure representation.  Reduces (via `densUB_of_pole`) to the near-pole
-frontier `intrPoleCap`. -/
 theorem intrDens_le_hyp
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (q b : Real)
     (hq : 0 ≤ q)
     (hd : 0 < Module.finrank Real E - 1)
@@ -395,15 +339,9 @@ theorem intrDens_le_hyp
   exact ⟨N, hN,
     densUB_of_pole (I := I) g γ V (mul_nonneg hq (Real.sqrt_nonneg _)) hanti hcap⟩
 
-/-- Interior nonconjugacy for the intrinsic Bishop adapters, packaged from a
-minimizing intrinsic tail (`tail_no_conj`): along the shifted tail geodesic that
-starts at `z.proj` with velocity `uTail`, every interior radial time is
-nonconjugate.  Supplies the `hno` hypothesis of `intrCross_anti` /
-`intrDens_le_hyp` with base point `z.proj`, direction `uTail` and window `b = 1`. -/
 theorem intrNoConj_min
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {O x : M} (v : TangentSpace I O)
     (hexp : expMapIntrinsic (I := I) g hEnorm O v = x)
     (hlen : Real.sqrt (g.inner O v v) = (riemannianEDist I O x).toReal)

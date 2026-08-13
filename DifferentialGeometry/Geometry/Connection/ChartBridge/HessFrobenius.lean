@@ -1,15 +1,19 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
-open Bundle Manifold Set FiberBundle Tensor0SBundle
+open Bundle Manifold Set FiberBundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -21,6 +25,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
 
 
@@ -33,8 +38,6 @@ noncomputable def leviHessSec
     (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g)
     f hf
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -87,8 +90,6 @@ private theorem hessSec_abs
         extDerivFun (I := I) f x ((cov (fun p : M => Y p) x) (X x)) =
       ((cotangentCov cov).toFun (extDerivFun (I := I) f) x (X x)) (Y x)
   linarith
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -267,8 +268,6 @@ theorem chartHessFrobeniusSq_eq_metric_hessian_norm_sq [I.Boundaryless]
       (I := I) g f x hM
   exact h1.trans h2
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem hessSec_normSq [I.Boundaryless]
@@ -293,5 +292,5 @@ theorem hessSec_normSq [I.Boundaryless]
     hessSec_chart_comp (I := I) g hf x hx k l]
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

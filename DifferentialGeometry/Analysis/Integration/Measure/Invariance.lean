@@ -1031,6 +1031,43 @@ theorem riemannianMeasure_eq_riemannianVolumeMeasure
   exact riemannianMeasure_eq_of_pou_independent (I := I) g ρ
     (chartAtlasPOU I M) hρ (chartAtlasPOU_isSubordinate I M)
 
+lemma finBasis_repr_sum
+    (L : E →L[ℝ] E) (i : Fin (Module.finrank ℝ E)) :
+    L ((Module.finBasis ℝ E) i) =
+      ∑ k, ((Module.finBasis ℝ E).repr (L ((Module.finBasis ℝ E) i)) k)
+            • (Module.finBasis ℝ E) k :=
+  (((Module.finBasis ℝ E).sum_repr (L ((Module.finBasis ℝ E) i)))).symm
+
+def transitionMatrix_gen (x₀ x₁ : M) (x : M) :
+    Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
+  Matrix.of fun k i =>
+    (Module.finBasis ℝ E).repr
+      ((tangentCoordChange I x₁ x₀ x) ((Module.finBasis ℝ E) i)) k
+
+@[simp] lemma transitionMatrix_apply_gen (x₀ x₁ : M) (x : M)
+    (k i : Fin (Module.finrank ℝ E)) :
+    transitionMatrix_gen (I := I) x₀ x₁ x k i =
+      (Module.finBasis ℝ E).repr
+        ((tangentCoordChange I x₁ x₀ x) ((Module.finBasis ℝ E) i)) k := rfl
+
+lemma tangentCoordChange_finBasis_eq_sum
+    (x₀ x₁ : M) (x : M) (i : Fin (Module.finrank ℝ E)) :
+    (tangentCoordChange I x₁ x₀ x) ((Module.finBasis ℝ E) i) =
+      ∑ k, transitionMatrix_gen (I := I) x₀ x₁ x k i • (Module.finBasis ℝ E) k :=
+  finBasis_repr_sum (tangentCoordChange I x₁ x₀ x) i
+
+lemma transitionMatrix_det_gen (x₀ x₁ : M) (x : M) :
+    (transitionMatrix_gen (I := I) x₀ x₁ x).det =
+      (tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).det := by
+  have hL :
+      transitionMatrix_gen (I := I) x₀ x₁ x =
+        LinearMap.toMatrix (Module.finBasis ℝ E) (Module.finBasis ℝ E)
+          (tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).toLinearMap := by
+    ext k i
+    simp [transitionMatrix_gen, LinearMap.toMatrix_apply]
+  rw [hL]
+  rw [LinearMap.det_toMatrix]
+
 end Measure
 end Integral
 end DifferentialGeometry

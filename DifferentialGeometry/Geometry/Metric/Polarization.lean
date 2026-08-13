@@ -2,14 +2,6 @@ import DifferentialGeometry.Geometry.Metric.Basic
 
 set_option autoImplicit false
 
-/-!
-# Polarization for pointwise Riemannian metrics
-
-This file records the small fiberwise polarization step used by local-isometry
-arguments: a real-linear map that preserves the metric quadratic form
-preserves the full metric inner product.
--/
-
 noncomputable section
 
 open scoped Manifold ContDiff
@@ -27,8 +19,6 @@ variable {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners ℝ E' H'}
 variable {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M']
   [IsManifold I' ∞ M']
 
-/-- A continuous linear map between tangent fibers that preserves every
-metric square preserves the full pointwise metric. -/
 theorem inner_eq_of_diag
     (g : SmoothRiemannianMetric I M) (g' : SmoothRiemannianMetric I' M')
     (x : M) (x' : M')

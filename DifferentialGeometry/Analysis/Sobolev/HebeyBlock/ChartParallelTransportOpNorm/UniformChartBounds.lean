@@ -1,8 +1,10 @@
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.ChartFrameNorm
 import DifferentialGeometry.Tensor.Multilinear.HsBoundOp
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 open Bundle
 open scoped Manifold ContDiff BigOperators ENNReal
@@ -759,4 +761,4 @@ theorem uniform_chart_bounds_from_compactness
     _ = Real.sqrt CE * (tsumHs ^ (1 / 2 : ℝ)).toReal := by
         rw [ENNReal.toReal_ofReal (Real.sqrt_nonneg _)]
 
-end DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+end DifferentialGeometry.Analysis.Sobolev.HebeyBlock

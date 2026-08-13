@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.Bootstrap.IteratedRegularityBootstrap
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -18,7 +19,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -35,11 +36,11 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 section Headline
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 local notation "dimE" => Module.finrank ℝ E
 
-omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+omit [I.Boundaryless] [T2Space M] [CompactSpace M]
   [NeZero (Module.finrank ℝ E)] in
 private lemma chain_step_le
     {S S' BFp BFp' L : ℝ≥0∞} {a c : ℝ} (ha : 0 ≤ a) (hc : 0 ≤ c)
@@ -60,7 +61,7 @@ private lemma chain_step_le
       rw [ENNReal.ofReal_add (by norm_num : (0 : ℝ) ≤ 1) hc, ENNReal.ofReal_one],
     ← ENNReal.ofReal_mul ha]
 
-omit [NeZero dimE] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero dimE] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 private lemma sum_componentNorm_mono_order
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (F : SmoothCcTensor g r s)
     (α : M) {Ω'' : Set EuclN} {n n' : ℕ} (hn : n ≤ n') :

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeVariation
-import DifferentialGeometry.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Integration.DivergenceTheorem.Gradient
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Gradient
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
 import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
@@ -20,6 +20,7 @@ import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 
 set_option autoImplicit false
 
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 noncomputable section
@@ -28,25 +29,15 @@ open Filter MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Coordinates
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-
-
-
-
-
-
-
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {M : Type*}
-
-
-
 
 def expNegPotentialDensity (potential : M -> Real) : M -> Real :=
   fun x => Real.exp (-(potential x))
@@ -55,9 +46,6 @@ def expNegPotentialDensity (potential : M -> Real) : M -> Real :=
 def expNegPotentialWeightedMeasure [MeasurableSpace M] (mu : Measure M)
     (potential : M -> Real) : Measure M :=
   mu.withDensity fun x => ENNReal.ofReal (expNegPotentialDensity potential x)
-
-
-
 
 theorem expNegPotentialWeightedMeasure_integral_eq_base
     [MeasurableSpace M] (mu : Measure M) (potential integrand : M -> Real)
@@ -80,9 +68,6 @@ theorem expNegPotentialWeightedMeasure_integral_eq_base
   have hnonneg : 0 ≤ expNegPotentialDensity potential x :=
     le_of_lt (Real.exp_pos _)
   simp [ENNReal.toReal_ofReal hnonneg, smul_eq_mul]
-
-
-
 
 theorem expWeightedIBP_of_baseIntegral_zero [MeasurableSpace M]
     (mu : Measure M) (potential lapPotential gradPotentialNormSq : M -> Real)
@@ -107,8 +92,6 @@ theorem expWeightedIBP_of_baseIntegral_zero [MeasurableSpace M]
 def fFunctionalBracket (scalarCurvature gradPotentialNormSq : M -> Real) :
     M -> Real :=
   fun x => scalarCurvature x + gradPotentialNormSq x
-
-
 
 def fFunctionalClosedBracket (scalarCurvature lapPotential : M -> Real) :
     M -> Real :=
@@ -167,8 +150,6 @@ theorem fFunctionalFirstVariation_eq_of_hasFirstVariationAt [MeasurableSpace M]
   unfold fFunctionalFirstVariation FFunctionalHasFirstVariationAt at *
   exact h.deriv
 
-
-
 theorem expNegPotentialDensity_hasDerivAt
     {potentialPath : Real -> M -> Real} {s0 : Real}
     {potentialVariation : M -> Real}
@@ -185,13 +166,9 @@ theorem expNegPotentialDensity_hasDerivAt
   have h := (hpotential_deriv x).neg.exp
   simpa [expNegPotentialDensity, mul_comm, mul_left_comm, mul_assoc] using h
 
-
-
 def expWeightedMeasureVariationFactor
     (potentialVariation metricVariationTrace : M -> Real) : M -> Real :=
   fun x => metricVariationTrace x / 2 - potentialVariation x
-
-
 
 def expWeightedIntegralVariationIntegrand
     (potential potentialVariation metricVariationTrace phi phiVariation :

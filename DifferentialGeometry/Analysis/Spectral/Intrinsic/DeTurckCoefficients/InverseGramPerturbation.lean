@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.GramInvU
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -12,13 +15,13 @@ open Bundle Set Matrix
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace DeTurckCoefficients
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -227,8 +230,6 @@ theorem exists_chartInvGramMatrix_lipschitz_on_compact
         refine mul_le_mul_of_nonneg_right ?_ h_gram_nn
         linarith
 
-
-
 theorem chartInvGram_pou_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
@@ -266,9 +267,8 @@ theorem chartInvGram_pou_lip
   exact hpt.trans (mul_le_mul_of_nonneg_right (by dsimp [C]; linarith) hdiff_nonneg)
 
 end DeTurckCoefficients
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

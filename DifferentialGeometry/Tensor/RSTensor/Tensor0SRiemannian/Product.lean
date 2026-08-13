@@ -1,16 +1,10 @@
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -21,8 +15,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
 
 theorem inner0S_product_one_two
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -59,8 +51,6 @@ theorem inner0S_product_one_two
   apply Finset.sum_congr rfl
   intro j _
   ring
-
-
 
 theorem inner0S_three_product_right
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -102,7 +92,6 @@ theorem inner0S_three_product_right
   apply Finset.sum_congr rfl
   intro j _
   ring
-
 
 theorem normSq0S_smul_sub_product_one_two
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -982,8 +971,7 @@ theorem deriv4sum
   funext q
   by_cases hq : q = 0 <;> simp [hq]
 
-
-
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

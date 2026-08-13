@@ -1,73 +1,19 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmRaisingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannOrthoFrame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannHeat
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Integral.Connection
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -78,17 +24,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
-
-
-
 section AbstractBound
 
 variable {n : ℕ}
-
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -119,9 +57,6 @@ private theorem tensor04_vec4_sum_last
         (coef e • vecs e)) from rfl]
   rw [Rm04.map_update_smul, ← hupd]
   simp [smul_eq_mul]
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
@@ -156,15 +91,6 @@ private theorem cotangentSharp_orthoBasis_expand
   · rw [hdiag i, one_mul, cotangentToDual_apply_gen]
   · intro j _ hj; rw [hoff i j (fun h => hj h.symm), zero_mul]
   · intro h; exact absurd (Finset.mem_univ i) h
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
@@ -201,22 +127,6 @@ theorem curvatureAction0SAt_orthoBasis_eq_sum
   by_cases hp : p = q
   · subst hp; simp [Function.update]
   · simp [Function.update, hp]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
@@ -275,25 +185,12 @@ theorem abs_curvatureAction0SAt_orthoBasis_le
 
 end AbstractBound
 
-
-
-
-
-
-
-
-
 section OrthoBasisFrame
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem exists_orthoBasisFrameAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M) :
     ∃ (n : ℕ) (frame : Fin n → (x : M) → TangentSpace I x)
       (basis : Module.Basis (Fin n) Real (TangentSpace I x₀)),
@@ -329,29 +226,13 @@ theorem exists_orthoBasisFrameAt
 
 end OrthoBasisFrame
 
-
-
-
-
-
-
 section SolutionBound
 
 variable {n : ℕ}
 
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 theorem abs_nablaLapComm_T2_orthoBasis_le
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M)
     (frame : Fin n → (x : M) → TangentSpace I x)
     (basis : Module.Basis (Fin n) Real (TangentSpace I x₀))
@@ -385,8 +266,6 @@ theorem abs_nablaLapComm_T2_orthoBasis_le
       basis horth (nablaRm04Field (I := I) S t x₀) a c sidx
   simpa using hmain
 
-
-
 private theorem sum_pi_fin_succ {Idx : Type*} [Fintype Idx] {k : ℕ}
     (f : (Fin (k + 1) → Idx) → Real) :
     (∑ idx : Fin (k + 1) → Idx, f idx) =
@@ -395,9 +274,6 @@ private theorem sum_pi_fin_succ {Idx : Type*} [Fintype Idx] {k : ℕ}
   rw [← (Fin.consEquiv (fun _ : Fin (k + 1) => Idx)).sum_comp f]
   rw [Fintype.sum_prod_type]
   rfl
-
-
-
 
 theorem compNormSqMulti_eq_compNormSq5
     {Idx : Type*} [Fintype Idx] (A : (Fin 5 → Idx) → Real) :
@@ -427,23 +303,9 @@ theorem compNormSqMulti_eq_compNormSq5
     exact absurd (Subsingleton.elim y default) hy
   · intro h; exact absurd (Finset.mem_univ _) h
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 theorem abs_nablaLapComm_T2_orthoFrame_le
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x₀ : M) :
     ∃ (n : ℕ) (frame : Fin n → (x : M) → TangentSpace I x),
       (∀ i j : Fin n,
@@ -478,7 +340,7 @@ theorem abs_nablaLapComm_T2_orthoFrame_le
       refine Finset.sum_congr rfl fun j _ => ?_
       refine Finset.sum_congr rfl fun k _ => ?_
       refine Finset.sum_congr rfl fun l _ => ?_
-      simp only [DifferentialGeometry.Integral.Connection.rm04Comp]
+      simp only [DifferentialGeometry.Geometry.Curvature.rm04Comp]
       rw [hframe i, hframe j, hframe k, hframe l]
     have hNab :
         compNormSqMulti (fun idx : Fin 5 → Fin n =>

@@ -2,14 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatD1GaussianSplit
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxKern
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateTail
 
-/-!
-# Gaussian tails for the terminal Koch--Lamm flux kernel
-
-The split first-derivative Gaussian is scaled without changing the exact
-parabolic power appearing in `klD1Exp`.  This file then integrates its
-off-diagonal factor on a selected terminal spatial set.
--/
-
 noncomputable section
 
 open MeasureTheory Set Real
@@ -24,13 +16,11 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- Scaled half-Gaussian remainder for the first heat-derivative majorant. -/
 def heatD1Half (t : ℝ) (x : V) : ℝ :=
   ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (heatScale t)⁻¹ *
     baseD1Half ((heatScale t)⁻¹ • x)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The scaled half-Gaussian remainder is nonnegative. -/
 theorem heatD1Half_nonneg (t : ℝ) (x : V) : 0 ≤ heatD1Half t x := by
   unfold heatD1Half
   exact mul_nonneg
@@ -40,7 +30,6 @@ theorem heatD1Half_nonneg (t : ℝ) (x : V) : 0 ≤ heatD1Half t x := by
     (baseD1Half_nonneg (V := V) _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Pointwise power factorization of the scaled half-Gaussian remainder. -/
 theorem heatD1Half_pow {t p : ℝ} (ht : 0 < t) (x : V) :
     (heatD1Half t x) ^ p =
       ((((heatScale t) ^ Module.finrank ℝ V)⁻¹ *
@@ -53,7 +42,6 @@ theorem heatD1Half_pow {t p : ℝ} (ht : 0 < t) (x : V) :
       (inv_nonneg.mpr (heatScale_pos ht).le))
     (baseD1Half_nonneg (V := V) _)]
 
-/-- The scaled half-Gaussian remainder has an integrable real `p`-th power. -/
 theorem heatD1Half_rpow {t p : ℝ} (ht : 0 < t)
     (hp1 : 1 ≤ p) (hp2 : p ≤ 2) :
     Integrable (fun x : V ↦ (heatD1Half t x) ^ p) := by
@@ -62,8 +50,6 @@ theorem heatD1Half_rpow {t p : ℝ} (ht : 0 < t)
     (inv_ne_zero (heatScale_pos ht).ne')).const_mul _
 
 omit [Nontrivial V] in
-/-- The translated half-Gaussian power mass has the same exact parabolic
-scale exponent as the full first-derivative majorant. -/
 theorem heatD1Half_shift {t p : ℝ} (ht : 0 < t) (x : V) :
     ∫ y : V, (heatD1Half t (x - y)) ^ p =
       t ^ (((Module.finrank ℝ V : ℝ) * (1 - p) - p) / 2) *
@@ -86,8 +72,6 @@ theorem heatD1Half_shift {t p : ℝ} (ht : 0 < t) (x : V) :
         baseD1HalfMass V p := by rw [heatD1Pow_scale (V := V) ht]
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- A scaled distance lower bound extracts the Gaussian factor from the
-first-derivative majorant power. -/
 theorem heatD1Tail_pow {t k p : ℝ} (ht : 0 < t) (hk : 0 ≤ k)
     (hp : 0 ≤ p) {x : V}
     (hx : k ≤ ‖(heatScale t)⁻¹ • x‖) :
@@ -117,8 +101,6 @@ theorem heatD1Tail_pow {t k p : ℝ} (ht : 0 < t) (hk : 0 ≤ k)
           (heatScale t)⁻¹) ^ p) *
             (baseD1Half ((heatScale t)⁻¹ • x)) ^ p) := by ring
 
-/-- Spatial first-derivative power on one selected terminal slice, with a
-far-field Gaussian factor and the unchanged parabolic scale exponent. -/
 theorem klFluxSlice_pow {R k s p : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (hp1 : 1 ≤ p) (hp2 : p ≤ 2)
     (hs : s ∈ Ioc (R ^ 2 / 2) (R ^ 2)) (hst : s ≠ R ^ 2)
@@ -184,14 +166,10 @@ theorem klFluxSlice_pow {R k s p : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
           (((Module.finrank ℝ V : ℝ) * (1 - p) - p) / 2) *
             baseD1HalfMass V p) := rfl
 
-/-- Real `klPDual`-power mass of the radial flux majorant on a selected
-terminal spatial set. -/
 def klFluxTailPow (R : ℝ) (x : V) (S : Set V) : ℝ :=
   ∫ z : ℝ × V, ‖klFluxMajor (R ^ 2) x z‖ ^ klPDual V
     ∂klTailMeasure (V := V) R S
 
-/-- A lower radius `kR` on the selected terminal set yields the Gaussian
-flux-tail factor while preserving the exact `klD1Exp` time power. -/
 theorem klFluxTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (x : V) {S : Set V} (hSm : MeasurableSet S)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :

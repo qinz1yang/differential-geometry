@@ -53,7 +53,7 @@ lemma image_extChartAt_tsupport_subset_image_K
 
 theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform_of_subset
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M) (α : M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {K : Set M} (hK_compact : IsCompact K) (hK_sub : K ⊆ (chartAt H α).source)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
     ∃ C : ℝ, 0 < C ∧
@@ -96,7 +96,7 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform_of
 
 theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure_uniform_of_subset
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M) (α : M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {K : Set M} (hK_compact : IsCompact K) (hK_sub : K ⊆ (chartAt H α).source)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
     ∃ C : ℝ, 0 < C ∧

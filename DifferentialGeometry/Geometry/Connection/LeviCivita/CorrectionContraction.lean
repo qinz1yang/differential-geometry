@@ -1,26 +1,22 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Geodesic.Equation
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open Bundle Manifold
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open scoped Manifold ContDiff
 
@@ -30,8 +26,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem correction_eq_contr
@@ -87,8 +81,6 @@ theorem correction_eq_contr
     rw [Finset.sum_comm]
   rw [hLHS, hRHS]
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem const_cov_eq_contr
     (g : SmoothRiemannianMetric 𝓘(Real, E) E) (a z v w : E) :
@@ -135,5 +127,5 @@ theorem const_cov_eq_contr
   rfl
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

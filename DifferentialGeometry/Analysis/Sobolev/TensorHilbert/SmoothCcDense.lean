@@ -4,13 +4,13 @@ noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Analysis
+namespace Sobolev
 namespace IntrinsicSobolev
 
 open DifferentialGeometry.Integral.Measure
@@ -55,8 +55,8 @@ theorem smoothCcTensor_denseRange_toHs
   exact hcoe.comp (hwrap_surj.denseRange) hcont
 
 end IntrinsicSobolev
-end RicciFlow
-end PDE
+end Sobolev
+end Analysis
 end DifferentialGeometry
 
 end

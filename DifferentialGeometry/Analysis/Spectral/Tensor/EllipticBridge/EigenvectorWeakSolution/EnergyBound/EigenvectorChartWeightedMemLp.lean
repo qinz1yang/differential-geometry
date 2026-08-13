@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.LowerOrder.EigenvectorChartLowerOrderLimits
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.VariationalIdentity.TensorChartBilinearData
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -569,7 +572,7 @@ lemma tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid_weighted
     (tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
       (I := I) (M := M) g r s u α P₀)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 lemma componentLpLimit_ae_zero_off_chartPouKernel_weighted_unconditional
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -601,7 +604,7 @@ lemma componentLpLimit_ae_zero_off_chartPouKernel_weighted_unconditional
   filter_upwards [h_smul_w, h_comp_zero] with y hy hy_zero hyK
   rw [hy, smul_eq_mul, hy_zero hyK, mul_zero]
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 lemma componentLpLimit_memLp_weighted_unconditional
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

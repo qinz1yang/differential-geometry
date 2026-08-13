@@ -142,7 +142,7 @@ lemma eLpNorm_chartPushed_le_wkpNorm_chartPushed
 
 lemma exists_sup_chartDensity_on_pou_tsupport_image
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
     (h_supp_ne : (tsupport
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -172,7 +172,7 @@ lemma exists_sup_chartDensity_on_pou_tsupport_image
 
 lemma eLpNorm_pou_mul_riemannianMeasure_le_const_mul_eLpNorm_chartPushed_per_u
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu_meas : Measurable u) :
@@ -212,7 +212,7 @@ lemma eLpNorm_pou_mul_riemannianMeasure_le_const_mul_eLpNorm_chartPushed_per_u
 
 private noncomputable def chartLocalIntegralPouTsupport
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   ∫⁻ x, (tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ)).indicator (fun _ : M => (1 : ℝ≥0∞)) x
@@ -220,7 +220,7 @@ private noncomputable def chartLocalIntegralPouTsupport
 
 private noncomputable def euclideanDensityIntegralPouTsupport
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
     ENNReal.ofReal
@@ -235,7 +235,7 @@ private noncomputable def euclideanDensityIntegralPouTsupport
 
 private noncomputable def chartHaarFactor
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ≥0∞ :=
   chartLocalIntegralPouTsupport (I := I) (M := M) g α /
     euclideanDensityIntegralPouTsupport (I := I) (M := M) g α

@@ -2,25 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.InjectivityRa
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 universe u uE uH
@@ -38,21 +19,9 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-
-
-
-
-
-
 abbrev PointedSeqDistance
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) : Type _ :=
   forall k : Nat, (X.obj k).M -> (X.obj k).M -> Real
-
-
-
-
-
-
 
 structure InjRadiusDecayInput
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
@@ -86,33 +55,12 @@ def subseq {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 end InjRadiusDecayInput
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 structure VolumeComparisonInput
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
   dist : PointedSeqDistance (I := I) X
-
   r0 : Real
   r0_pos : 0 < r0
   Imult : Real -> Nat
-
-
-
   ballMult :
     forall (m : Real), forall k : Nat, forall {α : Type u}, [Fintype α] -> [DecidableEq α] ->
       forall centers : α -> (X.obj k).M, forall r : Real, 0 < r -> m * r <= r0 ->

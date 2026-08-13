@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.ChartRHSBounds.EigenvectorChartRHSEpNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.PouComponentBound.PouCutoffComponentBridge
 
+open DifferentialGeometry.Analysis.Spectral
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -28,7 +29,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma eigenvectorChartComponentFun_ae_eq_chartPushedPouWeight_mul_cutoff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

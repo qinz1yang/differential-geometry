@@ -3,13 +3,6 @@ import DifferentialGeometry.Analysis.ODE.PhaseFlowSmallness
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 
-
-
-
-
-
-
-
 noncomputable section
 
 open Set Metric
@@ -19,8 +12,6 @@ namespace DifferentialGeometry
 namespace PhaseFlow
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-
-
 
 theorem freeDiagInv_pos [Nontrivial E] :
     0 < ‖((freeDiagCLE (E := E)).symm : (E × E) →L[Real] (E × E))‖₊⁻¹ := by
@@ -39,8 +30,6 @@ theorem freeDiagInv_pos [Nontrivial E] :
   have hnn : (0 : NNReal) < ‖L‖₊ := by exact_mod_cast hnorm
   exact inv_pos.mpr hnn
 
-
-
 theorem invErr_mono {N c c' : NNReal} (hcc' : c ≤ c') (hc' : c' < N⁻¹) :
     N * (N⁻¹ - c)⁻¹ * c ≤ N * (N⁻¹ - c')⁻¹ * c' := by
   have hnum : N * c ≤ N * c' :=
@@ -50,8 +39,6 @@ theorem invErr_mono {N c c' : NNReal} (hcc' : c ≤ c') (hc' : c' < N⁻¹) :
   have hfrac : (N * c) / (N⁻¹ - c) ≤ (N * c') / (N⁻¹ - c') :=
     div_le_div₀ (mul_nonneg N.2 c'.2) hnum hden_pos hden
   simpa only [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using hfrac
-
-
 
 theorem invErr_lt_one {N c : NNReal}
     (hc : c < N⁻¹ / (2 * (N + 1))) :
@@ -88,8 +75,6 @@ theorem invErr_lt_one {N c : NNReal}
       ring
     _ < 1 := (div_lt_one hdiff).2 hnum
 
-
-
 theorem invVel_approx
     {F : E × E → E × E} {s : Set (E × E)} {c : NNReal}
     (hF : ApproximatesLinearOn F
@@ -121,9 +106,6 @@ theorem invVel_approx
     _ ≤ (c : Real) * ‖z - z'‖ := hfull
     _ = (c : Real) * ‖x - x'‖ := by rw [hprod]
 
-
-
-
 theorem invVel_fderiv_le
     {F : E × E → E × E} {s : Set (E × E)} {c : NNReal}
     (hF : ApproximatesLinearOn F
@@ -139,9 +121,6 @@ theorem invVel_fderiv_le
       (differentiableAt_id.prodMk (differentiableAt_const y))).snd
   simpa only [sub_neg_eq_add] using
     (invVel_approx hF y).fderiv_sub_le hs' hslice
-
-
-
 
 theorem inv_smooth_of_approx [CompleteSpace E] [FiniteDimensional Real E]
     {f : E → E} {A : E ≃L[Real] E} {s : Set E} {c : NNReal}
@@ -194,8 +173,6 @@ theorem inv_smooth_of_approx [CompleteSpace E] [FiniteDimensional Real E]
     exact hsmx
   exact (e.contDiffAt_symm hy heD' hesm).contDiffWithinAt
 
-
-
 theorem quantInv_smooth [CompleteSpace E] [FiniteDimensional Real E]
     {f : E → E} {A : E ≃L[Real] E} {s : Set E} {c : NNReal}
     (hf : ApproximatesLinearOn f (A : E →L[Real] E) s c)
@@ -207,11 +184,6 @@ theorem quantInv_smooth [CompleteSpace E] [FiniteDimensional Real E]
   apply inv_smooth_of_approx hf hc hs hsm
   · rfl
   · rfl
-
-
-
-
-
 
 theorem exists_quant_inv_bi [CompleteSpace E]
     {f : E × E → E × E} {q c : NNReal}
@@ -275,8 +247,6 @@ theorem exists_quant_inv_bi [CompleteSpace E]
   · rfl
   · rfl
   · simpa [e, δ, s, NNReal.coe_sub hc.le] using htarget
-
-
 
 theorem exists_quant_inv [CompleteSpace E]
     {f : E × E → E × E} {q c : NNReal}

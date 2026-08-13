@@ -1,13 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Exp
 
-/-!
-# Gaussian-polynomial summation for terminal Koch--Lamm flux shells
-
-The quantitative cover grows polynomially like `(5(k+1))^d`, while the
-split first-derivative Gaussian contributes `exp (-k^2/8)`.  Their product is
-summable with a finite constant depending only on the dimension.
--/
-
 noncomputable section
 
 open Real
@@ -17,12 +9,10 @@ namespace Analysis
 namespace Parabolic
 namespace Euclidean
 
-/-- Exact Gaussian-polynomial weight of the `k`-th terminal flux shell. -/
 def klFluxWeight (d k : ℕ) : ℝ :=
   (5 * ((k + 1 : ℕ) : ℝ)) ^ d *
     Real.exp (-(8 : ℝ)⁻¹ * (k : ℝ) ^ 2)
 
-/-- Linear-exponential majorant used only to prove summability. -/
 private def klFluxLinWt (d k : ℕ) : ℝ :=
   (5 * ((k + 1 : ℕ) : ℝ)) ^ d *
     Real.exp (-(8 : ℝ)⁻¹ * (k : ℝ))
@@ -54,8 +44,6 @@ private theorem klFluxLin_sum (d : ℕ) : Summable (klFluxLinWt d) := by
       ring
     _ = _ := rfl
 
-/-- The exact Gaussian shell weight is bounded by its linear-exponential
-majorant. -/
 theorem klFluxWeight_le (d k : ℕ) :
     klFluxWeight d k ≤ klFluxLinWt d k := by
   have hk_sq : (k : ℝ) ≤ (k : ℝ) ^ 2 := by
@@ -71,17 +59,14 @@ theorem klFluxWeight_le (d k : ℕ) :
   exact mul_le_mul_of_nonneg_left
     (Real.exp_le_exp.mpr (by nlinarith [hk_sq])) (by positivity)
 
-/-- Polynomial shell growth is summable against the split flux Gaussian. -/
 theorem klFluxWeight_sum (d : ℕ) : Summable (klFluxWeight d) := by
   exact Summable.of_nonneg_of_le
     (fun k ↦ by unfold klFluxWeight; positivity)
     (klFluxWeight_le d) (klFluxLin_sum d)
 
-/-- Finite dimension-dependent mass of the terminal flux shell majorant. -/
 def klFluxSeries (d : ℕ) : ℝ :=
   ∑' k : ℕ, klFluxWeight d k
 
-/-- The terminal flux shell-series constant is nonnegative. -/
 theorem klFluxSeries_nn (d : ℕ) : 0 ≤ klFluxSeries d := by
   unfold klFluxSeries
   exact tsum_nonneg fun k ↦ by unfold klFluxWeight; positivity

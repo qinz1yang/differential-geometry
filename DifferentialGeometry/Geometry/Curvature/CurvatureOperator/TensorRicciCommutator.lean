@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciIdentity
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -10,11 +13,11 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 section General
 
@@ -22,7 +25,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)]
@@ -31,7 +34,6 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [FiberBundle F V] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
   [FiniteDimensional ℝ F]
 
-omit [SigmaCompactSpace M] in
 theorem riemannSec_eq_riemannOp_smooth
     (cov : CovariantDerivative I F V)
     [hcov : CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
@@ -42,7 +44,6 @@ theorem riemannSec_eq_riemannOp_smooth
     riemannSec cov X Y Z x = riemannOp cov x (X x) (Y x) (Z x) :=
   (riemannOp_apply_smooth (cov := cov) hX hY hZ).symm
 
-omit [SigmaCompactSpace M] in
 theorem cov_commutator_eq_riemannOp_smooth
     (cov : CovariantDerivative I F V)
     [hcov : CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
@@ -65,8 +66,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+variable [T2Space M] [BoundarylessManifold I M]
 
+omit [T2Space M] [BoundarylessManifold I M] in
 noncomputable abbrev tensorCov (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     CovariantDerivative I (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
   TensorRSNabla.tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
@@ -195,6 +197,6 @@ theorem rawTensorConnLap_eq_frame_trace_secondCovDeriv
 
 end TensorBundle
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

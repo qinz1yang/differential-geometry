@@ -6,8 +6,6 @@ import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 
-
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory

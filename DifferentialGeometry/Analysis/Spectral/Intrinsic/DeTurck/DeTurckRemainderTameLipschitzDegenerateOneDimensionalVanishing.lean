@@ -42,20 +42,22 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieCorrectionL2JetBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmDiffL2TameBallUniform
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzPhiMetTotalCurvatureFold
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -92,7 +94,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck (cometricLmodel)
+open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -159,15 +161,15 @@ private lemma ricciCometricFourTraceCLM_eq_zero_of_finrank_eq_one (h1 : Module.f
       (I := I) g₁ x = 0 := by
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciCometricFourTraceCLM]
   have hF : ∀ ρ₁ ρ₂ ρ₃ : Equiv.Perm (Fin 4),
-      (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.cometricDoubleTraceFib
+      (DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceFib
             (I := I) g₁ 2 x).comp
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.slotPermCLM (I := I) ρ₁ x)
-        + (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.cometricDoubleTraceFib
+        + (DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceFib
             (I := I) g₁ 2 x).comp
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.slotPermCLM (I := I) ρ₂ x)
-        - DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.cometricDoubleTraceFib
+        - DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceFib
             (I := I) g₁ 2 x
-        - (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.cometricDoubleTraceFib
+        - (DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceFib
             (I := I) g₁ 2 x).comp
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.slotPermCLM (I := I) ρ₃ x)
         = 0 := by
@@ -211,24 +213,24 @@ omit [SigmaCompactSpace M] in
 private lemma dim1_riemannOp_first_two_eq_zero (h1 : Module.finrank ℝ E = 1)
     (g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x)
     (hw : w ≠ 0) :
-    DifferentialGeometry.Integral.Connection.riemannOp
-      (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g₁) x v w u = 0 := by
+    DifferentialGeometry.Geometry.Curvature.riemannOp
+      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x v w u = 0 := by
   obtain ⟨c, hc⟩ := exists_smul_eq_of_finrank_eq_one (K := ℝ) (V := TangentSpace I x)
     (show Module.finrank ℝ (TangentSpace I x) = 1 from h1) hw v
-  have hself : DifferentialGeometry.Integral.Connection.riemannOp
-      (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g₁) x w w u = 0 := by
-    have hsw := DifferentialGeometry.Integral.Connection.riemannOp_swap
-      (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g₁) x w w u
-    have h2 : (2 : ℝ) • (DifferentialGeometry.Integral.Connection.riemannOp
-        (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g₁) x w w u) = 0 := by
+  have hself : DifferentialGeometry.Geometry.Curvature.riemannOp
+      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x w w u = 0 := by
+    have hsw := DifferentialGeometry.Geometry.Curvature.riemannOp_swap
+      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x w w u
+    have h2 : (2 : ℝ) • (DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x w w u) = 0 := by
       rw [two_smul]
       nth_rewrite 1 [hsw]
       abel
     have h2ne : (2 : ℝ) ≠ 0 := two_ne_zero
     exact (smul_eq_zero.mp h2).resolve_left h2ne
   rw [← hc]
-  rw [(DifferentialGeometry.Integral.Connection.riemannOp
-    (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g₁) x).map_smul c w]
+  rw [(DifferentialGeometry.Geometry.Curvature.riemannOp
+    (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x).map_smul c w]
   rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
   rw [hself, smul_zero]
 
@@ -237,9 +239,9 @@ omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma dim1_smoothOrthoFrame_ne_zero (g₁ : SmoothRiemannianMetric I M) (x : M)
     (a : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.Connection.smoothOrthoFrame (I := I) g₁ x a x ≠ 0 := by
+    DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g₁ x a x ≠ 0 := by
   intro h0
-  have horth := DifferentialGeometry.Integral.Connection.smoothOrthoFrame_orthonormal_at_center
+  have horth := DifferentialGeometry.Geometry.Connection.smoothOrthoFrame_orthonormal_at_center
     (I := I) g₁ x a a
   rw [if_pos rfl] at horth
   rw [h0] at horth
@@ -268,13 +270,13 @@ lemma dim1_ricciArmOrder0RiemannCoeff_eq_zero (h1 : Module.finrank ℝ E = 1)
     intro v
     rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.riemannBiContrFibFixedFrame_toModel]
     have hz : ∀ a b : Fin (Module.finrank ℝ E),
-        (g₁.inner x) (DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g₁) x (v 0)
-            (DifferentialGeometry.Integral.Connection.smoothOrthoFrame (I := I) g₁ x a x)
-            (DifferentialGeometry.Integral.Connection.smoothOrthoFrame (I := I) g₁ x b x))
+        (g₁.inner x) (DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₁) x (v 0)
+            (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g₁ x a x)
+            (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g₁ x b x))
           (v 1) *
-          D.toModel ![DifferentialGeometry.Integral.Connection.smoothOrthoFrame (I := I) g₁ x a x,
-            DifferentialGeometry.Integral.Connection.smoothOrthoFrame (I := I) g₁ x b x] = 0 := by
+          D.toModel ![DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g₁ x a x,
+            DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g₁ x b x] = 0 := by
       intro a b
       rw [dim1_riemannOp_first_two_eq_zero (I := I) h1 g₁ x (v 0) _ _
         (dim1_smoothOrthoFrame_ne_zero (I := I) g₁ x a)]
@@ -294,6 +296,6 @@ lemma dim1_ricciArmOrder0RiemannCoeff_eq_zero (h1 : Module.finrank ℝ E = 1)
   rw [hfib]
   rfl
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

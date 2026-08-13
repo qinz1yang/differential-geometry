@@ -1,15 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
 import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.OpensRestrict
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -22,6 +17,7 @@ open Bundle Manifold Set TopologicalSpace
 open scoped Manifold Topology ContDiff
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -56,8 +52,6 @@ private theorem chartBasisVec_open
 
 omit [NeZero (Module.finrank Real E)]
     in
-/-- Restricting a metric to an open subtype leaves its chart-Gram entries unchanged
-where the corresponding ambient chart is defined. -/
 theorem chartGram_open
     (g : SmoothRiemannianMetric I M) (U : Opens M)
     [SigmaCompactSpace U] [T2Space U] (a x : U)
@@ -104,8 +98,6 @@ private theorem chartGramOnE_open [I.Boundaryless]
     exact OpenPartialHomeomorph.subtypeRestr_symm_apply _ _ hyTarget
   rw [← hval]
   exact chartGram_open (I := I) g U a ((extChartAt I a).symm y) hzM i j
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem christoffel_open [I.Boundaryless]
@@ -177,8 +169,6 @@ theorem christoffel_open [I.Boundaryless]
     rw [(chartGramOnE_open (I := I) g U a i j).fderiv_eq]
   rw [hP_ij_lj, hP_ji_li, hP_lij]
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem contr_open [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (U : Opens M)
@@ -231,8 +221,6 @@ private theorem geodesicEq_open_iff [I.Boundaryless]
         congrArg (fun z => a + z) (contr_open (I := I) g U (gamma t) v v)
       _ = 0 := hid
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem geodesicOn_open_iff [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (U : Opens M)
@@ -244,8 +232,6 @@ theorem geodesicOn_open_iff [I.Boundaryless]
     exact (geodesicEq_open_iff (I := I) g U gamma t).mp (hgamma t ht)
   · intro hgamma t ht
     exact (geodesicEq_open_iff (I := I) g U gamma t).mpr (hgamma t ht)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem geodesic_open_iff [I.Boundaryless]

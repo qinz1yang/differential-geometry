@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Yuan Liao, Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Curry
 import DifferentialGeometry.Tensor.Multilinear.Tensor
@@ -11,6 +11,7 @@ import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.Trace
 
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 noncomputable section
 
@@ -445,7 +446,6 @@ private theorem trace_bilinear_basis_coord
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [h_cov j]
 
-
 theorem model_contract_trace_apply_basis
     {Idx : Type*} [Fintype Idx]
     (basis : Module.Basis Idx 𝕜 E) (r s : ℕ)
@@ -540,7 +540,6 @@ private theorem model_covariantChange_tensorWithCovector_first (r : ℕ)
     Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
 
-
 theorem model_contract_trace_naturality
     (r s : ℕ) (L Linv : E →L[𝕜] E)
     (hL : L.comp Linv = ContinuousLinearMap.id 𝕜 E)
@@ -610,7 +609,6 @@ theorem model_contract_trace_naturality
             model_contract_covariant_bilinear_apply,
             model_contract_contravariant_first_bilinear_apply]
           rfl
-
 
 omit [IsManifold I ω M] in
 theorem contract_trace_trivialization_eq
@@ -831,7 +829,6 @@ private theorem tensor0STrivialization_symmL_apply (k : ℕ) (x₀ x : M)
       rw [(trivializationAt (Tensor0SModel k 𝕜 E)
         (fun y => Tensor0SSpace k I y) x₀).continuousLinearMapAt_symmL (R := 𝕜) hx]
 
-
 noncomputable def contract_covariantField (r s : ℕ)
     (α : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r (s + 1))
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _)) :
@@ -929,7 +926,6 @@ noncomputable def contract_contravariantField_fun (r s : ℕ)
     (φ : (x : M) → Tensor0SSpace 1 I x) :
     (x : M) → TensorRSSpace r s I x :=
   fun x => contract_contravariant r s x (φ x) (α x)
-
 
 noncomputable def contract_contravariantField (r s : ℕ)
     (α : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) (r + 1) s)
@@ -1060,3 +1056,4 @@ end FieldContraction
 
 end
 end Tensor0SBundle
+end DifferentialGeometry

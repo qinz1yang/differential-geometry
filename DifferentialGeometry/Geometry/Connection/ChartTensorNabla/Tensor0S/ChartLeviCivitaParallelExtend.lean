@@ -9,7 +9,7 @@ open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -164,5 +164,5 @@ lemma chartParallelExtend_mdifferentiableAt
     (fun b' : M => chartParallelExtend (I := I) α b v b') hb_base).mpr hrep_diff
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

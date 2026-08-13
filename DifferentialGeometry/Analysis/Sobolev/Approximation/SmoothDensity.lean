@@ -173,7 +173,7 @@ lemma chartCutoff_smul_chartPushed_eq_chartPushed
 
 lemma chartCutoff_smul_chartPushed_memWkp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u) (α : M)
     {η : EuclN → ℝ}
@@ -202,7 +202,7 @@ lemma chartCutoff_smul_chartPushed_memWkp
 theorem exists_smooth_strong_support_approx
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g 1 p u)
     (α : M) (ε_per : ℝ) (hε_per : 0 < ε_per) :

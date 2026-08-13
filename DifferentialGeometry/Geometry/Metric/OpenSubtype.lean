@@ -15,10 +15,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-
-
-
-
 def SmoothRiemannianMetric.restrictOpenInner
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) (x : U) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real :=
@@ -213,8 +209,6 @@ omit [IsManifold I ∞ M] [FiniteDimensional Real E] in
     mfderiv_subtype_val (I := I) U (TopologicalSpace.Opens.inclusion hVU x)] at hcomp
   simpa using hcomp.symm
 
-
-
 noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
     {U V : TopologicalSpace.Opens M} (g : SmoothRiemannianMetric I U) (hVU : V ≤ U)
     [SigmaCompactSpace V] [T2Space V] : SmoothRiemannianMetric I V where
@@ -296,8 +290,6 @@ private theorem metric_eq_inner
     funext fun x => ContinuousLinearMap.ext fun v => ContinuousLinearMap.ext fun w => h x v w
   subst hi
   rfl
-
-
 
 @[simp] theorem SmoothRiemannianMetric.restrictOpen_flat
     (g : SmoothRiemannianMetric I M) {U V : TopologicalSpace.Opens M} (hVU : V ≤ U)

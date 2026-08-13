@@ -1,21 +1,14 @@
 import DifferentialGeometry.Geometry.Curvature.Tensor
 import DifferentialGeometry.Geometry.Curvature.Realized.Curvature
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -27,13 +20,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 abbrev SmoothTangentSection :=
   ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _)
 
-
-
-
-
-
-
-
 def Rm13RealizesConnection
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm13 : Tensor13Section (I := I) (M := M)) : Prop :=
@@ -43,8 +29,6 @@ def Rm13RealizesConnection
         cotangentToDual_gen (I := I) alpha
           ((connectionRiemannCurvatureField (I := I) cov
             (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p)) x)
-
-
 
 def Rm04RealizesConnection
     (g : SmoothRiemannianMetric I M)
@@ -93,7 +77,7 @@ def RicciTensorRealizesRm04TraceInFrame
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) : Prop :=
-  DifferentialGeometry.Integral.Connection.RicciRealizesRm04TraceInFrame (I := I)
+  DifferentialGeometry.Geometry.Curvature.RicciRealizesRm04TraceInFrame (I := I)
     (tensor02ToField (I := I) Ric) (tensor04ToField (I := I) Rm04) gInv frame
 
 
@@ -103,7 +87,7 @@ def ScalarSectionRealizesRicciTraceInFrame
     (Ric : Tensor02Section (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) : Prop :=
-  DifferentialGeometry.Integral.Connection.ScalarRealizesRicciTraceInFrame (I := I)
+  DifferentialGeometry.Geometry.Curvature.ScalarRealizesRicciTraceInFrame (I := I)
     scalar (tensor02ToField (I := I) Ric) gInv frame
 
 
@@ -134,7 +118,7 @@ theorem ricciComp_eq_trace
         gInv x k l * rm04Comp (I := I) Rm04 frame x k i j l := by
   simpa [RicciTensorRealizesRm04TraceInFrame, tensor02ToField, tensor04ToField,
     ricciComp, rm04Comp] using
-    DifferentialGeometry.Integral.Connection.ricci_comp_eq_trace (I := I)
+    DifferentialGeometry.Geometry.Curvature.ricci_comp_eq_trace (I := I)
       (tensor02ToField (I := I) Ric) (tensor04ToField (I := I) Rm04) gInv frame hRic x i j
 
 theorem scalarSection_eq_trace
@@ -149,7 +133,7 @@ theorem scalarSection_eq_trace
       ∑ i : Idx, ∑ j : Idx,
         gInv x i j * ricciComp (I := I) Ric frame x i j := by
   simpa [ScalarSectionRealizesRicciTraceInFrame, tensor02ToField, ricciComp] using
-    DifferentialGeometry.Integral.Connection.scalar_eq_trace (I := I)
+    DifferentialGeometry.Geometry.Curvature.scalar_eq_trace (I := I)
       scalar (tensor02ToField (I := I) Ric) gInv frame hScalar x
 
 theorem rm13_comp_eq_connection
@@ -179,7 +163,7 @@ theorem rm13_comp_eq_connection
     rm13Comp (I := I) K.rm13 (fun i y => frame i y) hframe x a b c d =
       hframe.coeff a x ((connectionRiemannCurvatureField (I := I) cov
         (fun y => frame b y) (fun y => frame c y) (fun y => frame d y)) x) :=
-  DifferentialGeometry.Integral.Connection.rm13_comp_eq_connection (I := I) cov K.rm13 frame hframe
+  DifferentialGeometry.Geometry.Curvature.rm13_comp_eq_connection (I := I) cov K.rm13 frame hframe
     hRm x a b c d
 
 theorem rm04_comp_eq_connection
@@ -193,7 +177,7 @@ theorem rm04_comp_eq_connection
     rm04Comp (I := I) K.rm04 (fun i y => frame i y) x a b c d =
       g.inner x (frame d x) ((connectionRiemannCurvatureField (I := I) cov
         (fun y => frame a y) (fun y => frame b y) (fun y => frame c y)) x) :=
-  DifferentialGeometry.Integral.Connection.rm04_comp_eq_connection (I := I) g cov K.rm04 frame hRm x
+  DifferentialGeometry.Geometry.Curvature.rm04_comp_eq_connection (I := I) g cov K.rm04 frame hRm x
     a b c d
 
 theorem ricci_comp_eq_trace
@@ -206,7 +190,7 @@ theorem ricci_comp_eq_trace
     ricciComp (I := I) K.ricci frame x i j =
       ∑ k : Idx, ∑ l : Idx,
         gInv x k l * rm04Comp (I := I) K.rm04 frame x k i j l :=
-  DifferentialGeometry.Integral.Connection.ricciComp_eq_trace (I := I) K.ricci K.rm04 gInv frame
+  DifferentialGeometry.Geometry.Curvature.ricciComp_eq_trace (I := I) K.ricci K.rm04 gInv frame
     hRic x i j
 
 theorem ricci_comp_eq_connection_trace
@@ -229,7 +213,7 @@ theorem ricci_comp_eq_connection_trace
     (fun i y => frame i y) hRic x i j]
   refine Finset.sum_congr rfl fun k _ => ?_
   refine Finset.sum_congr rfl fun l _ => ?_
-  rw [DifferentialGeometry.Integral.Connection.rm04_comp_eq_connection (I := I) g cov K.rm04 frame
+  rw [DifferentialGeometry.Geometry.Curvature.rm04_comp_eq_connection (I := I) g cov K.rm04 frame
     hRm x k i j l]
 
 theorem scalar_eq_trace
@@ -242,9 +226,9 @@ theorem scalar_eq_trace
     K.scalar x =
       ∑ i : Idx, ∑ j : Idx,
         gInv x i j * ricciComp (I := I) K.ricci frame x i j :=
-  DifferentialGeometry.Integral.Connection.scalarSection_eq_trace (I := I) K.scalar K.ricci gInv
+  DifferentialGeometry.Geometry.Curvature.scalarSection_eq_trace (I := I) K.scalar K.ricci gInv
     frame hScalar x
 
 end CurvatureTensorData
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

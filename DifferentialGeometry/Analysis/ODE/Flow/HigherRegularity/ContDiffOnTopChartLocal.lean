@@ -2,35 +2,6 @@ import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.ContDiffOnTop
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalMapContDiffOnK
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry.Analysis.ODE.Flow
@@ -38,15 +9,10 @@ namespace DifferentialGeometry.Analysis.ODE.Flow
 open Set Metric Function Real
 open scoped ContDiff NNReal Uniformity
 
-
-
 section CoefficientRegularity
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {Φ : E × ℝ → E}
-
-
-
 
 omit [CompleteSpace E] in
 private theorem contDiffOn_variational_coeff_aux_local
@@ -73,16 +39,12 @@ private theorem contDiffOn_variational_coeff_aux_local
 
 end CoefficientRegularity
 
-
-
 section LocalFlowTubeBounds
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   [FiniteDimensional ℝ E]
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ}
   {Φ : E × ℝ → E}
-
-
 
 omit [FiniteDimensional ℝ E] in
 omit [CompleteSpace E] in
@@ -145,8 +107,6 @@ private theorem IsLocalFlow.continuousOn_fderiv_along_orbit_local
   have hcomp := hpfD.continuousOn.comp horbit hmaps
   exact hcomp.congr (fun τ _hτ => rfl)
 
-
-
 omit [CompleteSpace E] [FiniteDimensional ℝ E] in
 private theorem continuousOn_timePiece_local
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
@@ -173,8 +133,6 @@ private theorem continuousOn_timePiece_local
     exact hΩ_flow q.1 (closedBall_subset_closedBall hρ_le hq.1) q.2 (hsub hq.2)
   have hcomp := hf_one.continuousOn.comp hiM hmaps
   exact hcomp.congr (fun q _hq => rfl)
-
-
 
 omit [CompleteSpace E] in
 theorem exists_fderiv_bound_on_flow_tube_local
@@ -219,8 +177,6 @@ theorem exists_fderiv_bound_on_flow_tube_local
   exact (hC (x, τ) hq).trans (le_max_left _ _)
 
 end LocalFlowTubeBounds
-
-
 
 section HartmanTheorem
 
@@ -273,19 +229,6 @@ private theorem contDiffOn_flow_succ_of_spatial_smooth_local
     contDiffOn_timePieceFn_local hf_Ck hΦ_Ck hΩ_map
   exact contDiffOn_succ_of_fderiv_coprod_smooth hU_open hΦ_diff hLsp_Ck hLti_Ck hLsp_eq
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 omit [CompleteSpace E] in
 private theorem exists_uniform_partial_fderiv_local
@@ -333,10 +276,6 @@ private theorem exists_uniform_partial_fderiv_local
   rw [h_neg, norm_neg]
   exact hdistF
 
-
-
-
-
 omit [CompleteSpace E] [FiniteDimensional ℝ E] in
 private theorem exists_orbit_tube_local
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
@@ -366,9 +305,6 @@ private theorem exists_orbit_tube_local
   have h2 : max 0 (dist z (Φ (x, τ))) = dist z (Φ (x, τ)) := max_eq_right dist_nonneg
   rw [h2, dist_eq_norm]
   exact hz
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 private theorem hasFDerivAt_flow_at_initial_local
@@ -910,9 +846,6 @@ private theorem hasFDerivAt_flow_at_initial_local
     apply mul_le_mul_of_nonneg_right (le_of_lt hε_target_le_one) hh_nn
   exact le_trans h_final_bd h_bound_le
 
-
-
-
 omit [FiniteDimensional ℝ E] in
 private theorem hasFDerivAt_flow_jointly_center_local
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
@@ -1230,12 +1163,6 @@ private theorem hasFDerivAt_flow_jointly_center_local
   rw [h_goal_eq]
   exact le_trans h_total h_final
 
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 private theorem hasFDerivAt_flow_jointly_at_local
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
@@ -1277,16 +1204,6 @@ private theorem hasFDerivAt_flow_jointly_at_local
     linarith
   exact hasFDerivAt_flow_jointly_center_local hΦ' hΩ hf_C1 hΩ_flow' hT hM hMT hsub
     (fun τ hτ => hA_bd x hx τ hτ) hr' ht
-
-
-
-
-
-
-
-
-
-
 
 theorem IsLocalFlow.contDiffOn_top_local
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)

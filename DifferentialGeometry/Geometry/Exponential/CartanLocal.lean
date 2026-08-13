@@ -1,24 +1,12 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.BranchRadius
 import DifferentialGeometry.Geometry.Exponential.CartanNorm
 import DifferentialGeometry.Geometry.Exponential.DiagInvFixed
 import DifferentialGeometry.Geometry.Metric.Polarization
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Local Cartan isometries
-
-A fixed-first diagonal-exponential branch supplies smooth normal coordinates
-on the source manifold.  Composing those coordinates with a tangent-space
-linear isometry and the intrinsic exponential on a second curvature-one
-manifold gives the local Cartan map.
-
-The metric proof is pointwise and invariant.  The Jacobi-field producer
-`expDiff_sq_xfer` transfers the target exponential differential square, while
-`exp_inv_mfderiv` cancels the source exponential differential after taking the
-canonical fixed-first projection of the diagonal branch.
-Polarization then gives the full bilinear metric identity.
--/
 
 noncomputable section
 
@@ -59,9 +47,6 @@ variable [RiemannianBundle (fun x : M' ↦ TangentSpace I' x)]
   [ConnectedSpace M']
   [IsContinuousRiemannianBundle E (fun x : M' ↦ TangentSpace I' x)]
 
-/-- The fixed-branch Cartan map associated to a tangent-space linear
-isometry.  It is totalized outside the selected branch domain, but all
-geometric statements below are restricted to that domain. -/
 def cartanMap
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -76,7 +61,6 @@ def cartanMap
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')] [ConnectedSpace M] [ConnectedSpace M'] in
-/-- A fixed-branch Cartan map is smooth on the fixed-first branch domain. -/
 theorem cartanMap_smooth
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -110,12 +94,9 @@ omit [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')]
   [ConnectedSpace M]
   [ConnectedSpace M'] in
-/-- The differential of a fixed-branch Cartan map preserves the metric
-quadratic form between curvature-one manifolds. -/
 theorem cartanMap_sq
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
@@ -123,13 +104,13 @@ theorem cartanMap_sq
     (p' : M') (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
-      (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) x)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
         X Y Z =
           g.inner x Y Z • X - g.inner x X Z • Y)
     (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
-      (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I') g') x)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
         X Y Z =
           g'.inner x Y Z • X - g'.inner x X Z • Y)
     {x : M} (hx : (p, x) ∈ B.dom) (Y : TangentSpace I x) :
@@ -225,12 +206,9 @@ omit [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')]
   [ConnectedSpace M]
   [ConnectedSpace M'] in
-/-- The differential of a fixed-branch Cartan map preserves the full
-Riemannian inner product between curvature-one manifolds. -/
 theorem cartanMap_inner
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
@@ -238,13 +216,13 @@ theorem cartanMap_inner
     (p' : M') (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
-      (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) x)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
         X Y Z =
           g.inner x Y Z • X - g.inner x X Z • Y)
     (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
-      (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I') g') x)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
         X Y Z =
           g'.inner x Y Z • X - g'.inner x X Z • Y)
     {x : M} (hx : (p, x) ∈ B.dom)
@@ -343,8 +321,6 @@ private theorem pdTrans_apply
     pdTrans Φ Ψ x = Ψ (Φ x) :=
   rfl
 
-/-- The Cartan map realized as a genuine smooth partial diffeomorphism near
-the selected source and target centers. -/
 def cartanPD
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -362,7 +338,6 @@ def cartanPD
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')] [ConnectedSpace M] [ConnectedSpace M'] in
-/-- The partial Cartan diffeomorphism has the expected totalized map. -/
 theorem cartanPD_coe
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -379,7 +354,6 @@ theorem cartanPD_coe
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')] [ConnectedSpace M] [ConnectedSpace M'] in
-/-- The source center belongs to the Cartan partial diffeomorphism. -/
 theorem cartanPD_center
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -403,12 +377,9 @@ omit [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')]
   [ConnectedSpace M]
   [ConnectedSpace M'] in
-/-- On its source, the Cartan partial diffeomorphism preserves the full
-Riemannian inner product. -/
 theorem cartanPD_inner
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (g' : SmoothRiemannianMetric I' M')
     (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
@@ -417,13 +388,13 @@ theorem cartanPD_inner
     (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
-      (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g) x)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
         X Y Z =
           g.inner x Y Z • X - g.inner x X Z • Y)
     (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
-      (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I') g') x)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
         X Y Z =
           g'.inner x Y Z • X - g'.inner x X Z • Y)
     {x : M} (hx : x ∈ (cartanPD B B' i).source)

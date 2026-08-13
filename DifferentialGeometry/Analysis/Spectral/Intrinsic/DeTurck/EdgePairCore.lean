@@ -1,34 +1,26 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefold
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SlotInsertSelfAdjointPairing
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorCovDivergence
-
-/-!
-# Acyclic closed-edge pairing core
-
-This file isolates the three algebraic APIs needed by the Ricci closed-edge
-pairing argument: moving double-trace refolding, insertion into a covariant
-rank-two slot, and the rank-four product carrier.  It deliberately avoids the
-later lower-pairing and refold-pairing modules so downstream Ricci estimates
-can depend on these identities without an import cycle.
--/
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-
-open Bundle Manifold Tensor0SBundle
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -168,8 +160,6 @@ private lemma pair_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
-/-- A moving-metric double trace is a fixed-background trace after inserting
-the relative inverse-metric endomorphism in the first contracted slot. -/
 theorem pairTrace_refold (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g gm s =
       ccOperatorFieldComp (I := I) (M := M) g (s + 2) (s + 2) s
@@ -321,8 +311,6 @@ theorem pairTrace_refold (g gm : SmoothRiemannianMetric I M) (s : Nat) :
                 smoothOrthoFrame (I := I) g x a x : TangentSpace I x) : E) from rfl]
         rw [← hrep0]
 
-/-- Insert a smooth tangent endomorphism into one of the two covariant slots
-of a rank-two tensor. -/
 def pairSlot2 (g : SmoothRiemannianMetric I M)
     (Λ : ContMDiffSection I (E →L[Real] E) ∞
       (fun x : M => TangentSpace I x →L[Real] TangentSpace I x))
@@ -332,7 +320,6 @@ def pairSlot2 (g : SmoothRiemannianMetric I M)
       (endoSlotZeroCcTensor (I := I) (M := M) g 1 Λ)
       (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) j) S))
 
-/-- Covariant tensor product with the first factor occupying slots `0,1`. -/
 def pairProd4 (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 4 :=
   operatorFieldApply (I := I) (M := M) g 2 4
@@ -341,8 +328,6 @@ def pairProd4 (g : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
-/-- Evaluation of `pairSlot2`: the chosen covariant slot is read through the
-given endomorphism. -/
 theorem pairSlot2_eval (g : SmoothRiemannianMetric I M)
     (Λ : ContMDiffSection I (E →L[Real] E) ∞
       (fun x : M => TangentSpace I x →L[Real] TangentSpace I x))
@@ -471,8 +456,6 @@ private lemma pair_extend2_eval (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-/-- The rank-four product carrier evaluates as the product of its first and
-last pair of covariant components. -/
 theorem pairProd4_eval (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 2) (x : M) (v : Fin 4 → E) :
     unitModel (I := I) (M := M) g 4
@@ -483,7 +466,6 @@ theorem pairProd4_eval (g : SmoothRiemannianMetric I M)
   rw [pair_extend2_eval (I := I) (M := M) g B x]
   rfl
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

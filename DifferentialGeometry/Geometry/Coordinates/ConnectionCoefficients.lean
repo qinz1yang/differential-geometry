@@ -4,19 +4,11 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set TensorLieDeriv Filter
+open Bundle Set DifferentialGeometry.TensorLieDeriv Filter
 open scoped Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -26,8 +18,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
-
-
 
 omit [IsManifold I 2 M] in
 omit [CompleteSpace 𝕜] in
@@ -45,8 +35,6 @@ theorem tangentConstInChart_eq_coordinateFrame_eventually
   rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
   rw [coordinateFrameAt_apply_of_mem (I := I) (x₀ := x₀) (x := x) hx i]
   rfl
-
-
 
 theorem connCoeff_eq_christoffelAlong_coord
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
 import Mathlib.Geometry.Manifold.PartitionOfUnity
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -7,17 +8,18 @@ noncomputable section
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
 
-omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M] in
+omit [FiniteDimensional ℝ E] [T2Space M] [BoundarylessManifold I M] in
 theorem orthonormal_tangent_expansion
     (g : SmoothRiemannianMetric I M) (x : M)
     (e : Fin (Module.finrank ℝ E) → TangentSpace I x)
@@ -67,7 +69,7 @@ theorem orthonormal_tangent_expansion
           rw [hob i, hinner_eq (e i) u]
     _ = u := hrepr
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [T2Space M]
   [BoundarylessManifold I M] in
 theorem parseval_family_inner_mul_sum
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -87,7 +89,7 @@ theorem parseval_family_inner_mul_sum
     rw [map_smul (g.inner x) (g.inner x (W a) u) (W a), ContinuousLinearMap.smul_apply,
       smul_eq_mul]
 
-omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M] in
+omit [FiniteDimensional ℝ E] [T2Space M] [BoundarylessManifold I M] in
 theorem parseval_family_sum_bilin_eq
     (g : SmoothRiemannianMetric I M) (x : M)
     {N : ℕ} (W : Fin N → TangentSpace I x)
@@ -260,7 +262,7 @@ theorem exists_smooth_parseval_frame_family (g : SmoothRiemannianMetric I M) :
     (fun p => g.inner x (W0 p x) u • W0 p x)
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

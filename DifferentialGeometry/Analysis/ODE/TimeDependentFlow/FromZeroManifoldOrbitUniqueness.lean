@@ -2,41 +2,13 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.FromZeroManifoldOrbit
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 import Mathlib.Geometry.Manifold.MFDeriv.Tangent
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
-
-/-!
-# From-`0` uniqueness of the bare manifold flow under the weak `t = 0` datum
-
-This file proves local forward (one-sided, from `t = 0`) uniqueness of the
-**bare** manifold flow from an explicit time-uniform chart-field Lipschitz
-datum, without assuming joint `C¹` regularity of the field up to `t = 0`.
-
-The forward two-sided uniqueness `bare_forward_flow_eqOn_of_jointC1`
-(`ForwardIntegralCurveUniqueness.lean`) requires the autonomised field `(1, X)` on `ℝ × M` to be
-jointly `C¹` *including at `t = 0`* (`AutonomizedFieldJointC1`).  At the `t = 0` corner of the
-forward flow that hypothesis is unavailable.  The theorem below isolates the
-exact chart-Lipschitz input needed at that corner.
-
-The route reads both bare-velocity curves into the chart at their common initial point
-`α := γ₁ 0`.  The bare manifold velocity `(1).smulRight (X t (γ t))` pushes to the chart-coordinate
-one-sided derivative with the trivialised chart velocity `fromZeroChartField X α t` (the
-`tangentCoordChange` reading), exactly as in `IsMIntegralCurveOn.hasDerivWithinAt`.  The orbit is
-confined to the validity ball near `t = 0` by the continuity of the curve through `α`; on that ball
-the from-`0` Grönwall Lipschitz-in-initial-point bound `forward_orbit_dist_le`, at the *same*
-initial point, forces the chart distance to vanish, which pulls back to manifold
-agreement.  The chart-field Lipschitz datum is an explicit theorem argument.
-The basepoint chart is pinned to `α` throughout, so the chart reads are
-`T1`-safe.
-
-## Main results
-
-* `bare_fromZero_local` — two one-sided bare integral curves starting at the
-  same point agree on some positive common interval.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 open Set Function Filter Metric Bundle
 open scoped Topology NNReal ContDiff Manifold
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.ODE
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [CompleteSpace E]
@@ -95,14 +67,6 @@ private theorem orbit_confine_source_ball (α : M) {a : ℝ} (ha : 0 < a) (γ : 
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] in
-/-- **From-`0` bare-flow uniqueness from an explicit chart-field Lipschitz datum.**  The core
-uniqueness step.  Given, at the basepoint `α`, a chart ball `closedBall x₀ a` on which the
-trivialised chart field `fromZeroChartField X α t` is `K`-Lipschitz for `t ∈ [0, δ₀]`, two curves
-`γ₁ γ₂ : ℝ → M` with `γ₁ 0 = γ₂ 0 = α`, both carrying the bare velocity on `Ico 0 δ`, agree on
-`Icc 0 δ'` for some `δ' > 0`.  The orbits are confined to the validity ball near `t = 0`
-(`orbit_confine_source_ball`), read into the chart with the `fromZeroChartField` velocity
-(`bareVel_to_chartDeriv` plus the `tangentCoordChange` identification), and forced equal by the
-from-`0` Grönwall bound `forward_orbit_dist_le` at the same initial point. -/
 theorem bare_fromZero_local
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
     {a : ℝ≥0} {δ₀ : ℝ} {K : ℝ≥0} (ha_pos : 0 < (a:ℝ)) (hδ₀_pos : 0 < δ₀)
@@ -201,4 +165,4 @@ theorem bare_fromZero_local
   have hpb : (extChartAt I α).symm (f₁ t) = (extChartAt I α).symm (f₂ t) := by rw [hfeq]
   rwa [hf₁, hf₂, (extChartAt I α).left_inv hsrc₁, (extChartAt I α).left_inv hsrc₂] at hpb
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

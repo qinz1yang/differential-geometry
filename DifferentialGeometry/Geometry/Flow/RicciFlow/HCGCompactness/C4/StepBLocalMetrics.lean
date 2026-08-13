@@ -1,33 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBLocalizedAA
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBInputs
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -37,13 +12,6 @@ namespace HCGCompactness
 open Filter Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-
-
-
-
-
-
 
 theorem exists_metricLimit_on
     {U : Set E} (hU : IsOpen U)
@@ -67,21 +35,6 @@ theorem exists_metricLimit_on
   exact ⟨ge_of_tendsto htendv (Filter.Eventually.of_forall fun k => (hequiv (φ k) z hz v).1),
     le_of_tendsto htendv (Filter.Eventually.of_forall fun k => (hequiv (φ k) z hz v).2)⟩
 
-
-/-
-Wires `NormalCoordMetricBoundInput` (B-input) into `exists_metricLimit_on`, for a fixed
-sequence of chart centers `c k : (X.obj k).M` (one `β`) on a fixed open domain `U`.  The
-two remaining hypotheses are now both **honest geometric containments** of `U` in a
-per-term ball: `hdom` (`U ⊆ ball 0 (input.radius k (c k))`, where the `lbl395`
-derivative/equivalence bounds apply) and `hsub` (`U ⊆ ball 0 (expMapC2Radius … (c k))`,
-where the pulled-back metric is `C^∞`).  The previous `hsmooth` hypothesis — the
-`C^∞` smoothness of `normalCoordMetric` on `U` — is **no longer a frontier**: it is
-discharged internally from `hsub` via `contDiffOn_normalCoordMetric_of_subset_expBall`
-(`StepBInputs`), which rests on the now-available single-radius
-`expMap_contMDiffAt_infty_of_norm_lt_radius`.  The only remaining Step-A wiring is a
-uniform positive lower bound on the two radii across the sequence so a single `U` works
-(recorded in `StepBLocalMetrics.md`).
--/
 section HCGNormalCoord
 
 open Bundle
@@ -96,14 +49,6 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-/-- **`normalCoordMetric` local metric limit** (`lbl394` metric part, fixed-`β` HCG
-form).  For a fixed sequence of chart centers `c k : (X.obj k).M` on a fixed open `U`
-contained in every `lbl395` bound ball (`hdom`) and in every `expMapC2Radius` smoothness
-ball (`hsub`), with the `lbl395` derivative/equivalence input (`input`), a subsequence of
-`normalCoordMetric (X.obj k) (c k)` converges in `C^∞` on compacts of `U` to a limit
-metric that is `C^∞` on `U` and retains the `½δ ≤ g ≤ 2δ` equivalence (hence positive
-definite on `U`).  `C^∞` smoothness on `U` is discharged from `hsub` internally (no
-`hsmooth` frontier).  Fixed-`β` only — NOT the finite diagonal over all `β`. -/
 theorem exists_metricLimit_normalCoord
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (input : NormalCoordMetricBoundInput (I := I) X)
@@ -128,9 +73,6 @@ theorem exists_metricLimit_normalCoord
       ⟨input.metricC r, fun k z hz => input.metric_deriv k r (c k) z (hdom k (hKU hz))⟩)
     (fun k z hz v => input.metric_equiv k (c k) z (hdom k hz) v)
 
-
-
--- Pi-valued iterated derivatives trigger a deep deterministic instance search.
 theorem exists_metric_lim_pi
     {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

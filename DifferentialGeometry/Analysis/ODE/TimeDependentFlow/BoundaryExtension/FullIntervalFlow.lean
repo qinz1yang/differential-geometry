@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Bundle
 open scoped Manifold Topology ContDiff
@@ -940,4 +940,4 @@ theorem global_flow_full_interval_with_reverse_on_closed_manifold
     rw [hstep1, ← hgroup (s, x) (-s) s]
     simp only [neg_add_cancel, hψ0 (s, x)]
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

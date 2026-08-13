@@ -4,7 +4,7 @@ import DifferentialGeometry.Tensor.RSTensor.Defs
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Function Tensor0SBundle
+open MeasureTheory Set Filter Topology Bundle Manifold Function DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff ENNReal NNReal
 
 namespace DifferentialGeometry

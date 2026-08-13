@@ -1,20 +1,12 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.KillingHopf
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundInputs
-import DifferentialGeometry.Geometry.Topology.FiberBundleT2
-import DifferentialGeometry.Geometry.Topology.SemilocallySimplyConnected
-import DifferentialGeometry.Geometry.Topology.UniversalCover.CompletenessPullback
-import DifferentialGeometry.Geometry.Topology.UniversalCover.CurvaturePullback
+import DifferentialGeometry.Topology.FiberBundleT2
+import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
+import DifferentialGeometry.Topology.Covering.CompletenessPullback
+import DifferentialGeometry.Topology.Covering.CurvaturePullback
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Positive-curvature universal covers
-
-This module applies the positive Killing--Hopf theorem to the normalized
-lifted metric on a universal cover.  It packages the metric-instance and
-completeness setup while retaining the differential isometry equation needed
-for the deck-action quotient.
--/
 
 noncomputable section
 
@@ -40,14 +32,12 @@ variable {Q : Type u} [TopologicalSpace Q]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The normalized universal cover of a compact connected positive
-constant-curvature manifold is globally isometric to the round sphere. -/
 theorem sphereCover_one
     (hn : 1 < n)
     (g : SmoothRiemannianMetric (𝓡 n) Q)
     (c : ℝ) (hc : 0 < c)
     (hsec : ∀ x : Q, ∀ X Y : TangentSpace (𝓡 n) x,
-      DifferentialGeometry.Integral.Connection.metricRm04StdAt
+      DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
           (I := 𝓡 n) (M := Q) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y))

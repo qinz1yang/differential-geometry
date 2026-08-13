@@ -2,30 +2,6 @@ import Mathlib.MeasureTheory.Function.Jacobian
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 import Mathlib.Algebra.GroupWithZero.Indicator
 
-/-!
-# Weighted non-injective area inequality
-
-This file records the weighted, non-injective change-of-variables *inequality* for a
-map `f : E → E` differentiable on a measurable set `s` of a finite-dimensional real
-normed space carrying an additive Haar measure.
-
-Mathlib provides the unweighted, injectivity-free bound
-`MeasureTheory.addHaar_image_le_lintegral_abs_det_fderiv` and the weighted change of
-variables *equality* only under injectivity
-(`MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul`). The weighted
-non-injective inequality below is not otherwise available.
-
-## Main result
-
-* `MeasureTheory.image_lintegral_le`: for a measurable weight `w : E → ℝ≥0∞`,
-  `∫⁻ y in f '' s, w y ∂μ ≤ ∫⁻ x in s, w (f x) * ENNReal.ofReal |(f' x).det| ∂μ`.
-
-The Jacobian weight `x ↦ |(f' x).det|` is **not** assumed measurable: the proof lifts
-the per-set Mathlib bound to simple functions using the unconditional superadditivity
-`MeasureTheory.le_lintegral_add`, then to a general `w` by monotone convergence on the
-image side only, so the weight is never moved across a limit.
--/
-
 open MeasureTheory MeasureTheory.Measure Set Module
 open scoped ENNReal NNReal
 
@@ -37,11 +13,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [BorelSpace E]
   [IsAddHaarMeasure μ] in
-/-- Simple-function stage of `image_lintegral_le`: given the per-set image bound `hkey`
-(the injectivity-free Mathlib inequality with weight `d`), the area inequality holds for
-every simple function `φ` in place of the weight. The weight `d` is arbitrary — in
-particular not assumed measurable — which is why the additive step is discharged with the
-unconditional `le_lintegral_add` rather than `lintegral_add_left`. -/
 private lemma image_simpleFunc_le (hf : Measurable f) {d : E → ℝ≥0∞}
     (hkey : ∀ ⦃T : Set E⦄, MeasurableSet T →
       μ (f '' s ∩ T) ≤ ∫⁻ x in s ∩ f ⁻¹' T, d x ∂μ)
@@ -86,11 +57,6 @@ private lemma image_simpleFunc_le (hf : Measurable f) {d : E → ℝ≥0∞}
       _ ≤ _ := add_le_add h₁ h₂
       _ ≤ _ := hR
 
-/-- **Weighted non-injective area inequality.** For an additive Haar measure `μ` on a
-finite-dimensional real normed space `E`, a measurable set `s`, a measurable map
-`f : E → E` differentiable within `s` with derivative `f'`, and a measurable weight
-`w : E → ℝ≥0∞`, the `w`-weighted measure of the image `f '' s` is at most the integral
-over `s` of `w ∘ f` weighted by the Jacobian `|det f'|`. No injectivity is assumed. -/
 theorem image_lintegral_le
     (hs : MeasurableSet s) (hf : Measurable f)
     (hf' : ∀ x ∈ s, HasFDerivWithinAt f (f' x) s x)

@@ -9,8 +9,9 @@ set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
+namespace DifferentialGeometry
 namespace Tensor0SNabla
 
 variable
@@ -25,6 +26,7 @@ noncomputable def tensor0Iso (x : M) :
   (tensor0SSpace_continuousLinearEquiv (I := I) 0 x).trans
     (continuousMultilinearCurryFin0 ℝ E ℝ).toContinuousLinearEquiv
 
+omit [SigmaCompactSpace M] [T2Space M] in
 noncomputable def scalarFn (T : Π x : M, Tensor0SSpace 0 I x) : M → ℝ :=
   fun x => tensor0Iso I M x (T x)
 
@@ -463,4 +465,5 @@ theorem mdifferentiableAt_curriedSection_iff_section {s : ℕ}
 
 end Tensor0SNabla
 
+end DifferentialGeometry
 end

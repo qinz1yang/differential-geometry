@@ -1,15 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1RawProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepDAssembly
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# MSM135 Theorem 3.9 -- conditional Chapter-4 endpoint
-
-This final assembly file combines the concrete B/C `StepB1RawInput` producer
-with the checked Step-D consumer and transports the resulting nested
-subsequence conclusion back to the original pointed sequence.
--/
 
 noncomputable section
 
@@ -26,8 +19,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace MetricCompactnessInputs
 
-/-- The conditional Chapter-4 construction with the concrete canonical
-reference-metric provenance retained alongside its public compactness output. -/
 def metricCanon
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
@@ -52,9 +43,6 @@ def metricCanon
     compactness_canon Ppsi B
   exact canon.ofSeqSubseq psi hpsi
 
-/-- **MSM135 Theorem 3.9, conditional form -- the Chapter 4 working target.**
-Compactness for complete connected pointed Riemannian manifolds, given the
-bundled book-external geometric inputs. -/
 def metricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)

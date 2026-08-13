@@ -1,13 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateShell
 
-/-!
-# Absolute-integral bounds for late Koch--Lamm shells
-
-The full terminal potential requires summability of the integrals of the
-integrand norm, not merely summability of the norms of shell integrals.  This
-file proves the corresponding one-piece, finite-cover, and shell estimates.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -24,8 +16,6 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-/-- Absolute integral of the kernel/source product on one far selected
-terminal piece. -/
 theorem klLatePiece_abs {T R k : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x c : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
@@ -96,7 +86,6 @@ theorem klLatePiece_abs {T R k : ℝ} {A₁ A_q : ℝ≥0}
           ring
 
 omit [CompleteSpace F] in
-/-- Absolute-integral form of the arbitrary finite-cover estimate. -/
 theorem klLateCover_abs {T R k : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
@@ -169,8 +158,6 @@ theorem klLateCover_abs {T R k : ℝ} {A₁ A_q : ℝ≥0}
           ring
 
 omit [CompleteSpace F] in
-/-- Absolute-integral shell bound under the canonical parameterized finite
-cover data. -/
 theorem klLateShell_abs {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)

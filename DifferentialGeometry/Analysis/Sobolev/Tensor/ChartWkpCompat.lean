@@ -1,31 +1,11 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpBoundK
-
-/-!
-# Exact tensor compatibility for chartwise `W^{2,p}` limits
-
-The estimates in `ChartWkpBound.lean` use the globally smooth coefficient
-
-`chartKernelCutoff α * chartKernelCutoff β * transitionCoeff β α`.
-
-For reconstruction one must also prove that the two extra cutoff factors do
-not change the partition-of-unity components.  This file records that exact
-identity.  The target cutoff is absorbed by the target POU weight; the source
-cutoff is absorbed either by the source POU weight of an actual section or by
-the pointwise support theorem for `secCompRep`.
-
-The two final statements are the exact identities used by completeness:
-
-* `secCompDecomp` decomposes an arbitrary genuine tensor section into the
-  finite sum of transported source-chart components;
-* `secPullLimitEq` computes a target component of one reconstructed weak
-  source-chart limit as the finite sum of its transported scalar limits.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -53,7 +33,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- A target POU weight absorbs its chart-kernel cutoff pointwise. -/
 theorem pouCutoffMul (α : M) (x : M) (v : ℝ) :
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x * v =
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
@@ -71,8 +50,6 @@ theorem pouCutoffMul (α : M) (x : M) (v : ℝ) :
     rw [hχ, one_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-/-- Reading a POU-weighted component at the Euclidean coordinate of a source
-point recovers the manifold-side POU component. -/
 theorem secComp_coord
     (r s : ℕ) (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) {x : M}
@@ -87,9 +64,6 @@ theorem secComp_coord
     (I := I) (M := M) α hx]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- The POU-weighted raw transition formula for an arbitrary genuine tensor
-section.  This is the smooth-section lemma from the spectral construction with
-the unnecessary smoothness hypothesis removed. -/
 theorem pouRawTrans
     (r s : ℕ) (S : RSTensorSection I M r s) (β α : M)
     (P : TensorCompIdx (E := E) r s) {x : M}
@@ -125,9 +99,6 @@ theorem pouRawTrans
     ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- A pointwise-supported weak source component absorbs both cutoff factors of
-the global transition coefficient after multiplication by the target POU
-weight. -/
 theorem repCoeffEq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) {v : EuclN → ℝ}
@@ -176,8 +147,6 @@ theorem repCoeffEq
   rw [transportCoeffManifold_apply, hχα, hχβ]
   ring
 
-/-- One reconstructed weak source-chart model has exactly the transported
-component formula in every target chart, modulo the chart-target measure. -/
 theorem secPullLimitEq
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -251,8 +220,6 @@ theorem secPullLimitEq
     rw [chartPullback_apply_of_notMem (I := I) (M := M) β _ hxβ, mul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- Every component of an arbitrary genuine tensor section is the finite sum
-of the transported POU components from the canonical active chart set. -/
 theorem secCompDecomp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : RSTensorSection I M r s) (α : M)

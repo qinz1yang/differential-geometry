@@ -5,22 +5,6 @@ import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
-/-!
-# Frozen Euclidean Duhamel evolution
-
-This file starts the analytic realization behind the frozen-coefficient
-parametrix.  The first layer is deliberately dimension-generic: for a bounded
-continuous spatial datum with bounded realized first and second Frechet
-derivatives, the positive-time heat evolution differentiates in time by the
-Euclidean Laplacian.
-
-The proof does not assume a heat equation for the evolved datum.  It rewrites
-the heat convolution using the time-one Gaussian, differentiates that scaled
-integral using the finite first Gaussian moment, and transfers the resulting
-first derivative by integration by parts.  The zero-trace Duhamel theorem and
-constant-SPD conjugation are built on this producer below.
--/
-
 noncomputable section
 open Asymptotics Filter MeasureTheory Real Set
 open scoped Interval NNReal RealInnerProductSpace Topology
@@ -35,7 +19,6 @@ variable {V F : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Trace evaluation on a bounded realized second Frechet derivative. -/
 def lapEval : (V →L[ℝ] V →L[ℝ] F) →L[ℝ] F :=
   ∑ i : Fin (Module.finrank ℝ V),
     (ContinuousLinearMap.apply ℝ F ((stdOrthonormalBasis ℝ V) i)).comp
@@ -50,7 +33,6 @@ theorem lapEval_apply (A : V →L[ℝ] V →L[ℝ] F) :
           ((stdOrthonormalBasis ℝ V) i) := by
   simp [lapEval]
 
-/-- Trace evaluation is Lipschitz with constant equal to the dimension. -/
 theorem lapEval_dist_le
     (A B : V →L[ℝ] V →L[ℝ] F) :
     dist (lapEval A) (lapEval B) ≤
@@ -83,8 +65,6 @@ theorem lapEval_dist_le
       congr 1
       exact (dist_eq_norm A B).symm
 
-/-- The bounded continuous Euclidean Laplacian associated to a bounded
-continuous realized second Frechet derivative. -/
 def coreLap (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F)) :
     BoundedContinuousFunction V F :=
   ⟨⟨fun x => lapEval (V := V) (F := F) (d2u x),
@@ -103,6 +83,35 @@ theorem coreLap_apply
           ((stdOrthonormalBasis ℝ V) i) := by
   simp [coreLap]
 
+theorem coreLap_norm_le
+    (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F)) :
+    ‖coreLap d2u‖ ≤ Module.finrank ℝ V * ‖d2u‖ := by
+  rw [BoundedContinuousFunction.norm_le (mul_nonneg (Nat.cast_nonneg _)
+    (norm_nonneg d2u))]
+  intro x
+  calc
+    ‖coreLap d2u x‖ ≤ Module.finrank ℝ V * ‖d2u x‖ := by
+      have h := lapEval_dist_le (V := V) (F := F) (d2u x) 0
+      simpa only [map_zero, dist_zero_right] using h
+    _ ≤ Module.finrank ℝ V * ‖d2u‖ :=
+      mul_le_mul_of_nonneg_left (d2u.norm_coe_le_norm x)
+        (Nat.cast_nonneg _)
+
+theorem coreLap_holder
+    {alpha K : NNReal}
+    (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F))
+    (h : HolderWith K alpha d2u) :
+    HolderWith (Module.finrank ℝ V * K) alpha (coreLap d2u) := by
+  have hlip : LipschitzWith (Module.finrank ℝ V : NNReal)
+      (lapEval (V := V) (F := F)) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro A B
+    simpa only [Nat.cast_ofNat, NNReal.smul_def, smul_eq_mul] using
+      lapEval_dist_le (V := V) (F := F) A B
+  have hcomp := hlip.holderWith.comp h
+  simpa only [coreLap, Function.comp_apply, NNReal.coe_natCast,
+    NNReal.coe_one, NNReal.rpow_one, mul_one, one_mul] using hcomp
+
 end CoreOperators
 
 section ScaledEvolution
@@ -113,13 +122,11 @@ variable {V F : Type*}
   [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- Heat evolution written against the fixed time-one Gaussian. -/
 def heatScaled (t : ℝ) (u : BoundedContinuousFunction V F) (x : V) : F :=
   ∫ z : V, baseHeat z • u (x - heatScale t • z)
 
 omit [Nontrivial V]
   [CompleteSpace F] in
-/-- Positive-time heat convolution equals its fixed-Gaussian scaled form. -/
 theorem heatSup_scaled {t : ℝ} (ht : 0 < t)
     (u : BoundedContinuousFunction V F) (x : V) :
     heatSup t u x = heatScaled t u x := by
@@ -155,8 +162,6 @@ theorem heatSup_scaled {t : ℝ} (ht : 0 < t)
       rw [inv_smul_smul₀ (pow_ne_zero _ hr.ne')]
 
 omit [CompleteSpace F] in
-/-- The fixed-Gaussian scaled heat evolution is continuous in its time
-parameter, including at time zero. -/
 theorem heatScaled_cont (u : BoundedContinuousFunction V F) (x : V) :
     Continuous (fun t : ℝ => heatScaled t u x) := by
   unfold heatScaled
@@ -179,7 +184,6 @@ theorem heatScaled_cont (u : BoundedContinuousFunction V F) (x : V) :
     fun_prop
 
 omit [Nontrivial V] in
-/-- The fixed-Gaussian formula has the correct value at time zero. -/
 @[simp]
 theorem heatScaled_zero (u : BoundedContinuousFunction V F) (x : V) :
     heatScaled 0 u x = u x := by
@@ -188,8 +192,6 @@ theorem heatScaled_zero (u : BoundedContinuousFunction V F) (x : V) :
   rw [integral_smul_const, integral_baseHeat, one_smul]
 
 omit [CompleteSpace F] in
-/-- The fixed-Gaussian heat formula is a contraction at every real parameter.
-For negative parameters this merely uses Lean's convention `sqrt t = 0`. -/
 theorem heatScaled_norm (t : ℝ) (u : BoundedContinuousFunction V F) (x : V) :
     ‖heatScaled t u x‖ ≤ ‖u‖ := by
   unfold heatScaled
@@ -231,8 +233,6 @@ theorem heatScaled_map {G : Type*}
   simp
 
 omit [CompleteSpace F] in
-/-- Spatial differentiation commutes with the fixed-Gaussian heat formula
-when the supplied bounded first jet is globally realized. -/
 theorem heatScaled_space (t : ℝ)
     (u : BoundedContinuousFunction V F)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
@@ -287,8 +287,6 @@ theorem heatScaled_space (t : ℝ)
       hbound hbound_int hdiff
   simpa only [F₀, F₁, heatScaled] using key
 
-/-- Quantitative approximation gives right convergence of the positive-time
-heat evolution to its bounded half-Holder datum. -/
 theorem heatSup_zero {K : ℝ≥0} (u : BoundedContinuousFunction V F)
     (hu : HolderWith K (1 / 2 : ℝ≥0) u) (x : V) :
     Tendsto (fun t : ℝ => heatSup t u x) (𝓝[>] (0 : ℝ)) (𝓝 (u x)) := by
@@ -329,9 +327,6 @@ private def scaledDt (t : ℝ)
     du (x - heatScale t • z) ((-(2 * heatScale t)⁻¹) • z)
 
 omit [CompleteSpace F] in
-/-- Differentiation of the fixed-Gaussian scaled heat evolution at positive
-time.  The derivative is still in first-derivative form; the following layer
-identifies it with the heat evolution of the Laplacian. -/
 theorem heatScaled_time {t : ℝ} (ht : 0 < t)
     (u : BoundedContinuousFunction V F)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
@@ -616,8 +611,6 @@ theorem scaledDt_eq_lap {t : ℝ} (ht : 0 < t)
       simp only [coreLap_apply, b, Finset.smul_sum]
 
 omit [CompleteSpace F] in
-/-- Positive-time heat evolution of a bounded realized `C²` spatial jet
-satisfies the Euclidean heat equation pointwise. -/
 theorem heatSup_time {t : ℝ} (ht : 0 < t)
     (u : BoundedContinuousFunction V F)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
@@ -632,8 +625,6 @@ theorem heatSup_time {t : ℝ} (ht : 0 < t)
   filter_upwards [Ioi_mem_nhds ht] with s hs
   exact heatSup_scaled hs u x
 
-/-- Fundamental heat-evolution identity on a positive interval.  This is the
-zero-endpoint bridge used to recover the Duhamel boundary term. -/
 theorem heatSup_primitive {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     (u : BoundedContinuousFunction V F)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
@@ -665,10 +656,6 @@ theorem heatSup_primitive {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
 section Duhamel
 
 omit [CompleteSpace F] in
-/-- A Volterra integral whose coefficient vanishes at zero has no moving-
-endpoint boundary term.  The proof separates a fixed interval from the
-moving sliver; boundedness of the realized derivative makes the latter
-quadratic in the time increment. -/
 private theorem volterra_zero {t : ℝ}
     (b db : BoundedContinuousFunction ℝ ℝ)
     (hb : ∀ q : ℝ, HasDerivAt (b : ℝ → ℝ) (db q) q)
@@ -834,8 +821,6 @@ private theorem volterra_time {t : ℝ}
   rw [hsplit]
   simpa only [add_assoc] using hc.add hz
 
-/-- Time-reversed simple-tensor Duhamel evolution.  Reversal keeps the heat
-parameter fixed while the scalar coefficient is differentiated. -/
 def frozenDuh (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction V F) (x : V) : F :=
   ∫ r in (0 : ℝ)..t, a (t - r) • heatScaled r u x
@@ -849,8 +834,6 @@ theorem frozenDuh_zero (a : BoundedContinuousFunction ℝ ℝ)
   simp [frozenDuh]
 
 omit [CompleteSpace F] in
-/-- The spatial first jet of the simple-tensor Duhamel evolution is the
-Duhamel evolution of the supplied realized first jet. -/
 theorem frozenDuh_space (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction V F)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
@@ -899,7 +882,6 @@ theorem frozenDuh_space (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
       hbound hbound_int hdiff
   simpa only [F₀, F₁, frozenDuh] using key
 
-/-- Continuous linear maps commute with the simple-tensor Duhamel formula. -/
 theorem frozenDuh_map {G : Type*}
     [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G]
     (L : F →L[ℝ] G) (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
@@ -918,8 +900,6 @@ theorem frozenDuh_map {G : Type*}
     a (t - r) • heatScaled r (L.compLeftContinuousBounded V u) x
   rw [map_smul, heatScaled_map]
 
-/-- Tracing the realized Duhamel Hessian is Duhamel evolution of the traced
-spatial Hessian. -/
 theorem frozenDuh_lap (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F)) (x : V) :
     lapEval (frozenDuh (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) =
@@ -928,9 +908,6 @@ theorem frozenDuh_lap (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     frozenDuh_map (V := V) (F := V →L[ℝ] V →L[ℝ] F)
       (G := F) (lapEval (V := V) (F := F)) t a d2u x
 
-/-- Time derivative of the simple-tensor Duhamel evolution.  The coefficient
-Leibniz formula is converted to the heat form by one interval integration by
-parts, using the already proved positive-time heat equation. -/
 theorem frozenDuh_time {t : ℝ} (ht : 0 < t)
     (a da : BoundedContinuousFunction ℝ ℝ)
     (ha : ∀ q : ℝ, HasDerivAt (a : ℝ → ℝ) (da q) q)

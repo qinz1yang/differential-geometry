@@ -97,6 +97,7 @@ theorem chartPushed_memWkp_two_k_of_chartSideBridge
         (I := I) (M := M) α) :=
   h_bridge α
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacianDomainPow_le_of_le_aux
     (g : SmoothRiemannianMetric I M) {k j : ℕ} (hjk : j ≤ k)

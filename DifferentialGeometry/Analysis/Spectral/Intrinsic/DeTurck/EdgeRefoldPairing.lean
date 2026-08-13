@@ -3,46 +3,29 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SlotInsertSelfAdjoint
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorCovDivergence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgePairCore
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgeLowerPairing
-
-/-!
-# Closed-edge Ricci--DeTurck refold pairing
-
-The closed-edge slope split leaves one genuinely nonlinear lower arm.  Its
-order-zero coefficient contains a derivative of the connection difference,
-so estimating that coefficient before pairing would require an inadmissible
-spatial derivative bound for the arbitrary edge solution.
-
-This file performs the exact algebraic refold first.  The public Palatini and
-DeTurck refold identities turn the dangerous part into
-
-* the Ricci half-combination, whose low-order structure is handled jointly;
-* a uniformly bounded order-zero family;
-* an explicit lower residual and the genuine first-gradient arm; and
-* a second-order coefficient which is pointwise `O(delta)`.
-
-The final theorem also records the resulting Hilbert-space pairing identity,
-so later energy estimates consume an actual full right-hand-side pairing and
-not an uninstantiated symbolic decomposition.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-
-open Bundle Manifold Tensor0SBundle
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -71,19 +54,12 @@ private local instance edgeTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
   Tensor0SBundle.tensorRSBundle_fiber r s
 
-/-- The Ricci order-zero combination left after adding and subtracting one
-Riemann coefficient.  It is the low-order Palatini residual; the complementary
-Riemann coefficient is the one combined with the DeTurck covariant-derivative
-arm below. -/
 def edgeRicciHalf (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   linearizedRicciConnDiffOrder0CoeffField (I := I) (M := M) g g₁ +
     (1 / 2 : Real) •
       ricciArmOrder0RiemannCoeff (I := I) (M := M) g g₁
 
-/-- The explicit zeroth-order remainder after the covariant-derivative part of
-the DeTurck coefficient has been refolded.  It contains no derivative of the
-connection difference hidden inside `deTurckLieCoeffField`. -/
 def edgeFold0 (g g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ((deTurckLieEndoArmField (I := I) (M := M) g g₁ g_bg +
@@ -91,7 +67,6 @@ def edgeFold0 (g g₁ g_bg : SmoothRiemannianMetric I M) :
     phiMetCurvCoeff (I := I) g g_bg g₁) -
       edgeCarry0 (I := I) (M := M) g g_bg
 
-/-- The complete nonlinear refold arm at one slope parameter. -/
 def edgeRefoldArm (g g₁ g_bg : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (C₀ : SmoothCcTensor g 2 2)
     (C₂ : SmoothCcTensor g 4 2) : SmoothCcTensor g 0 2 :=
@@ -108,7 +83,6 @@ def edgeRefoldArm (g g₁ g_bg : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-/-- The zero endpoint obeys any nonnegative fibre-operator bound. -/
 theorem edgeZeroBoundAt (g : SmoothRiemannianMetric I M) {delta : Real}
     (hdelta : 0 ≤ delta) :
     metricCauchySchwarzBound (I := I) (M := M) g
@@ -121,10 +95,6 @@ theorem edgeZeroBoundAt (g : SmoothRiemannianMetric I M) {delta : Real}
   exact mul_nonneg (mul_nonneg hdelta (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
 
 omit [CompactSpace M] [BoundarylessManifold I M] in
-/-- On the genuine segment, the path using the sharp zero bound and the path
-using the same radius at both endpoints are the same metric.  This bridge lets
-the equal-radius public refold packages feed the exact closed-edge slope split.
--/
 theorem edgeMetric_bal
     (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     {delta : Real} (hdelta_lt : delta < 1)
@@ -300,8 +270,6 @@ private lemma edge_frame_repr (g : SmoothRiemannianMetric I M) (x : M)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
-/-- A moving-metric double trace is a fixed-background trace after inserting
-the relative inverse-metric endomorphism in the first contracted slot. -/
 theorem edgeMvTrace (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     secondMetricCometricDoubleTraceField (I := I) (M := M) g gm s =
       ccOperatorFieldComp (I := I) (M := M) g (s + 2) (s + 2) s
@@ -421,8 +389,6 @@ private lemma edge_bitrace_move
       refine Finset.sum_congr rfl fun b _ => ?_
       ring
 
-/-- Insert a smooth tangent endomorphism into one of the two covariant slots
-of a rank-two tensor. -/
 def edgeSlot2 (g : SmoothRiemannianMetric I M)
     (Lambda : ContMDiffSection I (E →L[Real] E) ∞
       (fun x : M => TangentSpace I x →L[Real] TangentSpace I x))
@@ -432,7 +398,6 @@ def edgeSlot2 (g : SmoothRiemannianMetric I M)
       (endoSlotZeroCcTensor (I := I) (M := M) g 1 Lambda)
       (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) j) S))
 
-/-- Apply the relative inverse-metric endomorphism in both slots. -/
 def edgeRaise2 (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 2 :=
   edgeSlot2 (I := I) (M := M) g
@@ -440,13 +405,11 @@ def edgeRaise2 (g gm : SmoothRiemannianMetric I M)
     (edgeSlot2 (I := I) (M := M) g
       (fullRaisedEndoField (I := I) (M := M) g gm) 0 S)
 
-/-- Covariant tensor product with the first factor occupying slots `0,1`. -/
 def edgeProd4 (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 4 :=
   operatorFieldApply (I := I) (M := M) g 2 4
     (slotExtendIter (I := I) (M := M) g 0 2 2 B) A
 
-/-- Formal rank-four partner of one moving Palatini pair-trace monomial. -/
 def edgePairPartner (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (sigma : Equiv.Perm (Fin 4)) :
     SmoothCcTensor g 0 4 :=
@@ -454,10 +417,6 @@ def edgePairPartner (g gm : SmoothRiemannianMetric I M)
     (edgeProd4 (I := I) (M := M) g
       (edgeRaise2 (I := I) (M := M) g gm S) S)
 
-/-- The public moving-metric pair trace, arranged so that applying it to a
-rank-two tensor reproduces one Palatini refold monomial.  Keeping this field
-explicit is what later allows the second derivative to be moved by Green's
-identity before any pointwise estimate is taken. -/
 def edgePairMono (g gm : SmoothRiemannianMetric I M)
     (G : SmoothCcTensor g 0 4) (σ : Equiv.Perm (Fin 4)) :
     SmoothCcTensor g 2 2 :=
@@ -470,12 +429,6 @@ def edgePairMono (g gm : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
-/-- One moving pair-trace action is exactly one Palatini refold monomial.
-
-This is the public-API reconstruction of the algebraic identity needed by the
-closed-edge energy argument.  In particular it uses `mvPairTraceOp`, rather
-than relying on the private pair-trace implementation in the coefficient
-refold file. -/
 theorem edgeMonoRefold (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) :
@@ -537,8 +490,6 @@ theorem edgeMonoRefold (g gm : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
-/-- Evaluation of `edgeSlot2`: the chosen covariant slot is read through the
-given endomorphism. -/
 theorem edgeSlot2_eval (g : SmoothRiemannianMetric I M)
     (Λ : ContMDiffSection I (E →L[Real] E) ∞
       (fun x : M => TangentSpace I x →L[Real] TangentSpace I x))
@@ -566,8 +517,6 @@ theorem edgeSlot2_eval (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-/-- Both relative inverse-metric insertions in `edgeRaise2` are visible on
-the two covariant arguments. -/
 theorem edgeRaise2_eval (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2
@@ -664,8 +613,6 @@ private lemma edge_extend2_eval (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
-/-- The rank-four product carrier evaluates as the product of its first and
-last pair of covariant components. -/
 theorem edgeProd4_eval (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 2) (x : M) (v : Fin 4 → E) :
     unitModel (I := I) (M := M) g 4
@@ -678,7 +625,6 @@ theorem edgeProd4_eval (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-/-- Component formula for the formal rank-four partner of one monomial. -/
 theorem edgePartner_eval (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 4))
     (x : M) (v : Fin 4 → E) :
@@ -695,7 +641,6 @@ theorem edgePartner_eval (g gm : SmoothRiemannianMetric I M)
   congr 2 ; funext k ; fin_cases k <;> rfl
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-/-- Pointwise component formula for one public pair-trace monomial. -/
 theorem edgeMono_eval (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) (x : M) (v : Fin 2 → E) :
@@ -739,7 +684,6 @@ private lemma edgeEvalCLM_apply (s : Nat) (x : M) (v : Fin s → E)
     (D : Tensor0SSpace s I x) :
     edgeEvalCLM (I := I) (M := M) s x v D = Tensor0SSpace.toModel D v := rfl
 
-/-- A curried scalar reading of the first two slots of a covariant tensor. -/
 private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
     (v : Fin s → E) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real :=
@@ -1093,9 +1037,6 @@ private theorem edgePair_point (g gm : SmoothRiemannianMetric I M)
         rfl
 
 omit [BoundarylessManifold I M] in
-/-- Exact global formal-partner identity for one moving Palatini pair-trace
-monomial.  This is the Green-ready replacement for estimating the rank-four
-coefficient and `nabla² S` separately. -/
 theorem edgePair_l2 (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) :
@@ -1111,8 +1052,6 @@ theorem edgePair_l2 (g gm : SmoothRiemannianMetric I M)
   exact edgePair_point (I := I) (M := M) g gm S G σ x
 
 omit [BoundarylessManifold I M] in
-/-- Inner-product form of `edgePair_l2`, convenient for finite linear
-combinations of refold monomials. -/
 theorem edgePair_inner (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (σ : Equiv.Perm (Fin 4)) :
@@ -1122,7 +1061,6 @@ theorem edgePair_inner (g gm : SmoothRiemannianMetric I M)
   rw [SmoothCcTensor.inner_def, SmoothCcTensor.inner_def]
   exact edgePair_l2 (I := I) (M := M) g gm S G σ
 
-/-- Pair-trace form of the DeTurck part of the second-order refold family. -/
 def edgeLiePairFam (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
@@ -1140,7 +1078,6 @@ def edgeLiePairFam (g : SmoothRiemannianMetric I M)
         (iteratedCovGrad (I := I) g 0 2 2 T)
         ((q i).trans (Equiv.swap (0 : Fin 4) 1))))
 
-/-- Rank-four formal partner of the DeTurck second-order pair family. -/
 def edgeLiePartner (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
@@ -1157,8 +1094,6 @@ def edgeLiePartner (g : SmoothRiemannianMetric I M)
         ((q i).trans (Equiv.swap (0 : Fin 4) 1))))
 
 omit [BoundarylessManifold I M] in
-/-- The DeTurck second-order action is exactly the application of its
-rank-two pair-trace form to the metric difference. -/
 theorem edgeLiePair_apply
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -1199,7 +1134,6 @@ theorem edgeLiePair_apply
       (iteratedCovGrad (I := I) g 0 2 2 T)
       ((q 2).trans (Equiv.swap (0 : Fin 4) 1))]
 
-/-- Pair-trace form of one four-monomial Palatini kernel. -/
 def edgeKernelPair (g gm : SmoothRiemannianMetric I M)
     (G : SmoothCcTensor g 0 4) (q : Fin 4 → Equiv.Perm (Fin 4)) :
     SmoothCcTensor g 2 2 :=
@@ -1209,7 +1143,6 @@ def edgeKernelPair (g gm : SmoothRiemannianMetric I M)
       edgePairMono (I := I) (M := M) g gm G (q 2) -
       edgePairMono (I := I) (M := M) g gm G (q 3))
 
-/-- Rank-four formal partner of one four-monomial Palatini kernel. -/
 def edgeKernelPartner (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (q : Fin 4 → Equiv.Perm (Fin 4)) :
     SmoothCcTensor g 0 4 :=
@@ -1220,8 +1153,6 @@ def edgeKernelPartner (g gm : SmoothRiemannianMetric I M)
       edgePairPartner (I := I) (M := M) g gm S (q 3))
 
 omit [BoundarylessManifold I M] in
-/-- Applying a Palatini kernel pair field to its weight reproduces the
-corresponding rank-four kernel coefficient acting on the chosen input. -/
 theorem edgeKernel_apply (g gm : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) (G : SmoothCcTensor g 0 4)
     (q : Fin 4 → Equiv.Perm (Fin 4)) :
@@ -1239,7 +1170,6 @@ theorem edgeKernel_apply (g gm : SmoothRiemannianMetric I M)
     edgeMonoRefold (I := I) (M := M) g gm S G (q 2),
     edgeMonoRefold (I := I) (M := M) g gm S G (q 3)]
 
-/-- Pair-trace form of the Riemann--Palatini second-order refold family. -/
 def edgeRiemPairFam (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
@@ -1256,7 +1186,6 @@ def edgeRiemPairFam (g : SmoothRiemannianMetric I M)
         (realizedFam (I := I) g T 0 hdelta hdeltaZ s)
         (iteratedCovGrad (I := I) g 0 2 2 T) qB))
 
-/-- Rank-four formal partner of the Riemann--Palatini pair family. -/
 def edgeRiemPartner (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
@@ -1272,8 +1201,6 @@ def edgeRiemPartner (g : SmoothRiemannianMetric I M)
         (realizedFam (I := I) g T 0 hdelta hdeltaZ s) T qB))
 
 omit [BoundarylessManifold I M] in
-/-- The Riemann--Palatini second-order action is exactly the application of
-its rank-two pair-trace form to the metric difference. -/
 theorem edgeRiemPair_apply
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -1297,8 +1224,6 @@ theorem edgeRiemPair_apply
       (realizedFam (I := I) g T 0 hdelta hdeltaZ s) T
       (iteratedCovGrad (I := I) g 0 2 2 T) qB]
 
-/-- The pair-trace field for the complete top coefficient returned by the
-closed-edge refold package. -/
 def edgeTopPair (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
@@ -1311,7 +1236,6 @@ def edgeTopPair (g : SmoothRiemannianMetric I M)
   (2 : Real) • edgeRiemPairFam (I := I) (M := M) g T hdelta hdeltaZ qA qB s +
     edgeLiePairFam (I := I) (M := M) g T hdelta hdeltaZ q epsilon s
 
-/-- Rank-four formal partner of the complete top refold coefficient. -/
 def edgeTopPartner (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
     (hdelta : metricCauchySchwarzBound (I := I) (M := M) g
@@ -1326,7 +1250,6 @@ def edgeTopPartner (g : SmoothRiemannianMetric I M)
     edgeLiePartner (I := I) (M := M) g T hdelta hdeltaZ q epsilon s
 
 omit [BoundarylessManifold I M] in
-/-- Exact action identity for the complete top refold coefficient. -/
 theorem edgeTopPair_apply
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -1351,8 +1274,6 @@ theorem edgeTopPair_apply
     edgeLiePair_apply (I := I) (M := M) g T hdelta hdeltaZ q epsilon s]
 
 omit [BoundarylessManifold I M] in
-/-- Exact formal-partner identity for the complete top coefficient returned by
-the Riemann--DeTurck refold. -/
 theorem edgeTop_inner
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -1378,9 +1299,6 @@ theorem edgeTop_inner
     real_inner_smul_left, real_inner_smul_right]
   simp_rw [edgePair_inner (I := I) (M := M) g]
 
-/-- Green form of the complete top refold pairing.  All second derivatives of
-`T` have been moved onto the explicit formal partner before any estimate is
-taken. -/
 theorem edgeTop_green
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -1425,14 +1343,6 @@ theorem edgeTop_green
     _ = -⟪covDivergence (I := I) (M := M) g 3 P, T₁⟫_ℝ := by
       rw [real_inner_comm]
 
-/-- Exact full nonlinear refold on the closed-edge segment.
-
-No Sobolev or derivative bound is assumed: for the fixed smooth tensor `W`, a
-finite jet radius is constructed internally only to instantiate the public
-exact refold packages.  The returned top coefficient has an explicit
-pointwise `O(delta)` bound.  The order-zero refold family is uniformly bounded
-on the whole segment, while `edgeRicciHalf`, `edgeFold0`, and `edgeQuad1` stay
-visible for the subsequent low-edge joint estimate. -/
 theorem exists_edgeRefold
     (g g_bg : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -1610,9 +1520,6 @@ theorem exists_edgeRefold
     rw [hid]
     simp only [inner_add_right, real_inner_smul_right]
 
-/-- Consumer-shaped full slope normal form.  This composes the closed-edge
-three-arm cancellation with `exists_edgeRefold`; no residual coefficient or
-pairing identity is supplied as a hypothesis. -/
 theorem exists_edgeSlopeRef
     (g g_bg : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -1658,9 +1565,8 @@ theorem exists_edgeSlopeRef
   rw [hslope, hquad s hscc]
   rfl
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

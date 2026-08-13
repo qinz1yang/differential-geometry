@@ -1,16 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCProducers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalPhaseEndpoint
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -35,8 +28,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-
-
 
 private theorem exists_exit_time
     {Z : Type*} [TopologicalSpace Z] {K : Set Z} (hK : IsClosed K)
@@ -90,9 +81,6 @@ private theorem exists_exit_time
     · exact interior_subset (hbefore s ⟨hs.1, lt_of_le_of_ne hs.2 hst⟩)
   · rw [frontier, hK.closure_eq]
     exact ⟨htK, htNot⟩
-
-
-
 
 private theorem NormalCoordMetricEquivOn.chart_join_le
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -291,10 +279,6 @@ private theorem NormalCoordMetricEquivOn.chart_join_le
   rw [hend]
   have ht_abs : |t| = t := abs_of_nonneg ht.1
   simpa only [Real.norm_eq_abs, sub_zero, ht_abs, d, mul_assoc] using hmean
-
-
-
-
 
 theorem NormalCoordMetricEquivOn.ball_core_dist
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -502,8 +486,6 @@ theorem NormalCoordMetricEquivOn.ball_core_dist
       _ ≤ Real.sqrt 2 * (riemannianEDist I (chi.symm z) x).toReal := hfull'
   exact ⟨hxcore, hcoord⟩
 
-
-
 theorem NormalCoordMetricEquivOn.ball_subset_core
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -546,10 +528,6 @@ theorem NormalCoordMetricEquivOn.ball_subset_core
   intro x hx
   exact (NormalCoordMetricEquivOn.ball_core_dist Y hcomplete hconn hEnorm
     h hCU hUtgt heta hclosed hrhoeta hx).1
-
-
-
-
 
 theorem HasSuppConvData.metric_buffer
     (inp : MetricCompactnessInputs (I := I) X)

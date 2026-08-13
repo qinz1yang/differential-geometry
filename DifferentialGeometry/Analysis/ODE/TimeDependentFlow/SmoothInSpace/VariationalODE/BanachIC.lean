@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.U
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.ContDiffOnTop
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -309,4 +309,4 @@ theorem ChartLocalPicardData.contDiffOn_top
 
 end TransferSmoothness
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

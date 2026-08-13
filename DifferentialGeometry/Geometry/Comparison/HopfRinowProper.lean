@@ -2,15 +2,9 @@ import Mathlib.Topology.Order.IntermediateValue
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.Completeness
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -33,8 +27,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- A finite-radius closed ball for the extended distance of a complete
-Riemannian metric is compact, without a connectedness assumption. -/
 theorem closedEBall_isCompact
     {g : SmoothRiemannianMetric I M}
     (hg : RiemannianMetricComplete (I := I) g)
@@ -181,8 +173,7 @@ theorem expImgClosedBall_compact
       letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
       CompleteSpace M)
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (R : ℝ) :
     letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
     IsCompact ((fun v => expMapIntrinsic (I := I) g hEnorm p v) ''
@@ -204,8 +195,7 @@ theorem closedBall_subset_expImg
       letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
       CompleteSpace M)
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {R : ℝ} :
     letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
     (letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
@@ -238,8 +228,7 @@ theorem properSpace_riemMetric
       letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
       CompleteSpace M)
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v))) :
+    (hEnorm : IsMetricNorm (I := I) (M := M) g) :
     letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
     ProperSpace M := by
   letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
@@ -262,8 +251,7 @@ theorem intermediateDist_riemMetric
       letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
       CompleteSpace M)
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
-      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (O : M) :
     letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
     ∀ p : M, ∀ t : ℝ, 0 ≤ t → t ≤ dist p O →
@@ -290,6 +278,130 @@ theorem intermediateDist_riemMetric
   obtain ⟨s, hsIcc, hs⟩ :=
     intermediate_value_Icc (show (0 : ℝ) ≤ 1 by norm_num) hf_cont hmem
   exact ⟨γ s, by simpa [f] using hs⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+theorem properSpace_riemMetric_of_complete_metric
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g) :
+    letI : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    letI : TopologicalSpace.MetrizableSpace M :=
+      Manifold.metrizableSpace I M
+    letI : T3Space M := inferInstance
+    letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+      ⟨g.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+    letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    letI : PseudoEMetricSpace M :=
+      (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+    letI : CompleteSpace M := hcomplete.complete
+    letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
+    ProperSpace M := by
+  letI : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  letI : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  letI : T3Space M := inferInstance
+  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : PseudoEMetricSpace M :=
+    (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  letI : CompleteSpace M := hcomplete.complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  exact properSpace_riemMetric (I := I) (M := M) hcomplete.complete g hEnorm
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
+theorem riemMetric_dist_eq_of_complete_metric
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (x y : M) :
+    letI : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    letI : TopologicalSpace.MetrizableSpace M :=
+      Manifold.metrizableSpace I M
+    letI : T3Space M := inferInstance
+    letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+      ⟨g.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+    letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    letI : PseudoEMetricSpace M :=
+      (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+    letI : CompleteSpace M := hcomplete.complete
+    letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
+    dist x y = (riemannianEDist I x y).toReal := by
+  letI : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  letI : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  letI : T3Space M := inferInstance
+  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : PseudoEMetricSpace M :=
+    (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  letI : CompleteSpace M := hcomplete.complete
+  exact riemMetric_dist_eq (I := I) (M := M) x y
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+theorem intermediateDist_riemMetric_of_complete_metric
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (O : M) :
+    letI : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    letI : TopologicalSpace.MetrizableSpace M :=
+      Manifold.metrizableSpace I M
+    letI : T3Space M := inferInstance
+    letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+      ⟨g.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+    letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    letI : PseudoEMetricSpace M :=
+      (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+    letI : CompleteSpace M := hcomplete.complete
+    letI : MetricSpace M := riemMetricSpace (I := I) (M := M)
+    ∀ p : M, ∀ t : ℝ, 0 ≤ t → t ≤ dist p O →
+      ∃ q : M, dist q O = t := by
+  letI : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  letI : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  letI : T3Space M := inferInstance
+  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : PseudoEMetricSpace M :=
+    (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  letI : CompleteSpace M := hcomplete.complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  exact intermediateDist_riemMetric (I := I) (M := M) hcomplete.complete g hEnorm O
 
 end HopfRinow
 end Riemannian

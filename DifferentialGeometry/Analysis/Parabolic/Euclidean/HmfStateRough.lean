@@ -1,17 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.RoughCarleson
 
-/-!
-# A state-dependent principal arm in rough parabolic coordinates
-
-This file records the exact difference split and rough estimates when a
-principal flux genuinely depends on the state value.  It is a valid general
-extension of `HmfCoeff`, but it is not forced by harmonic-map heat flow: in a
-strong local-addition formula the vertical derivative multiplying `V_t`
-should cancel the identical vertical derivative in the leading tension term.
-After that cancellation the actual HMF principal coefficient is prescribed
-by the domain metric, corresponding to the specialization `L = 0` here.
--/
-
 noncomputable section
 open MeasureTheory Set
 open scoped ENNReal
@@ -27,7 +15,6 @@ variable {V Y G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Quantitative state dependence of a principal coefficient. -/
 structure HmfStateCoeff (eps L : ℝ)
     (A : ℝ × V → Y → G →L[ℝ] F) : Prop where
   eps0 : 0 ≤ eps
@@ -41,8 +28,6 @@ omit [NormedAddCommGroup V]
   [MeasurableSpace V]
   [BorelSpace V]
   [NormedSpace ℝ Y] in
-/-- On a radius-`R` state ball the full principal coefficient has size at
-most `eps + L R`. -/
 theorem stateCoeff_bound {eps L R : ℝ}
     {A : ℝ × V → Y → G →L[ℝ] F}
     (h : HmfStateCoeff eps L A) {z : ℝ × V} {y : Y}
@@ -72,7 +57,6 @@ theorem stateCoeff_sub {eps L D : ℝ}
   (h.state_lip z y₁ y₂).trans
     (mul_le_mul_of_nonneg_left hy h.L0)
 
-/-- Realized state-dependent HMF principal flux. -/
 def hmfStateFlux
     (A : ℝ × V → Y → G →L[ℝ] F)
     (p : ℝ × V → Y) (d : ℝ × V → G) (z : ℝ × V) : F :=
@@ -85,9 +69,6 @@ omit [NormedAddCommGroup V]
   [BorelSpace V]
   [NormedAddCommGroup Y]
   [NormedSpace ℝ Y] in
-/-- Exact two-arm difference split for a state-dependent principal flux.
-The first arm moves the gradient, while the second moves the coefficient and
-retains the partner gradient. -/
 theorem hmfStateFlux_sub
     (A : ℝ × V → Y → G →L[ℝ] F)
     (p₁ p₂ : ℝ × V → Y) (d₁ d₂ : ℝ × V → G) (z : ℝ × V) :
@@ -103,10 +84,6 @@ omit [NormedAddCommGroup V]
   [MeasurableSpace V]
   [BorelSpace V]
   [NormedSpace ℝ Y] in
-/-- Weighted critical estimate for the repaired state-dependent HMF
-principal flux.  Besides the prescribed smallness `eps`, the contraction
-coefficient contains only state-ball quantities `L R` and `L Dp`; no false
-horizon power is introduced. -/
 theorem hmfStateFluxWt
     {eps L T R Dp Rg Dg : ℝ}
     {A : ℝ × V → Y → G →L[ℝ] F}
@@ -157,19 +134,11 @@ theorem hmfStateFluxWt
         (mul_le_mul_of_nonneg_left (hdΔ t x ht hT) hcoef)
         (mul_le_mul_of_nonneg_left (hd₂ t x ht hT) hcoefD)
 
-/-! ## Local Carleson control
-
-The coefficient bounds needed for a Carleson cylinder are only required on
-`0 < t ≤ T`.  This localized variant avoids extending a state-ball bound to
-irrelevant negative or late times. -/
-
 omit [NormedAddCommGroup V]
   [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V]
   [MeasurableSpace V]
   [BorelSpace V] in
-/-- A coefficient bounded on the positive time slab preserves the weighted
-gradient class. -/
 theorem linWtOn
     (B : ℝ × V → G →L[ℝ] F)
     {T K C : ℝ} {d : ℝ × V → G}
@@ -187,8 +156,6 @@ theorem linWtOn
     _ = K * (Real.sqrt t * ‖d (t, x)‖) := by ring
     _ ≤ K * C := mul_le_mul_of_nonneg_left (hd t x ht hT) hK0
 
-/-- A coefficient bounded on the positive time slab preserves the gradient
-Carleson class.  This is the slab-local counterpart of `linCarl_of_bound`. -/
 theorem linCarlOn
     (B : ℝ × V → G →L[ℝ] F)
     {T K : ℝ} {C : ℝ≥0∞} {d : ℝ × V → G}
@@ -245,8 +212,6 @@ omit [NormedAddCommGroup V]
   [MeasurableSpace V]
   [BorelSpace V]
   [NormedSpace ℝ Y] in
-/-- Separate weighted estimates for the two state-principal difference
-arms. -/
 theorem hmfStateFluxWt2
     {eps L T R Dp Rg Dg : ℝ}
     {A : ℝ × V → Y → G →L[ℝ] F}
@@ -273,9 +238,6 @@ theorem hmfStateFluxWt2
       hcoefD hd₂
 
 omit [NormedSpace ℝ Y] in
-/-- The two state-dependent principal difference arms have separate
-Carleson estimates.  This is the form consumed by two applications of the
-linear heat-flux bound. -/
 theorem hmfStateFluxCarl
     {eps L T R Dp : ℝ} {C₂ CΔ : ℝ≥0∞}
     {A : ℝ × V → Y → G →L[ℝ] F}

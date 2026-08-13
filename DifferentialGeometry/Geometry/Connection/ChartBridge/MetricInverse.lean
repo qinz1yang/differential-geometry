@@ -1,31 +1,24 @@
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 open Bundle Manifold
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open Tensor0SBundle
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
-
-
 
 theorem chartInvGram_inverse
     (g : SmoothRiemannianMetric I M) (alpha : M) {x : M}
@@ -52,4 +45,4 @@ theorem chartInvGram_inverse
       chartGramMatrix_mul_chartInvGramMatrix (I := I) g alpha hx,
       Matrix.one_apply]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

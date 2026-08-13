@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
+import DifferentialGeometry.Geometry.Metric.DistanceScaling
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Exponential.Smoothness.MfderivZero
 import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
@@ -15,8 +17,8 @@ import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import DifferentialGeometry.Analysis.ODE.RadialSeminormFencing
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -133,8 +135,7 @@ variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
 
 private theorem radialDist_endpoint_le_pathELength
     (g : SmoothRiemannianMetric I M) (p : M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {γ : ℝ → M} {a b : ℝ} (hab : a ≤ b) (hγa : γ a = p)
     (hγ : CMDiff[Set.Icc a b] 1 γ)
     (hsrc : ∀ t ∈ Set.Icc a b,
@@ -418,8 +419,7 @@ private theorem mfderiv_expMap_injective_of_norm_lt_radius
 
 theorem normalBall_radial_length_le_riemannianEDist
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (_hv : (show TangentSpace I p from v) ∈ expDomain (I := I) g p)
     (hball : v ∈ (NormalCoordinates.normalChartAt (I := I) g p).target)
     (hsmall_g : Real.sqrt (g.inner p v v) < expRadiusGp (I := I) g p) :
@@ -680,8 +680,7 @@ theorem normalBall_radial_length_le_riemannianEDist
 
 private theorem minimizer_confined_to_C2_ball
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (hsmall_g : Real.sqrt (g.inner p v v) < expRadiusGp (I := I) g p)
     {γ : ℝ → M} {a b : ℝ}
     (hγ : CMDiff[Set.Icc a b] 1 γ) (hγa : γ a = p)
@@ -804,8 +803,7 @@ private theorem minimizer_confined_to_C2_ball
 
 private theorem radial_minimizer_radiality
     (g : SmoothRiemannianMetric I M) (p : M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {γ : ℝ → M} {a b : ℝ} (hab : a ≤ b)
     (hγ : CMDiff[Set.Icc a b] 1 γ) (hγa : γ a = p)
     (hγ_inBall : ∀ t ∈ Set.Icc a b,
@@ -1214,8 +1212,7 @@ private theorem radial_minimizer_radiality
 
 theorem normalBall_radial_minimizer_equality
     (g : SmoothRiemannianMetric I M) (p : M) {v : E}
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (_hv : (show TangentSpace I p from v) ∈ expDomain (I := I) g p)
     (hball : v ∈ (NormalCoordinates.normalChartAt (I := I) g p).target)
     (hsmall_g : Real.sqrt (g.inner p v v) < expRadiusGp (I := I) g p)
@@ -1449,8 +1446,7 @@ private lemma radialCurve_contMDiffOn_Icc
 
 private lemma radialCurve_pathELength_eq
     (g : SmoothRiemannianMetric I M) (p : M) (a : E)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (ha : ‖a‖ < expMapC2Radius (I := I) g p) :
     pathELength I
         (fun u : ℝ => (expMap (I := I) g p (show TangentSpace I p from (u • a)) : M)) 0 1
@@ -1473,8 +1469,7 @@ private lemma radialCurve_pathELength_eq
 
 theorem edist_exp_le_radius
     (g : SmoothRiemannianMetric I M) (p : M) (a : E)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (ha : ‖a‖ < expMapC2Radius (I := I) g p) :
     riemannianEDist I p
         (expMap (I := I) g p (show TangentSpace I p from a)) ≤
@@ -1498,10 +1493,24 @@ theorem edist_exp_le_radius
     radialCurve_pathELength_eq (I := I) g p a hEnorm ha] at hdist
   exact hdist
 
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+theorem edist_exp_le_radius_of_metric
+    (g : SmoothRiemannianMetric I M) (p : M) (a : E)
+    (ha : ‖a‖ < expMapC2Radius (I := I) g p) :
+    riemannianEDistOf (I := I) g p
+        (expMap (I := I) g p (show TangentSpace I p from a)) ≤
+      ENNReal.ofReal (Real.sqrt (g.inner p a a)) := by
+  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  have h := edist_exp_le_radius (I := I) (M := M) g p a hEnorm ha
+  simpa [riemannianEDistOf] using h
+
 private theorem radial_riemannianEDist_eq_radius
     (g : SmoothRiemannianMetric I M) (p : M) {a : E}
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (ha_dom : (show TangentSpace I p from a) ∈ expDomain (I := I) g p)
     (ha_ball : a ∈ (NormalCoordinates.normalChartAt (I := I) g p).target)
     (ha_small : Real.sqrt (g.inner p a a) < expRadiusGp (I := I) g p) :
@@ -1534,8 +1543,7 @@ private theorem radial_riemannianEDist_eq_radius
 
 theorem edist_exp_eq_radius
     (g : SmoothRiemannianMetric I M) (p : M) {a : E}
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (ha_small : Real.sqrt (g.inner p a a) < expRadiusGp (I := I) g p) :
     riemannianEDist I p (expMap (I := I) g p (show TangentSpace I p from a))
       = ENNReal.ofReal (Real.sqrt (g.inner p a a)) := by
@@ -1544,6 +1552,20 @@ theorem edist_exp_eq_radius
   exact radial_riemannianEDist_eq_radius (I := I) g p hEnorm
     (mem_expDomain_of_norm_lt_radius (I := I) g p ha_eucl)
     (ball_subset_normalChartAt_target (I := I) g p ha_eucl) ha_small
+
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+theorem edist_exp_eq_radius_of_metric
+    (g : SmoothRiemannianMetric I M) (p : M) {a : E}
+    (ha_small : Real.sqrt (g.inner p a a) < expRadiusGp (I := I) g p) :
+    riemannianEDistOf (I := I) g p (expMap (I := I) g p (show TangentSpace I p from a))
+      = ENNReal.ofReal (Real.sqrt (g.inner p a a)) := by
+  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  have h := edist_exp_eq_radius (I := I) (M := M) g p hEnorm ha_small
+  simpa [riemannianEDistOf] using h
 
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private theorem exists_forward_confinement_to_smallBall
@@ -1634,8 +1656,7 @@ private theorem exists_forward_confinement_to_smallBall
 
 theorem local_radial_identification_of_minimizer
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {γ : ℝ → M} {a b : ℝ}
     (hγ : CMDiff[Icc a b] 1 γ)
     (hmin : riemannianEDist I (γ a) (γ b) = pathELength I γ a b)
@@ -1728,8 +1749,7 @@ private lemma norm_le_sqrt_inner_div_sqrt_coercive
 
 private theorem path_confined_to_normalBall
     (g : SmoothRiemannianMetric I M) (c : M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {γ : ℝ → M} (hγ : CMDiff[Set.Icc (0 : ℝ) 1] 1 γ) (hγ0 : γ 0 = c)
     (hlen : pathELength I γ 0 1 < ENNReal.ofReal (expRadiusGp (I := I) g c)) :
     ∀ t ∈ Set.Icc (0 : ℝ) 1,
@@ -1986,8 +2006,7 @@ private theorem path_confined_to_normalBall
 
 theorem metricBall_subset_normalBall
     (g : SmoothRiemannianMetric I M) (c : M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {y : M} (hfin : riemannianEDist I c y ≠ ⊤)
     (hy : (riemannianEDist I c y).toReal < expRadiusGp (I := I) g c) :
     ∃ v : E, v ∈ (NormalCoordinates.normalChartAt (I := I) g c).target ∧
@@ -2027,10 +2046,31 @@ theorem metricBall_subset_normalBall
     rw [hy_eq]; exact hdist_eq
   rw [hdy, ENNReal.toReal_ofReal (Real.sqrt_nonneg _)]
 
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+theorem metricBall_subset_normalBall_of_metric
+    (g : SmoothRiemannianMetric I M) (c : M)
+    {y : M} (hfin : riemannianEDistOf (I := I) g c y ≠ ⊤)
+    (hy : (riemannianEDistOf (I := I) g c y).toReal < expRadiusGp (I := I) g c) :
+    ∃ v : E, v ∈ (NormalCoordinates.normalChartAt (I := I) g c).target ∧
+        (show TangentSpace I c from v) ∈ expDomain (I := I) g c ∧
+        Real.sqrt (g.inner c (show TangentSpace I c from v) (show TangentSpace I c from v))
+          = (riemannianEDistOf (I := I) g c y).toReal ∧
+        y = expMap (I := I) g c v := by
+  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  have hfin' : riemannianEDist I c y ≠ ⊤ := by
+    simpa [riemannianEDistOf] using hfin
+  have hy' : (riemannianEDist I c y).toReal < expRadiusGp (I := I) g c := by
+    simpa [riemannianEDistOf] using hy
+  have h := metricBall_subset_normalBall (I := I) (M := M) g c hEnorm hfin' hy'
+  simpa [riemannianEDistOf] using h
+
 theorem memNChartSrcOfDist
     (g : SmoothRiemannianMetric I M) (c : M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-        ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {y : M} (hfin : riemannianEDist I c y ≠ ⊤)
     (hy : (riemannianEDist I c y).toReal < expRadiusGp (I := I) g c) :
     y ∈ (NormalCoordinates.normalChartAt (I := I) g c).source := by
@@ -2048,6 +2088,23 @@ theorem memNChartSrcOfDist
     exact ψ.symm.map_source hv_symm_src
   rw [← hy_symm]
   exact hsrc
+
+omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
+theorem memNChartSrcOfDist_of_metric
+    (g : SmoothRiemannianMetric I M) (c : M)
+    {y : M} (hfin : riemannianEDistOf (I := I) g c y ≠ ⊤)
+    (hy : (riemannianEDistOf (I := I) g c y).toReal < expRadiusGp (I := I) g c) :
+    y ∈ (NormalCoordinates.normalChartAt (I := I) g c).source := by
+  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro x v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  have hfin' : riemannianEDist I c y ≠ ⊤ := by
+    simpa [riemannianEDistOf] using hfin
+  have hy' : (riemannianEDist I c y).toReal < expRadiusGp (I := I) g c := by
+    simpa [riemannianEDistOf] using hy
+  exact memNChartSrcOfDist (I := I) (M := M) g c hEnorm hfin' hy'
 
 end LocalRadialIdentification
 

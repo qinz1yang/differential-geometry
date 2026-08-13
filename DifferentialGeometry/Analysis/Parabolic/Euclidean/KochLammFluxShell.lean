@@ -1,14 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxCover
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateShell
 
-/-!
-# Parameterized shell bound for the terminal Koch--Lamm flux
-
-The existing half-open spatial shells are combined with a finite cover whose
-cardinality has the canonical polynomial bound.  The terminal flux gains the
-split-Gaussian factor `exp (-k^2/8)` on the `k`-th shell.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -25,8 +17,6 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-/-- A finite shell cover with the canonical polynomial cardinality bound
-inherits the directional Gaussian flux estimate. -/
 theorem klFluxShell_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)

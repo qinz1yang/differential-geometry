@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShor
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckQuasilinearExistence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurckRicciRHSSymmetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRicciRHSSymmetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.MildSolutionTimeH1
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothRepresentativeRealize
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralSmoothing
@@ -19,20 +19,21 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.PointwiseDeriv
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SeriesContinuous
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Modulus
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
-
-namespace DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.Spectral
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
@@ -47,7 +48,6 @@ variable
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem tensorL2_ext_of_tensorL2Coeff_jsmooth
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -76,7 +76,6 @@ private theorem ccTensorBilinSymm_zero_apply_jsmooth (g : SmoothRiemannianMetric
     (zero_smul ℝ _).symm
   rw [h0, ccTensorBilinSymm_smul]
   ring
-
 
 private theorem realizedSolField_continuousOn_smoothCcToTensorHs
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {T₁ : ℝ} (_hT₁_pos : 0 < T₁)
@@ -118,7 +117,6 @@ private theorem realizedSolField_continuousOn_smoothCcToTensorHs
     (s := Set.Icc (0 : ℝ) T₁)
     (fun t => smoothCcToTensorHs (I := I) (M := M) g₀ σ (F t)) φ hcoeff'
     (fun i => (hφ_smooth i).continuous.continuousOn) hCmaj_sum hmass
-
 
 private theorem realizedFamily_flowDeriv_of_repr
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -466,7 +464,6 @@ private theorem realizedFamily_jointChartGramSmooth
   jointChartGramSmooth_of_spectralSmooth_timeSmooth (I := I) (M := M)
     g hT T_rep hδ_lt hδ φ hφ_smooth hcoeff hmodemass
 
-
 private theorem forcingSmoothTimeCoordsSymm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a)
@@ -497,7 +494,6 @@ private theorem forcingSmoothTimeCoordsSymm
       (∀ t ∈ Set.Icc (0 : ℝ) d₂, ∀ i, (F t).coeff i = f i t) :=
   deTurckForcing_smoothTimeCoordinateFamilySymm (I := I) (M := M) g₀ g_bg a ha_super hT hT1
     hTT₀ gforce hforce hgforce
-
 
 private theorem forcingSmoothCoordsRealizeSymm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -564,7 +560,6 @@ private theorem forcingSmoothCoordsRealizeSymm
   filter_upwards [MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
     (measurableSet_Icc (a := (0 : ℝ)) (b := d₂))] with s hs
   rw [Set.IccExtend_of_mem hd₂_pos.le _ hs, hF_coeff s hs i]
-
 
 private theorem realizedSol_solField_smallnessHorizon_Ha2Symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -931,7 +926,6 @@ theorem deTurckRicci_forcingBootstrap_symm
       hT hT1 hTT₀ hT₁_pos hT₁_le hd₂F_pos hd₂F_le hT₁_le_d2F u gforce hduh hforce htrace
       Ffam hδ_lt hδ f hf_id hf_smooth hf_mass hforce_coord h_pin hball
 
-
 theorem maxreg_solution_jointly_smooth_representative_of_nemytskii
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
@@ -1239,24 +1233,6 @@ theorem maxreg_solution_jointly_smooth_representative_of_nemytskii
   exact ⟨T₁, hT₁_pos, hT₁_le, F, 1 / 2, hδ_lt, hF_small, hF_zero, hF_pin, hF_flow,
     hF_joint⟩
 
-/-- **Fixed-horizon representative (R1τ ruling item 5).**  The maximal-regularity
-smooth representative on the FULL given horizon `T`, with no existential
-shrinking.  Sibling of `maxreg_solution_jointly_smooth_representative_of_nemytskii`
-whose three horizon shrinks (`d`, `d₂`, `d₂F`) are all removed:
-
-* the qualitative `t = 0` continuity `δ` is replaced by the a-priori √t trace
-  modulus `timeH1.norm_toFun_sub_init_le` (ruling item 1): with `u.init = 0`
-  the fibre-operator smallness holds on all of `[0, T)` once `T` lies below the
-  explicit floor `Real.sqrt T * ‖u.deriv‖ ≤ 1 / (2 * C)`, where `C` is the
-  lossy fibre constant of `ccTensorBilinSymm_gFibreOpBound_le_spectral_lossy`;
-* the `H^{a+2}`-realizability ball (`hball_full`) and the forcing/mode-mass
-  window (`hf_mass`, `hf_id`) are supplied on the full interval (`d₂`, `d₂F`
-  folded to `T`).
-
-Returns the solution package on EXACTLY the supplied `T` (no `∃ T₁ ≤ T`
-shrink), so a caller who has an a-priori `T`-floor gets an a-priori lifetime —
-the input the black-box `(N)` assembly needs to choose `τ₀` without appeal to
-qualitative continuity. -/
 theorem maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
@@ -1519,4 +1495,4 @@ theorem maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
       φ hφ_smooth hcoeff hmodemass
   exact ⟨F, 1 / 2, hδ_lt, hF_small, hF_zero, hF_pin, hF_flow, hF_joint⟩
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Spectral

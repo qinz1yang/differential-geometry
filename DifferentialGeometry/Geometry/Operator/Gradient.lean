@@ -1,7 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Geometry.Operator.Operators
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
@@ -12,15 +11,15 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.LinearAlgebra.Matrix.Adjugate
 
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix
+open DifferentialGeometry.Integral.DivergenceTheorem
 
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -541,8 +540,6 @@ lemma gradChartLocal_eq_gradFun
   congr 1
   rw [inner_gradChartLocal_chartBasis (I := I) g α f hx k, hmfderiv_basis k]
 
-/-- At a differentiability point in a boundaryless chart, the squared metric
-norm of `gradFun` is the inverse Gram quadratic form in the chart partials. -/
 theorem grad_norm_sq_chart
     (g : SmoothRiemannianMetric I M) [I.Boundaryless]
     (α : M) {f : M → ℝ} {x : M}
@@ -576,11 +573,6 @@ theorem grad_norm_sq_chart
   unfold gradChartCoeff
   rw [Finset.sum_mul]
 
-/-- The pointwise `g`-norm bound on the gradient: for `f` differentiable at `x`
-and `x` in the chart-`α` source on a boundaryless model,
-`‖gradFun g f x‖_g² ≤ chartInvGramMatrix_l1Sum α x · (∑ k, |∂_k f̃(φ x)|²)`,
-where `f̃ = f ∘ (extChartAt I α).symm` is the chart pullback of `f` and `φ` is
-the extended chart. -/
 theorem g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
     (g : SmoothRiemannianMetric I M) [I.Boundaryless]
     (α : M) {f : M → ℝ} {x : M}
@@ -899,36 +891,43 @@ lemma gradFun_contMDiff_total [I.Boundaryless]
   exact (hsmooth_local2 x hx_src).contMDiffAt (hsrc_open.mem_nhds hx_src)
 
 def grad_g [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M) {f : M → ℝ}
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-  ⟨fun x : M => gradFun (I := I) g f x, gradFun_contMDiff_total (I := I) g hf⟩
+  ⟨fun x : M => gradFun (I := I) g f x, gradFun_contMDiff_total (I := I) g f.contMDiff⟩
 
 @[simp] lemma grad_g_apply [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M) {f : M → ℝ}
-    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    (grad_g (I := I) g hf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
+    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) (x : M) :
+    (grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       gradFun (I := I) g f x := rfl
+
+@[simp] lemma gradFun_coe (g : SmoothRiemannianMetric I M)
+    (f : C^∞⟮I, M; ℝ⟯) (x : M) :
+    gradFun (I := I) g (⇑f) x = gradFun (I := I) g f x := rfl
+
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+@[simp] theorem smoothFun_coe_mk (f : M → ℝ)
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
+    ((⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) : M → ℝ) = f := rfl
 
 theorem tangentSectionAction_eq_inner_grad_g [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
-    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (f : C^∞⟮I, M; ℝ⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     tangentSectionAction (I := I) X f x =
       g.inner x (X x)
-        ((grad_g (I := I) g hf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
+        ((grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
   rw [grad_g_apply]
   rw [inner_gradFun_right (I := I) g f x (X x)]
   rfl
 
 theorem inner_grad_g_symm [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
-    {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
+    (f h : C^∞⟮I, M; ℝ⟯)
     (x : M) :
-    g.inner x ((grad_g (I := I) g hf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g hh : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-      g.inner x ((grad_g (I := I) g hh : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g hf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) :=
+    g.inner x ((grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((grad_g (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+      g.inner x ((grad_g (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) :=
   g.symm x _ _
 
 lemma gradFun_eq_zero_of_eventuallyEq_zero
@@ -954,14 +953,14 @@ lemma support_gradFun_subset
 
 lemma hasCompactSupport_grad_g [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
-    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hf_cs : HasCompactSupport f) :
-    HasCompactSupport ((grad_g (I := I) g hf :
+    (f : C^∞⟮I, M; ℝ⟯) (hf_cs : HasCompactSupport f) :
+    HasCompactSupport ((grad_g (I := I) g f :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) := by
   refine HasCompactSupport.of_support_subset_isCompact (hf_cs : IsCompact (tsupport f)) ?_
   intro x hx
   show x ∈ tsupport f
   exact support_gradFun_subset (I := I) g f hx
 
-end DivergenceTheorem
-end Integral
+end Operator
+end Geometry
 end DifferentialGeometry

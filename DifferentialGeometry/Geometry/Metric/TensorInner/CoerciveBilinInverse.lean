@@ -3,16 +3,8 @@ import DifferentialGeometry.Analysis.Calculus.RingInverseDeriv
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
+namespace DifferentialGeometry
 
 open RealInnerProductSpace
 
@@ -30,15 +22,11 @@ namespace ContinuousDualEquiv
 variable (E : Type*) [NormedAddCommGroup E] [NormedSpace Real E]
   [ContinuousDualEquiv E]
 
-/-- The positive scalar used to normalize a chosen equivalence with the
-continuous dual. -/
 noncomputable def normalization : Realˣ :=
   Units.mk0
     (1 + ‖((equiv (E := E)).symm : (E →L[Real] Real) →L[Real] E)‖)
     (by positivity)
 
-/-- A chosen equivalence with the continuous dual, rescaled so that its
-inverse has operator norm at most one. -/
 noncomputable def normalizedEquiv : E ≃L[Real] (E →L[Real] Real) :=
   (ContinuousLinearEquiv.smulLeft (R₁ := Real) (M₁ := E)
       (normalization E)).trans (equiv (E := E))
@@ -57,7 +45,6 @@ theorem normalizedEquiv_symm_apply (eta : E →L[Real] Real) :
     Units.smul_def, Units.val_mk0]
   exact (smul_inv_smul₀ (by positivity) _).symm
 
-/-- The inverse of the normalized dual equivalence is nonexpanding. -/
 theorem normalizedEquiv_symm_norm_le_one :
     ‖((normalizedEquiv E).symm :
       (E →L[Real] Real) →L[Real] E)‖ ≤ 1 := by
@@ -90,8 +77,10 @@ theorem normalizedEquiv_symm_norm_le_one :
       nlinarith [norm_nonneg eta]
 
 end ContinuousDualEquiv
+end DifferentialGeometry
 
 namespace IsCoercive
+open DifferentialGeometry
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 instance [FiniteDimensional Real E] : FiniteDimensional Real (StrongDual Real E) :=
   inferInstanceAs (FiniteDimensional Real (E →L[Real] Real))
@@ -144,8 +133,6 @@ noncomputable instance (priority := 900) continuousDualEquivOfInnerProduct
 
 variable [CompleteSpace E] [CoerciveBilinInverse E]
 
-
-
 theorem symm_norm_le
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [CompleteSpace F] {B : F →L[Real] F →L[Real] Real}
@@ -172,8 +159,6 @@ theorem symm_norm_le
       ‖u‖ ≤ ‖xi‖ / c := (le_div_iff₀ hc).mpr (by simpa [mul_comm] using hcu)
       _ = c⁻¹ * ‖xi‖ := by rw [div_eq_mul_inv, mul_comm]
 
-
-
 private noncomputable def toDualEquiv {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) : E ≃L[Real] (E →L[Real] Real) :=
   ContinuousLinearEquiv.ofBijective B
@@ -183,8 +168,6 @@ private noncomputable def toDualEquiv {B : E →L[Real] E →L[Real] Real}
 noncomputable def sharp {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) (eta : E →L[Real] Real) : E :=
   (toDualEquiv hco).symm eta
-
-
 
 theorem sharp_eq_inverse
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
@@ -213,25 +196,20 @@ theorem sharp_eq_inverse
   rw [Ring.inverse_unit]
   rfl
 
-
 @[simp] theorem apply_sharp {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) (eta : E →L[Real] Real) :
     B (hco.sharp eta) = eta := by
   exact (toDualEquiv hco).apply_symm_apply eta
-
 
 @[simp] theorem sharp_apply {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) (u : E) :
     hco.sharp (B u) = u := by
   exact (toDualEquiv hco).symm_apply_apply u
 
-
 theorem sharp_sub {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) (eta theta : E →L[Real] Real) :
     hco.sharp (eta - theta) = hco.sharp eta - hco.sharp theta := by
   simp [sharp]
-
-
 
 theorem sharp_norm_le {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) {c : Real} (hc : 0 < c)
@@ -255,11 +233,6 @@ theorem sharp_norm_le {B : E →L[Real] E →L[Real] Real}
       ‖u‖ ≤ ‖eta‖ / c := (le_div_iff₀ hc).mpr (by simpa [mul_comm] using hcu)
       _ = c⁻¹ * ‖eta‖ := by rw [div_eq_mul_inv, mul_comm]
 
-
-
-
-/-- The sharp operation packaged as a continuous linear map from covectors to
-vectors.  This is the finite-Galerkin mass-matrix inverse in invariant form. -/
 noncomputable def sharpCLM {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) : (E →L[Real] Real) →L[Real] E :=
   (toDualEquiv hco).symm.toContinuousLinearMap
@@ -267,8 +240,6 @@ noncomputable def sharpCLM {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) (eta : E →L[Real] Real) :
     hco.sharpCLM eta = hco.sharp eta := rfl
 
-/-- A uniform quadratic coercivity constant gives the corresponding operator
-norm bound for the packaged sharp map. -/
 theorem sharpCLM_norm_le {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) {c : Real} (hc : 0 < c)
     (hB : ∀ v : E, c * ‖v‖ * ‖v‖ ≤ B v v) :
@@ -294,9 +265,6 @@ theorem gramCLM_isUnit
   rw [gramCLM_apply]
   exact ⟨hB.continuousLinearEquivOfBilin.toUnit, rfl⟩
 
-/-- A continuous family of coercive bilinear forms has a continuous family of
-packaged sharp maps.  This is the finite-dimensional moving-mass inverse
-continuity bridge used by nonautonomous Galerkin systems. -/
 theorem sharpCLM_contOn
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [CompleteSpace F]
@@ -332,8 +300,6 @@ theorem sharpCLM_contOn
   rw [sharpCLM_apply, sharp_eq_inverse]
   rfl
 
-/-- Restricted version of `sharpCLM_contOn`: coercivity is needed only at
-points of the set on which the bilinear family is continuous. -/
 theorem sharpCLM_cont_sub
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [CompleteSpace F]
@@ -348,9 +314,6 @@ theorem sharpCLM_cont_sub
     (fun x => hco x x.2)
   exact continuousOn_univ.mp h
 
-/-- Resolvent estimate for the sharp maps of two coercive bilinear forms.
-The inverse constants are kept explicit so callers can specialize them to
-uniform metric lower bounds. -/
 theorem sharp_sub_le
     {B C : E →L[Real] E →L[Real] Real}
     (hBco : IsCoercive B) (hCco : IsCoercive C)
@@ -387,9 +350,6 @@ theorem sharp_sub_le
       gcongr
       exact hCco.sharp_norm_le hcC hC eta
 
-/-- Joint resolvent estimate when both the coercive form and the covector
-vary.  This is the quantitative continuity input for a moving Galerkin mass
-matrix inverse. -/
 theorem sharp_var_le
     {B C : E →L[Real] E →L[Real] Real}
     (hBco : IsCoercive B) (hCco : IsCoercive C)

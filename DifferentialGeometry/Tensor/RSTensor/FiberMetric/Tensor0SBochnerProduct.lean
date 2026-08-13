@@ -3,58 +3,22 @@ import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SInnerLeibniz
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SPartialEval
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
 
 open scoped Manifold ContDiff BigOperators Topology
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.Coordinates
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -63,22 +27,12 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M]
 
-
-
-
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
   Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
 
 private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
-
-
-
-
-
-
-
 
 noncomputable def partialEval0SField {s : ℕ}
     (nablaT : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -102,12 +56,6 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
     (y : M) :
     partialEval0SField (I := I) nablaT Y y =
       tensor0S_curry (I := I) (𝕜 := Real) (M := M) s y (nablaT y) (Y y) := rfl
-
-
-
-
-
-
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem inner0S_mdiff {s : ℕ}
@@ -221,28 +169,6 @@ theorem inner0S_mdiff {s : ℕ}
       rfl
     rwa [heqfun] at hsumI
   exact hcontr.congr_of_eventuallyEq hlocal
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem nabla_partialEval0S {s : ℕ}
@@ -371,13 +297,6 @@ theorem nabla_partialEval0S {s : ℕ}
   rw [hLHS, hfreeze, hcurry, hRHStot]
   ring
 
-
-
-
-
-
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem freeze0S_deriv {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -459,9 +378,6 @@ theorem freeze0S_deriv {s : ℕ}
             (partialEval0SField (I := I) nablaT X x)) := by
         rw [hAderiv, hBderiv, hBdef, hadd]
 
-
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem du_norm0S {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -512,7 +428,6 @@ theorem du_norm0S {s : ℕ}
           rw [hAderiv, hWsec]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
-/-- Kato bound for the differential of the squared norm of a covariant tensor. -/
 theorem normSq0S_du_le {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -585,11 +500,6 @@ theorem normSq0S_du_le {s : ℕ}
           rw [normSq0S_curry_sum (I := I) g x s basis hinv]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
-/-- **The pointwise Hessian product rule of a covariant-tensor norm**, in basis
-component form — the genuine geometric input of the general Bochner Laplacian
-split, here **derived** (not assumed) from metric compatibility.  This is the
-rank-`s` generalisation of `BochnerTensor.hess_norm02`, and it discharges the
-`TensorNormHessianProductInBasis` hypothesis of `tensorNormBochnerSplit`. -/
 theorem hess_norm0S {s : ℕ}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -739,3 +649,4 @@ theorem tensorNormBochnerSplit_mc {s : ℕ}
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

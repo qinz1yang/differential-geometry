@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartLieBracket
 import DifferentialGeometry.Geometry.Connection.CovApplyCovRSChartBasisExtension
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -11,8 +13,9 @@ noncomputable section
 open Bundle Manifold Set FiberBundle Filter
 open scoped Manifold Topology ContDiff BigOperators
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -24,6 +27,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma extDerivFun_comp_extChartAt_apply_basis [I.Boundaryless]
@@ -508,7 +512,7 @@ theorem riemannOp_eq_chartRiemannCLM_apply [I.Boundaryless]
     (chartRiemannBasisIdentity_holds (I := I) g x) v w u
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

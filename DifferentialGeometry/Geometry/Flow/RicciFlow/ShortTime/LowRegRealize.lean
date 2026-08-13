@@ -1,33 +1,24 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+open DifferentialGeometry.Analysis.Spectral DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Geometry.Curvature
 
-/-!
-# Three-dimensional low-regularity metric realization
-
-The spectral `H3` ball used by the low-regularity maximal-regularity solver
-lies in a fixed fibre-small metric ball.  This is the dimension-three
-replacement for the deliberately lossy high-order realization bound.
--/
-
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped ContDiff Manifold Topology
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
       [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M] [SigmaCompactSpace M]
+      [T2Space M]
 
-/-- In dimension three, a positive spectral `H2` radius directly supplies
-the fibre-smallness needed to realize every smooth perturbation in the state
-ball as a metric. -/
 theorem lowreg_realize_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -58,8 +49,6 @@ theorem lowreg_realize_h2
   exact mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_right hdelta (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
 
-/-- In dimension three, a positive spectral `H3` radius gives the exact
-realizability witness used by the Sobolev Ricci--DeTurck nonlinearity. -/
 theorem lowreg_realize
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -102,4 +91,4 @@ theorem lowreg_realize
   exact mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_right hdelta hsv) hsw
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.PDE.RicciFlow

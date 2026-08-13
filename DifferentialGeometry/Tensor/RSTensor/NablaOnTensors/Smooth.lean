@@ -4,18 +4,12 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TensorRS
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S
 
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
 
-open Bundle Set TensorLieDeriv
+open Bundle Set DifferentialGeometry.TensorLieDeriv
 open scoped Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -25,8 +19,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
-
-
 
 noncomputable def nabla0S_smooth (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -39,8 +31,6 @@ noncomputable def nabla0S_smooth (s : ℕ)
       (n := (∞ : WithTop ℕ∞)) s :=
   nabla0S (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov X α
     (nabla0S_reg (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov hcov X α)
-
-
 
 noncomputable def nablaRS_smooth (r s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -83,3 +73,4 @@ noncomputable def nablaRS_smooth (r s : ℕ)
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

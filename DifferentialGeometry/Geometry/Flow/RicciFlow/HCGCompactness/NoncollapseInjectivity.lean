@@ -1,17 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.InjectivityRadius
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -30,10 +21,8 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace PointedFlowData
 
-
-
 def baseFlowBall
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (F : PointedFlowData.{u, uE, uH} (I := I) D)
     (hzero : 0 ∈ D.carrier) (r : Real) (hr : 0 < r) :
     letI : TopologicalSpace F.M := F.topology
@@ -64,9 +53,6 @@ def baseFlowBall
 
 end PointedFlowData
 
-
-
-
 structure FlowBaseVolData
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
   zero_mem : 0 ∈ X.D.carrier
@@ -74,8 +60,6 @@ structure FlowBaseVolData
   kappa_pos : 0 < kappa
   radius : Real
   radius_pos : 0 < radius
-
-
 
 structure IsFlowBaseVolBound
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}
@@ -108,10 +92,6 @@ structure IsFlowBaseVolBound
     letI : T2Space (X.term i).M := (X.term i).t2
     (PointedFlowData.baseFlowBall (I := I) (X.term i)
       V.zero_mem V.radius V.radius_pos).IsKappaNoncollapsed V.kappa
-
-
-
-
 
 noncomputable def flowInj_of_vol
     (X : PointedFlowSeq.{u, uE, uH} (I := I))

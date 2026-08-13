@@ -1,7 +1,5 @@
 import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
 
-
-
 noncomputable section
 
 open Bundle Manifold Set Filter Function

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientRefold
-import DifferentialGeometry.Geometry.Flow.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmCorrectionFieldBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
@@ -22,13 +22,19 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoeffic
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldSharpGradKoszulResidualSmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldResidualFieldBallUniform
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefoldResidualFieldL2JetWindow
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
@@ -38,12 +44,13 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -1333,17 +1340,17 @@ theorem covDerivConnDiff_realizedFam_zero_endpoint_eq_smul_covDerivSharp
       s •
         ((LeviCivita (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)).toFun
             (fun b : M =>
-              DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+              DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
                 (realizedFam (I := I) g₀ T 0 hδ hδZ s) b
                 (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
                   (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b (Z b) (Y b))) x (X x)
-          - DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+          - DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
             (realizedFam (I := I) g₀ T 0 hδ hδZ s) x
             (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
               (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) x (Z x)
               (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0))
                 (fun b => X b) (fun b => Y b) x))
-          - DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+          - DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
             (realizedFam (I := I) g₀ T 0 hδ hδZ s) x
             (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
               (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) x
@@ -1373,7 +1380,7 @@ theorem covDerivConnDiff_realizedFam_zero_endpoint_eq_smul_covDerivSharp
   have hpoint : ∀ (b : M) (u ζ : TangentSpace I b),
       PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ s)
         (realizedFam (I := I) g₀ T 0 hδ hδZ 0) b u ζ =
-      s • DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+      s • DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
         (realizedFam (I := I) g₀ T 0 hδ hδZ s) b
         (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
           (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b u ζ) := by
@@ -1418,7 +1425,7 @@ theorem covDerivConnDiff_realizedFam_zero_endpoint_eq_smul_covDerivSharp
         (realizedFam (I := I) g₀ T 0 hδ hδZ s) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
         Z.contMDiff Y.contMDiff
     have hΨ_eq : (fun b : M =>
-        DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+        DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
           (realizedFam (I := I) g₀ T 0 hδ hδZ s) b
           (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
             (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b (Z b) (Y b))) =
@@ -1429,7 +1436,7 @@ theorem covDerivConnDiff_realizedFam_zero_endpoint_eq_smul_covDerivSharp
       rw [hpoint b (Z b) (Y b), smul_smul, inv_mul_cancel₀ hs0, one_smul]
     have hΨ_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
-          (DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+          (DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
             (realizedFam (I := I) g₀ T 0 hδ hδZ s) b
             (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
               (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b (Z b) (Y b)))) := by
@@ -1441,7 +1448,7 @@ theorem covDerivConnDiff_realizedFam_zero_endpoint_eq_smul_covDerivSharp
         contMDiff_const hconn_smooth
       refine hsmul'.congr (fun b => ?_)
       refine congrArg (TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b) ?_
-      change DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+      change DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
         (realizedFam (I := I) g₀ T 0 hδ hδZ s) b
           (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
             (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b (Z b) (Y b)) =
@@ -1450,7 +1457,7 @@ theorem covDerivConnDiff_realizedFam_zero_endpoint_eq_smul_covDerivSharp
       exact congrFun hΨ_eq b
     have hσ : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
         (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
-          (DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+          (DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
             (realizedFam (I := I) g₀ T 0 hδ hδZ s) b
             (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
               (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b (Z b) (Y b)))) x :=
@@ -1459,7 +1466,7 @@ theorem covDerivConnDiff_realizedFam_zero_endpoint_eq_smul_covDerivSharp
         (LeviCivita (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ s))
         (fun b => Y b) (fun b => Z b) =
         s • (fun b : M =>
-          DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+          DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
             (realizedFam (I := I) g₀ T 0 hδ hδZ s) b
             (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
               (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b (Z b) (Y b))) := by
@@ -1470,7 +1477,7 @@ theorem covDerivConnDiff_realizedFam_zero_endpoint_eq_smul_covDerivSharp
     have hsmul := (LeviCivita (I := I)
       (realizedFam (I := I) g₀ T 0 hδ hδZ 0)).isCovariantDerivativeOnUniv.smul_const
       (σ := fun b : M =>
-        DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+        DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
           (realizedFam (I := I) g₀ T 0 hδ hδZ s) b
           (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T 0 hδ hδZ 0)
             (realizedVelocityCc (I := I) g₀ T 0 hδ hδZ 0) b (Z b) (Y b)))

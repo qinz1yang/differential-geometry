@@ -1,17 +1,25 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffPerOrderJetEnvelopes
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmAppCc
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Analysis.Parabolic
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ricciArmOrder1KoszulCoeff raisedKoszul)
@@ -49,7 +57,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_gridWindow_le
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) l (l + 1) := by
   classical
   set Φ : SmoothCcTensor g₀ 3 1 :=
-    DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.cometricDoubleTraceField
+    DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceField
       (I := I) g₀ 1 with hΦ_def
   have hSΦ_ex : ∀ i : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + i) x
@@ -554,6 +562,6 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topSeparated_generic_allOrders
       (iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P)]
   · exact hleaf g₁ P hδ_le hδ htie hPball i
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Analysis.Parabolic
 
 end

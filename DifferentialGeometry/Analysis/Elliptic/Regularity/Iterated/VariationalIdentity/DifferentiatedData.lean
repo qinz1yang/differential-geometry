@@ -57,16 +57,12 @@ variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 structure IteratedDiffChartBilinearData
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ) where
-
   directions : Fin m → Fin (Module.finrank ℝ E)
-
   diffChartForcing : EuclN → ℝ
-
   fChartEff_memLp_weighted :
     MemLp diffChartForcing 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
-
   m_diff_variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α →

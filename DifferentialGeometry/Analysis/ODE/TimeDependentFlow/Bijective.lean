@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -41,4 +41,4 @@ theorem time_dependent_vf_flow_bijective_and_inverse_smooth
     obtain ⟨α, _hαS, _hxU, hrepr⟩ := hΨ_repr x
     exact ⟨α, hrepr⟩
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

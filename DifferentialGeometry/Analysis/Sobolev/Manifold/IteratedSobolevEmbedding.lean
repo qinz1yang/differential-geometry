@@ -193,7 +193,7 @@ end EuclideanIterated
 
 theorem wkpNormChart_one_le_wkpNormChart_succ
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (hk : 1 ≤ k) (p : ℝ≥0∞) (u : M → ℝ) :
     wkpNormChart (I := I) (M := M) g 1 p u ≤
       wkpNormChart (I := I) (M := M) g k p u := by
@@ -204,7 +204,7 @@ theorem wkpNormChart_one_le_wkpNormChart_succ
 
 theorem MemWkpChart.le_one
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} (hk : 1 ≤ k) {p : ℝ≥0∞} {u : M → ℝ}
     (h : MemWkpChart (I := I) (M := M) g k p u) :
     MemWkpChart (I := I) (M := M) g 1 p u :=
@@ -213,7 +213,7 @@ theorem MemWkpChart.le_one
 theorem iterated_sobolev_embedding_chart_C0_supercritical
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (hk : 1 ≤ k)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : (Module.finrank ℝ E : ℝ) < p)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -697,7 +697,7 @@ lemma tsupport_chartPushedRaw_pou_mul_subset_target
     (toEuclidean_extChartAt_tsupport_pou_compact_subset (I := I) (M := M) α).2
 
 lemma memWkp_chartPushedRaw_pou_mul_of_memWkpChart
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : MemWkpChart (I := I) (M := M) g k p u) (α : M) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -724,7 +724,7 @@ lemma memWkp_chartPushedRaw_pou_mul_of_memWkpChart
     (d := Module.finrank ℝ E) hp_one hopen h_ae).mp h_chart_pushed
 
 private lemma wkpNorm_chartPushedRaw_pou_mul_eq_chartPushed
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (u : M → ℝ) (α : M) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E)
@@ -754,7 +754,7 @@ theorem wkpNormChart_succ_subcritical_step
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u : M → ℝ},
@@ -942,7 +942,7 @@ variable [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
 variable [NeZero (Module.finrank ℝ E)]
 
 private def Statement
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) (p : ℝ) (u : M → ℝ) : Prop :=
   ∃ (ũ : M → ℝ) (C : ℝ),
     Continuous ũ ∧ 0 ≤ C ∧
@@ -953,7 +953,7 @@ private def Statement
       (wkpNormChart (I := I) (M := M) g k (ENNReal.ofReal p) u).toReal)
 
 private theorem succ_subcritical_step
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (Module.finrank ℝ E : ℝ))
     (hu_meas_persists : ∀ {v : M → ℝ}, Measurable v →
       MemWkpChart (I := I) (M := M) g k
@@ -1087,7 +1087,7 @@ private theorem statement_holds_aux :
         {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
         [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
         [NeZero (Module.finrank ℝ E)],
-      ∀ (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M),
+      ∀ (g : DifferentialGeometry.SmoothRiemannianMetric I M),
       ∀ {p : ℝ}, 1 ≤ p →
         RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) p (k + 1) →
         (Module.finrank ℝ E : ℝ) < (k + 1 : ℝ) * p →
@@ -1186,7 +1186,7 @@ theorem iterated_sobolev_embedding_chart_C0
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (hk : 1 ≤ k) {p : ℝ} (hp_one : 1 ≤ p)
     (hreg : RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) p k)
     (hkp : (Module.finrank ℝ E : ℝ) < (k : ℝ) * p)
@@ -1213,7 +1213,7 @@ theorem sobolev_embedding_chart_C0_Hk
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (hk : Module.finrank ℝ E < 2 * k)
     (hreg : RegularExponent.IsRegular (Module.finrank ℝ E : ℝ) 2 k)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -1542,7 +1542,7 @@ private lemma tsupport_chartPushedRaw_pou_mul_subset_carrier [CompactSpace M]
 
 theorem memWkp_chartPushed_mono_exponent [CompactSpace M]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p p' : ℝ≥0∞} (hp'_one : 1 ≤ p') (hp'_le_p : p' ≤ p)
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k p u) (α : M) :
@@ -1601,7 +1601,7 @@ theorem memWkp_chartPushed_mono_exponent [CompactSpace M]
 
 theorem memWkpChart_mono_exponent [CompactSpace M]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p p' : ℝ≥0∞} (hp'_one : 1 ≤ p') (hp'_le_p : p' ≤ p)
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g k p u) :
@@ -1617,7 +1617,7 @@ theorem iterated_sobolev_embedding_chart_C0_unconditional
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} (hk : 1 ≤ k) {p : ℝ} (hp_one : 1 ≤ p)
     (hkp : (Module.finrank ℝ E : ℝ) < (k : ℝ) * p)
     (h_n_ge_2_or_p_gt_1 : 2 ≤ Module.finrank ℝ E ∨ 1 < p)

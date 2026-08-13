@@ -1,12 +1,14 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOperator.ConventionBridge
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLineParam
+open DifferentialGeometry.Geometry.Curvature
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Bundle
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Integral.Connection
+
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -330,4 +332,4 @@ theorem seeley_time_extend
       _ = (∑ᶠ α, ρ α x) • X t x := (finsum_smul' hfin (X t x)).symm
       _ = X t x := by rw [hsum1, one_smul]
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

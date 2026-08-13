@@ -1,17 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepDLimitMetrics
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCompactnessSubseq
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.WindowDataPullback
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -29,8 +22,6 @@ variable {I : ModelWithCorners ℝ E H}
 variable [I.Boundaryless]
 variable [NeZero (Module.finrank ℝ E)]
 
-/-- The concrete convergence data use the restricted limit metric itself as
-their seminorm reference metric. -/
 private def HasCanonRef
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -44,9 +35,6 @@ private def HasCanonRef
     letI : IsManifold I ∞ (MetricSourceDomain (I := I) Phi k) := D.smooth
     D.referenceMetric = D.limitMetric
 
-/-- The two whole-source estimates retained by the concrete Step-D sidecar.
-The tail is supplied by `D6ChainData.close`; the finite head requires the
-relatively compact collar argument recorded at the assembly frontier below. -/
 private def HasCanonBounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -120,8 +108,6 @@ private structure D6ChainData
           (mfderiv I I F x v) (mfderiv I I F x w)
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The all-tail comparison estimate restricted to the shrunk stage, with the
-zeroth chain pullback rewritten as the ambient stage metric. -/
 private theorem D6ChainData.tail_close
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ChartedSpace H (M j)]
     [∀ j, IsManifold I ∞ (M j)] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
@@ -164,16 +150,12 @@ private theorem D6ChainData.tail_close
               (D.metric n) (D.metric n) q x
     _ ≤ ε := hbig
 
-/-- The compact ambient closed ball that contains an entire shrunk tail stage
-while remaining inside the corresponding large open stage. -/
 private def tailCollar
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)]
     (b : ∀ j, M j) (j₀ n : ℕ) :
     Set (ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)) :=
   {x | dist (x : M (j₀ + n)) (b (j₀ + n)) ≤ (2 : ℝ) ^ n}
 
-/-- The full-radius tail collar is compact by ambient properness; the positive
-tail shift keeps its closed boundary inside the large open stage. -/
 private theorem tailCollar_compact
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ProperSpace (M j)]
     (b : ∀ j, M j) (j₀ n : ℕ) (hj₀ : 1 ≤ j₀) :
@@ -198,8 +180,6 @@ private theorem tailCollar_compact
   rw [hval]
   exact isCompact_closedBall _ _
 
-/-- Every point of a shrunk tail stage belongs to its compact collar in the
-large stage. -/
 private theorem tailBall_mem
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)]
     (b : ∀ j, M j) (j₀ n : ℕ) (x : tailBallOpen b j₀ n) :
@@ -208,8 +188,6 @@ private theorem tailBall_mem
   change dist (x : M (j₀ + n)) (b (j₀ + n)) ≤ (2 : ℝ) ^ n
   exact x.2.le
 
-/-- Uniform target-stage metric equivalence and covariant bounds before they
-are pulled back to the canonical direct-limit source domains. -/
 private def HasStageBounds
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ChartedSpace H (M j)]
     [∀ j, IsManifold I ∞ (M j)] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
@@ -236,8 +214,6 @@ private def HasStageBounds
     MetricSpace (X.obj k).M := by
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
   exact P.ms.replaceTopology (ProperMetricOn.top_eq (X.obj k) P).symm
-
-
 
 omit [I.Boundaryless] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
@@ -502,7 +478,6 @@ noncomputable def tailMemberConv
 
 namespace StepDCanonData
 
-/-- Sigma-compactness of a comparison map's canonical source open set. -/
 noncomputable def canonSrc
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -515,7 +490,6 @@ noncomputable def canonSrc
   letI : SigmaCompactSpace L.M := L.sigmaCompact
   exact Geometry.isSigmaCompact_of_isOpen I (Phi.source_open k)
 
-/-- Sigma-compactness of a comparison map's canonical target open set. -/
 noncomputable def canonTgt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -528,7 +502,6 @@ noncomputable def canonTgt
   letI : SigmaCompactSpace (X.obj (subseq k)).M := (X.obj (subseq k)).sigmaCompact
   exact Geometry.isSigmaCompact_of_isOpen I (Phi.target_open k)
 
-/-- The restricted limit metric on the canonical source domain. -/
 noncomputable def canonRef
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -558,7 +531,6 @@ noncomputable def canonRef
     metricSourceDomSigmaOf (I := I) Phi k (canonSrc (I := I) Phi k)
   exact L.metric.restrictOpen (I := I) (metricSourceOpen (I := I) Phi k)
 
-/-- The canonical metric source data determined by comparison maps. -/
 noncomputable def canonDomain
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
@@ -574,9 +546,6 @@ end StepDCanonData
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- On a direct-limit stage source, the canonical restricted limit metric is
-the pullback of the compatible stage metric by the source-target
-diffeomorphism. -/
 private theorem chain_canon_eq
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ChartedSpace H (M j)]
     [∀ j, IsManifold I ∞ (M j)] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
@@ -675,8 +644,6 @@ private theorem chain_canon_eq
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Covariant metric norms are unchanged by flat restriction to a smaller
-ambient open carrier. -/
 private theorem covFlat_eq
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M]
@@ -718,8 +685,6 @@ private theorem covFlat_eq
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The concrete all-tail estimate and compact finite head give one set of
-whole-stage constants, uniform in the stage index. -/
 private theorem D6ChainData.stage_bounds
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ChartedSpace H (M j)]
     [∀ j, IsManifold I ∞ (M j)] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
@@ -880,9 +845,6 @@ private theorem D6ChainData.stage_bounds
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Concrete Step-D output retaining the canonical reference-metric choice
-made by the direct-limit convergence construction.  The public
-`MetricCompactnessConclusion` deliberately forgets this provenance. -/
 structure StepDCanonData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
   mc : MetricCompactnessConclusion (I := I) X
@@ -915,9 +877,6 @@ structure StepDCanonData
 
 namespace StepDCanonData
 
-/-- Move canonical Step-D data from a sequence-level subsequence back to the
-original sequence.  The source-domain metrics are rewrapped field by field, so
-the canonical reference identity is preserved definitionally. -/
 def ofSeqSubseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (f : Nat -> Nat) (hf : StrictMono f)
@@ -957,9 +916,6 @@ end StepDCanonData
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The complete Step D assembly from the honest B/C comparison-map package,
-retaining the canonical reference-metric provenance used by its concrete
-restrict/pullback convergence construction. -/
 noncomputable opaque compactness_canon
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
@@ -1236,8 +1192,6 @@ noncomputable opaque compactness_canon
   · simpa only [mc] using hbounds.1
   · simpa only [mc] using hbounds.2
 
-/-- The public Step-D conclusion, obtained by forgetting the concrete
-reference-metric provenance retained by `compactness_canon`. -/
 noncomputable def compactness_of_b1
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))

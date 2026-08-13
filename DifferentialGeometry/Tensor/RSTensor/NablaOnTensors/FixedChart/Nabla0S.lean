@@ -1,15 +1,14 @@
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.FixedChart.Models
 
-
-
-
+namespace DifferentialGeometry
 namespace TensorLieDeriv
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Set IsManifold ContinuousLinearMap VectorField Filter Tensor0SBundle Function
+open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
+    DifferentialGeometry.Tensor0SBundle Function
 open scoped Manifold Topology Bundle ContDiff
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -24,19 +23,7 @@ variable [CompleteSpace 𝕜]
 
 section SmoothVectorFieldRSNabla
 
-
-
-
-
-
-
-
-
 variable [IsManifold I 1 M] [IsManifold I (n + 1) M]
-
-
-
-
 
 noncomputable def fixedChartNabla0SModel (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -51,8 +38,6 @@ noncomputable def fixedChartNabla0SModel (s : ℕ)
     (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H)
       (I := I) (M := M) s x₀ (fun x => α x))
     (range I) y
-
-
 
 omit [IsManifold I n M] [IsManifold I (n + 1) M] in
 theorem fixedChartNabla0SModel_apply_slots (s : ℕ)
@@ -77,9 +62,6 @@ theorem fixedChartNabla0SModel_apply_slots (s : ℕ)
               (fun x => X x) x₀ y) (slots a))) := by
   unfold fixedChartNabla0SModel
   rw [covariantDeriv_tensor0SModelWithin_apply_slots]
-
-
-
 
 omit [IsManifold I n M] [IsManifold I (n + 1) M] in
 theorem fixedChartNabla0SModel_apply_slots_of_mem (s : ℕ)
@@ -113,9 +95,6 @@ theorem fixedChartNabla0SModel_apply_slots_of_mem (s : ℕ)
   congr 2
   exact connectionEndomorphismInChart_apply_of_mem
     (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀ hy (slots a)
-
-
-
 
 omit [IsManifold I n M] in
 theorem fixedChartNabla0SModel_contDiffWithinAt (s : ℕ)
@@ -210,3 +189,4 @@ end SmoothVectorFieldRSNabla
 end
 
 end TensorLieDeriv
+end DifferentialGeometry

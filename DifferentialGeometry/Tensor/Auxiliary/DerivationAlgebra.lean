@@ -4,19 +4,9 @@ import Mathlib.Data.Fintype.Pi
 import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Tactic.Ring
 
-
-
-
-
-
-
-
-
 open scoped BigOperators
 
-namespace DifferentialGeometry.Integral.Connection
-
-
+namespace DifferentialGeometry.Tensor.Auxiliary
 
 def contractUpper {R Idx : Type*} [AddCommMonoid R] [Mul R] [Fintype Idx]
     {r s : Nat}
@@ -24,12 +14,6 @@ def contractUpper {R Idx : Type*} [AddCommMonoid R] [Mul R] [Fintype Idx]
     (beta : (Fin r -> Idx) -> (Fin s -> Idx) -> R)
     (K : Fin s -> Idx) : R :=
   ∑ L : Fin r -> Idx, theta L * beta L K
-
-
-
-
-
-
 
 theorem contractUpper_commutator_of_second_product_rules
     {R Idx : Type*} [CommRing R] [Fintype Idx] {r s : Nat}
@@ -69,13 +53,6 @@ theorem contractUpper_commutator_of_second_product_rules
   rw [hright, hleft, hij K, hji K]
   ring
 
-
-
-
-
-
-
-
 theorem contractUpper_second_product_of_first_product_rules
     {R Idx : Type*} [CommSemiring R] [Fintype Idx] {r s : Nat}
     (theta theta_i theta_j theta_ij : (Fin r -> Idx) -> R)
@@ -99,14 +76,6 @@ theorem contractUpper_second_product_of_first_product_rules
         contractUpper theta beta_ij K := by
   rw [hcontract K, hleft K, hright K]
   ring
-
-
-
-
-
-
-
-
 
 theorem contractUpper_first_product_of_local_rules
     {R Ω Idx : Type*} [AddCommMonoid R] [Mul R] [Fintype Idx] {r s : Nat}
@@ -142,13 +111,6 @@ theorem contractUpper_first_product_of_local_rules
           contractUpper (theta z₀) betaD K := by
             rfl
 
-
-
-
-
-
-
-
 theorem contractUpper_first_product_of_scalar_derivation
     {R Ω Idx : Type*} [AddCommMonoid R] [Mul R] [Fintype Idx] {r s : Nat}
     (D : (Ω -> R) -> R) (z₀ : Ω)
@@ -172,4 +134,4 @@ theorem contractUpper_first_product_of_scalar_derivation
     (hDsum (fun A z => theta z A * beta z A K))
     (fun A => by rw [hDmul, hthetaD A, hbetaD A K])
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Tensor.Auxiliary

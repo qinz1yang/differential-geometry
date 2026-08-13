@@ -20,7 +20,7 @@ variable {M : Type*} [TopologicalSpace M]
 
 theorem wkpNormChart_cauchy_of_seminormCauchySeq
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    {g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {f : ℕ → WkpChart (n := n) (M := M) g k p hp}
@@ -57,7 +57,7 @@ theorem wkpNormChart_cauchy_of_seminormCauchySeq
 
 theorem chartPushed_cauchy_of_wkpNormChart_cauchy
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    {g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {f : ℕ → WkpChart (n := n) (M := M) g k p hp}
@@ -121,7 +121,7 @@ theorem chartPushed_cauchy_of_wkpNormChart_cauchy
 
 theorem exists_chart_limit
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -163,7 +163,7 @@ theorem exists_chart_limit
 
 theorem chartPushed_tendstoInMeasure
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    {g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -244,7 +244,7 @@ theorem chartPushed_tendstoInMeasure
 
 theorem exists_subseq_chartPushed_ae_tendsto
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    {g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}

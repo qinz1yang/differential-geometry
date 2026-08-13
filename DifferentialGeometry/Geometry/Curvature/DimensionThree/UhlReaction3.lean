@@ -5,48 +5,6 @@ import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.SplitIfs
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry.Dim3Reaction
 
 open scoped BigOperators
@@ -113,8 +71,6 @@ def knRsq (a b c d : Fin 3) : ℝ :=
   -Rsq R a c * kd b d + Rsq R b c * kd a d + Rsq R a d * kd b c - Rsq R b d * kd a c
 
 variable {R}
-
-
 
 theorem driftG_eq_knRsq (hR : ∀ i j, R i j = R j i) (a b c d : Fin 3) :
     drift R a b c d + Gg R a b c d = 2 * knRsq R a b c d := by
@@ -193,9 +149,6 @@ private theorem minor_a2 (hR : ∀ i j, R i j = R j i) (b c d : Fin 3) :
       Fin.reduceFinMk, Fin.reduceEq, reduceIte] <;>
     (try simp only [hR 1 0, hR 2 0, hR 2 1]) <;> ring
 
-
-
-
 theorem minor_adj3 (hR : ∀ i j, R i j = R j i) (a b c d : Fin 3) :
     R a c * R b d - R a d * R b c =
       -(kd a c * Rsq R b d + Rsq R a c * kd b d
@@ -246,10 +199,6 @@ private theorem bt_a2 (hR : ∀ i j, R i j = R j i) (b c d : Fin 3) :
       Fin.reduceFinMk, Fin.reduceEq, reduceIte] <;>
     (try simp only [hR 1 0, hR 2 0, hR 2 1]) <;> ring
 
-
-
-
-
 theorem bt_closed (hR : ∀ i j, R i j = R j i) (a b c d : Fin 3) :
     Bt R a b c d = -(R a b * R c d) + 2 * R a c * R b d
       + kd a c * Rsq R b d + Rsq R a c * kd b d
@@ -262,10 +211,6 @@ theorem bt_closed (hR : ∀ i j, R i j = R j i) (a b c d : Fin 3) :
   · exact bt_a0 hR b c d
   · exact bt_a1 hR b c d
   · exact bt_a2 hR b c d
-
-
-
-
 
 theorem bsharp_eq_knC (hR : ∀ i j, R i j = R j i) (a b c d : Fin 3) :
     Bsharp R a b c d = knC R a b c d := by
@@ -283,8 +228,6 @@ theorem bsharp_eq_knC (hR : ∀ i j, R i j = R j i) (a b c d : Fin 3) :
     at h1 h2 h3 h4 hc1 hc2 hc3 hc4 hm ⊢
   linear_combination h1 - h2 + h3 - h4 + kd b d * hc1 - kd a d * hc2
     - kd b c * hc3 + kd a c * hc4 + hm
-
-
 
 theorem reaction_match (hR : ∀ i j, R i j = R j i) (a b c d : Fin 3) :
     KNQ R a b c d + Gg R a b c d = -2 * Bsharp R a b c d - drift R a b c d := by

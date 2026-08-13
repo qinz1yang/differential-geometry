@@ -1,15 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.HatUniformCage
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -241,10 +233,6 @@ theorem unifHatSuppData
         NetLimitData.hatSuppPtsOfComp (I := I) (X := X) hd P L pb r n mu center
           sourceK U V B Binf A Ainf hconn hKsrc hSupp hsrcK hVopen hB hA
           hBcont hAcont hid hKU hKV)
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 theorem unifHatCageData

@@ -21,7 +21,7 @@ namespace TensorRSRiemannian
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -263,7 +263,7 @@ end DifferentialGeometry
 namespace TensorRSBundle
 
 open scoped Manifold Topology Bundle BigOperators
-open Tensor0SBundle Bundle Set
+open DifferentialGeometry.Tensor0SBundle Bundle Set
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2

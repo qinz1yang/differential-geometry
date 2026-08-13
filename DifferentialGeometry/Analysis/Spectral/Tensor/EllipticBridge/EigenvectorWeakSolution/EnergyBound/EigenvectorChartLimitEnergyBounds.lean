@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.LowerOrder.EigenvectorChartLowerOrderLimits
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossRightDiv
 
+open DifferentialGeometry.Analysis.Spectral
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -32,7 +33,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma eigenvalue_pos
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -68,7 +69,7 @@ private lemma eLpNorm_lpClass_eq_ofReal_norm
       eLpNorm ((w : EuclN → ℝ)) 2 (chartL2Measure (I := I) (M := M) α) := rfl
   rw [h_eq, Lp.norm_def, ENNReal.ofReal_toReal (Lp.eLpNorm_ne_top w)]
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma partialLpLimit_eq_clm
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -82,7 +83,7 @@ private lemma partialLpLimit_eq_clm
     mul_inv_cancel₀ (eigenvalue_pos (I := I) (M := M) g r s i).ne',
     one_smul]
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma partialLpLimit_norm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -94,7 +95,7 @@ private lemma partialLpLimit_norm_le
   rw [partialLpLimit_eq_clm (I := I) (M := M) g r s i α P k]
   exact (eigenvectorChartPartialCLM (I := I) (M := M) g r s α P k).le_opNorm _
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 theorem partialLpLimit_eLpNorm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P : TensorCompIdx (E := E) r s)
@@ -153,7 +154,7 @@ theorem partialLpLimit_eLpNorm_le
   rw [← ENNReal.ofReal_mul h_factor_nn]
   exact ENNReal.ofReal_le_ofReal h_bound
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma cutoffPartialLpLimit_eq_clm
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -167,7 +168,7 @@ private lemma cutoffPartialLpLimit_eq_clm
     mul_inv_cancel₀ (eigenvalue_pos (I := I) (M := M) g r s i).ne',
     one_smul]
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma cutoffPartialLpLimit_norm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -180,7 +181,7 @@ private lemma cutoffPartialLpLimit_norm_le
   exact (eigenvectorCutoffChartPartialCLM (I := I) (M := M)
     g r s α P k).le_opNorm _
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 theorem cutoffPartialLpLimit_eLpNorm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P : TensorCompIdx (E := E) r s)
@@ -252,7 +253,6 @@ variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
   (P' : TensorCompIdx (E := E) r (s + 1))
   (k : Fin (Module.finrank ℝ E))
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
 example :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       eLpNorm ((partialLpLimit (I := I) (M := M)
@@ -267,7 +267,6 @@ example :
                 g r s) i‖ :=
   partialLpLimit_eLpNorm_le (I := I) (M := M) g r s α P k
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
 example :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
       eLpNorm ((cutoffPartialLpLimit (I := I) (M := M)

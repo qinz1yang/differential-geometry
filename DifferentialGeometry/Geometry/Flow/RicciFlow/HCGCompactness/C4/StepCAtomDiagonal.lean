@@ -1,14 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCAtomPackage
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -27,8 +21,6 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-
 
 def HasAtomWeightLim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -54,8 +46,6 @@ def HasAtomWeightLim
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
     MapCInfConvOnCompacts U weight weightInf
-
-
 
 theorem HasAtomWeightLim.of_atoms
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -91,8 +81,6 @@ theorem HasAtomWeightLim.of_atoms
   exact atomWeight_of_atoms (I := I) hD P L hre pb r hr hgp beta U hU hcoverU
     aInf hdead hatom hatomSmooth hatomInfSmooth
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem HasAtomWeightLim.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -118,8 +106,6 @@ theorem HasAtomWeightLim.subseq
   · intro k
     simpa only [seqAtomChart_subseq] using hweightSmooth (ψ k)
   · simpa only [seqAtomChart_subseq] using hweightConv.comp_subseq hψ
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem HasAtomWeightLim.weight_ne_tail
@@ -149,8 +135,6 @@ theorem HasAtomWeightLim.weight_ne_tail
   exact
     ((tendsto_pi_nhds.mp (tendsto_of_cInf hweightConv hz)) gamma).eventually_ne
       hweight
-
-
 
 theorem HasAtomWeightLim.weight_data_of_innerCover
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -255,8 +239,6 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
   · intro _z _hz _gamma _hweight
     exact Set.mem_univ _
 
-
-
 theorem HasAtomWeightLim.weight_data
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X} {D : Real} {hD : 0 < D}
@@ -302,8 +284,6 @@ theorem HasAtomWeightLim.weight_data
     apply hcover
     simpa only [NetLimitData.hatSourceBall] using hmap hz
   exact hlim.weight_data_of_innerCover hgp hcoverU
-
-
 
 theorem HasAtomWeightLim.binter_of_weight
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -359,8 +339,6 @@ theorem HasAtomWeightLim.binter_of_weight
     (seqAtom_mem_hat hd hD P L pb r k hgpK gamma (by
       simpa only [seqAtomChart] using
         (num_ne_of_cut_ne (num_ne_of_raw_ne hweightK))))
-
-
 
 theorem exists_atom_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -427,8 +405,6 @@ theorem exists_atom_lim
   simpa only [HasAtomWeightLim] using
     existsAtomWeightH6 (I := I) metricInput hD P L hre pb r hr hgp rho
       beta U hU hovlJ hUmetric hUexp hmapsJ hVmetric hVexp hbetaU
-
-
 
 theorem exists_atom_fin
     {ι : Type uι} (s : Finset ι)

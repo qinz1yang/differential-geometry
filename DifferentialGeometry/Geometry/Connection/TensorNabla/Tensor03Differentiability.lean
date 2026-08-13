@@ -10,6 +10,7 @@ import DifferentialGeometry.Bundle.Frame
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorExtension
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -17,8 +18,9 @@ noncomputable section
 open Bundle Manifold Set FiberBundle
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -398,7 +400,7 @@ lemma mdifferentiableAt_tensor03_pairing
   exact h2.2
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

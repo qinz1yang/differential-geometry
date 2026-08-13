@@ -1,14 +1,21 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.BarrierCore
+import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.PDE.RicciFlow
 
 noncomputable section
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -17,13 +24,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
-
-
-
-
-
 
 structure TensorFirstNullData
     (G : Real -> SmoothRiemannianMetric I M)
@@ -41,8 +41,6 @@ structure TensorFirstNullData
         (tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 t) x
   null :
     tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 t1 x1 v v = 0
-
-
 
 omit [IsManifold I 2 M] in
 theorem firstNullKernel_left
@@ -172,8 +170,6 @@ theorem firstNullKernel_right
   rw [hBsym w d.v]
   exact firstNullKernel_left (I := I) (M := M) hsym d w
 
-
-
 omit [IsManifold I 2 M] in
 theorem firstNullFieldKerL
     {G : Real -> SmoothRiemannianMetric I M}
@@ -199,8 +195,6 @@ theorem firstNullFieldKerL
   rw [hB w]
   exact firstNullKernel_left (I := I) (M := M) hsym d w
 
-
-
 omit [IsManifold I 2 M] in
 theorem firstNullFieldKerR
     {G : Real -> SmoothRiemannianMetric I M}
@@ -225,10 +219,6 @@ theorem firstNullFieldKerR
   intro w
   rw [hB w]
   exact firstNullKernel_right (I := I) (M := M) hsym d w
-
-
-
-
 
 private theorem deriv_nonpos_of_nonneg_left
     {phi : Real -> Real} {a b t d : Real}
@@ -302,10 +292,6 @@ theorem firstNullTime_nonpos
     d.null
     (hderiv d.t1 d.t1_mem d.x1 d.v)
 
-
-
-
-
 theorem nablaEval_extDeriv
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -328,7 +314,7 @@ theorem nablaEval_extDeriv
   have hslots : (fun q : Fin 2 => V q x) = vec2 (I := I) v v := by
     funext q
     rw [hV q]
-    fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   have h :=
     TotalNabla0SRealizes.eval_smooth_slots (I := I)
       hreal Y V x
@@ -345,14 +331,6 @@ theorem nablaEval_extDeriv
     exact (B x).map_update_zero (vec2 (I := I) v v) a
   rw [hsum]
   simp
-
-
-
-
-
-
-
-
 
 private theorem nablaEval_ker
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
@@ -376,7 +354,7 @@ private theorem nablaEval_ker
   have hslots : (fun q : Fin 2 => V q x) = vec2 (I := I) v v := by
     funext q
     rw [hV q]
-    fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   have h :=
     TotalNabla0SRealizes.eval_smooth_slots (I := I)
       hreal Y V x
@@ -399,7 +377,7 @@ private theorem nablaEval_ker
           Function.update (vec2 (I := I) v v) (0 : Fin 2) A =
             vec2 (I := I) A v := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           A]
       rw [hupdate]
       exact hkerR A
@@ -412,18 +390,12 @@ private theorem nablaEval_ker
           Function.update (vec2 (I := I) v v) (1 : Fin 2) A =
             vec2 (I := I) v A := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           A]
       rw [hupdate]
       exact hkerL A
   rw [hsum]
   simp
-
-
-
-
-
-
 
 private theorem nablaEval_ker_tangent
     [T2Space M]
@@ -459,8 +431,6 @@ private theorem nablaEval_ker_tangent
     nablaEval_ker (I := I) (M := M) hreal Ysec V hV' hkerL hkerR
   simpa [V, hYsec, vec2_self_eq_const] using hcalc
 
-
-
 private theorem deriv_eval_zero_left
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -484,7 +454,7 @@ private theorem deriv_eval_zero_left
   have hslots : (fun q : Fin 2 => U q x) =
       vec2 (I := I) (0 : TangentSpace I x) v := by
     funext q
-    fin_cases q <;> simp [U, hA, hV, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [U, hA, hV, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hreal X U x
   rw [hslots] at h
   have hfun :
@@ -493,14 +463,14 @@ private theorem deriv_eval_zero_left
     funext p
     congr
     funext q
-    fin_cases q <;> simp [U, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [U, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   rw [hfun] at h
   have hlhs :
       nablaB x (Fin.cons (X x) (vec2 (I := I) (0 : TangentSpace I x) v)) = 0 := by
     exact (nablaB x).map_coord_zero (1 : Fin 3)
       (by
         change (vec2 (I := I) (0 : TangentSpace I x) v) (0 : Fin 2) = 0
-        simp [vec2, DifferentialGeometry.Integral.Connection.vec2])
+        simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2])
   have hsum :
       (∑ a : Fin 2,
         B x
@@ -516,7 +486,7 @@ private theorem deriv_eval_zero_left
           Function.update (vec2 (I := I) (0 : TangentSpace I x) v) (0 : Fin 2) W =
             vec2 (I := I) W v := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           W]
       rw [hupdate]
       exact hkerR W
@@ -529,20 +499,18 @@ private theorem deriv_eval_zero_left
           Function.update (vec2 (I := I) (0 : TangentSpace I x) v) (1 : Fin 2) W =
             vec2 (I := I) (0 : TangentSpace I x) W := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           W]
       have hzero :
           B x (vec2 (I := I) (0 : TangentSpace I x) W) = 0 := by
         exact (B x).map_coord_zero (0 : Fin 2)
-          (by simp [vec2, DifferentialGeometry.Integral.Connection.vec2])
+          (by simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2])
       rw [hupdate]
       exact hzero
     rw [h0, h1]
     simp
   rw [hlhs, hsum] at h
   simpa using h.symm
-
-
 
 private theorem deriv_eval_zero_right
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
@@ -567,7 +535,7 @@ private theorem deriv_eval_zero_right
   have hslots : (fun q : Fin 2 => U q x) =
       vec2 (I := I) v (0 : TangentSpace I x) := by
     funext q
-    fin_cases q <;> simp [U, hA, hV, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [U, hA, hV, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hreal X U x
   rw [hslots] at h
   have hfun :
@@ -576,14 +544,14 @@ private theorem deriv_eval_zero_right
     funext p
     congr
     funext q
-    fin_cases q <;> simp [U, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [U, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   rw [hfun] at h
   have hlhs :
       nablaB x (Fin.cons (X x) (vec2 (I := I) v (0 : TangentSpace I x))) = 0 := by
     exact (nablaB x).map_coord_zero (2 : Fin 3)
       (by
         change (vec2 (I := I) v (0 : TangentSpace I x)) (1 : Fin 2) = 0
-        simp [vec2, DifferentialGeometry.Integral.Connection.vec2])
+        simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2])
   have hsum :
       (∑ a : Fin 2,
         B x
@@ -599,12 +567,12 @@ private theorem deriv_eval_zero_right
           Function.update (vec2 (I := I) v (0 : TangentSpace I x)) (0 : Fin 2) W =
             vec2 (I := I) W (0 : TangentSpace I x) := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           W]
       have hzero :
           B x (vec2 (I := I) W (0 : TangentSpace I x)) = 0 := by
         exact (B x).map_coord_zero (1 : Fin 2)
-          (by simp [vec2, DifferentialGeometry.Integral.Connection.vec2])
+          (by simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2])
       rw [hupdate]
       exact hzero
     have h1 :
@@ -616,7 +584,7 @@ private theorem deriv_eval_zero_right
           Function.update (vec2 (I := I) v (0 : TangentSpace I x)) (1 : Fin 2) W =
             vec2 (I := I) v W := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           W]
       rw [hupdate]
       exact hkerL W
@@ -624,8 +592,6 @@ private theorem deriv_eval_zero_right
     simp
   rw [hlhs, hsum] at h
   simpa using h.symm
-
-
 
 private theorem deriv_eval_zero_left_C1
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
@@ -671,7 +637,7 @@ private theorem deriv_eval_zero_left_C1
   have hslots : (fun q : Fin 2 => U q x) =
       vec2 (I := I) (0 : TangentSpace I x) v := by
     funext q
-    fin_cases q <;> simp [U, hA, hV, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [U, hA, hV, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   have h := TotalNabla0SRealizes.eval_C1_slots (I := I) hreal X U x hU_at
   rw [hslots] at h
   have hfun :
@@ -680,14 +646,14 @@ private theorem deriv_eval_zero_left_C1
     funext p
     congr
     funext q
-    fin_cases q <;> simp [U, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [U, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   rw [hfun] at h
   have hlhs :
       nablaB x (Fin.cons (X x) (vec2 (I := I) (0 : TangentSpace I x) v)) = 0 := by
     exact (nablaB x).map_coord_zero (1 : Fin 3)
       (by
         change (vec2 (I := I) (0 : TangentSpace I x) v) (0 : Fin 2) = 0
-        simp [vec2, DifferentialGeometry.Integral.Connection.vec2])
+        simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2])
   have hsum :
       (∑ a : Fin 2,
         B x
@@ -703,7 +669,7 @@ private theorem deriv_eval_zero_left_C1
           Function.update (vec2 (I := I) (0 : TangentSpace I x) v) (0 : Fin 2) W =
             vec2 (I := I) W v := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           W]
       rw [hupdate]
       exact hkerR W
@@ -716,20 +682,18 @@ private theorem deriv_eval_zero_left_C1
           Function.update (vec2 (I := I) (0 : TangentSpace I x) v) (1 : Fin 2) W =
             vec2 (I := I) (0 : TangentSpace I x) W := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           W]
       have hzero :
           B x (vec2 (I := I) (0 : TangentSpace I x) W) = 0 := by
         exact (B x).map_coord_zero (0 : Fin 2)
-          (by simp [vec2, DifferentialGeometry.Integral.Connection.vec2])
+          (by simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2])
       rw [hupdate]
       exact hzero
     rw [h0, h1]
     simp
   rw [hlhs, hsum] at h
   simpa using h.symm
-
-
 
 private theorem deriv_eval_zero_right_C1
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
@@ -775,7 +739,7 @@ private theorem deriv_eval_zero_right_C1
   have hslots : (fun q : Fin 2 => U q x) =
       vec2 (I := I) v (0 : TangentSpace I x) := by
     funext q
-    fin_cases q <;> simp [U, hA, hV, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [U, hA, hV, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   have h := TotalNabla0SRealizes.eval_C1_slots (I := I) hreal X U x hU_at
   rw [hslots] at h
   have hfun :
@@ -784,14 +748,14 @@ private theorem deriv_eval_zero_right_C1
     funext p
     congr
     funext q
-    fin_cases q <;> simp [U, vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [U, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   rw [hfun] at h
   have hlhs :
       nablaB x (Fin.cons (X x) (vec2 (I := I) v (0 : TangentSpace I x))) = 0 := by
     exact (nablaB x).map_coord_zero (2 : Fin 3)
       (by
         change (vec2 (I := I) v (0 : TangentSpace I x)) (1 : Fin 2) = 0
-        simp [vec2, DifferentialGeometry.Integral.Connection.vec2])
+        simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2])
   have hsum :
       (∑ a : Fin 2,
         B x
@@ -807,12 +771,12 @@ private theorem deriv_eval_zero_right_C1
           Function.update (vec2 (I := I) v (0 : TangentSpace I x)) (0 : Fin 2) W =
             vec2 (I := I) W (0 : TangentSpace I x) := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           W]
       have hzero :
           B x (vec2 (I := I) W (0 : TangentSpace I x)) = 0 := by
         exact (B x).map_coord_zero (1 : Fin 2)
-          (by simp [vec2, DifferentialGeometry.Integral.Connection.vec2])
+          (by simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2])
       rw [hupdate]
       exact hzero
     have h1 :
@@ -824,7 +788,7 @@ private theorem deriv_eval_zero_right_C1
           Function.update (vec2 (I := I) v (0 : TangentSpace I x)) (1 : Fin 2) W =
             vec2 (I := I) v W := by
         funext q
-        fin_cases q <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update,
+        fin_cases q <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update,
           W]
       rw [hupdate]
       exact hkerL W
@@ -832,8 +796,6 @@ private theorem deriv_eval_zero_right_C1
     simp
   rw [hlhs, hsum] at h
   simpa using h.symm
-
-
 
 theorem nabla2Eval_extDeriv
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
@@ -869,7 +831,7 @@ theorem nabla2Eval_extDeriv
     | zero =>
         simp [W]
     | succ q =>
-        simp [W, hV q, vec2, DifferentialGeometry.Integral.Connection.vec2, Fin.cons_succ]
+        simp [W, hV q, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Fin.cons_succ]
   have h :=
     TotalNabla0SRealizes.eval_smooth_slots (I := I)
       hreal X W x
@@ -908,13 +870,6 @@ theorem nabla2Eval_extDeriv
   rw [hfun, hsum]
   simp
 
-
-
-
-
-
-
-
 private theorem nabla2Eval_extDeriv_oneSec_corr
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {nablaB : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -947,7 +902,7 @@ private theorem nabla2Eval_extDeriv_oneSec_corr
     | zero =>
         simp [W]
     | succ q =>
-        simp [W, hV, vec2, DifferentialGeometry.Integral.Connection.vec2, Fin.cons_succ]
+        simp [W, hV, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Fin.cons_succ]
   have h :=
     TotalNabla0SRealizes.eval_smooth_slots (I := I)
       hreal X W x
@@ -1018,14 +973,6 @@ private theorem nabla2Eval_extDeriv_oneSec_corr
         simp [W, vec2_self_eq_const, Fin.cons_succ]
   rw [hfun, hsum]
 
-
-
-
-
-
-
-
-
 private theorem nabla2Eval_extDeriv_oneSec_corr_phi
     [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -1087,16 +1034,6 @@ private theorem nabla2Eval_extDeriv_oneSec_corr_phi
                   nablaB p (Fin.cons (Y p) (vec2 (I := I) (Vsec p) (Vsec p))))
                 x (X x) - z)
             hA
-
-
-
-
-
-
-
-
-
-
 
 private theorem nabla2Eval_extDeriv_oneSec_hess
     [T2Space M]
@@ -1180,7 +1117,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
       funext p
       congr
       funext a
-      fin_cases a <;> simp [Slots, vec2, DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases a <;> simp [Slots, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
     rw [← hfun]
     exact hraw
   have hcorrR :
@@ -1202,7 +1139,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
       funext p
       congr
       funext a
-      fin_cases a <;> simp [Slots, vec2, DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases a <;> simp [Slots, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
     rw [← hfun]
     exact hraw
   have hleft_fun :
@@ -1218,7 +1155,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
     have hslots : (fun a : Fin 2 => Slots a p) =
         vec2 (I := I) (V p) (V p) := by
       funext a
-      fin_cases a <;> simp [Slots, vec2, DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases a <;> simp [Slots, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
     rw [hslots] at hprod
     have hfun :
         (fun q : M => B q (fun a : Fin 2 => Slots a q)) = phi := by
@@ -1243,7 +1180,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
         rw [hcov]
         congr
         funext a
-        fin_cases a <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+        fin_cases a <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
       have h1 :
           B p
             (Function.update (vec2 (I := I) (V p) (V p)) (1 : Fin 2)
@@ -1255,7 +1192,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
         rw [hcov]
         congr
         funext a
-        fin_cases a <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+        fin_cases a <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
       rw [h0, h1]
     rw [hprod, hsum]
     ring
@@ -1289,8 +1226,6 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
       hreal1 hreal2 X Y V hV hcovVX hkerL hkerR
   rw [hleft_deriv] at hcorr_phi
   simpa [phi, dphiY] using hcorr_phi
-
-
 
 private theorem nabla2Eval_hess
     [T2Space M]
@@ -1484,11 +1419,6 @@ theorem nabla2Eval_hess_slots
     _ = Hess x (vec2 (I := I) U W) := by
         rw [hXsec, hYsec]
 
-
-
-
-
-
 theorem nablaEval_zero
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1511,9 +1441,6 @@ theorem nablaEval_zero
     nablaB x (Fin.cons (X x) (vec2 (I := I) v v)) = 0 := by
   rw [nablaEval_extDeriv (I := I) (M := M) hreal X V hV hcovV]
   exact hphi
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem firstNullLocalMin
@@ -1548,4 +1475,4 @@ theorem firstNullLocalMin
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.PDE.RicciFlow

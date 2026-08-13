@@ -2,22 +2,15 @@ import DifferentialGeometry.Geometry.Coordinates.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Tensor
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.ConnectionDifference
 import DifferentialGeometry.Tensor.RSTensor.TensorRSRiemannian
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
 noncomputable section
 
-open Bundle Module Tensor0SBundle
+open Bundle Module DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -27,9 +20,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {u : Set M}
-
-
-
 
 theorem tensor12Comp_connectionDifferenceTensorAt
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -53,9 +43,6 @@ theorem tensor12Comp_connectionDifferenceTensorAt
         (((CovariantDerivative.difference cov cov' x) (frame j x)) (frame i x))
   rw [componentRS_connectionDifferenceTensorAt]
   simp [IsLocalFrameOn.coeff, hx, IsLocalFrameOn.toBasisAt_coe]
-
-
-
 
 theorem normSqRS_connectionDifferenceTensorAt_eq_christoffel_sum
     [IsManifold I ∞ M]

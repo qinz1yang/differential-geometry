@@ -14,7 +14,7 @@ open Set Function Filter Metric Bundle
 open scoped Topology NNReal ContDiff Manifold
 open DifferentialGeometry.Analysis.ODE.Flow
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 section Manifold
 
@@ -716,4 +716,4 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
 
 end Manifold
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

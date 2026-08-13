@@ -1,39 +1,9 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentDensity
 import DifferentialGeometry.Analysis.Integration.Measure.JacobianImageLe
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Manifold-valued non-injective area inequality for the intrinsic exponential (L5)
-
-**Deliverable L5** of the A0′ `VolumeComparisonInput` lane
-(`HCGCompactness/C4/A0PRIME_VOLUME_PLAN.md`).  This is the missing bridge the B2
-lane flagged as its frontier: a *non-injective* change-of-variables **inequality**
-for `expMapIntrinsic x : E → M` into a Riemannian manifold, past the cut locus.
-
-For a compact launch set `K ⊆ T_xM` (`≅ E`),
-
-`riemannianVolumeMeasure g (expMapIntrinsic x '' K)`
-`  ≤ ∫⁻ v in K, ofReal (curveDensity g (intrinsicGeodesic x v) (intrinsic Jacobi frame) 1) ∂modelHaar`.
-
-## Route (POU-weighted decomposition — orchestrator design note, plan §8)
-
-`riemannianVolumeMeasure g = Measure.sum (α ↦ (chartLocalMeasure g α).withDensity
-(ofReal ∘ ρ α))` with `ρ = chartAtlasPOU`.  On the compact `K` the image is
-measurable, so `Measure.sum_apply` gives an EQUALITY over the weighted summands.
-Each summand is pulled back to the chart target and bounded by the weighted
-Euclidean area inequality `MeasureTheory.image_lintegral_le` (L3) applied to the
-chart-composed map `extChartAt α ∘ expMapIntrinsic x` with weight
-`ofReal ∘ (ρ α · chartDensity g α)`; the resulting integrand is rewritten by the
-density identity `exp_density_curve` (L2) to `ρ α (exp v) · curveDensity v`.
-Summing over the countable POU support and collapsing `Σ_α ρ α (exp v) = 1`
-(`tsum_ofReal_pou_eq_one`) leaves exactly `∫⁻ v in K, ofReal (curveDensity v)`.
-
-No injectivity, no cut-locus restriction: the exponential is globally `C^∞`
-(`intrinsicFiber_smooth`), the density identity holds for all `v`, and the
-Euclidean inequality (L3) needs no injectivity.
--/
 
 noncomputable section
 
@@ -62,15 +32,11 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The intrinsic Jacobi endpoint density along the radial geodesic in direction
-`v` — the RHS integrand of the area inequality `L5`, equal to the pointwise
-Riemannian Jacobian of `expMapIntrinsic x` at `v` (`exp_density_curve`). -/
-private def expJacDensity
+def expJacDensity
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) (v : E) : ℝ :=
   curveDensity (I := I) g
     (intrinsicGeodesic (I := I) g hEnorm x (show TangentSpace I x from v))
@@ -81,16 +47,11 @@ private def expJacDensity
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The intrinsic Jacobi endpoint density is continuous in the launch velocity.
-Local consequence of the density identity `exp_density_curve` (`= chartDensity ·
-|det (chart ∘ exp)|`) together with continuity of the chart density and of the
-Euclidean differential of the globally-`C^∞` chart-composed exponential. -/
-private theorem expJacDensity_continuous
+theorem expJacDensity_continuous
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) :
     Continuous (fun v : E => expJacDensity (I := I) g hEnorm x v) := by
   rw [continuous_iff_continuousAt]
@@ -102,14 +63,12 @@ private theorem expJacDensity_continuous
   have hsrc0 : F v₀ ∈ (chartAt H y₀).source := mem_chart_source H y₀
   set φ : E → E := fun b => extChartAt I y₀ (F b) with hφ
   set ψ : E → ℝ := fun v => chartDensity g y₀ (F v) * |(fderiv ℝ φ v).det| with hψ
-  -- `expJacDensity` agrees with `ψ` on the open neighbourhood where `exp v` stays in the chart.
   have hUnhds : F ⁻¹' (chartAt H y₀).source ∈ 𝓝 v₀ :=
     hFcont.continuousAt.preimage_mem_nhds ((chartAt H y₀).open_source.mem_nhds hsrc0)
   have heq : (fun v : E => expJacDensity (I := I) g hEnorm x v) =ᶠ[𝓝 v₀] ψ := by
     filter_upwards [hUnhds] with v hv
     change expJacDensity (I := I) g hEnorm x v = chartDensity g y₀ (F v) * |(fderiv ℝ φ v).det|
     exact (exp_density_curve (I := I) g hEnorm x v y₀ hv).symm
-  -- `ψ` is continuous at `v₀`.
   have hcd : ContinuousAt (fun v : E => chartDensity g y₀ (F v)) v₀ := by
     have h1 : ContinuousAt (chartDensity g y₀) (F v₀) := by
       refine (chartDensity_continuousOn (I := I) g y₀).continuousAt ?_
@@ -128,15 +87,11 @@ private theorem expJacDensity_continuous
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Per-chart summand bound (the crux of L5): the `α`-summand of the POU-weighted
-Riemannian volume of `expMapIntrinsic x '' K` is at most the `K`-integral of
-`ρ α (exp v) · expJacDensity v` against `modelHaar`. -/
 private theorem pou_term_exp_le
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {K : Set E} (hK : MeasurableSet K)
     (hKimg : MeasurableSet
       ((fun b : E => expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from b)) '' K))
@@ -159,7 +114,6 @@ private theorem pou_term_exp_le
   have hKαmeas : MeasurableSet Kα := hK.inter hUαopen.measurableSet
   have hTmeas : MeasurableSet (extChartAt I α).target :=
     measurableSet_extChartAt_target (I := I) α
-  -- The chart-composed exponential, made global by a piecewise definition.
   set fα : E → E := Uα.piecewise (fun b => extChartAt I α (Fmap b)) 0 with hfα
   set fα' : E → (E →L[ℝ] E) := fun v => fderiv ℝ (fun b => extChartAt I α (Fmap b)) v with hfα'
   set Wα : E → ℝ≥0∞ := (extChartAt I α).target.piecewise
@@ -174,7 +128,6 @@ private theorem pou_term_exp_le
       Wα q = ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm q)
         * chartAtlasPOU I M α ((extChartAt I α).symm q)) := fun q hq => by
     rw [hWα]; exact Set.piecewise_eq_of_mem _ _ _ hq
-  -- Measurability of the pieces.
   have hfα_meas : Measurable fα := by
     refine ContinuousOn.measurable_piecewise ?_ continuous_const.continuousOn
       hUαopen.measurableSet
@@ -191,8 +144,6 @@ private theorem pou_term_exp_le
     · refine (chartDensity_continuousOn (I := I) g α).comp hsymmOn (fun q hq => ?_)
       rw [trivializationAt_baseSet_eq_chartAt_source (I := I) α]; exact hsymm_maps hq
     · exact (chartAtlasPOU I M α).contMDiff.continuous.comp_continuousOn hsymmOn
-  -- Derivative of `fα` on `Kα` (via `expChart_contDiffAt` and the eventual equality with the
-  -- non-piecewise chart-composed exponential).
   have hderiv : ∀ v ∈ Kα, HasFDerivWithinAt fα (fα' v) Kα v := by
     intro v hv
     have hvUα : v ∈ Uα := hv.2
@@ -206,7 +157,6 @@ private theorem pou_term_exp_le
     exact (hHF.congr_of_eventuallyEq hEq).hasFDerivWithinAt
   have hραmeas : Measurable (fun y : M => ENNReal.ofReal (chartAtlasPOU I M α y)) :=
     ENNReal.measurable_ofReal.comp (chartAtlasPOU I M α).contMDiff.continuous.measurable
-  -- The pulled-back integrand agrees with the image indicator on the chart target.
   have hHeq : ∀ p ∈ (extChartAt I α).target,
       ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm p))
         * (Fmap '' K).indicator (fun y : M => ENNReal.ofReal (chartAtlasPOU I M α y))
@@ -243,7 +193,6 @@ private theorem pou_term_exp_le
       refine ⟨v, ⟨hvK, hvUα⟩, ?_⟩
       rw [hpw v hvUα, hFv]
       exact (extChartAt I α).right_inv hp
-  -- Main chain.
   rw [withDensity_apply _ hKimg,
     chartLocalMeasure_setLintegral_indicator (I := I) g α hKimg hραmeas]
   calc ∫⁻ p in (extChartAt I α).target,
@@ -275,7 +224,8 @@ private theorem pou_term_exp_le
             = expJacDensity (I := I) g hEnorm x v :=
           exp_density_curve (I := I) g hEnorm x v α hFvS
         rw [hWαv,
-          ← ENNReal.ofReal_mul (mul_nonneg (hcdnn (Fmap v)) ((chartAtlasPOU I M).nonneg α (Fmap v))),
+          ← ENNReal.ofReal_mul (mul_nonneg (hcdnn (Fmap v)) ((chartAtlasPOU I M).nonneg α
+            (Fmap v))),
           ← ENNReal.ofReal_mul ((chartAtlasPOU I M).nonneg α _)]
         congr 1
         rw [← hden]
@@ -289,18 +239,11 @@ private theorem pou_term_exp_le
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- **Non-injective area inequality for the intrinsic exponential** (L5).
-
-For a compact launch set `K ⊆ E`, the Riemannian volume of the image
-`expMapIntrinsic x '' K` is at most the `modelHaar`-integral over `K` of the
-intrinsic Jacobi endpoint density `expJacDensity`.  No injectivity or cut-locus
-hypothesis; the density integrand is `exp_density_curve`'s value. -/
 theorem riemVol_exp_image_le
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {K : Set E} (hK : IsCompact K) :
     riemannianVolumeMeasure (I := I) (M := M) g
         ((fun b : E => expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from b)) '' K)
@@ -325,7 +268,6 @@ theorem riemVol_exp_image_le
   set Tρ : Set M := {α : M | (Function.support (chartAtlasPOU I M α)).Nonempty} with hTρ
   have hCρ : Tρ.Countable := countable_nonempty_support_of_pou (I := I) (chartAtlasPOU I M)
   haveI : Countable Tρ := hCρ.to_subtype
-  -- the summand vanishes off the countable POU support
   have hsupp : Function.support (fun α : M => ∫⁻ v in K,
       ENNReal.ofReal (chartAtlasPOU I M α
           (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))
@@ -342,7 +284,6 @@ theorem riemVol_exp_image_le
       have hmem : _ ∈ Function.support (chartAtlasPOU I M α) := hne
       rw [hz] at hmem; exact hmem
     simp only [hzero, ENNReal.ofReal_zero, zero_mul, lintegral_zero]
-  -- POU support subset for the pointwise collapse
   have hsuppρ : ∀ v : E, Function.support (fun α : M => ENNReal.ofReal
       (chartAtlasPOU I M α
         (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))) ⊆ Tρ := by

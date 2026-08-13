@@ -1,59 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.BernsteinShiHigher
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Components
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -61,32 +11,9 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped BigOperators
 
-
-
-
-
-
-
-
-
-
-
 section ComponentRecursion
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 def covDerivStepComp {r : ℕ}
     (ext : (Fin r → Idx) → Idx → Real)
@@ -97,9 +24,6 @@ def covDerivStepComp {r : ℕ}
       ∑ s : Fin r, ∑ p : Idx,
         chr (n 0) (Fin.tail n s) p * A (Function.update (Fin.tail n) s p)
 
-
-
-
 def frameExtData {r : ℕ}
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -108,17 +32,6 @@ def frameExtData {r : ℕ}
     (A : M → (Fin r → Idx) → Real) (x : M) :
     (Fin r → Idx) → Idx → Real :=
   fun m d => extDerivFun (I := I) (fun y : M => A y m) x (frame d x)
-
-
-
-
-
-
-
-
-
-
-
 
 def iteratedRmComp
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -163,31 +76,14 @@ theorem iteratedRmComp_succ
 
 end ComponentRecursion
 
-
-
-
-
-
-
-
-
-
 section OrthonormalReduction
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
-
-
-
 
 def multiNormRaised {r : ℕ}
     (gInv : Idx → Idx → Real) (A : (Fin r → Idx) → Real) : Real :=
   ∑ m : Fin r → Idx, ∑ n : Fin r → Idx,
     (∏ s : Fin r, gInv (m s) (n s)) * A m * A n
-
-
 
 omit [Fintype Idx] in
 theorem prod_delta_eq {r : ℕ} (m n : Fin r → Idx) :
@@ -201,13 +97,6 @@ theorem prod_delta_eq {r : ℕ} (m n : Fin r → Idx) :
     obtain ⟨s, hs⟩ := Function.ne_iff.mp h
     refine Finset.prod_eq_zero (Finset.mem_univ s) ?_
     rw [if_neg hs]
-
-
-
-
-
-
-
 
 theorem multiNormInFrame_eq_compNormSqMulti {r : ℕ}
     (gInv : Idx → Idx → Real)
@@ -234,31 +123,6 @@ theorem multiNormInFrame_eq_compNormSqMulti {r : ℕ}
 
 end OrthonormalReduction
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 section TowerHeatInequality
 
 open Bundle
@@ -272,65 +136,36 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
-
-
 def towerReactionMulti
     (level : (k : ℕ) → (Fin (4 + k) → Idx) → Real)
     (star : (k : ℕ) → ℕ → (Fin (4 + k) → Idx) → Real)
     (k : ℕ) : Real :=
   nablaRmReactionMulti (level k) (star k)
 
-
-
-
-
-
-
-
-
-
 structure IteratedRmTowerOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (level : (k : ℕ) → Real → M → (Fin (4 + k) → Idx) → Real)
     (star : (k : ℕ) → Real → M → ℕ → (Fin (4 + k) → Idx) → Real)
     (w wLap : ℕ → Real → M → Real) : Prop where
-
   wDef : ∀ (k : ℕ) (t : Real) (x : M),
     w k t x = compNormSqMulti (level k t x)
-
-
-
-
   heatEq : ∀ (k : ℕ)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M),
     HasDerivWithinAt (fun s : Real => w k s x)
       (wLap k (t : Real) x +
         (-2 * w (k + 1) (t : Real) x +
           towerReactionMulti (level · (t : Real) x) (star · (t : Real) x) k))
       D.carrier (t : Real)
-
-
-
   starBound : ∀ (k : ℕ) (t : Real) (x : M),
     ∀ j ∈ Finset.range (k + 1), ∀ m : Fin (4 + k) → Idx,
       |star k t x j m| ≤
         (Fintype.card Idx : Real) ^ 2 *
           (Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x))
 
-
-
-
-
-
-
-
-
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem abs_towerReactionMulti_le
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {level : (k : ℕ) → Real → M → (Fin (4 + k) → Idx) → Real}
     {star : (k : ℕ) → Real → M → ℕ → (Fin (4 + k) → Idx) → Real}
     {w wLap : ℕ → Real → M → Real}
@@ -346,22 +181,15 @@ theorem abs_towerReactionMulti_le
   · intro j hj m
     exact T.starBound k t x j hj m
 
-
-
-
-
-
-
-
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem iteratedRmTower_heatBoundSharp
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {level : (k : ℕ) → Real → M → (Fin (4 + k) → Idx) → Real}
     {star : (k : ℕ) → Real → M → ℕ → (Fin (4 + k) → Idx) → Real}
     {w wLap : ℕ → Real → M → Real}
     (T : IteratedRmTowerOn (D := D) level star w wLap)
     (k : ℕ)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) :
     ∃ d : Real,
       HasDerivWithinAt (fun s : Real => w k s x) d D.carrier (t : Real) ∧
@@ -382,19 +210,9 @@ theorem iteratedRmTower_heatBoundSharp
     ring
   linarith [hreact_le]
 
-
-
-
-
-
-
-
-
-
-
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
 theorem iteratedRmTower_heatBound
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {level : (k : ℕ) → Real → M → (Fin (4 + k) → Idx) → Real}
     {star : (k : ℕ) → Real → M → ℕ → (Fin (4 + k) → Idx) → Real}
     {w wLap : ℕ → Real → M → Real}

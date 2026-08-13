@@ -4,15 +4,6 @@ import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -31,8 +22,6 @@ theorem contDiffOn_ringInverse (n : WithTop ℕ∞) :
   simp only [Set.mem_setOf_eq] at hy
   obtain ⟨u, rfl⟩ := hy
   exact (contDiffAt_ringInverse 𝕜 u).contDiffWithinAt
-
-
 
 theorem norm_iteratedFDerivWithin_ringInverse_le : ∀ (i : ℕ) (x : Rˣ),
     ‖iteratedFDerivWithin 𝕜 i Ring.inverse {y : R | IsUnit y} (x : R)‖
@@ -115,9 +104,6 @@ theorem norm_iteratedFDeriv_ringInverse_le (i : ℕ) (x : Rˣ) :
   exact norm_iteratedFDerivWithin_ringInverse_le i x
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-
-
 
 theorem norm_iteratedFDeriv_invComp_le
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P] [CompleteSpace E]

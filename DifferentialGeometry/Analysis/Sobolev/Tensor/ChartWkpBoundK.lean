@@ -1,24 +1,11 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpBound
-
-/-!
-# Quantitative tensor-chart transport in `W^{k,p}`
-
-`ChartWkpBound.lean` packages the order-two estimate used by the original
-maximal-regularity lane.  The contraction topology for the low-regularity
-Ricci--DeTurck construction is instead `W^{3,p}`.  This file records the same
-two estimates at arbitrary finite order, using the already general
-smooth-multiplier and cross-chart theorems.
-
-All constants below are attached only to the fixed background metric, chart
-pair, tensor indices, order, and exponent.  In particular they do not depend
-on an evolving metric or on a time horizon.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
@@ -45,8 +32,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-/-- Multiplication by one fixed cutoff transition coefficient is bounded on
-`W^{k,p}` of the source chart. -/
 theorem coeffMulJointK
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -78,11 +63,6 @@ theorem coeffMulJointK
     (chartTargetEuclid_isOpen (I := I) (M := M) β)
     h_smooth (fun j hj y _ => hC_bound y j hj) hv
 
-/-- A source component supported in the coordinate image of any fixed
-compact subset of its source chart contributes a quantitatively controlled
-`W^{k,p}` function in every target chart.  This is the local-support form
-needed after applying a strict fine-chart cutoff; it does not require the
-source to stay inside the canonical atlas POU support. -/
 theorem secTermJointOn
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -140,8 +120,6 @@ theorem secTermJointOn
       rw [ENNReal.ofReal_mul hK_cross_pos.le]
       simp only [mul_assoc]
 
-/-- A compactly POU-supported source component contributes a quantitatively
-controlled `W^{k,p}` function in every target chart. -/
 theorem secTermJointK
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))

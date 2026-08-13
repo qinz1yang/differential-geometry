@@ -1,15 +1,17 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRSNabla
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle CovariantDerivative Filter Tensor0SBundle
+open Bundle CovariantDerivative Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
@@ -21,7 +23,7 @@ variable
   {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+    [T2Space M] [BoundarylessManifold I M]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -46,7 +48,7 @@ theorem tensorRSCovariantDerivative_congr_of_eventuallyEq
     hσ hσ' Filter.univ_mem hagree
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

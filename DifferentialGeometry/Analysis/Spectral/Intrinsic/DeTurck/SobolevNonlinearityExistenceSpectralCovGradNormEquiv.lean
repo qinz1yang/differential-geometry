@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTi
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapIterL2WtwokTwoBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHSSection
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.FaithfulH1Embedding
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzTruncation
@@ -13,6 +13,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNor
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitz
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Sobolev.SmoothCcTensor
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -21,7 +25,7 @@ open Bundle MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
@@ -31,8 +35,8 @@ open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -40,7 +44,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem oneMinusConnLapSmoothIter_succ'
     (g₀ : SmoothRiemannianMetric I M) (k : ℕ) (S : SmoothCcTensor g₀ 0 2) :
     oneMinusConnLapSmoothIter (I := I) g₀ 0 2 (k + 1) S =
@@ -54,44 +58,44 @@ private theorem exists_oneMinusConnLapSmooth_toHs_le_toHs_succ
     (g₀ : SmoothRiemannianMetric I M) (m : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ U : SmoothCcTensor g₀ 0 2,
-        ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+        ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) m (oneMinusConnLapSmooth (I := I) g₀ 0 2 U)‖ ≤
-          C * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+          C * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) (m + 1) U‖ := by
   obtain ⟨C₁, hC₁_nn, hC₁⟩ := exists_rawConnLapSmooth_toHs_le_toHs_succ (I := I) g₀ m
   refine ⟨1 + C₁, by positivity, fun U => ?_⟩
   have hsub : oneMinusConnLapSmooth (I := I) g₀ 0 2 U =
       U - rawTensorConnLapSmooth (I := I) g₀ 0 2 U := rfl
   rw [hsub, SmoothCcTensor.toHs_sub]
-  have hmono : ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+  have hmono : ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
         (g := g₀) (r := 0) (s := 2) m U‖ ≤
-      ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+      ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
         (g := g₀) (r := 0) (s := 2) (m + 1) U‖ :=
     toHs_norm_mono (I := I) g₀ (Nat.le_succ m) U
   have hlap := hC₁ U
-  calc ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+  calc ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
           (g := g₀) (r := 0) (s := 2) m U -
-          DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+          DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) m (rawTensorConnLapSmooth (I := I) g₀ 0 2 U)‖
-      ≤ ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+      ≤ ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) m U‖ +
-          ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+          ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) m (rawTensorConnLapSmooth (I := I) g₀ 0 2 U)‖ :=
         norm_sub_le _ _
-    _ ≤ ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+    _ ≤ ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) (m + 1) U‖ +
-          C₁ * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+          C₁ * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) (m + 1) U‖ := add_le_add hmono hlap
-    _ = (1 + C₁) * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+    _ = (1 + C₁) * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) (m + 1) U‖ := by ring
 
 private theorem exists_oneMinusConnLapSmoothIter_toHs_le_toHs
     (g₀ : SmoothRiemannianMetric I M) (k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ S : SmoothCcTensor g₀ 0 2,
-        ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+        ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) 0 (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k S)‖ ≤
-          C * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+          C * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
             (g := g₀) (r := 0) (s := 2) k S‖ := by
   induction k with
   | zero =>
@@ -103,17 +107,19 @@ private theorem exists_oneMinusConnLapSmoothIter_toHs_le_toHs
         exists_oneMinusConnLapSmooth_toHs_le_toHs_succ (I := I) g₀ k
       refine ⟨Ck * Cstep, mul_nonneg hCk_nn hCstep_nn, fun S => ?_⟩
       rw [oneMinusConnLapSmoothIter_succ']
-      calc ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+      calc ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
               (g := g₀) (r := 0) (s := 2) 0
               (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k
                 (oneMinusConnLapSmooth (I := I) g₀ 0 2 S))‖
-          ≤ Ck * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+          ≤ Ck * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
               (g := g₀) (r := 0) (s := 2) k (oneMinusConnLapSmooth (I := I) g₀ 0 2 S)‖ :=
             hCk (oneMinusConnLapSmooth (I := I) g₀ 0 2 S)
-        _ ≤ Ck * (Cstep * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+        _ ≤ Ck * (Cstep *
+          ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
               (g := g₀) (r := 0) (s := 2) (k + 1) S‖) :=
             mul_le_mul_of_nonneg_left (hCstep S) hCk_nn
-        _ = (Ck * Cstep) * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+        _ = (Ck * Cstep) *
+          ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
               (g := g₀) (r := 0) (s := 2) (k + 1) S‖ := by ring
 
 theorem exists_smoothCcToTensorHs_even_le_iteratedCovGrad_sum
@@ -156,21 +162,21 @@ theorem exists_smoothCcToTensorHs_even_le_iteratedCovGrad_sum
   have hsum_nn : 0 ≤ ∑ j ∈ Finset.range (2 * k + 1),
       ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖ :=
     Finset.sum_nonneg (fun j _ => norm_nonneg _)
-  have htoHsk_nn : 0 ≤ ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+  have htoHsk_nn : 0 ≤ ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
       (g := g₀) (r := 0) (s := 2) k S‖ := norm_nonneg _
-  have htoHs0_nn : 0 ≤ ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+  have htoHs0_nn : 0 ≤ ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
       (g := g₀) (r := 0) (s := 2) 0 (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k S)‖ :=
     norm_nonneg _
-  have hhebey' : ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+  have hhebey' : ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
         (g := g₀) (r := 0) (s := 2) k S‖ ≤
       Chebey * ∑ j ∈ Finset.range (2 * k + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖ := by
     refine le_trans hhebey ?_
     refine mul_le_mul_of_nonneg_left ?_ hChebey_nn
     exact le_of_eq (Finset.sum_congr rfl (fun j _ => hjet_eq j))
   calc ‖SmoothCcTensor.toL2 (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k S)‖
-      ≤ Cl2 * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+      ≤ Cl2 * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
           (g := g₀) (r := 0) (s := 2) 0 (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k S)‖ := hl2
-    _ ≤ Cl2 * (Cdrop * ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+    _ ≤ Cl2 * (Cdrop * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
           (g := g₀) (r := 0) (s := 2) k S‖) := mul_le_mul_of_nonneg_left hdrop hCl2_nn
     _ ≤ Cl2 * (Cdrop * (Chebey * ∑ j ∈ Finset.range (2 * k + 1),
           ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖)) := by
@@ -816,6 +822,6 @@ theorem exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general
     _ = Real.sqrt ((2 : ℝ) ^ n * Csum) * ∑ j ∈ Finset.range (n + 1),
           ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖ := by rw [hSall_def]
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

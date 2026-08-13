@@ -1,29 +1,24 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -33,8 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-
 
 theorem app_hs_unif
     (g : SmoothRiemannianMetric I M) (b c : ℕ) {α : Type*}
@@ -108,9 +101,6 @@ theorem app_hs_unif
         (mul_le_mul_of_nonneg_left hJin hDsum_nn) hCout_nn
     _ = (Cout * Dsum * Cin) *
         ‖ccTensorToHs (I := I) (M := M) g b (n : ℝ) W‖ := by ring
-
-
-
 
 theorem app_hs_const
     (g : SmoothRiemannianMetric I M) (b c n : ℕ) :
@@ -243,8 +233,6 @@ theorem app_hs_const
     _ = (Cout * Gsum * Cin) * Real.sqrt Bsum *
         ‖ccTensorToHs (I := I) (M := M) g b (n : ℝ) W‖ := by ring
 
-
-
 theorem app_hs_small
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
     (Φ : SmoothCcTensor g b c) (B : ℕ → ℝ)
@@ -270,8 +258,6 @@ private noncomputable def appCcLin
     simpa only [RingHom.id_apply] using
       appCc_smul_right (I := I) (M := M) g b c m Φ W
 
-
-
 noncomputable def appHs
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
     (Φ : SmoothCcTensor g b c) :
@@ -280,8 +266,6 @@ noncomputable def appHs
   ((ccToHsLin (I := I) (M := M) g c (n : ℝ)).comp
       (appCcLin g b c Φ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g b (n : ℝ))
-
-
 
 theorem appHs_unif
     (g : SmoothRiemannianMetric I M) (b c n : ℕ) :
@@ -310,8 +294,6 @@ theorem appHs_unif
         ‖ccTensorToHs (I := I) (M := M) g b (n : ℝ) W‖
   exact happ Φ B hB_nn hB W
 
-
-
 theorem appHs_norm
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
     (Φ : SmoothCcTensor g b c) (B : ℕ → ℝ)
@@ -324,8 +306,6 @@ theorem appHs_norm
         C * Real.sqrt (∑ i ∈ Finset.range (n + 1), B i) := by
   obtain ⟨C, hC_nn, hC⟩ := appHs_unif (I := I) (M := M) g b c n
   exact ⟨C, hC_nn, hC Φ B hB_nn hB⟩
-
-
 
 theorem appHs_core
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
@@ -365,8 +345,6 @@ theorem appHs_core
   apply LinearMap.extendOfNorm_eq hdense
   exact ⟨C * Real.sqrt (∑ i ∈ Finset.range (n + 1), B i), happ⟩
 
-
-
 theorem appHs_add
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g b c)
@@ -386,8 +364,6 @@ theorem appHs_add
       ccTensorToHs_add])
   exact congrFun hLR U
 
-
-
 theorem appHs_smul
     (g : SmoothRiemannianMetric I M) (b c n : ℕ) (a : ℝ)
     (Φ : SmoothCcTensor g b c)
@@ -404,8 +380,6 @@ theorem appHs_smul
       ccToHsLin_apply]
     rw [appHs_core, appHs_core, appCc_smul_left, ccTensorToHs_smul])
   exact congrFun hLR U
-
-
 
 theorem appHs_sub
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
@@ -424,8 +398,8 @@ theorem appHs_sub
     _ = appHs g b c n Φ₁ U - appHs g b c n Φ₂ U := by
       rw [neg_one_smul, sub_eq_add_neg]
 
-end Connection
-end Integral
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

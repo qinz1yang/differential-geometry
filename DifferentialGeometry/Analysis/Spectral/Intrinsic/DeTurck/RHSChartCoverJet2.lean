@@ -1,47 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHSAbstractJet2Bound
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -51,22 +9,20 @@ open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -75,21 +31,11 @@ theorem extChartAt_self_mem_interior_target (α : M) :
   rw [(isOpen_extChartAt_target (I := I) α).interior_eq]
   exact mem_extChartAt_target (I := I) α
 
-
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem singleton_chartCenter_subset_interior_target (α : M) :
     ({extChartAt I α α} : Set E) ⊆ interior ((extChartAt I α).target : Set E) :=
   Set.singleton_subset_iff.mpr (extChartAt_self_mem_interior_target (I := I) α)
-
-
-
-
-
-
-
 
 omit [CompactSpace M] in
 omit [SigmaCompactSpace M] in
@@ -107,9 +53,6 @@ theorem abstractRHSFrameComponent_diff_abs_le_jet2_chartCenter
       (singleton_chartCenter_subset_interior_target (I := I) α)
   exact ⟨C, hC_pos, fun i j => hC (extChartAt I α α) (Set.mem_singleton _) i j⟩
 
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem exists_finite_chartSource_cover :
     ∃ s : Finset M, (⋃ α ∈ s, (chartAt H α).source) = Set.univ := by
@@ -124,20 +67,6 @@ theorem exists_finite_chartSource_cover :
       (by rw [hcover])
   refine ⟨s, Set.eq_univ_of_univ_subset ?_⟩
   simpa using hs
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [CompactSpace M] in
 omit [SigmaCompactSpace M] in
@@ -180,9 +109,8 @@ theorem exists_uniform_const_RHSFrameComponent_diff_jet2_on_finset
           chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ (α c) y :=
         mul_le_mul_of_nonneg_right hCc_le hjet2_nn
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

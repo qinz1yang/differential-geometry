@@ -1,13 +1,15 @@
-
-
-
+/-
+Authors: Yuan Liao, Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Curry
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
+open DifferentialGeometry.Tensor.Multilinear
 
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 noncomputable section
 
@@ -704,6 +706,6 @@ theorem TensorRSSpace.smul_apply (r s : ℕ) (x : M)
     (c : 𝕜) (T : TensorRSSpace r s I x) (A : Tensor0SSpace r I x) :
     (c • T) A = c • T A := rfl
 
-
 end
 end Tensor0SBundle
+end DifferentialGeometry

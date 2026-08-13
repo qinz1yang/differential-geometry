@@ -2,43 +2,31 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgePartnerBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgeRicciPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciConnDiffOrder0KernelJetGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceFibreBound
-
-/-!
-# Closed-edge bound for the order-one Ricci arm
-
-The order-one connection-difference coefficient is linear in the connection
-difference.  At the closed edge this is exactly the structure needed for an
-`O(delta) * ||nabla W||^2` energy bound: the coefficient contributes one
-factor of `nabla P`, its input is `nabla W`, and the outer pairing contributes
-the small undifferentiated `W`.
-
-The canonical order-one tame-envelope file proves the relevant five-arm
-kernel expansion only as a private implementation lemma.  This file reproves
-that finite algebra locally, exports the pointwise kernel and coefficient
-bounds needed at the energy boundary, and then specializes to the genuine
-segment `P = s W`.  No `H2` or higher jet of the edge tensor is used.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-
-open Bundle Manifold MeasureTheory Tensor0SBundle
+open Bundle Manifold MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -104,8 +92,6 @@ private lemma one_symm_eq (g : SmoothRiemannianMetric I M)
   have htwo : S + S = (2 : Real) • S := (two_smul Real S).symm
   rw [ccTensor02Symm, hswap, htwo, smul_smul,
     show (1 / 2 : Real) * 2 = 1 by norm_num, one_smul]
-
-/-! ## The five-arm kernel split -/
 
 private def oneOut0312 : Equiv.Perm (Fin 4) :=
   ⟨![0, 3, 1, 2], ![0, 2, 3, 1], by decide, by decide⟩
@@ -240,8 +226,6 @@ private theorem one_rfns_neg
     tensorInnerPointwise_smul_left, tensorInnerPointwise_smul_right]
   ring
 
-/-- The order-one Ricci kernel is a five-term isometric reindexing of the
-twice-slot-extended connection difference. -/
 theorem ricci1Ker_rfns
     (g gm : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 3 4 x
@@ -294,8 +278,6 @@ theorem ricci1Ker_rfns
   rw [one_rfns_neg (I := I) (M := M) g 3 4 x]
   exact hsum
 
-/-! ## Pointwise coefficient bound -/
-
 private theorem one_insert_rfns
     (g gm : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 3 4 x
@@ -338,11 +320,8 @@ private theorem one_insert_rfns
       simp only [A]
       ring
 
--- Elaborating the tensor-contraction instance chain requires the larger synthesis budget.
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-/-- The order-one Ricci coefficient is pointwise linear in the first
-covariant derivative of the metric perturbation. -/
 theorem ricci1Coeff_rfns (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
@@ -439,8 +418,6 @@ theorem ricci1Coeff_rfns (g : SmoothRiemannianMetric I M) :
       ring
     _ = (Real.sqrt K) ^ 2 * P1 := by rw [Real.sq_sqrt hK0]
 
-/-! ## Energy pairing on the genuine segment -/
-
 omit [BoundarylessManifold I M] in
 private theorem onePair_point
     (g : SmoothRiemannianMetric I M)
@@ -532,8 +509,6 @@ private lemma one_bound_mono
     (mul_le_mul_of_nonneg_right hab (Real.sqrt_nonneg _))
     (Real.sqrt_nonneg _))
 
-/-- On the genuine closed-edge segment, the order-one Ricci term costs at
-most one eighth of the Dirichlet energy. -/
 theorem ricci1_path_le (g : SmoothRiemannianMetric I M) :
     ∃ delta0 : Real, 0 < delta0 ∧ delta0 < 1 / 2 ∧
       ∀ (W : SmoothCcTensor g 0 2)
@@ -719,9 +694,8 @@ theorem ricci1_path_le (g : SmoothRiemannianMetric I M) :
         ‖iteratedCovGrad (I := I) g 0 2 1 W‖ ^ 2 :=
       mul_le_mul_of_nonneg_right hsmall (sq_nonneg _)
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

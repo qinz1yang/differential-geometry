@@ -2,17 +2,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalInvV
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalBranchConv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageFill
 import DifferentialGeometry.Analysis.Calculus.MovingImplicit
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -30,9 +23,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-
-
-
 
 theorem invVelSub_conv_on
     (inp : MetricCompactnessInputs (I := I) X)
@@ -104,9 +94,6 @@ theorem invVelSub_conv_on
     (fun _ => contDiff_snd.contDiffOn) contDiff_snd.contDiffOn
     hmap (fun q hq _ => hmapInf q hq)
 
-
-
-
 theorem invVelSub_conv
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -156,8 +143,6 @@ theorem invVelSub_conv
     hcfgC hcfgInfC hcfg (fun m => e (nn m)) eInf Metric.isOpen_ball
     (Filter.Eventually.of_forall fun m => heC (nn m)) heInfC he hD hfst
     (Filter.Eventually.of_forall hmap) hmapInf
-
-
 
 theorem HasSuppConvData.invVel_sub_conv
     (inp : MetricCompactnessInputs (I := I) X)
@@ -214,9 +199,6 @@ theorem HasSuppConvData.invVel_sub_conv
       kn ln hkn hln alpha
   exact invVelSub_conv inp P L hr phi hphi alpha kn ln hUopen weightInf
     hcfgC hcfgInfC hcfg e eInf hinvData nn hnn
-
-
-
 
 theorem HasDiagPairConv.exists_invVel_on
     {hcomplete : SeqMetricComplete (I := I) X}
@@ -295,8 +277,6 @@ theorem HasDiagPairConv.exists_invVel_on
       simpa only [FInf] using hL
     exact ⟨L, (Analysis.partialFDeriv₂_eq hFAt hslice).symm⟩
   exact Analysis.exists_rootTube hD hK hFInf continuousOn_id hgraph hroot hinv
-
-
 
 theorem HasDiagPairConv.exists_invVel_tube
     {hcomplete : SeqMetricComplete (I := I) X}

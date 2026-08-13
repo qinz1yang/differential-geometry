@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.SmoothMulH1Compl
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Defs
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2RegularitySuccessor
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -21,6 +22,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 
@@ -43,6 +45,7 @@ private lemma add_sub_rearrange {α : Type*} [AddCommGroup α] {a b c d : α}
     rw [← h]; abel
   rw [this]; abel
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradInnerCLM_eq_two_inv_preimageDiff
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -92,6 +95,7 @@ noncomputable def preimageLift
     H1Compl (I := I) (M := M) g :=
   Classical.choose (laplacianDomainPow_two_preimage_eq (I := I) (M := M) g hu_h)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma preimageLift_mem_laplacianDomain
     (g : SmoothRiemannianMetric I M)
@@ -102,6 +106,7 @@ lemma preimageLift_mem_laplacianDomain
   (Classical.choose_spec (laplacianDomainPow_two_preimage_eq
     (I := I) (M := M) g hu_h)).1
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma H1ComplToLp_preimageLift
     (g : SmoothRiemannianMetric I M)
@@ -115,6 +120,7 @@ lemma H1ComplToLp_preimageLift
   (Classical.choose_spec (laplacianDomainPow_two_preimage_eq
     (I := I) (M := M) g hu_h)).2
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothMulLp_preimage_in_image_laplacianDomain
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -136,6 +142,7 @@ theorem smoothMulLp_preimage_in_image_laplacianDomain
   · rw [H1ComplToLp_smoothMulH1Compl]
     rw [H1ComplToLp_preimageLift]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothMulLp_DeltaPhi_in_image_laplacianDomain
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -154,6 +161,7 @@ theorem smoothMulLp_DeltaPhi_in_image_laplacianDomain
   · exact h_sM_mem
   · rw [H1ComplToLp_smoothMulH1Compl]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothMulH1Compl_mem_pow_two_of_gradInnerCLM_mem_image
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -217,6 +225,7 @@ theorem smoothMulH1Compl_mem_pow_two_of_gradInnerCLM_mem_image
   rw [hf]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradInnerCLM_mem_image_of_smoothMulH1Compl_mem_pow_two
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -259,6 +268,7 @@ theorem gradInnerCLM_mem_image_of_smoothMulH1Compl_mem_pow_two
     rw [smul_smul]
     norm_num
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothMulH1Compl_mem_pow_two_iff_gradInnerCLM_mem_image
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -281,15 +291,15 @@ noncomputable def gradInnerSmoothBundle
     (gradFun (I := I) g v.toFun x)
   smooth := by
     have h := contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g φ.contMDiff) (grad_g (I := I) g v.smooth)
+      (grad_g (I := I) g φ) (grad_g (I := I) g ⟨v.toFun, v.smooth⟩)
     refine h.congr ?_
     intro x
-    change g.inner x ((grad_g (I := I) g φ.contMDiff :
+    change g.inner x ((grad_g (I := I) g φ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g v.smooth :
+          ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
         g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v.toFun x)
-    rw [grad_g_apply, grad_g_apply]
+    simp [grad_g_apply]
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -299,6 +309,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun x =
       g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v.toFun x) := rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradInnerSmooth_eq_smoothToLp_bundle
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
@@ -311,6 +322,7 @@ theorem gradInnerSmooth_eq_smoothToLp_bundle
   refine Filter.Eventually.of_forall ?_
   intro x; rfl
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
@@ -327,6 +339,7 @@ theorem gradInnerCLM_smoothToH1Compl_mem_image_laplacianDomain
     rw [gradInnerCLM_smoothToH1Compl]
     rw [gradInnerSmooth_eq_smoothToLp_bundle]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothToH1Compl_mem_laplacianDomainPow_two
     (g : SmoothRiemannianMetric I M) (v : SmoothScalar g) :
@@ -349,6 +362,7 @@ theorem smoothToH1Compl_mem_laplacianDomainPow_two
     v.oneSubLapClassical]
   rw [H1ComplToLp_smoothToH1Compl]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem smoothMulH1Compl_smoothToH1Compl_mem_laplacianDomainPow_two
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :

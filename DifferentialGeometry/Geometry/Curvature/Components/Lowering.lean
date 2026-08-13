@@ -1,12 +1,14 @@
 import DifferentialGeometry.Geometry.Curvature.Components.Basic
+open DifferentialGeometry.Geometry.Curvature
+
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -17,14 +19,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
 
-
-
-
-
-
-
-
-
 def Rm04LowersRm13At
     (g : SmoothRiemannianMetric I M) (x : M)
     (Rm13 : Tensor13At (I := I) (M := M) x)
@@ -33,8 +27,6 @@ def Rm04LowersRm13At
     Rm04 (vec4 X Y Z W) =
       Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) W))
         (vec3 X Y Z)
-
-
 
 theorem rm04RealizesLower
     [SigmaCompactSpace M] [T2Space M]
@@ -51,8 +43,6 @@ theorem rm04RealizesLower
   have h := hRm13 X Y Z x
     (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (W x)))
   simpa [tangentFlatLinear_apply_gen, cotangentToDual_apply_gen] using h
-
-
 
 theorem rm04LowersRm13At_of_realizes
     [SigmaCompactSpace M] [T2Space M]
@@ -102,8 +92,6 @@ theorem rm04LowersRm13At_of_realizes
       h13
   exact h04'.trans h13'.symm
 
-
-
 def Rm13MetricSkewAt
     (g : SmoothRiemannianMetric I M) (x : M)
     (Rm13 : Tensor13At (I := I) (M := M) x) : Prop :=
@@ -112,8 +100,6 @@ def Rm13MetricSkewAt
         (vec3 X Y Z) =
       -Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) Z))
         (vec3 X Y W)
-
-
 
 def Rm04OutputSkewAt
     (Rm04 : Tensor04At (I := I) (M := M) x) : Prop :=
@@ -136,8 +122,6 @@ theorem rm13MetricSkewAt_of_rm04_outputSkew
     _ = -Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) Z))
         (vec3 X Y W) := by rw [hLower X Y W Z]
 
-
-
 theorem rm13MetricSkewAt_of_realizes_outputSkew
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M)
@@ -152,4 +136,4 @@ theorem rm13MetricSkewAt_of_realizes_outputSkew
   rm13MetricSkewAt_of_rm04_outputSkew (I := I) g (Rm13 x) (Rm04 x)
     (rm04LowersRm13At_of_realizes (I := I) g cov Rm13 Rm04 hRm13 hRm04 x)
     hSkew
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

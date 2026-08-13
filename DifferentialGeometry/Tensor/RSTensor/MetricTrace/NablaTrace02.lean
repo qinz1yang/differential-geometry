@@ -1,18 +1,18 @@
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Trace04
+import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.Tensor.RSTensor
 
 noncomputable section
 
-open Bundle Tensor0SBundle Filter
+open Bundle DifferentialGeometry.Tensor0SBundle Filter
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -51,8 +51,6 @@ private theorem freezeHead03Slots_vec3
   fin_cases q <;> rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
-
 noncomputable def freezeHead03Field
     [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -180,9 +178,6 @@ private theorem freezeTail04Slots_vec4
   fin_cases q <;> rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 noncomputable def freezeTail04Field
     [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -312,9 +307,6 @@ private theorem freezeMiddle04Slots_vec4
   fin_cases q <;> rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 noncomputable def freezeMiddle04Field
     [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -413,7 +405,7 @@ noncomputable def freezeMiddle04Field
   rw [freezeMiddle04Slots_vec4]
   congr 1
   funext q
-  fin_cases q <;> simp [trace04Perm, DifferentialGeometry.Integral.Connection.vec4]
+  fin_cases q <;> simp [trace04Perm, DifferentialGeometry.Geometry.Curvature.vec4]
 
 @[simp] theorem freezeMiddle04Field_apply
     [CompleteSpace E]
@@ -428,15 +420,12 @@ noncomputable def freezeMiddle04Field
         (vec2 (I := I) (Y x) (Z x)) := by
   rfl
 
-
-
-
 theorem nablaTrace02
     [T2Space M] [CompleteSpace E] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -546,14 +535,12 @@ theorem nablaTrace02
             intro j _
             rw [hnabla i j]
 
-
-
 theorem dTrace02_eq
     [T2Space M] [CompleteSpace E] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -627,7 +614,6 @@ theorem dTrace02_eq
         (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           2 cov X A x) := hsum.symm
 
-
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Tensor.RSTensor

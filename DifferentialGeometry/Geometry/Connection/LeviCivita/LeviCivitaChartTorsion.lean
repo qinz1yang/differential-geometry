@@ -1,6 +1,7 @@
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartLieBracket
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -8,7 +9,7 @@ open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -19,6 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma christoffelCorrection_symm_cancel
@@ -87,5 +89,5 @@ theorem chartLeviCivita_torsion_free_on (g : SmoothRiemannianMetric I M) (α : M
     hx_src hx_base hx_int hX hY).symm
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

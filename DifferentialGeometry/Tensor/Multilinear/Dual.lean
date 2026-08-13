@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
 import DifferentialGeometry.Tensor.Multilinear.Basis
 import DifferentialGeometry.Tensor.Multilinear.Fiber
@@ -11,7 +11,7 @@ import Mathlib.Analysis.Normed.Module.Multilinear.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.LinearAlgebra.Dual.Basis
 import Mathlib.Topology.VectorBundle.FiniteDimensional
-
+open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
@@ -531,7 +531,7 @@ abbrev DualBundleSection
     (fun _ => inferInstance)
     (Bundle.continuousMultilinearMap.dualBundleFiberBundle r)
 
-namespace MultilinearSection
+namespace DifferentialGeometry.MultilinearSection
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F]
@@ -743,11 +743,11 @@ theorem dualUnliftFiber_triv_eq {r : ℕ} (x₀ x : B)
   exact ((ContinuousMultilinearMap.dualMultilinearEquivMultilinearOfDual
     (𝕜 := 𝕜) (F := F) r).apply_symm_apply triv_mlbdual).symm
 
-end MultilinearSection
+end DifferentialGeometry.MultilinearSection
 
 section BundleEquiv
 
-open MultilinearSection
+open DifferentialGeometry.MultilinearSection
 
 namespace Bundle.continuousMultilinearMap
 
@@ -889,7 +889,7 @@ noncomputable def dualBundle_multilinearOfDual_equiv
 
 end BundleEquiv
 
-namespace MultilinearSection
+namespace DifferentialGeometry.MultilinearSection
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F]
@@ -954,6 +954,6 @@ theorem toDualBundleSection_smulByFun {r : ℕ}
     φ x • (toDualBundleSection n α).1 x :=
   map_smul _ (φ x) (α x)
 
-end MultilinearSection
+end DifferentialGeometry.MultilinearSection
 
 end

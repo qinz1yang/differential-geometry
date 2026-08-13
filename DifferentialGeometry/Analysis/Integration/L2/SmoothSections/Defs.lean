@@ -9,7 +9,7 @@ noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Manifold Set Filter Bundle Tensor0SBundle
+open Manifold Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
@@ -90,10 +90,8 @@ lemma mem_compactlySupportedSmoothTensorSections {r s : ℕ}
         (fun x : M => TensorRSSpace.toModel (S x)) := Iff.rfl
 
 structure SmoothCcTensor (g : SmoothRiemannianMetric I M) (r s : ℕ) where
-
   toSection : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
     (fun x : M => TensorRSSpace r s I x)⟯
-
   hasCompactSupport :
     HasCompactSupport (fun x : M => TensorRSSpace.toModel (toSection x))
 

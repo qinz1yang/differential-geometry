@@ -6,8 +6,8 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv
 import Mathlib.Analysis.Calculus.DerivativeTest
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -161,8 +161,7 @@ omit [ConnectedSpace M] in
 theorem mdifferentiableAt_expMapIntrinsic_zero
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     MDifferentiableAt 𝓘(ℝ, E) I
       (fun v : E => (expMapIntrinsic (I := I) g hEnorm p (show TangentSpace I p from v) : M))
@@ -205,8 +204,7 @@ omit [ConnectedSpace M] in
 theorem exists_expVar_field
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (V : ℝ → E) (L : ℝ)
     (hγ : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
     (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
@@ -367,8 +365,7 @@ omit [ConnectedSpace M] in
 theorem exists_expVar_fixEnd
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (V : ℝ → E) (L : ℝ)
     (hγ : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
     (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
@@ -391,8 +388,7 @@ theorem exists_sqDeriv_field
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     [PseudoMetricSpace M]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (V : ℝ → E) (L : ℝ)
     (hγsmooth : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
     (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
@@ -436,8 +432,7 @@ omit [ConnectedSpace M] in
 theorem exists_variation_realising_field_via_exp
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (V : ℝ → E) (L : ℝ)
     (hγ : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
     (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
@@ -599,8 +594,7 @@ omit [ConnectedSpace M] in
 theorem indexForm_nonneg_of_minimising_geodesic
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (γ : ℝ → M) (L : ℝ) (V : ℝ → E)
     (hL : 0 < L)
     (hγ_smooth : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)

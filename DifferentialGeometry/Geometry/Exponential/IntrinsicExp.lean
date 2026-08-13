@@ -1,12 +1,12 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Comparison.HopfRinow
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Geodesic.ChartRegularity
 import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Geodesic.CrossVFReduction
 import DifferentialGeometry.Geometry.Exponential.Defs
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -37,8 +37,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
     [SigmaCompactSpace M] in
 private lemma velocity_enorm_le_of_speedSq_le
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {x : M} {w : TangentSpace I x} {c : ℝ}
     (hc : 0 ≤ c) (hle : g.inner x w w ≤ c ^ 2) :
     ‖w‖ₑ ≤ ENNReal.ofReal c := by
@@ -54,8 +53,7 @@ private lemma isGeodesicOn_hreg_record
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {η γ : ℝ → M} {a₀ δ b c : ℝ}
     (ha₀ : a₀ < 0) (hδ : 0 < δ) (hc_nonneg : 0 ≤ c)
     (hηspeed : (g.inner (η 0)) (mfderiv 𝓘(ℝ, ℝ) I η 0 1)
@@ -108,8 +106,7 @@ theorem exists_complete_geodesic_at_velocity
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     ∃ Γ : ℝ → M, IsGeodesic (I := I) g Γ ∧ Γ 0 = p ∧
       (mfderiv 𝓘(ℝ, ℝ) I Γ 0 (1 : ℝ) : E) = (v : E) ∧ Continuous Γ := by
@@ -291,8 +288,7 @@ def intrinsicGeodesic
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) : ℝ → M :=
   Classical.choose (exists_complete_geodesic_at_velocity (I := I) g hEnorm p v)
 
@@ -302,8 +298,7 @@ theorem intrinsicGeodesic_isGeodesic
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     IsGeodesic (I := I) g (intrinsicGeodesic (I := I) g hEnorm p v) :=
   (Classical.choose_spec (exists_complete_geodesic_at_velocity (I := I) g hEnorm p v)).1
@@ -314,8 +309,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     intrinsicGeodesic (I := I) g hEnorm p v 0 = p :=
   (Classical.choose_spec (exists_complete_geodesic_at_velocity (I := I) g hEnorm p v)).2.1
@@ -326,8 +320,7 @@ theorem intrinsicGeodesic_mfderiv_zero
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     (mfderiv 𝓘(ℝ, ℝ) I (intrinsicGeodesic (I := I) g hEnorm p v) 0 (1 : ℝ) : E)
       = (v : E) :=
@@ -339,8 +332,7 @@ def expMapIntrinsic
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) : M :=
   intrinsicGeodesic (I := I) g hEnorm p v 1
 
@@ -350,8 +342,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     expMapIntrinsic (I := I) g hEnorm p v = intrinsicGeodesic (I := I) g hEnorm p v 1 := rfl
 
@@ -361,8 +352,7 @@ theorem intrinsicGeodesic_continuous
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     Continuous (intrinsicGeodesic (I := I) g hEnorm p v) :=
   (Classical.choose_spec (exists_complete_geodesic_at_velocity (I := I) g hEnorm p v)).2.2.2
@@ -373,8 +363,7 @@ theorem intrinsicGeodesic_contMDiffOn
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     ContMDiffOn 𝓘(ℝ, ℝ) I 1 (intrinsicGeodesic (I := I) g hEnorm p v) Set.univ := by
   refine HopfRinow.isGeodesicOn_contMDiffOn_one (I := I) g isOpen_univ ?_ ?_
@@ -590,8 +579,7 @@ theorem expMapIntrinsic_eq_expMap_of_geodesicOn
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) (v : TangentSpace I q) {a b : ℝ} (ha : a < 0) (hb : 1 < b)
     (hcont_M : ContinuousOn (fun s => maximalGeodesic (I := I) g q v s) (Set.Ioo a b))
     (hgeo_M : ∀ t ∈ Set.Ioo a b,
@@ -892,8 +880,7 @@ theorem intrinsicGeodesic_foot_in_source_of_small
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {v : TangentSpace I q},
       Real.sqrt (g.inner q (v : E) (v : E)) < ρ →
@@ -1135,8 +1122,7 @@ theorem expMapIntrinsic_eq_expMap_of_small
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {v : TangentSpace I q},
       Real.sqrt (g.inner q (v : E) (v : E)) < ρ →
@@ -1196,8 +1182,7 @@ theorem exp_eq_intr_of_small
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {v : TangentSpace I q},
       Real.sqrt (g.inner q (v : E) (v : E)) < ρ →
@@ -1629,8 +1614,7 @@ theorem geo_end_eq_intr
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) (v : TangentSpace I q) {Γ : ℝ → M}
     (hcont : ContinuousOn Γ (Set.Icc (-1 : ℝ) 1))
     (hgeo : Geodesic.IsGeodesicOn (I := I) g Γ (Set.Ioo (-1 : ℝ) 1))
@@ -1670,8 +1654,7 @@ theorem intrinsicGeodesic_smul
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (t : ℝ) :
     intrinsicGeodesic (I := I) g hEnorm p (t • u) 1
       = intrinsicGeodesic (I := I) g hEnorm p u t := by
@@ -1744,8 +1727,7 @@ theorem exp_radial_eq_intr
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) (u : TangentSpace I q) :
     (fun s : ℝ => expMap (I := I) g q (s • u))
       =ᶠ[nhds (0 : ℝ)] intrinsicGeodesic (I := I) g hEnorm q u := by
@@ -1794,8 +1776,7 @@ theorem exp_radial_geo_zero
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) (u : TangentSpace I q) :
     Geodesic.HasGeodesicEquationAt (I := I) g
       (fun s : ℝ => expMap (I := I) g q (s • u)) 0 := by
@@ -1813,8 +1794,7 @@ theorem exp_radial_d2_zero
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : M) (u : TangentSpace I q) :
     covDerivAlong (I := I) g
       (fun s : ℝ => expMap (I := I) g q (s • u))

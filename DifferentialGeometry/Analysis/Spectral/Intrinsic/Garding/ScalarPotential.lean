@@ -4,31 +4,26 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantLeibniz
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ParametricAppHs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ParametricScalarSmul
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 
@@ -72,8 +67,6 @@ private noncomputable def scalarSmulLin
       c • ((ζ : M → Real) x • S.toSection x)
     rw [smul_smul, smul_smul, mul_comm]
 
-
-
 noncomputable def scalarPotSec
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) :
     ScalarH1Core (I := I) (M := M) q →ₗ[Real] SmoothCcTensor q 0 0 :=
@@ -88,8 +81,6 @@ theorem scalarPotSec_apply
       (ζ : M → Real) x •
         (tensorHsSmoothRepr (I := I) (M := M) v.1 v.2).toSection x := by
   rfl
-
-
 
 noncomputable def scalarPotCore
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) :
@@ -163,8 +154,6 @@ private theorem finiteRepr_norm
     (tensorResolventL2_isCompactOperator (I := I) (M := M) q 0 0)
     (show (0 : Real) ≤ 1 by norm_num) v.1
 
-
-
 omit [BoundarylessManifold I M] in
 theorem scalarPotCore_norm
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯)
@@ -192,15 +181,11 @@ private theorem exists_pot_bound
   refine ⟨max C₀ 0, le_max_right _ _, fun x => ?_⟩
   exact (hC₀ ⟨x, Set.mem_univ _, rfl⟩).trans (le_max_left _ _)
 
-
-
 noncomputable def scalarPotOp
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) :
     tensorHs (I := I) (M := M) q 0 0 1 →L[Real] TensorL2 0 0 q :=
   (scalarPotCore (I := I) (M := M) q ζ).extendOfNorm
     (ScalarH1Core (I := I) (M := M) q).subtype
-
-
 
 omit [BoundarylessManifold I M] in
 theorem scalarPotOp_core
@@ -217,8 +202,6 @@ theorem scalarPotOp_core
   intro w
   simpa only [Submodule.coe_subtype] using
     scalarPotCore_norm (I := I) (M := M) q ζ hC hζ w
-
-
 
 omit [BoundarylessManifold I M] in
 theorem scalarPotOp_norm
@@ -240,8 +223,6 @@ private noncomputable def scalarL2ToH0
     (tensorResolventL2_isCompactOperator
       (I := I) (M := M) q 0 0)).symm.toLinearIsometry
 
-
-
 noncomputable def scalarPotH0
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) :
     tensorHs (I := I) (M := M) q 0 0 1 →L[Real]
@@ -258,8 +239,6 @@ omit [BoundarylessManifold I M] in
         (tensorResolventL2_isCompactOperator
           (I := I) (M := M) q 0 0)).symm
         (scalarPotOp (I := I) (M := M) q ζ v) := rfl
-
-
 
 omit [BoundarylessManifold I M] in
 theorem scalarPotH0_test
@@ -360,8 +339,6 @@ private theorem scalarPotCore_sub
       (tensorHsSmoothRepr (I := I) (M := M) v.1 v.2).toSection x
   exact (sub_smul _ _ _).symm
 
-
-
 omit [BoundarylessManifold I M] in
 theorem scalarPot_pair_core
     (q : SmoothRiemannianMetric I M) (ζ η : C^∞⟮I, M; Real⟯)
@@ -375,8 +352,6 @@ theorem scalarPot_pair_core
   intro x
   change |(ζ : M → Real) x - (η : M → Real) x| ≤ C
   exact hζη x
-
-
 
 omit [BoundarylessManifold I M] in
 theorem scalarPot_pair_norm
@@ -402,8 +377,6 @@ theorem scalarPot_pair_norm
     rw [scalarPotOp_core (I := I) (M := M) q ζ v,
       scalarPotOp_core (I := I) (M := M) q η v]
     exact scalarPot_pair_core (I := I) (M := M) q ζ η hC hζη v
-
-
 
 omit [BoundarylessManifold I M] in
 theorem scalarPotH0_pair
@@ -452,8 +425,6 @@ private theorem smulHs_bound
   intro U
   simpa only [zeta] using hbound 0 (Set.mem_singleton 0) U
 
-
-
 noncomputable def scalarPotHs
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) (m : ℕ) :
     tensorHs (I := I) (M := M) q 0 0 (m : Real) →L[Real]
@@ -461,8 +432,6 @@ noncomputable def scalarPotHs
   ((ccToHsLin (I := I) (M := M) q 0 (m : Real)).comp
       (scalarSmulLin (I := I) (M := M) q ζ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) q 0 (m : Real))
-
-
 
 theorem scalarPotHs_core
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) (m : ℕ)
@@ -486,8 +455,6 @@ theorem scalarPotHs_core
   refine ⟨C, ?_⟩
   intro W
   simpa only [ccToHsLin_apply, scalarSmulLin, LinearMap.comp_apply] using hbound W
-
-
 
 theorem scalarPotHs_app
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) (m : ℕ)
@@ -603,8 +570,6 @@ private theorem scalarPotH0_cc
         (scalarSmul (I := I) (M := M) q 0 0 ζ U) :=
       ccHs_inc (I := I) (M := M) q h0n _
 
-
-
 theorem scalarPotHs_inc
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯)
     (m : ℕ) (hm : (1 : Real) ≤ (m : Real))
@@ -635,8 +600,6 @@ theorem scalarPotHs_inc
       ccHs_inc (I := I) (M := M) q hm,
       scalarPotH0_cc]
 
-
-
 theorem scalarPotHs_unif
     (q : SmoothRiemannianMetric I M)
     (zeta : Real → C^∞⟮I, M; Real⟯) {S K : Set Real}
@@ -659,9 +622,8 @@ theorem scalarPotHs_unif
   simpa only [ccToHsLin_apply, scalarSmulLin, LinearMap.comp_apply] using
     hbound t ht U
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

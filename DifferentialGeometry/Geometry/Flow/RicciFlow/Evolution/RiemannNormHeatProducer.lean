@@ -1,44 +1,15 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RiemannNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Uhlenbeck
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped BigOperators
-
-
-
-
-
-
-
-
 
 section ComponentAlgebra
 
@@ -93,14 +64,9 @@ theorem abs_le_sqrt_compNormSq4
   rw [← Real.sqrt_sq_eq_abs]
   exact Real.sqrt_le_sqrt (sq_le_compNormSq4 R a b c d)
 
-
-
-
 def bTensorDown (R : Idx → Idx → Idx → Idx → Real)
     (a b c d : Idx) : Real :=
   ∑ e : Idx, ∑ f : Idx, R a e b f * R c e d f
-
-
 
 theorem abs_bTensorDown_le
     (R : Idx → Idx → Idx → Idx → Real) (a b c d : Idx) :
@@ -140,9 +106,6 @@ theorem abs_bTensorDown_le
     _ = (Fintype.card Idx : Real) ^ 2 * compNormSq4 R := by
           simp [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, sq]
           ring
-
-
-
 
 def rmReactionDown (R : Idx → Idx → Idx → Idx → Real) : Real :=
   4 * ∑ a : Idx, ∑ b : Idx, ∑ c : Idx, ∑ d : Idx,
@@ -194,13 +157,6 @@ theorem rpow_three_halves_eq_mul_sqrt {x : Real} (hx : 0 ≤ x) :
   have hsplit : (3 / 2 : Real) = 1 + 1 / 2 := by norm_num
   rw [hsplit, Real.rpow_add_of_nonneg hx (by norm_num) (by norm_num),
     Real.rpow_one, ← Real.sqrt_eq_rpow]
-
-
-
-
-
-
-
 
 theorem abs_rmReactionDown_le
     (R : Idx → Idx → Idx → Idx → Real) :
@@ -267,13 +223,6 @@ theorem abs_rmReactionDown_le
 
 end ComponentAlgebra
 
-
-
-
-
-
-
-
 section Solution
 
 open Bundle
@@ -287,21 +236,14 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
 def InverseMetricOrthonormalAt
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (t : Real) (x : M) : Prop :=
   ∀ i j : Idx, gInv t x i j = (if i = j then 1 else 0)
 
-
-
-
-
-
 def rmReactionInFrame
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) :
     Real -> M -> Real :=
   fun t x =>
@@ -315,14 +257,14 @@ def rmReactionInFrame
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem raisedRm04CompInFrame_orthonormal
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M)
     (horth : InverseMetricOrthonormalAt (M := M) gInv t x)
     (a b c d : Idx) :
     raisedRm04CompInFrame (I := I) Rm04 gInv frame t x a b c d =
-      DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 t) frame x a b c d := by
+      DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x a b c d := by
   classical
   rw [raisedRm04CompInFrame_apply]
   unfold InverseMetricOrthonormalAt at horth
@@ -332,14 +274,14 @@ private theorem raisedRm04CompInFrame_orthonormal
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem rm04NormSqInFrame_eq_compNormSq4
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M)
     (horth : InverseMetricOrthonormalAt (M := M) gInv t x) :
     rm04NormSqInFrame (I := I) Rm04 gInv frame t x =
       compNormSq4 (fun a b c d : Idx =>
-        DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 t) frame x a b c d) := by
+        DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x a b c d) := by
   classical
   rw [rm04NormSqInFrame_apply]
   unfold compNormSq4
@@ -353,15 +295,15 @@ theorem rm04NormSqInFrame_eq_compNormSq4
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem uhlenbeckBTensorInFrame_orthonormal
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M)
     (horth : InverseMetricOrthonormalAt (M := M) gInv t x)
     (a b c d : Idx) :
     uhlenbeckBTensorInFrame gInv (solutionRm04CompInFrame (I := I) Rm04 frame) t x a b c d =
       bTensorDown (fun a' b' c' d' : Idx =>
-        DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 t) frame x a' b' c' d')
+        DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x a' b' c' d')
         a b c d := by
   classical
   unfold uhlenbeckBTensorInFrame bTensorDown
@@ -369,7 +311,7 @@ private theorem uhlenbeckBTensorInFrame_orthonormal
   simp only [horth, solutionRm04CompInFrame]
   set R : Idx → Idx → Idx → Idx → Real :=
     fun a' b' c' d' =>
-      DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 t) frame x a' b' c' d'
+      DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x a' b' c' d'
     with hRdef
   refine Finset.sum_congr rfl fun e _ => ?_
   have hg : ∀ f r : Idx,
@@ -410,14 +352,14 @@ private theorem uhlenbeckBTensorInFrame_orthonormal
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem rmReactionInFrame_eq_rmReactionDown
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M)
     (horth : InverseMetricOrthonormalAt (M := M) gInv t x) :
     rmReactionInFrame (I := I) Rm04 gInv frame t x =
       rmReactionDown (fun a b c d : Idx =>
-        DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 t) frame x a b c d) := by
+        DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x a b c d) := by
   classical
   unfold rmReactionInFrame rmReactionDown
   congr 1
@@ -431,15 +373,10 @@ theorem rmReactionInFrame_eq_rmReactionDown
     uhlenbeckBTensorInFrame_orthonormal (I := I) Rm04 gInv frame t x horth a d b c]
   rfl
 
-
-
-
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem abs_rmReactionInFrame_le
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Real) (x : M)
     (horth : InverseMetricOrthonormalAt (M := M) gInv t x) :
@@ -447,7 +384,7 @@ theorem abs_rmReactionInFrame_le
       16 * (Fintype.card Idx : Real) ^ 6 *
         (rm04NormSqInFrame (I := I) Rm04 gInv frame t x) ^ (3 / 2 : Real) := by
   set R : Idx → Idx → Idx → Idx → Real :=
-    fun a b c d => DifferentialGeometry.Integral.Connection.rm04Comp (I := I) (Rm04 t) frame x a b c
+    fun a b c d => DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x a b c
                      d
     with hR
   rw [rmReactionInFrame_eq_rmReactionDown (I := I) Rm04 gInv frame t x horth]
@@ -455,20 +392,13 @@ theorem abs_rmReactionInFrame_le
   rw [rpow_three_halves_eq_mul_sqrt (compNormSq4_nonneg R)]
   exact abs_rmReactionDown_le R
 
-
-
-
-
-
-
-
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem rm04NormHeatEquationOn_of_solution
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Integral.Connection.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (rm04Dt : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (rmNormLap roughLapInner nablaRmNormSq : Real -> M -> Real)

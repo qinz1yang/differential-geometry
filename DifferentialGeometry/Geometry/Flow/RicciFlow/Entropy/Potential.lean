@@ -2,14 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.Defs
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 noncomputable section

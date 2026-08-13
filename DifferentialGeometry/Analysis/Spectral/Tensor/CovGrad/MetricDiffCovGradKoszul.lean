@@ -2,13 +2,16 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckLineari
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation
 import DifferentialGeometry.Geometry.Connection.LeviCivita.ChristoffelDifferenceKoszul
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
@@ -18,9 +21,10 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -83,7 +87,7 @@ private lemma scalarFn_bilinCurriedSec
   congr 1
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem tensor0SCovariantDerivative02_consEval_leibnizDefect
     (g₀ : SmoothRiemannianMetric I M) (V : Π b : M, Tensor0SSpace 2 I b) {x : M}
     (hV : TensorSectionMDiffAt (I := I) 2 V x)
@@ -226,10 +230,10 @@ theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv
       ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)), hbil]
   rw [hcorrY, hcorrZ]
   have hg₁ : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun b : M => g₁.inner b (Y b) (Z b)) x :=
-    (DifferentialGeometry.Integral.DivergenceTheorem.contMDiff_g_inner_of_smooth_sections
+    (DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections
       (I := I) (M := M) g₁ Y Z x).mdifferentiableAt (by simp)
   have hg₁' : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun b : M => g₁'.inner b (Y b) (Z b)) x :=
-    (DifferentialGeometry.Integral.DivergenceTheorem.contMDiff_g_inner_of_smooth_sections
+    (DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections
       (I := I) (M := M) g₁' Y Z x).mdifferentiableAt (by simp)
   have hsplit : directionalDeriv (I := I)
         (fun b : M => g₁.inner b (Y b) (Z b) - g₁'.inner b (Y b) (Z b)) x (X x) =

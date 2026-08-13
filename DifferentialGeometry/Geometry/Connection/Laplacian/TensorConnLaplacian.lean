@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRSNabla
 import DifferentialGeometry.Geometry.Connection.Laplacian.ConnectionLaplacian
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -11,19 +12,20 @@ set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+variable [T2Space M] [BoundarylessManifold I M]
 
 def rawTensorConnLap
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -249,8 +251,8 @@ theorem rawTensorConnLap_smul [CompleteSpace E]
   rw [h_second_smul, h_smulT]
   simp only [ContinuousLinearMap.smul_apply, smul_sub]
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M]
-    [T2Space M] [BoundarylessManifold I M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
+    [BoundarylessManifold I M] in
 private lemma cov_eq_zero_of_eventually_zero_on_open
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
@@ -401,7 +403,7 @@ section CompactSupport
 
 variable [CompleteSpace E]
 
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [BoundarylessManifold I M]
     [CompleteSpace E] in
 private lemma rawTensorConnLap_T_mdiff_at (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
@@ -804,7 +806,6 @@ private lemma rawTensorConnLap_fixedFrame_firstSummand_contMDiff
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 private lemma rawTensorConnLap_fixedFrame_covBB_contMDiff
     (g : SmoothRiemannianMetric I M)
     {B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
@@ -1451,7 +1452,7 @@ theorem rawTensorConnLap_contMDiff
 end UnconditionalSmoothness
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

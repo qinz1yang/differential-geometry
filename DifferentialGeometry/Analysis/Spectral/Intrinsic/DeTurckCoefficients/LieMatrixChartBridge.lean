@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieSummandLipschitz
-import DifferentialGeometry.Geometry.Flow.DeTurckVFChartCoord
-import DifferentialGeometry.Geometry.Flow.LieDerivativeMetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFChartCoord
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeMetric
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -9,12 +12,12 @@ open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff Matrix BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace DeTurckCoefficients
 
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.DeTurck
@@ -146,9 +149,8 @@ theorem chartLieDerivMetricMatrix_deTurckVF_eq_chartLieDeTurckComp
       partialDeriv_chartCoeffOnE_deTurckVF_eq (I := I) g g_bg α j k hx]
 
 end DeTurckCoefficients
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

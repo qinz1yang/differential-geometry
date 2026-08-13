@@ -1,27 +1,12 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.ChartWkpLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.ChartTransition.TensorChartTransition
-
-/-!
-# Algebraic chart transport for raw tensor Sobolev sections
-
-The established tensor chart-transition theorem is stated for
-`SmoothCcTensor`.  Weak limits in `ChartWkpLimit.lean` are genuine dependent
-tensor sections but need not be smooth.  This file isolates the fibrewise
-algebra from smoothness and proves the same transition identity for every
-`RSTensorSection`.
-
-The main specialization, `secPull_raw_trans`, computes a target-chart raw
-component of `secModelPull β v` as a finite sum of the scalar components of
-the arbitrary model field `v`, multiplied by the existing smooth
-`transitionCoeff`.  This is the exact algebraic input for a later scalar
-cross-chart `W^{k,p}` estimate; no regularity is assumed here.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
@@ -38,8 +23,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-/-- The tensor-bundle trivialization used in the raw-section transition
-proof.  It is definitionally the trivialization used by `transitionCoeff`. -/
 @[reducible] private def rawRSTriv (r s : ℕ) (α : M) :
     Trivialization (TensorRSModel r s ℝ E)
       (Bundle.TotalSpace.proj (F := TensorRSModel r s ℝ E)
@@ -102,8 +85,6 @@ private theorem coordChange_apply
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-/-- On a chart overlap, the model value of an arbitrary raw section changes
-by the standard bundle coordinate-change map. -/
 theorem secTriv_trans
     (r s : ℕ) (S : RSTensorSection I M r s) (γ α : M) {x : M}
     (hxγ : x ∈ (chartAt H γ).source) (hxα : x ∈ (chartAt H α).source) :
@@ -192,8 +173,6 @@ theorem secCompRaw_trans
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-/-- In the source chart, trivializing `secModelPull α v` recovers the model
-field `v` at the corresponding Euclidean coordinate. -/
 theorem secPull_triv_eq
     (r s : ℕ) (α : M)
     (v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) →
@@ -228,8 +207,6 @@ theorem secPull_raw_eq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-/-- A target-chart raw component of a pulled-back weak model field is a finite
-transition-coefficient sum of the scalar source-model components. -/
 theorem secPull_raw_trans
     (r s : ℕ) (β α : M)
     (v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) →

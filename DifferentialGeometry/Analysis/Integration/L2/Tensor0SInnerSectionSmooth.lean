@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic
+open DifferentialGeometry
 
 
 noncomputable section
@@ -19,9 +20,9 @@ namespace TensorRSRiemannian
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
-open TensorMetricLowering
+open DifferentialGeometry.TensorMetricLowering
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -147,9 +148,9 @@ end DifferentialGeometry
 namespace TensorRSBundle
 
 open scoped Manifold Topology Bundle BigOperators
-open Tensor0SBundle Bundle Set
+open DifferentialGeometry.Tensor0SBundle Bundle Set
 open DifferentialGeometry.Tensor.TensorRSRiemannian
-open TensorMetricLowering
+open DifferentialGeometry.TensorMetricLowering
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 
@@ -202,8 +203,8 @@ namespace DifferentialGeometry
 namespace Tensor
 
 open scoped Manifold Topology Bundle
-open Tensor0SBundle Bundle Set
-open TensorMetricLowering
+open DifferentialGeometry.Tensor0SBundle Bundle Set
+open DifferentialGeometry.TensorMetricLowering
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 

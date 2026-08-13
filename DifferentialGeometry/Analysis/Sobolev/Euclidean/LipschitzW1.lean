@@ -3,14 +3,6 @@ import Mathlib.Analysis.Calculus.Rademacher
 import Mathlib.Topology.Algebra.MetricSpace.Lipschitz
 import Mathlib.Topology.MetricSpace.Thickening
 
-/-!
-# Lipschitz functions in first-order Sobolev spaces
-
-This file supplies the Euclidean weak-derivative entrance used by nonsmooth
-cutoff constructions.  The weak partial derivative is the line derivative in
-the corresponding coordinate direction.
--/
-
 noncomputable section
 
 open MeasureTheory Metric Set
@@ -22,8 +14,6 @@ variable {d : ℕ}
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
-/-- A locally Lipschitz Euclidean function with compact support and a global
-amplitude bound is globally Lipschitz. -/
 theorem lip_of_local_comp
     {f : E → ℝ} {B : ℝ≥0}
     (hf : LocallyLipschitz f) (hf_supp : HasCompactSupport f)
@@ -80,8 +70,6 @@ theorem lip_of_local_comp
     · rw [hzero hxK, hzero (fun hyK ↦ hyU (hK_sub hyK)), edist_self]
       exact bot_le
 
-/-- A coordinate line derivative of a Lipschitz function is its weak partial
-derivative on every set. -/
 theorem hasWeakPart_of_lip
     {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
     (hf : LipschitzWith C f) (i : Fin d) :
@@ -128,8 +116,6 @@ theorem hasWeakPart_of_lip
   have hneg := congrArg Neg.neg hibp'
   simpa only [ei, neg_neg] using hneg.symm
 
-/-- A globally Lipschitz, compactly supported function belongs to
-`W^{1,p}` on every set. -/
 theorem memW1p_of_lip
     {p : ℝ≥0∞} {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
     (hf : LipschitzWith C f) (hf_supp : HasCompactSupport f) :
@@ -151,9 +137,6 @@ theorem memW1p_of_lip
   refine ⟨gi, hgi_mem.restrict Omega, ?_⟩
   simpa only [gi, ei] using hasWeakPart_of_lip (Omega := Omega) hf i
 
-/-- At almost every point of an open set, the classical coordinate partial of
-a globally Lipschitz compactly supported function agrees with its chosen weak
-partial. -/
 theorem fderiv_ae_chosen
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Omega : Set E} (hOmega : IsOpen Omega)
     {C : ℝ≥0} {f : E → ℝ}
@@ -188,9 +171,6 @@ theorem fderiv_ae_chosen
     exact hx.lineDeriv_eq_fderiv.symm
   exact hfderiv_eq.trans hline_eq
 
-/-- The `L²` norm of the Euclidean length of the classical coordinate partials
-of a globally Lipschitz, compactly supported function is controlled by its
-first-order Sobolev norm on any open set. -/
 theorem partials_l2_le_wkp
     {Omega : Set E} (hOmega : IsOpen Omega) {C : ℝ≥0} {f : E → ℝ}
     (hf : LipschitzWith C f) (hf_supp : HasCompactSupport f) :
@@ -286,8 +266,6 @@ theorem partials_l2_le_wkp
       rw [wkpNorm_eq_sum, Finset.sum_range_succ, Finset.sum_range_one, hblock]
       exact le_add_of_nonneg_left (zero_le _)
 
-/-- A globally Lipschitz, compactly supported function belongs to the
-first-order iterated Sobolev space on every set. -/
 theorem memWkp_one_of_lip
     {p : ℝ≥0∞} {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
     (hf : LipschitzWith C f) (hf_supp : HasCompactSupport f) :

@@ -3,6 +3,10 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorSlotwiseCurvat
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.UniformRiemannOperatorNormBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpHigherRankParseval
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -13,10 +17,11 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
-open Tensor0SBundle Tensor0SNabla TensorRSNabla
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
+    DifferentialGeometry.TensorRSNabla
 
 variable {E : Type*} [NormedAddCommGroup E]
   [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -24,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
@@ -34,7 +39,7 @@ private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 private lemma metric_inner_self_nonneg' (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) : 0 ≤ g.inner x v v := by
   rcases eq_or_ne v 0 with hv0 | hv0
@@ -42,7 +47,7 @@ private lemma metric_inner_self_nonneg' (g : SmoothRiemannianMetric I M) (x : M)
   · exact (g.pos x v hv0).le
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] in
 private lemma exists_smooth_tensor0S_section_eq (t : ℕ) (x : M) (T₀ : Tensor0SSpace t I x) :
     ∃ A : Π b : M, Tensor0SSpace t I b, A x = T₀ ∧
       ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel t ℝ E)) ∞
@@ -538,8 +543,8 @@ theorem
   exact riemannianFiberNormSq_riemannOp_tensorCov_dualTensorFrameS_le (I := I) (M := M) g t x
     e i j J Kbase hKbase (fun a b c => hKb x a b c) horth
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

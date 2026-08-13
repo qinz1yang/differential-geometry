@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegul
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Leibniz
 import DifferentialGeometry.Analysis.Sobolev.Manifold.RellichManifold
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

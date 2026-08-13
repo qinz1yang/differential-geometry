@@ -1,20 +1,5 @@
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 
-/-!
-# Strict outer cutoffs for a subordinate smooth partition of unity
-
-This file packages the second cutoff in a standard two-cutoff localization.
-If a smooth partition of unity `rho` is subordinate to inner open sets `U i`,
-and `U i` is contained in a larger open set `V i`, then every partition
-function has a smooth outer cutoff which is one near its topological support
-and whose own topological support lies in `V i`.
-
-The statement is deliberately independent of charts and metrics. A later
-finite small-chart construction supplies `U` and `V`; this lemma supplies the
-outer cutoffs needed to pull non-compact Euclidean heat evolutions back to the
-manifold without losing the exact partition identity on the inner carriers.
--/
-
 noncomputable section
 
 open Set Topology Bundle Manifold Filter
@@ -51,9 +36,6 @@ private lemma tsupport_subset_of_zero_compl
   exact htop.trans hWV
 
 omit [I.Boundaryless] in
-/-- A closed function carrier inside an open set admits a smooth strict
-cutoff. The cutoff is one near the carrier, vanishes near the complement,
-takes values in `[0,1]`, and has support in the prescribed open set. -/
 theorem exists_strict_cutoff
     (f : M → ℝ) (V : Set M) (hVopen : IsOpen V)
     (hsupp : tsupport f ⊆ V) :
@@ -80,13 +62,6 @@ theorem exists_strict_cutoff
   exact tsupport_subset_of_zero_compl hχb.1
 
 omit [I.Boundaryless] in
-/-- A partition subordinate to inner sets `U i`, with `U i ⊆ V i` and each
-`V i` open, admits smooth outer cutoffs. Each cutoff is `[0,1]`-valued, is
-identically one on a neighborhood of the corresponding partition carrier,
-vanishes on a neighborhood of `(V i)ᶜ`, and has topological support in `V i`.
-
-This is the reusable double-cutoff separation lemma: the partition function is
-the inner cutoff and the produced function is the outer cutoff. -/
 theorem exists_pou_cutoff
     {ι : Type*} {s : Set M}
     (ρ : SmoothPartitionOfUnity ι I M s)

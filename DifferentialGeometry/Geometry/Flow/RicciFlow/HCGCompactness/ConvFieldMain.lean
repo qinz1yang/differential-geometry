@@ -1,44 +1,15 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.ConvFieldAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvWindowAllPt
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 open Set Function Filter Bundle Manifold TopologicalSpace
 open scoped Manifold Topology ContDiff BigOperators
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.RicciFlow (SolutionOn IsSolutionOn)
 
 namespace DifferentialGeometry
@@ -49,19 +20,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [neZeroE : NeZero (Module.finrank Real E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-
-
-
-
-
-
 section CongrLemmas
 
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
-
-
-
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -75,8 +37,6 @@ theorem derivNorm_congr_left
   unfold metricDerivNorm metricDiffCovDerivAt
   rw [metricCovDeriv_eq_covDerivOfField (I := I) g₁ gRef a,
     metricCovDeriv_eq_covDerivOfField (I := I) g₂ gRef a, h]
-
-
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -106,9 +66,6 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat -> Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-
-
-
 include finiteE in
 omit neZeroE [I.Boundaryless] in
 theorem sourceCompactSet_image_eq
@@ -121,10 +78,6 @@ theorem sourceCompactSet_image_eq
     exact hz
   · intro hy
     exact ⟨⟨y, hKsrc hy⟩, hy, rfl⟩
-
-
-
-
 
 noncomputable def resSrc (hsrc : SrcSigma Φ) (k : Nat)
     (g : letI : TopologicalSpace P.M := P.topology;
@@ -149,8 +102,6 @@ noncomputable def resSrc (hsrc : SrcSigma Φ) (k : Nat)
     P.M P.topology P.charted P.smooth inferInstance
     g (sourceOpen (I := I) Φ k) sourceSigma sourceT2
 
-
-
 include finiteE in
 omit neZeroE [I.Boundaryless] in
 theorem resSrc_inner
@@ -170,8 +121,6 @@ theorem resSrc_inner
     letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
     (resSrc (I := I) Φ hsrc k g).inner y v w = g.inner (y : P.M) v w := rfl
 
-
-
 include finiteE in
 omit neZeroE [I.Boundaryless] in
 theorem refRes_eq_resSrc
@@ -180,9 +129,6 @@ theorem refRes_eq_resSrc
       SmoothRiemannianMetric I P.M)
     (hsrc : SrcSigma Φ) (k : Nat) :
     refRes (I := I) Φ R hsrc k = resSrc (I := I) Φ hsrc k R := rfl
-
-
-
 
 include finiteE in
 omit neZeroE [I.Boundaryless] in
@@ -225,31 +171,18 @@ theorem supOn_resSrc_eq
     P.M P.topology P.charted P.t2 P.smooth
     g₁ g₂ g₃ (sourceOpen (I := I) Φ k) sourceSigma sourceT2 C p
 
-
-/-- **The Brick-5 output package** (ruling 5a: data, not bare existentials).
-One subsequence `φ`, one global limit family `gInf` on the limit manifold
-`P.M`, the sup-level convergence `conv` of the bump-extended sequence `gSeqExt`
-along `φ` toward `gInf` on the fixed window `[β, ψ]` for every spatial compact
-and every order, and its pointwise companion `convPt` along the same subsequence
-(the form consumed by the Brick-6 regularity/PDE layer). -/
 structure ConvOut
     (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
     (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
     (β ψ : Real) where
-  /-- The single subsequence serving all spatial compacts and orders on the
-  fixed window `[β, ψ]`. -/
   φ : Nat -> Nat
-
   hφ : StrictMono φ
-
   gInf : letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
     Real -> SmoothRiemannianMetric I P.M
-
-
   conv : letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
@@ -260,8 +193,6 @@ structure ConvOut
         forall t, t ∈ Set.Icc β ψ ->
           metricDerivNormSupOn (I := I) K p
             (gSeqExt (I := I) Φ R bf hsrc htgt (φ k) t) (gInf t) R < ε
-
-
   convPt : letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
@@ -275,8 +206,6 @@ structure ConvOut
 
 namespace ConvOut
 
-/-- Reindex a fixed-window convergence output along a further strict
-subsequence, retaining its limit metric family and both convergence fields. -/
 noncomputable def comp_subseq
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -305,12 +234,6 @@ noncomputable def comp_subseq
 
 end ConvOut
 
-/-- **Brick-5 Step 1+2: the Arzelà–Ascoli extraction, packaged.**  Applies
-`windowGInfAll` to the bump-extended sequence `gSeqExt` (Brick 4), with the
-three raw hypotheses discharged by `hgLip_gSeqExt`/`hbdd_gSeqExt`/`hlow_gSeqExt`
-from the cited inputs (threaded through verbatim at the Brick-4 granularity),
-and derives the pointwise companion along the same subsequence via the
-`BddAbove` pattern of `windowGInfAll_pt`. -/
 noncomputable def convOut
     (R : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted; letI : IsManifold I ∞ P.M := P.smooth;
@@ -428,11 +351,6 @@ noncomputable def convOut
       (Finset.le_sup' (fun b => Cf b + Cf b + 1) (Finset.mem_range.2 (Nat.lt_succ_of_le hbp)))
   exact lt_of_le_of_lt (le_csSup hbddAbove ⟨a, hap, x, hx, rfl⟩) (hk0 k hk t ht)
 
-
-
-
-
-
 include finiteE in
 omit neZeroE [I.Boundaryless] in
 private theorem ofRP_supOn_def
@@ -464,7 +382,7 @@ private theorem ofRP_supOn_def
           (resSrc (I := I) Φ hsrc k (gInf t))
           (refRes (I := I) Φ R hsrc k) := rfl
 
-open Tensor0SBundle in
+open DifferentialGeometry.Tensor0SBundle in
 include finiteE in
 omit neZeroE [I.Boundaryless] in
 theorem ofRP_supOn_eq
@@ -600,14 +518,6 @@ theorem ofRP_supOn_eq
           (gSeqExt (I := I) Φ R bf hsrc htgt k t) gIt R := by
         rw [sourceCompactSet_image_eq (I := I) Φ k hKsrc]
 
-
-
-
-
-
-
-
-
 include finiteE in
 omit neZeroE [I.Boundaryless] in
 theorem ofRP_supOn_conv
@@ -647,15 +557,6 @@ theorem ofRP_supOn_conv
   rw [ofRP_supOn_eq (I := I) Φ R bf hsrc htgt (co.φ k) K p t (co.gInf t) gInf
     (hmetric t ht) hkg]
   exact hk0c k (le_trans (le_max_left _ _) hk) t ht
-
-
-
-
-
-
-
-
-
 
 include finiteE in
 omit neZeroE [I.Boundaryless] in

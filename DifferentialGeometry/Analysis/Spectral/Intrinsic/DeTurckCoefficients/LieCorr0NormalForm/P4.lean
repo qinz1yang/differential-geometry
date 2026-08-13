@@ -1,18 +1,11 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0NormalForm.Basic
 
-
-
-
-
-
-
-
 noncomputable section
 
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF
 
 private lemma four_right {n : ℕ} (ig f : Fin n → Fin n → ℝ)
     (A B : Fin n → Fin n → Fin n → ℝ)
@@ -85,4 +78,4 @@ theorem nf_p4 {n : ℕ} (ig f : Fin n → Fin n → ℝ)
     four_left ig f ga0 gbg hga0s i j]
   ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients.LieCorr0NF
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.LieCorr0NF

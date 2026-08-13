@@ -1,85 +1,33 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedGramDiff
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChristoffelPerturbation
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCmOrderDropping
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace MetricRealization
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -106,8 +54,6 @@ private lemma chartGramOnE_diffAt_interior
     (chartGramOnE_contDiffOn (I := I) g α l b).mono interior_subset
   exact (hcd_int.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma partialDeriv_contDiffOn_interior
@@ -123,8 +69,6 @@ private lemma partialDeriv_contDiffOn_interior
       fun y => fderiv ℝ f y ((chartModelBasis E) a) := rfl
   rw [hrw]
   exact hfderiv.clm_apply contDiffOn_const
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -142,8 +86,6 @@ private lemma partialDeriv_chartGramOnE_diffAt_interior
     partialDeriv_contDiffOn_interior (I := I) α hcd_int a
   exact (hcd_partial.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
 
-
-
 def reprDiffChartCompOnE (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
     {u₁ u₂ : tensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
@@ -155,10 +97,6 @@ def reprDiffChartCompOnE (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
       ((extChartAt I α).symm y)
       (chartBasisVecFiber (I := I) α l ((extChartAt I α).symm y))
       (chartBasisVecFiber (I := I) α b ((extChartAt I α).symm y))
-
-
-
-
 
 omit [BoundarylessManifold I M] in
 theorem chartGramOnE_realizeMetricAt_sub_funext
@@ -173,8 +111,6 @@ theorem chartGramOnE_realizeMetricAt_sub_funext
   funext y
   rw [reprDiffChartCompOnE]
   exact chartGramOnE_realizeMetricAt_sub_eq_reprDiff (I := I) g_bg hu₁ hu₂ α l b y
-
-
 
 omit [BoundarylessManifold I M] in
 theorem chartGramMatrix_realizeMetricAt_sub_eq_reprDiffComp
@@ -191,8 +127,6 @@ theorem chartGramMatrix_realizeMetricAt_sub_eq_reprDiffComp
   rw [reprDiffChartCompOnE]
   exact chartGramMatrix_realizeMetricAt_sub_eq_reprDiff (I := I) g_bg hu₁ hu₂
     α ((extChartAt I α).symm y) l b
-
-
 
 omit [BoundarylessManifold I M] in
 theorem partialDeriv_chartGramOnE_realizeMetricAt_sub_eq
@@ -214,8 +148,6 @@ theorem partialDeriv_chartGramOnE_realizeMetricAt_sub_eq
   exact (fderiv_sub
     (chartGramOnE_diffAt_interior (I := I) (realizeMetricAt (I := I) g_bg u₁) α l b hy)
     (chartGramOnE_diffAt_interior (I := I) (realizeMetricAt (I := I) g_bg u₂) α l b hy)).symm
-
-
 
 omit [BoundarylessManifold I M] in
 theorem partialDeriv2_chartGramOnE_realizeMetricAt_sub_eq
@@ -311,27 +243,6 @@ theorem iteratedCovGradJetSum_le_toHs (g_bg : SmoothRiemannianMetric I M) (k : �
   refine ⟨C, hC_pos, fun S x => ?_⟩
   rw [iteratedCovGradJetSum]
   exact hC S x
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [BoundarylessManifold I M] in
 theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
@@ -450,21 +361,6 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
         gcongr
     _ = C₀ * Ncard * R := by rw [hNcard_def]; ring
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [BoundarylessManifold I M] in
 theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
@@ -517,9 +413,8 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs
     _ = C₁ * C₂ * N := by ring
 
 end MetricRealization
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

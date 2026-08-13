@@ -1,10 +1,9 @@
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import DifferentialGeometry.Tensor.Multilinear.Tensor
 
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open Bundle Module
@@ -74,8 +73,6 @@ theorem componentRS_apply
         (fun a => basis (lower a)) :=
   rfl
 
-
-
 theorem componentRS_congr_slots
     (T : TensorRSSpace r s I x)
     {upper upper' : Fin r -> Idx} {lower lower' : Fin s -> Idx}
@@ -138,3 +135,4 @@ theorem extRS_basis
 end Mixed
 
 end Tensor0SBundle
+end DifferentialGeometry

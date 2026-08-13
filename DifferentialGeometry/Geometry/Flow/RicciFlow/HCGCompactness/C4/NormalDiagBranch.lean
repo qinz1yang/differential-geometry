@@ -3,16 +3,9 @@ import DifferentialGeometry.Geometry.Exponential.DiagInvReadout
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalMetricExtend
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalDiagAt
 import Mathlib.Topology.OpenPartialHomeomorph.Composition
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -36,8 +29,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-
-
 noncomputable def normalTanHome
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -57,8 +48,6 @@ noncomputable def normalTanHome
     (tangentBundleModelSpaceHomeomorph 𝓘(Real, E)).symm.toOpenPartialHomeomorph.trans
       (PartialDiffeomorph.tangentHome (normalExpPD (I := I) Y x) (by simp))
 
-
-
 noncomputable def normalPairHome
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -72,8 +61,6 @@ noncomputable def normalPairHome
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact (normalExpPD (I := I) Y x).toOpenPartialHomeomorph.prod
     (normalExpPD (I := I) Y x).toOpenPartialHomeomorph
-
-
 
 theorem normalTanHome_apply
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
@@ -118,8 +105,6 @@ theorem normalPairHome_apply
     normalPairHome (I := I) Y x z = normalPair (I := I) Y x z := by
   rfl
 
-
-
 theorem normalTanHome_source
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -146,8 +131,6 @@ theorem normalTanHome_source
   · intro hz
     exact ⟨mem_univ z, hz⟩
 
-
-
 theorem normalPair_source
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -158,8 +141,6 @@ theorem normalPair_source
       (normalBall (I := I) Y x : Set E) ×ˢ
         (normalBall (I := I) Y x : Set E) := by
   rfl
-
-
 
 noncomputable def normalDiagHome
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
@@ -240,8 +221,6 @@ theorem normalTanHome_inf
     (m.source ∩ (m : E × E → TangentBundle 𝓘(Real, E) E) ⁻¹' t.source)
   exact ht.comp' hmOn
 
-
-
 theorem normalTan_inv_inf
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -307,8 +286,6 @@ theorem normalPairHome_inf
   simpa only [normalPairHome, OpenPartialHomeomorph.prod_source,
     OpenPartialHomeomorph.prod_apply] using h
 
-
-
 theorem normalPair_inv_inf
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -329,8 +306,6 @@ theorem normalPair_inv_inf
     OpenPartialHomeomorph.prod_symm_apply] using h
 
 namespace NormalCoordMetricBoundInput
-
-
 
 theorem chart_mem_norm_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -431,8 +406,6 @@ end NormalCoordMetricBoundInput
 
 namespace IsNormalDiag
 
-
-
 theorem eqOnSource
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -509,8 +482,6 @@ theorem eqOnSource
     exact ⟨hzFence'.2.1, hzFence'.2.2⟩
   · rw [normalPairHome_apply, normalPairHome_apply]
     exact (hdiag z hzClosed).trans (hdiag' z hzClosed).symm
-
-
 
 noncomputable def toBranch
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -667,8 +638,6 @@ noncomputable def toBranch
       (B.target ∩ (B.symm : Y.M × Y.M → E × E) ⁻¹' A.source)
     exact hAInf.comp' hBInv
 
-
-
 @[simp] theorem toBranch_hom
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -729,8 +698,6 @@ noncomputable def toBranch
           (normalTangent (I := I) Y x z) at h
   rcases h with ⟨_, _, _, _, _, _⟩
   rfl
-
-
 
 theorem full_transport
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -900,8 +867,6 @@ theorem full_transport
   rw [P.left_inv hwP]
   exact normalTanHome_apply (I := I) Y x (e.symm w) hzNormal
 
-
-
 theorem symm_fst_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -987,8 +952,6 @@ theorem symm_fst_eq
   · simpa only [normalExpPD_source] using hwNormal
   · exact hexp.symm
 
-
-
 theorem inv_pair_normal
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -1044,8 +1007,6 @@ theorem inv_pair_normal
   rw [(full_transport (I := I) Y hcomplete hconn x hq h hf).2.2 w hw]
   congr 1
   exact Prod.ext (symm_fst_eq (I := I) Y hcomplete hconn x h hf hw) rfl
-
-
 
 theorem target_of_pair_mem
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -1108,8 +1069,6 @@ theorem target_of_pair_mem
   rw [OpenPartialHomeomorph.trans_target] at hrest
   have htarget : P.symm (P w) ∈ e.target := hrest.2
   rwa [P.left_inv hw] at htarget
-
-
 
 theorem target_of_chart_dom
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -1222,9 +1181,6 @@ theorem target_of_chart_dom
   apply target_of_pair_mem (I := I) Y hcomplete hconn x hq h hcoordSource
   rwa [hpairEq]
 
-
-
-
 theorem pair_mem_of_closed
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -1324,8 +1280,6 @@ theorem pair_mem_of_closed
 
 end IsNormalDiag
 
-
-
 def HasNormalBranchDom
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -1359,8 +1313,6 @@ def HasNormalBranchDom
             (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he).dom
 
 namespace HasNormalBranchDom
-
-
 
 theorem exists_pair_branch
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1501,8 +1453,6 @@ theorem exists_pair_branch
   rw [← hnormalPair]
   exact hclosed (wa, wb) hwClosed
 
-
-
 theorem exists_pair_readout
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBoundInput (I := I) X) (k : Nat)
@@ -1585,8 +1535,6 @@ theorem exists_pair_readout
 end HasNormalBranchDom
 
 namespace NormalRadiusProfile
-
-
 
 theorem exists_common_dom
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

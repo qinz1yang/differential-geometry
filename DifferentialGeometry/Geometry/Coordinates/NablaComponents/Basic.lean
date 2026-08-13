@@ -3,22 +3,11 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -54,9 +43,6 @@ def modelDeriv0SAt {s : ℕ}
     (extChartAt I x₀ x₀) (X' (extChartAt I x₀ x₀))
     (fun a => (Module.finBasis 𝕜 E) (slots a))
 
-
-
-
 def ModelDerivEqCoordDeriv0SAt {s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x₀ : M)
@@ -64,8 +50,6 @@ def ModelDerivEqCoordDeriv0SAt {s : ℕ}
   forall slots : Fin s -> CoordinateIdx (𝕜 := 𝕜) E,
     modelDeriv0SAt (I := I) X x₀ α slots =
       coordDeriv0SAt (I := I) (fun x => X x) x₀ α slots
-
-
 
 omit [IsManifold I 2 M] in
 omit [CompleteSpace 𝕜] in
@@ -136,15 +120,6 @@ private theorem model_component_eq_coord_component_comp_eventually {s : ℕ}
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
-
-
-
 omit [IsManifold I 2 M] in
 omit [CompleteSpace 𝕜] in
 theorem modelDeriv_eq_coordDeriv0SAt {s : ℕ}
@@ -264,13 +239,6 @@ theorem modelDeriv_eq_coordDeriv0SAt {s : ℕ}
   rw [hS]
   rfl
 
-
-
-
-
-
-
-
 theorem nabla0S_model_coordFrame_slots {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -337,12 +305,6 @@ theorem nabla0S_model_coordFrame_slots {s : ℕ}
     simp
   · simp [Function.update, hb]
 
-
-
-
-
-
-
 theorem nabla0S_coordFrame_slots {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -361,9 +323,6 @@ theorem nabla0S_coordFrame_slots {s : ℕ}
             x₀ (X x₀) (slots a) k *
             coordComponent0SAt (I := I) (α x₀) (Function.update slots a k) := by
   rw [nabla0S_model_coordFrame_slots (I := I) cov X α x₀ slots, hderiv slots]
-
-
-
 
 theorem nabla0S_coordFrame_slots_of_smooth {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

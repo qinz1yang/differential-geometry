@@ -1,30 +1,21 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffPair
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffH0
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.BochnerL2
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
@@ -41,34 +32,31 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-
-
-
 theorem lapDiffA2_cont
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) {S : Set Real}
     (hreg : ∀ s ∈ S, (T : Real) - s ∈ D.regular)
     (hsmall : ∀ s ∈ S,
       (Module.finrank Real E : Real) *
           HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
-            (G.metric ((T : Real) - s))
-            (G.metric (T : Real)) (G.metric (T : Real)) ≤
+            (g_fam ((T : Real) - s))
+            (g_fam (T : Real)) (g_fam (T : Real)) ≤
         (1 / 2 : Real)) :
     ContinuousOn
-      (fun s : Real => lapDiffA2 (I := I) (M := M) G T s) S := by
+      (fun s : Real => lapDiffA2 (I := I) (M := M) g_fam T s) S := by
   letI : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (G.metric (T : Real)) 0 0 2 →L[Real]
-        TensorL2 0 0 (G.metric (T : Real))) :=
+      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+        TensorL2 0 0 (g_fam (T : Real))) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   intro s0 hs0
-  let q : SmoothRiemannianMetric I M := G.metric (T : Real)
+  let q : SmoothRiemannianMetric I M := g_fam (T : Real)
   let K : D.RegularTime := ⟨(T : Real) - s0, hreg s0 hs0⟩
-  let k : SmoothRiemannianMetric I M := G.metric (K : Real)
+  let k : SmoothRiemannianMetric I M := g_fam (K : Real)
   let rhoK : Real → Real := fun s =>
     HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
-      (G.metric ((T : Real) - s)) k k
+      (g_fam ((T : Real) - s)) k k
   have hshiftK :
       Tendsto (fun s : Real => (T : Real) - s)
         (nhds s0) (nhds (K : Real)) := by
@@ -78,13 +66,13 @@ theorem lapDiffA2_cont
         (tendsto_id : Tendsto (fun s : Real => s) (nhds s0) (nhds s0)))
   have hrhoK : Tendsto rhoK (nhds s0) (nhds 0) := by
     simpa only [rhoK, k] using
-      (HCGCompactness.metric_c1_tendsto (I := I) G hG K).comp hshiftK
+      (HCGCompactness.metric_c1_tendsto (I := I) g_fam hG K).comp hshiftK
   obtain ⟨C, hC, hpair⟩ :=
     lapDiff_pair_norm (I := I) (M := M) q k
   change Tendsto
-    (fun s : Real => lapDiffA2 (I := I) (M := M) G T s)
+    (fun s : Real => lapDiffA2 (I := I) (M := M) g_fam T s)
     (nhdsWithin s0 S)
-    (nhds (lapDiffA2 (I := I) (M := M) G T s0))
+    (nhds (lapDiffA2 (I := I) (M := M) g_fam T s0))
   rw [Metric.tendsto_nhds]
   intro eta heta
   have hKsmall :
@@ -108,41 +96,38 @@ theorem lapDiffA2_cont
   have hkh :
       (Module.finrank Real E : Real) *
           HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
-            (G.metric ((T : Real) - s)) k k ≤
+            (g_fam ((T : Real) - s)) k k ≤
         (1 / 2 : Real) := by
     simpa only [rhoK] using hks.le
   rw [dist_eq_norm]
   simpa only [lapDiffA2, q, k, K, rhoK] using
     lt_of_le_of_lt
-      (hpair (G.metric ((T : Real) - s)) hqh hqk hkh) hu
-
-
-
+      (hpair (g_fam ((T : Real) - s)) hqh hqk hkh) hu
 
 theorem lapDiffA20_short
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (T : D.RegularTime) {epsilon : Real} (hepsilon : 0 < epsilon) :
     ∃ tau : Real, 0 < tau ∧ tau ≤ 1 ∧
       ContinuousOn
-        (fun s : Real => lapDiffA20 (I := I) (M := M) G T s)
+        (fun s : Real => lapDiffA20 (I := I) (M := M) g_fam T s)
         (Set.Icc 0 tau) ∧
       AEStronglyMeasurable
-        (fun s : Real => lapDiffA20 (I := I) (M := M) G T s)
+        (fun s : Real => lapDiffA20 (I := I) (M := M) g_fam T s)
         (timeMeasure tau) ∧
       (∀ s ∈ Set.Icc 0 tau,
-        ‖lapDiffA20 (I := I) (M := M) G T s‖ ≤ epsilon) ∧
+        ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ epsilon) ∧
       ∀ᵐ s ∂timeMeasure tau,
-        ‖lapDiffA20 (I := I) (M := M) G T s‖ ≤ epsilon := by
+        ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ epsilon := by
   letI : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (G.metric (T : Real)) 0 0 2 →L[Real]
-        tensorHs (I := I) (M := M) (G.metric (T : Real)) 0 0 0) :=
+      (tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 2 →L[Real]
+        tensorHs (I := I) (M := M) (g_fam (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
-  let q : SmoothRiemannianMetric I M := G.metric (T : Real)
+  let q : SmoothRiemannianMetric I M := g_fam (T : Real)
   let rhoQ : Real → Real := fun s =>
     HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
-      (G.metric ((T : Real) - s)) q q
+      (g_fam ((T : Real) - s)) q q
   have hshift :
       Tendsto (fun s : Real => (T : Real) - s)
         (nhds 0) (nhds (T : Real)) := by
@@ -151,7 +136,7 @@ theorem lapDiffA20_short
         (tendsto_id : Tendsto (fun s : Real => s) (nhds 0) (nhds 0)))
   have hrhoQ : Tendsto rhoQ (nhds 0) (nhds 0) := by
     simpa only [rhoQ, q] using
-      (HCGCompactness.metric_c1_tendsto (I := I) G hG T).comp hshift
+      (HCGCompactness.metric_c1_tendsto (I := I) g_fam hG T).comp hshift
   have hreg :
       ∀ᶠ s in nhds (0 : Real), (T : Real) - s ∈ D.regular :=
     hshift.eventually (D.regular_isOpen.mem_nhds T.2)
@@ -162,18 +147,18 @@ theorem lapDiffA20_short
       (by norm_num)
   have heps :
       ∀ᶠ s in nhds (0 : Real),
-        ‖lapDiffA2 (I := I) (M := M) G T s‖ < epsilon :=
-    (lapDiffA2_zero (I := I) (M := M) G hG T).eventually_lt_const
+        ‖lapDiffA2 (I := I) (M := M) g_fam T s‖ < epsilon :=
+    (lapDiffA2_zero (I := I) (M := M) g_fam hG T).eventually_lt_const
       hepsilon
   let U : Set Real := {s |
     (T : Real) - s ∈ D.regular ∧
       (Module.finrank Real E : Real) * rhoQ s ≤ (1 / 2 : Real) ∧
-      ‖lapDiffA2 (I := I) (M := M) G T s‖ ≤ epsilon}
+      ‖lapDiffA2 (I := I) (M := M) g_fam T s‖ ≤ epsilon}
   have hU : U ∈ nhds (0 : Real) := by
     change ∀ᶠ s in nhds (0 : Real),
       (T : Real) - s ∈ D.regular ∧
         (Module.finrank Real E : Real) * rhoQ s ≤ (1 / 2 : Real) ∧
-        ‖lapDiffA2 (I := I) (M := M) G T s‖ ≤ epsilon
+        ‖lapDiffA2 (I := I) (M := M) g_fam T s‖ ≤ epsilon
     filter_upwards [hreg, hqsmall, heps] with s hs hr he
     exact ⟨hs, hr.le, he.le⟩
   obtain ⟨delta, hdelta, hball⟩ := Metric.mem_nhds_iff.mp hU
@@ -194,46 +179,45 @@ theorem lapDiffA20_short
   have hgood (s : Real) (hs : s ∈ Set.Icc (0 : Real) tau) :
       (T : Real) - s ∈ D.regular ∧
         (Module.finrank Real E : Real) * rhoQ s ≤ (1 / 2 : Real) ∧
-        ‖lapDiffA2 (I := I) (M := M) G T s‖ ≤ epsilon := by
+        ‖lapDiffA2 (I := I) (M := M) g_fam T s‖ ≤ epsilon := by
     simpa only [U] using hIccU hs
   have hA2cont :
       ContinuousOn
-        (fun s : Real => lapDiffA2 (I := I) (M := M) G T s)
+        (fun s : Real => lapDiffA2 (I := I) (M := M) g_fam T s)
         (Set.Icc 0 tau) := by
-    apply lapDiffA2_cont (I := I) (M := M) G hG T
+    apply lapDiffA2_cont (I := I) (M := M) g_fam hG T
     · intro s hs
       exact (hgood s hs).1
     · intro s hs
       simpa only [rhoQ, q] using (hgood s hs).2.1
   have hA20cont :
       ContinuousOn
-        (fun s : Real => lapDiffA20 (I := I) (M := M) G T s)
+        (fun s : Real => lapDiffA20 (I := I) (M := M) g_fam T s)
         (Set.Icc 0 tau) :=
-    lapDiffA20_cont_of (I := I) (M := M) G T hA2cont
+    lapDiffA20_cont_of (I := I) (M := M) g_fam T hA2cont
   have hA20meas :
       AEStronglyMeasurable
-        (fun s : Real => lapDiffA20 (I := I) (M := M) G T s)
+        (fun s : Real => lapDiffA20 (I := I) (M := M) g_fam T s)
         (timeMeasure tau) := by
     unfold timeMeasure
     exact hA20cont.aestronglyMeasurable measurableSet_Icc
   have hboundOn :
       ∀ s ∈ Set.Icc (0 : Real) tau,
-        ‖lapDiffA20 (I := I) (M := M) G T s‖ ≤ epsilon := by
+        ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ epsilon := by
     intro s hs
     rw [lapDiffA20_norm]
     exact (hgood s hs).2.2
   have hboundAE :
       ∀ᵐ s ∂timeMeasure tau,
-        ‖lapDiffA20 (I := I) (M := M) G T s‖ ≤ epsilon := by
+        ‖lapDiffA20 (I := I) (M := M) g_fam T s‖ ≤ epsilon := by
     unfold timeMeasure
     exact (ae_restrict_iff' measurableSet_Icc).2
       (Eventually.of_forall hboundOn)
   exact ⟨tau, htaupos, htauone, hA20cont, hA20meas, hboundOn,
     hboundAE⟩
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

@@ -3,16 +3,11 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamCha
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficients
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckTopCoeff
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieTopReanchor
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -21,17 +16,18 @@ set_option backward.isDefEq.respectTransparency false
 open Set Function MeasureTheory intervalIntegral
 open scoped Topology Manifold BigOperators ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -123,12 +119,6 @@ private theorem symmS_eq_self
   rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
-
-
-
-
-
-
 def rhsPathSlope
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
@@ -144,8 +134,6 @@ def rhsPathSlope
             α i j k j y) s) +
     lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       g_bg α i k s y
-
-
 
 omit [CompactSpace M] in
 theorem hasDerivAt_rhsPath
@@ -177,8 +165,6 @@ theorem hasDerivAt_rhsPath
   have hLie := hasDerivAt_realizedFam_chartLieDeTurckComp_chartSlope (I := I)
     g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg α i k hy hs
   simpa only [rhsPathSlope] using (hRic.const_mul (-2 : ℝ)).add hLie
-
-
 
 omit [CompactSpace M] in
 theorem deriv_rhsPath
@@ -227,8 +213,6 @@ theorem realizedFam_one
   rw [realizedFam_inner_of_mem (I := I) g₀ T T' hδ hδ'
       (Icc_subset_realizedSmallSet hδ_lt hδ'_lt ⟨zero_le_one, le_rfl⟩),
     tensorSectionRealizeMetric_inner, convexPerturbation_one]
-
-
 
 def rhsChartSum
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -287,8 +271,6 @@ def lieTopSum
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x)
         i k (extChartAt I x x)
 
-
-
 def lieTopCovSum
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -307,8 +289,6 @@ def lieTopCovSum
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
         ![(chartModelBasis E) i, (chartModelBasis E) k]
 
-
-
 def lieTopTailSum
     (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -321,9 +301,6 @@ def lieTopTailSum
     ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
       lieTopTail (I := I) g₀ T T'
         (realizedFam (I := I) g₀ T T' hδ hδ' s) x i k
-
-
-
 
 def lieTopTailSwap
     (g₀ : SmoothRiemannianMetric I M)
@@ -374,8 +351,6 @@ private theorem lieTopRaw_symm
   rw [h₁, h₂]
   ring
 
-
-
 theorem lieTop_add_tail
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -396,8 +371,6 @@ theorem lieTop_add_tail
   rw [← mul_add]
   rw [← lieTop_cov_eq_raw (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
     (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg x i k]
-
-
 
 theorem lieTop_add_swap
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -478,8 +451,6 @@ def lieZeroSum
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x)
         i k (extChartAt I x x)
 
-
-
 omit [CompactSpace M] in
 theorem lieSum_eq_split [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -499,8 +470,6 @@ theorem lieSum_eq_split [BoundarylessManifold I M]
   simp_rw [lieDeTurckChartSlope_eq_orderSplit (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' g_bg x _ _ s hy]
   simp only [mul_add, Finset.sum_add_distrib]
-
-
 
 omit [CompactSpace M] in
 theorem ricciSum_eq_lin [BoundarylessManifold I M]
@@ -524,8 +493,6 @@ theorem ricciSum_eq_lin [BoundarylessManifold I M]
     _ = linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s :=
       (linearizedRicciAt_eq_deriv_chartSum_on_Ioo (I := I)
         g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w hs).symm
-
-
 
 omit [CompactSpace M] in
 theorem rhsSlope_eq_lin [BoundarylessManifold I M]
@@ -563,8 +530,6 @@ theorem rhsSlope_eq_lin [BoundarylessManifold I M]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     ring
   rw [hscale, ricciSum_eq_lin (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w hs]
-
-
 
 theorem rhsSlope_eq_raw [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -619,8 +584,6 @@ theorem rhsSlope_eq_raw [BoundarylessManifold I M]
   rw [lieSum_eq_split (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s]
   ring
 
-
-
 def rhsTopTerm
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -634,8 +597,6 @@ def rhsTopTerm
       (deTurckPhiMetTotal (I := I) (M := M) g₀ g_bg
         (realizedFam (I := I) g₀ T T' hδ hδ' s))
       (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x ![v, w]
-
-
 
 def rhsLowTerm
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -659,9 +620,6 @@ def rhsLowTerm
     lieOneSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +
     lieZeroSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s -
     lieTopTailSwap (I := I) g₀ T T' hδ hδ' x v w s
-
-
-
 
 theorem rhsTop_eq_raw [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -700,9 +658,6 @@ theorem rhsTop_eq_raw [BoundarylessManifold I M]
     ← hLie]
   ring
 
-
-
-
 theorem rhsSlope_eq_split [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -725,8 +680,6 @@ theorem rhsSlope_eq_split [BoundarylessManifold I M]
   unfold rhsLowTerm
   rw [unitModel_add_app, unitModel_add_app]
   ring
-
-
 
 omit [CompactSpace M] in
 theorem rhsSum_contDiffAt [BoundarylessManifold I M]
@@ -755,8 +708,6 @@ theorem rhsSum_contDiffAt [BoundarylessManifold I M]
   rw [heq]
   exact realizedDeTurckRicciChartSum_contDiffAt (I := I)
     g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w hs
-
-
 
 omit [CompactSpace M] in
 theorem hasDerivAt_rhsSum [BoundarylessManifold I M]
@@ -808,8 +759,6 @@ theorem rhsSum_continuous [BoundarylessManifold I M]
   exact (rhsSum_contDiffAt (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
     x v w (Icc_subset_realizedSmallSet hδ_lt hδ'_lt hs)).continuousAt.continuousWithinAt
 
-
-
 omit [CompactSpace M] in
 theorem rhsSlope_integrable [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -852,8 +801,6 @@ theorem rhsSlope_integrable [BoundarylessManifold I M]
   refine measure_mono_null (fun s hs => ?_) hnull
   exact fun hs' => hs (hsub hs')
 
-
-
 omit [CompactSpace M] in
 theorem rhsSum_sub_eq_int [BoundarylessManifold I M]
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -879,4 +826,4 @@ theorem rhsSum_sub_eq_int [BoundarylessManifold I M]
     hδ_lt hδ hδ'_lt hδ' x v w
   exact (integral_eq_sub_of_hasDerivAt_of_le zero_le_one hcont hderiv hint).symm
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

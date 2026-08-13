@@ -2,17 +2,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.TowerHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.ResidualBase
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerSwapRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProducer
-
-
-
-
-
-
-
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Integral.Measure
 open scoped Manifold ContDiff BigOperators
 
@@ -25,8 +22,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-/-- The canonical whole residual field, fixed recursively before any point or
-orthonormal-frame choice. -/
 noncomputable def rmResidualField
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -37,8 +32,6 @@ noncomputable def rmResidualField
   | k + 1 => resStarNext (I := I) S t k (rmResidualField S t k)
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
-/-- The canonical residual field has the exact recursive constructor cost in
-every finite component index type. -/
 theorem rmResidualField_cost
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -60,8 +53,6 @@ theorem rmResidualField_cost
           (rmResidualField (I := I) S t k) ih
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
-/-- On one orthonormal local-frame patch, the fixed recursive field realizes
-the component heat equation at every tower level. -/
 private theorem rmResidual_local
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -136,8 +127,6 @@ private theorem rmResidual_local
       intro y hy I0
       simpa only [rmResidualField] using hnext.2 y hy I0
 
-/-- A Ricci-flow solution produces one globally fixed costed residual field at
-every order.  Pointwise orthonormal bases are chosen only after the field. -/
 theorem rmResidual_cost
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -200,9 +189,6 @@ theorem rmResidual_cost
       baseDt chrDt hrm hchr hchrId hswap k x hx I0
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- On a positive-time tail, a dimension-three Ricci-flow solution produces
-the local-frame StarSum residual and its component bound without additional
-time-regularity or derivative-swap assumptions. -/
 theorem resStarSol [CompactSpace M]
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)

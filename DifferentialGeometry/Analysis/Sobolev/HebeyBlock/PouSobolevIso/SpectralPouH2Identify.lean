@@ -9,7 +9,7 @@ import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOp
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.PouSobolevIso.PouNormChartComp
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.PouSobolevIso.AssemblePouIso
 
-namespace DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 open Bundle
 open scoped Manifold ContDiff
@@ -36,4 +36,4 @@ theorem chart_sobolev_intrinsic_nabla_equivalence_tensors_h1
             C * (tensorPouSobolevNorm (I := I) (M := M) g 1 T).toReal :=
   assemble_pou_h1_iso_intrinsic_h1 (I := I) (M := M) g r s
 
-end DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+end DifferentialGeometry.Analysis.Sobolev.HebeyBlock

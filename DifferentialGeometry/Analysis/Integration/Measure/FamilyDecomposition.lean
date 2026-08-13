@@ -12,7 +12,6 @@ import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 import Mathlib.Topology.Compactness.LocallyFinite
 
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory Matrix
@@ -32,8 +31,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- Bochner integral characterisation of the chart-local measure for an
-almost-everywhere strongly measurable real-valued function. -/
 theorem integral_chart_ae
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (h : M → ℝ)
@@ -107,8 +104,6 @@ theorem integral_chart_ae
   refine setIntegral_congr_fun htarget_meas (fun y hy => ?_)
   rw [hw_toReal y hy, smul_eq_mul]
 
-/-- Bochner integral characterisation of the chart-local measure for a
-measurable real-valued function. -/
 theorem integral_chartLocalMeasure
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (h : M → ℝ) (hh_meas : Measurable h) :
@@ -119,8 +114,6 @@ theorem integral_chartLocalMeasure
           ∂(modelHaar (E := E)) :=
   integral_chart_ae (I := I) g x₀ h hh_meas.aestronglyMeasurable
 
-/-- A model-Haar almost-everywhere property transfers to the chart-local
-measure after evaluation in the fixed chart coordinates. -/
 theorem ae_chart_of_haar
     (g : SmoothRiemannianMetric I M) (α : M)
     {P : E → Prop} (hP : MeasurableSet {y | P y})
@@ -173,8 +166,6 @@ theorem ae_chart_of_haar
   filter_upwards [hchart] with x hx hx_source
   simpa only [coord, if_pos hx_source] using hx
 
-/-- On a compact manifold, the set of indices where the chart-atlas POU has
-nonempty support is finite. -/
 lemma chartAtlasPOU_finite_support
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] :
     {α : M | (Function.support ((chartAtlasPOU I M) α)).Nonempty}.Finite :=
@@ -550,8 +541,6 @@ theorem integral_riemannianVolumeMeasure_eq_finset_sum
   conv_lhs => rw [hVol_eq]
   exact integral_finset_sum_measure hsummand_int
 
-/-- An integrable scalar function may be integrated globally by summing its
-partition-weighted chart-local integrals. -/
 theorem chart_sum_integral
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (h : M → ℝ)

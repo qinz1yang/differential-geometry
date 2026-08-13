@@ -1,24 +1,27 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHSStrictParabolic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.Formula
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Pullback.Cartan.Formula
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
-import DifferentialGeometry.Geometry.Flow.VectorFieldSmooth
-import DifferentialGeometry.Geometry.Flow.LieDerivativeMetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.VectorFieldSmooth
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeMetric
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
-namespace DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.Parabolic
 
 open Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.DeTurck
@@ -308,4 +311,4 @@ theorem deTurckRicciRHS_isSmoothQuasilinear [I.Boundaryless]
   · intro g
     exact deTurckRicciRHS_isStrictlyParabolic_at_self g g_bg
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Parabolic

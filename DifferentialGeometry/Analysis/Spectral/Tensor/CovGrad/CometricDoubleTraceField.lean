@@ -7,19 +7,22 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParal
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculus
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculusRS
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace DeTurck
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -44,7 +47,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem interiorProductField_contMDiff (s : ℕ)
@@ -100,7 +102,6 @@ theorem interiorProductField_contMDiff (s : ℕ)
     rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem contractTraceField_contMDiff (r s : ℕ)
@@ -246,7 +247,6 @@ theorem contractTraceField_contMDiff (r s : ℕ)
     r s L Linv hL hR Tx).symm
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem tensor0SField_castRank_contMDiff {m n : ℕ} (h : m = n)
@@ -380,7 +380,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Bound
         (Tensor0SBundle.Tensor0SSpace.toModel D) := rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 theorem cometricRaiseSlot0Fib_section_contMDiff (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
@@ -427,7 +426,7 @@ theorem contract_trace_unitZero_toModel (s : ℕ) (x : M)
     Tensor0SBundle.Tensor0SSpace.toModel
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x from
           Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 s x T)
-          (Integral.Connection.unitZeroSec (I := I) (M := M) x)) =
+          (DifferentialGeometry.Geometry.Connection.unitZeroSec (I := I) (M := M) x)) =
       (Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) 0 s
           (Tensor0SBundle.TensorRSSpace.toModel T))
         (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) := by
@@ -435,7 +434,6 @@ theorem contract_trace_unitZero_toModel (s : ℕ) (x : M)
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem ricciCometricDoubleTraceFib_contMDiff (g₀ : SmoothRiemannianMetric I M) (a : ℕ) :
@@ -469,9 +467,9 @@ theorem ricciCometricDoubleTraceFib_contMDiff (g₀ : SmoothRiemannianMetric I M
           x from
           Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 (2 + a) x
             (cometricRaiseSlot0Fib (I := I) g₀ (2 + a) x (Y' x)))
-          (Integral.Connection.unitZeroSec (I := I) (M := M) x))) :=
+          (DifferentialGeometry.Geometry.Connection.unitZeroSec (I := I) (M := M) x))) :=
     ContMDiff.clm_bundle_apply (b := id) htrace
-      (Integral.Connection.unitZeroSec (I := I) (M := M)).contMDiff
+      (DifferentialGeometry.Geometry.Connection.unitZeroSec (I := I) (M := M)).contMDiff
   have hscaled : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (2 + a) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (2 + a) ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace (2 + a) I z) x
@@ -479,7 +477,7 @@ theorem ricciCometricDoubleTraceFib_contMDiff (g₀ : SmoothRiemannianMetric I M
           (2 + a) I x from
           Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 (2 + a) x
             (cometricRaiseSlot0Fib (I := I) g₀ (2 + a) x (Y' x)))
-          (Integral.Connection.unitZeroSec (I := I) (M := M) x)))) :=
+          (DifferentialGeometry.Geometry.Connection.unitZeroSec (I := I) (M := M) x)))) :=
     ContMDiff.const_smul_section (a := (-2 : ℝ)) htraceUnit
   refine hscaled.congr (fun x => ?_)
   congr 1
@@ -493,8 +491,6 @@ theorem ricciCometricDoubleTraceFib_contMDiff (g₀ : SmoothRiemannianMetric I M
   rw [contract_trace_unitZero_toModel (I := I) (2 + a) x
     (cometricRaiseSlot0Fib (I := I) g₀ (2 + a) x (Y' x))]
   congr 1
-
-open DifferentialGeometry.Integral.Connection
 
 noncomputable def cometricDoubleTraceFib (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (x : M) :
     Tensor0SBundle.Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SBundle.Tensor0SSpace p I x :=
@@ -518,7 +514,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Bound
   rw [modelRankCast_refl]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem cometricDoubleTraceFib_contMDiff (g₀ : SmoothRiemannianMetric I M) (p : ℕ) :
@@ -542,9 +537,9 @@ theorem cometricDoubleTraceFib_contMDiff (g₀ : SmoothRiemannianMetric I M) (p 
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace p I x from
           Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 p x
             (cometricRaiseSlot0Fib (I := I) g₀ p x (Y x)))
-          (Integral.Connection.unitZeroSec (I := I) (M := M) x))) :=
+          (DifferentialGeometry.Geometry.Connection.unitZeroSec (I := I) (M := M) x))) :=
     ContMDiff.clm_bundle_apply (b := id) htrace
-      (Integral.Connection.unitZeroSec (I := I) (M := M)).contMDiff
+      (DifferentialGeometry.Geometry.Connection.unitZeroSec (I := I) (M := M)).contMDiff
   refine htraceUnit.congr (fun x => ?_)
   congr 1
   apply Tensor0SBundle.Tensor0SSpace.toModel_injective
@@ -801,7 +796,7 @@ theorem cometric_dualTrace_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric I M
 
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem tensor0SCovDeriv_finset_sum (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     {ι : Type*} (fs : Finset ι)
     (σ : ι → Cₛ^∞⟮I; Tensor0SBundle.Tensor0SModel s ℝ E,
@@ -1048,7 +1043,7 @@ private theorem orthoFrame_corrections_sum_eq_zero (g₀ : SmoothRiemannianMetri
 
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 private theorem covDeriv_doubleInsert_leibniz (g₀ : SmoothRiemannianMetric I M) (p : ℕ)
     (w : ∀ y : M, Tensor0SBundle.Tensor0SSpace (p + 2) I y)
     (hw : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (p + 2) ℝ E)) ∞
@@ -1113,7 +1108,7 @@ private theorem covDeriv_doubleInsert_leibniz (g₀ : SmoothRiemannianMetric I M
             (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (p + 1) x (w x)
               (smoothOrthoFrame (I := I) g₀ x i x))
             ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v) :=
-    Integral.Connection.tensor0SCovariantDerivative_curriedSection_hom_leibniz
+    DifferentialGeometry.Geometry.Connection.tensor0SCovariantDerivative_curriedSection_hom_leibniz
       (I := I) (M := M) g₀ p
       (fun y : M => (Tensor0SNabla.curriedSection I M (fun z' : M => w z') y)
         (smoothOrthoFrame (I := I) g₀ x i y)) (x := x) hu_at Ci v
@@ -1126,13 +1121,12 @@ private theorem covDeriv_doubleInsert_leibniz (g₀ : SmoothRiemannianMetric I M
           (smoothOrthoFrame (I := I) g₀ x i x)
         + Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (p + 1) x (w x)
             ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v) :=
-    Integral.Connection.tensor0SCovariantDerivative_curriedSection_hom_leibniz
+    DifferentialGeometry.Geometry.Connection.tensor0SCovariantDerivative_curriedSection_hom_leibniz
       (I := I) (M := M) g₀ (p + 1) (fun y : M => w y) (x := x) hw_at Ci v
   rw [h1, h2, map_add (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) p x),
     ContinuousLinearMap.add_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [CompleteSpace E] in
 theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric I M) (p : ℕ) :
     Analysis.Parabolic.TensorSpectral.covGrad (I := I) (M := M) g₀ (p + 2) p
@@ -1317,7 +1311,6 @@ theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric 
     ContinuousMultilinearMap.zero_apply]
 
 end DeTurck
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

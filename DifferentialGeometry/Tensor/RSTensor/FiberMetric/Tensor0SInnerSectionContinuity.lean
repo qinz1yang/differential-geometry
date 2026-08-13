@@ -8,7 +8,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Riemannian
 
-
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
@@ -24,13 +23,12 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Tensor.Tensor0SRiemannianBundle
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
 
 lemma continuousAt_clm_of_basis_continuousAt
     {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
@@ -84,7 +82,6 @@ lemma continuousAt_clm_of_basis_continuousAt
   rw [dist_eq_norm]
   exact lt_of_le_of_lt hChain (by linarith)
 
-
 lemma continuousAt_bilin_of_basis_continuousAt
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {N : Type*} [TopologicalSpace N]
@@ -101,7 +98,6 @@ lemma continuousAt_bilin_of_basis_continuousAt
   exact continuousAt_clm_of_basis_continuousAt
     (F := F) (G := F →L[ℝ] ℝ) (N := N) (v := v)
     (u := u) (x₀ := x₀) h_inner_each
-
 
 lemma chartTensorInnerPointwise_0sCLM_continuousAt_of_baseSet
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
@@ -131,7 +127,6 @@ lemma chartTensorInnerPointwise_0sCLM_continuousAt_of_baseSet
   have hOpen : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
     (trivializationAt E (TangentSpace I) α).open_baseSet
   exact hCont.continuousAt (hOpen.mem_nhds hb₀)
-
 
 lemma innerBundleCLM_inCoordinates_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
@@ -213,7 +208,6 @@ lemma innerBundleCLM_inCoordinates_apply
     exact chartJ_chartJinv (I := I) (M := M) α hb (m i)
   rw [hcomp v, hcomp w]
 
-
 theorem innerBundleCLM_continuousOn (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M) :
     ContinuousOn (fun b : M =>
       TotalSpace.mk' (Tensor0SModel s ℝ E →L[ℝ] Tensor0SModel s ℝ E →L[ℝ] ℝ) b
@@ -248,7 +242,6 @@ theorem innerBundleCLM_continuousOn (g : SmoothRiemannianMetric I M) (s : ℕ) (
   intro w
   exact (innerBundleCLM_inCoordinates_apply (I := I) (M := M) g s b₀ hx v w).symm
 
-
 theorem innerBundleCLM_continuous (g : SmoothRiemannianMetric I M) (s : ℕ) :
     Continuous (fun b : M =>
       TotalSpace.mk' (Tensor0SModel s ℝ E →L[ℝ] Tensor0SModel s ℝ E →L[ℝ] ℝ) b
@@ -276,7 +269,6 @@ noncomputable def tensor0SContinuousRiemannianMetric
   continuous := by
     have h := innerBundleCLM_continuous (I := I) (M := M) g s
     convert h using 0
-
 
 theorem isContinuousRiemannianBundle_data
     (g : SmoothRiemannianMetric I M) (s : ℕ) :

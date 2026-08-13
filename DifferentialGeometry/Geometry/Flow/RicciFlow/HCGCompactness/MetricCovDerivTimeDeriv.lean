@@ -6,39 +6,12 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -48,8 +21,8 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology
-open Bundle Tensor0SBundle
-open DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
+
 open DifferentialGeometry.PDE.RicciFlow
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -61,14 +34,6 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
@@ -126,12 +91,6 @@ theorem covDerivOfField_eval_hasDerivWithinAt
       rw [hv] at hcl
       exact hcl
 
-
-
-
-
-
-
 omit [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
 theorem covDerivOfField_swapReg
@@ -182,13 +141,6 @@ theorem covDerivOfField_swapReg
     exact covDerivOfField_eval_hasDerivWithinAt (I := I) gRef A B T R p hbase
       (fun q hq => ihp q hq (lt_trans hq hpN))
       p le_rfl t ht x' (fun a : Fin (p + 2) => V a x')
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -301,11 +253,6 @@ theorem covDerivOfField_eval_contMDiffAt
       rw [hfun]
       exact h1.sub h2
 
-
-
-
-
-
 omit [I.Boundaryless] [IsManifold I 2 M]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
@@ -416,9 +363,6 @@ theorem covDerivOfField_eval_smoothAt
       rw [hfun]
       exact h1.sub h2
 
-
-
-
 omit [I.Boundaryless] [IsManifold I 2 M]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
@@ -439,18 +383,12 @@ theorem covDerivOfField_eval_mdiffAt
       (I := I) A0 W x)
     p V).mdifferentiableAt (by simp)
 
-
-
-
 noncomputable def solnMetricField
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (r : Real) :
     Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2 :=
   Tensor0SBundle.metricTensorField (I := I) (S.family.metric r)
-
-
-
 
 noncomputable def solnRicField
     {D : RealTimeInterval}
@@ -470,9 +408,6 @@ noncomputable def solnEvolField
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2 :=
   (-2 : Real) • solnRicField (I := I) S t
 
-
-
-
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
@@ -485,8 +420,6 @@ theorem solnRicField_eq_ricciAt
     (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) (S.family.metric t)) x
   exact h
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -519,12 +452,6 @@ theorem solnMetricDeriv
   rw [hfun, hval]
   exact heq
 
-
-
-
-
-
-
 omit [I.Boundaryless] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
 theorem solnTower_hasDerivAt
@@ -555,11 +482,6 @@ theorem solnTower_hasDerivAt
     D.carrier D.regular N
     (solnMetricDeriv (I := I) S hS) hswap p hp t ht x v
   exact h.hasDerivAt (D.regular_mem_nhds ht)
-
-
-
-
-
 
 omit [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
@@ -605,13 +527,6 @@ theorem solnTowerSwap_of_smooth
     D.carrier D.regular D.regular_subset
     (fun ht => D.regular_mem_nhds ht) N
     (solnMetricDeriv (I := I) S hS) hSmooth hFdiff hFtdiff
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
@@ -684,11 +599,6 @@ theorem solnMetricJointAt
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-
-
-
-
-
 omit [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
 theorem solnTowerSwap_of_joint
@@ -718,14 +628,6 @@ theorem solnTowerSwap_of_joint
       covDerivOfField_eval_mdiffAt (I := I) gRef (solnMetricField (I := I) S s) p V x)
     (fun p _ V t _ x =>
       covDerivOfField_eval_mdiffAt (I := I) gRef (solnEvolField (I := I) S t) p V x)
-
-
-
-
-
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem solnTowerSwap_reg

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.EvaluationFormChainRule
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciTensor
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.RicciTensor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.TimeDerivativeChainRule
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
@@ -17,8 +17,10 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFr
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeAssembly.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
-
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
@@ -27,11 +29,11 @@ open DifferentialGeometry
 open DifferentialGeometry.PDE
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.PDE.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.PDE.RicciFlow.Pullback
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
@@ -52,11 +54,10 @@ namespace RicciContInMetricAux
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- `chartGramOnE` is twice differentiable at any point of the chart-target interior. -/
 private lemma chartGramOnE_diffAt_int
     (g : SmoothRiemannianMetric I M) (α : M) (i j : Fin (Module.finrank ℝ E))
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
@@ -68,8 +69,6 @@ private lemma chartGramOnE_diffAt_int
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- The Fréchet derivative `fderiv (chartGramOnE g α i j)` is differentiable at any
-point of the chart-target interior (the chart-Gram entry is `C^∞`, hence `C²`). -/
 private lemma fderiv_chartGramOnE_diffAt_int
     (g : SmoothRiemannianMetric I M) (α : M) (i j : Fin (Module.finrank ℝ E))
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
@@ -84,8 +83,6 @@ private lemma fderiv_chartGramOnE_diffAt_int
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- The second directional partial of `chartGramOnE` equals the value of the second
-iterated Fréchet derivative on the two basis directions, at a chart-target interior point. -/
 private lemma partialDeriv_partialDeriv_chartGramOnE_eq_iteratedFDeriv_two
     (g : SmoothRiemannianMetric I M) (α : M) (i j m l : Fin (Module.finrank ℝ E))
     {y : E} (hy : y ∈ interior (extChartAt I α).target) :
@@ -512,13 +509,12 @@ namespace RicciContJointAux
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (Sp : Set (ℝ × M))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- The joint `0`-jet chart-Gram value continuity, from the `iteratedFDeriv 0` joint input. -/
 private lemma jointGram_continuousOn
     (h0 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M => iteratedFDeriv ℝ 0
@@ -534,7 +530,6 @@ private lemma jointGram_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- The joint `1`-jet directional chart-Gram partial continuity. -/
 private lemma jointGramPartial_continuousOn
     (h1 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M => iteratedFDeriv ℝ 1
@@ -553,7 +548,6 @@ private lemma jointGramPartial_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- The joint `2`-jet directional second chart-Gram partial continuity, on good-set points. -/
 private lemma jointGramPartialPartial_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (h2 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -576,7 +570,6 @@ private lemma jointGramPartialPartial_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint determinant continuity of the chart Gram matrix (a Leibniz polynomial). -/
 private lemma jointDet_continuousOn
     (hentry : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M => chartGramOnE (I := I) (g_DT q.1) α a b
@@ -598,7 +591,6 @@ private lemma jointDet_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint adjugate-entry continuity of the chart Gram matrix. -/
 private lemma jointAdjugate_continuousOn
     (hentry : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M => chartGramOnE (I := I) (g_DT q.1) α a b
@@ -640,7 +632,6 @@ private lemma jointAdjugate_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint inverse-Gram entry continuity (Cramer's rule, non-vanishing det on good-set points). -/
 private lemma jointInvGram_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (hentry : ∀ a b : Fin (Module.finrank ℝ E),
@@ -689,7 +680,6 @@ private lemma jointInvGram_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint `gramBracket` continuity (a `1`-jet chart-Gram combination). -/
 private lemma jointGramBracket_continuousOn
     (h1 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun q : ℝ × M => iteratedFDeriv ℝ 1
@@ -711,7 +701,6 @@ private lemma jointGramBracket_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint `gramBracketDeriv` continuity (a `2`-jet chart-Gram combination), good-set points. -/
 private lemma jointGramBracketDeriv_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (h2 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -739,7 +728,6 @@ private lemma jointGramBracketDeriv_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint directional inverse-Gram partial continuity, good-set points. -/
 private lemma jointInvGramPartial_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (h0 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -777,7 +765,6 @@ private lemma jointInvGramPartial_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint chart-Christoffel value continuity, good-set points. -/
 private lemma jointChristoffel_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (h0 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -822,7 +809,6 @@ private lemma jointChristoffel_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint directional chart-Christoffel partial continuity, good-set points. -/
 private lemma jointChristoffelPartial_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (h0 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -865,7 +851,6 @@ private lemma jointChristoffelPartial_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint chart-Riemann-tensor entry continuity, good-set points. -/
 private lemma jointRiemann_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (h0 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -907,7 +892,6 @@ private lemma jointRiemann_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- Joint chart-Ricci-tensor entry continuity, good-set points. -/
 private lemma jointRicci_continuousOn
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
     (h0 : ∀ a b : Fin (Module.finrank ℝ E),
@@ -1086,7 +1070,7 @@ theorem gfam_inner_continuous_on
     (hg_joint : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun q : ℝ × M =>
-          Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j
+          DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j
             (extChartAt I α q.2))
         (Set.Icc 0 T ×ˢ (chartAt H α).source))
     (hΦ_orbit : ∀ y : M,
@@ -1128,7 +1112,7 @@ theorem gfam_inner_continuous_on
         hbase0 horbit ((hΦ_total x w).continuousWithinAt hs₀)) j
   have hgram : ∀ i j : Fin (Module.finrank ℝ E),
       ContinuousWithinAt
-        (fun s : ℝ => Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT s) α i j
+        (fun s : ℝ => DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT s) α i j
           (extChartAt I α ((Φ_fam s : M → M) x))) (Set.Ico 0 T) s₀ := by
     intro i j
     set Sp : Set (ℝ × M) := Set.Icc 0 T ×ˢ (chartAt H α).source with hSp
@@ -1163,7 +1147,7 @@ theorem gfam_inner_continuous_on
             ((chartModelBasis E).repr
               (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
                 (mfderiv I I (Φ_fam s : M → M) x w))) j *
-            Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT s) α i j
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT s) α i j
               (extChartAt I α ((Φ_fam s : M → M) x)) := by
     intro s hb hsr
     exact g_inner_eq_chart_sum (I := I) (g_DT s) α hb hsr
@@ -1176,7 +1160,7 @@ theorem gfam_inner_continuous_on
         ((chartModelBasis E).repr
           (e.continuousLinearMapAt ℝ ((Φ_fam s : M → M) x)
             (mfderiv I I (Φ_fam s : M → M) x w))) j *
-        Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT s) α i j
+        DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT s) α i j
           (extChartAt I α ((Φ_fam s : M → M) x))) (Set.Ico 0 T) s₀ := by
     refine cwa_finset_sum _ (fun i _ => ?_)
     refine cwa_finset_sum _ (fun j _ => ?_)
@@ -1201,7 +1185,7 @@ theorem ricci_gfam_continuous_on
     (hC2 : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)) (k : ℕ), k ≤ 2 →
         ContinuousOn
           (fun q : ℝ × M => iteratedFDeriv ℝ k
-            (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT q.1) α i j)
+            (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j)
             (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α))
     (hΦ0 : ∀ y : M,
@@ -1253,7 +1237,7 @@ theorem ricci_gfam_continuous_on
   have hgoodSp : ∀ qp ∈ Sp, qp.2 ∈ chartLeviCivitaGoodSet (I := I) α := fun qp hqp => hqp.2
   have hjet : ∀ (k : ℕ), k ≤ 2 → ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun qp : ℝ × M => iteratedFDeriv ℝ k
-        (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT qp.1) α a b)
+        (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT qp.1) α a b)
         (extChartAt I α qp.2)) Sp :=
     fun k hk a b => hC2 α a b k hk
   have hric : ∀ p q : Fin (Module.finrank ℝ E),
@@ -1325,7 +1309,7 @@ theorem ricci_continuous_in_metric_time
       ∀ i j : Fin (Module.finrank ℝ E), ∀ k : ℕ, k ≤ 2 →
         ContinuousOn
           (fun s : ℝ => iteratedFDeriv ℝ k
-            (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT s) α i j)
+            (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT s) α i j)
             (extChartAt I α y))
           (Set.Icc 0 T)) :
     ContinuousOn (fun s : ℝ => ricciTensor (I := I) (g_DT s) x v w) (Set.Icc 0 T) := by
@@ -1341,17 +1325,17 @@ theorem ricci_continuous_in_metric_time
     exact chartLeviCivitaGoodSet_mem_baseSet (I := I) hxgood
   have h0 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 0
-        (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT t) x a b)
+        (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t) x a b)
         (extChartAt I x x)) (Set.Icc 0 T) :=
     fun a b => hC2 x x hxgood a b 0 (by norm_num)
   have h1 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 1
-        (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT t) x a b)
+        (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t) x a b)
         (extChartAt I x x)) (Set.Icc 0 T) :=
     fun a b => hC2 x x hxgood a b 1 (by norm_num)
   have h2 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 2
-        (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT t) x a b)
+        (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t) x a b)
         (extChartAt I x x)) (Set.Icc 0 T) :=
     fun a b => hC2 x x hxgood a b 2 (by norm_num)
   have hbridge : ∀ t : ℝ,
@@ -1379,14 +1363,6 @@ theorem ricci_continuous_in_metric_time
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- **Public joint `(t, x)` chart-Ricci-tensor continuity.**
-
-Re-exports the joint-continuity machinery in `RicciContJointAux` (whose lemmas are
-file-private) so downstream `ricciCont` assembly — joint bundle continuity of the
-canonical Ricci of an interior-slab Ricci-flow solution — can consume it.  From
-joint chart-Gram `iteratedFDeriv` (orders `0,1,2`) continuity on a set `Sp ⊆ ℝ × M`
-of good-set points, the chart-Ricci entry `q ↦ chartRicciTensor (g_DT q.1) α i k
-(extChartAt I α q.2)` is jointly continuous on `Sp`. -/
 theorem chartRicci_jointContinuousOn
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (Sp : Set (ℝ × M))
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -1406,8 +1382,6 @@ theorem chartRicci_jointContinuousOn
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- **Public joint `(t, x)` chart-Riemann-tensor continuity.**  Companion of
-`chartRicci_jointContinuousOn`, for the `(1,3)` chart-Riemann entry. -/
 theorem chartRiemann_jointContinuousOn
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (Sp : Set (ℝ × M))
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -1428,10 +1402,6 @@ theorem chartRiemann_jointContinuousOn
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-/-- **Joint `(t, x)` continuity of the chart-frame Ricci components.**
-
-Combines chart-Ricci continuity with the chart-frame Ricci identity to produce
-the form consumed by the bundle-continuity constructor. -/
 theorem ricciChartFrameComp_jointContinuousOn [I.Boundaryless]
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (Sp : Set (ℝ × M))
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -1485,7 +1455,7 @@ theorem metricScalar_chartTrace_eq [I.Boundaryless]
     · simp only [hgram]
       rw [← Matrix.mul_apply, chartGramMatrix_mul_chartInvGramMatrix (I := I) g α hbase,
         Matrix.one_apply]
-  have htrace := DifferentialGeometry.Integral.Connection.metricTracePair0SAt_eq_sum_basis
+  have htrace := DifferentialGeometry.Geometry.Operator.metricTracePair0SAt_eq_sum_basis
     (I := I) g (chartBasisFamily (I := I) α hbase)
     (fun k l => chartInvGramMatrix (I := I) g α x k l) hinv (metricRicciAt (I := I) g x)
   unfold metricScalarAt
@@ -1499,11 +1469,6 @@ theorem metricScalar_chartTrace_eq [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [SigmaCompactSpace M] in
-/-- **Joint `(t, x)` continuity of scalar curvature in the chart-`α` frame.**  From the chart-Gram
-jets (orders 0,1,2) the scalar curvature `(t, x) ↦ metricScalarAt (g_DT t) x` is jointly continuous
-on a good-set domain `Sp`.  Sums the chart-frame trace `metricScalar_chartTrace_eq` over the frame:
-chart-Gram-inverse joint continuity (`jointInvGram_continuousOn`) times Ricci-frame joint continuity
-(`ricciChartFrameComp_jointContinuousOn`).  The scalar analogue of `ricciChartFrameComp_jointContinuousOn`. -/
 theorem chartScalar_jointContinuousOn [I.Boundaryless]
     (g_DT : ℝ → SmoothRiemannianMetric I M) (α : M) (Sp : Set (ℝ × M))
     (hgood : ∀ q ∈ Sp, q.2 ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -1530,7 +1495,7 @@ theorem chartScalar_jointContinuousOn [I.Boundaryless]
     (ricciChartFrameComp_jointContinuousOn (I := I) g_DT α Sp hgood h0 h1 h2 i j)
 
 open RicciContInMetricAux
-  DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients in
+  DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1541,7 +1506,7 @@ theorem lieDeriv_deTurckVF_continuous_in_metric_time
       ∀ i j : Fin (Module.finrank ℝ E), ∀ k : ℕ, k ≤ 2 →
         ContinuousOn
           (fun s : ℝ => iteratedFDeriv ℝ k
-            (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT s) α i j)
+            (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT s) α i j)
             (extChartAt I α y))
           (Set.Icc 0 T)) :
     ContinuousOn (fun s : ℝ =>
@@ -1558,17 +1523,17 @@ theorem lieDeriv_deTurckVF_continuous_in_metric_time
     exact chartLeviCivitaGoodSet_mem_baseSet (I := I) hxgood
   have h0 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 0
-        (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT t) x a b)
+        (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t) x a b)
         (extChartAt I x x)) (Set.Icc 0 T) :=
     fun a b => hC2 x x hxgood a b 0 (by norm_num)
   have h1 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 1
-        (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT t) x a b)
+        (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t) x a b)
         (extChartAt I x x)) (Set.Icc 0 T) :=
     fun a b => hC2 x x hxgood a b 1 (by norm_num)
   have h2 : ∀ a b : Fin (Module.finrank ℝ E),
       ContinuousOn (fun t : ℝ => iteratedFDeriv ℝ 2
-        (Integral.DivergenceTheorem.chartGramOnE (I := I) (g_DT t) x a b)
+        (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT t) x a b)
         (extChartAt I x x)) (Set.Icc 0 T) :=
     fun a b => hC2 x x hxgood a b 2 (by norm_num)
   have hbridge : ∀ t : ℝ,

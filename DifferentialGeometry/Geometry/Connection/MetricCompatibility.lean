@@ -6,15 +6,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricCompatible
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
 
 open Bundle
 open scoped Manifold ContDiff
@@ -25,10 +17,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 section Pointwise
-
-
-
-
 
 def IsMetricCompatibleAt_gen
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -46,8 +34,6 @@ def IsMetricCompatible_gen
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M) : Prop :=
   forall x : M, IsMetricCompatibleAt_gen (I := I) cov g x
-
-
 
 theorem metric_compatible_at_apply
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
@@ -75,4 +61,4 @@ theorem metric_compatible_apply
 
 end Pointwise
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

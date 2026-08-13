@@ -6,12 +6,13 @@ import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity
 
 noncomputable section
 
+open DifferentialGeometry.Integral.DivergenceTheorem
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
     [NeZero (Module.finrank ℝ E)]
@@ -249,6 +250,6 @@ lemma partialDeriv_chartDensityOnE
   rw [hsqrt_eq] at heq
   exact heq.symm
 
-end DivergenceTheorem
-end Integral
+end Operator
+end Geometry
 end DifferentialGeometry

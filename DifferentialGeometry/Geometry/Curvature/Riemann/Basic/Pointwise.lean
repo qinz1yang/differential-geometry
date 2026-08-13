@@ -1,13 +1,14 @@
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option autoImplicit false
 
-open Bundle Tensor0SBundle DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff Topology
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type _} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [CompleteSpace E]
@@ -677,4 +678,4 @@ theorem riemannCurvature04At_eq_lower_riemannCurvatureAt
 
 end CovariantDerivative
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

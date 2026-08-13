@@ -2,21 +2,17 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Realized.RicciFlow
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -25,8 +21,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
 
 private theorem metric_gain_of_quad_bound
     {epsilon delta c C g dg : Real}
@@ -58,8 +52,6 @@ private theorem metric_gain_of_quad_bound
     nlinarith [hCc_g_le, hc_dg_lower]
   have hmul := mul_le_mul_of_nonneg_left hinside (le_of_lt hepsilon)
   nlinarith
-
-
 
 omit [IsManifold I 2 M] in
 omit [FiniteDimensional ℝ E] in
@@ -157,11 +149,9 @@ theorem metricGainAt_of_timeSlabQuadBound
       hepsilon.1 hC hdelta_le_recip htime_nonneg htime_le hmetric_nonneg
       (hbound t ht_raw x v)
 
-
-
 omit [IsManifold I 2 M] in
 theorem metricGainAt_of_totalCont
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (G : Real -> SmoothRiemannianMetric I M)
     (A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -210,16 +200,10 @@ theorem metricGainAt_of_totalCont
   · exact timeSlabAbsQuadCont (I := I) (M := M)
       G A (Set.Icc t0 (t0 + deltaRaw)) hAcont
 
-
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem metricGainAt_of_metricVariationDerivAt
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    [CompactSpace M] [T2Space M]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (Ric : RicciTensorField (I := I) (M := M) Real)
     (A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -274,15 +258,10 @@ theorem metricGainAt_of_metricVariationDerivAt
   · exact hGcont
   · exact hAcont
 
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem metricGainControl_of_metricVariation
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
-    (G : RealizedMetricFamily (I := I) (M := M) Real)
+    [CompactSpace M] [T2Space M]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
     (Ric : RicciTensorField (I := I) (M := M) Real)
     (A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -335,24 +314,16 @@ theorem metricGainControl_of_metricVariation
     (G := G) (Ric := Ric) (A := A) (T := T) (t0 := t0) (deltaRaw := deltaRaw)
     hdeltaRaw hdeltaRawT hEq hA hGcont hAcont
 
-
-
-
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem metricGainControl_of_metricVariationOn
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (Ric : RicciTensorField (I := I) (M := M) Real)
     (A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     {T : Real}
-    (hEq : MetricVariationEquationOn (I := I) G Ric)
+    (hEq : MetricVariationEquationOnRaw (I := I) G Ric)
     (hlocal :
       ∀ t0 : Real,
         t0 ∈ Set.Icc 0 T ->
@@ -415,24 +386,18 @@ theorem metricGainControl_of_metricVariationOn
   · exact hGcont
   · exact hAcont
 
-
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem metricGainControl_of_metricVariationOn_closedOpen
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     {omega T : Real} (h0ω : 0 < omega) (hTω : T < omega)
-    (G : RealizedMetricFamilyOn (I := I) (M := M)
+    (G : MetricConnectionFamilyOn (I := I) (M := M)
       (RealTimeInterval.closedOpen 0 omega h0ω))
     (Ric : RicciTensorField (I := I) (M := M) Real)
     (A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (hEq : MetricVariationEquationOn (I := I) G Ric)
+    (hEq : MetricVariationEquationOnRaw (I := I) G Ric)
     (hSmooth : MetricFamilySmoothOn (I := I) (M := M)
-      (RealTimeInterval.closedOpen 0 omega h0ω) G)
+      (RealTimeInterval.closedOpen 0 omega h0ω) G.metric)
     (hA :
       ∀ t, t ∈ Set.Ioc 0 T ->
         ∀ x, ∀ v : TangentSpace I x,
@@ -489,10 +454,10 @@ theorem metricGainControl_of_metricVariationOn_closedOpen
       ⟨lt_of_le_of_lt ht0.1 ht.1, le_trans ht.2 hdeltaRawT⟩
     exact hA t ht_global x v
   · exact metricTimeBundleQuad_cont_of_metricFamilySmoothOn (I := I) (M := M)
-      G hSmooth (by
+      G.metric hSmooth (by
         intro s hs
         exact ⟨le_trans ht0.1 hs.1,
           lt_of_le_of_lt (le_trans hs.2 hdeltaRawT) hTω⟩)
   · exact hAcont t0 deltaRaw
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.PDE.RicciFlow

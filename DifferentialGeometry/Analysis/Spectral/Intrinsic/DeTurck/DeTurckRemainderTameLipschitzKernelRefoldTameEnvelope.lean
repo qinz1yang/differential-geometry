@@ -1,17 +1,24 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzKernelRefoldTopSeparatedBounds
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -48,7 +55,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck (cometricLmodel)
+open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -67,7 +74,6 @@ open Analysis.Parabolic.TensorSpectral
 set_option backward.isDefEq.respectTransparency false
 
 set_option backward.isDefEq.respectTransparency false in
-
 private theorem rfns_iteratedCovGrad_linRicciOrder0RiemannHalfComb_topSeparated_budgetDualCap_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) :
     ∃ ε : ℝ, 0 ≤ ε ∧
@@ -369,7 +375,6 @@ private theorem rfns_iteratedCovGrad_linRicciOrder0RiemannHalfComb_topSeparated_
     exact hfin
 
 set_option backward.isDefEq.respectTransparency false in
-
 private theorem
     linearizedRicciConnDiffOrder0RiemannHalfComb_perOrder_l2_topArm_tameEnvelope_highOrder
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -431,7 +436,7 @@ private theorem
         (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-      DifferentialGeometry.Integral.Connection.integrable_riemannianFiberNormSq_toSection
+      DifferentialGeometry.Analysis.Elliptic.integrable_riemannianFiberNormSq_toSection
         (I := I) (M := M) g₀ 0 (2 + (i + 2)) (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P)
     have hF_int : MeasureTheory.Integrable
         (fun x => ε ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
@@ -504,7 +509,6 @@ private theorem
     nlinarith
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem exists_linearizedRicciArm0CorrField_realizedFam_jetL2_topArm_tameEnvelope_highOrder
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -633,7 +637,6 @@ theorem exists_linearizedRicciArm0CorrField_realizedFam_jetL2_topArm_tameEnvelop
   linarith
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem linearizedRicciArm0CorrField_allOrder_tameEnvelope_interface
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -772,7 +775,6 @@ private theorem threeArmHjoint_const_smul_fw (g₀ : SmoothRiemannianMetric I M)
   rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply]
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem exists_riemannPalatini_curvatureRefold_data
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -875,6 +877,6 @@ theorem exists_riemannPalatini_curvatureRefold_data
           ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 := by positivity
       nlinarith [mul_nonneg (hKid_nn i) hX]
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

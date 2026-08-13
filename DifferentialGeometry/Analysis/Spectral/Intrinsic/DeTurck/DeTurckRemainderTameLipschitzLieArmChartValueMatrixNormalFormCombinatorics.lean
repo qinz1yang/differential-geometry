@@ -4,7 +4,7 @@ noncomputable section
 
 open scoped BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.M0Abstract
+namespace DifferentialGeometry.Analysis.Spectral.M0Abstract
 
 abbrev rchB {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.rchB n
 abbrev p5B {n : ℕ} := @DeTurckCoefficients.LieCorr0NF.p5B n
@@ -66,4 +66,4 @@ theorem m0_master {n : ℕ} (ig cg f : Fin n → Fin n → ℝ)
     dga1 dgbg dgb higs hcgs hfs hdgs2 hga0s hga1s hgbgs hdga0s hdga1s hdgbgs hddgs hf3s
     hgbs hdgbs hdigs hcol hga1e hdga1e hdige hgbe hdgbe i j
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.M0Abstract
+end DifferentialGeometry.Analysis.Spectral.M0Abstract

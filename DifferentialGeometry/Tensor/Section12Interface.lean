@@ -70,23 +70,6 @@ import DifferentialGeometry.Geometry.Coordinates.Tensor
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace Tensor
 
@@ -94,31 +77,20 @@ noncomputable section
 
 open scoped TensorProduct Manifold ContDiff
 
-
-
 structure CovariantTensorBundleSupport
     (R : Type*) [CommSemiring R] (Point : Type*) where
-
   Vec : Point -> Type*
-
   Tensor0 : Nat -> Type*
-
   eval0 : {s : Nat} -> Tensor0 s -> (x : Point) -> (Fin s -> Vec x) -> R
-
   tensorProduct0 : {s q : Nat} -> Tensor0 s -> Tensor0 q -> Tensor0 (s + q)
-
   tensorProduct0_eval :
     forall {s q : Nat} (A : Tensor0 s) (B : Tensor0 q)
       (x : Point) (v : Fin (s + q) -> Vec x),
       eval0 (tensorProduct0 A B) x v =
         eval0 A x (v ∘ Fin.castAdd q) * eval0 B x (v ∘ Fin.natAdd s)
-
   trace02 : Tensor0 2 -> Point -> R
-
   inner02 : Tensor0 2 -> Tensor0 2 -> Point -> R
-
   normSq02 : Tensor0 2 -> Point -> R
-
   normSq02_eq_inner02 :
     forall (A : Tensor0 2) (x : Point), normSq02 A x = inner02 A A x
 
@@ -126,7 +98,6 @@ namespace CovariantTensorBundleSupport
 
 variable {R : Type*} [CommSemiring R] {Point : Type*}
 variable (S : CovariantTensorBundleSupport R Point)
-
 
 def component0 {s : Nat} (A : S.Tensor0 s)
     (x : Point) (frame : Nat -> S.Vec x) (slots : Fin s -> Nat) : R :=
@@ -150,9 +121,6 @@ def component0 {s : Nat} (A : S.Tensor0 s)
 
 end CovariantTensorBundleSupport
 
-
-
-
 structure Section12ScalarHeatSupport
     (R : Type*) [Sub R] (Time Point : Type*) where
   dt : (Time -> Point -> R) -> Time -> Point -> R
@@ -163,7 +131,6 @@ namespace Section12ScalarHeatSupport
 variable {R : Type*} [Sub R] {Time Point : Type*}
 variable (H : Section12ScalarHeatSupport R Time Point)
 
-
 def heat (f : Time -> Point -> R) (t : Time) (x : Point) : R :=
   H.dt f t x - H.laplacian f t x
 
@@ -173,9 +140,6 @@ def heat (f : Time -> Point -> R) (t : Time) (x : Point) : R :=
 
 end Section12ScalarHeatSupport
 
-
-
-
 def TracefreeRicciNormSqDecomposition
     {R : Type*} [Mul R] [Sub R] (nInv : R)
     {Time Point : Type*}
@@ -184,10 +148,6 @@ def TracefreeRicciNormSqDecomposition
   forall t x,
     tracefreeRicciNormSq t x =
       ricciNormSq t x - nInv * scalarCurvature t x * scalarCurvature t x
-
-
-
-
 
 structure Section12CurvatureScalars
     (R : Type*) [Mul R] [Sub R] (Time Point : Type*) where
@@ -204,7 +164,6 @@ namespace Section12CurvatureScalars
 
 variable {R : Type*} [Mul R] [Sub R] {Time Point : Type*}
 
-
 theorem tracefreeRicciNormSqDecomposition
     (Q : Section12CurvatureScalars R Time Point) :
     TracefreeRicciNormSqDecomposition Q.tracefreeRicciNormSq_nInv
@@ -213,8 +172,6 @@ theorem tracefreeRicciNormSqDecomposition
 
 end Section12CurvatureScalars
 
-
-
 def CubicReactionIdentity
     {R : Type*} [OfNat R 2] [Mul R] [Sub R]
     {Time Point : Type*} (Q : Section12CurvatureScalars R Time Point)
@@ -222,13 +179,6 @@ def CubicReactionIdentity
   forall t x,
     2 * Q.scalarCurvature t x * reaction t x =
       2 * Q.ricciNormSq t x * Q.ricciNormSq t x - Q.cubicQ t x
-
-
-
-
-
-
-
 
 namespace MultilinearBundle
 
@@ -243,13 +193,6 @@ variable {E : B -> Type*} [forall x, NormedAddCommGroup (E x)]
   [TopologicalSpace (Bundle.TotalSpace F E)]
   [FiberBundle F E] [VectorBundle K F E]
 variable {n : WithTop ℕ∞} [ContMDiffVectorBundle n F E IB]
-
-
-
-
-
-
-
 
 noncomputable abbrev covariantTensorProductBundleEquiv (s q : Nat) :=
   MultilinearSection.multilinearBundle_tensorProduct_equiv

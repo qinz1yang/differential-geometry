@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDifferenceJetNorm
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -7,18 +8,18 @@ open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor
-open DifferentialGeometry.PDE.RicciFlow.HebeyBlock
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
-open Tensor0SBundle
+open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -98,11 +99,6 @@ theorem deTurckRHS_diff_frame_component_apply
           (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) := by
   rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
 
-
-
-
-
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -143,15 +139,6 @@ theorem deTurckRHS_diff_gNorm_le_modelNorm_pointwise
       ‖T‖ ≤ D * ‖TensorRSSpace.toModel (𝕜 := ℝ) (I := I) T‖ :=
   gNorm_le_modelNorm_pointwise (I := I) (M := M) g₀ 0 2 x₀
 
-
-
-
-
-
-
-
-
-
 def chartDeTurckRHSComp (g_bg g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (-2 : ℝ) * chartRicciTensor (I := I) g α i j y
@@ -164,32 +151,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
     chartDeTurckRHSComp (I := I) g_bg g α i j y =
       (-2 : ℝ) * chartRicciTensor (I := I) g α i j y
         + chartLieDeTurckComp (I := I) g g_bg α i j y := rfl
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [CompactSpace M] in
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -247,9 +208,8 @@ theorem exists_chartDeTurckRHSComp_lipschitz_on_compact
     _ = (2 * Cric + Clie) * jet2 := by ring
 
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

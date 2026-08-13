@@ -1,20 +1,7 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Geodesic.ChartRegularity
 import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
-
-
-/-!
-# Global `C^∞`-in-time regularity of the intrinsic geodesic
-
-The intrinsic geodesic of a complete manifold is `C^∞` in time on all of `ℝ`
-— the `C^∞` upgrade of `intrinsicGeodesic_contMDiffOn` (which gives `C¹`).
-The engine is `isGeodesicOn_contMDiffOn_infty` (`Geodesic/ChartRegularity.lean`):
-a moving-foot geodesic, continuous on an open time set, is `C^∞` there, with
-no chart-confinement or small-radius hypothesis.
-
-This removes the time-regularity half of the `expMapC2Radius`-type caps: the
-radial geodesic `t ↦ exp_p(t·x)` in its intrinsic form is smooth on every
-compact window, for every launch vector.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -40,14 +27,11 @@ variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [ConnectedSpace M] in
-/-- **The intrinsic geodesic is `C^∞` in time on all of `ℝ`.**  `C^∞` upgrade
-of `intrinsicGeodesic_contMDiffOn`. -/
 theorem intrinsicGeodesic_contMDiffOn_infty
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     ContMDiffOn 𝓘(ℝ, ℝ) I ∞ (intrinsicGeodesic (I := I) g hEnorm p v)
       Set.univ := by
@@ -59,15 +43,11 @@ theorem intrinsicGeodesic_contMDiffOn_infty
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [ConnectedSpace M] in
-/-- **The intrinsic geodesic is globally `C^∞` in time** (unrestricted
-`ContMDiff` form of `intrinsicGeodesic_contMDiffOn_infty`, for consumers that
-ask for `ContMDiff` on all of `ℝ`, e.g. the parallel-frame producer). -/
 theorem intrinsicGeodesic_contMDiff
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) :
     ContMDiff 𝓘(ℝ, ℝ) I ∞ (intrinsicGeodesic (I := I) g hEnorm p v) :=
   contMDiffOn_univ.mp

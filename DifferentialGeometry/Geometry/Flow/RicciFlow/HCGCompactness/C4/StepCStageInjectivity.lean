@@ -1,17 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCSourceBuffer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageReturn
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Global injectivity of the finite-stage comparison maps
-
-The proof combines the uniform intrinsic source buffer with the independently
-constructed reverse-stage approximate return map.  If two source points have
-the same forward image, return closeness puts them in one buffered normal
-chart.  The coordinate segment between them remains in a slightly larger
-source ball, where the order-one stage-map jet estimate gives injectivity.
--/
 
 noncomputable section
 
@@ -35,9 +26,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-/-- With the same explicit construction-radius room used by the approximate
-return theorem, the actual global comparison maps are eventually injective on
-the smaller retained source ball. -/
 theorem HasStageJetData.inj_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

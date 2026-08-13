@@ -6,14 +6,6 @@ import Mathlib.Tactic.NormNum
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -21,19 +13,10 @@ namespace HCGCompactness
 
 open scoped BigOperators
 
-
-
-
-
-
 noncomputable def oneStepConst (B : Nat -> Real) (k m : Nat) : Real :=
   (m : Real) *
     Finset.sum (Finset.range (k + 1))
       (fun a => (k.choose a : Real) * B a)
-
-
-
-
 
 noncomputable def lemma45Const (B : Nat -> Real) : Nat -> Nat -> Real
   | 0, _m => 1
@@ -106,13 +89,6 @@ theorem lemma45Const_le_succ
     mul_nonneg hprev_succ_nonneg hfactor_nonneg
   simp [lemma45Const]
   linarith
-
-
-
-
-
-
-
 
 noncomputable def compApproxConst (C : Nat -> Real) (p : Nat) : Real :=
   (2 : Real) ^ (p + 3) * (1 + (p : Real) * C p)

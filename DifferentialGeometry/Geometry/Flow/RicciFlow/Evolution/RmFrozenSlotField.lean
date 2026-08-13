@@ -1,70 +1,17 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmRaisingBridge
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle Filter
+open Bundle DifferentialGeometry.Tensor0SBundle Filter
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -73,14 +20,6 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
-
-
-
-
-
 
 private def freezeAllButSlots
     (Y : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -107,17 +46,7 @@ private theorem freezeAllButSlots_apply
   · subst hi; simp [freezeAllButSlots]
   · simp [freezeAllButSlots, Function.update_of_ne hi]
 
-
-
-
-
-
-
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
 noncomputable def freezeAllBut04Field
     [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -238,13 +167,6 @@ theorem freezeAllBut04Field_apply_vec
       A x (Function.update (fun i : Fin 4 => Y i x) q W) := by
   rw [freezeAllBut04Field_apply]
   exact oneFormAtSlot0S_apply (I := I) (A x) (fun i : Fin 4 => Y i x) q W
-
-
-
-
-
-
-
 
 private theorem allBut04FreezeNabla
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
@@ -400,15 +322,13 @@ private theorem allBut04FreezeNabla
         4 cov A x (Fin.cons (X x)
           (Function.update (fun i : Fin 4 => Y i x) q U)) := hAtot.symm
 
-end DifferentialGeometry.Integral.Connection
-
-
+end DifferentialGeometry.PDE.RicciFlow
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Integral.Connection
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -419,12 +339,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
-
-
 def rmFrozenSlotField
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (q : Fin 4)
     (Y : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) :
@@ -435,7 +351,7 @@ def rmFrozenSlotField
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 @[simp] theorem rmFrozenSlotField_apply
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (q : Fin 4)
     (Y : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
@@ -447,7 +363,7 @@ omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem rmFrozenSlotField_apply_vec
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (q : Fin 4)
     (Y : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
@@ -460,17 +376,15 @@ theorem rmFrozenSlotField_apply_vec
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem rmFrozen_connSmoothInf
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (S.family.connection t) (∞ : WithTop ℕ∞) := by
   simpa [SolutionFamily.connection, metricCov] using
     metricCov_smooth (I := I) (M := M) (S.base.metric t)
 
-
-
 def nablaRmFrozenSlotField
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (q : Fin 4)
     (Y : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) :
@@ -482,13 +396,10 @@ def nablaRmFrozenSlotField
       1 (S.family.connection t) (rmFrozen_connSmoothInf (I := I) S t)
       (rmFrozenSlotField (I := I) S t q Y))
 
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaRmFrozenSlotField_realizes
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (q : Fin 4)
     (Y : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) :
@@ -501,26 +412,12 @@ theorem nablaRmFrozenSlotField_realizes
       1 (S.family.connection t) (rmFrozen_connSmoothInf (I := I) S t)
       (rmFrozenSlotField (I := I) S t q Y))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [SigmaCompactSpace M] in
 theorem nablaRmFrozenSlot_eval
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (q : Fin 4)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))

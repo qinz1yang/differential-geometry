@@ -109,7 +109,7 @@ theorem MemWkpChart_smooth_mul_per_chart_quant
 theorem wkpNormChart_smooth_mul_le
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞}
     (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) :

@@ -1,19 +1,9 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageComparison
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -30,10 +20,6 @@ open DifferentialGeometry.Geometry.Riemannian
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace
-
-
-
-
 
 theorem MapCInfConvOnCompacts.pullbackAlong
     {V W : Type*}
@@ -85,8 +71,6 @@ theorem MapCInfConvOnCompacts.pullbackAlong
       (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
   exact hBA.pullbackForm hU hDA hBAc hBAinfC hDAc hDAinfC
 
-
-
 theorem pullback_sub_norm
     {V : Type*} [NormedAddCommGroup V] [NormedSpace Real V]
     (B₀ B₁ : V →L[Real] V →L[Real] Real) (A : V →L[Real] V) :
@@ -104,9 +88,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-
-
-
 
 theorem HasStageJetData.coeff_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -398,9 +379,6 @@ theorem HasStageJetData.coeff_tail
       have htau_sq : tau ^ 2 ≤ tau := by nlinarith [sq_nonneg tau]
       nlinarith
 
-
-
-
 theorem HasStageJetData.chart_conv
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -474,10 +452,6 @@ theorem HasStageJetData.chart_conv
     alpha z (interior_subset hzInt)
   have hsrc := hNs n hnS hzV
   exact (hjet hzInt hsrc).2.2 j hj
-
-
-
-
 
 theorem HasStageJetData.pb_conv
     (inp : MetricCompactnessInputs (I := I) X)
@@ -706,9 +680,6 @@ theorem HasStageJetData.pb_conv
     rw [fderiv_id]
     ext v w
     rfl
-
-
-
 
 theorem HasStageJetData.pb_jet_tail
     (inp : MetricCompactnessInputs (I := I) X)

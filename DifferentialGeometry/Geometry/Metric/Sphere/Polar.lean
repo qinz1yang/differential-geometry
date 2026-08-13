@@ -1,14 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundMetric
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.InverseDeriv
 
-/-!
-# Polar coordinates on the round sphere
-
-This file records the ambient algebra needed to read a point of the unit
-sphere, away from a pair of antipodes, in polar coordinates about one pole.
-The results are deliberately independent of the intrinsic exponential map.
--/
-
 noncomputable section
 
 open Metric Set
@@ -19,25 +11,20 @@ namespace Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
-/-- The ambient polar map about `p`. -/
 def spherePolar (p : E) (q : ℝ × E) : E :=
   Real.cos q.1 • p + Real.sin q.1 • q.2
 
-/-- The ambient polar-coordinate inverse about `p`, on the locus where it is
-defined smoothly. -/
 def spherePolarInv (p x : E) : ℝ × E :=
   (Real.arccos ⟪p, x⟫_ℝ,
     (Real.sin (Real.arccos ⟪p, x⟫_ℝ))⁻¹ •
       (x - ⟪p, x⟫_ℝ • p))
 
-/-- The ambient polar map is smooth. -/
 theorem spherePolar_smooth (p : E) :
     ContDiff ℝ ∞ (spherePolar p) := by
   exact
     ((Real.contDiff_cos.comp contDiff_fst).smul contDiff_const).add
       ((Real.contDiff_sin.comp contDiff_fst).smul contDiff_snd)
 
-/-- The polar-coordinate inverse is smooth away from the two pole levels. -/
 theorem polarInv_smooth (p : E) :
     ContDiffOn ℝ ∞ (spherePolarInv p)
       {x : E | |⟪p, x⟫_ℝ| < 1} := by
@@ -77,8 +64,6 @@ theorem polarInv_smooth (p : E) :
     · exact contDiffAt_id.sub (hinner.smul contDiffAt_const)
   exact (harccos.prodMk hsecond).contDiffWithinAt
 
-/-- Every unit vector other than the two poles has the canonical polar
-decomposition about `p`. -/
 theorem polar_decomp
     {p x : E} (hp : ‖p‖ = 1) (hx : ‖x‖ = 1)
     (hxp : x ≠ p) (hxnp : x ≠ -p) :

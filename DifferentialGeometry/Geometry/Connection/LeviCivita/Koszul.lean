@@ -13,7 +13,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -24,7 +24,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 lemma SmoothRiemannianMetric.eq_of_inner_eq
-    (g : Measure.SmoothRiemannianMetric I M) {x : M} {v w : TangentSpace I x}
+    (g : SmoothRiemannianMetric I M) {x : M} {v w : TangentSpace I x}
     (h : ∀ ζ : TangentSpace I x, g.inner x v ζ = g.inner x w ζ) : v = w := by
   have hpair : ∀ ζ : TangentSpace I x, g.inner x (v - w) ζ = 0 := by
     intro ζ
@@ -39,7 +39,7 @@ lemma SmoothRiemannianMetric.eq_of_inner_eq
 variable
   {cov : (Π x : M, TangentSpace I x) →
     (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x)}
-  {g : Measure.SmoothRiemannianMetric I M}
+  {g : SmoothRiemannianMetric I M}
 
 @[reducible] def directionalDeriv (f : M → ℝ) (x : M) (v : TangentSpace I x) : ℝ :=
   (mfderiv I 𝓘(ℝ) f x) v
@@ -185,5 +185,5 @@ theorem koszul_levi_civita_unique_of_torsionFree_metricCompatible
   simpa [hXx] using hloc
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

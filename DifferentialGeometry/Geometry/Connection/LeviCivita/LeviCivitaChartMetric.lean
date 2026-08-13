@@ -3,6 +3,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricCompatible
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -11,7 +12,7 @@ open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -22,6 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 def chartInnerOnE (g : SmoothRiemannianMetric I M) (α : M)
     (Y Z : Π x : M, TangentSpace I x) (y : E) : ℝ :=
@@ -1021,5 +1023,5 @@ theorem chartLeviCivita_isMetricCompatibleOn
   linear_combination hmatch
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

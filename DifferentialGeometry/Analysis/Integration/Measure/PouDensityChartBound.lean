@@ -24,7 +24,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 
 theorem exists_pou_chartDensity_bound_on_chartTarget
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ M_α : ℝ, 0 ≤ M_α ∧
       ∀ y ∈ (extChartAt I α).target,

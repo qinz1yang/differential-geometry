@@ -1,15 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory
@@ -29,14 +20,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-
-
-
-
-
-
-
-
 def paramGramMatrix (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) :
     E → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
@@ -44,11 +27,6 @@ def paramGramMatrix (g : SmoothRiemannianMetric I M)
     g.inner (Ψ w)
       (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
       (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j))
-
-
-
-
-
 
 @[simp] lemma paramGramMatrix_apply
     (g : SmoothRiemannianMetric I M)
@@ -59,20 +37,9 @@ def paramGramMatrix (g : SmoothRiemannianMetric I M)
         (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
         (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j)) := rfl
 
-
-
-
-
-
-
-
 def paramDensity (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) : E → ℝ :=
   fun w => Real.sqrt (paramGramMatrix (I := I) g Ψ w).det
-
-
-
-
 
 @[simp] lemma paramDensity_apply
     (g : SmoothRiemannianMetric I M)
@@ -81,13 +48,6 @@ def paramDensity (g : SmoothRiemannianMetric I M)
     paramDensity (I := I) g Ψ w =
       Real.sqrt (paramGramMatrix (I := I) g Ψ w).det := rfl
 
-
-
-
-
-
-
-
 noncomputable def paramDerivEquiv
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
     {w : E} (hw : w ∈ Ψ.source) :
@@ -95,11 +55,6 @@ noncomputable def paramDerivEquiv
   (PartialDiffeomorph.isLocalDiffeomorphAt
     (I := 𝓘(ℝ, E)) (J := I) (n := 1) Ψ hw).mfderivToContinuousLinearEquiv
       (by norm_num)
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 lemma paramDeriv_ker
@@ -113,31 +68,15 @@ lemma paramDeriv_ker
   intro v hv
   apply (hlocal.mfderivToContinuousLinearEquiv (by norm_num)).injective
 
-
-
-
-
-
-
 def paramChartMap (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) : E → E :=
   fun w => extChartAt I x₀ (Ψ w)
-
-
-
-
-
 
 def paramJacobianMatrix (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) (w : E) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   LinearMap.toMatrix (chartModelBasis E) (chartModelBasis E)
     (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w).toLinearMap
-
-
-
-
-
 
 omit [IsManifold I ∞ M] in
 @[simp] lemma paramJacobianMatrix_apply
@@ -148,13 +87,6 @@ omit [IsManifold I ∞ M] in
         ((fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w)
           ((chartModelBasis E) i)) k := by
   simp [paramJacobianMatrix, LinearMap.toMatrix_apply]
-
-
-
-
-
-
-
 
 lemma paramDeriv_chartBasis_eq_sum
     (x₀ : M) (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -225,13 +157,6 @@ lemma paramDeriv_chartBasis_eq_sum
           rw [hbasis]
           rw [ContinuousLinearEquiv.apply_symm_apply]
 
-
-
-
-
-
-
-
 lemma paramGramMatrix_pullback_eq_sum
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -279,12 +204,6 @@ lemma paramGramMatrix_pullback_eq_sum
   rw [chartGramMatrix_apply]
   ring
 
-
-
-
-
-
-
 theorem paramGramMatrix_pullback_eq_mul
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -305,12 +224,6 @@ theorem paramGramMatrix_pullback_eq_mul
   intro k _
   ring
 
-
-
-
-
-
-
 omit [IsManifold I ∞ M] in
 lemma paramJacobianMatrix_det
     (x₀ : M) (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) (w : E) :
@@ -318,12 +231,6 @@ lemma paramJacobianMatrix_det
       (fderiv ℝ (paramChartMap (I := I) x₀ Ψ) w).det := by
   unfold paramJacobianMatrix
   rw [LinearMap.det_toMatrix]
-
-
-
-
-
-
 
 lemma paramGramMatrix_det_pullback
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -338,12 +245,6 @@ lemma paramGramMatrix_det_pullback
   rw [paramJacobianMatrix_det (I := I) x₀ Ψ w]
   ring
 
-
-
-
-
-
-
 theorem paramDensity_eq_abs_det_mul_chartDensity
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -356,11 +257,6 @@ theorem paramDensity_eq_abs_det_mul_chartDensity
   rw [paramGramMatrix_det_pullback (I := I) g x₀ Ψ hw hx]
   rw [Real.sqrt_mul (sq_nonneg _)]
   rw [Real.sqrt_sq_eq_abs]
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 lemma paramChartMap_contDiffOn
@@ -382,8 +278,6 @@ lemma paramChartMap_contDiffOn
   exact contMDiffOn_iff_contDiffOn.mp
     (by simpa [paramChartMap, Function.comp_def] using hcomp)
 
-/-- The parametrized Gram matrix is continuous on any open source subset whose
-image lies in one canonical chart. -/
 lemma paramGram_contOn
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -432,9 +326,6 @@ lemma paramGram_contOn
       paramGramMatrix_pullback_eq_sum (I := I) g x₀ Ψ
         (hs_source hw) (hs_chart w hw) i j).restrict
 
-/-- The parametrized density is continuous on any open source subset whose image
-lies in one canonical chart.
--/
 lemma paramDensity_continuousOn_chart
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -461,8 +352,6 @@ lemma paramDensity_continuousOn_chart
     paramDensity_eq_abs_det_mul_chartDensity (I := I) g x₀ Ψ
       (hs_source hw) (hs_chart w hw))
 
-/-- The parametrized density is continuous on the full source of a partial
-diffeomorphism. -/
 lemma paramDensity_contOn
     (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) :
@@ -493,7 +382,6 @@ lemma paramDensity_contOn
   exact (hcontU.continuousAt (hUopen.mem_nhds hwU)).comp
     continuous_subtype_val.continuousAt
 
-/-- Measurability form of chart-local continuity of the parametrized density. -/
 lemma aemeasurable_ofReal_paramDensity_on_chart
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -505,12 +393,6 @@ lemma aemeasurable_ofReal_paramDensity_on_chart
   have hcont : ContinuousOn (paramDensity (I := I) g Ψ) s :=
     paramDensity_continuousOn_chart (I := I) g x₀ Ψ hs_open hs_source hs_chart
   exact ENNReal.measurable_ofReal.comp_aemeasurable (hcont.aemeasurable hs_meas)
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 lemma paramChartMap_hasFDerivWithinAt
@@ -530,12 +412,6 @@ lemma paramChartMap_hasFDerivWithinAt
       (paramChartMap (I := I) x₀ Ψ) w := by
     simpa [paramChartMap, Function.comp_def] using hchartdiff.comp w hΨdiff
   exact hTdiff.differentiableAt.hasFDerivAt.hasFDerivWithinAt
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 lemma paramChartMap_injOn
@@ -560,12 +436,6 @@ lemma paramChartMap_injOn
     (extChartAt I x₀).injOn hu_ext hv_ext huv
   exact Ψ.toPartialEquiv.injOn (hs_source hu) (hs_source hv) hΨuv
 
-
-
-
-
-
-
 lemma measurableSet_image_paramChartMap
     (x₀ : M) (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
     {s : Set E} (hs_meas : MeasurableSet s)
@@ -579,12 +449,6 @@ lemma measurableSet_image_paramChartMap
       (hs_source hw) (hs_chart w hw)
   exact MeasureTheory.measurable_image_of_fderivWithin hs_meas hf'
     (paramChartMap_injOn (I := I) x₀ Ψ hs_source hs_chart)
-
-
-
-
-
-
 
 lemma measurableSet_image_param
     [T2Space M]
@@ -642,12 +506,6 @@ lemma measurableSet_image_param
       exact hxchart
     simpa [paramChartMap] using ((extChartAt I x₀).left_inv hxsrc).symm
 
-
-
-
-
-
-
 omit [IsManifold I ∞ M] in
 lemma measurableSet_image_param_global
     [T2Space M]
@@ -661,12 +519,6 @@ lemma measurableSet_image_param_global
     intro u hu v hv huv
     exact Ψ.toPartialEquiv.injOn (hs_source hu) (hs_source hv) huv
   exact hs_meas.image_of_continuousOn_injOn hcont hinj
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 lemma measurableSet_symm_image_param
@@ -703,11 +555,6 @@ lemma measurableSet_symm_image_param
       change Ψ.toPartialEquiv.symm (Ψ.toPartialEquiv w) = w
       exact Ψ.toPartialEquiv.left_inv hwsrc⟩
 
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 lemma measurableSet_param_chartPiece
     (x₀ : M) (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -729,13 +576,6 @@ lemma measurableSet_param_chartPiece
       exact ⟨hw, hchart⟩
   rw [heq]
   exact hs_meas.inter hopen.measurableSet
-
-
-
-
-
-
-
 
 lemma aemeasurable_ofReal_paramDensity_on_chartPiece
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -769,8 +609,6 @@ lemma aemeasurable_ofReal_paramDensity_on_chartPiece
   exact ENNReal.measurable_ofReal.comp_aemeasurable
     ((hcontU.mono hpiece_sub).aemeasurable hpiece_meas)
 
-
-
 omit [IsManifold I ∞ M] in
 lemma aemeasurable_ofReal_pou_param_on_chartPiece
     (ρ : SmoothPartitionOfUnity M I M univ) (x₀ : M)
@@ -792,8 +630,6 @@ lemma aemeasurable_ofReal_pou_param_on_chartPiece
     (hΨcont_source.mono hS_sub_source).aemeasurable hS_meas
   exact (measurable_ofReal_pou_weight (I := I) ρ x₀).comp_aemeasurable hΨ_aem
 
-
-
 lemma aemeasurable_paramDensity_mul_pou_on_chartPiece
     (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ) (x₀ : M)
@@ -809,8 +645,6 @@ lemma aemeasurable_paramDensity_mul_pou_on_chartPiece
     hs_meas hs_source).mul
     (aemeasurable_ofReal_pou_param_on_chartPiece (I := I) ρ x₀ Ψ
       hs_meas hs_source)
-
-
 
 lemma aemeasurable_paramDensity_mul_pou_indicator_chartPiece
     (g : SmoothRiemannianMetric I M)
@@ -830,8 +664,6 @@ lemma aemeasurable_paramDensity_mul_pou_indicator_chartPiece
     (aemeasurable_paramDensity_mul_pou_on_chartPiece (I := I) g ρ x₀ Ψ
       hs_meas hs_source)
 
-
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 lemma pou_weight_eq_zero_of_notMem_chart
     (ρ : SmoothPartitionOfUnity M I M univ)
@@ -840,14 +672,6 @@ lemma pou_weight_eq_zero_of_notMem_chart
     ρ α x = 0 := by
   by_contra hne
   exact hx (hρ α (subset_tsupport _ hne))
-
-
-
-
-
-
-
-
 
 theorem lintegral_image_paramChartMap_chartDensity_eq
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -893,11 +717,6 @@ theorem lintegral_image_paramChartMap_chartDensity_eq
   rw [hsymm]
   rw [← ENNReal.ofReal_mul (abs_nonneg _)]
   rw [← paramDensity_eq_abs_det_mul_chartDensity (I := I) g x₀ Ψ (hs_source hw) hx]
-
-
-
-
-
 
 theorem lintegral_image_paramChartMap_mul_chartDensity_eq
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -949,15 +768,6 @@ theorem lintegral_image_paramChartMap_mul_chartDensity_eq
   rw [← mul_assoc]
   rw [← ENNReal.ofReal_mul (abs_nonneg _)]
   rw [← paramDensity_eq_abs_det_mul_chartDensity (I := I) g x₀ Ψ (hs_source hw) hx]
-
-
-
-
-
-
-
-
-
 
 theorem chartLocalMeasure_image_param_eq
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -1033,9 +843,6 @@ theorem chartLocalMeasure_image_param_eq
   exact lintegral_image_paramChartMap_chartDensity_eq (I := I) g x₀ Ψ
     hs_meas hs_source hs_chart
 
-
-
-
 theorem chartLocalMeasure_image_param_eq_t2
     [T2Space M]
     (g : SmoothRiemannianMetric I M) (x₀ : M)
@@ -1048,10 +855,6 @@ theorem chartLocalMeasure_image_param_eq_t2
         ∂(modelHaar (E := E)) :=
   chartLocalMeasure_image_param_eq (I := I) g x₀ Ψ hs_meas hs_source hs_chart
     (measurableSet_image_param (I := I) x₀ Ψ hs_meas hs_source hs_chart)
-
-
-
-
 
 theorem chartLocalMeasure_lintegral_image_param_eq_t2
     [T2Space M]
@@ -1128,13 +931,6 @@ theorem chartLocalMeasure_lintegral_image_param_eq_t2
   exact lintegral_image_paramChartMap_mul_chartDensity_eq (I := I) g x₀ Ψ
     hs_meas hs_source hs_chart F
 
-
-
-
-
-
-
-
 theorem riemannianMeasure_param_summand_eq
     [T2Space M]
     (g : SmoothRiemannianMetric I M)
@@ -1209,8 +1005,6 @@ theorem riemannianMeasure_param_summand_eq
           ENNReal.ofReal (ρ α (Ψ w)) ∂(modelHaar (E := E)) := by
           rw [hS_def]
 
-
-
 lemma param_pou_piece_zero
     (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ) (α : M)
@@ -1227,8 +1021,6 @@ lemma param_pou_piece_zero
     rw [hα] at hx
     exact (Set.notMem_empty _) hx
   simp [hzero]
-
-
 
 lemma tsum_param_pou_piece_eq_subtype
     (g : SmoothRiemannianMetric I M)
@@ -1250,7 +1042,6 @@ lemma tsum_param_pou_piece_eq_subtype
   by_contra hne
   rw [Set.not_nonempty_iff_eq_empty] at hne
   exact hα (param_pou_piece_zero (I := I) g ρ α hne Ψ)
-
 
 lemma tsum_param_pou_piece_indicator_eq
     [T2Space M] [SigmaCompactSpace M]
@@ -1316,9 +1107,6 @@ lemma tsum_param_pou_piece_indicator_eq
       intro hw
       exact hwB hw.1
     rw [Set.indicator_of_notMem hmem]
-
-
-
 
 theorem riemannianMeasure_image_param_eq
     [T2Space M] [SigmaCompactSpace M]
@@ -1394,7 +1182,6 @@ theorem riemannianMeasure_image_param_eq
         ∂(modelHaar (E := E)) := by
           rw [MeasureTheory.lintegral_indicator hB_meas]
 
-
 theorem riemannianVolumeMeasure_image_param_eq
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -1409,8 +1196,6 @@ theorem riemannianVolumeMeasure_image_param_eq
   exact riemannianMeasure_image_param_eq (I := I) g (chartAtlasPOU I M)
     (chartAtlasPOU_isSubordinate I M) Ψ hB_meas hB_source
 
-/-- A pointwise lower bound for a parametrized Riemannian density gives the
-corresponding lower bound for the volume of the parametrized image. -/
 theorem param_vol_ge
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -1433,8 +1218,6 @@ theorem param_vol_ge
       intro w hw
       exact ENNReal.ofReal_le_ofReal (hdens w hw)
 
-/-- Set-form V0 evaluation formula on a measurable target subset.
--/
 theorem riemannianVolumeMeasure_param_target_eq
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -1466,11 +1249,6 @@ theorem riemannianVolumeMeasure_param_target_eq
         ∂(modelHaar (E := E)) := by
           rw [hB_def]
 
-
-
-
-
-
 lemma paramGramMatrix_isHermitian
     (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1) (w : E) :
@@ -1483,12 +1261,6 @@ lemma paramGramMatrix_isHermitian
   exact g.symm (Ψ w)
     (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) j))
     (mfderiv 𝓘(ℝ, E) I Ψ w ((chartModelBasis E) i))
-
-
-
-
-
-
 
 lemma paramGramMatrix_dotProduct_mulVec
     (g : SmoothRiemannianMetric I M)
@@ -1546,12 +1318,6 @@ lemma paramGramMatrix_dotProduct_mulVec
   intro j _
   ring
 
-
-
-
-
-
-
 lemma paramGramMatrix_posDef
     (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
@@ -1578,22 +1344,12 @@ lemma paramGramMatrix_posDef
     exact hc this
   exact g.pos (Ψ w) v hvnz
 
-
-
-
-
 lemma paramGramMatrix_det_pos
     (g : SmoothRiemannianMetric I M)
     (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
     {w : E} (hw : w ∈ Ψ.source) :
     0 < (paramGramMatrix (I := I) g Ψ w).det :=
   (paramGramMatrix_posDef (I := I) g Ψ hw).det_pos
-
-
-
-
-
-
 
 lemma paramDensity_pos
     (g : SmoothRiemannianMetric I M)

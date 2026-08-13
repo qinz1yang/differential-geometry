@@ -7,8 +7,6 @@ import Mathlib.Geometry.Manifold.IntegralCurve.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
-
-
 noncomputable section
 
 open Bundle Manifold Set Filter Function

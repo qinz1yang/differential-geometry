@@ -1,16 +1,9 @@
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalPhase
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -28,8 +21,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-
-
 theorem normalPhaseVF_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) (a : E) (z : E × E) :
@@ -37,12 +28,10 @@ theorem normalPhaseVF_eq
         (normalTotal (I := I) Y x) a z =
       PhaseFlow.phaseField (normalAccel (I := I) Y x) z := by
   unfold Geodesic.chartPhaseVF PhaseFlow.phaseField normalAccel
-  rw [Integral.Connection.const_cov_eq_contr
+  rw [DifferentialGeometry.Geometry.Connection.const_cov_eq_contr
     (g := normalTotal (I := I) Y x) (a := a)
     (z := z.1) (v := z.2) (w := z.2)]
   rfl
-
-
 
 theorem normalPhase_contDiff
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -58,8 +47,6 @@ theorem normalPhase_contDiff
     simpa only [extChartAt_model_space_eq_id, PartialEquiv.refl_target,
       interior_univ, Set.univ_prod_univ] using heq
   exact contDiffOn_univ.mp heq'
-
-
 
 theorem normalGeoOn_of_phase
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -110,8 +97,6 @@ theorem normalGeoOn_of_phase
     rw [← hneg]
     abel
 
-
-
 theorem normalGeoOn_of_right
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) {Z : Real → E × E} {a b : Real} (hab : a < b)
@@ -128,8 +113,6 @@ theorem normalGeoOn_of_right
   intro t ht
   exact hasDerivAt_of_right hab hZcont hfield hZright ht
 
-
-
 theorem normalFlow_contDiff
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) {Z : Real → E × E} {a b : Real} (hab : a < b)
@@ -139,8 +122,6 @@ theorem normalFlow_contDiff
       (Set.Ici t) t) :
     ContDiffOn Real ∞ Z (Set.Ioo a b) :=
   contDiffOn_of_right hab (normalPhase_contDiff (I := I) Y x) hZcont hZright
-
-
 
 theorem normalFlow_geoOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

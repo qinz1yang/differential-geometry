@@ -2,24 +2,6 @@ import Mathlib.Data.Real.Sqrt
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -32,8 +14,6 @@ def ScalarGradientEstimateOn
   ∀ (t : Real) (x : M),
     gradScalarNormSq t x / scalar t x ^ 3 ≤
       beta * decayHalf t x + C * decayCubic t x
-
-
 
 def PinchingEstimateYetAgainOn
     (tracefreeRmRatio decay : Real -> M -> Real) (C : Real) : Prop :=
@@ -65,12 +45,8 @@ def RicciNormSquaredEvolutionOn
     (ricciNormSq ricciNormSqRhs : Real -> M -> Real) : Prop :=
   ∀ (t : Real) (x : M), ricciNormSq t x = ricciNormSqRhs t x
 
-
-
 def tracefreeRicciNormSqAtOf (scalar ricciNormSq : Real) : Real :=
   ricciNormSq - scalar ^ 2 / 3
-
-
 
 def tracefreeRicciNormSqOf
     (scalar ricciNormSq : Real -> M -> Real) (t : Real) (x : M) : Real :=
@@ -88,8 +64,6 @@ def GradRicciControlsGradScalarOn
     gradScalarNormSq t x / 3 ≤ gradRicciNormSq t x ∧
       (1 / 37 : Real) * gradRicciNormSq t x ≤
         gradRicciNormSq t x - gradScalarNormSq t x / 3
-
-
 
 def CauchySchwarzEstimateForGradScalarOn
     (gradScalarNormSq hessianScalarNormSq gradRicciNormSq : Real -> M -> Real)

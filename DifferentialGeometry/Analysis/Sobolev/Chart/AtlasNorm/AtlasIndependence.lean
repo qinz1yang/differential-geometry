@@ -47,7 +47,7 @@ lemma wkpNorm_chartPushed_eq_zero_of_pou_zero
 
 theorem wkpNorm_chartPushed_eq_zero_of_wkpNormChartGen_eq_zero
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞}
     (ρ : SmoothPartitionOfUnity M I M Set.univ) {u : M → ℝ}
     (h : wkpNormChartGen (I := I) (M := M) g k p ρ u = 0) (α : M) :
@@ -65,7 +65,7 @@ theorem wkpNorm_chartPushed_eq_zero_of_wkpNormChartGen_eq_zero
 
 theorem wkpNormChartGen_eq_zero_iff
     [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞}
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (u : M → ℝ) :
     wkpNormChartGen (I := I) (M := M) g k p ρ u = 0 ↔
@@ -103,7 +103,7 @@ theorem wkpNormChartGen_equiv_of_pou
     [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (k : ℕ) {p : ℝ≥0∞} (_hp_one : 1 ≤ p) (_hp_top : p ≠ (⊤ : ℝ≥0∞))
     (ρ₁ ρ₂ : SmoothPartitionOfUnity M I M Set.univ)
     (_hρ₁ : ρ₁.IsSubordinate (fun α : M => (chartAt H α).source))

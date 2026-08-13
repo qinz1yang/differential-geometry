@@ -1,21 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.HamiltonBaseProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.ResidualCost
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-/-!
-# Level-zero arbitrary-dimensional curvature residual
-
-This module joins the solution-level Hamilton evolution of lowered Riemann to
-the quantitative `StarSum2` cost ledger.  It is the base case for the direct
-arbitrary-dimensional curvature-tower recursion.
--/
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -29,8 +24,6 @@ variable [SigmaCompactSpace M] [T2Space M]
 variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The canonical level-zero reaction field has the exact residual cost and
-realizes the curvature heat equation in every finite orthonormal basis. -/
 theorem e0Residual
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -87,8 +80,6 @@ theorem e0Residual
       rm04Base_of_solution_any (I := I) S hS t x basis _horth m
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Compatibility wrapper exposing the canonical level-zero residual as an
-existential field. -/
 theorem rmResidual_zero
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)

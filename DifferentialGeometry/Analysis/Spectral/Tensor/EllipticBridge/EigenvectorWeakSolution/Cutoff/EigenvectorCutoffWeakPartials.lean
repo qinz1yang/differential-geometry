@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.EigenvectorCutoffChartPartialL2
 import DifferentialGeometry.Analysis.Sobolev.Tools.WeakPartialLimit
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -82,7 +84,7 @@ def eigenvectorCutoffChartWeakPartial
       g r s i α P₀ k :
     Lp ℝ 2 (chartL2Measure (I := I) (M := M) α))
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma cutoff_smoothApprox_smul_coe_tendsto
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
@@ -259,7 +261,7 @@ private lemma eigenvectorCutoffChartWeakPartial_approx_hasWeakPartialDeriv
   · exact (eigenvectorCutoffChartPartialLp_approx_coeFn
       (I := I) (M := M) g r s i α P₀ k n).symm
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma eigenvectorCutoffChartComponentL2_tendsto
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -283,7 +285,7 @@ private lemma eigenvectorCutoffChartComponentL2_tendsto
   simp only [Function.comp_def, tensorL2ChartComponentCutoffCLM_apply] at h_clm
   exact h_clm
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private lemma eigenvectorCutoffChartComponent_eLpNorm_tendsto
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
@@ -345,7 +347,7 @@ private lemma eigenvectorCutoffChartPartial_eLpNorm_tendsto
     (eigenvectorCutoffChartPartialLp_tendsto (I := I) (M := M)
       g r s i α P₀ k)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 theorem eigenvectorCutoffChartPartialLp_hasWeakPartialDeriv
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)

@@ -7,16 +7,11 @@ import DifferentialGeometry.Geometry.Exponential.ExpInvBranch
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-/-!
-# Explicit-metric distance bounds for Calabi broken paths
-
-This file exposes the standard distance-bounded-by-length inequality with the
-smooth Riemannian metric supplied explicitly.  It also packages the two-arc
-broken-path estimate used by point-centered Calabi upper supports.
--/
 
 noncomputable section
 
@@ -28,7 +23,7 @@ namespace DifferentialGeometry
 open Geometry.Riemannian
 open Geometry.Riemannian.Exponential
 open Geometry.Riemannian.HopfRinow
-open Integral.Connection
+open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -40,18 +35,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The deterministic fixed-first data selected from a finite-distance
-minimizing geodesic at the Calabi split time `1 / 4`.
-
-The selected branch contains the nonzero terminal launch vector and remains
-nonconjugate on an open interval extending beyond time one. -/
 structure CalabiTailData
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (O x : M) (r : Real) where
   p : M
   u : TangentSpace I p
@@ -76,7 +65,6 @@ structure CalabiTailData
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The selected tail vector exponentiates to the terminal point. -/
 theorem CalabiTailData.exp_eq
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -91,7 +79,6 @@ theorem CalabiTailData.exp_eq
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The terminal point lies in the target of the selected fixed-first branch. -/
 theorem CalabiTailData.target_mem
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -109,16 +96,12 @@ theorem CalabiTailData.target_mem
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- A finite-distance minimizing geodesic supplies the deterministic
-quarter-split Calabi tail, together with a fixed-first inverse branch and a
-nonconjugate radial interval extending past its endpoint. -/
 theorem exists_calabiTail
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {O x : M} {r : Real} (v : TangentSpace I O)
     (hexp : expMapIntrinsic (I := I) g hEnorm O v = x)
     (hlen : Real.sqrt (g.inner O v v) = r)
@@ -270,16 +253,12 @@ theorem exists_calabiTail
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- A finite nonbase point has selected Calabi-tail data whose explicit
-fixed-first branch radius is a smooth upper support with the standard
-Ricci-lower-bound Laplacian estimate. -/
 theorem exists_calabiData
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : Real) (hq : 0 ≤ q)
     (hRic : Geometry.Riemannian.BonnetMyers.RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2)))
@@ -524,15 +503,76 @@ theorem exists_calabiData
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The distance from `O` admits a smooth Calabi upper support at every finite
-nonbase point, with the standard Ricci-lower-bound Laplacian estimate. -/
+theorem exists_calabiData_of_complete_metric
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (q : Real) (hq : 0 ≤ q)
+    (hRic : Geometry.Riemannian.BonnetMyers.RicciBoundedBelow (I := I) g
+      (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2)))
+    {O x : M} (hOx : O ≠ x)
+    (hfin : riemannianEDistOf (I := I) g O x ≠ (⊤ : ENNReal)) :
+    letI : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    letI : TopologicalSpace.MetrizableSpace M :=
+      Manifold.metrizableSpace I M
+    letI : T3Space M := inferInstance
+    letI : RiemannianBundle (fun y : M => TangentSpace I y) :=
+      ⟨g.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
+    letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    letI : PseudoEMetricSpace M := inferInstance
+    letI : CompleteSpace M := hcomplete.complete
+    let hEnorm : IsMetricNorm (I := I) (M := M) g :=
+      fun y v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
+    let r := (riemannianEDist I O x).toReal
+    ∃ tail : CalabiTailData (I := I) g hEnorm O x r,
+      let rho : M → Real := fun y =>
+        tail.left + branchRadius (I := I) g tail.branch y
+      ContMDiffAt I 𝓘(Real, Real) ∞ rho x ∧
+      rho x = r ∧
+      (∀ᶠ y in 𝓝 x,
+        (riemannianEDist I O y).toReal ≤ rho y) ∧
+      (∀ᶠ y in 𝓝 x,
+        MDifferentiableAt I 𝓘(Real, Real) rho y) ∧
+      MDifferentiableAt I (I.prod 𝓘(Real, E))
+        (T% fun y : M => gradientFun (I := I) g rho y) x ∧
+      g.inner x
+          (gradientFun (I := I) g rho x)
+          (gradientFun (I := I) g rho x) = 1 ∧
+      laplacian (I := I)
+          (LeviCivita (I := I) g) g rho x ≤
+        2 * ((Module.finrank Real E - 1 : Nat) : Real) / r +
+          ((Module.finrank Real E - 1 : Nat) : Real) * q := by
+  letI : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  letI : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  letI : T3Space M := inferInstance
+  letI : RiemannianBundle (fun y : M => TangentSpace I y) :=
+    ⟨g.toRiemannianMetric⟩
+  letI : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : PseudoEMetricSpace M := inferInstance
+  letI : CompleteSpace M := hcomplete.complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro y v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
+  have hfin' : riemannianEDist I O x ≠ (⊤ : ENNReal) := by
+    simpa [riemannianEDistOf] using hfin
+  exact exists_calabiData (I := I) (M := M) g hEnorm q hq hRic hOx hfin'
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
 theorem calabiDist_support
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q : Real) (hq : 0 ≤ q)
     (hRic : Geometry.Riemannian.BonnetMyers.RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2)))
@@ -558,6 +598,62 @@ theorem calabiDist_support
   exact
     ⟨fun y => tail.left + branchRadius (I := I) g tail.branch y,
       hrho_inf, hrho_x, hupper, hgrad_norm.le, hlap⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+theorem calabiDist_support_of_complete_metric
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (q : Real) (hq : 0 ≤ q)
+    (hRic : Geometry.Riemannian.BonnetMyers.RicciBoundedBelow (I := I) g
+      (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2)))
+    {O x : M} (hOx : O ≠ x)
+    (hfin : riemannianEDistOf (I := I) g O x ≠ (⊤ : ENNReal)) :
+    letI : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+        (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+    letI : TopologicalSpace.MetrizableSpace M :=
+      Manifold.metrizableSpace I M
+    letI : T3Space M := inferInstance
+    letI : RiemannianBundle (fun y : M => TangentSpace I y) :=
+      ⟨g.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
+    letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    letI : PseudoEMetricSpace M := inferInstance
+    letI : CompleteSpace M := hcomplete.complete
+    let r := (riemannianEDist I O x).toReal
+    ∃ rho : M → Real,
+      ContMDiffAt I 𝓘(Real, Real) ∞ rho x ∧
+      rho x = r ∧
+      (∀ᶠ y in 𝓝 x,
+        (riemannianEDist I O y).toReal ≤ rho y) ∧
+      g.inner x
+          (gradientFun (I := I) g rho x)
+          (gradientFun (I := I) g rho x) ≤ 1 ∧
+      laplacian (I := I)
+          (LeviCivita (I := I) g) g rho x ≤
+        2 * ((Module.finrank Real E - 1 : Nat) : Real) / r +
+          ((Module.finrank Real E - 1 : Nat) : Real) * q := by
+  letI : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+      (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  letI : TopologicalSpace.MetrizableSpace M :=
+    Manifold.metrizableSpace I M
+  letI : T3Space M := inferInstance
+  letI : RiemannianBundle (fun y : M => TangentSpace I y) :=
+    ⟨g.toRiemannianMetric⟩
+  letI : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro y v w; rfl⟩⟩
+  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  letI : PseudoEMetricSpace M := inferInstance
+  letI : CompleteSpace M := hcomplete.complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g := by
+    intro y v
+    exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
+  have hfin' : riemannianEDist I O x ≠ (⊤ : ENNReal) := by
+    simpa [riemannianEDistOf] using hfin
+  exact calabiDist_support (I := I) (M := M) g hEnorm q hq hRic hOx hfin'
 
 private theorem continuousAt_fiber_smul
     {X B F : Type*} [TopologicalSpace X] [TopologicalSpace B]
@@ -588,8 +684,6 @@ omit [FiniteDimensional ℝ E]
   [I.Boundaryless]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- The extended distance of an explicitly supplied Riemannian metric is at
-most the arc length of any `C¹` curve joining the endpoints. -/
 theorem edistOf_le_arcLength
     (g : SmoothRiemannianMetric I M) {γ : Real → M} {a b : Real}
     (hab : a ≤ b)
@@ -613,8 +707,6 @@ omit [FiniteDimensional ℝ E]
   [I.Boundaryless]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- A broken path made of two `C¹` arcs bounds the explicit Riemannian
-extended distance by the sum of their arc lengths. -/
 theorem edistOf_le_two_arcs
     (g : SmoothRiemannianMetric I M)
     {γ δ : Real → M} {a b c d : Real}
@@ -647,16 +739,12 @@ theorem edistOf_le_two_arcs
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- A minimizing intrinsic geodesic from `O` to `x` admits a terminal point
-strictly before `x` whose remaining velocity lies in a prescribed inverse
-branch centered at `x`. -/
 theorem calabi_tail_of
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (O x : M) (hOx : riemannianEDist I O x ≠ ⊤)
     (B : DiagInvBranch (I := I) g hEnorm x) :
     ∃ (v : TangentSpace I O) (s₀ : Real),
@@ -776,16 +864,13 @@ theorem calabi_tail_of
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The generic diagonal-exponential branch supplies the terminal inverse
-segment needed in the Calabi broken-path construction. -/
 theorem exists_calabi_tail
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [T2Space (TangentBundle I M)]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (O x : M) (hOx : riemannianEDist I O x ≠ ⊤) :
     ∃ (v : TangentSpace I O) (s₀ : Real),
       expMapIntrinsic (I := I) g hEnorm O v = x ∧

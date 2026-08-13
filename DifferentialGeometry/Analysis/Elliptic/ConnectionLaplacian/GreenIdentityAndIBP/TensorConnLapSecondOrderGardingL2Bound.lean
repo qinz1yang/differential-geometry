@@ -1,15 +1,16 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorConnLapSecondGradientL2Bound
+open DifferentialGeometry.Analysis.Elliptic
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -146,8 +147,8 @@ theorem secondCovGrad_l2NormSq_le_rawConnLap_add_self
   have hstep1' : nHess ≤ nLap ^ 2 + C₀ * nGrad ^ 2 := hstep1
   exact second_order_garding_real hC₀ hstep1' horder1
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

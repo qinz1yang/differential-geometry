@@ -1,14 +1,8 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Smoothness of variation fields
-
-This module packages the total-space smoothness of the transverse derivative
-of a globally smooth two-parameter manifold variation.
--/
 
 open Bundle Manifold
 open scoped Manifold ContDiff Topology
@@ -130,8 +124,6 @@ private lemma velocity_infty
             mfderiv 𝓘(ℝ, ℝ) I (fun u : ℝ => f p.1 u) p.2 (1 : ℝ)⟩).2) p₀
   exact h_smooth_mfd.congr_of_eventuallyEq h_eq
 
-/-- The transverse field of a globally smooth two-parameter variation is a
-globally smooth section of the tangent bundle along its central curve. -/
 theorem varField_smooth
     (f : ℝ → ℝ → M)
     (hf : ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I ∞

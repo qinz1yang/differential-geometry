@@ -1,24 +1,5 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Module
@@ -27,9 +8,6 @@ open scoped RealInnerProductSpace
 namespace DifferentialGeometry
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
-
-
-
 
 theorem exists_linearIsometryEquiv_unit {u v : E} (hu : ‖u‖ = 1) (hv : ‖v‖ = 1) :
     ∃ e : E ≃ₗᵢ[ℝ] E, e u = v := by

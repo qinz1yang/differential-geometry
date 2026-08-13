@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzModulusOfContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionFieldLink
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTraceEnergy
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -48,7 +50,6 @@ def recentredHiL2 (hT : 0 < T) (hT1 : T ≤ 1)
   maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce -
     TimeSobolev.const T u₀
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem recentredCarrier_toFun_coeff (hT : 0 < T) (hT1 : T ≤ 1)
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -76,7 +77,6 @@ theorem recentredCarrier_toFun_coeff (hT : 0 < T) (hT1 : T ≤ 1)
     rw [hlo_def, recentredCarrier, TimeSobolev.timeH1.init_mk]
   rw [hinit, map_zero, zero_add]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem recentred_link (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -128,7 +128,6 @@ def maxRegRecentredCrossScaleField (hT : 0 < T) (hT1 : T ≤ 1)
   lo := recentredCarrier (I := I) (M := M) hT hT1 u₀ gforce
   link := recentred_link (I := I) (M := M) (h_compact := h_compact) hT hT1 u₀ gforce
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem recentred_repr_zero (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -147,7 +146,6 @@ theorem recentred_repr_zero (hT : 0 < T) (hT1 : T ≤ 1)
   change (recentredCarrier (I := I) (M := M) hT hT1 u₀ gforce).init.coeff i = 0
   rw [recentredCarrier, TimeSobolev.timeH1.init_mk, tensorHs.zero_coeff]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem recentred_repr_eq_field_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -234,7 +232,6 @@ theorem recentred_repr_eq_field_sub (hT : 0 < T) (hT1 : T ≤ 1)
   rw [← sub_eq_add_neg]
   exact hti
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_const_top
     (c : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -249,7 +246,6 @@ theorem timeModeCoeff_const_top
   filter_upwards [hlhs, hconst, hrhs] with t htlhs htconst htrhs
   rw [htlhs, htconst, htrhs]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_timeModeCoeff_const_top_sq
     (c : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -259,7 +255,6 @@ theorem norm_timeModeCoeff_const_top_sq
   rw [timeModeCoeff_const_top, TimeSobolev.norm_const, mul_pow, Real.sq_sqrt hT,
     Real.norm_eq_abs, sq_abs]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegHomogeneousSolField_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -275,7 +270,6 @@ theorem maxRegHomogeneousSolField_norm_le
     mul_left_comm]
   exact weighted_homModeCoeff_le (I := I) (M := M) (a := a) (T := T) hT u₀ i
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegHomogeneousDerivField_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -291,7 +285,6 @@ theorem maxRegHomogeneousDerivField_norm_le
     mul_left_comm]
   exact weighted_homDerivModeCoeff_le (I := I) (M := M) (a := a) (T := T) hT u₀ i
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularitySolField_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -304,7 +297,6 @@ theorem maximalRegularitySolField_norm_le
     (h_compact := h_compact) (a := a) hT f i]
   exact weighted_solModeCoeff_le (I := I) (M := M) (a := a) hT f i
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityDerivField_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -332,7 +324,6 @@ theorem timeL2_norm_le_of_ae_bound
       show ((2 : ℝ≥0∞).toReal)⁻¹ = (1 / 2 : ℝ) by norm_num,
       TimeSobolev.toReal_ofReal_rpow_half, ENNReal.toReal_ofReal hC]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem truncatedNonlin_norm_le {L_R : ℝ≥0} {R : ℝ} (hR : 0 ≤ R)
     {N : tensorHs (I := I) (M := M) g r s (a + 1) →
@@ -357,7 +348,6 @@ theorem truncatedNonlin_norm_le {L_R : ℝ≥0} {R : ℝ} (hR : 0 ≤ R)
     _ ≤ (L_R : ℝ) * R + ‖N u₀'‖ := by linarith [hlip]
     _ = ‖N u₀'‖ + (L_R : ℝ) * R := by ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskiiHa1_truncated_norm_le {L_R : ℝ≥0} {R : ℝ} (hR : 0 ≤ R)
     {N : tensorHs (I := I) (M := M) g r s (a + 1) →
@@ -376,7 +366,6 @@ theorem nemytskiiHa1_truncated_norm_le {L_R : ℝ≥0} {R : ℝ} (hR : 0 ≤ R)
   rw [ht]
   exact truncatedNonlin_norm_le (I := I) (M := M) hR hN (field t)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem recentred_repr_normSq_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -446,7 +435,6 @@ theorem recentred_repr_normSq_le (hT : 0 < T) (hT1 : T ≤ 1)
     TimeSobolev.norm_sq_eq_integral _
   rw [hhi_norm, hlo_norm]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem recentredHi_norm_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -467,7 +455,6 @@ theorem recentredHi_norm_le (hT : 0 < T) (hT1 : T ≤ 1)
       2 * Real.sqrt T * ‖u₀‖ + (1 + T) * ‖gforce‖ := by ring
   linarith [hhom, hduh]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem recentredCarrier_deriv_norm_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -483,7 +470,6 @@ theorem recentredCarrier_deriv_norm_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact := h_compact) hT.le gforce
   linarith [hhom, hduh]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem recentred_repr_normSq_le_of_smallForcing (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -551,7 +537,6 @@ theorem recentred_repr_normSq_le_of_smallForcing (hT : 0 < T) (hT1 : T ≤ 1)
   nlinarith [hbound1, hbound2, hTle, hsqrtT_pos.le, sq_nonneg (‖u₀‖ + C),
     sq_nonneg (‖u₀‖ + 2 * C)]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolFieldHa1_stay (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -576,7 +561,6 @@ theorem maxRegDuhamelSolFieldHa1_stay (hT : 0 < T) (hT1 : T ≤ 1)
   nlinarith [hsq, norm_nonneg ((maxRegRecentredCrossScaleField (I := I) (M := M)
     (h_compact := h_compact) hT hT1 u₀ gforce).repr t), hR]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_ofCompact
     {N : tensorHs (I := I) (M := M) g r s (a + 1) →
@@ -646,9 +630,113 @@ theorem quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_o
   have hstay := maxRegDuhamelSolFieldHa1_stay (I := I) (M := M)
     (h_compact := h_compact) hT hT1 u₀ gforce hC_nn hR.le hgforce_small hhoriz
   refine ⟨u, gforce, hu, ?_, htrace, hderiv, hstay⟩
-  conv_lhs => rw [hfix]
-  exact nemytskiiHa1_truncated_eqOn_ball (I := I) (M := M) hR.le hN
+  · conv_lhs => rw [hfix]
+    exact nemytskiiHa1_truncated_eqOn_ball (I := I) (M := M) hR.le hN
+      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) hstay
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem quasilinear_strong_existence_of_lipschitz_on_closed_ball
+    [Nontrivial E]
+    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
+      tensorHs (I := I) (M := M) g r s a}
+    {L_R : ℝ≥0} {R : ℝ} (hR : 0 < R)
+    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (hN : LipschitzOnWith L_R N (Metric.closedBall
+      (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
+        (show (a + 1) ≤ a + 2 by linarith) u₀) R)) :
+    ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (hT1 : T ≤ 1),
+      ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
+        (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+        u = maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce ∧
+          gforce =ᵐ[timeMeasure T]
+            (fun t => N (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+              a hT hT1 u₀ gforce t)) ∧
+          TimeSobolev.timeH1.trace0 _ T u =
+              tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
+                (show a ≤ a + 2 by linarith) u₀ ∧
+          TimeSobolev.timeH1.timeDeriv _ T u =
+            timeScaleLaplacian (I := I) (M := M) a
+                (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) +
+              gforce ∧
+          ∀ᵐ t ∂(timeMeasure T),
+            maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce t ∈
+              Metric.closedBall
+                (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
+                  (show (a + 1) ≤ a + 2 by linarith) u₀) R := by
+  letI : NeZero (Module.finrank ℝ E) :=
+    ⟨(Module.finrank_pos (R := ℝ) (M := E)).ne'⟩
+  obtain ⟨T₀, hT₀, hsol⟩ :=
+    quasilinear_strong_existence_locallyLipschitz_smallTime_stayDischarged_ofCompact
+      (I := I) (M := M) hR
+      (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
+        (I := I) (M := M) g r s) u₀ hN
+  refine ⟨T₀, hT₀, ?_⟩
+  intro T hT hTT₀ hT1
+  obtain ⟨u, gforce, hu, hforce, htrace, hderiv, hstay⟩ :=
+    hsol hT hTT₀ hT1
+  refine ⟨u, gforce, hu, hforce, htrace, ?_, hstay⟩
+  have htrunc := nemytskiiHa1_truncated_eqOn_ball (I := I) (M := M) hR.le hN
     (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) hstay
+  have hfix : gforce = nemytskiiHa1 (I := I) (M := M)
+      (truncatedNonlin_lipschitzWith (I := I) (M := M) hR.le hN)
+      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) := by
+    refine Lp.ext ?_
+    exact hforce.trans htrunc.symm
+  calc
+    TimeSobolev.timeH1.timeDeriv _ T u =
+        timeScaleLaplacian (I := I) (M := M) a
+            (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) +
+          nemytskiiHa1 (I := I) (M := M)
+            (truncatedNonlin_lipschitzWith (I := I) (M := M) hR.le hN)
+            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT hT1 u₀ gforce) := hderiv
+    _ = timeScaleLaplacian (I := I) (M := M) a
+          (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) +
+        gforce := congrArg
+          (fun z => timeScaleLaplacian (I := I) (M := M) a
+            (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) + z)
+          hfix.symm
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem quasilinear_strong_existence_locally_lipschitz
+    [Nontrivial E]
+    {N : tensorHs (I := I) (M := M) g r s (a + 1) →
+      tensorHs (I := I) (M := M) g r s a}
+    (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
+    (hN : LocallyLipschitz N) :
+    ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (hT1 : T ≤ 1),
+      ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
+        (gforce : timeL2 (tensorHs (I := I) (M := M) g r s a) T),
+        u = maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce ∧
+          gforce =ᵐ[timeMeasure T]
+            (fun t => N (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+              a hT hT1 u₀ gforce t)) ∧
+          TimeSobolev.timeH1.trace0 _ T u =
+              tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
+                (show a ≤ a + 2 by linarith) u₀ ∧
+          TimeSobolev.timeH1.timeDeriv _ T u =
+            timeScaleLaplacian (I := I) (M := M) a
+                (maxRegDuhamelSolField (I := I) (M := M) a hT hT1 u₀ gforce) +
+              gforce := by
+  let u₀' := tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
+    (show (a + 1) ≤ a + 2 by linarith) u₀
+  obtain ⟨L, U, hU, hNU⟩ := hN u₀'
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hU
+  let R := ε / 2
+  have hR : 0 < R := by dsimp [R]; positivity
+  have hclosed : Metric.closedBall u₀' R ⊆ U := by
+    refine (Metric.closedBall_subset_ball ?_).trans hball
+    dsimp [R]
+    linarith
+  have hNL : LipschitzOnWith L N (Metric.closedBall u₀' R) :=
+    hNU.mono hclosed
+  obtain ⟨T₀, hT₀, hsol⟩ :=
+    quasilinear_strong_existence_of_lipschitz_on_closed_ball
+      (I := I) (M := M) hR u₀ hNL
+  refine ⟨T₀, hT₀, ?_⟩
+  intro T hT hTT₀ hT1
+  obtain ⟨u, gforce, hu, hforce, htrace, hderiv, _hstay⟩ :=
+    hsol hT hTT₀ hT1
+  exact ⟨u, gforce, hu, hforce, htrace, hderiv⟩
 
 end QuasiLinear
 end Parabolic

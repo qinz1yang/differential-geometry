@@ -1,41 +1,18 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.AkMFold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.Claim1Wiring
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.HCGCompactness
-open DifferentialGeometry.Integral.Connection
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -47,18 +24,10 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
-
-
-
 def akAct {q : ℕ} (A : (Fin (2 + 1) → Idx) → Real) (B : (Fin q → Idx) → Real) :
     (Fin (q + 1) → Idx) → Real :=
   fun n => ∑ s : Fin q, ∑ p : Idx,
     A ![n 0, Fin.tail n s, p] * B (Function.update (Fin.tail n) s p)
-
-
-
 
 omit [DecidableEq Idx] in
 theorem covStep_chr_convert {q : ℕ}
@@ -87,11 +56,6 @@ theorem covStep_chr_convert {q : ℕ}
   rw [hdiff]
   ring
 
-
-
-
-
-
 def akInnerPerm {q : ℕ} (s : Fin (q + 1)) : Equiv.Perm (Fin (q + 1)) :=
   ((finRotate (q + 1)).symm).trans (Equiv.swap s (Fin.last q))
 
@@ -116,8 +80,6 @@ theorem akInnerPerm_succ {q : ℕ} (s : Fin (q + 1)) (i : Fin q) :
   · have hlast : Fin.castSucc i ≠ Fin.last q := (Fin.castSucc_lt_last i).ne
     simp [akInnerPerm, hrot, Equiv.swap_apply_of_ne_of_ne h hlast, h]
 
-
-
 def akSlotEquiv {q : ℕ} (s : Fin (q + 1)) : Fin (2 + q) ≃ Fin (q + 1 + 1) :=
   (finCongr (show 2 + q = q + 1 + 1 by omega)).trans (frontExtendEquiv (akInnerPerm s))
 
@@ -141,9 +103,6 @@ theorem akSlotEquiv_natAdd {q : ℕ} (s : Fin (q + 1)) (i : Fin q) :
       (Fin.natAdd 2 i) : Fin (q + 1 + 1)) = (i.succ).succ :=
     Fin.ext (by simp)
   rw [akSlotEquiv, Equiv.trans_apply, h, frontExtendEquiv_succ, akInnerPerm_succ]
-
-
-
 
 omit [DecidableEq Idx] in
 theorem akActTerm_eq {q : ℕ} (A : (Fin (2 + 1) → Idx) → Real)
@@ -193,8 +152,6 @@ theorem akActTerm_eq {q : ℕ} (A : (Fin (2 + 1) → Idx) → Real)
           rfl
         · exact absurd rfl hs
 
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem contMDiffOn_finsetSum' {ι : Type*} {u : Set M} (t : Finset ι)
@@ -212,8 +169,6 @@ private theorem contMDiffOn_finsetSum' {ι : Type*} {u : Set M} (t : Finset ι)
     rw [hsum]
     exact (hF a (Finset.mem_insert_self a s)).add
       (ih fun i hi => hF i (Finset.mem_insert_of_mem hi))
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -271,12 +226,6 @@ theorem compL2_sum_le {r : ℕ} {ι : Type*} (t : Finset ι)
     simp only [Finset.sum_insert hbs]
     exact le_trans (compL2_add_le (F b) (fun n => ∑ i ∈ s, F i n))
       (add_le_add le_rfl ih)
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -350,11 +299,6 @@ theorem compL2_akAct_le {q : ℕ} {u : Set M} (hu : IsOpen u)
         push_cast
         ring
 
-
-
-
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [DecidableEq Idx] in
@@ -367,17 +311,6 @@ theorem iterCov_chr_convert {q : ℕ}
         akAct (fun m => chrK y (m 0) (m 1) (m 2) - chrR y (m 0) (m 1) (m 2)) (B y) n := by
   simp only [iterCovComp_succ, iterCovComp_zero]
   exact covStep_chr_convert _ _ _ _ n
-
-
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
@@ -508,15 +441,7 @@ theorem claim2core {u : Set M} (hu : IsOpen u)
                   mul_le_mul_of_nonneg_left h2
                     (mul_nonneg (Nat.cast_nonneg _) (hCA0 c))
 
-
-
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem claim2_geom

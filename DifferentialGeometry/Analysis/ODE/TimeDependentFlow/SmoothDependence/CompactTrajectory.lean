@@ -1,22 +1,11 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 
-/-!
-# Smooth dependence along compact manifold trajectories
-
-This file upgrades local smooth manifold flows to a uniform restart window
-along one compact trajectory, then propagates smooth dependence of any selected
-exact trajectory family from its identity slice to every interior time.
-
-Unlike the closed-manifold flow theorem, compactness is required only for the
-single reference orbit used at the point where smoothness is checked.
--/
-
 noncomputable section
 
 open Set Function Filter Metric Bundle
 open scoped Topology NNReal ContDiff Manifold
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -25,8 +14,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
 
 omit [BoundarylessManifold I M] [T2Space M] in
-/-- A smooth time-dependent vector field has a common positive local-flow
-window over a compact set of initial points at one anchor time. -/
 theorem exists_flow_compact [CompleteSpace E] [I.Boundaryless]
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
@@ -80,8 +67,6 @@ theorem exists_flow_compact [CompleteSpace E] [I.Boundaryless]
     rw [Set.mem_iUnion₂] at hymem
     exact (hs_ne ⟨hymem.choose, hymem.choose_spec.1⟩).elim
 
-/-- Exact trajectories of a globally smooth autonomous manifold field depend
-smoothly on their initial point at every interior time. -/
 theorem flow_slice_smooth [CompleteSpace E] [I.Boundaryless]
     (v : ∀ x : M, TangentSpace I x)
     (hv : ContMDiff I I.tangent ∞
@@ -236,6 +221,6 @@ theorem flow_slice_smooth [CompleteSpace E] [I.Boundaryless]
   exact (show ContMDiffAt I I ∞ (fun y => F y target) x from
     (hsub htarget).1).contMDiffWithinAt
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE
 
 end

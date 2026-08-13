@@ -1,15 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Metric.Sphere.PolarBij
 
-/-!
-# Smooth polar coordinates on the round sphere
-
-This file packages the ambient polar formulas as a genuine smooth partial
-diffeomorphism.  The direction variable is the unit sphere in the orthogonal
-complement of the pole, so the source is an honest open subset of a manifold,
-not a non-open subset of `ℝ × E`.
--/
-
 noncomputable section
 
 open Metric Module Set TopologicalSpace
@@ -21,22 +12,17 @@ namespace Geometry
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 2)]
 
-/-- The sphere of unit directions orthogonal to a pole. -/
 abbrev PolarDir (p : sphere (0 : E) 1) :=
   sphere (0 : (ℝ ∙ (p : E))ᗮ) 1
 
-/-- The open polar cylinder. -/
 def polarSource (p : sphere (0 : E) 1) :
     Set (ℝ × PolarDir p) :=
   {q | q.1 ∈ Ioo 0 Real.pi}
 
-/-- The unit sphere with the pole and its antipode removed. -/
 def polarTarget (p : sphere (0 : E) 1) :
     Set (sphere (0 : E) 1) :=
   {x | x ≠ p ∧ x ≠ -p}
 
-/-- The orthogonal direction space has the expected codimension-one
-dimension. -/
 theorem polarDir_finrank (p : sphere (0 : E) 1) :
     finrank ℝ (ℝ ∙ (p : E))ᗮ = n + 1 := by
   have hp0 : (p : E) ≠ 0 :=
@@ -417,8 +403,6 @@ private theorem polarInv_mem
       (polarOpenDiffeo (n := n) p).symm ⟨x, hx⟩ := by
   simp only [polarInv, dif_pos hx]
 
-/-- Smooth polar coordinates as a partial diffeomorphism from the open polar
-cylinder to the unit sphere with its two poles removed. -/
 noncomputable def spherePolarPD
     (p : sphere (0 : E) 1) :
     PartialDiffeomorph (𝓘(ℝ, ℝ).prod (𝓡 n)) (𝓡 (n + 1))

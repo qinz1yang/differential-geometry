@@ -1,36 +1,24 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgeRefoldPairing
-
-/-!
-# Exact Riemann cancellation at the closed edge
-
-The closed-edge Ricci--DeTurck refold initially exposes a Riemann--Palatini
-order-zero family together with its second-order formal partner.  Those two
-pieces are not error terms: together they reproduce exactly the Riemann term
-inserted in `edgeRicciHalf`.  This file cancels that complete block before any
-estimate is taken.
-
-The resulting producer retains only the genuine connection-difference
-order-zero Ricci coefficient and the DeTurck Lie refold.  In particular, no
-Riemann second-order budget remains in the boundary energy estimate.
--/
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-
-open Bundle Manifold Tensor0SBundle
+open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -40,10 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-/-! ## Exact algebraic cancellation -/
-
-/-- A Riemann refold identity cancels exactly against the Riemann half inserted
-in `edgeRicciHalf`, leaving only the connection-difference Ricci coefficient. -/
 theorem edgeRiem_cancel
     (g gm : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     (C₀ : SmoothCcTensor g 2 2) (C₂ : SmoothCcTensor g 4 2)
@@ -65,11 +49,7 @@ theorem edgeRiem_cancel
   simp only [edgeRicciHalf, appCc_add_left, appCc_smul_left]
   module
 
-/-! ## Lie-only formal pairing -/
-
 omit [BoundarylessManifold I M] in
-/-- The DeTurck Lie pair field is the exact Hilbert-space formal partner of
-the Lie second-order refold family. -/
 theorem edgeLie_inner
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -91,8 +71,6 @@ theorem edgeLie_inner
     real_inner_smul_left, real_inner_smul_right]
   simp_rw [edgePair_inner (I := I) (M := M) g]
 
-/-- Green form of the Lie-only refold pairing.  Every second derivative of
-the edge tensor is transferred to the explicit Lie formal partner. -/
 theorem edgeLie_green
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -135,12 +113,6 @@ theorem edgeLie_green
     _ = -⟪covDivergence (I := I) (M := M) g 3 P, T₁⟫_ℝ := by
       rw [real_inner_comm]
 
-/-! ## Consumer-shaped Lie-only refold -/
-
-/-- The complete closed-edge nonlinear arm has a refold in which the whole
-Riemann--Palatini block has cancelled.  The only second-order piece left is
-the explicit DeTurck Lie pair family, with uniformly bounded signs and a
-uniformly bounded order-zero refold coefficient. -/
 theorem exists_edgeLieRef
     (g g_bg : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -234,9 +206,8 @@ theorem exists_edgeLieRef
   refine ⟨LambdaD, hLambdaD, C0D, q, epsilon, hepsilon, hnormal, ?_⟩
   exact hsupD
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

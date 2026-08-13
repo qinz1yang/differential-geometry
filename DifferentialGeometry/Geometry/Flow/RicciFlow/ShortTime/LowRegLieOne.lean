@@ -1,32 +1,28 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegCoeffJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm1CoeffL2JetBound
-
-/-!
-# Low-regularity order-one DeTurck Lie coefficient
-
-This file proves the dimension-three `H2` jet estimate for the concrete
-order-one DeTurck Lie coefficient.  The proof first performs the exact
-connection-difference cancellations in the lowered `kappa` arm.  Consequently
-the third metric derivative occurs only once, while all inverse-metric and
-other multiplicative factors are controlled by the lower `H2` radius.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable
@@ -35,7 +31,7 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -176,7 +172,7 @@ private theorem conn_norm_eq
       (connLow_rfns (I := I) (M := M) g₀ g₁ i x).symm)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem unit_sub
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S T : SmoothCcTensor g 0 s) (x : M) :
@@ -198,7 +194,7 @@ private theorem unit_sub
   rw [Tensor0SSpace.toModel_sub]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem unit_add
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S T : SmoothCcTensor g 0 s) (x : M) :
@@ -220,7 +216,7 @@ private theorem unit_add
   rw [Tensor0SSpace.toModel_add]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 private theorem conn_self_zero
     (g : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
@@ -234,7 +230,7 @@ private theorem conn_self_zero
   exact add_left_cancel h'
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 private theorem conn_antisymm
     (gA gB : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
@@ -244,7 +240,7 @@ private theorem conn_antisymm
   rw [conn_self_zero (I := I) (M := M) gA x u v] at h
   exact eq_neg_of_add_eq_zero_left h.symm
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (connDiffLoweredField) in
 private theorem lie_kappa_unit
@@ -327,7 +323,7 @@ private theorem raise_dom_normSq
     (I := I) (M := M) g σ W i x
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private theorem toModel_single
     (x : M) (om : Tensor0SSpace 1 I x)
     (m : Fin 1 → TangentSpace I x) :
@@ -342,7 +338,7 @@ private theorem toModel_single
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem inner_inv_endo
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
@@ -358,7 +354,7 @@ private theorem inner_inv_endo
   rw [cotangentToDual_g0FlatCLM]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M] in
+  [T2Space M] in
 private theorem inner_inv_mixed
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) (v : TangentSpace I x) :
@@ -377,7 +373,7 @@ private theorem inner_inv_mixed
     (inverseMetricSharpFib (I := I) g₁ x om)]
   rw [g₀.symm x v (inverseMetricSharpFib (I := I) g₁ x om)]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 set_option backward.isDefEq.respectTransparency false in
 private theorem sharp_eq_insert
     (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -414,7 +410,7 @@ private theorem sharp_eq_insert
   rw [fullRaisedEndoField_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 private theorem fullRaised_split
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     fullRaisedEndoField (I := I) (M := M) g₀ g₁ =
@@ -439,7 +435,7 @@ private theorem fullRaised_split
     rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
-  [SigmaCompactSpace M] in
+  in
 set_option backward.isDefEq.respectTransparency false in
 private theorem insert_add
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
@@ -466,7 +462,7 @@ private theorem insert_add
     rfl]
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem sharp_split
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     sharpFlatEndoCc (I := I) g₀ g₁ =
@@ -651,7 +647,7 @@ private theorem psi_h2_tame
   rw [← hfactor]
   exact hOut
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem traceHessian_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     traceHessianCoeff (I := I) (M := M) g₀ g₁ =
@@ -715,10 +711,6 @@ private theorem piece_h2_const
         (Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 2) * Q)) ^ 2 := by
       rfl
 
-/-- On a closed three-manifold, the concrete order-one DeTurck Lie
-coefficient has a tame intrinsic `H2` bound.  Its lower coefficients depend
-only on the perturbation `H2` radius, and the third metric derivative enters
-affinely after the exact self-background connection cancellation. -/
 theorem lie1_h2_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M)
@@ -1034,7 +1026,6 @@ theorem lie1_h2_tame
   rw [← hfactor]
   simpa only [Q9] using hAll
 
-/-- One-parameter compatibility wrapper around `lie1_h2_tame`. -/
 theorem lie1_h2
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M)
@@ -1069,6 +1060,6 @@ theorem lie1_h2
   simpa only [B] using htame g₁ P htie hδ_le hδ_nonneg hbound
     A A hA hA hP2 hP3
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.PDE.RicciFlow
 
 end

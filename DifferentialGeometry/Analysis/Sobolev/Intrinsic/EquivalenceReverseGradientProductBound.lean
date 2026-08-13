@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForward
 import DifferentialGeometry.Analysis.Sobolev.Manifold.MeasureBridgeUniform
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -24,6 +25,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 local notation "EuclN_E" =>
@@ -31,7 +33,7 @@ local notation "EuclN_E" =>
 
 omit [FiniteDimensional ℝ E] in
 lemma g_inner_cauchy_schwarz_sq
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     (g.inner x v w)^2 ≤ g.inner x v v * g.inner x w w := by
   have h_inner_self_nn : ∀ z : TangentSpace I x, 0 ≤ g.inner x z z := by
@@ -118,7 +120,7 @@ lemma g_inner_cauchy_schwarz_sq
 
 omit [FiniteDimensional ℝ E] in
 lemma abs_g_inner_le_sqrt_mul_sqrt
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     |g.inner x v w| ≤ Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) := by
   have h_inner_self_nn : ∀ z : TangentSpace I x, 0 ≤ g.inner x z z := by
@@ -144,25 +146,25 @@ lemma abs_g_inner_le_sqrt_mul_sqrt
   exact h_sqrt_le
 
 lemma gradFun_mul_pointwise
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {ρ u : M → ℝ} {x : M}
     (hρ : MDifferentiableAt I 𝓘(ℝ, ℝ) ρ x)
     (hu : MDifferentiableAt I 𝓘(ℝ, ℝ) u x) :
-    DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
       (fun y : M => ρ y * u y) x =
-    ρ x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x +
-    u x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g ρ x := by
+    ρ x • DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x +
+    u x • DifferentialGeometry.Geometry.Operator.gradFun (I := I) g ρ x := by
   classical
-  apply DifferentialGeometry.Integral.DivergenceTheorem.metricFlatLinear_injective
+  apply DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective
     (I := I) g x
   ext v
   change g.inner x
-      (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+      (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
         (fun y : M => ρ y * u y) x) v =
     g.inner x
-      (ρ x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x +
-        u x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g ρ x) v
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.inner_gradFun (I := I) g _ x v]
+      (ρ x • DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x +
+        u x • DifferentialGeometry.Geometry.Operator.gradFun (I := I) g ρ x) v
+  rw [DifferentialGeometry.Geometry.Operator.inner_gradFun (I := I) g _ x v]
   have h_fun_eq : (fun y : M => ρ y * u y) = ρ * u := by funext y; rfl
   set d_ρ : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) ρ x with hd_ρ_def
   set d_u : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) u x with hd_u_def
@@ -183,64 +185,71 @@ lemma gradFun_mul_pointwise
   rw [h_mfderiv_mul]
   symm
   have h1 : (g.inner x)
-      (ρ x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x +
-       u x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g ρ x) =
-      (g.inner x) (ρ x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      (ρ x • DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x +
+       u x • DifferentialGeometry.Geometry.Operator.gradFun (I := I) g ρ x) =
+      (g.inner x) (ρ x • DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g u x) +
-      (g.inner x) (u x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      (g.inner x) (u x • DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g ρ x) :=
     (g.inner x).map_add _ _
   change ((g.inner x)
-      (ρ x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x +
-       u x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g ρ x)) v =
+      (ρ x • DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x +
+       u x • DifferentialGeometry.Geometry.Operator.gradFun (I := I) g ρ x)) v =
     ρ x * d_u v + u x * d_ρ v
   rw [h1]
-  rw [show (((g.inner x) (ρ x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+  rw [show (((g.inner x) (ρ x • DifferentialGeometry.Geometry.Operator.gradFun
       (I := I) g u x)) + ((g.inner x) (u x •
-      DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g ρ x))) v =
-      ((g.inner x) (ρ x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      DifferentialGeometry.Geometry.Operator.gradFun (I := I) g ρ x))) v =
+      ((g.inner x) (ρ x • DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g u x)) v +
-      ((g.inner x) (u x • DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+      ((g.inner x) (u x • DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g ρ x)) v from rfl]
   rw [(g.inner x).map_smul, (g.inner x).map_smul]
-  rw [show (ρ x • (g.inner x) (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+  rw [show (ρ x • (g.inner x) (DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g u x)) v = ρ x • ((g.inner x)
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)) v from rfl]
-  rw [show (u x • (g.inner x) (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)) v from rfl]
+  rw [show (u x • (g.inner x) (DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g ρ x)) v = u x • ((g.inner x)
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g ρ x)) v from rfl]
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g ρ x)) v from rfl]
   simp only [smul_eq_mul]
-  rw [show ((g.inner x) (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+  rw [show ((g.inner x) (DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g u x)) v = d_u v from by
     rw [hd_u_def]
-    exact DifferentialGeometry.Integral.DivergenceTheorem.inner_gradFun (I := I) g u x v]
-  rw [show ((g.inner x) (DifferentialGeometry.Integral.DivergenceTheorem.gradFun
+    exact DifferentialGeometry.Geometry.Operator.inner_gradFun (I := I) g u x v]
+  rw [show ((g.inner x) (DifferentialGeometry.Geometry.Operator.gradFun
         (I := I) g ρ x)) v = d_ρ v from by
     rw [hd_ρ_def]
-    exact DifferentialGeometry.Integral.DivergenceTheorem.inner_gradFun (I := I) g ρ x v]
+    exact DifferentialGeometry.Geometry.Operator.inner_gradFun (I := I) g ρ x v]
 
 lemma continuous_sqrt_g_inner_gradFun_self
     [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     Continuous (fun x : M => Real.sqrt
       (g.inner x
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x))) := by
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x))) := by
   have hcont := TangentBundle.continuous_g_inner_of_smooth_sections
     (I := I) (M := M) g
-    (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g hf)
-    (DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g hf)
+    (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩)
+    (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩)
   have hcoe : (fun x : M => g.inner x
-        ((DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g hf :
+        ((DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((DifferentialGeometry.Integral.DivergenceTheorem.grad_g (I := I) g hf :
+          ((DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
       (fun x : M => g.inner x
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)
-        (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g f x)) := by
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)) := by
     funext x
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.grad_g_apply (I := I) g hf x]
+    rw [DifferentialGeometry.Geometry.Operator.grad_g_apply (I := I) g ⟨_, hf⟩ x]
+    change g.inner x
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x) =
+      g.inner x
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+        (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)
+    rfl
   rw [hcoe] at hcont
   exact Real.continuous_sqrt.comp hcont
 
@@ -277,22 +286,22 @@ lemma abs_chartAtlasPOU_le_one
 
 lemma sqrt_g_inner_gradFun_pou_mul_le
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
             (fun y : M => ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
               : C^∞⟮I, M; ℝ⟯) : M → ℝ) y * u y) x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
             (fun y : M => ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
               : C^∞⟮I, M; ℝ⟯) : M → ℝ) y * u y) x)) ≤
         K * (|u x| +
           Real.sqrt
             (g.inner x
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) := by
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) := by
   classical
   set ρ : C^∞⟮I, M; ℝ⟯ :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -300,9 +309,9 @@ lemma sqrt_g_inner_gradFun_pou_mul_le
     exists_continuous_sup_of_compactSpace (M := M)
       (f := fun x : M => Real.sqrt
         (g.inner x
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
             ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
-          (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
             ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)))
       (continuous_sqrt_g_inner_gradFun_self (I := I) (M := M) g ρ.contMDiff)
       (fun _ => Real.sqrt_nonneg _)
@@ -316,9 +325,9 @@ lemma sqrt_g_inner_gradFun_pou_mul_le
     (x := x) hρ_diff hu_diff
   rw [h_grad_eq]
   set gu : TangentSpace I x :=
-    DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x with hgu_def
+    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x with hgu_def
   set gρ : TangentSpace I x :=
-    DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+    DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
       ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x with hgρ_def
   set a : TangentSpace I x := ((ρ : M → ℝ)) x • gu
   set b : TangentSpace I x := u x • gρ

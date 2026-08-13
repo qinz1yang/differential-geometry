@@ -3,22 +3,10 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.CorrectedBareVelocity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBijective
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+open DifferentialGeometry.Geometry.Curvature
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Bundle MeasureTheory
 open scoped Manifold Topology ContDiff
@@ -63,11 +51,6 @@ private lemma intervalIntegrable_chartTrivRepr_along_orbit
   refine hII_deriv.congr_ae ?_
   rw [Set.uIoc_of_le hs0, hrestrict]
   exact ae_restrict_of_forall_mem measurableSet_Ioo (fun u hu => hφ_eq u hu)
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 theorem corrected_chart_anchor_flow_build
@@ -263,4 +246,4 @@ theorem corrected_chart_anchor_flow_build
     · rw [hΦ0_eq s, hext_round s hsIcc]
       exact ((hspec x).2 s hsIcc).2.2
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

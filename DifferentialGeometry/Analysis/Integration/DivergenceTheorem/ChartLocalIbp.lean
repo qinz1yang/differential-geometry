@@ -12,7 +12,6 @@ import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Topology.Algebra.Support
 
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory
@@ -110,7 +109,6 @@ private lemma vwIntegrandOnE_contDiffOn_target [I.Boundaryless]
   intro y hy
   rw [vwIntegrandOnE_apply_of_mem (I := I) g α X i hy]
 
-/-- Internal compatibility name for the public zero-extended chart pullback. -/
 private abbrev phiOnE (α : M) (φ : M → ℝ) : E → ℝ :=
   chartPullZero (I := I) α φ
 
@@ -126,7 +124,6 @@ private lemma phiOnE_apply_of_notMem (α : M) (φ : M → ℝ) {y : E}
     phiOnE (I := I) α φ y = 0 :=
   Set.indicator_of_notMem hy _
 
-/-- A chart coefficient extended by zero off the chart target. -/
 private noncomputable def coeffZero
     (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (i : Fin (Module.finrank ℝ E)) : E → ℝ :=
@@ -135,7 +132,6 @@ private noncomputable def coeffZero
     exact (extChartAt I α).target.piecewise
       (chartCoeffOnE (I := I) α X i) (fun _ => 0)
 
-/-- The measurable coordinate representative of a tangent action. -/
 private def chartActionE
     (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (φ : M → ℝ) : E → ℝ := fun y =>
@@ -143,14 +139,11 @@ private def chartActionE
     coeffZero (I := I) α X i y *
       lineDeriv ℝ (phiOnE (I := I) α φ) y ((chartModelBasis E) i)
 
-/-- The extended chart coordinate, with value zero off the chart source. -/
 private noncomputable def chartCoordZero (α : M) : M → E :=
   by
     classical
     exact (chartAt H α).source.piecewise (fun x => extChartAt I α x) (fun _ => 0)
 
-/-- The chart-coordinate tangent-action representative, extended by zero off
-the chart source. -/
 private noncomputable def chartActionM
     (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (φ : M → ℝ) : M → ℝ :=
@@ -198,9 +191,6 @@ private lemma chartActionM_meas
     (chartCoordZero_meas (I := I) α)).indicator
       (chartAt H α).open_source.measurableSet
 
-/-- The intrinsic tangent action agrees almost everywhere with its measurable
-zero-extended chart representative at differentiability points of the pulled
-back scalar function. -/
 private lemma tangent_ae_chart [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -247,8 +237,6 @@ private lemma tangent_ae_chart [I.Boundaryless]
     rw [hmf, Set.indicator_of_notMem hxsrc]
     rfl
 
-/-- A chart-Lipschitz scalar with support inside the chart has a measurable
-intrinsic tangent action for the corresponding chart-local measure. -/
 theorem tangent_aesm [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -590,9 +578,6 @@ private theorem ibp_per_index [I.Boundaryless]
   exact integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable hf'g_int hfg'_int hfg_int
     hvw_diff_tsupp_phi hphi_diff_tsupp_vw
 
-/-- The chart-local integration-by-parts identity for one coordinate direction
-when the scalar factor is only Lipschitz. A compact plateau localizes the
-smooth coefficient before applying Euclidean Lipschitz integration by parts. -/
 private theorem ibp_lip_index [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -754,9 +739,6 @@ private theorem ibp_lip_index [I.Boundaryless]
   refine ⟨heq, hlhs, ?_⟩
   simpa only [v] using hrhs
 
-/-- On the chart target, `partialDeriv i (vwIntegrandOnE g α X i) y` equals
-`partialDeriv i (chartCoeffOnE α X i · chartDensityOnE g α) y` (since the
-two functions agree on the open neighborhood `target`). -/
 private lemma partialDeriv_vwIntegrandOnE_eq_on_target [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -949,8 +931,6 @@ private lemma rhs_chart_target [I.Boundaryless]
   rw [htsa_eq]
   rfl
 
-/-- Pull the tangent-action integral of a chart-Lipschitz scalar to its
-almost-everywhere coordinate line-derivative representative. -/
 private lemma rhs_lip_target [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -1000,8 +980,6 @@ private lemma rhs_lip_target [I.Boundaryless]
       unfold chartDensityOnE
       ring
 
-/-- The intrinsic tangent action of a compactly supported chart-Lipschitz
-scalar is integrable for the corresponding chart-local measure. -/
 theorem tangent_lip_int [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -1088,8 +1066,6 @@ theorem tangent_lip_int [I.Boundaryless]
   exact hrep.congr
     (tangent_ae_chart (I := I) g α X hφ_lip hφ_supp).symm
 
-/-- Each summand `∂_i (vwIntegrandOnE) · phiOnE α φ` is `C^∞` on `E` and has
-compact support. -/
 private lemma summand_int [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -1341,8 +1317,6 @@ theorem chart_local_ibp [I.Boundaryless]
   rw [partialDeriv_phiOnE_eq_on_target (I := I) α φ i hy]
   ring
 
-/-- The chart-local integration-by-parts identity when the zero-extended chart
-pullback of the scalar factor is Lipschitz. -/
 theorem chart_local_ibp_lip [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)

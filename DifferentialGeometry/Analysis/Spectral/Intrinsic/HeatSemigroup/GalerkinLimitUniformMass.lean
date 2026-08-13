@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.GalerkinFo
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator
 import Mathlib.Topology.Algebra.InfiniteSum.Real
+open DifferentialGeometry.Analysis.Sobolev.CSupTensor
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -11,9 +14,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
@@ -1247,9 +1249,8 @@ theorem deTurckGalerkin_solField_uniformSpatialMass_allOrderSymm
     (fun i => hconv i) Bound hpartialbound
   exact hfatou
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

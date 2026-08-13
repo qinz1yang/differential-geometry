@@ -1,26 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfRoughMap
 import Mathlib.Topology.MetricSpace.Contracting
 
-/-!
-# The rough harmonic-map heat-flow fixed point
-
-This file isolates the Banach step in the local-addition harmonic-map
-heat-flow construction.  The ambient Banach space is the rough parabolic
-path space and `tr` is its initial-value trace.  The fixed-point ball is
-centred at the zero section.
-
-The two critical Duhamel arms are kept separate.  The prescribed principal
-coefficient contributes `4 * eps`, exactly as in `critCoeff_int_le`, while
-the quadratic-gradient arm contributes `K * R` on a ball of radius `R`.
-Thus the contraction rate is
-
-`4 * eps + K * R`.
-
-There is deliberately no power of the time horizon in the principal rate.
-Shortening the horizon may only be used to make the noncritical seed `seed`
-small enough to stay in the ball.
--/
-
 noncomputable section
 open MeasureTheory
 open scoped ENNReal
@@ -33,19 +13,8 @@ variable {X E : Type*}
   [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-/-- The exact contraction rate for the rough HMF map.  The factor `4` is the
-critical time-convolution bound; `K * R` is the quadratic-gradient rate on
-the radius-`R` state ball. -/
 def hmfRate (eps K R : ℝ) : ℝ := 4 * eps + K * R
 
-/-- Analytic data for the zero-initial-value rough HMF Duhamel map.
-
-`principal` is the heat potential of the prescribed inverse-metric
-difference flux and `quadratic` is the heat potential of the target/local
-addition quadratic-gradient source.  Their Lipschitz estimates are required
-only on the state ball.  The trace fields say that every Duhamel arm has zero
-initial value; the fixed point therefore has zero initial value as a proved
-conclusion. -/
 structure HmfFPData (tr : X →L[ℝ] E) (eps K R eta : ℝ) where
   seed : X
   principal : X → X
@@ -71,11 +40,9 @@ structure HmfFPData (tr : X →L[ℝ] E) (eps K R eta : ℝ) where
   rate_lt_one : hmfRate eps K R < 1
   seed_small : eta ≤ (1 - hmfRate eps K R) * R
 
-/-- The closed rough-path state ball. -/
 abbrev HmfBall (R : ℝ) (X : Type*) [Zero X] [PseudoMetricSpace X] :=
   Metric.closedBall (0 : X) R
 
-/-- The untruncated rough HMF Duhamel map. -/
 def hmfDuh {tr : X →L[ℝ] E} {eps K R eta : ℝ}
     (D : HmfFPData tr eps K R eta) (u : X) : X :=
   D.seed + D.principal u + D.quadratic u
@@ -126,7 +93,6 @@ theorem duh_mem {u : X} (hu : u ∈ Metric.closedBall 0 R) :
       add_le_add D.seed_small (le_refl _)
     _ = R := by ring
 
-/-- The Duhamel self-map of the rough-path state ball. -/
 def duhBall (u : HmfBall R X) : HmfBall R X :=
   ⟨hmfDuh D u, duh_mem D u.property⟩
 omit [CompleteSpace X] in
@@ -152,8 +118,6 @@ private theorem duh_diff {u v : X}
       ring
 
 omit [CompleteSpace X] in
-/-- The state-ball Duhamel map is a contraction with the exact rate
-`4 * eps + K * R`. -/
 theorem duh_contracting :
     ContractingWith ⟨hmfRate eps K R, rate_nonneg D⟩ D.duhBall := by
   refine ⟨?_, ?_⟩
@@ -201,13 +165,6 @@ variable {V G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- A normalized linear heat-potential estimate on the rough path space.
-
-The divergence potential consumes the weighted/Carleson gradient source
-class and costs the critical constant `4`.  The ordinary potential consumes
-the weighted/Carleson source class and costs `1`.  These are linear estimates,
-not a disguised contraction hypothesis: the nonlinear contraction constants
-are derived below from `hmfDiffSplit`. -/
 structure HeatRoughBound (T : ℝ) (tr : X →L[ℝ] E)
     (fluxPot sourcePot : (ℝ × V → F) → X) : Prop where
   flux_zero : fluxPot 0 = 0
@@ -221,9 +178,6 @@ structure HeatRoughBound (T : ℝ) (tr : X →L[ℝ] E)
   trace_flux : ∀ p, tr (fluxPot p) = 0
   trace_source : ∀ s, tr (sourcePot s) = 0
 
-/-- Realization of the rough Banach ball by an actual Euclidean path and its
-spatial derivative.  Ball membership yields the two rough estimates, while
-the ambient norm controls differences in the same scale. -/
 structure HmfRoughModel (T R : ℝ) (C : ℝ≥0∞)
     (path : X → ℝ × V → F) (grad : X → ℝ × V → G) : Prop where
   R0 : 0 ≤ R
@@ -235,9 +189,6 @@ structure HmfRoughModel (T R : ℝ) (C : ℝ≥0∞)
   carl_diff : ∀ u v, GradCarl T (ENNReal.ofReal (‖u - v‖ ^ 2))
     (fun z ↦ grad u z - grad v z)
 
-/-- Measurability data for the three realized source arms in
-`hmfDiffSplit`.  It is separated from coefficient bounds because the latter
-are pointwise analytic estimates. -/
 structure HmfMeas
     (A : ℝ × V → G →L[ℝ] F)
     (Q : ℝ × V → G →L[ℝ] G →L[ℝ] F)
@@ -251,22 +202,14 @@ structure HmfMeas
     (fun z ↦ Q z (grad v z) (grad u z - grad v z))
       (stVolume : Measure (ℝ × V))
 
-/-- The realized divergence flux of one HMF iterate. -/
 def hmfFlux (A : ℝ × V → G →L[ℝ] F) (grad : X → ℝ × V → G)
     (u : X) (z : ℝ × V) : F :=
   A z (grad u z)
 
-/-- The realized target/local-addition quadratic source of one HMF
-iterate. -/
 def hmfQuad (Q : ℝ × V → G →L[ℝ] G →L[ℝ] F)
     (grad : X → ℝ × V → G) (u : X) (z : ℝ × V) : F :=
   Q z (grad u z) (grad u z)
 
-/-- Build the fixed-point data from the two rough heat-potential estimates
-and `hmfDiffSplit`.
-
-The raw quadratic coefficient is bounded by `K / 2`; its two difference arms
-therefore add to the advertised combined rate `K * R`. -/
 def fpOfSplit {T eps K R eta : ℝ} {C : ℝ≥0∞}
     {tr : X →L[ℝ] E}
     {fluxPot sourcePot : (ℝ × V → F) → X}
@@ -333,9 +276,6 @@ def fpOfSplit {T eps K R eta : ℝ} {C : ℝ≥0∞}
   rate_lt_one := hrate
   seed_small := hsmall
 
-/-- The fixed point produced from `hmfDiffSplit`, with the actual HMF
-Duhamel equation and both the weighted and Carleson gradient bounds exposed
-in the conclusion. -/
 theorem split_fixed {T eps K R eta : ℝ} {C : ℝ≥0∞}
     {tr : X →L[ℝ] E}
     {fluxPot sourcePot : (ℝ × V → F) → X}

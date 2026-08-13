@@ -1,25 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -33,8 +14,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 namespace Geometry
-
-
 
 private def convexCombForm (g₁ g₂ : SmoothRiemannianMetric I M) (χ : M → ℝ) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
@@ -73,9 +52,6 @@ private lemma convexCombForm_pos (g₁ g₂ : SmoothRiemannianMetric I M) (χ : 
     rw [hb1]
     simpa using h2
 
-
-
-
 private lemma frameVec_contMDiffAt (x₀ : M) (i : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
     ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
@@ -91,9 +67,6 @@ private lemma frameVec_contMDiffAt (x₀ : M) (i : Fin (Module.finrank ℝ E)) {
   refine (contMDiffAt_localFrame_of_mem (I := I) (n := (∞ : WithTop ℕ∞)) (e := e) (b := b)
     (i := i) hx).congr_of_eventuallyEq ?_
   exact hfr.mono (fun y hy => congrArg (TotalSpace.mk' E y) hy)
-
-
-
 
 private lemma convexCombForm_coeff_contMDiffOn (g₁ g₂ : SmoothRiemannianMetric I M) (χ : M → ℝ)
     (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (x₀ : M) (i j : Fin (Module.finrank ℝ E)) :
@@ -115,12 +88,12 @@ private lemma convexCombForm_coeff_contMDiffOn (g₁ g₂ : SmoothRiemannianMetr
   have hg1 :
       ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (fun y : M => g₁.inner y (frameVec (I := I) x₀ i y) (frameVec (I := I) x₀ j y)) x :=
-    DifferentialGeometry.Integral.Connection.CovariantDerivative.metric_inner_contMDiffAt
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.metric_inner_contMDiffAt
       (I := I) g₁ hfri hfrj le_rfl
   have hg2 :
       ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (fun y : M => g₂.inner y (frameVec (I := I) x₀ i y) (frameVec (I := I) x₀ j y)) x :=
-    DifferentialGeometry.Integral.Connection.CovariantDerivative.metric_inner_contMDiffAt
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.metric_inner_contMDiffAt
       (I := I) g₂ hfri hfrj le_rfl
   have hχx : ContMDiffAt I 𝓘(ℝ, ℝ) ∞ χ x := hχ x
   have hχ1x : ContMDiffAt I 𝓘(ℝ, ℝ) ∞ (fun y : M => 1 - χ y) x :=
@@ -130,9 +103,6 @@ private lemma convexCombForm_coeff_contMDiffOn (g₁ g₂ : SmoothRiemannianMetr
 end Geometry
 
 open Geometry
-
-
-
 
 noncomputable def SmoothRiemannianMetric.convexComb
     (g₁ g₂ : SmoothRiemannianMetric I M) (χ : M → ℝ)

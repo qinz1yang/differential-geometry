@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowToTangentLift
 import Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -27,7 +26,6 @@ section ChartPhaseAtZeroSection
 variable [I.Boundaryless]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem eventually_hasDerivAt_chartPhaseVF_at_zero_section
     {g : SmoothRiemannianMetric I M} {α : M} {s₀ : ℝ}

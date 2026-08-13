@@ -10,7 +10,6 @@ import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.LineDeriv.Basic
 
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory
@@ -50,8 +49,6 @@ theorem tangent_mul
   rw [hmul]
   rfl
 
-/-- The pullback of `f : M → ℝ` through the chart inverse, viewed as a function
-on the chart target `(extChartAt I α).target ⊆ E`. -/
 def scalarOnE (α : M) (f : M → ℝ) : E → ℝ :=
   fun y => f ((extChartAt I α).symm y)
 
@@ -59,8 +56,6 @@ omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 @[simp] lemma scalarOnE_def (α : M) (f : M → ℝ) (y : E) :
     scalarOnE (I := I) α f y = f ((extChartAt I α).symm y) := rfl
 
-/-- The chart pullback of a scalar function, extended by zero outside the
-extended-chart target. -/
 def chartPullZero (α : M) (f : M → ℝ) : E → ℝ :=
   (extChartAt I α).target.indicator (scalarOnE (I := I) α f)
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
@@ -99,9 +94,6 @@ lemma scalarOnE_contDiffWithinAt
     ContDiffWithinAt ℝ ∞ (scalarOnE (I := I) α f) (extChartAt I α).target y :=
   scalarOnE_contDiffOn (I := I) α hf y hy
 
-/-- At a point where the scalar chart pullback is differentiable, the
-manifold derivative on a chart-basis vector is the corresponding Euclidean
-partial derivative. -/
 lemma mfderiv_chart_diff (α : M)
     {f : M → ℝ} {x : M} (hx : x ∈ (chartAt H α).source)
     (hf : DifferentiableAt ℝ (scalarOnE (I := I) α f) (extChartAt I α x))
@@ -154,12 +146,6 @@ lemma mfderiv_chart_diff (α : M)
   rw [hmfderiv_chartBasis]
   rfl
 
-/-- Decomposition: applying `mfderiv` of `f` at `x` to the chart-basis frame
-vector at index `i`, using the chart at `α`. The model space is `E`, so this is
-just `partialDeriv i (scalarOnE α f) (φ_α x)`. To prove this we use the chain
-rule `f = scalarOnE α f ∘ extChartAt I α` near `x`, plus the fact that
-`mfderiv (extChartAt I α) x` sends the chart-basis frame at `α` to the model
-basis (as a continuous linear map). -/
 lemma mfderiv_chartBasisVecFiber (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     {x : M} (hx : x ∈ (chartAt H α).source)
@@ -265,9 +251,6 @@ lemma extChartAt_target_subset_interior_of_boundaryless [I.Boundaryless] (α : M
   intro y hy
   exact (isOpen_extChartAt_target (I := I) α).interior_eq.symm ▸ hy
 
-/-- At a differentiability point of the zero-extended chart pullback, a
-smooth tangent section acts by the corresponding finite sum of coordinate
-line derivatives. -/
 theorem tangent_chart_diff [I.Boundaryless]
     (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -305,8 +288,6 @@ theorem tangent_chart_diff [I.Boundaryless]
   rw [← heq.fderiv_eq, ← hf.lineDeriv_eq_fderiv]
   exact smul_eq_mul ..
 
-/-- Under `[I.Boundaryless]`, the chart-local representation holds for any
-point in the chart base set. -/
 theorem tangentSectionAction_chartLocal_of_boundaryless [I.Boundaryless]
     (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)

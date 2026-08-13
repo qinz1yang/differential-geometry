@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqLe
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -11,32 +13,32 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
+  [T2Space M] [BoundarylessManifold I M]
 
 noncomputable def riemannianFrameScalar
     (g : SmoothRiemannianMetric I M) (b : M) (S : TensorRSSpace 0 2 I b) : ℝ :=
   (riemannianFiberNormSq_le_pointwise_witness (I := I) (M := M) g 0 2 b S).choose
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 lemma riemannianFrameScalar_nonneg
     (g : SmoothRiemannianMetric I M) (b : M) (S : TensorRSSpace 0 2 I b) :
     0 ≤ riemannianFrameScalar (I := I) (M := M) g b S :=
   (riemannianFiberNormSq_le_pointwise_witness (I := I) (M := M) g 0 2 b S).choose_spec.1
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 lemma riemannianFiberNormSq_le_frameScalar_sq
     (g : SmoothRiemannianMetric I M) (b : M) (S : TensorRSSpace 0 2 I b) :
@@ -119,8 +121,8 @@ theorem exists_bound_riemannianFiberNormSq_riemannOp_tensorCov
         (I := I) (M := M) g X Y T x)
       (h_le_K x)
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

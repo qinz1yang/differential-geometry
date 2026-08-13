@@ -3,13 +3,16 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDe
 import DifferentialGeometry.Tensor.Mixed.Field
 import DifferentialGeometry.Tensor.Multilinear.ModelProductContinuousBilinear
 import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
@@ -19,8 +22,7 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.PDE.RicciFlow
+
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -817,7 +819,7 @@ private lemma toModel_chartTensor0SCovariantDerivative_prodUnitEval
   abel
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma chartTensor0SCovariantDerivative_eq_abstract_gen
     (g : SmoothRiemannianMetric I M) {n : ℕ} (Y : Π b' : M, Tensor0SSpace n I b')
     (X : Π b' : M, TangentSpace I b') (x : M)
@@ -835,7 +837,7 @@ private lemma chartTensor0SCovariantDerivative_eq_abstract_gen
       exact chartTensor0SCovariantDerivative_eq_abstract_zero (I := I) (M := M) g x Y X hx_good
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma toModel_tensor0SCovariantDerivative_factorUnitEval_frame
     (g : SmoothRiemannianMetric I M) {s : ℕ} (W : SmoothCcTensor g 0 (s + 1))
     (X : Π b' : M, TangentSpace I b') (x : M)
@@ -853,7 +855,7 @@ private lemma toModel_tensor0SCovariantDerivative_factorUnitEval_frame
     (factorUnitEval_tensorSectionMDiffAt (I := I) g W x) hX_at]
 
 omit [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covDerivUnitModel_prodUnitEval_frame (g : SmoothRiemannianMetric I M) {p' q' : ℕ}
     (S : SmoothCcTensor g 0 (p' + 1)) (T : SmoothCcTensor g 0 (q' + 1)) (x : M)
     (i : Fin (Module.finrank ℝ E)) :
@@ -893,7 +895,7 @@ private lemma covDerivUnitModel_prodUnitEval_frame (g : SmoothRiemannianMetric I
     toModel_tensor0SCovariantDerivative_factorUnitEval_frame (I := I) g T Xf x hX_at]
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma toModel_tensor0SCovariantDerivative_factorUnitEval_frame_gen
     (g : SmoothRiemannianMetric I M) {s : ℕ} (W : SmoothCcTensor g 0 s)
     (X : Π b' : M, TangentSpace I b') (x : M)
@@ -908,7 +910,7 @@ private lemma toModel_tensor0SCovariantDerivative_factorUnitEval_frame_gen
     (factorUnitEval (I := I) g W) X x (factorUnitEval_tensorSectionMDiffAt (I := I) g W x) hX_at]
 
 omit [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covDerivUnitModel_prodUnitEval_frame_gen (g : SmoothRiemannianMetric I M) {p q : ℕ}
     (S : SmoothCcTensor g 0 p) (T : SmoothCcTensor g 0 q) (x : M)
     (i : Fin (Module.finrank ℝ E)) :
@@ -987,7 +989,7 @@ private lemma modelProduct_finsum_smul_right {n m d : ℕ} (c : Fin d → ℝ)
   simp only [map_smul, Bundle.continuousMultilinearMap.modelProductL_apply]
 
 omit [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covDerivUnitModel_prodUnitEval (g : SmoothRiemannianMetric I M) {p' q' : ℕ}
     (S : SmoothCcTensor g 0 (p' + 1)) (T : SmoothCcTensor g 0 (q' + 1)) (x : M)
     (w : TangentSpace I x) :
@@ -1030,7 +1032,7 @@ private lemma covDerivUnitModel_prodUnitEval (g : SmoothRiemannianMetric I M) {p
   rw [← smul_add, covDerivUnitModel_prodUnitEval_frame (I := I) g S T x i]
 
 omit [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covDerivUnitModel_prodUnitEval_gen (g : SmoothRiemannianMetric I M) {p q : ℕ}
     (S : SmoothCcTensor g 0 p) (T : SmoothCcTensor g 0 q) (x : M)
     (w : TangentSpace I x) :

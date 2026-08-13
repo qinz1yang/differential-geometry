@@ -1,3 +1,1 @@
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
-
-set_option autoImplicit false

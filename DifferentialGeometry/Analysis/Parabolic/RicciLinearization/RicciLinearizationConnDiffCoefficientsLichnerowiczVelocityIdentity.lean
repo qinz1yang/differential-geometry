@@ -1,16 +1,20 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnDiffCovGradBridge
-import DifferentialGeometry.Geometry.Flow.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
 import DifferentialGeometry.Tensor.Multilinear.ModelProductContinuousBilinear
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficientsFibreOperators
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory intervalIntegral
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
 
 namespace DifferentialGeometry
@@ -20,11 +24,12 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -197,7 +202,7 @@ private lemma koszulPair_eq_smul_dual_linearizedKoszul
   rw [koszulCovGradCovec, hcd]
   have hlm : ((realizedFam (I := I) g₀ T T' hδ hδ' 0).inner b
       (((0 : ℝ) - s) •
-        DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+        DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' 0) b
           (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) b (Yf b) (Zf b)))).toLinearMap =
@@ -208,10 +213,10 @@ private lemma koszulPair_eq_smul_dual_linearizedKoszul
     intro z
     rw [LinearMap.smul_apply]
     change ((realizedFam (I := I) g₀ T T' hδ hδ' 0).inner b
-      (((0 : ℝ) - s) • DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+      (((0 : ℝ) - s) • DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
         (realizedFam (I := I) g₀ T T' hδ hδ' 0) b _)) z = _
     rw [map_smul, ContinuousLinearMap.smul_apply,
-      DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp]
+      DifferentialGeometry.Geometry.Operator.inner_metricSharp]
   rw [hlm, dualToCotangent_smul_c]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -332,7 +337,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma inverseMetricSharpFib_dualToCotangent (g : SmoothRiemannianMetric I M)
     (x : M) (φ : Module.Dual ℝ (TangentSpace I x)) :
     inverseMetricSharpFib (I := I) g x (dualToCotangent (I := I) φ) =
-      DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I) g x φ := by
+      DifferentialGeometry.Geometry.Operator.metricSharp (I := I) g x φ := by
   rw [inverseMetricSharpFib_apply, cotangentToDualLinear_apply, cotangentToDual_dualToCotangent]
 
 
@@ -646,7 +651,7 @@ private lemma lkc_eq_endpoint_flat
         linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) b u ζ z := by
     rw [hkey, map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul,
-      DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp]
+      DifferentialGeometry.Geometry.Operator.inner_metricSharp]
   rw [LinearMap.smul_apply]
   rw [show (((realizedFam (I := I) g₀ T T' hδ hδ' 1).inner b
       (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)
@@ -725,7 +730,7 @@ private lemma metricSharp_linearizedKoszulCovec_contMDiff
     (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
-        (DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+        (DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
           (realizedFam (I := I) g₀ T T' hδ hδ' s) b
           (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) b (Z b) (Y b)))) := by
@@ -772,7 +777,7 @@ private theorem covDerivLinearizedConn_inner_towers
             (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y (Z y) (Y y))))) =
         (fun y : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) y
-          (DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+          (DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
             (realizedFam (I := I) g₀ T T' hδ hδ' s) y
             (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y (Z y) (Y y)))) := by
@@ -808,7 +813,7 @@ private theorem covDerivLinearizedConn_inner_towers
       (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) x (Z x)
       (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
         (fun b => X b) (fun b => Y b) x) =
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+    DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
       (realizedFam (I := I) g₀ T T' hδ hδ' s) x
       (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) x (Z x)
@@ -818,14 +823,14 @@ private theorem covDerivLinearizedConn_inner_towers
       (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) x
       (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
         (fun b => X b) (fun b => Z b) x) (Y x) =
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp (I := I)
+    DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
       (realizedFam (I := I) g₀ T T' hδ hδ' s) x
       (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) x
         (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
           (fun b => X b) (fun b => Z b) x) (Y x)) from rfl]
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp,
-    DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp]
+  rw [DifferentialGeometry.Geometry.Operator.inner_metricSharp,
+    DifferentialGeometry.Geometry.Operator.inner_metricSharp]
   rw [linearizedKoszulCovec_apply, linearizedKoszulCovec_apply]
   rw [covApply_apply, covApply_apply]
   ring

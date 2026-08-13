@@ -3,17 +3,6 @@ import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Analysis.Calculus.TangentCone.Prod
 
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open scoped ContDiff
@@ -23,8 +12,6 @@ namespace Analysis
 
 variable {E F : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-
 
 theorem fderiv_deriv_time_comm {G : ℝ → E → F} (t : ℝ) (x : E)
     (hG : ContDiff ℝ ∞ (Function.uncurry G)) :
@@ -72,8 +59,67 @@ theorem fderiv_deriv_time_comm {G : ℝ → E → F} (t : ℝ) (x : E)
   exact second_derivative_symmetric (f := H) (fun y => (hHdiff y).hasFDerivAt)
     ((hHdiff1 (t, x)).hasFDerivAt) (0, u) (1, 0)
 
-
-
+theorem fderiv_deriv_hasDerivAt_comm (Φ : ℝ × E → ℝ) (s₀ : ℝ) (y₀ : E) (v : E)
+    (hΦ : ContDiffAt ℝ ∞ Φ (s₀, y₀)) :
+    HasDerivAt
+      (fun s => fderiv ℝ (fun y => Φ (s, y)) y₀ v)
+      (fderiv ℝ (fun y => deriv (fun s => Φ (s, y)) s₀) y₀ v)
+      s₀ := by
+  have hΦ_dfderiv : ContDiffAt ℝ ∞ (fderiv ℝ Φ) (s₀, y₀) := hΦ.fderiv_right (by simp)
+  have get_diff_nhd : ∀ (p₀ : ℝ × E), ContDiffAt ℝ ∞ Φ p₀ →
+      ∀ᶠ p : ℝ × E in nhds p₀, DifferentiableAt ℝ Φ p := fun p₀ hp => by
+    obtain ⟨f', u, hu, _, hfu⟩ :=
+      contDiffAt_one_iff.mp (hp.of_le (by exact_mod_cast le_top : (1 : WithTop ℕ∞) ≤ ∞))
+    exact Filter.eventually_of_mem hu fun p hp => (hfu p hp).differentiableAt
+  have hΦ_s : ∀ᶠ s in nhds s₀, DifferentiableAt ℝ Φ (s, y₀) :=
+    (continuous_id.prodMk (continuous_const (y := y₀))).continuousAt (get_diff_nhd _ hΦ)
+  have hΦ_y : ∀ᶠ y : E in nhds y₀, DifferentiableAt ℝ Φ (s₀, y) :=
+    (continuous_const (y := s₀) |>.prodMk continuous_id).continuousAt (get_diff_nhd _ hΦ)
+  have lhs_eq : (fun s => fderiv ℝ (fun y => Φ (s, y)) y₀ v) =ᶠ[nhds s₀]
+      (fun s => fderiv ℝ Φ (s, y₀) (0, v)) := by
+    filter_upwards [hΦ_s] with s hs
+    have h : HasFDerivAt (fun y => Φ (s, y))
+        ((fderiv ℝ Φ (s, y₀)).comp (ContinuousLinearMap.inr ℝ ℝ E)) y₀ :=
+      hs.hasFDerivAt.comp y₀ (hasFDerivAt_prodMk_right s y₀)
+    rw [h.fderiv]
+    simp [ContinuousLinearMap.comp_apply, ContinuousLinearMap.inr_apply]
+  have h_fderiv_s : HasFDerivAt (fun s : ℝ => fderiv ℝ Φ (s, y₀))
+      ((fderiv ℝ (fderiv ℝ Φ) (s₀, y₀)).comp (ContinuousLinearMap.inl ℝ ℝ E)) s₀ :=
+    (hΦ_dfderiv.differentiableAt (by norm_num)).hasFDerivAt.comp s₀
+      (hasFDerivAt_prodMk_left s₀ y₀)
+  have h_sv : HasDerivAt (fun s => fderiv ℝ Φ (s, y₀) (0, v))
+      (fderiv ℝ (fderiv ℝ Φ) (s₀, y₀) (1, 0) (0, v)) s₀ := by
+    have h_d : HasDerivAt (fun s : ℝ => fderiv ℝ Φ (s, y₀))
+        (fderiv ℝ (fderiv ℝ Φ) (s₀, y₀) (1, 0)) s₀ := by
+      simpa [ContinuousLinearMap.comp_apply, ContinuousLinearMap.inl_apply]
+        using h_fderiv_s.hasDerivAt
+    simpa [map_zero] using h_d.clm_apply (hasDerivAt_const s₀ ((0 : ℝ), v))
+  have hsymm : IsSymmSndFDerivAt ℝ Φ (s₀, y₀) :=
+    hΦ.isSymmSndFDerivAt (by
+      rw [minSmoothness_of_isRCLikeNormedField]
+      exact WithTop.coe_le_coe.mpr le_top)
+  have h_sv' : HasDerivAt (fun s => fderiv ℝ Φ (s, y₀) (0, v))
+      (fderiv ℝ (fderiv ℝ Φ) (s₀, y₀) (0, v) (1, 0)) s₀ := by
+    rwa [hsymm ((1 : ℝ), (0 : E)) ((0 : ℝ), v)] at h_sv
+  have rhs_eq : fderiv ℝ (fun y => deriv (fun s => Φ (s, y)) s₀) y₀ v =
+      fderiv ℝ (fderiv ℝ Φ) (s₀, y₀) (0, v) (1, 0) := by
+    have h_eq : (fun y => deriv (fun s => Φ (s, y)) s₀) =ᶠ[nhds y₀]
+        (fun y => fderiv ℝ Φ (s₀, y) (1, 0)) := by
+      filter_upwards [hΦ_y] with y hy
+      have := hy.hasFDerivAt.comp_hasDerivAt (s₀ : ℝ)
+        (hasFDerivAt_prodMk_left s₀ y).hasDerivAt
+      exact this.deriv
+    rw [Filter.EventuallyEq.fderiv_eq h_eq]
+    have h_chain : HasFDerivAt (fun y => fderiv ℝ Φ (s₀, y) ((1 : ℝ), (0 : E)))
+        ((ContinuousLinearMap.apply ℝ ℝ ((1 : ℝ), (0 : E))).comp
+          ((fderiv ℝ (fderiv ℝ Φ) (s₀, y₀)).comp (ContinuousLinearMap.inr ℝ ℝ E))) y₀ :=
+      (ContinuousLinearMap.apply ℝ ℝ ((1 : ℝ), (0 : E))).hasFDerivAt.comp y₀
+        ((hΦ_dfderiv.differentiableAt (by norm_num)).hasFDerivAt.comp y₀
+          (hasFDerivAt_prodMk_right s₀ y₀))
+    simp [h_chain.fderiv, ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply,
+          ContinuousLinearMap.inr_apply]
+  rw [rhs_eq]
+  exact h_sv'.congr_of_eventuallyEq lhs_eq
 
 theorem fderiv_iteratedDeriv_time_comm {G : ℝ → E → F} (a : ℕ) (t₀ : ℝ) (x : E)
     (hG : ContDiff ℝ ∞ (Function.uncurry G)) :
@@ -101,10 +147,6 @@ theorem fderiv_iteratedDeriv_time_comm {G : ℝ → E → F} (a : ℕ) (t₀ : �
     congr 1
     funext t
     exact fderiv_deriv_time_comm t x hG
-
-
-
-
 
 theorem fderiv_derivWithin_time_comm {G : ℝ → E → F} {sₜ : Set ℝ} {V : Set E}
     (hsₜ : UniqueDiffOn ℝ sₜ) (hsacc : sₜ ⊆ closure (interior sₜ)) (hV : IsOpen V)
@@ -186,10 +228,6 @@ theorem fderiv_derivWithin_time_comm {G : ℝ → E → F} {sₜ : Set ℝ} {V :
     ContinuousLinearMap.inr_apply]
   exact hsymm.eq (0, u) (1, 0)
 
-
-
-
-
 theorem fderiv_iteratedDerivWithin_time_comm {G : ℝ → E → F} {sₜ : Set ℝ} {V : Set E}
     (hsₜ : UniqueDiffOn ℝ sₜ) (hsacc : sₜ ⊆ closure (interior sₜ)) (hV : IsOpen V)
     (a : ℕ) {t₀ : ℝ} (ht₀ : t₀ ∈ sₜ) {x : E} (hx : x ∈ V)
@@ -222,11 +260,6 @@ theorem fderiv_iteratedDerivWithin_time_comm {G : ℝ → E → F} {sₜ : Set �
     rw [hlhs, ih hG', iteratedDerivWithin_succ']
     refine iteratedDerivWithin_congr (fun t ht => ?_) ht₀
     exact fderiv_derivWithin_time_comm hsₜ hsacc hV ht hx hG
-
-
-
-
-
 
 theorem spatialFDeriv_contDiffOn {G : ℝ → E → F} {sₜ : Set ℝ} {V : Set E}
     (hsₜ : UniqueDiffOn ℝ sₜ) (hV : IsOpen V)

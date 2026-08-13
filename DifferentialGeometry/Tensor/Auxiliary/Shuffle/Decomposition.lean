@@ -1,14 +1,15 @@
-
-
-
-
-
+/-
+Copyright (c) 2026 Jack McCarthy. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Auxiliary.Shuffle.Split
 import Mathlib.GroupTheory.Perm.Finite
 import Mathlib.GroupTheory.Perm.Option
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 import Mathlib.Logic.Equiv.Fin.Basic
 import Mathlib.Tactic.Group
+open DifferentialGeometry
 
 namespace ContinuousAlternatingMap
 
@@ -67,20 +68,20 @@ noncomputable def finSuccSumOptionEquiv {m n : ℕ} :
   simp [finSuccSumOptionEquiv]
 
 def normalizeLeft (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
-    (k : Fin (m + 1)) (_hk : σ⁻¹ (Sum.inl 0) = Sum.inl k) :
+    (k : Fin (m + 1)) :
     Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)) :=
   σ * Equiv.Perm.sumCongr (Equiv.swap 0 k) 1
 
 theorem normalizeLeft_fixes (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (k : Fin (m + 1)) (hk : σ⁻¹ (Sum.inl 0) = Sum.inl k) :
-    normalizeLeft σ k hk (Sum.inl 0) = Sum.inl 0 := by
+    normalizeLeft σ k (Sum.inl 0) = Sum.inl 0 := by
   simp only [normalizeLeft, Equiv.Perm.coe_mul, Function.comp_apply,
     Equiv.sumCongr_apply, Sum.map_inl, Equiv.swap_apply_left]
   rw [← hk]; simp
 
 theorem normalizeLeft_coset (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
-    (k : Fin (m + 1)) (hk : σ⁻¹ (Sum.inl 0) = Sum.inl k) :
-    Quotient.mk'' (normalizeLeft σ k hk) =
+    (k : Fin (m + 1)) :
+    Quotient.mk'' (normalizeLeft σ k) =
       (Quotient.mk'' σ : Equiv.Perm.ModSumCongr (Fin (m + 1)) (Fin (n + 1))) := by
   symm; apply Quotient.sound'
   rw [QuotientGroup.leftRel_apply]
@@ -88,15 +89,14 @@ theorem normalizeLeft_coset (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
   simp [normalizeLeft, Equiv.Perm.sumCongrHom_apply]
 
 noncomputable def restrictComplement
-    (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
-    (_hfix : σ (Sum.inl 0) = Sum.inl 0) :
+    (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1))) :
     Equiv.Perm (Fin m ⊕ Fin (n + 1)) :=
   Equiv.removeNone (Equiv.permCongr finSuccSumOptionEquiv σ)
 
 theorem restrictComplement_sign
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hfix : σ (Sum.inl 0) = Sum.inl 0) :
-    Equiv.Perm.sign (restrictComplement σ hfix) = Equiv.Perm.sign σ := by
+    Equiv.Perm.sign (restrictComplement σ) = Equiv.Perm.sign σ := by
   unfold restrictComplement
   rw [ShuffleSplit.removeNone_sign, Equiv.Perm.sign_permCongr]
   change finSuccSumOptionEquiv (σ (finSuccSumOptionEquiv.symm none)) = none
@@ -105,7 +105,7 @@ theorem restrictComplement_sign
 theorem restrictComplement_sumCongr_mem
     (τ_l : Equiv.Perm (Fin (m + 1))) (τ_r : Equiv.Perm (Fin (n + 1)))
     (hτ_fix : τ_l 0 = 0) :
-    restrictComplement (Equiv.Perm.sumCongr τ_l τ_r) (by simp [hτ_fix]) ∈
+    restrictComplement (Equiv.Perm.sumCongr τ_l τ_r) ∈
       (Equiv.Perm.sumCongrHom (Fin m) (Fin (n + 1))).range := by
   apply Equiv.Perm.mem_sumCongrHom_range_of_perm_mapsTo_inl
   intro x ⟨a, ha⟩; subst ha
@@ -116,7 +116,7 @@ theorem restrictComplement_sumCongr_mem
     obtain ⟨a', ha'⟩ := h
     have h_eq := congr_fun (congr_arg DFunLike.coe h_oc) (some (Sum.inl a))
     simp only [Equiv.optionCongr_apply, Option.map_some] at h_eq
-    change restrictComplement _ _ (Sum.inl a) ∈ _
+    change restrictComplement _ (Sum.inl a) ∈ _
     unfold restrictComplement
     rw [show Equiv.removeNone (Equiv.permCongr finSuccSumOptionEquiv
       (Equiv.Perm.sumCongr τ_l τ_r)) = Equiv.removeNone σ_opt from rfl]
@@ -149,8 +149,7 @@ noncomputable def shuffleLeftFwd
     (hσ : ∃ k, σ⁻¹ (Sum.inl 0) = Sum.inl k) :
     Equiv.Perm (Fin m ⊕ Fin (n + 1)) :=
   let k := hσ.choose
-  let hk := hσ.choose_spec
-  restrictComplement (normalizeLeft σ k hk) (normalizeLeft_fixes σ k hk)
+  restrictComplement (normalizeLeft σ k)
 
 theorem shuffleLeftFwd_wd
     (σ₁ σ₂ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
@@ -163,8 +162,8 @@ theorem shuffleLeftFwd_wd
         (shuffleLeftFwd σ₁ hσ₁) (shuffleLeftFwd σ₂ hσ₂) := by
   set k₁ := hσ₁.choose; set hk₁ := hσ₁.choose_spec
   set k₂ := hσ₂.choose; set hk₂ := hσ₂.choose_spec
-  set n1 := normalizeLeft σ₁ k₁ hk₁
-  set n2 := normalizeLeft σ₂ k₂ hk₂
+  set n1 := normalizeLeft σ₁ k₁
+  set n2 := normalizeLeft σ₂ k₂
   have hn1 := normalizeLeft_fixes σ₁ k₁ hk₁
   have hn2 := normalizeLeft_fixes σ₂ k₂ hk₂
   have h_n_rel : QuotientGroup.leftRel
@@ -205,15 +204,15 @@ theorem shuffleLeftFwd_wd
   have h_n2_none : Equiv.permCongr finSuccSumOptionEquiv n2 none = none := by
     change finSuccSumOptionEquiv (n2 (finSuccSumOptionEquiv.symm none)) = none
     rw [finSuccSumOptionEquiv_symm_none, hn2, finSuccSumOptionEquiv_inl_zero]
-  have h_rc_mul : (restrictComplement n1 hn1)⁻¹ * restrictComplement n2 hn2 =
-      restrictComplement (n1⁻¹ * n2) hn12 := by
+  have h_rc_mul : (restrictComplement n1)⁻¹ * restrictComplement n2 =
+      restrictComplement (n1⁻¹ * n2) := by
     unfold restrictComplement
     rw [ShuffleSplit.permCongr_inv_mul (finSuccSumOptionEquiv) n1 n2,
       ShuffleSplit.removeNone_inv_mul _ _ h_n1_none h_n2_none]
-  change (restrictComplement n1 hn1)⁻¹ * restrictComplement n2 hn2 ∈ _
+  change (restrictComplement n1)⁻¹ * restrictComplement n2 ∈ _
   rw [h_rc_mul]
-  have : restrictComplement (n1⁻¹ * n2) hn12 =
-      restrictComplement (Equiv.Perm.sumCongr τ_l τ_r) (hτ_eq ▸ hn12) := by
+  have : restrictComplement (n1⁻¹ * n2) =
+      restrictComplement (Equiv.Perm.sumCongr τ_l τ_r) := by
     congr 1; exact hτ_eq.symm
   rw [this]
   exact restrictComplement_sumCongr_mem τ_l τ_r hτ_fix
@@ -235,7 +234,7 @@ theorem shuffleLeftBwd_isLeft (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
 
 theorem restrictComplement_shuffleLeftBwd
     (σ' : Equiv.Perm (Fin m ⊕ Fin (n + 1))) :
-    restrictComplement (shuffleLeftBwd σ') (shuffleLeftBwd_fixes σ') = σ' := by
+    restrictComplement (shuffleLeftBwd σ') = σ' := by
   simp only [restrictComplement, shuffleLeftBwd]
   have : Equiv.permCongr finSuccSumOptionEquiv
       (Equiv.permCongr finSuccSumOptionEquiv.symm σ'.optionCongr) =
@@ -247,7 +246,7 @@ theorem restrictComplement_shuffleLeftBwd
 theorem shuffleLeftBwd_restrictComplement
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hfix : σ (Sum.inl 0) = Sum.inl 0) :
-    shuffleLeftBwd (restrictComplement σ hfix) = σ := by
+    shuffleLeftBwd (restrictComplement σ) = σ := by
   have h_fixes_none :
       (Equiv.permCongr finSuccSumOptionEquiv σ) none = none := by
     simp [Equiv.permCongr_apply, hfix]
@@ -323,9 +322,8 @@ theorem shuffleLeft_fwd_bwd_eq
   have hk_eq : hσ.choose = (0 : Fin (m + 1)) :=
     Sum.inl.inj (hσ.choose_spec.symm.trans h_inv_zero)
   change restrictComplement
-    (normalizeLeft (shuffleLeftBwd σ') hσ.choose hσ.choose_spec)
-    (normalizeLeft_fixes _ _ _) = σ'
-  have : normalizeLeft (shuffleLeftBwd σ') hσ.choose hσ.choose_spec =
+    (normalizeLeft (shuffleLeftBwd σ') hσ.choose) = σ'
+  have : normalizeLeft (shuffleLeftBwd σ') hσ.choose =
       shuffleLeftBwd σ' := by
     unfold normalizeLeft; rw [hk_eq]; ext (a | b) <;> simp
   simp only [this]
@@ -340,8 +338,7 @@ theorem shuffleLeft_bwd_fwd
   set k := hσ.choose
   set hk := hσ.choose_spec
   rw [show shuffleLeftFwd σ hσ =
-    restrictComplement (normalizeLeft σ k hk)
-      (normalizeLeft_fixes σ k hk) from rfl]
+    restrictComplement (normalizeLeft σ k) from rfl]
   rw [shuffleLeftBwd_restrictComplement _ (normalizeLeft_fixes σ k hk)]
   rw [QuotientGroup.leftRel_apply]
   refine ⟨⟨(Equiv.swap 0 k)⁻¹, 1⟩, ?_⟩
@@ -422,7 +419,7 @@ theorem restrictComplement_lift
     (ν : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hν : ν (Sum.inl 0) = Sum.inl 0)
     (y : Fin m ⊕ Fin (n + 1)) :
-    Sum.map Fin.succ id (restrictComplement ν hν y) =
+    Sum.map Fin.succ id (restrictComplement ν y) =
       ν (Sum.map Fin.succ id y) := by
   unfold restrictComplement
   set σ := Equiv.permCongr finSuccSumOptionEquiv ν with hσ_def
@@ -488,28 +485,27 @@ noncomputable def finSumSuccOptionEquiv {m n : ℕ} :
   rw [Equiv.apply_symm_apply]; exact (finSumSuccOptionEquiv_inr_succ b).symm
 
 def normalizeRight (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
-    (k : Fin (n + 1)) (_hk : σ⁻¹ (Sum.inl 0) = Sum.inr k) :
+    (k : Fin (n + 1)) :
     Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)) :=
   Equiv.swap (Sum.inl 0) (Sum.inr 0) *
     σ * Equiv.Perm.sumCongr 1 (Equiv.swap 0 k)
 
 theorem normalizeRight_fixes (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (k : Fin (n + 1)) (hk : σ⁻¹ (Sum.inl 0) = Sum.inr k) :
-    normalizeRight σ k hk (Sum.inr 0) = Sum.inr 0 := by
+    normalizeRight σ k (Sum.inr 0) = Sum.inr 0 := by
   simp only [normalizeRight, Equiv.Perm.coe_mul, Function.comp_apply,
     Equiv.sumCongr_apply, Sum.map_inr, Equiv.swap_apply_left]
   rw [← hk]; simp
 
 noncomputable def restrictComplementRight
-    (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
-    (_hfix : σ (Sum.inr 0) = Sum.inr 0) :
+    (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1))) :
     Equiv.Perm (Fin (m + 1) ⊕ Fin n) :=
   Equiv.removeNone (Equiv.permCongr finSumSuccOptionEquiv σ)
 
 theorem restrictComplementRight_sign
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hfix : σ (Sum.inr 0) = Sum.inr 0) :
-    Equiv.Perm.sign (restrictComplementRight σ hfix) = Equiv.Perm.sign σ := by
+    Equiv.Perm.sign (restrictComplementRight σ) = Equiv.Perm.sign σ := by
   unfold restrictComplementRight
   rw [ShuffleSplit.removeNone_sign, Equiv.Perm.sign_permCongr]
   change finSumSuccOptionEquiv (σ (finSumSuccOptionEquiv.symm none)) = none
@@ -519,7 +515,7 @@ theorem restrictComplementRight_lift
     (ν : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hν : ν (Sum.inr 0) = Sum.inr 0)
     (y : Fin (m + 1) ⊕ Fin n) :
-    Sum.map id Fin.succ (restrictComplementRight ν hν y) =
+    Sum.map id Fin.succ (restrictComplementRight ν y) =
       ν (Sum.map id Fin.succ y) := by
   unfold restrictComplementRight
   set σ := Equiv.permCongr finSumSuccOptionEquiv ν with hσ_def
@@ -555,8 +551,8 @@ noncomputable def shuffleRightFwd
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hσ : ∃ k, σ⁻¹ (Sum.inl 0) = Sum.inr k) :
     Equiv.Perm (Fin (m + 1) ⊕ Fin n) :=
-  let k := hσ.choose; let hk := hσ.choose_spec
-  restrictComplementRight (normalizeRight σ k hk) (normalizeRight_fixes σ k hk)
+  let k := hσ.choose
+  restrictComplementRight (normalizeRight σ k)
 
 noncomputable def shuffleRightBwd
     (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
@@ -584,7 +580,7 @@ theorem shuffleRightBwd_isRight (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
 theorem restrictComplementRight_sumCongr_mem
     (τ_l : Equiv.Perm (Fin (m + 1))) (τ_r : Equiv.Perm (Fin (n + 1)))
     (hτ_fix : τ_r 0 = 0) :
-    restrictComplementRight (Equiv.Perm.sumCongr τ_l τ_r) (by simp [hτ_fix]) ∈
+    restrictComplementRight (Equiv.Perm.sumCongr τ_l τ_r) ∈
       (Equiv.Perm.sumCongrHom (Fin (m + 1)) (Fin n)).range := by
   apply Equiv.Perm.mem_sumCongrHom_range_of_perm_mapsTo_inl
   intro x ⟨a, ha⟩; subst ha
@@ -597,7 +593,7 @@ theorem restrictComplementRight_sumCongr_mem
     obtain ⟨a', ha'⟩ := h
     have h_eq := congr_fun (congr_arg DFunLike.coe h_oc) (some (Sum.inl a))
     simp only [Equiv.optionCongr_apply, Option.map_some] at h_eq
-    change restrictComplementRight _ _ (Sum.inl a) ∈ _
+    change restrictComplementRight _ (Sum.inl a) ∈ _
     unfold restrictComplementRight
     rw [show Equiv.removeNone (Equiv.permCongr finSumSuccOptionEquiv
       (Equiv.Perm.sumCongr τ_l τ_r)) = Equiv.removeNone σ_opt from rfl]
@@ -632,8 +628,8 @@ theorem shuffleRightFwd_wd
         (shuffleRightFwd σ₁ hσ₁) (shuffleRightFwd σ₂ hσ₂) := by
   set k₁ := hσ₁.choose; set hk₁ := hσ₁.choose_spec
   set k₂ := hσ₂.choose; set hk₂ := hσ₂.choose_spec
-  set n1 := normalizeRight σ₁ k₁ hk₁
-  set n2 := normalizeRight σ₂ k₂ hk₂
+  set n1 := normalizeRight σ₁ k₁
+  set n2 := normalizeRight σ₂ k₂
   have hn1 := normalizeRight_fixes σ₁ k₁ hk₁
   have hn2 := normalizeRight_fixes σ₂ k₂ hk₂
   have h_n_rel : QuotientGroup.leftRel
@@ -680,17 +676,17 @@ theorem shuffleRightFwd_wd
   have h_n2_none : Equiv.permCongr finSumSuccOptionEquiv n2 none = none := by
     change finSumSuccOptionEquiv (n2 (finSumSuccOptionEquiv.symm none)) = none
     rw [finSumSuccOptionEquiv_symm_none, hn2, finSumSuccOptionEquiv_inr_zero]
-  have h_rc_mul : (restrictComplementRight n1 hn1)⁻¹ *
-      restrictComplementRight n2 hn2 =
-      restrictComplementRight (n1⁻¹ * n2) hn12 := by
+  have h_rc_mul : (restrictComplementRight n1)⁻¹ *
+      restrictComplementRight n2 =
+      restrictComplementRight (n1⁻¹ * n2) := by
     unfold restrictComplementRight
     rw [ShuffleSplit.permCongr_inv_mul (finSumSuccOptionEquiv) n1 n2,
       ShuffleSplit.removeNone_inv_mul _ _ h_n1_none h_n2_none]
-  change (restrictComplementRight n1 hn1)⁻¹ *
-    restrictComplementRight n2 hn2 ∈ _
+  change (restrictComplementRight n1)⁻¹ *
+    restrictComplementRight n2 ∈ _
   rw [h_rc_mul]
-  have : restrictComplementRight (n1⁻¹ * n2) hn12 =
-      restrictComplementRight (Equiv.Perm.sumCongr τ_l τ_r) (hτ_eq ▸ hn12) := by
+  have : restrictComplementRight (n1⁻¹ * n2) =
+      restrictComplementRight (Equiv.Perm.sumCongr τ_l τ_r) := by
     congr 1; exact hτ_eq.symm
   rw [this]
   exact restrictComplementRight_sumCongr_mem τ_l τ_r hτ_fix
@@ -784,8 +780,7 @@ theorem shuffleRightBwd_wd
 theorem restrictComplementRight_shuffleRightBwd
     (σ' : Equiv.Perm (Fin (m + 1) ⊕ Fin n)) :
     restrictComplementRight
-      (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr)
-      (by simp [Equiv.permCongr_apply, Equiv.optionCongr_apply]) = σ' := by
+      (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr) = σ' := by
   simp only [restrictComplementRight]
   have : Equiv.permCongr finSumSuccOptionEquiv
       (Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr) =
@@ -813,9 +808,8 @@ theorem shuffleRight_fwd_bwd_eq
   have hk_eq : hσ.choose = (0 : Fin (n + 1)) :=
     Sum.inr.inj (hσ.choose_spec.symm.trans h_inv_zero)
   change restrictComplementRight
-    (normalizeRight (shuffleRightBwd σ') hσ.choose hσ.choose_spec)
-    (normalizeRight_fixes _ _ _) = σ'
-  have h_norm : normalizeRight (shuffleRightBwd σ') hσ.choose hσ.choose_spec =
+    (normalizeRight (shuffleRightBwd σ') hσ.choose) = σ'
+  have h_norm : normalizeRight (shuffleRightBwd σ') hσ.choose =
       Equiv.permCongr finSumSuccOptionEquiv.symm σ'.optionCongr := by
     unfold normalizeRight
     rw [hk_eq]
@@ -833,7 +827,7 @@ theorem shuffleRight_fwd_bwd_eq
 theorem shuffleRightBwd_restrictComplementRight
     (σ : Equiv.Perm (Fin (m + 1) ⊕ Fin (n + 1)))
     (hfix : σ (Sum.inr 0) = Sum.inr 0) :
-    shuffleRightBwd (restrictComplementRight σ hfix) =
+    shuffleRightBwd (restrictComplementRight σ) =
       Equiv.swap (Sum.inl 0) (Sum.inr 0) * σ := by
   unfold shuffleRightBwd restrictComplementRight
   have h_fixes_none :
@@ -858,8 +852,7 @@ theorem shuffleRight_bwd_fwd
   set k := hσ.choose
   set hk := hσ.choose_spec
   rw [show shuffleRightFwd σ hσ =
-    restrictComplementRight (normalizeRight σ k hk)
-      (normalizeRight_fixes σ k hk) from rfl]
+    restrictComplementRight (normalizeRight σ k) from rfl]
   rw [shuffleRightBwd_restrictComplementRight _ (normalizeRight_fixes σ k hk)]
   rw [QuotientGroup.leftRel_apply]
   refine ⟨⟨1, (Equiv.swap 0 k)⁻¹⟩, ?_⟩

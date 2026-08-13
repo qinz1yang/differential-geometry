@@ -2,27 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.GammaAlgebra
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -35,24 +14,15 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 def covD2 (Γ : ι → ι → Real) (g dg : ι → ι → Real) (i j : ι) : Real :=
   dg i j - (∑ p : ι, Γ p i * g p j) - (∑ p : ι, Γ p j * g i p)
 
-
-
 def covD12 (Γ : ι → ι → Real) (A dA : ι → ι → ι → Real) (k i j : ι) : Real :=
   dA k i j + (∑ p : ι, Γ k p * A p i j) -
     (∑ p : ι, Γ p i * A k p j) - (∑ p : ι, Γ p j * A k i p)
 
-
-
 def starAg (A : ι → ι → ι → Real) (g : ι → ι → Real) (i j d : ι) : Real :=
   ∑ k : ι, A k i j * g k d
 
-
-
 def dStarAg (A dA : ι → ι → ι → Real) (g dg : ι → ι → Real) (i j d : ι) : Real :=
   ∑ k : ι, (dA k i j * g k d + A k i j * dg k d)
-
-
-
 
 omit [DecidableEq ι] in
 theorem covD3_starAg_leibniz

@@ -1,22 +1,28 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricDifferenceSlotPairing
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Defs
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -72,20 +78,20 @@ theorem multilinear_slot0_pairing_self_adjoint
     · simp
     · simp
   set wA : TangentSpace I x :=
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp
+    DifferentialGeometry.Geometry.Operator.metricSharp
       (I := I) g₀ x φA.toLinearMap with hwA_def
   set wB : TangentSpace I x :=
-    DifferentialGeometry.Integral.DivergenceTheorem.metricSharp
+    DifferentialGeometry.Geometry.Operator.metricSharp
       (I := I) g₀ x φB.toLinearMap with hwB_def
   have hwA_inner : ∀ u : TangentSpace I x, g₀.inner x wA u = φA u := by
     intro u
     rw [hwA_def]
-    exact DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp
+    exact DifferentialGeometry.Geometry.Operator.inner_metricSharp
       (I := I) g₀ x φA.toLinearMap u
   have hwB_inner : ∀ u : TangentSpace I x, g₀.inner x wB u = φB u := by
     intro u
     rw [hwB_def]
-    exact DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp
+    exact DifferentialGeometry.Geometry.Operator.inner_metricSharp
       (I := I) g₀ x φB.toLinearMap u
   have hAe : ∀ a : Fin (Module.finrank ℝ E),
       Am (Fin.cons (e a) (fun k => e (J' k))) = g₀.inner x wA (e a) := by

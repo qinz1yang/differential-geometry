@@ -1,20 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyDecomposition
 
-/-!
-# Uniform comparison of compact metric-family volume measures
-
-This file proves the measure comparison needed by nonautonomous weak parabolic
-problems on a closed manifold.  The input is deliberately only joint `C^0`
-control of the chart Gram matrices on a compact time set.  No time derivative
-of the metric and no matrix Loewner-to-determinant estimate is needed.
-
-The proof uses the finite canonical partition of unity.  On each compact set
-`J x tsupport rho_alpha`, both ratios of the moving and reference chart
-densities are continuous and hence bounded.  The chart-target lower-integral
-formula then compares the weighted chart-local measures, and the finite POU
-sum gives a single constant for the global volume measures.
--/
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory Matrix
@@ -36,10 +21,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
-/-- Joint continuity of chart density follows from joint continuity of every
-chart Gram-matrix entry.  This is the `C^0` core of
-`continuousOn_chartDensity_family`, separated from its stronger time-derivative
-interface. -/
 lemma density_cont_of_gram
     (g : ℝ → SmoothRiemannianMetric I M) (alpha : M)
     {S : Set (ℝ × M)}
@@ -67,8 +48,6 @@ lemma density_cont_of_gram
     exact hG (sigma i) i
   exact Real.continuous_sqrt.comp_continuousOn hdet
 
-/-- On one POU chart, both moving/reference density ratios are uniformly
-bounded on a compact time set and the POU `tsupport`. -/
 lemma density_ratio_bdd
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) (alpha : M)
@@ -144,8 +123,6 @@ lemma density_ratio_bdd
     intro t ht x hx
     exact (hK_ne ⟨(t, x), ht, hx⟩).elim
 
-/-- A single real constant controls both chart-density directions on every
-nonzero chart of the finite canonical POU. -/
 theorem volume_density_bdd
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
@@ -192,8 +169,6 @@ theorem volume_density_bdd
   · exact hreverse.trans (mul_le_mul_of_nonneg_right hCalpha (Real.sqrt_nonneg _))
 
 omit [CompactSpace M] in
-/-- Comparison of one POU-weighted chart-local lower integral from a pointwise
-chart-density bound on the POU `tsupport`. -/
 lemma chart_lintegral_le
     (q h : SmoothRiemannianMetric I M) (alpha : M) (C : ℝ) (hC : 0 ≤ C)
     (hdensity : ∀ x ∈ tsupport
@@ -273,8 +248,6 @@ private lemma volume_lintegral_sum
     riemannianMeasure_lintegral_eq (I := I) g (chartAtlasPOU I M) hF,
     volume_tsum_eq_sum (I := I) (M := M) g F]
 
-/-- Uniform two-sided lower-integral comparison for a compact `C^0` metric
-family.  The same real constant works for every time in `J`. -/
 theorem volume_lintegral_le
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
@@ -339,8 +312,6 @@ theorem volume_lintegral_le
           ∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) (g t)) := by
             rw [hsum_g]
 
-/-- On a compact time set, joint `C^0` chart-Gram regularity makes all moving
-Riemannian volume measures uniformly equivalent to the reference measure. -/
 theorem volume_uniform_equiv
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)

@@ -1,7 +1,10 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqTensorInnerBridge
+import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import Mathlib.MeasureTheory.Integral.MeanInequalities
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -12,57 +15,7 @@ open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
 namespace DifferentialGeometry
 namespace Integral
-
-section ScalarHolder
-
-variable {α ι : Type*} [MeasurableSpace α] {μ : MeasureTheory.Measure α}
-
-theorem holder_integral_prod_rpow_le_prod_integral_rpow
-    (t : Finset ι) (f : ι → α → ℝ) (θ : ι → ℝ)
-    (hf_int : ∀ i ∈ t, MeasureTheory.Integrable (f i) μ)
-    (hf_nn : ∀ i ∈ t, 0 ≤ᵐ[μ] f i)
-    (hθ : ∀ i ∈ t, 0 ≤ θ i) (hθ1 : ∑ i ∈ t, θ i = 1) :
-    ∫ x, ∏ i ∈ t, f i x ^ θ i ∂μ ≤ ∏ i ∈ t, (∫ x, f i x ∂μ) ^ θ i := by
-  classical
-  have hae : ∀ᵐ x ∂μ, ∀ i ∈ t, 0 ≤ f i x :=
-    (Filter.eventually_all_finset t).mpr fun i hi => hf_nn i hi
-  have hmeas : ∀ i ∈ t, AEMeasurable (f i) μ := fun i hi => (hf_int i hi).aemeasurable
-  have hF_meas : AEMeasurable (fun x => ∏ i ∈ t, f i x ^ θ i) μ :=
-    Finset.aemeasurable_fun_prod t fun i hi => (hmeas i hi).pow_const (θ i)
-  have hF_nn : 0 ≤ᵐ[μ] fun x => ∏ i ∈ t, f i x ^ θ i := by
-    filter_upwards [hae] with x hx
-    exact Finset.prod_nonneg fun i hi => Real.rpow_nonneg (hx i hi) (θ i)
-  rw [MeasureTheory.integral_eq_lintegral_of_nonneg_ae hF_nn hF_meas.aestronglyMeasurable]
-  have hoR : ∀ i ∈ t, AEMeasurable (fun x => ENNReal.ofReal (f i x)) μ :=
-    fun i hi => ENNReal.measurable_ofReal.comp_aemeasurable (hmeas i hi)
-  have hlin := ENNReal.lintegral_prod_norm_pow_le t hoR hθ1 hθ
-  have hcongr : (∫⁻ x, ENNReal.ofReal (∏ i ∈ t, f i x ^ θ i) ∂μ) =
-      ∫⁻ x, ∏ i ∈ t, ENNReal.ofReal (f i x) ^ θ i ∂μ := by
-    refine MeasureTheory.lintegral_congr_ae ?_
-    filter_upwards [hae] with x hx
-    rw [ENNReal.ofReal_prod_of_nonneg fun i hi => Real.rpow_nonneg (hx i hi) (θ i)]
-    exact Finset.prod_congr rfl fun i hi =>
-      (ENNReal.ofReal_rpow_of_nonneg (hx i hi) (hθ i hi)).symm
-  have hfin : ∀ i ∈ t, (∫⁻ x, ENNReal.ofReal (f i x) ∂μ) ≠ ⊤ :=
-    fun i hi => (hf_int i hi).lintegral_lt_top.ne
-  have hRfin : (∏ i ∈ t, (∫⁻ x, ENNReal.ofReal (f i x) ∂μ) ^ θ i) ≠ ⊤ :=
-    (ENNReal.prod_lt_top fun i hi =>
-      ENNReal.rpow_lt_top_of_nonneg (hθ i hi) (hfin i hi)).ne
-  calc (∫⁻ x, ENNReal.ofReal (∏ i ∈ t, f i x ^ θ i) ∂μ).toReal
-      ≤ (∏ i ∈ t, (∫⁻ x, ENNReal.ofReal (f i x) ∂μ) ^ θ i).toReal := by
-        refine ENNReal.toReal_mono hRfin ?_
-        rw [hcongr]
-        exact hlin
-    _ = ∏ i ∈ t, (∫ x, f i x ∂μ) ^ θ i := by
-        rw [ENNReal.toReal_prod]
-        refine Finset.prod_congr rfl fun i hi => ?_
-        rw [← ENNReal.toReal_rpow,
-          MeasureTheory.integral_eq_lintegral_of_nonneg_ae (hf_nn i hi)
-            (hf_int i hi).aestronglyMeasurable]
-
-end ScalarHolder
-
-namespace Connection
+namespace L2
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -263,7 +216,7 @@ theorem holder_integral_prod_riemannianFiberNormSq_natWeight_le_of_sup_bound
   refine congrArg _ (Finset.prod_congr rfl fun m hm => ?_)
   rw [one_div_div]
 
-end Connection
+end L2
 end Integral
 end DifferentialGeometry
 

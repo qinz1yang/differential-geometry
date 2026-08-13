@@ -10,26 +10,22 @@ import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Product
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Smooth
 import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvalRealized
+import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Geometry.Curvature
+
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -38,22 +34,16 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {Time : Type*}
 
-
-
 section TensorInner
 
 variable [FiniteDimensional Real E]
 
-
-
 abbrev Tensor02Field (Time : Type*) :=
   Time -> Tensor02Section (I := I) (M := M)
 
-
-
 def InverseMetricComponentsInFrameTime
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) : Prop :=
   forall t x i j,
@@ -69,8 +59,6 @@ private noncomputable instance tangentSpace_addCommMonoid (x : M) :
 private noncomputable instance tangentSpace_module (x : M) :
     Module Real (TangentSpace I x) :=
   inferInstanceAs (Module Real E)
-
-
 
 def inner02
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -215,7 +203,7 @@ theorem norm02_smooth
 
 
 def tensorNormSq02
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (A : Tensor02Field (I := I) (M := M) Time) :
     Time -> M -> Real :=
   fun t x => normSq02 (I := I) (G.metric t) x (A t x)
@@ -227,9 +215,6 @@ def tensor02Comp
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (t : Time) (x : M) (i j : Idx) : Real :=
   A t x (fun a => if a = 0 then frame i x else frame j x)
-
-
-
 
 theorem inner02_eq_coord_direct
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -247,13 +232,11 @@ theorem inner02_eq_coord_direct
     Tensor0SBundle.inner0S_two_eq_coord_direct (I := I) (M := M) g x
       basis gInv hinv A B
 
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricInverseInBasis_of_frame
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {u : Set M}
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E ∞ frame u)
@@ -266,12 +249,10 @@ theorem metricInverseInBasis_of_frame
   · simpa [IsLocalFrameOn.toBasisAt_coe] using (hinv t x i j).1
   · simpa [IsLocalFrameOn.toBasisAt_coe] using (hinv t x i j).2
 
-
-
 theorem inner02_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {u : Set M}
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (A B : Tensor02Field (I := I) (M := M) Time)
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -296,7 +277,7 @@ theorem inner02_eq_coord
 theorem normSq02_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {u : Set M}
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (A : Tensor02Field (I := I) (M := M) Time)
     (gInv : Time -> InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -320,20 +301,9 @@ theorem normSq02_eq_coord
 
 end TensorInner
 
-
-
 section GeneralTensorNorm
 
 variable {Comp Dir : Type*} [Fintype Comp] [Fintype Dir]
-
-
-
-
-
-
-
-
-
 
 def tensorNormSqInFrame
     (weight component : Time -> M -> Comp -> Real) :
@@ -362,10 +332,6 @@ omit [TopologicalSpace M] in
       ∑ I : Comp, weight t x I * roughLap t x I * component t x I := by
   rfl
 
-
-
-
-
 def nablaTensorNormSqInFrame
     (weight : Time -> M -> Comp -> Real)
     (nablaComponent : Time -> M -> Dir -> Comp -> Real) :
@@ -383,8 +349,6 @@ omit [TopologicalSpace M] in
       ∑ a : Dir, ∑ I : Comp,
         weight t x I * nablaComponent t x a I * nablaComponent t x a I := by
   rfl
-
-
 
 def ScalarLaplacianRealizesTensorNormBochnerInFrame
     (lapNormSq : Time -> M -> Real)
@@ -449,13 +413,9 @@ theorem tensor_norm_laplacian_eq_of_bochner_components
 
 end GeneralTensorNorm
 
-
-
 section RicciNorm
 
 variable {Idx : Type*} [Fintype Idx]
-
-
 
 def raisedRicciComponentsInFrame
     (Ric : Time -> RawTwoTensorField (I := I) (M := M))
@@ -476,8 +436,6 @@ omit [IsManifold I ∞ M] in
       ∑ a : Idx, ∑ b : Idx,
         gInv t x i a * gInv t x j b * Ric t x (frame a x) (frame b x) := by
   rfl
-
-
 
 def ricciNormSqInFrame
     (Ric : Time -> RawTwoTensorField (I := I) (M := M))
@@ -526,8 +484,6 @@ omit [IsManifold I ∞ M] in
           raisedRicciComponentsInFrame (I := I) Ric gInv frame t x i j := by
   rfl
 
-
-
 def nablaRicciNormSqInFrame
     (nablaRic : Time -> M -> Idx -> Idx -> Idx -> Real)
     (gInv : Time -> InverseMetricComponents M Idx) :
@@ -547,8 +503,6 @@ omit [TopologicalSpace M] in
         gInv t x a b * gInv t x i k * gInv t x j l *
           nablaRic t x a i j * nablaRic t x b k l := by
   rfl
-
-
 
 section Tensor02Product
 
@@ -725,8 +679,6 @@ def tensor02NablaNormCoord
       nablaA (vec3 (I := I) (basis a) (basis i) (basis j)) *
         nablaA (vec3 (I := I) (basis b) (basis k) (basis l))
 
-
-
 theorem inner02_rough
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
@@ -776,8 +728,6 @@ theorem tensor02FreezeNabla_eq_curry
   rw [hv, tensor02FreezeNabla_apply, tensor0S_curry_apply_cons_local]
   congr 1
   exact (fin_cons_vec2_eq_vec3 (I := I) X (v 0) (v 1)).symm
-
-
 
 noncomputable def freeze02Field
     (nablaA :
@@ -832,16 +782,10 @@ noncomputable def freeze02Field
     tensor02FreezeNabla (I := I) (nablaA x) (Y x)
   rfl
 
-
-
-
-
-
-
 theorem tensor02_inner_extDerivFun_eq_inner_nabla
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA nablaB :
@@ -896,7 +840,7 @@ private theorem inner02_mdiff
 private theorem inner02_nablaFun
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -939,14 +883,12 @@ private theorem eval_pt0S
     (I := I) hA Wsec V x
   simpa [hWsec] using h0
 
-
-
 theorem du_norm02
     [T2Space M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA :
@@ -1019,17 +961,12 @@ omit [FiniteDimensional ℝ E] in
   congr 1
   exact fin_cons_vec3_eq_vec4 (I := I) X Y Z W
 
-
-
-
-
-
 theorem freeze02_deriv
     [T2Space M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA :
@@ -1176,9 +1113,9 @@ theorem freeze02_deriv
             vec3 (I := I) (Y x) ((cov (fun y : M => Z y) x) (X x)) (v 1) := by
         funext a
         fin_cases a
-        · simp [Function.update, DifferentialGeometry.Integral.Connection.vec3]
-        · simp [Function.update, DifferentialGeometry.Integral.Connection.vec3]
-        · simpa [Function.update, DifferentialGeometry.Integral.Connection.vec3] using hW
+        · simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
+        · simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
+        · simpa [Function.update, DifferentialGeometry.Geometry.Curvature.vec3] using hW
       have hWupd :
           Function.update
               (Fin.cons (Y x) (fun a : Fin 2 => (if a = 0 then Z else W) x)) 2
@@ -1186,9 +1123,9 @@ theorem freeze02_deriv
             vec3 (I := I) (Y x) (v 0) ((cov (fun y : M => W y) x) (X x)) := by
         funext a
         fin_cases a
-        · simp [Function.update, DifferentialGeometry.Integral.Connection.vec3]
-        · simpa [Function.update, DifferentialGeometry.Integral.Connection.vec3] using hZ
-        · simp [Function.update, DifferentialGeometry.Integral.Connection.vec3]
+        · simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
+        · simpa [Function.update, DifferentialGeometry.Geometry.Curvature.vec3] using hZ
+        · simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
       simp only [hZupd, hWupd] at h
       simpa [CZ, CW] using h
     have htot :
@@ -1203,19 +1140,19 @@ theorem freeze02_deriv
               ((cov (fun p : M => Y p) x) (X x)) =
             vec3 (I := I) ((cov (fun y : M => Y y) x) (X x)) (v 0) (v 1) := by
         funext a
-        fin_cases a <;> simp [Function.update, DifferentialGeometry.Integral.Connection.vec3]
+        fin_cases a <;> simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
       have hZupd3 :
           Function.update (vec3 (I := I) (Y x) (v 0) (v 1)) 1
               ((cov (fun p : M => Z p) x) (X x)) =
             vec3 (I := I) (Y x) ((cov (fun y : M => Z y) x) (X x)) (v 1) := by
         funext a
-        fin_cases a <;> simp [Function.update, DifferentialGeometry.Integral.Connection.vec3]
+        fin_cases a <;> simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
       have hWupd3 :
           Function.update (vec3 (I := I) (Y x) (v 0) (v 1)) 2
               ((cov (fun p : M => W p) x) (X x)) =
             vec3 (I := I) (Y x) (v 0) ((cov (fun y : M => W y) x) (X x)) := by
         funext a
-        fin_cases a <;> simp [Function.update, DifferentialGeometry.Integral.Connection.vec3]
+        fin_cases a <;> simp [Function.update, DifferentialGeometry.Geometry.Curvature.vec3]
       simp only [Nat.reduceAdd, Fin.isValue, ContinuousLinearMap.coe_comp',
         ContinuousLinearEquiv.coe_coe, Function.comp_apply, directionalDeriv_eq,
         Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ, Fin.succ_zero_eq_one,
@@ -1226,9 +1163,9 @@ theorem freeze02_deriv
           (nabla2A x) (vec4 (I := I) (X x) (Y x) (v 0) (v 1)) =
             D - (CY + (CZ + CW)) := by
         simpa [D, CY, CZ, CW, V2, V3, hZ, hW,
-          DifferentialGeometry.Integral.Connection.vec2,
-            DifferentialGeometry.Integral.Connection.vec3,
-          DifferentialGeometry.Integral.Connection.vec4, Fin.sum_univ_succ, Fin.sum_univ_two,
+          DifferentialGeometry.Geometry.Curvature.vec2,
+            DifferentialGeometry.Geometry.Curvature.vec3,
+          DifferentialGeometry.Geometry.Curvature.vec4, Fin.sum_univ_succ, Fin.sum_univ_two,
           Function.update, Fin.cons_zero, Fin.cons_succ]
           using h
       calc
@@ -1290,8 +1227,6 @@ theorem freeze02_deriv
         rw [hAderiv, hBderiv]
         simp [B, inner02, Tensor0SBundle.inner0S, map_add]
 
-
-
 def Tensor02NormHessianProductInBasis
     {Idx : Type*} [Fintype Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1309,15 +1244,13 @@ def Tensor02NormHessianProductInBasis
             (tensor02FreezeNabla (I := I) nablaA (basis j))
             (tensor02FreezeNabla (I := I) nablaA (basis i)))
 
-
-
 theorem hess_norm02
     [T2Space M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
@@ -1430,10 +1363,6 @@ theorem hess_norm02
             (tensor02FreezeNabla (I := I) (nablaA x) (basis j))
             (tensor02FreezeNabla (I := I) (nablaA x) (basis i))]
 
-
-
-
-
 def Tensor02NormSecondProductInBasis
     {Idx : Type*} [Fintype Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1480,7 +1409,7 @@ theorem Tensor02NormSecondProductInBasis.of_hessian_product
                 vec2 (I := I) (basis i) (basis j) := by
             funext a
             fin_cases a
-            · simp [metricTraceInput, vec2, DifferentialGeometry.Integral.Connection.vec2]
+            · simp [metricTraceInput, vec2, DifferentialGeometry.Geometry.Curvature.vec2]
             · rfl
           rw [hinput]
     _ =
@@ -1572,7 +1501,7 @@ theorem second_norm02_mc
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
@@ -1623,8 +1552,6 @@ def Tensor02NormProductRuleInBasis
     2 * tensor02RoughInnerCoord (I := I) basis gInv A roughA +
       2 * tensor02NablaNormCoord (I := I) basis gInv nablaA
 
-
-
 theorem tensor02_norm_product_rule_of_second_product
     {Idx : Type*} [Fintype Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -1650,11 +1577,6 @@ theorem tensor02_norm_product_rule_of_second_product
 
 end Tensor02Product
 
-
-
-
-
-
 def RicciNormScalarLaplacianExpansionInFrame
     (ricciNormLap : Time -> M -> Real)
     (roughLapRic : Time -> M -> Idx -> Idx -> Real)
@@ -1675,12 +1597,6 @@ def RicciNormScalarLaplacianExpansionInFrame
 section Tensor02ProductProducer
 
 variable [FiniteDimensional Real E]
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 theorem ricciNormScalarLaplacianExpansionInFrame_of_tensor02_product_rule
@@ -1745,13 +1661,11 @@ theorem ricciNormScalarLaplacianExpansionInFrame_of_tensor02_product_rule
     simp_rw [hnablaComp]
   rw [hprod, hrough, hnabla]
 
-
-
 theorem ricci_lap_mc
     [T2Space M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (ricciNormLap : Time -> M -> Real)
     (roughLapRic : Time -> M -> Idx -> Idx -> Real)
     (Ric : Time -> RawTwoTensorField (I := I) (M := M))
@@ -1822,9 +1736,6 @@ theorem ricci_lap_mc
 
 end Tensor02ProductProducer
 
-
-
-
 def curvRicciRicciReactionInFrame
     (Riemann04 : Time -> RawFourTensorField (I := I) (M := M))
     (RicRaised : Time -> M -> Idx -> Idx -> Real)
@@ -1847,25 +1758,15 @@ omit [IsManifold I ∞ M] in
           RicRaised t x i j * RicRaised t x k l := by
   rfl
 
-
-
-
-
 def RicciNormTimeDerivativeComponentsInFrame
     (ricciNormDt roughLapInner reaction : Time -> M -> Real) : Prop :=
   forall (t : Time) (x : M),
     ricciNormDt t x = 2 * roughLapInner t x + 4 * reaction t x
 
-
-
 def RicciNormLaplacianComponentsInFrame
     (ricciNormLap roughLapInner nablaRicNormSq : Time -> M -> Real) : Prop :=
   forall (t : Time) (x : M),
     ricciNormLap t x = 2 * roughLapInner t x + 2 * nablaRicNormSq t x
-
-
-
-
 
 omit [IsManifold I ∞ M] in
 theorem ricciNormLaplacianComponentsInFrame_of_normSq_laplacian_expansion
@@ -1885,8 +1786,6 @@ theorem ricciNormLaplacianComponentsInFrame_of_normSq_laplacian_expansion
   rw [h_lap t x]
   rfl
 
-
-
 omit [TopologicalSpace M] in
 theorem ricci_norm_heat_eq_of_bochner_components
     (ricciNormDt ricciNormLap roughLapInner nablaRicNormSq reaction : Time -> M -> Real)
@@ -1905,4 +1804,4 @@ end RicciNorm
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

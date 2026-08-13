@@ -1,14 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialJacobiScaling
-
-
-/-!
-# Explicit radial-Jacobi radius packages
-
-This file gives the radial Rm04 package a named source radius.  The older
-existential declarations in `RadialGronwall` remain compatibility APIs; the
-quantitative H6 route should use the declarations here so that radius bounds
-can be compared across a sequence.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -40,8 +31,6 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The differentiability and Rm04 ODE data used by the radial endpoint
-comparison, available on one prescribed source radius. -/
 def Rm04DataAt
     (g : SmoothRiemannianMetric I M) (p : M) (r : ℝ) : Prop :=
   ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
@@ -52,7 +41,7 @@ def Rm04DataAt
     (∀ t (_ht : t ∈ Ioo (0 : ℝ) b),
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p x t) 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
     (∀ t ∈ Icc (0 : ℝ) b,
       DifferentiableAt ℝ
@@ -80,8 +69,6 @@ def Rm04DataAt
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
-/-- The canonical Jacobi launch radius lies inside the exponential smoothness
-radius used to construct it. -/
 lemma jacobi_radius_le_c2
     (g : SmoothRiemannianMetric I M) (p : M) :
     jacobiVarRadius (I := I) g p ≤ expMapC2Radius (I := I) g p := by
@@ -99,16 +86,13 @@ private lemma jacobiRadius_lt_exp
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The canonical clamped Jacobi radius supplies the complete radial Rm04 data
-package, with no additional existential radius choice. -/
 theorem rm04Data_jacobi
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     Rm04DataAt (I := I) g p (jacobiVarRadius (I := I) g p) := by
   classical
@@ -144,19 +128,19 @@ theorem rm04Data_jacobi
       simpa [show Module.finrank ℝ
           (TangentSpace I (radialCurve (I := I) g p x t)) =
             Module.finrank ℝ E from rfl] using
-        (DifferentialGeometry.Integral.Connection.exists_gOrthonormalBasis
+        (DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
           (I := I) g (radialCurve (I := I) g p x t))
     choose basis hON using hbasis
     have hcurv : ∀ t ∈ Ioo (0 : ℝ) b,
         g.inner (radialCurve (I := I) g p x t)
-            ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+            ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
                 (radialCurve (I := I) g p x t))
               (radialJacobiField (I := I) g p x w t)
               (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
               (curveVelocity (I := I) (radialCurve (I := I) g p x) t))
-            ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+            ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
                 (radialCurve (I := I) g p x t))
               (radialJacobiField (I := I) g p x w t)
               (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -172,7 +156,7 @@ theorem rm04Data_jacobi
         Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : ℝ))
       set A : ℝ := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p x t) 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p x t)))
       have hCnn : 0 ≤ C := Real.sqrt_nonneg _
       have hVsq : 0 ≤ Vb ^ 2 := sq_nonneg Vb
@@ -187,16 +171,13 @@ theorem rm04Data_jacobi
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Upper endpoint estimate for one arbitrary direction on the canonical
-Jacobi launch radius. -/
 theorem rm04_one_le
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x w : E)
     {a K R Vb b A B : ℝ}
     (ha : 0 < a) (hK : 0 ≤ K) (hVb : 0 ≤ Vb)
@@ -210,7 +191,7 @@ theorem rm04_one_le
     (hRm : ∀ t (_ht : t ∈ Ioo (0 : ℝ) b),
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p x t) 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R)
     (hγ : ∀ t ∈ Icc (0 : ℝ) b,
       ContMDiffAt 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p x) t)
@@ -254,16 +235,13 @@ theorem rm04_one_le
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Lower endpoint estimate for one arbitrary direction on the canonical
-Jacobi launch radius. -/
 theorem rm04_one_ge
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x w : E)
     {a K R Vb b B : ℝ}
     (ha : 0 < a) (hK : 0 ≤ K) (hVb : 0 ≤ Vb)
@@ -277,7 +255,7 @@ theorem rm04_one_ge
     (hRm : ∀ t (_ht : t ∈ Ioo (0 : ℝ) b),
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p x t) 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R)
     (hγ : ∀ t ∈ Icc (0 : ℝ) b,
       ContMDiffAt 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p x) t)

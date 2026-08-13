@@ -20,17 +20,22 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartT
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Analysis.Sobolev.Embedding.RawConnLapToHsOrderDroppingCentredFrameInvGramExpansion
 import DifferentialGeometry.Analysis.Sobolev.Embedding.RawConnLapToHsOrderDroppingComponentL2NormHsZeroBound
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
-namespace DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
 
 section InnerProductSpaceModel
 
@@ -55,7 +60,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -481,7 +486,7 @@ private noncomputable def naiveSecondCovDerivGlobalCorr0
         (I := I) (M := M) g r s α Idx Jdx k l)) I' J'
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma naiveSecondCovDerivGlobalCorr_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -498,7 +503,7 @@ private lemma naiveSecondCovDerivGlobalCorr_contDiffOn
           (I := I) (M := M) g r s α Idx Jdx k l))).1 I' J' m
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma naiveSecondCovDerivGlobalCorr0_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -512,7 +517,7 @@ private lemma naiveSecondCovDerivGlobalCorr0_contDiffOn
       (Classical.choose_spec
         (secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
           (I := I) (M := M) g r s α Idx Jdx k l))).2.1 I' J'
-
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLap_chartα_raw_eq_invGram_naiveSecondCovDeriv_proj_on_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -1982,9 +1987,9 @@ theorem exists_rawConnLapSmooth_toHs_le_toHs_succ
     (g : SmoothRiemannianMetric I M) (k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ T : Integral.L2.SmoothCcTensor g 0 2,
-        ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) k
+        ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) k
             (rawTensorConnLapSmooth (I := I) g 0 2 T)‖ ≤
-          C * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (k + 1) T‖ := by
+          C * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (k + 1) T‖ := by
   obtain ⟨C, hC_nn, hC⟩ :=
     exists_rawConnLapSmooth_tensorPouSobolevHsNorm_le (I := I) (M := M) g 0 2 k
   refine ⟨C, hC_nn, fun T => ?_⟩
@@ -2010,9 +2015,9 @@ theorem exists_rawConnLapIter_toHs_le_toHs
     (g : SmoothRiemannianMetric I M) (i k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (T : Integral.L2.SmoothCcTensor g 0 2),
-        ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) k
+        ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) k
             (rawTensorConnLapIter (I := I) g 0 2 i T)‖ ≤
-          C * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (k + i) T‖ := by
+          C * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (k + i) T‖ := by
   induction i generalizing k with
   | zero =>
       refine ⟨1, zero_le_one, fun T => ?_⟩
@@ -2030,18 +2035,18 @@ theorem exists_rawConnLapIter_toHs_le_toHs
       have hord : k + 1 + i = k + (i + 1) := by ring
       rw [hord] at hih
       refine le_trans hstep ?_
-      calc C1 * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (k + 1)
+      calc C1 * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (k + 1)
               (rawTensorConnLapIter (I := I) g 0 2 i T)‖
-          ≤ C1 * (Ci * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2)
+          ≤ C1 * (Ci * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2)
               (k + (i + 1)) T‖) := mul_le_mul_of_nonneg_left hih hC1_nn
-        _ = C1 * Ci * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2)
+        _ = C1 * Ci * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2)
               (k + (i + 1)) T‖ := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem toHs_norm_mono (g : SmoothRiemannianMetric I M) {r s : ℕ} {m n : ℕ} (hmn : m ≤ n)
     (T : Integral.L2.SmoothCcTensor g r s) :
-    ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) m T‖ ≤
-      ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) n T‖ := by
+    ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) m T‖ ≤
+      ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) n T‖ := by
   rw [tensorPouSobolevHilbert_norm_eq, tensorPouSobolevHilbert_norm_eq]
   refine ENNReal.toReal_mono (tensorPouSobolevHsNorm_lt_top (I := I) (M := M) g n T).ne ?_
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hmn
@@ -2057,20 +2062,20 @@ theorem toHs_norm_mono (g : SmoothRiemannianMetric I M) {r s : ℕ} {m n : ℕ} 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem SmoothCcTensor.toHs_add {g : SmoothRiemannianMetric I M} {r s : ℕ} (k : ℕ)
     (R₁ R₂ : Integral.L2.SmoothCcTensor g r s) :
-    IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k (R₁ + R₂)
-      = IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k R₁
-        + IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k R₂ := by
-  unfold IntrinsicSobolev.SmoothCcTensor.toHs
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k (R₁ + R₂)
+      = DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k R₁
+        + DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k R₂ := by
+  unfold DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
   rw [← UniformSpace.Completion.coe_add]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem SmoothCcTensor.toHs_sub {g : SmoothRiemannianMetric I M} {r s : ℕ} (k : ℕ)
     (R₁ R₂ : Integral.L2.SmoothCcTensor g r s) :
-    IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k (R₁ - R₂)
-      = IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k R₁
-        - IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k R₂ := by
-  unfold IntrinsicSobolev.SmoothCcTensor.toHs
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k (R₁ - R₂)
+      = DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k R₁
+        - DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := r) (s := s) k R₂ := by
+  unfold DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
   rw [← UniformSpace.Completion.coe_sub]
   rfl
 
@@ -2086,13 +2091,13 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-open DifferentialGeometry.Integral.Connection Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 
 set_option backward.isDefEq.respectTransparency false
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma rawConnLap_smooth_witness (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : Integral.L2.SmoothCcTensor g r s) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -2209,7 +2214,7 @@ theorem exists_l2Norm_le_toHs_zero
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ T : Integral.L2.SmoothCcTensor g 0 2,
         ‖Integral.L2.SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2) T‖ ≤
-          C * ‖IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) 0 T‖ := by
+          C * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) 0 T‖ := by
   obtain ⟨C, hC_nn, hC⟩ :=
     exists_l2Norm_le_tensorPouSobolevHsNorm_zero (I := I) (M := M) g 0 2
   refine ⟨C, hC_nn, fun T => ?_⟩
@@ -2218,4 +2223,4 @@ theorem exists_l2Norm_le_toHs_zero
 
 end InnerProductSpaceModel
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Sobolev

@@ -3,16 +3,9 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiCoord
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Index forms in a parallel perpendicular frame
-
-This module identifies the geometric index form of a field expanded in a
-parallel orthonormal frame with the abstract Euclidean index form of its
-coefficient field.
--/
 
 open Set Function Manifold Bundle
 open scoped Topology Manifold ContDiff RealInnerProductSpace
@@ -68,14 +61,12 @@ private lemma g_inner_contDiff
   rw [← contMDiff_iff_contDiff]
   exact hcm
 
-/-- Lift Euclidean coefficient functions through a finite frame along a curve. -/
 def perpFrameLift {γ : ℝ → M}
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
     (y : ℝ → EuclideanSpace ℝ ι) (t : ℝ) :
     TangentSpace I (γ t) :=
   ∑ i, y t i • F i t
 
-/-- Coefficients of a field in a finite frame along a curve. -/
 def perpCoeff (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
     (Y : ∀ t : ℝ, TangentSpace I (γ t)) (t : ℝ) :
@@ -100,7 +91,6 @@ omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [Fintype ι] [DecidableEq ι]
   [T2Space M] [SigmaCompactSpace M] in
-/-- A field that vanishes at a time has zero frame coefficients there. -/
 @[simp]
 theorem perpCoeff_zero
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
@@ -115,8 +105,6 @@ theorem perpCoeff_zero
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
-/-- Frame coefficients are globally smooth when the frame and field are
-globally smooth bundle sections along the curve. -/
 theorem perpCoeff_smooth
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -134,15 +122,14 @@ theorem perpCoeff_smooth
   exact (ContinuousLinearEquiv.contDiff
     (EuclideanSpace.equiv ι ℝ).symm).comp hcomponents
 
-/-- The coefficient-space Jacobi curvature operator of a finite frame. -/
 def perpCurvOp (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t)) (t : ℝ) :
     EuclideanSpace ℝ ι →L[ℝ] EuclideanSpace ℝ ι :=
   (Matrix.toLpLin 2 2
     (fun i j =>
       g.inner (γ t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (F j t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
           (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
@@ -157,21 +144,18 @@ theorem perpCurvOp_apply
     (t : ℝ) (y : EuclideanSpace ℝ ι) (i : ι) :
     perpCurvOp (I := I) g γ F t y i =
       ∑ j, g.inner (γ t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (F j t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
           (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
         (F i t) * y j := by
   rfl
 
--- Elaborating the geometric instance chain requires the larger synthesis budget.
 set_option backward.isDefEq.respectTransparency false in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-/-- The coefficient-space curvature operator is smooth along a smooth curve
-and a smooth finite frame. -/
 theorem perpCurv_smooth
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
@@ -222,7 +206,7 @@ theorem perpCurv_smooth
       (E × (E →L[ℝ] E →L[ℝ] E →L[ℝ] E)) :=
     Prod.normedSpace
   have hR0 :=
-    (DifferentialGeometry.Integral.Connection.riemannOp_section_contMDiff
+    (DifferentialGeometry.Geometry.Curvature.riemannOp_section_contMDiff
       (I := I) (M := M) g).comp hγ
   have hR1 (j : ι) :=
     ContMDiff.clm_bundle_apply
@@ -232,8 +216,8 @@ theorem perpCurv_smooth
         TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)
       (b := γ)
       (ϕ := fun t =>
-        DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
           (γ t))
       (v := fun t => F j t) hR0 (hF j)
   have hR2 (j : ι) :=
@@ -243,8 +227,8 @@ theorem perpCurv_smooth
       (E₂ := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
       (b := γ)
       (ϕ := fun t =>
-        (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
           (γ t)) (F j t))
       (v := fun t => mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
       (hR1 j) hvel
@@ -255,15 +239,15 @@ theorem perpCurv_smooth
       (E₂ := fun x : M => TangentSpace I x)
       (b := γ)
       (ϕ := fun t =>
-        (DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
           (γ t)) (F j t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
       (v := fun t => mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
       (hR2 j) hvel
   have hcoeff (i j : ι) : ContDiff ℝ ∞
       (fun t : ℝ => g.inner (γ t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
           (γ t)) (F j t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
             (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ)))
         (F i t)) :=
@@ -278,7 +262,6 @@ theorem perpCurv_smooth
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
-/-- A coefficient field that vanishes at a time has zero frame lift there. -/
 @[simp]
 theorem perpLift_zero {γ : ℝ → M}
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -289,7 +272,6 @@ theorem perpLift_zero {γ : ℝ → M}
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
-/-- A lift through a perpendicular frame remains perpendicular. -/
 theorem perpLift_perp
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -302,7 +284,6 @@ theorem perpLift_perp
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] in
-/-- A lift through a pointwise orthonormal frame preserves inner products. -/
 theorem perpLift_inner
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -318,8 +299,6 @@ theorem perpLift_inner
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- A pointwise orthonormal frame of the orthogonal complement expands every
-vector perpendicular to the distinguished nonzero vector. -/
 theorem perpFrame_expand
     (g : SmoothRiemannianMetric I M) {x : M}
     (F : ι → TangentSpace I x) (u Z : TangentSpace I x)
@@ -418,8 +397,6 @@ theorem perpFrame_expand
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- A perpendicular field is recovered from its coefficients in a complete
-orthonormal perpendicular frame. -/
 theorem perpLift_coeff
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -441,8 +418,6 @@ theorem perpLift_coeff
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-/-- A nonzero perpendicular vector has a nonzero coefficient vector in a
-complete orthonormal perpendicular frame. -/
 theorem perpCoeff_ne_zero
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M}
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -464,14 +439,11 @@ theorem perpCoeff_ne_zero
     hFperp hYperp hON]
   exact perpLift_zero (I := I) F (perpCoeff (I := I) g F Y) t hcoeff
 
--- Elaborating the geometric instance chain requires the larger synthesis budget.
 set_option backward.isDefEq.respectTransparency false in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- The curvature coordinates of a perpendicular field are obtained by
-applying the frame curvature operator to its frame coefficients. -/
 theorem perpCurv_coeff
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -487,8 +459,8 @@ theorem perpCurv_coeff
       if i = j then 1 else 0)
     (i : ι) :
     g.inner (γ t) (F i t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (Y t) (curveVelocity (I := I) γ t)
           (curveVelocity (I := I) γ t)) =
@@ -510,8 +482,8 @@ theorem perpCurv_coeff
     (curveVelocity (I := I) γ t) (Y t) hcard hvel hFperp hYperp hON
   have hcurv := congrArg
     (fun Z : TangentSpace I (γ t) =>
-      (DifferentialGeometry.Integral.Connection.riemannOp
-        (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
         (γ t))
         Z (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t))
     hYexp
@@ -524,8 +496,8 @@ theorem perpCurv_coeff
   simp only [perpCoeff_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [g.symm (γ t) (F i t)
-    ((DifferentialGeometry.Integral.Connection.riemannOp
-      (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+    ((DifferentialGeometry.Geometry.Curvature.riemannOp
+      (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
       (γ t))
       (F j t) (curveVelocity (I := I) γ t)
       (curveVelocity (I := I) γ t))]
@@ -534,8 +506,6 @@ theorem perpCurv_coeff
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- Frame coefficients of a perpendicular Jacobi field satisfy the
-first-order form of the coefficient Jacobi equation. -/
 theorem perpCoeff_ode
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -599,8 +569,6 @@ theorem perpCoeff_ode
 omit [Fintype ι] [DecidableEq ι] in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- A Jacobi field along a global geodesic that vanishes at two distinct
-times is everywhere perpendicular to the geodesic velocity. -/
 theorem jacobi_perp_of_ends
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (J : ∀ t : ℝ, TangentSpace I (γ t)) {c : ℝ}
@@ -630,24 +598,24 @@ theorem jacobi_perp_of_ends
       (I := I) g γ t hγ).mpr (hgeo.hasGeodesicEquationAt t)
   have hcurvzero (t : ℝ) :
       g.inner (γ t) (curveVelocity (I := I) γ t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (J t) (curveVelocity (I := I) γ t)
           (curveVelocity (I := I) γ t)) = 0 := by
     have hRzero :
-        (DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        (DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t)
           (curveVelocity (I := I) γ t) = 0 := by
-      have hswap := DifferentialGeometry.Integral.Connection.riemannOp_swap
-        (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+      have hswap := DifferentialGeometry.Geometry.Curvature.riemannOp_swap
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
         (γ t) (curveVelocity (I := I) γ t)
         (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t)
       set a :=
-        (DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        (DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t)
           (curveVelocity (I := I) γ t) with ha
@@ -661,27 +629,27 @@ theorem jacobi_perp_of_ends
       exact (smul_eq_zero.mp hsmul).resolve_left hne
     calc
       g.inner (γ t) (curveVelocity (I := I) γ t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (γ t))
             (J t) (curveVelocity (I := I) γ t)
             (curveVelocity (I := I) γ t)) =
         g.inner (γ t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (γ t))
             (J t) (curveVelocity (I := I) γ t)
             (curveVelocity (I := I) γ t))
           (curveVelocity (I := I) γ t) :=
         g.symm (γ t) _ _
       _ = g.inner (γ t) (J t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (γ t))
             (curveVelocity (I := I) γ t)
             (curveVelocity (I := I) γ t)
             (curveVelocity (I := I) γ t)) :=
-        DifferentialGeometry.Integral.Connection.riemannOp_diag_symm
+        DifferentialGeometry.Geometry.Curvature.riemannOp_diag_symm
           (I := I) g (γ t) (curveVelocity (I := I) γ t) (J t)
           (curveVelocity (I := I) γ t)
       _ = 0 := by rw [hRzero, map_zero]
@@ -734,8 +702,6 @@ theorem jacobi_perp_of_ends
 
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Covariant differentiation becomes ordinary coefficient differentiation
-in a parallel frame. -/
 theorem perpLift_covDeriv
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -767,8 +733,6 @@ theorem perpLift_covDeriv
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [DecidableEq ι] in
-/-- A finite coefficient lift is a smooth bundle field when both the
-coefficients and frame are smooth. -/
 theorem perpLift_smooth
     {γ : ℝ → M} (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ)
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -822,19 +786,16 @@ theorem perpLift_smooth
   rw [(trivializationAt E (TangentSpace I) (γ t₀)).apply_eq_prod_continuousLinearEquivAt
     ℝ (γ t) ht]
 
--- Elaborating the geometric instance chain requires the larger synthesis budget.
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- The Euclidean curvature pairing is the geometric curvature pairing of
-the lifted fields. -/
 theorem perpCurv_inner
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
     (y z : EuclideanSpace ℝ ι) (t : ℝ) :
     inner ℝ (perpCurvOp (I := I) g γ F t y) z =
       g.inner (γ t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (∑ j, y j • F j t)
           (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
@@ -853,7 +814,6 @@ theorem perpCurv_inner
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- The frame curvature operator is self-adjoint. -/
 theorem perpCurv_symm
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -861,13 +821,13 @@ theorem perpCurv_symm
     inner ℝ (perpCurvOp (I := I) g γ F t y) z =
       inner ℝ y (perpCurvOp (I := I) g γ F t z) := by
   rw [perpCurv_inner (I := I) g γ F y z t]
-  rw [DifferentialGeometry.Integral.Connection.riemannOp_diag_symm
+  rw [DifferentialGeometry.Geometry.Curvature.riemannOp_diag_symm
     (I := I) g (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
     (∑ j, y j • F j t) (∑ i, z i • F i t)]
   rw [g.symm (γ t)
     (∑ j, y j • F j t)
-    ((DifferentialGeometry.Integral.Connection.riemannOp
-        (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+    ((DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
         (γ t))
       (∑ i, z i • F i t)
       (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ))
@@ -877,7 +837,6 @@ theorem perpCurv_symm
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- Pointwise identification of geometric and coefficient index integrands. -/
 theorem perpLift_integrand
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))
@@ -903,8 +862,6 @@ theorem perpLift_integrand
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- Identification of the geometric index form with the abstract Euclidean
-index form in a parallel orthonormal frame. -/
 theorem perpLift_indexForm
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (F : ι → ∀ t : ℝ, TangentSpace I (γ t))

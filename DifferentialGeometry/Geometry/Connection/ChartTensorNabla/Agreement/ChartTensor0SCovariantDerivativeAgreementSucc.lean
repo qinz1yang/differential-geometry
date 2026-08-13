@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartT
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor0SIntrinsicChartCurryFactor
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartLeviCivitaParallelExtend
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -11,10 +12,11 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
+
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -26,8 +28,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open Tensor0SNabla
-open Tensor0SPartialEval
+open DifferentialGeometry.Tensor0SNabla
+open DifferentialGeometry.Tensor0SPartialEval
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
@@ -82,6 +84,7 @@ private lemma LeviCivita_chartParallelExtend_eq_parallelCLM
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∀ (s : ℕ) (T : Π b' : M, Tensor0SSpace (s + 1) I b')
@@ -484,6 +487,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem chartTensor0SCovariantDerivative_eq_abstract_succ
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
     (T :
@@ -519,7 +523,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ
     (I := I) (M := M) g α s T.toFun X.toFun hb hT_at hX_at
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

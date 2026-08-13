@@ -1,13 +1,12 @@
-
-
-
-
-
+/-
+Copyright (c) 2026 Jack McCarthy. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Jack McCarthy
+-/
 import Mathlib.GroupTheory.Perm.Option
 import Mathlib.LinearAlgebra.Alternating.DomCoprod
 
-
-
+namespace DifferentialGeometry
 namespace ShuffleSplit
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
@@ -141,3 +140,4 @@ theorem permCongr_inv_mul {α β : Type*}
     h_inv, Equiv.symm_apply_apply]
 
 end ShuffleSplit
+end DifferentialGeometry

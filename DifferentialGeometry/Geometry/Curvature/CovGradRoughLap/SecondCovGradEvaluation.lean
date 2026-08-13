@@ -2,38 +2,40 @@ import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.PointwiseTensorCu
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.GradientField
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FullHomCovariantCalculusRS
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
-open TensorMultilinear
+open DifferentialGeometry.TensorMultilinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 lemma tensorRS_eq_of_toModel_eval_eq {r a : ℕ} {x : M}
     {T T' : TensorRSSpace r a I x}
     (h : ∀ (D : Tensor0SSpace r I x) (v : Fin a → TangentSpace I x),
@@ -56,9 +58,8 @@ private lemma eq_add_of_eq_sub {A : Type*} [AddCommGroup A] {a b c : A}
   sub_eq_iff_eq_add.mp h.symm
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 private lemma tensor0S_curry_apply_eval_tangent {n : ℕ} {x : M}
     (T : Tensor0SSpace (n + 1) I x) (v₀ : TangentSpace I x)
     (v : Fin n → TangentSpace I x) :
@@ -68,9 +69,8 @@ private lemma tensor0S_curry_apply_eval_tangent {n : ℕ} {x : M}
   exact TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) T v₀ v
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+    [BoundarylessManifold I M] [T2Space M] in
 lemma toModel_sum_eval {a : ℕ} {x : M} {ι : Type*} (t : Finset ι)
     (f : ι → Tensor0SSpace a I x) (v : Fin a → TangentSpace I x) :
     Tensor0SSpace.toModel (∑ i ∈ t, f i) v = ∑ i ∈ t, Tensor0SSpace.toModel (f i) v := by
@@ -82,7 +82,6 @@ section Bridge
 variable (g : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
-
 private noncomputable def covApplyCcSec (r t : ℕ) (W : SmoothCcTensor g r t)
     {Y : Π b : M, TangentSpace I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
@@ -114,7 +113,6 @@ private lemma curried_covGrad_apply_eq_tensorCovDerivAt_apply (r t : ℕ)
   exact tensor0S_curry_covGrad_appCcRS_eq (I := I) (M := M) g r t W y (w y) v
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma covApply_covDeriv_apply_eq_add (r t : ℕ) (W : SmoothCcTensor g r t)
     {X Y : Π b : M, TangentSpace I b}
@@ -136,7 +134,6 @@ private lemma covApply_covDeriv_apply_eq_add (r t : ℕ) (W : SmoothCcTensor g r
   exact eq_add_of_eq_sub h
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma covGrad_covDeriv_eval (r t : ℕ) (W : SmoothCcTensor g r t)
     {X Y : Π b : M, TangentSpace I b}
@@ -159,7 +156,6 @@ private lemma covGrad_covDeriv_eval (r t : ℕ) (W : SmoothCcTensor g r t)
   rw [vecTail_cons' (Y x) m]
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem secondCovGrad_eval_eq_tensorSecondCovDeriv (r t : ℕ)
     (W : SmoothCcTensor g r t)
@@ -280,6 +276,6 @@ theorem secondCovGrad_eval_eq_tensorSecondCovDeriv (r t : ℕ)
 
 end Bridge
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry

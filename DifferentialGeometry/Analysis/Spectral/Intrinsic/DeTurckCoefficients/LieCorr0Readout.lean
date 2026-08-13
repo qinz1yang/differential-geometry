@@ -1,29 +1,27 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.RealizedGramDerivChartEvaluation
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffAppCcValue
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff Matrix
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -57,7 +55,8 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
   chartPushedRaw_tensorChartComponentRaw_contDiffOn)
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
   (chartDeTurckCorrPrincipalSymbolExprRaw chartDeTurckCorrHessBlockRaw)
-open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv chartGramOnE chartInvGramOnE)
+open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
+open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -175,8 +174,6 @@ private lemma lieArm_unitModel3_basisChart_readout_split
     funext j; fin_cases j <;> rfl
   simp only [arm1ReadoutCovDeriv, hJ0, hJtail]
 
-
-
 omit [BoundarylessManifold I M] in
 theorem lieU3_readout (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -282,7 +279,7 @@ private lemma lieCorr0_euclid_christoffel_bridge (g : SmoothRiemannianMetric I M
     extChartAt_target_subset_interior_of_boundaryless
       (I := I) x (mem_extChartAt_target x)
   have hdiff : DifferentiableAt ℝ (chartChristoffel (I := I) g x a b r) (extChartAt I x x) :=
-    ((DifferentialGeometry.Integral.DivergenceTheorem.chartChristoffel_contDiffOn_interior
+    ((DifferentialGeometry.Geometry.Operator.chartChristoffel_contDiffOn_interior
       (I := I) g x a b r).contDiffAt
       (isOpen_interior.mem_nhds hy_int)).differentiableAt (by simp)
   rw [euclidPartial_def, DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv]
@@ -496,4 +493,4 @@ theorem lieR4_center (hδ_lt : δ < 1)
       · refine congrArg Neg.neg (Finset.sum_congr rfl (fun t _ => ?_))
         rw [lieCorr0_raw_readout (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c t]
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

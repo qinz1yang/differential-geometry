@@ -8,6 +8,8 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoef
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityBaseDataLocalRegularity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -480,6 +482,7 @@ private lemma base_weak_partial_ae_zero_off_K_α
   exact weakPartial_ae_zero_on_open_subset_of_ae_zero
     hΩ_open hU_open hU_sub (i := i) h_isWeak hw_li hf_ae
 
+omit [SigmaCompactSpace M] in
 private lemma base_f_chart_locally_memLp_helper
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}

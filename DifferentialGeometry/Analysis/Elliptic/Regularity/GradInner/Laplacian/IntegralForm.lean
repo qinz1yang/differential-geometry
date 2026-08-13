@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.SmoothViaDensity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.DensityExtension
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -20,7 +22,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+
 open DifferentialGeometry.Analysis.Laplacian.GradInnerLpIdentity
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.MetricExtension
@@ -40,6 +43,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lpInner_H1ComplToLp_oneSubLap_eq_lpInner_smooth_preimage
     (g : SmoothRiemannianMetric I M)
@@ -78,6 +82,7 @@ theorem lpInner_H1ComplToLp_oneSubLap_eq_lpInner_smooth_preimage
     exact resolvent_laplacianDomain_preimage_eq (I := I) (M := M) g ⟨w_lift, hw_lift⟩
   rw [h_LHS, h_RHS]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lpInner_gradInner_smooth_oneSubLap_eq_lpInner_smooth_preimage
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -103,7 +108,7 @@ theorem integral_H1ComplToLp_oneSubLap_eq_integral_preimage_smooth
     (w : SmoothScalar g) :
     ∫ x, ((H1ComplToLp (I := I) (M := M) g w_lift :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((laplacianDomain.preimage (I := I) (M := M) g
@@ -118,7 +123,7 @@ theorem integral_H1ComplToLp_oneSubLap_eq_integral_preimage_smooth
       ((smoothToLp (I := I) (M := M) g w.oneSubLapClassical :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =ᵐ[
           riemannianVolumeMeasure (I := I) (M := M) g]
-        (fun x : M => w.toFun x - Δ_g (I := I) g w.smooth x) := by
+        (fun x : M => w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x) := by
     have h := MemLp.coeFn_toLp w.oneSubLapClassical.memLp_two
     filter_upwards [h] with x hx
     change ((w.oneSubLapClassical.memLp_two.toLp _ :
@@ -141,7 +146,7 @@ theorem integral_H1ComplToLp_oneSubLap_eq_integral_preimage_smooth
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         ∫ x, ((H1ComplToLp (I := I) (M := M) g w_lift :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-              (w.toFun x - Δ_g (I := I) g w.smooth x)
+              (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     refine integral_congr_ae ?_
     filter_upwards [h_LHS_coe] with x hx
@@ -210,7 +215,7 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_preimage_smooth
     (w : SmoothScalar g) :
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ u_h :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((laplacianDomain.preimage (I := I) (M := M) g
@@ -228,7 +233,7 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_smoothCase
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ
               (smoothToH1Compl (I := I) (M := M) g v) :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((smoothToLp (I := I) (M := M) g
@@ -278,7 +283,7 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_candidate_of_variational
     (w : SmoothScalar g) :
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ u_h :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((gradInnerLaplacianCandidateUnconditional
@@ -314,7 +319,7 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_candidate_smoothCase_of_
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ
               (smoothToH1Compl (I := I) (M := M) g v) :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
@@ -351,7 +356,7 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_candidate_density
     (w : SmoothScalar g) :
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ u_h :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((gradInnerLaplacianCandidateUnconditional
@@ -377,7 +382,7 @@ theorem integral_gradInner_oneSubLap_contMDiff_eq_integral_preimage
     {w : M → ℝ} (hw : ContMDiff I 𝓘(ℝ, ℝ) ∞ w) :
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ u_h :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w x - Δ_g (I := I) g hw x)
+            (w x - Δ_g (I := I) g ⟨_, hw⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w x *
             ((laplacianDomain.preimage (I := I) (M := M) g
@@ -393,12 +398,12 @@ theorem integral_grad_inner_oneSubLap_smooth_pointwise
     (w : SmoothScalar g) :
     ∫ x, g.inner x (gradFun (I := I) g (φ : M → ℝ) x)
             (gradFun (I := I) g v.toFun x) *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun x -
-              Δ_g (I := I) g
-                (gradInnerSmoothBundle (I := I) (M := M) g φ v).smooth x)
+              Δ_g (I := I) g ⟨(gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun,
+                (gradInnerSmoothBundle (I := I) (M := M) g φ v).smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have h_main :=
@@ -419,8 +424,8 @@ theorem integral_grad_inner_oneSubLap_smooth_pointwise
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
       (fun x : M => (gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun x -
-            Δ_g (I := I) g
-              (gradInnerSmoothBundle (I := I) (M := M) g φ v).smooth x) := by
+            Δ_g (I := I) g ⟨(gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun,
+              (gradInnerSmoothBundle (I := I) (M := M) g φ v).smooth⟩ x) := by
     have h := MemLp.coeFn_toLp
       (gradInnerSmoothBundle (I := I) (M := M) g φ v).oneSubLapClassical.memLp_two
     filter_upwards [h] with x hx
@@ -434,11 +439,11 @@ theorem integral_grad_inner_oneSubLap_smooth_pointwise
           ((gradInnerCLM (I := I) (M := M) g φ
               (smoothToH1Compl (I := I) (M := M) g v) :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)) =ᵐ[
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
       (fun x : M => g.inner x (gradFun (I := I) g (φ : M → ℝ) x)
             (gradFun (I := I) g v.toFun x) *
-          (w.toFun x - Δ_g (I := I) g w.smooth x)) := by
+          (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)) := by
     filter_upwards [h_LHS_coeFn] with x hx
     rw [hx]
   have h_RHS_int_ae :
@@ -450,8 +455,8 @@ theorem integral_grad_inner_oneSubLap_smooth_pointwise
         riemannianVolumeMeasure (I := I) (M := M) g]
       (fun x : M => w.toFun x *
           ((gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun x -
-            Δ_g (I := I) g
-              (gradInnerSmoothBundle (I := I) (M := M) g φ v).smooth x)) := by
+            Δ_g (I := I) g ⟨(gradInnerSmoothBundle (I := I) (M := M) g φ v).toFun,
+              (gradInnerSmoothBundle (I := I) (M := M) g φ v).smooth⟩ x)) := by
     filter_upwards [h_RHS_coeFn] with x hx
     rw [hx]
   have h_LHS_eq :=
@@ -472,7 +477,7 @@ theorem integral_gradInner_oneSubLap_contMDiffMap_eq_integral_preimage
     (w : C^∞⟮I, M; ℝ⟯) :
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ u_h :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            ((w : M → ℝ) x - Δ_g (I := I) g w.contMDiff x)
+            ((w : M → ℝ) x - Δ_g (I := I) g w x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, (w : M → ℝ) x *
             ((laplacianDomain.preimage (I := I) (M := M) g
@@ -490,7 +495,7 @@ theorem weak_oneSubLap_holds_of_image_in_laplacianDomain
     (hw_lift : w_lift ∈ laplacianDomain (I := I) (M := M) g)
     (h_A_eq : H1ComplToLp (I := I) (M := M) g w_lift = A) :
     ∀ w : SmoothScalar g,
-      ∫ x, (A : M → ℝ) x * (w.toFun x - Δ_g (I := I) g w.smooth x)
+      ∫ x, (A : M → ℝ) x * (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((laplacianDomain.preimage (I := I) (M := M) g
@@ -510,7 +515,7 @@ example (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : Smooth
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ
               (smoothToH1Compl (I := I) (M := M) g v) :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
@@ -525,7 +530,7 @@ example (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v w : Smoo
     ∫ x, ((gradInnerCLM (I := I) (M := M) g φ
               (smoothToH1Compl (I := I) (M := M) g v) :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
-            (w.toFun x - Δ_g (I := I) g w.smooth x)
+            (w.toFun x - Δ_g (I := I) g ⟨w.toFun, w.smooth⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, w.toFun x *
             ((smoothToLp (I := I) (M := M) g

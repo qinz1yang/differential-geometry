@@ -3,23 +3,9 @@ import DifferentialGeometry.Tensor.Multilinear.DomDomCongrSection
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 set_option backward.isDefEq.respectTransparency false
@@ -34,8 +20,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [CompleteSpace E] [IsManifold I ∞ M]
 
-
-
 def frontExtendEquiv {s s' : ℕ} (e : Fin s ≃ Fin s') : Fin (s + 1) ≃ Fin (s' + 1) :=
   (finSuccEquiv s).trans ((Equiv.optionCongr e).trans (finSuccEquiv s').symm)
 
@@ -47,8 +31,6 @@ def frontExtendEquiv {s s' : ℕ} (e : Fin s ≃ Fin s') : Fin (s + 1) ≃ Fin (
     frontExtendEquiv e i.succ = (e i).succ := by
   simp [frontExtendEquiv]
 
-
-
 @[simp] theorem cons_apply_frontExtendEquiv {s s' : ℕ} (e : Fin s ≃ Fin s')
     {α : Type*} (c : α) (g : Fin s' → α) (i : Fin (s + 1)) :
     (Fin.cons c g : Fin (s' + 1) → α) (frontExtendEquiv e i)
@@ -56,8 +38,6 @@ def frontExtendEquiv {s s' : ℕ} (e : Fin s ≃ Fin s') : Fin (s + 1) ≃ Fin (
   rcases Fin.eq_zero_or_eq_succ i with h | ⟨j, h⟩
   · subst h; rw [frontExtendEquiv_zero, Fin.cons_zero, Fin.cons_zero]
   · subst h; rw [frontExtendEquiv_succ, Fin.cons_succ, Fin.cons_succ, Function.comp_apply]
-
-
 
 omit [CompleteSpace E] in
 theorem nabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
@@ -101,9 +81,6 @@ theorem nabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
     simp only [Function.update_apply, Equiv.apply_symm_apply,
       Equiv.apply_eq_iff_eq_symm_apply]
 
-
-
-
 omit [CompleteSpace E] in
 theorem totalNabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] {s s' : ℕ}
@@ -144,10 +121,6 @@ theorem totalNabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I
   simp only [cons_apply_frontExtendEquiv]
   rw [totalNabla0SFun_apply_section]
 
-
-
-
-
 omit [CompleteSpace E] in
 theorem totalNabla0SRealizes_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] {s s' : ℕ}
@@ -173,12 +146,6 @@ theorem totalNabla0SRealizes_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManif
   simp only [cons_apply_frontExtendEquiv]
   exact (hZ X x (slots ∘ e)).trans
     (nabla0SFun_domDomCongr (I := I) cov X e Z x slots).symm
-
-
-
-
-
-
 
 omit [CompleteSpace E] in
 theorem totalNabla0SRealizes_unique [T2Space M] {s : ℕ}
@@ -207,3 +174,4 @@ theorem totalNabla0SRealizes_unique [T2Space M] {s : ℕ}
   rw [e1, e2]
 
 end Tensor0SBundle
+end DifferentialGeometry

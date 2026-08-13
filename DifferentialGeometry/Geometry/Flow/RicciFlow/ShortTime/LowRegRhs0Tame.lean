@@ -1,30 +1,27 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegInsertH1
-
-/-!
-# Affine low-regularity bounds for the order-zero Ricci--DeTurck coefficient
-
-This file separates the lower `H2` metric radius from the single top `H3`
-derivative in the order-zero coefficient estimates.  The cancellation inside
-`DLb + lieCorr0` is retained before any norm estimate is taken.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open LieCorr0Core
 
@@ -34,12 +31,10 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-/-- In dimension three, an `H1` coefficient grid with the order-`i` window
-`i + 3` has an affine bound in the unique total-order-three metric grid. -/
 theorem h1_grid_tame
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (C : ℕ → ℝ)
@@ -157,8 +152,6 @@ theorem h1_grid_tame
       nlinarith [mul_nonneg (Real.sqrt_nonneg (Q0 R))
         (mul_nonneg (Real.sqrt_nonneg (Q1 R)) hA)]
 
-/-- The endpoint spectral `H2` radius controls the lower three-term metric jet
-at every point of a convex realization segment. -/
 theorem convex_h2_jet (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2) (R : ℝ), 0 ≤ R →
@@ -327,8 +320,6 @@ private theorem app_h2h1
   simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
     iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hsquare
 
-/-- Affine `H1` bound for the order-zero Ricci connection-difference
-coefficient. -/
 theorem ricci0_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -363,7 +354,6 @@ theorem ricci0_h1_tame
     R A hR hA hP2 htop
     (fun i hi x ↦ hpt g₁ P htie hδ_le hδ_nonneg hbound i x)
 
-/-- Affine `H1` bound for the order-zero `DLa` coefficient. -/
 theorem dla_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -398,7 +388,6 @@ theorem dla_h1_tame
     R A hR hA hP2 htop
     (fun i hi x ↦ hpt g₁ P htie hδ_le hδ_nonneg hbound i x)
 
-/-- Affine `H1` bound for the change of fixed DeTurck background in `DLb`. -/
 theorem dlbDiff_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -457,9 +446,6 @@ theorem dlbDiff_h1_tame
       deTurckLieDLbCoeffField (I := I) (M := M) g₀ g₁ g₀)
     R A hR hA hP2 htop hpt'
 
--- The rank-changing operator composition needs an enlarged local elaboration budget.
-/-- The fixed-curvature part of `lieCorr0` is in fact a lower-order `H1`
-coefficient; its affine top-order coefficient can be chosen to be zero. -/
 theorem riem_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -535,8 +521,6 @@ theorem riem_h1_tame
     norm_smul, Real.norm_eq_abs,
     abs_neg, abs_one, one_mul] using hAppJet
 
-/-- Affine `H1` bound for the genuine vector--bilinear correction.  Its only
-top-order factor is the self-background Koszul tensor. -/
 theorem vb_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -693,9 +677,6 @@ theorem vb_h1_tame
       dsimp only [B0, B1, Ob, Nb, Ib, Vb]
       ring
 
-/-- Affine `H1` bound for the genuine mixed connection correction.  The
-background connection stays in the lower factor and the self-background
-Koszul tensor carries the only top derivative. -/
 theorem amix_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -869,7 +850,6 @@ theorem amix_h1_tame
       dsimp only [B0, B1, Ob, Mb, Nb, Qb]
       ring
 
-/-- Affine `H1` bound for the cancellation-preserving `DLb + lieCorr0` tail. -/
 theorem tail_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -967,9 +947,6 @@ theorem tail_h1_tame
       rw [mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 5)]
     _ = (B0 R + B1 R * A) ^ 2 := by rw [hfactor]
 
--- The affine assembly combines several rank-changing coefficient estimates.
-/-- A lower endpoint `H2` radius and an independent endpoint `H3` radius give
-the complete affine `H1` bound for `rhsLow0Coeff` along the same convex path. -/
 theorem rhs0_h1_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -1125,4 +1102,4 @@ theorem rhs0_h1_tame
   rw [hrhs]
   exact hout.trans (hbound.trans_eq (by rw [hfactor]))
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.PDE.RicciFlow

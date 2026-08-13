@@ -1,30 +1,24 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.BalancedPairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBound
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -52,10 +46,6 @@ private local instance slotPairTensorRSTotalSpaceTopology (r s : ℕ) :
 private local instance slotPairTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
   Tensor0SBundle.tensorRSBundle_fiber r s
-
-
-
-
 
 theorem slot_pair_step (g : SmoothRiemannianMetric I M) (σ k : ℕ)
     (C : SmoothCcTensor g σ σ) (V : SmoothCcTensor g 0 σ) :
@@ -830,10 +820,6 @@ private theorem slot_main_bound (g : SmoothRiemannianMetric I M)
   refine le_trans (Finset.sum_le_sum hstep) ?_
   rw [← Finset.sum_mul]
 
-
-
-
-
 theorem slot_iterL_pair (g : SmoothRiemannianMetric I M) (s n : ℕ)
     (C₀ : SmoothCcTensor g (s + 1) (s + 1)) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ U : SmoothCcTensor g 0 s,
@@ -982,9 +968,6 @@ theorem slot_iterL_pair (g : SmoothRiemannianMetric I M) (s n : ℕ)
   rw [hsplit]
   refine le_trans (abs_add_le _ _) ?_
   exact le_trans (add_le_add hmain hcurv) (le_of_eq (by ring))
-
-
-
 
 theorem slot_iterL_unif (g : SmoothRiemannianMetric I M) (s n : ℕ)
     {α : Type*} (C : α → SmoothCcTensor g (s + 1) (s + 1)) (A : Set α)
@@ -1140,7 +1123,6 @@ theorem slot_iterL_unif (g : SmoothRiemannianMetric I M) (s n : ℕ)
   refine le_trans (abs_add_le _ _) ?_
   exact le_trans (add_le_add hmain hcurv) (le_of_eq (by ring))
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

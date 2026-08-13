@@ -1,15 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialJacobiScaling
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -29,13 +21,6 @@ section MatrixBounds
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-
-
-
-
-
-
-
 lemma sqrt_det_le_of_entry_bound
     {A : Matrix ι ι ℝ} {C : ℝ}
     (hdet_nonneg : 0 ≤ A.det)
@@ -51,11 +36,6 @@ lemma sqrt_det_le_of_entry_bound
     rw [AbsoluteValue.abs_apply, abs_of_nonneg hdet_nonneg, nsmul_eq_mul] at hdet_abs
     exact hdet_abs
   exact Real.sqrt_le_sqrt hdet_le
-
-
-
-
-
 
 lemma sqrt_pow_le_sqrt_det
     {A : Matrix ι ι ℝ} {a : ℝ}
@@ -74,8 +54,6 @@ lemma sqrt_pow_le_sqrt_det
     exact hprod
   exact Real.sqrt_le_sqrt hdet
 
-
-
 lemma eigenvalues_ge_of_rayleigh
     {A : Matrix ι ι ℝ} {a : ℝ}
     (hA : A.IsHermitian)
@@ -85,8 +63,6 @@ lemma eigenvalues_ge_of_rayleigh
   intro i
   rw [hA.eigenvalues_eq i]
   exact hray (hA.eigenvectorBasis i) (hA.eigenvectorBasis.norm_eq_one i)
-
-
 
 lemma sqrt_pow_le_sqrt_det_of_rayleigh
     {A : Matrix ι ι ℝ} {a : ℝ}
@@ -166,10 +142,6 @@ private lemma g_inner_smul_add_diag
   rw [hsymm]
   ring
 
-
-
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 private lemma riemannian_inner_cauchy_schwarz
@@ -234,8 +206,6 @@ private lemma riemannian_inner_cauchy_schwarz
   rw [hsqrt_mul] at hC
   exact hC
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 lemma radialEntry_le_of_length_bound
@@ -254,9 +224,6 @@ lemma radialEntry_le_of_length_bound
     (radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1)
   rw [radialJacobiGram_apply]
   exact hcs.trans (mul_le_mul (hJ i) (hJ j) (Real.sqrt_nonneg _) hB)
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -302,11 +269,6 @@ lemma radialJacobiGram_quadratic
     g.inner q (∑ i, v i • J i) (∑ i, v i • J i)
   rw [hleft, hright]
 
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_le_of_radial_entry_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {C : ℝ}
@@ -335,8 +297,6 @@ lemma normalDensity_le_of_radial_entry_bound
       (A := radialJacobiGram (I := I) g p x)
       (C := C) hdet_nonneg hentry
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_le_of_radial_length_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {B : ℝ}
@@ -353,14 +313,6 @@ lemma normalDensity_le_of_radial_length_bound
   normalDensity_le_of_radial_entry_bound
     (I := I) g p hxsrc hxrad
     (radialEntry_le_of_length_bound (I := I) g p x hB hJ)
-
-
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall
@@ -421,11 +373,6 @@ lemma density_le_gronwall
     (radialJacobi_fin_le (I := I) g p x hK hb h1b hγ hcard F hpar hON
       hFdiff hJdiff hDJdiff hODE hG)
 
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall_of_init_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {K b A B : ℝ}
@@ -481,12 +428,6 @@ lemma density_le_gronwall_of_init_bound
     (radialJacobi_fin_le_of_init_bound (I := I) g p x hK hb h1b hγ hcard F
       hpar hON hFdiff hJdiff hDJdiff hODE hinit hmodel)
 
-
-
-
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall_of_deriv_eq
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {K b A B : ℝ}
@@ -541,12 +482,6 @@ lemma density_le_gronwall_of_deriv_eq
     (I := I) g p hxsrc hxrad hBnn
     (radialJacobi_fin_le_of_deriv_eq (I := I) g p x hK hb h1b hγ hcard F
       hpar hON hFdiff hJdiff hDJdiff hODE hderiv hbasis hmodel)
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall_of_radius_deriv
@@ -605,12 +540,6 @@ lemma density_le_gronwall_of_radius_deriv
     (radialJacobi_fin_le_of_radius_deriv (I := I) g p x hK hb h1b hγ hcard F
       hpar hON hFdiff hJdiff hDJdiff hODE hderivRadius hxsmall hbasisSmall
       hbasis hmodel)
-
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_le_gronwall_of_scaled_radius
@@ -679,8 +608,7 @@ theorem exists_dens_le_rm04_at
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -692,7 +620,7 @@ theorem exists_dens_le_rm04_at
       (∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       x ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source →
       ‖x‖ < expMapC2Radius (I := I) g p →
@@ -735,8 +663,7 @@ theorem exists_dens_le_rm04
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -748,7 +675,7 @@ theorem exists_dens_le_rm04
       (∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       x ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source →
       ‖x‖ < expMapC2Radius (I := I) g p →
@@ -778,8 +705,6 @@ theorem exists_dens_le_rm04
   exact h x hx hBnn ha hK hVb hb0 hb1 h1b hsmall hlaunch hKbound hRm hxsrc hxrad
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hinit hmodel
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma radialJacobiGram_posDef
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}
@@ -789,11 +714,6 @@ lemma radialJacobiGram_posDef
   rw [← normalGram_radialMat (I := I) g p hxsrc hxrad]
   exact DifferentialGeometry.Integral.Measure.paramGramMatrix_posDef
     (I := I) g (NormalCoordinates.expMapDiffeo (I := I) g p) hxsrc
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_ge_of_eigen_bound
@@ -812,11 +732,6 @@ lemma normalDensity_ge_of_eigen_bound
       (a := a)
       (radialJacobiGram_posDef (I := I) g p hxsrc hxrad).posSemidef
       ha heig
-
-
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_ge_of_rayleigh_bound
@@ -837,8 +752,6 @@ lemma normalDensity_ge_of_rayleigh_bound
       (radialJacobiGram_posDef (I := I) g p hxsrc hxrad).posSemidef
       ha hray
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_ge_of_combo_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {a : ℝ}
@@ -855,9 +768,6 @@ lemma normalDensity_ge_of_combo_bound
       have h := hcombo v hv
       rw [← radialJacobiGram_quadratic (I := I) g p x (⇑v)] at h
       simpa using h)
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_ge_of_dir_bound
@@ -886,8 +796,7 @@ theorem exists_dens_ge_rm04_at
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -900,7 +809,7 @@ theorem exists_dens_ge_rm04_at
       (∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       x ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source →
       ‖x‖ < expMapC2Radius (I := I) g p →
@@ -946,8 +855,7 @@ theorem exists_dens_ge_rm04
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b B : ℝ}, 0 < a → 0 ≤ B → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -960,7 +868,7 @@ theorem exists_dens_ge_rm04
       (∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       x ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source →
       ‖x‖ < expMapC2Radius (I := I) g p →
@@ -1001,8 +909,7 @@ theorem exists_dens_two_rm04_at
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -1016,7 +923,7 @@ theorem exists_dens_two_rm04_at
       (∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       x ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source →
       ‖x‖ < expMapC2Radius (I := I) g p →
@@ -1087,8 +994,7 @@ theorem exists_dens_pair_rm04_at
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A Blo Bhi : ℝ}, 0 ≤ Blo → 0 ≤ Bhi →
@@ -1103,7 +1009,7 @@ theorem exists_dens_pair_rm04_at
       (∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       x ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source →
       ‖x‖ < expMapC2Radius (I := I) g p →
@@ -1174,8 +1080,7 @@ theorem exists_dens_two_rm04
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b A B : ℝ}, 0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Vb → 0 ≤ b →
@@ -1189,7 +1094,7 @@ theorem exists_dens_two_rm04
       (∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       x ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source →
       ‖x‖ < expMapC2Radius (I := I) g p →
@@ -1230,8 +1135,6 @@ theorem exists_dens_two_rm04
     hxsrc hxrad (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff
     hinit hmodelLe hmodelGe
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma ball_src_of_radius
     (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ}
@@ -1244,8 +1147,6 @@ lemma ball_src_of_radius
     ball_subset_normalChartAt_target (I := I) g p (hwR.trans_le hR)
   simpa [normalChartAt_target_eq (I := I) g p] using hw_target
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_det
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {c : ℝ}
@@ -1255,8 +1156,6 @@ lemma density_ge_det
     Real.sqrt c ≤ normalChartDensity (I := I) g p x := by
   rw [normalDensity_radial (I := I) g p hxsrc hxrad]
   exact Real.sqrt_le_sqrt hdet
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_det_ball
@@ -1274,8 +1173,6 @@ lemma density_ge_det_ball
       simpa [Metric.mem_ball, dist_eq_norm] using hw
     exact hwR.trans_le hR
   exact density_ge_det (I := I) g p hwsrc hwrad (hdet w hw)
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_rayleigh_ball
@@ -1297,8 +1194,6 @@ lemma density_ge_rayleigh_ball
     exact hwR.trans_le hR
   exact normalDensity_ge_of_rayleigh_bound (I := I) g p hwsrc hwrad ha (hray w hw)
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_combo_ball
     (g : SmoothRiemannianMetric I M) (p : M) {R a : ℝ}
@@ -1319,8 +1214,6 @@ lemma density_ge_combo_ball
       simpa [Metric.mem_ball, dist_eq_norm] using hw
     exact hwR.trans_le hR
   exact normalDensity_ge_of_combo_bound (I := I) g p hwsrc hwrad ha (hcombo w hw)
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma density_ge_dir_ball
@@ -1344,11 +1237,6 @@ lemma density_ge_dir_ball
       simpa [Metric.mem_ball, dist_eq_norm] using hw
     exact hwR.trans_le hR
   exact normalDensity_ge_of_dir_bound (I := I) g p hwsrc hwrad ha (hdir w hw)
-
-
-
-
-
 
 theorem normalChart_volume_le_of_radial_entry_bound
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1390,10 +1278,6 @@ theorem normalChart_volume_le_of_radial_entry_bound
   exact normalDensity_le_of_radial_entry_bound
     (I := I) g p hwsrc hwrad (hentry w hw)
 
-
-
-
-
 theorem normalChart_volume_le_of_radial_length_bound
     (g : SmoothRiemannianMetric I M) (p : M)
     {A : Set M} (hA_meas : MeasurableSet A)
@@ -1414,11 +1298,6 @@ theorem normalChart_volume_le_of_radial_length_bound
   normalChart_volume_le_of_radial_entry_bound
     (I := I) g p hA_meas hA_source hA_rad
     (fun w hw => radialEntry_le_of_length_bound (I := I) g p w hB (hJ w hw))
-
-
-
-
-
 
 theorem normalChart_volume_le_const_mul_of_radial_length_bound
     (g : SmoothRiemannianMetric I M) (p : M)

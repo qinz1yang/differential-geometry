@@ -1,24 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.CovDerivStepCompLinear
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -27,9 +10,6 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open scoped BigOperators
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
 
 def contrTail {p q : ℕ}
     (A : (Fin (p + 1) → Idx) → Real) (B : (Fin (q + 1) → Idx) → Real) :
@@ -97,8 +77,6 @@ private theorem update_append_natAdd {p q : ℕ} (aPart : Fin p → Idx) (bPart 
     · rw [Function.update_of_ne (fun he => h (Fin.natAdd_injective _ _ he)),
         Fin.append_right, Function.update_of_ne h]
 
-
-
 omit [Fintype Idx] [DecidableEq Idx] in
 private theorem snoc_cons_zero {p : ℕ} (d : Idx) (Y : Fin p → Idx) (c : Idx) :
     (Fin.snoc (Fin.cons d Y : Fin (p + 1) → Idx) c : Fin (p + 2) → Idx) 0 = d := by
@@ -137,11 +115,6 @@ private theorem update_snoc_castSucc {p : ℕ} (Y : Fin p → Idx) (c a : Idx) (
         Function.update_of_ne hkj, Fin.snoc_castSucc]
   · rw [Function.update_of_ne (Fin.castSucc_lt_last j).ne', Fin.snoc_last, Fin.snoc_last]
 
-
-
-
-
-
 def covDerivStepCompU {p : ℕ}
     (ext : (Fin (p + 1) → Idx) → Idx → Real)
     (chr : Idx → Idx → Idx → Real)
@@ -155,10 +128,6 @@ def covDerivStepCompU {p : ℕ}
         chr (n 0) a (Fin.tail n (Fin.last p)) *
           A (Function.update (Fin.tail n) (Fin.last p) a))
 
-
-
-
-
 omit [DecidableEq Idx] in
 theorem contrTail_contracted_cancel {p q : ℕ}
     (chr : Idx → Idx → Idx → Real) (d : Idx)
@@ -171,12 +140,6 @@ theorem contrTail_contracted_cancel {p q : ℕ}
   simp only [Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun a _ => by ring
-
-
-
-
-
-
 
 omit [DecidableEq Idx] in
 theorem covDerivStepCompU_contrTail_leibniz {p q : ℕ}

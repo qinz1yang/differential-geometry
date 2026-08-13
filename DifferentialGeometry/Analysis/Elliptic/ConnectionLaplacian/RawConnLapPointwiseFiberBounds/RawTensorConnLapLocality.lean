@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -8,11 +10,11 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -21,7 +23,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-omit [InnerProductSpace ℝ E] in
+omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] in
 theorem rawTensorConnLap_eq_zero_of_eventually_zero_contMDiff [CompleteSpace E]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b)
@@ -71,7 +73,7 @@ theorem rawTensorConnLap_eq_zero_of_eventually_zero_contMDiff [CompleteSpace E]
   exact rawTensorConnLap_eq_zero_of_eventually_zero (I := I) g r s
     (T := T) (U := U) hU_open hbU hT_zero_U hT_diff_b hcov_diff_b
 
-omit [InnerProductSpace ℝ E] in
+omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] in
 theorem rawTensorConnLap_tsupport_subset [CompleteSpace E]
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b)
@@ -103,8 +105,8 @@ theorem rawTensorConnLap_tsupport_subset [CompleteSpace E]
     (rawTensorConnLap (I := I) g r s T x) = 0
   rw [h_zero, TensorRSSpace.toModel_zero]
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

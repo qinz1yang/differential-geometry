@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.IteratedInvGramJetLipschitz
+open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -8,13 +11,13 @@ open Bundle Set
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace DeTurckCoefficients
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -24,14 +27,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 structure HasChartJetLip
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (K : Set E)
     (F : SmoothRiemannianMetric I M → E → ℝ) (d : ℕ) : Prop where
-
   contDiff : ∀ g : SmoothRiemannianMetric I M,
     ContDiffOn ℝ ∞ (F g) (interior (extChartAt I α).target)
-
   bound : ∀ N : ℕ, ∃ B : ℝ, 0 ≤ B ∧ ∀ y ∈ K, ∀ m : ℕ, m ≤ N →
     ‖iteratedFDerivWithin ℝ m (F g₁) (interior (extChartAt I α).target) y‖ ≤ B ∧
       ‖iteratedFDerivWithin ℝ m (F g₂) (interior (extChartAt I α).target) y‖ ≤ B
-
   lip : ∀ N : ℕ, ∃ C : ℝ, 0 < C ∧ ∀ y ∈ K,
     ‖iteratedFDerivWithin ℝ N (fun z => F g₁ z - F g₂ z)
         (interior (extChartAt I α).target) y‖ ≤
@@ -471,9 +471,8 @@ theorem hasChartJetLip_chartInvGramOnE
     exact hC y hy k l
 
 end DeTurckCoefficients
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

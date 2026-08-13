@@ -1,17 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Topology.MetricSpace.ThickenedIndicator
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Riemannian distance tents
-
-This file specializes Mathlib's `thickenedIndicator` to the extended distance
-of an explicitly supplied smooth Riemannian metric.  The resulting real-valued
-tent is one on the half-radius ball, vanishes outside the three-quarter-radius
-ball, and has Lipschitz constant `4 / r`.
--/
 
 noncomputable section
 
@@ -28,8 +20,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The real-valued thickened indicator of the closed half-radius ball for an
-explicit smooth Riemannian metric. -/
 noncomputable def riemDistTent
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) (x : M) : ℝ :=
   letI : RiemannianBundle (TangentSpace I : M → Type _) :=
@@ -42,7 +32,6 @@ noncomputable def riemDistTent
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The Riemannian distance tent takes values in the unit interval. -/
 theorem riemTent_mem_Icc
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) (x : M) :
     riemDistTent g a hr x ∈ Set.Icc (0 : ℝ) 1 := by
@@ -60,7 +49,6 @@ theorem riemTent_mem_Icc
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The Riemannian distance tent is one on the closed half-radius ball. -/
 theorem riemTent_eq_one
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) {x : M}
     (hx : riemannianEDistOf (I := I) g a x ≤ ENNReal.ofReal (r / 2)) :
@@ -81,7 +69,6 @@ theorem riemTent_eq_one
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The Riemannian distance tent vanishes from radius `3 * r / 4` onward. -/
 theorem riemTent_eq_zero
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) {x : M}
     (hx : ENNReal.ofReal (3 * r / 4) ≤ riemannianEDistOf (I := I) g a x) :
@@ -120,8 +107,6 @@ theorem riemTent_eq_zero
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The support of the Riemannian distance tent lies in the open
-three-quarter-radius ball. -/
 theorem riemTent_support
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     Function.support (riemDistTent g a hr) ⊆
@@ -133,8 +118,6 @@ theorem riemTent_support
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The topological support of the Riemannian distance tent lies in the open
-radius-`r` ball. -/
 theorem riemTent_tsupport
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     tsupport (riemDistTent g a hr) ⊆
@@ -162,8 +145,6 @@ theorem riemTent_tsupport
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The Riemannian distance tent has the scale-sharp explicit-distance
-Lipschitz bound `4 / r`. -/
 theorem riemTent_lip
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) (x y : M) :
     edist (riemDistTent g a hr x) (riemDistTent g a hr y) ≤

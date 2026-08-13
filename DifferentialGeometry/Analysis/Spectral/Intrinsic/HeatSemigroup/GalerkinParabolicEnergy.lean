@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.ODE.EnergyHierarchy
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -8,9 +10,8 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.ODE
@@ -23,7 +24,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 variable {g : SmoothRiemannianMetric I M} {r s₀ : ℕ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma lambda_mul_tensorSobolevWeight
     (i : TensorEigenIdx (I := I) (M := M) g r s₀) (σ : ℝ) :
@@ -42,7 +42,6 @@ noncomputable def galerkinEnergy
     (u : ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ) (σ : ℝ) (t : ℝ) : ℝ :=
   ∑ i ∈ s, tensorSobolevWeight (I := I) (M := M) i σ * (u t i) ^ 2
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma galerkinEnergy_nonneg
     (s : Finset (TensorEigenIdx (I := I) (M := M) g r s₀))
@@ -54,7 +53,6 @@ lemma galerkinEnergy_nonneg
     tensorSobolevWeight_nonneg (I := I) (M := M) i σ
   positivity
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma galerkinEnergy_continuousOn
     (s : Finset (TensorEigenIdx (I := I) (M := M) g r s₀))
@@ -65,7 +63,6 @@ lemma galerkinEnergy_continuousOn
   refine continuousOn_finset_sum s (fun i hi => ?_)
   exact continuousOn_const.mul ((hu i hi).pow 2)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma galerkinEnergy_hasDerivWithinAt
     (s : Finset (TensorEigenIdx (I := I) (M := M) g r s₀))
@@ -85,7 +82,6 @@ lemma galerkinEnergy_hasDerivWithinAt
   have := hsq.const_mul (tensorSobolevWeight (I := I) (M := M) i σ)
   simpa [pow_one] using this
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem galerkinEnergy_deriv_identity
     (s : Finset (TensorEigenIdx (I := I) (M := M) g r s₀))
@@ -115,7 +111,6 @@ theorem galerkinEnergy_deriv_identity
   rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.sum_add_distrib,
     Finset.sum_add_distrib]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem galerkinEnergy_hasDerivWithinAt_ode
     (s : Finset (TensorEigenIdx (I := I) (M := M) g r s₀))
@@ -229,7 +224,6 @@ theorem energy_hierarchy_explicit_bound_perScale
   calc Mk k t ≤ gronwallBound (B0 k) (C k + 1) ((seed k) ^ 2 / 4) (t - 0) := hgron t htIcc
     _ ≤ gronwallBound (B0 k) (C k + 1) ((seed k) ^ 2 / 4) T := hmono
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem galerkin_energy_uniform_bound_perScale
     {U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ}
@@ -308,7 +302,6 @@ theorem galerkin_energy_uniform_bound_perScale
     fun N t ht => ?_⟩
   exact hkey N k t ht
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem galerkin_energy_uniform_bound
     {U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ}
@@ -387,7 +380,6 @@ theorem galerkin_energy_uniform_bound
     fun N t ht => ?_⟩
   exact hkey N k t ht
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

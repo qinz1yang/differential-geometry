@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.Stokes
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Laplacian
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Gradient
+import DifferentialGeometry.Geometry.Operator.WithBoundary.Laplacian
+import DifferentialGeometry.Geometry.Operator.WithBoundary.Gradient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.IntegrationByParts
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.POUReduction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Green
@@ -9,6 +9,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.Measure.Family
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import DifferentialGeometry.Geometry.Operator.Gradient
 
 
 noncomputable section
@@ -16,10 +17,13 @@ noncomputable section
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix ENNReal
 
+open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
 namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
+
+open DifferentialGeometry.Geometry.Operator.WithBoundary
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E]
@@ -34,7 +38,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 noncomputable def boundaryFaceSum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : ℝ :=
   ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -57,7 +61,7 @@ variable [hI : HasSmoothBoundary E H I]
 
 omit [InnerProductSpace ℝ E] in
 theorem integral_divergence_with_boundary_eq_boundaryFaceSum
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∫ x, divergence_g_with_boundary (I := I) g X x
@@ -188,7 +192,7 @@ private lemma inner_grad_grad_integrable
 
 omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
@@ -253,7 +257,7 @@ theorem green_first_with_boundary
 
 omit [InnerProductSpace ℝ E] in
 theorem green_first_with_boundary_face_sum_eq_zero_of_interior_support
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_int : tsupport h ⊆ I.interior M) :
@@ -297,7 +301,7 @@ private theorem green_first_with_boundary_swap
 
 omit [InnerProductSpace ℝ E] in
 theorem green_second_with_boundary
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_int : tsupport f ⊆ I.interior M)

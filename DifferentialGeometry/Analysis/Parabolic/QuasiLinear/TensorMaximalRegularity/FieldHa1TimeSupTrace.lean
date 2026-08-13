@@ -1,7 +1,9 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.PointwiseSpectralCoordinate
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DuhamelSmoothing
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerModeEndpoint
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2InterpolationLimit
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -26,7 +28,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -76,7 +78,8 @@ private theorem integral_sq_Icc_le_norm_sq (f : timeL2 ℝ T) {t : ℝ}
 private theorem perModeConv_endpoint_sq_le_timeL2 (lam : ℝ) (f : timeL2 ℝ T)
     {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     (perModeConv lam (fun s => f s) t) ^ 2
-      ≤ duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, (f s) ^ 2 := by
+      ≤ MaximalRegularity.duhamelKernelSqIntegral lam t *
+          ∫ s in (0 : ℝ)..t, (f s) ^ 2 := by
   obtain ⟨ht0, htT⟩ := ht
   set k : ℝ → ℝ := fun s => Real.exp (-(lam * (t - s))) with hk_def
   have hconv_eq : perModeConv lam (fun s => f s) t = ∫ s in (0 : ℝ)..t, k s * f s := rfl
@@ -91,8 +94,9 @@ private theorem perModeConv_endpoint_sq_le_timeL2 (lam : ℝ) (f : timeL2 ℝ T)
       ⟨le_rfl, le_trans ht0 htT⟩ ⟨ht0, htT⟩
   have hi_k2 : IntervalIntegrable (fun s => k s ^ 2) volume 0 t := by
     apply Continuous.intervalIntegrable; rw [hk_def]; fun_prop
-  have hC_eq : C = duhamelKernelSqIntegral lam t := by
-    rw [hC]; unfold duhamelKernelSqIntegral
+  have hC_eq : C = MaximalRegularity.duhamelKernelSqIntegral lam t := by
+    rw [hC]
+    unfold MaximalRegularity.duhamelKernelSqIntegral
     refine intervalIntegral.integral_congr (fun s _ => ?_)
     rw [hk_def, ← Real.exp_nat_mul]
     congr 1; push_cast; ring
@@ -126,7 +130,8 @@ private theorem one_add_lambda_mul_perModeConv_sq_le_timeL2 (lam : ℝ)
     (1 + lam) * (perModeConv lam (fun s => f s) t) ^ 2 ≤ (1 + T) * ‖f‖ ^ 2 := by
   obtain ⟨ht0, htT⟩ := ht
   have hcs := perModeConv_endpoint_sq_le_timeL2 (T := T) lam f ⟨ht0, htT⟩
-  have hkernel := one_add_lambda_mul_duhamel_kernel_sq_integral_le hlam ht0
+  have hkernel :=
+    MaximalRegularity.one_add_lambda_mul_duhamel_kernel_sq_integral_le hlam ht0
   have hf2_nn : 0 ≤ ∫ s in (0 : ℝ)..t, (f s) ^ 2 :=
     intervalIntegral.integral_nonneg ht0 (fun s _ => sq_nonneg _)
   have h1plus_nn : 0 ≤ 1 + lam := by linarith
@@ -135,9 +140,11 @@ private theorem one_add_lambda_mul_perModeConv_sq_le_timeL2 (lam : ℝ)
   have hfac_le : t + 1 / 2 ≤ 1 + T := by linarith
   have hfac_nn : 0 ≤ t + 1 / 2 := by linarith
   calc (1 + lam) * (perModeConv lam (fun s => f s) t) ^ 2
-      ≤ (1 + lam) * (duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, (f s) ^ 2) :=
+      ≤ (1 + lam) * (MaximalRegularity.duhamelKernelSqIntegral lam t *
+          ∫ s in (0 : ℝ)..t, (f s) ^ 2) :=
         mul_le_mul_of_nonneg_left hcs h1plus_nn
-    _ = ((1 + lam) * duhamelKernelSqIntegral lam t) * ∫ s in (0 : ℝ)..t, (f s) ^ 2 := by
+    _ = ((1 + lam) * MaximalRegularity.duhamelKernelSqIntegral lam t) *
+          ∫ s in (0 : ℝ)..t, (f s) ^ 2 := by
         ring
     _ ≤ (t + 1 / 2) * ∫ s in (0 : ℝ)..t, (f s) ^ 2 :=
         mul_le_mul_of_nonneg_right hkernel hf2_nn
@@ -147,7 +154,6 @@ private theorem one_add_lambda_mul_perModeConv_sq_le_timeL2 (lam : ℝ)
 
 variable {g₀ : SmoothRiemannianMetric I M}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem weighted_perModeConv_forcing_sq_le
     (F : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T)
@@ -192,7 +198,9 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
             (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2)) F)) t‖ ≤
         Real.sqrt (1 + T) * ‖F‖ := by
   classical
-  have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ r s
+  have h_compact :=
+    DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
+      (I := I) (M := M) g₀ r s
   haveI := countable_tensorEigenIdx (I := I) (M := M)
     (g := g₀) (r := r) (s := s) h_compact
   set field := maxRegDuhamelSolField (I := I) (M := M) a hT hT1

@@ -1,31 +1,30 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DLaCoefficientFieldTopSeparated
-
-/-!
-# Top-separated realized-family jet bounds for the DLa coefficient field
-
-The pointwise DLa coefficient-field estimate is integrated along the realized metric family.  This
-gives both per-order and summed jet-L2 bounds whose protected top coefficient is independent of the
-lower-order ball radius.
--/
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (realizedFam convexPerturbation realizedFam_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one realizedSmallSet Icc_subset_realizedSmallSet)
@@ -90,11 +89,8 @@ private lemma jetL2_sum_lowShift
       Finset.sum_le_sum_of_subset_of_nonneg hsub (fun j _ _ => hw j)
     linarith
   linarith [hA, hB]
--- The realized-family jet assembly requires additional elaboration budget.
+
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (Icc_subset_realizedSmallSet) in
-/-- **`realizedFam` per-order top-separated jet-L2 bound** for the DLa coefficient field.  Fixes
-the single top constant `Ktop = Ktop_field·(diagonalGridGrowthFactor a)²` (`R`-free) by
-`diagonalGridGrowthFactor i ≤ diagonalGridGrowthFactor a`; the remainder uses the ball-uniform tame-window integrator. -/
 theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -122,7 +118,8 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
   have hδ₁_nn : 0 ≤ δ₁ := le_max_right _ _
   have hδ₁_lt : δ₁ < 1 := max_lt hδ₀ one_pos
   obtain ⟨Ktop_field, hKtop_field_nn, Kc_field, hKc_field_nn, hfield⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnDiffDerivCoeffField_topSeparated_le (I := I) (M := M) g₀ g_bg hδ₁_lt
+    riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnDiffDerivCoeffField_topSeparated_le
+      (I := I) (M := M) g₀ g_bg hδ₁_lt
   obtain ⟨K, hK_nn, hK⟩ :=
     antidiagonalTupleGrid_integral_ballUniform_tameWindow (I := I) (M := M) g₀ a ha_super hR
   refine ⟨Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor (E := E) a,
@@ -143,7 +140,8 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
     rw [hPc_def]; exact convexPerturbation_gFibreOpBound_abs (I := I) g₀ T T' hδ hδ' s
   set δP : ℝ := max (|1 - s| * δ' + |s| * δ) 0 with hδP_def
   have hδP_nn : 0 ≤ δP := le_max_right _ _
-  have hδP_bound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ Pc) δP :=
+  have hδP_bound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm
+    (I := I) g₀ Pc) δP :=
     gFibreOpBound_mono_of_le (I := I) (M := M) g₀ _ (le_max_left _ _) hδs_raw
   have hδP_le : δP ≤ δ₁ := by
     refine max_le ?_ hδ₁_nn
@@ -209,7 +207,6 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
           ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖)),
       mul_nonneg h1ms (sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖),
       mul_nonneg hs0 (sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖)]
-  -- pointwise field top-sep bound (with the grid remainder in explicit `∑∑∑∏` form).
   have hpt : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
           ((iteratedCovGrad (I := I) g₀ 2 2 i
@@ -225,7 +222,8 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) Pc).toSection x) := by
     intro x
     refine (hfield g₁ Pc htie hδP_le hδP_nn hδP_bound i x).trans_eq ?_
-    have hgw : antidiagonalTupleGridPartialSum (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
+    have hgw : antidiagonalTupleGridPartialSum (fun l => riemannianFiberNormSq (I := I)
+      (M := M) g₀ 0 (2 + l) x
           ((iteratedCovGrad (I := I) g₀ 0 2 l Pc).toSection x)) (i + 3) =
         ∑ k ∈ Finset.range (i + 3), ∑ n ∈ Finset.range (k + 1),
           ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
@@ -242,7 +240,8 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     fun k _ => (hK Pc hPball k).1
   have hutop_int : MeasureTheory.Integrable
-      (fun x => Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor (E := E) i *
+      (fun x => Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor
+        (E := E) i *
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) Pc).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
@@ -258,8 +257,10 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     (MeasureTheory.integrable_finset_sum (Finset.range (i + 3)) hint_k).const_mul _
   have hnorm := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
-    (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnDiffDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg))
-    (fun x => (Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor (E := E) i *
+    (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnDiffDerivCoeffField (I := I)
+      (M := M) g₀ g₁ g_bg))
+    (fun x => (Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor
+      (E := E) i *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) Pc).toSection x)) +
       Kc_field i * ∑ k ∈ Finset.range (i + 3),
@@ -271,8 +272,8 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
     (hutop_int.add hvrem_int) hpt
   refine le_trans hnorm ?_
   rw [MeasureTheory.integral_add hutop_int hvrem_int]
-  -- top integral
-  have htop_eval : (∫ x, Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor (E := E) i *
+  have htop_eval : (∫ x,
+    Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor (E := E) i *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) Pc).toSection x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) =
@@ -283,10 +284,8 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
       tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g₀ 0
         (2 + (i + 2)) (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) Pc)]
   rw [htop_eval]
-  -- remainder integral
   rw [MeasureTheory.integral_const_mul,
     MeasureTheory.integral_finset_sum (Finset.range (i + 3)) hint_k]
-  -- top: bound `diagonalGridGrowthFactor i·diagonalGridGrowthFactor i ≤ diagonalGridGrowthFactor a·diagonalGridGrowthFactor a` and `Pc → (T,T')`.
   have happ_mono : diagonalGridGrowthFactor (E := E) i ≤ diagonalGridGrowthFactor (E := E) a := by
     rw [diagonalGridGrowthFactor, diagonalGridGrowthFactor]
     exact pow_le_pow_right₀ (by
@@ -294,23 +293,29 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
       linarith) hi
   have happ_nn : 0 ≤ diagonalGridGrowthFactor (E := E) i := appCcGdiag_nonneg (E := E) i
   have happa_nn : 0 ≤ diagonalGridGrowthFactor (E := E) a := appCcGdiag_nonneg (E := E) a
-  have htop_le : Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor (E := E) i *
+  have htop_le : Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor
+    (E := E) i *
         ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) Pc‖ ^ 2 ≤
       (Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor (E := E) a) *
         (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T‖ ^ 2 +
           ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) := by
-    have hc_le : Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor (E := E) i ≤
+    have hc_le : Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor
+      (E := E) i ≤
         Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor (E := E) a := by
-      have h1 : Ktop_field * diagonalGridGrowthFactor (E := E) i ≤ Ktop_field * diagonalGridGrowthFactor (E := E) a :=
+      have h1 : Ktop_field * diagonalGridGrowthFactor
+        (E := E) i ≤ Ktop_field * diagonalGridGrowthFactor (E := E) a :=
         mul_le_mul_of_nonneg_left happ_mono hKtop_field_nn
       have h2 : 0 ≤ Ktop_field * diagonalGridGrowthFactor (E := E) i :=
         mul_nonneg hKtop_field_nn happ_nn
       calc Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor (E := E) i
-          ≤ Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor (E := E) i :=
+          ≤ Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor
+            (E := E) i :=
             mul_le_mul_of_nonneg_right h1 happ_nn
-        _ ≤ Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor (E := E) a :=
+        _ ≤ Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor
+          (E := E) a :=
             mul_le_mul_of_nonneg_left happ_mono (mul_nonneg hKtop_field_nn happa_nn)
-    have hc_nn : 0 ≤ Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor (E := E) a :=
+    have hc_nn : 0 ≤ Ktop_field * diagonalGridGrowthFactor (E := E) a * diagonalGridGrowthFactor
+      (E := E) a :=
       mul_nonneg (mul_nonneg hKtop_field_nn happa_nn) happa_nn
     calc Ktop_field * diagonalGridGrowthFactor (E := E) i * diagonalGridGrowthFactor (E := E) i *
           ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) Pc‖ ^ 2
@@ -321,7 +326,6 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
             (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T‖ ^ 2 +
               ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) :=
           mul_le_mul_of_nonneg_left (hwin (i + 2)) hc_nn
-  -- remainder: bound each `∫ grid_k ≤ K k·(1+∑_{j<k+1}‖∇^jPc‖²)`, then Pc→(T,T').
   have hrem_le : Kc_field i * ∑ k ∈ Finset.range (i + 3),
         (∫ x, ∑ n ∈ Finset.range (k + 1),
               ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
@@ -378,8 +382,6 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_perOrder_topSeparated
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by ring
   linarith [htop_le, hrem_le]
 
-/-- **Summed** `realizedFam` top-separated jet-L2 bound for the DLa coefficient field.  Top window
-`a+3` (matching the deTurckLie window), `Ktop` `R`-free, `Kc = ∑_{i≤a} Kc_perOrder i`. -/
 theorem deTurckLieDLaCoeffField_realizedFam_jetL2_summed_topSeparated
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -411,7 +413,8 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_summed_topSeparated
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs
   exact jetL2_sum_lowShift a 2 3 Ktop hKtop_nn Kc hKc_nn
     (fun i => ‖iteratedCovGrad (I := I) g₀ 2 2 i
-      (deTurckLieConnDiffDerivCoeffField (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2)
+      (deTurckLieConnDiffDerivCoeffField (I := I) g₀ (realizedFam
+        (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2)
     (fun j => ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)
     (fun j => add_nonneg (sq_nonneg _) (sq_nonneg _))
@@ -419,6 +422,6 @@ theorem deTurckLieDLaCoeffField_realizedFam_jetL2_summed_topSeparated
 
 end DLaGridBrick
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Analysis.Sobolev
 
 end

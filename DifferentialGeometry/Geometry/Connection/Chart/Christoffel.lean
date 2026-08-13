@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Time
 import DifferentialGeometry.Geometry.Connection.Chart.Basic
 
 
+open DifferentialGeometry.Analysis
 namespace DifferentialGeometry
 namespace Coordinates
 

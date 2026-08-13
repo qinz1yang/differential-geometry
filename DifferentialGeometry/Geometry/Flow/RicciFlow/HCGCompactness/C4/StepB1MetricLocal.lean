@@ -1,17 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1MetricBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCSourceBuffer
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Local moving-source metric coefficients for Step B1
-
-This file removes the fixed-patch source-stay premise from the chart
-coefficient bridge by localizing a hypothetical bad sequence inside the
-producer-owned uniformly buffered source cover.  It remains entirely at the
-Euclidean coefficient level; the intrinsic covariant-tensor norm bridge is a
-separate downstream theorem.
--/
 
 noncomputable section
 
@@ -54,9 +46,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-/-- A coordinate center with a fixed closed-ball buffer inside the retained
-core has one fixed pair of nested coordinate neighborhoods whose inverse
-charts eventually remain in any prescribed larger source ball. -/
 theorem HasSuppConvData.source_stay
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -200,9 +189,6 @@ theorem HasSuppConvData.source_stay
     change dist (chiK.symm w) Yk.basepoint ≤ S
     exact hdist.le
 
-/-- On one retained source patch with a fixed coordinate buffer, every finite
-jet of the actual pulled-back target metric converges to the corresponding
-source-stage normal metric, with one rectangular tail in the two stages. -/
 theorem HasStageJetData.pb_buf_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -533,9 +519,6 @@ theorem HasStageJetData.pb_buf_tail
   have hbad' := hbad (ψ n)
   simpa only [kn, ln, zn] using (not_lt_of_ge hle hbad')
 
-/-- On a smaller source ball, the producer-owned finite buffered chart cover
-admits one common two-stage tail for all coefficient jets through a prescribed
-finite order.  The conclusion keeps the chart witnessing each source point. -/
 theorem HasStageJetData.pb_local_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

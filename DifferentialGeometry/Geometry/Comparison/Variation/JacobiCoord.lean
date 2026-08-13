@@ -2,28 +2,9 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiField
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Metric.FiberExpansion
 import DifferentialGeometry.Analysis.ODE.SecondOrderLinearExistence
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Frame coordinates of a Jacobi field: derivative identities
-
-Along a curve `γ`, pair a section `Y` against a **parallel** section `Fi`.
-The scalar coordinate `t ↦ g.inner (γ t) (Fi t) (Y t)` then differentiates
-without any curvature of `Fi` entering:
-
-* first derivative — `g.inner (Fi t) (D_t Y t)` (metric compatibility plus
-  parallelism kills the `g(D_t Fi, Y)` term);
-* second derivative, when `Y` is Jacobi at `t` — `-g(Fi, R(Y, γ̇)γ̇)`
-  (the Jacobi equation read through `jacobi_d2_eq`).
-
-These are the scalar identities behind the frame-coordinate representation
-`yᵢ'' = -(A t) y` of a Jacobi field in a parallel orthonormal frame — brick
-"J-remaining" (uniqueness/representation) of the option-1 route in
-`Geometry/Comparison/VOLUME_COMPARISON_PLAN.md`.  Existence of the comparison
-solutions is `forward_ode2_of_bound`; the Grönwall closer is
-`norm_le_gronwall_secondOrder`.
--/
 
 open Set Function Manifold Bundle
 open scoped Topology Manifold ContDiff
@@ -47,10 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [NeZero (Module.finrank ℝ E)]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- **Coordinate against a parallel section: first derivative.**  If `Fi` is
-parallel at `t` and both chart representations differentiate, then
-`s ↦ g.inner (γ s) (Fi s) (Y s)` has derivative
-`g.inner (γ t) (Fi t) (D_t Y t)` at `t`. -/
 theorem parInner_deriv
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -67,11 +44,6 @@ theorem parInner_deriv
 
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- **Coordinate against a parallel section: second derivative through the
-Jacobi equation.**  If additionally the chart representation of `D_t Y`
-differentiates and `Y` is Jacobi at `t`, then
-`s ↦ g.inner (γ s) (Fi s) (D_t Y s)` has derivative
-`-g.inner (γ t) (Fi t) (R(Y t, γ̇)γ̇)` at `t`. -/
 theorem parInner_d2
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -86,8 +58,8 @@ theorem parInner_d2
     HasDerivAt
       (fun s : ℝ => g.inner (γ s) (Fi s) (covDerivAlong (I := I) g γ Y s))
       (- g.inner (γ t) (Fi t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (Y t) (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t)))
       t := by
@@ -96,16 +68,10 @@ theorem parInner_d2
   rw [jacobi_d2_eq (I := I) g γ Y hY] at h
   simpa using h
 
--- Elaborating the geometric instance chain requires the larger synthesis budget.
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- **Curvature term in frame coordinates.**  Expanding `Y t` in a full
-`g`-orthonormal family `F · t` at `γ t`, the curvature pairing
-`g(F i, R(Y, γ̇)γ̇)` is the linear combination
-`∑ j, g(F j, Y) · g(F i, R(F j, γ̇)γ̇)` — the `(A t) y` form of the
-frame-coordinate Jacobi system. -/
 theorem parInner_curv_expand
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (t : ℝ)
     {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
@@ -114,14 +80,14 @@ theorem parInner_curv_expand
     (hcard : Fintype.card ι = Module.finrank ℝ (TangentSpace I (γ t)))
     (i : ι) :
     g.inner (γ t) (F i t)
-      ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+      ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
           (γ t))
         (Y t) (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t))
     = ∑ j, g.inner (γ t) (F j t) (Y t) *
         g.inner (γ t) (F i t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (γ t))
             (F j t) (curveVelocity (I := I) γ t)
             (curveVelocity (I := I) γ t)) := by
@@ -131,17 +97,10 @@ theorem parInner_curv_expand
   simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum', Finset.sum_apply,
     ContinuousLinearMap.coe_smul', Pi.smul_apply, smul_eq_mul]
 
--- Elaborating the geometric instance chain requires the larger synthesis budget.
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
-/-- **Uniqueness of Jacobi fields with given initial data.**  Along a curve
-carrying a parallel `g`-orthonormal frame of full cardinality on `[0, b]`,
-two fields that are Jacobi on `[0, b]`, have the required chart-representation
-differentiability, and agree in value and covariant derivative at `0`, agree
-on all of `[0, b]` — provided the frame curvature entries are bounded by a
-constant.  Grönwall closer: `ode2_pi_zero` on the coordinate differences. -/
 theorem jacobi_unique
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {b : ℝ}
@@ -172,8 +131,8 @@ theorem jacobi_unique
     (hJ₂ : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ Y₂ t)
     (hCbound : ∀ t ∈ Icc (0 : ℝ) b, ∀ i j,
       |g.inner (γ t) (F i t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (γ t))
           (F j t) (curveVelocity (I := I) γ t)
           (curveVelocity (I := I) γ t))| ≤ C)
@@ -183,7 +142,6 @@ theorem jacobi_unique
     ∀ t ∈ Icc (0 : ℝ) b, Y₁ t = Y₂ t := by
   classical
   have h0mem : (0 : ℝ) ∈ Icc (0 : ℝ) b := ⟨le_rfl, hb⟩
-  -- the scalar coordinate system of the difference
   have hzero := DifferentialGeometry.Analysis.ODE.ode2_pi_zero
     (y := fun t i => g.inner (γ t) (F i t) (Y₁ t) - g.inner (γ t) (F i t) (Y₂ t))
     (v := fun t i =>
@@ -191,13 +149,13 @@ theorem jacobi_unique
         - g.inner (γ t) (F i t) (covDerivAlong (I := I) g γ Y₂ t))
     (w := fun t i =>
       (- g.inner (γ t) (F i t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-              (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+              (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (γ t))
             (Y₁ t) (curveVelocity (I := I) γ t) (curveVelocity (I := I) γ t)))
         - (- g.inner (γ t) (F i t)
-            ((DifferentialGeometry.Integral.Connection.riemannOp
-                (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+            ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
                 (γ t))
               (Y₂ t) (curveVelocity (I := I) γ t)
               (curveVelocity (I := I) γ t))))
@@ -235,22 +193,22 @@ theorem jacobi_unique
         (hON t hIcc) (hcard t hIcc) i
       have hw :
           (- g.inner (γ t) (F i t)
-              ((DifferentialGeometry.Integral.Connection.riemannOp
-                  (DifferentialGeometry.Integral.Connection.LeviCivita
+              ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                  (DifferentialGeometry.Geometry.Connection.LeviCivita
                     (I := I) g) (γ t))
                 (Y₁ t) (curveVelocity (I := I) γ t)
                 (curveVelocity (I := I) γ t)))
             - (- g.inner (γ t) (F i t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                    (DifferentialGeometry.Integral.Connection.LeviCivita
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                    (DifferentialGeometry.Geometry.Connection.LeviCivita
                       (I := I) g) (γ t))
                   (Y₂ t) (curveVelocity (I := I) γ t)
                   (curveVelocity (I := I) γ t)))
           = ∑ j, (g.inner (γ t) (F j t) (Y₂ t)
                 - g.inner (γ t) (F j t) (Y₁ t))
               * g.inner (γ t) (F i t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                    (DifferentialGeometry.Integral.Connection.LeviCivita
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                    (DifferentialGeometry.Geometry.Connection.LeviCivita
                       (I := I) g) (γ t))
                   (F j t) (curveVelocity (I := I) γ t)
                   (curveVelocity (I := I) γ t)) := by
@@ -262,16 +220,16 @@ theorem jacobi_unique
       calc |∑ j, (g.inner (γ t) (F j t) (Y₂ t)
                 - g.inner (γ t) (F j t) (Y₁ t))
               * g.inner (γ t) (F i t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                    (DifferentialGeometry.Integral.Connection.LeviCivita
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                    (DifferentialGeometry.Geometry.Connection.LeviCivita
                       (I := I) g) (γ t))
                   (F j t) (curveVelocity (I := I) γ t)
                   (curveVelocity (I := I) γ t))|
           ≤ ∑ j, |(g.inner (γ t) (F j t) (Y₂ t)
                 - g.inner (γ t) (F j t) (Y₁ t))
               * g.inner (γ t) (F i t)
-                ((DifferentialGeometry.Integral.Connection.riemannOp
-                    (DifferentialGeometry.Integral.Connection.LeviCivita
+                ((DifferentialGeometry.Geometry.Curvature.riemannOp
+                    (DifferentialGeometry.Geometry.Connection.LeviCivita
                       (I := I) g) (γ t))
                   (F j t) (curveVelocity (I := I) γ t)
                   (curveVelocity (I := I) γ t))| :=

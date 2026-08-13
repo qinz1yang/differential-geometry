@@ -3,15 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.SolutionCompa
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 universe u uE uH
@@ -27,9 +18,6 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
-
-
-
 
 omit [Module.Finite ℝ E] in
 theorem solutionComp_cond

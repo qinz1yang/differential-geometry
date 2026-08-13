@@ -1,24 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.HarmonicDensityJoint
 import DifferentialGeometry.Analysis.Integration.Measure.CompactParametricIntegral
-
-/-!
-# The finite state-dependent harmonic-map mass
-
-The exponential-section coordinate of a map is nonlinear.  Consequently the
-time derivative of the represented map is not the raw coefficient velocity:
-the velocity must first be pushed through the coefficient derivative of the
-local addition.  This file records that derivative on a finite spectral trial
-space and packages its target-metric pairing as the faithful finite mass
-operator.
-
-The definitions here deliberately differ from `hmfFinMass`.  That older form
-is the zero-section mass and has no state argument.  It is the linearization of
-the present operator at the identity map, not the nonlinear Galerkin mass.
--/
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
@@ -27,10 +14,6 @@ open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.Measure
 
-/-! ## Stability of finite coercive forms -/
-
-/-- A continuous bilinear family which has a quantitative coercivity bound at
-the origin retains half that bound on a sufficiently small state ball. -/
 theorem bilin_coer_near
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (B : V → V →L[ℝ] V →L[ℝ] ℝ) {c : ℝ} (hc : 0 < c)
@@ -81,16 +64,14 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M]
+  [BoundarylessManifold I M] [ConnectedSpace M]
 
 private local instance : MeasurableSpace M := borel M
 
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-! ## Coefficient derivative of the local addition -/
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
     [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem mfderiv_affine_line_apply
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -127,7 +108,7 @@ private theorem mfderiv_affine_line_apply
   exact hcomp.trans hgoal
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-    [IsManifold I ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
     [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem mfderiv_euclidean_affine_line_apply
     {J : Type*} [Fintype J]
@@ -137,9 +118,6 @@ private theorem mfderiv_euclidean_affine_line_apply
       mfderiv 𝓘(ℝ, EuclideanSpace ℝ J) I f u v :=
   mfderiv_affine_line_apply (E := E) (I := I) (M := M) f u v hmd
 
-/-- The derivative, in the finite spectral coefficient, of the local-addition
-map at a fixed spatial point.  Its value is a tangent vector at the represented
-map value, exactly as required for the harmonic-map time velocity. -/
 noncomputable irreducible_def hmfSpecVar
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -150,9 +128,6 @@ noncomputable irreducible_def hmfSpecVar
     (hmfSpecMap (I := I) (M := M) q S x) u
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Applying `hmfSpecVar` to a direction is the derivative of the corresponding
-one-dimensional coefficient line.  This is the chain-rule bridge between the
-finite-dimensional Fréchet derivative and `hmfStateVar`. -/
 theorem hmfSpecVar_line
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -168,8 +143,6 @@ theorem hmfSpecVar_line
     (hmfSpecMap (I := I) (M := M) q S x) u v hmd
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- On a differentiability point, the finite coefficient derivative agrees
-with the intrinsic one-dimensional state variation. -/
 theorem hmfSpecVar_state
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -206,10 +179,6 @@ theorem hmfSpecVar_state
     exact hmd
   exact hmfSpecVar_line (I := I) (M := M) q S u v x hmdMap
 
-/-! ## The faithful finite mass -/
-
-/-- Pointwise target-metric mass after both coefficient directions have been
-pushed through the state derivative of the local addition. -/
 noncomputable def hmfSpecMassPt
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -233,9 +202,6 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
         (hmfSpecVar (I := I) (M := M) q S u x w) := by
   rfl
 
-/-- The faithful finite mass operator, integrated against the moving domain
-volume.  Integrating the bilinear maps themselves preserves linearity without
-introducing separate scalar-integral linearity obligations. -/
 noncomputable def hmfSpecMassOp
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -246,9 +212,6 @@ noncomputable def hmfSpecMassOp
     ∂(riemannianVolumeMeasure (I := I) (M := M) h)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Joint continuity of the pointwise faithful mass on a coefficient ball
-implies operator-norm continuity of the integrated finite mass for a fixed
-domain metric. -/
 theorem hmfSpecMass_cont
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -271,8 +234,6 @@ theorem hmfSpecMass_cont
         (0 : EuclideanSpace ℝ {i // i ∈ S}) R) hmass)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Evaluation of the integrated mass operator can be moved inside the
-integral once the pointwise bilinear-map field is integrable. -/
 theorem hmfSpecMass_apply
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -296,9 +257,6 @@ theorem hmfSpecMass_apply
   simp only [hmfSpecMassPt_apply]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- The finite operator is exactly the faithful state mass restricted to the
-spectral trial space whenever the local-addition coefficient slice is
-differentiable. -/
 theorem hmfSpecMass_state
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))

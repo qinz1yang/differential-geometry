@@ -2,23 +2,27 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetric
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.BareSlot0CurryParseval
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle CovariantDerivative
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open Tensor0SNabla
-open TensorRSNabla
+open DifferentialGeometry.Tensor0SNabla
+open DifferentialGeometry.TensorRSNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -153,6 +157,7 @@ private lemma contMDiff_slot0Read (g : SmoothRiemannianMetric I M) (s : ℕ)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem tensor0S_curry_covApply_slot0_leibniz_fib
     (g : SmoothRiemannianMetric I M) (s : ℕ) (Z : SmoothCcTensor g 0 (s + 1))
     {V X : Π b : M, TangentSpace I b}
@@ -268,7 +273,7 @@ theorem tensor0S_curry_covApply_slot0_leibniz_fib
   rw [hfinal, ← hC2]
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem tensor0S_curry_covApply_slot0_leibniz
     (g : SmoothRiemannianMetric I M) (s : ℕ) (Z : SmoothCcTensor g 0 (s + 1))
     {V X : Π b : M, TangentSpace I b}
@@ -301,7 +306,7 @@ theorem tensor0S_curry_covApply_slot0_leibniz
   rfl
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

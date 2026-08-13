@@ -16,17 +16,11 @@ import Mathlib.LinearAlgebra.Trace
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 import Mathlib.Topology.Algebra.Module.LinearMap
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -294,13 +288,9 @@ theorem hom_nonneg [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
   · exact homFlatLinear_comm DV DW
   · exact homFlatLinear_nonneg DV DW
 
-
 end MetricFiberData
-
-
-
-
 
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

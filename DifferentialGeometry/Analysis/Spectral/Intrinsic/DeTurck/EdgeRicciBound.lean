@@ -1,44 +1,31 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgePartnerBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgeRicciPairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceFibreBound
-
-/-!
-# Closed-edge bounds for the derivative Ricci arm
-
-The order-zero Ricci connection-difference coefficient contains a covariant
-derivative of the connection difference.  Estimating that coefficient before
-pairing would therefore ask for a second derivative of the metric difference.
-`EdgeRicciPairing` instead transfers the derivative to a rank-four partner
-which contains only one relative inverse-metric trace.  This file proves the
-sharp zeroth- and first-derivative bounds for that partner and converts the
-Green identity into a closed-edge energy estimate.
-
-The small factor below comes from the undifferentiated symmetric tensor `W`.
-The metric defining the relative inverse is allowed to be `g + P`, with only
-`|nabla P| <= |nabla W|`; this is the form needed on the genuine segment
-`P = s W`.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-
-open Bundle Manifold MeasureTheory Tensor0SBundle
+open Bundle Manifold MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -177,11 +164,6 @@ private theorem ric_perm_norm_le
         (ric_perm_rfns (I := I) (M := M) g Q sigma j x).le)
   simpa only [one_mul] using h
 
-/-! ## Pointwise partner bounds -/
-
-/-- The single-relative-trace Ricci partner and its first covariant
-derivative retain the sharp squared small factor.  No derivative above
-`nabla W` occurs. -/
 theorem ricciPart_bds (g : SmoothRiemannianMetric I M) :
     ∃ C0 C1 : Real, 0 ≤ C0 ∧ 0 ≤ C1 ∧
       ∀ (gm : SmoothRiemannianMetric I M)
@@ -437,14 +419,9 @@ theorem ricciPart_bds (g : SmoothRiemannianMetric I M) :
       _ ≤ C1 * delta ^ 2 * W1 := hFlux1
       _ = _ := by rfl
 
-/-! ## The undifferentiated connection-difference carrier -/
-
--- Elaborating the tensor-contraction instance chain requires the larger synthesis budget.
 omit [NeZero (Module.finrank ℝ E)] in
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-/-- The rotated lowered connection difference in `ricciDA_green` is bounded
-in `L2` by one derivative of the metric perturbation. -/
 theorem ricciBase_l2 (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
@@ -517,12 +494,6 @@ private lemma mul_mul_le_sixteenth_sq_add_four_sq (A δ w d : Real) :
       (1 / 16 : Real) * d ^ 2 + 4 * A ^ 2 * δ ^ 2 * w ^ 2 := by
   nlinarith [sq_nonneg (d - 8 * (A * δ * w))]
 
-/-! ## Absorption on the genuine slope segment -/
-
-/-- The exact derivative-only Ricci order-zero term on the realized segment
-costs at most one eighth of the Dirichlet energy, plus a fixed multiple of the
-`L2` energy.  The factor `-2` is the coefficient with which this arm occurs
-inside `edgeRate0`. -/
 theorem ricciDA_path_le [Nonempty M]
     (g : SmoothRiemannianMetric I M) :
     ∃ delta0 K : Real,
@@ -806,9 +777,8 @@ theorem ricciDA_path_le [Nonempty M]
           ‖iteratedCovGrad (I := I) g 0 2 1 W‖ ^ 2 +
         K * ‖W‖ ^ 2 := by linarith
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

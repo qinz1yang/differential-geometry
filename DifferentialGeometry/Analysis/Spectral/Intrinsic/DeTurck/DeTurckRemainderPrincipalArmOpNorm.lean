@@ -22,6 +22,68 @@ import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.HomFieldCurvature
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderPrincipalArmOpNormCometricCoeffFibreSup
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderPrincipalArmOpNormArmFieldPathIntegralJetL2
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderPrincipalArmOpNormConnLapIterateJetLadder
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -31,15 +93,14 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -2675,9 +2736,8 @@ theorem
     have hextra := mul_nonneg hKc1i hSig_nn
     linear_combination 2 * hD + 2 * hr + hextra
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

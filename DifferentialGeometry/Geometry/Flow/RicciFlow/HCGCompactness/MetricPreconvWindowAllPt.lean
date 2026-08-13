@@ -1,26 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvWindowAll
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -30,8 +11,8 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
-open DifferentialGeometry.Integral.Connection
-open Tensor0SBundle TensorLieDeriv
+
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open Filter Topology
 open DifferentialGeometry.PDE.RicciFlow
 
@@ -44,8 +25,6 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [SigmaCompactSpace M] [IsManifold I 2 M]
@@ -68,9 +47,6 @@ theorem derivNorm_le_cov_add
     normSq0S_neg (I := I) gRef x (a + 2) (metricCovDeriv (I := I) h gRef a x)
   refine le_trans (sqrtNormSq0S_add_le (I := I) gRef x (a + 2) _ _) ?_
   rw [hneg]
-
-
-
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -98,11 +74,6 @@ theorem derivNorm_le_sup_sing
     rw [heq]
     exact ((Set.finite_Iic p).image _).bddAbove
   exact le_csSup hbdd ⟨a, ha, z, Set.mem_singleton z, rfl⟩
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 theorem windowGInfAll_pt

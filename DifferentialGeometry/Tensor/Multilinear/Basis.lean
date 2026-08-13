@@ -1,15 +1,17 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.Multilinear.Bundle
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 
+namespace DifferentialGeometry.Tensor.Multilinear
+
 
 noncomputable section
 
-open Bundle Set
+open _root_.Bundle Set
 
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -116,18 +118,17 @@ variable {EB : Type*} [NormedAddCommGroup EB] [NormedSpace 𝕜 EB]
   [FiberBundle F E] [VectorBundle 𝕜 F E]
   (n : WithTop ℕ∞) [ContMDiffVectorBundle n F E IB]
 
-
 omit [ContMDiffVectorBundle n F E IB] in
 theorem contMDiff_multilinearSection_iff_coord {d : ℕ}
     (b : Module.Basis (Fin d) 𝕜 F) {s : ℕ}
-    (f : ∀ x : B, Bundle.continuousMultilinearMap 𝕜 s F E x) :
+    (f : ∀ x : B, _root_.Bundle.continuousMultilinearMap 𝕜 s F E x) :
     ContMDiff IB (IB.prod 𝓘(𝕜, MLF s)) n
       (fun x => TotalSpace.mk' (MLF s) x (f x)) ↔
     ∀ σ : Fin s → Fin d, ∀ x₀ : B,
       ContMDiffAt IB 𝓘(𝕜, 𝕜) n
         (fun x => (continuousMultilinearMap_basis b s).repr
           (trivializationAt (MLF s)
-            (Bundle.continuousMultilinearMap 𝕜 s F E) x₀ ⟨x, f x⟩).2 σ) x₀ := by
+            (_root_.Bundle.continuousMultilinearMap 𝕜 s F E) x₀ ⟨x, f x⟩).2 σ) x₀ := by
   set Bb := continuousMultilinearMap_basis b s
   constructor
   · intro hf σ x₀
@@ -136,7 +137,7 @@ theorem contMDiff_multilinearSection_iff_coord {d : ℕ}
   · intro hcoord x₀
     rw [contMDiffAt_section]
     let g := fun x => (trivializationAt (MLF s)
-        (Bundle.continuousMultilinearMap 𝕜 s F E) x₀ ⟨x, f x⟩).2
+        (_root_.Bundle.continuousMultilinearMap 𝕜 s F E) x₀ ⟨x, f x⟩).2
     change ContMDiffAt IB 𝓘(𝕜, MLF s) n g x₀
     rw [show g = fun x => Bb.equivFun.symm (Bb.equivFun (g x)) from
         funext fun x => (Bb.equivFun.symm_apply_apply (g x)).symm]
@@ -146,3 +147,5 @@ theorem contMDiff_multilinearSection_iff_coord {d : ℕ}
 end smooth
 
 end
+
+end DifferentialGeometry.Tensor.Multilinear

@@ -13,8 +13,8 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformExistence
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -37,8 +37,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 section GaussLemma
 
 variable [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)]
-
-
 
 theorem radial_maximalGeodesic_hasGeodesicEquationAt_of_small
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -192,7 +190,6 @@ theorem radial_maximalGeodesic_cont_and_foot_in_source_of_small
     rw [show (t' • vb : TangentSpace I p) = v from hvb_resc] at hEq
     rw [← hEq]; exact hsrc'
 
-
 def expMapC2Radius (g : SmoothRiemannianMetric I M) (p : M) : ℝ :=
   min (Classical.choose (Exponential.expMap_contMDiffAt_infty_of_norm_lt (I := I) g p))
     (min
@@ -307,7 +304,6 @@ lemma mem_expDomain_of_norm_lt_radius
         (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
       (NormalCoordinates.expMapDiffeo (I := I) g p).toPartialEquiv.injOn
     exact hx0 (hinj hsrc h0src (by rw [hΦx, hΦ0]))
-
 
 omit [I.Boundaryless] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 private lemma gp_coercive (g : SmoothRiemannianMetric I M) (p : M) :
@@ -440,8 +436,6 @@ lemma norm_lt_expMapC2Radius_of_sqrt_inner_lt
   have hRpos : 0 < expMapC2Radius (I := I) g p := expMapC2Radius_pos (I := I) g p
   nlinarith [norm_nonneg x, hsq_lt, hRpos]
 
-/-- The coercivity conversion is compatible with division by the same positive
-scale on the Riemannian and model radii. -/
 lemma norm_lt_exp_div
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {n : ℝ}
     (hn : 0 < n)
@@ -469,7 +463,6 @@ lemma norm_lt_exp_div
   have hRpos : 0 < expMapC2Radius (I := I) g p / n :=
     div_pos (expMapC2Radius_pos (I := I) g p) hn
   nlinarith [norm_nonneg x, hsq_lt, hRpos]
-
 
 section GaussVariation
 
@@ -540,10 +533,6 @@ lemma radialCurve_contMDiffAt2
     expMap_contMDiffAt2_of_norm_lt_radius (I := I) g p ht₀
   exact hexp.comp t₀ hbase
 
-/-- The central radial curve `t ↦ expMap g p (t • a)` satisfies the
-moving-foot geodesic equation at every `t₀ ∈ (-1, 2)` provided
-`‖a‖ < expMapC2Radius g p`.  Transferred from the maximal geodesic via the
-`[0, 1]` rescaling identity and `congr_of_eventuallyEq_at`. -/
 lemma radial_geo_at
     (g : SmoothRiemannianMetric I M) (p : M) (a : E)
     (ha : ‖a‖ < expMapC2Radius (I := I) g p) (t₀ : ℝ) (ht₀ : t₀ ∈ Set.Ioo (0 : ℝ) 1) :
@@ -804,7 +793,6 @@ private lemma launchSpeedSq_s_hasDerivAt
   have hval : (2 : ℝ) * B v w = B v w + B w v := by rw [hsymm]; ring
   exact hval ▸ hd
 
-
 private noncomputable def gaussClamp (δ : ℝ) : ℝ → ℝ :=
   fun s => δ * Real.arctan (s / δ)
 
@@ -837,7 +825,6 @@ private lemma gaussClamp_contMDiff (δ : ℝ) :
   change ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun s : ℝ => δ * Real.arctan (s / δ))
   rw [contMDiff_iff_contDiff]
   exact contDiff_const.mul (Real.contDiff_arctan.comp (contDiff_id.div_const δ))
-
 
 private lemma gauss_phi_hasDerivAt
     (g : SmoothRiemannianMetric I M) (p : M) (v w : E) (δ : ℝ) (hδ : 0 < δ)
@@ -1401,7 +1388,6 @@ theorem gauss_lemma_pullback
 end GaussAssembly
 
 section RadialLengthEngine
-
 
 open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 

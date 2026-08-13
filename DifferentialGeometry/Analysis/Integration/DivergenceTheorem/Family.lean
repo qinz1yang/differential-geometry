@@ -12,6 +12,7 @@ noncomputable section
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix ENNReal
 
+open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
 namespace Integral
 namespace DivergenceTheorem
@@ -82,12 +83,12 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_family
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_supp : HasCompactSupport h) (t : ℝ) :
     ∫ x, (g_fam t).inner x
-            ((grad_g (I := I) (g_fam t) hf :
+            ((grad_g (I := I) (g_fam t) ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) (g_fam t) hh :
+            ((grad_g (I := I) (g_fam t) ⟨_, hh⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) =
-      -∫ x, f x * Δ_g (I := I) (g_fam t) hh x
+      -∫ x, f x * Δ_g (I := I) (g_fam t) ⟨_, hh⟩ x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
   rw [riemannianMeasureFamily_def]
   exact green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
@@ -98,8 +99,8 @@ theorem integral_smul_laplacian_sub_eq_zero_family
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (t : ℝ) :
-    ∫ x, (f x * Δ_g (I := I) (g_fam t) hh x -
-            h x * Δ_g (I := I) (g_fam t) hf x)
+    ∫ x, (f x * Δ_g (I := I) (g_fam t) ⟨_, hh⟩ x -
+            h x * Δ_g (I := I) (g_fam t) ⟨_, hf⟩ x)
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) = 0 := by
   rw [riemannianMeasureFamily_def]
   exact green_second_integral_smul_laplacian_sub_eq_zero (I := I) (g_fam t) hf hh

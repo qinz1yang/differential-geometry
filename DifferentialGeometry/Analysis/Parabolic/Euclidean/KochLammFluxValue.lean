@@ -2,15 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammEarlyFlux
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxFull
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammPotential
 
-/-!
-# The full directional Koch--Lamm flux value potential
-
-This file joins the initial and terminal halves of one directional
-divergence-source heat potential at an arbitrary positive observation time.
-The terminal radius is `sqrt t`.  Both halves are proved integrable and their
-sum is identified exactly with the canonical Duhamel potential `heatPot1`.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -26,14 +17,10 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- The directional flux value potential, split at half of the observation
-time into the existing early and full terminal potentials. -/
 def klHeat1 (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
   heatEarly1 t w f x + klFluxFull1 (Real.sqrt t) w f x
 
 omit [CompleteSpace F] in
-/-- The directional heat integrand is Bochner integrable on the complete
-early half-slab under the local `L²` arm of `KLSource1`. -/
 theorem klEarly1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
     (h : KLSource1 T A₂ Aₚ f) :
@@ -109,8 +96,6 @@ theorem klEarly1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
   simpa only [q] using hfinite
 
 omit [CompleteSpace F] in
-/-- The same directional heat integrand is Bochner integrable on the
-terminal half-slab, with terminal radius `sqrt t`. -/
 theorem klLate1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
     (h : KLSource1 T A₂ Aₚ f) :
@@ -125,8 +110,6 @@ theorem klLate1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
   simpa only [Real.sq_sqrt ht.le] using hi
 
 omit [CompleteSpace F] in
-/-- The early/terminal split directional potential is exactly the canonical
-Duhamel potential `heatPot1`, with the same direction `w` in both halves. -/
 theorem klHeat1_eq_heatPot {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
     (h : KLSource1 T A₂ Aₚ f) :
@@ -177,8 +160,6 @@ theorem klHeat1_eq_heatPot {T t : ℝ} {A₂ Aₚ : ℝ≥0}
   rw [intervalIntegral.integral_of_le ht.le, ← hprod, hsplit, hlateEq]
 
 omit [CompleteSpace F] in
-/-- The full directional flux value is bounded by the sum of its local `L²`
-and terminal `L^(n+4)` Koch--Lamm radii. -/
 theorem klHeat1_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
     (h : KLSource1 T A₂ Aₚ f) :

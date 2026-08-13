@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorSlotwiseCurvature
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -8,19 +9,20 @@ set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
+
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle Tensor0SNabla
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [I.Boundaryless]
+  [T2Space M] [BoundarylessManifold I M] [I.Boundaryless]
 
 omit [I.Boundaryless] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
@@ -66,7 +68,7 @@ theorem riemannSec_tensorCov_apply_eval
   rfl
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

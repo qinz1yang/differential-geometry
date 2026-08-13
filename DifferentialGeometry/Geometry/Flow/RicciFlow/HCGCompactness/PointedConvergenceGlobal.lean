@@ -2,19 +2,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.PointedConver
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Headlines
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import Mathlib.Topology.Connected.Clopen
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -88,8 +78,6 @@ end PointedRiemannianManifold
 
 namespace PointedCGHMaps
 
-
-
 theorem exists_source_univ
     {X : PointedFlowSeq.{u} (I := I)}
     {P : PointedRiemannianManifold.{u} (I := I)}
@@ -103,9 +91,6 @@ theorem exists_source_univ
   obtain ⟨k0, hk0⟩ := Phi.source_subset (K := Set.univ) hcompact
   refine ⟨k0, fun k hk => ?_⟩
   exact Set.eq_univ_of_univ_subset (hk0 k hk)
-
-
-
 
 theorem target_univ
     {X : PointedFlowSeq.{u} (I := I)}
@@ -145,8 +130,6 @@ theorem target_univ
   have htarget_univ : phi.target = Set.univ :=
     IsClopen.eq_univ ⟨htarget_compact.isClosed, phi.open_target⟩ htarget_nonempty
   simpa [phi, PointedCGHMaps.target] using htarget_univ
-
-
 
 noncomputable def globalDiffeomorph
     {X : PointedFlowSeq.{u} (I := I)}

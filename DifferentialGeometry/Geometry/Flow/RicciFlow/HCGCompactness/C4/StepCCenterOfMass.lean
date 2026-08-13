@@ -1,16 +1,9 @@
 import DifferentialGeometry.Geometry.Comparison.HalfSqDistGradMain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCInputs
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -22,7 +15,8 @@ namespace HCGCompactness
 open Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace
@@ -35,8 +29,6 @@ variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] [T3Space M]
-
-
 
 structure CenterInput (g : SmoothRiemannianMetric I M)
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (pts : ι → M)
@@ -197,8 +189,6 @@ theorem unique :
   letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact (Classical.choose_spec h.exists_cm).2.2
 
-
-
 theorem dist_le {qstar : M} {ε : ℝ} (hε : 0 ≤ ε)
     (hnear :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -224,8 +214,6 @@ theorem dist_le {qstar : M} {ε : ℝ} (hε : 0 ≤ ε)
       h.strict.one h.strict.strict
   have hq_eq : q = centerOfMass (I := I) g μ pts join p r h := unique h q hqmin
   simpa [hq_eq] using hqdist
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
@@ -262,12 +250,6 @@ theorem centerEnergy_diff {x : M}
     (by
       intro i _hi
       exact (hdiffSummands i).const_smul (μ i))
-
-
-
-
-
-
 
 theorem expInv_eqn
     (hdiffEnergy :
@@ -314,8 +296,6 @@ theorem expInv_eqn
   letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact CenterOfMass.sum_expInv_eq_zero (I := I) (κ := ι) g μ pts
     (centerOfMass (I := I) g μ pts join p r h) (min h) hdiffEnergy hdiffSummands hgrad
-
-
 
 theorem invB_eqn
     (invB : ι → TangentSpace I (centerOfMass (I := I) g μ pts join p r h))
@@ -364,9 +344,6 @@ theorem invB_eqn
   have hsum_neg : -(∑ i : ι, μ i • invB i) = 0 := by
     simpa only [Finset.sum_neg_distrib, smul_neg] using hneg
   exact neg_eq_zero.mp hsum_neg
-
-
-
 
 theorem expInv_eqn_local
     (hdiffSummands :
@@ -425,10 +402,6 @@ theorem expInv_eqn_local
     exact grad_half_self (I := I) (g := g) q hdiffSelf
   · exact hgradρ (hsrc i) hself (hsmall i hself) (hdiffSummands i)
 
-
-
-
-
 noncomputable def eqnRadius : ℝ :=
   letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
@@ -451,8 +424,6 @@ theorem eqnRadius_pos : 0 < eqnRadius (I := I) h := by
   letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact (Classical.choose_spec (grad_halfSqDist (I := I) g h.enorm
     (centerOfMass (I := I) g μ pts join p r h))).1
-
-
 
 theorem grad_eq_of_lt {pt : M}
     (hsrc : pt ∈ (NormalCoordinates.normalChartAt (I := I) g
@@ -492,8 +463,6 @@ theorem grad_eq_of_lt {pt : M}
   letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact (Classical.choose_spec (grad_halfSqDist (I := I) g h.enorm
     (centerOfMass (I := I) g μ pts join p r h))).2 hsrc hne hsmall hdiff
-
-
 
 theorem expInv_eqn_of_lt
     (hdiffSummands :
@@ -554,13 +523,6 @@ theorem expInv_eqn_of_lt
   · exact grad_eq_of_lt h (hsrc i) hself (hsmall i hself) (hdiffSummands i)
 
 end centerOfMass
-
-
-
-
-
-
-
 
 theorem centerOfMass_cont {P : Type*} [TopologicalSpace P] [FirstCountableTopology P]
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]

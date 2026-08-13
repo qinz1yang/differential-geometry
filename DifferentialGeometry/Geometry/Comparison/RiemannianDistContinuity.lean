@@ -5,7 +5,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Topology.Instances.ENNReal.Lemmas
 
-
 open Set Function Filter Bundle Manifold Metric MeasureTheory
 open scoped Topology Manifold ContDiff ENNReal NNReal
 
@@ -23,24 +22,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M]
 
-/-- **Continuity of the Riemannian extended distance from a fixed base point.**
-
-For a smooth Riemannian metric `g` and a fixed `p : M`, the map
-`q ↦ riemannianEDist I p q` is continuous for the manifold topology on `M`.
-
-The auxiliary fibre instances `RiemannianBundle (TangentSpace I)` and
-`IsContinuousRiemannianBundle E (TangentSpace I)` are installed from `g`
-inside the proof, exactly as Mathlib's `riemannianEDist` API expects; the
-statement itself uses only the manifold topology and the metric data `g`.
-
-Mathlib's `PseudoEMetricSpace.ofRiemannianMetric I M` provides a pseudo
-extended metric whose `edist` is `riemannianEDist I` and whose topology is
-definitionally the ambient one; continuity of `edist` (`Continuous.edist`)
-then transfers to `riemannianEDist`.
-
-The regularity hypothesis of `ofRiemannianMetric` is discharged locally
-from finite-dimensionality (local compactness) together with the
-Hausdorff hypothesis. -/
 theorem continuous_riemannianEDist
     (g : SmoothRiemannianMetric I M) (p : M) :
     letI : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=
@@ -63,8 +44,6 @@ attribute [local instance] normedSpaceTangentSpaceVectorSpace
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M]
   [T2Space M] in
-/-- On a sufficiently small convex extended-chart ball, the chart inverse is
-Lipschitz for the Riemannian extended distance. -/
 theorem chart_symm_edist_le
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsManifold I 1 M]
@@ -131,8 +110,6 @@ theorem chart_symm_edist_le
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M]
   [T2Space M] in
-/-- A fixed smooth parametrization is locally Lipschitz for Riemannian
-extended distance at every point of its source. -/
 theorem diffeo_edist_le
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsManifold I 1 M]
@@ -203,8 +180,6 @@ theorem diffeo_edist_le
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M]
   [T2Space M] in
-/-- A pointwise speed bound along a model segment controls the Riemannian
-extended distance between the corresponding parametrized endpoints. -/
 theorem param_edist_le
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsManifold I 1 M]
@@ -279,8 +254,6 @@ theorem param_edist_le
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M]
   [T2Space M] in
-/-- The inverse of a fixed extended chart is locally Lipschitz for the
-Riemannian extended distance at every point of its target. -/
 theorem chart_inv_edist_le
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsManifold I 1 M]
@@ -348,17 +321,6 @@ theorem chart_inv_edist_le
         ≤ C * (K * edist y z) := mul_right_mono (hKt hyt hzt)
     _ = (C * K) * edist y z := by simp only [mul_assoc]
 
-/-- **Continuity on the finite locus of the real Riemannian distance from a fixed
-base point.**
-
-There is no separate `riemannianDist` definition in Mathlib; the real-valued
-Riemannian distance is `(riemannianEDist I p ·).toReal`. Since `ENNReal.toReal`
-is discontinuous at `∞` (and `riemannianEDist I p q = ∞` is possible when no
-`C¹` path joins `p` to `q`), the real distance is *not* globally continuous on a
-non-complete manifold. It is, however, continuous on the locus where the
-extended distance is finite, which is what the corollary records: on
-`{q | riemannianEDist I p q ≠ ∞}` the map `q ↦ (riemannianEDist I p q).toReal`
-is continuous. -/
 theorem continuousOn_riemannianEDist_toReal_on_finite
     (g : SmoothRiemannianMetric I M) (p : M) :
     letI : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=

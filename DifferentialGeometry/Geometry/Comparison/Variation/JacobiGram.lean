@@ -1,15 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.JacobiFormula
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiField
-
-/-!
-# Gram determinants of Jacobi families
-
-This file differentiates the Gram matrix of a finite family of vector fields
-along a curve.  Metric compatibility supplies the entry derivatives, Jacobi's
-determinant formula supplies the density derivative, and vanishing pairwise
-Wronskians reduce that derivative to the mixed Gram trace used in comparison
-geometry.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -35,26 +26,21 @@ section Gram
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-/-- Gram matrix of a finite family of vector fields along a curve. -/
 def curveGram (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : Matrix ι ι ℝ :=
   Matrix.of fun i j => g.inner (γ t) (V i t) (V j t)
 
-/-- Entrywise derivative of `curveGram`, written using covariant derivatives
-along the curve. -/
 def curveGramDeriv (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : Matrix ι ι ℝ :=
   Matrix.of fun i j =>
     g.inner (γ t) (covDerivAlong (I := I) g γ (V i) t) (V j t) +
       g.inner (γ t) (V i t) (covDerivAlong (I := I) g γ (V j) t)
 
-/-- Mixed Gram matrix pairing each covariant derivative with a field. -/
 def curveMixedGram (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : Matrix ι ι ℝ :=
   Matrix.of fun i j =>
     g.inner (γ t) (covDerivAlong (I := I) g γ (V i) t) (V j t)
 
-/-- Entrywise derivative of `curveMixedGram`. -/
 def curveMixedDeriv (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : Matrix ι ι ℝ :=
   Matrix.of fun i j =>
@@ -65,7 +51,6 @@ def curveMixedDeriv (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
       g.inner (γ t) (covDerivAlong (I := I) g γ (V i) t)
         (covDerivAlong (I := I) g γ (V j) t)
 
-/-- Square-root Gram determinant of a finite family along a curve. -/
 def curveDensity (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) : ℝ :=
   Real.sqrt (curveGram (I := I) g γ V t).det
@@ -73,7 +58,6 @@ def curveDensity (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [Fintype ι] [DecidableEq ι] in
-/-- The Gram matrix of a finite tangent family is Hermitian. -/
 theorem curveGram_herm
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) :
@@ -86,8 +70,6 @@ theorem curveGram_herm
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [DecidableEq ι] in
-/-- The Gram quadratic form is the metric norm-square of the corresponding
-linear combination. -/
 theorem curveGram_dotVec
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ) (c : ι → ℝ) :
@@ -118,8 +100,6 @@ theorem curveGram_dotVec
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [Fintype ι] [DecidableEq ι] in
-/-- A Gram matrix is positive definite when the tangent family is linearly
-independent. -/
 theorem curveGram_posDef
     [Finite ι]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -141,7 +121,6 @@ theorem curveGram_posDef
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-/-- Linear independence makes the Gram determinant strictly positive. -/
 theorem curveGram_det_pos
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -152,7 +131,6 @@ theorem curveGram_det_pos
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-/-- Linear independence makes the square-root Gram density strictly positive. -/
 theorem curveDensity_pos
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -164,7 +142,6 @@ omit [Fintype ι] [DecidableEq ι] in
 omit [NeZero (Module.finrank ℝ E)]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- Metric compatibility differentiates each entry of the Gram matrix. -/
 theorem hasDerivAt_gram
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -183,7 +160,6 @@ omit [Fintype ι] [DecidableEq ι] in
 omit [NeZero (Module.finrank ℝ E)]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- Metric compatibility differentiates each entry of the mixed Gram matrix. -/
 theorem hasDerivAt_mixed
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -206,7 +182,6 @@ theorem hasDerivAt_mixed
 omit [NeZero (Module.finrank ℝ E)]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- Jacobi's formula for the square-root Gram determinant. -/
 theorem hasDerivAt_curveDen
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -227,8 +202,6 @@ theorem hasDerivAt_curveDen
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [Fintype ι] [DecidableEq ι] in
-/-- Vanishing pairwise Wronskians identify the Gram derivative with twice the
-mixed Gram matrix. -/
 theorem gramDeriv_eq_two
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -244,7 +217,6 @@ theorem gramDeriv_eq_two
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [Fintype ι] [DecidableEq ι] in
-/-- Vanishing pairwise Wronskians make the mixed Gram matrix symmetric. -/
 theorem mixedGram_symm
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -263,8 +235,6 @@ theorem mixedGram_symm
 omit [NeZero (Module.finrank ℝ E)]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- Wronskian symmetry simplifies the density derivative to the mixed Gram
-trace. -/
 theorem hasDerivAt_symmDen
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)

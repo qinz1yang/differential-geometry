@@ -4,54 +4,12 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.ConnectionDifference
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped BigOperators
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem lemma45Scalar
     {eps : Real} {B N G D : Nat -> Real} {s : Nat}
@@ -109,13 +67,6 @@ theorem lemma45Scalar
           heps0 heps1 hB hN (hLift p) (hOne p)
           (fun k _hk => hOne k)
 
-
-
-
-
-
-
-
 theorem lemma45Anti
     {eps : Real} {B A N G D : Nat -> Real} {s : Nat}
     (heps0 : 0 <= eps)
@@ -145,10 +96,6 @@ theorem lemma45Anti
     (fun a _ha => hA a)
     (fun b hb => single_le_sum_range hN hb)
     (hLeib k)
-
-
-
-
 
 theorem lemma45ScalarBdd
     {eps : Real} {B N G D : Nat -> Real} {s P : Nat}
@@ -207,17 +154,6 @@ theorem lemma45ScalarBdd
           (hOne P (Nat.lt_succ_self P))
           (fun k hk => hOne k (hk.trans (Nat.lt_succ_self P)))
 
-
-
-
-
-
-
-
-
-
-
-
 theorem lemma45Double
     {eps : Real} {B : Nat -> Real} {s : Nat}
     (heps0 : 0 <= eps)
@@ -248,11 +184,6 @@ theorem lemma45Double
           exact h
       · intro k _
         exact hOne i k
-
-
-
-
-
 
 theorem lemma45DoubleBdd
     {eps : Real} {B : Nat -> Real} {s : Nat}

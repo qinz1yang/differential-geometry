@@ -1,87 +1,15 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.HeatOutputRealize
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace MetricRealization
 
 open DifferentialGeometry.Integral.Measure
@@ -103,10 +31,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-
-
-
-
 def MemAllTensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) : Prop :=
   ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
@@ -114,10 +38,6 @@ def MemAllTensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ)
       tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
           (tensorResolventL2_isCompactOperator
             (I := I) (M := M) g r s) hσ v = u
-
-
-
-
 
 theorem gateWitness_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) {σ : ℝ} (hσ : 0 ≤ σ)
@@ -136,10 +56,6 @@ theorem gateWitness_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rw [spectralCoeff_apply]
   exact h.symm
 
-
-
-
-
 theorem spectralWeighted_summable_of_mem (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (u : TensorL2 r s g) (h_mem : MemAllTensorHs (I := I) (M := M) g r s u)
     {σ : ℝ} (hσ : 0 ≤ σ) :
@@ -157,11 +73,6 @@ theorem spectralWeighted_summable_of_mem (g : SmoothRiemannianMetric I M)
     rw [gateWitness_coeff_eq (I := I) (M := M) g r s u hσ v hv i]
   rwa [h_eq] at hsumm
 
-
-
-
-
-
 theorem gateWitness_zero_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (h_mem : MemAllTensorHs (I := I) (M := M) g r s u)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :
@@ -170,9 +81,6 @@ theorem gateWitness_zero_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
   gateWitness_coeff_eq (I := I) (M := M) g r s u (le_refl (0 : ℝ))
     (Classical.choose (h_mem 0 (le_refl (0 : ℝ))))
     (Classical.choose_spec (h_mem 0 (le_refl (0 : ℝ)))) i
-
-
-
 
 theorem spectralSmooth_realizesAsSmooth_of_finite_support'
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (u : TensorL2 r s g)
@@ -190,19 +98,6 @@ theorem spectralSmooth_realizesAsSmooth_of_finite_support'
     (le_refl (0 : ℝ)) v₀ hv₀_fs]
   exact hv₀
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 def IteratedGardingExtensionBound (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Prop :=
   ∀ k : ℕ, ∃ σ : ℝ, ∃ _hσ : 0 ≤ σ, ∃ C : ℝ, 0 ≤ C ∧
@@ -212,54 +107,17 @@ def IteratedGardingExtensionBound (g : SmoothRiemannianMetric I M) (r s : ℕ) :
           (tensorHsSmoothRepr (I := I) (M := M) T hT_fs)).toReal ≤
         C * ‖T‖
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def EigenvalueTailSummable (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop :=
   ∃ p : ℝ, 0 < p ∧
     Summable (fun i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s =>
       (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (-p))
 
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eigenvalueTail_eq_weight
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (p : ℝ)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :
     (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (-p) =
       tensorSobolevWeight (I := I) (M := M) i (-p) := rfl
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem spectralCoeff_weightedPow_summable
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (u : TensorL2 r s g)
@@ -333,15 +191,6 @@ theorem spectralCoeff_weightedPow_summable
       exact h_amgm
     nlinarith [key, hwN_nonneg, abs_nonneg c, hwp_pos.le]
 
-
-
-
-
-
-
-
-
-
 def TensorSuperCriticalReconstruct (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Prop :=
   ∀ w : TensorL2 r s g,
@@ -352,15 +201,6 @@ def TensorSuperCriticalReconstruct (g : SmoothRiemannianMetric I M) (r s : ℕ) 
         (chartTargetEuclid (I := I) (M := M) α)) →
     ∃ T : SmoothCcTensor g r s, (T : TensorL2 r s g) = w
 
-
-
-
-
-
-
-
-
-
 def SpectralChartRegularity (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop :=
   ∀ u : TensorL2 r s g, MemAllTensorHs (I := I) (M := M) g r s u →
     ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
@@ -368,22 +208,6 @@ def SpectralChartRegularity (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop 
         (d := Module.finrank ℝ E) (2 * k) 2
         (fun y => (tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ y))
         (chartTargetEuclid (I := I) (M := M) α)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem spectralSmooth_realizesAsSmooth_of_reduction
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -395,9 +219,8 @@ theorem spectralSmooth_realizesAsSmooth_of_reduction
   exact h_recon u (fun k α P₀ => h_reg u h_memAll k α P₀)
 
 end MetricRealization
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

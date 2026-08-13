@@ -1,31 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.SecondOrderBootstrap
 import DifferentialGeometry.Geometry.Geodesic.CrossVFReduction
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
-
-/-!
-# Chart regularity of geodesics
-
-A curve satisfying the (moving-foot) geodesic equation on an open time window,
-continuously and with foot staying in one chart source, has `C^∞` chart reading
-there — together with its derivative.  This is the fixed-chart regularity
-upgrade behind global-in-time smoothness of geodesics: on any window contained
-in a single chart the chart reading solves the autonomous second-order ODE
-`u'' = -Γ(u)(u', u')` with `C^∞` coefficients, so the ODE bootstrap
-`contDiffOn_ode2_inf` applies.
-
-## Main result
-
-* `chartCurve_contDiffOn` — on an open `O ⊆ ℝ` where `γ` is continuous,
-  `γ s ∈ (chartAt H q).source`, and `HasGeodesicEquationAt g γ s` for every
-  `s ∈ O`, the chart reading `chartCurve q γ` and its derivative are
-  `C^∞` on `O`.
-
-The two fixed-chart ODE inputs are the existing bridges
-`hasGeodesicEquationAt_fixedChart_eventually_hasDerivAt` and
-`hasGeodesicEquationAt_fixedChart_hasDerivAt_velocity`
-(`CrossVFReduction.lean`); the coefficient smoothness is
-`chartChristoffelContraction_contDiffOn` (`SmoothFlow.lean`).
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -44,10 +21,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-/-- **Chart reading of a geodesic window is `C^∞`.**  If `γ` is continuous on an
-open `O ⊆ ℝ`, keeps its foot in `(chartAt H q).source`, and satisfies the
-geodesic equation at every `s ∈ O`, then the fixed-chart reading
-`chartCurve q γ` and its derivative are `C^∞` on `O`. -/
 theorem chartCurve_contDiffOn [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (q : M) {γ : ℝ → M} {O : Set ℝ}
     (hO : IsOpen O) (hγ_cont : ContinuousOn γ O)
@@ -85,12 +58,6 @@ theorem chartCurve_contDiffOn [I.Boundaryless]
     (chartChristoffelContraction_contDiffOn (I := I) g q).neg
   exact contDiffOn_ode2_inf hO hF hmem hy₁ hy₂
 
-/-- **`C^∞`-in-time regularity of a moving-foot geodesic (pointwise).**  An
-intrinsic moving-foot geodesic `γ` on an open set `s`, continuous on `s`, is
-`ContMDiffAt 𝓘(ℝ, ℝ) I ∞` at every `t ∈ s`.  The `C^∞` upgrade of
-`isGeodesicOn_contMDiffAt_one`: the chart window around `t` supplies a `C^∞`
-chart reading via `chartCurve_contDiffOn`, and the chart round-trip transfers
-it to `γ`. -/
 theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {s : Set ℝ} {t : ℝ}
     (hs : IsOpen s) (ht : t ∈ s)
@@ -100,7 +67,6 @@ theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
   set α : M := γ t with hα_def
   set u : ℝ → E := chartCurve (I := I) α γ with hu_def
   have hα_src : α ∈ (chartAt H α).source := mem_chart_source H α
-  -- the open chart window around `t`
   set O : Set ℝ := s ∩ γ ⁻¹' (chartAt H α).source with hO_def
   have hO_open : IsOpen O :=
     hcont.isOpen_inter_preimage hs (chartAt H α).open_source
@@ -112,7 +78,6 @@ theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
   have hu_cd : ContDiffAt ℝ ∞ u t :=
     hu_cdOn.contDiffAt (hO_open.mem_nhds htO)
   have hu_cmd : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ u t := hu_cd.contMDiffAt
-  -- the inverse chart is `C^∞` at `u t`
   have hα_ext_src : α ∈ (extChartAt I α).source := by
     rw [extChartAt_source]; exact hα_src
   have hut_eq : u t = extChartAt I α α := by
@@ -126,7 +91,6 @@ theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
       htarget_nhds
   have hcomp : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ ((extChartAt I α).symm ∘ u) t :=
     hsymm_at.comp t hu_cmd
-  -- `γ` agrees with the chart round-trip near `t`
   have hcontAt_t : ContinuousAt γ t := hcont.continuousAt (hs.mem_nhds ht)
   have hsrc_nhds : (fun r => γ r) ⁻¹' (chartAt H α).source ∈ 𝓝 t :=
     hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_src)
@@ -139,8 +103,6 @@ theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
     exact (extChartAt I α).left_inv hr_ext
   exact hcomp.congr_of_eventuallyEq heq.symm
 
-/-- **`C^∞`-in-time regularity of a moving-foot geodesic (on an open set).**
-The `C^∞` upgrade of `isGeodesicOn_contMDiffOn_one`. -/
 theorem isGeodesicOn_contMDiffOn_infty [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {s : Set ℝ}
     (hs : IsOpen s)

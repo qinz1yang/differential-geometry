@@ -4,63 +4,15 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.BBSAllMBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.EndpointMetricLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.EndpointRicciLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ExtendShiInputs
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open DifferentialGeometry.Integral.Connection
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -69,12 +21,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
-variable [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [BoundarylessManifold I M]
-
-
-
-
-
+variable [T2Space M] [CompactSpace M] [BoundarylessManifold I M]
 
 def cinftyLimitData_of_allMBounds
     {alpha omega : ℝ} {hαω : alpha < omega}
@@ -96,8 +43,6 @@ def cinftyLimitData_of_allMBounds
                 Lambda * (S.base.metric alpha).inner x v v) :
     CinftyLimitData (I := I) S.base.metric alpha omega hαω := by
   classical
-  -- `exists_endMetric` is `Prop`-valued while the goal is data, so the endpoint
-  -- metric is extracted with `Exists.choose` rather than destructured.
   have hex := exists_endMetric (I := I) S hdim hS hbound hEquiv
   refine
     { limitMetric := hex.choose
@@ -105,14 +50,6 @@ def cinftyLimitData_of_allMBounds
       ricci_match := ?_ }
   intro x v w
   exact ricci_tendsto_left (I := I) S hdim hS hbound hEquiv hex.choose hex.choose_spec x v w
-
-
-
-
-
-
-
-
 
 def cinftyLimitData_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}

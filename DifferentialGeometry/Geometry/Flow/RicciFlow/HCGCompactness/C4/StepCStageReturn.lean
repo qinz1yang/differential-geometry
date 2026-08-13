@@ -1,15 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageComparison
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -32,9 +24,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-
-
-
 
 theorem liveCenters_radial
     (inp : MetricCompactnessInputs (I := I) X)
@@ -70,9 +59,6 @@ theorem liveCenters_radial
   have hk' := abs_lt.mp (hN k hk alpha)
   have hl' := abs_lt.mp (hN l hl alpha)
   linarith
-
-
-
 
 theorem HasStageJetData.mapsTo_tail
     (inp : MetricCompactnessInputs (I := I) X)
@@ -289,9 +275,6 @@ theorem HasStageJetData.mapsTo_tail
         linarith
   change dist (F x) Yl.basepoint ≤ R1
   exact hfinal.le
-
-
-
 
 theorem HasStageJetData.return_tail
     (inp : MetricCompactnessInputs (I := I) X)

@@ -379,7 +379,7 @@ lemma exists_grad_bound_etaEuclid [I.Boundaryless] [T2Space M]
 theorem exists_strict_strong_support_approx
     [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (α : M) :
     ∃ K_α : Set M, IsCompact K_α ∧ K_α ⊆ (chartAt H α).source ∧

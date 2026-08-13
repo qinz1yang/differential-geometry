@@ -1,23 +1,30 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorConnLapGreenIntertwiner
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle CovariantDerivative
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
+    CovariantDerivative
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Tensor.TensorRSRiemannian
-open Tensor0SNabla TensorRSNabla TensorMetricLowering
+open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.TensorRSNabla
+    DifferentialGeometry.TensorMetricLowering
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -43,13 +50,13 @@ def LoweringIntertwinerRS (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop :=
           (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) S x v))
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem loweringIntertwinerRS_holds (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     LoweringIntertwinerRS (I := I) (M := M) g r s :=
   fun S x v => loweredCovDerivAt_eq_lower_tensorCovDerivAt_rs (I := I) (M := M) g r s S x v
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem loweringIntertwinerRS_zero (g : SmoothRiemannianMetric I M) (s : ℕ) :
     LoweringIntertwinerRS (I := I) (M := M) g 0 s :=
   fun S x v => loweredCovDerivAt_eq_lower_tensorCovDerivAt_gen (I := I) (M := M) g s S x v
@@ -63,7 +70,7 @@ def covDerivAlongVFrawRS
     (fun y : M => B y) (fun y : M => T y)
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] lemma covDerivAlongVFrawRS_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
@@ -73,7 +80,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         (fun y : M => T y) y (B y) := rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma covDerivAlongVFrawRS_contMDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
@@ -111,7 +118,7 @@ def covDerivAlongVFSectionRS
     (covDerivAlongVFrawRS_contMDiff (I := I) (M := M) g r s T B)
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] lemma covDerivAlongVFSectionRS_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
@@ -121,7 +128,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         (fun y : M => T y) y (B y) := rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma covDerivAlongVFSectionRS_lowered_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (hint : LoweringIntertwinerRS (I := I) (M := M) g r s)
@@ -134,7 +141,7 @@ lemma covDerivAlongVFSectionRS_lowered_eq
   rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma toModel_liftedTensorSection_covDerivAlongVFSectionRS
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (hint : LoweringIntertwinerRS (I := I) (M := M) g r s)
@@ -148,7 +155,7 @@ lemma toModel_liftedTensorSection_covDerivAlongVFSectionRS
   exact covDerivAlongVFSectionRS_lowered_eq (I := I) (M := M) g r s hint T B y
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma covDerivAlongRS_covDerivAlongVFSectionRS_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
@@ -194,7 +201,7 @@ def dirichletFormRS
     rfl
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] lemma dirichletFormRS_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T v : SmoothCcTensor g r s) (b : M)
     (X : TangentSpace I b) :
@@ -209,7 +216,7 @@ def dirichletVFRS
   metricSharp (I := I) g b (dirichletFormRS (I := I) (M := M) g r s T v b)
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma inner_dirichletVFRS
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T v : SmoothCcTensor g r s) (b : M)
     (X : TangentSpace I b) :
@@ -219,7 +226,7 @@ lemma inner_dirichletVFRS
   exact inner_metricSharp (I := I) g b (dirichletFormRS (I := I) (M := M) g r s T v b) X
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma dirichletFormRS_chartBasis_component_contMDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T v : SmoothCcTensor g r s) (α : M)
     (j : Fin (Module.finrank ℝ E)) :
@@ -272,7 +279,7 @@ private lemma dirichletFormRS_chartBasis_component_contMDiffOn
   rw [dirichletFormRS_apply]
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma dirichletVFRS_contMDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T v : SmoothCcTensor g r s) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -290,13 +297,13 @@ def dirichletVFSectionRS
     (dirichletVFRS_contMDiff (I := I) (M := M) g r s T v)
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] lemma dirichletVFSectionRS_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T v : SmoothCcTensor g r s) (b : M) :
     dirichletVFSectionRS (I := I) (M := M) g r s T v b =
       dirichletVFRS (I := I) (M := M) g r s T v b := rfl
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma divergence_dirichletVFRS_summand_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (hint : LoweringIntertwinerRS (I := I) (M := M) g r s)
@@ -418,7 +425,7 @@ private lemma divergence_dirichletVFRS_summand_eq
   ring
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma tensorCovDerivPointwiseInnerRS_eq_smoothOrthoFrame_diag
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T v : SmoothCcTensor g r s) (b : M) :
     tensorCovDerivPointwiseInner (I := I) (M := M) g r s T v b =
@@ -484,7 +491,7 @@ private lemma tensorCovDerivPointwiseInnerRS_eq_smoothOrthoFrame_diag
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [hframe_eq i]
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma divergence_dirichletVFRS_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (hint : LoweringIntertwinerRS (I := I) (M := M) g r s)
@@ -626,8 +633,8 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawTensorConnLapSmooth_rs
   tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawTensorConnLapSmooth_rs_of_intertwiner
     (I := I) (M := M) g r s (loweringIntertwinerRS_holds (I := I) (M := M) g r s) T v
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

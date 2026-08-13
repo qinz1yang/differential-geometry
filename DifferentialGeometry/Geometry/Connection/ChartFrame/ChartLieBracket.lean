@@ -8,7 +8,7 @@ open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -61,7 +61,6 @@ private lemma mpullbackWithin_extChartAt_symm_eventuallyEq_chartE_repr_symm
   exact mpullbackWithin_extChartAt_symm_eq_chartE_repr_symm V hy
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [FiniteDimensional ℝ E] in
 theorem mlieBracket_eq_chart_fderiv_diff
     (x : M) (X Y : Π y : M, TangentSpace I y)
@@ -119,7 +118,6 @@ theorem mlieBracket_eq_chart_fderiv_diff
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem mlieBracket_eq_chart_fderiv_diff_general
     (α x : M) (X Y : Π y : M, TangentSpace I y)
     (hx_src : x ∈ (extChartAt I α).source)
@@ -333,7 +331,6 @@ private lemma mfderiv_scalar_along_eventuallyEq_chart_fderiv
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [FiniteDimensional ℝ E] in
 theorem mfderiv_scalar_along_eq_chart_fderiv
     {x : M} {X Y : Π b : M, TangentSpace I b}
@@ -513,5 +510,5 @@ theorem extDerivFun_apply_mlieBracket
   exact hftilde_lieBracket
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

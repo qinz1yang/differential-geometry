@@ -2,13 +2,6 @@ import DifferentialGeometry.Analysis.ODE.Flow.Variational
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -17,8 +10,6 @@ namespace Riemannian
 namespace Geodesic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-
-
 
 def flatPhaseCLM : (E × E) →L[Real] (E × E) :=
   (ContinuousLinearMap.snd Real E E).prod (0 : (E × E) →L[Real] E)
@@ -51,8 +42,6 @@ theorem flatPhaseFlow_hasDerivAt (z : E × E) (t : Real) :
   have hx := ((hasDerivAt_id t).smul_const z.2).const_add z.1
   have hv := hasDerivAt_const t z.2
   simpa using hx.prodMk hv
-
-
 
 theorem flatPhase_is_var
     {f : Real → (E × E) → (E × E)}

@@ -1,23 +1,18 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing
 import DifferentialGeometry.Analysis.Calculus.DyadicScale
 import DifferentialGeometry.Geometry.Comparison.Volume.SmallBall
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Smaller curvature-controlled flow balls
-
-This file records the geometric restriction step used after dyadic scale
-selection.  Shrinking a flow ball keeps its center and distinguished time.
--/
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 noncomputable section
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open scoped Manifold ContDiff ENNReal
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 
 universe u uE uH
@@ -36,14 +31,12 @@ namespace FlowMetricBall
 variable {S : SolutionOn (I := I) (M := M) D}
 variable {time : RealTimeInterval.FlowTime D}
 
-/-- The concentric flow ball whose radius is multiplied by a positive factor. -/
 def shrink (B : FlowMetricBall S time) (q : ℝ) (hq : 0 < q) :
     FlowMetricBall S time where
   center := B.center
   radius := q * B.radius
   radius_pos := mul_pos hq B.radius_pos
 
-/-- The concentric ball at the `j`-th dyadic radius. -/
 def dyadic (B : FlowMetricBall S time) (j : ℕ) : FlowMetricBall S time :=
   B.shrink ((1 / 2 : ℝ) ^ j) (by positivity)
 
@@ -61,7 +54,6 @@ theorem dyadic_succ_rad (B : FlowMetricBall S time) (j : ℕ) :
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 omit [IsManifold I 1 M] in
-/-- A shrink factor at most one gives pointwise inclusion at every time. -/
 theorem shrink_setAt
     (B : FlowMetricBall S time) {q : ℝ} (hq : 0 < q) (hq1 : q ≤ 1) (t : ℝ) :
     (B.shrink q hq).setAt t ⊆ B.setAt t := by
@@ -72,15 +64,12 @@ theorem shrink_setAt
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 omit [IsManifold I 1 M] in
-/-- A concentric shrink is nested in the original distinguished-time ball. -/
 theorem shrink_nested
     (B : FlowMetricBall S time) {q : ℝ} (hq : 0 < q) (hq1 : q ≤ 1) :
     (B.shrink q hq).Nested B :=
   shrink_setAt B hq hq1 time
 
 omit [SigmaCompactSpace M] in
-/-- Backward parabolic curvature control is inherited by every concentric
-shrink whose radius factor is at most one. -/
 theorem shrink_rm
     (B : FlowMetricBall S time) {q : ℝ} (hq : 0 < q) (hq1 : q ≤ 1)
     (hB : B.IsRmControlled) :
@@ -112,8 +101,6 @@ theorem shrink_rm
       exact normSq0S_nonneg (I := I) (S.base.metric t) x 4 (S.base.rm04 t x)
     exact (mul_le_mul_of_nonneg_right hrpow hRm0).trans hcurv
 
-/-- A dyadic subball has no larger normalized volume than the original ball
-and satisfies the volume-doubling inequality needed by the cutoff estimate. -/
 theorem exists_coll_scale
     [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless]
     [T2Space (TangentBundle I M)] [T3Space M] [ConnectedSpace M]

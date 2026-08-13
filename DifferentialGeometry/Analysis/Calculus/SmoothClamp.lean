@@ -5,30 +5,16 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 
 open Set MeasureTheory intervalIntegral
 open scoped ContDiff
 
-
-
-theorem exists_smooth_clamp (a b : ℝ) (ha : a < 0) (hb : 0 < b) :
-    ∃ ψ : ℝ → ℝ, ContDiff ℝ ∞ ψ ∧ (∀ t ∈ Set.Icc a b, ψ t = t) ∧
-      ∀ t : ℝ, |ψ t| ≤ b - a + 2 := by
+private theorem exists_smooth_clamp_aux (a b : ℝ) (ha : a < 0) (hb : 0 < b) :
+    ∃ ψ : ℝ → ℝ, ContDiff ℝ ∞ ψ ∧
+      (∀ t ∈ Set.Icc a b, ψ t = t) ∧
+      (∀ t ∈ Set.Icc a b, HasDerivAt ψ 1 t) ∧
+      ∀ t : ℝ, ψ t ∈ Set.Icc (a - 1) (b + 1) := by
   classical
   set c : ℝ := (a + b) / 2 with hc
   have hrIn_pos : 0 < (b - a) / 2 := by linarith
@@ -168,8 +154,141 @@ theorem exists_smooth_clamp (a b : ℝ) (ha : a < 0) (hb : 0 < b) :
         rw [← hadd, hzero, add_zero]
       rw [hval]
       exact hψ_ge_neg (a - 1) (by linarith)
-  refine ⟨ψ, hψ_smooth, hψ_id, fun t => ?_⟩
+  refine ⟨ψ, hψ_smooth, hψ_id, ?_, fun t => ⟨hψ_lb t, hψ_ub t⟩⟩
+  intro t ht
+  simpa only [hχ_one t ht] using (hψ_sderiv t).hasDerivAt
+
+theorem exists_smooth_clamp (a b : ℝ) (ha : a < 0) (hb : 0 < b) :
+    ∃ ψ : ℝ → ℝ, ContDiff ℝ ∞ ψ ∧ (∀ t ∈ Set.Icc a b, ψ t = t) ∧
+      ∀ t : ℝ, |ψ t| ≤ b - a + 2 := by
+  obtain ⟨ψ, hψ, hψid, _hψderiv, hψrange⟩ := exists_smooth_clamp_aux a b ha hb
+  refine ⟨ψ, hψ, hψid, fun t => ?_⟩
   rw [abs_le]
-  exact ⟨by linarith [hψ_lb t], by linarith [hψ_ub t]⟩
+  exact ⟨by linarith [(hψrange t).1], by linarith [(hψrange t).2]⟩
+
+theorem exists_smooth_time_clamp
+    (A D margin : ℝ) (hAD : A < D) (hmargin : 0 < margin) :
+    ∃ ρ : ℝ → ℝ, ContDiff ℝ ∞ ρ ∧
+      (∀ t ∈ Set.Icc A D, ρ t = t) ∧
+      (∀ t ∈ Set.Icc A D, HasDerivAt ρ 1 t) ∧
+      ∀ t : ℝ, ρ t ∈ Set.Icc (A - margin) (D + margin) := by
+  let center := (A + D) / 2
+  let a := (A - center) / margin
+  let b := (D - center) / margin
+  have ha : a < 0 := div_neg_of_neg_of_pos (by dsimp only [a, center]; linarith) hmargin
+  have hb : 0 < b := div_pos (by dsimp only [b, center]; linarith) hmargin
+  obtain ⟨ψ, hψ, hψid, hψderiv, hψrange⟩ := exists_smooth_clamp_aux a b ha hb
+  let inner : ℝ → ℝ := fun t => (t - center) / margin
+  let ρ : ℝ → ℝ := fun t => center + margin * ψ (inner t)
+  have hinner : ContDiff ℝ ∞ inner :=
+    (contDiff_id.sub contDiff_const).div_const margin
+  have hρ : ContDiff ℝ ∞ ρ := by
+    exact contDiff_const.add (contDiff_const.mul (hψ.comp hinner))
+  have hinnerMem : ∀ t ∈ Set.Icc A D, inner t ∈ Set.Icc a b := by
+    intro t ht
+    constructor
+    · dsimp only [inner, a]
+      exact (div_le_div_iff_of_pos_right hmargin).2
+        (sub_le_sub_right ht.1 center)
+    · dsimp only [inner, b]
+      exact (div_le_div_iff_of_pos_right hmargin).2
+        (sub_le_sub_right ht.2 center)
+  refine ⟨ρ, hρ, ?_, ?_, ?_⟩
+  · intro t ht
+    dsimp only [ρ]
+    rw [show ψ (inner t) = inner t from hψid (inner t) (hinnerMem t ht)]
+    dsimp only [inner]
+    field_simp [hmargin.ne']
+    ring
+  · intro t ht
+    have hinnerDeriv : HasDerivAt inner (1 / margin) t := by
+      simpa only [one_div] using ((hasDerivAt_id t).sub_const center).div_const margin
+    have hcomp := (hψderiv (inner t) (hinnerMem t ht)).comp t hinnerDeriv
+    have hscaled := hcomp.const_mul margin
+    have htotal := (hasDerivAt_const t center).add hscaled
+    have htotal' : HasDerivAt ρ (0 + margin * (1 * (1 / margin))) t := by
+      simpa only [ρ, Function.comp_apply] using htotal
+    have hcoefficient : 0 + margin * (1 * (1 / margin)) = 1 := by
+      field_simp [hmargin.ne']
+      ring
+    simpa only [hcoefficient] using htotal'
+  · intro t
+    have hrange := hψrange (inner t)
+    constructor
+    · have hmul := mul_le_mul_of_nonneg_left hrange.1 hmargin.le
+      change A - margin ≤ center + margin * ψ (inner t)
+      calc
+        A - margin = center + margin * (a - 1) := by
+          dsimp only [a]
+          field_simp [hmargin.ne']
+          ring
+        _ ≤ center + margin * ψ (inner t) := by
+          simpa only [add_comm] using add_le_add_left hmul center
+    · have hmul := mul_le_mul_of_nonneg_left hrange.2 hmargin.le
+      change center + margin * ψ (inner t) ≤ D + margin
+      calc
+        center + margin * ψ (inner t) ≤ center + margin * (b + 1) :=
+          by simpa only [add_comm] using add_le_add_left hmul center
+        _ = D + margin := by
+          dsimp only [b]
+          field_simp [hmargin.ne']
+          ring
+
+theorem exists_smooth_positive_clamp
+    (a b : ℝ) (ha : 0 < a) (hab : a < b) :
+    ∃ rho : ℝ → ℝ, ContDiff ℝ ∞ rho ∧
+      (∀ t ∈ Set.Icc a b, rho t = t) ∧
+      (∀ t ∈ Set.Icc a b, HasDerivAt rho 1 t) ∧
+      (∀ t : ℝ, 0 < rho t) ∧
+      ∀ t : ℝ, rho t ∈ Set.Icc (a / 2) (b + a / 2) := by
+  have hmargin : 0 < a / 2 := by linarith
+  obtain ⟨rho, hrho, hrho_id, hrho_deriv, hrho_range⟩ :=
+    exists_smooth_time_clamp a b (a / 2) hab hmargin
+  refine ⟨rho, hrho, hrho_id, hrho_deriv, ?_, ?_⟩
+  · intro t
+    linarith [(hrho_range t).1]
+  · intro t
+    have ht := hrho_range t
+    constructor <;> linarith [ht.1, ht.2]
+
+theorem eventuallyEq_comp_of_eqOn_Icc_of_mem_Ioo
+    {X : Type*} [TopologicalSpace X]
+    {rho : ℝ → ℝ} {u : X → ℝ} {a b : ℝ} {x : X}
+    (hrho : Set.EqOn rho id (Set.Icc a b))
+    (hu : ContinuousAt u x) (hx : u x ∈ Set.Ioo a b) :
+    (rho ∘ u) =ᶠ[nhds x] u := by
+  filter_upwards [hu (isOpen_Ioo.mem_nhds hx)] with y hy
+  simpa only [Function.comp_apply, id_eq] using hrho ⟨hy.1.le, hy.2.le⟩
+
+theorem exists_smooth_positive_clamp_eventuallyEq_on_compact
+    {X : Type*} [TopologicalSpace X]
+    {K : Set X} {u : X → ℝ}
+    (hK : IsCompact K) (hKne : K.Nonempty)
+    (hu : Continuous u) (hpos : ∀ x ∈ K, 0 < u x) :
+    ∃ rho : ℝ → ℝ, ContDiff ℝ ∞ rho ∧
+      (∀ t : ℝ, 0 < rho t) ∧
+      (∀ x ∈ K, (rho ∘ u) =ᶠ[nhds x] u) := by
+  obtain ⟨xmin, hxmin, hmin⟩ := hK.exists_isMinOn hKne hu.continuousOn
+  obtain ⟨xmax, hxmax, hmax⟩ := hK.exists_isMaxOn hKne hu.continuousOn
+  let a := u xmin / 2
+  let b := u xmax + a
+  have ha : 0 < a := by
+    dsimp [a]
+    linarith [hpos xmin hxmin]
+  have hab : a < b := by
+    dsimp [b]
+    linarith [hpos xmax hxmax]
+  obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_pos, _hrho_range⟩ :=
+    exists_smooth_positive_clamp a b ha hab
+  refine ⟨rho, hrho, hrho_pos, ?_⟩
+  intro x hx
+  have hminx : u xmin ≤ u x := hmin hx
+  have hmaxx : u x ≤ u xmax := hmax hx
+  apply eventuallyEq_comp_of_eqOn_Icc_of_mem_Ioo hrho_id hu.continuousAt
+  constructor
+  · change u xmin / 2 < u x
+    linarith [hpos xmin hxmin, hminx]
+  · change u x < u xmax + u xmin / 2
+    linarith [hpos xmin hxmin, hmaxx]
 
 end DifferentialGeometry

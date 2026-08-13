@@ -1,16 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.MetricCompactnessInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCAtomConv
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -34,9 +26,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-
-
-
 noncomputable def stageTarget
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -59,10 +48,6 @@ noncomputable def stageTarget
       (seqCenterD inp.decay P L l (gamma : Nat))).symm
     (NormalCoordinates.normalChartAt (I := I) Yk.metric
       (seqCenterD inp.decay P L k (gamma : Nat)) x)
-
-
-
-
 
 @[simp] theorem stageTarget_chart
     (inp : MetricCompactnessInputs (I := I) X)
@@ -93,8 +78,6 @@ noncomputable def stageTarget
           (seqCenterD inp.decay P L k (alpha : Nat))
           (seqCenterD inp.decay P L k (gamma : Nat)) z) := by
   rfl
-
-
 
 theorem stageTarget_local
     (inp : MetricCompactnessInputs (I := I) X)
@@ -160,8 +143,6 @@ theorem stageTarget_local
     (X.obj (L.φ l)).metric
     (seqCenterD inp.decay P L l (alpha : Nat)) hsrc
 
-
-
 @[simp] theorem stageTarget_subseq
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -205,8 +186,6 @@ def HasUniqueStageCenter
           x gamma)
         (stageTarget inp P L s k l x) z
 
-
-
 theorem uniqueCenter_subseq
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -227,10 +206,6 @@ theorem uniqueCenter_subseq
     NetLimitData.subseq_phi, Function.comp_apply]
   rfl
 
-
-
-
-
 noncomputable def stageComparisonMap
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -249,8 +224,6 @@ noncomputable def stageComparisonMap
     else
       (X.obj (L.φ l)).basepoint
 
-
-
 theorem stageCompare_choose
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -264,8 +237,6 @@ theorem stageCompare_choose
     stageComparisonMap inp P L s hs hconn k l x =
       Classical.choose huniq.exists := by
   simp only [stageComparisonMap, hx, huniq, dite_true]
-
-
 
 theorem stageCompare_default
     (inp : MetricCompactnessInputs (I := I) X)
@@ -284,8 +255,6 @@ theorem stageCompare_default
   · by_cases hx : x ∈ L.hatSourceBall inp.decay P s k
     · simp only [stageComparisonMap, hx, huniq, dite_true, dite_false]
     · simp only [stageComparisonMap, hx, dite_false]
-
-
 
 @[simp] theorem stageCompare_subseq
     (inp : MetricCompactnessInputs (I := I) X)
@@ -331,9 +300,6 @@ theorem stageCompare_default
       stageCompare_default (I := I) inp P L s hs hconn (ψ k) (ψ l) x
         (Or.inl hx)]
     simp only [NetLimitData.subseq_phi, Function.comp_apply]
-
-
-
 
 theorem stageCompare_base
     (inp : MetricCompactnessInputs (I := I) X)

@@ -1,23 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.BarrierCore
 import Mathlib.Analysis.Normed.Module.Multilinear.Curry
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.PDE.RicciFlow
 
 noncomputable section
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -26,8 +19,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
 
 def Tensor02RealizesRawAt
     (A : RawTwoTensorField (I := I) (M := M)) (x : M)
@@ -47,8 +38,6 @@ def rawRightLM
   map_smul' := by
     intro c y
     simpa [smul_eq_mul] using hA.smul_right c v y
-
-
 
 def rawRightCLM
     (A : RawTwoTensorField (I := I) (M := M)) {x : M}
@@ -104,15 +93,11 @@ def rawCurriedCLM
   ⟨rawCurriedLM (I := I) (M := M) A hA,
     LinearMap.continuous_of_finiteDimensional _⟩
 
-
-
 def tensor02OfRawAt
     (A : RawTwoTensorField (I := I) (M := M)) (x : M)
     (hA : TwoTensorBilinearAt (I := I) (M := M) A x) :
     Tensor02At (I := I) (M := M) x :=
   (rawCurriedCLM (I := I) (M := M) A hA).uncurryLeft
-
-
 
 omit [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem tensor02OfRawAt_realizes
@@ -135,7 +120,7 @@ theorem tensor02_realizes_ext
   intro m
   have hm : m = vec2 (I := I) (m 0) (m 1) := by
     funext i
-    fin_cases i <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases i <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
   rw [hm, hT, hU]
 
 
@@ -164,9 +149,6 @@ theorem rawSym2_eq_of_symm
 abbrev Tensor02ReactionAt : Type _ :=
   Real -> SmoothRiemannianMetric I M -> (x : M) ->
     Tensor02At (I := I) (M := M) x -> Tensor02At (I := I) (M := M) x
-
-
-
 
 def Tensor02ReactionAt.toRawSymm
     (N : Tensor02ReactionAt (I := I) (M := M)) :
@@ -197,8 +179,6 @@ theorem Tensor02ReactionAt.toRawSymm_eval_of_bilin
         (vec2 (I := I) v w) := by
   unfold Tensor02ReactionAt.toRawSymm
   rw [dif_pos (rawSym2_bilin (I := I) (M := M) hA)]
-
-
 
 omit [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem Tensor02ReactionAt.toRawSymm_symmInputOn
@@ -241,15 +221,15 @@ theorem Tensor02ReactionAt.toRawSymm_output_bilin
       have hleft :
           Function.update m (0 : Fin 2) (X + Y) = vec2 (I := I) (X + Y) Z := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       have hX : Function.update m (0 : Fin 2) X = vec2 (I := I) X Z := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       have hY : Function.update m (0 : Fin 2) Y = vec2 (I := I) Y Z := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       simpa [hleft, hX, hY] using hmap
     · intro c X Z
@@ -262,11 +242,11 @@ theorem Tensor02ReactionAt.toRawSymm_output_bilin
       have hleft :
           Function.update m (0 : Fin 2) (c • X) = vec2 (I := I) (c • X) Z := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       have hX : Function.update m (0 : Fin 2) X = vec2 (I := I) X Z := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       simpa [hleft, hX, smul_eq_mul] using hmap
     · intro X Y Z
@@ -279,15 +259,15 @@ theorem Tensor02ReactionAt.toRawSymm_output_bilin
       have hleft :
           Function.update m (1 : Fin 2) (Y + Z) = vec2 (I := I) X (Y + Z) := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       have hY : Function.update m (1 : Fin 2) Y = vec2 (I := I) X Y := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       have hZ : Function.update m (1 : Fin 2) Z = vec2 (I := I) X Z := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       simpa [hleft, hY, hZ] using hmap
     · intro c X Z
@@ -300,14 +280,14 @@ theorem Tensor02ReactionAt.toRawSymm_output_bilin
       have hleft :
           Function.update m (1 : Fin 2) (c • Z) = vec2 (I := I) X (c • Z) := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       have hZ : Function.update m (1 : Fin 2) Z = vec2 (I := I) X Z := by
         funext i
-        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2,
+        fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2,
           Function.update]
       simpa [hleft, hZ, smul_eq_mul] using hmap
   · constructor <;> simp [Tensor02ReactionAt.toRawSymm, hA]
 
 end
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.PDE.RicciFlow

@@ -1,13 +1,13 @@
 import DifferentialGeometry.Geometry.Connection.Chart.NablaComponents.Basic
-
-
+import DifferentialGeometry.Geometry.Operator.Operators
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 namespace DifferentialGeometry
 namespace Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

@@ -3,49 +3,7 @@ import DifferentialGeometry.Tensor.Multilinear.Tensor
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -59,12 +17,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 private theorem extDerivFun_mul_real
@@ -82,18 +34,12 @@ private theorem extDerivFun_mul_real
   simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm,
     mul_assoc] using hprod
 
-
 private theorem castAdd_natAdd_ne {s q : ℕ} (a : Fin s) (b : Fin q) :
     Fin.castAdd q a ≠ Fin.natAdd s b := by
   intro h
   have hcoe := Fin.val_eq_of_eq h
   simp only [Fin.val_castAdd, Fin.val_natAdd] at hcoe
   omega
-
-
-
-
-
 
 theorem tensor0SField_product_apply {s q : ℕ}
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -106,17 +52,6 @@ theorem tensor0SField_product_apply {s q : ℕ}
       A x (V ∘ Fin.castAdd q) * B x (V ∘ Fin.natAdd s) := by
   change Bundle.continuousMultilinearMap.product_fun (A x) (B x) V = _
   rw [Bundle.continuousMultilinearMap.product_fun_apply]
-
-
-
-
-
-
-
-
-
-
-
 
 theorem nabla0SFun_product_eval {s q : ℕ}
     [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
@@ -261,9 +196,6 @@ theorem nabla0SFun_product_eval {s q : ℕ}
   simp only [af, bf, Vfirst, Vlast]
   ring
 
-
-
-
 theorem nabla_product_zero_of_zero {s q : ℕ}
     [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -315,12 +247,7 @@ theorem nabla_product_zero_of_zero {s q : ℕ}
   rw [hmain]
   simp
 
-
-
 variable [IsManifold I 1 M]
-
-
-
 
 noncomputable def metricPow
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) :
@@ -334,7 +261,6 @@ noncomputable def metricPow
         MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
           (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 * r)
           (metricTensorField (I := I) g) (metricPow g r)
-
 
 private theorem nabla_one0_zero
     [IsManifold I 2 M] [T2Space M]
@@ -383,7 +309,6 @@ private theorem nabla_one0_zero
   rw [heval, hconst]
   simp
 
-
 private theorem totalNabla0SRealizes_zero_cast
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     {s₁ s₂ : ℕ} (h : s₁ = s₂)
@@ -400,17 +325,11 @@ private theorem totalNabla0SRealizes_zero_cast
   subst h
   exact hA
 
-
-
-
-
-
-
 theorem nabla_metricPow_zero
     [IsManifold I 2 M] [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g) :
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g) :
     ∀ r : ℕ,
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (2 * r) cov (metricPow (I := I) g r)
@@ -443,23 +362,11 @@ theorem nabla_metricPow_zero
     rw [hmp]
     exact htrans
 
-
-
-
-
-
-
-
-
-
-
-
-
 theorem nabla0SFun_metricPow_contraction_eval {s r : ℕ}
     [IsManifold I 2 M] [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -487,3 +394,4 @@ theorem nabla0SFun_metricPow_contraction_eval {s r : ℕ}
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

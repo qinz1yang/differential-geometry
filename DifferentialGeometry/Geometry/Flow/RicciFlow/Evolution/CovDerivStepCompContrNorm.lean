@@ -1,17 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.CovDerivStepCompContr
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -74,8 +64,6 @@ private theorem sum_append_split {p q : ℕ} (F : (Fin (p + q) → Idx) → Real
   · simp [Fin.append_left]
   · simp [Fin.append_right]
 
-
-
 omit [DecidableEq Idx] in
 theorem compL2Sq_contrTail_le {p q : ℕ}
     (A : (Fin (p + 1) → Idx) → Real) (B : (Fin (q + 1) → Idx) → Real) :
@@ -117,8 +105,6 @@ theorem compL2_nonneg {r : ℕ} (T : (Fin r → Idx) → Real) : 0 ≤ compL2 T 
 omit [DecidableEq Idx] in
 theorem compL2_sq {r : ℕ} (T : (Fin r → Idx) → Real) : compL2 T ^ 2 = compL2Sq T := by
   rw [compL2, Real.sq_sqrt (compL2Sq_nonneg T)]
-
-
 
 omit [DecidableEq Idx] in
 theorem compL2Sq_comp_equiv {r r' : ℕ} (T : (Fin r → Idx) → Real) (e : Fin r ≃ Fin r') :
@@ -186,8 +172,6 @@ theorem compL2_neg {r : ℕ} (T : (Fin r → Idx) → Real) :
   congr 1
   exact Finset.sum_congr rfl fun idx _ => by ring
 
-
-
 omit [DecidableEq Idx] in
 theorem compL2_sub_le {r : ℕ} (T U : (Fin r → Idx) → Real) :
     compL2 (fun idx => T idx - U idx) ≤ compL2 T + compL2 U := by
@@ -211,9 +195,6 @@ namespace DifferentialGeometry.HCGCompactness
 
 open scoped BigOperators
 
-
-
-
 theorem pascal_sum (m : ℕ) (g : ℕ → ℝ) :
     (∑ c ∈ Finset.range (m + 1), (m.choose c : ℝ) * g (c + 1)) +
         (∑ c ∈ Finset.range (m + 1), (m.choose c : ℝ) * g c)
@@ -226,9 +207,6 @@ theorem pascal_sum (m : ℕ) (g : ℕ → ℝ) :
     Nat.choose_eq_zero_of_lt (Nat.lt_succ_self m)]
   simp only [Nat.cast_zero, zero_mul, add_zero]
   ring
-
-
-
 
 theorem pascal_sum_notop (m : ℕ) (g : ℕ → ℝ) :
     (∑ c ∈ Finset.range m, (m.choose c : ℝ) * g (c + 1)) +

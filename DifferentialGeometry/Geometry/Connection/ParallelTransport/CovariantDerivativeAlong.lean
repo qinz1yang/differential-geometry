@@ -3,8 +3,6 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCu
 import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartTransition
 
-
-
 noncomputable section
 
 open Set Function Filter Manifold Bundle
@@ -191,8 +189,6 @@ theorem covDerivAlong_smul (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
   rw [smul_add]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Covariant differentiation along a multiplicatively reparametrized curve
-scales by the parameter factor. -/
 theorem covDeriv_comp_mul (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ∀ t, TangentSpace I (γ t)) (c t : ℝ) :
     covDerivAlong (I := I) g (fun s => γ (c * s)) (fun s => V (c * s)) t =
@@ -211,13 +207,6 @@ theorem covDeriv_comp_mul (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     ChartChristoffel.contraction_smul_left, smul_add]
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- **Leibniz rule for a scalar-function multiple.** If the chart-`(γ t)`-
-coordinate representation of `V` and the scalar function `f` are both
-differentiable at `t`, then
-`covDerivAlong g γ (f • V) t = f' t • V t + f t • covDerivAlong g γ V t`.
-The first summand uses the *derivative of `f` at `t`* times the value
-`V t` (recovered by the round-trip `symmL`), the second the value `f t`
-times the covariant derivative of `V`. -/
 theorem covDerivAlong_smulFun (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (f : ℝ → ℝ) (V : ∀ t, TangentSpace I (γ t)) (t : ℝ)
     (hf : DifferentiableAt ℝ f t)
@@ -651,7 +640,6 @@ theorem covDerivAlong_chart_foot_invariance [I.Boundaryless]
   rw [hRHS]
   abel
 
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [Module.Finite ℝ E] in
 theorem chartRepAtBase_differentiableAt [I.Boundaryless]
@@ -769,7 +757,6 @@ theorem covDerivAlong_expand {ι : Type*} (g : SmoothRiemannianMetric I M) (γ :
   refine Finset.sum_congr rfl fun i hi => ?_
   rw [covDerivAlong_smulFun g γ (y i) (F i) t (hy i hi) (hF i hi), hpar i hi,
     smul_zero, add_zero]
-
 
 end CovariantDerivativeAlong
 

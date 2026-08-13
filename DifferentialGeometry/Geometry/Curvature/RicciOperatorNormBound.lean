@@ -2,28 +2,15 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open DifferentialGeometry.Integral.Connection Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -32,9 +19,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {x : M}
-
-
-
 
 theorem exists_gOrthonormalBasis (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ basis :
@@ -59,11 +43,6 @@ theorem exists_gOrthonormalBasis (g : SmoothRiemannianMetric I M) (x : M) :
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact hob
-
-
-
-
-
 
 theorem ricci_unitSphere_le_of_componentBound
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -136,9 +115,6 @@ theorem ricci_unitSphere_le_of_componentBound
     _ = R * ((n : Real) * g.inner x u u) := by rw [← hgexp]
     _ = (n : Real) * R := by rw [hu]; ring
 
-
-
-
 theorem abs_component0S_le_sqrt_normSq0S
     (g : SmoothRiemannianMetric I M) {x : M} {ι : Type*} [Fintype ι] [DecidableEq ι]
     {s : ℕ} (basis : Module.Basis ι Real (TangentSpace I x))
@@ -151,8 +127,6 @@ theorem abs_component0S_le_sqrt_normSq0S
   rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv A]
   exact Finset.single_le_sum (f := fun slots => (component0S (I := I) basis A slots) ^ 2)
     (fun slots _ => sq_nonneg _) (Finset.mem_univ slots₀)
-
-
 
 theorem ricciComp_le_rmNorm
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -182,9 +156,6 @@ theorem ricciComp_le_rmNorm
       rwa [heq] at hcomp
     _ = (Fintype.card ι : Real) * Real.sqrt (normSq0S (I := I) g x 4 Rm04) := by
       rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-
-
-
 
 theorem metricRicciComp_le
     [SigmaCompactSpace M] [T2Space M]
@@ -226,10 +197,6 @@ theorem metricRicciComp_le
     (metricRicciAt (I := I) (M := M) g x)
     (metricRm04At (I := I) (M := M) g x) htrace i j
 
-
-
-
-
 theorem ricci_unitQuad_le_of_trace
     (g : SmoothRiemannianMetric I M) {x : M} {n : ℕ}
     (basis : Module.Basis (Fin n) Real (TangentSpace I x))
@@ -264,11 +231,6 @@ theorem ricci_unitQuad_le_of_trace
   calc |Ric (vec2 (I := I) u u)| ≤ (n : Real) * ((n : Real) * B) := hmain
     _ = (n : Real) ^ 2 * B := by ring
 
-
-
-
-
-
 theorem tensor02_quadForm_abs_le_normSq0S
     (g : SmoothRiemannianMetric I M) {x : M}
     (T : Tensor02At (I := I) (M := M) x) (v : TangentSpace I x) :
@@ -301,8 +263,6 @@ theorem tensor02_quadForm_abs_le_normSq0S
     _ = (Module.finrank Real (TangentSpace I x) : Real)
           * Real.sqrt (normSq0S (I := I) g x 2 T) * g.inner x v v := by ring
 
-
-
 theorem exists_rm04_bound [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     ∃ K : Real, 0 ≤ K ∧ ∀ x : M,
@@ -317,8 +277,6 @@ theorem exists_rm04_bound [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
   obtain ⟨K, hK⟩ := hcompact.bddAbove
   refine ⟨max K 0, le_max_right _ _, fun x => ?_⟩
   exact (hK (Set.mem_range_self x)).trans (le_max_left _ _)
-
-
 
 theorem exists_ricci_bound
     [NeZero (Module.finrank Real E)]
@@ -381,4 +339,4 @@ theorem exists_ricci_bound
   rw [metricRicciAt_apply_eq_ricciTensor (I := I) g x v v] at hall
   exact hall
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

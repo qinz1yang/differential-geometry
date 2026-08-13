@@ -4,34 +4,6 @@ set_option autoImplicit false
 set_option relaxedAutoImplicit false
 set_option maxSynthPendingDepth 3
 
-/-!
-# The `√t` Hölder-`½` time modulus of `H¹([0,T]; X)`
-
-For the vector-valued time-Sobolev carrier `timeH1 X T = H¹([0,T]; X)` this file
-proves the sharp quantitative modulus of continuity at the initial time:
-
-  `‖u.toFun t − u.init‖ ≤ √t · ‖u.deriv‖`   for `t ∈ [0,T]`,
-
-where `‖u.deriv‖` is the time-`L²([0,T]; X)` norm of the derivative field.  This
-is the explicit Hölder-`½` (`√t`) modulus that quantifies the naked
-`ContinuousWithinAt` of `u.toFun` at `t = 0`: unlike the uniform-in-time Sobolev
-bound `timeH1.norm_toFun_le` (which carries the whole-horizon factor `√T`), the
-increment vanishes as `t → 0` at the explicit rate `√t`.
-
-## Main results
-
-* `TimeSobolev.integral_norm_Icc_le` — the sharp-horizon Cauchy–Schwarz bound
-  `∫ s in [0,t], ‖f s‖ ≤ √t · ‖f‖` for `f : L²([0,T]; X)` and `t ∈ [0,T]`.  It
-  is the `√t` companion of `TimeSobolev.integral_norm_le` (whose factor is
-  `√T`); the sharper factor comes from applying the `L¹ ⊆ L²` Hölder nesting on
-  the *sub*-measure `timeMeasure t` and then monotonicity in the measure.
-* `TimeSobolev.timeH1.norm_toFun_sub_init_le` — the `√t` trace modulus
-  `‖u.toFun t − u.init‖ ≤ √t · ‖u.deriv‖` on `[0,T]`.
-
-The canonical home of `integral_norm_Icc_le` would be `BochnerL2.lean` next to
-`integral_norm_le`; it is placed here to keep the change a single additive leaf.
--/
-
 noncomputable section
 
 open Set MeasureTheory Filter
@@ -45,17 +17,6 @@ namespace TimeSobolev
 variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
 variable {T : ℝ}
 
-/-- **Sharp-horizon Cauchy–Schwarz bound for the interval integral.**  For an
-element `f : L²([0,T]; X)` and `t ∈ [0,T]`,
-
-  `∫ s in [0,t], ‖f s‖ ≤ √t · ‖f‖`.
-
-This is the `√t` refinement of `TimeSobolev.integral_norm_le` (which bounds the
-integral over the *whole* horizon `[0,T]` by `√T · ‖f‖`): the integral over the
-sub-interval `[0,t]` is bounded by `√t` times the full `L²` norm.  The proof
-applies the `L¹ ⊆ L²` Hölder-nesting estimate on the sub-measure `timeMeasure t`
-(whose total mass is `t`) and then bounds the `L²`-norm-on-`[0,t]` by the
-`L²`-norm-on-`[0,T]` via monotonicity of `eLpNorm` in the measure. -/
 theorem integral_norm_Icc_le (f : timeL2 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     ∫ s in Set.Icc (0 : ℝ) t, ‖f s‖ ≤ Real.sqrt t * ‖f‖ := by
   have hle_meas : timeMeasure t ≤ timeMeasure T := by
@@ -90,18 +51,6 @@ theorem integral_norm_Icc_le (f : timeL2 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 :
 
 namespace timeH1
 
-/-- **The `√t` Hölder-`½` trace modulus of `H¹([0,T]; X)`.**  For `t ∈ [0,T]`,
-
-  `‖u.toFun t − u.init‖ ≤ √t · ‖u.deriv‖`.
-
-The increment of the represented function away from its initial value is
-controlled by `√t` times the `L²([0,T]; X)` norm of the time derivative.  This
-is the explicit `½`-Hölder modulus of continuity at `t = 0`, quantifying the
-qualitative `timeH1.continuousWithinAt_toFun` at the initial time: the increment
-vanishes like `√t`.  Proof: the fundamental theorem of calculus
-`toFun_sub_toFun` writes the increment as `∫ s in 0..t, u.deriv s`, and the
-sharp-horizon Cauchy–Schwarz bound `integral_norm_Icc_le` supplies the `√t`
-factor against the full `L²` norm. -/
 theorem norm_toFun_sub_init_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     ‖u.toFun t - u.init‖ ≤ Real.sqrt t * ‖u.deriv‖ := by
   have h0t : (0 : ℝ) ≤ t := ht.1

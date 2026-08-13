@@ -4,24 +4,31 @@ import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.CurvatureDefect
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.FiberNormSubadditivity
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpDualFrameParseval
+import DifferentialGeometry.Geometry.Operator.Gradient
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle CovariantDerivative
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
+    CovariantDerivative
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
+open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open Tensor0SNabla
-open TensorRSNabla
+open DifferentialGeometry.Tensor0SNabla
+open DifferentialGeometry.TensorRSNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -29,7 +36,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -45,7 +52,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 noncomputable def metricTraceHessian
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -183,17 +190,17 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private noncomputable def coBchangeChartα (α : M) {b : M}
     (B : Fin (Module.finrank ℝ E) → TangentSpace I b) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i k => (chartModelBasis E).repr (trivToE (I := I) α b (B i)) k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma decompose_in_chartBasisα (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (B : Fin (Module.finrank ℝ E) → TangentSpace I b) (i : Fin (Module.finrank ℝ E)) :
@@ -221,7 +228,7 @@ private lemma decompose_in_chartBasisα (α : M) {b : M}
           rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma bilin_expand_chartBasisα {A : Type*} [AddCommGroup A] [Module ℝ A]
     [TopologicalSpace A] [IsTopologicalAddGroup A] [ContinuousSMul ℝ A]
     (α : M) {b : M}
@@ -268,7 +275,7 @@ private lemma bilin_expand_chartBasisα {A : Type*} [AddCommGroup A] [Module ℝ
   rw [smul_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma orthonormal_matrix_form_chartα
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -310,7 +317,7 @@ private lemma orthonormal_matrix_form_chartα
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 private lemma sum_coBchangeChartα_eq_invGram
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -321,7 +328,7 @@ private lemma sum_coBchangeChartα_eq_invGram
     ∑ i : Fin (Module.finrank ℝ E),
       coBchangeChartα (I := I) α B i k *
         coBchangeChartα (I := I) α B i l =
-      DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix (I := I) g α b k l := by
+      DifferentialGeometry.Geometry.Operator.chartInvGramMatrix (I := I) g α b k l := by
   classical
   set A : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
     coBchangeChartα (I := I) α B with hA_def
@@ -334,11 +341,11 @@ private lemma sum_coBchangeChartα_eq_invGram
   rw [Matrix.mul_assoc] at hA_left_inv
   have hAtA_eq_Ginv : A.transpose * A = G⁻¹ := (Matrix.inv_eq_right_inv hA_left_inv).symm
   have hGinv_eq : G⁻¹ =
-      DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix (I := I) g α b := by
-    have hmul : DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix
+      DifferentialGeometry.Geometry.Operator.chartInvGramMatrix (I := I) g α b := by
+    have hmul : DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
         (I := I) g α b * G = 1 := by
       rw [hG_def]
-      exact DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix_mul_chartGramMatrix
+      exact DifferentialGeometry.Geometry.Operator.chartInvGramMatrix_mul_chartGramMatrix
         (I := I) g α hb
     exact (Matrix.inv_eq_left_inv hmul).symm
   have heval : (A.transpose * A) k l = G⁻¹ k l := by rw [hAtA_eq_Ginv]
@@ -348,7 +355,7 @@ private lemma sum_coBchangeChartα_eq_invGram
   rw [heval, hGinv_eq]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+  [BoundarylessManifold I M] [T2Space M] in
 theorem orthonormal_basis_bilin_trace_chartα {A : Type*} [AddCommGroup A] [Module ℝ A]
     [TopologicalSpace A] [IsTopologicalAddGroup A] [ContinuousSMul ℝ A]
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
@@ -359,7 +366,7 @@ theorem orthonormal_basis_bilin_trace_chartα {A : Type*} [AddCommGroup A] [Modu
       g.inner b (B i) (B j) = if i = j then (1 : ℝ) else 0) :
     ∑ i : Fin (Module.finrank ℝ E), Hb (B i) (B i) =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
-        DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix (I := I) g α b k l •
+        DifferentialGeometry.Geometry.Operator.chartInvGramMatrix (I := I) g α b k l •
           Hb (chartBasisVecFiber (I := I) α k b)
             (chartBasisVecFiber (I := I) α l b) := by
   classical
@@ -390,8 +397,8 @@ theorem orthonormal_basis_bilin_trace_chartα {A : Type*} [AddCommGroup A] [Modu
 
 end ChartInvGramBilinearTrace
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

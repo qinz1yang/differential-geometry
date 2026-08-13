@@ -9,43 +9,6 @@ import DifferentialGeometry.Analysis.Integration.Measure.Rellich
 import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 import Mathlib.Topology.UniformSpace.UniformEmbedding
 
-/-!
-# Manifold-side scaffolding for the Banach completeness of `W^{k,p}_chart(M)`
-
-This file collects scaffolding lemmas tying together the existing chart-target
-Euclidean Sobolev infrastructure (per-chart Banach completeness on Euclidean
-chart targets, in `Euclidean/Completeness/IteratedSobolevBanach.lean`) and the
-manifold-side
-pullback construction (`pullbackToManifold` in `MeasurablePullback.lean`),
-needed to assemble a manifold limit for a Cauchy sequence in the chart-based
-Sobolev space `WkpChart`.
-
-The pieces developed here are:
-
-1. The εδ-Cauchy condition on `wkpNormChart` derived from a Mathlib `CauchySeq`
-   in the seminormed `WkpChart`.
-2. The per-chart Cauchy property in Euclidean `wkpNorm` on each chart target.
-3. The per-chart Euclidean Banach completeness application yielding, for each
-   chart `α`, a Sobolev limit `chartLimit α : EuclN → ℝ` in
-   `MemWkp k p (chartTargetEuclid α)`.
-4. The fact that `chartLimit α` vanishes almost everywhere outside the fixed
-   compact Euclidean image of the partition-of-unity kernel.
-5. The manifold-side candidate limit
-   `manifoldLimitFun(x) := Σ_{β ∈ chartAtlasPOU_finset} pullbackToManifold β
-   (chartLimit β) (x)`,
-   defined as a finite POU-pulled-back sum.
-6. The pointwise per-iterate POU decomposition
-   `wkpChartFun u (x) = Σ_β pullbackToManifold β (chartPushed β (wkpChartFun u))
-   (x)`.
-
-These structural pieces are correct and self-contained; they form the bridge
-layer for the eventual `CompleteSpace (WkpChartQuot _)` instance, whose final
-assembly relies on additional chart-transition Sobolev bounds (a quantitative
-analogue of `wkpNorm_smul_smooth_bounded_le_one` valid at arbitrary `k` and
-across chart-transition diffeomorphisms applied to weak-Sobolev inputs). That
-final assembly is left to follow-up work.
--/
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold Function
@@ -72,7 +35,7 @@ variable [NeZero (Module.finrank ℝ E)]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNormChart_cauchy_of_seminormCauchySeq
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
     (hf : CauchySeq f) :
@@ -108,7 +71,7 @@ theorem wkpNormChart_cauchy_of_seminormCauchySeq
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushed_cauchy_of_wkpNormChart_cauchy
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
     (h_cauchy : ∀ ε > 0, ∃ N, ∀ m n, N ≤ m → N ≤ n →
@@ -164,7 +127,7 @@ theorem chartPushed_cauchy_of_wkpNormChart_cauchy
 
 theorem exists_chart_limit
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -202,7 +165,7 @@ theorem exists_chart_limit
 
 noncomputable def chartLimit
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -216,7 +179,7 @@ noncomputable def chartLimit
 
 lemma chartLimit_memWkp
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -233,7 +196,7 @@ lemma chartLimit_memWkp
 
 lemma chartLimit_tendsto
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -254,12 +217,9 @@ lemma chartLimit_tendsto
       atTop (𝓝 0) :=
   (exists_chart_limit (I := I) (M := M) g hp_one hp_top h_cauchy α).choose_spec.2
 
-/-- The chosen per-chart Sobolev limit vanishes almost everywhere, inside the
-chart target, away from the fixed compact Euclidean image of the support of
-the canonical partition-of-unity factor. -/
 lemma chartLimit_ae_zero
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -384,12 +344,9 @@ lemma chartLimit_ae_zero
   exact tendsto_nhds_unique hy_tendsto
     (by simpa only [hzero] using tendsto_const_nhds)
 
-/-- The candidate manifold limit, defined as the finite POU-pulled-back sum of
-the per-chart Euclidean Sobolev limits. The sum is over `chartAtlasPOU_finset`,
-a finite set on a compact manifold. -/
 noncomputable def manifoldLimitFun
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
     {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}
@@ -405,7 +362,7 @@ noncomputable def manifoldLimitFun
 omit [NeZero (Module.finrank ℝ E)] in
 lemma wkpChartFun_eq_finset_sum_pullback
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     (u : WkpChart (I := I) (M := M) g k p hp) :
     (fun x : M => wkpChartFun u x) =

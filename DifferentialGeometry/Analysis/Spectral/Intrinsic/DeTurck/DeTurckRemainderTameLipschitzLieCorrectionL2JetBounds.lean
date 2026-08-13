@@ -1,19 +1,25 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieCorrectionMixedFeedBounds
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open LieCorr0Core
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -59,7 +65,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   connDiffOp_homSection_contMDiff metricConnDiffLoweredFib metricConnDiffLoweredFib_toModel
   metricConnDiffLoweredFib_contMDiff domDomCongrFibRank domDomCongrFibRank_apply
   tensor0SProdKappaFib tensor0SProdKappaFib_apply)
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
 section LieCorr0BoundsF4
@@ -195,7 +201,7 @@ theorem lieCorr0Field_realizedFam_jetL2_perOrder_ballUniform
   obtain ⟨hc00, hc0L2⟩ := hc0 g₁ Pc htie hδP_le hδP_nn hδP_bound hPball
   obtain ⟨hcb0, hcbL2⟩ := hcb g₁ Pc htie hδP_le hδP_nn hδP_bound hPball
   have hWi : ‖iteratedCovGrad (I := I) g₀ 1 1 i
-      (DifferentialGeometry.Integral.Connection.deTurckLieWEndoInsert
+      (DifferentialGeometry.PDE.RicciFlow.deTurckLieWEndoInsert
         (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2 ≤ PW i := by
     rw [hg₁_def]
     exact hPW T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
@@ -268,7 +274,7 @@ theorem lieCorr0Field_realizedFam_jetL2_perOrder_ballUniform
       rw [lc0b_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g_bg]
       have k1 := lc0b_normSq_icg_sub_le (I := I) (M := M) g₀ 1 1 i
         (lc0CdVField (I := I) (M := M) g₀ g₁ g₀ - lc0CdVField (I := I) (M := M) g₀ g₁ g_bg)
-        (DifferentialGeometry.Integral.Connection.deTurckLieWEndoInsert
+        (DifferentialGeometry.PDE.RicciFlow.deTurckLieWEndoInsert
           (I := I) (M := M) g₀ g₁ g₀)
       have k2 := lc0b_normSq_icg_sub_le (I := I) (M := M) g₀ 1 1 i
         (lc0CdVField (I := I) (M := M) g₀ g₁ g₀) (lc0CdVField (I := I) (M := M) g₀ g₁ g_bg)
@@ -369,7 +375,7 @@ theorem lieCorr0Field_realizedFam_rfns_order0_ballUniform
   obtain ⟨Λcb, Fcb, hΛcb_nn, hFcb_nn, hcb⟩ :=
     lc0b_cdVField_feed (I := I) (M := M) g₀ g_bg a ha_super hR hδ₁_lt
   obtain ⟨ΛW, hΛW_nn, hΛW⟩ :=
-    DifferentialGeometry.Integral.Connection.deTurckLieWEndoInsert_realizedFam_order0_ballUniform
+    DifferentialGeometry.Analysis.Sobolev.deTurckLieWEndoInsert_realizedFam_order0_ballUniform
       (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -435,7 +441,7 @@ theorem lieCorr0Field_realizedFam_rfns_order0_ballUniform
   obtain ⟨hc00, hc0L2⟩ := hc0 g₁ Pc htie hδP_le hδP_nn hδP_bound hPball
   obtain ⟨hcb0, hcbL2⟩ := hcb g₁ Pc htie hδP_le hδP_nn hδP_bound hPball
   have hWx : riemannianFiberNormSq (I := I) (M := M) g₀ 1 1 x
-      ((DifferentialGeometry.Integral.Connection.deTurckLieWEndoInsert
+      ((DifferentialGeometry.PDE.RicciFlow.deTurckLieWEndoInsert
         (I := I) (M := M) g₀ g₁ g₀).toSection x) ≤ ΛW := by
     rw [hg₁_def]
     exact hΛW T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
@@ -504,7 +510,7 @@ theorem lieCorr0Field_realizedFam_rfns_order0_ballUniform
       rw [lc0b_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g_bg]
       have k1 := lc0b_rfns_toSection_sub_le (I := I) (M := M) g₀ 1 1
         (lc0CdVField (I := I) (M := M) g₀ g₁ g₀ - lc0CdVField (I := I) (M := M) g₀ g₁ g_bg)
-        (DifferentialGeometry.Integral.Connection.deTurckLieWEndoInsert
+        (DifferentialGeometry.PDE.RicciFlow.deTurckLieWEndoInsert
           (I := I) (M := M) g₀ g₁ g₀) x
       have k2 := lc0b_rfns_toSection_sub_le (I := I) (M := M) g₀ 1 1
         (lc0CdVField (I := I) (M := M) g₀ g₁ g₀) (lc0CdVField (I := I) (M := M) g₀ g₁ g_bg) x
@@ -544,6 +550,6 @@ end LieCorr0BoundsF4
 
 end LieCorr0BoundsAll
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

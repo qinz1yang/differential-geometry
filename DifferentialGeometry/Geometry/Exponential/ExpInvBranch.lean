@@ -1,19 +1,10 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoIFT
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Fixed-first inverse branches of the intrinsic exponential
-
-This file packages one smooth local inverse branch of the intrinsic
-exponential with a fixed base point.  It is the canonical branch object for
-fixed-metric radial calculations at a possibly nonzero launch vector.
-
-No injectivity radius or quantitative source radius is stored in the object.
-Those bounds belong to the producer that selects a branch for a geometric
-application.
--/
 
 noncomputable section
 
@@ -32,8 +23,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
-/-- Passing a map from the model space through the centered target chart does
-not change its derivative. -/
 theorem hasFDerivAt_chart
     {f : E → M} {u : E}
     (hf : MDifferentiableAt 𝓘(Real, E) I f u) :
@@ -93,15 +82,9 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-/-- A selected smooth local inverse branch of the intrinsic exponential with
-fixed base point `p`.
-
-The forward map is stored as a `C∞` partial diffeomorphism and is required to
-agree with the intrinsic exponential on its open source. -/
 structure ExpInvBranch
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) where
   hom : PartialDiffeomorph 𝓘(Real, E) I E M ∞
   hom_eq :
@@ -114,7 +97,6 @@ structure ExpInvBranch
 
 namespace ExpInvBranch
 
-/-- The totalized inverse selected by a fixed-first exponential branch. -/
 def inv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -122,7 +104,6 @@ def inv
     {p : M} (B : ExpInvBranch (I := I) g hEnorm p) : M → E :=
   B.hom.symm
 
-/-- The target domain on which the selected inverse laws hold. -/
 def dom
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -130,8 +111,6 @@ def dom
     {p : M} (B : ExpInvBranch (I := I) g hEnorm p) : Set M :=
   B.hom.target
 
-/-- The selected branch is a right inverse of the intrinsic exponential on
-its target. -/
 theorem right_inv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -147,8 +126,6 @@ theorem right_inv
       B.hom (B.inv y) := B.hom_eq hu
     _ = y := by simpa only [inv] using B.hom.right_inv hy
 
-/-- The selected branch is a left inverse of the intrinsic exponential on
-its source. -/
 theorem left_inv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -165,7 +142,6 @@ theorem left_inv
       B.inv (B.hom u) := congrArg B.inv (B.hom_eq hu)
     _ = u := by simpa only [inv] using B.hom.left_inv hu
 
-/-- The selected fixed-first inverse is smooth on its target. -/
 theorem inv_inf
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -178,8 +154,7 @@ end ExpInvBranch
 
 private theorem branch_of_inj
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {p : M} {u : E}
     (hu : Function.Injective
       (mfderiv 𝓘(Real, E) I
@@ -234,12 +209,9 @@ private theorem branch_of_inj
       Ψ.open_source huΨ hf.contMDiffOn hinv_source
   exact ⟨⟨Φ, hEqΦ⟩, huΦ⟩
 
-/-- A nonconjugate launch vector admits a selected smooth fixed-first inverse
-branch of the intrinsic exponential. -/
 theorem branch_of_not_conj
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {p : M} {u : TangentSpace I p}
     (hu : ¬ IsConjVec (I := I) g hEnorm p (u : E)) :
     ∃ B : ExpInvBranch (I := I) g hEnorm p,
@@ -250,8 +222,6 @@ theorem branch_of_not_conj
 
 namespace ExpInvBranch
 
-/-- Every vector in the source of a selected fixed-first branch is
-nonconjugate. -/
 theorem not_conj
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),

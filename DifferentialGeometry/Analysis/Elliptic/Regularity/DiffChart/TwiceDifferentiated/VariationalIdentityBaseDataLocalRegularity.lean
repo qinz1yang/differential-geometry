@@ -7,6 +7,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.Residual
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -157,6 +158,7 @@ lemma exists_smooth_global_extension_chart
   exists_smooth_global_extension (I := I) (M := M) (φ := φ) α
     hφ_chart hK_compact hK_in
 
+omit [SigmaCompactSpace M] in
 lemma base_u_chart_locally_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -180,6 +182,7 @@ lemma base_u_chart_locally_memLp
     h_weighted.smul_measure hc_ne_top
   exact h_smul.mono_measure h_le
 
+omit [SigmaCompactSpace M] in
 lemma base_f_chart_locally_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -203,6 +206,7 @@ lemma base_f_chart_locally_memLp
     h_weighted.smul_measure hc_ne_top
   exact h_smul.mono_measure h_le
 
+omit [SigmaCompactSpace M] in
 lemma base_weak_partial_locally_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}

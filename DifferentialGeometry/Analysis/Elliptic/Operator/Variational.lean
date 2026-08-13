@@ -25,7 +25,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def H1ComplBilin (g : SmoothRiemannianMetric I M) :
     H1Compl g →L[ℝ] H1Compl g →L[ℝ] ℝ :=

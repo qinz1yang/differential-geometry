@@ -1,20 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.ChartSobolevDensity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.CompChainRuleK
 
-/-!
-# Uniform chart-Sobolev bounds from compactly supported Frechet jets
-
-This file records the quantitative Euclidean bridge needed when a geometric
-argument supplies uniform pointwise bounds for a finite jet of a family of
-smooth chart functions.
-
-If every member of a family is supported in one compact set `K` contained in
-an open set `Omega`, and all Frechet derivatives through order `k` have one
-pointwise bound `C`, then the family has one finite `W^{k,p}` bound on `Omega`.
-The proof uses the canonical smooth weak-derivative realization and estimates
-each classical coordinate partial by the corresponding Frechet derivative.
--/
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology
@@ -30,13 +16,6 @@ variable {d : ℕ} [NeZero d]
 local notation "EuclN" => EuclideanSpace ℝ (Fin d)
 
 omit [NeZero d] in
-/-- A family of smooth functions with one compact support and one finite-jet
-bound has a uniform finite chart-Sobolev norm.  The displayed witness is the
-finite sum, over all coordinate partials of order at most `k`, of
-
-`volume K ^ (1 / p.toReal) * ENNReal.ofReal C`.
-
-No boundedness assumption on the ambient open set is needed. -/
 theorem wkp_bdd_of_jet
     {ι : Type*} {Ω K : Set EuclN}
     (hΩ : IsOpen Ω) (hK : IsCompact K) (hKΩ : K ⊆ Ω)

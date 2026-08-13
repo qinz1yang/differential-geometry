@@ -2,17 +2,12 @@ import DifferentialGeometry.Geometry.Metric.Sphere.RoundMetric
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Operator.Hessian
 
-
-
-
-
-
-
 noncomputable section
 
 open Manifold Metric Module Set
 open scoped Manifold RealInnerProductSpace
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry
 namespace Geometry
@@ -37,11 +32,6 @@ theorem extChartAt_symm_zero_sphere (x₀ : sphere (0 : E) 1) :
   simp only [norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, zero_add,
     smul_zero, zero_sub, coe_neg_sphere]
   module
-
-
-
-
-
 
 omit [NeZero n] in
 theorem chartGramOnE_roundMetric (x₀ : sphere (0 : E) 1)

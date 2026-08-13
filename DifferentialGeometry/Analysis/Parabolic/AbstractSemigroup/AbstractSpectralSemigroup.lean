@@ -245,6 +245,30 @@ theorem abstractSpectralSemigroup_apply_of_nonneg (b : HilbertBasis ι ℝ X)
   unfold abstractSpectralSemigroup
   rw [dif_pos ht]; rfl
 
+theorem abstractSpectralSemigroup_repr_apply (b : HilbertBasis ι ℝ X)
+    {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : 0 ≤ t)
+    (v : X) (i : ι) :
+    (b.repr (abstractSpectralSemigroup b hlam t v) : ι → ℝ) i =
+      heatCoeff lam t i * (b.repr v : ι → ℝ) i := by
+  classical
+  rw [b.repr_apply_apply, b.repr_apply_apply,
+    abstractSpectralSemigroup_apply_of_nonneg b hlam ht]
+  have hsum := summable_heatTerm b hlam ht v
+  change (innerSL (𝕜 := ℝ) (E := X) (b i))
+      (∑' j : ι, heatCoeff lam t j • ⟪b j, v⟫_ℝ • b j) = _
+  rw [(innerSL (𝕜 := ℝ) (E := X) (b i)).map_tsum hsum]
+  have horth := (orthonormal_iff_ite (𝕜 := ℝ) (v := b)).mp b.orthonormal
+  simp_rw [innerSL_apply_apply, inner_smul_right, horth]
+  have heq : (fun j : ι =>
+      heatCoeff lam t j * (⟪b j, v⟫_ℝ * if i = j then 1 else 0)) =
+      (fun j => if j = i then heatCoeff lam t j * ⟪b j, v⟫_ℝ else 0) := by
+    funext j
+    by_cases hji : j = i
+    · subst j
+      simp
+    · simp [hji, Ne.symm hji]
+  rw [heq, tsum_ite_eq]
+
 theorem abstractSpectralSemigroup_of_neg (b : HilbertBasis ι ℝ X)
     {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : t < 0) :
     abstractSpectralSemigroup b hlam t = 0 := by

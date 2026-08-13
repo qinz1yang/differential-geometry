@@ -515,6 +515,7 @@ noncomputable def chosenFChartDeriv
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
       (I := I) (M := M) α)
 
+omit [SigmaCompactSpace M] in
 lemma chosenFChartDeriv_isWeakPartial
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -537,6 +538,7 @@ lemma chosenFChartDeriv_isWeakPartial
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
     h_memW1p direction
 
+omit [SigmaCompactSpace M] in
 private lemma chosenFChartDeriv_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -556,6 +558,7 @@ private lemma chosenFChartDeriv_memLp
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
     h_memW1p direction
 
+omit [SigmaCompactSpace M] in
 private lemma chosenFChartDeriv_locally_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}

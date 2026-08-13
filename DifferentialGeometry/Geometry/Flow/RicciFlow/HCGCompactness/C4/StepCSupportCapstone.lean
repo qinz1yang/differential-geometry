@@ -1,18 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCProducers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCHatReadout
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalLiveConv
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -35,10 +26,6 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-
-
-
 
 def HasSuppCmFin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -101,8 +88,6 @@ def HasSuppCmFin
           HasHatCmStrictAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
             (mu alpha x) pts join x (radSeq alpha a b x) hcm
 
-
-
 theorem HasSuppCmFin.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
@@ -146,10 +131,6 @@ theorem HasSuppCmFin.subseq
       (ψ b) (hb.trans (hψ.id_le b)) alpha x hx
     simpa only [radSeq', NetLimitData.subseq_phi,
       Function.comp_apply] using hout
-
-
-
-
 
 def HasSuppCmData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -221,8 +202,6 @@ def HasSuppCmData
     HasSuppCmFin (I := I) inp.decay P Lphi inp.pack r n
       hcomplete hconn q δ sourceBall sourcePatch localWeight pts
 
-
-
 theorem HasSuppCmData.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {inp : MetricCompactnessInputs (I := I) X}
@@ -251,9 +230,6 @@ theorem HasSuppCmData.subseq
   · have hsub := hcm.subseq hψ
     simpa only [NetLimitData.subseq, Function.comp_apply,
       seqCenterD_subseq, NetLimitData.hatSourceBall_subseq, totalPts] using hsub
-
-
-
 
 def HasSourceCmFin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -312,8 +288,6 @@ def HasSourceCmFin
             HasHatCmStrictAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
               (mu alpha x) pts join x (radSeq alpha a b x) hcm
 
-
-
 theorem HasSuppCmFin.toSource
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
@@ -342,9 +316,6 @@ theorem HasSuppCmFin.toSource
   intro a ha b hb x hx
   rcases Set.mem_iUnion.mp (hcover hx) with ⟨alpha, hxalpha⟩
   exact ⟨alpha, hxalpha, hN a ha b hb alpha x hxalpha⟩
-
-
-
 
 theorem MetricCompactBase.exists_supp_cm_fin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -615,11 +586,6 @@ theorem MetricCompactBase.exists_supp_cm_fin
           (fun alpha => hsmall alpha epsilon hepsilon)
       · exact finite_cover_two_tail hcover _ hcap
 
-
-
-
-
-
 theorem MetricCompactBase.exists_supp_diag_fin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
@@ -878,10 +844,6 @@ theorem MetricCompactBase.exists_supp_diag_fin
   exact ⟨hconvTheta, hstable, hphys, h8, hradD, hradRatio, hqdata, hqWide, hqAcc,
     herr, hinvErr, hcore,
     hcenter, hmetric, hbranchTheta, hscaleAll, hpair, hcapAll⟩
-
-
-
-
 
 theorem MetricCompactBase.exists_cm_on_source
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

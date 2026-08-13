@@ -1,12 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopJacobi
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialGram
-
-/-!
-# Radial input for Bishop comparison
-
-This file transfers endpoint lower bounds for scaled radial Jacobi fields to
-the positive pole-density ratio required by the Jacobi Bishop comparison.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -164,8 +158,6 @@ private lemma quad_sub
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
-/-- Endpoint radial Jacobi fields in every unit chart direction retain a
-uniform positive length for launch points tending to the pole. -/
 theorem exists_radial_base
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
     ∃ B : ℝ, 0 < B ∧
@@ -307,9 +299,6 @@ theorem exists_radial_base
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
-/-- A radial Jacobi field launched orthogonally to the radial direction remains
-orthogonal to the radial velocity while the exponential map is in its `C²`
-range. -/
 lemma radialJacobi_perp
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
     (htx : ‖t • x‖ < expMapC2Radius (I := I) g p)
@@ -348,8 +337,6 @@ lemma radialJacobi_perp
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
-/-- The first covariant derivative of a transverse radial Jacobi field is also
-orthogonal to the radial velocity. -/
 lemma radialJacobi_dperp
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {t : ℝ}
     (hx : ‖x‖ < expMapC2Radius (I := I) g p)
@@ -406,8 +393,6 @@ lemma radialJacobi_dperp
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
-/-- A uniform endpoint lower bound for the scaled radial family gives the
-positive density-ratio input at the pole. -/
 theorem radialRatio_ge
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) (v : ι → E)
@@ -497,11 +482,6 @@ theorem radialRatio_ge
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
-/-- A unit-direction endpoint lower bound for the full chart model basis gives
-the positive pole-density ratio for any linearly independent finite family.
-
-The loss is exactly the positive lower bound of the finite-dimensional
-coefficient map from the supplied family to the chart model basis. -/
 theorem radialRatio_basis
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) (v : ι → E)
@@ -632,8 +612,6 @@ theorem radialRatio_basis
 
 omit [T2Space M]
   [SigmaCompactSpace M] in
-/-- The radial density ratio has a positive pole lower bound for every linearly
-independent finite family, with no extra endpoint assumption. -/
 theorem radialRatio_auto
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) (v : ι → E)
@@ -648,9 +626,6 @@ theorem radialRatio_auto
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- On one common normal-coordinate radius, every nonzero radial direction and
-small linearly independent transverse family satisfies the Bishop mean-curvature
-comparison and radial density-ratio monotonicity under the Ricci lower bound. -/
 theorem exists_radial_cmp
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -806,8 +781,6 @@ theorem exists_radial_cmp
         hγ hVdiff hLI hWronsk hmean
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- Antitonicity of a transverse radial-Jacobi density ratio transfers to the
-corresponding normal-coordinate density ratio. -/
 theorem normalRatio_anti
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (p : M) (u : E)
@@ -830,7 +803,7 @@ theorem normalRatio_anti
         r ^ Fintype.card ι * normalChartDensity (I := I) g p (r • u) /
           hypDensity q (Fintype.card ι) r)
       (Ioo (0 : ℝ) b) := by
-  obtain ⟨c, hc, hdensity⟩ :=
+  obtain ⟨c, hc, _hcval, hdensity⟩ :=
     normalDensity_curve (I := I) g p u B hBu hperp hsrc hrad
   intro r hr s hs hrs
   calc
@@ -852,7 +825,6 @@ theorem normalRatio_anti
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- Mean-curvature projection of `exists_radial_cmp`. -/
 theorem exists_radial_mean
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]

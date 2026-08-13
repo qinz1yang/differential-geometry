@@ -3,27 +3,6 @@ import Mathlib.Analysis.Calculus.ContDiff.Bounds
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
@@ -33,12 +12,6 @@ open scoped ContDiff
 variable {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
-
-
-
-
-
-
 
 theorem mapDerivNorm_fderivApply_le (r : ℕ) (v : E) {Φk Φinf : E → F} {x : E}
     (hk : ContDiff ℝ (∞ : WithTop ℕ∞) Φk) (hinf : ContDiff ℝ (∞ : WithTop ℕ∞) Φinf) :
@@ -62,10 +35,6 @@ theorem mapDerivNorm_fderivApply_le (r : ℕ) (v : E) {Φk Φinf : E → F} {x :
     _ = ‖v‖ * ‖iteratedFDeriv ℝ (r + 1) g x‖ := by rw [norm_iteratedFDeriv_fderiv]
     _ = ‖v‖ * mapDerivNorm (r + 1) Φk Φinf x := by rw [mapDerivNorm, hg]
 
-
-
-
-
 theorem MapCInfConvOnCompacts.fderivApply {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
     (h : MapCInfConvOnCompacts U Φ Φinf)
     (hΦ : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k))
@@ -83,9 +52,6 @@ theorem MapCInfConvOnCompacts.fderivApply {U : Set E} {Φ : ℕ → E → F} {Φ
     _ ≤ ε := by
         rw [← mul_div_assoc, div_le_iff₀ (by positivity : (0:ℝ) < ‖v‖ + 1)]
         nlinarith [norm_nonneg v, hε.le]
-
-
-
 
 theorem MapCInfConvOnCompacts.fderivOn {U : Set E} (hU : IsOpen U)
     {Φ : ℕ → E → F} {Φinf : E → F}
@@ -119,8 +85,6 @@ theorem MapCInfConvOnCompacts.fderivOn {U : Set E} (hU : IsOpen U)
   rw [hnorm]
   exact hk0 k hk (r + 1) (by omega) x hx
 
-
-
 theorem contDiff_clm_flip :
     ContDiff ℝ (∞ : WithTop ℕ∞) (ContinuousLinearMap.flip :
       (E →L[ℝ] F →L[ℝ] ℝ) → (F →L[ℝ] E →L[ℝ] ℝ)) := by
@@ -142,9 +106,6 @@ theorem contDiff_clm_flip :
     LinearIsometryEquiv.contDiff (𝕜 := ℝ) (n := ∞) flipIso
   simpa [A, B, flipIso] using h
 
-
-
-
 noncomputable def pullbackForm
     (q : (F →L[ℝ] F →L[ℝ] ℝ) × (E →L[ℝ] F)) : E →L[ℝ] E →L[ℝ] ℝ :=
   q.1.bilinearComp q.2 q.2
@@ -154,8 +115,6 @@ noncomputable def pullbackForm
 theorem pullbackForm_apply (B : F →L[ℝ] F →L[ℝ] ℝ) (D : E →L[ℝ] F) (u v : E) :
     pullbackForm (B, D) u v = B (D u) (D v) :=
   rfl
-
-
 
 theorem pullbackForm.contDiff :
     ContDiff ℝ (∞ : WithTop ℕ∞) (pullbackForm (E := E) (F := F)) := by
@@ -171,8 +130,6 @@ theorem pullbackForm.contDiff :
         (q.1.comp q.2).flip.comp q.2) :=
     hflip₁.clm_comp contDiff_snd
   exact contDiff_clm_flip.comp hcomp₂
-
-
 
 theorem MapCPConvOn.succ_of_fderiv {U K : Set E} {p : ℕ} (hU : IsOpen U)
     (hKU : K ⊆ U) {Φ : ℕ → E → F} {Φinf : E → F}
@@ -210,9 +167,6 @@ theorem MapCPConvOn.succ_of_fderiv {U K : Set E} {p : ℕ} (hU : IsOpen U)
       rw [← hnorm]
       exact hk1 k (le_trans (le_max_right _ _) hk) r (by omega) x hx
 
-
-
-
 theorem MapCInfConvOnCompacts.add {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf Ψinf : E → F}
     (hΦ : MapCInfConvOnCompacts U Φ Φinf) (hΨ : MapCInfConvOnCompacts U Ψ Ψinf)
     (hΦc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k)) (hΦic : ContDiff ℝ (∞ : WithTop ℕ∞) Φinf)
@@ -245,9 +199,6 @@ theorem MapCInfConvOnCompacts.add {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf �
         · exact hk2 k (le_trans (le_max_right _ _) hk) r hr x hx
     _ = ε := by ring
 
-
-
-
 theorem MapCInfConvOnCompacts.sub {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf Ψinf : E → F}
     (hΦ : MapCInfConvOnCompacts U Φ Φinf) (hΨ : MapCInfConvOnCompacts U Ψ Ψinf)
     (hΦc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k)) (hΦic : ContDiff ℝ (∞ : WithTop ℕ∞) Φinf)
@@ -279,13 +230,6 @@ theorem MapCInfConvOnCompacts.sub {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf �
         · exact hk1 k (le_trans (le_max_left _ _) hk) r hr x hx
         · exact hk2 k (le_trans (le_max_right _ _) hk) r hr x hx
     _ = ε := by ring
-
-
-
-
-
-
-
 
 theorem MapCInfConvOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ} {Φlim : E → ℝ}
     (h : MapCInfConvOnCompacts U Φ Φlim) {g : E → ℝ} (hg : ContDiff ℝ (∞ : WithTop ℕ∞) g)
@@ -341,10 +285,6 @@ theorem MapCInfConvOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ} {Φli
       = 2 ^ r * Bg * ε / (2 ^ p * Bg + 1) from by ring, div_le_iff₀ hD]
   nlinarith [mul_nonneg (mul_nonneg hε.le (sub_nonneg.mpr h2r)) hBg0, hε.le]
 
-
-
-
-
 theorem MapCInfConvOnCompacts.sum {ι : Type*} {U : Set E} (s : Finset ι)
     {Φ : ι → ℕ → E → F} {Φinf : ι → E → F}
     (h : ∀ i, MapCInfConvOnCompacts U (Φ i) (Φinf i))
@@ -369,8 +309,6 @@ theorem MapCInfConvOnCompacts.sum {ι : Type*} {U : Set E} (s : Finset ι)
     exact MapCInfConvOnCompacts.add (h a) ih (fun k => hc a k) (hic a)
       (fun k => ContDiff.sum (fun i _ => hc i k)) (ContDiff.sum (fun i _ => hic i))
 
-
-
 theorem MapCPConvOn.congr {U K : Set E} {p : ℕ}
     {Φ Φ' : ℕ → E → F} {Φinf Φ'inf : E → F}
     (h : MapCPConvOn K p Φ Φinf) (hU : IsOpen U) (hKU : K ⊆ U)
@@ -389,19 +327,12 @@ theorem MapCPConvOn.congr {U K : Set E} {p : ℕ}
   rw [hval]
   exact hk0 k hk r hr x hx
 
-
-
-
 theorem MapCInfConvOnCompacts.congr {U : Set E} {Φ Φ' : ℕ → E → F} {Φinf Φ'inf : E → F}
     (h : MapCInfConvOnCompacts U Φ Φinf) (hU : IsOpen U)
     (hΦ : ∀ k, Set.EqOn (Φ' k) (Φ k) U) (hΦinf : Set.EqOn Φ'inf Φinf U) :
     MapCInfConvOnCompacts U Φ' Φ'inf := by
   intro K hK hKU p
   exact (h K hK hKU p).congr hU hKU hΦ hΦinf
-
-
-
-
 
 theorem MapCInfConvOnCompacts.congr_eventually
     {U : Set E} {Φ Φ' : ℕ → E → F} {Φinf Φ'inf : E → F}

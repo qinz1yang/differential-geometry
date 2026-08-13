@@ -1,13 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarNonautSpan
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarPotentialPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjPotential
-
-/-!
-# Compact-span scalar critical estimate
-
-This file combines the prescribed-length moving-Laplacian estimate with the
-fixed-background scalar-potential estimate on a compact regular-time slab.
--/
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -20,9 +15,9 @@ namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -30,13 +25,10 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-/-- On every sufficiently short prescribed backward interval in a compact
-regular-time slab, the scalar conjugate-heat perturbation has one
-support-independent finite-core energy bound at every Sobolev order. -/
 theorem scalar_crit_span
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -81,7 +73,7 @@ theorem scalar_crit_span
                             (v.coeff i) ^ 2) := by
   classical
   obtain ⟨ρ, hρ, hρone, hA2span⟩ :=
-    cc_a2_span (I := I) (M := M) S.family hS.smoothMetric hab
+    cc_a2_span (I := I) (M := M) S.family.metric hS.smoothMetric hab
   refine ⟨ρ, hρ, hρone, ?_⟩
   intro T hT h hh hhρ hleft
   obtain ⟨hreg, hA2⟩ := hA2span T hT h hh hhρ hleft

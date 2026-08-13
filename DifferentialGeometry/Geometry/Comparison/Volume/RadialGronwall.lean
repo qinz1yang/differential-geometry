@@ -5,15 +5,12 @@ import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -71,8 +68,6 @@ omit [NeZero (Module.finrank ℝ E)] in
   rw [zero_smul]
   exact expMap_zero (I := I) g p
 
-
-
 omit [T2Space M] in
 omit [SigmaCompactSpace M] in
 theorem exists_radialJacobi_diff
@@ -89,8 +84,6 @@ theorem exists_radialJacobi_diff
               (radialJacobiField (I := I) g p x w) s) t) t) := by
   simpa [radialCurve, radialJacobiField] using
     DifferentialGeometry.Geometry.Riemannian.exists_jacobi_diff (I := I) g p
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
@@ -114,8 +107,6 @@ theorem radial_mem_expBall
       _ < ρ := hxρ
   · rfl
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [T2Space (TangentBundle I M)] in
 lemma exists_radialFrame
@@ -136,7 +127,7 @@ lemma exists_radialFrame
           if i = j then (1 : ℝ) else 0) := by
   classical
   obtain ⟨basis, hON0⟩ :=
-    DifferentialGeometry.Integral.Connection.exists_gOrthonormalBasis
+    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
       (I := I) g (radialCurve (I := I) g p x 0)
   obtain ⟨F, _hF0, hFdiff, hFpar, hFON⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_parallel_frame
@@ -146,8 +137,6 @@ lemma exists_radialFrame
   intro t ht
   simp only [Fintype.card_fin]
   rfl
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma radialCurve_contMDiffAt_Icc
@@ -172,8 +161,6 @@ lemma radialCurve_contMDiffAt_Icc
   simpa [radialCurve] using
     (DifferentialGeometry.Geometry.Riemannian.radialCurve_contMDiffAt2
       (I := I) g p x t hnorm)
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma radialCurve_contMDiffOn_Icc
@@ -212,9 +199,6 @@ lemma radialC2OnBallIcc
     (by
       intro t ht
       exact ⟨ht.1, le_trans ht.2 hb⟩)
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma exists_radial_clip
@@ -259,9 +243,6 @@ lemma exists_radial_clip
     rw [norm_smul, Real.norm_eq_abs]
     exact lt_of_le_of_lt
       (mul_le_mul_of_nonneg_right (htau_bound t) (norm_nonneg x)) hprod
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma exists_rclip_nbhd
@@ -320,9 +301,6 @@ lemma exists_rclip_nbhd
     exact lt_of_le_of_lt
       (mul_le_mul_of_nonneg_right (htau_bound t) (norm_nonneg x)) hprod
 
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma radial_clip_contMDiff
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) (tau : ℝ → ℝ)
@@ -344,9 +322,6 @@ lemma radial_clip_contMDiff
     expMap_contMDiffAt2_of_norm_lt_radius (I := I) g p (hradius t)
   simpa using hexpC2.comp t (hsmul.contMDiffAt.of_le ENat.LEInfty.out)
 
-
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma exists_radial_ext
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {b : ℝ}
@@ -364,8 +339,6 @@ lemma exists_radial_ext
       radialCurve (I := I) g p x t
     rw [htau_eq ht]
     rfl
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma exists_rext_nbhd
@@ -386,8 +359,6 @@ lemma exists_rext_nbhd
     rw [htau_eq ht]
     rfl
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radial_speed_sq_eq
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
@@ -400,8 +371,6 @@ theorem radial_speed_sq_eq
   simpa [radialCurve, curveVelocity] using
     (DifferentialGeometry.Geometry.Riemannian.radialSpeedSq_eq_inner
       (I := I) g p x hx t ht)
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem radial_speed_le
@@ -417,8 +386,6 @@ theorem radial_speed_le
   rw [radial_speed_sq_eq (I := I) g p x hx ht01]
   exact hVb
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
 private theorem exists_gON_tangentBasis_E
@@ -426,11 +393,8 @@ private theorem exists_gON_tangentBasis_E
     ∃ basis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I y),
       ∀ i j, g.inner y (basis i) (basis j) = if i = j then (1 : ℝ) else 0 := by
   simpa [show Module.finrank ℝ (TangentSpace I y) = Module.finrank ℝ E from rfl]
-    using DifferentialGeometry.Integral.Connection.exists_gOrthonormalBasis
+    using DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
       (I := I) g y
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem exists_jacobi_Ioo
@@ -445,8 +409,6 @@ theorem exists_jacobi_Ioo
   have ht01 : t ∈ Ioo (0 : ℝ) 1 := ⟨ht.1, lt_of_lt_of_le ht.2 hb⟩
   simpa [radialCurve] using hJac x w hx hw t ht01
 
-
-
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -457,14 +419,14 @@ theorem radialJacobi_ode_of_curv
         (radialJacobiField (I := I) g p x w) t)
     (hcurv : ∀ t ∈ Ico (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (radialCurve (I := I) g p x t))
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t))
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (radialCurve (I := I) g p x t))
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -488,10 +450,6 @@ theorem radialJacobi_ode_of_curv
     (radialJacobiField (I := I) g p x w) (K := K) (t := t) (hJac t ht)
     (hcurv t ht)
 
-
-
-
-
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -502,14 +460,14 @@ theorem ode_Ico_of_Ioo_zero
         (radialJacobiField (I := I) g p x w) t)
     (hcurv : ∀ t ∈ Ioo (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (radialCurve (I := I) g p x t))
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t))
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (radialCurve (I := I) g p x t))
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -548,8 +506,6 @@ theorem ode_Ico_of_Ioo_zero
       (radialJacobiField (I := I) g p x w) (K := K) (t := t)
       (hJac t ⟨htpos, ht.2⟩) (hcurv t ⟨htpos, ht.2⟩)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem ode_Ico_of_Ioo_d2
@@ -559,14 +515,14 @@ theorem ode_Ico_of_Ioo_d2
         (radialJacobiField (I := I) g p x w) t)
     (hcurv : ∀ t ∈ Ioo (0 : ℝ) b,
       g.inner (radialCurve (I := I) g p x t)
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (radialCurve (I := I) g p x t))
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t))
-        ((DifferentialGeometry.Integral.Connection.riemannOp
-          (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+        ((DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
             (radialCurve (I := I) g p x t))
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -606,8 +562,6 @@ theorem ode_Ico_of_Ioo_d2
   rw [hz]
   rw [mul_zero]
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem d2_zero_of_jac0
@@ -624,8 +578,8 @@ theorem d2_zero_of_jac0
       (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) s) 0 with hD_def
   set C : TangentSpace I (radialCurve (I := I) g p x 0) :=
-    ((DifferentialGeometry.Integral.Connection.riemannOp
-        (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+    ((DifferentialGeometry.Geometry.Curvature.riemannOp
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
           (radialCurve (I := I) g p x 0))
         (0 : TangentSpace I (radialCurve (I := I) g p x 0))
         (curveVelocity (I := I) (radialCurve (I := I) g p x) 0)
@@ -638,23 +592,20 @@ theorem d2_zero_of_jac0
   rw [hCzero, add_zero] at hJac0
   exact hJac0
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_Ico
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r → ∀ {K b : ℝ}, b ≤ 1 →
       (∀ t ∈ Ioo (0 : ℝ) b,
         g.inner (radialCurve (I := I) g p x t)
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (radialCurve (I := I) g p x t))
             (radialJacobiField (I := I) g p x w t)
             (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
             (curveVelocity (I := I) (radialCurve (I := I) g p x) t))
-          ((DifferentialGeometry.Integral.Connection.riemannOp
-            (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+          ((DifferentialGeometry.Geometry.Curvature.riemannOp
+            (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
               (radialCurve (I := I) g p x t))
             (radialJacobiField (I := I) g p x w t)
             (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -726,8 +677,8 @@ private lemma inner_sq_le_of_sqrt_le
 private def radialCurvTerm
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real) :
     TangentSpace I (radialCurve (I := I) g p x t) :=
-  (DifferentialGeometry.Integral.Connection.riemannOp
-    (DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+  (DifferentialGeometry.Geometry.Curvature.riemannOp
+    (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
       (radialCurve (I := I) g p x t))
     (radialJacobiField (I := I) g p x w t)
     (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -741,8 +692,6 @@ private def radialCurvTermFlat
     (Tensor0SBundle.tangentFlatLinear_gen (I := I) g
       (radialCurve (I := I) g p x t)
       (radialCurvTerm (I := I) g p x w t))
-
-
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -762,8 +711,6 @@ private theorem radialCurvTermFlat_inner
       (radialCurvTerm (I := I) g p x w t)
       (radialCurvTerm (I := I) g p x w t))
 
-
-
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -771,26 +718,24 @@ private theorem radialCurvTermFlat_apply_eq_metricRm04StdAt
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real)
     (W : TangentSpace I (radialCurve (I := I) g p x t)) :
     radialCurvTermFlat (I := I) g p x w t (fun _ : Fin 1 => W) =
-      DifferentialGeometry.Integral.Connection.metricRm04StdAt
+      DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
         (I := I) (M := M) g (radialCurve (I := I) g p x t)
         (radialJacobiField (I := I) g p x w t)
         (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
         (curveVelocity (I := I) (radialCurve (I := I) g p x) t) W := by
   have hcov :=
     DifferentialGeometry.leviCivita_contMDiffCovariantDerivativeLocally (I := I) g
-  rw [DifferentialGeometry.Integral.Connection.metricRm04StdAt_apply,
+  rw [DifferentialGeometry.Geometry.Curvature.metricRm04StdAt_apply,
     DifferentialGeometry.metricRm04At_eq_riemannCurvature04At,
-    DifferentialGeometry.Integral.Connection.CovariantDerivative.riemannCurvature04At_apply_const,
+    DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_const,
     DifferentialGeometry.riemannCurvatureAux_tangentConst_eq_riemannOp
-      (cov := DifferentialGeometry.Integral.Connection.LeviCivita (I := I) g)
+      (cov := DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g)
       (hcov := hcov)]
   unfold radialCurvTermFlat radialCurvTerm
   rw [Tensor0SBundle.dualToCotangent_apply_gen,
     Tensor0SBundle.tangentFlatLinear_apply_gen]
   exact g.symm (radialCurve (I := I) g p x t)
     (radialCurvTerm (I := I) g p x w t) W
-
-
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -802,7 +747,7 @@ private theorem radialCurvTermFlat_component_eq_metricRm04StdAt
     (i : Idx) :
     Tensor0SBundle.component0S (I := I) basis
         (radialCurvTermFlat (I := I) g p x w t) (fun _ : Fin 1 => i) =
-      DifferentialGeometry.Integral.Connection.metricRm04StdAt
+      DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
         (I := I) (M := M) g (radialCurve (I := I) g p x t)
         (radialJacobiField (I := I) g p x w t)
         (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -810,8 +755,6 @@ private theorem radialCurvTermFlat_component_eq_metricRm04StdAt
         (basis i) := by
   rw [Tensor0SBundle.component0S_apply]
   exact radialCurvTermFlat_apply_eq_metricRm04StdAt (I := I) g p x w t (basis i)
-
-
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -828,8 +771,6 @@ private theorem radialCurvTermFlat_normSq_eq_cotangentInner
     Tensor0SBundle.inner0S_one_eq_cotangent]
   rfl
 
-
-
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -844,33 +785,30 @@ theorem abs_flat_apply_le_rm04
     |radialCurvTermFlat (I := I) g p x w t (fun _ : Fin 1 => W)| ≤
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p x t) 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
       ∏ a : Fin 4, Real.sqrt (g.inner (radialCurve (I := I) g p x t)
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           W) a)
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           W) a)) := by
   have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S
     (I := I) g (radialCurve (I := I) g p x t) 4 basis hON
-    (DifferentialGeometry.Integral.Connection.metricRm04At
+    (DifferentialGeometry.Geometry.Curvature.metricRm04At
       (I := I) (M := M) g (radialCurve (I := I) g p x t))
-    (DifferentialGeometry.Integral.Connection.vec4 (I := I)
+    (DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
       (radialJacobiField (I := I) g p x w t)
       (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
       (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
       W)
   rw [radialCurvTermFlat_apply_eq_metricRm04StdAt (I := I) g p x w t W]
-  simpa [DifferentialGeometry.Integral.Connection.metricRm04StdAt_apply] using hCS
-
-
-
+  simpa [DifferentialGeometry.Geometry.Curvature.metricRm04StdAt_apply] using hCS
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -886,15 +824,15 @@ theorem radialCurvTermFlat_normSq_le_card
     (hB : ∀ i : Idx,
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p x t) 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
       ∏ a : Fin 4, Real.sqrt (g.inner (radialCurve (I := I) g p x t)
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           (basis i)) a)
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -907,7 +845,7 @@ theorem radialCurvTermFlat_normSq_le_card
       Tensor0SBundle.MetricInverseInBasis_gen (I := I) g
         (radialCurve (I := I) g p x t) basis
         (Tensor0SBundle.identityInvMetric (Idx := Idx)) :=
-    DifferentialGeometry.Integral.Connection.metricInverseInBasis_of_orthonormal
+    DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := I) g basis hON
   refine Tensor0SBundle.normSq0S_le_card_of_component_bound
     (I := I) g (radialCurve (I := I) g p x t) 1 basis hinv
@@ -928,22 +866,20 @@ theorem radialCurvTermFlat_normSq_le_card
           rw [Tensor0SBundle.component0S_apply, hslots]
     _ ≤ Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
         ∏ a : Fin 4, Real.sqrt (g.inner (radialCurve (I := I) g p x t)
-          ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+          ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
             (radialJacobiField (I := I) g p x w t)
             (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
             (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
             (basis (slots 0))) a)
-          ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+          ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
             (radialJacobiField (I := I) g p x w t)
             (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
             (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
             (basis (slots 0))) a)) := happly
     _ ≤ B := hB (slots 0)
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -955,20 +891,18 @@ private theorem radialSlotProd_basis_le
       g.inner q (basis i) (basis j) = if i = j then (1 : Real) else 0)
     (J V : TangentSpace I q) (i : Idx) :
     ∏ a : Fin 4, Real.sqrt (g.inner q
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           J V V (basis i)) a)
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           J V V (basis i)) a)) ≤
       Real.sqrt (g.inner q J J) * (Real.sqrt (g.inner q V V)) ^ 2 := by
   have hunit : Real.sqrt (g.inner q (basis i) (basis i)) = 1 := by
     rw [hON i i]
     simp
   rw [Fin.prod_univ_four]
-  simp [DifferentialGeometry.Integral.Connection.vec4, hunit, pow_two]
+  simp [DifferentialGeometry.Geometry.Curvature.vec4, hunit, pow_two]
   ring_nf
   exact le_rfl
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -983,9 +917,9 @@ private theorem radialSlotBound_basis_le
     (hJ : Real.sqrt (g.inner q J J) ≤ Jb)
     (hV : Real.sqrt (g.inner q V V) ≤ Vb) (i : Idx) :
     R * (∏ a : Fin 4, Real.sqrt (g.inner q
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           J V V (basis i)) a)
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           J V V (basis i)) a))) ≤
       R * Jb * Vb ^ 2 := by
   have hprod := radialSlotProd_basis_le (I := I) g basis hON J V i
@@ -997,16 +931,16 @@ private theorem radialSlotBound_basis_le
     exact sq_le_sq.mpr habs
   have hprod_bound :
       ∏ a : Fin 4, Real.sqrt (g.inner q
-          ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+          ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
             J V V (basis i)) a)
-          ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+          ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
             J V V (basis i)) a)) ≤
         Jb * Vb ^ 2 := by
     calc
       ∏ a : Fin 4, Real.sqrt (g.inner q
-          ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+          ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
             J V V (basis i)) a)
-          ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+          ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
             J V V (basis i)) a))
           ≤ Real.sqrt (g.inner q J J) *
               (Real.sqrt (g.inner q V V)) ^ 2 := hprod
@@ -1014,14 +948,12 @@ private theorem radialSlotBound_basis_le
           exact mul_le_mul hJ hVsq (sq_nonneg _) hJb
   calc
     R * (∏ a : Fin 4, Real.sqrt (g.inner q
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           J V V (basis i)) a)
-        ((DifferentialGeometry.Integral.Connection.vec4 (I := I)
+        ((DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           J V V (basis i)) a)))
         ≤ R * (Jb * Vb ^ 2) := mul_le_mul_of_nonneg_left hprod_bound hRnn
     _ = R * Jb * Vb ^ 2 := by ring
-
-
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1045,13 +977,13 @@ theorem radialCurvTermFlat_normSq_le_card_of_bounds
       (Fintype.card (Fin 1 -> Idx) : Real) *
         (Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
           Jb * Vb ^ 2) ^ 2 := by
   classical
   set R : Real := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
     (radialCurve (I := I) g p x t) 4
-    (DifferentialGeometry.Integral.Connection.metricRm04At
+    (DifferentialGeometry.Geometry.Curvature.metricRm04At
       (I := I) (M := M) g (radialCurve (I := I) g p x t)))
   have hRnn : 0 ≤ R := by
     simp [R]
@@ -1074,9 +1006,6 @@ private theorem sqrt_le_sqrt_mul_of_sq_le {A C B : Real}
     _ = Real.sqrt C * Real.sqrt (B ^ 2) := Real.sqrt_mul hC _
     _ = Real.sqrt C * B := by rw [Real.sqrt_sq hB]
 
-
-
-
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1097,7 +1026,7 @@ theorem radialCurvTermFlat_sqrt_le_card_of_velocity_bound
       Real.sqrt ((Fintype.card (Fin 1 -> Idx) : Real)) *
         (Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
           Real.sqrt (g.inner (radialCurve (I := I) g p x t)
             (radialJacobiField (I := I) g p x w t)
@@ -1109,7 +1038,7 @@ theorem radialCurvTermFlat_sqrt_le_card_of_velocity_bound
     (radialJacobiField (I := I) g p x w t))
   set R : Real := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
     (radialCurve (I := I) g p x t) 4
-    (DifferentialGeometry.Integral.Connection.metricRm04At
+    (DifferentialGeometry.Geometry.Curvature.metricRm04At
       (I := I) (M := M) g (radialCurve (I := I) g p x t)))
   have hJb : 0 ≤ Jb := by
     simp [Jb]
@@ -1121,8 +1050,6 @@ theorem radialCurvTermFlat_sqrt_le_card_of_velocity_bound
     exact Nat.cast_nonneg _
   simpa [R, Jb] using
     sqrt_le_sqrt_mul_of_sq_le hcard hBnn hsq
-
-
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1142,7 +1069,7 @@ theorem radialCurvTermFlat_sqrt_le_K
       Real.sqrt ((Fintype.card (Fin 1 -> Idx) : Real)) *
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
         Vb ^ 2 ≤ K) :
     Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
@@ -1154,7 +1081,7 @@ theorem radialCurvTermFlat_sqrt_le_K
   set Cn : Real := Real.sqrt ((Fintype.card (Fin 1 -> Idx) : Real))
   set Rn : Real := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
     (radialCurve (I := I) g p x t) 4
-    (DifferentialGeometry.Integral.Connection.metricRm04At
+    (DifferentialGeometry.Geometry.Curvature.metricRm04At
       (I := I) (M := M) g (radialCurve (I := I) g p x t)))
   set Jn : Real := Real.sqrt (g.inner (radialCurve (I := I) g p x t)
     (radialJacobiField (I := I) g p x w t)
@@ -1170,8 +1097,6 @@ theorem radialCurvTermFlat_sqrt_le_K
       Cn * (Rn * Jn * Vb ^ 2) = (Cn * Rn * Vb ^ 2) * Jn := by ring
       _ ≤ K * Jn := mul_le_mul_of_nonneg_right hcoef hJn
   exact hbase.trans (by simpa [Cn, Rn, Jn] using hstep)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
@@ -1200,8 +1125,6 @@ theorem curv_sq_of_flat_Ioo
       rw [radialCurvTermFlat_inner] at h
       exact h)
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
 theorem curv_sq_of_fiber_Ioo
@@ -1226,9 +1149,6 @@ theorem curv_sq_of_fiber_Ioo
   simpa [radialCurvTermFlat_normSq_eq_cotangentInner]
     using hcurv t ht
 
-
-
-
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1249,7 +1169,7 @@ theorem curv_sq_of_rm04_velocity_Ioo
       Real.sqrt ((Fintype.card (Fin 1 -> Idx) : Real)) *
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
         Vb ^ 2 ≤ K) :
     ∀ t ∈ Ioo (0 : Real) b,
@@ -1264,8 +1184,6 @@ theorem curv_sq_of_rm04_velocity_Ioo
   exact radialCurvTermFlat_sqrt_le_K
     (I := I) g p x w t (basis t ht) (hON t ht) K Vb hVb
     (hV t ht) (hRm t ht)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
@@ -1288,8 +1206,6 @@ theorem curv_sq_of_norm_Ioo
           (radialJacobiField (I := I) g p x w t) := by
   intro t ht
   exact inner_sq_le_of_sqrt_le (I := I) g hK (hcurv t ht)
-
-
 
 omit [SigmaCompactSpace M] in
 theorem exists_ode_Ico_of_curvNorm
@@ -1329,8 +1245,6 @@ theorem exists_ode_Ico_of_curvNorm
   intro x w hx hw K b hK hb hcurv h0
   exact hODE x w hx hw hb (curv_sq_of_norm_Ioo (I := I) g p x w hK hcurv) h0
 
-
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_Ico_of_flat
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -1369,8 +1283,6 @@ theorem exists_ode_Ico_of_flat
   refine ⟨r, hr, ?_⟩
   intro x w hx hw K b hK hb hcurv h0
   exact hODE x w hx hw hb (curv_sq_of_flat_Ioo (I := I) g p x w hK hcurv) h0
-
-
 
 omit [SigmaCompactSpace M] in
 theorem exists_ode_Ico_of_fiber
@@ -1413,9 +1325,6 @@ theorem exists_ode_Ico_of_fiber
   simpa [radialCurvTermFlat_normSq_eq_cotangentInner]
     using hcurv t ht
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_Ico_of_rm04_velocity
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -1435,7 +1344,7 @@ theorem exists_ode_Ico_of_rm04_velocity
         Real.sqrt ((Fintype.card (Fin 1 -> Idx) : Real)) *
           Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
             (radialCurve (I := I) g p x t) 4
-            (DifferentialGeometry.Integral.Connection.metricRm04At
+            (DifferentialGeometry.Geometry.Curvature.metricRm04At
               (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
           Vb ^ 2 ≤ K) →
       (g.inner (radialCurve (I := I) g p x 0)
@@ -1465,9 +1374,6 @@ theorem exists_ode_Ico_of_rm04_velocity
   exact hODE x w hx hw hb
     (curv_sq_of_rm04_velocity_Ioo (I := I) g p x w hK hVb basis hON hV hRm) h0
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_Ico_of_rm04_launch
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -1484,7 +1390,7 @@ theorem exists_ode_Ico_of_rm04_launch
         Real.sqrt ((Fintype.card (Fin 1 -> Idx) : Real)) *
           Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
             (radialCurve (I := I) g p x t) 4
-            (DifferentialGeometry.Integral.Connection.metricRm04At
+            (DifferentialGeometry.Geometry.Curvature.metricRm04At
               (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
           Vb ^ 2 ≤ K) →
       (g.inner (radialCurve (I := I) g p x 0)
@@ -1520,9 +1426,6 @@ theorem exists_ode_Ico_of_rm04_launch
   exact hODE x w hx₀ hw₀ hK hVb hb basis hON
     (radial_speed_le (I := I) g p x hxExp hb hlaunch) hRm h0
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_Ico_of_rm04
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -1533,7 +1436,7 @@ theorem exists_ode_Ico_of_rm04
         Real.sqrt ((Fintype.card (Fin 1 -> Fin (Module.finrank ℝ E)) : Real)) *
           Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
             (radialCurve (I := I) g p x t) 4
-            (DifferentialGeometry.Integral.Connection.metricRm04At
+            (DifferentialGeometry.Geometry.Curvature.metricRm04At
               (I := I) (M := M) g (radialCurve (I := I) g p x t))) *
           Vb ^ 2 ≤ K) →
       (g.inner (radialCurve (I := I) g p x 0)
@@ -1575,8 +1478,6 @@ theorem exists_ode_Ico_of_rm04
   exact hODE x w hx hw hK hVb hb hlaunch basis
     (fun t ht i j => hON t ht i j) hRm h0
 
-
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_Ico_of_rm04_norm
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -1588,7 +1489,7 @@ theorem exists_ode_Ico_of_rm04_norm
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       (g.inner (radialCurve (I := I) g p x 0)
           (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
@@ -1620,7 +1521,7 @@ theorem exists_ode_Ico_of_rm04_norm
     with hC_def
   set A : Real := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
     (radialCurve (I := I) g p x t) 4
-    (DifferentialGeometry.Integral.Connection.metricRm04At
+    (DifferentialGeometry.Geometry.Curvature.metricRm04At
       (I := I) (M := M) g (radialCurve (I := I) g p x t))) with hA_def
   have hCnn : 0 ≤ C := by rw [hC_def]; exact Real.sqrt_nonneg _
   have hVsq : 0 ≤ Vb ^ 2 := sq_nonneg Vb
@@ -1628,8 +1529,6 @@ theorem exists_ode_Ico_of_rm04_norm
   have hmul : C * A * Vb ^ 2 ≤ C * R * Vb ^ 2 := by
     exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hA_le_R hCnn) hVsq
   exact le_trans hmul hKbound
-
-
 
 omit [SigmaCompactSpace M] in
 theorem exists_ode_rm04_d2
@@ -1642,7 +1541,7 @@ theorem exists_ode_rm04_d2
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       covDerivAlong (I := I) g (radialCurve (I := I) g p x)
         (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
@@ -1678,8 +1577,6 @@ theorem exists_ode_rm04_d2
   rw [hz]
   rw [mul_zero]
 
-
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_rm04_jac0
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -1691,7 +1588,7 @@ theorem exists_ode_rm04_jac0
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) 0 →
@@ -1720,8 +1617,7 @@ theorem exists_ode_rm04
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       ∀ {K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
@@ -1731,7 +1627,7 @@ theorem exists_ode_rm04
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       ∀ t ∈ Ico (0 : Real) b,
         g.inner (radialCurve (I := I) g p x t)
@@ -1767,8 +1663,7 @@ theorem exists_rm04_data
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       ∀ {K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
@@ -1778,7 +1673,7 @@ theorem exists_rm04_data
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       (∀ t ∈ Icc (0 : ℝ) b,
         DifferentiableAt ℝ
@@ -1819,8 +1714,7 @@ theorem exists_rm04_basis
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x : E, ‖x‖ < r →
       ∀ {a K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
@@ -1831,7 +1725,7 @@ theorem exists_rm04_basis
       (∀ t (_ht : t ∈ Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p x t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
       (∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Icc (0 : ℝ) b,
         DifferentiableAt ℝ
@@ -1875,8 +1769,7 @@ theorem exists_rm04_pack
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : Real, 0 < r ∧
       (∀ x : E, ‖x‖ < r →
@@ -1888,7 +1781,7 @@ theorem exists_rm04_pack
         (∀ t (_ht : t ∈ Ioo (0 : Real) b),
           Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
             (radialCurve (I := I) g p x t) 4
-            (DifferentialGeometry.Integral.Connection.metricRm04At
+            (DifferentialGeometry.Geometry.Curvature.metricRm04At
               (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R) →
         (∀ k : Fin (Module.finrank ℝ E), ∀ t ∈ Icc (0 : ℝ) b,
           DifferentiableAt ℝ
@@ -1927,8 +1820,6 @@ theorem exists_rm04_pack
     have hw₁ : ‖w‖ < r₁ := lt_of_lt_of_le hw (min_le_right _ _)
     exact hderiv x w hx₁ hw₁
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem rm04_Ioo_of_region
@@ -1938,12 +1829,12 @@ theorem rm04_Ioo_of_region
       radialCurve (I := I) g p x t ∈ U)
     (hRmU : ∀ q : M, q ∈ U →
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g q)) ≤ R) :
     ∀ t (_ht : t ∈ Ioo (0 : Real) b),
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
         (radialCurve (I := I) g p x t) 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g (radialCurve (I := I) g p x t))) ≤ R := by
   intro t ht
   exact hRmU _ (hcurve t ht)
@@ -1967,7 +1858,7 @@ theorem exists_ode_rm04_on
         radialCurve (I := I) g p x t ∈ U) →
       (∀ q : M, q ∈ U →
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ R) →
       ∀ t ∈ Ico (0 : Real) b,
         g.inner (radialCurve (I := I) g p x t)
@@ -1987,8 +1878,6 @@ theorem exists_ode_rm04_on
   exact hODE x w hx hw hK hVb hb hlaunch hKbound
     (rm04_Ioo_of_region (I := I) g p x hcurve hRmU)
 
-
-
 omit [SigmaCompactSpace M] in
 theorem exists_ode_expBall
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -2001,7 +1890,7 @@ theorem exists_ode_expBall
         (fun v : TangentSpace I p => expMap (I := I) g p v) ''
           {v : TangentSpace I p | ‖v‖ < ρ} →
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ R) →
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) 0 →
@@ -2023,27 +1912,22 @@ theorem exists_ode_expBall
     (rm04_Ioo_of_region (I := I) g p x
       (radial_mem_expBall (I := I) g p x hxρ hb) hRm) hJac0
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem rm04Exp_of_global
     (g : SmoothRiemannianMetric I M) (p : M) {R ρ : Real}
     (hRm : ∀ q : M,
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g q)) ≤ R) :
     ∀ q : M, q ∈
       (fun v : TangentSpace I p => expMap (I := I) g p v) ''
         {v : TangentSpace I p | ‖v‖ < ρ} →
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-        (DifferentialGeometry.Integral.Connection.metricRm04At
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At
           (I := I) (M := M) g q)) ≤ R := by
   intro q _hq
   exact hRm q
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem exists_ode_global
@@ -2055,7 +1939,7 @@ theorem exists_ode_global
           R * Vb ^ 2 ≤ K →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ R) →
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) 0 →

@@ -56,7 +56,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 private noncomputable def extChartAtSymmGlobal (α : M) : E → M := by
   classical
@@ -65,7 +65,7 @@ private noncomputable def extChartAtSymmGlobal (α : M) : E → M := by
     (fun _ : E => α)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+    [T2Space M] [CompactSpace M] in
 private lemma extChartAtSymmGlobal_eq_on_target (α : M) {y : E}
     (hy : y ∈ (extChartAt I α).target) :
     extChartAtSymmGlobal (I := I) (M := M) α y = (extChartAt I α).symm y := by
@@ -76,7 +76,7 @@ private lemma extChartAtSymmGlobal_eq_on_target (α : M) {y : E}
   rw [Set.piecewise_eq_of_mem _ _ _ hy]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+    [T2Space M] [CompactSpace M] in
 private lemma extChartAtSymmGlobal_measurable (α : M) :
     Measurable (extChartAtSymmGlobal (I := I) (M := M) α) := by
   classical
@@ -88,7 +88,7 @@ private lemma extChartAtSymmGlobal_measurable (α : M) :
       (I := I) (M := M) α)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] [CompactSpace M] in
+    [CompactSpace M] in
 private lemma chartPushedRaw_measurable (α : M) {F : M → ℝ}
     (hF_meas : Measurable F) :
     Measurable (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α F) := by
@@ -662,7 +662,7 @@ private lemma chartPulledIntegralCLM_density_ψ_smoothToLp_eq_setIntegral
     (I := I) (M := M) α v.toFun hy]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
 private lemma psi_memLp_chartPulledWeighted
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -678,7 +678,7 @@ private lemma psi_memLp_chartPulledWeighted
   continuous_compactSupport_memLp_chartPulledWeighted_restrict
     (I := I) (M := M) g α hψ.continuous hψ_cs hψ_supp
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 private lemma setIntegral_density_eq_integral_weighted
     (g : SmoothRiemannianMetric I M) (α : M)
     (f ψ : EuclN → ℝ) :
@@ -708,7 +708,7 @@ private lemma setIntegral_density_eq_integral_weighted
   rw [← setIntegral_chartPulledWeighted_eq_setIntegral_density_mul_volume
     (I := I) (M := M) g α (fun y => f y * ψ y)]
 
-omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 private lemma setIntegral_density_G_psi_eq_inner
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)

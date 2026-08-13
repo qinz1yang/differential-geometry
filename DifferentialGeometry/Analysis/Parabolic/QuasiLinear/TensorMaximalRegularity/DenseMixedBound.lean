@@ -1,20 +1,11 @@
 import Mathlib
 
-/-!
-# Dense extension of mixed Sobolev bounds
-
-Two small topological lemmas used when a nonlinear estimate is first proved
-on smooth tensors and then extended to a completed Sobolev space.
--/
-
 noncomputable section
 
 open Set
 
 namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
-/-- A Lipschitz map on a dense subset has a Lipschitz dense extension with
-the same constant. -/
 theorem dense_lipschitz
     {X Y : Type*} [PseudoMetricSpace X] [PseudoMetricSpace Y]
     [T2Space Y] [CompleteSpace Y] {D : Set X} (hD : Dense D) {K : NNReal}
@@ -37,9 +28,6 @@ theorem dense_lipschitz
   rw [hD.closure_eq, lipschitzOnWith_univ] at hlip_closure
   exact hlip_closure
 
-/-- A continuous mixed two-scale estimate which holds on a dense set holds
-on the whole completed space.  The auxiliary map `J` is the lower Sobolev
-view (usually a continuous inclusion). -/
 theorem mixed_of_dense
     {X Y Z : Type*} [NormedAddCommGroup X] [NormedAddCommGroup Y]
     [NormedAddCommGroup Z] {D : Set X} (hD : Dense D)

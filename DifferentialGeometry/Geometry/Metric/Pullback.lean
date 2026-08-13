@@ -1,16 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
 import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Bundle.ClmSectionSmooth
@@ -37,15 +24,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
 private lemma infty_ne_zero : (∞ : WithTop ℕ∞) ≠ 0 := by decide
-
-
-
-
-
-
-
-
-
 
 noncomputable def Diffeomorph.pullbackInner
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (x : M) :
@@ -86,9 +64,6 @@ theorem Diffeomorph.pullbackInner_pos
     rw [← h2]; exact fun h => h1 (by simpa [hcoe] using h)
   exact g.pos (Φ x) _ hvImg
 
-
-
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem inner_comp_smooth_along_diffeo
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
@@ -112,8 +87,6 @@ private theorem mfderiv_eq_mfderivCLE_apply
       = mfderiv I I Φ x v := by
   have h := Diffeomorph.mfderivToContinuousLinearEquiv_coe (Φ := Φ) (x := x) infty_ne_zero
   exact congrArg (fun f : TangentSpace I x →L[ℝ] TangentSpace I (Φ x) => f v) h
-
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem Diffeomorph.pullbackInner_isVonNBounded
@@ -151,9 +124,6 @@ theorem Diffeomorph.pullbackInner_isVonNBounded
   rw [hseteq]
   exact himg
 
-
-
-
 omit [FiniteDimensional ℝ E] in
 private theorem mfderiv_apply_section_smooth_along_diffeo
     (Φ : M ≃ₘ⟮I, I⟯ N)
@@ -167,8 +137,6 @@ private theorem mfderiv_apply_section_smooth_along_diffeo
     Φ.contMDiff.contMDiff_tangentMap (le_refl _)
   have h := h_tangentMap.comp hY
   exact h
-
-
 
 noncomputable def Diffeomorph.pullbackMetric
     [SigmaCompactSpace M] [T2Space M]
@@ -242,9 +210,6 @@ theorem diffeomorph_pullback_metric_exists
     ∃ g' : SmoothRiemannianMetric I M, g' = Diffeomorph.pullbackMetric g Φ :=
   ⟨Diffeomorph.pullbackMetric g Φ, rfl⟩
 
-
-
-
 theorem Diffeomorph.pullbackMetric_inner
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) (x : M) (v w : TangentSpace I x) :
@@ -310,8 +275,6 @@ theorem Diffeomorph.pullbackMetric_trans
   rw [hcomp]
   rfl
 
-
-
 theorem Diffeomorph.pullbackInner_contMDiff
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I N) (Φ : M ≃ₘ⟮I, I⟯ N) :
@@ -319,8 +282,6 @@ theorem Diffeomorph.pullbackInner_contMDiff
       (fun x => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ) x
         ((Diffeomorph.pullbackInner g Φ x : E →L[ℝ] E →L[ℝ] ℝ))) :=
   (Diffeomorph.pullbackMetric g Φ).contMDiff
-
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I ∞ N] in
 theorem Diffeomorph.mfderiv_contMDiff

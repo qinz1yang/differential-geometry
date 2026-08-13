@@ -4,27 +4,7 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
-
-/-!
-# Toward the differentiated Christoffel-difference Koszul identity (B2 P2.a)
-
-This leaf builds the covariant derivative of the Christoffel-difference Koszul identity, the crux of the
-UNGATED order-1 connection-difference-derivative norm bound (mission B2; see
-`HCGCompactness/UNIF_ITEM6_RECON.md` §4b for the full route).
-
-The target identity (differentiating `connDiff_koszul` covariantly along `W` under `∇₂ = LeviCivita g₂`):
-```
-2·g₁(covDerivConnDiff g₂ g₁ W X Y x, Z) = [∇₂²g₁ combo] − 2·(∇₂_W g₁)(A(X,Y), Z),
-```
-with `A = connDiff g₁ g₂ = difference (LC g₁) (LC g₂)`.  The differentiation base is the Tensor-layer
-`koszul_difference` (`Tensor/RSTensor/NablaOnTensors/KoszulDifference.lean`) in the
-`nabla0SFun (metricTensorField g₁)` currency, whose derivative is differentiable via
-`nabla0SFun_eval_smooth_slots`.
-
-**Landed so far:** the a=0 differentiation base `connDiff_koszul_nabla` — `koszul_difference` specialised
-to the Levi-Civita pair `(LC g₁, LC g₂)`, in the `nabla0SFun` currency that the covariant differentiation
-consumes.  The full differentiated identity is the multi-brick continuation (recon §4b, 6-step plan).
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -32,10 +12,10 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -47,15 +27,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-/-- **The Christoffel-difference Koszul identity in `nabla0SFun` currency** (the a=0 differentiation
-base).  Specialisation of the Tensor-layer `koszul_difference` to the Levi-Civita pair `(LC g₁, LC g₂)`:
-pairing the connection difference `A = difference (LC g₁) (LC g₂)` against `g₁` equals the symmetric
-Koszul combination of the `∇₂`-covariant derivative of `g₁`, expressed as
-`nabla0SFun 2 (LC g₂) · (metricTensorField g₁)` (= `∇₂g₁`).
-
-This is `connDiff_koszul` in the currency whose covariant derivative is Tensor-layer differentiable
-(`nabla0SFun_eval_smooth_slots`); the differentiated identity (B2 P2.a) is obtained by applying that
-engine to the right-hand side and metric-compatibility to the left. -/
 theorem connDiff_koszul_nabla
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
@@ -89,9 +60,6 @@ theorem connDiff_koszul_nabla
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-/-- Smoothness of `∇₂g₁ = totalNabla0SFun 2 (LC g₂) (metricTensorField g₁)` as a `(0,3)`-field, so it
-can be bundled via `totalNabla0S` and differentiated a second time.  From `totalNabla0S_reg` and the
-local smoothness of the `g₂`-Levi-Civita connection. -/
 theorem metricField_totalReg
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
@@ -104,12 +72,6 @@ theorem metricField_totalReg
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-/-- **One combo term of the differentiated Koszul RHS.**  The directional derivative along `W` of a
-`∇₂g₁` combo term (direction `V 0`, slots `V 1, V 2`) equals the second covariant derivative `∇₂²g₁`
-(`nabla0SFun 3 (LC g₂) W (∇₂g₁-field)`) plus the Leibniz slot corrections, by
-`nabla0SFun_eval_smooth_slots` on the bundled `∇₂g₁` field, bridged to the first-order combo term via
-`totalNabla0SFun_apply_section`.  This is the RHS engine step of the B2 P2.a differentiated identity; the
-three combo terms of `connDiff_koszul_nabla` are its instances at `V = ![X,Y,Z]`, `![Y,X,Z]`, `![Z,X,Y]`. -/
 theorem nablaMetric_combo_extDeriv
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
@@ -154,11 +116,6 @@ theorem nablaMetric_combo_extDeriv
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M]
   [T2Space M] in
-/-- **The LHS metric-compatibility Leibniz** for the differentiated Koszul identity.  The directional
-derivative along `W` of the `g₁`-contraction `p ↦ g₁(a p, b p)` (slots `a = V 0`, `b = V 1`) equals the
-first covariant derivative `(∇₂g₁)(a,b)` (`nabla0SFun 2 (LC g₂) W (metricTensorField g₁)`) plus the two
-`g₁(∇₂_W ·, ·)` Leibniz corrections.  Direct application of `nabla0SFun_eval_smooth_slots` to
-`metricTensorField g₁`; this expands the LHS of `connDiff_koszul_nabla` under differentiation. -/
 theorem metric_leibniz_extDeriv
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
@@ -181,12 +138,6 @@ theorem metric_leibniz_extDeriv
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-/-- **Field-eval form of the a=0 Koszul identity.**  Pairing the connection difference
-`A = difference (LC g₁) (LC g₂)` against `g₁` equals the symmetric Koszul combination of the bundled
-`∇₂g₁` field `totalNabla0S 2 (LC g₂) (metricTensorField g₁)`, evaluated on the three cyclic slot
-tuples.  This is `connDiff_koszul_nabla` bridged to the `(0,3)`-field currency (via
-`totalNabla0SFun_apply_section`), the form in which the differentiated identity's slot corrections
-cancel against the RHS second-derivative combos. -/
 private theorem koszul_field
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
@@ -224,12 +175,6 @@ private theorem koszul_field
     hbr Q (P x) (R x), hbr P (Q x) (R x), hbr R (Q x) (P x)]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-/-- **The differentiated Christoffel-difference Koszul identity (B2 P2.a).**  Differentiating the a=0
-Koszul identity `2 g₁(A(X,Y), Z) = ∇₂g₁ combo` covariantly along `W` under `∇₂ = LeviCivita g₂`:
-`2 g₁(covDerivConnDiff g₂ g₁ W X Y x, Z) = [∇₂²g₁ combo] − 2 (∇₂_W g₁)(A(X,Y), Z)`, with
-`A(X,Y) = difference (LC g₁)(LC g₂) x (Y x)(X x)`.  The second-derivative combo is the `nabla0SFun 3`
-directional derivative (along `W`) of the bundled `∇₂g₁` field `totalNabla0S 2 (LC g₂)(mtf g₁)`, and the
-quadratic term is the first covariant derivative of `g₁` paired against the connection difference. -/
 theorem connDiff_koszul_deriv
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
@@ -263,7 +208,6 @@ theorem connDiff_koszul_deriv
   set field := Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
     (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
     (metricField_totalReg (I := I) g₁ g₂) with hfield
-  -- The connection-difference section `A(X,Y) = ∇₂-difference of X against Y`.
   have hAsm : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
       (T% (diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
         (fun b => X b) (fun b => Y b))) :=
@@ -273,7 +217,6 @@ theorem connDiff_koszul_deriv
   set Adiff : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     ContMDiffSection.mk (diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
       (fun b => X b) (fun b => Y b)) hAsm with hAdiff
-  -- The three covariant-derivative sections `∇₂_W X`, `∇₂_W Y`, `∇₂_W Z`.
   have hZcast : ∀ (S : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)),
       ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1) (T% (fun b => S b)) := by
     intro S
@@ -300,7 +243,6 @@ theorem connDiff_koszul_deriv
   set DWZ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     ContMDiffSection.mk (covApply (LeviCivita (I := I) g₂) (fun b => W b) (fun b => Z b))
       hDWZsm with hDWZ
-  -- LHS: differentiate `p ↦ g₁(A(X,Y)(p), Z(p))` along `W` (metric-compatibility Leibniz).
   have hLHSfun : (fun p : M => g₁.inner p (Adiff p) (Z p))
       = (fun p : M => Tensor0SBundle.metricTensorField (I := I) g₁ p
           (fun c : Fin 2 =>
@@ -311,7 +253,6 @@ theorem connDiff_koszul_deriv
     simp [Matrix.cons_val_zero, Matrix.cons_val_one]
   have hLHS := metric_leibniz_extDeriv (I := I) g₁ g₂ ![Adiff, Z] W x
   rw [← hLHSfun] at hLHS
-  -- The funext identity from the a=0 Koszul base.
   have hfun : (fun p : M => g₁.inner p (Adiff p) (Z p))
       = (fun p : M =>
           (1 / 2) * Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
@@ -332,14 +273,12 @@ theorem connDiff_koszul_deriv
   have hmaster := congrArg (fun f : M → ℝ => extDerivFun (I := I) f x (W x)) hfun
   simp only [] at hmaster
   rw [hLHS] at hmaster
-  -- Differentiability of a `∇₂g₁`-field evaluated on a smooth slot tuple.
   have hMDcombo : ∀ (V : Fin 3 → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _)),
       MDifferentiableAt I 𝓘(ℝ, ℝ) (fun p : M => field p (fun a : Fin 3 => V a p)) x := by
     intro V
     exact (Tensor0SBundle.tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) field V x).mdifferentiableAt (by simp)
-  -- The `∇₂g₁`-field-eval / first-covariant-derivative bridge and the slot-form normalisation.
   have hbrgen : ∀ (V : Fin 3 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)),
       (fun p : M => field p (fun a : Fin 3 => V a p))
         = (fun p : M => Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
@@ -367,29 +306,26 @@ theorem connDiff_koszul_deriv
     funext p
     have hs : (fun q : Fin 2 =>
         (![a, bb, cc] : Fin 3 → ContMDiffSection I E (∞ : WithTop ℕ∞)
-          (TangentSpace I : M → Type _)) q.succ p) = (fun q : Fin 2 => if q = 0 then bb p else cc p) := by
+          (TangentSpace I : M → Type _)) q.succ p) =
+            (fun q : Fin 2 => if q = 0 then bb p else cc p) := by
       funext q; fin_cases q <;> simp
     rw [hs, Matrix.cons_val_zero]
-  -- Bridges to `cX`, `cY`, `cZ` (the three `if`-form combos of `hfun`).
   have hbrX := (hbrgen ![X, Y, Z]).trans (hVgen X Y Z)
   have hbrY := (hbrgen ![Y, X, Z]).trans (hVgen Y X Z)
   have hbrZ := (hbrgen ![Z, X, Y]).trans (hVgen Z X Y)
   have hMDcX := hbrX ▸ hMDcombo ![X, Y, Z]
   have hMDcY := hbrY ▸ hMDcombo ![Y, X, Z]
   have hMDcZ := hbrZ ▸ hMDcombo ![Z, X, Y]
-  -- The three nablaMetric second-derivative results, converted to `cX`, `cY`, `cZ` form.
   have hRX := nablaMetric_combo_extDeriv (I := I) g₁ g₂ ![X, Y, Z] W x
   have hRY := nablaMetric_combo_extDeriv (I := I) g₁ g₂ ![Y, X, Z] W x
   have hRZ := nablaMetric_combo_extDeriv (I := I) g₁ g₂ ![Z, X, Y] W x
   rw [hVgen X Y Z] at hRX
   rw [hVgen Y X Z] at hRY
   rw [hVgen Z X Y] at hRZ
-  -- Linearity of the exterior derivative over the (scaled) sum of the three combos.
   have hdc : ∀ (c : M → ℝ), MDifferentiableAt I 𝓘(ℝ, ℝ) c x →
       MDifferentiableAt I 𝓘(ℝ, ℝ) (fun p : M => (1 / 2 : ℝ) * c p) x := by
     intro c hc
     exact (mdifferentiableAt_const (I := I) (I' := 𝓘(ℝ, ℝ)) (c := (1 / 2 : ℝ))).mul hc
-  -- Name the three `if`-form combos and fold them into the master equation.
   set cX : M → ℝ := fun p : M => Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I)
     (M := M) 2 (LeviCivita (I := I) g₂) X (Tensor0SBundle.metricTensorField (I := I) g₁) p
     (fun q : Fin 2 => if q = 0 then Y p else Z p) with hcXdef
@@ -416,7 +352,6 @@ theorem connDiff_koszul_deriv
     have h := extDerivFun_add (I := I) (g := f - g) (g' := g) (hf.sub hg) hg
     rw [sub_add_cancel] at h
     exact eq_sub_of_add_eq h.symm
-  -- Linearity split of the exterior derivative of the combined RHS, applied to `W x`.
   rw [show (fun p : M => (1 / 2) * cX p + (1 / 2) * cY p - (1 / 2) * cZ p)
         = ((fun p : M => (1 / 2) * cX p) + (fun p : M => (1 / 2) * cY p))
           - (fun p : M => (1 / 2) * cZ p) from rfl,
@@ -428,7 +363,6 @@ theorem connDiff_koszul_deriv
     ContinuousLinearMap.smul_apply, smul_eq_mul] at hmaster
   rw [hRX, hRY, hRZ] at hmaster
   rw [← hfield] at hmaster
-  -- Normalise the slot functions and `Function.update`s to explicit matrices.
   have e3 : ∀ (a b c : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)),
       (fun i : Fin 3 => (![a, b, c] i) x) = ![a x, b x, c x] := by
     intro a b c; funext i; fin_cases i <;> rfl
@@ -455,13 +389,11 @@ theorem connDiff_koszul_deriv
         (TangentSpace I : M → Type _)) 2 = c := fun _ _ _ => rfl
   simp only [Fin.sum_univ_two, Fin.sum_univ_three, e3, e2, hup30, hup31, hup32, hup20, hup21,
     hc2, metricTensorField_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at hmaster
-  -- Realize the coercion values by the packaged covariant-derivative sections.
   have hDWXval : DWX x = ((LeviCivita (I := I) g₂) (fun p : M => X p) x) (W x) := rfl
   have hDWYval : DWY x = ((LeviCivita (I := I) g₂) (fun p : M => Y p) x) (W x) := rfl
   have hDWZval : DWZ x = ((LeviCivita (I := I) g₂) (fun p : M => Z p) x) (W x) := rfl
   have hAx : Adiff x = (CovariantDerivative.difference (LeviCivita (I := I) g₁)
       (LeviCivita (I := I) g₂) x) (Y x) (X x) := rfl
-  -- Covariant derivative of the connection-difference section, via `covDerivConnDiff`.
   have hB : ((LeviCivita (I := I) g₂) (fun p : M => Adiff p) x) (W x)
       = covDerivConnDiff (I := I) g₂ g₁ W X Y x
         + (CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x)
@@ -475,7 +407,6 @@ theorem connDiff_koszul_deriv
           - (CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x)
               (DWY x) (X x) := rfl
     rw [hcd]; abel
-  -- Koszul identity on the three correction pairings.
   have hk1 := koszul_field (I := I) g₁ g₂ Y DWX Z x
   have hk2 := koszul_field (I := I) g₁ g₂ DWY X Z x
   have hk3 := koszul_field (I := I) g₁ g₂ Y X DWZ x
@@ -489,7 +420,7 @@ theorem connDiff_koszul_deriv
   linarith [hmaster, hk1, hk2, hk3]
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

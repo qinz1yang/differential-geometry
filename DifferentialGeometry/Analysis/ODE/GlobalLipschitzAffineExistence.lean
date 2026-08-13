@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.ForwardVariationalFromZero
 import DifferentialGeometry.Analysis.Calculus.BallRetraction
 import Mathlib.Analysis.ODE.Gronwall
+open DifferentialGeometry.Analysis.Calculus
 
 open Set Function Filter Metric Real
 open scoped Topology NNReal

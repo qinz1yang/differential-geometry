@@ -2,17 +2,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCAvera
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCPartition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepBApproxIso
 import DifferentialGeometry.Geometry.Exponential.GaussLemma
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -39,9 +32,6 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] [T3Space M]
 
-
-
-
 omit [Module.Finite ℝ E] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank Real E)] in
 theorem chartSymmUnif
@@ -65,9 +55,6 @@ theorem chartSymmUnif
   have hcont : ContinuousOn (fun v : E => ψ.symm v) K := by
     simpa [ψ] using ψ.contMDiffOn_invFun.continuousOn.mono hKtarget
   exact hK.uniformContinuousOn_of_continuous hcont
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -120,8 +107,6 @@ theorem chartSymmIdConv
   simpa [dist_comm] using
     hδ (F a b v) hFvK' v hvK' (lt_of_lt_of_le hdist (min_le_left δ η))
 
-
-
 omit [Module.Finite ℝ E] in
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -173,8 +158,6 @@ theorem chartPtsConv
   rw [hleft] at hdist
   simpa [ψ] using hdist
 
-
-
 omit [Module.Finite ℝ E] in
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -218,10 +201,6 @@ theorem chartPtsSrcK
   simpa [ψ] using
     chartPtsConv (I := I) (g := g) (p := p) (S := S) (K := ψ '' Ksrc)
       hK hKtarget hSsource hScoord F hclose
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 theorem properBallSrcOfRad
@@ -274,8 +253,6 @@ theorem properBallSrcOfRad
     rw [hed, ENNReal.toReal_ofReal (dist_nonneg : 0 ≤ dist c y)]
     exact lt_of_le_of_lt hdist_le hR
   exact memNChartSrcOfDist (I := I) Y.metric c hEnorm hfin hsmall
-
-
 
 omit [Module.Finite ℝ E] in
 theorem properBallNormal
@@ -333,8 +310,6 @@ theorem properBallNormal
   calc
     Real.sqrt (Y.metric.inner c v v) = (riemannianEDist I c y).toReal := hvlen
     _ = dist c y := by rw [hed, ENNReal.toReal_ofReal dist_nonneg]
-
-
 
 omit [Module.Finite ℝ E] in
 theorem properExpDist

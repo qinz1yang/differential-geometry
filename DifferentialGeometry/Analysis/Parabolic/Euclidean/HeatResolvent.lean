@@ -2,13 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelLp
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
-/-!
-# The damped causal heat resolvent
-
-This file computes the classical Fourier transform of the Euclidean heat
-kernel and of its exponentially damped causal spacetime extension.
--/
-
 noncomputable section
 
 open Complex MeasureTheory Real Set
@@ -21,8 +14,6 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
 omit [Nontrivial V] in
-/-- The normalized time-one heat Gaussian has symbol
-`exp (-4 π² ‖ξ‖²)`. -/
 theorem baseHeat_fourier (ξ : V) :
     𝓕 (fun x : V => (baseHeat x : ℂ)) ξ =
       Complex.exp ((-(4 * π ^ 2 * ‖ξ‖ ^ 2 : ℝ) : ℂ)) := by
@@ -71,7 +62,6 @@ theorem baseHeat_fourier (ξ : V) :
       ring
 
 omit [Nontrivial V] in
-/-- At positive time, the heat kernel has symbol `exp (-4 π² t ‖ξ‖²)`. -/
 theorem heatKernel_fourier {t : ℝ} (ht : 0 < t) (ξ : V) :
     𝓕 (fun x : V => (heatKernel t x : ℂ)) ξ =
       Complex.exp ((-(4 * π ^ 2 * t * ‖ξ‖ ^ 2 : ℝ) : ℂ)) := by
@@ -144,13 +134,11 @@ theorem heatKernel_fourier {t : ℝ} (ht : 0 < t) (ξ : V) :
       rw [mul_pow, show (r : ℂ) ^ 2 = (t : ℂ) by exact_mod_cast hr2]
       ring
 
-/-- The exponentially damped causal heat kernel on spacetime. -/
 def dampHeat (δ : ℝ) (z : WithLp 2 (ℝ × V)) : ℂ :=
   if 0 < z.fst then
     Complex.exp (((-δ * z.fst : ℝ) : ℂ)) * (heatKernel z.fst z.snd : ℂ)
   else 0
 
-/-- Positive damping makes the causal heat kernel integrable on spacetime. -/
 theorem dampHeat_int {δ : ℝ} (hδ : 0 < δ) :
     Integrable (dampHeat (V := V) δ) := by
   rw [← (WithLp.volume_preserving_toLp (U := ℝ) (V := V)).integrable_comp_emb
@@ -191,8 +179,6 @@ theorem dampHeat_int {δ : ℝ} (hδ : 0 < δ) :
       simp
     · simp [Function.comp_apply, dampHeat, ht]
 
-/-- The Fourier transform of the damped causal heat kernel is the parabolic
-resolvent `1 / (δ + 4 π² ‖ξ‖² + 2 π i τ)`. -/
 theorem dampHeat_fourier {δ : ℝ} (hδ : 0 < δ)
     (q : WithLp 2 (ℝ × V)) :
     𝓕 (dampHeat (V := V) δ) q =

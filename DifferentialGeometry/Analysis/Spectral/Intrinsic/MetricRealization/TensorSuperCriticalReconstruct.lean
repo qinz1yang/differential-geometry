@@ -14,67 +14,23 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.QuasiMeasureP
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.ChartPullbackSmooth
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.IteratedSobolevEmbedding
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace MetricRealization
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Sobolev.Chart
@@ -99,8 +55,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartTargetEuclid_sdiff_chartPouKernel_isOpen' (α : M) :
     IsOpen (chartTargetEuclid (I := I) (M := M) α \
@@ -109,17 +63,12 @@ private lemma chartTargetEuclid_sdiff_chartPouKernel_isOpen' (α : M) :
     (I := I) (M := M) α).sdiff
     (chartPouKernel_isCompact (I := I) (M := M) α).isClosed
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma chartTargetEuclid_sdiff_chartPouKernel_subset' (α : M) :
     chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α :=
   Set.diff_subset
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma superCriticalChartComponent_ae_zero_off_kernel
@@ -164,14 +113,6 @@ private lemma superCriticalChartComponent_ae_zero_off_kernel
   filter_upwards [(ae_restrict_iff' hV_meas).mp h_ae_V] with y hy
   intro hy_V
   exact hy hy_V hy_V.2
-
-
-
-
-
-
-
-
 
 theorem superCriticalChartComponent_exists_smooth_representative
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -269,14 +210,10 @@ theorem superCriticalChartComponent_exists_smooth_representative
 
 variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
 
-
-
 private def wChartComp (w : TensorL2 r s g) (α : M)
     (P : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
   fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s w α P :
     Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
-
-
 
 private def chosenComp_w (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
@@ -287,8 +224,6 @@ private def chosenComp_w (w : TensorL2 r s g)
   Classical.choose
     (superCriticalChartComponent_exists_smooth_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))
-
-
 
 private lemma chosenComp_w_contDiffOn (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
@@ -314,8 +249,6 @@ private lemma chosenComp_w_hasCompactSupport (w : TensorL2 r s g)
     (superCriticalChartComponent_exists_smooth_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))).2.1
 
-
-
 private lemma chosenComp_w_tsupport (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -327,9 +260,6 @@ private lemma chosenComp_w_tsupport (w : TensorL2 r s g)
   (Classical.choose_spec
     (superCriticalChartComponent_exists_smooth_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))).2.2.1
-
-
-
 
 private lemma chosenComp_w_ae_eq (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
@@ -345,8 +275,6 @@ private lemma chosenComp_w_ae_eq (w : TensorL2 r s g)
     (superCriticalChartComponent_exists_smooth_representative
       (I := I) (M := M) g r s w α P (fun k => h_all k α P))).2.2.2
 
-
-
 private lemma chosenComp_w_hu (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -357,8 +285,6 @@ private lemma chosenComp_w_hu (w : TensorL2 r s g)
       ContDiffOn ℝ ∞ (chosenComp_w (I := I) (M := M) g r s w h_all α P)
         (chartTargetEuclid (I := I) (M := M) α) :=
   fun P => chosenComp_w_contDiffOn (I := I) (M := M) g r s w h_all α P
-
-
 
 private lemma chosenComp_w_hsupp (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
@@ -373,8 +299,6 @@ private lemma chosenComp_w_hsupp (w : TensorL2 r s g)
   fun P => ⟨chosenComp_w_hasCompactSupport (I := I) (M := M) g r s w h_all α P,
     chosenComp_w_tsupport (I := I) (M := M) g r s w h_all α P⟩
 
-
-
 private def wSmoothChart (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -385,9 +309,6 @@ private def wSmoothChart (w : TensorL2 r s g)
     (chosenComp_w (I := I) (M := M) g r s w h_all α)
     (chosenComp_w_hu (I := I) (M := M) g r s w h_all α)
     (chosenComp_w_hsupp (I := I) (M := M) g r s w h_all α)
-
-
-
 
 private lemma tensorChartComponentRaw_wSmoothChart_self (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
@@ -406,8 +327,6 @@ private lemma tensorChartComponentRaw_wSmoothChart_self (w : TensorL2 r s g)
     (chosenComp_w_hu (I := I) (M := M) g r s w h_all α)
     (chosenComp_w_hsupp (I := I) (M := M) g r s w h_all α) P hy
 
-
-
 private lemma wSmoothChart_toSection_eq_zero_off_source (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -420,8 +339,6 @@ private lemma wSmoothChart_toSection_eq_zero_off_source (w : TensorL2 r s g)
     (chosenComp_w (I := I) (M := M) g r s w h_all α)
     (chosenComp_w_hu (I := I) (M := M) g r s w h_all α)
     (chosenComp_w_hsupp (I := I) (M := M) g r s w h_all α) hx
-
-
 
 private lemma tensorChartComponentRaw_wSmoothChart_eq_zero_off_source
     (w : TensorL2 r s g)
@@ -444,9 +361,6 @@ private lemma tensorChartComponentRaw_wSmoothChart_eq_zero_off_source
         ((wSmoothChart (I := I) (M := M) g r s w h_all α).toSection x)
       from rfl, hsec, ContinuousLinearMap.map_zero, ContinuousLinearMap.map_zero]
 
-
-
-
 private def wSmooth (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -464,8 +378,6 @@ private lemma wSmooth_eq (w : TensorL2 r s g)
       ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
         wSmoothChart (I := I) (M := M) g r s w h_all α := rfl
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma transportChartCenters_subset_chartAtlasPOU_finset' (β : M) :
     transportChartCenters (I := I) (M := M) β ⊆
@@ -474,9 +386,6 @@ private lemma transportChartCenters_subset_chartAtlasPOU_finset' (β : M) :
   rw [mem_transportChartCenters] at hγ
   rw [chartAtlasPOU_finset_mem]
   exact hγ.mono (Set.inter_subset_left)
-
-
-
 
 private lemma ae_eq_of_ae_eq_restrict_of_eqOn_compl'
     {X : Type*} [MeasurableSpace X] {μ : Measure X}
@@ -637,13 +546,9 @@ private lemma wSmoothChart_tensorL2ChartComponent_coeFn_aeEq (w : TensorL2 r s g
   exact raw_wSmoothChart_eq_ite (I := I) (M := M) g r s w h_all α β
     P₀ (symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) β hy)
 
-
-
 private def chartKernelCutoffPushed (γ : M) : EuclN → ℝ :=
   chartPushedRaw (I := I) (M := M) γ
     (fun x => ((chartKernelCutoff (I := I) (M := M) γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartKernelCutoffPushed_eq_one_on_chartPouKernel
@@ -667,8 +572,6 @@ private lemma chartKernelCutoffPushed_eq_one_on_chartPouKernel
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) γ _ hy_target, hsymm]
   exact chartKernelCutoff_eqOn_one (I := I) (M := M) γ hw_supp
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartKernelCutoffPushed_toEuclidean_extChartAt
     (γ : M) {z : M} (hz : z ∈ (chartAt H γ).source) :
@@ -680,9 +583,6 @@ private lemma chartKernelCutoffPushed_toEuclidean_extChartAt
       (toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) γ hz),
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) γ hz]
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma chartPushedPouWeight_toEuclidean_extChartAt'
     (α : M) {z : M} (hz : z ∈ (chartAt H α).source) :
@@ -693,9 +593,6 @@ private lemma chartPushedPouWeight_toEuclidean_extChartAt'
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _
       (toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) α hz),
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) α hz]
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma wChartComp_ae_eq_chartKernelCutoffPushed_mul (w : TensorL2 r s g)
@@ -756,9 +653,6 @@ private lemma wChartComp_ae_eq_chartKernelCutoffPushed_mul (w : TensorL2 r s g)
   · exact hy_on hy_mem
   · exact hy_off hy_mem
 
-
-
-
 private lemma chosenComp_w_comp_chartTransition_ae_eq (w : TensorL2 r s g)
     (h_all : ∀ k : ℕ, ∀ (α : M) (P₀ : TensorCompIdx (E := E) r s),
       MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -780,9 +674,6 @@ private lemma chosenComp_w_comp_chartTransition_ae_eq (w : TensorL2 r s g)
     ae_mono (Measure.restrict_mono_set _
       (chartOverlapEuclid_subset_chartTarget (I := I) (M := M) γ β)) h_target
   exact chartTransitionEuclid_comp_ae_eq_restrict (I := I) (M := M) β γ h_overlap
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma wChartComp_comp_chartTransition_ae_eq_cutoff_mul (w : TensorL2 r s g)
@@ -1072,9 +963,6 @@ private lemma wSmoothChart_tensorL2ChartComponent_eq_transport_sum
   funext y
   rw [Finset.mul_sum]
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma wChartComp_ite_chartPushedPouWeight_zero_ae_zero (w : TensorL2 r s g)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
@@ -1100,9 +988,6 @@ private lemma wChartComp_ite_chartPushedPouWeight_zero_ae_zero (w : TensorL2 r s
   by_cases hw : chartPushedPouWeight (I := I) (M := M) α y = 0
   · rw [if_pos hw]; exact hy hw
   · rw [if_neg hw]
-
-
-
 
 private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s g)
     (α β : M) (P₀ Q : TensorCompIdx (E := E) r s)
@@ -1232,9 +1117,6 @@ private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s 
     · rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) β _ hy_target,
         zero_mul]
   exact ae_eq_of_ae_eq_restrict_of_eqOn_compl' hΩ_meas h_on_overlap h_off_overlap
-
-
-
 
 private lemma transportSum_w_ae_zero_of_notMem (w : TensorL2 r s g)
     (α β : M) (P₀ : TensorCompIdx (E := E) r s)
@@ -1395,20 +1277,6 @@ private lemma wSmooth_tensorL2ChartComponent_eq (w : TensorL2 r s g)
         transportChartCenters (I := I) (M := M) β, F α y) = 0 from hy,
     add_zero]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 theorem tensorSuperCriticalReconstruct
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     TensorSuperCriticalReconstruct (I := I) (M := M) g r s := by
@@ -1425,9 +1293,8 @@ theorem tensorSuperCriticalReconstruct
       (I := I) (M := M) g r s w h_all' β P₀)
 
 end MetricRealization
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

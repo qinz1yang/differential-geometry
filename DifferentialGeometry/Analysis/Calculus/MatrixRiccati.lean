@@ -9,14 +9,6 @@ import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.LinearAlgebra.Matrix.Symmetric
 import Mathlib.LinearAlgebra.Matrix.Trace
 
-/-!
-# Matrix Riccati calculus
-
-This file records derivative formulas for inverse-matrix products along real
-paths.  They isolate the finite-dimensional calculus used by geometric
-Riccati equations from the Jacobi-field identities that supply the matrices.
--/
-
 noncomputable section
 
 open Matrix
@@ -28,7 +20,6 @@ namespace Analysis
 variable {n : Type*} [DecidableEq n]
 
 omit [DecidableEq n] in
-/-- Entrywise real derivatives assemble into a matrix-valued derivative. -/
 theorem hasDerivAt_matrix
     [Finite n]
     (A : ℝ → Matrix n n ℝ) (A' : Matrix n n ℝ) (t : ℝ)
@@ -40,7 +31,6 @@ theorem hasDerivAt_matrix
 variable [Fintype n]
 
 omit [DecidableEq n] in
-/-- The trace of a differentiable matrix path has the trace of its derivative. -/
 theorem hasDerivAt_trace
     (A : ℝ → Matrix n n ℝ) (A' : Matrix n n ℝ) (t : ℝ)
     (hA : HasDerivAt A A' t) :
@@ -49,7 +39,6 @@ theorem hasDerivAt_trace
     (HasDerivAt.fun_sum fun i (_ : i ∈ Finset.univ) =>
       hasDerivAt_pi.mp (hasDerivAt_pi.mp hA i) i)
 
-/-- Derivative of an inverse-matrix product along a real path. -/
 theorem hasDerivAt_inv_mul
     (G B : ℝ → Matrix n n ℝ) (G' B' : Matrix n n ℝ) (t : ℝ)
     (hG : HasDerivAt G G' t) (hB : HasDerivAt B B' t)
@@ -70,15 +59,12 @@ theorem hasDerivAt_inv_mul
       Matrix.nonsing_inv_eq_ringInverse] using hinvF.comp_hasDerivAt t hG
   simpa [Matrix.nonsing_inv_eq_ringInverse, Matrix.mul_assoc] using hinv.mul hB
 
-/-- The inverse-Gram trace of a conjugated matrix is its ordinary trace. -/
 theorem trace_inv_mul_conj
     (G A : Matrix n n ℝ) (hdet : IsUnit G.det) :
     trace (G⁻¹ * (A * G)) = trace A := by
   rw [← Matrix.mul_assoc, Matrix.trace_mul_cycle,
     Matrix.mul_nonsing_inv G hdet, Matrix.one_mul]
 
-/-- The trace square of a real symmetric matrix is controlled by the trace of
-its square, with the cardinality of the indexing type as the sharp factor. -/
 theorem trace_sq_le_mul
     (A : Matrix n n ℝ) (hA : A.IsSymm) :
     (trace A) ^ 2 ≤ (Fintype.card n : ℝ) * trace (A ^ 2) := by
@@ -100,7 +86,6 @@ theorem trace_sq_le_mul
   rw [trace, htraceSq]
   exact hdiag.trans (mul_le_mul_of_nonneg_left hsum hcard)
 
-/-- Trace Riccati formula for a Gram path and its mixed matrix path. -/
 theorem hasDerivAt_riccati
     (G M : ℝ → Matrix n n ℝ) (Q : Matrix n n ℝ) (t : ℝ)
     (hG : HasDerivAt G ((2 : ℝ) • M t) t)

@@ -1,19 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.DeTurckNaturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.HarmonicTension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.InverseFamily
-
-/-!
-# The harmonic-map heat-flow gauge produces Ricci--DeTurck flow
-
-This file closes the geometric part of the reverse DeTurck ladder.  Given a
-family of diffeomorphisms solving harmonic-map heat flow from a Ricci-flow
-metric to a fixed background, its inverse pulls the Ricci flow back to a
-Ricci--DeTurck solution.
-
-The theorem is conditional only on the actual harmonic-map family and the
-regularity already required by the pullback differentiation API.  It does not
-postulate the missing harmonic-map heat-flow existence theorem.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -23,7 +11,7 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.DeTurck
 
@@ -36,12 +24,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [CompactSpace M] in
-/-- The inverse of a harmonic-map heat-flow gauge pulls a Ricci flow back to
-a Ricci--DeTurck solution relative to the fixed target metric.
-
-The sign is fixed by `hmf_neg_gauge`; `symm_gauge_vel` differentiates the
-inverse family; and `push_deTurckVF` identifies the pushed-forward source
-DeTurck field with the target DeTurck field of the inverse-pulled metric. -/
 theorem hmf_inverse_DT
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)

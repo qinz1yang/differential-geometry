@@ -1,15 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammSpaces
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.RoughCarleson
 
-/-!
-# Local energy from the Koch--Lamm `L²` arm
-
-The local `L²` arm in the exact Koch--Lamm carrier is the square root of the
-Carleson energy used by the nonlinear product estimates.  This file records
-that identification and its scale cancellation for both fluxes and path
-gradients.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -28,8 +19,6 @@ variable {V F G : Type*}
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [BorelSpace V] [NormedSpace ℝ G] in
-/-- Squaring the `L²` seminorm gives the corresponding integral of the
-squared norm. -/
 theorem eLpNorm_two_sq (d : ℝ × V → G) (μ : Measure (ℝ × V)) :
     eLpNorm d 2 μ ^ 2 = ∫⁻ z, ENNReal.ofReal (‖d z‖ ^ 2) ∂μ := by
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal
@@ -46,8 +35,6 @@ theorem eLpNorm_two_sq (d : ℝ × V → G) (μ : Measure (ℝ × V)) :
   norm_num
 
 omit [MeasurableSpace V] [BorelSpace V] in
-/-- The inverse-square of the Koch--Lamm local `L²` scale is the spatial
-volume scale `R^n`. -/
 theorem klL2_inv_sq {R : ℝ} (hR : 0 < R) :
     (klL2Scale (V := V) R)⁻¹ ^ 2 =
       ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
@@ -85,8 +72,6 @@ theorem klL2_inv_sq {R : ℝ} (hR : 0 < R) :
       Real.rpow_natCast R (Module.finrank ℝ V)
 
 omit [NormedSpace ℝ G] in
-/-- A Koch--Lamm divergence source has the local gradient-Carleson bound
-with the square of its `L²` radius. -/
 theorem kl1_to_gradCarl {T : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → G} (h : KLSource1 T A₂ Aₚ f) :
     GradCarl T ((A₂ : ℝ≥0∞) ^ 2) f := by
@@ -116,8 +101,6 @@ theorem kl1_to_gradCarl {T : ℝ} {A₂ Aₚ : ℝ≥0}
         rw [mul_pow, klL2_inv_sq (V := V) hR]
 
 omit [NormedSpace ℝ F] [NormedSpace ℝ G] in
-/-- The local `L²` arm of a Koch--Lamm path gives the same gradient-Carleson
-bound. -/
 theorem klPath_gradCarl {T : ℝ} {A₀ A₂ Aₚ : ℝ≥0}
     {u : ℝ × V → F} {d : ℝ × V → G} (h : KLPath T A₀ A₂ Aₚ u d) :
     GradCarl T ((A₂ : ℝ≥0∞) ^ 2) d := by

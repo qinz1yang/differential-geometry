@@ -6,8 +6,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -133,8 +132,6 @@ variable {V' W' : Type*}
   [NormedAddCommGroup V'] [NormedSpace Real V'] [FiniteDimensional Real V']
   [NormedAddCommGroup W'] [NormedSpace Real W'] [FiniteDimensional Real W']
 
-/-- Equal-dimensional metric fibers admit a continuous linear equivalence
-preserving their metric inner products. -/
 theorem exists_metric_cle
     (DV : MetricFiberData V') (DW : MetricFiberData W')
     (hfin : Module.finrank Real V' = Module.finrank Real W') :
@@ -294,3 +291,4 @@ end TangentMetricData
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

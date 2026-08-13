@@ -3,23 +3,7 @@ import DifferentialGeometry.Tensor.Multilinear.DomDomCongrSection
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 set_option backward.isDefEq.respectTransparency false
@@ -34,21 +18,12 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [CompleteSpace E] [IsManifold I ∞ M]
 
-
-
-
 noncomputable def leibnizRightEquiv (s q : ℕ) : Fin (s + (q + 1)) ≃ Fin (s + q + 1) :=
   (finCongr (by omega : s + (q + 1) = s + q + 1)).trans
     (Fin.cycleRange ⟨s, by omega⟩)
 
-
-
 def leibnizLeftEquiv (s q : ℕ) : Fin (s + 1 + q) ≃ Fin (s + q + 1) :=
   finCongr (by omega)
-
-
-
-
 
 omit [CompleteSpace E] in
 theorem nabla0S_product_realizes {s q : ℕ}
@@ -159,3 +134,4 @@ theorem nabla0S_product_realizes {s q : ℕ}
       simp only [Function.comp_apply, hidx, Fin.cons_succ]
 
 end Tensor0SBundle
+end DifferentialGeometry

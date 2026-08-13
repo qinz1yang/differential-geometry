@@ -44,21 +44,28 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzPhiMetTotalCurvatureFold
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmOneAllOrderTameEnvelope
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzKernelRefoldTameEnvelope
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open LieCorr0Core
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -95,7 +102,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck (cometricLmodel)
+open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -489,7 +496,7 @@ private theorem exists_perturbedMetricLoweredConnDiff_coeffJetEnvelope
 
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (sharpFlatEndoCc) in
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck (cometricDoubleTraceField) in
+open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricDoubleTraceField) in
 private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiemannianMetric I M)
     (s : ℕ) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1712,7 +1719,7 @@ private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
   have hEndoEq : ∀ u : ℝ,
       deTurckLieEndoArmField (I := I) (M := M) g₀
         (realizedFam (I := I) g₀ T 0 hδ hδZ u) g₀ =
-      DifferentialGeometry.Integral.Connection.deTurckLieDLbCoeffField (I := I) (M := M)
+      DifferentialGeometry.Analysis.Sobolev.deTurckLieDLbCoeffField (I := I) (M := M)
         g₀ (realizedFam (I := I) g₀ T 0 hδ hδZ u) g₀ := by
     intro u
     apply SmoothCcTensor.ext
@@ -1984,7 +1991,6 @@ private theorem exists_lieDerivativeCorrection_curvatureRefold_armSplit_data
       mul_nonneg (hKrs_nn i) hW]
 
 set_option backward.isDefEq.respectTransparency false in
-
 private theorem exists_lieDerivativeCorrection_curvatureRefold_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -2217,7 +2223,6 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureRefold_data
     linarith
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem sum_range_shift_two_sq_le (g₀ : SmoothRiemannianMetric I M) (i : ℕ)
@@ -2281,7 +2286,6 @@ private lemma lc0_jet_sum_bound (i : ℕ) (f Kc Kr X : ℕ → ℝ) (ε : ℝ)
   exact lc0_path_sum_arithmetic (le_trans hsum (le_of_eq hsum_eq)) hmul hX
 
 set_option backward.isDefEq.respectTransparency false in
-
 private theorem deTurckPhiZeroPathIntegral_zero_curvatureRefold_coeffSup_jetEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
@@ -3356,6 +3360,6 @@ theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureRefold_coeffSup_jetE
       have hle : K₀c i ≤ K₀c i + K₁c i := le_add_of_nonneg_right (hK₁c_nn i)
       exact mul_le_mul_of_nonneg_right hle hsum_nn
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

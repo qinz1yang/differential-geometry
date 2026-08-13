@@ -4,23 +4,27 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedAppCcLeibni
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomFieldActionIteratedCovGradWindow
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SlotExtendCovariantParallelism
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RankRReadingDominationUniformSup
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
-open TensorMultilinear
-open TensorRSNabla
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.TensorMultilinear
+open DifferentialGeometry.TensorRSNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -274,7 +278,7 @@ private lemma fiberNormSqComponent_covGrad_slotExtend_eq_swap
     rw [covGrad_toSection_apply_eval (I := I) (M := M) g (r + 1) (s + 1)
       (slotExtend (I := I) (M := M) g r s Φ) x (coframeS (I := I) (M := M) g x (r + 1) e K')
       (fun k => (show E from e (J' k)))]
-    rw [DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.tensorCovDerivAt_slotExtend_eq
+    rw [DifferentialGeometry.Analysis.Spectral.DeTurck.tensorCovDerivAt_slotExtend_eq
       (I := I) (M := M) g r s Φ x ((fun k => (show E from e (J' k))) 0)]
     rw [show Matrix.vecTail (fun k => (show E from e (J' k))) =
         Fin.cons (show E from e (J' 1))
@@ -568,7 +572,7 @@ private lemma covGrad_slotExtend_toSection_rsDomDomCongr
   conv_rhs => rw [← hfib]
   rw [covGrad_toSection_apply_eval (I := I) (M := M) g (r + 1) (s + 1)
     (slotExtend (I := I) (M := M) g r s Φ) x d m]
-  rw [DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck.tensorCovDerivAt_slotExtend_eq
+  rw [DifferentialGeometry.Analysis.Spectral.DeTurck.tensorCovDerivAt_slotExtend_eq
     (I := I) (M := M) g r s Φ x (m 0)]
   rw [show Matrix.vecTail m =
       Fin.cons (m 1) (fun k : Fin s => m (Fin.succ (Fin.succ k))) from by
@@ -617,8 +621,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma covGrad_castRankCc_db (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ} (h : a = b)
     (W : SmoothCcTensor g r a) :
     covGrad (I := I) (M := M) g r b
-        (DifferentialGeometry.Integral.Connection.castCcTensorRank g r h W) =
-      DifferentialGeometry.Integral.Connection.castCcTensorRank g r (by rw [h] : a + 1 = b + 1)
+        (DifferentialGeometry.Analysis.Spectral.castCcTensorRank g r h W) =
+      DifferentialGeometry.Analysis.Spectral.castCcTensorRank g r (by rw [h] : a + 1 = b + 1)
         (covGrad (I := I) (M := M) g r a W) := by
   subst h; rfl
 
@@ -634,13 +638,13 @@ private lemma succ_step_cast_transposition_eq {r a b : ℕ} (h : a = b)
     (sigmaHat swapB : Equiv.Perm (Fin b)) (swapA : Equiv.Perm (Fin a)) (hswap : HEq swapA swapB)
     (hPQ : P.toSection x = tensorRS_domDomCongr (I := I) (M := M) swapA (Q.toSection x)) :
     tensorRS_domDomCongr (I := I) (M := M) sigmaHat
-        ((DifferentialGeometry.Integral.Connection.castCcTensorRank g (r + 1) h P).toSection x) =
+        ((DifferentialGeometry.Analysis.Spectral.castCcTensorRank g (r + 1) h P).toSection x) =
       tensorRS_domDomCongr (I := I) (M := M) (swapB.trans sigmaHat)
-        ((DifferentialGeometry.Integral.Connection.castCcTensorRank g (r + 1) h Q).toSection
+        ((DifferentialGeometry.Analysis.Spectral.castCcTensorRank g (r + 1) h Q).toSection
           x) := by
   subst h
   rw [eq_of_heq hswap] at hPQ
-  simp only [DifferentialGeometry.Integral.Connection.castCcTensorRank]
+  simp only [DifferentialGeometry.Analysis.Spectral.castCcTensorRank]
   rw [hPQ, rsDomDomCongr_rsDomDomCongr]
 
 omit [CompleteSpace E] in
@@ -652,7 +656,7 @@ lemma exists_iteratedCovGrad_slotExtend_rsDomDomCongr
         (iteratedCovGrad (I := I) g (r + 1) (s + 1) i
             (slotExtend (I := I) (M := M) g r s Φ)).toSection x =
           tensorRS_domDomCongr (I := I) (M := M) σ
-            ((DifferentialGeometry.Integral.Connection.castCcTensorRank g (r + 1)
+            ((DifferentialGeometry.Analysis.Spectral.castCcTensorRank g (r + 1)
               (by omega : (s + i) + 1 = (s + 1) + i)
               (slotExtend (I := I) (M := M) g r (s + i)
                 (iteratedCovGrad (I := I) g r s i Φ))).toSection x) := by
@@ -671,7 +675,7 @@ lemma exists_iteratedCovGrad_slotExtend_rsDomDomCongr
           Tensor0SSpace.toModel y w = (y : Tensor0SSpace ((s + 1) + 0) I x) w := fun _ _ => rfl
       conv_rhs => rw [hfib, rsDomDomCongr_apply_eval (I := I) (M := M) (r := r + 1)
         (Equiv.refl (Fin ((s + 1) + 0)))
-        ((DifferentialGeometry.Integral.Connection.castCcTensorRank g (r + 1)
+        ((DifferentialGeometry.Analysis.Spectral.castCcTensorRank g (r + 1)
           (by omega : (s + 0) + 1 = (s + 1) + 0)
           (slotExtend (I := I) (M := M) g r (s + 0) Φ)).toSection x) d m]
       simp only [Equiv.refl_apply]
@@ -686,7 +690,7 @@ lemma exists_iteratedCovGrad_slotExtend_rsDomDomCongr
               (slotExtend (I := I) (M := M) g r s Φ))).toSection x =
           tensorRS_domDomCongr (I := I) (M := M) (Equiv.Perm.decomposeFin.symm (0, σ))
             ((covGrad (I := I) (M := M) g (r + 1) ((s + 1) + i)
-              (DifferentialGeometry.Integral.Connection.castCcTensorRank g (r + 1)
+              (DifferentialGeometry.Analysis.Spectral.castCcTensorRank g (r + 1)
                 (by omega : (s + i) + 1 = (s + 1) + i)
                 (slotExtend (I := I) (M := M) g r (s + i)
                   (iteratedCovGrad (I := I) g r s i Φ)))).toSection x) := by
@@ -696,7 +700,7 @@ lemma exists_iteratedCovGrad_slotExtend_rsDomDomCongr
         apply ContinuousMultilinearMap.ext
         intro v
         rw [covGrad_rs_toModel_domDomCongr (I := I) (M := M) g (r + 1) ((s + 1) + i) σ
-          (DifferentialGeometry.Integral.Connection.castCcTensorRank g (r + 1)
+          (DifferentialGeometry.Analysis.Spectral.castCcTensorRank g (r + 1)
             (by omega : (s + i) + 1 = (s + 1) + i)
             (slotExtend (I := I) (M := M) g r (s + i) (iteratedCovGrad (I := I) g r s i Φ)))
           (iteratedCovGrad (I := I) g (r + 1) (s + 1) i (slotExtend (I := I) (M := M) g r s Φ))
@@ -712,7 +716,7 @@ lemma exists_iteratedCovGrad_slotExtend_rsDomDomCongr
         conv_rhs => rw [hfib, rsDomDomCongr_apply_eval (I := I) (M := M) (r := r + 1)
           (Equiv.Perm.decomposeFin.symm (0, σ))
           ((covGrad (I := I) (M := M) g (r + 1) ((s + 1) + i)
-            (DifferentialGeometry.Integral.Connection.castCcTensorRank g (r + 1)
+            (DifferentialGeometry.Analysis.Spectral.castCcTensorRank g (r + 1)
               (by omega : (s + i) + 1 = (s + 1) + i)
               (slotExtend (I := I) (M := M) g r (s + i)
                 (iteratedCovGrad (I := I) g r s i Φ)))).toSection x) d v]
@@ -747,12 +751,12 @@ theorem rfns_iteratedCovGrad_slotExtend_le (g : SmoothRiemannianMetric I M) (r s
   obtain ⟨σ, hσ⟩ := exists_iteratedCovGrad_slotExtend_rsDomDomCongr (I := I) (M := M) g r s Φ i
   rw [hσ x]
   rw [riemannianFiberNormSq_domDomCongr_covariant (I := I) (M := M) g (r + 1) ((s + 1) + i) x σ
-    ((DifferentialGeometry.Integral.Connection.castCcTensorRank g (r + 1)
+    ((DifferentialGeometry.Analysis.Spectral.castCcTensorRank g (r + 1)
       (by omega : (s + i) + 1 = (s + 1) + i)
       (slotExtend (I := I) (M := M) g r (s + i)
         (iteratedCovGrad (I := I) g r s i Φ))).toSection x)]
   rw [← rfns_toSection_heq_congr_rs g (by omega : (s + i) + 1 = (s + 1) + i)
-    (DifferentialGeometry.Integral.Connection.castRankCc_db_heq g (r + 1)
+    (DifferentialGeometry.Analysis.Spectral.castRankCc_db_heq g (r + 1)
       (by omega : (s + i) + 1 = (s + 1) + i)
       (slotExtend (I := I) (M := M) g r (s + i) (iteratedCovGrad (I := I) g r s i Φ))).symm x]
   rw [rfns_slotExtend_eq (I := I) (M := M) g r (s + i) (iteratedCovGrad (I := I) g r s i Φ) x]
@@ -1786,8 +1790,8 @@ theorem rfns_appCcRS_appCcLeibnizPsi_diag_le (g : SmoothRiemannianMetric I M)
     (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x)
     (show Tensor0SSpace p I x →L[ℝ] Tensor0SSpace (b + i) I x from U.toSection x)
 
-end Connection
-end Integral
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

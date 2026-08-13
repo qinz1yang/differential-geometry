@@ -1,32 +1,8 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicRatio
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Sharp pole limit of the intrinsic transverse Jacobi density
-
-The Bishop--Gromov absolute volume bound needs the transverse Jacobi density to
-be compared to the hyperbolic model with the *sharp* constant `1` (equality on
-flat `ℝⁿ`).  Along `γ = intrinsicGeodesic g hEnorm p u` with speed
-`ell = √(g.inner p u u)`, for a `gₓ`-orthonormal transverse frame `v` the density
-ratio `curveDensity g γ V t / hypDensity (q·ell) (n-1) t` tends to `1` at the pole
-`t → 0⁺`, sharpening the non-sharp `intrPoleCap` (constant `N = M₀/c`).
-
-Route (all metric-contracted, avoiding the discontinuous raw exponential
-differential): near the pole the intrinsic Jacobi density equals the chart-radial
-one (`intrJacobi_raw`); the radial Gram of the frame `v` is
-`t² · Vᵀ · (normalGramMatrix) · V` with `V` the change of basis to
-`chartModelBasis`, whose limit at the centre is the `gₓ`-Gram of `v`, i.e. the
-identity for a `gₓ`-orthonormal frame; and the model density satisfies
-`hypSn q t / t → 1`.
-
-* `curveDensity_pole` — geodesic side: `curveDensity g γ V t / t^(n-1) → 1`.
-* `poleLimit` — the sharp ratio limit (part 2).
-* `transDens_le_hyp` — step-(c) corollary consumed by the L6 assembly: on the
-  conjugate-free window the transverse density is `≤` the model density with
-  constant exactly `1` (antitone ratio + pole limit `1`).
--/
 
 noncomputable section
 
@@ -62,8 +38,6 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-/-- The hyperbolic warping ratio tends to `1` at the pole: `hypSn q t / t → 1`.
-The leading term of `sinh(q t)/q` is `t`, independent of the frequency `q`. -/
 private lemma hypSn_div_tendsto (q : Real) :
     Tendsto (fun t => hypSn q t / t) (𝓝[>] (0 : Real)) (𝓝 1) := by
   have hzero : hypSn q 0 = 0 := by
@@ -79,7 +53,6 @@ private lemma hypSn_div_tendsto (q : Real) :
   rw [hfun] at hslope
   exact hslope.mono_left (nhdsWithin_mono 0 (fun x hx => ne_of_gt hx))
 
-/-- Model side of the pole limit: `hypDensity q d t / t^d → 1`. -/
 private lemma hypDensity_div_tendsto (q : Real) (d : ℕ) :
     Tendsto (fun t => hypDensity q d t / t ^ d) (𝓝[>] (0 : Real)) (𝓝 1) := by
   have hpow := (hypSn_div_tendsto q).pow d
@@ -91,41 +64,182 @@ private lemma hypDensity_div_tendsto (q : Real) (d : ℕ) :
   rw [hfun]
   exact hpow
 
-/-- **Geodesic side of the sharp pole limit.**  For a `gₓ`-orthonormal transverse
-frame `v`, the transverse intrinsic-Jacobi density along `γ = intrinsicGeodesic p u`
-normalized by `t^(n-1)` tends to `1` at the pole. -/
+private lemma clm_smul_apply
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+    (B : F →L[Real] F →L[Real] Real) (c : Real) (v w : F) :
+    B (c • v) w = c * B v w := by
+  have h := congrArg (fun L : F →L[Real] Real => L w) (B.map_smul c v)
+  simpa only [ContinuousLinearMap.smul_apply, smul_eq_mul] using h
+
+private lemma clm_sum_apply
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
+    {κ : Type*} [Fintype κ]
+    (B : F →L[Real] F →L[Real] Real) (v : κ → F) (w : F) :
+    B (∑ i, v i) w = ∑ i, B (v i) w := by
+  rw [map_sum, ContinuousLinearMap.sum_apply]
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space (TangentBundle I M)] in
+omit [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)] in
+lemma linIndep_of_ortho
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (e : Fin (Module.finrank Real E - 1) → E)
+    (hON : ∀ i j, g.inner x (e i) (e j) = if i = j then 1 else 0) :
+    LinearIndependent Real e := by
+  classical
+  rw [Fintype.linearIndependent_iff]
+  intro c hc j
+  have hpair := congrArg (fun z : E => g.inner x z (e j)) hc
+  change g.inner x (∑ i, c i • e i) (e j) = g.inner x 0 (e j) at hpair
+  rw [clm_sum_apply, map_zero, ContinuousLinearMap.zero_apply] at hpair
+  rw [Finset.sum_eq_single j] at hpair
+  · calc
+      c j = c j * 1 := by rw [mul_one]
+      _ = c j * g.inner x (e j) (e j) := by rw [hON j j, if_pos rfl]
+      _ = g.inner x (c j • e j) (e j) :=
+        (clm_smul_apply (g.inner x) (c j) (e j) (e j)).symm
+      _ = 0 := hpair
+  · intro i _ hij
+    calc
+      g.inner x (c i • e i) (e j) = c i * g.inner x (e i) (e j) :=
+        clm_smul_apply (g.inner x) (c i) (e i) (e j)
+      _ = c i * (if i = j then 1 else 0) := by rw [hON i j]
+      _ = c i * 0 := by rw [if_neg (by simpa using hij)]
+      _ = 0 := mul_zero _
+  · intro hj
+    exact (hj (Finset.mem_univ j)).elim
+
 theorem curveDensity_pole
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (hu : 0 < g.inner p u u)
     (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)
-    (hON : ∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0) :
+    (hON : ∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0)
+    (hperp : ∀ i, g.inner p u (v i) = 0) :
     Tendsto
       (fun t => curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
           (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t /
         t ^ (Module.finrank Real E - 1))
       (𝓝[>] (0 : Real)) (𝓝 1) := by
-  sorry
+  classical
+  have hv_li : LinearIndependent Real v := by
+    simpa using linIndep_of_ortho (I := I) g p v hON
+  obtain ⟨B, hBnone, hBsome⟩ := exists_perp_basis (I := I) g p u v hv_li hperp hu
+  let ue : E := (u : E)
+  have hu_ne : u ≠ 0 := by
+    intro h
+    rw [h] at hu
+    simp at hu
+  have hue_ne : ue ≠ 0 := hu_ne
+  have hunorm : 0 < ‖ue‖ := norm_pos_iff.mpr hue_ne
+  set b₀ : Real := expMapC2Radius (I := I) g p / ‖ue‖ with hb₀_def
+  have hb₀ : 0 < b₀ := div_pos (expMapC2Radius_pos (I := I) g p) hunorm
+  have hrad : ∀ r ∈ Set.Ioo (0 : Real) b₀,
+      ‖r • ue‖ < expMapC2Radius (I := I) g p := by
+    intro r hr
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos hr.1, ← lt_div_iff₀ hunorm]
+    exact hr.2
+  have hsrc : Set.MapsTo (fun r : Real => r • ue) (Set.Ioo (0 : Real) b₀)
+      (expMapDiffeo (I := I) g p).source := by
+    intro r hr
+    change r • ue ∈ (expMapDiffeo (I := I) g p).source
+    exact mem_expMapDiffeo_source_of_norm_lt_radius (I := I) g p (hrad r hr)
+  have hBperp : ∀ i, g.inner p ue (B (some i)) = 0 := by
+    intro i
+    rw [hBsome i]
+    exact hperp i
+  have hONB : ∀ i j, g.inner p (B (some i)) (B (some j)) = if i = j then 1 else 0 := by
+    intro i j
+    rw [hBsome i, hBsome j]
+    exact hON i j
+  obtain ⟨c, hc, hc_val, hdensity⟩ :=
+    normalDensity_curve (I := I) g p ue B hBnone hBperp hsrc hrad
+  have hzero_val :=
+    normalChartDensity_zero_of_perpOrthonormal (I := I) g p ue B hBnone hBperp hONB
+  have hc_eq_ncd0 : c = normalChartDensity (I := I) g p 0 := by
+    rw [hc_val, hzero_val]
+  have hcurveEq : ∀ᶠ t in 𝓝[>] (0 : Real),
+      curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
+          (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t =
+        curveDensity (I := I) g (radialCurve (I := I) g p ue)
+          (fun i => radialJacobiField (I := I) g p ue (B (some i))) t := by
+    have hcurve : ∀ᶠ t in 𝓝[>] (0 : Real),
+        intrinsicGeodesic (I := I) g hEnorm p u t =
+          radialCurve (I := I) g p ue t := by
+      filter_upwards [intrJacobi_raw (I := I) g hEnorm p ue (0 : E)]
+        with t ht using ht.1
+    have hfields : ∀ᶠ t in 𝓝[>] (0 : Real), ∀ i,
+        (intrinsicJacobi (I := I) g hEnorm p u (v i) t : E) =
+          (radialJacobiField (I := I) g p ue (B (some i)) t : E) := by
+      refine Filter.eventually_all.2 (fun i => ?_)
+      filter_upwards [intrJacobi_raw (I := I) g hEnorm p ue (v i : E)]
+        with t ht
+      rw [hBsome i]
+      exact ht.2
+    filter_upwards [hcurve, hfields] with t hct hft
+    have hgram :
+        curveGram (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
+            (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t =
+          curveGram (I := I) g (radialCurve (I := I) g p ue)
+            (fun i => radialJacobiField (I := I) g p ue (B (some i))) t := by
+      ext i j
+      simp only [curveGram, Matrix.of_apply]
+      rw [hct, hft i, hft j]
+    simp only [curveDensity, hgram]
+  have hratio : Filter.EventuallyEq (𝓝[>] (0 : Real))
+      (fun t => curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
+          (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t /
+            t ^ (Module.finrank Real E - 1))
+      (fun t => normalChartDensity (I := I) g p (t • ue) / c) := by
+    filter_upwards [hcurveEq, self_mem_nhdsWithin, Ioo_mem_nhdsGT hb₀]
+      with t hcurvet htpos htwin
+    have ht0 : 0 < t := htpos
+    have hpow : 0 < t ^ (Module.finrank Real E - 1) := pow_pos ht0 _
+    have hdens := hdensity t htwin
+    rw [hcurvet]
+    field_simp [hc.ne', hpow.ne']
+    rw [mul_comm]
+    rw [← hdens]
+    rw [Fintype.card_fin]
+  have hcontAt : ContinuousAt (normalChartDensity (I := I) g p) 0 := by
+    have hcont : ContinuousOn (normalChartDensity (I := I) g p)
+        (expMapDiffeo (I := I) g p).source := by
+      simpa only [normalChartDensity] using
+        paramDensity_contOn (I := I) g (expMapDiffeo (I := I) g p)
+    exact hcont.continuousAt ((expMapDiffeo (I := I) g p).open_source.mem_nhds
+      (zero_mem_expMapDiffeo_source (I := I) g p))
+  have htend : Tendsto (fun t : Real => t • ue) (𝓝[>] (0 : Real)) (𝓝 (0 : E)) := by
+    have hcont : Continuous fun t : Real => t • ue := continuous_id.smul continuous_const
+    have hzero : Tendsto (fun t : Real => t • ue) (𝓝 (0 : Real)) (𝓝 (0 : E)) := by
+      simpa using (hcont.continuousAt (x := (0 : Real))).tendsto
+    exact hzero.mono_left inf_le_left
+  have hlim : Tendsto (fun t => normalChartDensity (I := I) g p (t • ue) / c)
+      (𝓝[>] (0 : Real)) (𝓝 (normalChartDensity (I := I) g p 0 / c)) :=
+    (hcontAt.tendsto.comp htend).div tendsto_const_nhds hc.ne'
+  have hlim_one : Tendsto (fun t => normalChartDensity (I := I) g p (t • ue) / c)
+      (𝓝[>] (0 : Real)) (𝓝 1) := by
+    rw [← (show normalChartDensity (I := I) g p 0 / c = 1 from by
+      rw [← hc_eq_ncd0]
+      exact div_self hc.ne')]
+    exact hlim
+  exact Filter.Tendsto.congr' hratio.symm hlim_one
 
-/-- **The sharp pole limit (deliverable 2).**  For a `gₓ`-orthonormal transverse
-frame `v` perpendicular to `u`, the transverse Jacobi density ratio to the
-speed-scaled hyperbolic model tends to `1` at the pole.  Sharpens `intrPoleCap`
-(constant `N = M₀/c`) to the exact constant `1`. -/
 theorem poleLimit
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (q : Real) (hq : 0 ≤ q)
     (hu : 0 < g.inner p u u)
     (v : Fin (Module.finrank Real E - 1) → TangentSpace I p)
-    (hON : ∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0) :
+    (hON : ∀ i j, g.inner p (v i) (v j) = if i = j then 1 else 0)
+    (hperp : ∀ i, g.inner p u (v i) = 0) :
     Tendsto
       (fun t => curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
           (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t /
         hypDensity (q * Real.sqrt (g.inner p u u)) (Module.finrank Real E - 1) t)
       (𝓝[>] (0 : Real)) (𝓝 1) := by
-  have hcd := curveDensity_pole (I := I) g hEnorm p u hu v hON
+  have hcd := curveDensity_pole (I := I) g hEnorm p u hu v hON hperp
   have hmd := hypDensity_div_tendsto (q * Real.sqrt (g.inner p u u))
     (Module.finrank Real E - 1)
   have hcombine := hcd.div hmd one_ne_zero
@@ -140,16 +254,9 @@ theorem poleLimit
   simp only [Pi.div_apply]
   field_simp [hpow.ne', hmdpos.ne']
 
-/-- **Step-(c) corollary consumed by the L6 assembly (deliverable 3).**  On the
-conjugate-free window `Ioo 0 b`, under a Ricci lower bound `Ric ≥ -(n-1)q²`, the
-transverse intrinsic-Jacobi density along `γ` is bounded by the speed-scaled
-hyperbolic model density with constant EXACTLY `1`.  Obtained from the antitone
-ratio (`intrRatioOfFrame`) and the sharp pole limit `1` (`poleLimit`): an antitone
-function whose limit at the pole is `1` is `≤ 1` throughout the window. -/
 theorem transDens_le_hyp
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (q b : Real)
     (hq : 0 ≤ q)
     (hd : 0 < Module.finrank Real E - 1)
@@ -172,7 +279,7 @@ theorem transDens_le_hyp
   have hperp : ∀ i, g.inner p u (v i) = 0 := by
     intro i; rw [g.symm p u (v i)]; exact hperp' i
   have hanti := intrRatioOfFrame (I := I) g hEnorm p u q b hq hd hu v hON hperp hno hRic
-  have hlim := poleLimit (I := I) g hEnorm p u q hq hu v hON
+  have hlim := poleLimit (I := I) g hEnorm p u q hq hu v hON hperp
   refine ⟨v, hON, hperp, ?_⟩
   intro γ V ell t ht
   have hpos : 0 < hypDensity (q * ell) (Module.finrank Real E - 1) t :=

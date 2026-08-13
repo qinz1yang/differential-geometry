@@ -1,52 +1,17 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedNablaRmTower
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -58,20 +23,14 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
 section FrameTuple
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
 
 def frameTuple {r : ℕ}
     (frame : Idx → (x : M) → TangentSpace I x) (x : M) (m : Fin r → Idx) :
     Fin r → TangentSpace I x :=
   fun q => frame (m q) x
-
-
 
 def frameComp0S {r : ℕ}
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -88,8 +47,6 @@ omit [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 2 M] [CompleteSpace E] 
     (frame : Idx → (x : M) → TangentSpace I x) (x : M) (m : Fin r → Idx) :
     frameComp0S (I := I) A frame x m = A x (fun q => frame (m q) x) := rfl
 
-
-
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx]
     [DecidableEq Idx] in
@@ -105,28 +62,9 @@ theorem frameTuple_eq_cons {r : ℕ}
 
 end FrameTuple
 
-
-
-
-
-
-
-
-
-
-
-
 section StepBridge
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M] [DecidableEq Idx] in
 theorem covDerivStepComp_frameComp_eq {s : ℕ}
@@ -232,23 +170,17 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
 
 end StepBridge
 
-
-
 section Solution
-
-
 
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem connSmoothInf
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (S.family.connection t) (∞ : WithTop ℕ∞) := by
   simpa [SolutionFamily.connection, metricCov] using
     metricCov_smooth (I := I) (M := M) (S.base.metric t)
-
-
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -261,16 +193,8 @@ theorem extDerivFun_eventuallyEq_congr
   rw [Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(Real, Real)) h]
   rfl
 
-
-
-
-
-
-
-
-
 def nablaRm04Field
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 5 :=
@@ -279,10 +203,8 @@ def nablaRm04Field
     (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
       4 (S.family.connection t) (connSmoothInf (I := I) S t) (S.base.rm04 t))
 
-
-
 def nabla2Rm04Field
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 6 :=
@@ -292,11 +214,8 @@ def nabla2Rm04Field
       5 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nablaRm04Field (I := I) S t))
 
-
-
-
 def nabla3Rm04Field
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 7 :=
@@ -309,7 +228,7 @@ def nabla3Rm04Field
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaRm04Field_realizes
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       4 (S.family.connection t) (S.base.rm04 t) (nablaRm04Field (I := I) S t) :=
@@ -321,7 +240,7 @@ theorem nablaRm04Field_realizes
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nabla2Rm04Field_realizes
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       5 (S.family.connection t) (nablaRm04Field (I := I) S t)
@@ -335,7 +254,7 @@ theorem nabla2Rm04Field_realizes
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nabla3Rm04Field_realizes
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       6 (S.family.connection t) (nabla2Rm04Field (I := I) S t)
@@ -346,16 +265,8 @@ theorem nabla3Rm04Field_realizes
       6 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nabla2Rm04Field (I := I) S t))
 
-
-
-
-
-
-
-
-
 def realizedChr
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M) :
     Real → M → CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E →
       CoordinateIdx (𝕜 := Real) E → Real :=
@@ -364,10 +275,8 @@ def realizedChr
       (coordinateFrameAt (I := I) x₀)
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀) x
 
-
-
 def realizedRmBase
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M) :
     Real → M → (Fin 4 → CoordinateIdx (𝕜 := Real) E) → Real :=
   fun t => frameComp0S (I := I) (S.base.rm04 t) (coordinateFrameAt (I := I) x₀)
@@ -375,26 +284,16 @@ def realizedRmBase
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 @[simp] theorem realizedRmBase_apply
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M)
     (t : Real) (x : M) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     realizedRmBase (I := I) S x₀ t x m =
       S.base.rm04 t x (fun q => coordinateFrameAt (I := I) x₀ (m q) x) := rfl
 
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem iteratedRmComp_one_eq_nablaRm04Field
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
     {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -412,20 +311,10 @@ theorem iteratedRmComp_one_eq_nablaRm04Field
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
     (coordinateFrameSet_open (I := I) x₀) hx n
 
-
-
-
-
-
-
-
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem iteratedRmComp_two_eq_nabla2Rm04Field
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
     (n : Fin 6 → CoordinateIdx (𝕜 := Real) E) :
@@ -476,64 +365,47 @@ theorem iteratedRmComp_two_eq_nabla2Rm04Field
 
 end Solution
 
-
-
-
-
-
-
-
 section RicciIdentity
-
-
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem rm04_nabla0SSectionRealizes
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Integral.Connection.Nabla0SSectionRealizes (I := I) 4
+    DifferentialGeometry.Tensor.RicciIdentity.Nabla0SSectionRealizes (I := I) 4
       (S.family.connection t) (S.base.rm04 t) (nablaRm04Field (I := I) S t) := by
   intro y X slots
   exact nablaRm04Field_realizes (I := I) S t X y slots
 
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaRm04_nabla0SSectionRealizes
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Integral.Connection.Nabla0SSectionRealizes (I := I) 5
+    DifferentialGeometry.Tensor.RicciIdentity.Nabla0SSectionRealizes (I := I) 5
       (S.family.connection t) (nablaRm04Field (I := I) S t)
       (nabla2Rm04Field (I := I) S t) := by
   intro y X slots
   exact nabla2Rm04Field_realizes (I := I) S t X y slots
 
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem rm04_nabla20SRealizesAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
-    DifferentialGeometry.Integral.Connection.Nabla20SRealizesAt (I := I) 4
+    DifferentialGeometry.Tensor.RicciIdentity.Nabla20SRealizesAt (I := I) 4
       (S.family.connection t) (S.base.rm04 t) (nablaRm04Field (I := I) S t) x
       (nabla2Rm04Field (I := I) S t x) := by
   refine ⟨rm04_nabla0SSectionRealizes (I := I) S t, ?_⟩
   intro X slots
   exact nabla2Rm04Field_realizes (I := I) S t X x slots
 
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaRm04_nabla20SRealizesAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
-    DifferentialGeometry.Integral.Connection.Nabla20SRealizesAt (I := I) 5
+    DifferentialGeometry.Tensor.RicciIdentity.Nabla20SRealizesAt (I := I) 5
       (S.family.connection t) (nablaRm04Field (I := I) S t)
       (nabla2Rm04Field (I := I) S t) x
       (nabla3Rm04Field (I := I) S t x) := by
@@ -541,18 +413,15 @@ theorem nablaRm04_nabla20SRealizesAt
   intro X slots
   exact nabla3Rm04Field_realizes (I := I) S t X x slots
 
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem rm04_ricciIdentityAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) :
-    DifferentialGeometry.Integral.Connection.Tensor0SRicciIdentityAt (I := I)
+    DifferentialGeometry.Tensor.RSTensor.Tensor0SRicciIdentityAt (I := I)
       (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real) x)
       (nabla2Rm04Field (I := I) S (t : Real) x) := by
   have hcov :
@@ -561,10 +430,10 @@ theorem rm04_ricciIdentityAt
     connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
-      DifferentialGeometry.Integral.Connection.torsionFree_of_isLeviCivita
+      DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
         (I := I) (lcAt_regular (I := I) S hS t)
-    simpa [DifferentialGeometry.Integral.Connection.IsTorsionFreeAt] using htf x
-  exact DifferentialGeometry.Integral.Connection.tensor0S_ricciIdentity_of_torsionFree
+    simpa [DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt] using htf x
+  exact DifferentialGeometry.Tensor.RicciIdentity.tensor0S_ricciIdentity_of_torsionFree
     (I := I) (S.family.connection (t : Real)) hcov (S.base.rm13 (t : Real))
     (S.base.rm04 (t : Real)) (nablaRm04Field (I := I) S (t : Real))
     (S.base.rm04 (t : Real) x) (nablaRm04Field (I := I) S (t : Real) x)
@@ -572,18 +441,15 @@ theorem rm04_ricciIdentityAt
     (rm13OfSol (I := I) S (t : Real) (D.regular_subset t.2)) rfl rfl
     (rm04_nabla20SRealizesAt (I := I) S (t : Real) x) htor
 
-
-
-
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaRm04_ricciIdentityAt
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) :
-    DifferentialGeometry.Integral.Connection.Tensor0SRicciIdentityAt (I := I)
+    DifferentialGeometry.Tensor.RSTensor.Tensor0SRicciIdentityAt (I := I)
       (S.base.rm13 (t : Real)) (nablaRm04Field (I := I) S (t : Real) x)
       (nabla3Rm04Field (I := I) S (t : Real) x) := by
   have hcov :
@@ -592,10 +458,10 @@ theorem nablaRm04_ricciIdentityAt
     connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
-      DifferentialGeometry.Integral.Connection.torsionFree_of_isLeviCivita
+      DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
         (I := I) (lcAt_regular (I := I) S hS t)
-    simpa [DifferentialGeometry.Integral.Connection.IsTorsionFreeAt] using htf x
-  exact DifferentialGeometry.Integral.Connection.tensor0S_ricciIdentity_of_torsionFree
+    simpa [DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt] using htf x
+  exact DifferentialGeometry.Tensor.RicciIdentity.tensor0S_ricciIdentity_of_torsionFree
     (I := I) (S.family.connection (t : Real)) hcov (S.base.rm13 (t : Real))
     (nablaRm04Field (I := I) S (t : Real)) (nabla2Rm04Field (I := I) S (t : Real))
     (nablaRm04Field (I := I) S (t : Real) x)

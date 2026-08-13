@@ -5,6 +5,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenWithBoundary
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Family
 import DifferentialGeometry.Analysis.Integration.Measure.Family
+import DifferentialGeometry.Geometry.Operator.Gradient
 
 
 noncomputable section
@@ -12,10 +13,13 @@ noncomputable section
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix ENNReal
 
+open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
 namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
+
+open DifferentialGeometry.Geometry.Operator.WithBoundary
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
   [Module.Finite ℝ E]

@@ -4,13 +4,15 @@ import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.RingTheory.Derivation.Lie
 
+namespace DifferentialGeometry.Geometry.Connection.Realization
+
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
-open Bundle
+open _root_.Bundle
 
 section Embedding
 
@@ -474,3 +476,5 @@ theorem embed_bracket_closed
 end Embedding
 
 end
+
+end DifferentialGeometry.Geometry.Connection.Realization

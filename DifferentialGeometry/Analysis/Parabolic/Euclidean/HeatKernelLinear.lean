@@ -1,20 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelCancel
 import Mathlib.Analysis.Normed.Operator.NNNorm
 
-/-!
-# Linear-coordinate conjugates of the Euclidean heat cancellation operator
-
-A frozen uniformly positive principal matrix is reduced to the isotropic heat
-operator by a finite-dimensional linear equivalence.  This file packages the
-resulting cancellation estimate without introducing a determinant-normalized
-kernel: the operator itself is defined by conjugating the already normalized
-isotropic operator.
-
-The two quantitative costs are exactly the expected ones: two factors of the
-inverse-map norm for the two derivative directions and a half power of the
-forward-map norm for the pulled-back `1/2`-Holder constant.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -32,12 +18,9 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- Pull a Banach-valued function back by a continuous linear equivalence. -/
 def linPull (L : V ≃L[ℝ] V) (f : V → F) : V → F :=
   f ∘ L
 
-/-- Holder constant produced by pulling exponent-`1/2` data back through
-`L`. -/
 def linHalfConst (L : V ≃L[ℝ] V) (K : ℝ≥0) : ℝ≥0 :=
   K * ‖(L : V →L[ℝ] V)‖₊ ^ (1 / 2 : ℝ)
 
@@ -47,8 +30,6 @@ omit [FiniteDimensional ℝ V]
   [Nontrivial V]
   [NormedSpace ℝ F]
   [CompleteSpace F] in
-/-- Pullback through a continuous linear equivalence preserves exponent
-`1/2`, with the expected half power of the Lipschitz constant. -/
 theorem linPull_holder (L : V ≃L[ℝ] V) {K : ℝ≥0} {f : V → F}
     (hf : HolderWith K (1 / 2 : ℝ≥0) f) :
     HolderWith (linHalfConst L K) (1 / 2 : ℝ≥0) (linPull L f) := by
@@ -56,15 +37,11 @@ theorem linPull_holder (L : V ≃L[ℝ] V) {K : ℝ≥0} {f : V → F}
     L.lipschitz.holderWith
   simpa [linPull, linHalfConst] using hf.comp hL
 
-/-- Second-derivative cancellation operator conjugated by `L`.  If `L L*`
-is the frozen principal matrix, this is the corresponding frozen heat
-operator in the original coordinates. -/
 def linD2Cancel (L : V ≃L[ℝ] V) (t : ℝ) (v w : V)
     (f : V → F) (x : V) : F :=
   heatD2Cancel t (L.symm v) (L.symm w) (linPull L f) (L.symm x)
 
 omit [CompleteSpace F] in
-/-- Cancellation bound in the conjugated directional variables. -/
 theorem linD2Cancel_norm (L : V ≃L[ℝ] V) {t : ℝ} (ht : 0 < t)
     {K : ℝ≥0} {f : V → F} (hf : HolderWith K (1 / 2 : ℝ≥0) f)
     (v w x : V) :
@@ -75,7 +52,6 @@ theorem linD2Cancel_norm (L : V ≃L[ℝ] V) {t : ℝ} (ht : 0 < t)
   exact heatD2Cancel_norm ht (linPull_holder L hf) (L.symm v) (L.symm w) (L.symm x)
 
 omit [CompleteSpace F] in
-/-- Operator-norm version of the conjugated cancellation bound. -/
 theorem linD2Cancel_op (L : V ≃L[ℝ] V) {t : ℝ} (ht : 0 < t)
     {K : ℝ≥0} {f : V → F} (hf : HolderWith K (1 / 2 : ℝ≥0) f)
     (v w x : V) :

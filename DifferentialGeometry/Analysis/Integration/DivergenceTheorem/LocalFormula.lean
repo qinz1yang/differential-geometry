@@ -310,6 +310,118 @@ def divergence_g (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     divergence_g (I := I) g X x = localDivergence (I := I) g x X x := rfl
 
+theorem divergence_g_chart_product
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
+    divergence_g (I := I) g X x =
+      (∑ i : Fin (Module.finrank ℝ E),
+        partialDeriv (E := E) i
+          (chartCoeffOnE (I := I) x X i) (extChartAt I x x)) +
+        (∑ i : Fin (Module.finrank ℝ E),
+          chartCoeffOnE (I := I) x X i (extChartAt I x x) *
+            partialDeriv (E := E) i
+              (chartDensityOnE (I := I) g x) (extChartAt I x x)) /
+          chartDensity (I := I) g x x := by
+  classical
+  set y₀ : E := extChartAt I x x with hy₀_def
+  have hxsrc : x ∈ (extChartAt I x).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]
+    exact mem_chart_source H x
+  have hy₀_target : y₀ ∈ (extChartAt I x).target := by
+    simp [hy₀_def]
+  have htarget_nhd : (extChartAt I x).target ∈ 𝓝 y₀ :=
+    (isOpen_extChartAt_target (I := I) x).mem_nhds hy₀_target
+  have hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source]
+    exact mem_chart_source H x
+  have hρ_pos : 0 < chartDensity (I := I) g x x :=
+    chartDensity_pos (I := I) g x hbase
+  have hρ_ne : chartDensity (I := I) g x x ≠ 0 := ne_of_gt hρ_pos
+  have hsymm : (extChartAt I x).symm y₀ = x := by
+    simp [hy₀_def]
+  have hρOnE :
+      chartDensityOnE (I := I) g x y₀ = chartDensity (I := I) g x x := by
+    change chartDensity (I := I) g x ((extChartAt I x).symm y₀) =
+      chartDensity (I := I) g x x
+    rw [hsymm]
+  have hcoeff_diff :
+      ∀ i : Fin (Module.finrank ℝ E),
+        DifferentiableAt ℝ (chartCoeffOnE (I := I) x X i) y₀ := by
+    intro i
+    have hsmooth : ContDiffOn ℝ ∞ (chartCoeffOnE (I := I) x X i)
+        (extChartAt I x).target :=
+      chartCoeffOnE_contDiffOn (I := I) x X i
+    exact ((hsmooth y₀ hy₀_target).contDiffAt htarget_nhd).differentiableAt
+      (by simp)
+  have hρ_diff :
+      DifferentiableAt ℝ (chartDensityOnE (I := I) g x) y₀ := by
+    have hsmooth : ContDiffOn ℝ ∞ (chartDensityOnE (I := I) g x)
+        (extChartAt I x).target :=
+      chartDensityOnE_contDiffOn (I := I) g x
+    exact ((hsmooth y₀ hy₀_target).contDiffAt htarget_nhd).differentiableAt
+      (by simp)
+  have hprod :
+      ∀ i : Fin (Module.finrank ℝ E),
+        partialDeriv (E := E) i
+          (fun y : E =>
+            chartCoeffOnE (I := I) x X i y *
+              chartDensityOnE (I := I) g x y) y₀ =
+          partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
+            chartDensityOnE (I := I) g x y₀ +
+          chartCoeffOnE (I := I) x X i y₀ *
+            partialDeriv (E := E) i (chartDensityOnE (I := I) g x) y₀ := by
+    intro i
+    unfold partialDeriv
+    have hmul : fderiv ℝ
+        (fun y : E =>
+          chartCoeffOnE (I := I) x X i y *
+            chartDensityOnE (I := I) g x y) y₀ =
+        chartCoeffOnE (I := I) x X i y₀ •
+          fderiv ℝ (chartDensityOnE (I := I) g x) y₀ +
+        chartDensityOnE (I := I) g x y₀ •
+          fderiv ℝ (chartCoeffOnE (I := I) x X i) y₀ :=
+      fderiv_fun_mul (hcoeff_diff i) hρ_diff
+    rw [hmul]
+    rw [ContinuousLinearMap.add_apply,
+      ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+    simp only [smul_eq_mul]
+    ring
+  rw [divergence_g_def, localDivergence_def]
+  change
+    (∑ i : Fin (Module.finrank ℝ E),
+        partialDeriv (E := E) i
+          (fun y : E =>
+            chartCoeffOnE (I := I) x X i y *
+              chartDensityOnE (I := I) g x y) y₀) /
+      chartDensity (I := I) g x x = _
+  rw [show
+      (∑ i : Fin (Module.finrank ℝ E),
+        partialDeriv (E := E) i
+          (fun y : E =>
+            chartCoeffOnE (I := I) x X i y *
+              chartDensityOnE (I := I) g x y) y₀) =
+        ∑ i : Fin (Module.finrank ℝ E),
+          (partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
+            chartDensityOnE (I := I) g x y₀ +
+          chartCoeffOnE (I := I) x X i y₀ *
+            partialDeriv (E := E) i (chartDensityOnE (I := I) g x) y₀) by
+      refine Finset.sum_congr rfl ?_
+      intro i _
+      exact hprod i]
+  rw [Finset.sum_add_distrib]
+  rw [show
+      (∑ i : Fin (Module.finrank ℝ E),
+        partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀ *
+          chartDensityOnE (I := I) g x y₀) =
+        (∑ i : Fin (Module.finrank ℝ E),
+          partialDeriv (E := E) i (chartCoeffOnE (I := I) x X i) y₀) *
+          chartDensityOnE (I := I) g x y₀ by
+      rw [Finset.sum_mul]]
+  rw [hρOnE]
+  rw [add_div]
+  rw [mul_div_assoc, div_self hρ_ne, mul_one]
+
 end DivergenceTheorem
 end Integral
 end DifferentialGeometry

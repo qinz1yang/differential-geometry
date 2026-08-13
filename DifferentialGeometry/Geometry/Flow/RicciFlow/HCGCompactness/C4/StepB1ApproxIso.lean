@@ -1,45 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.ApproxIsometryDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.GoodCoveringOrdered
 import DifferentialGeometry.Geometry.Comparison.ExpBallDiffeo
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -66,12 +30,6 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsMan
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [T2Space N] [IsManifold I ∞ N]
   [SigmaCompactSpace N]
 
-
-
-
-
-
-
 noncomputable def PreApproxIsoDataOn.congr {K : Set M} {ε : Real} {p : Nat} {F F' : M → N}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (hdata : PreApproxIsoDataOn (I := I) K ε p F g h)
@@ -87,14 +45,6 @@ noncomputable def PreApproxIsoDataOn.congr {K : Set M} {ε : Real} {p : Nat} {F 
     exact hdata.pullback_apply x hx v
   c0_small := hdata.c0_small
   cov_deriv_small := hdata.cov_deriv_small
-
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] [SigmaCompactSpace N] in
@@ -142,11 +92,6 @@ theorem stepB1_glue
 
 end Glue
 
-
-
-
-
-
 structure StepB1RawInput (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) : Prop where
   comparison : ∀ (r : Real), 0 < r → ∀ (ε : Real), 0 < ε → ε < 1 → ∀ (p : Nat),
     ∃ k₀ : Nat, ∀ k ℓ : Nat, k₀ ≤ k → k₀ ≤ ℓ →
@@ -174,23 +119,6 @@ structure StepB1RawInput (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) : 
         Nonempty (PreApproxIsoDataOn (I := I) (F '' Metric.closedBall (X.obj k).basepoint r) ε p
           (Function.invFunOn F (Metric.ball (X.obj k).basepoint R))
           (X.obj ℓ).metric (X.obj k).metric)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in

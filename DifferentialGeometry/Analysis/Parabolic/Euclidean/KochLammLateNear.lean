@@ -1,16 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelHolder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateKern
 
-/-!
-# Near terminal-cylinder Koch--Lamm estimate
-
-The late ordinary-source estimate is a genuinely space-time Hölder estimate.
-This file restricts the terminal heat-kernel class to one Koch--Lamm late
-cylinder and pairs it with the matching `KLSource0.late_lq` arm.  In
-particular, no uniform-in-time spatial `L^q` bound is extracted from the
-source hypothesis.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -27,8 +17,6 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [Nontrivial V] in
-/-- A Koch--Lamm late cylinder is contained, as a restricted product
-measure, in the corresponding full-space terminal slab. -/
 theorem klLateMeasure_le (x : V) (R : ℝ) :
     (klVolume : Measure (ℝ × V)).restrict (klLateCyl x R) ≤
       klTermMeasure (V := V) (R ^ 2) := by
@@ -38,8 +26,6 @@ theorem klLateMeasure_le (x : V) (R : ℝ) :
     (Set.prod_mono (subset_refl _) (Set.subset_univ _)) le_rfl
 
 omit [Nontrivial V] [NormedSpace ℝ F] [CompleteSpace F] in
-/-- The finite late-cylinder source estimate supplies the local `MemLp`
-fact needed for space-time Hölder. -/
 theorem klLateSrc_memLp {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
@@ -57,8 +43,6 @@ theorem klLateSrc_memLp {T R : ℝ} {A₁ A_q : ℝ≥0}
   exact ENNReal.lt_top_of_mul_ne_top_right hmul.ne hs0
 
 omit [Nontrivial V] [NormedSpace ℝ F] [CompleteSpace F] in
-/-- Quantitative form of the same late-cylinder source estimate, with the
-positive Koch--Lamm scale divided out. -/
 theorem klLateSrc_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
@@ -72,15 +56,11 @@ theorem klLateSrc_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
   exact (ENNReal.mul_le_iff_le_inv hs0 hsT).mp
     (h.late_lq x R hR hRT)
 
-/-- The contribution of one late Koch--Lamm cylinder to the terminal-time
-ordinary heat potential. -/
 def klLateNear0 (R : ℝ) (f : ℝ × V → F) (x : V) : F :=
   ∫ z in klLateCyl x R,
     klTermKernel (R ^ 2) x z • f z ∂(klVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
-/-- Space-time Hölder controls the near terminal-cylinder heat potential in
-the exact conjugate exponents. -/
 theorem klLateNear_holder {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :

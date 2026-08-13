@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.LinearAlgebra.Alternating.Basic
 
@@ -37,6 +37,18 @@ theorem domDomCongr_add (e : Fin m ≃ Fin n)
     (f g : M [⋀^Fin m]→L[𝕜] N) :
     domDomCongr e (f + g) = domDomCongr e f + domDomCongr e g := by
   ext x; simp [domDomCongr_apply, add_apply]
+
+theorem domDomCongr_smul {ι ι' : Type*} (c : 𝕜) (e : ι ≃ ι')
+    (f : M [⋀^ι]→L[𝕜] N) :
+    domDomCongr e (c • f) = c • domDomCongr e f := by
+  ext v
+  simp [domDomCongr_apply]
+
+theorem domDomCongr_trans {ι ι' ι'' : Type*} (e₁ : ι ≃ ι') (e₂ : ι' ≃ ι'')
+    (f : M [⋀^ι]→L[𝕜] N) :
+    (f.domDomCongr e₁).domDomCongr e₂ = f.domDomCongr (e₁.trans e₂) := by
+  ext v
+  rfl
 
 theorem domDomCongr_sum {ι : Type*}
     (e : Fin m ≃ Fin n) (s : Finset ι) (f : ι → M [⋀^Fin m]→L[𝕜] N) :

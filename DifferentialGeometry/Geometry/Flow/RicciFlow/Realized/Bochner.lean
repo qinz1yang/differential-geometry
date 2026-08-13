@@ -1,3 +1,1 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerTensor
-
-set_option autoImplicit false

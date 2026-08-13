@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.ChartLocalPicardRegular
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle Set
 open scoped Manifold ContDiff Topology
@@ -144,4 +144,4 @@ noncomputable def chartLocalPicardData_of_spatialC1
   exact ⟨fun α => chartLocalPicardData_of_regular X hReg α,
     fun α => chartLocalPicardData_of_regular (fun t x => -(X t x)) hRegNeg α⟩
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

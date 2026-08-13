@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Component.EigenvectorChartComponentH2EnergyBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Iterated.EigenvectorIteratedData
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorChartComponentSobolevBound
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -126,7 +128,7 @@ private lemma wkpNorm_two_eigenvectorChartComponentFun_eq_zero_of_notMem_activeF
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
     (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_chart_open
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 private noncomputable def perAlphaPCConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) : ℝ :=
@@ -134,7 +136,7 @@ private noncomputable def perAlphaPCConstant
     (eigenvector_chartComponent_wkpNorm_two_energy_le
       (I := I) (M := M) g r s α P₀)
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma perAlphaPCConstant_nonneg
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -144,7 +146,7 @@ private lemma perAlphaPCConstant_nonneg
     (eigenvector_chartComponent_wkpNorm_two_energy_le
       (I := I) (M := M) g r s α P₀)).1
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 private lemma perAlphaPCConstant_bound
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -215,7 +217,7 @@ private lemma perAlphaPCConstant_le_totalActivePCConstant
         perAlphaPCConstant_nonneg (I := I) (M := M) g r s β Q) hα
   exact h_inner_le.trans h_outer_le
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral in
+open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
 theorem eigenvector_chartComponent_wkpNorm_two_energy_le_uniform_β_unconditional
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :

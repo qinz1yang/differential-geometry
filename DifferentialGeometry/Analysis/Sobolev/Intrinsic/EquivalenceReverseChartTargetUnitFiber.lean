@@ -54,7 +54,7 @@ private lemma chartTargetUnit_smoothOn (α : M)
     ((trivializationAt E (TangentSpace I) α).apply_mk_symm hx v_E)
 
 private lemma g_inner_chartTargetUnit_continuousOn
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) (i : Fin (Module.finrank ℝ E)) :
     ContinuousOn
       (fun x : M => g.inner x
@@ -85,7 +85,7 @@ private lemma g_inner_chartTargetUnit_continuousOn
 
 noncomputable def chartTargetUnitSqSumSupOnPouTsupport
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) : ℝ := by
   classical
   set Kα : Set M := tsupport
@@ -112,7 +112,7 @@ noncomputable def chartTargetUnitSqSumSupOnPouTsupport
 
 lemma chartTargetUnitSqSumSupOnPouTsupport_nonneg
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) :
     0 ≤ chartTargetUnitSqSumSupOnPouTsupport (I := I) (M := M) g α := by
   classical
@@ -170,7 +170,7 @@ lemma chartTargetUnitSqSumSupOnPouTsupport_nonneg
 
 lemma chartTargetUnitSqSum_le_sup
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M) {x : M}
     (hx : x ∈ tsupport
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α

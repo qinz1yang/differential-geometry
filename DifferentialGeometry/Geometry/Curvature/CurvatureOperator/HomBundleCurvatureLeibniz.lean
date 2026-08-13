@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.HomBundleNabla
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -8,8 +9,9 @@ set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
-open DifferentialGeometry.Integral.Connection
 
+
+namespace DifferentialGeometry
 namespace HomConnectionGen
 
 variable
@@ -213,4 +215,5 @@ theorem riemannSec_homBundleGen_apply_eq
 
 end HomConnectionGen
 
+end DifferentialGeometry
 end

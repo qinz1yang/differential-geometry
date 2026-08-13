@@ -1,19 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCAveraging
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalBranchMin
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -26,7 +19,8 @@ open Set Bundle Manifold
 open scoped Topology Manifold ContDiff
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
@@ -36,8 +30,6 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] [T3Space M]
-
-
 
 noncomputable def centerCfgOn
     (g : SmoothRiemannianMetric I M) (p : M) {ι : Type} [Fintype ι]
@@ -52,7 +44,6 @@ noncomputable def centerCfgOn
     (fun params i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
     join (fun _ => p) (fun _ => r) (fun _ => p) h
 
-
 noncomputable def chartCenterOn
     (g : SmoothRiemannianMetric I M) (p : M) {ι : Type} [Fintype ι]
     (join : M -> M -> Real -> M) (r : Real)
@@ -63,8 +54,6 @@ noncomputable def chartCenterOn
         join p r)
     (params : (ι -> Real) × (ι -> E)) : E :=
   NormalCoordinates.normalChartAt (I := I) g p (centerCfgOn (I := I) g p join r V h params)
-
-
 
 theorem centerCfgOn_eq
     (g : SmoothRiemannianMetric I M) (p : M) {ι : Type} [Fintype ι]
@@ -91,10 +80,6 @@ variable {P₀ : Type*} [TopologicalSpace P₀] [T2Space P₀]
 
 omit [NormedSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] in
-/-- Local pinned inverses along a compact graph glue to one continuous ambient
-root extension.  The common injectivity neighborhood is returned explicitly;
-agreement with the original root on `B` follows from injectivity, not merely
-from the fact that both functions solve the same equation. -/
 theorem existsRootExtension
     (G : E -> P₀ -> E) {A B : Set P₀} (hA : IsCompact A) (hAB : A ⊆ B)
     (c : P₀ -> E) (hc : ContinuousOn c B)
@@ -255,8 +240,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem centerReadoutB_zero
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (mu : ι -> Real) (xi : ι -> E)
     (join : M -> M -> Real -> M) (r : Real)
@@ -376,8 +360,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
 theorem centerReadout_zero
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (mu : ι -> Real) (xi : ι -> E)
     (join : M -> M -> Real -> M) (r : Real)
     (h : CenterInput (I := I) g mu
@@ -509,8 +492,7 @@ omit [ConnectedSpace M] in
 theorem existsCmExtensionB
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (D : DiagInvBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι]
     {A B : Set ((ι -> Real) × (ι -> E))} (hA : IsCompact A) (hAB : A ⊆ B)
@@ -550,8 +532,7 @@ omit [ConnectedSpace M] in
 theorem existsCmExtension
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι]
     {A B : Set ((ι -> Real) × (ι -> E))} (hA : IsCompact A) (hAB : A ⊆ B)
     (c : ((ι -> Real) × (ι -> E)) -> E) (hc : ContinuousOn c B)
@@ -758,7 +739,6 @@ open Set Bundle Manifold
 open scoped Topology Manifold ContDiff
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
-open DifferentialGeometry.Integral.Connection
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace
@@ -768,8 +748,6 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-
-
 
 theorem centerReadoutB_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

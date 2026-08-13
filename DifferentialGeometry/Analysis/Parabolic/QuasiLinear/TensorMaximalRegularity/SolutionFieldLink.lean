@@ -1,13 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionSpace
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -41,15 +33,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a : ℝ} {T : ℝ}
 
-
-
-
-
-
-
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem homModeCoeff_eq_init_add_integral
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -94,15 +77,6 @@ theorem homModeCoeff_eq_init_add_integral
   simp only [mul_zero, Real.exp_zero, one_mul]
   ring
 
-
-
-
-
-
-
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solModeCoeff_eq_integral (hT : 0 ≤ T)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T)
@@ -127,9 +101,6 @@ theorem solModeCoeff_eq_integral (hT : 0 ≤ T)
   rw [TimeSobolev.timeH1.toFun_apply, TimeSobolev.timeH1.init_mk,
     TimeSobolev.timeH1.deriv_mk, zero_add]
 
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -163,16 +134,6 @@ theorem maxRegDuhamelMap_deriv_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
   filter_upwards [hcoe, haddcoe] with s hs1 hs2
   rw [← hs1, hsum, hs2, Pi.add_apply]
 
-
-
-
-
-
-
-
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -235,17 +196,6 @@ theorem maxRegDuhamelSolField_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     rw [hs hsmem]
   rw [hcongr]
 
-
-
-
-
-
-
-
-
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -302,9 +252,6 @@ theorem maxRegDuhamelSolFieldHa1_coeff_ae (hT : 0 < T) (hT1 : T ≤ 1)
     rw [hs hsmem]
   rw [hcongr]
 
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solField_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -355,9 +302,6 @@ theorem solField_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
   rw [tensorHsInclusion_coeff_apply]
   exact ht i
 
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem solFieldHa1_toFun_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))

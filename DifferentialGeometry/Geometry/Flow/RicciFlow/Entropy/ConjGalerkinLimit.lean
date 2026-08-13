@@ -2,17 +2,11 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTr
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.GalerkinCompactness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjGalerkinEnergy
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -24,8 +18,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral
+
 open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -34,7 +28,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
@@ -91,7 +85,6 @@ structure IsConjGalSubseq
         (ulim t i) ^ 2 ≤ Bound
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem gal_lim_mass
     (q : SmoothRiemannianMetric I M) {tau : Real}
@@ -187,9 +180,6 @@ private theorem supp_right_lip
     · simpa only [f', if_pos hi] using hdu N t ht i hi
     · simpa only [f', if_neg hi, norm_zero] using (L i).property
 
-
-
-
 private lemma real_abs_neg_mul_add_le {lam v c A K : ℝ} (hlam : 0 ≤ lam)
     (hv : |v| ≤ A) (hc : |c| ≤ K) : |-lam * v + c| ≤ lam * A + K := by
   calc |-lam * v + c| ≤ |-lam * v| + |c| := abs_add_le _ _
@@ -199,7 +189,7 @@ private lemma real_abs_neg_mul_add_le {lam v c A K : ℝ} (hlam : 0 ≤ lam)
 private lemma scalarGalPert_continuousOn_of_parts
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) {tau : Real}
-    (h2 : ContinuousOn (fun t => lapDiffA20 (I := I) (M := M) S.family T t)
+    (h2 : ContinuousOn (fun t => lapDiffA20 (I := I) (M := M) S.family.metric T t)
       (Icc (0 : Real) tau))
     (h1 : ContinuousOn (fun t => conjA1 (I := I) (M := M) S T t)
       (Icc (0 : Real) tau)) :
@@ -215,8 +205,6 @@ private lemma scalarGalPert_continuousOn_of_parts
   have hsum := h2.add hPot
   exact hsum
 
-/-- Exact-interval energy bounds and perturbation continuity produce a
-modewise uniformly convergent Galerkin subsequence on that same interval. -/
 theorem gal_subseq_on
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) {tau : Real} (htau : 0 < tau)
@@ -405,11 +393,6 @@ theorem gal_subseq_on
     lim_mass := by simpa only [q] using hlim_mass
   }⟩
 
-
-
-/-- Every smooth scalar initial datum has, on one common time interval, a
-modewise uniformly convergent subsequence of genuine finite Galerkin solutions.
-The limit inherits the all-order weighted spectral mass bounds. -/
 theorem scalar_gal_subseq
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) :
@@ -428,7 +411,7 @@ theorem scalar_gal_subseq
   obtain ⟨tauE, htauE, htauE_one, hsolve⟩ := hgal
   obtain ⟨tau2, htau2, _htau2_one, hcont2, _hmeas2, _hbound2,
       _hboundAE2⟩ :=
-    lapDiffA20_short (I := I) (M := M) S.family hS.smoothMetric T
+    lapDiffA20_short (I := I) (M := M) S.family.metric hS.smoothMetric T
       (epsilon := (1 : Real)) zero_lt_one
   obtain ⟨tau1, htau1, _htau1_one, _C1, hcont1, _hmeas1, _hbound1,
       _hboundAE1⟩ := conjA1_short (I := I) (M := M) S hS T
@@ -475,8 +458,6 @@ theorem scalar_gal_subseq
       exact ⟨Bound, fun N t ht => hBound N t (hIccE ht)⟩
   · exact hpert
 
-/-- The order-`m` Sobolev realization of the limiting Galerkin coefficients at
-one time in the compactness interval. -/
 noncomputable def galLimHs
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -495,7 +476,6 @@ noncomputable def galLimHs
   coeff := ulim t
   weighted_summable := ((hlim.lim_mass m).choose_spec t ht).1
 
-
 noncomputable def galLimPath
     {D : RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
@@ -511,8 +491,6 @@ noncomputable def galLimPath
     Icc (0 : Real) tau → tensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (m : Real) :=
   fun t => galLimHs hlim m t t.2
-
-
 
 theorem galLimPath_cont
     {D : RealTimeInterval}
@@ -555,8 +533,6 @@ theorem galLimPath_cont
     simp only [W, galLimPath, galLimHs, q, tensorHsInclusion_coeff_apply]
   rw [heq] at hcont
   exact hcont
-
-
 
 theorem galLim_tendsto
     {D : RealTimeInterval}

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCProducers
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
@@ -203,8 +204,6 @@ theorem stepCJoinFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       hV'sub gamma (binfMemClosed (hB gamma) (hKU gamma hv) (hV'closed gamma)
         (Filter.Eventually.of_forall (hKV0 gamma v hv))))
 
-
-
 theorem stepCJoinDataFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
@@ -353,16 +352,6 @@ theorem stepCJoinDataFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (fun gamma v hv =>
       hV'sub gamma (binfMemClosed (hB gamma) (hKU gamma hv) (hV'closed gamma)
         (Filter.Eventually.of_forall (hKV0 gamma v hv))))
-
-
-
-
-
-
-
-
-
-
 
 theorem stepCJoin (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))

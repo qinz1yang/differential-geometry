@@ -1,18 +1,17 @@
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.NablaTrace02
+import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.Tensor.RSTensor
 
 noncomputable section
 
-open Bundle Tensor0SBundle Filter
+open Bundle DifferentialGeometry.Tensor0SBundle Filter
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -119,24 +118,18 @@ private theorem headFreezeNabla
         have hV2x :
             (fun a : Fin 2 => V2 a x) = vec2 (I := I) U V := by
           funext a
-          fin_cases a <;> simp [V2, hUsec, hVsec, DifferentialGeometry.Integral.Connection.vec2]
+          fin_cases a <;> simp [V2, hUsec, hVsec, DifferentialGeometry.Geometry.Curvature.vec2]
         have hV3x :
             (fun a : Fin 3 => V3 a x) =
               vec3 (I := I) (Y x) U V := by
           funext a
-          fin_cases a <;> simp [V3, hUsec, hVsec, DifferentialGeometry.Integral.Connection.vec3]
+          fin_cases a <;> simp [V3, hUsec, hVsec, DifferentialGeometry.Geometry.Curvature.vec3]
         rw [← hV2x, ← hV3x]
         rw [hBeval, hAeval, hderiv, hBcorr, hAcorr]
     _ =
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         3 cov A x (vec4 (I := I) (X x) (Y x) U V) := by
         simpa [metricTrace_finCons_vec3_eq_vec4 (I := I)] using hAtot.symm
-
-
-
-
-
-
 
 theorem nabla2Trace02
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
@@ -146,7 +139,7 @@ theorem nabla2Trace02
       (∞ : WithTop ℕ∞))
     (hcov1 : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -440,12 +433,12 @@ private theorem tailFreezeNabla
         have hV2x :
             (fun a : Fin 2 => V2 a x) = vec2 (I := I) U V := by
           funext a
-          fin_cases a <;> simp [V2, hUsec, hVsec, DifferentialGeometry.Integral.Connection.vec2]
+          fin_cases a <;> simp [V2, hUsec, hVsec, DifferentialGeometry.Geometry.Curvature.vec2]
         have hV4x :
             (fun a : Fin 4 => V4 a x) =
               vec4 (I := I) U V (Y x) (Z x) := by
           funext a
-          fin_cases a <;> simp [V4, hUsec, hVsec, DifferentialGeometry.Integral.Connection.vec4]
+          fin_cases a <;> simp [V4, hUsec, hVsec, DifferentialGeometry.Geometry.Curvature.vec4]
         rw [← hV2x, ← hV4x]
         rw [hBeval, hAeval, hderiv, hBcorr, hAcorr]
     _ =
@@ -530,7 +523,7 @@ private theorem middleFreezeNabla
         vec4 (I := I) (Usec p) (Vsec p) (Y p) (Z p) (trace04Perm i)) = _
       apply congrArg (A p)
       funext q
-      fin_cases q <;> simp [trace04Perm, DifferentialGeometry.Integral.Connection.vec4]
+      fin_cases q <;> simp [trace04Perm, DifferentialGeometry.Geometry.Curvature.vec4]
     rw [hfun]
   have hBcorr :
       (∑ a : Fin 2,
@@ -559,12 +552,12 @@ private theorem middleFreezeNabla
         have hV2x :
             (fun a : Fin 2 => V2 a x) = vec2 (I := I) U V := by
           funext a
-          fin_cases a <;> simp [V2, hUsec, hVsec, DifferentialGeometry.Integral.Connection.vec2]
+          fin_cases a <;> simp [V2, hUsec, hVsec, DifferentialGeometry.Geometry.Curvature.vec2]
         have hV4x :
             (fun a : Fin 4 => V4 a x) =
               vec4 (I := I) U (Y x) (Z x) V := by
           funext a
-          fin_cases a <;> simp [V4, hUsec, hVsec, DifferentialGeometry.Integral.Connection.vec4]
+          fin_cases a <;> simp [V4, hUsec, hVsec, DifferentialGeometry.Geometry.Curvature.vec4]
         rw [← hV2x, ← hV4x]
         rw [hBeval, hAeval, hderiv, hBcorr, hAcorr]
     _ =
@@ -572,15 +565,13 @@ private theorem middleFreezeNabla
         4 cov A x (Fin.cons (X x) (vec4 (I := I) U (Y x) (Z x) V)) := by
         simpa [hUsec, hVsec] using hAtot.symm
 
-
-
 theorem nablaTrace04
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -658,7 +649,7 @@ theorem nablaTrace04
           have hV2x :
               (fun a : Fin 2 => V2 a x) = vec2 (I := I) Y Z := by
             funext a
-            fin_cases a <;> simp [V2, hYsec, hZsec, DifferentialGeometry.Integral.Connection.vec2]
+            fin_cases a <;> simp [V2, hYsec, hZsec, DifferentialGeometry.Geometry.Curvature.vec2]
           rw [← hV2x]
           rw [heval, hcorr]
           rw [hfun]
@@ -685,7 +676,6 @@ theorem nablaTrace04
       (hYcov Xsec) (hZcov Xsec) (basis i) (basis j)
   simpa [B, nablaA, hXsec, hYsec, hZsec] using hfreeze
 
-
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Tensor.RSTensor

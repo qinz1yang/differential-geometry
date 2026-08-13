@@ -2,7 +2,7 @@ import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle IsManifold
 open scoped Manifold ContDiff Topology
@@ -121,4 +121,4 @@ theorem manifold_contMDiffAt_of_chart_smooth_flow
   have hΨ_smooth : ContMDiffAt I I ∞ Ψ x := h_chart_symm.comp x h_step2
   exact hΨ_smooth.congr_of_eventuallyEq hEqEv
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

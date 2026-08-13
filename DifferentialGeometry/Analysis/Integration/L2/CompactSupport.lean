@@ -11,6 +11,7 @@ import Mathlib.MeasureTheory.Function.SimpleFuncDenseLp
 import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Indicator
+open DifferentialGeometry.Geometry.Connection.Realization
 
 
 noncomputable section

@@ -25,7 +25,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 theorem resolvent_injective (g : SmoothRiemannianMetric I M) :
     Function.Injective (resolvent (I := I) (M := M) g) := by
@@ -191,6 +191,15 @@ theorem laplacianOp_smoothToH1Compl
     rw [h_eq, H1ComplToLp_smoothToH1Compl]
   · apply Subtype.ext
     exact smoothToH1Compl_eq_resolvent_oneSubLap (I := I) (M := M) u
+
+theorem laplacianOp_smoothToH1Compl_eq_smoothToLp_laplacian
+    {g : SmoothRiemannianMetric I M} (u : SmoothScalar g) :
+    laplacianOp (I := I) (M := M) g
+        ⟨smoothToH1Compl (I := I) (M := M) g u,
+          smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) u⟩ =
+      smoothToLp (I := I) (M := M) g u.laplacian := by
+  rw [laplacianOp_smoothToH1Compl]
+  rw [← map_sub, SmoothScalar.sub_oneSubLapClassical]
 
 example (g : SmoothRiemannianMetric I M) :
     Submodule ℝ (H1Compl g) := laplacianDomain (I := I) (M := M) g

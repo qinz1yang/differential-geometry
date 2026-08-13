@@ -1,19 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -44,8 +32,7 @@ theorem exists_gradVariation
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (q pt : M) (u : TangentSpace I q) (L : ℝ) (hL : 0 < L)
     (hgL : intrinsicGeodesic (I := I) g hEnorm q u L = pt)
     (w : TangentSpace I q) :

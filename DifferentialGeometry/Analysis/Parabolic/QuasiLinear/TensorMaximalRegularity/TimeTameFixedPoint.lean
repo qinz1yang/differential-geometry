@@ -1,21 +1,15 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TimeLocalNemytskii
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TameForcingFixedPoint
-
-/-!
-# Time-dependent tame forcing-space fixed points
-
-This file lifts the lower-state three-arm forcing argument to a genuinely
-time-dependent nonlinearity.  The state set and maximal-regularity argument
-are generic in tensor variance, so vector-valued harmonic-map gauges use
-`(r,s) = (1,0)` without a separate analytic solver.
--/
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Parabolic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -30,15 +24,12 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-/-- The generic top-order tensor state whose order-`a+1` view has norm at
-most `R`. -/
 def lowerStateRS (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ) (R : ℝ) :
     Set (tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) :=
   lowerBall (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
     (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith)) R
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-/-- Zero belongs to every generic nonnegative lower-order state ball. -/
+omit [NeZero (Module.finrank ℝ E)] in
 theorem zero_mem_lowerRS (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ)
     {R : ℝ} (hR : 0 ≤ R) :
     (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) ∈
@@ -49,8 +40,6 @@ theorem zero_mem_lowerRS (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ)
         (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2))‖ ≤ R
   simpa only [map_zero, norm_zero] using hR
 
-/-- A generic Duhamel field driven by the radius-`ρ` forcing ball lies almost
-everywhere in the prescribed lower-order state ball. -/
 theorem field_mem_lowerRS
     (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ) {T ρ R : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1) (hρR : 2 * ρ ≤ R)
@@ -92,8 +81,6 @@ theorem field_mem_lowerRS
     _ ≤ 2 * ρ := mul_le_mul hsqrt hF (norm_nonneg F) (by positivity)
     _ ≤ R := hρR
 
-/- A four-term `L²` Minkowski estimate.  It is kept private because its public
-consumer is the three-arm fixed-point theorem below. -/
 private theorem l2_four
     {T : ℝ} {X Y Z W V : Type*}
     [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
@@ -208,14 +195,6 @@ private theorem l2_four
     ENNReal.toReal_ofReal hA, ENNReal.toReal_ofReal hB,
     ENNReal.toReal_ofReal hC, ENNReal.toReal_ofReal hD]
 
-/-- Quantitative forcing-space existence for a time-dependent nonlinearity on
-a generic lower-order tensor state ball satisfying a uniform critical
-three-arm tame estimate.
-
-The first smallness hypothesis controls the genuinely top-order arm.  The
-second controls the high-size times lower-difference arm on the forcing ball.
-The horizon controls only the fixed lower-order arm and the displacement of
-the zero forcing. -/
 theorem time_partial_tame
     (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ)
     {R τ : ℝ} (hR : 0 < R) (hτ : 0 < τ)
@@ -731,7 +710,6 @@ theorem time_partial_tame
       (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) Fstar]
   · simpa only [hρdef] using hFstar
 
-
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Parabolic
 
 end

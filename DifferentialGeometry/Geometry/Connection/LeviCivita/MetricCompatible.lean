@@ -11,7 +11,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -21,7 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 def IsMetricCompatibleOn
     (cov : (Π x : M, TangentSpace I x) →
       (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x))
-    (g : Measure.SmoothRiemannianMetric I M) (s : Set M := Set.univ) : Prop :=
+    (g : SmoothRiemannianMetric I M) (s : Set M := Set.univ) : Prop :=
   ∀ ⦃Y Z : Π x : M, TangentSpace I x⦄ ⦃x : M⦄,
     MDiffAt (T% Y) x → MDiffAt (T% Z) x → x ∈ s →
     ∀ v : TangentSpace I x,
@@ -29,11 +29,11 @@ def IsMetricCompatibleOn
         g.inner x (cov Y x v) (Z x) + g.inner x (Y x) (cov Z x v)
 
 def IsMetricCompatible (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (g : Measure.SmoothRiemannianMetric I M) : Prop :=
+    (g : SmoothRiemannianMetric I M) : Prop :=
   IsMetricCompatibleOn cov.toFun g Set.univ
 
 def metricCompatibleDifferential
-    (g : Measure.SmoothRiemannianMetric I M) {x : M}
+    (g : SmoothRiemannianMetric I M) {x : M}
     (covY : TangentSpace I x →L[ℝ] TangentSpace I x)
     (covZ : TangentSpace I x →L[ℝ] TangentSpace I x)
     (Yx Zx : TangentSpace I x) : TangentSpace I x →L[ℝ] ℝ :=
@@ -42,7 +42,7 @@ def metricCompatibleDifferential
 omit [FiniteDimensional ℝ E] in
 @[simp]
 lemma metricCompatibleDifferential_apply
-    (g : Measure.SmoothRiemannianMetric I M) {x : M}
+    (g : SmoothRiemannianMetric I M) {x : M}
     (covY : TangentSpace I x →L[ℝ] TangentSpace I x)
     (covZ : TangentSpace I x →L[ℝ] TangentSpace I x)
     (Yx Zx : TangentSpace I x) (v : TangentSpace I x) :
@@ -54,7 +54,7 @@ namespace IsMetricCompatibleOn
 variable
     {cov : (Π x : M, TangentSpace I x) →
       (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x)}
-    {g : Measure.SmoothRiemannianMetric I M}
+    {g : SmoothRiemannianMetric I M}
 
 omit [FiniteDimensional ℝ E] in
 lemma mono {s t : Set M} (h : IsMetricCompatibleOn cov g t) (hst : s ⊆ t) :
@@ -111,7 +111,7 @@ end IsMetricCompatibleOn
 namespace IsMetricCompatible
 
 variable {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
-variable {g : Measure.SmoothRiemannianMetric I M}
+variable {g : SmoothRiemannianMetric I M}
 
 omit [FiniteDimensional ℝ E] in
 lemma apply (h : IsMetricCompatible cov g)
@@ -156,10 +156,10 @@ end IsMetricCompatible
 omit [FiniteDimensional ℝ E] in
 lemma IsMetricCompatibleOn.toIsMetricCompatible
     {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
-    {g : Measure.SmoothRiemannianMetric I M}
+    {g : SmoothRiemannianMetric I M}
     (h : IsMetricCompatibleOn cov.toFun g Set.univ) :
     IsMetricCompatible cov g := h
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

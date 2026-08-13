@@ -1,33 +1,30 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.RealizedGramDerivChartEvaluation
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.DeTurckLieCoeffAppCcValue
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDeTurckRemainderOrderSplit
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -176,7 +173,8 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
   chartPushedRaw_tensorChartComponentRaw_contDiffOn)
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
   (chartDeTurckCorrPrincipalSymbolExprRaw chartDeTurckCorrHessBlockRaw)
-open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv chartGramOnE chartInvGramOnE)
+open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
+open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -514,10 +512,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma lieArm_chartInvGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramOnE (I := I) g x a b
+    DifferentialGeometry.Geometry.Operator.chartInvGramOnE (I := I) g x a b
         (extChartAt I x x) =
       chartInvGramMatrix (I := I) g x x a b := by
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramOnE_def]
+  rw [DifferentialGeometry.Geometry.Operator.chartInvGramOnE_def]
   have hx_src : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
   rw [(extChartAt I x).left_inv hx_src]
@@ -526,10 +524,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma lieArm_chartGramOnE_center (g : SmoothRiemannianMetric I M) (x : M)
     (a b : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g x a b
+    DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g x a b
         (extChartAt I x x) =
       DifferentialGeometry.Integral.Measure.chartGramMatrix (I := I) g x x a b := by
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_def]
+  rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def]
   have hx_src : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
   rw [(extChartAt I x).left_inv hx_src]
@@ -558,7 +556,7 @@ private lemma lieArm_gram_invGram_collapse (g : SmoothRiemannianMetric I M) (x :
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]; exact mem_chart_source H x
   have hmul :=
-    DifferentialGeometry.Integral.DivergenceTheorem.chartInvGramMatrix_mul_chartGramMatrix (I := I)
+    DifferentialGeometry.Geometry.Operator.chartInvGramMatrix_mul_chartGramMatrix (I := I)
     g x hx_base
   have h := congrFun (congrFun hmul l) j
   rw [Matrix.mul_apply, Matrix.one_apply] at h
@@ -597,8 +595,8 @@ private lemma lieArm_partialDeriv2_realizedGramDeriv_swap
     euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw (I := I) g₀ (T - T') x m₂ m₁ b a]
 
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-  (chartDeTurckCorrPrincipalSymbolExprRaw chartDeTurckCorrHessBlockRaw)
-open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv chartGramOnE chartInvGramOnE)
+open DifferentialGeometry.Integral.DivergenceTheorem (partialDeriv)
+open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 open DifferentialGeometry.Integral.Measure (chartGramMatrix)
 
 omit [CompactSpace M] [BoundarylessManifold I M] in
@@ -747,8 +745,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   cometricFinBasisTrace_eq_chartInvGram_bilin quadrilinearMapSlotBilinearAt
   unitModel4SlotBilin_apply)
 
-
-
 def lieTopTail
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (g₁ : SmoothRiemannianMetric I M) (x : M)
@@ -761,8 +757,6 @@ def lieTopTail
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![j, l, i, k₁]
         - arm2ReadoutCovDerivPair (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![i, j, l, k₁])
-
-
 
 omit [BoundarylessManifold I M] in
 theorem lieTop_cov_eq_raw
@@ -852,7 +846,7 @@ theorem lieTop_cov_eq_raw
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) j a b k
                 (extChartAt I x x)) from rfl]
   rw [Finset.sum_congr rfl (fun k _ => by
-      rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_symm (I := I) g₁ x i k
+      rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_symm (I := I) g₁ x i k
         (extChartAt I x x)] :
     ∀ k ∈ Finset.univ,
       chartGramOnE (I := I) g₁ x i k (extChartAt I x x) *
@@ -878,4 +872,4 @@ theorem lieTop_cov_eq_raw
     hδ_lt hδ hδ'_lt hδ' x i j l k₁]
   ring
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

@@ -5,21 +5,23 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
 import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Topology Metric Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter Topology Metric DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev
-open DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev
+open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Sobolev.Tensor
@@ -1041,6 +1043,6 @@ theorem tensorPouSobolevHilbert_embedding_Ck_gNorm
   have hDα_le : Dfun α ≤ S.sup' hS_ne Dfun := Finset.le_sup' Dfun hα_S
   linarith
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Analysis.Sobolev
 
 end

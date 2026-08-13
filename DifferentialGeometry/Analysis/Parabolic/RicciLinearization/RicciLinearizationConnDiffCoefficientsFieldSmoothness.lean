@@ -1,16 +1,19 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnDiffCovGradBridge
-import DifferentialGeometry.Geometry.Flow.DeTurckVFConnDiffVariation
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckVFConnDiffVariation
 import DifferentialGeometry.Tensor.Multilinear.ModelProductContinuousBilinear
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficientsFibreOperators
+open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory intervalIntegral
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped Manifold Topology ContDiff BigOperators Matrix Interval
 
 namespace DifferentialGeometry
@@ -20,11 +23,11 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -40,7 +43,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem domDomCongrSectionContMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
@@ -92,7 +94,6 @@ theorem slotPermCLM_field_contMDiff {d : ℕ} (ρ : Equiv.Perm (Fin d))
     (slotPermCLM_apply (I := I) ρ x (Z x))
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
@@ -144,7 +145,6 @@ private theorem tensorProdWithCLM_field_contMDiff (m k : ℕ)
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connContrCLM_field_contMDiff (m k : ℕ)
@@ -205,7 +205,6 @@ theorem connContrCLM_field_contMDiff (m k : ℕ)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace (m + 1 + k) I z) x t) rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -249,7 +248,6 @@ theorem linearizedRicciConnDiffOrder1CLM_field_contMDiff
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) x t) rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciConnDiffOrder0CLM_field_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -329,7 +327,6 @@ theorem linearizedRicciConnDiffOrder0CLM_field_contMDiff
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 4 I z) x t) rfl
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem ricciCometricFourTraceCLM_field_contMDiff (g₁ : SmoothRiemannianMetric I M)
@@ -376,7 +373,6 @@ noncomputable def linearizedRicciConnDiffOrder0CometricTracedCLM
       ((covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀)).toSection x))
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnDiffOrder1CometricTracedCLM_contMDiff
@@ -398,12 +394,10 @@ theorem linearizedRicciConnDiffOrder1CometricTracedCLM_contMDiff
     (fun x => linearizedRicciConnDiffOrder1CLM (I := I) x
       ((connDiffSection (I := I) g₁ g₀).toSection x) (Y x)) hE1
   refine hCK.congr (fun x => ?_)
-  exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
-    (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) rfl
+  apply TotalSpace.mk_inj.mpr
+  rfl
 
 set_option backward.isDefEq.respectTransparency false in
-set_option maxRecDepth 8000 in
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem linearizedRicciConnDiffOrder0CometricTracedCLM_contMDiff
     (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -426,8 +420,9 @@ theorem linearizedRicciConnDiffOrder0CometricTracedCLM_contMDiff
       ((covGrad (I := I) (M := M) g₀ 1 2
           (connDiffSection (I := I) g₁ g₀)).toSection x) (Y x)) hE0
   refine hCK.congr (fun x => ?_)
-  exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
-    (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) rfl
+  apply TotalSpace.mk_inj.mpr
+  rw [linearizedRicciConnDiffOrder0CometricTracedCLM]
+  rw [ContinuousLinearMap.comp_apply]
 
 noncomputable def linearizedRicciConnDiffOrder1CoeffField
     (g₀ g₁ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 3 2 where

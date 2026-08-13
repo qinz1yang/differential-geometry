@@ -71,33 +71,15 @@ import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
 import Mathlib.LinearAlgebra.Dual.Basis
 import Mathlib.LinearAlgebra.Trace
-import DifferentialGeometry.Tensor.RSTensor.Field
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -136,14 +118,9 @@ abbrev Tensor04At (x : M) :=
 abbrev Tensor13At (x : M) :=
   TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 3 x
 
-
-
 def scalarOne0S (x : M) : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 0 x :=
   ContinuousMultilinearMap.constOfIsEmpty Real
     (fun _ : Fin 0 => TangentSpace I x) 1
-
-
-
 
 def ricciFromRm13At {x : M} (Rm13 : Tensor13At (I := I) (M := M) x) :
     Tensor02At (I := I) (M := M) x :=
@@ -172,27 +149,13 @@ def tensor04ToField (Rm04 : Tensor04Section (I := I) (M := M)) :
     RawFourTensorField (I := I) (M := M) :=
   fun x X Y Z W => Rm04 x (vec4 X Y Z W)
 
-
-
-
-
 def tensor04StdAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (X Y Z W : TangentSpace I x) : Real :=
   Rm04 (vec4 X Y Z W)
 
-
-
-
-
-
-
-
-
 def tensor04OutAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (W X Y Z : TangentSpace I x) : Real :=
   Rm04 (vec4 X Y Z W)
-
-
 
 def tensor04StdToOutPerm : Equiv.Perm (Fin 4) where
   toFun i := if i = 0 then 3 else if i = 1 then 0 else if i = 2 then 1 else 2
@@ -201,8 +164,6 @@ def tensor04StdToOutPerm : Equiv.Perm (Fin 4) where
     fin_cases i <;> simp
   right_inv i := by
     fin_cases i <;> simp
-
-
 
 def tensor04StdOfOutAt {x : M} (Rm04Out : Tensor04At (I := I) (M := M) x) :
     Tensor04At (I := I) (M := M) x :=
@@ -237,13 +198,9 @@ theorem tensor04StdOfOutAt_apply
   funext i
   fin_cases i <;> simp [tensor04StdToOutPerm, vec4]
 
-
-
 def tensor04ToStdField (Rm04 : Tensor04Section (I := I) (M := M)) :
     RawFourTensorField (I := I) (M := M) :=
   fun x X Y Z W => tensor04StdAt (I := I) (Rm04 x) X Y Z W
-
-
 
 def tensor04ToOutField (Rm04 : Tensor04Section (I := I) (M := M)) :
     RawFourTensorField (I := I) (M := M) :=
@@ -265,8 +222,6 @@ def rm04Comp
     (x : M) (i j k l : Idx) : Real :=
   Rm04 x (vec4 (frame i x) (frame j x) (frame k x) (frame l x))
 
-
-
 def rm13Comp
     {Idx : Type*} {u : Set M}
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -274,9 +229,6 @@ def rm13Comp
     (hframe : IsLocalFrameOn I E ∞ frame u)
     (x : M) (a b c d : Idx) : Real :=
   Rm13 x (dualToCotangent_gen (hframe.coeff a x)) (vec3 (frame b x) (frame c x) (frame d x))
-
-
-
 
 structure CurvatureTensorData where
   rm13 : Tensor13Section (I := I) (M := M)
@@ -295,4 +247,4 @@ theorem rm04_comp_eq_eval
       Rm04 x (vec4 (frame i x) (frame j x) (frame k x) (frame l x)) :=
   rfl
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

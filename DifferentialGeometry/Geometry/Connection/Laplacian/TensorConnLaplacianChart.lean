@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.TensorConnLaplacian
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartTensorRSSecondCovariantDerivative
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -8,10 +9,11 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
+
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -38,6 +40,7 @@ private lemma smoothOrthoFrameAsSection_toFun
       smoothOrthoFrame (I := I) g y i := rfl
 
 omit [CompleteSpace E] in
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLap_eq_chart
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T :
@@ -86,7 +89,7 @@ theorem rawTensorConnLap_eq_chart
   rw [hSecond]
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

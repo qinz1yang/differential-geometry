@@ -2,18 +2,10 @@ import DifferentialGeometry.Analysis.Calculus.MovingInverse
 import DifferentialGeometry.Geometry.Comparison.ExpBallDiffeo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1MetricLocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageInjectivity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Exact inverse chart tails for Step B1
-
-The reverse finite-stage comparison map is used only to prove injectivity.  This
-file instead studies the exact inverse `Function.invFunOn` of the forward map.
-The analysis input is `OpenPartialHomeomorph.exists_symm_cInf`; a bad-pair
-argument later turns its one-sequence conclusion into the rectangular
-source/target-stage tail needed by Step B1.
--/
 
 noncomputable section
 
@@ -163,9 +155,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-/-- Along any cofinal pair of stages, the exact coordinate inverse of the
-forward comparison map converges smoothly to the identity on a neighborhood
-of every compact target core.  The reverse comparison map is not used here. -/
 theorem HasStageJetData.inv_chart_conv
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -465,9 +454,6 @@ theorem HasStageJetData.inv_chart_conv
     exact ⟨hAloc, hAinj, hleft⟩
   exact exists_inv_seq hQ hW hK hKQ hQW hAconv hgood
 
-/-- On a fixed compact target core, the exact coordinate inverses of all
-sufficiently late forward comparison maps have one common two-stage jet tail.
-The inverse is `Function.invFunOn` on the prescribed source ball. -/
 theorem HasStageJetData.inv_chart_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

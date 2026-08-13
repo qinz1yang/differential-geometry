@@ -1,14 +1,7 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.DiagInvBranch
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -36,8 +29,6 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-
-
 noncomputable def diagReadout
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -46,16 +37,12 @@ noncomputable def diagReadout
     (y : M × M) : E :=
   (trivializationAt E (TangentSpace I) p (B.inv y)).2
 
-
-
 def readDom
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
     {p : M} (B : DiagInvBranch (I := I) g hEnorm p) : Set (M × M) :=
   B.dom ∩ Prod.fst ⁻¹' (trivializationAt E (TangentSpace I) p).baseSet
-
-
 
 omit [ConnectedSpace M] in
 omit [InnerProductSpace ℝ E] in

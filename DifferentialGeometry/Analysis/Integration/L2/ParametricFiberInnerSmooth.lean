@@ -15,7 +15,7 @@ noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Manifold MeasureTheory Set Filter Bundle Tensor0SBundle
+open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
   RealInnerProductSpace InnerProductSpace
 
@@ -57,7 +57,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [T2Space M] [MeasurableSpace M] [OpensMeasurableSpace M]
 
-private theorem hasDerivAt_integral_param
+theorem hasDerivAt_integral_of_jointContMDiff
     (μ : Measure M) [IsFiniteMeasure μ] (f : M → ℝ → ℝ)
     (hf : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ (fun p : M × ℝ => f p.1 p.2)) (t₀ : ℝ) :
     HasDerivAt (fun t => ∫ x, f x t ∂μ) (∫ x, deriv (fun s => f x s) t₀ ∂μ) t₀ := by
@@ -106,15 +106,17 @@ theorem contDiff_integral_of_jointContMDiff
   | zero =>
       rw [Nat.cast_zero, contDiff_zero]
       exact continuous_iff_continuousAt.mpr
-        (fun t₀ => (hasDerivAt_integral_param μ f hf t₀).continuousAt)
+        (fun t₀ => (hasDerivAt_integral_of_jointContMDiff μ f hf t₀).continuousAt)
   | succ n ih =>
       rw [Nat.cast_succ, contDiff_succ_iff_deriv]
       refine ⟨?_, ?_, ?_⟩
-      · exact fun t₀ => (hasDerivAt_integral_param μ f hf t₀).differentiableAt
+      · exact fun t₀ =>
+          (hasDerivAt_integral_of_jointContMDiff μ f hf t₀).differentiableAt
       · intro hcontra; exact absurd hcontra (by simp)
       · have hderiv_eq : deriv (fun t : ℝ => ∫ x, f x t ∂μ) =
             fun t : ℝ => ∫ x, deriv (fun s => f x s) t ∂μ := by
-          funext t₀; exact (hasDerivAt_integral_param μ f hf t₀).deriv
+          funext t₀
+          exact (hasDerivAt_integral_of_jointContMDiff μ f hf t₀).deriv
         rw [hderiv_eq]
         set Fd : M → ℝ → ℝ := fun x t => deriv (fun s => f x s) t with hFd
         have hFd_joint : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ (fun p : M × ℝ => Fd p.1 p.2) := by
@@ -202,7 +204,7 @@ theorem partialSnd_contMDiffOn_Icc
       (fun q hq => hq.2) hUM
   simpa [inTangentCoordinates_model_space] using h_apply
 
-private theorem hasDerivWithinAt_integral_param_Icc
+theorem hasDerivWithinAt_integral_of_jointContMDiffOn_Icc
     (μ : Measure M) [IsFiniteMeasure μ] (f : M → ℝ → ℝ) {T : ℝ} (hT : 0 < T)
     (hf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ (fun p : M × ℝ => f p.1 p.2)
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T))
@@ -307,19 +309,20 @@ private theorem contDiffOn_integral_of_jointContMDiffOn_Icc_pos
       intro f hf
       rw [Nat.cast_zero, contDiffOn_zero]
       exact fun t₀ ht₀ =>
-        (hasDerivWithinAt_integral_param_Icc μ f hT hf ht₀).continuousWithinAt
+        (hasDerivWithinAt_integral_of_jointContMDiffOn_Icc μ f hT hf ht₀).continuousWithinAt
   | succ n ih =>
       intro f hf
       rw [Nat.cast_succ, contDiffOn_succ_iff_derivWithin hUD]
       refine ⟨?_, ?_, ?_⟩
       · exact fun t₀ ht₀ =>
-          (hasDerivWithinAt_integral_param_Icc μ f hT hf ht₀).differentiableWithinAt
+          (hasDerivWithinAt_integral_of_jointContMDiffOn_Icc μ f hT hf ht₀).differentiableWithinAt
       · intro hcontra; exact absurd hcontra (by simp)
       · have hderiv_eq : Set.EqOn (derivWithin (fun t : ℝ => ∫ x, f x t ∂μ) (Set.Icc (0 : ℝ) T))
             (fun t : ℝ => ∫ x, derivWithin (fun s => f x s) (Set.Icc (0 : ℝ) T) t ∂μ)
             (Set.Icc (0 : ℝ) T) := by
           intro t₀ ht₀
-          exact (hasDerivWithinAt_integral_param_Icc μ f hT hf ht₀).derivWithin (hUD t₀ ht₀)
+          exact (hasDerivWithinAt_integral_of_jointContMDiffOn_Icc μ f hT hf ht₀).derivWithin
+            (hUD t₀ ht₀)
         refine ContDiffOn.congr ?_ hderiv_eq
         exact ih (fun x t => derivWithin (fun s => f x s) (Set.Icc (0 : ℝ) T) t)
           (partialSnd_contMDiffOn_Icc f hf)

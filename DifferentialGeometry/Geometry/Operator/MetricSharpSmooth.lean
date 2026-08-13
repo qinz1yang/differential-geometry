@@ -3,12 +3,13 @@ import DifferentialGeometry.Geometry.Operator.Gradient
 
 noncomputable section
 
+open DifferentialGeometry.Integral.DivergenceTheorem
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -16,20 +17,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.Measure
-
-lemma metricSharp_eq_connectionMetricSharp
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (alpha : TangentSpace I x →ₗ[ℝ] ℝ) :
-    metricSharp (I := I) g x alpha =
-      DifferentialGeometry.Integral.Connection.metricSharp (I := I) g x alpha := by
-  apply DifferentialGeometry.Integral.DivergenceTheorem.metricFlatLinear_injective
-    (I := I) g x
-  ext w
-  change g.inner x (metricSharp (I := I) g x alpha) w =
-    g.inner x (DifferentialGeometry.Integral.Connection.metricSharp
-      (I := I) g x alpha) w
-  rw [DifferentialGeometry.Integral.DivergenceTheorem.inner_metricSharp,
-    DifferentialGeometry.Integral.Connection.inner_metricSharp]
 
 def metricSharpChartCoeff (g : SmoothRiemannianMetric I M) (α : M)
     (cv : Π b : M, TangentSpace I b →ₗ[ℝ] ℝ)
@@ -291,6 +278,6 @@ lemma metricSharp_contMDiff_total [I.Boundaryless]
     rw [h]
   exact (hsmooth_local2 x hx_src).contMDiffAt (hsrc_open.mem_nhds hx_src)
 
-end DivergenceTheorem
-end Integral
+end Operator
+end Geometry
 end DifferentialGeometry

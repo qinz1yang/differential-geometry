@@ -11,25 +11,32 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Proper
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle CovariantDerivative
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
+    CovariantDerivative
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Tensor.TensorRSRiemannian
-open Tensor0SNabla TensorRSNabla TensorMetricLowering
+open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.TensorRSNabla
+    DifferentialGeometry.TensorMetricLowering
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -73,6 +80,7 @@ def dirichletForm
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 @[simp] lemma dirichletForm_apply
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) (b : M)
     (X : TangentSpace I b) :
@@ -88,6 +96,7 @@ def dirichletVF
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 lemma inner_dirichletVF
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) (b : M)
     (X : TangentSpace I b) :
@@ -97,7 +106,7 @@ lemma inner_dirichletVF
   exact inner_metricSharp (I := I) g b (dirichletForm (I := I) (M := M) g T v b) X
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma dirichletForm_chartBasis_component_contMDiffOn
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) (α : M)
     (j : Fin (Module.finrank ℝ E)) :
@@ -150,7 +159,7 @@ private lemma dirichletForm_chartBasis_component_contMDiffOn
   rw [dirichletForm_apply]
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 lemma dirichletVF_contMDiff
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -168,7 +177,7 @@ def dirichletVFSection
     (dirichletVF_contMDiff (I := I) (M := M) g T v)
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 @[simp] lemma dirichletVFSection_apply
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) (b : M) :
     dirichletVFSection (I := I) (M := M) g T v b =
@@ -256,7 +265,7 @@ lemma divergence_g_eq_smoothOrthoFrame_trace
     rw [hHb_apply, chartBasisVecFiber_self (I := I) b m,
       chartBasisVecFiber_self (I := I) b n]
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma tangentSectionAction_inner_dirichletVF
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (b : M) :
@@ -304,7 +313,7 @@ private lemma tangentSectionAction_inner_dirichletVF
     toModel_liftedTensorSection_covDerivAlongVFSection (I := I) (M := M) g
       v.toSection B b]
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma divergence_dirichletVF_summand_eq
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) (b : M)
     (i : Fin (Module.finrank ℝ E)) :
@@ -395,7 +404,7 @@ private lemma divergence_dirichletVF_summand_eq
         (fun y : M => smoothOrthoFrame (I := I) g b i y) from rfl]
   ring
 
-omit [CompactSpace M] [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private lemma tensorCovDerivPointwiseInner_eq_smoothOrthoFrame_diag
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) (b : M) :
     tensorCovDerivPointwiseInner (I := I) (M := M) g 0 2 T v b =
@@ -461,7 +470,7 @@ private lemma tensorCovDerivPointwiseInner_eq_smoothOrthoFrame_diag
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [hframe_eq i]
 
-omit [CompactSpace M] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma divergence_dirichletVF_eq
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) (b : M) :
     divergence_g (I := I) g (dirichletVFSection (I := I) (M := M) g T v) b =
@@ -588,8 +597,8 @@ theorem green_first_covGrad_l2Inner_eq_neg_rawTensorConnLap_of_closed
     refine integral_congr_ae (Filter.Eventually.of_forall (fun b => ?_))
     simp only [SmoothCcTensor.toFun_apply, rawTensorConnLapSmooth_toSection_apply]
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

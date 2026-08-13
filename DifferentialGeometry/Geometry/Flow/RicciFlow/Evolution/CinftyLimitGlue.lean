@@ -3,83 +3,9 @@ import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.Calculus.FDeriv.Extend
 import Mathlib.Topology.UniformSpace.Cauchy
 import Mathlib.Topology.Order.OrderClosed
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -89,7 +15,7 @@ open Bundle Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.Integral.Connection
+
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -97,18 +23,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem tendsto_nhdsLT_of_bounded_deriv
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
@@ -171,15 +85,6 @@ theorem tendsto_nhdsLT_of_bounded_deriv
         have := mul_lt_mul_of_pos_left hfrac hε
         rwa [mul_one] at this
 
-
-
-
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 theorem chartGramMatrix_tendsto_nhdsLT_of_bounded_deriv
@@ -200,67 +105,24 @@ theorem chartGramMatrix_tendsto_nhdsLT_of_bounded_deriv
     hderiv (fun s hs => ?_)
   simpa [Real.norm_eq_abs] using hbound s hs
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 structure CinftyLimitData
     (g_fam : ℝ → SmoothRiemannianMetric I M) (α omega : ℝ) (hαomega : α < omega) where
-
   limitMetric : SmoothRiemannianMetric I M
-
   tendsto_left :
     ∀ (x₀ x : M) (i j : Fin (Module.finrank ℝ E)),
       Tendsto (fun s : ℝ =>
         Integral.Measure.chartGramMatrix (I := I) (g_fam s) x₀ x i j) (𝓝[<] omega)
         (𝓝 (Integral.Measure.chartGramMatrix (I := I) limitMetric x₀ x i j))
-
-
-
   ricci_match :
     ∀ (x : M) (v w : TangentSpace I x),
       Tendsto
         (fun s : ℝ =>
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (g_fam s) x v w)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g_fam s) x v w)
         (𝓝[<] omega)
-        (𝓝 (DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+        (𝓝 (DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
           limitMetric x v w))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+omit [SigmaCompactSpace M] in
 theorem restart_short_time (gomega : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, 0 < T ∧ ∃ r : ℝ → SmoothRiemannianMetric I M,
       r 0 = gomega ∧
@@ -277,22 +139,13 @@ theorem restart_short_time (gomega : SmoothRiemannianMetric I M) :
       (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (r s).inner x v w)
           ((-2 : ℝ) *
-            DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (r t) x v w)
+            DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (r t) x v w)
           (Set.Ici 0) t) := by
   obtain ⟨T, hT, r, hr0, hsmooth, hpde⟩ :=
     ricci_flow_short_time_existence (I := I) (M := M) gomega
   refine ⟨T, hT, r, hr0, hsmooth, ?_, hpde⟩
   intro x₀ i j
   exact (hsmooth x₀ i j).continuousOn
-
-
-
-
-
-
-
-
-
 
 def gluedFamily
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -314,10 +167,6 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     gluedFamily (I := I) g_fam r omega s = r (s - omega) := by
   simp [gluedFamily, not_lt.mpr hs]
 
-
-
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem gluedFamily_eq_left
@@ -325,37 +174,12 @@ theorem gluedFamily_eq_left
     ∀ s : ℝ, s < omega → gluedFamily (I := I) g_fam r omega s = g_fam s :=
   fun _ hs => gluedFamily_of_lt (I := I) g_fam r omega hs
 
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 @[simp] theorem gluedFamily_at_endpoint
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (omega : ℝ) :
     gluedFamily (I := I) g_fam r omega omega = r 0 := by
   rw [gluedFamily_of_ge (I := I) g_fam r omega (le_refl omega), sub_self]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -365,7 +189,7 @@ theorem gluedFamily_pde_cross_of_matching
     (hleft : ∀ t ∈ Set.Ico α omega, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (g_fam t) x v w)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g_fam t) x v w)
         (Set.Ici α) t)
     (hcont : ∀ x : M, ∀ v w : TangentSpace I x,
       Tendsto (fun s : ℝ => (g_fam s).inner x v w) (𝓝[<] omega)
@@ -373,15 +197,15 @@ theorem gluedFamily_pde_cross_of_matching
     (hderiv_lim : ∀ x : M, ∀ v w : TangentSpace I x,
       Tendsto
         (fun s : ℝ => (-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (g_fam s) x v w)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g_fam s) x v w)
         (𝓝[<] omega)
         (𝓝 ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) gomega x v w))) :
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) gomega x v w))) :
     ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt
         (fun s : ℝ => (gluedFamily (I := I) g_fam r omega s).inner x v w)
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
             (gluedFamily (I := I) g_fam r omega omega) x v w)
         (Set.Iic omega) omega := by
   intro x v w
@@ -393,20 +217,20 @@ theorem gluedFamily_pde_cross_of_matching
   have hg0_hasDeriv : ∀ s ∈ Set.Ioo α omega,
       HasDerivAt g0
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (g_fam s) x v w) s := by
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g_fam s) x v w) s := by
     intro s hs
     have hIci : Set.Ici α ∈ 𝓝 s := Ici_mem_nhds hs.1
     exact (hleft s ⟨le_of_lt hs.1, hs.2⟩ x v w).hasDerivAt hIci
   have hf_omega : f omega = (gomega).inner x v w := by
     simp only [hf, gluedFamily_at_endpoint (I := I) g_fam r omega, hr0]
   have hric_omega :
-      DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+      DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
         (gluedFamily (I := I) g_fam r omega omega) x v w =
-      DifferentialGeometry.Integral.Connection.ricciTensor (I := I) gomega x v w := by
+      DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) gomega x v w := by
     simp only [gluedFamily_at_endpoint (I := I) g_fam r omega, hr0]
   rw [hric_omega]
   refine hasDerivWithinAt_Iic_of_tendsto_deriv (s := Set.Ioo α omega) (e := (-2 : ℝ) *
-      DifferentialGeometry.Integral.Connection.ricciTensor (I := I) gomega x v w)
+      DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) gomega x v w)
     (f := f) ?_ ?_ (Ioo_mem_nhdsLT hαomega) ?_
   · intro s hs
     have hg0d : DifferentiableWithinAt ℝ g0 (Set.Ioo α omega) s :=
@@ -425,31 +249,6 @@ theorem gluedFamily_pde_cross_of_matching
       filter_upwards [Ioo_mem_nhds hs.1 hs.2] with t ht using hfg0 t ht
     rw [hev.deriv_eq, (hg0_hasDeriv s hs).deriv]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem gluedFamily_pde
@@ -458,25 +257,25 @@ theorem gluedFamily_pde
     (hleft : ∀ t ∈ Set.Ico α omega, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (g_fam t) x v w)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g_fam t) x v w)
         (Set.Ici α) t)
     (hright : ∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun u : ℝ => (r u).inner x v w)
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (r t) x v w)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (r t) x v w)
         (Set.Ici 0) t)
     (hcross : ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt
         (fun s : ℝ => (gluedFamily (I := I) g_fam r omega s).inner x v w)
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
             (gluedFamily (I := I) g_fam r omega omega) x v w)
         (Set.Iic omega) omega) :
     ∀ t ∈ Set.Ico α (omega + ε), ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt
         (fun s : ℝ => (gluedFamily (I := I) g_fam r omega s).inner x v w)
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
             (gluedFamily (I := I) g_fam r omega t) x v w)
         (Set.Ici α) t := by
   intro t ht x v w
@@ -503,14 +302,14 @@ theorem gluedFamily_pde
     have hcomp :
         HasDerivWithinAt (fun s : ℝ => (r (s - t)).inner x v w)
           ((1 : ℝ) • ((-2 : ℝ) *
-            DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (r 0) x v w))
+            DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (r 0) x v w))
           (Set.Ici t) t :=
       HasDerivWithinAt.scomp_of_eq t hr_pde0 hshift hmaps (sub_self t).symm
     have hright_one :
         HasDerivWithinAt
           (fun s : ℝ => (gluedFamily (I := I) g_fam r t s).inner x v w)
           ((-2 : ℝ) *
-            DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+            DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
               (gluedFamily (I := I) g_fam r t t) x v w)
           (Set.Ici t) t := by
       have hev : (fun s : ℝ => (gluedFamily (I := I) g_fam r t s).inner x v w)
@@ -529,7 +328,7 @@ theorem gluedFamily_pde
     have hderiv : HasDerivAt
         (fun s : ℝ => (gluedFamily (I := I) g_fam r t s).inner x v w)
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
             (gluedFamily (I := I) g_fam r t t) x v w)
         t := hasDerivWithinAt_univ.mp hunion
     exact hderiv.hasDerivWithinAt
@@ -543,11 +342,11 @@ theorem gluedFamily_pde
       simpa using (hasDerivAt_id t).sub_const omega
     have hcomp : HasDerivAt (fun s : ℝ => (r (s - omega)).inner x v w)
         ((1 : ℝ) • ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (r (t - omega)) x v w))
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (r (t - omega)) x v w))
         t := by
       have hr_at : HasDerivAt (fun u : ℝ => (r u).inner x v w)
           ((-2 : ℝ) *
-            DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (r (t - omega)) x v w)
+            DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (r (t - omega)) x v w)
           (t - omega) :=
         hr_pdet.hasDerivAt (Ici_mem_nhds htpos)
       exact hr_at.scomp t hshift
@@ -562,22 +361,8 @@ theorem gluedFamily_pde
       (by rw [gluedFamily_of_ge (I := I) g_fam r omega (le_of_lt htgt)])).congr_deriv ?_
     simp
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 structure CinftyGlueData
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (α omega ε : ℝ) : Prop where
-
   gram_smooth :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
@@ -585,8 +370,6 @@ structure CinftyGlueData
           Integral.Measure.chartGramMatrix (I := I)
             (gluedFamily (I := I) g_fam r omega p.1) x₀ p.2 i j)
         (Set.Ioo α (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
-
-
   gram_cont :
     ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
@@ -594,64 +377,18 @@ structure CinftyGlueData
           Integral.Measure.chartGramMatrix (I := I)
             (gluedFamily (I := I) g_fam r omega p.1) x₀ p.2 i j)
         (Set.Ico α (omega + ε) ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)
-
-
-
-
-
-
-
-
   metric_match :
     ∀ x : M, ∀ v w : TangentSpace I x,
       Tendsto (fun s : ℝ => (g_fam s).inner x v w) (𝓝[<] omega)
         (𝓝 ((r 0).inner x v w))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+omit [SigmaCompactSpace M] in
 theorem ricci_flow_extends_construction
     (g_fam : ℝ → SmoothRiemannianMetric I M) {α omega : ℝ} (hαomega : α < omega)
     (hleft : ∀ t ∈ Set.Ico α omega, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt (fun s : ℝ => (g_fam s).inner x v w)
         ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (g_fam t) x v w)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g_fam t) x v w)
         (Set.Ici α) t)
     (limit : CinftyLimitData (I := I) g_fam α omega hαomega)
     (glue : ∀ (r : ℝ → SmoothRiemannianMetric I M) (T : ℝ),
@@ -664,7 +401,7 @@ theorem ricci_flow_extends_construction
       (∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun u : ℝ => (r u).inner x v w)
           ((-2 : ℝ) *
-            DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (r t) x v w)
+            DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (r t) x v w)
           (Set.Ici 0) t) →
       ∃ ε : ℝ, 0 < ε ∧ ε ≤ T ∧ CinftyGlueData (I := I) g_fam r α omega ε) :
     ∃ ε : ℝ, 0 < ε ∧ ∃ g_ext : ℝ → SmoothRiemannianMetric I M,
@@ -682,7 +419,7 @@ theorem ricci_flow_extends_construction
       (∀ t ∈ Set.Ico α (omega + ε), ∀ x : M, ∀ v w : TangentSpace I x,
         HasDerivWithinAt (fun s : ℝ => (g_ext s).inner x v w)
           ((-2 : ℝ) *
-            DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+            DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
               (g_ext t) x v w)
           (Set.Ici α) t) := by
   obtain ⟨T, hT, r, hr0, hr_smooth_closed, _hr_cont, hr_pde⟩ :=
@@ -697,10 +434,10 @@ theorem ricci_flow_extends_construction
   have hderiv_lim : ∀ x : M, ∀ v w : TangentSpace I x,
       Tendsto
         (fun s : ℝ => (-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I) (g_fam s) x v w)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g_fam s) x v w)
         (𝓝[<] omega)
         (𝓝 ((-2 : ℝ) *
-          DifferentialGeometry.Integral.Connection.ricciTensor (I := I)
+          DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
             limit.limitMetric x v w)) :=
     fun x v w => (limit.ricci_match x v w).const_mul (-2)
   have hcross :=

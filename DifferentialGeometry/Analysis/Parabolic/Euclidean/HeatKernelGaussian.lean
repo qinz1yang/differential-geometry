@@ -1,14 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelLp
 
-/-!
-# Pointwise Gaussian bounds for the Euclidean heat kernel
-
-The rough early-time heat-potential estimate needs more than the global
-`L¹` normalization: it needs a pointwise scale bound and Gaussian decay on
-spatial annuli.  These facts follow directly from the normalized kernel
-already defined in `HeatKernelLp.lean`.
--/
-
 noncomputable section
 
 open Real
@@ -22,7 +13,6 @@ namespace Euclidean
 variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 
-/-- The normalized time-one Gaussian is bounded by its normalizing constant. -/
 theorem baseHeat_le (x : V) :
     baseHeat x ≤ (baseHeatMass V)⁻¹ := by
   unfold baseHeat
@@ -33,7 +23,6 @@ theorem baseHeat_le (x : V) :
     mul_le_mul_of_nonneg_left hexp
       (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)
 
-/-- Gaussian decay once the spatial norm is at least `R`. -/
 theorem baseHeat_decay {R : ℝ} (hR : 0 ≤ R) {x : V} (hx : R ≤ ‖x‖) :
     baseHeat x ≤
       (baseHeatMass V)⁻¹ * Real.exp (-(4 : ℝ)⁻¹ * R ^ 2) := by
@@ -45,8 +34,6 @@ theorem baseHeat_decay {R : ℝ} (hR : 0 ≤ R) {x : V} (hx : R ≤ ‖x‖) :
   exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr harg)
     (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)
 
-/-- Gaussian decay for the first radial derivative majorant, with a supplied
-upper bound on the scaled radius. -/
 theorem baseD1Maj_decay {R Q : ℝ} (hR : 0 ≤ R) {x : V}
     (hlo : R ≤ ‖x‖) (hhi : ‖x‖ ≤ Q) :
     baseD1Maj x ≤
@@ -60,8 +47,6 @@ theorem baseD1Maj_decay {R Q : ℝ} (hR : 0 ≤ R) {x : V}
     (mul_le_mul_of_nonneg_left hhi (by positivity)) hheat
     (baseHeat_nonneg x) (mul_nonneg (by positivity) hQ0)
 
-/-- Gaussian decay for the second radial derivative majorant, again keeping
-an explicit upper bound on the scaled radius. -/
 theorem baseD2Maj_decay {R Q : ℝ} (hR : 0 ≤ R) {x : V}
     (hlo : R ≤ ‖x‖) (hhi : ‖x‖ ≤ Q) :
     baseD2Maj x ≤
@@ -80,7 +65,6 @@ theorem baseD2Maj_decay {R Q : ℝ} (hR : 0 ≤ R) {x : V}
   exact mul_le_mul hcoeff hheat (baseHeat_nonneg x)
     (add_nonneg (mul_nonneg (by positivity) (sq_nonneg Q)) (by positivity))
 
-/-- The scale-invariant pointwise upper bound for the heat kernel. -/
 theorem heatKernel_le (t : ℝ) (x : V) :
     heatKernel t x ≤
       ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (baseHeatMass V)⁻¹ := by
@@ -88,10 +72,6 @@ theorem heatKernel_le (t : ℝ) (x : V) :
   exact mul_le_mul_of_nonneg_left (baseHeat_le _)
     (inv_nonneg.mpr (pow_nonneg (by simp [heatScale]) _))
 
-/-- On the early-time half of a Duhamel integral, the heat kernel is bounded
-at the fixed spatial scale `sqrt (t / 2)`.  This is the local kernel estimate
-used to convert a source Carleson bound into a near-field heat-potential
-bound. -/
 theorem heatKernel_half {t s : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
     (hst : s ≤ t / 2) (x : V) :
     heatKernel (t - s) x ≤
@@ -116,8 +96,6 @@ theorem heatKernel_half {t s : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
     (mul_le_mul_of_nonneg_right hinv
       (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le))
 
-/-- Off-diagonal Gaussian decay in units of the heat scale.  If
-`R * sqrt(t) <= ||x||`, the time-`t` kernel gains `exp(-R^2/4)`. -/
 theorem heatKernel_decay {t R : ℝ} (ht : 0 < t) (hR : 0 ≤ R)
     {x : V} (hx : R * heatScale t ≤ ‖x‖) :
     heatKernel t x ≤
@@ -132,9 +110,6 @@ theorem heatKernel_decay {t R : ℝ} (ht : 0 < t) (hR : 0 ≤ R)
   exact mul_le_mul_of_nonneg_left (baseHeat_decay hR hscaled)
     (inv_nonneg.mpr (pow_nonneg hs.le _))
 
-/-- Gaussian decay on the early half of a Duhamel integral, with both the
-kernel prefactor and the off-diagonal radius measured at the observation-time
-scale. -/
 theorem heatKernel_early {t s R : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
     (hst : s ≤ t / 2) (hR : 0 ≤ R) {x : V}
     (hx : R * heatScale t ≤ ‖x‖) :
@@ -169,8 +144,6 @@ theorem heatKernel_early {t s R : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
         (Real.exp_pos _).le))
 
 omit [FiniteDimensional ℝ V] in
-/-- A lower observation-scale radius remains a lower radius after rescaling
-by any heat time in the early Duhamel half. -/
 theorem earlyScaled_lo {t s R : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
     (hst : s ≤ t / 2) (_hR : 0 ≤ R) {x : V}
     (hx : R * heatScale t ≤ ‖x‖) :
@@ -190,8 +163,6 @@ theorem earlyScaled_lo {t s R : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
     (mul_le_mul_of_nonneg_right hinv (norm_nonneg x))
 
 omit [FiniteDimensional ℝ V] in
-/-- An upper observation-scale radius becomes at most `sqrt 2` times larger
-after rescaling by a heat time in the early Duhamel half. -/
 theorem earlyScaled_hi {t s Q : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
     (hst : s ≤ t / 2) (_hQ : 0 ≤ Q) {x : V}
     (hx : ‖x‖ ≤ Q * heatScale t) :
@@ -223,8 +194,6 @@ theorem earlyScaled_hi {t s Q : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
       rw [hscaleEq]
       field_simp [(heatScale_pos hhalf).ne']
 
-/-- First-derivative radial majorant on the early Duhamel half.  The scaled
-radius hypotheses are separated out so shell geometry can supply them. -/
 theorem heatD1Maj_early {t s R Q : ℝ} (ht : 0 < t) (_hs : 0 ≤ s)
     (hst : s ≤ t / 2) (hR : 0 ≤ R) {x : V}
     (hlo : R ≤ ‖(heatScale (t - s))⁻¹ • x‖)

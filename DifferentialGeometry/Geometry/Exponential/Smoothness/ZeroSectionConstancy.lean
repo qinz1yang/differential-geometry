@@ -5,8 +5,7 @@ import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Exponential.Smoothness.ChartFlowVelocitySlice
 import DifferentialGeometry.Geometry.Exponential.Smoothness.UniformChartFlowBridge
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

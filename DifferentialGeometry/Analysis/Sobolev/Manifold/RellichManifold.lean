@@ -65,7 +65,7 @@ lemma chartPushed_eq_chartPushedRaw_pou_ae
   exact chartPushed_eq_chartPushedRaw_pou_mul_on_target
     (I := I) (M := M) ρ α u hy
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
 omit [I.Boundaryless] in
 private lemma extChartAt_image_tsupport_pou_compact
@@ -166,7 +166,7 @@ private lemma chartCompact_subset_chartNbhd (α : M) :
     (chartThickeningRadius_pos (I := I) (M := M) α)
     (chartCompact (I := I) (M := M) α)
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 lemma chartPushedRaw_pou_mul_eq_zero_off_chartCompact
     (α : M) (u : M → ℝ)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
@@ -286,7 +286,7 @@ lemma chartPushedRaw_pou_mul_hasCompactSupport
   exact (chartCompact_isCompact (I := I) (M := M) α).of_isClosed_subset
     isClosed_closure h_tsupp_sub
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] in
+omit [T2Space M] [CompactSpace M] [I.Boundaryless] in
 omit [IsManifold I ∞ M] in
 lemma chartPushedRaw_sub
     (α : M) (u v : M → ℝ) :
@@ -300,7 +300,7 @@ lemma chartPushedRaw_sub
   · simp [hy]
   · simp [hy]
 
-omit [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] [CompactSpace M] in
 omit [IsManifold I ∞ M] [T2Space M] in
 lemma chartPushedRaw_pullbackToM_apply
     (α : M)
@@ -324,7 +324,7 @@ lemma chartPushedRaw_pullbackToM_apply
   · rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy]
     rw [Set.indicator_of_notMem hy]
 
-omit [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] [CompactSpace M] in
 omit [IsManifold I ∞ M] [T2Space M] in
 lemma chartPushedRaw_pullbackToM_eq_indicator
     (α : M)
@@ -392,16 +392,16 @@ lemma pullbackToM_tsupport_subset_of_supp_in_chartCompact
     exact h_P_closed.closure_subset_iff.mpr h_supp_sub
   exact h_tsupp_sub_P.trans hP_subset_source
 
-omit [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] in
+omit [IsManifold I ∞ M] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 lemma pullbackToM_eq_zero_off_chart_source
     (α : M) (w : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ) {x : M}
     (hx : x ∉ (chartAt H α).source) :
     pullbackToM (M := M) I α w x = 0 :=
   pullbackToM_apply_of_notMem (M := M) (I := I) α w hx
 
-omit [CompactSpace M] in
+
 lemma memW1p_chartPushedRaw_pou_mul_of_memWkpChart
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞}
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 p u)
@@ -432,7 +432,7 @@ lemma memW1p_chartPushedRaw_pou_mul_of_memWkpChart
     (d := Module.finrank ℝ E) (p := p) hopen h_ae).mp h_chart_pushed_w1p
 
 lemma memW1p_chartPushedRaw_pou_mul_chartNbhd
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞}
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 p u)
@@ -462,7 +462,7 @@ lemma memW1p_chartPushedRaw_pou_mul_chartNbhd
 
 lemma memW01p_chartPushedRaw_pou_mul_chartNbhd
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u)
@@ -479,9 +479,9 @@ lemma memW01p_chartPushedRaw_pou_mul_chartNbhd
   exact DeGiorgi.memW01p_of_memW1p_of_tsupport_subset
     (chartNbhd_isOpen (I := I) (M := M) α) hp_one h_w1p h_compact h_supp
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 lemma eLpNorm_chartPushedRaw_pou_mul_eq_chartPushed
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞}
     (u : M → ℝ) (α : M) :
     eLpNorm (chartPushedRaw (I := I) (M := M) α
@@ -516,7 +516,7 @@ lemma eLpNorm_chartPushedRaw_pou_mul_chartNbhd_le
 
 lemma rellich_witness_weakGrad_isWeakPartial
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u)
@@ -534,7 +534,7 @@ lemma rellich_witness_weakGrad_isWeakPartial
 
 lemma rellich_witness_weakGrad_memLp
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u)
@@ -549,7 +549,7 @@ lemma rellich_witness_weakGrad_memLp
 
 lemma rellich_witness_weakGrad_ae_eq_chosenWeakPartial'
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u)
@@ -664,9 +664,9 @@ lemma rellich_witness_weakGrad_ae_eq_chosenWeakPartial'
     (chartNbhd_isOpen (I := I) (M := M) α) hWit_isWeak
     hChart_w1p_chosenWeakPartial_raw hWit_loc hChosen_loc
 
-omit [CompactSpace M] in
+
 lemma eLpNorm_chartPushed_le_wkpNormChart
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ≥0∞}
     (u : M → ℝ) (α : M) :
     eLpNorm (chartPushed (I := I) (M := M)
@@ -709,7 +709,7 @@ lemma eLpNorm_chartPushed_le_wkpNormChart
 
 lemma eLpNorm_rellich_witness_weakGrad_le_wkpNormChart
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ}
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u)
@@ -812,7 +812,7 @@ lemma eLpNorm_rellich_witness_weakGrad_le_wkpNormChart
 
 private lemma exists_chart_rellich_subseq_aux
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
     (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n))
@@ -1034,7 +1034,7 @@ lemma chartPushedRaw_pullbackToM_chartCompact_indicator
 
 private lemma exists_diagonal_chart_extraction
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
     (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) (u n))
@@ -1101,10 +1101,9 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma chartAtlasPOU_measurable (α : M) :
     Measurable
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -1113,7 +1112,6 @@ private lemma chartAtlasPOU_measurable (α : M) :
     : C^∞⟮I, M; ℝ⟯).contMDiff.continuous).measurable
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma pou_mul_measurable (α : M) {u : M → ℝ} (hu : Measurable u) :
     Measurable (fun x : M =>
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -1121,7 +1119,6 @@ private lemma pou_mul_measurable (α : M) {u : M → ℝ} (hu : Measurable u) :
   (chartAtlasPOU_measurable (I := I) (M := M) α).mul hu
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma pou_mul_sub_measurable (α : M) {u v : M → ℝ}
     (hu : Measurable u) (hv : Measurable v) :
     Measurable (fun x : M =>
@@ -1133,7 +1130,6 @@ private lemma pou_mul_sub_measurable (α : M) {u v : M → ℝ}
     ((chartAtlasPOU_measurable (I := I) (M := M) α).mul hv)
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma tsupport_pou_mul_subset_tsupport_pou
     (α : M) (u : M → ℝ) :
     tsupport (fun x : M =>
@@ -1152,7 +1148,6 @@ private lemma tsupport_pou_mul_subset_tsupport_pou
   exact tsupport_smul_subset_left _ _
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma tsupport_pou_mul_sub_subset_tsupport_pou
     (α : M) (u v : M → ℝ) :
     tsupport (fun x : M =>
@@ -1205,7 +1200,6 @@ private lemma tsupport_pou_mul_sub_subset_tsupport_pou
       (subset_tsupport _ hv_supp)
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma tsupport_pou_mul_subset_chart_source
     (α : M) (u : M → ℝ) :
     tsupport (fun x : M =>
@@ -1216,7 +1210,6 @@ private lemma tsupport_pou_mul_subset_chart_source
       (I := I) (M := M) α)
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma tsupport_pou_mul_sub_subset_chart_source
     (α : M) (u v : M → ℝ) :
     tsupport (fun x : M =>
@@ -1243,7 +1236,7 @@ private lemma kPouCompact_subset_target (α : M) :
     kPouCompact (I := I) (M := M) α ⊆ (extChartAt I α).target :=
   (extChartAt_image_tsupport_pou_compact (I := I) (M := M) α).2
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma kPouCompact_nonempty_of_pouNonempty
     {α : M}
     (hα_supp : (Function.support
@@ -1254,7 +1247,6 @@ private lemma kPouCompact_nonempty_of_pouNonempty
   exact ⟨_, x, subset_tsupport _ hx, rfl⟩
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma image_extChartAt_tsupport_pou_mul_subset_kPouCompact
     (α : M) (u : M → ℝ) :
     (extChartAt I α) '' (tsupport (fun x : M =>
@@ -1264,7 +1256,6 @@ private lemma image_extChartAt_tsupport_pou_mul_subset_kPouCompact
   exact ⟨x, tsupport_pou_mul_subset_tsupport_pou (I := I) (M := M) α u hx, rfl⟩
 
 omit [I.Boundaryless] in
-omit [CompactSpace M] in
 private lemma image_extChartAt_tsupport_pou_mul_sub_subset_kPouCompact
     (α : M) (u v : M → ℝ) :
     (extChartAt I α) '' (tsupport (fun x : M =>
@@ -1276,7 +1267,7 @@ private lemma image_extChartAt_tsupport_pou_mul_sub_subset_kPouCompact
   exact ⟨x, tsupport_pou_mul_sub_subset_tsupport_pou
     (I := I) (M := M) α u v hx, rfl⟩
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [I.Boundaryless] in
 private lemma chartPushedRaw_pou_mul_sub_eq_zero_off_chartCompact
     (α : M) (u v : M → ℝ)
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
@@ -1341,7 +1332,7 @@ private lemma tsupport_chartPushedRaw_pou_mul_sub_subset_chartCompact
 
 private lemma memLp_pou_mul_riemannianMeasure
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ} (hu_meas : Measurable u)
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u)
@@ -1410,7 +1401,7 @@ private lemma memLp_pou_mul_riemannianMeasure
 
 private lemma memLp_riemannianMeasure_of_memWkpChart
     [NeZero (Module.finrank ℝ E)]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ} (hu_meas : Measurable u)
     (hu : MemWkpChart (I := I) (M := M) g 1 (ENNReal.ofReal p) u) :

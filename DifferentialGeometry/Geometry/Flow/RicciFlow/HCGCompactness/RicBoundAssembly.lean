@@ -1,29 +1,18 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.RicBoundClaims
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.Claim1Wiring
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.HCGCompactness
-open DifferentialGeometry.Integral.Connection
+
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -36,11 +25,6 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
-
-
 
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -73,18 +57,6 @@ theorem tower_bound_to_intrinsic
     ← compL2_tower_eq (I := I) gRef T' frame hframe hu hy hinv N]
   exact hbound
 
-
-
-
-
-
-
-
-
-
-
-
-
 omit [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [I.Boundaryless] in
@@ -111,7 +83,7 @@ theorem aN_intrinsic_point
     (C0 : Real) (hGinv : ∀ x ∈ u, compL2 (Ginv x) ≤ C0)
     (hRicSm : ∀ k : Fin 2 → Idx, ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y => frameComp0S (I := I)
-        (DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection
+        (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
           (I := I) (M := M) (leviCivitaConnectionOfMetric (I := I) g)
           (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) (M := M) g))
         frame y k) u)
@@ -128,7 +100,7 @@ theorem aN_intrinsic_point
         (fun y' => christoffelSymbolInFrame
           (leviCivitaConnectionOfMetric (I := I) g) frame hframe y')
         (frameComp0S (I := I)
-          (DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection
+          (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
             (I := I) (M := M) (leviCivitaConnectionOfMetric (I := I) g)
             (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) (M := M) g))
           frame) s z) ≤ KShi)
@@ -138,7 +110,7 @@ theorem aN_intrinsic_point
     ∃ Cpp Cppp : Real, 0 ≤ Cpp ∧ 0 ≤ Cppp ∧
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef y (2 + N)
         (iterCov (I := I) gRef 2
-          (DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection
+          (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
             (I := I) (M := M) (leviCivitaConnectionOfMetric (I := I) g)
             (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) (M := M) g))
           N y)) ≤
@@ -200,7 +172,7 @@ theorem aN_intrinsic_point
       (leviCivitaConnectionOfMetric (I := I) g) frame hframe y')
     hchrG
     (frameComp0S (I := I)
-      (DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection
+      (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
         (I := I) (M := M) (leviCivitaConnectionOfMetric (I := I) g)
         (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) (M := M) g))
       frame)
@@ -208,7 +180,7 @@ theorem aN_intrinsic_point
     (frameComp0S (I := I) (metricTensorField (I := I) g) frame) hDtop hShi
   exact ⟨Cpp, Cppp, hpp0, hppp0,
     tower_bound_to_intrinsic gRef
-      (DifferentialGeometry.Integral.Connection.CovariantDerivative.ricciSection
+      (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
         (I := I) (M := M) (leviCivitaConnectionOfMetric (I := I) g)
         (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) (M := M) g))
       (metricTensorField (I := I) g) frame hframe hu hy hinvON N Cpp Cppp (hcomp y hy)⟩

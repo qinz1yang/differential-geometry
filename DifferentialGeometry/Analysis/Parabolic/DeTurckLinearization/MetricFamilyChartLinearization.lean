@@ -1,8 +1,11 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartDeTurckRemainderPolynomial
-import DifferentialGeometry.Geometry.Flow.RicciFlow.PrincipalSymbol
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.PrincipalSymbol
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSecondOrderPart
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionPrincipalSymbolRemainder
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -18,9 +21,10 @@ namespace DeTurckLinearization
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -1295,7 +1299,7 @@ lemma chartFComponentOnE_deTurckRicciRHS_eq
   have hyz : extChartAt I α z = y := (extChartAt I α).right_inv hy_t
   have hz_pre : z ∈ (extChartAt I α) ⁻¹' interior ((extChartAt I α).target : Set E) := by
     simp only [Set.mem_preimage, hyz]; exact hy
-  have hz_good : z ∈ DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet (I := I) α :=
+  have hz_good : z ∈ DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet (I := I) α :=
     ⟨⟨hz_src, hz_base⟩, hz_pre⟩
   rw [DifferentialGeometry.PDE.RicciFlow.chartFComponentOnE]
   simp only [chartPushforwardFrameVec_eq_chartBasisVecFiber]

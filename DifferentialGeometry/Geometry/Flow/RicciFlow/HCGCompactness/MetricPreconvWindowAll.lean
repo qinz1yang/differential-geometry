@@ -1,29 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricPreconvWindowGInf
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.AllTimesBoundsFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivContinuity
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -33,8 +14,8 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
-open DifferentialGeometry.Integral.Connection
-open Tensor0SBundle TensorLieDeriv
+
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open Filter Topology
 open DifferentialGeometry.PDE.RicciFlow
 
@@ -48,8 +29,6 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [IsManifold I 1 M] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -60,10 +39,6 @@ theorem metric_ext_inner
   cases g₁; cases g₂
   simp only [Bundle.ContMDiffRiemannianMetric.mk.injEq]
   funext x; exact h x
-
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -114,8 +89,6 @@ theorem metricInnerApply_diff_le
     mul_nonneg (mul_nonneg hmn hmd) (hgnn w),
     mul_nonneg (mul_nonneg hmn hmd) (hgnn (v + w))]
 
-
-
 omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -163,8 +136,6 @@ theorem metricCInf_inner
     nlinarith [hε, mul_nonneg hn hS]
   exact lt_of_le_of_lt (le_trans hbound hprod) hfrac
 
-
-
 omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -179,9 +150,6 @@ theorem metricCInf_unique
   exact tendsto_nhds_unique
     (metricCInf_inner (I := I) gSeq A gRefA hA x v w)
     (metricCInf_inner (I := I) gSeq B gRefB hB x v w)
-
-
-
 
 omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -236,10 +204,6 @@ theorem metricInner_cauchy
       <= n * metricDerivNorm (I := I) 0 (gk m) (gk l) gRef x * S := hbound
     _ < eps := hkey
 
-
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [IsManifold I 1 M] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
@@ -277,14 +241,6 @@ theorem metricLimit_uniq
       (nhds (B.inner x v w)) :=
     tendsto_nhds_of_cauchySeq_of_subseq (hcauchy x v w) hpsiB.tendsto_atTop hBvw
   exact tendsto_nhds_unique hfullA hfullB
-
-
-
-
-
-
-
-
 
 theorem windowGInfPt (hne : Nonempty M)
     (K : Set M) (hK : IsCompact K) (beta psiT : Real) (p : Nat)
@@ -442,12 +398,6 @@ theorem windowGInfPt (hne : Nonempty M)
   have hgInf_t : gInf t = gAt t ht := by dsimp [gInf]; exact dif_pos ht
   rw [hgInf_t]
   exact (hgAt t ht).1
-
-
-
-
-
-
 
 theorem windowGInfAll
     [WeaklyLocallyCompactSpace M]

@@ -1,21 +1,17 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MovingShiPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.Core
 import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-open Set Function Filter Bundle Manifold Tensor0SBundle
+open Set Function Filter Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.HCGCompactness
 
 namespace DifferentialGeometry
@@ -30,10 +26,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
 private lemma infty_ne_zero : (∞ : WithTop ℕ∞) ≠ 0 := by decide
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem _root_.IsLocalFrameOn.pushforward
@@ -84,10 +76,6 @@ theorem _root_.IsLocalFrameOn.pushforward
         (mfderiv I I (Φ : M → N) (Φ.symm y) (frame i (Φ.symm y))))
       (Φ.apply_symm_apply y)).symm
 
-
-
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem gradientFun_pullback
     [SigmaCompactSpace M] [T2Space M] [SigmaCompactSpace N] [T2Space N]
@@ -108,10 +96,6 @@ theorem gradientFun_pullback
     mfderiv_comp y hf (Φ.contMDiff.mdifferentiableAt infty_ne_zero)]
   simp only [ContinuousLinearMap.coe_comp, he]
   rfl
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [IsManifold I ∞ M] [IsManifold I ∞ N] in
@@ -148,8 +132,6 @@ def solutionOn_pullback [SigmaCompactSpace M] [T2Space M]
     SolutionOn (I := I) (M := M) D where
   base := { metric := fun t => Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ }
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem pullback_coeff_eq
     [SigmaCompactSpace M] [T2Space M] [SigmaCompactSpace N] [T2Space N]
@@ -162,10 +144,6 @@ private theorem pullback_coeff_eq
   funext t
   exact Diffeomorph.pullbackMetric_inner (I := I) (S.family.metric t) Φ x X Y
 
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem metricFamilySmoothOn_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
@@ -173,7 +151,7 @@ theorem metricFamilySmoothOn_pullback
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
-    MetricFamilySmoothOn (I := I) D (solutionOn_pullback (I := I) S Φ).family where
+    MetricFamilySmoothOn (I := I) D (solutionOn_pullback (I := I) S Φ).family.metric where
   coeff x X Y := by
     rw [pullback_coeff_eq (I := I) S Φ x X Y]
     exact hS.smoothMetric.coeff (Φ x)
@@ -224,9 +202,6 @@ theorem metricFamilySmoothOn_pullback
     intro p _hp
     simp only [Function.comp_apply, hN]
 
-
-
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricVariationEquation_pullback
@@ -257,8 +232,6 @@ theorem metricVariationEquation_pullback
   exact hS.equation t (Φ x)
     (mfderiv I I (Φ : M → N) x X) (mfderiv I I (Φ : M → N) x Y)
 
-
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_pullback
@@ -272,8 +245,6 @@ theorem scalar_pullback
   simp only [SolutionOn.scalar, SolutionFamily.scalar, solutionOn_pullback]
   exact DifferentialGeometry.HCGCompactness.metricScalarAt_pullback (I := I)
     (S.base.metric t) Φ x
-
-
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -296,9 +267,6 @@ theorem scalarCont_pullback
     (continuous_fst.prodMk ((Φ.continuous).comp continuous_snd)).continuousOn
     (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
 
-
-
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarTime_pullback
@@ -317,9 +285,6 @@ theorem scalarTime_pullback
     funext s; exact scalar_pullback (I := I) S Φ s x
   rw [heq]
   exact hS.scalarTime htK hKsub (Φ x)
-
-
-
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -350,9 +315,6 @@ theorem metricRicci_pullback_eval
       funext i; fin_cases i <;> rfl] at hRHS
   rw [hLHS, hpb, ← hRHS]
 
-
-
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciNorm_pullback
@@ -376,9 +338,6 @@ theorem ricciNorm_pullback
     (metricRicci (I := I) (S.base.metric t) (Φ x))
     (fun slots => metricRicci_pullback_eval (I := I) (S.base.metric t) Φ x slots)
 
-
-
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciNormSpace_pullback
@@ -398,9 +357,6 @@ theorem ricciNormSpace_pullback
   exact (hS.ricciNormSpace t ht (Φ x)).comp x
     (Φ.contMDiff.mdifferentiableAt (by simp))
 
-
-
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciCont_pullback
@@ -419,10 +375,6 @@ theorem ricciCont_pullback
   intro t _ht x
   ext slots
   exact (metricRicci_pullback_eval (I := I) (S.base.metric t) Φ x slots).symm
-
-
-
-
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -457,9 +409,6 @@ theorem metricRm04_pullback_eval
       funext i; fin_cases i <;> rfl] at hRHS
   rw [hLHS, hpb, ← hRHS]
 
-
-
-
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rm04Cont_pullback
@@ -479,9 +428,6 @@ theorem rm04Cont_pullback
   ext slots
   exact (metricRm04_pullback_eval (I := I) (S.base.metric t) Φ x slots).symm
 
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem smoothConnection_pullback
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
@@ -494,15 +440,6 @@ theorem smoothConnection_pullback
   intro t
   exact leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I)
     ((solutionOn_pullback (I := I) S Φ).base.metric (t : ℝ))
-
-
-
-
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] in
 omit [I.Boundaryless] in
@@ -529,14 +466,14 @@ theorem isSolutionOn_pullback
     intro t _ht x
     have hsmooth : ContMDiff I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
         (ricciNorm (I := I) (solutionOn_pullback (I := I) S Φ) t) := by
-      refine (DifferentialGeometry.Integral.Connection.normSq02_smooth (I := I) (M := M)
+      refine (DifferentialGeometry.Tensor.RSTensor.normSq02_smooth (I := I) (M := M)
         ((solutionOn_pullback (I := I) S Φ).family.metric t)
         (metricRicci (I := I) (M := M)
           ((solutionOn_pullback (I := I) S Φ).family.metric t))).congr ?_
       intro y
       simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
         SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
-    exact DifferentialGeometry.Integral.Connection.gradientFun_mdiffAt (I := I)
+    exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I)
       ((solutionOn_pullback (I := I) S Φ).family.metric t) hsmooth x
 
 

@@ -26,7 +26,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 private lemma norm_heatSemigroup_sub_le_heatSemigroup_diff
     (g : SmoothRiemannianMetric I M)
@@ -253,6 +253,152 @@ theorem heatSemigroup_apply_f_continuous
           _ = ‖f s - f s₀‖ := one_mul _
       have h_f_to_f₀ : Tendsto f (𝓝[Set.Icc 0 t] s₀) (𝓝 (f s₀)) :=
         (hf.continuousAt.continuousWithinAt : ContinuousWithinAt f (Set.Icc 0 t) s₀)
+      have h_f_diff_to_zero :
+          Tendsto (fun s : ℝ => f s - f s₀) (𝓝[Set.Icc 0 t] s₀) (𝓝 0) := by
+        have := h_f_to_f₀.sub (tendsto_const_nhds (x := f s₀))
+        simpa using this
+      have h_norm_to_zero :
+          Tendsto (fun s : ℝ => ‖f s - f s₀‖) (𝓝[Set.Icc 0 t] s₀) (𝓝 0) := by
+        have := h_f_diff_to_zero.norm
+        simpa using this
+      exact squeeze_zero_norm' h_norm_le_event h_norm_to_zero
+    have h_termB :
+        Tendsto
+          (fun s : ℝ =>
+            heatSemigroup (I := I) (M := M) g (t - s) (f s₀) -
+              heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀))
+          (𝓝[Set.Icc 0 t] s₀) (𝓝 0) := by
+      have h_norm_le_event :
+          ∀ᶠ s in 𝓝[Set.Icc 0 t] s₀,
+            ‖heatSemigroup (I := I) (M := M) g (t - s) (f s₀) -
+              heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀)‖ ≤
+            ‖heatSemigroup (I := I) (M := M) g |s₀ - s| (f s₀) - f s₀‖ := by
+        rw [Filter.eventually_iff_exists_mem]
+        refine ⟨Set.Icc 0 t, self_mem_nhdsWithin, ?_⟩
+        intro s hs
+        have h_t_minus_s_nn : 0 ≤ t - s := sub_nonneg.mpr hs.2
+        have h := norm_heatSemigroup_sub_le_heatSemigroup_diff
+          (I := I) (M := M) g h_t_minus_s_nn h_diff_nn (f s₀)
+        have h_abs_eq : |(t - s) - (t - s₀)| = |s₀ - s| := by
+          have : (t - s) - (t - s₀) = s₀ - s := by ring
+          rw [this]
+        rw [h_abs_eq] at h
+        exact h
+      have h_abs_to_zero :
+          Tendsto (fun s : ℝ => |s₀ - s|) (𝓝 s₀) (𝓝 0) := by
+        have h_sub : Tendsto (fun s : ℝ => s₀ - s) (𝓝 s₀) (𝓝 (0 : ℝ)) := by
+          have : Tendsto (fun s : ℝ => s₀ - s) (𝓝 s₀) (𝓝 (s₀ - s₀)) :=
+            Filter.Tendsto.sub tendsto_const_nhds tendsto_id
+          simpa using this
+        have := h_sub.abs
+        simpa using this
+      have h_abs_to_zero_within :
+          Tendsto (fun s : ℝ => |s₀ - s|) (𝓝 s₀) (𝓝[≥] (0 : ℝ)) := by
+        rw [tendsto_nhdsWithin_iff]
+        refine ⟨h_abs_to_zero, ?_⟩
+        exact Eventually.of_forall (fun _ => Set.mem_Ici.mpr (abs_nonneg _))
+      have h_strong :=
+        heatSemigroup_continuous_at_zero (I := I) (M := M) g (f s₀)
+      have h_compose :
+          Tendsto (fun s : ℝ =>
+              heatSemigroup (I := I) (M := M) g |s₀ - s| (f s₀))
+            (𝓝 s₀) (𝓝 (f s₀)) :=
+        h_strong.comp h_abs_to_zero_within
+      have h_compose_diff :
+          Tendsto (fun s : ℝ =>
+              heatSemigroup (I := I) (M := M) g |s₀ - s| (f s₀) - f s₀)
+            (𝓝 s₀) (𝓝 0) := by
+        have := h_compose.sub (tendsto_const_nhds (x := f s₀))
+        simpa using this
+      have h_norm_to_zero :
+          Tendsto (fun s : ℝ =>
+              ‖heatSemigroup (I := I) (M := M) g |s₀ - s| (f s₀) - f s₀‖)
+            (𝓝 s₀) (𝓝 0) := by
+        have := h_compose_diff.norm
+        simpa using this
+      have h_norm_to_zero_within :
+          Tendsto (fun s : ℝ =>
+              ‖heatSemigroup (I := I) (M := M) g |s₀ - s| (f s₀) - f s₀‖)
+            (𝓝[Set.Icc 0 t] s₀) (𝓝 0) := h_norm_to_zero.mono_left nhdsWithin_le_nhds
+      exact squeeze_zero_norm' h_norm_le_event h_norm_to_zero_within
+    have h_sum := h_termA.add h_termB
+    have h_total_eq : ∀ s,
+        heatSemigroup (I := I) (M := M) g (t - s) (f s) -
+          heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀) =
+        (heatSemigroup (I := I) (M := M) g (t - s) (f s) -
+            heatSemigroup (I := I) (M := M) g (t - s) (f s₀)) +
+        (heatSemigroup (I := I) (M := M) g (t - s) (f s₀) -
+            heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀)) := by
+      intro s; abel
+    have h_eq_fun :
+        (fun s : ℝ =>
+          heatSemigroup (I := I) (M := M) g (t - s) (f s) -
+            heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀)) =
+        (fun s : ℝ =>
+          (heatSemigroup (I := I) (M := M) g (t - s) (f s) -
+              heatSemigroup (I := I) (M := M) g (t - s) (f s₀)) +
+          (heatSemigroup (I := I) (M := M) g (t - s) (f s₀) -
+              heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀))) := by
+      funext s; exact h_total_eq s
+    rw [h_eq_fun]
+    have := h_sum
+    simpa using this
+  have h_added := h_diff_to_zero.add (tendsto_const_nhds
+    (x := heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀)))
+  simpa using h_added
+
+theorem heatSemigroup_apply_f_continuousOn
+    (g : SmoothRiemannianMetric I M)
+    {f : ℝ → Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
+    {U : Set ℝ} (hf : ContinuousOn f U) {t : ℝ} (hU : Set.Icc 0 t ⊆ U) :
+    ContinuousOn
+      (fun s : ℝ => heatSemigroup (I := I) (M := M) g (t - s) (f s))
+      (Set.Icc 0 t) := by
+  intro s₀ hs₀
+  have hs₀_le : s₀ ≤ t := hs₀.2
+  have h_diff_nn : 0 ≤ t - s₀ := sub_nonneg.mpr hs₀_le
+  rw [ContinuousWithinAt]
+  rw [show (𝓝 (heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀))) =
+      𝓝 (0 + heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀)) by rw [zero_add]]
+  have h_diff_to_zero :
+      Tendsto
+        (fun s : ℝ =>
+          heatSemigroup (I := I) (M := M) g (t - s) (f s) -
+            heatSemigroup (I := I) (M := M) g (t - s₀) (f s₀))
+        (𝓝[Set.Icc 0 t] s₀) (𝓝 0) := by
+    have h_termA :
+        Tendsto
+          (fun s : ℝ =>
+            heatSemigroup (I := I) (M := M) g (t - s) (f s) -
+              heatSemigroup (I := I) (M := M) g (t - s) (f s₀))
+          (𝓝[Set.Icc 0 t] s₀) (𝓝 0) := by
+      have h_diff_eq : ∀ s,
+          heatSemigroup (I := I) (M := M) g (t - s) (f s) -
+            heatSemigroup (I := I) (M := M) g (t - s) (f s₀) =
+          heatSemigroup (I := I) (M := M) g (t - s) (f s - f s₀) := by
+        intro s
+        rw [← (heatSemigroup (I := I) (M := M) g (t - s)).map_sub]
+      have h_norm_le_event :
+          ∀ᶠ s in 𝓝[Set.Icc 0 t] s₀,
+            ‖heatSemigroup (I := I) (M := M) g (t - s) (f s) -
+              heatSemigroup (I := I) (M := M) g (t - s) (f s₀)‖ ≤
+            ‖f s - f s₀‖ := by
+        rw [Filter.eventually_iff_exists_mem]
+        refine ⟨Set.Icc 0 t, self_mem_nhdsWithin, ?_⟩
+        intro s hs
+        rw [h_diff_eq]
+        have h_t_minus_s_nn : 0 ≤ t - s := sub_nonneg.mpr hs.2
+        have h_op_le :=
+          heatSemigroup_opNorm_le_one (I := I) (M := M) g h_t_minus_s_nn
+        have h_le := ContinuousLinearMap.le_opNorm
+          (heatSemigroup (I := I) (M := M) g (t - s)) (f s - f s₀)
+        have h_nn : 0 ≤ ‖f s - f s₀‖ := norm_nonneg _
+        calc ‖heatSemigroup (I := I) (M := M) g (t - s) (f s - f s₀)‖
+            ≤ ‖heatSemigroup (I := I) (M := M) g (t - s)‖ * ‖f s - f s₀‖ := h_le
+          _ ≤ 1 * ‖f s - f s₀‖ := mul_le_mul_of_nonneg_right h_op_le h_nn
+          _ = ‖f s - f s₀‖ := one_mul _
+      have h_f_to_f₀ : Tendsto f (𝓝[Set.Icc 0 t] s₀) (𝓝 (f s₀)) :=
+        (hf.continuousWithinAt (hU hs₀)).mono_left (nhdsWithin_mono _ hU)
       have h_f_diff_to_zero :
           Tendsto (fun s : ℝ => f s - f s₀) (𝓝[Set.Icc 0 t] s₀) (𝓝 0) := by
         have := h_f_to_f₀.sub (tendsto_const_nhds (x := f s₀))

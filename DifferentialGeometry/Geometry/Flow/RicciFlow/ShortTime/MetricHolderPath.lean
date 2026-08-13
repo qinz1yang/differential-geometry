@@ -1,19 +1,11 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HolderPath
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.MetricHolderData
-
-/-!
-# Finite-chart Holder paths for metric differences
-
-This file instantiates the analytic finite-family gauge from `HolderPath` on
-the active POU charts and the finitely many `(0,2)` component pairs.  Its first
-producer places every member of a uniformly `C^3` metric family, viewed as a
-constant path, in one common parabolic Holder ball.  The ball constant is
-chosen before both the family index and the time horizon.
--/
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold Set Tensor0SBundle
+open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff NNReal ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -31,18 +23,15 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+      [BoundarylessManifold I M] [T2Space M]
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-/-- Finite set of active POU chart centres and covariant `(0,2)` component
-indices. -/
 def metricChartIdx :
     Finset (M × (Fin 2 → Fin (Module.finrank ℝ E))) := by
   classical
   exact (chartAtlasPOU_finset (I := I) (M := M)).product Finset.univ
 
-/-- POU-weighted Euclidean component path of the difference from `gBase`. -/
 def metricCompPath
     (gBase : SmoothRiemannianMetric I M)
     (gPath : ℝ → SmoothRiemannianMetric I M)
@@ -52,15 +41,12 @@ def metricCompPath
     (metricDifferenceCcTensor (I := I) (M := M) gBase (gPath t))
     a.1 (![] : Fin 0 → Fin (Module.finrank ℝ E)) a.2 y
 
-/-- Finite-chart parabolic `C^{2,1/2}` gauge of a metric path relative to a
-fixed background. -/
 def metricParGauge
     (gBase : SmoothRiemannianMetric I M) (τ : ℝ)
     (gPath : ℝ → SmoothRiemannianMetric I M) : ℝ≥0∞ :=
   eFinParC2Half (metricChartIdx (I := I) (M := M)) τ
     (metricCompPath (I := I) (M := M) gBase gPath)
 
-/-- Metric-path version of the finite parabolic Holder ball. -/
 def MetricInHolderBall
     (gBase : SmoothRiemannianMetric I M) (τ : ℝ) (C : ℝ≥0∞)
     (gPath : ℝ → SmoothRiemannianMetric I M) : Prop :=
@@ -68,9 +54,6 @@ def MetricInHolderBall
     (metricCompPath (I := I) (M := M) gBase gPath)
 
 omit [BoundarylessManifold I M] in
-/-- One order-at-most-three intrinsic family bound places all constant
-initial paths in one finite-chart parabolic Holder ball.  The same ball works
-for every time horizon. -/
 theorem metricConst_ball
     {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)

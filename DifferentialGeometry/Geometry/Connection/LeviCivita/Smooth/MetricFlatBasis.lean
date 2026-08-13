@@ -4,19 +4,20 @@ import DifferentialGeometry.Bundle.LocalFrameRegularity
 import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Smooth
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+
+namespace DifferentialGeometry.Geometry.Connection
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
 
 open Bundle
-open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Tensor.Coordinates
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -26,25 +27,11 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
 
-
-
-
-
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_isLeviCivita_smoothFile
     (g : SmoothRiemannianMetric I M) :
     IsLeviCivita (I := I) (leviCivitaConnectionOfMetric (I := I) g) g :=
   leviCivitaConnectionOfMetric_isLeviCivita (I := I) g
-
-
-
-
-
-
-
-
 
 private def localMetricCoeff
     {ι : Type*}
@@ -197,9 +184,6 @@ private theorem basisBilin_apply {ι : Type*} (b : Module.Basis ι Real E) (i j 
     basisBilin (E := E) b i j v w = b.coord i v * b.coord j w := by
   simp [basisBilin, coordCLM]
 
-
-
-
 noncomputable def localMetricFlatBasis {ι : Type*} [Fintype ι]
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
     [MemTrivializationAtlas e] (b : Module.Basis ι Real E)
@@ -324,8 +308,6 @@ theorem localMetricFlatBasis_isInvertible {ι : Type*} [Fintype ι]
   rw [← hA]
   exact ContinuousLinearMap.isInvertible_equiv
 
-
-
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem localMetricFlatBasis_contMDiffAt {ι : Type*} [Fintype ι]
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
@@ -336,8 +318,6 @@ theorem localMetricFlatBasis_contMDiffAt {ι : Type*} [Fintype ι]
   unfold localMetricFlatBasis
   refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
   exact (localMetricCoeff_contMDiffAt (I := I) e b g hx i j).smul contMDiffAt_const
-
-
 
 private noncomputable def localInvMetricCoeff {ι : Type*} [Fintype ι]
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
@@ -384,8 +364,6 @@ private theorem localInvMetricCoeff_contMDiffAt {ι : Type*} [Fintype ι]
       (fun y : M => localInvMetricCoeff (I := I) e b g k l y) x :=
   localInvMetricCoeff_contMDiffAt_of_isInvertible (I := I) e b g hx
     (localMetricFlatBasis_isInvertible (I := I) e b g hx) k l
-
-
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem coordGInvMdiff
@@ -620,4 +598,4 @@ theorem lc_christoffel_contMDiffAt {ι : Type*} [Finite ι]
     exact lc_christoffel_eq_koszul_sum (I := I) e b g hy i j k
   exact hRhs.congr_of_eventuallyEq heq
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

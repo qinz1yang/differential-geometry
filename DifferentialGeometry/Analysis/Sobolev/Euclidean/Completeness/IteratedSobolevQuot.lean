@@ -1,19 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevBanach
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
 
-/-!
-# A separated Euclidean Sobolev Banach carrier
-
-The existing Euclidean theory proves sequence-level completeness for
-`MemWkp`, but the local heat parametrix needs an actual Banach carrier on
-which continuous linear maps can be formed.  This file supplies the minimal
-carrier: Sobolev functions on one fixed open set, modulo a.e. equality there.
-
-All algebraic, normed, and complete structures are ordinary theorem values.
-No global or scoped instance is registered.  A finite-chart consumer installs
-them only inside its own `letI` scope.
--/
-
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
@@ -28,7 +15,6 @@ namespace Euclidean
 
 variable {d : ℕ}
 
-/-- The linear subspace of functions belonging to `W^{k,p}(Ω)`. -/
 def euclidWkpSubmodule
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) (hΩ : IsOpen Ω) :
@@ -40,15 +26,11 @@ def euclidWkpSubmodule
     change MemWkp (d := d) k p (fun x => c * u x) Ω
     exact MemWkp.const_smul (d := d) hp hΩ hu c
 
-/-- The unseparated Euclidean Sobolev carrier.  It is reducible to the
-submodule subtype, so its algebra comes only from Mathlib's generic subtype
-instances. -/
 abbrev EuclidWkp
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [hΩ : Fact (IsOpen Ω)] : Type _ :=
   ↑(euclidWkpSubmodule (d := d) k p hp Ω hΩ.out)
 
-/-- A.e. equality on the fixed Sobolev domain. -/
 def EuclidAEEq
     {k : ℕ} {p : ℝ≥0∞} {hp : 1 ≤ p}
     {Ω : Set (EuclideanSpace ℝ (Fin d))} [Fact (IsOpen Ω)]
@@ -108,13 +90,10 @@ def euclidWkpSetoid
     symm := EuclidAEEq.symm
     trans := EuclidAEEq.trans }
 
-/-- The separated Euclidean `W^{k,p}(Ω)` carrier. -/
 def EuclidWkpQ
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)] : Type _ :=
   Quotient (euclidWkpSetoid (d := d) k p hp Ω)
-
-/-! ## Explicit quotient algebra -/
 
 def ezero
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
@@ -493,16 +472,12 @@ private noncomputable def ewkpCore
     (ewkpModule (d := d) k p hp Ω)
     (ewkpCore (d := d) k p hp Ω)
 
-/-- The norm distance written without installing the theorem-valued
-structures. -/
 def ewkpDist
     (k : ℕ) (p : ℝ≥0∞) (hp : 1 ≤ p)
     (Ω : Set (EuclideanSpace ℝ (Fin d))) [Fact (IsOpen Ω)]
     (a b : EuclidWkpQ (d := d) k p hp Ω) : ℝ :=
   (ewkpNorm (d := d) k p hp Ω (esub k p hp Ω a b)).toReal
 
-/-- Completeness of the generated normed structure, obtained directly from
-`MemWkp.exists_limit_of_wkpNorm_cauchy`. -/
 theorem ewkpComplete
     [NeZero d]
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ∞)

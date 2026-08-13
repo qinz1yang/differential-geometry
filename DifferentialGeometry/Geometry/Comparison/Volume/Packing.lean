@@ -5,27 +5,12 @@ import Mathlib.Topology.MetricSpace.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 namespace VolumeComparison
 
 open MeasureTheory
-
-
-
-
-
-
 
 theorem card_le_of_mul_lt {n N : Nat} {L U : Real}
     (hL : 0 < L)
@@ -39,12 +24,6 @@ theorem card_le_of_mul_lt {n N : Nat} {L U : Real}
   have hmul : ((N + 1 : Nat) : Real) * L <= (n : Real) * L :=
     mul_le_mul_of_nonneg_right hNn_real hL.le
   nlinarith
-
-
-
-
-
-
 
 theorem mul_lower_le_upper {α ι : Type*} [MeasurableSpace α]
     (μ : Measure α)
@@ -72,8 +51,6 @@ theorem mul_lower_le_upper {α ι : Type*} [MeasurableSpace α]
     exact measureReal_mono hUnion_sub hlarge_fin
   exact hsum_lower.trans hsum_upper
 
-
-
 theorem balls_disjoint {α ι : Type*} [PseudoMetricSpace α]
     {J : Finset ι} {centers : ι → α} {r : Real}
     (hsep : ∀ i ∈ J, ∀ j ∈ J, i ≠ j → r ≤ dist (centers i) (centers j)) :
@@ -96,9 +73,6 @@ theorem balls_disjoint {α ι : Type*} [PseudoMetricSpace α]
       _ = r := by ring
   exact False.elim ((not_lt_of_ge (hsep i hi j hj hij)) hdist)
 
-
-
-
 theorem balls_subset_ball {α ι : Type*} [PseudoMetricSpace α]
     {J : Finset ι} {centers : ι → α} {z : α} {r m : Real}
     (hJz : ∀ j ∈ J, dist (centers j) z ≤ m * r) :
@@ -116,12 +90,6 @@ theorem balls_subset_ball {α ι : Type*} [PseudoMetricSpace α]
   have hrewrite : r / 2 + m * r = (m + 1 / 2) * r := by ring
   exact Metric.mem_ball.mpr (by simpa [hrewrite] using hxz)
 
-
-
-
-
-
-
 theorem ball_mul_le {α ι : Type*} [PseudoMetricSpace α]
     [MeasurableSpace α] [BorelSpace α]
     (μ : Measure α)
@@ -138,13 +106,6 @@ theorem ball_mul_le {α ι : Type*} [PseudoMetricSpace α]
   intro j hj x hx
   exact balls_subset_ball (J := J) (centers := centers) (z := z) (r := r) (m := m) hJz
     (Set.mem_iUnion.2 ⟨j, Set.mem_iUnion.2 ⟨hj, hx⟩⟩)
-
-
-
-
-
-
-
 
 theorem ball_card_le_meas {α ι : Type*} [PseudoMetricSpace α] [MeasurableSpace α]
     (μ : Measure α) (J : Finset ι) (centers : ι → α) (z : α)
@@ -186,12 +147,6 @@ theorem ball_card_le_meas {α ι : Type*} [PseudoMetricSpace α] [MeasurableSpac
       μ.real (Metric.ball z ((m + 1 / 2) * r)) ≤ U :=
     ENNReal.toReal_le_of_le_ofReal hUnonneg hupper
   exact card_le_of_mul_lt hLpos (hmul.trans hupper_real) hcap
-
-
-
-
-
-
 
 theorem ball_card_le_of_vol {α ι : Type*} [PseudoMetricSpace α]
     [MeasurableSpace α] [BorelSpace α]

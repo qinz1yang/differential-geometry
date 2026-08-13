@@ -9,7 +9,7 @@ open Set Function Filter Metric
 open scoped Topology NNReal ContDiff
 open DifferentialGeometry.Analysis.ODE.Flow
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 theorem time_block_eq_comp_inr
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
@@ -94,4 +94,4 @@ theorem variationalEquation_spatialDerivative_of_contDiff
       Set.Ioo_subset_Ioo (by linarith) (by linarith) htT
     exact hΦ.hasDerivAt_partial_spatial_fderiv hf hUopen hΦsmooth hxsU hxr htε
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

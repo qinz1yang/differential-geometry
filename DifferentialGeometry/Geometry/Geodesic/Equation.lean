@@ -2,8 +2,7 @@ import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Geometry.Operator.HessianTrace
 import Mathlib.Geometry.Manifold.IntegralCurve.Basic
 import Mathlib.Geometry.Manifold.IntegralCurve.Transform
-
-
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -22,6 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 def chartCoord (i : Fin (Module.finrank ℝ E)) (v : E) : ℝ :=
   (chartModelBasis E).repr v i
@@ -452,21 +452,10 @@ theorem isGeodesicOn_comp_neg
   intro τ hτ
   exact hasGeodesicEquationAt_comp_neg (I := I) (hγ (-τ) hτ)
 
-
-
-
-
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma chartLocalCurve_comp_affine (γ : ℝ → M) (c d t : ℝ) :
     chartLocalCurve (I := I) (fun s => γ (c * s + d)) t =
       (fun s => chartLocalCurve (I := I) γ (c * t + d) (c * s + d)) := rfl
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hasGeodesicEquationAt_comp_affine
@@ -509,9 +498,6 @@ theorem hasGeodesicEquationAt_comp_affine
     exact hfin
   · rw [chartChristoffelContraction_smul_smul (I := I) g _ c v, ← smul_add, hgeo,
       smul_zero]
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_comp_affine

@@ -65,15 +65,11 @@ structure CanonicalIteratedDataBundle
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g)
     (dirs_seq : ℕ → Fin (Module.finrank ℝ E)) (m : ℕ) where
-
   data : IteratedDiffChartBilinearData (I := I) (M := M) g α u_h m
-
   directions_eq : data.directions = dirsOf dirs_seq m
-
   fChartEff_memW1p :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 data.diffChartForcing
       (chartTargetEuclid (I := I) (M := M) α)
-
   fChartEff_ae_zero_off_K :
     data.diffChartForcing =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \
@@ -301,7 +297,6 @@ private structure CanonicalBundleWithMemWkp
     (u_h : H1Compl (I := I) (M := M) g)
     (dirs_seq : ℕ → Fin (Module.finrank ℝ E)) (M_max K m : ℕ) extends
     CanonicalIteratedDataBundle (I := I) (M := M) g α u_h dirs_seq m where
-
   fChartEff_memWkp :
     MemWkp (d := Module.finrank ℝ E) (K + (M_max - m)) 2 data.diffChartForcing
       (chartTargetEuclid (I := I) (M := M) α)

@@ -18,8 +18,9 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Topology.Compactness.Compact
 import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -159,7 +160,7 @@ theorem speedSq_hasDerivAt
     have hxsrc : f s t ∈ (extChartAt I α).source := by rw [extChartAt_source]; exact hsrc
     have hsq : speedSq (I := I) g f s t = g.inner (f s t) (Vsec s) (Vsec s) := rfl
     rw [hsq]
-    rw [DifferentialGeometry.Integral.Connection.g_inner_eq_chart_sum
+    rw [DifferentialGeometry.Geometry.Connection.g_inner_eq_chart_sum
       (I := I) g α hbase_set hxsrc (Vsec s) (Vsec s)]
     have hVcoord :
         (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (f s t) (Vsec s)
@@ -242,10 +243,10 @@ theorem speedSq_hasDerivAt
   have hu0_eq : u0 = extChartAt I α α := by
     rw [hu0, AlongCurve.chartCurve_def, hγ, hα]
   have hGram_eq : ∀ l j : Fin (Module.finrank ℝ E),
-      DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α l j u0 =
+      DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0 =
         chartGramMatrix (I := I) g α α l j := by
     intro l j
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_def, hu0_eq,
+    rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def, hu0_eq,
       (extChartAt I α).left_inv (mem_extChartAt_source α)]
   have hinner_sum :
       g.inner α
@@ -253,7 +254,7 @@ theorem speedSq_hasDerivAt
             (I := I) g γ Vsec 0)
           (Vsec 0)
         = ∑ l : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-            DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α l j u0 *
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0 *
               chartCoord (E := E) l DV
               * chartCoord (E := E) j (V 0) := by
     have hrt1 : (trivializationAt E (TangentSpace I) α).symmL ℝ α DV
@@ -273,23 +274,23 @@ theorem speedSq_hasDerivAt
   rw [hinner_sum]
   have hT2 :
       (∑ i : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
-          DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α i l u0 *
+          DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α i l u0 *
             chartCoord (E := E) i (V 0)
             * chartCoord (E := E) l DV)
         = ∑ l : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-            DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α l j u0 *
+            DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0 *
               chartCoord (E := E) l DV
               * chartCoord (E := E) j (V 0) := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun l _ => Finset.sum_congr rfl (fun i _ => ?_))
-    rw [DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE_symm (I := I) g α i l u0]
+    rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_symm (I := I) g α i l u0]
     ring
-  change (2 : ℝ) * (∑ l, ∑ j, DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I)
+  change (2 : ℝ) * (∑ l, ∑ j, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
     g α l j u0
         * chartCoord (E := E) l DV * chartCoord (E := E) j (V 0))
-      = (∑ l, ∑ j, DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α l j u0
+      = (∑ l, ∑ j, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α l j u0
           * chartCoord (E := E) l DV * chartCoord (E := E) j (V 0))
-        + (∑ i, ∑ l, DifferentialGeometry.Integral.DivergenceTheorem.chartGramOnE (I := I) g α i l
+        + (∑ i, ∑ l, DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) g α i l
           u0
             * chartCoord (E := E) i (V 0) * chartCoord (E := E) l DV)
   rw [hT2]; ring

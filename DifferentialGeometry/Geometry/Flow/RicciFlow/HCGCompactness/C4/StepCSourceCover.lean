@@ -1,15 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCAveragePOU
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCPairTail
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -159,8 +151,6 @@ theorem liveMetric0_symm
     simpa only [Function.comp_apply] using hwv
   rw [hstage] at hvw'
   exact tendsto_nhds_unique hvw' hwv'
-
-
 
 theorem MetricCompactnessInputs.exists_live_cores
     (inp : MetricCompactnessInputs (I := I) X)

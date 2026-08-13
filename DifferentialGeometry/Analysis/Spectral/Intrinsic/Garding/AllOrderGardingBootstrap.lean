@@ -3,109 +3,22 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorConnLapGradientL2Bound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.IntegratedOrder2Garding
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -117,32 +30,15 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-
-
-
-
-
 def Order2GardingFamily (g : SmoothRiemannianMetric I M) (Cg : ℝ) : Prop :=
   0 ≤ Cg ∧ ∀ (s : ℕ) (S : SmoothCcTensor g 0 s),
     ‖covGrad (I := I) (M := M) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s S)‖ ^ 2 ≤
       Cg * (‖rawTensorConnLapSmooth (I := I) g 0 s S‖ ^ 2 + ‖S‖ ^ 2)
 
-
-
-
-
-
 def Order1ControlFamily (g : SmoothRiemannianMetric I M) : Prop :=
   ∀ (s : ℕ) (S : SmoothCcTensor g 0 s),
     ‖covGrad (I := I) (M := M) g 0 s S‖ ^ 2 ≤
       ‖rawTensorConnLapSmooth (I := I) g 0 s S‖ * ‖S‖
-
-
-
-
-
-
-
 
 def CommutatorDefectBound (g : SmoothRiemannianMetric I M) (Cc : ℝ) : Prop :=
   0 ≤ Cc ∧ ∀ (U : SmoothCcTensor g 0 2) (p : ℕ),
@@ -151,23 +47,6 @@ def CommutatorDefectBound (g : SmoothRiemannianMetric I M) (Cc : ℝ) : Prop :=
         iteratedCovGrad g 0 2 p (rawTensorConnLapSmooth (I := I) g 0 2 U)‖ ≤
       Cc * ∑ i ∈ Finset.range (p + 2),
         ‖iteratedCovGrad g 0 2 i U‖
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 def CurvatureCrossTermBound (g : SmoothRiemannianMetric I M) (Ccross : ℝ) : Prop :=
   0 ≤ Ccross ∧ ∀ (s : ℕ) (S : SmoothCcTensor g 0 s),
@@ -184,14 +63,6 @@ def CurvatureCrossTermBound (g : SmoothRiemannianMetric I M) (Ccross : ℝ) : Pr
             tensorL2Norm (I := I) (M := M) g 0 (s + 1)
               (covGrad (I := I) (M := M) g 0 s S).toFun)
 
-
-
-
-
-
-
-
-
 theorem order2GardingFamily_of_curvatureCrossTermBound
     (g : SmoothRiemannianMetric I M) (Ccross : ℝ)
     (hcross : CurvatureCrossTermBound (I := I) (M := M) g Ccross) :
@@ -205,8 +76,6 @@ theorem order2GardingFamily_of_curvatureCrossTermBound
   exact secondCovGrad_l2NormSq_le_of_cross_bound (I := I) (M := M) g s S Ccross hCcross
     (hcrossS s S)
 
-
-
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma iteratedCovGrad_norm_eq_tensorL2Norm
@@ -215,8 +84,6 @@ private lemma iteratedCovGrad_norm_eq_tensorL2Norm
       tensorL2Norm (I := I) (M := M) g 0 (2 + j)
         (iteratedCovGrad g 0 2 j U).toFun :=
   SmoothCcTensor.norm_def (I := I) (M := M) (iteratedCovGrad g 0 2 j U)
-
-
 
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma rawTensorConnLapIter_norm_eq_toL2
@@ -327,16 +194,6 @@ private lemma gradOrder_one_l2Norm_le
     rw [← Real.sqrt_sq hgrad]
     exact Real.sqrt_le_sqrt (hgrad1 2 U)
   exact hsqrt.trans (sqrt_mul_le_add_of_nonneg ha hb)
-
-
-
-
-
-
-
-
-
-
 
 private lemma gradOrder_l2Norm_le_lapIter_sum
     (g : SmoothRiemannianMetric I M) (Cg Cc : ℝ)
@@ -553,30 +410,6 @@ private lemma gradOrder_l2Norm_le_lapIter_sum
         rw [hLHS, hRHS]
         exact hfinal
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 theorem allOrder_covGrad_l2Norm_le_lapIter_sum
     (g : SmoothRiemannianMetric I M) (Cg Cc : ℝ) (k : ℕ)
     (hgard : Order2GardingFamily (I := I) (M := M) g Cg)
@@ -632,8 +465,6 @@ theorem allOrder_covGrad_l2Norm_le_lapIter_sum
     _ = (∑ j ∈ Finset.range (2 * k + 1), Cmix j) * Sk := by rw [Finset.sum_mul]
     _ = Cmax * Sk := by rw [hCmax_def]
 
-
-
 theorem order1Control_rank_two
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) :
     ‖covGrad (I := I) (M := M) g 0 2 S‖ ^ 2 ≤
@@ -643,13 +474,6 @@ theorem order1Control_rank_two
     SmoothCcTensor.norm_def (I := I) (M := M) S]
   exact covGrad_l2NormSq_le_rawConnLap_mul_self (I := I) (M := M) g S
 
-
-
-
-
-
-
-
 theorem order1ControlFamily_holds (g : SmoothRiemannianMetric I M) :
     Order1ControlFamily (I := I) (M := M) g := by
   intro s S
@@ -657,12 +481,6 @@ theorem order1ControlFamily_holds (g : SmoothRiemannianMetric I M) :
     SmoothCcTensor.norm_def (I := I) (M := M) (rawTensorConnLapSmooth (I := I) g 0 s S),
     SmoothCcTensor.norm_def (I := I) (M := M) S]
   exact covGrad_l2NormSq_le_rawConnLap_mul_self_gen (I := I) (M := M) g s S
-
-
-
-
-
-
 
 theorem order2Garding_rank_two_of_pointwise_curv_bound
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (C₀ : ℝ) (hC₀ : 0 ≤ C₀)
@@ -686,9 +504,8 @@ theorem order2Garding_rank_two_of_pointwise_curv_bound
   exact secondCovGrad_l2NormSq_le_rawConnLap_of_pointwise_curv_bound
     (I := I) (M := M) g S C₀ hC₀ hpt
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

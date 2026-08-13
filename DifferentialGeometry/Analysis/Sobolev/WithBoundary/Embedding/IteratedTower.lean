@@ -86,7 +86,7 @@ variable {M : Type*} [TopologicalSpace M]
 
 theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -173,7 +173,7 @@ theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart
 
 theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart_smooth
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {k : ℕ} {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧

@@ -26,7 +26,7 @@ namespace Tensor0SRiemannianBundle
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -249,6 +249,7 @@ end Tensor0SRiemannianBundle
 end Tensor
 end DifferentialGeometry
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open DifferentialGeometry.Tensor.Tensor0SRiemannianBundle
@@ -266,3 +267,4 @@ noncomputable def tensor0S_riemannianBundle
   ⟨tensor0SRiemannianMetric (I := I) (M := M) g s⟩
 
 end Tensor0SBundle
+end DifferentialGeometry

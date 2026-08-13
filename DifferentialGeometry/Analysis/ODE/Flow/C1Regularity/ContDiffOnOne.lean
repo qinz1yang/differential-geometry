@@ -268,10 +268,6 @@ theorem variationalSolution_compare_norm
     have hx_le_T : τ' - t₀ ≤ T := by change 2 * t₀ - t - t₀ ≤ T; linarith [ht.1]
     exact le_trans hgr_τ' (hreduce_full hx_nn hx_le_T)
 
-
-
-
-
 omit [CompleteSpace E] in
 theorem opNorm_sub_le_of_var
     {α₁ α₂ : ℝ → E} {T M ε : ℝ}

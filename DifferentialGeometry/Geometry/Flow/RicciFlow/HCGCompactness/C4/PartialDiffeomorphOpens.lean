@@ -1,19 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.PullbackFieldConstruction
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -53,8 +42,6 @@ section OpensDiffeo
 
 open TopologicalSpace Topology
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [IsManifold I ∞ N] in
 theorem image_opens_isOpen (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
@@ -74,10 +61,6 @@ theorem image_opens_isOpen (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ�
       exact ⟨(Φ.symm : N → M) y, hy2, Φ.right_inv' hy1⟩
   rw [himg]
   exact Φ.symm.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage Φ.open_target V.2
-
-
-
-
 
 noncomputable def PartialDiffeomorph.toOpensDiffeo
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
@@ -131,8 +114,6 @@ noncomputable def PartialDiffeomorph.toOpensDiffeo
       exact Φ.symm.contMDiffOn_toFun.contMDiffAt (Φ.open_target.mem_nhds hqt)
     exact contMDiffAt_codRestr hmem hbase
 
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [IsManifold I ∞ N] in
 theorem PartialDiffeomorph.opensDiffeo_mfderiv
@@ -168,8 +149,6 @@ theorem PartialDiffeomorph.opensDiffeo_mfderiv
   have happ := DFunLike.congr_fun (h1.symm.trans h2) v
   simpa only [F, ContinuousLinearMap.comp_apply,
     mfderiv_subtype_val (I := I) W (F p), mfderiv_subtype_val (I := I) U p] using happ
-
-
 
 noncomputable def PartialDiffeomorph.opensMap
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
@@ -212,8 +191,6 @@ theorem PartialDiffeomorph.opensMap_contMDiff
       (Opens.inclusion hWV : W → V) ∘ F := rfl
   rw [hfun]
   exact (contMDiff_inclusion hWV).comp F.contMDiff
-
-
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [IsManifold I ∞ N] in
@@ -295,8 +272,6 @@ theorem PartialDiffeomorph.opensMap_inv_mdiff
   change Function.invFun (inc ∘ F) ((inc ∘ F) x) = x
   exact Function.leftInverse_invFun htotal x
 
-
-
 omit [IsManifold I ∞ N] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem invSubtype_mdiff (U : Opens N) [Nonempty U] :
@@ -312,9 +287,6 @@ theorem invSubtype_mdiff (U : Opens N) [Nonempty U] :
       (Function.leftInverse_invFun U.isOpenEmbedding'.injective u)
   exact (contMDiffAt_codRestr
     (fun z => (Function.invFun (Subtype.val : U → N) z).2) hamb).contMDiffWithinAt
-
-
-
 
 noncomputable def PartialDiffeomorph.liftTargetOpen
     {U : Opens N} [Nonempty U] (Φ : PartialDiffeomorph I I M U (∞ : WithTop ℕ∞))
@@ -395,8 +367,6 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] in
     {U : Opens N} [Nonempty U] (Φ : PartialDiffeomorph I I M U (∞ : WithTop ℕ∞))
     (htarget : Φ.target = Set.univ) (x : M) :
     PartialDiffeomorph.liftTargetOpen Φ htarget x = (Φ x : N) := rfl
-
-
 
 omit [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
 omit [IsManifold I ∞ N] in

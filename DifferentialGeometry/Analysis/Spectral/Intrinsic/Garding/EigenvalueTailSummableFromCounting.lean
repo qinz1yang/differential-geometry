@@ -1,32 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralChartRegularityAnyOrder
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -34,19 +7,8 @@ open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
-
-
-
-
-
-
-
-
-
-
+namespace Analysis
+namespace Spectral
 
 theorem counting_summable_dyadic {ι : Type*} (w : ι → ℝ) (hw : ∀ i, 1 ≤ w i)
     (q : ℕ) (A : ℝ) (hA : 0 ≤ A)
@@ -170,21 +132,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem eigenvalueTailSummable_of_polynomial_counting_bound
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -204,9 +151,8 @@ theorem eigenvalueTailSummable_of_polynomial_counting_bound
     (fun i => 1 + TensorEigenIdx.lambda (I := I) (M := M) i) hw q A hA count
     hcount_mem hcount_card
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

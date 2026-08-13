@@ -8,8 +8,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import Mathlib.Geometry.Manifold.IntegralCurve.Basic
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.Deriv.Mul
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -390,11 +389,6 @@ theorem geodesicVectorFieldChart_eq_geodesicVectorField
     rw [hXval, geodesicVectorField_snd]
   apply Prod.ext hfst hsnd
 
-/-- The basepoint-free geodesic spray is smooth as a section of `T(TM)`.
-
-Locally it is the chart-fixed geodesic vector field based at the foot of the
-chosen tangent vector, so smoothness follows from the fixed-chart construction
-and `geodesicVectorFieldChart_eq_geodesicVectorField`. -/
 theorem geodesicVF_smooth
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) :
@@ -415,11 +409,6 @@ theorem geodesicVF_smooth
   exact heq_of_eq ((geodesicVectorFieldChart_eq_geodesicVectorField
     (I := I) g α hq).symm)
 
-/-- **Cross-basepoint pointwise coincidence of the chart-fixed geodesic vector
-field.** At a tangent-bundle point `p` whose foot lies in both chart-sources,
-the chart-`α` and chart-`α'` fixed geodesic vector fields agree as elements of
-`T_p(TM)`. Both equal the basepoint-free geodesic spray
-`geodesicVectorField g p` by `geodesicVectorFieldChart_eq_geodesicVectorField`. -/
 theorem geodesicVectorFieldChart_eq_of_proj_mem
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α α' : M)

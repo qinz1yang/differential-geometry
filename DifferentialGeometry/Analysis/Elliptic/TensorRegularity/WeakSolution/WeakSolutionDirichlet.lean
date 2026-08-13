@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.WeakSolutionHeadline
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -12,7 +13,7 @@ namespace Analysis
 namespace Laplacian
 namespace TensorRegularity
 
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.L2

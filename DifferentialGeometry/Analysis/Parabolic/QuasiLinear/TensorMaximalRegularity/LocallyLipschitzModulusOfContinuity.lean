@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.LocallyLipschitzTruncation
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -32,7 +33,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a : ℝ} {T : ℝ}
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_const_inclusion
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2))
@@ -55,7 +55,6 @@ theorem timeModeCoeff_const_inclusion
   filter_upwards [hlhs, hconst, hrhs] with t htlhs htconst htrhs
   rw [htlhs, htconst, htrhs, tensorHsInclusion_coeff_apply]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem timeModeCoeff_homog_sub_const_coeFn
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2)) (hT : 0 ≤ T)
@@ -105,7 +104,6 @@ theorem timeModeCoeff_homog_sub_const_coeFn
   rw [htadd, Pi.add_apply, htmode, htnegc, Pi.neg_apply, htconst]
   ring
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_timeModeCoeff_homog_sub_const_sq_le
     (u₀ : tensorHs (I := I) (M := M) g r s (a + 2)) (hT : 0 ≤ T)
@@ -158,7 +156,6 @@ theorem norm_timeModeCoeff_homog_sub_const_sq_le
       ≤ (Real.sqrt T * |u₀.coeff i|) ^ 2 := hsq
     _ = T * (u₀.coeff i) ^ 2 := by rw [mul_pow, Real.sq_sqrt hT, sq_abs]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegHomogeneousSolFieldHa1_sub_const_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -191,7 +188,6 @@ theorem maxRegHomogeneousSolFieldHa1_sub_const_norm_le
   rw [one_pow, one_mul, hconst_norm]
   exact mul_le_mul_of_nonneg_left hdefect hw_nonneg
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolFieldHa1_sub_const_norm_le_ofCompact (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
@@ -222,7 +218,6 @@ theorem maxRegDuhamelSolFieldHa1_sub_const_norm_le_ofCompact (hT : 0 < T) (hT1 :
     (h_compact := h_compact) (a := a) hT hT1 gforce
   exact add_le_add hhom hduh
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maxRegDuhamelSolFieldTraceScale_tendsto_const_ofCompact
     (h_compact : IsCompactOperator (tensorResolventL2

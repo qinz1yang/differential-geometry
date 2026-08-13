@@ -2,30 +2,23 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Spectr
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
-
-/-!
-# Scalar spectral tail summability
-
-This file proves the polynomial counting estimate needed for the rank-zero
-tensor connection-Laplacian.  The proof uses the scalar point-evaluation
-Sobolev bound on a finite reproducing-kernel combination, rather than the
-strong local Weyl-law input used for arbitrary tensor valence.
--/
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (eigenvectorSmooth)
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open Tensor0SBundle
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -73,7 +66,7 @@ private lemma combo_val
       unfold scalarCombo at ih ⊢
       simp [hi, ih, smul_eq_mul]
 
-omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
 open scoped Classical in
 private lemma basis_sum_coeff
     (g : SmoothRiemannianMetric I M)
@@ -123,9 +116,6 @@ private lemma combo_norm_sq
     rw [basis_sum_coeff (I := I) (M := M), if_neg hi]
     ring
 
-/-- The rank-zero connection-Laplacian has a polynomial pointwise diagonal
-kernel bound.  Unlike the arbitrary-valence local Weyl statement, this follows
-from the already proved scalar Sobolev point-evaluation estimate. -/
 theorem scalar_diag_le
     (g : SmoothRiemannianMetric I M) :
     ∃ (q : ℕ) (B : ℝ), 0 ≤ B ∧
@@ -246,8 +236,6 @@ theorem scalar_diag_le
       simpa only [diagonalKernel, Finset.sum_empty] using
         (mul_nonneg (sq_nonneg C) hpow)
 
-/-- A negative power of the rank-zero tensor eigenvalues is summable.  This is
-the scalar spectral input used by the conjugate-heat Galerkin construction. -/
 theorem scalar_eigen_tail
     (g : SmoothRiemannianMetric I M) :
     EigenvalueTailSummable (I := I) (M := M) g 0 0 := by
@@ -257,4 +245,4 @@ theorem scalar_eigen_tail
     (eigenvalueCountingBound_of_pointwiseDiagonalKernelBound
       (I := I) (M := M) g 0 0 q B hB count hmem hkernel)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral

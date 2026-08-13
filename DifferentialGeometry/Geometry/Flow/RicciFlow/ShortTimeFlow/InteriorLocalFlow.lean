@@ -12,13 +12,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Glue
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ChartBridge
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
@@ -26,13 +20,11 @@ open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.PDE.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.ODE
 open DifferentialGeometry.PDE.RicciFlow.Pullback
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
@@ -121,14 +113,6 @@ theorem chartcover_orbit_is_bare_integral_curve
   rw [hcurve, hvel]
   exact hbridge
 
-
-
-
-
-
-
-
-
 private structure ChartFlowEngineInputs
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData (I := I) X α)
@@ -171,10 +155,6 @@ private structure ChartFlowEngineInputs
             ∀ s ∈ Set.Ico (0 : ℝ) S_α,
               Ψ s (Φ s x) = x ∧ Φ s (Ψ s x) = x
 
-
-
-
-
 private noncomputable def glueFlow
     (Y : ℝ → ∀ x : M, TangentSpace I x)
     (hperY : ∀ α : M, ChartLocalPicardData (I := I) Y α) : ℝ → M → M :=
@@ -194,10 +174,6 @@ private theorem glueFlow_spec
   refine ⟨hspec.1, fun x => ?_⟩
   obtain ⟨α, _hαS, hxU, hrepr⟩ := hspec.2 x
   exact ⟨α, hxU, hrepr⟩
-
-
-
-
 
 private noncomputable def flowBijectiveHorizon
     (X : ℝ → ∀ x : M, TangentSpace I x)

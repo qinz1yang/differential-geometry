@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothApproxSeq.Identif
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.BilinearBoundW22
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2RegularitySuccessor
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

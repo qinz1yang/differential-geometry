@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Analysis.Normed.Module.FiniteDimension
@@ -19,15 +19,10 @@ structure VectorBundleHom
     (F₂ : Type*) [NormedAddCommGroup F₂] [NormedSpace 𝕜 F₂]
     (E₂ : B₂ → Type*) [∀ x, AddCommGroup (E₂ x)] [∀ x, Module 𝕜 (E₂ x)]
     [TopologicalSpace (TotalSpace F₂ E₂)] where
-
   baseMap : B₁ → B₂
-
   toFun : TotalSpace F₁ E₁ → TotalSpace F₂ E₂
-
   continuous_toFun : Continuous toFun
-
   fiberLinearMap : ∀ x : B₁, E₁ x →ₗ[𝕜] E₂ (baseMap x)
-
   fiber_compat : ∀ (x : B₁) (v : E₁ x),
     toFun ⟨x, v⟩ = ⟨baseMap x, fiberLinearMap x v⟩
 
@@ -130,13 +125,9 @@ structure VectorBundleEquiv
     (F₂ : Type*) [NormedAddCommGroup F₂] [NormedSpace 𝕜 F₂]
     (E₂ : B₂ → Type*) [∀ x, AddCommGroup (E₂ x)] [∀ x, Module 𝕜 (E₂ x)]
     [TopologicalSpace (TotalSpace F₂ E₂)] where
-
   baseMap : B₁ → B₂
-
   toHomeomorph : TotalSpace F₁ E₁ ≃ₜ TotalSpace F₂ E₂
-
   fiberLinearEquiv : ∀ x : B₁, E₁ x ≃ₗ[𝕜] E₂ (baseMap x)
-
   fiber_compat : ∀ (x : B₁) (v : E₁ x),
     toHomeomorph ⟨x, v⟩ = ⟨baseMap x, fiberLinearEquiv x v⟩
 

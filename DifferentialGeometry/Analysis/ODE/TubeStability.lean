@@ -4,20 +4,9 @@ import Mathlib.Topology.Order.Compact
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry.Analysis.ODE
 
 open Filter Metric Set Topology
-
-
 
 theorem exists_first_hit_Icc
     {f : ℝ → ℝ} {a b r : ℝ}
@@ -66,8 +55,6 @@ theorem exists_first_hit_Icc
   subst s
   exact (not_lt_of_ge hτeq.le) hrs
 
-
-
 theorem tendsto_gronwallBound_zero_zero (L T : ℝ) :
     Tendsto
       (fun z : ℝ × ℝ => gronwallBound z.1 L z.2 T)
@@ -104,9 +91,6 @@ private theorem exists_pos_gronwallBound_lt
   refine ⟨e n, hen, ?_, ?_⟩
   · simpa [Real.dist_eq, abs_of_pos hen] using hnSmall
   · exact (le_abs_self _).trans_lt (by simpa [Real.dist_eq] using hnBound)
-
-
-
 
 theorem integralCurve_tendstoUniformlyOn_of_limit_tube
     {P X : Type*}

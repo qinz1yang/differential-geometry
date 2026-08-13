@@ -1,92 +1,19 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.IteratedRmTowerHeatEq
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannHeatFrameInvariant
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -97,25 +24,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
-
-
-
-
-
-
-
 section OrthonormalCollapse
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
@@ -138,31 +49,9 @@ theorem inner0S_orthoBasis_eq_compContract
 
 end OrthonormalCollapse
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 section RicReactionCollapse
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
-
-
-
-
-
-
 
 theorem sum_delta_erase_slot_eq {s : ℕ}
     (I0 : Fin s → Idx) (b : Fin s) (G : (Fin s → Idx) → Real) :
@@ -210,29 +99,10 @@ theorem sum_delta_erase_slot_eq {s : ℕ}
   refine Finset.prod_eq_zero (Finset.mem_erase.mpr ⟨hab, Finset.mem_univ a⟩) ?_
   rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hdis]
 
-
-
-
-
-
-
-
-
 def ricStarArray {s : ℕ}
     (ric : Idx → Idx → Real) (cB : (Fin s → Idx) → Real) :
     (Fin s → Idx) → Real :=
   fun I0 => ∑ b : Fin s, ∑ e : Idx, ric (I0 b) e * cB (Function.update I0 b e)
-
-
-
-
-
-
-
-
-
-
-
 
 omit [DecidableEq Idx] in
 theorem abs_ricStarArray_le {s : ℕ}
@@ -266,14 +136,6 @@ theorem abs_ricStarArray_le {s : ℕ}
         ((Fintype.card Idx : Real) * Rbnd * Real.sqrt (compNormSqMulti cB))) =
       (s : Real) * (Fintype.card Idx : Real) * Rbnd *
         Real.sqrt (compNormSqMulti cB) from by ring]
-
-
-
-
-
-
-
-
 
 theorem ricReactionContract_delta_eq_compContract {s : ℕ}
     (ric : Idx → Idx → Real) (cA cB : (Fin s → Idx) → Real) :
@@ -359,34 +221,9 @@ theorem ricReactionContract_delta_eq_compContract {s : ℕ}
 
 end RicReactionCollapse
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 section ReactionBridge
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-
-
-
-
-
-
 
 def combinedStarArray {s : ℕ}
     (ric : Idx → Idx → Real)
@@ -394,29 +231,12 @@ def combinedStarArray {s : ℕ}
     (Fin s → Idx) → Real :=
   fun m => ricStarArray ric rmComp m + residualComp m
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaKRm04Reaction_orthoBasis_eq_compContract
     [Module.Finite ℝ E]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (k : ℕ)
     (basis : (x : M) → Module.Basis Idx Real (TangentSpace I x))
     (gInv : Real → M → Idx → Idx → Real)
@@ -474,14 +294,12 @@ theorem nablaKRm04Reaction_orthoBasis_eq_compContract
               (∑ m : Fin (4 + k) → Idx, residC m * rmC m)) from by ring]
   rw [hcombine]
 
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaKReactionAt_eq
     [Module.Finite ℝ E]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (k : ℕ) (t : Real) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv ric : Idx → Idx → Real)
@@ -537,80 +355,5 @@ theorem nablaKReactionAt_eq
   rw [hcombine]
 
 end ReactionBridge
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 end DifferentialGeometry.PDE.RicciFlow

@@ -4,20 +4,12 @@ import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Analysis.Calculus.MeanValue
 
-
-
-
-
-
-
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Topology Manifold ContDiff
 
 namespace DifferentialGeometry
-
-
 
 theorem extDerivFun_real_eq_mfderiv
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -44,12 +36,6 @@ theorem extDerivFun_comp_diffeomorph
   rw [extDerivFun_real_eq_mfderiv, extDerivFun_real_eq_mfderiv]
   simpa [Function.comp_def] using
     mfderiv_comp_apply (I := I) (I' := I) (I'' := 𝓘(Real, Real)) x hf hPhi v
-
-
-
-
-
-
 
 theorem writtenInExtChartAt_diffAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -80,8 +66,6 @@ theorem writtenInExtChartAt_diffAt
     exact (extChartAt I x).right_inv hz
   rw [hpoint] at hdiff_within
   exact hdiff_within.differentiableAt hrange
-
-
 
 theorem extDerivFun_tangentConstInChart_eq_fderiv
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -151,8 +135,6 @@ theorem extDerivFun_tangentConstInChart_eq_fderiv
   rw [extDerivFun_real_eq_mfderiv, hfield]
   exact hchain_apply.symm.trans hwithin_to_fderiv
 
-
-
 theorem isLocallyConstant_of_mfderiv_eq_zero
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -210,9 +192,6 @@ theorem isLocallyConstant_of_mfderiv_eq_zero
   change f (e.symm (e y)) = f (e.symm (e x)) at hFy
   simpa [hsymm_y, hsymm_x] using hFy
 
-
-
-
 theorem extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -244,16 +223,6 @@ theorem extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
     _ = fderiv Real φ z₀ V := by
           rw [hφ.fderiv_eq]
 
-
-
-
-
-
-
-
-
-
-
 def FixedBaseExtDerivTimeDerivativeOn
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
@@ -267,11 +236,6 @@ def FixedBaseExtDerivTimeDerivativeOn
         (extDerivFun (I := I) (Ft t) x V)
       timeSet
       t
-
-
-
-
-
 
 def FixedBaseExtDerivTimeDerivativeOnRegular
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -335,12 +299,6 @@ theorem FixedBaseExtDerivTimeDerivativeOn.toRegular
   intro t _ht x hx V
   exact h t x hx V
 
-
-
-
-
-
-
 theorem fixedBaseExtDerivTimeDerivativeOn_singleton_of_chart_contDiff
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -397,9 +355,6 @@ theorem fixedBaseExtDerivTimeDerivativeOn_singleton_of_chart_contDiff
       (fun s _hs => hleft s)
       (hleft t)).congr_deriv hright.symm
 
-
-
-
 theorem fixedBaseExtDerivTimeDerivativeOnRegular_singleton_of_chart_contDiff
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -430,9 +385,6 @@ theorem fixedBaseExtDerivTimeDerivativeOnRegular_singleton_of_chart_contDiff
       (F := F) (Ft := Ft) (Φ := Φ)
       hΦ hFdiff hFchart hFtdiff hFtchart).toRegular
       (I := I) (regularSet := regularSet)
-
-
-
 
 theorem fixedBaseExtDerivTimeDerivativeOnRegular_singleton_of_chart_contDiffOnTime
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -494,12 +446,6 @@ theorem fixedBaseExtDerivTimeDerivativeOnRegular_singleton_of_chart_contDiffOnTi
       (fun s hs => hleft s hs)
       (hleft t (hregular_subset ht))).congr_deriv hright.symm
 
-
-
-
-
-
-
 theorem eventuallyEq_timeFDeriv
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {timeSet : Set Real}
@@ -536,13 +482,6 @@ theorem eventuallyEq_timeFDeriv
       HasDerivAt (fun s : Real => Φ s y) (Ψ t y) t :=
     hy_deriv.hasDerivAt htime
   exact htime_deriv.unique hchart
-
-
-
-
-
-
-
 
 theorem fixedBaseAtReg
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -613,8 +552,6 @@ theorem fixedBaseAtReg
       (fun s hs => hleft s hs)
       (hleft t (hregular_subset ht))).congr_deriv hright.symm
 
-
-
 theorem contDiffAt_prodChart
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
@@ -640,12 +577,6 @@ theorem contDiffAt_prodChart
         simp [Set.range_prodMap, ModelWithCorners.range_eq_univ]
       simp [hp]
   simpa [contDiffWithinAt_univ] using hsrc'
-
-
-
-
-
-
 
 theorem fixedBaseOnReg_of_timeDerivWithin
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -742,11 +673,6 @@ theorem fixedBaseOnReg_of_timeDerivWithin
         simp [writtenInExtChartAt, extChartAt]
       exact hFt_raw.trans hraw
   exact hsingle t ht x (by simp) V
-
-
-
-
-
 
 theorem fixedBaseOnRegLocal
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -854,11 +780,6 @@ theorem fixedBaseOnRegLocal
         simp [writtenInExtChartAt, extChartAt]
       exact hFt_raw.trans hraw
   exact hsingle t ht x (by simp) V
-
-
-
-
-
 
 theorem fixedBaseOnRegSmooth
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

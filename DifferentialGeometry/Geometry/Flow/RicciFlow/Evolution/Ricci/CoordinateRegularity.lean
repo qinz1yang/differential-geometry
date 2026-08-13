@@ -1,18 +1,15 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Commutator
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -33,10 +30,8 @@ section CoordinateFrameRicciEvolution
 
 open DifferentialGeometry.Tensor.Coordinates
 
-
-
 theorem coordInvMdiff
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
     (a b : CoordinateIdx (𝕜 := Real) E) :
@@ -45,10 +40,8 @@ theorem coordInvMdiff
   simpa [coordInv] using
     DifferentialGeometry.Tensor.Coordinates.gInvComp_mdiffAt (I := I) (S.family.metric t) x₀ a b
 
-
-
 theorem coordInvMdiffOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -56,13 +49,11 @@ theorem coordInvMdiffOn
     MDifferentiableAt I 𝓘(Real, Real)
       (fun y : M => coordInv (I := I) S x₀ t y a b) x := by
   simpa [coordInv] using
-    DifferentialGeometry.Integral.Connection.coordGInvMdiff (I := I) (S.family.metric t) x₀ hx a b
-
-
+    DifferentialGeometry.Geometry.Connection.coordGInvMdiff (I := I) (S.family.metric t) x₀ hx a b
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordMetricMdiff
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
     (a b : CoordinateIdx (𝕜 := Real) E) :
@@ -78,11 +69,9 @@ theorem coordMetricMdiff
       (coordinateFrameSet_open (I := I) x₀)
       (coordinateFrameAt_mem (I := I) x₀) a b
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordMetricMdiffOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -99,12 +88,10 @@ theorem coordMetricMdiffOn
       (coordinateFrameSet_open (I := I) x₀)
       hx a b
 
-
-
 theorem coordInvCovZero
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (x₀ : M) (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (x₀ : M) (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (d k l : CoordinateIdx (𝕜 := Real) E) :
     inverseMetricCovDerivCompInFrame (I := I) (coordInv (I := I) S x₀)
       (S.family.connection (t : Real)) (coordinateFrameAt (I := I) x₀)
@@ -115,7 +102,7 @@ theorem coordInvCovZero
     (S.family.connection (t : Real)) (coordinateFrameAt (I := I) x₀)
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
     (coordInvLocal (I := I) S x₀) (t : Real)
-    (DifferentialGeometry.Integral.Connection.RealizedMetricFamilyOn.metricCompatibleAt_regular
+    (DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.metricCompatibleAt_regular
       (I := I) S.family t)
     (coordinateFrameSet_open (I := I) x₀)
     (coordinateFrameAt_mem (I := I) x₀)
@@ -123,12 +110,10 @@ theorem coordInvCovZero
     (fun a b => coordMetricMdiff (I := I) S x₀ (t : Real) a b)
     d k l
 
-
-
 theorem coordInvCovZeroOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (x₀ : M) (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (x₀ : M) (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (d k l : CoordinateIdx (𝕜 := Real) E) :
     inverseMetricCovDerivCompInFrame (I := I) (coordInv (I := I) S x₀)
@@ -140,7 +125,7 @@ theorem coordInvCovZeroOn
     (S.family.connection (t : Real)) (coordinateFrameAt (I := I) x₀)
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
     (coordInvLocal (I := I) S x₀) (t : Real)
-    (DifferentialGeometry.Integral.Connection.RealizedMetricFamilyOn.metricCompatibleAt_regular
+    (DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.metricCompatibleAt_regular
       (I := I) S.family t)
     (coordinateFrameSet_open (I := I) x₀)
     hx
@@ -148,11 +133,9 @@ theorem coordInvCovZeroOn
     (fun a b => coordMetricMdiffOn (I := I) S x₀ (t : Real) x hx a b)
     d k l
 
-
-
 omit [SigmaCompactSpace M] in
 theorem coordRicciMdiff
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -183,11 +166,11 @@ theorem coordRicciMdiff
     · simpa [V] using hframeAt b
   have hslots : ∀ y,
       (fun q : Fin 2 => V q y) =
-        DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame a y) (frame b y) := by
+        DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (frame a y) (frame b y) := by
     intro y
     funext q
-    fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec2,
-      DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec2,
+      DifferentialGeometry.Geometry.Curvature.vec2]
   have hfun :
       (fun y : M => S.ricci t y (fun q : Fin 2 => V q y)) =
         fun y : M =>
@@ -205,11 +188,9 @@ theorem coordRicciMdiff
       (fun q => (hV q).of_le (by simp))
   simpa [hfun] using hEval
 
-
-
 omit [SigmaCompactSpace M] in
 theorem coordNablaReg
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
     (a i j : CoordinateIdx (𝕜 := Real) E) :
@@ -255,12 +236,12 @@ theorem coordNablaReg
     · simpa [V] using hframeAt j
   have hslots : ∀ y,
       (fun q : Fin 3 => V q y) =
-        DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame a y) (frame i y)
+        DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame a y) (frame i y)
           (frame j y) := by
     intro y
     funext q
-    fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec3,
-      DifferentialGeometry.Integral.Connection.vec3]
+    fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec3,
+      DifferentialGeometry.Geometry.Curvature.vec3]
   have hmdiff :=
     tensor0SField_eval_C1_slots_mdiffAt
       (I := I) (M := M) (α := derivs.nablaA) (V := V) x₀ hV_at
@@ -274,11 +255,9 @@ theorem coordNablaReg
       frame]
   simpa [hfun] using hmdiff
 
-
-
 omit [SigmaCompactSpace M] in
 theorem coordNablaRegOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -324,12 +303,12 @@ theorem coordNablaRegOn
     · simpa [V] using hframeAt j
   have hslots : ∀ y,
       (fun q : Fin 3 => V q y) =
-        DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame a y) (frame i y)
+        DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame a y) (frame i y)
           (frame j y) := by
     intro y
     funext q
-    fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec3,
-      DifferentialGeometry.Integral.Connection.vec3]
+    fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec3,
+      DifferentialGeometry.Geometry.Curvature.vec3]
   have hmdiff :=
     tensor0SField_eval_C1_slots_mdiffAt
       (I := I) (M := M) (α := derivs.nablaA) (V := V) x hV_at
@@ -343,11 +322,9 @@ theorem coordNablaRegOn
       frame]
   simpa [hfun] using hmdiff
 
-
-
 omit [SigmaCompactSpace M] in
 theorem coordNablaReal
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
     (d a b : CoordinateIdx (𝕜 := Real) E) :
@@ -407,17 +384,17 @@ theorem coordNablaReal
     · simpa [V] using hframeAt b
   have hslots : ∀ y,
       (fun q : Fin 2 => V q y) =
-        DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame a y) (frame b y) := by
+        DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (frame a y) (frame b y) := by
     intro y
     funext q
-    fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec2,
-      DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec2,
+      DifferentialGeometry.Geometry.Curvature.vec2]
   have heval :=
     TotalNabla0SRealizes.eval_C1_slots (I := I) (s := 2)
       (h := (derivs.first)) X V x₀ hV_at
   have hcons :
       Fin.cons (X x₀) (fun q : Fin 2 => V q x₀) =
-        DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame d x₀) (frame a x₀)
+        DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x₀) (frame a x₀)
           (frame b x₀) := by
     rw [hX, hslots x₀]
     funext q
@@ -426,7 +403,7 @@ theorem coordNablaReal
   rw [hX] at heval
   have hleft :
       derivs.nablaA x₀
-          (DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame d x₀) (frame a x₀)
+          (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x₀) (frame a x₀)
             (frame b x₀)) =
         nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀) t x₀ d a b := by
     simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection,
@@ -442,18 +419,18 @@ theorem coordNablaReal
           (Function.update (fun q : Fin 2 => V q x₀) (0 : Fin 2)
             ((S.family.connection t) (V 0) x₀ (frame d x₀))) =
         S.ricciAt t x₀
-          (DifferentialGeometry.Integral.Connection.vec2
+          (DifferentialGeometry.Geometry.Curvature.vec2
             ((S.family.connection t) (frame a) x₀ (frame d x₀))
             (frame b x₀)) := by
     have harg :
         Function.update (fun q : Fin 2 => V q x₀) (0 : Fin 2)
             ((S.family.connection t) (V 0) x₀ (frame d x₀)) =
-          DifferentialGeometry.Integral.Connection.vec2
+          DifferentialGeometry.Geometry.Curvature.vec2
             ((S.family.connection t) (frame a) x₀ (frame d x₀))
             (frame b x₀) := by
       funext q
-      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Integral.Connection.vec2,
-        DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Geometry.Curvature.vec2,
+        DifferentialGeometry.Geometry.Curvature.vec2]
     rw [harg]
     simp [SolutionOn.ricciAt_eq]
   have hterm1 :
@@ -461,18 +438,18 @@ theorem coordNablaReal
           (Function.update (fun q : Fin 2 => V q x₀) (1 : Fin 2)
             ((S.family.connection t) (V 1) x₀ (frame d x₀))) =
         S.ricciAt t x₀
-          (DifferentialGeometry.Integral.Connection.vec2
+          (DifferentialGeometry.Geometry.Curvature.vec2
             (frame a x₀)
             ((S.family.connection t) (frame b) x₀ (frame d x₀))) := by
     have harg :
         Function.update (fun q : Fin 2 => V q x₀) (1 : Fin 2)
             ((S.family.connection t) (V 1) x₀ (frame d x₀)) =
-          DifferentialGeometry.Integral.Connection.vec2
+          DifferentialGeometry.Geometry.Curvature.vec2
             (frame a x₀)
             ((S.family.connection t) (frame b) x₀ (frame d x₀)) := by
       funext q
-      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Integral.Connection.vec2,
-        DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Geometry.Curvature.vec2,
+        DifferentialGeometry.Geometry.Curvature.vec2]
     rw [harg]
     simp [SolutionOn.ricciAt_eq]
   rw [hleft, hfun] at heval
@@ -480,11 +457,9 @@ theorem coordNablaReal
   simpa [ricciCovDerivCompInFrame, frame, sub_eq_add_neg, add_assoc, add_comm, add_left_comm]
     using heval
 
-
-
 omit [SigmaCompactSpace M] in
 theorem coordNablaRealOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) :
     NablaRicciComponentsByConnectionInFrameOn
@@ -542,17 +517,17 @@ theorem coordNablaRealOn
     · simpa [V] using hframeAt b
   have hslots : ∀ y,
       (fun q : Fin 2 => V q y) =
-        DifferentialGeometry.Integral.Connection.vec2 (I := I) (frame a y) (frame b y) := by
+        DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (frame a y) (frame b y) := by
     intro y
     funext q
-    fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec2,
-      DifferentialGeometry.Integral.Connection.vec2]
+    fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec2,
+      DifferentialGeometry.Geometry.Curvature.vec2]
   have heval :=
     TotalNabla0SRealizes.eval_C1_slots (I := I) (s := 2)
       (h := (derivs.first)) X V x hV_at
   have hcons :
       Fin.cons (X x) (fun q : Fin 2 => V q x) =
-        DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame d x) (frame a x)
+        DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x) (frame a x)
           (frame b x) := by
     rw [hX, hslots x]
     funext q
@@ -561,7 +536,7 @@ theorem coordNablaRealOn
   rw [hX] at heval
   have hleft :
       derivs.nablaA x
-          (DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame d x) (frame a x)
+          (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x) (frame a x)
             (frame b x)) =
         nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀) t x d a b := by
     simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection,
@@ -577,18 +552,18 @@ theorem coordNablaRealOn
           (Function.update (fun q : Fin 2 => V q x) (0 : Fin 2)
             ((S.family.connection t) (V 0) x (frame d x))) =
         S.ricciAt t x
-          (DifferentialGeometry.Integral.Connection.vec2
+          (DifferentialGeometry.Geometry.Curvature.vec2
             ((S.family.connection t) (frame a) x (frame d x))
             (frame b x)) := by
     have harg :
         Function.update (fun q : Fin 2 => V q x) (0 : Fin 2)
             ((S.family.connection t) (V 0) x (frame d x)) =
-          DifferentialGeometry.Integral.Connection.vec2
+          DifferentialGeometry.Geometry.Curvature.vec2
             ((S.family.connection t) (frame a) x (frame d x))
             (frame b x) := by
       funext q
-      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Integral.Connection.vec2,
-        DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Geometry.Curvature.vec2,
+        DifferentialGeometry.Geometry.Curvature.vec2]
     rw [harg]
     simp [SolutionOn.ricciAt_eq]
   have hterm1 :
@@ -596,18 +571,18 @@ theorem coordNablaRealOn
           (Function.update (fun q : Fin 2 => V q x) (1 : Fin 2)
             ((S.family.connection t) (V 1) x (frame d x))) =
         S.ricciAt t x
-          (DifferentialGeometry.Integral.Connection.vec2
+          (DifferentialGeometry.Geometry.Curvature.vec2
             (frame a x)
             ((S.family.connection t) (frame b) x (frame d x))) := by
     have harg :
         Function.update (fun q : Fin 2 => V q x) (1 : Fin 2)
             ((S.family.connection t) (V 1) x (frame d x)) =
-          DifferentialGeometry.Integral.Connection.vec2
+          DifferentialGeometry.Geometry.Curvature.vec2
             (frame a x)
             ((S.family.connection t) (frame b) x (frame d x)) := by
       funext q
-      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Integral.Connection.vec2,
-        DifferentialGeometry.Integral.Connection.vec2]
+      fin_cases q <;> simp [Function.update, V, DifferentialGeometry.Geometry.Curvature.vec2,
+        DifferentialGeometry.Geometry.Curvature.vec2]
     rw [harg]
     simp [SolutionOn.ricciAt_eq]
   rw [hleft, hfun] at heval
@@ -615,14 +590,8 @@ theorem coordNablaRealOn
   simpa [ricciCovDerivCompInFrame, frame, sub_eq_add_neg, add_assoc, add_comm, add_left_comm]
     using heval
 
-
-
-
-
-
-
 theorem coordNab2Can
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x0 : M)
     (nablaA :
@@ -635,7 +604,7 @@ theorem coordNab2Can
       (M := M) 3 (S.family.connection t) nablaA nabla2A)
     (hnabla : ∀ y a i j,
       nablaA y
-          (DifferentialGeometry.Integral.Connection.vec3 (I := I)
+          (DifferentialGeometry.Geometry.Curvature.vec3 (I := I)
             (coordinateFrameAt (I := I) x0 a y)
             (coordinateFrameAt (I := I) x0 i y)
             (coordinateFrameAt (I := I) x0 j y)) =
@@ -643,7 +612,7 @@ theorem coordNab2Can
           (coordinateFrameAt (I := I) x0) t y a i j) :
     ∀ d a i j,
       nabla2A x0
-          (DifferentialGeometry.Integral.Connection.vec4 (I := I)
+          (DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
             (coordinateFrameAt (I := I) x0 d x0)
             (coordinateFrameAt (I := I) x0 a x0)
             (coordinateFrameAt (I := I) x0 i x0)
@@ -695,15 +664,15 @@ theorem coordNab2Can
     · simpa [V] using hframeAt j
   have hslots3 : ∀ y,
       (fun q : Fin 3 => V q y) =
-        DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame a y) (frame i y)
+        DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame a y) (frame i y)
           (frame j y) := by
     intro y
     funext q
-    fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec3,
-      DifferentialGeometry.Integral.Connection.vec3]
+    fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec3,
+      DifferentialGeometry.Geometry.Curvature.vec3]
   have hslots4 :
       Fin.cons (X x0) (fun q : Fin 3 => V q x0) =
-        DifferentialGeometry.Integral.Connection.vec4 (I := I) (frame d x0) (frame a x0)
+        DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (frame d x0) (frame a x0)
           (frame i x0)
           (frame j x0) := by
     rw [hX, hslots3 x0]
@@ -775,11 +744,11 @@ theorem coordNab2Can
           rw [(nablaA x0).map_update_smul]
           have hslot :
               Function.update (fun b : Fin 3 => V b x0) (0 : Fin 3) (frame p x0) =
-                DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame p x0) (frame i x0)
+                DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame p x0) (frame i x0)
                   (frame j x0) := by
             funext q
-            fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec3,
-              DifferentialGeometry.Integral.Connection.vec3]
+            fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec3,
+              DifferentialGeometry.Geometry.Curvature.vec3]
           rw [hslot]
           rw [hnabla x0 p i j]
           simp [N, smul_eq_mul]
@@ -830,11 +799,11 @@ theorem coordNab2Can
           rw [(nablaA x0).map_update_smul]
           have hslot :
               Function.update (fun b : Fin 3 => V b x0) (1 : Fin 3) (frame p x0) =
-                DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame a x0) (frame p x0)
+                DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame a x0) (frame p x0)
                   (frame j x0) := by
             funext q
-            fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec3,
-              DifferentialGeometry.Integral.Connection.vec3]
+            fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec3,
+              DifferentialGeometry.Geometry.Curvature.vec3]
           rw [hslot]
           rw [hnabla x0 a p j]
           simp [N, smul_eq_mul]
@@ -885,11 +854,11 @@ theorem coordNab2Can
           rw [(nablaA x0).map_update_smul]
           have hslot :
               Function.update (fun b : Fin 3 => V b x0) (2 : Fin 3) (frame p x0) =
-                DifferentialGeometry.Integral.Connection.vec3 (I := I) (frame a x0) (frame i x0)
+                DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame a x0) (frame i x0)
                   (frame p x0) := by
             funext q
-            fin_cases q <;> simp [V, DifferentialGeometry.Integral.Connection.vec3,
-              DifferentialGeometry.Integral.Connection.vec3]
+            fin_cases q <;> simp [V, DifferentialGeometry.Geometry.Curvature.vec3,
+              DifferentialGeometry.Geometry.Curvature.vec3]
           rw [hslot]
           rw [hnabla x0 a i p]
           simp [N, smul_eq_mul]
@@ -905,7 +874,7 @@ theorem coordNab2Can
     rw [hterm0, hterm1, hterm2]
   calc
     nabla2A x0
-        (DifferentialGeometry.Integral.Connection.vec4 (I := I) (frame d x0) (frame a x0)
+        (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (frame d x0) (frame a x0)
           (frame i x0)
           (frame j x0)) =
         extDerivFun (I := I)
@@ -922,12 +891,10 @@ theorem coordNab2Can
           rw [hcorr]
           ring
 
-
-
 omit [SigmaCompactSpace M] in
 theorem coordMetricDeriv
     [I.Boundaryless]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M) :
@@ -959,11 +926,9 @@ theorem coordMetricDeriv
         (I := I) S hS (coordinateFrameAt (I := I) x₀)
         ⟨t, ht⟩ x a b
 
-
-
 omit [SigmaCompactSpace M] in
 theorem coordMetricMix
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
@@ -991,10 +956,8 @@ theorem coordMetricMix
     (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))
     (coordNablaRealOn (I := I) S x₀)
 
-
-
 theorem coordGammaEvol
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
@@ -1027,12 +990,10 @@ theorem coordGammaEvol
       (M := M)
       (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀)))
 
-
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordGammaForm
     [I.Boundaryless]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (s : Real) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -1040,17 +1001,15 @@ theorem coordGammaForm
     christoffelSymbolInFrame
         (S.family.connection s) (coordinateFrameAt (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀) x i j k =
-      DifferentialGeometry.Integral.Connection.leviCivitaChristoffelModelRHS
+      DifferentialGeometry.Geometry.Connection.leviCivitaChristoffelModelRHS
         (I := I) (S.family.metric s) x₀ i j k (extChartAt I x₀ x) := by
   simpa [SolutionOn.family, SolutionFamily.connection] using
-    (DifferentialGeometry.Integral.Connection.leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
+    (DifferentialGeometry.Geometry.Connection.leviCivitaChristoffelModelRHS_eq_christoffel_of_mem
       (I := I) (g := S.family.metric s) x₀ hx i j k).symm
-
-
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordGammaMdiff
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (s : Real) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -1066,11 +1025,11 @@ theorem coordGammaMdiff
       ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M =>
           e.localFrame_coeff I b k y
-            ((DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric
+            ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
                 (I := I) (S.family.metric s) (e.localFrame b j) y)
               (e.localFrame b i y))) x := by
     simpa [e, b] using
-      DifferentialGeometry.Integral.Connection.lc_christoffel_contMDiffAt
+      DifferentialGeometry.Geometry.Connection.lc_christoffel_contMDiffAt
         (I := I) (e := coordinateTrivializationAt (I := I) x₀)
         (b := Module.finBasis Real E) (g := S.family.metric s)
         (x := x) hx i j k
@@ -1083,7 +1042,7 @@ theorem coordGammaMdiff
         =ᶠ[nhds x]
       fun y : M =>
         e.localFrame_coeff I b k y
-          ((DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric
+          ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
               (I := I) (S.family.metric s) (e.localFrame b j) y)
             (e.localFrame b i y)) := by
     filter_upwards [(coordinateFrameSet_open (I := I) x₀).mem_nhds hx] with y hy
@@ -1104,7 +1063,7 @@ theorem coordGammaMdiff
       SolutionOn.family, SolutionFamily.connection, e, b]
     let V : (z : M) -> TangentSpace I z :=
       fun z =>
-        (DifferentialGeometry.Integral.Connection.leviCivitaConnectionOfMetric
+        (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
             (I := I) (S.family.metric s) (e.localFrame b j) z)
           (e.localFrame b i z)
     change
@@ -1116,10 +1075,8 @@ theorem coordGammaMdiff
     rw [hbasis]
   exact hmdiff.congr_of_eventuallyEq heq.symm
 
-
-
 theorem coordGammaRhsMd
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
@@ -1176,21 +1133,19 @@ theorem coordGammaRhsMd
     filter_upwards with y
     simp [Finset.sum_apply])
 
-
-
 omit [SigmaCompactSpace M] in
 private theorem coordDgSmAt
     [I.Boundaryless]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (x₀ : M) (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+    (x₀ : M) (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (a i j : CoordinateIdx (𝕜 := Real) E) :
     ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M =>
         fderivWithin Real
-          (DifferentialGeometry.Integral.Connection.metricFlatModelInChart_component
+          (DifferentialGeometry.Geometry.Connection.metricFlatModelInChart_component
             (I := I) (S.family.metric p.1) x₀ i j)
           (Set.range I) (extChartAt I x₀ p.2)
           ((Module.finBasis Real E) a))
@@ -1218,7 +1173,7 @@ private theorem coordDgSmAt
   have heq :
       (fun p : Real × M =>
         fderivWithin Real
-          (DifferentialGeometry.Integral.Connection.metricFlatModelInChart_component
+          (DifferentialGeometry.Geometry.Connection.metricFlatModelInChart_component
             (I := I) (S.family.metric p.1) x₀ i j)
           (Set.range I) (extChartAt I x₀ p.2)
           ((Module.finBasis Real E) a))
@@ -1230,29 +1185,27 @@ private theorem coordDgSmAt
       (coordinateFrameSet_open (I := I) x₀).preimage continuous_snd
     filter_upwards [hopen.mem_nhds hx] with p hp
     have hflat :=
-      DifferentialGeometry.Integral.Connection.metricFlatModelInChart_component_deriv_of_mem
+      DifferentialGeometry.Geometry.Connection.metricFlatModelInChart_component_deriv_of_mem
         (I := I) (g := S.family.metric p.1) x₀ hp a i j
     simpa [F, X, frame, metricCompInFrame,
-      DifferentialGeometry.Integral.Connection.directionalDeriv] using hflat
+      DifferentialGeometry.Geometry.Connection.directionalDeriv] using hflat
   exact hD.congr_of_eventuallyEq heq
-
-
 
 private theorem gammaRhsSm
     [I.Boundaryless]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (x₀ : M) (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+    (x₀ : M) (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i j k : CoordinateIdx (𝕜 := Real) E) :
     ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M =>
-        DifferentialGeometry.Integral.Connection.leviCivitaChristoffelModelRHS
+        DifferentialGeometry.Geometry.Connection.leviCivitaChristoffelModelRHS
           (I := I) (S.family.metric p.1) x₀ i j k (extChartAt I x₀ p.2))
       ((t : Real), x) := by
   classical
-  unfold DifferentialGeometry.Integral.Connection.leviCivitaChristoffelModelRHS
+  unfold DifferentialGeometry.Geometry.Connection.leviCivitaChristoffelModelRHS
   refine contMDiffAt_const.mul ?_
   refine ContMDiffAt.sum fun l _ => ?_
   have hInv :
@@ -1265,7 +1218,7 @@ private theorem gammaRhsSm
         (fun p : Real × M =>
           (Module.finBasis Real E).coord k
             ((ContinuousLinearMap.inverse
-                (DifferentialGeometry.Integral.Connection.metricFlatModelInChart
+                (DifferentialGeometry.Geometry.Connection.metricFlatModelInChart
                   (I := I) (S.family.metric p.1) x₀
                   (extChartAt I x₀ p.2)))
               (LinearMap.toContinuousLinearMap
@@ -1276,18 +1229,12 @@ private theorem gammaRhsSm
   have h₃ := coordDgSmAt (I := I) S hS x₀ t x hx l i j
   exact hInv'.mul ((h₁.add h₂).sub h₃)
 
-
-
-
-
-
-
 theorem coordGammaSmoothInf
     [I.Boundaryless]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (x₀ : M) (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+    (x₀ : M) (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i j k : CoordinateIdx (𝕜 := Real) E) :
     ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
@@ -1304,7 +1251,7 @@ theorem coordGammaSmoothInf
           (coordinateFrameAt_isLocalFrame_one (I := I) x₀) p.2 i j k)
         =ᶠ[nhds ((t : Real), x)]
       fun p : Real × M =>
-        DifferentialGeometry.Integral.Connection.leviCivitaChristoffelModelRHS
+        DifferentialGeometry.Geometry.Connection.leviCivitaChristoffelModelRHS
           (I := I) (S.family.metric p.1) x₀ i j k (extChartAt I x₀ p.2) := by
     have hopen :
         IsOpen {p : Real × M | p.2 ∈ coordinateFrameSet (I := I) x₀} :=
@@ -1316,10 +1263,10 @@ theorem coordGammaSmoothInf
 
 theorem coordGammaSmoothAt
     [I.Boundaryless]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (x₀ : M) (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M)
+    (x₀ : M) (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i j k : CoordinateIdx (𝕜 := Real) E) :
     ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) 2
@@ -1331,11 +1278,9 @@ theorem coordGammaSmoothAt
   exact (coordGammaSmoothInf (I := I) S hS x₀ t x hx i j k).of_le
     (WithTop.coe_le_coe.mpr le_top)
 
-
-
 theorem coordGammaMix
     [I.Boundaryless]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (x₀ : M)
@@ -1375,10 +1320,8 @@ theorem coordGammaMix
   · intro t ht x hx
     exact hGamma ⟨t, ht⟩ x hx i j k
 
-
-
 theorem coordNab2At
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
     (d a i j : CoordinateIdx (𝕜 := Real) E) :
@@ -1390,10 +1333,8 @@ theorem coordNab2At
         t x₀ d a i j := by
   rfl
 
-
-
 theorem coordNab2On
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) :
     Nabla2RicciComponentsByConnectionInFrameOn

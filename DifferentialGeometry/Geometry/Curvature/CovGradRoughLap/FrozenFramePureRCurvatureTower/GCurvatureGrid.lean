@@ -1,27 +1,32 @@
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.FrozenFramePureRCurvatureTower.GenuineOperator
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Sobolev
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
+  [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -89,7 +94,7 @@ private theorem iteratedCovGrad_covGrad_comm_heq_tw (g : SmoothRiemannianMetric 
       exact covGrad_heq_congr_tw g (by omega : (s + 1) + k = s + (k + 1)) ih
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
+    [T2Space M] in
 private theorem rfns_toSection_heq_congr_tw (g : SmoothRiemannianMetric I M)
     {a b : ℕ} (h : a = b) {Y : SmoothCcTensor g 0 a} {Z : SmoothCcTensor g 0 b}
     (hYZ : HEq Y Z) (x : M) :
@@ -153,7 +158,7 @@ theorem exists_GcurvSection_iteratedCovGrad_grid_bound (g : SmoothRiemannianMetr
     exact mul_nonneg (by positivity) (gridWindowSum_nonneg hkappa_nn 0 (s + 1) k)
   rw [hcsq]
   have hgrid :=
-    DifferentialGeometry.Integral.Connection.DiffBilinOp.exists_rfns_iteratedCovGrad_singleSum_le_at
+    DifferentialGeometry.Analysis.Spectral.DiffBilinOp.exists_rfns_iteratedCovGrad_singleSum_le_at
     (g := g)
     (op := fun p r W => pureRGenuineDiffOp (I := I) (M := M) g p r W)
     (fun p r W => covGrad_pureRGenuineDiffOp_eq (I := I) (M := M) g p r W)
@@ -167,8 +172,8 @@ theorem exists_GcurvSection_iteratedCovGrad_grid_bound (g : SmoothRiemannianMetr
   refine Finset.sum_congr rfl (fun q _ => ?_)
   exact riemannianFiberNormSq_toSection_iteratedCovGrad_covGrad_comm (I := I) (M := M) g s q S x
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

@@ -1,5 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 import DifferentialGeometry.Geometry.Operator.HessianTrace
+import DifferentialGeometry.Geometry.Operator.Gradient
+import DifferentialGeometry.Geometry.Operator.Hessian
+import DifferentialGeometry.Geometry.Operator.HessianTraceChartGramRegularity
+import DifferentialGeometry.Geometry.Operator.HessianTraceChartInverseGramDerivative
+import DifferentialGeometry.Geometry.Operator.VossWeyl
 
 
 noncomputable section
@@ -7,6 +12,7 @@ noncomputable section
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix
 
+open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry
 namespace Integral
 namespace DivergenceTheorem

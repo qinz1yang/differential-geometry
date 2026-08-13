@@ -32,7 +32,7 @@ theorem time_dependent_vf_globalflow_diffeomorph
       right_inv := fun x => hΦΨ t hmem x }
   exact ⟨⟨e, hΦ_smooth t ht htT, hΨ_smooth t ht htT⟩, fun x => rfl, fun x => rfl⟩
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Bundle
 open scoped Manifold ContDiff
@@ -79,6 +79,7 @@ theorem picard_data_chart_coord_in_closedBall
   exact Metric.ball_subset_closedBall hx.2
 
 
+omit [SigmaCompactSpace M] in
 theorem time_dependent_vf_flow_diffeomorph_on_closed_manifold
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hper : ∀ α : M, ChartLocalPicardData X α)
@@ -190,4 +191,4 @@ theorem time_dependent_vf_flow_diffeomorph_on_closed_manifold
   obtain ⟨d, hd_fwd, _⟩ := hDiffeo t ht htT
   exact ⟨d, hd_fwd⟩
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

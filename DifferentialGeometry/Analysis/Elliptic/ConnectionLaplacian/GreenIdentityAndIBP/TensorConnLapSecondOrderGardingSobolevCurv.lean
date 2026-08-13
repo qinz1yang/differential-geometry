@@ -1,15 +1,16 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorConnLapSecondOrderGardingL2Bound
+open DifferentialGeometry.Analysis.Elliptic
 
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
@@ -160,8 +161,8 @@ theorem secondCovGrad_l2NormSq_le_rawConnLap_gen
     exact covGrad_l2NormSq_le_rawConnLap_mul_self (I := I) (M := M) g T
   exact second_order_garding_sobolev_curv_real hC₀ hstep1 horder1
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

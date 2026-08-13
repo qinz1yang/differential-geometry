@@ -1,25 +1,22 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HomFieldActionL2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetBound
-
-
-
-
-
-
-
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Sobolev
 
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -32,8 +29,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-
 
 theorem app_jet_sq_le
     (g : SmoothRiemannianMetric I M) (b c j : ℕ)
@@ -98,8 +93,6 @@ theorem app_jet_sq_le
     rw [SmoothCcTensor.norm_def,
       tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs
         (I := I) (M := M) g 0 (b + l)])
-
-
 
 theorem app_jet_of_bdd
     (g : SmoothRiemannianMetric I M) (b c : ℕ) {α : Type*}
@@ -192,9 +185,6 @@ theorem app_jet_of_bdd
         (operatorFieldApply (I := I) (M := M) g b c (Φ t) W)‖ ≤ (A + 1) * J
     exact le_of_sq_le_sq htarget (mul_nonneg (add_nonneg hA_nn zero_le_one) hJ_nn)
 
-
-
-
 theorem param_app_jet
     (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : ℝ → SmoothCcTensor g b c) {S K : Set ℝ}
@@ -215,8 +205,8 @@ theorem param_app_jet
     joint_jet_bdd (I := I) (M := M) g b c Φ hK hKS hjoint
   exact app_jet_of_bdd (I := I) (M := M) g b c Φ K B hB_nn hB
 
-end Connection
-end Integral
+end Sobolev
+end Analysis
 end DifferentialGeometry
 
 end

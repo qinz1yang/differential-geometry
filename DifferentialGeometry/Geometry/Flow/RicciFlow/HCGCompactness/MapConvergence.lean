@@ -13,24 +13,6 @@ import Mathlib.Topology.MetricSpace.Pseudo.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
@@ -41,11 +23,6 @@ section MapArzelaAscoli
 variable {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-
-
-
-
-
 
 theorem cmm_finiteDimensional (r : ℕ) :
     FiniteDimensional ℝ (ContinuousMultilinearMap ℝ (fun _ : Fin r => E) F) := by
@@ -91,27 +68,6 @@ private theorem equicont_iteratedFDeriv
     _ < (max M 0 + 1) * (ε / (max M 0 + 1)) :=
         mul_lt_mul_of_pos_right (lt_add_one _) (by positivity)
     _ = ε := by field_simp
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem exists_cInf_subseq
     (Φ : ℕ → E → F) (hΦ : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (Φ k))
@@ -187,13 +143,6 @@ theorem exists_cInf_subseq
     funext fun y => (hid r y).symm] at h
   exact h
 
-
-
-
-
-
-
-
 omit [FiniteDimensional ℝ F] in
 private theorem equicontOn_iteratedFDerivWithin
     {U : Set E} (hU : IsOpen U) (Φ : ℕ → E → F)
@@ -248,18 +197,6 @@ private theorem equicontOn_iteratedFDerivWithin
     _ < (max M 0 + 1) * (ε / (max M 0 + 1)) :=
         mul_lt_mul_of_pos_right (lt_add_one _) (by positivity)
     _ = ε := by field_simp
-
-
-
-
-
-
-
-
-
-
-
-
 
 theorem exists_cInf_subseq_on
     {U : Set E} (hU : IsOpen U) (Φ : ℕ → E → F)

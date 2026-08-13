@@ -12,16 +12,18 @@ import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
 import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Topology.Order.IntermediateValue
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.PDE.RicciFlow
 
 noncomputable section
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -30,13 +32,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
-
-
-
-
-
 
 abbrev TwoTensorFamily : Type _ :=
   Real -> RawTwoTensorField (I := I) (M := M)
@@ -99,13 +94,14 @@ def TwoTensorFamilyNonnegativeOn (S : TwoTensorFamily (I := I) (M := M))
   ∀ t, t ∈ U -> ∀ x, TwoTensorNonnegativeAt (I := I) (M := M) (S t) x
 
 
+def TwoTensorFamilyPositiveDefiniteOn (S : TwoTensorFamily (I := I) (M := M))
+    (U : Set Real) : Prop :=
+  ∀ t, t ∈ U -> ∀ x, TwoTensorPositiveDefiniteAt (I := I) (M := M) (S t) x
+
+
 def TwoTensorFamilyNonnegativeAtTime (S : TwoTensorFamily (I := I) (M := M))
     (t : Real) : Prop :=
   ∀ x, TwoTensorNonnegativeAt (I := I) (M := M) (S t) x
-
-
-
-
 
 def tensorBarrierFamily
     (G : Real -> SmoothRiemannianMetric I M)
@@ -137,8 +133,6 @@ abbrev TensorNabla2SecFamily : Type _ :=
   Real -> Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (n := (∞ : WithTop ℕ∞)) 4
 
-
-
 def twoTensorSecToFamily
     (S : TwoTensorSecFamily (I := I) (M := M)) :
     TwoTensorFamily (I := I) (M := M) :=
@@ -152,8 +146,6 @@ theorem twoTensorSecToFamily_apply
     twoTensorSecToFamily (I := I) (M := M) S t x v w =
       S t x (vec2 (I := I) v w) := by
   rfl
-
-
 
 omit [IsManifold I ∞ M] [IsManifold I 2 M] in
 theorem twoTensorSecToFamily_bilin
@@ -169,13 +161,13 @@ theorem twoTensorSecToFamily_bilin
     have hleft :
         Function.update m (0 : Fin 2) (X + Y) = vec2 (I := I) (X + Y) Z := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hX : Function.update m (0 : Fin 2) X = vec2 (I := I) X Z := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hY : Function.update m (0 : Fin 2) Y = vec2 (I := I) Y Z := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     simpa [twoTensorSecToFamily, hleft, hX, hY] using hmap
   · intro c X Z
     classical
@@ -184,10 +176,10 @@ theorem twoTensorSecToFamily_bilin
     have hleft :
         Function.update m (0 : Fin 2) (c • X) = vec2 (I := I) (c • X) Z := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hX : Function.update m (0 : Fin 2) X = vec2 (I := I) X Z := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     simpa [twoTensorSecToFamily, hleft, hX, smul_eq_mul] using hmap
   · intro X Y Z
     classical
@@ -196,13 +188,13 @@ theorem twoTensorSecToFamily_bilin
     have hleft :
         Function.update m (1 : Fin 2) (Y + Z) = vec2 (I := I) X (Y + Z) := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hY : Function.update m (1 : Fin 2) Y = vec2 (I := I) X Y := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hZ : Function.update m (1 : Fin 2) Z = vec2 (I := I) X Z := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     simpa [twoTensorSecToFamily, hleft, hY, hZ] using hmap
   · intro c X Z
     classical
@@ -211,14 +203,11 @@ theorem twoTensorSecToFamily_bilin
     have hleft :
         Function.update m (1 : Fin 2) (c • Z) = vec2 (I := I) X (c • Z) := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     have hZ : Function.update m (1 : Fin 2) Z = vec2 (I := I) X Z := by
       funext i
-      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Integral.Connection.vec2, Function.update]
+      fin_cases i <;> simp [m, vec2, DifferentialGeometry.Geometry.Curvature.vec2, Function.update]
     simpa [twoTensorSecToFamily, hleft, hZ, smul_eq_mul] using hmap
-
-
-
 
 noncomputable def tensorBarrierSecFamily
     (G : Real -> SmoothRiemannianMetric I M)
@@ -254,9 +243,9 @@ theorem tensorBarrierSec_apply
         epsilon * (delta + t - t0) * (G t).inner x v w
   rw [Tensor0SBundle.metricTensorField_apply]
   have h0 : vec2 (I := I) v w 0 = v := by
-    simp [DifferentialGeometry.Integral.Connection.vec2]
+    simp [DifferentialGeometry.Geometry.Curvature.vec2]
   have h1 : vec2 (I := I) v w 1 = w := by
-    simp [DifferentialGeometry.Integral.Connection.vec2]
+    simp [DifferentialGeometry.Geometry.Curvature.vec2]
   rw [h0, h1]
 
 omit [IsManifold I ∞ M] [IsManifold I 2 M] in
@@ -329,7 +318,7 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifo
 theorem vec2_self_eq_const {x : M} (v : TangentSpace I x) :
     vec2 (I := I) v v = fun _ : Fin 2 => v := by
   funext i
-  fin_cases i <;> simp [vec2, DifferentialGeometry.Integral.Connection.vec2]
+  fin_cases i <;> simp [vec2, DifferentialGeometry.Geometry.Curvature.vec2]
 
 
 omit [IsManifold I 2 M] in
@@ -369,8 +358,6 @@ theorem barrierFamily_smul2
       (a • v) (a • v),
     ← tensorBarrierSec_apply (I := I) (M := M) G S epsilon delta t0 t x v v]
   exact barrierSec_smul2 (I := I) (M := M) G S epsilon delta t0 t x a v
-
-
 
 omit [IsManifold I 2 M] in
 theorem negBarrier_unit
@@ -462,8 +449,6 @@ theorem barrierUnitQuad_mk
       tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 t x v v := by
   rfl
 
-
-
 omit [IsManifold I 2 M] in
 theorem negBarrier_unitSlab
     (G : Real -> SmoothRiemannianMetric I M)
@@ -485,8 +470,6 @@ theorem negBarrier_unitSlab
       (⟨(⟨x, u⟩ : TangentBundle I M), hunit⟩ :
         MetricUnitTangent (I := I) (M := M) (G t))⟩, rfl, ?_⟩
   simpa using hneg_u
-
-
 
 omit [IsManifold I 2 M] in
 theorem failure_unitSlab
@@ -540,14 +523,10 @@ def metricBundleQuad
     (q : {t : Real // t ∈ K} × TangentBundle I M) : Real :=
   metricTimeBundleQuad (I := I) (M := M) G K q
 
-
-
 def tensorSecBundleQuad
     (S : TwoTensorSecFamily (I := I) (M := M)) (K : Set Real)
     (q : {t : Real // t ∈ K} × TangentBundle I M) : Real :=
   S q.1.1 q.2.proj (fun _ : Fin 2 => q.2.2)
-
-
 
 omit [IsManifold I 2 M] in
 theorem metricFamQuadCont
@@ -583,8 +562,6 @@ theorem metricFamQuadCont
   simpa [metricBundleQuad, metricTimeBundleQuad, T, b, v,
     Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply,
     metricTensorField_apply, vec2_self_eq_const] using hEval
-
-
 
 omit [IsManifold I 2 M] in
 theorem tensorQuadCont
@@ -629,8 +606,6 @@ def barrierBundleQuad
   tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0
     q.1.1 q.2.proj q.2.2 q.2.2
 
-
-
 omit [IsManifold I 2 M] in
 omit [IsManifold I 2 M] in
 theorem barrierBundleCont
@@ -660,8 +635,6 @@ theorem barrierBundleCont
   simp [barrierBundleQuad, tensorSecBundleQuad, metricBundleQuad,
     metricTimeBundleQuad, tensorBarrierFamily, twoTensorSecToFamily,
     vec2_self_eq_const, mul_assoc]
-
-
 
 def barrierTimeSlabQuad
     (G : Real -> SmoothRiemannianMetric I M)
@@ -702,8 +675,6 @@ theorem barrierTimeSlabQuad_mk
       tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 t x v v := by
   rfl
 
-
-
 omit [IsManifold I 2 M] in
 theorem barrierTimeCont
     (G : Real -> SmoothRiemannianMetric I M)
@@ -725,8 +696,6 @@ theorem barrierTimeCont
     MetricUnitTangentTimeSlab.vec, MetricUnitTangentTimeSlab.bundlePoint]
     using hbundle.comp hsub
 
-
-
 omit [IsManifold I 2 M] in
 theorem negBarrier_timeSlab
     (G : Real -> SmoothRiemannianMetric I M)
@@ -746,8 +715,6 @@ theorem negBarrier_timeSlab
     negBarrier_unit (I := I) (M := M) G S epsilon delta t0 t x v hneg
   refine ⟨⟨(⟨t, ht⟩, (⟨x, u⟩ : TangentBundle I M)), hunit⟩, rfl, ?_⟩
   simpa using hneg_u
-
-
 
 omit [IsManifold I 2 M] in
 theorem failure_timeSlab
@@ -813,4 +780,4 @@ theorem exists_left_neg_of_continuousOn
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.PDE.RicciFlow

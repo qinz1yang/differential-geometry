@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.Geometry.Manifold.Algebra.SmoothFunctions
 import Mathlib.Geometry.Manifold.VectorBundle.Tensoriality
@@ -15,58 +15,10 @@ import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Geometry.Manifold.BumpFunction
 import DifferentialGeometry.Bundle.Section
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 set_option autoImplicit false
 
 open scoped Manifold Topology ContDiff
 open Bundle
-
-
 
 section FixedTrivializationSmoothness
 
@@ -83,12 +35,6 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   [ContMDiffVectorBundle n F V I]
   {s : ∀ x, V x} {x₀ : M}
 
-
-
-
-
-
-
 theorem contMDiffAt_section_of_trivializationAt_eventuallyEq
     (e : Trivialization F (Bundle.TotalSpace.proj : Bundle.TotalSpace F V → M))
     [MemTrivializationAtlas e] (hx₀ : x₀ ∈ e.baseSet)
@@ -100,9 +46,6 @@ theorem contMDiffAt_section_of_trivializationAt_eventuallyEq
   exact (e.contMDiffAt_section_iff hx₀).mpr (hA.congr_of_eventuallyEq hEq)
 
 variable [IsManifold I n M]
-
-
-
 
 theorem contMDiffAt_section_of_chart_model_eventuallyEq
     (e : Trivialization F (Bundle.TotalSpace.proj : Bundle.TotalSpace F V → M))
@@ -131,8 +74,6 @@ theorem contMDiffAt_section_of_chart_model_eventuallyEq
 
 end FixedTrivializationSmoothness
 
-
-
 section ModuleOverSmoothFunctions
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -148,13 +89,9 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
 
 namespace ContMDiffSection
 
-
-
 end ContMDiffSection
 
 end ModuleOverSmoothFunctions
-
-
 
 section MapSection
 
@@ -178,8 +115,6 @@ namespace ContMDiffVectorBundleHom
 
 end ContMDiffVectorBundleHom
 
-
-
 section SectionAux
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -199,8 +134,6 @@ theorem ContMDiffSection.finset_sum_apply_gen {ι : Type*} (s : Finset ι)
   change (ContMDiffSection.coeAddHom I F (↑n) V (∑ i ∈ s, f i)) x = _
   rw [map_sum]; simp [ContMDiffSection.coeAddHom_apply, Finset.sum_apply]
 
-
-
 theorem ContMDiffSection.exists_eq_at_gen
     [IsManifold I ∞ M] [T2Space M]
     [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
@@ -218,35 +151,6 @@ theorem ContMDiffSection.exists_eq_at_gen
   exact (hframe.toBasisAt he).sum_repr v
 
 end SectionAux
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 section ActsHelpers
 
@@ -289,8 +193,6 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_locally_gen
   simp only [ContMDiffSection.coe_smulContMDiffMap, ContMDiffSection.coe_zero,
     Pi.zero_apply] at this
   rwa [show (ψ' p : ℝ) = 1 from ψ.eq_one, one_smul] at this
-
-
 
 theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise_gen
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯)
@@ -385,8 +287,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
   [FiniteDimensional ℝ E] [FiniteDimensional ℝ F₁] [FiniteDimensional ℝ F₂]
   [ContMDiffVectorBundle n F₁ E₁ I] [ContMDiffVectorBundle n F₂ E₂ I]
-
-
 
 noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection_gen
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) :
@@ -497,10 +397,6 @@ theorem ContMDiffVectorBundleHom.ofLinearMapSection_baseMap_gen
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) :
     (ofLinearMapSection_gen F).baseMap = _root_.id := rfl
 
-
-
-
-
 omit [SigmaCompactSpace M] [FiniteDimensional ℝ F₂] [ContMDiffVectorBundle (↑n) F₂ E₂ I] in
 theorem ContMDiffVectorBundleHom.ofLinearMapSection_spec_gen
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) (σ) :
@@ -519,8 +415,6 @@ theorem ContMDiffVectorBundleHom.ofLinearMapSection_mapSection_gen
   funext ⟨x, v⟩
   obtain ⟨σ, rfl⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := F₁) (n := n) x v
   rw [Φ.mapSection_apply hΦ, Ψ.mapSection_apply hΨ, h_eq]
-
-
 
 noncomputable def ContMDiffVectorBundleEquiv.ofLinearEquivSection_gen
     (F : Cₛ^n⟮I; F₁, E₁⟯ ≃ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) :

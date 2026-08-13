@@ -3,15 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateTime
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammTailGauss
 import Mathlib.MeasureTheory.Integral.Prod
 
-/-!
-# Terminal-slab integration of the Koch--Lamm Gaussian tail
-
-This file converts a lower radius `k * R` on the terminal slab at time
-`R^2` into the scaled lower radius `sqrt 2 * k` consumed by
-`klHeatPow_tail`.  It then integrates the resulting far-field bound over an
-arbitrary measurable spatial set.  No finite cover is chosen here.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -26,14 +17,11 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- Product measure on a terminal half-slab and a selected spatial set. -/
 def klTailMeasure (R : ℝ) (S : Set V) : Measure (ℝ × V) :=
   (volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))).prod
     ((volume : Measure V).restrict S)
 
 omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- On the terminal half-slab, a radius `kR` is at least `sqrt 2 * k` in
-the current heat scale. -/
 theorem klTerm_scaled {R k s : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (hs : s ∈ Ioc (R ^ 2 / 2) (R ^ 2)) (hst : s ≠ R ^ 2)
     {x y : V} (hxy : k * R ≤ ‖x - y‖) :
@@ -64,20 +52,16 @@ theorem klTerm_scaled {R k s : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
   rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ]
   simpa only [ρ, div_eq_mul_inv, mul_comm] using hdiv
 
-/-- Integrability of the translated split-Gaussian majorant. -/
 theorem klTailKernel_mem {u p : ℝ} (hu : 0 < u) (hp : 0 < p) (x : V) :
     Integrable (fun y : V ↦ klTailKernel u p (x - y)) := by
   unfold klTailKernel
   exact (((klTailGauss_mem (V := V) hp).comp_smul
     (inv_ne_zero (heatScale_pos hu).ne')).const_mul _).comp_sub_left x
 
-/-- The terminal heat-kernel power over an arbitrary spatial set. -/
 def klTermTailPow (R : ℝ) (x : V) (S : Set V) : ℝ :=
   ∫ z : ℝ × V, ‖klTermKernel (R ^ 2) x z‖ ^ klQDual V
     ∂(klTailMeasure (V := V) R S)
 
-/-- A lower radius `kR` on `S` gives an exponentially decaying terminal
-kernel-power bound. -/
 theorem klTermTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (x : V) {S : Set V} (hSm : MeasurableSet S)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :

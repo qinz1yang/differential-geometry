@@ -1,34 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffL2JetMoser
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciConnDiffOrder1TameEnvelope
-
-/-!
-# Summed data-weighted jet-L2 bound for the connection-difference field (DIRECT route)
-
-This file proves the **connection-difference** analogue of the arm summed bounds in
-`ArmBaseCoeffJetL2Summed.lean`: a single `R`-independent-top data-weighted jet-L2 bound for the
-`(3,4)` field `connDiffContrInsertionField g₀ g₁`.
-
-The construction follows the DIRECT-summed recipe of `RemainderCoeffTopSeparated.md` (skipping the
-field-level `∃ Hd` witness): the committed engine
-`rfns_iteratedCovGrad_connDiffSection_topSeparated_le`
-(`CurvatureCoefficientDifferenceJetTower.lean`) splits the section jet into a top head and a
-data-weighted remainder; the field↔section identity
-`connDiffContrInsertionField_eq_reindex_slotExtend_two` transfers this to the field with a
-`finrank²` factor; the remainder is reshaped to a `boundedFactorGridWindow` and integrated by
-`boundedFactorGridWindow_integral_ballUniform_tameWindow`.  The **top-split coefficient `Ktop`** is
-built only from `(g₀, hδ₀)`-level committed constants (engine head `10·S 0`, times `2·finrank²`),
-hence `R`-independent; the lumped low constant `Kc` follows the accepted house `R`-pattern (it is
-threaded through the ball-uniform tame-window converter, exactly as arm0's accepted generic).
-
-The end shape (both windows land at order `a+2`):
-```
-∑_{i ≤ a} ‖∇^i (connDiffContrInsertionField g₀ (realizedFam …))‖²
-  ≤ Ktop · (∑_{j < a+2} (‖∇^j T‖² + ‖∇^j T'‖²))
-  +  Kc  · (1 + ∑_{j < a+2} (‖∇^j T‖² + ‖∇^j T'‖²))
-```
-This is constituent 3-of-5 of the data-weighted threeArm precursor (R1τ item (2)); see
-`UNIF_EXISTENCE_PLAN.md` "Planner acceptance №4" and `RemainderCoeffTopSeparated.md`.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
@@ -37,29 +12,27 @@ set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-  (metricCauchySchwarzBound ccTensorBilinSymm smoothCcTensorBilinForm ccTensorBilin_apply ccTensorModel
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+  (metricCauchySchwarzBound ccTensorBilinSymm smoothCcTensorBilinForm ccTensorBilin_apply
+    ccTensorModel
     ccTensorMultilinear ccTensorBilinSymm_contMDiff ccTensorBilinSymm_apply ccTensorBilinSymm_symm)
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (realizedFam convexPerturbation convexPerturbation_gFibreOpBound realizedFam_inner_of_mem
     Icc_subset_realizedSmallSet)
 
-/-! ### Pure real / `Finset` / combinatorial helpers (no geometry). -/
-
-/-- Copied verbatim (pure combinatorial, only `Combinatorics.*` deps) from the private
-`tsResSum_le_boundedWindow` of `CurvatureCoefficientDifferenceJetTower.lean`.  Reshapes the engine
-remainder sum into a `boundedFactorGridWindow`. -/
 private lemma tsResSum_le_boundedWindow (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (j : ℕ) :
     ∑ k ∈ Finset.range j, b (j - k) * Combinatorics.antidiagonalTupleGrid b (k + 1) ≤
       (j : ℝ) * Combinatorics.boundedFactorGridWindow b j (j + 2) := by
@@ -76,7 +49,6 @@ private lemma tsResSum_le_boundedWindow (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j
     _ = (j : ℝ) * Combinatorics.boundedFactorGridWindow b j (j + 2) := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
 
-/-- Shifted-range domination for a nonnegative sequence (copied from `ArmBaseCoeffJetL2Summed`). -/
 private lemma sum_shift_le (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ) :
     ∑ i ∈ Finset.range m, g (i + c) ≤ ∑ j ∈ Finset.range (m + c), g j := by
   classical
@@ -95,9 +67,6 @@ private lemma sum_shift_le (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ)
     _ ≤ ∑ j ∈ Finset.range (m + c), g j :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub (fun j _ _ => hg j)
 
-/-- Summation of a per-order top-separated bound with **independent** top offset `p` and low-window
-offset `q` (the connDiff field naturally has top point at order `i+1` but low window `i+2`, so the
-single-offset `jetL2_sum_of_perOrder` of `ArmBaseCoeffJetL2Summed` does not apply directly). -/
 private lemma jetL2_sum_lowShift
     (a p q : ℕ) (Ktop : ℝ) (hKtop : 0 ≤ Ktop) (Kc : ℕ → ℝ) (hKc : ∀ i, 0 ≤ Kc i)
     (f w : ℕ → ℝ) (hw : ∀ j, 0 ≤ w j)
@@ -126,8 +95,6 @@ private lemma jetL2_sum_lowShift
     linarith
   linarith [hA, hB]
 
-/-! ### Geometry setting. -/
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -137,8 +104,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- Real-scalar linearity of `iteratedCovGrad` (copied from the private helper of
-`RemainderCoeffL2JetMoser.lean`; needed for the `convexPerturbation` jet expansion). -/
 private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
@@ -147,12 +112,6 @@ private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s 
   | succ j ih => rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih,
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_smul]
 
-/-! ### Generic per-order top-separated bound (DIRECT route). -/
-
-/-- DIRECT per-order top-separated jet-L2 bound for the connection-difference field, generic in
-`(g₁, P, htie)`.  The **top-split coefficient** `2·finrank²·Kt0` (`Kt0` = engine head `10·S 0`) is
-`R`-independent; the lumped low coefficient carries the ball-uniform tame-window constant `KI`
-(house `R`-pattern). -/
 theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -188,8 +147,6 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
   intro g₁ P δ hδ_le hδ htie hPball i hi
   by_cases hMne : Nonempty M
   · obtain ⟨x₀⟩ := hMne
-    -- `δ ≥ 0` is forced by the fibre-op bound at a nonzero vector (copied from the tameEnvelope
-    -- producer `connDiffContrInsertionField_order0sup_perOrder_l2_tameEnvelope_generic`).
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
         haveI : Nontrivial (TangentSpace I x₀) := by
@@ -208,7 +165,6 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
         have h1 : δ * Real.sqrt (g₀.inner x₀ v v) < 0 := mul_neg_of_neg_of_pos hδc' hsqrt_pos
         exact mul_neg_of_neg_of_pos h1 hsqrt_pos
       linarith [le_trans habs_nn hbnd]
-    -- named integrand summands (top head + reshaped remainder window)
     set uFun : M → ℝ := fun x => 2 * fr ^ 2 * Kt0 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 1)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P).toSection x) with huFun_def
@@ -216,14 +172,12 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
         Combinatorics.boundedFactorGridWindow
           (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3) with hvFun_def
-    -- pointwise bound: field jet ≤ uFun + vFun
     have hpt : ∀ x : M,
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + i) x
             ((iteratedCovGrad (I := I) g₀ 3 4 i
               (connDiffContrInsertionField (I := I) g₀ g₁)).toSection x) ≤
           uFun x + vFun x := by
       intro x
-      -- field↔section transfer with a `finrank²` factor
       have htrans : riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + i) x
           ((iteratedCovGrad (I := I) g₀ 3 4 i
             (connDiffContrInsertionField (I := I) g₀ g₁)).toSection x) ≤
@@ -264,16 +218,13 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
           _ = fr ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
                 ((iteratedCovGrad (I := I) g₀ 1 2 i
                   (connDiffSection (I := I) g₁ g₀)).toSection x) := by ring
-      -- engine split of the section jet at order `i`
       have heng := hbot g₁ P htie hδ_le hδ0 hδ i x
-      -- fold the head into `Hd`
       set Hd : SmoothCcTensor g₀ 1 (2 + i) :=
         ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 (2 + i)
           (iteratedCovGrad (I := I) g₀ 1 2 i (raisedKoszul (I := I) g₀ g₁))
           (sharpFlatEndoCc (I := I) g₀ g₁) with hHd_def
       have hhead := heng.1
       have hrem := heng.2
-      -- `∇^i sec = Hd + (∇^i sec - Hd)`
       have hsplit : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
           ((iteratedCovGrad (I := I) g₀ 1 2 i (connDiffSection (I := I) g₁ g₀)).toSection x) ≤
           2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x (Hd.toSection x) +
@@ -292,7 +243,6 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
           abel
         rw [key]
         exact hadd
-      -- reshape the remainder into a bounded-factor grid window
       have hrem_reshaped : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
           ((iteratedCovGrad (I := I) g₀ 1 2 i (connDiffSection (I := I) g₁ g₀) - Hd).toSection x) ≤
           Kc0 i * ((i : ℝ) * Combinatorics.boundedFactorGridWindow
@@ -308,7 +258,6 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
           (Combinatorics.boundedFactorGridWindow_mono _
             (fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _)
             (by omega) (by omega)) (Nat.cast_nonneg i)
-      -- combine: section bound
       have hsec_bound : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
           ((iteratedCovGrad (I := I) g₀ 1 2 i (connDiffSection (I := I) g₁ g₀)).toSection x) ≤
           2 * (Kt0 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 1)) x
@@ -317,7 +266,6 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3))) := by
         linarith [hsplit, hhead, hrem_reshaped]
-      -- assemble the pointwise bound
       calc riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + i) x
               ((iteratedCovGrad (I := I) g₀ 3 4 i
                 (connDiffContrInsertionField (I := I) g₀ g₁)).toSection x)
@@ -331,7 +279,6 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
                   ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3)))) :=
             mul_le_mul_of_nonneg_left hsec_bound hfr2_nn
         _ = uFun x + vFun x := by simp only [huFun_def, hvFun_def]; ring
-    -- integrate
     have hu_int : MeasureTheory.Integrable uFun
         (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
       simp only [huFun_def]
@@ -380,14 +327,9 @@ theorem connDiffContrInsertionField_perOrder_l2_topSeparated_generic
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) :=
           add_nonneg (mul_nonneg hKtop_nn (sq_nonneg _)) (mul_nonneg (hKc_nn i) hwin_nn)
 
-/-! ### `realizedFam` per-order and summed bounds. -/
-
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound realizedFam_inner_of_mem
     Icc_subset_realizedSmallSet) in
-/-- `realizedFam` per-order top-separated bound: instantiate the generic producer at the convex
-perturbation `g₁ = realizedFam g₀ T T' hδ hδ' s`, converting the perturbation data-weights to
-`(T, T')` weights.  The top coefficient `Ktop` is unchanged (`R`-independent). -/
 theorem connDiffContrInsertionField_realizedFam_jetL2_perOrder_topSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -499,10 +441,6 @@ theorem connDiffContrInsertionField_realizedFam_jetL2_perOrder_topSeparated
       (fun j (_ : j ∈ Finset.range (i + 2)) => hwin j)
     linarith
 
-/-- **Summed** data-weighted jet-L2 bound for the connection-difference field (constituent
-3-of-5 of the data-weighted threeArm precursor).  Summing the `realizedFam` per-order bound over
-`i ≤ a` lands both data windows at order `a+2`, with `Ktop` `R`-independent (the engine head,
-times `2·finrank²`) and `Kc = ∑_{i≤a} Kc_perOrder i` following the accepted house `R`-pattern. -/
 theorem connDiffContrInsertionField_realizedFam_jetL2_summed_topSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -540,4 +478,4 @@ theorem connDiffContrInsertionField_realizedFam_jetL2_summed_topSeparated
     (fun j => add_nonneg (sq_nonneg _) (sq_nonneg _))
     (fun i hi => hper T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs i hi)
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Analysis.Sobolev

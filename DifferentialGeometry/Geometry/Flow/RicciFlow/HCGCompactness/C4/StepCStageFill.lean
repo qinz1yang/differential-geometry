@@ -1,19 +1,11 @@
 import DifferentialGeometry.Analysis.Calculus.BumpClamp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1Producers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCProducers
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry
 namespace HCGCompactness
 
@@ -31,8 +23,6 @@ def safeFill (cut : Y → Real) (safe : Y → Y)
     (F : X → Y) (R : Y → X) (x : X) : X :=
   x + cut (F x) • (R (safe (F x)) - x)
 
-
-
 theorem safeFill_smooth
     {U : Set X} {V : Set Y} {cut : Y → Real} {safe : Y → Y}
     {F : X → Y} {R : Y → X}
@@ -49,8 +39,6 @@ theorem safeFill_smooth
   exact contDiffOn_id.add
     ((hcut.contDiffOn.comp hF (fun _ _ => Set.mem_univ _)).smul
       (hback.sub contDiffOn_id))
-
-
 
 theorem safeFill_diag
     [ProperSpace X] [ProperSpace Y]
@@ -145,8 +133,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-
-
 noncomputable def stageTotal
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
@@ -157,8 +143,6 @@ noncomputable def stageTotal
   match interSlot? alpha gamma with
   | some target => pairPts target a b z
   | none => z
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem stageTotal_smooth
@@ -179,8 +163,6 @@ theorem stageTotal_smooth
   | none => exact contDiffOn_id
   | some target => exact hpair target
 
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem stageTotal_conv
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
@@ -200,8 +182,6 @@ theorem stageTotal_conv
   cases hlookup : interSlot? alpha gamma with
   | none => exact mapCInfConv_const (U := U) id
   | some target => exact hpair target
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem stageTotal_pi_conv
@@ -234,16 +214,12 @@ section Bumps
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [HasContDiffBump E]
 
-
-
 noncomputable def activityBump (lam : Real) (hlam : 0 < lam) :
     ContDiffBump (0 : E) where
   rIn := 6 * lam
   rOut := 7 * lam
   rIn_pos := by positivity
   rIn_lt_rOut := by linarith
-
-
 
 noncomputable def safetyBump (lam : Real) (hlam : 0 < lam) :
     ContDiffBump (0 : E) where
@@ -280,8 +256,6 @@ theorem stageClamp_mapsTo (lam : Real) (hlam : 0 < lam) :
       (Metric.ball 0 (8 * lam)) := by
   exact (safetyBump (E := E) lam hlam).radial_mapsTo
 
-
-
 theorem stageFill_eq_raw (lam : Real) (hlam : 0 < lam)
     (F R : E → E) {x : E}
     (hx : F x ∈ Metric.closedBall 0 (6 * lam)) :
@@ -298,9 +272,6 @@ theorem stageFill_eq_self (lam : Real) (hlam : 0 < lam)
     (hx : activityBump (E := E) lam hlam (F x) = 0) :
     stageFill lam hlam F R x = x := by
   simp only [stageFill, safeFill, hx, zero_smul, add_zero]
-
-
-
 
 theorem stageFill_conv [ProperSpace E]
     (lam : Real) (hlam : 0 < lam) {U : Set E} (hU : IsOpen U)
@@ -356,8 +327,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-
-
 noncomputable def pairStageFill
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -385,8 +354,6 @@ noncomputable def pairStageFill
       (seqCenterD inp.decay P L l (target.1.1 : Nat))
       (seqCenterD inp.decay P L l (alpha.1 : Nat)))
 
-
-
 noncomputable def stagePts
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -394,8 +361,6 @@ noncomputable def stagePts
     (alpha : LiveSlot L inp.pack r) (k l : Nat)
     (z : E) (gamma : Fin (inp.pack.A r)) : E :=
   stageTotal alpha (pairStageFill inp P L alpha) k l z gamma
-
-
 
 noncomputable def stageWeight
     (inp : MetricCompactnessInputs (I := I) X)
@@ -412,8 +377,6 @@ noncomputable def stageWeight
         inp.pack r beta target k)
       i0) z gamma
 
-
-
 noncomputable def stageCfg
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -421,8 +384,6 @@ noncomputable def stageCfg
     (alpha : LiveSlot L inp.pack r) (k l : Nat) (z : E) :
     (Fin (inp.pack.A r) → Real) × (Fin (inp.pack.A r) → E) :=
   (stageWeight inp P L hr alpha k z, stagePts inp P L alpha k l z)
-
-
 
 noncomputable def pairStageFillSub
     (inp : MetricCompactnessInputs (I := I) X)
@@ -453,8 +414,6 @@ noncomputable def pairStageFillSub
       (seqCenterD inp.decay P Lphi l (target.1.1 : Nat))
       (seqCenterD inp.decay P Lphi l (alpha.1 : Nat)))
 
-
-
 noncomputable def stagePtsSub
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -463,8 +422,6 @@ noncomputable def stagePtsSub
     (alpha : LiveSlot L inp.pack r) (k l : Nat)
     (z : E) (gamma : Fin (inp.pack.A r)) : E :=
   stageTotal alpha (pairStageFillSub inp P L phi hphi alpha) k l z gamma
-
-
 
 noncomputable def stageWeightSub
     (inp : MetricCompactnessInputs (I := I) X)
@@ -482,8 +439,6 @@ noncomputable def stageWeightSub
       (fun target => seqAtomChart (I := I) inp.decay inp.hD P Lphi
         inp.pack r beta target k)
       i0) z gamma
-
-
 
 theorem stageWeightSub_eq
     (inp : MetricCompactnessInputs (I := I) X)
@@ -512,8 +467,6 @@ theorem stageWeightSub_eq
         gamma := by
   rfl
 
-
-
 noncomputable def stageCfgSub
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -523,8 +476,6 @@ noncomputable def stageCfgSub
     (Fin (inp.pack.A r) → Real) × (Fin (inp.pack.A r) → E) :=
   (stageWeightSub inp P L hr phi hphi alpha k z,
     stagePtsSub inp P L phi hphi alpha k l z)
-
-
 
 theorem HasSuppConvData.weightSub_ev
     (inp : MetricCompactnessInputs (I := I) X)
@@ -580,8 +531,6 @@ theorem HasSuppConvData.weightSub_ev
   exact ⟨hweight.nonneg, hweight.pos, hweight.sum_one,
     fun z _hz _gamma _hne => Set.mem_univ z⟩
 
-
-
 theorem stageWeight_small
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -620,8 +569,6 @@ theorem stageWeight_small
   apply inp.weight_trans_small P L r k hgp beta i0 gamma hC2 z
   simpa only [stageWeight, beta, i0] using hweight
 
-
-
 theorem HasAtomWeightLim.stageWeight_data
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -642,9 +589,6 @@ theorem HasAtomWeightLim.stageWeight_data
   dsimp only [HasAtomWeightLim] at hlim
   simpa only [stageWeight] using
     ⟨hlim.2.2.2.2.1, hlim.2.2.2.2.2.1, hlim.2.2.2.2.2.2⟩
-
-
-
 
 theorem stageCfg_conv
     (inp : MetricCompactnessInputs (I := I) X)
@@ -678,8 +622,6 @@ theorem stageCfg_conv
     (mapCInfConv_prodMk hU hweightKn hpts
       (fun m => hweightc (kn m)) hweightInfc hptsc hdiagc)
 
-
-
 theorem HasAtomWeightLim.stageWeightSub_data
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -703,8 +645,6 @@ theorem HasAtomWeightLim.stageWeightSub_data
   dsimp only [HasAtomWeightLim] at hlim
   simpa only [stageWeightSub] using
     ⟨hlim.2.2.2.2.1, hlim.2.2.2.2.2.1, hlim.2.2.2.2.2.2⟩
-
-
 
 theorem stageCfgSub_conv
     (inp : MetricCompactnessInputs (I := I) X)
@@ -741,9 +681,6 @@ theorem stageCfgSub_conv
   simpa only [stageCfgSub] using
     (mapCInfConv_prodMk hU hweightKn hpts
       (fun m => hweightc (kn m)) hweightInfc hptsc hdiagc)
-
-
-
 
 theorem stagePts_eq_raw
     (inp : MetricCompactnessInputs (I := I) X)
@@ -784,8 +721,6 @@ theorem stagePts_eq_raw
         (seqCenterD inp.decay P L l (target.1.1 : Nat))
         (seqCenterD inp.decay P L l (alpha.1 : Nat))) hsmall)
 
-
-
 theorem stagePts_eq_weight
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -816,8 +751,6 @@ theorem stagePts_eq_weight
           (seqCenterD inp.decay P L k (target.1.1 : Nat)) z) := by
   exact stagePts_eq_raw inp P L alpha target k l z
     (stageWeight_small inp P L hr alpha k hgp target.1.1 hC2 z hweight)
-
-
 
 theorem stagePtsSub_eq_ne
     (inp : MetricCompactnessInputs (I := I) X)
@@ -886,8 +819,6 @@ theorem stagePtsSub_eq_ne
         (seqCenterD inp.decay P Lphi l (target.1.1 : Nat))
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))) hsmall)
 
-
-
 theorem pairStageFill_conv
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -933,8 +864,6 @@ theorem pairStageFill_conv
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       Metric.isOpen_ball hJ hJbar hstage hJc hstageBar hJbarc hinv
       kn ln hkn hln)
-
-
 
 theorem pairStageSub_conv
     (inp : MetricCompactnessInputs (I := I) X)
@@ -992,8 +921,6 @@ theorem pairStageSub_conv
       Metric.isOpen_ball hJ hJbar hstage hJc hstageBar hJbarc hinv
       kn ln hkn hln)
 
-
-
 theorem pairStageSub_smooth
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1042,8 +969,6 @@ theorem pairStageSub_smooth
           (L.rInf (target.1.1 : Nat)))).radial_contDiff
       hstage hstageBar hsafe)
 
-
-
 theorem stagePtsSub_conv
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1065,9 +990,6 @@ theorem stagePtsSub_conv
       (fun z _ => z) := by
   exact stageTotal_pi_conv alpha
     (pairStageFillSub inp P L phi hphi alpha) hU kn ln hpair hpairc
-
-
-
 
 theorem HasSuppConvData.cfgSub_conv
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1136,8 +1058,6 @@ theorem HasSuppConvData.cfgSub_conv
   exact stageCfgSub_conv inp P L hr phi hphi alpha (U alpha)
     (hUopen alpha) (aInf alpha) (hlim alpha) kn ln hkn hpts hptsc
 
-
-
 theorem HasSuppConvData.cfgSub_data
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1204,8 +1124,6 @@ theorem HasSuppConvData.cfgSub_data
   simpa only [stageCfgSub] using
     (hweightc (kn m)).prodMk (hptsc m)
 
-
-
 theorem HasSuppConvData.ptsSub_conv
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1235,9 +1153,6 @@ theorem HasSuppConvData.ptsSub_conv
     (Fin (inp.pack.A r) → Real) (Fin (inp.pack.A r) → E)
   have hp := mapCInfConv_clm hU proj hconv hcfg hdiag
   simpa only [proj, stageCfgSub] using hp
-
-
-
 
 theorem HasSuppConvData.pts_eq_ne
     (inp : MetricCompactnessInputs (I := I) X)
@@ -1376,8 +1291,6 @@ theorem HasSuppConvData.pts_eq_ne
     (stagePtsSub_eq_ne inp P L hr phi hphi alpha target k l hgpK (by
       simpa only [htarget] using hC2gamma) z (by
       simpa only [htarget] using hweight))
-
-
 
 theorem pairFill_smooth
     (inp : MetricCompactnessInputs (I := I) X)

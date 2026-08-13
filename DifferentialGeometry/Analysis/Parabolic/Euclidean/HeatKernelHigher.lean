@@ -1,16 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelPDE
 
-/-!
-# Higher derivatives of the Euclidean heat kernel
-
-This file supplies the two derivative estimates needed by the heat-specific
-parabolic Hörmander argument.  It constructs the third spatial derivative of
-the normalized Gaussian, realizes it as the actual Fréchet derivative of
-`heatD2`, and proves its scale-sharp spatial `L¹` bound.  It also records the
-direct positive-time derivative of `heatD2`; this is the narrower alternative
-to building a complete fourth spatial derivative API.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -28,7 +17,6 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V]
 
-/-- Third directional derivative of the normalized time-one heat kernel. -/
 def baseD3 (u v w x : V) : ℝ :=
   (-(8 : ℝ)⁻¹ * ⟪x, u⟫ * ⟪x, v⟫ * ⟪x, w⟫ +
       (4 : ℝ)⁻¹ *
@@ -36,7 +24,6 @@ def baseD3 (u v w x : V) : ℝ :=
           ⟪v, w⟫ * ⟪x, u⟫)) *
     baseHeat x
 
-/-- Fréchet derivative map of `baseD2 v w`. -/
 def baseD3Map (v w x : V) : V →L[ℝ] ℝ :=
   (-(8 : ℝ)⁻¹ * ⟪x, v⟫ * ⟪x, w⟫ * baseHeat x) • innerSL ℝ x +
     ((4 : ℝ)⁻¹ * ⟪x, w⟫ * baseHeat x) • innerSL ℝ v +
@@ -53,8 +40,6 @@ omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
   ring
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The explicit third Gaussian kernel is the Fréchet derivative of the
-second one. -/
 theorem baseD2_hasFDeriv (v w x : V) :
     HasFDerivAt (baseD2 v w) (baseD3Map v w x) x := by
   have hv : HasFDerivAt (fun y : V => ⟪y, v⟫) (innerSL ℝ v) x := by
@@ -74,7 +59,6 @@ theorem baseD2_hasFDeriv (v w x : V) :
       innerSL_apply_apply, smul_eq_mul, Pi.mul_apply]
     ring
 
-/-- Radial `L¹` majorant for the third derivative kernel. -/
 def baseD3Maj (x : V) : ℝ :=
   ((8 : ℝ)⁻¹ * ‖x‖ ^ 3 + (3 / 4 : ℝ) * ‖x‖) * baseHeat x
 
@@ -88,7 +72,6 @@ theorem baseD3Maj_nonneg (x : V) : 0 ≤ baseD3Maj x := by
     (baseHeat_nonneg x)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The third derivative is bounded by its radial Gaussian majorant. -/
 theorem baseD3_bound (u v w x : V) :
     ‖baseD3 u v w x‖ ≤ ‖u‖ * ‖v‖ * ‖w‖ * baseD3Maj x := by
   let A : ℝ := -(8 : ℝ)⁻¹ * ⟪x, u⟫ * ⟪x, v⟫ * ⟪x, w⟫
@@ -155,7 +138,6 @@ theorem baseD3_bound (u v w x : V) :
         (((8 : ℝ)⁻¹ * ‖x‖ ^ 3 + (3 / 4 : ℝ) * ‖x‖) *
           baseHeat x) := by ring
 
-/-- The radial third-derivative majorant is integrable. -/
 theorem baseD3Maj_int : Integrable (baseD3Maj : V → ℝ) := by
   have h3 := (gaussMoment_int (V := V) 3
     (by positivity : (0 : ℝ) < (4 : ℝ)⁻¹)).const_mul
@@ -174,7 +156,6 @@ theorem baseD3Maj_int : Integrable (baseD3Maj : V → ℝ) := by
   rw [heq]
   exact h3.add h1
 
-/-- Dimension-dependent third-derivative `L¹` constant. -/
 def heatC3 (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] : ℝ :=
   ∫ x : V, baseD3Maj x
@@ -183,19 +164,16 @@ omit [Nontrivial V] in
 theorem heatC3_nonneg : 0 ≤ heatC3 V :=
   integral_nonneg baseD3Maj_nonneg
 
-/-- Third-derivative majorant at time `t`. -/
 def heatD3Maj (t : ℝ) (x : V) : ℝ :=
   ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (heatScale t)⁻¹ *
       (heatScale t)⁻¹ * (heatScale t)⁻¹ *
     baseD3Maj ((heatScale t)⁻¹ • x)
 
-/-- Third spatial derivative kernel of the heat kernel. -/
 def heatD3 (t : ℝ) (u v w x : V) : ℝ :=
   ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (heatScale t)⁻¹ *
       (heatScale t)⁻¹ * (heatScale t)⁻¹ *
     baseD3 u v w ((heatScale t)⁻¹ • x)
 
-/-- Fréchet derivative map of `heatD2 t v w`. -/
 def heatD3Map (t : ℝ) (v w x : V) : V →L[ℝ] ℝ :=
   (((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (heatScale t)⁻¹ *
       (heatScale t)⁻¹ * (heatScale t)⁻¹) •
@@ -207,9 +185,7 @@ omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
   simp [heatD3Map, heatD3]
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- At positive time, `heatD3` is the actual Fréchet derivative of
-`heatD2`. -/
-theorem heatD2_hasFDeriv {t : ℝ} (_ht : 0 < t) (v w x : V) :
+theorem heatD2_hasFDeriv {t : ℝ} (v w x : V) :
     HasFDerivAt (heatD2 t v w) (heatD3Map t v w x) x := by
   let S : V →L[ℝ] V := (heatScale t)⁻¹ • ContinuousLinearMap.id ℝ V
   have hS : HasFDerivAt (fun y : V => (heatScale t)⁻¹ • y) S x := by
@@ -237,7 +213,6 @@ theorem heatD3Maj_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     (baseD3Maj_nonneg _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Pointwise third-derivative kernel bound. -/
 theorem heatD3_bound {t : ℝ} (ht : 0 < t) (u v w x : V) :
     ‖heatD3 t u v w x‖ ≤ ‖u‖ * ‖v‖ * ‖w‖ * heatD3Maj t x := by
   unfold heatD3 heatD3Maj
@@ -266,7 +241,16 @@ theorem heatD3_bound {t : ℝ} (ht : 0 < t) (u v w x : V) :
           (heatScale t)⁻¹ * (heatScale t)⁻¹ *
             baseD3Maj ((heatScale t)⁻¹ • x)) := by ring
 
-/-- Integrability of the scaled third-derivative majorant. -/
+omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
+theorem heatD3Map_norm_le {t : Real} (ht : 0 < t) (v w x : V) :
+    ‖heatD3Map t v w x‖ ≤ ‖v‖ * ‖w‖ * heatD3Maj t x := by
+  apply ContinuousLinearMap.opNorm_le_bound (heatD3Map t v w x)
+    (mul_nonneg (mul_nonneg (norm_nonneg v) (norm_nonneg w))
+      (heatD3Maj_nonneg ht x))
+  intro u
+  rw [heatD3Map_apply]
+  exact (heatD3_bound ht u v w x).trans_eq (by ring)
+
 theorem heatD3Maj_int {t : ℝ} (ht : 0 < t) :
     Integrable (heatD3Maj t : V → ℝ) := by
   unfold heatD3Maj
@@ -274,7 +258,6 @@ theorem heatD3Maj_int {t : ℝ} (ht : 0 < t) :
     (inv_ne_zero (heatScale_pos ht).ne') |>.const_mul _
 
 omit [Nontrivial V] in
-/-- Exact spatial integral scaling of the third-derivative majorant. -/
 theorem integral_heatD3Maj {t : ℝ} (ht : 0 < t) :
     ∫ x : V, heatD3Maj t x =
       t⁻¹ * (heatScale t)⁻¹ * heatC3 V := by
@@ -297,7 +280,6 @@ theorem integral_heatD3Maj {t : ℝ} (ht : 0 < t) :
       field_simp [hr.ne']
     _ = t⁻¹ * (heatScale t)⁻¹ * ∫ x : V, baseD3Maj x := by rw [hscale]
 
-/-- `L¹` norm of the third derivative kernel, with `t^(-3/2)` scaling. -/
 theorem integral_norm_D3 {t : ℝ} (ht : 0 < t) (u v w : V) :
     (∫ x : V, ‖heatD3 t u v w x‖) ≤
       ‖u‖ * ‖v‖ * ‖w‖ * t⁻¹ * (heatScale t)⁻¹ * heatC3 V := by
@@ -328,13 +310,10 @@ variable {V : Type*}
   [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V]
 
-/-- Time derivative profile of the time-one Hessian after parabolic
-rescaling. -/
 def baseD2Dt (v w x : V) : ℝ :=
   -(((Module.finrank ℝ V : ℝ) + 2) / 2) * baseD2 v w x -
     (2 : ℝ)⁻¹ * baseD3 x v w x
 
-/-- Radial majorant for the time derivative profile of the Hessian. -/
 def baseD2DtMaj (x : V) : ℝ :=
   (((Module.finrank ℝ V : ℝ) + 2) / 2) * baseD2Maj x +
     (2 : ℝ)⁻¹ * ‖x‖ * baseD3Maj x
@@ -349,7 +328,6 @@ theorem baseD2DtMaj_nonneg (x : V) : 0 ≤ baseD2DtMaj x := by
       (baseD3Maj_nonneg x))
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The rescaled Hessian time profile is bounded by its radial majorant. -/
 theorem baseD2Dt_bound (v w x : V) :
     ‖baseD2Dt v w x‖ ≤ ‖v‖ * ‖w‖ * baseD2DtMaj x := by
   let c : ℝ := ((Module.finrank ℝ V : ℝ) + 2) / 2
@@ -371,7 +349,6 @@ theorem baseD2Dt_bound (v w x : V) :
     _ = ‖v‖ * ‖w‖ *
         (c * baseD2Maj x + (2 : ℝ)⁻¹ * ‖x‖ * baseD3Maj x) := by ring
 
-/-- Integrability of the extra radial moment in `baseD2DtMaj`. -/
 private theorem baseD3First_int :
     Integrable (fun x : V => ‖x‖ * baseD3Maj x) := by
   have h4 := (gaussMoment_int (V := V) 4
@@ -391,7 +368,6 @@ private theorem baseD3First_int :
   rw [heq]
   exact h4.add h2
 
-/-- The radial time-derivative majorant is integrable. -/
 theorem baseD2DtMaj_int : Integrable (baseD2DtMaj : V → ℝ) := by
   have h0 := (baseD2Maj_int (V := V)).const_mul
     (((Module.finrank ℝ V : ℝ) + 2) / 2)
@@ -405,7 +381,6 @@ theorem baseD2DtMaj_int : Integrable (baseD2DtMaj : V → ℝ) := by
   rw [heq]
   exact h0.add h1
 
-/-- Dimension-dependent `L¹` constant for the Hessian time derivative. -/
 def heatC2Dt (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] : ℝ :=
   ∫ x : V, baseD2DtMaj x
@@ -414,20 +389,15 @@ omit [Nontrivial V] in
 theorem heatC2Dt_nonneg : 0 ≤ heatC2Dt V :=
   integral_nonneg baseD2DtMaj_nonneg
 
-/-- Positive-time derivative of the heat-kernel Hessian. -/
 def heatD2Dt (t : ℝ) (v w x : V) : ℝ :=
   ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (t ^ 2)⁻¹ *
     baseD2Dt v w ((heatScale t)⁻¹ • x)
 
-/-- Radial majorant for the positive-time derivative of the heat-kernel
-Hessian. -/
 def heatD2DtMaj (t : ℝ) (x : V) : ℝ :=
   ((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (t ^ 2)⁻¹ *
     baseD2DtMaj ((heatScale t)⁻¹ • x)
 
 omit [MeasurableSpace V] [BorelSpace V] in
-/-- At positive time, `heatD2Dt` is the actual time derivative of the
-heat-kernel Hessian. -/
 theorem heatD2_time {t : ℝ} (ht : 0 < t) (v w x : V) :
     HasDerivAt (fun s : ℝ => heatD2 s v w x) (heatD2Dt t v w x) t := by
   let n := Module.finrank ℝ V
@@ -509,7 +479,6 @@ theorem heatD2DtMaj_nonneg {t : ℝ} (ht : 0 < t) (x : V) :
     (baseD2DtMaj_nonneg _)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Pointwise bound for the positive-time Hessian derivative. -/
 theorem heatD2Dt_bound {t : ℝ} (ht : 0 < t) (v w x : V) :
     ‖heatD2Dt t v w x‖ ≤ ‖v‖ * ‖w‖ * heatD2DtMaj t x := by
   unfold heatD2Dt heatD2DtMaj
@@ -532,7 +501,6 @@ theorem heatD2Dt_bound {t : ℝ} (ht : 0 < t) (v w x : V) :
         (((heatScale t) ^ Module.finrank ℝ V)⁻¹ * (t ^ 2)⁻¹ *
           baseD2DtMaj ((heatScale t)⁻¹ • x)) := by ring
 
-/-- Integrability of the scaled Hessian-time-derivative majorant. -/
 theorem heatD2DtMaj_int {t : ℝ} (ht : 0 < t) :
     Integrable (heatD2DtMaj t : V → ℝ) := by
   unfold heatD2DtMaj
@@ -540,8 +508,6 @@ theorem heatD2DtMaj_int {t : ℝ} (ht : 0 < t) :
     (inv_ne_zero (heatScale_pos ht).ne') |>.const_mul _
 
 omit [Nontrivial V] in
-/-- Exact `t⁻²` spatial integral scaling of the time-derivative
-majorant. -/
 theorem integral_heatD2DtMaj {t : ℝ} (ht : 0 < t) :
     ∫ x : V, heatD2DtMaj t x = (t ^ 2)⁻¹ * heatC2Dt V := by
   have hr : 0 < heatScale t := heatScale_pos ht
@@ -551,8 +517,6 @@ theorem integral_heatD2DtMaj {t : ℝ} (ht : 0 < t) :
   simp only [smul_eq_mul]
   field_simp [hr.ne']
 
-/-- `L¹` norm bound for the Hessian time derivative, with exact `t⁻²`
-scaling. -/
 theorem integral_norm_D2Dt {t : ℝ} (ht : 0 < t) (v w : V) :
     (∫ x : V, ‖heatD2Dt t v w x‖) ≤
       ‖v‖ * ‖w‖ * (t ^ 2)⁻¹ * heatC2Dt V := by

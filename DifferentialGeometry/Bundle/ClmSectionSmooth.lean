@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 import DifferentialGeometry.Bundle.Equiv
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.Diffeomorph
@@ -32,14 +23,6 @@ namespace DifferentialGeometry
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
-
-
-
-
-
 
 theorem cotangentCov_clmSection_smooth_aux
     {F₂ : Type*} [NormedAddCommGroup F₂] [NormedSpace ℝ F₂] [FiniteDimensional ℝ F₂]

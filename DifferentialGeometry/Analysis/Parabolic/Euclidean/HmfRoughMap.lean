@@ -1,23 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelBeta
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.QuasilinearFlux
 
-/-!
-# Rough fixed-point interface for a local-addition harmonic-map heat flow
-
-This is the specialization actually needed by smooth Ricci-flow forward
-uniqueness.  The unknown is the local-addition section `V`, with zero initial
-value.  Its nonlinear equation is split into
-
-* a divergence flux `a(t,x) DV`, where the prescribed coefficient is the
-  inverse-domain-metric difference `g(t)^{-1} - q^{-1}`;
-* a target/local-addition term quadratic in `DV`.
-
-The first coefficient is small because `g(t)` is uniformly `C^0` close to
-`q = g(0)` on a short closed edge window.  The critical heat convolution has
-no small horizon factor, so this coefficient smallness is retained explicitly
-in every estimate below.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -34,9 +17,6 @@ variable {V G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Coefficient data for the local-addition HMF rough map.  `eps` bounds the
-prescribed inverse-metric-difference flux and is the principal contraction
-parameter.  `K` is only a uniform bound for the quadratic target coefficient. -/
 structure HmfCoeff (eps K : ℝ)
     (A : ℝ × V → G →L[ℝ] F)
     (Q : ℝ × V → G →L[ℝ] G →L[ℝ] F) : Prop where
@@ -45,9 +25,6 @@ structure HmfCoeff (eps K : ℝ)
   principal : ∀ z, ‖A z‖ ≤ eps
   quadratic : ∀ z, ‖Q z‖ ≤ K
 
-/-- The two different analytic source classes in the HMF Duhamel map.  The
-principal term is a divergence flux and therefore has the gradient-shaped
-weighted/Carleson controls; the quadratic term is an undifferentiated source. -/
 structure HmfSplit (T Ap As : ℝ) (Cp Cs : ℝ≥0∞)
     (p s : ℝ × V → F) : Prop where
   principalWt : GradWt T Ap p
@@ -60,7 +37,6 @@ omit [NormedAddCommGroup V]
   [FiniteDimensional ℝ V]
   [MeasurableSpace V]
   [BorelSpace V] in
-/-- Weighted estimate for the prescribed inverse-metric-difference flux. -/
 theorem hmfPrinWt {eps K T C : ℝ}
     {A : ℝ × V → G →L[ℝ] F}
     {Q : ℝ × V → G →L[ℝ] G →L[ℝ] F}
@@ -69,7 +45,6 @@ theorem hmfPrinWt {eps K T C : ℝ}
     GradWt T (eps * C) (fun z ↦ A z (d z)) :=
   linWt_of_bound A h.principal h.eps0 hd
 
-/-- Local `L²` Carleson estimate for the same prescribed principal flux. -/
 theorem hmfPrinCarl {eps K T : ℝ} {C : ℝ≥0∞}
     {A : ℝ × V → G →L[ℝ] F}
     {Q : ℝ × V → G →L[ℝ] G →L[ℝ] F}
@@ -86,8 +61,6 @@ omit [NormedAddCommGroup V]
   [FiniteDimensional ℝ V]
   [MeasurableSpace V]
   [BorelSpace V] in
-/-- The critical first-heat-derivative time convolution leaves `eps` as the
-small factor and supplies no power of the horizon. -/
 theorem hmfCrit {eps K C t : ℝ}
     {A : ℝ × V → G →L[ℝ] F}
     {Q : ℝ × V → G →L[ℝ] G →L[ℝ] F}
@@ -100,8 +73,6 @@ omit [NormedAddCommGroup V]
   [FiniteDimensional ℝ V]
   [MeasurableSpace V]
   [BorelSpace V] in
-/-- Weighted two-arm difference estimate for the quadratic local-addition
-source. -/
 theorem quadDiffWt {K T A₁ A₂ AΔ : ℝ}
     (Q : ℝ × V → G →L[ℝ] G →L[ℝ] F)
     (hK : ∀ z, ‖Q z‖ ≤ K) (hK0 : 0 ≤ K)
@@ -124,7 +95,6 @@ theorem quadDiffWt {K T A₁ A₂ AΔ : ℝ}
   rw [hsplit]
   exact hadd
 
-/-- Carleson two-arm difference estimate for the same quadratic source. -/
 theorem quadDiffCarl {K T : ℝ} {C₁ C₂ CΔ : ℝ≥0∞}
     (Q : ℝ × V → G →L[ℝ] G →L[ℝ] F)
     (hK : ∀ z, ‖Q z‖ ≤ K) (hK0 : 0 ≤ K)
@@ -153,9 +123,6 @@ theorem quadDiffCarl {K T : ℝ} {C₁ C₂ CΔ : ℝ≥0∞}
   rw [hsplit]
   exact hadd
 
-/-- Consumer-shaped stability package for the difference of two HMF
-fixed-point iterates.  It keeps the principal divergence flux and quadratic
-source in their distinct rough classes. -/
 theorem hmfDiffSplit {eps K T A₁ A₂ AΔ : ℝ}
     {C₁ C₂ CΔ : ℝ≥0∞}
     {A : ℝ × V → G →L[ℝ] F}

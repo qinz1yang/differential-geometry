@@ -11,21 +11,21 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Covaria
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.VariationalEquation.FlatPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTimeAssembly.BasepointMotion
+open DifferentialGeometry.Geometry.Curvature
 
 
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.PDE.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.ODE
 open DifferentialGeometry.PDE.RicciFlow.Pullback
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
-open DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
+
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
@@ -197,7 +197,7 @@ theorem evalForm_pullbackPart_hasDerivWithinAt_neg_lieDerivMetric_deTurckVF
           (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v w :=
     hasDerivWithinAt_Ici_unique ht0 hpart1 hbase
   have hpush :=
-    DifferentialGeometry.PDE.RicciFlow.ODE.variational_flow_flat_pairing_hasDerivWithinAt
+    DifferentialGeometry.Analysis.ODE.variational_flow_flat_pairing_hasDerivWithinAt
     (I := I) (g_DT t) (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v w
     (T'v x v t) (P'v x v t) (T'w x w t) (P'w x w t)
     (hv_flat t ht x v) (hw_flat t ht x w) (hcorr_v t ht x v) (hcorr_w t ht x w)

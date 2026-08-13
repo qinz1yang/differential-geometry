@@ -3,14 +3,6 @@ import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 
 open Set
@@ -19,8 +11,6 @@ open scoped NNReal
 namespace PhaseFlow
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-
 
 def phaseField (a : E × E → E) (z : E × E) : E × E :=
   (z.2, a z)
@@ -49,8 +39,6 @@ theorem freeDiag_apply (z : E × E) : freeDiag z = (z.1, z.1 + z.2) := by
 theorem freeDiagCLE_apply (z : E × E) : freeDiagCLE z = (z.1, z.1 + z.2) := by
   simp [freeDiagCLE, freeDiag, freeEnd]
 
-
-
 @[simp]
 theorem freeDiagInv_apply (z : E × E) :
     (freeDiagCLE (E := E)).symm z = (z.1, z.2 - z.1) := by
@@ -59,8 +47,6 @@ theorem freeDiagInv_apply (z : E × E) :
 
 theorem freeDiagCLE_coe :
     (freeDiagCLE (E := E) : (E × E) →L[ℝ] (E × E)) = freeDiag := rfl
-
-
 
 noncomputable def phaseErr (κ : ℝ≥0) : ℝ≥0 where
   val := (κ : ℝ) * Real.exp (1 + (κ : ℝ)) * (Real.exp 1 - 1)
@@ -93,8 +79,6 @@ theorem phaseField_lip
     LipschitzOnWith (max 1 κ) (phaseField a) s := by
   simpa only [phaseField] using
     (LipschitzWith.prod_snd.lipschitzOnWith.prodMk ha)
-
-
 
 theorem phase_pos_res_le
     {a : E × E → E} {s : Set (E × E)} {κ : ℝ≥0}
@@ -234,8 +218,6 @@ theorem phase_pos_res_le
     ring
   rwa [hgb] at hmain
 
-
-
 theorem phase_pos_approx
     {a : E × E → E} {q u : Set (E × E)} {κ : ℝ≥0}
     {Φ : (E × E) → ℝ → E × E}
@@ -253,8 +235,6 @@ theorem phase_pos_approx
   simpa only [freeEnd, ContinuousLinearMap.add_apply,
     ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd',
     Prod.fst_sub, Prod.snd_sub, dist_eq_norm] using hres
-
-
 
 theorem phase_diag_approx
     {a : E × E → E} {q u : Set (E × E)} {κ : ℝ≥0}

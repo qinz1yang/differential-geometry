@@ -1,19 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.ImprovedPinching
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -28,8 +17,6 @@ def CurvatureEigenvaluesOrdered
     (lambda mu nu : Real -> M -> Real) : Prop :=
   ∀ (t : Real) (x : M), nu t x ≤ mu t x ∧ mu t x ≤ lambda t x
 
-
-
 def RicciPinchingPreservedOn
     (lambda mu nu : Real -> M -> Real) (C : Real) : Prop :=
   ∀ (t : Real) (x : M), lambda t x ≤ C * (nu t x + mu t x)
@@ -39,8 +26,6 @@ def RicciPinchingPreservedInequalityOn
     (lambda mu nu : Real -> M -> Real) (C : Real) : Prop :=
   RicciPinchingPreservedOn lambda mu nu C
 
-
-
 def LogPinchingDerivativeNonpositiveOn
     (lambda mu nu : Real -> M -> Real) : Prop :=
   ∀ (t : Real) (x : M),
@@ -49,19 +34,13 @@ def LogPinchingDerivativeNonpositiveOn
         nu t x ^ 2 * (mu t x - lambda t x)) /
           (lambda t x * (nu t x + mu t x)) ≤ 0
 
-
-
 def LogLambdaOverMuPlusNuDerivativeFormulaOn
     (lambda mu nu : Real -> M -> Real) : Prop :=
   LogPinchingDerivativeNonpositiveOn lambda mu nu
 
-
-
 def RicciLowerBoundFromPinchingOn
     (ricciLower scalar : Real -> M -> Real) (beta : Real) : Prop :=
   ∀ (t : Real) (x : M), 2 * beta ^ 2 * scalar t x ≤ ricciLower t x
-
-
 
 def PinchingDecayWeightOn
     (_lambda _mu _nu weight : Real -> M -> Real) (delta : Real) : Prop :=
@@ -73,8 +52,6 @@ def RicciPinchingImprovesOn
   ∀ (t : Real) (x : M),
     (lambda t x - nu t x) / (nu t x + mu t x) ≤
       C * weight t x
-
-
 
 def PinchingImprovesFunctionEvolutionOn
     (f rhs : Real -> M -> Real) : Prop :=
@@ -98,8 +75,6 @@ def PinchingPFormulaOn
   ∀ (t : Real) (x : M),
     P t x = pinchingP (lambda t x) (mu t x) (nu t x)
 
-
-
 theorem pinchingP_formula
     (lambda mu nu : Real -> M -> Real) :
     PinchingPFormulaOn lambda mu nu
@@ -107,32 +82,24 @@ theorem pinchingP_formula
   intro t x
   rfl
 
-
-
-
-
 abbrev PAlphaOverQBetaFormulaOn
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     [FiniteDimensional Real E]
     {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners Real E H}
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [IsManifold I (∞ + 1) M]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (phi psi phiHeat psiHeat : Real -> M -> Real)
     (alpha beta : Real) : Prop :=
   QuotientEvolutionOn (I := I) (D := D) G
     phi psi phiHeat psiHeat alpha beta
 
-
-
 def TracefreeRmPinchingEvolutionInequalityOn
     (f scalar Q : Real -> M -> Real) (epsilon : Real) : Prop :=
   ∀ (t : Real) (x : M),
     0 < scalar t x -> f t x ≤ Q t x + epsilon * scalar t x
-
-
 
 def ScalarEvolutionEigenvalueFormulaOn
     (scalar lambda mu nu rhs : Real -> M -> Real) : Prop :=
@@ -195,64 +162,64 @@ theorem palpha_over_qbeta_formula
     [FiniteDimensional Real E]
     {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners Real E H}
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [IsManifold I (∞ + 1) M] [IsManifold I 1 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    (G : DifferentialGeometry.Integral.Connection.RealizedMetricFamily (I := I) (M := M) Real)
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (phi psi phiLap psiLap phiHeat psiHeat : Real -> M -> Real)
     (alpha beta : Real)
-    (hphiDt : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hphiDt : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       HasDerivWithinAt (fun s : Real => phi s x)
         (phiLap (t : Real) x + phiHeat (t : Real) x)
         D.carrier (t : Real))
-    (hpsiDt : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hpsiDt : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       HasDerivWithinAt (fun s : Real => psi s x)
         (psiLap (t : Real) x + psiHeat (t : Real) x)
         D.carrier (t : Real))
-    (hphiLap : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hphiLap : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       phiLap (t : Real) x =
-        DifferentialGeometry.Integral.Connection.laplacianAt (I := I) G (t : Real) (phi (t : Real))
+        DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) G (t : Real) (phi (t : Real))
           x)
-    (hpsiLap : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hpsiLap : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       psiLap (t : Real) x =
-        DifferentialGeometry.Integral.Connection.laplacianAt (I := I) G (t : Real) (psi (t : Real))
+        DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) G (t : Real) (psi (t : Real))
           x)
-    (hphiDiff : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hphiDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       MDifferentiableAt I 𝓘(Real, Real) (phi (t : Real)) y)
-    (hpsiDiff : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hpsiDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       MDifferentiableAt I 𝓘(Real, Real) (psi (t : Real)) y)
-    (hphiPos : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hphiPos : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       0 < phi (t : Real) y)
-    (hpsiPos : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hpsiPos : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       0 < psi (t : Real) y)
-    (hgradPhi : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hgradPhi : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       MDiffAt (T% fun y : M =>
-        DifferentialGeometry.Integral.Connection.gradientFun (I := I) (G.metric (t : Real))
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric (t : Real))
           (phi (t : Real)) y) x)
-    (hgradPsi : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (hgradPsi : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       MDiffAt (T% fun y : M =>
-        DifferentialGeometry.Integral.Connection.gradientFun (I := I) (G.metric (t : Real))
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric (t : Real))
           (psi (t : Real)) y) x)
-    (hgradPhiPow : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime
+    (hgradPhiPow : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) y,
       MDiffAt (T% fun z : M =>
-        DifferentialGeometry.Integral.Connection.gradientFun (I := I) (G.metric (t : Real))
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric (t : Real))
           (fun w : M => phi (t : Real) w ^ alpha) z) y)
-    (hgradPsiPow : forall (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime
+    (hgradPsiPow : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) y,
       MDiffAt (T% fun z : M =>
-        DifferentialGeometry.Integral.Connection.gradientFun (I := I) (G.metric (t : Real))
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric (t : Real))
           (fun w : M => psi (t : Real) w ^ (-beta)) z) y) :
     PAlphaOverQBetaFormulaOn (I := I) (D := D) G
       phi psi phiHeat psiHeat alpha beta :=

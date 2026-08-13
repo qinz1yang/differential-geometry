@@ -3,37 +3,29 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.FlatArmCoeffConnect
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.EdgePairCore
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RankReducingOperatorFieldGreenIBP
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
-
-/-!
-# Ricci connection-difference pairing at a closed edge
-
-The order-zero Ricci connection-difference coefficient contains six terms
-quadratic in the connection difference and two terms linear in its covariant
-derivative.  The latter terms cannot be estimated pointwise at the initial
-edge.  This file first exposes that algebraic split using only public tensor
-operator APIs.  The derivative part is kept as a concrete field, so its
-pairing can subsequently be lowered to the closed-edge formal partners and
-integrated by parts.
--/
+open DifferentialGeometry.Geometry.Connection.Realization
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Set Filter Tensor0SBundle MeasureTheory
+open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace Matrix
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
-open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.DeTurck
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -44,8 +36,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
-
-/-! ## Concrete kernel split -/
 
 private def ricPerm3201 : Equiv.Perm (Fin 4) :=
   ⟨![3, 2, 0, 1], ![2, 3, 1, 0], by decide, by decide⟩
@@ -107,7 +97,6 @@ private theorem permCoeff_smooth (_g : SmoothRiemannianMetric I M) {d : Nat}
     (Tensor0SBundle.Tensor0SModel d Real E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) x t) rfl
 
-/-- Smooth operator field which permutes all covariant output slots. -/
 def permCoeff (g : SmoothRiemannianMetric I M) {d : Nat}
     (rho : Equiv.Perm (Fin d)) : SmoothCcTensor g d d where
   toSection :=
@@ -193,8 +182,6 @@ private def ricDer1 (g gm : SmoothRiemannianMetric I M) :
       (connDiffGradContrInsertionField (I := I) g gm))
     innerContractionSwapPerm
 
-/-- The six connection-difference-quadratic arms of the order-zero Ricci
-kernel. -/
 def ricciAAKer (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ricQuad0 (I := I) (M := M) g gm +
@@ -204,15 +191,12 @@ def ricciAAKer (g gm : SmoothRiemannianMetric I M) :
     ricQuad4 (I := I) (M := M) g gm +
     ricQuad5 (I := I) (M := M) g gm
 
-/-- The signed two-arm part of the order-zero Ricci kernel which is linear in
-the covariant derivative of the connection difference. -/
 def ricciDAKer (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   -ricDer0 (I := I) (M := M) g gm -
     ricDer1 (I := I) (M := M) g gm
 
 omit [NeZero (Module.finrank Real E)] in
-/-- Exact derivative/non-derivative split of the order-zero Ricci kernel. -/
 theorem ricciKer_split (g gm : SmoothRiemannianMetric I M) :
     linearizedRicciConnDiffOrder0KernelField (I := I) g gm =
       ricciAAKer (I := I) (M := M) g gm +
@@ -229,14 +213,12 @@ theorem ricciKer_split (g gm : SmoothRiemannianMetric I M) :
   rw [hraw, ricciDAKer]
   module
 
-/-- Four-trace contraction of the quadratic kernel arms. -/
 def ricciAAArm (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 2
     (ricciCometricFourTraceCastG0 (I := I) g gm)
     (ricciAAKer (I := I) (M := M) g gm)
 
-/-- Four-trace contraction of the derivative-only kernel arms. -/
 def ricciDAArm (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 2
@@ -244,8 +226,6 @@ def ricciDAArm (g gm : SmoothRiemannianMetric I M) :
     (ricciDAKer (I := I) (M := M) g gm)
 
 omit [NeZero (Module.finrank Real E)] in
-/-- Exact split of the full order-zero Ricci connection-difference
-coefficient into its quadratic and derivative-only parts. -/
 theorem ricciCoeff_split (g gm : SmoothRiemannianMetric I M) :
     linearizedRicciConnDiffOrder0CoeffField (I := I) (M := M) g gm =
       ricciAAArm (I := I) (M := M) g gm +
@@ -291,8 +271,6 @@ private lemma ricPerm2_eval (x : M) (D : Tensor0SSpace 2 I x)
   exact congrArg _ (funext fun j => by fin_cases j <;> rfl)
 
 omit [NeZero (Module.finrank Real E)] in
-/-- The derivative kernel consists of exactly the two expected contractions
-of `covGrad connDiffSection` against its rank-two input. -/
 theorem ricciDAKer_eval (g gm : SmoothRiemannianMetric I M) (x : M)
     (T : Tensor0SSpace 2 I x) (a b c d : TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -332,8 +310,6 @@ theorem ricciDAKer_eval (g gm : SmoothRiemannianMetric I M) (x : M)
   simp only [DA]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-/-- A single moving-metric trace is a `g`-orthonormal diagonal trace with
-one relative inverse-metric insertion. -/
 theorem ricTrace_eval (g gm : SmoothRiemannianMetric I M)
     (Z : SmoothCcTensor g 0 4) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2
@@ -374,8 +350,6 @@ theorem ricTrace_eval (g gm : SmoothRiemannianMetric I M)
   congr 1
   funext k
   fin_cases k <;> rfl
-
-/-! ## The genuine one-moving-trace flux -/
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -432,8 +406,6 @@ private lemma ricUnit_smul (g : SmoothRiemannianMetric I M) (s : Nat)
     rfl
   rw [unitModel, unitModel, h, Tensor0SSpace.toModel_smul]
 
-/-- Rank-four flux left after the signed Ricci four-trace cancellation.  It
-contains exactly one relative inverse-metric insertion. -/
 def ricciDAFlux (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 4 :=
   let WR : SmoothCcTensor g 0 2 :=
@@ -445,8 +417,6 @@ def ricciDAFlux (g gm : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-/-- Component formula for `ricciDAFlux`.  In a `g`-orthonormal frame it is
-`W[p,u] W(L v,r) - W[u,v] W(L p,r)`. -/
 theorem ricciDAFlux_eval (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M) (v : Fin 4 → E) :
     unitModel (I := I) (M := M) g 4
@@ -476,11 +446,6 @@ theorem ricciDAFlux_eval (g gm : SmoothRiemannianMetric I M)
   simp_rw [ricUpdate2Zero]
   simp
 
-/-! ## A slot-aligned carrier for the Green pairing -/
-
-/-- Covariant derivative of the lowered connection difference, with slots
-ordered as `[r,p,u,v]`.  Thus its component at those slots is
-`g ((nabla_p A) u v) r`. -/
 def ricciDAG (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 0 4 :=
   domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 4) 1)
@@ -488,19 +453,12 @@ def ricciDAG (g gm : SmoothRiemannianMetric I M) :
       (domDomCongrSection (I := I) g (finRotate 3)
         (connDiffLoweredCc (I := I) g gm)))
 
-/-- The two-term Ricci derivative partner, ordered to pair directly with
-`ricciDAG`.  At slots `[r,p,u,v]` it is
-`W[p,u] W(L v,r) - W[u,v] W(L p,r)`. -/
 def ricciDAPart (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 4 :=
   domDomCongrSection (I := I) g ricPerm3012.symm
     (ricciDAFlux (I := I) (M := M) g gm W)
 
 omit [NeZero (Module.finrank Real E)] in
-/-- The Ricci DA flux is a difference of a rank-four product and one slot
-permutation of that product, so every covariant-derivative fibre norm costs at
-most the universal factor four.  This public estimate hides the internal
-choice of component permutation. -/
 theorem ricciFlux_rfns (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (j : Nat) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
@@ -542,9 +500,6 @@ theorem ricciFlux_rfns (g gm : SmoothRiemannianMetric I M)
     _ = _ := by rfl
 
 omit [NeZero (Module.finrank Real E)] in
-/-- The outer slot alignment in `ricciDAPart` preserves every covariant
-derivative fibre norm.  This is the bound-facing interface which hides the
-internal alignment permutation. -/
 theorem ricciPart_rfns (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (j : Nat) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
@@ -559,8 +514,6 @@ theorem ricciPart_rfns (g gm : SmoothRiemannianMetric I M)
       (ricciDAFlux (I := I) (M := M) g gm W) j x
 
 omit [NeZero (Module.finrank Real E)] in
-/-- `ricciDAG` is just the first-two-slot swap of the covariant derivative
-of the rotated lowered connection-difference tensor. -/
 theorem ricciDAG_eval (g gm : SmoothRiemannianMetric I M)
     (x : M) (v : Fin 4 → E) :
     unitModel (I := I) (M := M) g 4
@@ -719,8 +672,6 @@ private lemma ricRS13_pair (x : M) (B : TensorRSSpace 1 3 I x)
     rw [map_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul])
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
-/-- Public realization of the connection difference by raising the first
-slot of its lowered covariant tensor. -/
 theorem connRaise_eq (g gm : SmoothRiemannianMetric I M) :
     connDiffSection (I := I) gm g =
       cometricRaiseSlot0Field (I := I) (M := M) g 1
@@ -800,8 +751,6 @@ theorem connRaise_eq (g gm : SmoothRiemannianMetric I M) :
     (PDE.DeTurck.connDiff (I := I) gm g x (YZ 0) (YZ 1))]
 
 omit [NeZero (Module.finrank Real E)] in
-/-- The covariant derivative consumed by the Ricci derivative kernel is the
-first-slot raise of the slot-aligned lowered carrier `ricciDAG`. -/
 theorem covConnRaise_eq (g gm : SmoothRiemannianMetric I M) :
     covGrad (I := I) (M := M) g 1 2 (connDiffSection (I := I) gm g) =
       cometricRaiseSlot0Field (I := I) (M := M) g 2
@@ -811,8 +760,6 @@ theorem covConnRaise_eq (g gm : SmoothRiemannianMetric I M) :
   rfl
 
 omit [NeZero (Module.finrank Real E)] in
-/-- Pairing the vector reconstructed from the raised derivative tensor with
-its lowering slot recovers the corresponding `ricciDAG` component. -/
 theorem ricciDAG_pair (g gm : SmoothRiemannianMetric I M) (x : M)
     (r p u v : TangentSpace I x) :
     g.inner x
@@ -884,8 +831,6 @@ private lemma ricL_self (g gm : SmoothRiemannianMetric I M) (x : M)
     (g0FlatCLM (I := I) g x v) w]
   rw [cotangentToDual_g0FlatCLM]
 
-/-- Vector-valued component of the covariant derivative of the connection
-difference. -/
 def ricDAVec (g gm : SmoothRiemannianMetric I M) (x : M)
     (a b c : TangentSpace I x) : TangentSpace I x :=
   rs13ContrVec (I := I) (M := M) x
@@ -895,8 +840,6 @@ def ricDAVec (g gm : SmoothRiemannianMetric I M) (x : M)
     ![a, b, c]
 
 omit [NeZero (Module.finrank Real E)] in
-/-- Lowering `ricDAVec` in its output slot gives the corresponding
-`ricciDAG` component. -/
 theorem ricDAVec_pair (g gm : SmoothRiemannianMetric I M) (x : M)
     (r p u v : TangentSpace I x) :
     g.inner x (ricDAVec (I := I) (M := M) g gm x p u v) r =
@@ -906,8 +849,6 @@ theorem ricDAVec_pair (g gm : SmoothRiemannianMetric I M) (x : M)
     ricciDAG_pair (I := I) (M := M) g gm x r p u v
 
 omit [NeZero (Module.finrank Real E)] in
-/-- Evaluation of the derivative-only kernel after applying it to a
-covariant two-tensor. -/
 theorem ricciDAKer_app (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M)
     (a b c d : TangentSpace I x) :
@@ -925,8 +866,6 @@ theorem ricciDAKer_app (g gm : SmoothRiemannianMetric I M)
         W.toSection x) (unitTensor (I := I) (M := M) x)) a b c d
 
 omit [NeZero (Module.finrank Real E)] in
-/-- The derivative of the connection difference remains symmetric in the
-two connection-input slots. -/
 theorem ricDAVec_symm (g gm : SmoothRiemannianMetric I M) (x : M)
     (a b c : TangentSpace I x) :
     ricDAVec (I := I) (M := M) g gm x a b c =
@@ -1254,8 +1193,6 @@ private lemma ricSwap_point (g : SmoothRiemannianMetric I M)
   simp [sigma]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] in
-/-- Moving the first-two-slot swap from one rank-four covariant tensor to the
-other leaves the global `L²` pairing unchanged. -/
 theorem ricSwap_l2 (g : SmoothRiemannianMetric I M)
     (A B : SmoothCcTensor g 0 4) :
     tensorL2Inner (I := I) (M := M) g 0 4 A.toFun
@@ -1272,7 +1209,6 @@ theorem ricSwap_l2 (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-/-- Component formula for the slot-aligned Ricci derivative partner. -/
 theorem ricciDAPart_eval (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M) (v : Fin 4 → E) :
     unitModel (I := I) (M := M) g 4
@@ -1293,8 +1229,6 @@ theorem ricciDAPart_eval (g gm : SmoothRiemannianMetric I M)
   simp
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M] in
-/-- The Ricci four-trace is the signed half-sum of four genuine single
-moving-metric traces. -/
 theorem ricFour_eval (g gm : SmoothRiemannianMetric I M)
     (Z : SmoothCcTensor g 0 4) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2
@@ -1358,8 +1292,6 @@ theorem ricFour_eval (g gm : SmoothRiemannianMetric I M)
           (ricciArmPrincipalCoeffPure (I := I) (M := M) g gm) Z3) x v)
   rw [h1, h2, h3]
 
-/-- Pointwise eight-term expansion of the Ricci derivative arm before the
-last-two-slot and formal-adjoint cancellations. -/
 theorem ricciDAOut_eval (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) (x : M) (v : Fin 2 → E) :
     let e : Fin (Module.finrank Real E) → TangentSpace I x :=
@@ -1476,8 +1408,6 @@ private lemma ricW_D (g gm : SmoothRiemannianMetric I M)
       (ricDAVec (I := I) (M := M) g gm x p u v),
     ricDAVec_pair]
 
-/-- After the connection-input and test-tensor symmetries, the pointwise
-eight-term Ricci derivative output reduces to three terms. -/
 theorem ricciDAOut_red (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1653,8 +1583,6 @@ private lemma ricMove4 (g gm : SmoothRiemannianMetric I M)
       refine Finset.sum_congr rfl fun p _ => ?_
       rw [ricW_symm (I := I) (M := M) g W hWsymm x r (L (e p))]
 
-/-- Fully contracted pointwise formula for the Ricci derivative arm.  The
-two surviving components are exactly the two arms of `ricciDAPart`. -/
 theorem ricciDAOut_fin (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1897,8 +1825,6 @@ private theorem ricDA_point (g gm : SmoothRiemannianMetric I M)
       (w p u * h v r - w u v * h p r) * d r p u v
   exact ricPair_alg w h d
 
-/-- The derivative-only Ricci connection-difference arm pairs exactly with
-the rank-four single-relative-trace partner. -/
 theorem ricciDA_pair (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1915,23 +1841,17 @@ theorem ricciDA_pair (g gm : SmoothRiemannianMetric I M)
     (Filter.Eventually.of_forall fun x => ?_)
   exact ricDA_point (I := I) (M := M) g gm W hWsymm x
 
-/-- Rotated lowered connection difference whose covariant derivative is the
-unswapped carrier underlying `ricciDAG`. -/
 def ricciDABase (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 0 3 :=
   domDomCongrSection (I := I) g (finRotate 3)
     (connDiffLoweredCc (I := I) g gm)
 
-/-- Formal adjoint of the slot-aligned Ricci derivative partner. -/
 def ricciDAAdj (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) : SmoothCcTensor g 0 3 :=
   covDivergence (I := I) (M := M) g 3
     (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 4) 1)
       (ricciDAPart (I := I) (M := M) g gm W))
 
-/-- Closed-manifold Green identity for the derivative-only Ricci
-connection-difference arm.  The covariant derivative has been transferred
-entirely to the explicit single-relative-trace partner. -/
 theorem ricciDA_green (g gm : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1970,9 +1890,8 @@ theorem ricciDA_green (g gm : SmoothRiemannianMetric I M)
       (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 4) 1)
         (ricciDAPart (I := I) (M := M) g gm W))).toFun]
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

@@ -1,18 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageDiagonal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageInjectivity
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-/-!
-# Master-subsequence stage geometry
-
-The integer-radius diagonal records each fixed-radius stage package on a tail
-of one master selector.  This file transports the already proved local
-diffeomorphism, injectivity, and pointedness tails to the manifolds indexed
-directly by that master selector.  Only point/manifold indices are transported;
-the radius-local `LiveSlot` and `InterSlot` types are never identified across
-subsequences.
--/
 
 noncomputable section
 
@@ -31,8 +22,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-/-- Transport a finite-stage comparison map along equalities of its two
-ambient sequence indices. -/
 noncomputable def stageMapCast
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -101,11 +90,6 @@ private theorem cast_geom
   subst L'
   simpa only [stageMapCast] using hgeom
 
-/-- A fixed integer-radius tail supplies the first three Step-B1 comparison
-fields directly on the master sequence: local diffeomorphism on the retained
-open ball, global injectivity there, and exact basepoint preservation.  The
-witnessed radius-tail selector and index equality are retained so downstream
-metric estimates can use the very same transported map. -/
 theorem HasRadiusTail.geom_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

@@ -1,14 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateCover
 
-/-!
-# Parameterized shell bound for the late Koch--Lamm potential
-
-The `k`-th spatial shell has inner radius `kR` and outer radius `(k+1)R`.
-This file proves its measurable geometry and applies the finite-cover estimate
-under exactly the cardinality and covering conclusions supplied by the
-canonical quantitative-cover theorem.  It does not choose a cover itself.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -24,13 +15,11 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- The half-open shell of radii `[kR, (k+1)R)`. -/
 def klLateShell (x : V) (R : ℝ) (k : ℕ) : Set V :=
   Metric.ball x (((k + 1 : ℕ) : ℝ) * R) \
     Metric.ball x ((k : ℝ) * R)
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [Nontrivial V] in
-/-- Every late shell is measurable. -/
 theorem klLateShell_mble (x : V) (R : ℝ) (k : ℕ) :
     MeasurableSet (klLateShell x R k) := by
   unfold klLateShell
@@ -39,7 +28,6 @@ theorem klLateShell_mble (x : V) (R : ℝ) (k : ℕ) :
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- A shell lies in its outer closed ball. -/
 theorem klLateShell_sub (x : V) (R : ℝ) (k : ℕ) :
     klLateShell x R k ⊆
       Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) := by
@@ -47,8 +35,6 @@ theorem klLateShell_sub (x : V) (R : ℝ) (k : ℕ) :
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Membership outside the inner open ball gives the lower distance used by
-the Gaussian tail estimate. -/
 theorem klLateShell_far (x : V) (R : ℝ) (k : ℕ) :
     ∀ y ∈ klLateShell x R k, (k : ℝ) * R ≤ ‖x - y‖ := by
   intro y hy
@@ -58,8 +44,6 @@ theorem klLateShell_far (x : V) (R : ℝ) (k : ℕ) :
   simpa only [dist_comm, dist_eq_norm] using hdist
 
 omit [CompleteSpace F] in
-/-- A finite shell cover with the canonical polynomial cardinality bound
-inherits the Gaussian late-source estimate. -/
 theorem klLateShell_norm {T R : ℝ} {A₁ A_q : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)

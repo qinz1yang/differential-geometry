@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricCovariantSmoothness
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -7,18 +10,17 @@ open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Tensor
-open DifferentialGeometry.PDE.RicciFlow.HebeyBlock
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
-open Tensor0SBundle
+open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -107,10 +109,6 @@ private theorem tensor02_pairing_contMDiff
   intro x
   exact (contMDiffAt_section (F := ℝ) (E := fun _ : M => ℝ) x).mp (h2 x)
 
-
-
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem tensor04_pairing_contMDiff
@@ -140,10 +138,6 @@ private theorem tensor04_pairing_contMDiff
         TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
       (b := fun b : M => b) (ϕ := fun b => S b) (v := fun b => Y b) hS hY
   exact tensor03_pairing_contMDiff h1 hZ hW hU
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem chartFrame_component_contMDiffOn_aux
@@ -180,8 +174,6 @@ private theorem chartFrame_component_contMDiffOn_aux
     rw [hb i, hb j]
   exact h_chart_at.contMDiffWithinAt
 
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem metricDiff02_contMDiff (g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -200,8 +192,6 @@ private theorem metricDiff02_contMDiff (g₁ g₂ : SmoothRiemannianMetric I M) 
   rw [hsub]
   exact g₁.contMDiff.sub_section g₂.contMDiff
 
-
-
 private def metricDiff02ModelFun (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x :=
   Tensor0SSpace.ofModel (I := I)
@@ -216,8 +206,6 @@ private theorem metricDiff02ModelFun_toModel_apply
   unfold metricDiff02ModelFun
   rw [Tensor0SSpace.toModel_ofModel]
   exact biForm₂ToModel_apply (TangentSpace I x) (metricDiff02 (I := I) g₁ g₂ x) v
-
-
 
 set_option backward.isDefEq.respectTransparency false in
 def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -260,9 +248,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCom
       metricDiff02 (I := I) g₁ g₂ x (v 0) (v 1) :=
   metricDiff02ModelFun_toModel_apply (I := I) g₁ g₂ x v
 
-
-
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem metricDiff02Cov_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -286,8 +271,6 @@ private theorem metricDiff02Cov_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetr
   rw [hsub]
   exact (tensor02Cov_metric_contMDiff (I := I) g₀ g₁).sub_section
     (tensor02Cov_metric_contMDiff (I := I) g₀ g₂)
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem chartFrame_component3_contMDiffOn_aux
@@ -327,8 +310,6 @@ private theorem chartFrame_component3_contMDiffOn_aux
     rw [hc i, hc j, hc k]
   exact h_chart_at.contMDiffWithinAt
 
-
-
 private def metricDiff02CovModelFun (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 3 I x :=
   Tensor0SSpace.ofModel (I := I)
@@ -343,8 +324,6 @@ private theorem metricDiff02CovModelFun_toModel_apply
   unfold metricDiff02CovModelFun
   rw [Tensor0SSpace.toModel_ofModel]
   exact triFormToModel_apply (TangentSpace I x) (metricDiff02Cov (I := I) g₀ g₁ g₂ x) v
-
-
 
 set_option backward.isDefEq.respectTransparency false in
 def metricDiff02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -389,9 +368,6 @@ omit [NeZero (Module.finrank ℝ E)] in
       metricDiff02Cov (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) :=
   metricDiff02CovModelFun_toModel_apply (I := I) g₀ g₁ g₂ x v
 
-
-
-
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem metricDiff02CovIterate_contMDiff (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -416,8 +392,6 @@ private theorem metricDiff02CovIterate_contMDiff (g₀ g₁ g₂ : SmoothRiemann
     exact congrArg _ (metricDiff02CovIterate_eq_sub (I := I) g₀ g₁ g₂ c)
   rw [hsub]
   exact hS₁.sub_section hS₂
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem chartFrame_component4_contMDiffOn_aux
@@ -458,8 +432,6 @@ private theorem chartFrame_component4_contMDiffOn_aux
     rw [hc i, hc j, hc k, hc l]
   exact h_chart_at.contMDiffWithinAt
 
-
-
 private def metricDiff02CovIterateModelFun (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 4 I x :=
   Tensor0SSpace.ofModel (I := I)
@@ -474,8 +446,6 @@ private theorem metricDiff02CovIterateModelFun_toModel_apply
   unfold metricDiff02CovIterateModelFun
   rw [Tensor0SSpace.toModel_ofModel]
   exact quadFormToModel_apply (TangentSpace I x) (metricDiff02CovIterate (I := I) g₀ g₁ g₂ x) v
-
-
 
 set_option backward.isDefEq.respectTransparency false in
 def metricDiff02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -520,15 +490,11 @@ omit [NeZero (Module.finrank ℝ E)] in
       metricDiff02CovIterate (I := I) g₀ g₁ g₂ x (v 0) (v 1) (v 2) (v 3) :=
   metricDiff02CovIterateModelFun_toModel_apply (I := I) g₀ g₁ g₂ x v
 
-
-
 set_option backward.isDefEq.respectTransparency false in
 def metricDiff02MixedSection (g₁ g₂ : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun x : M => TensorRSSpace 0 2 I x)⟯ :=
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
     (E := (TangentSpace I : M → Type _)) ∞ (metricDiff02Field (I := I) g₁ g₂)
-
-
 
 set_option backward.isDefEq.respectTransparency false in
 def metricDiff02CovMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
@@ -536,17 +502,14 @@ def metricDiff02CovMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
     (E := (TangentSpace I : M → Type _)) ∞ (metricDiff02CovField (I := I) g₀ g₁ g₂)
 
-
-
 set_option backward.isDefEq.respectTransparency false in
 def metricDiff02CovIterateMixedSection (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; TensorRSModel 0 4 ℝ E, (fun x : M => TensorRSSpace 0 4 I x)⟯ :=
   MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
     (E := (TangentSpace I : M → Type _)) ∞ (metricDiff02CovIterateField (I := I) g₀ g₁ g₂)
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

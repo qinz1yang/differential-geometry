@@ -3,13 +3,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjCriticalSpan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjGalerkinLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjGalerkinOn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjPotentialSpan
-
-/-!
-# Compact-span scalar Galerkin compactness
-
-This file assembles the prescribed-interval moving-operator, finite-dimensional
-ODE, energy, and compactness producers on a compact regular-time slab.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -20,10 +16,10 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -31,12 +27,10 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+  [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-/-- A compact regular-time slab has one backward radius such that every
-requested shorter interval supports a full scalar Galerkin subsequence. -/
 theorem gal_span
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -55,7 +49,7 @@ theorem gal_span
               IsConjGalSubseq (I := I) (M := M) S T h u0 V phi ulim := by
   classical
   obtain ⟨ρ2, hρ2, hρ2one, hA2⟩ :=
-    lapA20_span (I := I) (M := M) S.family hS.smoothMetric hab
+    lapA20_span (I := I) (M := M) S.family.metric hS.smoothMetric hab
   obtain ⟨ρc, hρc, hρcone, hcritSpan⟩ :=
     scalar_crit_span (I := I) (M := M) S hS hab
   let ρ : Real := min ρ2 ρc
@@ -89,9 +83,6 @@ theorem gal_span
   have hsub := gal_subseq_on (I := I) (M := M) S T hh hbound hpert
   exact ⟨hreg, hsub⟩
 
-/-- A compact regular-time slab has one backward radius such that every
-requested shorter interval carries a Galerkin subsequence and its classical
-heat-potential reconstruction on exactly that interval. -/
 theorem gallim_span
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -122,7 +113,7 @@ theorem gallim_span
   obtain ⟨ρg, hρg, hρgone, hgal⟩ :=
     gal_span (I := I) (M := M) S hS hab
   obtain ⟨ρa, hρa, hρaone, hA20⟩ :=
-    lapA20_span (I := I) (M := M) S.family hS.smoothMetric hab
+    lapA20_span (I := I) (M := M) S.family.metric hS.smoothMetric hab
   let ρ : Real := min ρg ρa
   have hρ : 0 < ρ := lt_min hρg hρa
   have hρone : ρ ≤ 1 := (min_le_left ρg ρa).trans hρgone
@@ -138,9 +129,6 @@ theorem gallim_span
   refine ⟨V, phi, ulim, hlim, ?_⟩
   exact gallim_on (I := I) (M := M) hS hh hlim hreg hcore
 
-/-- Unless the manifold is empty, a compact regular-time slab has one
-backward radius on which every requested shorter interval carries a positive
-unit-mass classical conjugate heat potential. -/
 theorem gallim_unit_span
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)

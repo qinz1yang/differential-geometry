@@ -11,6 +11,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferen
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityBaseDataLocalRegularity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityIntegrationByParts
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentityVanishingOffSupport
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -55,7 +56,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma integrable_mul_triple_of_tsupport {Ω K : Set EuclN}
@@ -181,11 +181,6 @@ private lemma integral_add_thirteen {α : Type*} [MeasurableSpace α]
     MeasureTheory.integral_add hs2 h3,
     MeasureTheory.integral_add h1 h2]
 
--- Residual diffuse `whnf`/`isDefEq` cost of this ~1600-line chart identity. Factoring its
--- integral-additivity (`integral_add_thirteen`), triple-integrability
--- (`integrable_mul_triple_of_tsupport`), fderiv-apply (`fderiv_apply_continuousOn_of_contDiffOn`)
--- and sum-distribution steps into the lemmas above cut the needed budget from 4000000 to ~230000
--- (default 200000); the remainder is spread across the 295-line numerator-decomposition block.
 private lemma numerator_secondOrder_decomp
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -648,7 +643,6 @@ private lemma numerator_secondOrder_decomp
   rw [h_int_split, eq_intA1, eq_intA2, eq_intA3, eq_intB1, eq_intB2,
     eq_intC1, eq_intC2, eq_intC3, eq_intC4, eq_intD1, eq_intD2, eq_intE1, eq_intE2]
 
-
 theorem twice_differentiated_variational_identity_holds
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -686,7 +680,6 @@ theorem twice_differentiated_variational_identity_holds
     base_f_chart_memW1p_from_residual_memW1p (I := I) (M := M) g α hu_h
       (fChartResidual_memW1p_truly_unconditional (I := I) (M := M) g α hu_h)
   let ψl₂ : EuclN → ℝ := fun y => (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1)
-   
   have hψl₂_smooth : ContDiff ℝ (⊤ : ℕ∞) ψl₂ :=
     contDiff_fderiv_apply_single (ψ := ψ) hψ_smooth l₂
   have hψl₂_cs : HasCompactSupport ψl₂ :=

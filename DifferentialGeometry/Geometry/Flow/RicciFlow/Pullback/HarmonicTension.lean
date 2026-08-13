@@ -1,25 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.DeTurckNaturality
-import DifferentialGeometry.Geometry.Metric.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.PushforwardVF
-
-/-!
-# Harmonic-map tension for diffeomorphisms
-
-For a diffeomorphism `Φ : M → M`, the tension of
-
-```text
-Φ : (M, g) → (M, g_bg)
-```
-
-can be read on the domain by pulling the target metric back.  The resulting
-domain vector is the `g`-trace of
-`∇^(Φ*g_bg) - ∇^g`; pushing that vector through `dΦ` gives the usual tension
-at the target point.  This formulation avoids choosing coordinates or a
-connection on a not-yet-constructed mapping-space bundle.
-
-The identity-map specialization proves the sign needed by the reverse
-DeTurck gauge: its tension is `- deTurckVF g g_bg`.
--/
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Metric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Pullback.PushforwardVF
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
@@ -29,7 +12,7 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
 
 open DifferentialGeometry
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.DeTurck
 
@@ -43,8 +26,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
   [BoundarylessManifold I M] in
-/-- Reversing the two Levi-Civita connections reverses the sign of their
-connection-difference tensor. -/
 theorem connDiff_neg (g h : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     connDiff (I := I) h g x u v = -connDiff (I := I) g h x u v := by
@@ -52,8 +33,6 @@ theorem connDiff_neg (g h : SmoothRiemannianMetric I M) (x : M)
   rw [connDiff_self] at hcycle
   exact eq_neg_of_add_eq_zero_left hcycle.symm
 
-/-- The tension of the identity map `(M,g) → (M,h)`, defined intrinsically
-as the `g`-orthonormal-frame trace of `∇^h - ∇^g`. -/
 def idTension (g h : SmoothRiemannianMetric I M) :
     ∀ x : M, TangentSpace I x := fun x =>
   ∑ i : Fin (Module.finrank ℝ E),
@@ -62,8 +41,6 @@ def idTension (g h : SmoothRiemannianMetric I M) :
       (smoothOrthoFrame (I := I) g x i x)
 
 omit [SigmaCompactSpace M] in
-/-- The identity-map tension has the opposite sign from the DeTurck vector
-field, because `deTurckVF g h` traces `∇^g - ∇^h`. -/
 theorem idTension_eq (g h : SmoothRiemannianMetric I M) (x : M) :
     idTension (I := I) g h x =
       -(deTurckVF (I := I) g h :
@@ -77,8 +54,6 @@ theorem idTension_eq (g h : SmoothRiemannianMetric I M) (x : M) :
     (smoothOrthoFrame (I := I) g x i x)
     (smoothOrthoFrame (I := I) g x i x)
 
-/-- The smooth bundled identity-map tension field.  The preceding theorem
-identifies its value with the intrinsic connection trace. -/
 def idTensionVF (g h : SmoothRiemannianMetric I M) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
   -(deTurckVF (I := I) g h)
@@ -90,19 +65,11 @@ omit [SigmaCompactSpace M] in
   rw [idTensionVF, idTension_eq]
   rfl
 
-/-- The tension vector field of a diffeomorphism
-`Φ : (M,g) → (M,h)`, expressed as the pushforward of the identity tension
-from `(M,g)` to `(M, Φ*h)`.
-
-Evaluating this target vector field at `Φ x` gives the standard tension along
-the map at the source point `x`. -/
 def diffeoTension (g h : SmoothRiemannianMetric I M)
     (Φ : M ≃ₘ⟮I, I⟯ M) : ∀ y : M, TangentSpace I y :=
   Diffeomorph.pushforward Φ
     (idTension (I := I) g (Diffeomorph.pullbackMetric h Φ))
 
-/-- At the image of a source point, diffeomorphism tension is the differential
-of `Φ` applied to the negative DeTurck field of `g` relative to `Φ*h`. -/
 theorem tension_image (g h : SmoothRiemannianMetric I M)
     (Φ : M ≃ₘ⟮I, I⟯ M) (x : M) :
     diffeoTension (I := I) g h Φ (Φ x) =
@@ -112,9 +79,6 @@ theorem tension_image (g h : SmoothRiemannianMetric I M)
   rw [diffeoTension, Diffeomorph.pushforward_image,
     idTension_eq, map_neg]
 
-/-- Diffeomorphism tension is the negative pushed-forward DeTurck vector
-field.  This target-vector-field form is the one used when differentiating the
-inverse gauge family. -/
 theorem tension_eq_push (g h : SmoothRiemannianMetric I M)
     (Φ : M ≃ₘ⟮I, I⟯ M) (y : M) :
     diffeoTension (I := I) g h Φ y =
@@ -133,9 +97,6 @@ theorem tension_eq_DT (g h : SmoothRiemannianMetric I M)
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y := by
   rw [tension_eq_push, push_deTurckVF]
 
-/-- A harmonic-map heat equation written with `diffeoTension` has exactly the
-negative pushed-forward gauge velocity required by the inverse-family lemma
-`symm_gauge_vel`. -/
 theorem hmf_neg_gauge
     (g : ℝ → SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric I M) (T : ℝ)
@@ -156,8 +117,6 @@ theorem hmf_neg_gauge
   intro x t ht
   simpa only [tension_eq_push] using hHMF x t ht
 
-/-- Target-metric form of harmonic-map heat flow: its velocity is the
-negative DeTurck field of the inverse-pulled source metric. -/
 theorem hmf_target_gauge
     (g : ℝ → SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric I M) (T : ℝ)
@@ -178,8 +137,6 @@ theorem hmf_target_gauge
   intro x t ht
   simpa only [tension_eq_DT] using hHMF x t ht
 
-/-- At the identity diffeomorphism, diffeomorphism tension reduces exactly to
-the negative DeTurck vector field. -/
 @[simp] theorem tension_refl
     (g h : SmoothRiemannianMetric I M) (x : M) :
     diffeoTension (I := I) g h (Diffeomorph.refl I M ∞) x =

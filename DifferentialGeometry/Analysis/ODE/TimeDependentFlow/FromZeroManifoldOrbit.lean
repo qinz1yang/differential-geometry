@@ -2,12 +2,14 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Mani
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOperator.ConventionBridge
 import DifferentialGeometry.Analysis.ODE.ForwardVariationalFromZero
 import Mathlib.Geometry.Manifold.IntegralCurve.Basic
+open DifferentialGeometry.Geometry.Curvature
 
 
 open Set Function Filter Metric Bundle
 open scoped Topology NNReal ContDiff Manifold
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.ODE
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [CompleteSpace E]
@@ -386,4 +388,4 @@ private lemma fromZeroChartField_center_eq
   rw [fromZeroChartField_eq_tangentCoordChange, hsymm]
   exact tangentCoordChange_self (I := I) (mem_extChartAt_source α)
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

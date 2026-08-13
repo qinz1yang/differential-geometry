@@ -2,21 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.FrozenDuhamel
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelSPD
 import Mathlib.Analysis.InnerProductSpace.CanonicalTensor
 
-/-!
-# Frozen positive-definite Duhamel evolution
-
-This file conjugates the dimension-generic isotropic producer in
-`FrozenDuhamel` by the canonical positive square root of a real
-positive-definite matrix.  It exposes the value, gradient, and Hessian maps
-in the original coordinates and proves the actual constant-coefficient PDE
-
-`(∂ₜ - A : D²) H_A(a ⊗ u) = a(t) u`.
-
-The matrix contraction is not hidden behind an assumed operator identity.
-`spd_factorLap` expands the square-root trace and identifies it with the
-double matrix contraction.
--/
-
 noncomputable section
 
 open MeasureTheory Real Matrix
@@ -32,8 +17,6 @@ variable {V F : Type*}
   [NormedAddCommGroup V] [NormedSpace ℝ V]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Precomposition of a bounded continuous function by a continuous linear
-equivalence. -/
 def linPullBcf (L : V ≃L[ℝ] V) (u : BoundedContinuousFunction V F) :
     BoundedContinuousFunction V F where
   toFun := fun x => u (L x)
@@ -48,8 +31,19 @@ theorem linPullBcf_apply (L : V ≃L[ℝ] V)
     (u : BoundedContinuousFunction V F) (x : V) :
     linPullBcf L u x = u (L x) := rfl
 
-/-- Precompose a continuous linear map by `L`, bundled as a continuous
-linear operation on the operator space. -/
+omit [NormedSpace ℝ F] in
+theorem norm_linPullBcf (L : V ≃L[ℝ] V)
+    (u : BoundedContinuousFunction V F) :
+    ‖linPullBcf L u‖ = ‖u‖ := by
+  apply le_antisymm
+  · rw [BoundedContinuousFunction.norm_le (norm_nonneg u)]
+    intro x
+    exact u.norm_coe_le_norm (L x)
+  · rw [BoundedContinuousFunction.norm_le (norm_nonneg (linPullBcf L u))]
+    intro x
+    simpa only [linPullBcf_apply, ContinuousLinearEquiv.apply_symm_apply] using
+      (linPullBcf L u).norm_coe_le_norm (L.symm x)
+
 def precompJet (L : V ≃L[ℝ] V) :
     (V →L[ℝ] F) →L[ℝ] V →L[ℝ] F :=
   (ContinuousLinearMap.compL ℝ V V F).flip
@@ -60,7 +54,11 @@ theorem precompJet_apply (L : V ≃L[ℝ] V) (D : V →L[ℝ] F) (v : V) :
     precompJet L D v = D (L v) := by
   simp [precompJet, ContinuousLinearMap.compL_apply]
 
-/-- Apply `L` in both slots of a bounded bilinear map. -/
+theorem norm_precompJet_le (L : V ≃L[ℝ] V) (D : V →L[ℝ] F) :
+    ‖precompJet L D‖ ≤ ‖(L : V →L[ℝ] V)‖ * ‖D‖ := by
+  rw [mul_comm]
+  exact D.opNorm_comp_le (L : V →L[ℝ] V)
+
 def pushHess (L : V ≃L[ℝ] V) :
     (V →L[ℝ] V →L[ℝ] F) →L[ℝ] V →L[ℝ] V →L[ℝ] F :=
   let P := precompJet (F := F) L
@@ -74,14 +72,46 @@ theorem pushHess_apply (L : V ≃L[ℝ] V)
     pushHess L B v w = B (L v) (L w) := by
   simp [pushHess, precompJet, ContinuousLinearMap.compL_apply]
 
-/-- The first derivative jet of a pullback. -/
+theorem norm_pushHess_le (L : V ≃L[ℝ] V)
+    (B : V →L[ℝ] V →L[ℝ] F) :
+    ‖pushHess L B‖ ≤ ‖(L : V →L[ℝ] V)‖ ^ 2 * ‖B‖ := by
+  apply ContinuousLinearMap.opNorm_le_bound _
+    (mul_nonneg (sq_nonneg _) (norm_nonneg B))
+  intro v
+  apply ContinuousLinearMap.opNorm_le_bound _
+    (mul_nonneg (mul_nonneg (sq_nonneg _) (norm_nonneg B)) (norm_nonneg v))
+  intro w
+  rw [pushHess_apply]
+  calc
+    ‖B (L v) (L w)‖ ≤ ‖B (L v)‖ * ‖L w‖ :=
+      (B (L v)).le_opNorm (L w)
+    _ ≤ (‖B‖ * ‖L v‖) *
+        (‖(L : V →L[ℝ] V)‖ * ‖w‖) := by
+      gcongr
+      · exact B.le_opNorm (L v)
+      · exact (L : V →L[ℝ] V).le_opNorm w
+    _ ≤ (‖B‖ * (‖(L : V →L[ℝ] V)‖ * ‖v‖)) *
+        (‖(L : V →L[ℝ] V)‖ * ‖w‖) := by
+      gcongr
+      exact (L : V →L[ℝ] V).le_opNorm v
+    _ = (‖(L : V →L[ℝ] V)‖ ^ 2 * ‖B‖ * ‖v‖) * ‖w‖ := by
+      ring
+
+theorem lipschitzWith_pushHess (L : V ≃L[ℝ] V) :
+    LipschitzWith (‖(L : V →L[ℝ] V)‖₊ ^ 2)
+      (pushHess (F := F) L) := by
+  apply LipschitzWith.of_dist_le_mul
+  intro B C
+  rw [dist_eq_norm, ← map_sub]
+  simpa only [NNReal.coe_pow, coe_nnnorm, dist_eq_norm] using
+    norm_pushHess_le L (B - C)
+
 def pullJet1 (L : V ≃L[ℝ] V)
     (du : BoundedContinuousFunction V (V →L[ℝ] F)) :
     BoundedContinuousFunction V (V →L[ℝ] F) :=
   (precompJet (F := F) L).compLeftContinuousBounded V (linPullBcf L du)
 
 set_option maxSynthPendingDepth 8 in
-/-- The second derivative jet of a pullback. -/
 def pullJet2 (L : V ≃L[ℝ] V)
     (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F)) :
     BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F) := by
@@ -108,8 +138,6 @@ theorem pullJet2_apply (L : V ≃L[ℝ] V)
     pullJet2 L d2u x v w = d2u (L x) (L v) (L w) := by
   simp [pullJet2]
 
-/-- A globally realized first jet pulls back to the explicitly transformed
-jet. -/
 theorem linPull_fderiv (L : V ≃L[ℝ] V)
     (u : BoundedContinuousFunction V F)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
@@ -119,8 +147,6 @@ theorem linPull_fderiv (L : V ≃L[ℝ] V)
   simpa only [linPullBcf_apply, pullJet1_apply,
     ContinuousLinearMap.comp_apply] using h
 
-/-- A globally realized second jet pulls back to the explicitly transformed
-bilinear jet. -/
 theorem pullJet1_fderiv (L : V ≃L[ℝ] V)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
     (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F))
@@ -142,8 +168,6 @@ variable {V F : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The trace of a bilinear map may be computed in any finite orthonormal
-basis. -/
 theorem lapEval_basis {ι : Type*} [Fintype ι]
     (e : OrthonormalBasis ι ℝ V) (B : V →L[ℝ] V →L[ℝ] F) :
     lapEval B = ∑ i, B (e i) (e i) := by
@@ -157,15 +181,11 @@ theorem lapEval_basis {ι : Type*} [Fintype ι]
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
-/-- Trace in the directions obtained by applying a fixed linear equivalence
-to the canonical Euclidean orthonormal basis. -/
 def factorLap (L : Euc n ≃L[ℝ] Euc n)
     (B : Euc n →L[ℝ] Euc n →L[ℝ] F) : F :=
   ∑ i : n, B (L (EuclideanSpace.basisFun n ℝ i))
     (L (EuclideanSpace.basisFun n ℝ i))
 
-/-- Matrix contraction with a bilinear map in canonical Euclidean
-coordinates. -/
 def matrixLap (A : Matrix n n ℝ)
     (B : Euc n →L[ℝ] Euc n →L[ℝ] F) : F :=
   ∑ i : n, ∑ j : n,
@@ -173,8 +193,6 @@ def matrixLap (A : Matrix n n ℝ)
       (EuclideanSpace.basisFun n ℝ j)
 
 omit [DecidableEq n] in
-/-- Pulling a Hessian back by `L⁻¹` converts the factor trace for `L` to the
-ordinary isotropic trace. -/
 theorem factorLap_pull (L : Euc n ≃L[ℝ] Euc n)
     (B : Euc n →L[ℝ] Euc n →L[ℝ] F) :
     factorLap L (pushHess (F := F) L.symm B) = lapEval B := by
@@ -245,8 +263,6 @@ private theorem factorLap_self (L : Euc n ≃L[ℝ] Euc n)
   intro j hj
   rw [← Finset.sum_smul, hcoef]
 
-/-- The canonical positive square root factors exactly the explicit matrix
-contraction `A : B`. -/
 theorem spd_factorLap (A : Matrix n n ℝ) (hA : A.PosDef)
     (B : Euc n →L[ℝ] Euc n →L[ℝ] F) :
     factorLap (spdSqrtEquiv A hA) B = matrixLap A B := by
@@ -272,14 +288,12 @@ section SPDEvolution
 variable {n F : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- Frozen positive-definite Duhamel value in the original coordinates. -/
 def spdDuh (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction (Euc n) F) (x : Euc n) : F :=
   let L := spdSqrtEquiv A hA
   frozenDuh t a (linPullBcf L u) (L.symm x)
 
-/-- Realized gradient of the frozen positive-definite Duhamel value. -/
 def spdDuhD1 (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[ℝ] F))
@@ -288,7 +302,6 @@ def spdDuhD1 (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
   (frozenDuh t a (pullJet1 L du) (L.symm x)).comp
     (L.symm : Euc n →L[ℝ] Euc n)
 
-/-- Realized Hessian of the frozen positive-definite Duhamel value. -/
 def spdDuhD2 (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (d2u : BoundedContinuousFunction (Euc n)
@@ -329,7 +342,6 @@ theorem spdDuhD2_zero (A : Matrix n n ℝ) (hA : A.PosDef)
   simp [spdDuhD2]
 
 omit [CompleteSpace F] in
-/-- Original-coordinate value derivative. -/
 theorem spdDuh_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction (Euc n) F)
@@ -347,7 +359,6 @@ theorem spdDuh_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
   simpa only [spdDuh, spdDuhD1, L, ContinuousLinearMap.comp_apply] using h
 
 omit [CompleteSpace F] in
-/-- Original-coordinate gradient derivative realizes the Hessian map. -/
 theorem spdDuhD1_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[ℝ] F))
@@ -370,9 +381,6 @@ theorem spdDuhD1_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
   simpa only [spdDuhD1, spdDuhD2, L, Function.comp_apply,
     ContinuousLinearMap.comp_apply] using h
 
--- Elaborating the nested continuous-linear-map conjugation is expensive.
-/-- The original-coordinate Hessian contraction is the isotropic trace of
-the pulled-back Hessian. -/
 theorem spdDuh_lap (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (d2u : BoundedContinuousFunction (Euc n)
@@ -399,7 +407,6 @@ theorem spdDuh_lap (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     _ = lapEval B := hfactor
     _ = frozenDuh t a (coreLap d2p) (L.symm x) := hlap
 
-/-- Consumer-shaped frozen positive-definite zero-trace Duhamel PDE. -/
 theorem spdDuh_pde {t : ℝ} (ht : 0 < t)
     (A : Matrix n n ℝ) (hA : A.PosDef)
     (a da : BoundedContinuousFunction ℝ ℝ)

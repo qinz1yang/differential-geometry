@@ -1,19 +1,20 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.Cartan.Cancellation
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Pullback.Cartan.Cancellation
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import Mathlib.Analysis.Calculus.Deriv.Mul
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Analysis
 namespace ODE
 
 open Bundle Set
 open scoped Manifold Topology ContDiff
 open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.PDE.DeTurck
 open DifferentialGeometry.PDE.RicciFlow.Pullback
 
@@ -143,6 +144,5 @@ theorem variational_flow_feeds_cartan_witness
     h_A h_B h_A_value h_B_value h_total rfl
 
 end ODE
-end RicciFlow
-end PDE
+end Analysis
 end DifferentialGeometry

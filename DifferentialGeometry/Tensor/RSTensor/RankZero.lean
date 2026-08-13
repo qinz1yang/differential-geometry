@@ -1,14 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.Field
 
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 noncomputable section
@@ -24,8 +16,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable {n : WithTop ℕ∞} [IsManifold I 1 M] [IsManifold I (n + 1) M]
-
-
 
 noncomputable def TensorRSField.rs0 {s : ℕ}
     (T : TensorRSField n 0 s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
@@ -63,8 +53,6 @@ private theorem rankZero_eq_smul_one
     Tensor0SSpace.evalScalar_apply]
   exact congrArg (Tensor0SSpace.toModel c) (Subsingleton.elim v Fin.elim0)
 
-
-
 omit [IsManifold I (n + 1) M] in
 theorem TensorRSField.toRS0_rs0 {s : ℕ}
     (T : TensorRSField n 0 s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
@@ -84,7 +72,6 @@ theorem TensorRSField.toRS0_rs0 {s : ℕ}
           rw [map_smul]
     _ = T x c := congrArg (T x) (rankZero_eq_smul_one (n := n) x c).symm
 
-
 omit [IsManifold I (n + 1) M] in
 theorem TensorRSField.rs0_toRS0 {s : ℕ}
     (A : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
@@ -100,12 +87,10 @@ theorem TensorRSField.rs0_toRS0 {s : ℕ}
       (I := I) (M := M) n x Fin.elim0
   rw [hone, one_smul]
 
-
 noncomputable def TensorRSField.scalar0
     (T : TensorRSField n 0 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     M → 𝕜 :=
   (TensorRSField.rs0 (n := n) T).toScalarField n
-
 
 theorem TensorRSField.scalar0_smooth
   (T : TensorRSField n 0 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
@@ -167,8 +152,6 @@ theorem TensorRSField.scalar0_sub
   rw [sub_eq_add_neg, TensorRSField.scalar0_add, TensorRSField.scalar0_neg]
   rw [sub_eq_add_neg]
 
-
-
 theorem TensorRSField.lift_scalar0
     (T : TensorRSField n 0 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     (Tensor0SField.fromScalarField n (TensorRSField.scalar0 (n := n) T)
@@ -184,3 +167,4 @@ theorem TensorRSField.lift_scalar0
 end
 
 end Tensor0SBundle
+end DifferentialGeometry

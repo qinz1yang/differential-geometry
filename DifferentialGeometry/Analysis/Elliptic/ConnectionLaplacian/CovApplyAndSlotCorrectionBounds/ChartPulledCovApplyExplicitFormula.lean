@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartTensorRSCovariantDerivativeAgreement
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 open DifferentialGeometry.Integral.L2 (SmoothCcTensor)
@@ -11,11 +13,11 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -47,6 +49,7 @@ private lemma good_set_mem_baseSet_rs
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem chart_pulled_covApply_explicit_formula
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T :
@@ -145,7 +148,7 @@ theorem chart_pulled_covApply_explicit_formula
       (R := ℝ) hb_baseRS]
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem chart_pulled_covApply_explicit_formula_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T :
@@ -192,7 +195,7 @@ theorem chart_pulled_covApply_explicit_formula_target
   exact h
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem chart_pulled_covApply_explicit_formula_target_smoothCc
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s)
@@ -227,8 +230,8 @@ theorem chart_pulled_covApply_explicit_formula_target_smoothCc
   chart_pulled_covApply_explicit_formula_target (I := I) (M := M)
     g r s α T.toSection B hy_target hy_good
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

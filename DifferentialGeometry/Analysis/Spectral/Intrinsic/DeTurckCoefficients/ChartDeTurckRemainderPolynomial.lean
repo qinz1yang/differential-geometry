@@ -1,8 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChartLieDerivStructuralDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieMatrixChartBridge
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
-import DifferentialGeometry.Geometry.Flow.LieDerivativeChartFrameIdentity
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeChartFrameIdentity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonDeTurckPullback
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -11,13 +12,13 @@ open Bundle Set Matrix
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace DeTurckCoefficients
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
 
 section NormedSpaceModel
@@ -56,14 +57,14 @@ omit [SigmaCompactSpace M] in
 theorem deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS
     (g g_bg : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) {x : M}
-    (hx : x ∈ DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet (I := I) α) :
+    (hx : x ∈ DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet (I := I) α) :
     DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS (I := I) g_bg g x
           (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) α i x)
           (DifferentialGeometry.Integral.Measure.chartBasisVecFiber (I := I) α k x) =
       chartDeTurckRicciRHS (I := I) g g_bg α i k (extChartAt I α x) := by
   classical
   rw [DifferentialGeometry.PDE.RicciFlow.deTurckRicciRHS_apply]
-  rw [DifferentialGeometry.Integral.Connection.ricciTensor_chartBasisVec_alpha_eq
+  rw [DifferentialGeometry.Geometry.Connection.ricciTensor_chartBasisVec_alpha_eq
       (I := I) g α i k hx]
   rw [← DifferentialGeometry.PDE.DeTurck.chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
       (I := I) g (DifferentialGeometry.PDE.DeTurck.deTurckVF (I := I) g g_bg) α i k x hx]
@@ -177,9 +178,8 @@ theorem chartDeTurckRicciRHS_sub_eq_principalSymbol_add_lowerOrder
 end InnerProductSpaceModel
 
 end DeTurckCoefficients
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

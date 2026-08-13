@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.BallVolume
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -39,8 +40,7 @@ theorem exists_pair_rrm1_ge
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ C κ Blo : ℝ, 0 < ρ ∧ 0 < C ∧ 0 < κ ∧ 0 < Blo ∧ ∀ {Rm A Bhi R s : ℝ},
       0 ≤ Bhi → 0 ≤ Rm →
@@ -56,7 +56,7 @@ theorem exists_pair_rrm1_ge
           Rm * (C * R) ^ 2 ≤ κ →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -97,8 +97,7 @@ theorem exists_pair_rrm1
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ C κ Blo : ℝ, 0 < ρ ∧ 0 < C ∧ 0 < κ ∧ 0 < Blo ∧ ∀ {Rm A R s : ℝ},
       0 ≤ Rm →
@@ -114,7 +113,7 @@ theorem exists_pair_rrm1
           Rm * (C * R) ^ 2 ≤ κ →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -173,8 +172,7 @@ theorem exists_vol_pair_coeff
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {Rm b A Blo Bhi R s : ℝ},
       0 ≤ Blo → 0 ≤ Bhi → 0 ≤ Rm →
@@ -191,7 +189,7 @@ theorem exists_vol_pair_coeff
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p w t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -247,8 +245,7 @@ theorem exists_vol_pair_regionRm
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {Rm b A Blo Bhi R s : ℝ} {U : Set M},
       0 ≤ Blo → 0 ≤ Bhi → 0 ≤ Rm →
@@ -266,7 +263,7 @@ theorem exists_vol_pair_regionRm
         radialCurve (I := I) g p w t ∈ U) →
       (∀ q ∈ U,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -315,8 +312,7 @@ theorem exists_vol_pair_globalRm
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {Rm b A Blo Bhi R s : ℝ},
       0 ≤ Blo → 0 ≤ Bhi → 0 ≤ Rm →
@@ -332,7 +328,7 @@ theorem exists_vol_pair_globalRm
       s / Real.sqrt (gpCoerciveConst (I := I) g p) < R →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -380,8 +376,7 @@ theorem exists_vol_pair_globalRm1
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {Rm A Blo Bhi R s : ℝ},
       0 ≤ Blo → 0 ≤ Bhi → 0 ≤ Rm →
@@ -396,7 +391,7 @@ theorem exists_vol_pair_globalRm1
       s / Real.sqrt (gpCoerciveConst (I := I) g p) < R →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -444,8 +439,7 @@ theorem exists_vol_pair_rm1_ge
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ κ Blo : ℝ, 0 < ρ ∧ 0 < κ ∧ 0 < Blo ∧ ∀ {Rm A Bhi R s : ℝ},
       0 ≤ Bhi → 0 ≤ Rm →
@@ -462,7 +456,7 @@ theorem exists_vol_pair_rm1_ge
           Rm * ρ ^ 2 ≤ κ →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -503,8 +497,7 @@ theorem exists_vol_pair_rm1_auto
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ κ Blo : ℝ, 0 < ρ ∧ 0 < κ ∧ 0 < Blo ∧ ∀ {Rm A R s : ℝ},
       0 ≤ Rm →
@@ -521,7 +514,7 @@ theorem exists_vol_pair_rm1_auto
           Rm * ρ ^ 2 ≤ κ →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -580,8 +573,7 @@ theorem exists_vol_two_rm04
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {a K Rm Vb b A B R s : ℝ},
       0 ≤ B → 0 < a → 0 ≤ K → 0 ≤ Rm → 0 ≤ Vb → 0 ≤ b →
@@ -605,7 +597,7 @@ theorem exists_vol_two_rm04
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p w t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ w ∈ Metric.ball (0 : E) R,
         ContMDiff 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p w)) →
@@ -661,8 +653,7 @@ theorem exists_vol_rm04_pkg
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {a K Rm Vb b A B R s : ℝ},
       (D : Rm04FrameData (I := I) g p R b) →
@@ -698,8 +689,7 @@ theorem exists_vol_scale
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {K Rm Vb b A B R s : ℝ},
       (D : Rm04FrameData (I := I) g p R b) →
@@ -733,8 +723,7 @@ theorem exists_vol_scalar
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {K Rm Vb b A B R s : ℝ},
       0 ≤ B → 0 ≤ K → 0 ≤ Rm → 0 ≤ Vb →
@@ -754,7 +743,7 @@ theorem exists_vol_scalar
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p w t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -797,8 +786,7 @@ theorem exists_vol_launch
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {K Rm b A B R s : ℝ},
       0 ≤ B → 0 ≤ K → 0 ≤ Rm →
@@ -817,7 +805,7 @@ theorem exists_vol_launch
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p w t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -864,8 +852,7 @@ theorem exists_vol_coeff
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {Rm b A B R s : ℝ},
       0 ≤ B → 0 ≤ Rm →
@@ -882,7 +869,7 @@ theorem exists_vol_coeff
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p w t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -938,8 +925,7 @@ theorem exists_vol_regionRm
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {Rm b A B R s : ℝ} {U : Set M},
       0 ≤ B → 0 ≤ Rm →
@@ -957,7 +943,7 @@ theorem exists_vol_regionRm
         radialCurve (I := I) g p w t ∈ U) →
       (∀ q ∈ U,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -1006,8 +992,7 @@ theorem exists_vol_globalRm
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {Rm b A B R s : ℝ},
       0 ≤ B → 0 ≤ Rm →
@@ -1023,7 +1008,7 @@ theorem exists_vol_globalRm
       s / Real.sqrt (gpCoerciveConst (I := I) g p) < R →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -1071,8 +1056,7 @@ theorem exists_vol_globalRm1
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {Rm A B R s : ℝ},
       0 ≤ B → 0 ≤ Rm →
@@ -1087,7 +1071,7 @@ theorem exists_vol_globalRm1
       s / Real.sqrt (gpCoerciveConst (I := I) g p) < R →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -1138,8 +1122,7 @@ theorem exists_vol_rm1_ge
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ κ B : ℝ, 0 < ρ ∧ 0 < κ ∧ 0 < B ∧ ∀ {Rm A R s : ℝ},
       0 ≤ Rm →
@@ -1156,7 +1139,7 @@ theorem exists_vol_rm1_ge
           Rm * ρ ^ 2 ≤ κ →
       (∀ q : M,
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g q)) ≤ Rm) →
       (∀ k : Fin (Module.finrank ℝ E),
         Real.sqrt (g.inner p ((chartModelBasis E) k) ((chartModelBasis E) k)) ≤ A) →
@@ -1197,8 +1180,7 @@ theorem exists_vol_frame
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {K Rm Vb b A B R s : ℝ},
       0 ≤ B → 0 ≤ K → 0 ≤ Rm → 0 ≤ Vb →
@@ -1218,7 +1200,7 @@ theorem exists_vol_frame
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t (_ht : t ∈ Set.Ioo (0 : Real) b),
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
           (radialCurve (I := I) g p w t) 4
-          (DifferentialGeometry.Integral.Connection.metricRm04At
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g (radialCurve (I := I) g p w t))) ≤ Rm) →
       (∀ a : ℝ, 0 < a →
         (∀ k : Fin (Module.finrank ℝ E), ‖a • (chartModelBasis E) k‖ < ρ) →
@@ -1296,8 +1278,7 @@ theorem exists_metricBall_vol_two_local
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {c B Rlo Rup s : ℝ},
       0 ≤ B →
@@ -1354,8 +1335,7 @@ theorem exists_vol_two_same
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {c B R s : ℝ},
       0 ≤ B →
@@ -1401,8 +1381,7 @@ theorem exists_vol_two_meas
     [T3Space M] [ConnectedSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ x : M, ∀ w : TangentSpace I x,
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {c B R s : ℝ},
       0 ≤ B →
@@ -1439,11 +1418,6 @@ theorem exists_vol_two_meas
   exact htwo hB hRpos hR hρball hgs hdens hsR hsρ hsdiv
     (metricBall_meas (I := I) (M := M) p s) hJ
 
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricBall_vol_ge [PseudoMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1475,8 +1449,6 @@ theorem metricBall_vol_ge_sc [PseudoMetricSpace M]
       riemannianVolumeMeasure (I := I) (M := M) g (Metric.ball p s) := by
   simpa [modelHaar_ball (E := E) hRpos] using
     metricBall_vol_ge (I := I) g p hball_target hcoord_subset hdens
-
-
 
 theorem metricBall_vol_ge_sc_c2 [PseudoMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M)

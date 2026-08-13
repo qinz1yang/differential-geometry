@@ -1,15 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.SolutionCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.SolutionCompactnessInputs
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -27,9 +20,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-
-
-
 theorem compactnessSol_cond
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (inp : MetricCompactnessInputs (I := I) (X.atZero (I := I)))
@@ -46,15 +36,11 @@ theorem compactnessSol_cond
     CompactnessConclusion (I := I) X :=
   solutionComp_cond (I := I) X inp hcomplete0 hflowInj hconn hderiv hflow
 
-/-- **MSM135 Theorem 3.10 (Compactness for solutions).**  A sequence of
-complete pointed Ricci flows on one open interval, with locally uniform
-curvature bounds and a uniform time-zero basepoint injectivity-radius bound,
-has a smoothly convergent pointed subsequence on that open interval. -/
 theorem compactnessSol
     {α b : Real} (h0 : (0 : Real) ∈ Set.Ioo α b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D =
-      DifferentialGeometry.Integral.Connection.RealTimeInterval.openInterval
+      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.openInterval
         α b 0 h0)
     (hcomplete : CompleteInput (I := I) X)
     (hcurv : CurvBoundInput (I := I) X)

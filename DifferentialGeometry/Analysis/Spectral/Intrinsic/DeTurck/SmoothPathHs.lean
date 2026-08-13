@@ -1,26 +1,20 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricScalarSmulJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.ParametricAppHsTime
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
-
-/-!
-# Smooth tensor paths in the spectral Sobolev scale
-
-The completed tensor-action API already contains the required time
-regularity: regard a covariant tensor as a `(0,c)` operator and apply it to the
-constant rank-zero unit section.  This file exports that argument for `(0,2)`
-tensors on an open time set.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-open Bundle Manifold Set Filter MeasureTheory Tensor0SBundle
+open Bundle Manifold Set Filter MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators RealInnerProductSpace InnerProductSpace
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -80,8 +74,6 @@ private theorem appCc_one (g : SmoothRiemannianMetric I M) (c : ℕ)
   intro A
   rw [ContinuousLinearMap.comp_apply, oneCc_apply (I := I) (M := M)]
 
-/-- The generic covariant smooth embedding and the Ricci--DeTurck `(0,2)`
-embedding are the same spectral element. -/
 theorem ccHs_eq_smoothHs (g : SmoothRiemannianMetric I M) (sigma : ℝ)
     (Phi : SmoothCcTensor g 0 2) :
     ccTensorToHs (I := I) (M := M) g 2 sigma Phi =
@@ -90,8 +82,6 @@ theorem ccHs_eq_smoothHs (g : SmoothRiemannianMetric I M) (sigma : ℝ)
   funext i
   rfl
 
-/-- A jointly smooth compactly supported `(0,2)`-tensor family is a smooth
-path in every integer spectral Sobolev space. -/
 theorem smoothHs_path_cd
     (g : SmoothRiemannianMetric I M) (n : ℕ)
     (Phi : ℝ → SmoothCcTensor g 0 2) {S : Set ℝ} (hS : IsOpen S)
@@ -114,9 +104,6 @@ theorem smoothHs_path_cd
     rw [appHs_core, appCc_one (I := I) (M := M), ccHs_eq_smoothHs]
   rwa [hpath] at h
 
-/-- A jointly smooth `(0,2)`-tensor family has one jointly smooth tensor time
-derivative whose spectral embedding is the strong derivative at every integer
-Sobolev order. -/
 theorem smoothHs_deriv
     (g : SmoothRiemannianMetric I M)
     (Phi : ℝ → SmoothCcTensor g 0 2) {S : Set ℝ} (hS : IsOpen S)
@@ -160,6 +147,6 @@ theorem smoothHs_deriv
     rw [appHs_core, appCc_one (I := I) (M := M), ccHs_eq_smoothHs]
   rwa [hpath, hdval] at happ
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

@@ -1,6 +1,6 @@
-
-
-
+/-
+Authors: Jack McCarthy
+-/
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.RSTensor.Derivation.Contract
 import DifferentialGeometry.Tensor.RSTensor.Defs
@@ -68,33 +68,18 @@ import DifferentialGeometry.Tensor.Product.Fiber
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
 import DifferentialGeometry.Bundle.SectionRealized
-import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
 import Mathlib.LinearAlgebra.Dual.Basis
 import Mathlib.LinearAlgebra.Trace
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
-import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+namespace DifferentialGeometry.Tensor.RSTensor
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold Tensor0SBundle
+open _root_.Bundle Manifold DifferentialGeometry.Tensor0SBundle
 
 open scoped Manifold Topology Bundle ContDiff
 
@@ -105,9 +90,8 @@ variable {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
 variable (n : WithTop ℕ∞)
 variable (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
 
-
-
-abbrev RiemannianMetric_gen := Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M → Type _)
+abbrev RiemannianMetric_gen := _root_.Bundle.ContMDiffRiemannianMetric I n E
+    (TangentSpace I : M → Type _)
 
 private noncomputable def to02Tensor_eCLM :
     (E →L[ℝ] ℝ) →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : Fin 1 => E) ℝ :=
@@ -117,8 +101,6 @@ private noncomputable def to02Tensor_uCLM :
     (E →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : Fin 1 => E) ℝ) →L[ℝ]
       ContinuousMultilinearMap ℝ (fun _ : Fin 2 => E) ℝ :=
   (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin 2 => E) ℝ).symm.toContinuousLinearMap
-
-
 
 private lemma to02Tensor_trivialization_eq {x₀ x : M}
     (A : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
@@ -135,7 +117,7 @@ private lemma to02Tensor_trivialization_eq {x₀ x : M}
   change (((e₀.continuousMultilinearMap ℝ 2)
       ⟨x, ((to02Tensor_eCLM (E := E)).comp
         A).uncurryLeft⟩).2) m = _
-  rw [Bundle.Trivialization.continuousMultilinearMap_apply]
+  rw [_root_.Bundle.Trivialization.continuousMultilinearMap_apply]
   simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousLinearMap.uncurryLeft_apply]
   have hx' : x ∈ (trivializationAt (E →L[ℝ] ℝ)
@@ -153,8 +135,6 @@ private lemma to02Tensor_trivialization_eq {x₀ x : M}
   rw [ContinuousLinearMap.inCoordinates_eq hx hx']
   simp [to02Tensor_eCLM, hom_trivializationAt, Trivialization.continuousLinearMap_apply]
   rfl
-
-
 
 theorem joint_to02 [IsManifold I ∞ M] {S : Set ℝ}
     (A : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1 →L[ℝ] ℝ)
@@ -174,11 +154,11 @@ theorem joint_to02 [IsManifold I ∞ M] {S : Set ℝ}
   letI := Tensor0SBundle.tensor0SBundle_topology
     (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   intro p₀ hp₀
-  rw [Bundle.contMDiffWithinAt_totalSpace]
+  rw [_root_.Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   let eCLM := to02Tensor_eCLM (E := E)
   let uCLM := to02Tensor_uCLM (E := E)
-  have htriv := (Bundle.contMDiffWithinAt_totalSpace
+  have htriv := (_root_.Bundle.contMDiffWithinAt_totalSpace
     (F := E →L[ℝ] E →L[ℝ] ℝ)
     (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)).mp
       (hA p₀ hp₀)
@@ -211,20 +191,17 @@ theorem joint_to02 [IsManifold I ∞ M] {S : Set ℝ}
   · exact to02Tensor_trivialization_eq (I := I) (M := M)
       (A := A p₀) (mem_baseSet_trivializationAt E (TangentSpace I) p₀.1)
 
-
-
-
 def RiemannianMetric_gen.to02Tensor_gen {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [IsManifold I (n + 1) M]
-    (g : Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _)) :
+    (g : _root_.Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _)) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (I := I) (M := M) (n := n) 2 := by
   unfold Tensor0SBundle.Tensor0SField
   letI := Tensor0SBundle.tensor0SBundle_topology
     (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   let eCLM := to02Tensor_eCLM (E := E)
   let uCLM := to02Tensor_uCLM (E := E)
-  let gI := Bundle.ContMDiffRiemannianMetric.inner g
+  let gI := _root_.Bundle.ContMDiffRiemannianMetric.inner g
   exact ⟨fun x => (eCLM.comp (gI x)).uncurryLeft, by
     haveI := Tensor0SBundle.tensor0SBundle_smooth
       (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := n) 2
@@ -248,14 +225,16 @@ def RiemannianMetric_gen.to02Tensor_gen {I : ModelWithCorners ℝ E H} {n : With
 theorem RiemannianMetric_gen.to02Tensor_apply {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [IsManifold I (n + 1) M]
-    (g : Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _))
+    (g : _root_.Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _))
     (x : M) (v : Fin 2 -> TangentSpace I x) :
     RiemannianMetric_gen.to02Tensor_gen (I := I) (n := n) g x v =
-      (Bundle.ContMDiffRiemannianMetric.inner g) x (v 0) (v 1) := by
+      (_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0) (v 1) := by
   simp only [to02Tensor_gen, tensor0SBundle_fiber.eq_1, to02Tensor_eCLM,
     LinearIsometryEquiv.toLinearEquiv_symm, id_eq, ContMDiffSection.coeFn_mk, Fin.isValue]
-  change ((Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (Fin.tail v 0) =
-    ((Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (v 1)
+  change ((_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (Fin.tail v 0) =
+    ((_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (v 1)
   simp [Fin.tail]
 
 end
+
+end DifferentialGeometry.Tensor.RSTensor

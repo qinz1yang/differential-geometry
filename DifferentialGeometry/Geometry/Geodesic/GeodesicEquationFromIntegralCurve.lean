@@ -5,8 +5,6 @@ import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
 import DifferentialGeometry.Geometry.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Uniqueness
 
-
-
 noncomputable section
 
 open Bundle Manifold Set Filter Function

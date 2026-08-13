@@ -5,7 +5,7 @@ import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Bundle
 open scoped Manifold Topology ContDiff
@@ -121,4 +121,4 @@ theorem time_dependent_vf_diffeomorph_family_of_hdiffeo
     simp only [hguard, dif_pos, and_self]
     exact (hdiffeo t ht htT).choose_spec x
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartTorsion
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -7,7 +8,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -17,6 +18,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma trivToE_basepoint (α : M) (v : TangentSpace I α) :
@@ -56,5 +58,5 @@ theorem christoffelCorrection_basepoint_symm
   exact hsym
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

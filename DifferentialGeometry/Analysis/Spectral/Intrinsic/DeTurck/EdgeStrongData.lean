@@ -1,28 +1,17 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SmoothStrongPair
 import Mathlib.Analysis.ODE.Gronwall
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Initial-edge strong Ricci--DeTurck data
-
-This file isolates the maximal-regularity output that an initial-edge
-harmonic-map gauge must provide.  The package contains only regularity,
-representation, and equation fields for one geometric perturbation; in
-particular, it does not assume equality with a second solution.
-
-Two packages on the same time window are unique by the existing reverse
-Duhamel and mixed forcing contraction theorem.  Their continuous `timeH1`
-representatives then recover pointwise equality of the underlying smooth
-covariant tensor paths, including the initial time.
--/
 
 noncomputable section
 
 open Bundle Filter MeasureTheory Set
 open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
@@ -45,12 +34,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- Initial-edge Grönwall closure.  The energy is only differentiated on the
-open positive-time interval.  Continuity to the zero edge and the zero initial
-energy suffice: apply ordinary Grönwall on `[ε,t]` and send `ε → 0+`.
-
-This is the scalar endpoint argument needed after a Ricci--DeTurck difference
-energy estimate; it does not assume a right derivative at time zero. -/
 theorem edgeGronwall_zero {T K : ℝ} (hT : 0 < T)
     (energy energy' : ℝ → ℝ)
     (hcont : ContinuousOn energy (Icc (0 : ℝ) T))
@@ -105,13 +88,6 @@ theorem edgeGronwall_zero {T K : ℝ} (hT : 0 < T)
     simpa only [gronwallBound_ε0] using hgr
   exact le_antisymm (ge_of_tendsto hrhs hev) (hnonneg t ht)
 
-/-- Exact maximal-regularity output required from one initial-edge geometric
-Ricci--DeTurck perturbation.  `lo` is the continuous low-scale representative;
-`hi` is its almost-everywhere high-scale realization; and `force` is the
-Nemytskii remainder in the fixed-background heat equation.
-
-The fields concern one path only.  No uniqueness or equality with another
-geometric solution is included in the package. -/
 structure EdgeStrongData
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     (Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
@@ -137,14 +113,6 @@ structure EdgeStrongData
   path_rep : ∀ t ∈ Icc (0 : ℝ) T,
     lo.toFun t = smoothCcToTensorHs (I := I) (M := M) g₀ (a : ℝ) (Phi t)
 
-/-- Reverse realization at the initial edge from the two genuine parabolic
-energy outputs.  Closed-window continuity is required only at the low Sobolev
-scale.  The high-scale geometric path and its strong time derivative need only
-belong to their time-`L²` spaces; all pointwise differentiability and PDE
-identities are used on the open positive-time interval.
-
-Thus the remaining geometric edge estimate is exactly
-`L²_t H^(a+2) ∩ H¹_t H^a`, not an equality or fixed-point assumption. -/
 noncomputable def edgePath_strong
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
@@ -267,9 +235,6 @@ noncomputable def edgePath_strong
       simpa only [force] using hft
     rw [hdt, haddt, Pi.add_apply, hLapt, hhit, hforce_t, hhit, hpde t ht]
 
-/-- Two geometric perturbations carrying the exact initial-edge strong data
-are pointwise equal on the closed window whenever the existing mixed forcing
-map is contractive on their common force ball. -/
 theorem edgeStrong_unique
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
@@ -308,6 +273,6 @@ theorem edgeStrong_unique
   apply ccToHs_injective (I := I) (M := M) g₀ 2 (a : ℝ)
   simpa only [ccHs_eq_smoothHs] using hu
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

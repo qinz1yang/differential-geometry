@@ -1,12 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Polar
 
-/-!
-# The polar-coordinate bijection on the round sphere
-
-This file packages the ambient polar decomposition as a bijection between the
-open polar cylinder and the unit sphere with its two poles removed.
--/
-
 noncomputable section
 
 open Metric Set
@@ -17,7 +10,6 @@ namespace Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
-/-- The ambient polar inverse is a left inverse on the open polar cylinder. -/
 theorem polar_left_inv
     {p : E} (hp : ‖p‖ = 1) :
     Set.LeftInvOn (spherePolarInv p) (spherePolar p)
@@ -48,8 +40,6 @@ theorem polar_left_inv
     rw [add_sub_cancel_left, smul_smul,
       inv_mul_cancel₀ hsin, one_smul]
 
-/-- Polar coordinates biject the open polar cylinder with the punctured unit
-sphere. -/
 theorem polar_bijOn
     {p : E} (hp : ‖p‖ = 1) :
     Set.BijOn (spherePolar p)

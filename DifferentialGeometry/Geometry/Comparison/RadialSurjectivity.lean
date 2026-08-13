@@ -9,11 +9,10 @@ import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 import Mathlib.Analysis.Convex.Star
 import Mathlib.Analysis.Convex.PathConnected
+open DifferentialGeometry.Geometry.Curvature
 
-
-
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpace_normedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpace_normedSpace
 
 noncomputable section
 

@@ -1,26 +1,22 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingSharpC0JetSum
-
-/-!
-# Low-order antidiagonal jet-grid integrals in dimension three
-
-This file extracts the part of the general high-order tame grid argument that
-only uses the first four intrinsic `L2` jets.  It is the low-regularity input
-needed for coefficients depending polynomially on a metric two-jet.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 variable
@@ -33,10 +29,6 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-/-- On a closed three-manifold, every antidiagonal polynomial jet grid up to
-a prescribed order `a ≥ 2` has a uniform integral bound from the intrinsic
-`L2` jet through order `a`.  The lower endpoint `a = 2` is the key algebra
-estimate used to keep moving trace factors independent of the top `H3` norm. -/
 theorem low_grid_int
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (a : ℕ) (ha : 2 ≤ a) :
@@ -248,7 +240,6 @@ theorem low_grid_int
       _ = K A k := by
           simp only [K, if_neg hk0, G, Lam]
 
-/-- The intrinsic `H2` algebra form of `low_grid_int`. -/
 theorem h2_grid_int
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -274,11 +265,6 @@ theorem h2_grid_int
   simpa only [Nat.reduceAdd] using
     low_grid_int (I := I) (M := M) hDim g 2 (by omega)
 
-/-- The total-order-three antidiagonal grid is linear in the top `H3` jet
-once the lower `H2` jet is fixed.  More precisely, its integral is bounded
-by `K R * A ^ 2`, where `R` controls the jets through order two and `A`
-controls only the third derivative.  This is the tame endpoint that is lost
-if the lower pointwise bound is formed from the full `H3` norm. -/
 theorem h3_top_grid_int
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -432,8 +418,6 @@ theorem h3_top_grid_int
         simp only [count, G, K, Lam]
         ring
 
-/-- The intrinsic `H3` specialization used by coefficient fields whose first
-jet still contains a metric two-jet. -/
 theorem h3_grid_int
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -459,6 +443,6 @@ theorem h3_grid_int
   simpa only [Nat.reduceAdd] using
     low_grid_int (I := I) (M := M) hDim g 3 (by omega)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

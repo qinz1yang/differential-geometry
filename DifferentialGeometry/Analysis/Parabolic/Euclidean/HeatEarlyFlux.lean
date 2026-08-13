@@ -4,15 +4,6 @@ import DifferentialGeometry.External.DeGiorgi.FiniteCover
 import Mathlib.MeasureTheory.Integral.MeanInequalities
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
-/-!
-# The early divergence-source heat potential
-
-This file begins the `Y¹ → L∞` value estimate for the Euclidean heat map.
-The source is only locally `L²`, so the early Duhamel slab is treated by
-Cauchy--Schwarz on parabolic cylinders and the off-diagonal first-derivative
-Gaussian majorant.
--/
-
 noncomputable section
 
 open MeasureTheory Real Set
@@ -28,8 +19,6 @@ section Holder
 variable {X F : Type*} [MeasurableSpace X]
   [NormedAddCommGroup F]
 
-/-- The finite-measure `L² → L¹` estimate in the `ENNReal` form used by
-rough parabolic cylinder masses. -/
 theorem lintegral_enorm_le_sqrt (μ : Measure X) (f : X → F)
     (hf : AEStronglyMeasurable f μ) :
     (∫⁻ x, ‖f x‖ₑ ∂μ) ≤
@@ -59,12 +48,9 @@ section Cylinders
 
 variable {V : Type*} [NormedAddCommGroup V]
 
-/-- An early half-cylinder at the observation-time heat scale. -/
 def earlyFluxCyl (t : ℝ) (x : V) : Set (ℝ × V) :=
   Set.Ioc 0 (t / 2) ×ˢ Metric.ball x (heatScale t)
 
-/-- The early half-cylinder is contained in the full Carleson cylinder at
-the same heat scale. -/
 theorem earlyFluxCyl_sub {t : ℝ} (ht : 0 ≤ t) (x : V) :
     earlyFluxCyl t x ⊆ paraCyl x (heatScale t) := by
   rintro z ⟨hzs, hzx⟩
@@ -81,15 +67,12 @@ theorem earlyFluxCyl_meas (t : ℝ) (x : V) :
 variable [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [Nontrivial V]
   {F : Type*} [NormedAddCommGroup F]
 
-/-- The volume of the unit ball in the normalized Euclidean Haar measure. -/
 def heatBallVol (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] : ℝ≥0∞ :=
   ENNReal.ofReal
     (Real.sqrt Real.pi ^ Module.finrank ℝ V /
       Real.Gamma (Module.finrank ℝ V / 2 + 1))
 
-/-- A half-cylinder has at most the full parabolic volume scale
-`(sqrt t)^(n+2)` times the unit-ball volume. -/
 theorem earlyFluxCyl_volume_le {t : ℝ} (ht : 0 < t) (x : V) :
     (stVolume : Measure (ℝ × V)) (earlyFluxCyl t x) ≤
       (ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 2) *
@@ -113,8 +96,6 @@ theorem earlyFluxCyl_volume_le {t : ℝ} (ht : 0 < t) (x : V) :
       rw [ENNReal.ofReal_pow hs0 2, pow_add]
       ring
 
-/-- The two square-root factors supplied by cylinder volume and local `L²`
-mass have exactly the parabolic scale `r^(n+1)`. -/
 theorem parabolicSqrt_mul (r B C : ℝ≥0∞) (n : ℕ) :
     (r ^ (n + 2) * B) ^ ((1 : ℝ) / 2) *
         (C * r ^ n) ^ ((1 : ℝ) / 2) =
@@ -146,8 +127,6 @@ theorem parabolicSqrt_mul (r B C : ℝ≥0∞) (n : ℕ) :
     _ = r ^ (n + 1) * B ^ ((1 : ℝ) / 2) * C ^ ((1 : ℝ) / 2) := by
       rw [ENNReal.rpow_natCast]
 
-/-- Cauchy--Schwarz converts local gradient-Carleson mass into the `L¹`
-mass needed by a pointwise kernel bound on an early cylinder. -/
 theorem earlyFlux_l1 {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (hsrc : GradCarl T C f) :
@@ -194,8 +173,6 @@ theorem earlyFlux_l1 {T t : ℝ} {C : ℝ≥0∞}
           ((heatScale t) ^ Module.finrank ℝ V)) ^ ((1 : ℝ) / 2) := by
       gcongr
 
-/-- Scale-cancelled form of `earlyFlux_l1`: the early-cylinder `L¹` source
-mass carries exactly one factor `(sqrt t)^(n+1)`. -/
 theorem earlyFlux_l1_scale {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
     (hsrc : GradCarl T C f) :
@@ -211,10 +188,6 @@ theorem earlyFlux_l1_scale {T t : ℝ} {C : ℝ≥0∞}
     ENNReal.ofReal_pow hs0 (Module.finrank ℝ V)
   rw [hpow, parabolicSqrt_mul]
 
-/-- A finite heat-scale ball cover converts the local gradient-Carleson
-estimate into an `L¹` estimate on the covered early slab.  The theorem is
-stated independently of how the cover is produced, so quantitative Euclidean
-covering lemmas can be inserted without duplicating the analytic argument. -/
 theorem earlyFlux_cover_l1 {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (A : Set V)
     (s : Finset V)
@@ -251,12 +224,10 @@ theorem earlyFlux_cover_l1 {T t : ℝ} {C : ℝ≥0∞}
           (heatBallVol V) ^ ((1 : ℝ) / 2) * C ^ ((1 : ℝ) / 2)) := by
       rw [Finset.sum_const, nsmul_eq_mul]
 
-/-- The `k`-th spatial shell in observation-time heat units. -/
 def fluxShell (t : ℝ) (x : V) (k : ℕ) : Set V :=
   {y | (k : ℝ) * heatScale t ≤ ‖x - y‖ ∧
     ‖x - y‖ < ((k + 1 : ℕ) : ℝ) * heatScale t}
 
-/-- The early time slab over one divergence-source heat shell. -/
 def fluxShellCyl (t : ℝ) (x : V) (k : ℕ) : Set (ℝ × V) :=
   Set.Ioc 0 (t / 2) ×ˢ fluxShell t x k
 
@@ -270,8 +241,6 @@ theorem fluxShellCyl_meas (t : ℝ) (x : V) (k : ℕ) :
       (isOpen_lt hnorm continuous_const).measurableSet)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- On the `k`-th early shell, the first heat derivative carries the exact
-radial factor `k+1` and Gaussian decay `exp (-k^2/4)`. -/
 theorem heatD1_early_shell {t s : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
     (hst : s ≤ t / 2) (w : V) {x y : V} (k : ℕ)
     (hy : y ∈ fluxShell t x k) :
@@ -308,8 +277,6 @@ theorem heatD1_early_shell {t s : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
 
 omit [MeasurableSpace V] [BorelSpace V] [FiniteDimensional ℝ V]
   [Nontrivial V] in
-/-- The extra inverse heat scale in the first derivative kernel cancels the
-extra spatial-time factor in `earlyFlux_l1_scale`. -/
 theorem halfScale_cancel_succ {t : ℝ} (ht : 0 < t) :
     ((heatScale (t / 2)) ^ Module.finrank ℝ V)⁻¹ *
         (heatScale (t / 2))⁻¹ *
@@ -334,8 +301,6 @@ theorem halfScale_cancel_succ {t : ℝ} (ht : 0 < t) :
   field_simp [hs.ne']
   ring
 
-/-- The dimension-only first-derivative factor in the early flux value
-estimate, before the cylinder-volume square root is inserted. -/
 def earlyFluxD1C (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] : ℝ :=
   (Real.sqrt 2) ^ (Module.finrank ℝ V + 1) *
@@ -349,7 +314,6 @@ theorem earlyFluxD1C_nonneg : 0 ≤ earlyFluxD1C V := by
       (mul_nonneg (by positivity) (Real.sqrt_nonneg _))
       (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le))
 
-/-- The full dimension-only early `Y¹ → L∞` value constant. -/
 def earlyFluxC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] : ℝ≥0∞ :=
   ENNReal.ofReal (earlyFluxD1C V) *
@@ -357,7 +321,6 @@ def earlyFluxC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 
 variable [NormedSpace ℝ F] [CompleteSpace F]
 
-/-- The scalar mass of one early divergence-source shell integrand. -/
 def fluxShellMass (t : ℝ) (w : V) (f : ℝ × V → F)
     (x : V) (k : ℕ) : ℝ≥0∞ :=
   ∫⁻ z in fluxShellCyl t x k,
@@ -365,9 +328,6 @@ def fluxShellMass (t : ℝ) (w : V) (f : ℝ × V → F)
       ∂(stVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
-/-- Before the final scale cancellation, one shell is bounded by its finite
-cover count, its local gradient-Carleson `L¹` mass, and the exact first heat
-derivative Gaussian factor. -/
 theorem fluxShellMass_raw {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F)
     (x : V) (k : ℕ) (s : Finset V)
@@ -455,9 +415,6 @@ theorem fluxShellMass_raw {T t : ℝ} {C : ℝ≥0∞}
       mul_le_mul_right hsource _
 
 omit [CompleteSpace F] in
-/-- With the quantitative cover cardinality inserted, all heat scales cancel
-from one shell.  Only polynomial cover growth, the radial `k+1` factor, and a
-summable exponential remain. -/
 theorem fluxShellMass_le {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F)
     (x : V) (k : ℕ) (s : Finset V)
@@ -594,16 +551,12 @@ theorem fluxShellMass_le {T t : ℝ} {C : ℝ≥0∞}
       congr 2
       all_goals ring
 
-/-- The actual Bochner potential of one divergence-source component on an
-early heat-scale cylinder. -/
 def heatEarly1Near (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
   ∫ z in earlyFluxCyl t x,
     heatD1 (t - z.1) w (x - z.2) • f z
       ∂(stVolume : Measure (ℝ × V))
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- On the near early cylinder, the directional first heat derivative is
-bounded at the fixed scale `sqrt (t/2)`. -/
 theorem heatD1_early_near {t s : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
     (hst : s ≤ t / 2) (w : V) {x y : V}
     (hy : y ∈ Metric.ball x (heatScale t)) :
@@ -636,9 +589,6 @@ theorem heatD1_early_near {t s : ℝ} (ht : 0 < t) (hs : 0 ≤ s)
       simpa [mul_assoc] using hmaj
 
 omit [CompleteSpace F] in
-/-- The early near part of one divergence-source potential has a uniform
-pointwise value bound.  The source radius appears as the square root of its
-gradient-Carleson mass. -/
 theorem heatEarly1Near_norm {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (w : V)
     (f : ℝ × V → F) (x : V) (hsrc : GradCarl T C f) :
@@ -744,7 +694,6 @@ theorem heatEarly1Near_norm {T t : ℝ} {C : ℝ≥0∞}
 
 omit [MeasurableSpace V] [BorelSpace V] [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V] [Nontrivial V] in
-/-- Every point lies in an integer observation-scale shell. -/
 theorem mem_fluxShell_union {t : ℝ} (ht : 0 < t) (x y : V) :
     y ∈ ⋃ k : ℕ, fluxShell t x k := by
   let rho := heatScale t
@@ -762,7 +711,6 @@ theorem mem_fluxShell_union {t : ℝ} (ht : 0 < t) (x y : V) :
 
 omit [MeasurableSpace V] [BorelSpace V] [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V] [Nontrivial V] in
-/-- The full early slab is covered by the divergence-source shell cylinders. -/
 theorem earlyFluxSlab_sub {t : ℝ} (ht : 0 < t) (x : V) :
     (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)) ⊆
       ⋃ k : ℕ, fluxShellCyl t x k := by
@@ -770,17 +718,12 @@ theorem earlyFluxSlab_sub {t : ℝ} (ht : 0 < t) (x : V) :
   obtain ⟨k, hyk⟩ := Set.mem_iUnion.mp (mem_fluxShell_union ht x z.2)
   exact Set.mem_iUnion.2 ⟨k, hzs, hyk⟩
 
-/-- The full early divergence-source heat potential. -/
 def heatEarly1 (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
   ∫ z in (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)),
     heatD1 (t - z.1) w (x - z.2) • f z
       ∂(stVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
-/-- A quantitative heat-scale cover on every shell and any majorant for the
-resulting weight series give the global early divergence-source bound.  The
-canonical Euclidean covering and summability APIs can be inserted later by a
-short bridge. -/
 theorem heatEarly1_norm {T t : ℝ} {C S : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
     (hcovers : ∀ k : ℕ, ∃ s : Finset V,

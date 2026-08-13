@@ -1,14 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.BanachManifold
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartAe
 
-/-!
-# Sobolev membership of the assembled manifold limit
-
-This file assembles the fixed-support cross-chart producer over the finite
-canonical partition of unity.  It proves that the already-defined
-`manifoldLimitFun` belongs to the chart Sobolev class.
--/
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold Function
@@ -32,8 +24,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [IsManifold I ∞ M] in
-/-- The measurable pullback used in the completeness construction is the same
-pointwise function as the chart pullback used by the cross-chart estimates. -/
 lemma pullback_eq_chart (α : M) (v : EuclN → ℝ) :
     pullbackToManifold (I := I) α v = chartPullback I α v := by
   funext x
@@ -43,12 +33,10 @@ lemma pullback_eq_chart (α : M) (v : EuclN → ℝ) :
   · rw [pullbackToManifold_apply_of_notMem (I := I) (α := α) v hx,
       chartPullback_apply_of_notMem (I := I) (M := M) α v hx]
 
-/-- The finite POU assembly of the chosen chart limits belongs to
-`MemWkpChart g k p`. -/
 theorem limitFun_memWkp
     [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
-    {g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M}
+    {g : DifferentialGeometry.SmoothRiemannianMetric I M}
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
     {f : ℕ → WkpChart (I := I) (M := M) g k p hp}

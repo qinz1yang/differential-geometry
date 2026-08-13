@@ -26,31 +26,31 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 def SmoothScalar.toContinuousMap {g : SmoothRiemannianMetric I M}
     (f : SmoothScalar g) : C(M, ℝ) :=
   ⟨f.toFun, f.smooth.continuous⟩
 
-omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 @[simp] lemma SmoothScalar.toContinuousMap_apply {g : SmoothRiemannianMetric I M}
     (f : SmoothScalar g) (x : M) :
     f.toContinuousMap x = f.toFun x := rfl
 
-omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 @[simp] lemma SmoothScalar.toContinuousMap_zero {g : SmoothRiemannianMetric I M} :
     (0 : SmoothScalar g).toContinuousMap = (0 : C(M, ℝ)) := by
   ext x
   rfl
 
-omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 @[simp] lemma SmoothScalar.toContinuousMap_add {g : SmoothRiemannianMetric I M}
     (f h : SmoothScalar g) :
     (f + h).toContinuousMap = f.toContinuousMap + h.toContinuousMap := by
   ext x
   rfl
 
-omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 @[simp] lemma SmoothScalar.toContinuousMap_smul {g : SmoothRiemannianMetric I M}
     (c : ℝ) (f : SmoothScalar g) :
     (c • f).toContinuousMap = c • f.toContinuousMap := by
@@ -61,7 +61,7 @@ def SmoothScalar.one (g : SmoothRiemannianMetric I M) : SmoothScalar g where
   toFun := fun _ => (1 : ℝ)
   smooth := contMDiff_const
 
-omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 @[simp] lemma SmoothScalar.one_toFun (g : SmoothRiemannianMetric I M) :
     (SmoothScalar.one g).toFun = fun _ : M => (1 : ℝ) := rfl
 
@@ -70,7 +70,7 @@ def SmoothScalar.mul {g : SmoothRiemannianMetric I M} (f h : SmoothScalar g) :
   toFun := fun x => f.toFun x * h.toFun x
   smooth := f.smooth.mul h.smooth
 
-omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 @[simp] lemma SmoothScalar.mul_toFun {g : SmoothRiemannianMetric I M}
     (f h : SmoothScalar g) :
     (SmoothScalar.mul f h).toFun = fun x => f.toFun x * h.toFun x := rfl
@@ -109,7 +109,7 @@ def smoothScalarSubalgebra (g : SmoothRiemannianMetric I M) :
     change c = (c • (1 : C(M, ℝ))) x
     rw [ContinuousMap.smul_apply, ContinuousMap.one_apply, smul_eq_mul, mul_one]
 
-omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [Module.Finite ℝ E] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 @[simp] lemma mem_smoothScalarSubalgebra_iff {g : SmoothRiemannianMetric I M}
     {φ : C(M, ℝ)} :
     φ ∈ smoothScalarSubalgebra (I := I) (M := M) g ↔
@@ -189,7 +189,7 @@ private lemma eLpNorm_smooth_sub_bc_le
     f.smooth.continuous.sub ψ.continuous
   exact eLpNorm_two_le_of_norm_le (I := I) (M := M) g _ h_diff_cont δ h_pt
 
-omit [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
+omit [T2Space M] [CompactSpace M] in
 private lemma edist_toLp_eq_eLpNorm
     {μ : Measure M} (a b : M → ℝ) (ha : MemLp a 2 μ) (hb : MemLp b 2 μ) :
     edist (ha.toLp a) (hb.toLp b) = eLpNorm (fun x : M => a x - b x) 2 μ := by

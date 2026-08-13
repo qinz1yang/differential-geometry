@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Geometry.Operator.HessianTrace
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -9,7 +10,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff Matrix
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -19,6 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma g_inner_eq_chartGramMatrix_basis
@@ -340,5 +342,5 @@ theorem partialDeriv_chartGramOnE_eq_chartChristoffel_sum
   ring
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry

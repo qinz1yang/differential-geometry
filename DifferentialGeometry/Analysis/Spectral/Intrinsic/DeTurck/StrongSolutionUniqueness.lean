@@ -1,24 +1,13 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckQuasilinearExistence
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.StrongDuhamelBack
 
-/-!
-# Strong uniqueness for the mixed Ricci--DeTurck forcing contraction
-
-The concrete Ricci--DeTurck nonlinearity need not have a globally small
-`H^{a+2} → H^a` Lipschitz constant.  Its live maximal-regularity solver instead
-uses `nemytskiiMixedForcingMap`, which is contractive on a small forcing ball by
-the refined critical/subcritical estimate.  This file supplies the matching
-uniqueness theorem for two arbitrary fixed points in that ball and combines it
-with reverse Duhamel realization for independently supplied strong pairs.
--/
-
 noncomputable section
 
 open Bundle MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
@@ -42,8 +31,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [BoundarylessManifold I M] in
-/-- Two fixed points of the concrete mixed-view forcing map in the same force
-ball coincide whenever its exported mixed Lipschitz modulus is less than one. -/
 theorem mixForce_unique
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
@@ -86,9 +73,6 @@ theorem mixForce_unique
   nlinarith
 
 omit [BoundarylessManifold I M] in
-/-- Local uniqueness for two independently supplied zero-trace strong
-Ricci--DeTurck perturbation pairs under the same mixed forcing-ball budgets.
-The pairs need not have been constructed by the fixed-point solver. -/
 theorem deTurckStrong_unique
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     {Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
@@ -165,6 +149,6 @@ theorem deTurckStrong_unique
           (a : ℝ) hT hT1 u₀ force₂ := by rw [hforces]
       _ = u₂ := hu₂.symm
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

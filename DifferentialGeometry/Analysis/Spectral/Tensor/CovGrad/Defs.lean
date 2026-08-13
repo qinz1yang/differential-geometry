@@ -1,13 +1,15 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantLeibniz
 import DifferentialGeometry.Tensor.RSTensor.Derivation.GradientBundleEquiv
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
   RealInnerProductSpace InnerProductSpace
 
@@ -18,9 +20,9 @@ namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Tensor.TensorRSRiemannian
-open TensorRSNabla
+open DifferentialGeometry.TensorRSNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -43,6 +45,7 @@ private noncomputable def covGradGradSection
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma covGradGradSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) (x : M) (v : E) :
@@ -51,6 +54,7 @@ private lemma covGradGradSection_apply
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 private lemma covGradGradSection_contMDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) :
@@ -120,7 +124,7 @@ private noncomputable def covGradSmoothSection
       (fun x : M => TensorRSSpace r (s + 1) I x)⟯)
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covGradSmoothSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) (x : M) :
@@ -129,7 +133,7 @@ private lemma covGradSmoothSection_apply
         (covGradGradSection (I := I) (M := M) g r s w x) := rfl
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covGradSmoothSection_toModel_eq_zero_off_tsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) {x : M} (hx : x ∉ tsupport w.toFun) :
@@ -200,7 +204,7 @@ theorem covGrad_toSection_apply_eval
       (fun y : M => w.toSection y) x) D v
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covGradGradSection_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w₁ w₂ : SmoothCcTensor g r s) (x : M) :
@@ -214,7 +218,7 @@ private lemma covGradGradSection_add
   exact tensorCovDerivAt_add (I := I) (M := M) g r s w₁ w₂ x v
 
 omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covGradGradSection_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (w : SmoothCcTensor g r s) (x : M) :

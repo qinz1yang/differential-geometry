@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartT
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SLeviCivitaParallelExtend
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.ChartTensor0SCovariantDerivativeAgreementSucc
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRSNabla
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -10,10 +11,11 @@ set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
+
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -167,6 +169,7 @@ private lemma chartTensor0SSlotCorrection_partialEval_eq_chartTensorRSOutputSlot
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T :
@@ -468,7 +471,7 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
   abel
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

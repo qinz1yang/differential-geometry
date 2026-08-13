@@ -1,17 +1,10 @@
 import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoOpen
 import DifferentialGeometry.Geometry.Metric.Sphere.IsometryRepresentation
 import DifferentialGeometry.Geometry.Metric.Sphere.QuotientDescent
-import DifferentialGeometry.Geometry.Topology.UniversalCover.DeckIsometry
-import DifferentialGeometry.Geometry.Topology.UniversalCover.FibreEquiv
-import DifferentialGeometry.Geometry.Topology.UniversalCover.LocalDiffeomorph
-
-/-!
-# Round quotient data from a universal-cover isometry
-
-This file packages a global isometry from the round sphere to the universal
-cover of a standard-model manifold into the finite orthogonal quotient data
-used by spherical metric descent.
--/
+import DifferentialGeometry.Topology.Covering.DeckIsometry
+import DifferentialGeometry.Topology.Covering.FibreEquiv
+import DifferentialGeometry.Topology.Covering.LocalDiffeomorph
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -27,8 +20,6 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)] [NeZero n]
 
-/-- A global round isometry onto the universal cover realizes the base as a
-finite quotient of the round sphere by ambient orthogonal transformations. -/
 noncomputable def roundQuotientUC
     {Q : Type*} [TopologicalSpace Q]
     [ChartedSpace (EuclideanSpace ℝ (Fin n)) Q]

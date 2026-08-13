@@ -7,12 +7,13 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 noncomputable section
 
+open DifferentialGeometry.Integral.DivergenceTheorem
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace DivergenceTheorem
+namespace Geometry
+namespace Operator
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -510,8 +511,8 @@ theorem laplacian_sq_le_dim_mul_frobenius_sq_of_trace_eq
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (htr : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
-        Δ_g (I := I) g hf x) :
-    (Δ_g (I := I) g hf x)^2 ≤
+        Δ_g (I := I) g ⟨_, hf⟩ x) :
+    (Δ_g (I := I) g ⟨_, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) *
         ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -527,8 +528,8 @@ theorem laplacian_sq_div_dim_le_frobenius_sq_of_trace_eq
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (htr : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
-        Δ_g (I := I) g hf x) :
-    (Δ_g (I := I) g hf x)^2 / (Module.finrank ℝ E : ℝ) ≤
+        Δ_g (I := I) g ⟨_, hf⟩ x) :
+    (Δ_g (I := I) g ⟨_, hf⟩ x)^2 / (Module.finrank ℝ E : ℝ) ≤
       ∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         (chartHessianTensor (I := I) g x f i j x)^2 := by
@@ -550,6 +551,6 @@ theorem traceFun_hessFun_sq_le_dim_mul_frobeniusSqFun
   traceFun_sq_le_dim_mul_frobeniusSqFun
     (I := I) (M := M) (hessFun (I := I) g f) x
 
-end DivergenceTheorem
-end Integral
+end Operator
+end Geometry
 end DifferentialGeometry

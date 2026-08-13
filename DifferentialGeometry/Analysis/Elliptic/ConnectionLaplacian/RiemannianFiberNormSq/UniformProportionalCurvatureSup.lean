@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFibe
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.CurvatureFrameEnergyContinuity
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Defs
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -12,13 +14,13 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E]
   [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -38,6 +40,7 @@ private lemma metric_inner_self_nonneg
   · rw [hv0]; simp
   · exact (g.pos x v hv0).le
 
+omit [SigmaCompactSpace M] in
 theorem exists_continuous_riemannianFiberNormSq_riemannOp_tensorCov_proportional
     (g : SmoothRiemannianMetric I M) (t : ℕ) :
     ∃ Ccurv : M → ℝ, Continuous Ccurv ∧ (∀ x : M, 0 ≤ Ccurv x) ∧
@@ -122,8 +125,8 @@ theorem riemannianFiberNormSq_riemannOp_covGrad_uniform_proportional_bound
             riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
               ((covGrad (I := I) (M := M) g 0 s S).toSection x) := by ring
 
-end Connection
-end Integral
+end Elliptic
+end Analysis
 end DifferentialGeometry
 
 end

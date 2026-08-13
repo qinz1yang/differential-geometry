@@ -1,22 +1,29 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SingleSlotOperatorFiberNormBound
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -85,20 +92,15 @@ theorem norm_toSection_iteratedCovGrad_castRankCc (g : SmoothRiemannianMetric I 
   rfl
 
 structure ParallelTensorProduct (g : SmoothRiemannianMetric I M) (r₁ s₁ r₂ s₂ r₀ s₀ : ℕ) where
-
   prod : ∀ {a b : ℕ}, SmoothCcTensor g r₁ (s₁ + a) → SmoothCcTensor g r₂ (s₂ + b) →
     SmoothCcTensor g r₀ (s₀ + a + b)
-
   opNorm : ℝ
-
   opNorm_nonneg : 0 ≤ opNorm
-
   rfns_prod_le : ∀ {a b : ℕ} (S : SmoothCcTensor g r₁ (s₁ + a)) (T : SmoothCcTensor g r₂ (s₂ + b))
     (x : M),
     riemannianFiberNormSq (I := I) (M := M) g r₀ (s₀ + a + b) x ((prod S T).toSection x) ≤
       opNorm * riemannianFiberNormSq (I := I) (M := M) g r₁ (s₁ + a) x (S.toSection x) *
         riemannianFiberNormSq (I := I) (M := M) g r₂ (s₂ + b) x (T.toSection x)
-
   covGrad_prod : ∀ {a b : ℕ} (S : SmoothCcTensor g r₁ (s₁ + a)) (T : SmoothCcTensor g r₂ (s₂ + b)),
     covGrad g r₀ (s₀ + a + b) (prod S T) =
       castRankCc g r₀ (by omega : s₀ + (a + 1) + b = s₀ + a + b + 1)
@@ -163,8 +165,8 @@ theorem prod_zero_right (Φ : ParallelTensorProduct g r₁ s₁ r₂ s₂ r₀ s
 
 end ParallelTensorProduct
 
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

@@ -3,15 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxExp
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateKern
 import Mathlib.MeasureTheory.Integral.Prod
 
-/-!
-# Terminal-slab Koch--Lamm first-derivative kernel
-
-The late divergence-source estimate pairs an `L^(n+4)` source with the first
-spatial derivative of the heat kernel on the terminal half-cylinder.  This
-file proves the corresponding full-space terminal-slab `L^p'` membership and
-evaluates the exact power mass of the radial derivative majorant.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -26,18 +17,13 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- A directional first spatial derivative of the translated heat kernel on
-the terminal space-time slab. -/
 def klFluxKernel (t : ℝ) (w x : V) (z : ℝ × V) : ℝ :=
   heatD1 (t - z.1) w (x - z.2)
 
-/-- Radial majorant for the terminal first-derivative kernel. -/
 def klFluxMajor (t : ℝ) (x : V) (z : ℝ × V) : ℝ :=
   heatD1Maj (t - z.1) (x - z.2)
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- The radial terminal first-derivative majorant is nonnegative even on the
-null terminal slice. -/
 theorem klFluxMajor_nonneg (t : ℝ) (x : V) (z : ℝ × V) :
     0 ≤ klFluxMajor t x z := by
   unfold klFluxMajor heatD1Maj
@@ -47,8 +33,6 @@ theorem klFluxMajor_nonneg (t : ℝ) (x : V) (z : ℝ × V) :
       (inv_nonneg.mpr (Real.sqrt_nonneg _)))
     (baseD1Maj_nonneg _)
 
-/-- The radial first-derivative majorant is in the exact Hölder-dual
-space-time class on the full terminal slab. -/
 theorem klFluxMajor_memLp {t : ℝ} (ht : 0 < t) (x : V) :
     MemLp (klFluxMajor t x) (ENNReal.ofReal (klPDual V))
       (klTermMeasure (V := V) t) := by
@@ -103,8 +87,6 @@ theorem klFluxMajor_memLp {t : ℝ} (ht : 0 < t) (x : V) :
     Real.norm_of_nonneg (klFluxMajor_nonneg (V := V) t x _)] using hpow
 
 omit [Nontrivial V] in
-/-- On the terminal slab, every directional first-derivative heat kernel is
-almost everywhere bounded by the radial majorant times the direction norm. -/
 theorem klFluxKernel_ae {t : ℝ} (_ht : 0 < t) (w x : V) :
     ∀ᵐ z ∂(klTermMeasure (V := V) t),
       ‖klFluxKernel t w x z‖ ≤ ‖w‖ * klFluxMajor t x z := by
@@ -128,8 +110,6 @@ theorem klFluxKernel_ae {t : ℝ} (_ht : 0 < t) (w x : V) :
   simpa only [klFluxKernel, klFluxMajor] using
     (heatD1_bound (V := V) hts w (x - y))
 
-/-- Every directional terminal first-derivative kernel belongs to the same
-Hölder-dual space-time class. -/
 theorem klFluxKernel_memLp {t : ℝ} (ht : 0 < t) (w x : V) :
     MemLp (klFluxKernel t w x) (ENNReal.ofReal (klPDual V))
       (klTermMeasure (V := V) t) := by
@@ -148,14 +128,10 @@ theorem klFluxKernel_memLp {t : ℝ} (ht : 0 < t) (w x : V) :
     ((klFluxMajor_memLp (V := V) ht x).const_mul ‖w‖)
     hkmeas hbound
 
-/-- Real `klPDual`-power mass of the radial first-derivative majorant on the
-full terminal slab. -/
 def klFluxPowMass (t : ℝ) (x : V) : ℝ :=
   ∫ z : ℝ × V, ‖klFluxMajor t x z‖ ^ klPDual V
     ∂(klTermMeasure (V := V) t)
 
-/-- Exact Fubini evaluation of the terminal first-derivative majorant power
-mass. -/
 theorem klFluxPowMass_eq {t : ℝ} (ht : 0 < t) (x : V) :
     klFluxPowMass t x =
       ((t / 2) ^ (klD1Exp V + 1) / (klD1Exp V + 1)) *

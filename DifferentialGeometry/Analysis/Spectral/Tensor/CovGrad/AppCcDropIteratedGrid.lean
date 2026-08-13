@@ -1,21 +1,22 @@
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.RankRDiffBilinGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculusRS
-
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -24,7 +25,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 variable [CompleteSpace E]
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -35,7 +35,6 @@ private theorem riemannianFiberNormSq_toSection_heq_congr_leibnizTower
     riemannianFiberNormSq (I := I) (M := M) g 0 a x (Y.toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g 0 b x (Z.toSection x) := by
   subst h; rw [eq_of_heq hYZ]
-
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -52,7 +51,6 @@ private lemma sum_range_shift_le_drop (n : ℕ) (f : ℕ → ℝ) (hf : ∀ i, 0
     ∑ i ∈ Finset.range n, f (i + 1) ≤ ∑ i ∈ Finset.range (n + 1), f i := by
   rw [Finset.sum_range_succ' f n]
   exact le_add_of_nonneg_right (hf 0)
-
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -72,7 +70,6 @@ def slotExtendIter (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ) :
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] [CompleteSpace E] in
-/-- Iterated slot extension is linear with respect to subtraction in its passenger. -/
 theorem slotExtendIter_sub (g : SmoothRiemannianMetric I M) (b₀ s₀ w : ℕ)
     (A B : SmoothCcTensor g b₀ s₀) :
     slotExtendIter (I := I) (M := M) g b₀ s₀ w (A - B) =
@@ -788,8 +785,8 @@ theorem appCc_iteratedCovGrad_drop_singleSum_le (g : SmoothRiemannianMetric I M)
       (gridWindowSum_nonneg (dropKappa_nonneg (I := I) (M := M) g b₀ s₀ C) 0 0 j),
     fun W j x => appCc_iteratedCovGrad_drop_singleSum_le_explicit (I := I) (M := M) g b₀ s₀ C W j x⟩
 
-end Connection
-end Integral
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

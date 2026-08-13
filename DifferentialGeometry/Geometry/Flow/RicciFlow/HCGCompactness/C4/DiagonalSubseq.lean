@@ -4,29 +4,10 @@ import Mathlib.Topology.UniformSpace.Real
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace DifferentialGeometry
 namespace HCGCompactness
 
 open Filter Topology
-
-
-
 
 theorem exists_subseq_tendsto_pi {C : ℕ → ℝ} (f : ℕ → ℕ → ℝ)
     (hbd : ∀ n k, f n k ∈ Set.Icc (0 : ℝ) (C n)) :
@@ -44,8 +25,6 @@ theorem exists_subseq_tendsto_pi {C : ℕ → ℝ} (f : ℕ → ℕ → ℝ)
     exact (tendsto_pi_nhds.mp ha) n
   have h2 := (continuous_subtype_val.tendsto (a n)).comp h1
   simpa [hx, Function.comp] using h2
-
-
 
 theorem exists_subseq_eventually_eq {ι : Type*} [Countable ι] (b : ι → ℕ → Bool) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧

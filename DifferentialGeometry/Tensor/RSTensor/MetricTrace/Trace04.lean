@@ -1,19 +1,17 @@
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Connection
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.Tensor.RSTensor
 
 noncomputable section
 
-open Bundle Tensor0SBundle Filter
+open Bundle DifferentialGeometry.Tensor0SBundle Filter
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -49,8 +47,6 @@ theorem metricTrace_finCons_vec3_eq_vec4 {x : M}
     Fin.cons X (vec3 (I := I) Y Z U) = vec4 (I := I) X Y Z U := by
   funext a
   fin_cases a <;> rfl
-
-
 
 def trace04Perm : Equiv.Perm (Fin 4) where
   toFun q := if q = 0 then 0 else if q = 1 then 2 else if q = 2 then 3 else 1
@@ -239,8 +235,6 @@ private theorem trace04Coeff
     (trace04Event (I := I) g A x₀ tail)
 
 set_option backward.isDefEq.respectTransparency false in
-
-
 def trace04Field
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -307,4 +301,4 @@ def trace04Field
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Tensor.RSTensor

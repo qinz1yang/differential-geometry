@@ -1,23 +1,20 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Exponential.ExpInvBranch
 import DifferentialGeometry.Geometry.Exponential.IntrinsicGauss
 import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Operator.Operators
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Radius functions from a selected inverse branch
-
-This file develops the fixed-first calculus of a selected inverse branch of the
-intrinsic exponential.
--/
 
 noncomputable section
 
 open Bundle Manifold Set Filter
 open scoped ContDiff Manifold Topology
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry
 namespace Geometry
@@ -39,8 +36,6 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-/-- Half the squared length of the inverse vector selected by `B`, with the
-first point fixed at `p`. -/
 noncomputable def branchEnergy
     (g : SmoothRiemannianMetric I M)
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -50,8 +45,6 @@ noncomputable def branchEnergy
   (1 / 2 : Real) *
     g.inner p (B.inv z) (B.inv z)
 
-/-- Length of the inverse vector selected by `B`, with the first point fixed
-at `p`. -/
 noncomputable def branchRadius
     (g : SmoothRiemannianMetric I M)
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -61,7 +54,6 @@ noncomputable def branchRadius
   Real.sqrt
     (g.inner p (B.inv z) (B.inv z))
 
-/-- The branch radius is the square root of twice the branch energy. -/
 theorem branchRadius_eq
     (g : SmoothRiemannianMetric I M)
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -74,7 +66,6 @@ theorem branchRadius_eq
   congr 1
   ring
 
-/-- On the selected source, branch energy reads off the launch-vector energy. -/
 theorem branchEnergy_exp
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -93,7 +84,6 @@ theorem branchEnergy_exp
   exact congrArg
     (fun a : E => (1 / 2 : Real) * g.inner p a a) hinv
 
-/-- On the selected source, branch radius reads off the launch-vector norm. -/
 theorem branchRadius_exp
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -112,8 +102,6 @@ theorem branchRadius_exp
   exact congrArg
     (fun a : E => Real.sqrt (g.inner p a a)) hinv
 
-/-- The radial path selected by a fixed-first branch bounds the Riemannian
-distance from its base point by the branch radius. -/
 theorem ExpInvBranch.edist_le_radius
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -133,8 +121,6 @@ theorem ExpInvBranch.edist_le_radius
   rw [intrinsicGeodesic_zero, ← expMapIntrinsic_def, hright] at hdist
   simpa only [branchRadius, u, sub_zero, mul_one] using hdist
 
-/-- Along a positive radial ray that stays in the selected source, the branch
-radius is locally the affine function `s ↦ s |x|`. -/
 theorem branchRadius_ray
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -184,8 +170,6 @@ private theorem half_inner_hasFDerivAt
   rw [g.symm p w u]
   ring
 
-/-- The derivative of the selected branch energy is the base metric pairing
-with the derivative of the fixed-first inverse vector. -/
 theorem branchEnergy_deriv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -217,8 +201,6 @@ theorem branchEnergy_deriv
     simp only [branchEnergy, invf]
   simpa only using hquad.congr_of_eventuallyEq heq
 
-/-- The differential of the selected fixed-first inverse is a right inverse of
-the differential of the intrinsic exponential. -/
 theorem exp_inv_mfderiv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -270,8 +252,6 @@ theorem exp_inv_mfderiv
     rfl
   exact hchainE.trans hidE
 
-/-- The differential of the selected fixed-first inverse is a left inverse of
-the differential of the intrinsic exponential on the selected source. -/
 theorem inv_exp_mfderiv
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -331,8 +311,6 @@ theorem inv_exp_mfderiv
     rfl
   simpa only [expf, invf, uE, wE] using hchain.symm.trans hid
 
-/-- The selected branch radius is smooth at every nonzero vector in the
-selected source. -/
 theorem branchRadius_infAt
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -381,8 +359,6 @@ theorem branchRadius_infAt
     simp only [branchRadius, invf]
   simpa only [q] using hsqrt.congr_of_eventuallyEq heq
 
-/-- A nonzero selected launch vector has an open endpoint neighborhood on
-which the fixed-first branch radius is smooth. -/
 theorem branchRadius_open
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -440,8 +416,6 @@ theorem branchRadius_open
   intro z hz
   simp only [branchRadius, sq, invf]
 
-/-- The gradient of the fixed-first branch energy is the terminal velocity of
-the intrinsic geodesic selected by the launch vector. -/
 theorem grad_branchEnergy
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -526,8 +500,6 @@ theorem grad_branchEnergy
     simpa only [q] using hgauss
   exact hgauss'.symm.trans hpair
 
-/-- The gradient of the nonzero fixed-first branch radius is the terminal unit
-velocity of its intrinsic radial geodesic. -/
 theorem grad_branchRadius
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),

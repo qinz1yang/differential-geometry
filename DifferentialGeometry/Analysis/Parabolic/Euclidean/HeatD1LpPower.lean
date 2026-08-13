@@ -1,13 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelLp
 
-/-!
-# Spatial real-power masses of the first heat-derivative majorant
-
-This file proves that the radial first-derivative majorant belongs to every
-real `L^p` class with `1 ≤ p ≤ 2`, and computes the exact parabolic scaling
-of its spatial power mass.  The Koch--Lamm dual exponent lies in this range.
--/
-
 noncomputable section
 
 open MeasureTheory Real
@@ -22,7 +14,6 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-/-- The square of the time-one first-derivative majorant is integrable. -/
 theorem baseD1Maj_sq_int :
     Integrable (fun x : V ↦ baseD1Maj x ^ 2) := by
   have h := (gaussMoment_int (V := V) 2
@@ -43,8 +34,6 @@ theorem baseD1Maj_sq_int :
   rw [heq]
   exact h
 
-/-- The time-one first-derivative majorant has an integrable real `p`-th
-power throughout the range used by the late Koch--Lamm flux estimate. -/
 theorem baseD1Maj_rpow {p : ℝ} (hp1 : 1 ≤ p) (hp2 : p ≤ 2) :
     Integrable (fun x : V ↦ (baseD1Maj x) ^ p) := by
   have hp0 : 0 ≤ p := zero_le_one.trans hp1
@@ -66,15 +55,12 @@ theorem baseD1Maj_rpow {p : ℝ} (hp1 : 1 ≤ p) (hp2 : p ≤ 2) :
         Real.rpow_le_rpow_of_exponent_le hx1 hp2
     exact hpw.trans (le_add_of_nonneg_left hx0)
 
-/-- Time-one spatial mass of the real `p`-th power of the radial
-first-derivative majorant. -/
 def baseD1PowMass (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
     (p : ℝ) : ℝ :=
   ∫ x : V, (baseD1Maj x) ^ p
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-/-- Pointwise factorization of the scaled first-derivative majorant power. -/
 theorem heatD1Maj_pow {t p : ℝ} (ht : 0 < t) (x : V) :
     (heatD1Maj t x) ^ p =
       ((((heatScale t) ^ Module.finrank ℝ V)⁻¹ *
@@ -88,7 +74,6 @@ theorem heatD1Maj_pow {t p : ℝ} (ht : 0 < t) (x : V) :
     (baseD1Maj_nonneg _)]
 
 omit [Nontrivial V] in
-/-- Exact spatial integral of the scaled first-derivative majorant power. -/
 theorem heatD1MajPow_int {t p : ℝ} (ht : 0 < t) :
     ∫ x : V, (heatD1Maj t x) ^ p =
       ((((heatScale t) ^ Module.finrank ℝ V)⁻¹ *
@@ -103,8 +88,6 @@ theorem heatD1MajPow_int {t p : ℝ} (ht : 0 < t) :
 
 omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V] in
-/-- The dilation factor in `heatD1MajPow_int`, written as one power of the
-heat time. -/
 theorem heatD1Pow_scale {t p : ℝ} (ht : 0 < t) :
     ((((heatScale t) ^ Module.finrank ℝ V)⁻¹ *
         (heatScale t)⁻¹) ^ p) *
@@ -129,7 +112,6 @@ theorem heatD1Pow_scale {t p : ℝ} (ht : 0 < t) :
   ring
 
 omit [Nontrivial V] in
-/-- Scale-normalized form of the first-derivative majorant power mass. -/
 theorem heatD1Pow_int_eq {t p : ℝ} (ht : 0 < t) :
     ∫ x : V, (heatD1Maj t x) ^ p =
       t ^ (((Module.finrank ℝ V : ℝ) * (1 - p) - p) / 2) *
@@ -138,8 +120,6 @@ theorem heatD1Pow_int_eq {t p : ℝ} (ht : 0 < t) :
     heatD1Pow_scale (V := V) ht]
 
 omit [Nontrivial V] in
-/-- The same majorant power mass for the translated-reflected kernel used at
-an observation point. -/
 theorem heatD1Pow_shift {t p : ℝ} (ht : 0 < t) (x : V) :
     ∫ y : V, (heatD1Maj t (x - y)) ^ p =
       t ^ (((Module.finrank ℝ V : ℝ) * (1 - p) - p) / 2) *

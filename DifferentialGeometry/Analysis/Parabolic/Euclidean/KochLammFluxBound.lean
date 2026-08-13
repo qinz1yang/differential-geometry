@@ -3,15 +3,6 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxScale
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateBound
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
-/-!
-# Quantitative near late-flux Koch--Lamm bound
-
-The directional first-derivative kernel is dominated by its radial
-majorant.  Its exact terminal-slab scale cancels the inverse scale in
-`KLSource1.late_lp`, yielding a radius-independent bound on one late
-cylinder.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -27,8 +18,6 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The local directional terminal-kernel factor is bounded by the global
-radial factor, including the norm of the chosen direction. -/
 theorem klFluxKern_fac {R : ℝ} (hR : 0 < R) (w x : V) :
     (∫ z in klLateCyl x R,
         ‖klFluxKernel (R ^ 2) w x z‖ ^ klPDual V
@@ -120,8 +109,6 @@ theorem klFluxKern_fac {R : ℝ} (hR : 0 < R) (w x : V) :
     _ = ‖w‖ * klLate1C V * klLpScaleR (V := V) R := by ring
 
 omit [Nontrivial V] [NormedSpace ℝ F] in
-/-- The late flux-source power-integral factor has the inverse radius scale
-advertised by `KLSource1.late_lp`. -/
 theorem klFluxSrc_fac {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
@@ -148,8 +135,6 @@ theorem klFluxSrc_fac {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   simpa only [klLpScale, ENNReal.toReal_mul, ENNReal.toReal_inv,
     ENNReal.toReal_ofReal hs.le, ENNReal.coe_toReal] using hreal
 
-/-- Radius-independent near terminal-cylinder bound for one directional
-component of a divergence-form Koch--Lamm source. -/
 theorem klFluxNear_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :

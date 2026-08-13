@@ -1,14 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammFluxPiece
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammLateCover
 
-/-!
-# Finite-cover terminal Koch--Lamm flux estimate
-
-This file sums the directional one-piece estimate over an arbitrary finite
-radius-scale ball cover.  The selected set is split into disjoint pieces, so
-overlaps in the supplied cover do not lead to double counting.
--/
-
 noncomputable section
 
 open MeasureTheory Set
@@ -25,8 +17,6 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-/-- The directional kernel/source product is integrable on every selected
-piece contained in one late source cylinder. -/
 theorem klFluxPiece_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
@@ -47,8 +37,6 @@ theorem klFluxPiece_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   exact memLp_one_iff_integrable.mp (hf.smul hk)
 
 omit [CompleteSpace F] in
-/-- Integrability and norm bound supplied by an arbitrary finite radius-`R`
-ball cover of a measurable terminal spatial set. -/
 theorem klFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
@@ -139,7 +127,6 @@ theorem klFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
           ring
 
 omit [CompleteSpace F] in
-/-- Norm-only form of the arbitrary finite-cover flux estimate. -/
 theorem klFluxCover_norm {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
     {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)

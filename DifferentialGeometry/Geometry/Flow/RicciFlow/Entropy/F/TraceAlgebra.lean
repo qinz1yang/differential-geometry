@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.GeometryFormulaCore
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
 
 
 set_option autoImplicit false
@@ -11,17 +13,10 @@ open Filter MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Coordinates
-open Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {M : Type*}
-
-
-
-
-
-
-
 
 section GeometryFormula510
 
@@ -33,9 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-
-
-
 theorem connTraceAction_coord
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
@@ -43,7 +35,7 @@ theorem connTraceAction_coord
     (potential : M -> Real)
     (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀) :
     DifferentialGeometry.Integral.DivergenceTheorem.tangentSectionAction
-        (I := I) (DifferentialGeometry.Integral.Connection.connTraceField (I := I) g A)
+        (I := I) (DifferentialGeometry.Tensor.RSTensor.connTraceField (I := I) g A)
         potential x =
       ∑ p : CoordinateIdx (𝕜 := Real) E,
         (∑ i : CoordinateIdx (𝕜 := Real) E,
@@ -57,7 +49,7 @@ theorem connTraceAction_coord
             (coordinateFrameAt (I := I) x₀ p x) := by
   classical
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    DifferentialGeometry.Integral.Connection.connTraceField (I := I) g A
+    DifferentialGeometry.Tensor.RSTensor.connTraceField (I := I) g A
   let frame := coordinateFrameAt (I := I) x₀
   let hframe := coordinateFrameAt_isLocalFrame (I := I) x₀
   have hX :
@@ -72,7 +64,7 @@ theorem connTraceAction_coord
   intro p _
   rw [map_smul]
   have hcoeff :=
-    DifferentialGeometry.Integral.Connection.connTraceField_coord (I := I) g A x₀ hx p
+    DifferentialGeometry.Tensor.RSTensor.connTraceField_coord (I := I) g A x₀ hx p
   rw [hcoeff]
   exact smul_eq_mul ..
 
@@ -83,10 +75,7 @@ def connTraceRawDiv
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2) : M -> Real :=
   fun x =>
     DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
-      (I := I) g (DifferentialGeometry.Integral.Connection.connTraceField (I := I) g A) x
-
-
-
+      (I := I) g (DifferentialGeometry.Tensor.RSTensor.connTraceField (I := I) g A) x
 
 def connTraceAction
     (g : SmoothRiemannianMetric I M)
@@ -106,9 +95,6 @@ def connTraceAction
         extDerivFun (I := I) potential x
           (coordinateFrameAt (I := I) x p x)
 
-
-
-
 def gammaActionTrace
     (g : SmoothRiemannianMetric I M)
     (christoffelVariation :
@@ -124,8 +110,6 @@ def gammaActionTrace
               (extChartAt I x x) *
             christoffelVariation x p i j) *
         gradPotential x p
-
-
 
 def gammaRawDivergenceTrace
     (g : SmoothRiemannianMetric I M)
@@ -404,8 +388,6 @@ theorem traceNablaAlg
            (∑ a : Idx, Gamma d j a * A d i a))) := by
       rw [traceUpperAlg A Gamma hGamma i j]
 
-
-
 def christoffelWeightedDivergenceTrace
     (g : SmoothRiemannianMetric I M)
     (nablaChristoffelVariation :
@@ -423,11 +405,6 @@ def christoffelWeightedDivergenceTrace
             (extChartAt I x x) *
           christoffelWeightedDivergenceInFrame nablaChristoffelVariation
             christoffelVariation gradPotential x i j
-
-
-
-
-
 
 theorem weightedTrace_eq
     (g : SmoothRiemannianMetric I M)
@@ -533,24 +510,18 @@ theorem weightedTrace_eq
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [Finset.sum_mul]
 
-
-
 theorem connTraceAction_eq
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2)
     (potential : M -> Real) (x : M) :
     DifferentialGeometry.Integral.DivergenceTheorem.tangentSectionAction
-        (I := I) (DifferentialGeometry.Integral.Connection.connTraceField (I := I) g A)
+        (I := I) (DifferentialGeometry.Tensor.RSTensor.connTraceField (I := I) g A)
         potential x =
       connTraceAction (I := I) g A potential x := by
   simpa [connTraceAction] using
     connTraceAction_coord (I := I) g A potential x
       (coordinateFrameAt_mem (I := I) x)
-
-
-
-
 
 theorem connTraceAction_eq_gamma
     (g : SmoothRiemannianMetric I M)
@@ -585,9 +556,6 @@ theorem connTraceAction_eq_gamma
   refine Finset.sum_congr rfl ?_
   intro j _
   rw [hA x p i j]
-
-
-
 
 theorem weightedTrace_of_raw
     (g : SmoothRiemannianMetric I M)

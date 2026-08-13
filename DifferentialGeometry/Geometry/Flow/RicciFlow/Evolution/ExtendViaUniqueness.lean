@@ -1,33 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.CinftyLimitGlue
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.FixedDomainMetricBounds
+open DifferentialGeometry.Analysis.Sobolev.CSupTensor
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -37,37 +15,15 @@ open Bundle Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry
 open DifferentialGeometry.PDE
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.HCGCompactness
-
-
-
-
-
-
-
-
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    [I.Boundaryless] [T2Space M]
 
 theorem ricci_flow_unif_existence (gBase : SmoothRiemannianMetric I M) :
     ∀ Λ : ℝ, 1 ≤ Λ → ∃ τ₀ : ℝ, 0 < τ₀ ∧
@@ -88,15 +44,6 @@ theorem ricci_flow_unif_existence (gBase : SmoothRiemannianMetric I M) :
             HasDerivWithinAt (fun u : ℝ => (rr u).inner x v w)
               ((-2 : ℝ) * ricciTensor (I := I) (rr t) x v w) (Set.Ici 0) t) := by
   sorry
-
-
-
-
-
-
-
-
-
 
 theorem ricci_flow_interior_restart
     (g_fam : ℝ → SmoothRiemannianMetric I M) {α omega : ℝ} (_hαω : α < omega)
@@ -155,16 +102,6 @@ theorem ricci_flow_interior_restart
   obtain ⟨rr, hrr0, hrrS, hrrC, hrrP⟩ := hexist (g_fam t_star) hell_star hcov_star
   exact ⟨t_star, hstar_mem_αω, τ₀, hreach, rr, hrr0, hrrS, hrrC, hrrP⟩
 
-
-
-
-
-
-
-
-
-
-
 theorem ricci_flow_forward_unique
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (h1smooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -193,15 +130,7 @@ theorem ricci_flow_forward_unique
     ∀ t ∈ Set.Ico a b, g₁ t = g₂ t := by
   sorry
 
-
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
 theorem extend_construction_of_restart
     (g_fam : ℝ → SmoothRiemannianMetric I M) {α omega : ℝ} (_hαω : α < omega)
     (hleft : ∀ t ∈ Set.Ico α omega, ∀ x : M, ∀ v w : TangentSpace I x,
@@ -377,9 +306,6 @@ theorem extend_construction_of_restart
         rw [hext_eq_r s (le_of_lt hs)]
       · rw [hext_t]
 
-
-
-
 private theorem expBounds_of_logDiff {fa fb R : ℝ}
     (hfa : 0 < fa) (hfb : 0 < fb) (hlog : |Real.log fb - Real.log fa| ≤ R) :
     Real.exp (-R) * fa ≤ fb ∧ fb ≤ Real.exp R * fa := by
@@ -400,16 +326,8 @@ private theorem expBounds_of_logDiff {fa fb R : ℝ}
     calc fb = (fb / fa) * fa := by field_simp
       _ ≤ Real.exp R * fa := mul_le_mul_of_nonneg_right hratio_upper hfa.le
 
-
-
-
-
-
-
-
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
 theorem metricEquiv_of_ricBound
     (g_fam : ℝ → SmoothRiemannianMetric I M) {α omega : ℝ} (hαω : α < omega)
     {K : ℝ} (hK : 0 ≤ K)

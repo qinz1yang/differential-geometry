@@ -15,10 +15,8 @@ variable {M : Type*} [TopologicalSpace M]
 
 class IsBorelChartedSpace (H : Type*) (M : Type*)
     [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] : Prop where
-
   chartAt_range_countable :
     (Set.range (fun x : M => chartAt H x)).Countable
-
   measurableSet_chartAt_preimage :
     ∀ c : OpenPartialHomeomorph M H,
       @MeasurableSet M (borel M) {x : M | chartAt H x = c}

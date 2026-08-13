@@ -1,26 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open scoped ContDiff
@@ -30,14 +9,9 @@ namespace Analysis
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {n : ℕ}
 
-
-
-
 abbrev MatJet (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] (n : ℕ) : Type _ :=
   (Fin n → Fin n → ℝ) ×
     (E →L[ℝ] (Fin n → Fin n → ℝ)) × (E →L[ℝ] (E →L[ℝ] (Fin n → Fin n → ℝ)))
-
-
 
 theorem contDiff_jetVal (a b : Fin n) :
     ContDiff ℝ ∞ (fun p : MatJet E n => p.1 a b) :=
@@ -61,15 +35,10 @@ theorem contDiff_jetD2 (d e : E) (a b : Fin n) :
       (((contDiff_snd.comp contDiff_snd).clm_apply (contDiff_const (c := d))).clm_apply
         (contDiff_const (c := e))))
 
-
-
 theorem contDiffAt_jetInvGram {p₀ : MatJet E n} (hp₀ : (Matrix.of p₀.1).det ≠ 0) (k l : Fin n) :
     ContDiffAt ℝ ∞ (fun p : MatJet E n => (Matrix.of p.1)⁻¹ k l) p₀ :=
   contDiffAt_inv_of_entries (fun p : MatJet E n => Matrix.of p.1)
     (fun a b => contDiff_jetVal a b) hp₀ k l
-
-
-
 
 theorem contDiffAt_jetInvGramDeriv (b : Fin n → E) {p₀ : MatJet E n}
     (hp₀ : (Matrix.of p₀.1).det ≠ 0) (m k l : Fin n) :
@@ -80,13 +49,9 @@ theorem contDiffAt_jetInvGramDeriv (b : Fin n → E) {p₀ : MatJet E n}
   exact ((contDiffAt_jetInvGram hp₀ k a).mul (contDiffAt_jetInvGram hp₀ c l)).mul
     (contDiff_jetD1 (b m) a c).contDiffAt
 
-
-
 def jetChristoffel (b : Fin n → E) (p : MatJet E n) (i j k : Fin n) : ℝ :=
   (1 / 2 : ℝ) * ∑ l : Fin n, (Matrix.of p.1)⁻¹ k l *
     ((p.2.1 (b i)) l j + (p.2.1 (b j)) l i - (p.2.1 (b l)) i j)
-
-
 
 def jetChristoffelDeriv (b : Fin n → E) (p : MatJet E n) (m i j k : Fin n) : ℝ :=
   (1 / 2 : ℝ) * ∑ l : Fin n,
@@ -105,8 +70,6 @@ def jetRiemann (b : Fin n → E) (p : MatJet E n) (i j k l : Fin n) : ℝ :=
 
 def jetRicci (b : Fin n → E) (p : MatJet E n) (i k : Fin n) : ℝ :=
   ∑ j : Fin n, jetRiemann b p i j k j
-
-
 
 def jetRicciFlow (b : Fin n → E) (p : MatJet E n) : Fin n → Fin n → ℝ :=
   fun i k => -2 * jetRicci b p i k
@@ -151,8 +114,6 @@ theorem contDiffAt_jetRicci (b : Fin n → E) {p₀ : MatJet E n}
     ContDiffAt ℝ ∞ (fun p : MatJet E n => jetRicci b p i k) p₀ := by
   unfold jetRicci
   exact ContDiffAt.sum (fun j _ => contDiffAt_jetRiemann b hp₀ i j k j)
-
-
 
 theorem contDiffAt_jetRicciFlow (b : Fin n → E) {p₀ : MatJet E n}
     (hp₀ : (Matrix.of p₀.1).det ≠ 0) :

@@ -4,16 +4,9 @@ import Mathlib.Analysis.Calculus.FDeriv.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace MetricKoszul
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [ContinuousDualEquiv E]
@@ -80,8 +73,6 @@ noncomputable local instance sprayTriFiniteDim
     FiniteDimensional Real (E →L[Real] E →L[Real] E →L[Real] Real) :=
   ContinuousLinearMap.finiteDimensional
 
-
-
 private noncomputable def koszulRieszOp :
     (E →L[Real] E →L[Real] E →L[Real] Real) →L[Real]
       (E →L[Real] E →L[Real] E) :=
@@ -97,15 +88,12 @@ private noncomputable def koszulRieszOp :
       (ContinuousDualEquiv.equiv (E := E)).symm (koszulCov D u v) := by
   simp [koszulRieszOp]
 
-
 private noncomputable def postBilin :
     (E →L[Real] E) →L[Real]
       (E →L[Real] E →L[Real] E) →L[Real]
         (E →L[Real] E →L[Real] E) :=
   (ContinuousLinearMap.compL Real E (E →L[Real] E) (E →L[Real] E)).comp
     (ContinuousLinearMap.compL Real E E E)
-
-
 
 private noncomputable def gramCLM :
     (E →L[Real] E →L[Real] Real) →L[Real] (E →L[Real] E) :=
@@ -132,7 +120,6 @@ private theorem gramCLM_isUnit
     gramCLM B
   rfl
 
-
 noncomputable def raisedKoszulOp
     (B : E →L[Real] E →L[Real] Real)
     (D : E →L[Real] E →L[Real] E →L[Real] Real) :
@@ -148,8 +135,6 @@ noncomputable def raisedKoszulOp
       Ring.inverse (gramCLM B)
         ((ContinuousDualEquiv.equiv (E := E)).symm (koszulCov D u v)) := by
   rfl
-
-
 
 theorem raisedKoszulOp_eq
     [CompleteSpace E] [CoerciveBilinInverse E]
@@ -174,13 +159,9 @@ theorem raisedKoszulOp_eq
     (ContinuousDualEquiv.equiv (E := E)).symm (koszulCov D u v) at he
   exact (ContinuousDualEquiv.equiv (E := E)).symm.injective he
 
-
-
 noncomputable def metricSpray
     (g : E → E →L[Real] E →L[Real] Real) (z : E × E) : E × E :=
   (z.2, -raisedKoszulOp (g z.1) (fderiv Real g z.1) z.2 z.2)
-
-
 
 theorem metricSpray_eq
     [CompleteSpace E] [CoerciveBilinInverse E]
@@ -272,8 +253,6 @@ private theorem koszulRiesz_conv
     (hgInf_cd.fderiv_of_isOpen hU
       (by rw [show (∞ : WithTop ℕ∞) + 1 = ∞ from rfl]))
 
-/-- A smooth coercive metric-coefficient field has a smooth proof-independent
-raised Koszul bilinear operator. -/
 theorem raisedOp_smooth
     [FiniteDimensional Real E]
     {U : Set E} (hU : IsOpen U)
@@ -370,8 +349,6 @@ private theorem raisedDiag_conv
       (fun _ => hdiag.contDiffOn) hdiag.contDiffOn
       (fun _ _ => Set.mem_univ _) (fun _ _ _ => Set.mem_univ _))
 
-
-
 theorem metricSpray_contDiffOn
     [FiniteDimensional Real E]
     {U : Set E} (hU : IsOpen U)
@@ -435,3 +412,4 @@ theorem metricSpray_conv
       (fun _ => contDiffOn_snd) contDiffOn_snd hneg_cd hnegInf_cd)
 
 end MetricKoszul
+end DifferentialGeometry

@@ -2,13 +2,15 @@ import DifferentialGeometry.Geometry.Connection.Realization.Embedding
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
 
+namespace DifferentialGeometry.Geometry.Connection.Realization
+
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
-open Bundle CovariantDerivative
+open _root_.Bundle CovariantDerivative
 
 section Connection
 
@@ -109,3 +111,5 @@ theorem concreteConn_leibniz
 end Connection
 
 end
+
+end DifferentialGeometry.Geometry.Connection.Realization

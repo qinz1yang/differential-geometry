@@ -3,15 +3,6 @@ import DifferentialGeometry.Analysis.ODE.SecondOrderGronwall
 
 set_option autoImplicit false
 
-/-!
-# Uniqueness for the abstract Jacobi ODE
-
-This module extends `IndexForm.lean` with the interior zero-data uniqueness
-needed by the no-conjugate-point argument.  The proof is independent of
-Riemannian geometry: propagate zero data to the right by the second-order
-Gronwall estimate, and to the left after reversing time.
--/
-
 open Set
 
 noncomputable section
@@ -20,8 +11,6 @@ namespace DifferentialGeometry.Analysis.ODE
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- A homogeneous second-order system with zero initial data vanishes on its
-forward interval. -/
 private theorem ode2_zero
     {Y V W : ℝ → F} {C b : ℝ}
     (hC : 0 ≤ C)
@@ -52,8 +41,6 @@ private theorem ode2_zero
 
 namespace IsJacobiSolOn
 
-/-- If a Jacobi ODE solution has zero position and velocity at an interior
-time, then both fields vanish on the whole interval. -/
 theorem eq_zero_of_interior
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {a b c C : ℝ} {y v : ℝ → F}

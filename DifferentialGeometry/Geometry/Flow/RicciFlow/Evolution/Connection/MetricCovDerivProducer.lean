@@ -2,26 +2,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Produce
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Geometry.Connection.TensorNabla.CotangentExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.BlackBox
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -41,11 +25,6 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 variable {Idx : Type} [Fintype Idx] [DecidableEq Idx]
 variable {u : Set M}
-
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -70,20 +49,13 @@ theorem metricInner_mdiffAt
       (E₂ := fun x : M => TangentSpace I x →L[Real] Real)
       (b := fun b : M => b)
       (ϕ := fun b => g.inner b) (v := fun b => Y b) hg hY
-  exact ((DifferentialGeometry.Integral.Connection.cotangentCov_pairing_contMDiff hgY hZ)
+  exact ((DifferentialGeometry.Geometry.Connection.cotangentCov_pairing_contMDiff hgY hZ)
     x).mdifferentiableAt (by simp)
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem metricFrameComp_fixedBaseSwap_of_solution
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -108,21 +80,10 @@ theorem metricFrameComp_fixedBaseSwap_of_solution
   have heq := hS.equation ⟨t, ht⟩ x (frame a x) (frame b x)
   simpa [ricciCompInFrame] using heq
 
-
-
-
-
-
-
-
-
-
-
-
 omit [NeZero (Module.finrank ℝ E)] [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
 theorem metricCovDerivDeriv_of_solution
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -167,13 +128,8 @@ theorem metricCovDerivDeriv_of_solution
       D.carrier (t : Real)
   exact hval ▸ hcomb
 
-
-
-
-
-
 def connectionVariationBlackBox_of_solution
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -194,19 +150,15 @@ def connectionVariationBlackBox_of_solution
     metricCovDerivDeriv_of_solution (I := I) S hS frame hSmooth hFdiff hFtdiff
   metricCovDerivRicciFlow := fun _ _ _ _ _ => rfl
 
-
-
-
-
 omit [DecidableEq Idx] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem christoffelEvolution_of_solution
     [DecidableEq Idx]
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (gInv : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
+    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (gInvDt : Real -> M -> Idx -> Idx -> Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u) (hu : IsOpen u)

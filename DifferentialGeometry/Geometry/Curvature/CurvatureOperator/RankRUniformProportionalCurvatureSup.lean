@@ -2,6 +2,10 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorCurvature
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorSlotwiseCurvatureRS
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqRiemannOpHigherRankParseval
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
@@ -12,11 +16,12 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Geometry
+namespace Curvature
 
 open DifferentialGeometry.Integral.Measure
-open Tensor0SBundle Tensor0SNabla TensorRSNabla
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
+    DifferentialGeometry.TensorRSNabla
 
 variable {E : Type*} [NormedAddCommGroup E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -91,7 +96,7 @@ private lemma exists_smooth_tensor0S_section_eq2 (r : ℕ) (x : M) (Y₀ : Tenso
       (V := fun b => Tensor0SSpace r I b) x Y₀⟩
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannOp_tensorCovRS_apply_eval
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (v w : TangentSpace I x)
     (T : TensorRSSpace r s I x) (Y₀ : Tensor0SSpace r I x) (u : Fin s → TangentSpace I x) :
@@ -186,8 +191,8 @@ theorem riemannOp_tensorCovRS_apply_eval
     rw [hXx, hWx, hYx]
   rw [hLHS, hkey, hCov, hContra, hτx]
 
-end Connection
-end Integral
+end Curvature
+end Geometry
 end DifferentialGeometry
 
 end

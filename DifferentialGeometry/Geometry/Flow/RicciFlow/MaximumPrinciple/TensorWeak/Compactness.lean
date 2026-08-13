@@ -1,14 +1,22 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.FirstNull
+import DifferentialGeometry.Geometry.Operator.GradientRegularity
+import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
+import DifferentialGeometry.Geometry.Operator.Operators
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.PDE.RicciFlow
 
 noncomputable section
 
-open Bundle Tensor0SBundle Set
+open Bundle DifferentialGeometry.Tensor0SBundle Set
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -17,13 +25,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
-
-
-
-
-
-
-
 
 structure TensorFirstNullCompactnessOn
     (G : Real -> SmoothRiemannianMetric I M)
@@ -38,8 +39,6 @@ structure TensorFirstNullCompactnessOn
     Nonempty (TensorFirstNullData (I := I) (M := M) G S epsilon delta t0)
 
 namespace TensorFirstNullCompactnessOn
-
-
 
 omit [IsManifold I 2 M] in
 theorem of_section
@@ -171,9 +170,6 @@ end TensorFirstNullCompactnessOn
 
 namespace TensorFirstNullCompactnessOn
 
-
-
-
 omit [IsManifold I 2 M] in
 theorem of_section_timeSlab
     (G : Real -> SmoothRiemannianMetric I M)
@@ -304,13 +300,6 @@ theorem of_section_timeSlab
 
 end TensorFirstNullCompactnessOn
 
-
-
-
-
-
-
-
 def TensorBarrierStrictSupersolutionOn
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorFamily (I := I) (M := M))
@@ -352,12 +341,6 @@ theorem strictBarrier_of_est
     (epsilon := epsilon) (delta := delta) (t0 := t0) (T := T)
     (U := Set.Ioc t0 (t0 + delta)) hsub hbase hest
 
-
-
-
-
-
-
 def TensorBarrierUniformStrictOnSlab
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorFamily (I := I) (M := M))
@@ -369,14 +352,6 @@ def TensorBarrierUniformStrictOnSlab
     ∃ nablaBarrier : TensorNabla1Family (I := I) (M := M),
       TensorBarrierStrictSupersolutionOn (I := I) (M := M) G S X N
         nabla2Barrier nablaBarrier epsilon delta t0
-
-
-
-
-
-
-
-
 
 def TensorFirstNullScalarSigns
     (G : Real -> SmoothRiemannianMetric I M)
@@ -391,8 +366,6 @@ def TensorFirstNullScalarSigns
     drift = 0 ∧
     0 ≤ reaction ∧
     drift + reaction < timeDeriv - laplacian
-
-
 
 structure TensorStrictCert
     (G : Real -> SmoothRiemannianMetric I M)
@@ -421,16 +394,6 @@ def TensorStrictCertSlab
   ∀ epsilon : Real, SmallBarrierEps epsilon ->
     Nonempty (TensorStrictCert (I := I) (M := M) G S X N
       epsilon delta t0)
-
-
-
-
-
-
-
-
-
-
 
 omit [IsManifold I 2 M] in
 theorem scalarSigns_of_eval
@@ -516,12 +479,6 @@ theorem scalarSigns_of_eval
     hreaction_nonneg, ?_⟩
   linarith
 
-
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem scalarSigns_of_parts
     {G : Real -> SmoothRiemannianMetric I M}
@@ -570,12 +527,6 @@ theorem scalarSigns_of_parts
       (nabla2Barrier d.t1 d.x1) (nablaBarrier d.t1 d.x1) d.v
       laplacian drift hlap hdrift)
 
-
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem scalarSigns_of_lap
     {G : Real -> SmoothRiemannianMetric I M}
@@ -620,12 +571,6 @@ theorem scalarSigns_of_lap
     hstrict hnull hsym hbilin d laplacian 0 htime_nonpos
     hlaplacian_nonneg rfl hlap hdrift
 
-
-
-
-
-
-
 omit [IsManifold I 2 M] in
 theorem scalarSigns_of_lap_firstNull
     {G : Real -> SmoothRiemannianMetric I M}
@@ -661,11 +606,6 @@ theorem scalarSigns_of_lap_firstNull
     (fun timeDeriv hderiv => firstNullTime_nonpos (I := I) (M := M)
       d timeDeriv hderiv)
     hlaplacian_nonneg hlap hdrift
-
-
-
-
-
 
 theorem scalarSigns_of_local
     {G : Real -> SmoothRiemannianMetric I M}
@@ -717,12 +657,6 @@ theorem scalarSigns_of_local
     hstrict hnull hsym hbilin d laplacian hlaplacian_nonneg hlap
   rw [hnabla, hX]
   exact nablaEval_zero (I := I) (M := M) hreal Xsec V hV hphi hcovV
-
-
-
-
-
-
 
 theorem scalarSigns_of_local_min
     [I.Boundaryless]
@@ -804,10 +738,6 @@ theorem scalarSigns_of_local_min
     (cov := cov) (B := B) (nablaB := nablaB)
     hstrict hnull hsym hbilin d (laplacian (I := I) cov (G d.t1) phi d.x1)
     hlap_nonneg hlap hreal Xsec V hX hnabla hV hphi hcovV
-
-
-
-
 
 theorem scalarSigns_oneSec
     [I.Boundaryless]
@@ -925,11 +855,6 @@ theorem scalarSigns_oneSec
     hstrict hnull hsym hbilin d hreal Xsec V hlapMin hlap' hX hnabla hV' hB'
     hcovV' hmdiff' hmdiff_near' hgrad'
 
-
-
-
-
-
 theorem scalarSigns_hess
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -1029,14 +954,6 @@ theorem scalarSigns_hess
     hstrict hnull hsym hbilin d hreal1 Xsec Vsec hlapMin (Hess d.x1) hlap hslots
     hX hnabla hV hB (hcovV Xsec) hmdiff hmdiff_near hgrad
 
-
-
-
-
-
-
-
-
 theorem scalarSigns_covHess
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -1070,7 +987,7 @@ theorem scalarSigns_covHess
         (Set.Icc t0 (t0 + delta)))
     (d : TensorFirstNullData (I := I) (M := M) G
       (twoTensorSecToFamily (I := I) (M := M) S) epsilon delta t0)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov (G d.t1))
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov (G d.t1))
     (hreal1 :
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         2 cov B nablaB)
@@ -1175,11 +1092,6 @@ theorem scalarSigns_covHess
     hX hnabla hV (hB Vsec hV) hcovVall hmdiff hmdiff_near
     (by simpa [phi] using hgrad)
 
-
-
-
-
-
 theorem scalarSigns_secHess
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -1209,7 +1121,7 @@ theorem scalarSigns_secHess
     (hcovInf : CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov d.t1) (∞ : WithTop ℕ∞))
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S)
     (Xsec :
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -1268,17 +1180,6 @@ theorem scalarSigns_secHess
     hcov1 hcovInf hstrict hnull hsym d (hmc d.t1)
     (hbarDerivs.first d.t1) (hbarDerivs.second d.t1) Xsec hlapMin
     rfl hkerB_left hkerB_right hX rfl hB
-
-
-
-
-
-
-
-
-
-
-
 
 theorem scalarSigns_covZero
     [I.Boundaryless] [T2Space M]
@@ -1376,4 +1277,4 @@ theorem scalarSigns_covZero
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.PDE.RicciFlow

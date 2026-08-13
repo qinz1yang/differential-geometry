@@ -1,19 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.PartialDiffeomorphOpens
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -36,9 +24,6 @@ section PartialCovNaturality
 
 open TopologicalSpace
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem tensor02_eq_covDOF
     (A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -53,9 +38,6 @@ theorem tensor02_eq_covDOF
         = covDerivOfField (I := I) gRef A (a + 1)
       rw [ih, covDerivOfField_succ]
 
-
-
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 private theorem srm_ext {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M']
     [IsManifold I ∞ M'] {g g' : SmoothRiemannianMetric I M'}
@@ -66,17 +48,6 @@ private theorem srm_ext {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M']
     funext fun x => ContinuousLinearMap.ext fun v => ContinuousLinearMap.ext fun w => h x v w
   subst hi
   rfl
-
-
-
-
-
-
-
-
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem covNormWith_pd_zone [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
@@ -190,7 +161,7 @@ theorem covNormWith_pd_zone [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     (ContinuousMultilinearMap.ext hres2).symm
   unfold tensor02CovDerivNormWith
   rw [tensor02_eq_covDOF, tensor02_eq_covDOF]
-  obtain ⟨basis, hONb⟩ := DifferentialGeometry.Integral.Connection.exists_gOrthonormalBasis (I := I)
+  obtain ⟨basis, hONb⟩ := DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I)
     (Diffeomorph.pullbackMetric (I := I) (g'.restrictOpen (I := I) W) F) xV
   have hnorm1 : Tensor0SBundle.normSq0S (I := I) G x (a + 2)
         (covDerivOfField (I := I) G δM a x)

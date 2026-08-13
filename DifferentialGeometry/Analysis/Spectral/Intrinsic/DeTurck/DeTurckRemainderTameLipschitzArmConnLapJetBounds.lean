@@ -35,20 +35,27 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm1CoeffL2
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieArm2CoeffL2JetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefold
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -542,7 +549,7 @@ private lemma bareChartJetContent_le_sqrt_fiberNormSq_sum_uniform
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
   obtain ⟨Cpeel, hCpeel_nn, hCpeel⟩ :=
-    DifferentialGeometry.PDE.RicciFlow.iteratedFDeriv_rawPullR_le_zeroContent_sum
+    DifferentialGeometry.Analysis.Sobolev.iteratedFDeriv_rawPullR_le_zeroContent_sum
       (I := I) (M := M) g 0 2 α N N (le_refl N)
   obtain ⟨Cfib0, hCfib0_nn, hCfib0⟩ :=
     Analysis.Parabolic.TensorSpectral.exists_zeroContentR_le_fiberNorm_on_pouKernel
@@ -615,7 +622,7 @@ private lemma bareChartJetContent_le_sqrt_fiberNormSq_sum_uniform
       have hmN : m ≤ N := Nat.lt_succ_iff.mp (Finset.mem_range.mp hm)
       have hpeel := hCpeel D m hmN 0 (by omega) q'.1 q'.2 y hyK'
       have h0eq : (iteratedCovGrad (I := I) g 0 2 0 D) = D :=
-        DifferentialGeometry.PDE.RicciFlow.iteratedCovGrad_zero (I := I) g 0 2 D
+        DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_zero (I := I) g 0 2 D
       rw [h0eq] at hpeel
       have hreindex : (∑ i ∈ Finset.range (m + 1),
             tensorComponentAbsSum (I := I) (M := M) g 0 (2 + (0 + i))
@@ -730,7 +737,7 @@ private lemma tensorChartComponentRaw_deTurckRHSArm_eq_chartDeTurckRicciRHS_diff
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (α : M) {b : M}
-    (hb : b ∈ DifferentialGeometry.Integral.Connection.chartLeviCivitaGoodSet (I := I) α)
+    (hb : b ∈ DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet (I := I) α)
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorChartComponentRaw
         (I := I) (M := M) g₀ 0 2
@@ -1161,7 +1168,7 @@ theorem deTurckArmDiff_supercritical_pointwise_jet_le
   set S : ℝ := ∑ i ∈ Finset.range (a + 2 + 1),
     ‖iteratedCovGrad (I := I) g₀ 0 2 i W‖ ^ 2 with hS_def
   have hS_nn : 0 ≤ S := Finset.sum_nonneg fun i _ => sq_nonneg _
-  set Mn : ℝ := ‖DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.SmoothCcTensor.toHs
+  set Mn : ℝ := ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
       (g := g₀) (r := 0) (s := 2) (2 * k) W‖ with hMn_def
   have hMn_nn : 0 ≤ Mn := norm_nonneg _
   have hCol := hCc W x
@@ -1238,6 +1245,6 @@ theorem deTurckArmDiff_supercritical_pointwise_jet_le
 
 end NormedSpaceModel
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

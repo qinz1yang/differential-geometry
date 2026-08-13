@@ -1,28 +1,15 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RmFrozenSlotField
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Tensor0SBundle Filter DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle Filter
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -33,11 +20,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
 noncomputable def freezeAllBut0SField {s : ℕ}
     [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -172,10 +154,6 @@ private theorem updateSlots_apply {s : ℕ}
   by_cases hi : i = q
   · subst hi; simp
   · simp [Function.update_of_ne hi]
-
-
-
-
 
 theorem allBut0SFreezeNabla {s : ℕ}
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]

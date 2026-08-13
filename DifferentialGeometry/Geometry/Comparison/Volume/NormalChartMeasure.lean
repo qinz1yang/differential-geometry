@@ -1,15 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
 import DifferentialGeometry.Geometry.Exponential.JacobiVariation
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -42,13 +34,6 @@ section NormalChart
 variable [I.Boundaryless] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
-
-
-
-
-
-
-
 def normalChartDensity (g : SmoothRiemannianMetric I M) (p : M) : E → ℝ :=
   paramDensity (I := I) g (expMapDiffeo (I := I) g p)
 
@@ -58,8 +43,6 @@ omit [NeZero (Module.finrank ℝ E)] in
     (g : SmoothRiemannianMetric I M) (p : M) (w : E) :
     normalChartDensity (I := I) g p w =
       paramDensity (I := I) g (expMapDiffeo (I := I) g p) w := rfl
-
-
 
 def normalGramMatrix (g : SmoothRiemannianMetric I M) (p : M) :
     E → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
@@ -76,8 +59,6 @@ omit [NeZero (Module.finrank ℝ E)] in
         (mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) w ((chartModelBasis E) j)) :=
   rfl
 
-
-
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma normalDensity_det
@@ -87,7 +68,6 @@ lemma normalDensity_det
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-/-- The normal-coordinate Gram matrix is continuous at the chart centre. -/
 lemma normalGram_contAt
     (g : SmoothRiemannianMetric I M) (p : M) :
     ContinuousAt (normalGramMatrix (I := I) g p) 0 := by
@@ -112,7 +92,6 @@ lemma normalGram_contAt
         Set.inter_subset_left (fun w hw => hw.2)
   exact hcont.continuousAt (hUopen.mem_nhds hzeroU)
 
-/-- The radial variation field along the geodesic launched by `x`. -/
 def radialJacobiField (g : SmoothRiemannianMetric I M) (p : M)
     (x w : E) (t : ℝ) :
     TangentSpace I
@@ -120,7 +99,6 @@ def radialJacobiField (g : SmoothRiemannianMetric I M) (p : M)
   mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
     (expMap (I := I) g p
       (show TangentSpace I p from (t • (x + s • w))) : M)) 0 (1 : ℝ)
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
@@ -130,7 +108,6 @@ lemma radialJacobi_zero
     radialJacobiField (I := I) g p x w 0 = 0 := by
   simpa [radialJacobiField] using
     DifferentialGeometry.Geometry.Riemannian.radial_jacobi_zero (I := I) g p x w
-
 
 omit [SigmaCompactSpace M] in
 theorem exists_radialJacobi_radius
@@ -149,8 +126,7 @@ theorem exists_radialJacobi_zero_radius
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       IsJacobiAt (I := I) g
@@ -158,8 +134,6 @@ theorem exists_radialJacobi_zero_radius
         (radialJacobiField (I := I) g p x w) 0 := by
   simpa [radialJacobiField] using
     DifferentialGeometry.Geometry.Riemannian.exists_jacobi_zero (I := I) g hEnorm p
-
-
 
 omit [T2Space M] in
 omit [SigmaCompactSpace M] in
@@ -171,8 +145,6 @@ theorem exists_radialJacobi_deriv_radius
         (radialJacobiField (I := I) g p x w) 0 : E) = w := by
   simpa [radialJacobiField] using
     DifferentialGeometry.Geometry.Riemannian.exists_radial_jacobi_deriv_radius (I := I) g p
-
-
 
 def radialJacobiGram (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
@@ -192,7 +164,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space
         (radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1) :=
   rfl
 
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma radialJacobi_one
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
@@ -205,10 +176,6 @@ lemma radialJacobi_one
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-/-- Radial time scaling can be transferred to both launch vectors and then
-evaluated at time one.  This is an algebraic identity of the defining
-exponential variations, valid at every scale; the radial Gram comparison uses
-it inside the source of `expMapDiffeo` to obtain linear independence. -/
 lemma radialJacobi_scale
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : ℝ) :
     radialJacobiField (I := I) g p x w t =
@@ -227,8 +194,6 @@ lemma radialJacobi_scale
   rfl
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- At any radial time in the local `C²` range, the radial Jacobi field is the
-exponential differential applied to the scaled variation direction. -/
 lemma radialJacobi_at
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : ℝ)
     (htx : ‖t • x‖ < expMapC2Radius (I := I) g p) :
@@ -240,8 +205,6 @@ lemma radialJacobi_at
     radialJacobi_one (I := I) g p (t • x) (t • w) htx]
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- Radial Jacobi fields preserve finite linear combinations at every time in
-the local `C²` range. -/
 lemma radialJacobi_sum_at
     {ι : Type*} [Fintype ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
@@ -275,7 +238,6 @@ lemma radialJacobi_sum_at
           rw [radialJacobi_at (I := I) g p x (w i) t htx]
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- Endpoint radial Jacobi fields are linear in the variation direction. -/
 lemma radialJacobi_one_smul
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (a : ℝ)
     (hx : ‖x‖ < expMapC2Radius (I := I) g p) :
@@ -287,8 +249,6 @@ lemma radialJacobi_one_smul
     (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x).map_smul a w
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- Endpoint radial Jacobi fields preserve arbitrary finite linear
-combinations of variation directions. -/
 lemma radialJacobi_sum
     {ι : Type*} [Fintype ι]
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
@@ -309,8 +269,6 @@ lemma radialJacobi_sum
   exact L.map_smul (c i) (w i)
 
 omit [T2Space M] [SigmaCompactSpace M] in
-/-- Endpoint radial Jacobi fields are linear over finite combinations of
-variation directions. -/
 lemma radialJacobi_one_sum
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     (c : Fin (Module.finrank ℝ E) → ℝ)
@@ -319,8 +277,6 @@ lemma radialJacobi_one_sum
         (∑ i, c i • (chartModelBasis E) i) 1 =
       ∑ i, c i • radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1 := by
   exact radialJacobi_sum (I := I) g p x (chartModelBasis E) c hx
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -338,9 +294,6 @@ lemma expDiffeo_mfderiv
     filter_upwards [hsrc] with y hy
     exact expMapDiffeo_apply_eq (I := I) g p hy
   exact hagree.mfderiv_eq
-
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalGram_radial
@@ -371,7 +324,6 @@ lemma normalGram_radial
   rw [← radialJacobi_one (I := I) g p x ((chartModelBasis E) i) hxrad]
   rw [← radialJacobi_one (I := I) g p x ((chartModelBasis E) j) hxrad]
 
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalGram_radialMat
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}
@@ -381,7 +333,6 @@ lemma normalGram_radialMat
   ext i j
   exact normalGram_radial (I := I) g p hxsrc hxrad i j
 
-
 omit [T2Space M] [SigmaCompactSpace M] in
 lemma normalDensity_radial
     (g : SmoothRiemannianMetric I M) (p : M) {x : E}
@@ -390,15 +341,6 @@ lemma normalDensity_radial
     normalChartDensity (I := I) g p x =
       Real.sqrt (radialJacobiGram (I := I) g p x).det := by
   rw [normalDensity_det, normalGram_radialMat (I := I) g p hxsrc hxrad]
-
-
-
-
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalChart_volume_eq
@@ -414,8 +356,6 @@ theorem normalChart_volume_eq
   simpa [normalChartAt, normalChartDensity] using
     riemannianVolumeMeasure_param_target_eq (I := I) (M := M) g
       (expMapDiffeo (I := I) g p) hA_meas hA_target
-
-
 
 theorem normalChart_volume_radial
     (g : SmoothRiemannianMetric I M) (p : M)

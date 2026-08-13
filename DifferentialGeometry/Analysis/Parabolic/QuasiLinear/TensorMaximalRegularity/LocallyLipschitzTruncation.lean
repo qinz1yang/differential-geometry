@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SubcriticalSmallTime
 import DifferentialGeometry.Analysis.Calculus.BallRetraction
+open DifferentialGeometry.Analysis.Calculus
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -40,8 +42,6 @@ variable {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
 noncomputable def recenteredBallRetraction (c : X) (R : ℝ) (v : X) : X :=
   c + ballRetraction R (v - c)
 
-/-- In an arbitrary normed space, recentered radial retraction is
-`2`-Lipschitz. -/
 theorem recenteredBallRetraction_lipschitzWith
     {R : ℝ} (hR : 0 ≤ R) (c : X) :
     LipschitzWith 2 (recenteredBallRetraction c R) := by
@@ -63,8 +63,6 @@ section RecentreHilbert
 
 variable {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
 
-/-- In an inner-product space, recentered radial retraction has the sharp
-Lipschitz constant `1`. -/
 theorem recenteredBallRetraction_lipschitzWith_one
     {R : ℝ} (hR : 0 ≤ R) (c : X) :
     LipschitzWith 1 (recenteredBallRetraction c R) := by
@@ -113,7 +111,6 @@ def truncatedNonlin (N : tensorHs (I := I) (M := M) g r s (a + 1) →
       tensorHs (I := I) (M := M) g r s a :=
   fun v => N (recenteredBallRetraction u₀' R v)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem truncatedNonlin_eq_of_mem
     {u₀' : tensorHs (I := I) (M := M) g r s (a + 1)} {R : ℝ}
@@ -122,7 +119,6 @@ theorem truncatedNonlin_eq_of_mem
     truncatedNonlin (I := I) (M := M) N u₀' R v = N v := by
   rw [truncatedNonlin, recenteredBallRetraction_eq_self_of_mem hv]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem truncatedNonlin_lipschitzWith {L_R : ℝ≥0}
     {u₀' : tensorHs (I := I) (M := M) g r s (a + 1)} {R : ℝ} (hR : 0 ≤ R)
@@ -142,7 +138,6 @@ theorem truncatedNonlin_lipschitzWith {L_R : ℝ≥0}
 
 end Truncation
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem quasilinear_strong_existence_truncated_smallTime_ofCompact
     {N : tensorHs (I := I) (M := M) g r s (a + 1) →
@@ -175,7 +170,6 @@ theorem quasilinear_strong_existence_truncated_smallTime_ofCompact
     (h_compact := h_compact) u₀
     (truncatedNonlin_lipschitzWith (I := I) (M := M) hR hN)
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem nemytskiiHa1_truncated_eqOn_ball
     {N : tensorHs (I := I) (M := M) g r s (a + 1) →
@@ -193,7 +187,6 @@ theorem nemytskiiHa1_truncated_eqOn_ball
   filter_upwards [hcoe, hball] with t ht htmem
   rw [ht, truncatedNonlin_eq_of_mem (I := I) (M := M) htmem]
 
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem de_simon_quasilinear_tensor_heat_short_time_existence_locally_lipschitz_of_compact_resolvent
     {N : tensorHs (I := I) (M := M) g r s (a + 1) →

@@ -1,13 +1,14 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOperator.ManifoldFlowOrbitReduction
+open DifferentialGeometry.Geometry.Connection
 
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow.ODE
+namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Bundle Filter
 open scoped Manifold Topology ContDiff
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 
 section OrbitODE
@@ -127,4 +128,4 @@ theorem rawVariationalIdentity_of_orbitODE_factors
 
 end OrbitODE
 
-end DifferentialGeometry.PDE.RicciFlow.ODE
+end DifferentialGeometry.Analysis.ODE

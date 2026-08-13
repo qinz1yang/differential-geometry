@@ -4,39 +4,23 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInne
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricRaisedEndomorphismJetBound
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
-
-/-!
-# Joint regularity of the finite-spectral Dirichlet density
-
-The finite-spectral local addition is jointly `C^3` in the coefficient and
-the spatial point.  Its spatial differential is therefore jointly `C^2`.
-This file combines that fact with the smooth inverse-cometric coefficient and
-the target metric to prove the corresponding joint `C^2` regularity of
-`hmfDirDensity`.
-
-The definition of `hmfDirDensity` uses a smooth orthonormal frame whose centre
-is the evaluation point.  Such a moving-centre frame is not itself a smooth
-field.  The proof consequently freezes the frame at the point under
-consideration, proves regularity with that fixed smooth frame, and returns to
-the moving-centre definition by the basis-independence of a genuine bilinear
-trace.
-
-The final section records the state-dependent mass pairing forced by the
-local-addition parametrisation.  It is deliberately distinct from `hmfMass`:
-away from the zero section, the coefficient velocity must first be pushed by
-the state derivative of the exponential chart.
--/
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle Filter
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
 
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
 
 open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
@@ -49,19 +33,9 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M]
-
-/-! ## A jointly regular spatial pushforward -/
+  [BoundarylessManifold I M] [ConnectedSpace M]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- The differential in the spatial slot of the finite-spectral local
-addition, applied to a fixed smooth tangent field, is jointly `C^2` in the
-coefficient and spatial variables.
-
-The proof uses the parameterised `mfderivWithin` theorem for the genuinely
-joint map `(u,x) ↦ hmfAdd q (hmfSpecIncl q S u) x`.  Thus the coefficient
-dependence of the spatial derivative is retained; this is stronger than
-applying the tangent-map theorem separately to each coefficient slice. -/
 private theorem hmfSpecPush_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -168,12 +142,7 @@ private theorem hmfSpecPush_cd
     rw [hrw]
     exact hφ
 
-/-! ## Frozen-frame density -/
-
-omit [CompactSpace M] [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Applying the inverse-cometric endomorphism to a frozen smooth
-orthonormal-frame vector gives a smooth tangent section, jointly with an
-unused finite-spectral parameter. -/
+omit [CompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem hmfRaisedFrame_cd
     (q h : SmoothRiemannianMetric I M)
     (x₀ : M) (i : Fin (Module.finrank ℝ E)) :
@@ -187,8 +156,6 @@ private theorem hmfRaisedFrame_cd
     (smoothOrthoFrame_smooth (I := I) q x₀ i)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- With the orthonormal frame frozen at `x₀`, the finite-spectral
-Dirichlet-density expression is jointly `C^2` on the coefficient ball. -/
 private theorem hmfSpecFrozen_cd
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -280,11 +247,8 @@ private theorem hmfSpecFrozen_cd
     contMDiffWithinAt_const
   exact hc.mul (ContMDiffWithinAt.sum (fun i _ ↦ hterm i p hp))
 
-omit [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+omit [I.Boundaryless] [CompactSpace M] [T2Space M]
   [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- The pointwise density computed in the moving-centre orthonormal frame is
-equal, on the frozen frame's orthonormality neighbourhood, to the expression
-computed in that frozen frame. -/
 private theorem hmfDens_eq_frozen
     (q h : SmoothRiemannianMetric I M) (Φ : M → M)
     (x₀ : M) {y : M}
@@ -319,13 +283,7 @@ private theorem hmfDens_eq_frozen
     simpa only [Hb, precomp, step₁, dΦ, A, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.precomp_apply] using hmove.trans hfixed.symm)
 
-/-! ## The moving-centre density -/
-
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- On one coefficient ball, the finite-spectral Dirichlet density is jointly
-`C^2` in the coefficient and spatial variables.  The radius is uniform in the
-spatial point and is exactly the radius on which the local-addition map is
-jointly `C^3`. -/
 theorem hmfSpecDens_cd
     (q h : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
@@ -361,17 +319,8 @@ theorem hmfSpecDens_cd
     (hmfAdd (I := I) (M := M) q
       (hmfSpecIncl (I := I) (M := M) q S z.1)) p.2 hz
 
-/-! ## The jointly regular coefficient derivative -/
-
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-/-- For a fixed finite coefficient direction, the derivative of the
-local-addition map in that coefficient direction is a jointly `C^2`
-tangent-bundle section on one coefficient ball.  The radius is the same
-uniform-in-space radius delivered by the joint `C^3` local-addition theorem.
-
-This is the bundled regularity needed for the two pushed coefficient
-directions in the faithful finite mass. -/
 theorem hmfSpecCoeff_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
@@ -451,11 +400,6 @@ theorem hmfSpecCoeff_cd
     rw [hrw]
     exact hφ
 
-/-! ## The faithful state-dependent mass -/
-
-/-- Pointwise variation of the local-addition state `S` in the smooth-tensor
-direction `U`.  A one-dimensional line is used so that no artificial Banach
-topology on the full space of smooth sections is introduced. -/
 noncomputable def hmfStateVar
     (q : SmoothRiemannianMetric I M)
     (S U : SmoothCcTensor q 0 1) (x : M) :
@@ -463,10 +407,6 @@ noncomputable def hmfStateVar
   mfderiv 𝓘(ℝ) I
     (fun a : ℝ ↦ hmfAdd (I := I) (M := M) q (S + a • U) x) 0 1
 
-/-- State-dependent mass pairing in local-addition coordinates.  Unlike
-`hmfMass`, both coefficient directions are pushed through the state
-derivative of the exponential chart before being paired by the target
-metric. -/
 noncomputable def hmfStateMass
     (q h : SmoothRiemannianMetric I M)
     (S U V : SmoothCcTensor q 0 1) : ℝ :=
@@ -475,11 +415,6 @@ noncomputable def hmfStateMass
       (hmfStateVar (I := I) (M := M) q S V x)
     ∂(riemannianVolumeMeasure (I := I) (M := M) h)
 
-/-! ### The zero-section state derivative -/
-
-/-- The fixed-base exponential hidden in `hmfDiagExp`.  Keeping this small
-wrapper separate makes the one-dimensional state derivative a literal
-composition with a map on the fixed model fibre. -/
 private noncomputable def hmfFiberExp
     (q : SmoothRiemannianMetric I M) (x : M) : E → M :=
   fun v : E ↦
@@ -489,10 +424,6 @@ private noncomputable def hmfFiberExp
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- The derivative of the fixed-base HMF exponential at the zero tangent
-vector is the identity.  The local metric instances duplicate the concrete
-instances hidden inside `hmfDiagExp`; no global Riemannian-bundle instance is
-introduced. -/
 private theorem hmfFiberExp_mfd
     (q : SmoothRiemannianMetric I M) (x : M) :
     mfderiv 𝓘(ℝ, E) I (hmfFiberExp (I := I) (M := M) q x) 0 =
@@ -514,9 +445,6 @@ private theorem hmfFiberExp_mfd
     (mfderiv_expMapIntrinsic_at_zero (I := I) q hEnorm x)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- The fixed-base HMF exponential is manifold differentiable at the zero
-tangent vector.  This follows from its already identified nonzero derivative:
-if differentiability failed, `mfderiv` would be the zero map. -/
 private theorem hmfFiberExp_md
     (q : SmoothRiemannianMetric I M) (x : M) :
     MDifferentiableAt 𝓘(ℝ, E) I
@@ -533,9 +461,6 @@ private theorem hmfFiberExp_md
   exact hv hv'.symm
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- At the zero state, the derivative of the exponential local-addition
-coordinate in a smooth tensor direction is exactly the raised one-form field
-represented by that tensor. -/
 @[simp] theorem hmfStateVar_zero
     (q : SmoothRiemannianMetric I M)
     (U : SmoothCcTensor q 0 1) (x : M) :
@@ -585,12 +510,8 @@ represented by that tensor. -/
     simpa only [ContinuousLinearMap.id_apply, w] using hmfd
   exact hcomp.trans hgoal
 
-/-! ### The rank-one mass bridge -/
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Every upper-rank-zero mixed tensor is the canonical rank-zero lift of
-its value on the unit scalar tensor. -/
+  [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem hmfUnitLift
     (q : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor q 0 1) (x : M) :
@@ -629,9 +550,7 @@ private theorem hmfUnitLift
     _ = (S.toSection x) c := congrArg (S.toSection x) hc.symm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- The inverse Gram matrix on the fixed model basis is a genuine inverse
-metric in that basis. -/
+  [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem hmfChartInv
     (q : SmoothRiemannianMetric I M) (x : M) :
     MetricInverseInBasis (I := I) q x (chartModelBasis E)
@@ -652,9 +571,7 @@ private theorem hmfChartInv
     simpa only [Matrix.mul_apply, gramMatrixAt_apply, Matrix.one_apply] using hij
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- For one-forms, the recursively defined Gram-matrix tensor pairing is the
-target-metric pairing of their musical sharps. -/
+  [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem hmfCovInner
     (q : SmoothRiemannianMetric I M) (x : M)
     (α β : Tensor0SSpace 1 I x) :
@@ -730,9 +647,7 @@ private theorem hmfCovInner
           (Tensor0SSpace.toModel α) (Tensor0SSpace.toModel β) := htensor.symm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] [T2Space M]
-  [SigmaCompactSpace M] [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- Pointwise, the target pairing of the raised HMF one-forms is exactly the
-mixed-tensor pairing used by `hmfMass`. -/
+  [BoundarylessManifold I M] [ConnectedSpace M] in
 private theorem hmfMassPt
     (q : SmoothRiemannianMetric I M)
     (U V : SmoothCcTensor q 0 1) (x : M) :
@@ -760,8 +675,6 @@ private theorem hmfMassPt
   exact hmfCovInner (I := I) (M := M) q x α β
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-/-- At the zero state, the faithful state-dependent mass is exactly the
-older fixed-coordinate mass pairing. -/
 @[simp] theorem hmfStateMass_zero_eq
     (q h : SmoothRiemannianMetric I M)
     (U V : SmoothCcTensor q 0 1) :

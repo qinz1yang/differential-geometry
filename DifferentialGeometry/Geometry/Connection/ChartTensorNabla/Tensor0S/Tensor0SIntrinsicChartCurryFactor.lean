@@ -9,10 +9,10 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
-open Bundle Set Tensor0SBundle
+open Bundle Set DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry
-namespace Integral
+namespace Geometry
 namespace Connection
 
 variable
@@ -332,7 +332,7 @@ theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
   rw [hfderiv_at_w, curryLeftEvalCLM_apply]
 
 end Connection
-end Integral
+end Geometry
 end DifferentialGeometry
 
 end

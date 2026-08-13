@@ -8,7 +8,7 @@ noncomputable section
 open Bundle ContinuousLinearMap
 open scoped Manifold ContDiff Topology
 
-namespace DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
@@ -210,6 +210,6 @@ theorem chartTriv_opNorm_isBounded_on_compact_unconditional
   have h_le_Cmax : N y₀ ≤ C_max := Finset.le_sup' (f := N) hy₀_S
   exact hN_b.trans h_le_Cmax
 
-end DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+end DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 end

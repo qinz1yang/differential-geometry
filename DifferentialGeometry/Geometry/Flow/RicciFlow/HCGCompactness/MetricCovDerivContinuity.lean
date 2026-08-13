@@ -1,35 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.FixedDomainMetricBounds
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricContinuity
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -46,9 +20,6 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem metricCovDerivNorm_cont (a : Nat) (h gRef : SmoothRiemannianMetric I M) :
     Continuous (fun z : M => metricCovDerivNorm (I := I) a h gRef z) := by
@@ -58,9 +29,6 @@ theorem metricCovDerivNorm_cont (a : Nat) (h gRef : SmoothRiemannianMetric I M) 
     Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef z (a + 2)
       (metricCovDeriv (I := I) h gRef a z))
   exact Real.continuous_sqrt.comp hc
-
-
-
 
 omit [SigmaCompactSpace M] in
 theorem metricDerivNorm_cont (a : Nat) (gk gInf gRef : SmoothRiemannianMetric I M) :
@@ -79,11 +47,6 @@ theorem metricDerivNorm_cont (a : Nat) (gk gInf gRef : SmoothRiemannianMetric I 
       (metricDiffCovDerivAt (I := I) a gk gInf gRef z))
   exact Real.continuous_sqrt.comp hc
 
-
-
-
-
-
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem sqrtNormSq0S_bddOn {K : Set M} (hK : IsCompact K) (s : Nat)
     (gRef : SmoothRiemannianMetric I M)
@@ -100,9 +63,6 @@ theorem sqrtNormSq0S_bddOn {K : Set M} (hK : IsCompact K) (s : Nat)
   refine ⟨max 0 (Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef z₀ s (A z₀))),
     le_max_left _ _, fun z hz => le_trans (hmax hz) (le_max_right _ _)⟩
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem metricCovDerivNorm_bddOn {K : Set M} (hK : IsCompact K)
     (a : Nat) (h gRef : SmoothRiemannianMetric I M) :
@@ -113,8 +73,6 @@ theorem metricCovDerivNorm_bddOn {K : Set M} (hK : IsCompact K)
   obtain ⟨z₀, _, hmax⟩ := hK.exists_isMaxOn hne
     ((metricCovDerivNorm_cont (I := I) a h gRef).continuousOn)
   exact ⟨metricCovDerivNorm (I := I) a h gRef z₀, fun z hz => hmax hz⟩
-
-
 
 omit [SigmaCompactSpace M] in
 theorem cov_bdd_of_eventual {K : Set M} (hK : IsCompact K)
@@ -145,9 +103,6 @@ theorem cov_bdd_of_eventual {K : Set M} (hK : IsCompact K)
   · exact (hCinit k hk z hz).trans (le_max_left _ _)
   · exact (htail k (by omega) z hz).trans (le_max_right _ _)
 
-
-
-
 omit [SigmaCompactSpace M] in
 theorem metricDerivNorm_bddOn {K : Set M} (hK : IsCompact K)
     (p : Nat) (gk gInf gRef : SmoothRiemannianMetric I M) :
@@ -167,8 +122,6 @@ theorem metricDerivNorm_bddOn {K : Set M} (hK : IsCompact K)
     fun a ha z hz => ?_⟩
   refine le_trans (hCf a z hz) (le_trans ?_ (le_max_right 0 _))
   exact Finset.le_sup' Cf (Finset.mem_range.2 (Nat.lt_succ_of_le ha))
-
-
 
 omit [SigmaCompactSpace M] in
 theorem derivNorm_le_sup {K : Set M} (hK : IsCompact K)

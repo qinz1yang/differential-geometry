@@ -3,14 +3,6 @@ import Mathlib.MeasureTheory.Function.StronglyMeasurable.Lemmas
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 open MeasureTheory
@@ -21,8 +13,6 @@ variable {X Y : Type*}
 variable [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
 variable [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 variable {T : ℝ}
-
-
 
 theorem memLp_timeOp
     (A : ℝ → X →L[ℝ] Y)
@@ -122,8 +112,6 @@ private noncomputable def timeOpLin
   map_add' := timeOpFun_add A hA C hC
   map_smul' := timeOpFun_smul A hA C hC
 
-
-
 noncomputable def timeOp
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -133,8 +121,6 @@ noncomputable def timeOp
   (timeOpLin A hA C hC).mkContinuous (C : ℝ)
     (timeOpFun_norm_le A hA C hC)
 
-
-
 theorem timeOp_apply_ae
     (A : ℝ → X →L[ℝ] Y)
     (hA : AEStronglyMeasurable A (timeMeasure T))
@@ -143,8 +129,6 @@ theorem timeOp_apply_ae
     (f : timeL2 X T) :
     timeOp A hA C hC f =ᵐ[timeMeasure T] fun t => A t (f t) :=
   timeOpFun_apply_ae A hA C hC f
-
-
 
 theorem timeOp_norm_le
     (A : ℝ → X →L[ℝ] Y)

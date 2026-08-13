@@ -1,15 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
 
-/-!
-# Continuity of moving-volume integrals with a general parameter
-
-`integral_family_cont` treats a real parameter.  Finite-dimensional Galerkin
-arguments need the same statement on compact subsets of `ℝ × V`: the metric
-depends only on time, while the integrand also depends on the coefficient
-vector.  The proof below is the same finite-partition-of-unity dominated
-convergence argument, with an arbitrary topological parameter space.
--/
-
 noncomputable section
 
 open Bundle Manifold Set MeasureTheory Matrix Filter
@@ -127,7 +117,6 @@ private lemma chart_integrand_cont_param
       (fun _ _ ↦ Set.mem_univ _)
   exact (hfc.mul hρc).mul (density_extChart_cont_param (I := I) hg α)
 
--- The compact chart estimate expands a parametric density through a finite atlas.
 private theorem chart_int_cont_param
     [FirstCountableTopology P]
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -238,10 +227,9 @@ private theorem chart_int_cont_param
     hb_int hlim
   simpa only [F, ρ, symm, target, μ] using hdct
 
--- The global statement unfolds the finite atlas decomposition at each parameter.
 theorem integral_family_cont_param
     [FirstCountableTopology P]
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g : P → SmoothRiemannianMetric I M}
     {f : P → M → ℝ} {K : Set P}
     (hK : IsCompact K)

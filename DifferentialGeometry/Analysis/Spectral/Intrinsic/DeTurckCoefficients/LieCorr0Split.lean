@@ -1,40 +1,27 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0Core
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RiemannCoefficientPalatiniRefold
-
-/-!
-# Public smooth-field split of the zeroth-order DeTurck correction
-
-The canonical fibre construction of `lieCorr0Field` has four algebraically
-different pieces.  This file packages those fibres as smooth coefficient
-fields and exports the exact decomposition needed by low-regularity estimates.
-In the base-background split the insert piece is kept together with the
-DeTurck endomorphism arm, where its leading derivative cancels.
--/
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
--- Match `Tensor/RSTensor/Defs.lean`: the bundle instances (and the model-fibre
--- `NormedSpace (TensorRSModel …)` needed by the `Cₛ^∞⟮…⟯` section stack) were
--- elaborated under reduced def-eq transparency, so downstream section
--- constructions require the same option to synthesize the FiberBundle/VectorBundle
--- stack. Elaboration-config only; no statement or proof changes.
 set_option backward.isDefEq.respectTransparency false
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold Topology ContDiff Matrix
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurckCoefficients
 open LieCorr0Core
 
 variable
@@ -45,8 +32,6 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-/-- Smooth field associated with the two insertion terms in
-`lieCorr0TotalFib`. -/
 def lc0Insert (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
@@ -56,8 +41,6 @@ def lc0Insert (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
       contMDiff_toFun := lieCorr0InsertFib_contMDiff (I := I) g₀ g₁ g_bg }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-/-- Smooth field associated with the vector--bilinear term in
-`lieCorr0TotalFib`. -/
 def lc0VB (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
@@ -67,8 +50,6 @@ def lc0VB (g₀ g₁ : SmoothRiemannianMetric I M) :
       contMDiff_toFun := lieCorr0VBFib_contMDiff (I := I) g₀ g₁ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-/-- Smooth field associated with the mixed connection-difference term in
-`lieCorr0TotalFib`. -/
 def lc0AMix (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
@@ -78,8 +59,6 @@ def lc0AMix (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
       contMDiff_toFun := lieCorr0AMixFib_contMDiff (I := I) g₀ g₁ g_bg }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-/-- Smooth field associated with the fixed-curvature term in
-`lieCorr0TotalFib`. -/
 def lc0Riem (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
   toSection :=
@@ -93,8 +72,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [SigmaCompactSpace M] in
-/-- At the frozen base background, the insertion endomorphism is exactly the
-negative of the DeTurck `W` endomorphism. -/
 theorem nEndo_base (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     lieCorr0NEndo (I := I) g₀ g₁ g₀ x =
       -deTurckLieWEndo (I := I) g₁ g₀ x := by
@@ -104,10 +81,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [I.Boundaryless]
   [SigmaCompactSpace M] in
-/-- After the base cancellation, the insertion endomorphism is a product of
-the moving-to-frozen connection difference with the difference of the two
-DeTurck vector fields.  In particular its first covariant derivative uses at
-most the metric jet through order three. -/
 theorem nEndo_diff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     lieCorr0NEndo (I := I) g₀ g₁ g_bg x -
         lieCorr0NEndo (I := I) g₀ g₁ g₀ x =
@@ -122,9 +95,6 @@ theorem nEndo_diff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-/-- The insertion part cancels the base-background DeTurck endomorphism arm.
-Writing the result as a background difference prevents the highest derivative
-of the metric perturbation from reappearing in a separate norm estimate. -/
 theorem insert_base (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lc0Insert (I := I) (M := M) g₀ g₁ g_bg +
         deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
@@ -176,7 +146,6 @@ theorem insert_base (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- Exact four-piece smooth-field realization of `lieCorr0Field`. -/
 theorem lc0_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorr0Field (I := I) (M := M) g₀ g₁ g_bg =
       ((lc0Insert (I := I) (M := M) g₀ g₁ g_bg +
@@ -192,9 +161,6 @@ theorem lc0_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-/-- In the base-background tail, keep the insertion field next to the
-endomorphism arm.  This is the cancellation-preserving normal form consumed by
-the low-regularity coefficient estimate. -/
 theorem tail_base_split (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorr0Field (I := I) (M := M) g₀ g₁ g_bg +
         deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
@@ -207,6 +173,6 @@ theorem tail_base_split (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
   rw [← insert_base (I := I) (M := M) g₀ g₁ g_bg]
   abel
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

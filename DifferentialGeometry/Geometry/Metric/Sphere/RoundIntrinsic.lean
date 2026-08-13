@@ -1,12 +1,7 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Metric.Sphere.GreatCircle
 import DifferentialGeometry.Geometry.Exponential.IntrinsicExp
-
-/-!
-# The intrinsic exponential map of the round sphere
-
-This file identifies the complete intrinsic geodesic of the round metric with
-the explicit ambient great circle having the same initial data.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -29,8 +24,6 @@ private instance sphereModel_neZero :
   infer_instance
 
 omit [FiniteDimensional ℝ E] [NeZero n] in
-/-- The differential of the sphere inclusion takes tangent vectors to the
-ambient orthogonal complement of the radius. -/
 theorem dIncl_orth (p : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) p) :
     ⟪(p : E), dIncl (n := n) p v⟫ = 0 := by
   rw [real_inner_comm]
@@ -52,12 +45,9 @@ variable
   [IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin n))
     (fun p : sphere (0 : E) 1 => TangentSpace (𝓡 n) p)]
 
-/-- The complete intrinsic geodesic of the round metric with unit launch
-velocity is the corresponding explicit great circle. -/
 theorem intrinsic_eq_gc
-    (hEnorm : ∀ (x : sphere (0 : E) 1) (w : TangentSpace (𝓡 n) x),
-      ‖w‖ₑ = ENNReal.ofReal
-        (Real.sqrt ((roundMetric (E := E) (n := n)).inner x w w)))
+    (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := 𝓡 n) (M := sphere
+      (0 : E) 1) (roundMetric (E := E) (n := n)))
     (p : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) p)
     (hv : ‖dIncl (n := n) p v‖ = 1) (t : ℝ) :
     intrinsicGeodesic (I := 𝓡 n) (roundMetric (E := E) (n := n))
@@ -97,12 +87,9 @@ theorem intrinsic_eq_gc
         zero_add] using hvel.symm
   exact heq (Set.mem_univ t)
 
-/-- The intrinsic round exponential along a scalar multiple of a unit tangent
-vector is the corresponding point of its great circle. -/
 theorem round_exp_radial
-    (hEnorm : ∀ (x : sphere (0 : E) 1) (w : TangentSpace (𝓡 n) x),
-      ‖w‖ₑ = ENNReal.ofReal
-        (Real.sqrt ((roundMetric (E := E) (n := n)).inner x w w)))
+    (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := 𝓡 n) (M := sphere
+      (0 : E) 1) (roundMetric (E := E) (n := n)))
     (p : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) p)
     (hv : ‖dIncl (n := n) p v‖ = 1) (r : ℝ) :
     expMapIntrinsic (I := 𝓡 n) (roundMetric (E := E) (n := n))
@@ -111,11 +98,9 @@ theorem round_exp_radial
   rw [expMapIntrinsic_def, intrinsicGeodesic_smul]
   exact intrinsic_eq_gc hEnorm p v hv r
 
-/-- Ambient-coordinate formula for the radial intrinsic round exponential. -/
 theorem round_exp_val
-    (hEnorm : ∀ (x : sphere (0 : E) 1) (w : TangentSpace (𝓡 n) x),
-      ‖w‖ₑ = ENNReal.ofReal
-        (Real.sqrt ((roundMetric (E := E) (n := n)).inner x w w)))
+    (hEnorm : DifferentialGeometry.Geometry.Riemannian.IsMetricNorm (I := 𝓡 n) (M := sphere
+      (0 : E) 1) (roundMetric (E := E) (n := n)))
     (p : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) p)
     (hv : ‖dIncl (n := n) p v‖ = 1) (r : ℝ) :
     ((expMapIntrinsic (I := 𝓡 n) (roundMetric (E := E) (n := n))

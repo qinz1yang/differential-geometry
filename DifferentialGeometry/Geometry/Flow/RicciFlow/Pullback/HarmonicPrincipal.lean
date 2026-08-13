@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorCovGradL2InnerDirichletBridge
 import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
-import DifferentialGeometry.Integration.Volume.Family.Variation
+import DifferentialGeometry.Analysis.Integration.Measure.VolumeVariation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SlotInsertSelfAdjointPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffJetTowerRaisedEndoCovariantDerivativeBound
@@ -12,35 +12,20 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwi
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricRaisedEndomorphismJetBound
 import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
 import DifferentialGeometry.Geometry.Exponential.LocalAddition
-
-/-!
-# The zero-section principal part of the harmonic-map gauge
-
-The harmonic-map heat-flow construction is most naturally solved in a local-addition
-coordinate: a small tangent section `V` represents the self-map
-`x |-> exp_x(V x)`.  This file records the two already available facts that determine the
-linear second-order part at `V = 0`.
-
-* The target component of the component-local exponential addition has identity derivative
-  in the vertical variable.  Thus its zero-section linearization does not alter the top
-  spatial derivative of `V`.
-* The mixed `(0, 1)` connection Laplacian used by tensor maximal regularity, after applying
-  the metric sharp, is exactly the vector rough Laplacian.
-* The divergence-form principal bilinear form for a moving domain metric is written with
-  the fixed target connection.  Its moving coefficients are only the inverse domain metric
-  and the domain volume measure; no spatial derivative of the moving metric occurs.
-
-The complete Jacobi linearization of tension generally also has a curvature zero-order
-term.  Accordingly, the declarations below identify only the principal second-order term;
-they do not assert that the full derivative of tension is the rough Laplacian.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 set_option maxSynthPendingDepth 8
 
-open Bundle Manifold MeasureTheory Set Tensor0SBundle
+open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped ENNReal Manifold Topology ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Pullback
@@ -49,12 +34,13 @@ open DifferentialGeometry
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.Geometry.Riemannian.Exponential
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.ConnectionLaplacian
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian
+open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -68,10 +54,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-! ## The vertical derivative of the local addition -/
-
-/-- The tangent-bundle chart coordinate of the zero vector over `p` used by the
-component-local addition. -/
 noncomputable def connAddZeroCoord (p : M) : E × E :=
   extChartAt I.tangent
     (⟨connCompPt (I := I) p, (0 : E)⟩ :
@@ -79,15 +61,11 @@ noncomputable def connAddZeroCoord (p : M) : E × E :=
     (⟨connCompPt (I := I) p, (0 : E)⟩ :
       TangentBundle I (connCompOpen (I := I) p))
 
-/-- The target-manifold coordinate of the component-local exponential addition. -/
 noncomputable def connAddTarget
     (g : SmoothRiemannianMetric I M) (p : M) : E × E → E :=
   fun z => (connAddChart (I := I) g p z).2
 
 omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
-/-- At the zero section, the derivative of the target coordinate of the local addition is
-`(a, b) |-> a + b`.  This is the target projection of the unipotent derivative of
-`connDiagExp`. -/
 theorem connAddTarget_fd
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
     HasFDerivAt (connAddTarget (I := I) g p)
@@ -98,9 +76,6 @@ theorem connAddTarget_fd
     (connAdd_fderiv (I := I) g p n hn).snd
 
 omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
-/-- The local-addition target has identity derivative in a purely vertical direction at the
-zero section.  This is the precise first-order fact that keeps the highest spatial derivative
-of the section unknown unchanged. -/
 theorem connAdd_vert
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) (v : E) :
     fderiv ℝ (connAddTarget (I := I) g p)
@@ -108,16 +83,11 @@ theorem connAdd_vert
   rw [(connAddTarget_fd (I := I) g p n hn).fderiv]
   simp [unipotentCLE, DifferentialGeometry.PhaseFlow.freeDiagCLE_apply]
 
-/-! ## The fixed-background HMF principal operator -/
-
-/-- The `(0, 1)` tensor maximal-regularity state used for the local-addition unknown after
-lowering it with the fixed background metric. -/
 abbrev hmfState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
     Set (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.tensorHs
       (I := I) (M := M) g₀ 0 1 ((a : ℝ) + 2)) :=
   lowerStateRS (I := I) (M := M) g₀ 0 1 a R
 
-/-- The vector field represented by a smooth mixed `(0, 1)` tensor state. -/
 noncomputable def hmfUnknown
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     ∀ x : M, TangentSpace I x := fun x =>
@@ -152,8 +122,6 @@ theorem hmfUnknown_smul
       (c • (S.toSection x) (unitZeroSec (I := I) (M := M) x)) = _
   rw [map_smul]
 
-/-- At each point, realization of a lowered HMF tensor as a tangent vector is
-linear in the tensor argument. -/
 noncomputable def hmfUnknownLM
     (g₀ : SmoothRiemannianMetric I M) (x : M) :
     SmoothCcTensor g₀ 0 1 →ₗ[ℝ] TangentSpace I x where
@@ -167,10 +135,6 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (x : M) (S : SmoothCcTensor g₀ 0 1) :
     hmfUnknownLM (I := I) g₀ x S = hmfUnknown (I := I) g₀ S x := rfl
 
-/-- The vector field represented by a smooth lowered HMF state, packaged as a
-smooth tangent section.  This is the bundle-valued regularity producer used
-when finite spectral coefficients are inserted into the exponential local
-addition. -/
 noncomputable def hmfUnknownSec
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ where
@@ -190,8 +154,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
     hmfUnknownSec (I := I) g₀ S x = hmfUnknown (I := I) g₀ S x := rfl
 
-/-- The fixed-background principal HMF operator in the mixed-tensor carrier consumed by
-maximal regularity, realized as a vector field by the metric sharp. -/
 noncomputable def hmfPrincipal
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     ∀ x : M, TangentSpace I x := fun x =>
@@ -200,9 +162,7 @@ noncomputable def hmfPrincipal
       connLaplacianMixed (I := I) (M := M) g₀ 0 1 S.toSection x)
       (unitZeroSec (I := I) (M := M) x))
 
-omit [CompactSpace M] in
-/-- The mixed-tensor principal operator is exactly the vector connection Laplacian of the
-represented HMF unknown. -/
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem hmfPrincipal_eq
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
     hmfPrincipal (I := I) g₀ S x =
@@ -210,21 +170,6 @@ theorem hmfPrincipal_eq
   simpa only [hmfPrincipal, hmfUnknown] using
     (sharp_connLap (I := I) (M := M) g₀ S x).symm
 
-/-! ## The moving-domain divergence form
-
-For the identity-map linearization, the target connection and target fibre metric are
-frozen at `q`, while the trace is taken with the inverse of the domain metric `h`.  After
-lowering a vector field with `q`, the new leading slot of `covGrad q 0 1 S` is the domain
-derivative slot.  Precomposing that slot with
-
-`h♯ ∘ q♭ = id + (h♯ ∘ q♭ - id)`
-
-and then pairing with the `q` tensor inner product changes precisely that one contraction
-from `q⁻¹` to `h⁻¹`.  This is the invariant weak-form replacement for writing the
-moving Christoffel symbols as strong coefficients. -/
-
-/-- The inverse-cometric-difference part of the moving HMF flux.  It inserts
-`h♯ ∘ q♭ - id` only in the domain-derivative slot of `covGrad q S`. -/
 noncomputable def hmfDiff
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     SmoothCcTensor q 0 2 :=
@@ -233,10 +178,6 @@ noncomputable def hmfDiff
       (gInvDiffRaisedEndoField (I := I) q h))
     (covGrad (I := I) (M := M) q 0 1 S)
 
-/-- The moving-domain first-order flux for the lowered HMF unknown.  The first summand is
-the fixed `q⁻¹` contraction; the second is `hmfDiff`.  Together they represent contraction
-of the domain-derivative slot by `h⁻¹`, while the target covector slot and connection remain
-fixed at `q`. -/
 noncomputable def hmfFlux
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     SmoothCcTensor q 0 2 :=
@@ -244,10 +185,6 @@ noncomputable def hmfFlux
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- Pointwise, `hmfFlux q h S` is exactly `covGrad q S` with the full raised
-endomorphism `h♯ ∘ q♭` inserted in its first covariant slot.  Thus the sum in
-`hmfFlux` is not merely a formal coefficient split: it changes precisely the domain
-derivative slot from the `q⁻¹` contraction to the `h⁻¹` contraction. -/
 theorem hmfFlux_apply
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1)
     (x : M) (m : Fin 2 → E) :
@@ -363,9 +300,6 @@ private theorem hmfSlot_self_app
   rw [Function.update_eq_self]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- Tensor-level version of `hmfFlux_apply`: the split flux is the full raised
-endomorphism `h♯ ∘ q♭` inserted into the leading covariant slot of `covGrad q S`.
-This is the rewrite used by the weak form and its Galerkin matrix coefficients. -/
 theorem hmfFlux_eq_full
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     hmfFlux (I := I) (M := M) q h S =
@@ -379,16 +313,11 @@ theorem hmfFlux_eq_full
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- At the frozen domain metric, the HMF flux is the ordinary fixed-background
-covariant gradient. -/
 theorem hmfFlux_self
     (q : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     hmfFlux (I := I) (M := M) q q S =
       covGrad (I := I) (M := M) q 0 1 S := by
   rw [hmfFlux_eq_full, hmfSlot_self_app]
-
-/-! The flux is linear in the section variable.  These identities are kept at the
-smooth-core level because they are the algebraic input for the completed bilinear form. -/
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem hmfDiff_add
@@ -425,17 +354,11 @@ theorem hmfFlux_smul
   unfold hmfFlux
   rw [covGrad_smul, hmfDiff_smul, smul_add]
 
-/-- The moving mass pairing for the lowered HMF unknown.  The target fibre pairing is
-fixed at `q`, and only the integration measure moves with the domain metric `h`. -/
 noncomputable def hmfMass
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) : ℝ :=
   ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 1 x (S.toFun x) (T.toFun x)
     ∂(riemannianVolumeMeasure (I := I) (M := M) h)
 
-/-- The smooth-core divergence-form principal pairing for HMF with moving domain metric
-`h` and fixed target metric `q`.  The moving domain enters only through the inverse-metric
-flux `hmfFlux q h S` and `dμ_h`; in particular the definition contains no `covGrad h` and
-no connection-difference coefficient. -/
 noncomputable def hmfWeakForm
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) : ℝ :=
   ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
@@ -445,10 +368,6 @@ noncomputable def hmfWeakForm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- On a compact time set, joint chart-Gram `C⁰` regularity makes every
-smooth-core moving HMF mass coefficient continuous in time.  No time
-derivative of the metric is used: the fibre pairing is frozen at `q`, and
-only the Riemannian volume measure varies. -/
 theorem hmfMass_time_cont
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
@@ -485,9 +404,6 @@ private theorem functionRegularAt_const_time
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- The exact time derivative of a smooth-core moving HMF mass coefficient.
-The only derivative is the standard variation of the moving volume measure;
-the fixed `q`-fibre pairing contributes no time derivative. -/
 theorem hmfMass_hasDerivAt
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) (t₀ : ℝ)
@@ -522,7 +438,8 @@ private lemma hmf_inner_int
   letI : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I) (M := M) h) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) h
-  exact (SmoothCcTensor.continuous_inner_cross (I := I) (M := M) S T).integrable_of_hasCompactSupport
+  exact (SmoothCcTensor.continuous_inner_cross (I := I)
+    (M := M) S T).integrable_of_hasCompactSupport
     (SmoothCcTensor.hasCompactSupport_inner_cross (I := I) (M := M) S T)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
@@ -668,9 +585,6 @@ theorem hmfWeak_smul_right
   rw [hmfWeak_symm, hmfWeak_smul_left, hmfWeak_symm q h T S]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- The weak HMF principal form unfolded into its fixed part and its sole moving
-inverse-cometric coefficient.  This is the consumer normal form for an `H¹ -> H⁻¹`
-nonautonomous construction. -/
 theorem hmfWeakForm_eq
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfWeakForm (I := I) (M := M) q h S T =
@@ -684,9 +598,6 @@ theorem hmfWeakForm_eq
         ∂(riemannianVolumeMeasure (I := I) (M := M) h) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- Integral contraction form of the moving HMF principal part.  Unlike the definitional
-split in `hmfWeakForm_eq`, this theorem uses `hmfFlux_eq_full` to identify the whole
-integrand with insertion of `h♯ ∘ q♭` in the first covariant-gradient slot. -/
 theorem hmfWeakForm_full
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfWeakForm (I := I) (M := M) q h S T =
@@ -700,8 +611,6 @@ theorem hmfWeakForm_full
   rw [hmfWeakForm, hmfFlux_eq_full]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- At the frozen domain metric, the HMF weak form is exactly the established
-`L²(q)` pairing of the fixed-background covariant gradients. -/
 theorem hmfWeakForm_self
     (q : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfWeakForm (I := I) (M := M) q q S T =
@@ -713,17 +622,12 @@ theorem hmfWeakForm_self
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-/-- At the frozen metric, the moving mass pairing is exactly the established tensor
-`L²(q)` pairing. -/
 theorem hmfMass_self
     (q : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfMass (I := I) (M := M) q q S T =
       tensorL2Inner (I := I) (M := M) q 0 1 S.toFun T.toFun := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-/-- The frozen mass plus frozen HMF principal form is the canonical smooth-core
-`H¹(q)` pairing.  Thus the moving-form construction is anchored to the existing
-`TensorH1Compl q 0 1` completion rather than to a new Sobolev carrier. -/
 theorem hmfH1_self
     (q : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
     hmfMass (I := I) (M := M) q q S T +
@@ -731,8 +635,6 @@ theorem hmfH1_self
       tensorH1Inner (I := I) (M := M) q 0 1 S T := by
   rw [hmfMass_self, hmfWeakForm_self, tensorH1Inner_def,
     tensorL2Inner_covGrad_eq_integral_tensorCovDerivPointwiseInner]
-
-/-! ## Pointwise ellipticity and fixed-measure comparison -/
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 private lemma hmf_integral_le
@@ -814,7 +716,6 @@ private theorem hmfNegDiff_self_le
       simpa only [hmfDiff, appCc_toSection, ContinuousLinearMap.comp_apply] using hneg
 
 omit [BoundarylessManifold I M] in
-/-- Upper pointwise ellipticity bound for the full moving HMF flux. -/
 theorem hmfFlux_diag_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -836,7 +737,6 @@ theorem hmfFlux_diag_le
     q h k htie hδ_lt hδ_nn hδ S x]
 
 omit [BoundarylessManifold I M] in
-/-- Lower pointwise ellipticity bound for the full moving HMF flux. -/
 theorem hmfFlux_diag_ge
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -891,8 +791,6 @@ theorem hmfWeak_nonneg
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-/-- The moving mass diagonal is controlled by the frozen mass diagonal under
-one direction of volume-measure domination. -/
 theorem hmfMass_self_le
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -907,7 +805,6 @@ theorem hmfMass_self_le
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-/-- The reverse measure domination controls the frozen mass by the moving mass. -/
 theorem hmfMass_self_rev
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -921,8 +818,6 @@ theorem hmfMass_self_rev
     (hmf_inner_int (I := I) (M := M) q h S S)
 
 omit [BoundarylessManifold I M] in
-/-- Upper diagonal bound for the moving principal form on the fixed background
-gradient energy. -/
 theorem hmfForm_self_le
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -982,8 +877,6 @@ theorem hmfForm_self_le
       ring
 
 omit [BoundarylessManifold I M] in
-/-- Lower diagonal bound for the moving principal form, expressed on the
-frozen gradient energy.  The threshold `δ < 1/2` makes the coefficient positive. -/
 theorem hmfForm_self_rev
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1047,14 +940,8 @@ theorem hmfForm_self_rev
     _ ≤ C.toReal * hmfWeakForm (I := I) (M := M) q h S S :=
       mul_le_mul_of_nonneg_left hpt ENNReal.toReal_nonneg
 
-/-! ## Uniform equivalence of the moving mass measures -/
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- The endpoint's joint chart-Gram `C⁰` hypothesis supplies one two-sided
-volume-measure comparison constant on every compact initial subslab.  In
-particular, the moving HMF mass and principal forms may be estimated on the
-single fixed `L²(q)`/`H¹(q)` carrier without a metric-dependent time shrink. -/
 theorem hmfVolumeEquiv
     (q : SmoothRiemannianMetric I M)
     (h : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b)
@@ -1072,15 +959,11 @@ theorem hmfVolumeEquiv
   exact (hcont x₀ i j).mono fun p hp =>
     ⟨⟨hp.1.1, hp.1.2.trans_lt hcb⟩, hp.2⟩
 
-/-! ## Bounded smooth forms on the fixed `H¹(q)` core -/
-
-/-- Moving mass pairing on the existing smooth `H¹(q)` carrier. -/
 noncomputable def hmfMassH1
     (q h : SmoothRiemannianMetric I M)
     (S T : SmoothCcTensorH1 q 0 1) : ℝ :=
   hmfMass (I := I) (M := M) q h S.toCcTensor T.toCcTensor
 
-/-- Moving principal pairing on the existing smooth `H¹(q)` carrier. -/
 noncomputable def hmfFormH1
     (q h : SmoothRiemannianMetric I M)
     (S T : SmoothCcTensorH1 q 0 1) : ℝ :=
@@ -1251,8 +1134,6 @@ theorem hmfFormH1_diag_le
       (mul_le_mul_of_nonneg_left hfrozen hcoef)
 
 omit [BoundarylessManifold I M] in
-/-- Coercivity of moving mass plus moving principal energy on the smooth
-`H¹(q)` core. -/
 theorem hmfH1_coercive
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1399,8 +1280,6 @@ private theorem bilin_abs_le
   exact abs_le_of_sq_le_sq hbound
     (mul_nonneg (mul_nonneg hK (norm_nonneg u)) (norm_nonneg v))
 
-/-- The moving mass pairing packaged as a continuous bilinear form on the
-smooth `H¹(q)` core. -/
 noncomputable def hmfMassSmooth
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1435,8 +1314,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     hmfMassSmooth (I := I) (M := M) q h C hC0 hCtop hvol S T =
       hmfMassH1 (I := I) (M := M) q h S T := rfl
 
-/-- The moving HMF principal pairing packaged as a continuous bilinear form
-on the smooth `H¹(q)` core. -/
 noncomputable def hmfFormSmooth
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1525,8 +1402,6 @@ private local instance smoothCcTensorH1DualComplete
     CompleteSpace (SmoothCcTensorH1 q 0 1 →L[ℝ] ℝ) :=
   ContinuousLinearMap.instCompleteSpace
 
-/-- Extend a continuous bilinear form from the smooth `H¹(q)` core in both
-variables.  The final flip preserves the original argument order. -/
 private noncomputable def hmfExtend
     (q : SmoothRiemannianMetric I M)
     (F : SmoothCcTensorH1 q 0 1 →L[ℝ]
@@ -1562,8 +1437,6 @@ private theorem hmfExtend_coe
     (e := smoothToTensorH1Compl (I := I) (M := M) q 0 1)
     (hmf_dense (I := I) (M := M) q) (hmf_inducing (I := I) (M := M) q) S)
 
-/-- Moving mass pairing extended continuously to `TensorH1Compl q 0 1` in
-both variables. -/
 noncomputable def hmfMassCompl
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1587,8 +1460,6 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
       hmfMassH1 (I := I) (M := M) q h S T := by
   rw [hmfMassCompl, hmfExtend_coe, hmfMassSm_apply]
 
-/-- Moving HMF principal pairing extended continuously to
-`TensorH1Compl q 0 1` in both variables. -/
 noncomputable def hmfFormCompl
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1624,8 +1495,6 @@ omit [BoundarylessManifold I M] in
   rw [hmfFormCompl, hmfExtend_coe, hmfFormSm_apply]
 
 omit [BoundarylessManifold I M] in
-/-- Coercivity of the completed moving mass-plus-principal form.  No constant
-is lost in passing from the smooth core to `TensorH1Compl`. -/
 theorem hmfCompl_coercive
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1666,13 +1535,8 @@ theorem hmfCompl_coercive
   exact hmfH1_coercive (I := I) (M := M)
     q h C hC0 hCtop hvol.2 k htie hδ_half hδ_nn hδ S
 
-/-! ## One common initial-edge form window -/
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-/-- Joint chart-Gram `C⁰` regularity and equality at the initial edge select
-one common positive window carrying both volume equivalence and the fixed
-`δ = 1/4` inverse-cometric bound. -/
 theorem hmfEdge_inputs
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
@@ -1697,8 +1561,6 @@ theorem hmfEdge_inputs
   exact ⟨T, C, hT, hTb, hC0, hCtop, fun t ht => ⟨hvol t ht, hop t ht⟩⟩
 
 omit [BoundarylessManifold I M] in
-/-- The completed HMF form is uniformly coercive at every time of a window
-carrying the two inputs produced by `hmfEdge_inputs`. -/
 theorem hmfEdge_coercive
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {a T : ℝ} (C : ℝ≥0∞)
@@ -1733,11 +1595,7 @@ theorem hmfEdge_coercive
     (fun y v w => by rw [metricDiff_symVal]; ring)
     (δ := (1 / 4 : ℝ)) (by norm_num) (by norm_num) (hop t ht) u
 
-omit [BoundarylessManifold I M] in
-/-- In local-addition coordinates, the zero-section target derivative leaves the frozen HMF
-principal vector unchanged.  This combines the local-addition and mixed maximal-regularity
-realizations without making a claim about the curvature lower-order part of the Jacobi
-operator. -/
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem connAdd_lap_vert
     (g₀ : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n)
     (S : SmoothCcTensor g₀ 0 1) :

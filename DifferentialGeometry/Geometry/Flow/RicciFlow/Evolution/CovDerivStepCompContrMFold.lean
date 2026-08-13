@@ -3,19 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.CovDerivStepCompLi
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -24,14 +11,10 @@ open scoped BigOperators
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-
-
 def iterDl (D : ∀ {r : ℕ}, ((Fin r → Idx) → Real) → ((Fin (r + 1) → Idx) → Real))
     {r : ℕ} : (m : ℕ) → ((Fin r → Idx) → Real) → ((Fin (r + m) → Idx) → Real)
   | 0, T => T
   | (m + 1), T => D (iterDl D m T)
-
-
 
 def iterDU (DU : ∀ {r : ℕ}, ((Fin (r + 1) → Idx) → Real) → ((Fin (r + 2) → Idx) → Real))
     {p : ℕ} : (c : ℕ) → ((Fin (p + 1) → Idx) → Real) → ((Fin ((p + c) + 1) → Idx) → Real)

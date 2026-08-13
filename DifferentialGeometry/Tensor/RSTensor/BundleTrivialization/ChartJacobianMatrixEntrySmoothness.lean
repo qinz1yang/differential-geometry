@@ -10,7 +10,6 @@ import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.LinearAlgebra.Basis.Defs
 import Mathlib.LinearAlgebra.Dimension.Free
 
-
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false

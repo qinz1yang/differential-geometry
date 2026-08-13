@@ -3,12 +3,13 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentSobolevBoundFromH1
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
@@ -97,10 +98,10 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         eLpNorm (fun x : M => Real.sqrt
             (g.inner x
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
                 (tensorChartComponentScalar (I := I) (M := M)
                   g r s S.toCcTensor α Idx Jdx) x)
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
                 (tensorChartComponentScalar (I := I) (M := M)
                   g r s S.toCcTensor α Idx Jdx) x))) 2
             (riemannianVolumeMeasure (I := I) (M := M) g) ≤
@@ -167,8 +168,8 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
           (eLpNorm u 2 μM +
             eLpNorm (fun x : M => Real.sqrt
                 (g.inner x
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                  (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) 2
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                  (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) 2
                     μM) :=
     h_env hu_smooth k
   have h_L2_apply :
@@ -178,8 +179,8 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
   have h_grad_apply :
       eLpNorm (fun x : M => Real.sqrt
           (g.inner x
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-            (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) 2 μM ≤
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) 2 μM ≤
         ENNReal.ofReal C_grad * NS := by
     rw [hu_def, hμM_def, hNS_def]
     exact hC_grad_bound S Idx Jdx
@@ -187,8 +188,8 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
       eLpNorm u 2 μM +
         eLpNorm (fun x : M => Real.sqrt
             (g.inner x
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-              (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) 2 μM ≤
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) 2 μM ≤
         ENNReal.ofReal C_L2 * NS + ENNReal.ofReal C_grad * NS :=
     add_le_add h_L2_apply h_grad_apply
   have h_factor_sum :
@@ -221,8 +222,8 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
             (eLpNorm u 2 μM +
               eLpNorm (fun x : M => Real.sqrt
                   (g.inner x
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x)
-                    (DifferentialGeometry.Integral.DivergenceTheorem.gradFun (I := I) g u x))) 2
+                    (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)
+                    (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x))) 2
                       μM) :=
           h_env_apply
       _ ≤ ENNReal.ofReal C_env *

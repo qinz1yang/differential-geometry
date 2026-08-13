@@ -1,6 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Topology.MetricSpace.Lipschitz
 
+namespace DifferentialGeometry.Analysis.Calculus
 
 open scoped InnerProductSpace
 
@@ -45,9 +46,6 @@ private theorem ballRetraction_eq_smul_of_lt {R : ℝ} {x : X} (hx : R < ‖x‖
     · exact (div_le_one hx0).2 (le_of_lt hx)
   rw [ballRetraction, min_eq_right hle]
 
-/-- Radial retraction onto a closed ball is `2`-Lipschitz in every real
-normed space.  In an inner-product space the sharper constant `1` is
-available as `lipschitzWith_one_ballRetraction`. -/
 theorem lipschitzWith_ballRetraction {R : ℝ} (hR : 0 ≤ R) :
     LipschitzWith 2 (ballRetraction (X := X) R) := by
   refine LipschitzWith.of_dist_le_mul fun x y => ?_
@@ -320,3 +318,5 @@ theorem norm_map_ballRetraction_sub_le {Y : Type*} [NormedAddCommGroup Y]
       linarith
 
 end NormedDifference
+
+end DifferentialGeometry.Analysis.Calculus

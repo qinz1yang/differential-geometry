@@ -1,33 +1,5 @@
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 
-/-!
-# Regularity bootstrap for autonomous second-order ODEs
-
-A given solution of a second-order equation `y'' = F (y, y')` with `C^∞`
-right-hand side is automatically `C^∞` on any open time set where the
-equation holds.  This is a regularity statement about one given solution:
-no existence, uniqueness, completeness, or finite-dimensionality enters.
-
-The statement is deliberately first-order-free in shape: the right-hand
-side is an arbitrary map `F : E × E → E` that is `C^∞` on a set `V`
-containing the orbit `t ↦ (y t, deriv y t)`.  The chart geodesic equation
-`y'' = -Γ(y)(y', y')` is the intended instance, with `V` the phase-space
-region over a chart domain; the Christoffel shape is recovered by taking
-`F (q, v) = -Γ q v v`.
-
-## Main results
-
-* `contDiffOn_ode2` — if `y` and `deriv y` differentiate on an open
-  `J ⊆ ℝ` with `(deriv y)' = F (y, deriv y)` and the orbit stays in `V`,
-  then `y` and `deriv y` are `C^n` on `J` for every `n : ℕ`.
-* `contDiffOn_ode2_inf` — the `C^∞` packaging of the same conclusion.
-
-The induction is the classical bootstrap: `y'' = F (y, y')` expresses the
-next derivative through data already known to be `C^n`, and
-`contDiffOn_succ_iff_deriv_of_isOpen` converts that into a `C^{n+1}`
-upgrade for both `y` and `deriv y`.
--/
-
 namespace DifferentialGeometry
 
 open Set
@@ -35,11 +7,6 @@ open scoped ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-/-- **Bootstrap for a given solution of `y'' = F (y, y')`.**  Let `J ⊆ ℝ` be
-open and `F : E × E → E` be `C^∞` on `V`.  If `y` is differentiable at every
-`t ∈ J`, its derivative differentiates with `(deriv y)' t = F (y t, deriv y t)`,
-and the phase orbit `(y t, deriv y t)` stays in `V`, then `y` and `deriv y`
-are `C^n` on `J` for every `n : ℕ`. -/
 theorem contDiffOn_ode2
     {F : E × E → E} {y : ℝ → E} {J : Set ℝ} {V : Set (E × E)}
     (hJ : IsOpen J) (hF : ContDiffOn ℝ ∞ F V)
@@ -68,9 +35,6 @@ theorem contDiffOn_ode2
     exact ⟨(contDiffOn_succ_iff_deriv_of_isOpen hJ).mpr ⟨hdy, by simp, ihdy⟩,
       (contDiffOn_succ_iff_deriv_of_isOpen hJ).mpr ⟨hddy, by simp, hddn⟩⟩
 
-/-- `C^∞` form of `contDiffOn_ode2`: a solution of `y'' = F (y, y')` with
-`C^∞` right-hand side is `C^∞`, together with its derivative, on any open
-time set where the equation holds and the orbit stays in `V`. -/
 theorem contDiffOn_ode2_inf
     {F : E × E → E} {y : ℝ → E} {J : Set ℝ} {V : Set (E × E)}
     (hJ : IsOpen J) (hF : ContDiffOn ℝ ∞ F V)

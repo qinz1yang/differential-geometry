@@ -13,23 +13,15 @@ import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
+open DifferentialGeometry.Analysis
+namespace DifferentialGeometry.Geometry.Curvature
 
-
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
-
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -38,39 +30,50 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable {Time : Type*}
 
-
-
-
-
-
-structure RealizedMetricFamily (Time : Type*) where
+structure MetricConnectionFamily (Time : Type*) where
   metric : Time -> SmoothRiemannianMetric I M
   connection : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _)
   metricCompatible : forall t : Time,
-    DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (connection t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (connection t)
       (metric t)
 
-
-
-
-
-structure RealizedMetricFamilyOn (D : RealTimeInterval) where
+structure MetricConnectionFamilyOn (D : RealTimeInterval) where
   metric : Real -> SmoothRiemannianMetric I M
   connection : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)
   metricCompatible : forall t : RealTimeInterval.FlowTime D,
-    DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
       (connection (t : Real)) (metric (t : Real))
 
-namespace RealizedMetricFamily
+namespace MetricConnectionFamily
+
+def restrict
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (D : RealTimeInterval) :
+    MetricConnectionFamilyOn (I := I) (M := M) D where
+  metric := G.metric
+  connection := G.connection
+  metricCompatible := fun t => G.metricCompatible (t : Real)
+
+@[simp] theorem restrict_metric
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (D : RealTimeInterval) (t : Real) :
+    (G.restrict D).metric t = G.metric t := by
+  rfl
+
+@[simp] theorem restrict_connection
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (D : RealTimeInterval) (t : Real) :
+    (G.restrict D).connection t = G.connection t := by
+  rfl
 
 @[simp] theorem metric_mk
     (metric : Time -> SmoothRiemannianMetric I M)
     (connection : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
     (metricCompatible : forall t : Time,
-      DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (connection t)
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (connection t)
         (metric t))
     (t : Time) :
-    (RealizedMetricFamily.mk (I := I) (M := M) metric connection
+    (MetricConnectionFamily.mk (I := I) (M := M) metric connection
       metricCompatible).metric t = metric t := by
   rfl
 
@@ -78,10 +81,10 @@ namespace RealizedMetricFamily
     (metric : Time -> SmoothRiemannianMetric I M)
     (connection : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
     (metricCompatible : forall t : Time,
-      DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (connection t)
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (connection t)
         (metric t))
     (t : Time) :
-    (RealizedMetricFamily.mk (I := I) (M := M) metric connection
+    (MetricConnectionFamily.mk (I := I) (M := M) metric connection
       metricCompatible).connection t =
       connection t := by
   rfl
@@ -90,22 +93,22 @@ namespace RealizedMetricFamily
     (metric : Time -> SmoothRiemannianMetric I M)
     (connection : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
     (metricCompatible : forall t : Time,
-      DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (connection t)
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (connection t)
         (metric t))
     (t : Time) :
-    (RealizedMetricFamily.mk (I := I) (M := M) metric connection
+    (MetricConnectionFamily.mk (I := I) (M := M) metric connection
       metricCompatible).metricCompatible t = metricCompatible t := by
   rfl
 
-end RealizedMetricFamily
+end MetricConnectionFamily
 
-namespace RealizedMetricFamilyOn
+namespace MetricConnectionFamilyOn
 
 
 def toFlowTimeFamily
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D) :
-    RealizedMetricFamily (I := I) (M := M) (RealTimeInterval.FlowTime D) where
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D) :
+    MetricConnectionFamily (I := I) (M := M) (RealTimeInterval.FlowTime D) where
   metric := fun t => G.metric (t : Real)
   connection := fun t => G.connection (t : Real)
   metricCompatible := fun t => G.metricCompatible t
@@ -113,8 +116,8 @@ def toFlowTimeFamily
 
 def toRegularTimeFamily
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D) :
-    RealizedMetricFamily (I := I) (M := M) (RealTimeInterval.RegularTime D) where
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D) :
+    MetricConnectionFamily (I := I) (M := M) (RealTimeInterval.RegularTime D) where
   metric := fun t => G.metric (t : Real)
   connection := fun t => G.connection (t : Real)
   metricCompatible := fun t => G.metricCompatible (RealTimeInterval.regularToFlow t)
@@ -122,7 +125,7 @@ def toRegularTimeFamily
 
 def metricAt
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.FlowTime D) :
     SmoothRiemannianMetric I M :=
   G.metric (t : Real)
@@ -130,21 +133,21 @@ def metricAt
 
 def connectionAt
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.FlowTime D) :
     CovariantDerivative I E (TangentSpace I : M -> Type _) :=
   G.connection (t : Real)
 
 @[simp] theorem metricAt_eq
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.FlowTime D) :
     G.metricAt t = G.metric (t : Real) := by
   rfl
 
 @[simp] theorem connectionAt_eq
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.FlowTime D) :
     G.connectionAt t = G.connection (t : Real) := by
   rfl
@@ -152,44 +155,44 @@ def connectionAt
 
 theorem metricCompatibleAt
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.FlowTime D) :
-    DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (G.connectionAt t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (G.connectionAt t)
       (G.metricAt t) := by
   exact G.metricCompatible t
 
 
 theorem metricCompatibleAt_regular
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) :
-    DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
       (G.connection (t : Real)) (G.metric (t : Real)) := by
   exact G.metricCompatible (RealTimeInterval.regularToFlow t)
 
-end RealizedMetricFamilyOn
+end MetricConnectionFamilyOn
 
 section FamilyCompatibility
 
 
 def IsMetricCompatibleFamilyOn
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D) : Prop :=
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D) : Prop :=
   forall t : RealTimeInterval.FlowTime D,
-    DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) (G.connectionAt t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (G.connectionAt t)
       (G.metricAt t)
 
 
 theorem isMetricCompatibleFamilyOn
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D) :
+    (G : MetricConnectionFamilyOn (I := I) (M := M) D) :
     IsMetricCompatibleFamilyOn (I := I) G :=
   fun t => G.metricCompatibleAt t
 
 
 theorem metric_compatible_family_apply
     {D : RealTimeInterval}
-    {G : RealizedMetricFamilyOn (I := I) (M := M) D}
+    {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hmc : IsMetricCompatibleFamilyOn (I := I) G)
     (t : RealTimeInterval.FlowTime D)
     {x : M}
@@ -199,7 +202,7 @@ theorem metric_compatible_family_apply
         (fun y : M => (G.metricAt t).inner y (Y y) (Z y)) x (X x) =
       (G.metricAt t).inner x ((G.connectionAt t) Y x (X x)) (Z x) +
         (G.metricAt t).inner x (Y x) ((G.connectionAt t) Z x (X x)) :=
-  DifferentialGeometry.Integral.Connection.metric_compatible_apply (I := I) (hmc t) X Y Z hX hY hZ
+  DifferentialGeometry.Geometry.Connection.metric_compatible_apply (I := I) (hmc t) X Y Z hX hY hZ
 
 end FamilyCompatibility
 
@@ -207,19 +210,16 @@ section TimeSmoothness
 
 variable {A Time : Type*} [CommRing A] [Algebra Real A]
 
-
-
-
 def MetricFamilySmoothInTime
     (td : TimeDerivativeData Real A Time) [TimeRegularFam td]
-    (G : RealizedMetricFamily (I := I) (M := M) Time) : Prop :=
+    (G : MetricConnectionFamily (I := I) (M := M) Time) : Prop :=
   forall (x : M) (X Y : TangentSpace I x),
     td.isSmoothFam (fun t : Time => (G.metric t).inner x X Y)
 
 
 theorem metric_smooth_coeff_of_metricFamilySmoothInTime
     (td : TimeDerivativeData Real A Time) [TimeRegularFam td]
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (hG : MetricFamilySmoothInTime td G)
     (x : M) (X Y : TangentSpace I x) :
     td.isSmoothFam (fun t : Time => (G.metric t).inner x X Y) :=
@@ -228,13 +228,13 @@ theorem metric_smooth_coeff_of_metricFamilySmoothInTime
 
 noncomputable def metricTimeDerivative
     (td : TimeDerivativeData Real A Time)
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (x : M) (X Y : TangentSpace I x) : Real :=
   td.dt_apply (fun s : Time => (G.metric s).inner x X Y) t
 
 @[simp] theorem metricTimeDerivative_eq
     (td : TimeDerivativeData Real A Time)
-    (G : RealizedMetricFamily (I := I) (M := M) Time)
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (x : M) (X Y : TangentSpace I x) :
     metricTimeDerivative td G t x X Y =
       td.dt_apply (fun s : Time => (G.metric s).inner x X Y) t := by
@@ -246,12 +246,6 @@ section IntervalSmoothness
 
 variable [FiniteDimensional Real E]
 
-
-
-
-
-
-
 def Tensor0SFamilyContinuousOnSet
     (s : Nat) (K : Set Real)
     (A : (t : Real) -> (x : M) ->
@@ -261,16 +255,9 @@ def Tensor0SFamilyContinuousOnSet
     TotalSpace.mk' (Tensor0SModel s Real E)
       (E := fun x : M => Tensor0SSpace s I x) q.2 (A q.1.1 q.2))
 
-
-
-
 abbrev SmoothTwoTensorFamily : Type _ :=
   Real -> Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (n := (∞ : WithTop ℕ∞)) 2
-
-
-
-
 
 structure SmoothTwoTensorFamilyOnSet
     (K : Set Real) (A : SmoothTwoTensorFamily (I := I) (M := M)) : Prop where
@@ -323,10 +310,6 @@ theorem comp_time
     exact htime.prodMk continuous_snd
   exact hA.comp hpull
 
-
-
-
-
 theorem of_union_closedOpen
     {s : Nat} {a c b : Real} (hac : a < c)
     {A : (t : Real) -> (x : M) ->
@@ -368,9 +351,6 @@ theorem of_union_closedOpen
         continuous_subtype_val).subtype_mk _).prodMk
         (continuous_snd.comp continuous_subtype_val)
     exact hcont.continuousAt (hopen.mem_nhds (lt_of_lt_of_le hac hge))
-
-
-
 
 theorem congr
     {s : Nat} {K : Set Real}
@@ -418,8 +398,6 @@ theorem add
   refine ⟨hAq.1, ?_⟩
   simpa [map_add] using hAq.2.add hBq.2
 
-
-
 theorem smul
     {s : Nat} {K : Set Real}
     {f : Real -> M -> Real}
@@ -439,8 +417,6 @@ theorem smul
   refine ⟨hAq.1, ?_⟩
   simpa [map_smul] using hfq.smul hAq.2
 
-
-
 theorem tangentBundle
     {s : Nat} {K : Set Real}
     {A : (t : Real) -> (x : M) ->
@@ -458,12 +434,6 @@ theorem tangentBundle
     exact continuous_fst.prodMk
       ((FiberBundle.continuous_proj E (TangentSpace I)).comp continuous_snd)
   exact hA.comp hpull
-
-
-
-
-
-
 
 theorem eval_continuous
     {s : Nat} {K : Set Real}
@@ -499,8 +469,6 @@ theorem eval_continuous
 
 end Tensor0SFamilyContinuousOnSet
 
-
-
 theorem tensor0SFamily_quadCont
     {K : Set Real}
     {A : (t : Real) -> (x : M) ->
@@ -533,33 +501,18 @@ theorem tensor0SFamily_quadCont
     b hb T hT v hv
   simpa [quad02, P, b, T, v] using hEval
 
-
-
-
-
-
-
-
-
-
-
 structure MetricFamilySmoothOn
     (D : RealTimeInterval)
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D) : Prop where
+    (g_fam : ℝ → SmoothRiemannianMetric I M) : Prop where
   coeff :
     forall (x : M) (X Y : TangentSpace I x),
-    ContDiffOn Real ∞ (fun t : Real => (G.metric t).inner x X Y) D.regular
+    ContDiffOn Real ∞ (fun t : Real => (g_fam t).inner x X Y) D.regular
   coeff_cont :
     forall (x : M) (X Y : TangentSpace I x),
-    ContinuousOn (fun t : Real => (G.metric t).inner x X Y) D.carrier
+    ContinuousOn (fun t : Real => (g_fam t).inner x X Y) D.carrier
   metricTensor_cont :
     Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
-      (fun t x => metricTensorField (I := I) (G.metric t) x)
-
-
-
-
-
+      (fun t x => metricTensorField (I := I) (g_fam t) x)
   frameCompSmooth :
     forall {Idx : Type} [Fintype Idx]
       (frame : Idx -> (x : M) -> TangentSpace I x) {u : Set M},
@@ -567,91 +520,87 @@ structure MetricFamilySmoothOn
       forall i j : Idx,
         ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
           (fun p : Real × M =>
-            (G.metric p.1).inner p.2 (frame i p.2) (frame j p.2))
+            (g_fam p.1).inner p.2 (frame i p.2) (frame j p.2))
           (D.regular ×ˢ u)
 
 
 theorem metric_smooth_coeff_of_metricFamilySmoothOn
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (x : M) (X Y : TangentSpace I x) :
-    ContDiffOn Real ∞ (fun t : Real => (G.metric t).inner x X Y) D.regular :=
+    ContDiffOn Real ∞ (fun t : Real => (g_fam t).inner x X Y) D.regular :=
   hG.coeff x X Y
 
 
 theorem metric_coeff_cont_of_metricFamilySmoothOn
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (x : M) (X Y : TangentSpace I x) :
-    ContinuousOn (fun t : Real => (G.metric t).inner x X Y) D.carrier :=
+    ContinuousOn (fun t : Real => (g_fam t).inner x X Y) D.carrier :=
   hG.coeff_cont x X Y
 
 
 theorem metricTensor_cont_of_metricFamilySmoothOn
     {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G) :
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam) :
     Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
-      (fun t x => metricTensorField (I := I) (G.metric t) x) :=
+      (fun t x => metricTensorField (I := I) (g_fam t) x) :=
   hG.metricTensor_cont
 
 
 theorem metricTensor_cont_restrict_of_metricFamilySmoothOn
     {D : RealTimeInterval} {K : Set Real}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (hK : K ⊆ D.carrier) :
     Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
-      (fun t x => metricTensorField (I := I) (G.metric t) x) :=
+      (fun t x => metricTensorField (I := I) (g_fam t) x) :=
   Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
     hG.metricTensor_cont hK
 
 
 theorem metricTensor_tangentBundle_cont_of_metricFamilySmoothOn
     {D : RealTimeInterval} {K : Set Real}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (hK : K ⊆ D.carrier) :
     Continuous (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
       TotalSpace.mk' (Tensor0SModel 2 Real E)
         (E := fun x : M => Tensor0SSpace 2 I x) q.2.proj
-        (metricTensorField (I := I) (G.metric q.1.1) q.2.proj)) :=
+        (metricTensorField (I := I) (g_fam q.1.1) q.2.proj)) :=
   Tensor0SFamilyContinuousOnSet.tangentBundle (I := I) (M := M)
     (metricTensor_cont_restrict_of_metricFamilySmoothOn (I := I) (M := M)
-      G hG hK)
-
-
+      g_fam hG hK)
 
 theorem metricTimeBundleQuad_cont_of_metricFamilySmoothOn
     {D : RealTimeInterval} {K : Set Real}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
-    (hG : MetricFamilySmoothOn (I := I) (M := M) D G)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
     (hK : K ⊆ D.carrier) :
     Continuous
-      (metricTimeBundleQuad (I := I) (M := M) (fun t => G.metric t) K) := by
+      (metricTimeBundleQuad (I := I) (M := M) g_fam K) := by
   have hquad :=
     tensor0SFamily_quadCont (I := I) (M := M)
       (metricTensor_cont_restrict_of_metricFamilySmoothOn (I := I) (M := M)
-        G hG hK)
+        g_fam hG hK)
   simpa [metricTimeBundleQuad, quad02, metricTensorField_apply] using hquad
 
 
 noncomputable def metricCoeff
-    {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
     (x : M) (X Y : TangentSpace I x) : Real -> Real :=
-  fun t => (G.metric t).inner x X Y
+  fun t => (g_fam t).inner x X Y
 
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem metricCoeff_eq
-    {D : RealTimeInterval}
-    (G : RealizedMetricFamilyOn (I := I) (M := M) D)
+    (g_fam : ℝ → SmoothRiemannianMetric I M)
     (x : M) (X Y : TangentSpace I x) (t : Real) :
-    metricCoeff G x X Y t = (G.metric t).inner x X Y := by
+    metricCoeff g_fam x X Y t = (g_fam t).inner x X Y := by
   rfl
 
 end IntervalSmoothness
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

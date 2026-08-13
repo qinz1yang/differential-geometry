@@ -2,14 +2,6 @@ import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.ODE.PicardLindelof
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Filter MeasureTheory Set
@@ -19,8 +11,6 @@ namespace DifferentialGeometry
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F]
-
-
 
 theorem hasDerivAt_of_right
     {f f' : Real -> F} {a b t : Real} (hab : a < b)
@@ -67,8 +57,6 @@ theorem hasDerivAt_of_right
     have htIcc : t ∈ Icc a b := Ioo_subset_Icc_self ht
     exact (hgderivIcc t htIcc).hasDerivAt (Icc_mem_nhds ht.1 ht.2)
   exact hgAt.congr_of_eventuallyEq hfg_ev
-
-
 
 theorem contDiffOn_of_right
     {v : F → F} {f : Real → F} {a b : Real} (hab : a < b)

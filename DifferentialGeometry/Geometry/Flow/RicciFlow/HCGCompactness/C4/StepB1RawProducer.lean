@@ -1,16 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepCStageMaster
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1MetricCarrier
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -90,10 +83,6 @@ private theorem cast_preapprox
   subst L'
   simpa only [stageMapCast] using hnative
 
-/-- A metric-compactness base has a master subsequence carrying the concrete
-raw Step-B1 comparison data.  The target is stated at its final interface so
-the radius diagonal, stage-map geometry, and metric-error bridges can be filled
-in place rather than hidden behind another input structure. -/
 theorem MetricCompactBase.exists_b1_raw
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)

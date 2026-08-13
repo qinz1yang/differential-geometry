@@ -1,20 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelDuhamel
 
-/-!
-# The critical first-heat-kernel time convolution
-
-The divergence-refolded quasilinear arm couples the first heat derivative
-`(t-s)^(-1/2)` with the rough gradient weight `s^(-1/2)`.  This convolution
-is critical: its exact value is `pi`, independent of `t`.  For the fixed-point
-estimate we only need the elementary uniform bound `4`, proved below by
-splitting at `t/2`.
-
-The important design consequence is explicit in the theorem statement:
-there is no positive power of the horizon.  Contraction must therefore come
-from a small `C^0` oscillation/coefficient difference, not from shrinking the
-time interval.
--/
-
 noncomputable section
 
 open MeasureTheory Real Set
@@ -24,7 +9,6 @@ namespace Analysis
 namespace Parabolic
 namespace Euclidean
 
-/-- Integral of the unreflected `s^(-1/2)` singularity. -/
 theorem scale12_int {a : ℝ} (_ha : 0 < a) :
     ∫ s : ℝ in 0..a, heatScale12 s = 2 * a ^ (1 / 2 : ℝ) := by
   unfold heatScale12
@@ -33,7 +17,6 @@ theorem scale12_int {a : ℝ} (_ha : 0 < a) :
   rw [hexp, Real.zero_rpow (by norm_num : (1 / 2 : ℝ) ≠ 0)]
   ring
 
-/-- The critical convolution integrand. -/
 def critTime (t s : ℝ) : ℝ :=
   heatScale12 (t - s) * heatScale12 s
 private theorem heatScale12_nonneg (s : ℝ) : 0 ≤ heatScale12 s := by
@@ -83,8 +66,6 @@ theorem critTime_intble {t : ℝ} (ht : 0 < t) :
   have hright := rightCrit_intble ht
   exact hleft.trans hright
 
-/-- Reflection around `t/2` exchanges the two halves of the critical
-convolution. -/
 theorem rightCrit_eq_left {t : ℝ} :
     (∫ s : ℝ in t / 2..t, critTime t s) =
       ∫ s : ℝ in 0..t / 2, critTime t s := by
@@ -135,8 +116,6 @@ theorem leftCrit_int_le {t : ℝ} (ht : 0 < t) :
           rw [Real.rpow_add hhalf]
         _ = 2 := by norm_num
 
-/-- Uniform critical convolution bound.  In particular the estimate carries
-no factor tending to zero with the horizon. -/
 theorem critTime_int_le {t : ℝ} (ht : 0 < t) :
     (∫ s : ℝ in 0..t, critTime t s) ≤ 4 := by
   have hleft := leftCrit_intble ht
@@ -152,8 +131,6 @@ theorem critTime_int_le {t : ℝ} (ht : 0 < t) :
     _ ≤ 2 * 2 := mul_le_mul_of_nonneg_left (leftCrit_int_le ht) (by norm_num)
     _ = 4 := by norm_num
 
-/-- A coefficient `K` multiplying the critical flux remains the only small
-factor after time integration. -/
 theorem critCoeff_int_le {t K : ℝ} (ht : 0 < t) (hK : 0 ≤ K) :
     (∫ s : ℝ in 0..t, K * critTime t s) ≤ 4 * K := by
   calc

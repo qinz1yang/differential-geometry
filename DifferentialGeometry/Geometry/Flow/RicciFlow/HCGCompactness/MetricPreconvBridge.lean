@@ -5,39 +5,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.WindowPreconv
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 universe u uE uH
@@ -46,8 +13,8 @@ namespace DifferentialGeometry
 namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology
-open Bundle Tensor0SBundle TensorLieDeriv
-open DifferentialGeometry.Integral.Connection
+open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
+
 open DifferentialGeometry.PDE.RicciFlow
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -59,16 +26,6 @@ variable [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
-
-
-
-
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
@@ -167,10 +124,6 @@ theorem metricDerivNorm_le_compSq_uniform
                   ^ 2) := by
           rw [hsumeq]
 
-
-
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
@@ -196,13 +149,6 @@ theorem metricDerivNorm_le_compSq
     metricDerivNorm_le_compSq_uniform (I := I) gRef a x
   exact ⟨basisE, u', Cu, hopen, hxu', hsub, hCu, fun z hzu' hz => h gk gInf z hzu' hz⟩
 
-
-
-
-
-
-
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -221,16 +167,6 @@ theorem metricCInfConvOnCompacts_of_normConv
   refine lt_of_le_of_lt
     (metricDerivNormSupOn_le_of_forall (I := I) K p (gSeq k) gInf gRef (ε / 2) (by positivity)
       (fun a hap x hxK => (hk0 k hk a hap x hxK).le)) (by linarith)
-
-
-
-
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
@@ -262,15 +198,6 @@ theorem exists_subseq_hconv
     have hval := hk0 (k - m) (by omega) a hap x hxK
     simp only [Nat.sub_add_cancel (show m ≤ k by omega)] at hval
     exact hval
-
-
-
-
-
-
-
-
-
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]

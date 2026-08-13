@@ -4,22 +4,15 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorCompone
 import DifferentialGeometry.Analysis.Sobolev.Manifold.EmbeddingSubcritical
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradL2
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFiberNormSq.RiemannianFiberNormSqTensorInnerBridge
-
-/-!
-# Three-dimensional mixed-tensor H1 to L6 control
-
-This file combines the scalar closed-manifold Sobolev embedding with the
-finite chart-component reconstruction of a mixed tensor.  The resulting
-estimate is stated directly in terms of the metric `L²` norms of a tensor and
-its covariant gradient, so it applies to mixed coefficient tensors without
-introducing a separate mixed spectral Sobolev scale.
--/
+open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
@@ -28,7 +21,7 @@ namespace DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -112,9 +105,6 @@ private theorem sqrt_sum_sq_le_sum_abs {ι : Type*}
           (fun i _ => abs_nonneg (f i)))
     _ = ∑ i ∈ K, |f i| := Real.sqrt_sq hsum_nn
 
-/-- On a closed three-manifold, the fibre norm of a smooth mixed tensor has
-its real `L⁶` norm controlled by the intrinsic `H¹` norm.  The estimate is
-valid for arbitrary contravariant and covariant valences. -/
 theorem h1_lp6_fiber_rs
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :

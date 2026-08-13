@@ -171,7 +171,7 @@ theorem wkpNormHalfSpace_zero_chartPushed_mul_le
   exact eLpNorm_chartPushed_mul_le_uMax_mul (n := n) (M := M) α hu_bound huMax_nn p _
 
 theorem wkpNormChart_zero_mul_le_const_mul_wkpNormChart_withBoundary
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I_hs M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {u v : M → ℝ} {uMax : ℝ}
     (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax) (huMax_nn : 0 ≤ uMax) (p : ℝ≥0∞) :
     wkpNormChart (n := n) (M := M) g 0 p (fun x => u x * v x) ≤
@@ -453,7 +453,7 @@ private lemma chartSmoothExt_ae_eq_chartPushed_interior_local
 omit [CompactSpace M] in
 theorem wkpNormChart_eq_finset_sum_withBoundary
     [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I_hs M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (u : M → ℝ) :
     wkpNormChart (n := n) (M := M) g k p u =
       ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
@@ -501,7 +501,7 @@ theorem wkpNormChart_eq_finset_sum_withBoundary
 omit [CompactSpace M] in
 theorem mul_smooth_chart_bound_explicit_form_withBoundary_of_per_chart
     [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I_hs M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ} (hp : (n : ℝ) < p)
     (Bα : M → ℝ)
     (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
@@ -624,7 +624,7 @@ theorem mul_smooth_chart_bound_explicit_form_withBoundary_of_per_chart
 omit [CompactSpace M] in
 theorem mul_smooth_chart_bound_withBoundary_interior_of_per_chart
     [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I_hs M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ} (hp : (n : ℝ) < p)
     (Bα : M → ℝ)
     (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
@@ -745,7 +745,7 @@ theorem mul_smooth_chart_bound_withBoundary_interior_of_per_chart
 omit [CompactSpace M] in
 theorem MemWkpChart_of_contMDiff_AllChartsInteriorSupport
     [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I_hs M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ u)
     (h_int : AllChartsInteriorSupport (n := n) (M := M) u) :
@@ -803,7 +803,7 @@ theorem MemWkpChart_of_contMDiff_AllChartsInteriorSupport
 omit [CompactSpace M] in
 theorem mul_smooth_chart_bound_withBoundary_interior
     [CompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I_hs M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {p : ℝ} (hp : (n : ℝ) < p)
     (Bα : M → ℝ)
     (hBα_nn : ∀ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset

@@ -160,7 +160,7 @@ theorem chartTargetEuclid_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkp
 
 theorem chartPushed_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) (α : M)
     {u : M → ℝ}
@@ -199,7 +199,7 @@ theorem chartPushed_eLpNorm_p_star_smooth_le_const_mul_wkpNormHalfSpace
 
 theorem chartPushed_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpChart
     [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ)) (α : M)
     {u : M → ℝ}
@@ -234,7 +234,7 @@ theorem chartPushed_eLpNorm_p_star_le_const_mul_wkpNormHalfSpace_of_memWkpChart
 
 theorem chartPushed_sum_eLpNorm_p_star_smooth_le_const_mul_wkpNormChart
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric
+    (g : DifferentialGeometry.SmoothRiemannianMetric
       (modelWithCornersEuclideanHalfSpace n) M)
     {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (n : ℝ))
     {u : M → ℝ}

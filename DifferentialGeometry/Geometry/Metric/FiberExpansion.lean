@@ -2,29 +2,6 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-
-/-!
-# Fiberwise expansion in a `g`-orthonormal family
-
-Any tangent vector expands in **any** given `g`-orthonormal family of full
-cardinality: `v = ∑ i, g.inner x (e i) v • e i`.  This is the pointwise
-fiber-linear-algebra input of the Jacobi frame reduction (brick J-a of the
-option-1 route in `Geometry/Comparison/VOLUME_COMPARISON_PLAN.md`): the
-curvature term `R(·, γ̇)γ̇` is expanded in the parallel frame to produce the
-frame-coordinate Jacobi system.
-
-Unlike `tangent_frame_expansion`
-(`Analysis/Elliptic/…/RiemannianFiberNormSqRiemannOpVWFactorBound.lean`),
-which chooses its own frame, the family here is **supplied** — e.g. the
-parallel frame of `exists_intrFrame` evaluated at a point of the geodesic.
-
-The proof installs the honest inner-product structure of `g` on the fiber
-(`g.toRiemannianMetric.toCore` + `InnerProductSpace.ofCoreOfTopology`, the
-same `letI` chain as `exists_gOrthonormalBasis`), under which the family is
-orthonormal of full cardinality, hence an `OrthonormalBasis`; the expansion
-is `OrthonormalBasis.sum_repr'`.
--/
-
 open Bundle
 open scoped Manifold ContDiff
 
@@ -36,9 +13,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 omit [FiniteDimensional ℝ E] in
-/-- **Expansion in a supplied full `g`-orthonormal family.**  If
-`e : ι → TangentSpace I x` is `g`-orthonormal and `card ι = finrank`, then
-every tangent vector at `x` is `∑ i, g.inner x (e i) v • e i`. -/
 theorem gON_expand (g : SmoothRiemannianMetric I M) (x : M)
     {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
     (e : ι → TangentSpace I x)

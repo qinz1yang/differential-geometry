@@ -1,12 +1,14 @@
 import DifferentialGeometry.Geometry.Curvature.Components.TraceOneForm
+open DifferentialGeometry.Geometry.Curvature
+
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Curvature
 
-open Bundle Tensor0SBundle
+open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -17,13 +19,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {x : M}
 
-
-
-
-
-
-
-
 omit [FiniteDimensional ℝ E] in
 theorem metricInverseInBasis_of_orthonormal
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -33,10 +28,6 @@ theorem metricInverseInBasis_of_orthonormal
   classical
   intro i j
   constructor <;> simp [hON]
-
-
-
-
 
 theorem ricciFromRm13_comp_eq_rm04_trace
     (g : SmoothRiemannianMetric I M)
@@ -73,8 +64,6 @@ theorem ricciFromRm13_comp_eq_rm04_trace
   rw [← hLower (basis a) (basis i) (basis j) (basis k)]
   rw [rm04CompAt_apply]
 
-
-
 theorem ricciComp_eq_rm04_trace_of_rm13
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -108,8 +97,6 @@ theorem ricciComp_eq_rm04_trace_of_rm13_section
         gInv a k * rm04CompAt (I := I) basis (Rm04 x) a i j k := by
   exact ricciComp_eq_rm04_trace_of_rm13 (I := I) g basis gInv hinv (Ric x) (Rm13 x)
     (Rm04 x) (hRic x) hLower i j
-
-
 
 theorem ricci_diag_eq_sum_rm04_diag_of_orthonormal
     (g : SmoothRiemannianMetric I M) {x : M}
@@ -146,11 +133,6 @@ theorem ricciCompAt_eq_contractTrace_of_realizes
   rw [hRic x]
   exact ricciCompAt_eq_contractTrace (I := I) basis (Rm13 x) i j
 
-
-
-
-
-
 def RicciRealizesRm04FirstTraceAt
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -160,8 +142,6 @@ def RicciRealizesRm04FirstTraceAt
     Ric (vec2 (basis a) (basis b)) =
       ∑ k : Idx, ∑ l : Idx,
         gInv k l * Rm04 (vec4 (basis k) (basis a) (basis b) (basis l))
-
-
 
 omit [FiniteDimensional ℝ E] [DecidableEq Idx] in
 theorem ricciSymm_of_rm04
@@ -205,8 +185,6 @@ theorem ricciSymm_of_rm04
           rw [hP, hI, hO]
           ring
 
-
-
 theorem ricciFirstTraceAt_of_rm13
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -242,11 +220,6 @@ theorem ricciFirstTraceAt_of_rm13_section
   exact ricciFirstTraceAt_of_rm13 (I := I) g basis gInv hinv
     (Ric x) (Rm13 x) (Rm04 x) (hRic x) hLower hInvSym
 
-
-
-
-
-
 def RicciRealizesRm04TraceAt
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -256,8 +229,6 @@ def RicciRealizesRm04TraceAt
     Ric (vec2 X Y) =
       ∑ k : Idx, ∑ l : Idx,
         gInv k l * Rm04 (vec4 (basis k) X Y (basis l))
-
-
 
 def ScalarRealizesRicciTraceAt
     (scalar : Real)
@@ -294,4 +265,4 @@ theorem scalar_eq_trace_ricci
         gInv i j * ricciCompAt (I := I) basis Ric i j := by
   rw [hScalar]
   simp_rw [ricciCompAt_apply]
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Curvature

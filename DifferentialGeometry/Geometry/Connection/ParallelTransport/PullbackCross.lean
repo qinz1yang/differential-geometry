@@ -2,25 +2,23 @@ import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LinearExtensionTangent
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+open DifferentialGeometry.Tensor.RicciIdentity
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
+
 
 namespace DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 
 open Bundle Filter Manifold Set
 open scoped Topology Manifold ContDiff
-open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 
@@ -465,8 +463,6 @@ private theorem covAlong_mapCross_zero
     ← trivFromE_trivToE (I := J) b hbBase
       (covDerivAlong (I := J) g delta W t), hleftCoord, hrightCoord]
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_mapCrossAt
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
@@ -485,7 +481,7 @@ theorem covAlong_mapCrossAt
       covDerivAlong (I := J) g (fun s => Phi (gamma s))
         (fun s => mfderiv I J (Phi : M → N) (gamma s) (Y (gamma s))) t := by
   let delta : ℝ → N := fun s => Phi (gamma s)
-  let Ypush := DifferentialGeometry.Integral.Connection.pushFwdSectionCross
+  let Ypush := DifferentialGeometry.Geometry.Curvature.pushFwdSectionCross
     (I := I) (J := J) Phi Y
   let v : TangentSpace I (gamma t) :=
     (mfderiv 𝓘(ℝ, ℝ) I gamma t : ℝ →L[ℝ] TangentSpace I (gamma t)) (1 : ℝ)
@@ -507,7 +503,7 @@ theorem covAlong_mapCrossAt
     simpa [delta, v, Function.comp_def] using
       (mfderiv_comp_apply (I := 𝓘(ℝ, ℝ)) (I' := I) (I'' := J)
         (g := (Phi : M → N)) (f := gamma) (x := t) hPhi hgammaAt (1 : ℝ))
-  have hcov := DifferentialGeometry.Integral.Connection.metricCov_pullbackCross
+  have hcov := DifferentialGeometry.Geometry.Curvature.metricCov_pullbackCross
     (I := I) (J := J) g Phi Y (gamma t) v
   calc
     mfderiv I J (Phi : M → N) (gamma t)
@@ -520,7 +516,7 @@ theorem covAlong_mapCrossAt
           (fun x : M => Y x) (gamma t) v) := by rw [hleft]
     _ = (LeviCivita (I := J) g) (fun x : N => Ypush x) (Phi (gamma t))
         (mfderiv I J (Phi : M → N) (gamma t) v) := by
-      simpa [LeviCivita, DifferentialGeometry.Integral.Connection.metricCov,
+      simpa [LeviCivita, DifferentialGeometry.Geometry.Curvature.metricCov,
         Ypush] using hcov
     _ = (LeviCivita (I := J) g) (fun x : N => Ypush x) (delta t)
         ((mfderiv 𝓘(ℝ, ℝ) J delta t : ℝ →L[ℝ] TangentSpace J (delta t)) (1 : ℝ)) := by
@@ -529,8 +525,6 @@ theorem covAlong_mapCrossAt
     _ = covDerivAlong (I := J) g (fun s => Phi (gamma s))
         (fun s => mfderiv I J (Phi : M → N) (gamma s) (Y (gamma s))) t := by
       simp [delta, Ypush]
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_mapCross
@@ -550,8 +544,6 @@ theorem covAlong_mapCross
       covDerivAlong (I := J) g (fun s => Phi (gamma s))
         (fun s => mfderiv I J (Phi : M → N) (gamma s) (Y (gamma s))) t :=
   covAlong_mapCrossAt (I := I) (J := J) g Phi gamma Y t hgamma.contMDiffAt
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_natCrossAt
@@ -663,8 +655,6 @@ theorem covAlong_natCrossAt
     _ = covDerivAlong (I := J) g delta
         (fun s => Ymap s + Rmap s) t := htargetAdd.symm
     _ = covDerivAlong (I := J) g delta Vmap t := by rw [htarget]
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
 theorem covAlong_natCross

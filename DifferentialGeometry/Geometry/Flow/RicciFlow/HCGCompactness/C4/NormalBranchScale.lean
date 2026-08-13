@@ -1,15 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalDiagAt
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalDiagBranch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.NormalPhaseSmallness
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -32,8 +27,6 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem normalBrHat
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -45,8 +38,6 @@ theorem normalBrHat
     c * (hd.mu R / D) = (c / D) * hd.mu R := by ring
     _ < a * hd.mu R :=
       mul_lt_mul_of_pos_right ((div_lt_iff₀ hD).2 hc) (hd.mu_pos R)
-
-
 
 def HasNormalBrFull
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -103,8 +94,6 @@ def HasNormalBrFull
 
 namespace HasNormalBrFull
 
-
-
 theorem mono
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -118,8 +107,6 @@ theorem mono
   refine ⟨hq, e, he, hfence, ?_, hδdom, htransport⟩
   intro w hw
   exact hclosed w (Metric.closedBall_subset_closedBall hρ hw)
-
-
 
 theorem toDom
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -179,8 +166,6 @@ theorem toDom
   exact ⟨hq, e, he, hclosed⟩
 
 end HasNormalBrFull
-
-
 
 theorem normalBrAccept
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -355,9 +340,6 @@ theorem normalBrAccept
   exact ⟨hq, e, he, hfence, hclosed, hδdom, htransport.1,
     htransport.2.1, htransport.2.2, hδinv, _, hinvErr, hinvApprox⟩
 
-
-
-
 theorem normalMinScale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
@@ -450,8 +432,6 @@ theorem normalMinScale
         nlinarith [mul_nonneg haMin.le (hd.mu_nonneg R)]
       _ ≤ h.gpRatio * hd.mu R := hMinFloor
   exact ⟨hbranch, hradius, hhalfFloor.trans (h.floor_le_expGp hx)⟩
-
-
 
 theorem normalBrScale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

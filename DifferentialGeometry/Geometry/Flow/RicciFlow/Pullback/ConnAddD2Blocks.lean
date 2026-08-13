@@ -1,15 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Pullback.ConnAddHessian
-
-/-!
-# Four-block split of the local-addition Hessian remainder
-
-The second Fréchet derivative is linear in each of its two direction
-arguments.  Splitting each direction into its horizontal and vertical parts
-therefore gives four exact blocks.  This file records that elementary Banach
-calculus identity and specializes it to `connAddD2Rem`.
-
-No tension-field, PDE, or Jacobi-operator identification is asserted here.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -21,11 +11,6 @@ variable {P X Y : Type*}
   [NormedAddCommGroup X] [NormedSpace ℝ X]
   [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 
-/-- The second Fréchet derivative on two product directions is the sum of its
-horizontal-horizontal, horizontal-vertical, vertical-horizontal, and
-vertical-vertical blocks.  No differentiability hypothesis is needed because
-`fderiv (fderiv F)` is a continuous linear map in each displayed direction
-even when the totalized derivative is zero. -/
 theorem fderivD2_blocks
     (F : P × X → Y) (p : P) (x : X) (a b : P) (u v : X) :
     fderiv ℝ (fderiv ℝ F) (p, x) (a, u) (b, v) =
@@ -58,9 +43,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
 
-/-- The first-jet local-addition remainder has the exact four-block split
-obtained by separating each graph direction into its base direction and its
-section-derivative direction. -/
 theorem connAddD2_blocks
     (g : SmoothRiemannianMetric I M) (p : M)
     (v : E → E) (z a b : E) :

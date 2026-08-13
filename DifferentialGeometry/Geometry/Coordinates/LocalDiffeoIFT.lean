@@ -5,31 +5,6 @@ import DifferentialGeometry.Analysis.Calculus.CLMNeumann
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Set Manifold
@@ -47,37 +22,9 @@ variable {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G} [J.Boun
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J n N]
 variable {f : M → N} {x : M}
 
-
-
 theorem isInvertible_of_norm_id_sub_lt {T : E →L[ℝ] E}
     (h : ‖ContinuousLinearMap.id ℝ E - T‖ < 1) : T.IsInvertible := by
   exact ContinuousLinearMap.invertible_of_id_sub h
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 omit [CompleteSpace F] in
 theorem isLocalDiffeomorphAt_of_contMDiffOn' (hn : 1 ≤ n) (hn' : n ≠ ∞) {U : Set M} (hU : IsOpen U)
@@ -207,9 +154,6 @@ theorem isLocalDiffeomorphAt_of_contMDiffOn' (hn : 1 ≤ n) (hn' : n ≠ ∞) {U
       rintro y ⟨z, hz, rfl⟩; exact (hSsub hz).2 }, hxS,
     fun z hz => (hSsub hz).1.1.2, fun z _ => rfl⟩
 
-
-
-
 omit [CompleteSpace E] in
 theorem norm_sub_le_of_fderiv_near_id {s : Set E} (hs : Convex ℝ s) {G : E → E} {ε : ℝ}
     (hG : ∀ z ∈ s, DifferentiableAt ℝ G z)
@@ -234,9 +178,6 @@ theorem norm_sub_le_of_fderiv_near_id {s : Set E} (hs : Convex ℝ s) {G : E →
       _ ≤ ‖G x - G y‖ + ε * ‖x - y‖ := by linarith
   linarith
 
-
-
-
 omit [CompleteSpace E] in
 theorem injOn_of_fderiv_near_id {s : Set E} (hs : Convex ℝ s) {G : E → E} {ε : ℝ} (hε : ε < 1)
     (hG : ∀ z ∈ s, DifferentiableAt ℝ G z)
@@ -248,11 +189,6 @@ theorem injOn_of_fderiv_near_id {s : Set E} (hs : Convex ℝ s) {G : E → E} {�
   have hnorm : ‖x - y‖ = 0 :=
     le_antisymm (by nlinarith [norm_nonneg (x - y)]) (norm_nonneg _)
   exact sub_eq_zero.mp (norm_eq_zero.mp hnorm)
-
-
-
-
-
 
 omit [CompleteSpace E] [I.Boundaryless] [CompleteSpace F] [J.Boundaryless] in
 theorem injOn_of_writtenInExtChart {f : M → N} {U : Set M} (x₀ : M)
@@ -274,10 +210,6 @@ theorem injOn_of_writtenInExtChart {f : M → N} {U : Set M} (x₀ : M)
   have := congrArg (extChartAt I x₀).symm hchart
   rwa [PartialEquiv.left_inv _ (hUsub ha), PartialEquiv.left_inv _ (hUsub hb)] at this
 
-
-
-
-
 omit [CompleteSpace F] in
 theorem isLocalDiffeomorphAt_of_contMDiffOn (hn : 1 ≤ n) (hn' : n ≠ ∞) {U : Set M} (hU : IsOpen U)
     (hxU : x ∈ U) (hf : ContMDiffOn I J n f U)
@@ -285,9 +217,6 @@ theorem isLocalDiffeomorphAt_of_contMDiffOn (hn : 1 ≤ n) (hn' : n ≠ ∞) {U 
     IsLocalDiffeomorphAt I J n f x := by
   obtain ⟨Φ, hx, -, hEq⟩ := isLocalDiffeomorphAt_of_contMDiffOn' hn hn' hU hxU hf hinv
   exact ⟨Φ, hx, hEq⟩
-
-
-
 
 omit [CompleteSpace F] in
 theorem contMDiffOn_isLocalDiffeomorphOn (hn : 1 ≤ n) (hn' : n ≠ ∞) {U : Set M} (hU : IsOpen U)
@@ -298,9 +227,6 @@ theorem contMDiffOn_isLocalDiffeomorphOn (hn : 1 ≤ n) (hn' : n ≠ ∞) {U : S
   rintro ⟨y, hy⟩
   exact isLocalDiffeomorphAt_of_contMDiffOn hn hn' hU hy hf (hinv y hy)
 
-
-
-
 omit [CompleteSpace F] in
 theorem contMDiffAt_isLocalDiffeomorphAt (hn : 1 ≤ n) (hn' : n ≠ ∞)
     (hf : ContMDiffAt I J n f x)
@@ -309,9 +235,6 @@ theorem contMDiffAt_isLocalDiffeomorphAt (hn : 1 ≤ n) (hn' : n ≠ ∞)
   obtain ⟨W, hW_nhds, hfW⟩ := (contMDiffAt_iff_contMDiffOn_nhds hn').mp hf
   obtain ⟨V, hVW, hV_open, hxV⟩ := mem_nhds_iff.mp hW_nhds
   exact isLocalDiffeomorphAt_of_contMDiffOn hn hn' hV_open hxV (hfW.mono hVW) hinv
-
-
-
 
 omit [CompleteSpace F] in
 theorem hlocAt_infty'
@@ -371,16 +294,6 @@ theorem hlocAt_infty'
            open_target := Φ.open_target
            contMDiffOn_toFun := (hf.mono hΦU).congr (fun z hz => (hEqΦ hz).symm)
            contMDiffOn_invFun := hsymm_infty }, hxΦ, hΦU, hEqΦ⟩
-
-
-
-
-
-
-
-
-
-
 
 omit [CompleteSpace F] in
 theorem contMDiffOn_isLocalDiffeomorphOn_infty

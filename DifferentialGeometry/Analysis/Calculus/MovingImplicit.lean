@@ -7,15 +7,6 @@ import Mathlib.Topology.Separation.Regular
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Filter Set
@@ -25,8 +16,6 @@ namespace DifferentialGeometry
 namespace Analysis
 
 open HCGCompactness
-
-
 
 theorem approx_of_fderiv_le
     {E F : Type*}
@@ -40,8 +29,6 @@ theorem approx_of_fderiv_le
   intro x hx y hy
   exact hs.norm_image_sub_le_of_norm_fderiv_le'
     (x := y) (y := x) hf hderiv hy hx
-
-
 
 theorem exists_eq_of_fderiv
     {E F : Type*}
@@ -60,8 +47,6 @@ theorem exists_eq_of_fderiv
     approx_of_fderiv_le hf hderiv (convex_closedBall a r)
   exact happ.surjOn_closedBall_of_nonlinearRightInverse
     A.toNonlinearRightInverse hr Subset.rfl hy
-
-
 
 theorem exists_preim_tail
     {E F : Type*}
@@ -227,8 +212,6 @@ theorem exists_preim_tail
       B hr.le Subset.rfl
     simpa only [margin] using hsurj hyStage
 
-
-
 noncomputable def partialFDeriv₂
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P]
@@ -236,8 +219,6 @@ noncomputable def partialFDeriv₂
     [NormedAddCommGroup Y] [NormedSpace Real Y]
     (F : P × X → Y) (p : P) (x : X) : X →L[Real] Y :=
   (fderiv Real F (p, x)).comp (ContinuousLinearMap.inr Real P X)
-
-
 
 theorem partialFDeriv₂_eq
     {P X Y : Type*}
@@ -252,8 +233,6 @@ theorem partialFDeriv₂_eq
     ((hasFDerivAt_const (x := x) (c := p)).prodMk (hasFDerivAt_id x))
   exact hslice.unique hL
 
-
-
 noncomputable def implicitRootDeriv
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P]
@@ -262,8 +241,6 @@ noncomputable def implicitRootDeriv
     (A : (P × X) →L[Real] Y) : P →L[Real] X :=
   -((A.comp (ContinuousLinearMap.inr Real P X)).inverse.comp
     (A.comp (ContinuousLinearMap.inl Real P X)))
-
-
 
 def implicitRootDomain
     {P X Y : Type*}
@@ -286,8 +263,6 @@ theorem isOpen_rootDerivDom
   change IsOpen (restrictRoot ⁻¹'
     Set.range ((↑) : (X ≃L[Real] Y) → X →L[Real] Y))
   exact ContinuousLinearEquiv.isOpen.preimage restrictRoot.continuous
-
-
 
 theorem rootDeriv_contDiffOn
     {P X Y : Type*}
@@ -318,8 +293,6 @@ theorem rootDeriv_contDiffOn
   simpa only [implicitRootDeriv, restrictRoot, restrictParam,
     ContinuousLinearMap.compL_apply] using hComp
 
-
-
 noncomputable def pinnedRootMap
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P]
@@ -327,8 +300,6 @@ noncomputable def pinnedRootMap
     [NormedAddCommGroup Y] [NormedSpace Real Y]
     (F : P × X → Y) : P × X → Y × P :=
   fun z => (F z, z.1)
-
-
 
 theorem pinnedFDeriv_inv
     {P X Y : Type*}
@@ -378,8 +349,6 @@ theorem pinnedFDeriv_inv
   rw [hderiv]
   exact ContinuousLinearMap.IsInvertible.of_inverse hCB hBC
 
-
-
 structure CompactRootTube
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P]
@@ -420,8 +389,6 @@ def closedTube
   (fun q : P × X => (q.1, PhiInf q.1 + q.2)) ''
     (closure T.W ×ˢ Metric.closedBall 0 r)
 
-
-
 theorem mem_closedTube
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P]
@@ -444,8 +411,6 @@ theorem mem_closedTube
       · rfl
       · change PhiInf z.1 + (z.2 - PhiInf z.1) = z.2
         rw [add_comm, sub_add_cancel]
-
-
 
 theorem closedTube_compact
     {P X Y : Type*}
@@ -479,9 +444,6 @@ theorem closedTube_subset
   obtain ⟨hp, hdist⟩ := (T.mem_closedTube).mp hz
   exact T.tube_subset z.1 hp (by
     simpa only [Metric.mem_closedBall] using hdist.trans hr)
-
-
-
 
 theorem exists_domain_buffer
     {P X Y : Type*}
@@ -541,8 +503,6 @@ def closedAnnulus
   (fun q : P × X => (q.1, PhiInf q.1 + q.2)) ''
     (closure T.W ×ˢ (Metric.closedBall 0 outer \ Metric.ball 0 inner))
 
-
-
 theorem mem_closedAnnulus
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P]
@@ -571,8 +531,6 @@ theorem mem_closedAnnulus
       · change PhiInf z.1 + (z.2 - PhiInf z.1) = z.2
         rw [add_comm, sub_add_cancel]
 
-
-
 theorem annulus_compact
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
@@ -591,8 +549,6 @@ theorem annulus_compact
       ((hPhi.comp continuousOn_fst (fun q hq => hq.1)).add continuousOn_snd)
   exact (T.isCompact_closure_W.prod
     ((isCompact_closedBall 0 outer).diff Metric.isOpen_ball)).image_of_continuousOn hmap
-
-
 
 theorem exists_residual_gap
     {P X Y : Type*}
@@ -627,9 +583,6 @@ theorem exists_residual_gap
     intro z hz
     exact False.elim (hne ⟨z, hz⟩)
 
-
-
-
 theorem eventually_no_root
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
@@ -658,8 +611,6 @@ theorem eventually_no_root
   have hclose := hn z hz
   rw [hzero, dist_zero_right] at hclose
   exact (not_lt_of_ge (hgap z hz)) (hclose.trans_le (by linarith))
-
-
 
 theorem exists_deriv_radius
     {P X Y : Type*}
@@ -782,8 +733,6 @@ theorem exists_deriv_radius
     · simpa only [dist_comm] using hclosePartial.le
   rcases hdeltaball hmem with ⟨e, he⟩
   exact ⟨e, he⟩
-
-
 
 theorem exists_root_buffer
     {P X Y : Type*}
@@ -1011,9 +960,6 @@ theorem exists_root_buffer
       · next h => exact absurd ⟨p, hpSf⟩ h
     exact hbMin_b₀.trans hb₀_b
 
-
-
-
 theorem exists_root_c0
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
@@ -1136,8 +1082,6 @@ theorem exists_root_c0
     · rintro rfl
       exact hPhiRoot
 
-
-
 theorem root_contDiffOn
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
@@ -1194,8 +1138,6 @@ theorem root_contDiffOn
     filter_upwards [hpsiRoot, hdistEv, hWEv] with q hqRoot hqDist hqW
     exact ((huniq n hn q (subset_closure hqW) (psi q) hqDist).mp hqRoot).symm
   exact (hpsiCD.congr_of_eventuallyEq heq).contDiffWithinAt
-
-
 
 theorem root_fderiv_eq
     {P X Y : Type*}
@@ -1288,8 +1230,6 @@ theorem limit_fderiv_eq
   exact T.root_fderiv_eq (F := fun _ : Nat => FInf)
     (fun _ => T.limit_equation_smooth) (N := 0)
     (Phi := fun _ : Nat => PhiInf) hspec huniq 0 (by omega)
-
-
 
 theorem root_cInf
     {P X Y : Type*}
@@ -1420,8 +1360,6 @@ theorem root_cInf
           (fun n => (hPhi_cd n).differentiableOn (by simp))
           (hPhiInf_cd.differentiableOn (by simp))
 
-
-
 theorem exists_root_smooth
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
@@ -1445,11 +1383,6 @@ theorem exists_root_smooth
           (F n (p, x) = 0 ↔ x = Phi n p) := by
   obtain ⟨N, Phi, hconv, hspec, huniq⟩ := T.exists_root_c0 hF_cd hF_conv
   exact ⟨N, Phi, hconv, T.root_contDiffOn hF_cd hspec huniq, hspec, huniq⟩
-
-
-
-
-
 
 theorem exists_root_cInf
     {P X Y : Type*}
@@ -1534,9 +1467,6 @@ theorem exists_root_cInf
   · intro n hn p hp x hx
     simpa only [Phi, if_pos hn] using huniq₀ n hn p hp x hx
 
-
-
-
 theorem exists_cInf_tail
     {P X Y : Type*}
     [NormedAddCommGroup P] [NormedSpace Real P] [FiniteDimensional Real P]
@@ -1587,9 +1517,6 @@ theorem exists_cInf_tail
     simpa only [F', if_pos hn₀] using huniq n hn₁ p hp x hx
 
 end CompactRootTube
-
-
-
 
 theorem exists_compactRootTube
     {P X Y : Type*}
@@ -1723,8 +1650,6 @@ theorem exists_compactRootTube
     exact ⟨e, he⟩
   exact ⟨⟨W, rho, hWopen, hWcompact, hKW, hWW₀, hrho, hD, hW₀,
     hFInf, hPhiInf, fun p hp => hroot p (hWW₀ hp), htube, hunique, hderiv⟩⟩
-
-
 
 theorem exists_rootTube
     {P X Y : Type*}

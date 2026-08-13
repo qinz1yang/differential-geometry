@@ -31,7 +31,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma memWkp_succ_of_chosenWeakPartial_memWkp
@@ -62,14 +62,14 @@ theorem eigenvector_chartComponent_memWkp_two_k
       (d := Module.finrank ℝ E) (2 * k) 2
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
         (tensorResolventEigenbasisVec (I := I) (M := M)
-          (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.tensorResolventL2_isCompactOperator
+          (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
             (I := I) (M := M) g r s) i) α P₀ :
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω'' := by
   have h_two : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 2 2
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
         (tensorResolventEigenbasisVec (I := I) (M := M)
-          (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.tensorResolventL2_isCompactOperator
+          (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
             (I := I) (M := M) g r s) i) α P₀ :
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω'' :=
     eigenvector_chartComponent_memWkp g r s i α P₀
@@ -112,7 +112,7 @@ example (α : M) (P₀ : TensorCompIdx (E := E) r s)
       (d := Module.finrank ℝ E) (2 * k) 2
       (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
         (tensorResolventEigenbasisVec (I := I) (M := M)
-          (DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.tensorResolventL2_isCompactOperator
+          (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
             (I := I) (M := M) g r s) i) α P₀ :
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) Ω'' :=
   eigenvector_chartComponent_memWkp_two_k g r s i α P₀

@@ -29,27 +29,24 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-theorem heatSemigroup_smooth_representative
+theorem smooth_representative_of_memWkpChart_forall
     (g : SmoothRiemannianMetric I M)
-    {t : ℝ} (_ht : 0 < t) (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
+    (u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
     (h_iterated_regularity :
       ∀ k : ℕ,
         DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
           (I := I) (M := M) g (2 * k) 2
-          ((heatSemigroup (I := I) (M := M) g t u_0 :
-            Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
+          (u : M → ℝ)) :
     ∃ u_smooth : M → ℝ,
       ContMDiff I 𝓘(ℝ, ℝ) ∞ u_smooth ∧
-      ((heatSemigroup (I := I) (M := M) g t u_0 :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =ᵐ[
+      (u : M → ℝ) =ᵐ[
           riemannianVolumeMeasure (I := I) (M := M) g] u_smooth := by
   classical
   have hu_coe_aesm :
       AEStronglyMeasurable
-        ((heatSemigroup (I := I) (M := M) g t u_0 :
-          Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)
+        (u : M → ℝ)
         (riemannianVolumeMeasure (I := I) (M := M) g) :=
     Lp.aestronglyMeasurable _
   let u_meas : M → ℝ := hu_coe_aesm.mk _
@@ -57,13 +54,11 @@ theorem heatSemigroup_smooth_representative
     hu_coe_aesm.stronglyMeasurable_mk
   have hu_meas_meas : Measurable u_meas := hu_meas_strong.measurable
   have hu_coe_ae_meas :
-      ((heatSemigroup (I := I) (M := M) g t u_0 :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =ᵐ[
+      (u : M → ℝ) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g] u_meas :=
     hu_coe_aesm.ae_eq_mk
   have h_S_null : (riemannianVolumeMeasure (I := I) (M := M) g)
-      {x : M | ((heatSemigroup (I := I) (M := M) g t u_0 :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x ≠
+      {x : M | (u : M → ℝ) x ≠
           u_meas x} = 0 := by
     have := hu_coe_ae_meas
     rwa [Filter.EventuallyEq, MeasureTheory.ae_iff] at this
@@ -108,8 +103,7 @@ theorem heatSemigroup_smooth_representative
   have h_pushed_aeEq :
       DifferentialGeometry.Analysis.Sobolev.Chart.ChartPushedAEEq
         (I := I) (M := M) g
-        ((heatSemigroup (I := I) (M := M) g t u_0 :
-          Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)
+        (u : M → ℝ)
         u_meas := by
     intro α
     have h := h_chartPushed_d_ae_zero α
@@ -127,12 +121,10 @@ theorem heatSemigroup_smooth_representative
       rw [← Set.indicator_of_mem h_mem (fun _ : M => (1 : ℝ))]
       exact hd_y
     have h_notS : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∉
-        {x : M | ((heatSemigroup (I := I) (M := M) g t u_0 :
-          Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x ≠
+        {x : M | (u : M → ℝ) x ≠
             u_meas x} := fun h => h_notN (hSN h)
     have h_eq :
-        ((heatSemigroup (I := I) (M := M) g t u_0 :
-          Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)
+        (u : M → ℝ)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) =
         u_meas ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := by
       by_contra hne
@@ -152,6 +144,24 @@ theorem heatSemigroup_smooth_representative
       (I := I) (M := M) g (u := u_meas) hu_meas_meas h_iter_meas
   refine ⟨u_smooth, h_smooth, ?_⟩
   exact hu_coe_ae_meas.trans h_smooth_ae_meas.symm
+
+theorem heatSemigroup_smooth_representative
+    (g : SmoothRiemannianMetric I M)
+    {t : ℝ}
+    (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
+    (h_iterated_regularity :
+      ∀ k : ℕ,
+        DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
+          (I := I) (M := M) g (2 * k) 2
+          ((heatSemigroup (I := I) (M := M) g t u_0 :
+            Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :
+    ∃ u_smooth : M → ℝ,
+      ContMDiff I 𝓘(ℝ, ℝ) ∞ u_smooth ∧
+      ((heatSemigroup (I := I) (M := M) g t u_0 :
+        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =ᵐ[
+          riemannianVolumeMeasure (I := I) (M := M) g] u_smooth :=
+  smooth_representative_of_memWkpChart_forall (I := I) (M := M) g
+    (heatSemigroup (I := I) (M := M) g t u_0) h_iterated_regularity
 
 theorem heatSemigroup_contMDiff_in_time
     (g : SmoothRiemannianMetric I M)
@@ -198,7 +208,7 @@ theorem heatSemigroup_smooth_in_space_and_time
       (Set.Ioi (0 : ℝ)) := by
   refine ⟨?_, ?_⟩
   · intro t ht
-    exact heatSemigroup_smooth_representative (I := I) (M := M) g ht u_0
+    exact heatSemigroup_smooth_representative (I := I) (M := M) g u_0
       (h_iterated_regularity_uniform t ht)
   · exact heatSemigroup_contMDiff_in_time (I := I) (M := M) g u_0
 

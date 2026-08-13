@@ -2,14 +2,9 @@ import DifferentialGeometry.Geometry.Metric.DistanceTent
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.LipschitzApprox
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
-
-/-!
-# Smooth cutoff energy
-
-This file turns the intrinsic distance tent into a smooth cutoff.  The output
-keeps a definite amount of the half-ball `L²` mass and has the scale-sharp
-outer-ball gradient bound needed by the Perelman cutoff argument.
--/
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -23,7 +18,8 @@ namespace RicciFlow
 namespace Perelman
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection
+
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicLp
 
@@ -31,14 +27,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+  [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
   [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-/-- A radius-`r` ball admits a smooth cutoff whose `L²` mass sees the
-half-radius ball and whose metric-gradient `L²` norm is at most the outer-ball
-volume scale times `5 / r`. -/
 theorem exists_cutoff_energy
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     ∃ φ : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ φ ∧

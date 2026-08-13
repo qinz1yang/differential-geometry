@@ -1,30 +1,11 @@
-import DifferentialGeometry.Integration.DivergenceTheorem.Gradient
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Gradient
 import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChristoffelPerturbation
+open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Geometry.Connection
 
 open Bundle
 open scoped Manifold ContDiff BigOperators
@@ -40,12 +21,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Operator
 
 private lemma traceChristoffelAlg
     {Idx : Type*} [Fintype Idx]
@@ -90,12 +66,6 @@ private lemma traceChristoffelAlg
           rw [hS₃]
           ring
     _ = (1 / 2 : ℝ) * ∑ i : Idx, ∑ j : Idx, gInv i j * D p i j := rfl
-
-
-
-
-
-
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] in
 omit [InnerProductSpace ℝ E] in
@@ -164,12 +134,6 @@ theorem lcTrace_halfTrace
                   chartGramMatrix (I := I) g x ((extChartAt I x).symm y) i j)
                 y₀ := rfl
 
-
-
-
-
-
-
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] in
 omit [InnerProductSpace ℝ E] in
 theorem lcTrace_logDensity
@@ -214,4 +178,4 @@ theorem lcTrace_logDensity
         chartChristoffel (I := I) g x p a a (extChartAt I x x) := by
           exact (lcTrace_halfTrace (I := I) g x p).symm
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Geometry.Connection

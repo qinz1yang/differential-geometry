@@ -2,16 +2,10 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.GalerkinPa
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjCriticalTame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjGalerkin
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -22,9 +16,9 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+open DifferentialGeometry.Analysis.Spectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -37,7 +31,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 omit [BoundarylessManifold I M] in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem galVec_norm_sq
     (q : SmoothRiemannianMetric I M)
@@ -55,7 +48,6 @@ theorem galVec_norm_sq
 
 omit [BoundarylessManifold I M] in
 open scoped Classical in
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem gal_crit_nf
     (q : SmoothRiemannianMetric I M)
@@ -112,8 +104,6 @@ private theorem gal_crit_nf
   exact hcrit
 
 open scoped Classical in
-/-- Prescribed-interval Galerkin solutions have all-order energy bounds when
-the genuine finite-core perturbation satisfies the critical estimate. -/
 theorem gal_bound_on
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) {tau : Real}
@@ -155,7 +145,7 @@ theorem gal_bound_on
           tensorHsZeroEquivL2 (I := I) (M := M)
               (tensorResolventL2_isCompactOperator
                 (I := I) (M := M) q 0 0)
-              (lapDiffA20 (I := I) (M := M) S.family T s v.1) =
+              (lapDiffA20 (I := I) (M := M) S.family.metric T s v.1) =
             lapDiffCore (I := I) (M := M) q
               (S.family.metric ((T : Real) - s)) v) →
       ∀ (u0 : SmoothCcTensor q 0 0)
@@ -299,9 +289,6 @@ theorem gal_bound_on
   · simpa only [zero_add] using hbounds
 
 open scoped Classical in
-/-- Every sequence of finite scalar truncations of one smooth initial datum has
-solutions on a common interval, with Galerkin energies bounded uniformly in the
-truncation at every natural Sobolev order. -/
 theorem scalar_gal_bound
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) :
@@ -336,7 +323,7 @@ theorem scalar_gal_bound
   have htauG : 0 < tauG := by simpa only [tauG] using hG.pos
   obtain ⟨tauC, htauC, _htauC_one, Cmid, hCmid, hcrit⟩ :=
     scalar_crit_tame (I := I) (M := M) S hS T
-  have hcore := lapDiffA20_core (I := I) (M := M) S.family hS.smoothMetric T
+  have hcore := lapDiffA20_core (I := I) (M := M) S.family.metric hS.smoothMetric T
   obtain ⟨delta, hdelta, hball⟩ := Metric.mem_nhds_iff.mp hcore
   let tau : Real := min (min tauG tauC) (delta / 2)
   have htau : 0 < tau := by

@@ -2,18 +2,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.RealizedMetricForMeasure
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
@@ -21,7 +13,7 @@ noncomputable section
 
 universe u uE uH
 
-open Bundle Tensor0SBundle MeasureTheory
+open Bundle DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold ContDiff ENNReal
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -31,15 +23,10 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M]
 variable [T2Space M] [SigmaCompactSpace M]
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
-
-
-
-
-
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 structure FlowMetricBall (S : SolutionOn (I := I) (M := M) D)
-    (time : DifferentialGeometry.Integral.Connection.RealTimeInterval.FlowTime D) where
+    (time : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D) where
   center : M
   radius : Real
   radius_pos : 0 < radius
@@ -47,9 +34,7 @@ structure FlowMetricBall (S : SolutionOn (I := I) (M := M) D)
 namespace FlowMetricBall
 
 variable {S : SolutionOn (I := I) (M := M) D}
-variable {time : DifferentialGeometry.Integral.Connection.RealTimeInterval.FlowTime D}
-
-
+variable {time : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D}
 
 def setAt (B : FlowMetricBall S time) (t : Real) : Set M :=
   {x : M | DifferentialGeometry.riemannianEDistOf
@@ -68,15 +53,10 @@ def volume (B : FlowMetricBall S time) : ℝ≥0∞ :=
 def rmNormSq (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) : Real :=
   Tensor0SBundle.normSq0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x)
 
-
-
-
 def IsRmControlled (B : FlowMetricBall S time) : Prop :=
   Set.Icc ((time : Real) - B.radius ^ 2) (time : Real) ⊆ D.carrier ∧
     ∀ t ∈ Set.Icc ((time : Real) - B.radius ^ 2) (time : Real), ∀ x ∈ B.setAt t,
       B.radius ^ 4 * rmNormSq S t x ≤ 1
-
-
 
 def IsKappaNoncollapsed (kappa : Real) (B : FlowMetricBall S time) : Prop :=
   0 < kappa ∧
@@ -94,15 +74,11 @@ theorem volume_mono {small large : FlowMetricBall S time} (h : small.Nested larg
 
 end FlowMetricBall
 
-
-
 def KappaNoncollapsedBelowScale
     (S : SolutionOn (I := I) (M := M) D) (kappa rho : Real) : Prop :=
-  0 < rho ∧ ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.FlowTime D)
+  0 < rho ∧ ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D)
     (B : FlowMetricBall S t), B.radius ≤ rho →
     B.IsRmControlled → B.IsKappaNoncollapsed kappa
-
-
 
 def NoLocalCollapsing
     (S : SolutionOn (I := I) (M := M) D) (rho : Real) : Prop :=

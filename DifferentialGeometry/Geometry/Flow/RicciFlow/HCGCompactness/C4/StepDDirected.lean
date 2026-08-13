@@ -1,30 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1ApproxIso
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.PullbackField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.Distances
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -35,7 +15,7 @@ namespace HCGCompactness
 
 open scoped Manifold ContDiff Topology BigOperators ENNReal
 open Bundle Manifold
-open DifferentialGeometry.Integral.Connection Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
@@ -55,8 +35,6 @@ noncomputable def PartialDiffeomorph.refl (M : Type u) [TopologicalSpace M]
   contMDiffOn_toFun := contMDiff_id.contMDiffOn
   contMDiffOn_invFun := contMDiff_id.contMDiffOn
 
-
-
 noncomputable def chainComp {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞)) (j l : ℕ) :
@@ -68,10 +46,6 @@ noncomputable def chainComp {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j
       PartialDiffeomorph.trans (E := E) (H := H) (I := I) (M := Mf j)
         (N := Mf (j + l)) (P := Mf (j + l + 1)) prev (Ψ (j + l)))
     l
-
-
-
-
 
 noncomputable def chainComp' {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
@@ -111,8 +85,6 @@ theorem chainComp_base {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
   | succ l ih =>
       rw [chainComp_apply_succ, ih]
       simpa [Nat.add_assoc] using hbase (j + l)
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp_add_apply {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
@@ -235,8 +207,6 @@ theorem chainComp'_apply_succ {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf
           ((Ψ j : Mf j → Mf (j + 1)) x) :=
   rfl
 
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp'_apply_zero {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
@@ -247,10 +217,6 @@ theorem chainComp'_apply_zero {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf
   have hj : j = m := Nat.add_zero j ▸ h
   subst hj
   rfl
-
-
-
-
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp'_snoc {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
@@ -303,10 +269,6 @@ theorem chainComp_eq_right {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)
   | succ l ih =>
       rw [chainComp_apply_succ, ih j, chainComp'_snoc]
 
-
-
-
-
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem chainComp_coe_head {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)] [∀ j, IsManifold I ∞ (Mf j)]
@@ -337,8 +299,6 @@ end Chain
 
 section MemberBridge
 
-
-
 theorem ball_subset_eball_ofReal {α : Type*} [PseudoMetricSpace α]
     (x : α) {r : ℝ} (hr : 0 < r) :
     Metric.ball x r ⊆ Metric.eball x (ENNReal.ofReal r) := by
@@ -346,8 +306,6 @@ theorem ball_subset_eball_ofReal {α : Type*} [PseudoMetricSpace α]
   rw [Metric.mem_ball] at hy
   rw [Metric.mem_eball, edist_dist]
   exact (ENNReal.ofReal_lt_ofReal_iff hr).2 hy
-
-
 
 theorem closedEBall_ofReal_subset_ball {α : Type*} [PseudoMetricSpace α]
     (x : α) {r R : ℝ} (hr : 0 ≤ r) (hR : r < R) :
@@ -420,10 +378,6 @@ theorem data_image_metric_ball_of_superset
     (Φ : M → N) '' Metric.ball O r ⊆ Metric.ball ((Φ : M → N) O) R :=
   data_image_metric_ball (I := I) Φ hgnorm hhnorm hr hrr₂ hε0 hR
     (hdata.mono hK le_rfl hdata.eps_lt_one) hsub
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless] in
 theorem member_isRiemannian (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -531,8 +485,6 @@ theorem image_eq_of_fun_eq {α β : Type*} {s : Set α} {f g : α → β} (h : f
   subst h
   rfl
 
-
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [MetricSpace M] [Nonempty M] [T2Space N]
     [SigmaCompactSpace N] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M]
@@ -560,9 +512,6 @@ end DataTransport
 section ReflData
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 theorem tensor02CovDeriv_metric_zero {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
@@ -572,11 +521,6 @@ theorem tensor02CovDeriv_metric_zero {M' : Type u} [TopologicalSpace M'] [Charte
     tensor02CovDeriv (I := I) (Tensor0SBundle.metricTensorField (I := I) g) g (a + 1) = 0 := by
   rw [tensor02_eq_covDOF, covDerivOfField_eq_iterCov, iterCov_metric_zero,
     MultilinearSection.domDomCongr_zero]
-
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
@@ -651,10 +595,6 @@ theorem reflBookData {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
     reverse := mkPre ((PartialDiffeomorph.refl (I := I) M' : M' → M') '' K)
         ((PartialDiffeomorph.refl (I := I) M').symm : M' → M') hsymmcoe hsymmmfd
       (contMDiffOn_id (I := I)) }⟩
-
-
-
-
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
@@ -732,11 +672,6 @@ end ReflData
 
 section Endpoint
 
-
-
-
-
-
 theorem geomTailBudget : ∀ ε : ℝ, 0 < ε → ∃ j₀ : ℕ, ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
     ∑ i ∈ Finset.range (l + 1), (1 / 2 : ℝ) ^ (j + i) ≤ ε := by
   intro ε hε
@@ -753,8 +688,6 @@ theorem geomTailBudget : ∀ ε : ℝ, 0 < ε → ∃ j₀ : ℕ, ∀ j : ℕ, j
         exact sum_le_hasSum (Finset.range (l + 1)) (fun i _ => by positivity) hasSum_geometric_two
     _ ≤ (ε / 2) * 2 := by exact mul_le_mul_of_nonneg_right hpow (by norm_num)
     _ = ε := by ring
-
-
 
 theorem two_pow_lt_openRad (j l : ℕ) :
     (2 : ℝ) ^ j < (2 : ℝ) ^ j * (1 + (1 / 2 : ℝ) ^ (l + 1)) := by
@@ -984,8 +917,6 @@ theorem imageMid_lt_step {a : ℝ} (j l : ℕ) (ha0 : 0 < a) (ha2 : a ≤ 1 / 2)
     _ = (2 : ℝ) ^ (j + 1) := by rw [pow_succ']
     _ ≤ (2 : ℝ) ^ (j + l + 1) := hpow_mono
 
-
-
 theorem imageMid_lt_openRad {a : ℝ} (j l : ℕ) (ha0 : 0 < a) (ha2 : a ≤ 1 / 2) :
     Real.sqrt (1 + a) * midRad j l
       < (2 : ℝ) ^ (j + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1)) := by
@@ -1015,8 +946,6 @@ theorem nextTol_pos {a δ B : ℝ} (ha0 : 0 < a) (ha1 : a < 1) (hδ0 : 0 < δ)
   have hfrac : 0 < a / (1 - a) := div_pos ha0 hden
   have hδB : 0 ≤ δ * B := mul_nonneg hδ0.le hB0
   exact lt_of_lt_of_le (by linarith) (nextTol_left a δ B)
-
-
 
 def sepFeed (c0 cov : ℝ) : ℝ :=
   max (c0 / (1 - c0)) cov
@@ -1070,12 +999,8 @@ theorem sepNextCov_bound (c0 cov δ B : ℝ) :
     sepFeed c0 cov + δ * B ≤ sepNextCov c0 cov δ B :=
   le_rfl
 
-
-
 def sepTail (s l : ℕ) : ℝ :=
   ∑ i ∈ Finset.range l, (1 / 2 : ℝ) ^ (s + i + 1)
-
-
 
 def sepBeta (B : ℝ) : ℝ :=
   max B 4
@@ -1186,10 +1111,6 @@ theorem sepTailBudget (B ε : ℝ) (hε : 0 < ε) :
           mul_le_mul_of_nonneg_left hgeom hβpos.le
     _ = ε := by field_simp [ne_of_gt hβpos]
 
-
-
-
-
 theorem exists_strictMono_ge (T : ℕ → ℕ) :
     ∃ σ : ℕ → ℕ, StrictMono σ ∧ ∀ j, T j ≤ σ j := by
   classical
@@ -1211,14 +1132,6 @@ theorem exists_strictMono_ge (T : ℕ → ℕ) :
     exact le_trans (Finset.le_sup (Finset.self_mem_range_succ j)) (Nat.le_add_left _ j)
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
-
-
-
-
-
-
-
-
 
 theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
     (B : StepB1RawInput (X := X) P) :

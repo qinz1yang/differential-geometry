@@ -1,19 +1,22 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricContractionTowerGrid
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.RicciTraceCarrier
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace Integral
-namespace Connection
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -25,7 +28,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [CompleteSpace E]
 
 set_option backward.isDefEq.respectTransparency false in
-
 def ricBackgroundSlotCoeff (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -38,7 +40,6 @@ def ricBackgroundSlotCoeff (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor 
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 set_option backward.isDefEq.respectTransparency false in
-
 def ricBackgroundArmCoeffField (g₀ : SmoothRiemannianMetric I M) :
     ∀ r : ℕ, SmoothCcTensor g₀ (r + 0) (r + 0) :=
   fun r => match r with
@@ -46,7 +47,6 @@ def ricBackgroundArmCoeffField (g₀ : SmoothRiemannianMetric I M) :
     | _ => 0
 
 set_option backward.isDefEq.respectTransparency false in
-
 omit [CompleteSpace E] in
 theorem ricBackgroundArm_iteratedCovGrad_singleSum_le
     (g₀ : SmoothRiemannianMetric I M) (x₀ : M) (W : SmoothCcTensor g₀ 0 2) (a : ℕ) :
@@ -63,8 +63,8 @@ theorem ricBackgroundArm_iteratedCovGrad_singleSum_le
   fixedCoeffDiffOp_iteratedCovGrad_singleSum_le (I := I) (M := M) g₀
     (ricBackgroundArmCoeffField (I := I) g₀) x₀ 2 W a
 
-end Connection
-end Integral
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

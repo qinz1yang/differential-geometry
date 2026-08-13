@@ -1,16 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricDerivNormRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivPullback
-import DifferentialGeometry.Geometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.SigmaCompactOpen
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -41,8 +34,6 @@ private theorem codRestr_mdiffAt
     (by simpa [Function.comp_def] using hcont), ?_⟩
   convert hdiff using 2
 
-/-- A smaller ambient open `V ≤ U`, regarded as an ordinary open subset of
-the open subtype `U`. -/
 def nestedOpen {U V : Opens M} (_hVU : V ≤ U) : Opens U :=
   ⟨Subtype.val ⁻¹' (V : Set M), V.isOpen.preimage continuous_subtype_val⟩
 
@@ -56,8 +47,6 @@ private def flatNestedEquiv {U V : Opens M} (hVU : V ≤ U) :
     apply Subtype.ext
     rfl
 
-/-- The identity diffeomorphism from a flat ambient open subtype to the same
-set regarded as an open subset of the larger carrier. -/
 noncomputable def flatNestedDiffeo {U V : Opens M} (hVU : V ≤ U) :
     V ≃ₘ⟮I, I⟯ nestedOpen hVU where
   toEquiv := flatNestedEquiv hVU
@@ -105,8 +94,6 @@ private theorem metric_ext
 
 omit [T2Space M] [SigmaCompactSpace M] [CompleteSpace E]
     [NeZero (Module.finrank ℝ E)] in
-/-- Flat restriction to a smaller ambient open carrier is the pullback of the
-ordinary restriction to the corresponding nested open subtype. -/
 theorem restrictSubset_pull
     {U V : Opens M} (hVU : V ≤ U)
     [SigmaCompactSpace U] [T2Space U]
@@ -150,8 +137,6 @@ private theorem norm_eq_of_pull
   subst C
   exact metricDerivNorm_pullback (E := E) (H := H) (I := I)
     (M := P) (N := Q) gk gInf gRef F a x
-
-
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

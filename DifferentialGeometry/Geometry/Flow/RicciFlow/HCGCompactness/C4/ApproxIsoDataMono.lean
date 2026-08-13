@@ -1,19 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.ApproxIsoSeparationComposition
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 noncomputable section
 
@@ -33,8 +22,6 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
 
 section DataMono
-
-
 
 def PreApproxIsoDataOn.mono [T2Space N] [SigmaCompactSpace N]
     {K K' : Set M} {ε ε' : ℝ} {p : ℕ}
@@ -62,8 +49,6 @@ def BookApproxIsoPartialData.mono [T2Space N] [SigmaCompactSpace N]
   source_sub := fun _ hx => D.source_sub (hK hx)
   forward := D.forward.mono hK hε hε1
   reverse := (D.reverse.mono (Set.image_mono hK) hε hε1 :)
-
-
 
 def PreApproxIsoDataOn.monoP [T2Space N] [SigmaCompactSpace N]
     {K : Set M} {ε : ℝ} {p p' : ℕ}

@@ -27,6 +27,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_quasilinear_local_existence
     (g : SmoothRiemannianMetric I M) (σ : ℝ)
@@ -48,6 +49,7 @@ theorem scalar_quasilinear_local_existence
   have h := hu_eq t ht
   simpa only [scalarHsBoundedC0Semigroup_apply] using h
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_quasilinear_local_unique
     (g : SmoothRiemannianMetric I M) (σ : ℝ)
@@ -74,6 +76,7 @@ theorem scalar_quasilinear_local_unique
   · intro t ht
     simpa only [scalarHsBoundedC0Semigroup_apply] using hv_eq t ht
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalar_quasilinear_local_existence_Hk
     (g : SmoothRiemannianMetric I M) (k : ℕ)

@@ -1,25 +1,19 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.SobolevScaleSummable
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.CovDivergenceRoughLaplacianCommutation
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
-
-
-
-
-
-
-
-
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -100,8 +94,6 @@ theorem oneMinusConnLapSmooth_l2Inner_selfAdjoint
       (rawTensorConnLapSmooth (I := I) g r s v)]
   rw [rawTensorConnLapSmooth_l2Inner_selfAdjoint (I := I) (M := M) g r s T v]
 
-
-
 theorem oneMinusConnLapSmooth_l2Inner_eq_add_covGrad
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (A B : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s
@@ -123,7 +115,7 @@ theorem oneMinusConnLapSmooth_l2Inner_eq_add_covGrad
   ring
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem oneMinusConnLapSmoothIter_oneMinusConnLapSmooth_comm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ) (v : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s k
@@ -153,7 +145,7 @@ theorem oneMinusConnLapSmoothIter_l2Inner_selfAdjoint
       oneMinusConnLapSmoothIter_oneMinusConnLapSmooth_comm]
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem oneMinusConnLapSmoothIter_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a b : ℕ)
     (T : SmoothCcTensor g r s) :
@@ -178,8 +170,6 @@ theorem oneMinusConnLapSmoothIter_l2Inner_sym_split
   rw [oneMinusConnLapSmoothIter_add (I := I) (M := M) g r s a b A]
   rw [oneMinusConnLapSmoothIter_l2Inner_selfAdjoint (I := I) (M := M) g r s a
     (oneMinusConnLapSmoothIter (I := I) g r s b A) B]
-
-
 
 theorem oneMinusConnLapSmoothIter_l2Inner_eq_add_sum_covGrad
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (n : ℕ)
@@ -242,8 +232,6 @@ theorem connLapIter_map_add (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_succ,
       oneMinusConnLapSmoothIter_succ, ih, oneMinusConn_add (I := I) (M := M) g r s]
 
-
-
 theorem covGrad_oneMinus (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g 0 s) :
     covGrad (I := I) (M := M) g 0 s
@@ -259,14 +247,12 @@ theorem covGrad_oneMinus (g : SmoothRiemannianMetric I M) (s : ℕ)
   abel
 
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem connLapIter_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
     oneMinusConnLapSmoothIter (I := I) g r s 1 S =
       oneMinusConnLapSmooth (I := I) g r s S := by
   rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_zero]
-
-
 
 theorem covGrad_iterL (g : SmoothRiemannianMetric I M) (s j : ℕ) :
     ∀ S : SmoothCcTensor g 0 s,
@@ -325,7 +311,6 @@ theorem covGrad_iterL (g : SmoothRiemannianMetric I M) (s j : ℕ) :
     rw [show k + 1 - 1 - k = 0 from by omega, oneMinusConnLapSmoothIter_zero]
     abel
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

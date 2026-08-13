@@ -115,7 +115,7 @@ lemma per_chart_integrand_hasDerivAt
   exact hprod
 
 theorem chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M) (t : ℝ)
     (h : M → ℝ) (hh_cont : Continuous h) :
     ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
@@ -157,7 +157,7 @@ theorem chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
   rw [hswap, hintegrand_eq]
 
 theorem volume_variation_formula_clean_of_chart_derivs
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → M → ℝ) (t : ℝ)
     (hf_cont : ∀ᶠ s in 𝓝 t, Continuous (f s))
@@ -425,6 +425,23 @@ lemma continuousOn_traceTimeDerivMetric_of_base
       (I := I) (M := M) (t := p.1) (hreg.at_any p.1) α hp.2
   exact h_base.congr h_eq
 
+lemma traceTimeDerivMetric_joint_continuous
+    {g_fam : ℝ → SmoothRiemannianMetric I M} {t : ℝ}
+    (hreg : MetricFamilyRegularAt (I := I) g_fam t) :
+    Continuous
+      (fun p : ℝ × M => traceTimeDerivMetric (I := I) g_fam p.1 p.2) := by
+  rw [continuous_iff_continuousAt]
+  intro p
+  let e := trivializationAt E (TangentSpace I) p.2
+  have hopen : IsOpen ((Set.univ : Set ℝ) ×ˢ e.baseSet) :=
+    isOpen_univ.prod e.open_baseSet
+  have hp : p ∈ (Set.univ : Set ℝ) ×ˢ e.baseSet := by
+    exact ⟨Set.mem_univ _, by simp [e]⟩
+  exact
+    ((continuousOn_traceTimeDerivMetric_of_base
+      (I := I) (M := M) hreg p.2) p hp).continuousAt
+      (hopen.mem_nhds hp)
+
 lemma continuousOn_chartDensity_family
     {g_fam : ℝ → SmoothRiemannianMetric I M} {t : ℝ}
     (hreg : MetricFamilyRegularAt (I := I) g_fam t) (α : M) :
@@ -499,7 +516,7 @@ private lemma chartDensity_nonneg_of_base
 
 
 lemma per_chart_hasDerivAt
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : ℝ → SmoothRiemannianMetric I M} {f : ℝ → M → ℝ} {t : ℝ}
     (hreg : MetricFamilyRegularAt (I := I) g_fam t)
     (hf : FunctionRegularAt f t)
@@ -999,7 +1016,7 @@ section CleanTheorem
 variable {g_fam : ℝ → SmoothRiemannianMetric I M}
 
 theorem first_variation_of_volume
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [CompactSpace M]
     {g_fam : ℝ → SmoothRiemannianMetric I M}
     {f : ℝ → M → ℝ} {t₀ : ℝ}
     (hg : MetricFamilyRegularAt (I := I) g_fam t₀)

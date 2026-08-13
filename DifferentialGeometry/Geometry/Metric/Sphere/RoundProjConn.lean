@@ -5,33 +5,6 @@ import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 open Bundle Manifold Set Metric Module
@@ -42,8 +15,6 @@ namespace Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)]
-
-
 
 noncomputable def dInclField (Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x) :
     sphere (0 : E) 1 → E :=
@@ -70,8 +41,6 @@ theorem dInclField_mdifferentiableAt
   refine hcomp.2.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => ?_)
   simp only [dInclField, dIncl, tangentMap, trivializationAt_model_space_apply]
   rfl
-
-
 
 noncomputable def dInclEquiv (x : sphere (0 : E) 1) :
     TangentSpace (𝓡 n) x ≃L[ℝ] ((ℝ ∙ (↑x : E))ᗮ) := by
@@ -111,10 +80,6 @@ theorem dInclField_smul (g : sphere (0 : E) 1 → ℝ)
   change dIncl (n := n) y (g y • Y y) = g y • dIncl (n := n) y (Y y)
   exact map_smul _ _ _
 
-
-
-
-
 noncomputable def ambDeriv (Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x)
     (x : sphere (0 : E) 1) : TangentSpace (𝓡 n) x →L[ℝ] E :=
   (mfderiv (𝓡 n) 𝓘(ℝ, E) (dInclField (n := n) Y) x : TangentSpace (𝓡 n) x →L[ℝ] E)
@@ -151,8 +116,6 @@ theorem ambDeriv_smul {Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x}
   have key := fromTangentSpace_mfderiv_smul_apply hg (dInclField_mdifferentiableAt (n := n) hY) v
   rw [← dInclField_smul] at key
   exact key
-
-
 
 noncomputable def projConn (Y : ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x) :
     ∀ x : sphere (0 : E) 1, TangentSpace (𝓡 n) x →L[ℝ] TangentSpace (𝓡 n) x :=

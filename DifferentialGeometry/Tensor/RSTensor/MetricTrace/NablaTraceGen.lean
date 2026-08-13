@@ -1,34 +1,20 @@
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.Higher
 import DifferentialGeometry.Tensor.RSTensor.NablaDomDomCongr
 import DifferentialGeometry.Tensor.RSTensor.ContractionLeibniz
+import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
+import DifferentialGeometry.Geometry.Operator.RoughLaplacian
+open DifferentialGeometry.Tensor.Multilinear
+open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-namespace DifferentialGeometry.Integral.Connection
+open DifferentialGeometry.Geometry.Operator
+namespace DifferentialGeometry.Tensor.RSTensor
 
 noncomputable section
 
-open Bundle Tensor0SBundle Filter
+open Bundle DifferentialGeometry.Tensor0SBundle Filter
 open DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff BigOperators
 
@@ -37,10 +23,6 @@ variable [FiniteDimensional Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-
-
-
 
 private def freezeTailSlots {s : ℕ}
     (x₀ : M) (σ : Fin 2 → CoordinateIdx (𝕜 := Real) E)
@@ -53,9 +35,6 @@ private def freezeTailSlots {s : ℕ}
     (fun b : Fin s => Y b y) q
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 noncomputable def freezeTailField {s : ℕ}
     [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -180,11 +159,6 @@ noncomputable def freezeTailField {s : ℕ}
       freezeFirstTwo0S (I := I) (A x) (fun b : Fin s => Y b x) := by
   rfl
 
-
-
-
-
-
 private theorem tailFreezeNablaGen {s : ℕ}
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -289,7 +263,7 @@ private theorem tailFreezeNablaGen {s : ℕ}
         have hV2x :
             (fun a : Fin 2 => V2 a x) = vec2 (I := I) U V := by
           funext a
-          fin_cases a <;> simp [V2, hUsec, hVsec, DifferentialGeometry.Integral.Connection.vec2]
+          fin_cases a <;> simp [V2, hUsec, hVsec, DifferentialGeometry.Geometry.Curvature.vec2]
         have hVfullx :
             (fun a : Fin (s + 2) => Vfull a x) =
               metricTraceInput (I := I) U V (fun b : Fin s => Y b x) := by
@@ -302,10 +276,6 @@ private theorem tailFreezeNablaGen {s : ℕ}
         (Fin.cons (X x)
           (metricTraceInput (I := I) U V (fun b : Fin s => Y b x))) :=
         hAtot.symm
-
-
-
-
 
 private def traceFirstTwoIdx {s : ℕ}
     (i j : CoordinateIdx (𝕜 := Real) E)
@@ -393,9 +363,6 @@ private theorem metricTraceFirstTwoCoeff {s : ℕ}
     (metricTraceFirstTwoEvent (I := I) g A x₀ σ)
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 def metricTraceFirstTwoField {s : ℕ}
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M)
@@ -457,8 +424,6 @@ def metricTraceFirstTwoField {s : ℕ}
       metricTraceFirstTwo0STensor (I := I) g (A x) := by
   rfl
 
-
-
 private theorem metricTraceFirstTwo0STensor_eq_pair_freeze {s : ℕ}
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -483,26 +448,13 @@ private theorem metricTraceFirstTwo0STensor_eq_pair_freeze {s : ℕ}
   congr 1
   rw [freezeFirstTwo0S_apply]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 theorem nabla_metricTraceFirstTwo0S {s : ℕ}
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2))
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -590,10 +542,6 @@ theorem nabla_metricTraceFirstTwo0S {s : ℕ}
   rw [← hXsec, show tail = (fun b : Fin s => Vtail b x) from (funext hVtailx).symm]
   exact hfreeze
 
-
-
-
-
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem metricTraceInput_apply {x : M} {s : ℕ} (X Y : TangentSpace I x)
     (tail : Fin s -> TangentSpace I x) (i : Fin (s + 2)) :
@@ -612,8 +560,6 @@ theorem metricTraceInput_apply {x : M} {s : ℕ} (X Y : TangentSpace I x)
       apply congrArg tail
       apply Fin.ext
       simp [Fin.val_succ]
-
-
 
 theorem metricTraceFirstTwoField_eq_sum {s : ℕ}
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -639,7 +585,6 @@ theorem metricTraceFirstTwoField_eq_sum {s : ℕ}
       (A x) tail]
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem metricTraceFirstTwoField_add {s : ℕ}
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M)
@@ -665,7 +610,6 @@ theorem metricTraceFirstTwoField_add {s : ℕ}
   simp only [Tensor0SSpace.add_apply, mul_add, Finset.sum_add_distrib]
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem metricTraceFirstTwoField_smul {s : ℕ}
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M) (c : Real)
@@ -689,9 +633,6 @@ theorem metricTraceFirstTwoField_smul {s : ℕ}
   ring
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
 theorem metricTraceFirstTwoField_domDomCongr_gen {s s' : ℕ}
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M)
@@ -729,9 +670,6 @@ theorem metricTraceFirstTwoField_domDomCongr_gen {s s' : ℕ}
   rw [Tensor0SSpace.domDomCongr_apply]
   exact congrArg (A x) (hcompat x _ _ tail)
 
-
-
-
 theorem metricTraceFirstTwoField_domDomCongr {s s' : ℕ}
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M) (e : Fin s ≃ Fin s')
@@ -758,10 +696,6 @@ theorem metricTraceFirstTwoField_domDomCongr {s s' : ℕ}
         metricTraceInput, Fin.cases_succ]
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
 theorem metricTraceFirstTwoField_product {k q : ℕ}
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M)
@@ -832,14 +766,7 @@ theorem metricTraceFirstTwoField_product {k q : ℕ}
   rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply, fact1, fact2]
   ring
 
-
-
-
-
-
-
 set_option backward.isDefEq.respectTransparency false in
-
 theorem metricTraceFirstTwoField_zero {s : ℕ}
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M) :
@@ -854,20 +781,6 @@ theorem metricTraceFirstTwoField_zero {s : ℕ}
   rw [metricTraceFirstTwoField_eq_sum]
   unfold metricTrace0S2InBasis
   simp [ContMDiffSection.coe_zero]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 def traceNablaShuffle (s : ℕ) : Equiv.Perm (Fin (s + 2 + 1)) :=
   (Equiv.swap 0 2).trans (Equiv.swap 0 1)
@@ -898,7 +811,6 @@ theorem traceNablaShuffle_val_ge (s : ℕ) (p : Fin (s + 2 + 1)) (hp : 3 ≤ (p 
   simp only [traceNablaShuffle, Equiv.trans_apply,
     Equiv.swap_apply_of_ne_of_ne hp0 hp2, Equiv.swap_apply_of_ne_of_ne hp0 hp1]
 
-
 theorem traceNablaShuffle_val (s : ℕ) (p : Fin (s + 2 + 1)) :
     ((traceNablaShuffle s p : Fin (s + 2 + 1)) : ℕ) =
       if (p : ℕ) = 0 then 2 else if (p : ℕ) = 1 then 0 else if (p : ℕ) = 2 then 1
@@ -914,15 +826,11 @@ theorem traceNablaShuffle_val (s : ℕ) (p : Fin (s + 2 + 1)) :
           tns_c2, if_neg (by omega), if_neg (by omega), if_pos rfl]
       · rw [traceNablaShuffle_val_ge s p (by omega), if_neg h0, if_neg h1, if_neg h2]
 
-
-
 private theorem consPredVal {V : Type*} {n : ℕ} (c : V) (f : Fin n → V) (q : Fin (n + 1))
     (hq : q ≠ 0) : @Fin.cons n (fun _ => V) c f q = f (q.pred hq) := by
   have h := Fin.cons_succ (α := fun _ => V) c f (q.pred hq)
   rw [Fin.succ_pred] at h
   exact h
-
-
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem traceNablaShuffle_metricTraceInput {x : M} {s : ℕ}
@@ -987,18 +895,13 @@ theorem traceNablaShuffle_metricTraceInput {x : M} {s : ℕ}
         simp only [Fin.val_pred, hval]
 
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
 theorem nablaRealizes_metricTraceFirstTwo {s : ℕ}
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Integral.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2))
     (nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1041,4 +944,4 @@ theorem nablaRealizes_metricTraceFirstTwo {s : ℕ}
 
 end
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Tensor.RSTensor

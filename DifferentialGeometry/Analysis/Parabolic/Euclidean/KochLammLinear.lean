@@ -1,14 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.KochLammSpaces
 
-/-!
-# Bounded linear coefficients on Koch--Lamm fluxes
-
-A uniformly bounded linear coefficient preserves both the local `L²` and the
-late `L^(n+4)` arms of a Koch--Lamm divergence source.  The norm radius is
-multiplied by the coefficient bound, which is the critical small parameter in
-the harmonic-map heat-flow principal flux.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -24,8 +15,6 @@ variable {X E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- A pointwise uniformly bounded family of continuous linear maps gives the
-same bound on every `eLpNorm`. -/
 theorem eLpNorm_clm_le (A : X → E →L[ℝ] F) (d : X → E)
     (ε : ℝ≥0) (hA : ∀ x, ‖A x‖ ≤ (ε : ℝ)) (p : ℝ≥0∞) (μ : Measure X) :
     eLpNorm (fun x => A x (d x)) p μ ≤
@@ -52,8 +41,6 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-/-- A bounded linear coefficient preserves a Koch--Lamm divergence source,
-with both radii multiplied by the coefficient bound. -/
 theorem kl1_map_bound {T : ℝ} {A₂ Aₚ ε : ℝ≥0}
     (A : ℝ × V → E →L[ℝ] F) (d : ℝ × V → E)
     (hA : ∀ z, ‖A z‖ ≤ (ε : ℝ))
@@ -97,8 +84,6 @@ theorem kl1_map_bound {T : ℝ} {A₂ Aₚ ε : ℝ≥0}
         mul_le_mul_right (hd.late_lp x R hR hRT) _
       _ = ((ε * Aₚ : ℝ≥0) : ℝ≥0∞) := by norm_cast
 
-/-- A bounded linear coefficient applied to the gradient field of a
-Koch--Lamm path produces a Koch--Lamm divergence source. -/
 theorem klPath_map_bound {T : ℝ} {A₀ A₂ Aₚ ε : ℝ≥0}
     (A : ℝ × V → E →L[ℝ] F) (u : ℝ × V → F) (d : ℝ × V → E)
     (hA : ∀ z, ‖A z‖ ≤ (ε : ℝ))

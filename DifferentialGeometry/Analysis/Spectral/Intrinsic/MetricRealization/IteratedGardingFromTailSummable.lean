@@ -1,69 +1,17 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralSmoothRepresentative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralChartRegularityAnyOrder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.SpectralWeylCounting
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-open Bundle Manifold MeasureTheory Set Filter Tensor0SBundle
+open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 namespace MetricRealization
 
 open DifferentialGeometry.Integral.Measure
@@ -85,9 +33,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma resolvent_pow_eq_weight
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
@@ -98,16 +43,6 @@ private lemma resolvent_pow_eq_weight
   unfold tensorSobolevWeight
   rw [Real.rpow_natCast]
 
-
-
-
-
-
-
-
-
-
-omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma garding_l1_sum_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
@@ -199,23 +134,6 @@ private lemma garding_l1_sum_le
     _ = ‖T‖ * Real.sqrt Stail := hrhs_eq
     _ = Real.sqrt Stail * ‖T‖ := by ring
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 theorem iteratedGardingExtensionBound_of_eigenvalueTailSummable
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (h_tail : EigenvalueTailSummable (I := I) (M := M) g r s) :
@@ -277,22 +195,6 @@ theorem iteratedGardingExtensionBound_of_eigenvalueTailSummable
         mul_le_mul_of_nonneg_left hl1 hC₀_nn
     _ = C₀ * Real.sqrt Stail * ‖T‖ := by ring
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 theorem iteratedGardingExtensionBound_of_countingBound
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (h : EigenvalueCountingBound (I := I) (M := M) g r s) :
@@ -301,9 +203,8 @@ theorem iteratedGardingExtensionBound_of_countingBound
     (eigenvalueTailSummable_of_countingBound (I := I) (M := M) g r s h)
 
 end MetricRealization
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry
 
 end

@@ -25,7 +25,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [Module.Finite ℝ E] in
 private lemma continuous_g_inner_aux
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {v w : ∀ x : M, TangentSpace I x}
     (hv : Continuous (fun x : M => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) x (v x)))
@@ -57,7 +57,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [Module.Finite ℝ E] in
 theorem continuous_g_inner_of_smooth_sections
-    (g : DifferentialGeometry.Integral.Measure.SmoothRiemannianMetric I M)
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Continuous (fun b : M => g.inner b (X b) (Y b)) := by
   have hX : Continuous (fun x : M => TotalSpace.mk' E

@@ -1,19 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfFixedCore
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HmfStateQuad
 
-/-!
-# A clean fixed point for the state-dependent HMF quadratic source
-
-The local-addition quadratic coefficient depends on the path value.  Its
-difference has three genuine arms, including
-
-`(Q(u) - Q(v)) (Dv) (Dv)`.
-
-This file feeds the exact weighted and Carleson estimates for all three arms
-into `HmfCoreData`.  It does not import the older prescribed-quadratic HMF map
-or its fixed-point wrapper.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -33,9 +20,6 @@ variable {X E V Y G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Linear heat-potential bounds used by the rough HMF realization.  The
-divergence potential costs the critical factor four, while the ordinary
-source potential costs one. -/
 structure HmfQuadHeat (T : ℝ) (tr : X →L[ℝ] E)
     (fluxPot sourcePot : (ℝ × V → F) → X) : Prop where
   flux_zero : fluxPot 0 = 0
@@ -49,8 +33,6 @@ structure HmfQuadHeat (T : ℝ) (tr : X →L[ℝ] E)
   trace_flux : ∀ p, tr (fluxPot p) = 0
   trace_source : ∀ s, tr (sourcePot s) = 0
 
-/-- A rough path realization whose value and gradient differences are both
-controlled by the ambient Banach distance. -/
 structure HmfQuadModel (T R : ℝ) (C : ℝ≥0∞)
     (path : X → ℝ × V → Y) (grad : X → ℝ × V → G) : Prop where
   R0 : 0 ≤ R
@@ -66,8 +48,6 @@ structure HmfQuadModel (T R : ℝ) (C : ℝ≥0∞)
     GradCarl T (ENNReal.ofReal (‖u - v‖ ^ 2))
       (fun z ↦ grad u z - grad v z)
 
-/-- Measurability of the prescribed principal flux and all three realized
-state-quadratic difference arms. -/
 structure HmfQuadMeas
     (A : ℝ × V → G →L[ℝ] F)
     (Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F)
@@ -84,19 +64,13 @@ structure HmfQuadMeas
     (fun z ↦ (Q z (path u z) - Q z (path v z))
       (grad v z) (grad v z)) (stVolume : Measure (ℝ × V))
 
-/-- Realized prescribed principal flux. -/
 def hmfQuadFlux (A : ℝ × V → G →L[ℝ] F)
     (grad : X → ℝ × V → G) (u : X) (z : ℝ × V) : F :=
   A z (grad u z)
 
-/-- Exact contraction rate: prescribed critical flux, the two base quadratic
-arms, and the three state-Lipschitz radius factors. -/
 def hmfQuadRate (eps K L R : ℝ) : ℝ :=
   4 * eps + K * R + 3 * L * R ^ 2
 
-/-- Assemble the faithful state-quadratic realization into the clean Banach
-core.  The base quadratic coefficient is normalized by `K / 2`, so its two
-gradient arms have combined rate `K * R`. -/
 def quadCoreData
     {T eps K L R eta : ℝ} {C : ℝ≥0∞}
     {tr : X →L[ℝ] E}
@@ -201,9 +175,6 @@ def quadCoreData
   seed_small := hsmall
 
 omit [NormedSpace ℝ Y] in
-/-- The clean state-quadratic HMF fixed point.  Its equation retains the
-actual coefficient `Q z (path u z)` and the conclusion exposes all rough path
-bounds used to realize the geometric gauge. -/
 theorem quad_fixed
     {T eps K L R eta : ℝ} {C : ℝ≥0∞}
     {tr : X →L[ℝ] E}

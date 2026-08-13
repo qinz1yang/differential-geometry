@@ -1,38 +1,24 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieCoeffL2JetBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0Split
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorr0Split
-
-/-!
-# `lieCorr0Field` realizedFam jet-L2 top-separated producer
-
-The second genuinely-missing `C₀` constituent of the `Ψ₀` map
-(`Ψ₀ = -2·arm0Field + deTurckLieCoeffField + lieCorr0Field`).  We produce the
-`realizedFam` per-order and summed top-separated jet-L2 bounds for
-`lieCorr0Field`, shape-matching the `deTurckLieCoeffField` siblings.
-
-`lieCorr0Field` genuinely carries the top window `∇^{i+2}T` (RULING 2, not the
-traceHessian pattern): via `lc0_decomp` it is
-`lc0Insert + lc0VB + lc0AMix + lc0Riem`, and `lc0Insert` contains the base
-insertion `lc0Insert g₀ g₁ g₀ = -deTurckLieDLbCoeffField g₀ g₁ g₀` whose
-`∇^i` reaches `∇^{i+2}T` — its top-separation is inherited verbatim from the
-committed DLb field producer at `g_bg := g₀` (`Ktop` R-free).  The remaining
-four pieces are `∇²T`-free and land in the `R`-carrying `Kc`.
--/
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.Analysis.Sobolev
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -48,8 +34,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- The reanchoring endomorphism arm field and the DLb coefficient field are the
-same object (both are `ofCLM (deTurckLieDLbFib g₁ g_bg)`). -/
 private theorem endoArm_eq_dlb (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g_bg =
       deTurckLieDLbCoeffField (I := I) (M := M) g₀ g₁ g_bg := by
@@ -59,9 +43,6 @@ private theorem endoArm_eq_dlb (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
   rw [deTurckLieEndoArmField_toSection, deTurckLieDLbCoeffField_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-/-- The base insertion piece is the negative of the DLb coefficient field.
-Combines `insert_base` (at `g_bg := g₀`) with `endoArm_eq_dlb`; this routes
-`lieCorr0Field`'s top window through the committed DLb producer. -/
 private theorem lc0Insert_base_eq_neg_dlb (g₀ g₁ : SmoothRiemannianMetric I M) :
     lc0Insert (I := I) (M := M) g₀ g₁ g₀ =
       -deTurckLieDLbCoeffField (I := I) (M := M) g₀ g₁ g₀ := by
@@ -69,8 +50,6 @@ private theorem lc0Insert_base_eq_neg_dlb (g₀ g₁ : SmoothRiemannianMetric I 
   rw [sub_self] at h
   rw [eq_neg_of_add_eq_zero_left h, endoArm_eq_dlb]
 
-/-- **Top piece.**  The base insertion piece inherits the DLb field producer's
-top-separated bound at `g_bg := g₀` (`Ktop` R-free). -/
 private theorem lc0InsertBase_realizedFam_perOrder_topSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -102,8 +81,6 @@ private theorem lc0InsertBase_realizedFam_perOrder_topSeparated
   rw [lc0Insert_base_eq_neg_dlb, iteratedCovGrad_neg, norm_neg]
   exact hb
 
-/-- Five-way squared triangle: `t ≤ a+b+c+d+e` (all nonneg) gives
-`t² ≤ 5·(a²+b²+c²+d²+e²)`.  Used for the `lc0_decomp` five-summand assembly. -/
 private theorem sq_le_five_add (t a b c d e : ℝ) (ht : 0 ≤ t)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d) (he : 0 ≤ e)
     (htri : t ≤ a + b + c + d + e) :
@@ -113,6 +90,6 @@ private theorem sq_le_five_add (t a b c d e : ℝ) (ht : 0 ≤ t)
     sq_nonneg (a - d), sq_nonneg (a - e), sq_nonneg (b - c), sq_nonneg (b - d),
     sq_nonneg (b - e), sq_nonneg (c - d), sq_nonneg (c - e), sq_nonneg (d - e)]
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.Analysis.Sobolev
 
 end

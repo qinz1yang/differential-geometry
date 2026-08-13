@@ -46,20 +46,26 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzArmDiffL2TameBallUniform
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzPhiMetTotalCurvatureFold
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzDegenerateOneDimensionalVanishing
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Elliptic
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Bundle Manifold Tensor0SBundle ContinuousLinearMap
+open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
+    ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry
-open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.MetricRealization
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
+    DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
@@ -96,7 +102,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.DeTurck (cometricLmodel)
+open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_realizedFam_chartLieDeTurckComp_eq_chartSlope)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -128,10 +134,10 @@ private theorem lieArm1Piece_connDiff_realizedFam_allOrder_tameEnvelope
         ∀ (σ' : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
         ∀ (i : ℕ), ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (DifferentialGeometry.Integral.Connection.deTurckLieTraceCoeffPiece (I := I) (M := M)
+              (DifferentialGeometry.Analysis.Sobolev.deTurckLieTraceCoeffPiece (I := I) (M := M)
                 g₀
                 (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-                (DifferentialGeometry.Integral.Connection.connDiffSection (I := I)
+                (DifferentialGeometry.Geometry.Curvature.connDiffSection (I := I)
                   (realizedFam (I := I) g₀ T T' hδ hδ' s) g₀))‖ ^ 2 ≤
             P i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
@@ -383,10 +389,10 @@ private theorem lieArm1Piece_connDiffBg_realizedFam_allOrder_tameEnvelope
         ∀ (σ' : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
         ∀ (i : ℕ), ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (DifferentialGeometry.Integral.Connection.deTurckLieTraceCoeffPiece (I := I) (M := M)
+              (DifferentialGeometry.Analysis.Sobolev.deTurckLieTraceCoeffPiece (I := I) (M := M)
                 g₀
                 (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-                (DifferentialGeometry.Integral.Connection.lieArm1ConnDiffBgCc (I := I) (M := M)
+                (DifferentialGeometry.Analysis.Sobolev.lieArm1ConnDiffBgCc (I := I) (M := M)
                   g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤
             P i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
@@ -692,10 +698,10 @@ private theorem lieArm1Piece_psiB_realizedFam_allOrder_tameEnvelope
         ∀ (σ' : Equiv.Perm (Fin 4)) (ρ : Equiv.Perm (Fin 3)),
         ∀ (i : ℕ), ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (DifferentialGeometry.Integral.Connection.deTurckLieTraceCoeffPiece (I := I) (M := M)
+              (DifferentialGeometry.Analysis.Sobolev.deTurckLieTraceCoeffPiece (I := I) (M := M)
                 g₀
                 (realizedFam (I := I) g₀ T T' hδ hδ' s) σ' ρ
-                (DifferentialGeometry.Integral.Connection.lieArm1PsiB (I := I) (M := M)
+                (DifferentialGeometry.Analysis.Sobolev.lieArm1PsiB (I := I) (M := M)
                   g₀ (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg))‖ ^ 2 ≤
             P i * (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
@@ -1177,7 +1183,6 @@ theorem deTurckLieArm1Coeff_realizedFam_allOrder_tameEnvelope
   linarith [htri1, htri2, htri3, hblock1, hblock2]
 
 set_option backward.isDefEq.respectTransparency false in
-
 theorem linearizedRicciArm1CorrField_allOrder_tameEnvelope_interface
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1211,6 +1216,6 @@ theorem linearizedRicciArm1CorrField_allOrder_tameEnvelope_interface
         - linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s from hid s]
   exact hK T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i s hs
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

@@ -2,14 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.HyperbolicModel
 import DifferentialGeometry.Geometry.Comparison.Volume.JacobiRiccati
 import DifferentialGeometry.Geometry.Comparison.Volume.JacobianBounds
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
-
-/-!
-# Bishop comparison for Jacobi families
-
-This file combines the Jacobi density derivative, the trace Riccati inequality,
-and the hyperbolic scalar comparison kernel.  It is the radial geometric core
-of Bishop comparison, before polar integration and cut-locus transfer.
--/
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -37,8 +30,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 omit [NeZero (Module.finrank ℝ E)]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- The Jacobi density ratio has logarithmic derivative equal to the
-difference between the Jacobi and model mean curvatures. -/
 theorem hasDerivAt_denRatio
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -66,8 +57,6 @@ theorem hasDerivAt_denRatio
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-/-- A uniform linear lower bound for every unit Jacobi combination gives a
-positive lower bound for its hyperbolic density ratio at the pole. -/
 theorem denRatio_ge_of_dir
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -135,8 +124,6 @@ theorem denRatio_ge_of_dir
 omit [NeZero (Module.finrank ℝ E)]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- A Jacobi density whose mean curvature is bounded above by the model mean
-curvature has antitone ratio to the model density. -/
 theorem curveRatio_anti
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -188,9 +175,6 @@ theorem curveRatio_anti
   simpa only [R] using hanti
 
 omit [SigmaCompactSpace M] in
-/-- A positive constant-speed transverse Jacobi family under the Ricci lower
-bound has mean curvature at most the speed-scaled hyperbolic model, provided
-its density ratio stays positive at the pole. -/
 theorem curveMean_le_hyp
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     {ι : Type*} [Fintype ι] [DecidableEq ι]

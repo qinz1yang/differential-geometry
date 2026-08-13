@@ -5,16 +5,6 @@ import Mathlib.Analysis.Calculus.MeanValue
 
 set_option autoImplicit false
 
-/-!
-# Smoothing a negative split index direction
-
-This module smooths a value-matched pair of negative index-form directions
-across its interior junction.  The construction stays in the fixed Hilbert
-space of the abstract Jacobi ODE.  Its key estimate is first-order: the
-`1 / δ` derivative of the transition weight is multiplied by the difference
-of the two fields, which is `O(δ)` because their values agree at the junction.
--/
-
 open Set intervalIntegral MeasureTheory
 open scoped ContDiff RealInnerProductSpace Topology
 
@@ -718,8 +708,6 @@ private theorem exists_splice_error
       simp only [C]
       ring
 
-/-- A value-matched pair of locally smooth split fields with negative total
-index can be smoothed across the junction without losing negativity. -/
 theorem exists_smooth_indexForm_neg_of_split
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     {R : ℝ → F →L[ℝ] F}
@@ -952,8 +940,6 @@ private theorem smooth_split_to
       rwa [← hindex]
     exact lt_of_mul_lt_mul_left (by simpa using hmul_neg) hL.le
 
-/-- A Jacobi solution on `[0, L]` whose position field is globally smooth
-produces a globally smooth endpoint-vanishing field with negative index. -/
 theorem IsJacobiSolOn.exists_smooth_neg_on
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
@@ -1035,7 +1021,6 @@ theorem IsJacobiSolOn.exists_smooth_neg_on
     (hc.1.trans hc.2) hc hR hW₀Smooth hW₁Smooth
     hW₀_zero hW₁_zero hmatch hneg
 
-/-- Unit-interval compatibility wrapper for `IsJacobiSolOn.exists_smooth_neg_on`. -/
 theorem IsJacobiSolOn.exists_smooth_neg
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}

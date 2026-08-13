@@ -1,25 +1,20 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.WSpan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.FlowBallW
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-/-!
-# No local collapsing on a positive regular slab
-
-This file combines the compact-slab W lower bound with the selected cutoff
-test function on a curvature-controlled flow ball.  The result deliberately
-starts at a strictly positive regular time; extending it uniformly to the
-initial time is a separate geometric frontier.
--/
-
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 noncomputable section
 
-open Bundle MeasureTheory Set Tensor0SBundle
+open Bundle MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
-open DifferentialGeometry.Integral.Connection
+
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Entropy
 
@@ -39,8 +34,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-/-- A Ricci flow is uniformly noncollapsed on curvature-controlled balls of
-bounded radius whose times lie in a fixed positive regular slab. -/
 theorem noncollapse_span
     [T2Space (TangentBundle I M)]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)

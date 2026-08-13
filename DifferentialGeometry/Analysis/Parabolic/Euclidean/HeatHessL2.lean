@@ -2,14 +2,6 @@ import Mathlib.Analysis.Fourier.LpSpace
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
-/-!
-# The spacetime `L²` heat-Hessian multiplier
-
-This file isolates the Plancherel anchor for the singular late-time arm in the
-Koch--Lamm heat map.  The multiplier is scalar-valued; finite-dimensional
-codomains can later be recovered componentwise.
--/
-
 noncomputable section
 
 open Complex MeasureTheory Real
@@ -21,19 +13,11 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-/-- The Fourier symbol of `∂_v ∂_w (∂_t - Δ)⁻¹` on spacetime.
-
-Mathlib uses `exp (-2 π i ⟪x, ξ⟫)` for the Fourier transform.  Cancelling one
-common factor `2 π` from numerator and denominator gives the normalization
-used here.  The value at the single zero frequency is the field-theoretic
-value `0 / 0 = 0`. -/
 def heatHessSym (v w : V) (z : WithLp 2 (ℝ × V)) : ℂ :=
   -((2 * π * inner ℝ v z.snd * inner ℝ w z.snd : ℝ) : ℂ) /
     (((2 * π * ‖z.snd‖ ^ 2 : ℝ) : ℂ) + I * (z.fst : ℂ))
 
 omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] in
-/-- The heat-Hessian symbol is bounded by the product of the two directional
-norms.  This is the pointwise estimate behind the spacetime `L²` bound. -/
 theorem heatHessSym_norm (v w : V) (z : WithLp 2 (ℝ × V)) :
     ‖heatHessSym v w z‖ ≤ ‖v‖ * ‖w‖ := by
   by_cases hz : z.snd = 0
@@ -73,19 +57,15 @@ theorem heatHessSym_norm (v w : V) (z : WithLp 2 (ℝ × V)) :
     _ ≤ (‖v‖ * ‖w‖) * ‖d‖ :=
       mul_le_mul_of_nonneg_left hd_lower (mul_nonneg (norm_nonneg _) (norm_nonneg _))
 
-/-- The heat-Hessian symbol is Borel measurable despite its harmless
-discontinuity at the zero frequency. -/
 theorem heatHessSym_meas (v w : V) : Measurable (heatHessSym v w) := by
   unfold heatHessSym
   measurability
 
-/-- The heat-Hessian symbol belongs to `L∞` on spacetime. -/
 theorem heatHessSym_memLp (v w : V) :
     MemLp (heatHessSym v w) ⊤ (volume : Measure (WithLp 2 (ℝ × V))) :=
   memLp_top_of_bound (heatHessSym_meas v w).aestronglyMeasurable
     (‖v‖ * ‖w‖) (Filter.Eventually.of_forall (heatHessSym_norm v w))
 
-/-- Pointwise multiplication by the heat-Hessian symbol on spacetime `L²`. -/
 def heatHessFreq (v w : V)
     (f : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V)))) :
     Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
@@ -100,7 +80,6 @@ theorem heatHessFreq_ae (v w : V)
   unfold heatHessFreq
   apply MemLp.coeFn_toLp
 
-/-- Multiplication by the heat-Hessian symbol is bounded on spacetime `L²`. -/
 theorem heatHessFreq_norm (v w : V)
     (f : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V)))) :
     ‖heatHessFreq v w f‖ ≤ (‖v‖ * ‖w‖) * ‖f‖ := by
@@ -109,14 +88,12 @@ theorem heatHessFreq_norm (v w : V)
   rw [hz, norm_mul]
   exact mul_le_mul_of_nonneg_right (heatHessSym_norm v w z) (norm_nonneg _)
 
-/-- The spacetime `L²` heat-Hessian Fourier multiplier. -/
 def heatHessL2 (v w : V)
     (f : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V)))) :
     Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
   (Lp.fourierTransformₗᵢ (WithLp 2 (ℝ × V)) ℂ).symm
     (heatHessFreq v w (Lp.fourierTransformₗᵢ (WithLp 2 (ℝ × V)) ℂ f))
 
-/-- The multiplier has exactly the advertised Fourier-side representative. -/
 theorem heatHessL2_fourier (v w : V)
     (f : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V)))) :
     Lp.fourierTransformₗᵢ (WithLp 2 (ℝ × V)) ℂ (heatHessL2 v w f) =
@@ -124,7 +101,6 @@ theorem heatHessL2_fourier (v w : V)
   unfold heatHessL2
   exact (Lp.fourierTransformₗᵢ (WithLp 2 (ℝ × V)) ℂ).apply_symm_apply _
 
-/-- Plancherel transfers the symbol bound to the spacetime `L²` multiplier. -/
 theorem heatHessL2_norm (v w : V)
     (f : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V)))) :
     ‖heatHessL2 v w f‖ ≤ (‖v‖ * ‖w‖) * ‖f‖ := by

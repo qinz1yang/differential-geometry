@@ -2,19 +2,6 @@ import DifferentialGeometry.Tensor.RSTensor.Derivation.NablaOnTensors
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 noncomputable section
 
 namespace DifferentialGeometry
@@ -91,12 +78,6 @@ namespace DifferentialGeometry
 open Bundle Set Topology TopologicalSpace
 open scoped Manifold ContDiff
 set_option backward.isDefEq.respectTransparency false in
-
-
-
-
-
-
 noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -123,6 +104,5 @@ noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace
           (mem_chart_source H (x₀ : M))
       filter_upwards [hnb] with x hx
       exact tensor0SModelAt_opens s x₀ x hx (δ (x : M)) }
-
 
 end DifferentialGeometry

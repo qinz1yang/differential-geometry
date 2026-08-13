@@ -3,40 +3,21 @@ import DifferentialGeometry.Geometry.Curvature.PullbackNaturality
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundShape
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Curvature.MetricSectional
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
 open Bundle Manifold Set Metric Module
 open scoped Manifold Topology ContDiff RealInnerProductSpace
-open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.Integral.Connection.CovariantDerivative
+
+open DifferentialGeometry.Geometry.Curvature.CovariantDerivative
 
 namespace DifferentialGeometry
 namespace Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)] [NeZero n]
-
-
-
-
 
 omit [NeZero n] in
 theorem metricRm04_round_invariant [NeZero n]
@@ -60,13 +41,6 @@ theorem metricRm04_round_invariant [NeZero n]
 
 omit [NeZero n] in
 omit [FiniteDimensional ℝ E] in
-/-- **The round sphere's sectional-curvature numerator is the Gram determinant** (constant curvature
-`c = 1`): `Rm04(X,Y,Y,X) = g(X,X)g(Y,Y) − g(X,Y)²` at every point.  This is the curvature content of
-`ConstPosSecMetric roundMetric`; the `∃ c, …` wrapper is assembled where `ConstPosSecMetric` is in
-scope (the Hamilton space-form file).  The curvature operator on the chart-constant extensions is
-reduced to genuinely smooth sections by germ congruence
-(`connectionRiemannCurvatureField_eq_smooth_of_eventuallyEq_tangentConst`), then evaluated by the Gauss
-equation `dIncl_curv_inner`. -/
 theorem roundMetric_sec_value (x : sphere (0 : E) 1) (X Y : TangentSpace (𝓡 n) x) :
     metricRm04StdAt (roundMetric (E := E) (n := n)) x X Y Y X
       = (roundMetric (E := E) (n := n)).inner x X X * (roundMetric (E := E) (n := n)).inner x Y Y
@@ -103,11 +77,6 @@ theorem roundMetric_sec_value (x : sphere (0 : E) 1) (X Y : TangentSpace (𝓡 n
 
 omit [NeZero n]
   [FiniteDimensional ℝ E] in
-/-- **The round metric has constant positive sectional curvature (`c = 1`).**  This is precisely the
-unfolding of `ConstPosSecMetric roundMetric` (defined in the Hamilton space-form file, which cannot be
-imported here): `∃ c > 0, ∀ x X Y, Rm04(X,Y,Y,X) = c·(g(X,X)g(Y,Y) − g(X,Y)²)`.  It is therefore usable
-directly wherever `ConstPosSecMetric roundMetric` is expected (definitional equality), feeding the
-spherical-space-form quotient descent. -/
 theorem roundMetric_constPosSec :
     ∃ c : ℝ, 0 < c ∧ ∀ (x : sphere (0 : E) 1) (X Y : TangentSpace (𝓡 n) x),
       metricRm04StdAt (roundMetric (E := E) (n := n)) x X Y Y X
@@ -123,7 +92,6 @@ private instance sphereModel_neZero :
   infer_instance
 
 omit [FiniteDimensional ℝ E] in
-/-- The round metric has the curvature-one Riemann-operator formula. -/
 theorem round_riemann_one (x : sphere (0 : E) 1)
     (X Y Z : TangentSpace (𝓡 n) x) :
     riemannOp (LeviCivita (I := 𝓡 n) (roundMetric (E := E) (n := n))) x X Y Z =

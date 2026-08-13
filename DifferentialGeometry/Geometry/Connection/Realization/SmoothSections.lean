@@ -5,13 +5,15 @@ import DifferentialGeometry.Bundle.Equiv
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 
+namespace DifferentialGeometry.Geometry.Connection.Realization
+
 
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
-open Bundle
+open _root_.Bundle
 
 section SmoothSections
 
@@ -24,26 +26,26 @@ variable
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem contMDiff_dual_apply_section
-    (α : Cₛ^∞⟮I; E →L[ℝ] ℝ, (Bundle.dual ℝ (TangentSpace I : M → Type _))⟯)
+    (α : Cₛ^∞⟮I; E →L[ℝ] ℝ, (_root_.Bundle.dual ℝ (TangentSpace I : M → Type _))⟯)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y => α y (Y y)) := by
   have hα : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
       (fun y => TotalSpace.mk' (E →L[ℝ] ℝ)
-        (E := fun x : M => (TangentSpace I x →L[ℝ] (Bundle.Trivial M ℝ) x))
+        (E := fun x : M => (TangentSpace I x →L[ℝ] (_root_.Bundle.Trivial M ℝ) x))
         y (α y)) := α.contMDiff
   have hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (Y y)) := Y.contMDiff
   have hap : ContMDiff I (I.prod 𝓘(ℝ, ℝ)) ∞
-      (fun y => TotalSpace.mk' ℝ (E := Bundle.Trivial M ℝ) y (α y (Y y))) :=
+      (fun y => TotalSpace.mk' ℝ (E := _root_.Bundle.Trivial M ℝ) y (α y (Y y))) :=
     ContMDiff.clm_bundle_apply (b := id) hα hY
   intro y
-  exact (contMDiffAt_section (F := ℝ) (E := Bundle.Trivial M ℝ) y).mp (hap y)
+  exact (contMDiffAt_section (F := ℝ) (E := _root_.Bundle.Trivial M ℝ) y).mp (hap y)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem contMDiff_extDerivFun_section (h : C^∞⟮I, M; ℝ⟯) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] ℝ)
-        (E := fun x : M => (TangentSpace I x →L[ℝ] (Bundle.Trivial M ℝ) x))
+        (E := fun x : M => (TangentSpace I x →L[ℝ] (_root_.Bundle.Trivial M ℝ) x))
         x (extDerivFun h x)) := by
   intro x₀
   rw [contMDiffAt_hom_bundle]
@@ -61,8 +63,8 @@ theorem contMDiff_extDerivFun_section (h : C^∞⟮I, M; ℝ⟯) :
   convert hmfderiv_v using 1
   ext x
   simp only [inTangentCoordinates, ContinuousLinearMap.inCoordinates,
-    Bundle.Trivial.fiberBundle_trivializationAt',
-    Bundle.Trivial.continuousLinearMapAt_trivialization,
+    _root_.Bundle.Trivial.fiberBundle_trivializationAt',
+    _root_.Bundle.Trivial.continuousLinearMapAt_trivialization,
     TangentBundle.continuousLinearMapAt_model_space,
     extDerivFun, ContinuousLinearMap.coe_comp', Function.comp_apply,
     ContinuousLinearMap.coe_id', id_eq]
@@ -145,3 +147,5 @@ theorem contMDiff_clm_section_of_pointwise
 end SmoothSections
 
 end
+
+end DifferentialGeometry.Geometry.Connection.Realization

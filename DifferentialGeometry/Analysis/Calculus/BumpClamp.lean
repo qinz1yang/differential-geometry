@@ -2,14 +2,6 @@ import Mathlib.Analysis.Calculus.BumpFunction.Basic
 
 set_option autoImplicit false
 
-
-
-
-
-
-
-
-
 namespace ContDiffBump
 
 open Set

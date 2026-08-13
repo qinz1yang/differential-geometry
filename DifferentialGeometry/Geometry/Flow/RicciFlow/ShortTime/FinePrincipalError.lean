@@ -1,19 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.FineInvGram
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.RetractionParametrix
 import DifferentialGeometry.Geometry.Operator.VossWeyl
-
-/-!
-# The uniformly small principal freezing error
-
-The diagonal chart heat operator is only a local parametrix for the genuine
-Ricci--DeTurck principal operator.  Its second-order error is the oscillation
-of the inverse Gram coefficients away from the point where they were frozen.
-
-This file makes the spatial smallness choice before the time horizon is
-chosen.  The radius depends only on the fixed chart-buffer radius and the
-family-uniform inverse-Gram derivative bound.  In particular, it is
-independent of the member of the metric family and of the later time horizon.
--/
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -23,6 +13,7 @@ open scoped ContDiff Manifold Topology BigOperators
 open DifferentialGeometry
 open DifferentialGeometry.HCGCompactness
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
@@ -34,14 +25,9 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [T2Space M] [SigmaCompactSpace M]
 
-/-- A fixed fine radius determined only by a chart-buffer radius, a
-family-uniform first-derivative bound for inverse Gram entries, and the
-uniform maximal-regularity Hessian constant `K₂`. -/
 def fineOscRadius (r₀ L K₂ : ℝ) : ℝ :=
   min (r₀ / 2) (1 / (8 * (L + 1) * (K₂ + 1)))
 
-/-- The fine oscillation radius is positive whenever the outer buffer radius
-is positive and the derivative bound is nonnegative. -/
 theorem fineOscRadius_pos {r₀ L K₂ : ℝ}
     (hr₀ : 0 < r₀) (hL : 0 ≤ L) (hK₂ : 0 ≤ K₂) :
     0 < fineOscRadius r₀ L K₂ := by
@@ -52,14 +38,12 @@ theorem fineOscRadius_pos {r₀ L K₂ : ℝ}
   rw [fineOscRadius]
   exact lt_min (by linarith) (one_div_pos.mpr hden)
 
-/-- The chosen fine radius stays inside the chart buffer. -/
 theorem fineOscRadius_le {r₀ L K₂ : ℝ} (hr₀ : 0 < r₀) :
     fineOscRadius r₀ L K₂ ≤ r₀ := by
   calc
     fineOscRadius r₀ L K₂ ≤ r₀ / 2 := min_le_left _ _
     _ ≤ r₀ := by linarith
 
-/-- The coefficient oscillation itself is strictly smaller than one quarter. -/
 theorem fineOsc_coeff_lt {r₀ L K₂ : ℝ}
     (hL : 0 ≤ L) (hK₂ : 0 ≤ K₂) :
     L * fineOscRadius r₀ L K₂ < (1 : ℝ) / 4 := by
@@ -79,8 +63,6 @@ theorem fineOsc_coeff_lt {r₀ L K₂ : ℝ}
       rw [div_lt_iff₀ hden]
       nlinarith [mul_nonneg hL hK₂]
 
-/-- After the maximal-regularity Hessian constant is inserted, the complete
-principal coefficient remains strictly smaller than one quarter. -/
 theorem fineOsc_mul_lt {r₀ L K₂ : ℝ}
     (hL : 0 ≤ L) (hK₂ : 0 ≤ K₂) :
     (L * fineOscRadius r₀ L K₂) * K₂ < (1 : ℝ) / 4 := by
@@ -106,10 +88,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- On the fixed fine ball every inverse-Gram coefficient differs from its
-frozen value by at most `L` times the fixed fine radius, uniformly over the
-metric family.  Retaining this constant is what later yields a strict
-operator-norm bound rather than merely a pointwise quarter estimate. -/
 theorem invGramOscBound
     {ι : Type*}
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -148,9 +126,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- On the fixed fine ball every inverse-Gram coefficient differs from its
-frozen value by strictly less than one quarter, uniformly over the metric
-family. -/
 theorem invGramOscQuarter
     {ι : Type*}
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -178,13 +153,10 @@ section PrincipalArray
 variable {n : ℕ}
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The pointwise principal freezing error acting on a finite Hessian array. -/
 def principalOsc
     (a a₀ : Fin n → Fin n → ℝ) (D2u : Fin n → Fin n → F) : F :=
   ∑ i, ∑ j, (a i j - a₀ i j) • D2u i j
 
-/-- Triangle inequality for the principal freezing error, before inserting
-any coefficient-smallness estimate. -/
 theorem principalOsc_bound
     (a a₀ : Fin n → Fin n → ℝ) (D2u : Fin n → Fin n → F) :
     ‖principalOsc a a₀ D2u‖ ≤
@@ -195,8 +167,6 @@ theorem principalOsc_bound
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
   rw [norm_smul, Real.norm_eq_abs]
 
-/-- A common nonnegative entrywise coefficient bound controls the complete
-second-order freezing arm against the `ℓ¹` Hessian size. -/
 theorem principalOsc_const
     (a a₀ : Fin n → Fin n → ℝ) (D2u : Fin n → Fin n → F)
     {δ : ℝ}
@@ -217,8 +187,6 @@ theorem principalOsc_const
     _ = δ * ∑ i, ∑ j, ‖D2u i j‖ := by
       rw [Finset.mul_sum]
 
-/-- Entrywise coefficient oscillation at most one quarter makes the complete
-second-order freezing arm at most one quarter of the `ℓ¹` Hessian size. -/
 theorem principalOscQuarter
     (a a₀ : Fin n → Fin n → ℝ) (D2u : Fin n → Fin n → F)
     (ha : ∀ i j, |a i j - a₀ i j| ≤ (1 : ℝ) / 4) :
@@ -230,8 +198,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- The actual inverse-Gram freezing arm retains the strict uniform constant
-`L * fineOscRadius r₀ L K₂`. -/
 theorem invGramB2Bound
     {ι : Type*}
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -263,9 +229,6 @@ omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
   [T2Space M]
   [SigmaCompactSpace M] in
-/-- The actual inverse-Gram freezing arm has the uniform one-quarter bound on
-the fixed fine ball.  This is the pointwise `B₂` estimate used by the
-retraction--coretraction parametrix. -/
 theorem invGramB2Quarter
     {ι : Type*}
     (gSeq : ι → SmoothRiemannianMetric I M)
@@ -313,9 +276,6 @@ variable
     [NormedAddCommGroup V] [NormedSpace ℝ V]
     [NormedAddCommGroup J₂] [NormedSpace ℝ J₂]
 
-/-- Once the actual coefficient multiplier and frozen-solver Hessian maps are
-measured in the chosen forcing norm, the fine radius makes the concrete
-principal error operator strictly smaller than one quarter. -/
 theorem b2Error_quarter
     {r₀ L K₂ : ℝ} (hr₀ : 0 < r₀) (hL : 0 ≤ L) (hK₂ : 0 ≤ K₂)
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)

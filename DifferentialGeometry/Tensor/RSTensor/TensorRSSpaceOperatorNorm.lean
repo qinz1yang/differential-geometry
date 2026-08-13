@@ -1,8 +1,8 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
 
-
 noncomputable section
 
+namespace DifferentialGeometry
 namespace Tensor0SBundle
 
 open scoped Topology
@@ -144,4 +144,5 @@ theorem tensorRSSpace_opNorm_le_bound {b : M} (T : TensorRSSpace r s I b)
 
 end Tensor0SBundle
 
+end DifferentialGeometry
 end

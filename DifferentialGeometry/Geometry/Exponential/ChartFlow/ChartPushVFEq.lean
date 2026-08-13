@@ -7,8 +7,7 @@ import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
 import DifferentialGeometry.Geometry.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Uniqueness
-
-
+open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 

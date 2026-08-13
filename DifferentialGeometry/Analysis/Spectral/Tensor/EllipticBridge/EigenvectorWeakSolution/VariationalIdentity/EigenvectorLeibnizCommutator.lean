@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiate
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
+open DifferentialGeometry.Geometry.Curvature
 
 
 noncomputable section
@@ -36,7 +37,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma contDiff_partial
@@ -123,7 +124,7 @@ private lemma memLp_restrict_of_memLp_restrict
   rw [← h_eq]
   exact hf.restrict K
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
     [CompactSpace M] in
 private lemma exists_smooth_global_extension
     {φ : EuclN → ℝ} (α : M)
@@ -162,7 +163,7 @@ private lemma exists_smooth_global_extension
     change η y * φ y = φ y
     rw [hη_one y hy, one_mul]
 
-omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
     [CompactSpace M] in
 theorem generic_per_pair_ibp
     (α : M)

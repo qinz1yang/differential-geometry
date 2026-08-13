@@ -2,10 +2,12 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.MildSolutionExistence
 import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
-import DifferentialGeometry.Geometry.Flow.RicciFlow.PrincipalSymbol
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.PrincipalSymbol
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
+open DifferentialGeometry.Geometry.Curvature
 
 
+open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry
 namespace PDE
 

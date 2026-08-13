@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonPositiveRicci
 
+namespace DifferentialGeometry
+
 open DifferentialGeometry.PDE.RicciFlow
 
 run_cmd do
@@ -15,3 +17,4 @@ run_cmd do
         axioms.all (fun dependency => expected.contains dependency) do
       let found := String.intercalate ", " (axioms.toList.map toString)
       throwError "unexpected axioms for '{declaration}': [{found}]"
+end DifferentialGeometry

@@ -1,16 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.C4.StepB1Inverse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness.MetricCovDerivMetric
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-
-/-!
-# Exact-inverse component tails for Step B1
-
-This file supplies the reverse coordinate producer for the Step B1 metric
-bridge.  Its map is the exact `Function.invFunOn` of the forward stage
-comparison map.  The opposite-direction stage comparison map is not used as
-an inverse.
--/
 
 noncomputable section
 
@@ -38,9 +31,6 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-/-- On the moving target image of a smaller source ball, one rectangular
-pair-index tail controls every component of every finite covariant-derivative
-tower of the exact inverse pullback-metric error. -/
 theorem HasStageJetData.inv_cov_comp_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

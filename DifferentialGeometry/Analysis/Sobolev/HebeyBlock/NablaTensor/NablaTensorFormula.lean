@@ -3,13 +3,16 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedNorm
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Inclusion
 import DifferentialGeometry.Tensor.Multilinear.HsBoundOp
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
 
-namespace DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+open DifferentialGeometry.Geometry.Connection
+namespace DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 
 open Bundle DifferentialGeometry
 open MeasureTheory
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.Connection Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Sobolev.Tensor
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -720,7 +723,7 @@ private theorem hs_le_pou_uniform
   intro T
   have hpou_ne_top :
       tensorPouSobolevNorm (I := I) (M := M) g k T ≠ ⊤ :=
-    DifferentialGeometry.PDE.RicciFlow.IntrinsicSobolev.tensorPouSobolevNorm_ne_top
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.tensorPouSobolevNorm_ne_top
       (I := I) (M := M) g k T
   rw [tensorPouSobolevNorm_eq, tensorPouSobolevHsNorm_eq]
   set tsumPou : ℝ≥0∞ :=
@@ -828,4 +831,4 @@ theorem nabla_tensor_iterated_Hk_formula
           C * (tensorPouSobolevNorm (I := I) (M := M) g k T).toReal :=
   hs_le_pou_uniform (I := I) (M := M) g r s k
 
-end DifferentialGeometry.PDE.RicciFlow.HebeyBlock
+end DifferentialGeometry.Analysis.Sobolev.HebeyBlock

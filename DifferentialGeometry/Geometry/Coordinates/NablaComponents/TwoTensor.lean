@@ -1,19 +1,12 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 
-
-
-
-
-
-
-
 set_option autoImplicit false
 
 noncomputable section
 
 namespace DifferentialGeometry.Tensor.Coordinates
 
-open Bundle Set Tensor0SBundle TensorLieDeriv
+open Bundle Set DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
 open scoped BigOperators Manifold ContDiff Topology
 
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
@@ -23,8 +16,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [h_mfd : IsManifold I ∞ M]
-
-
 
 omit [CompleteSpace 𝕜] [IsManifold I 2 M] in
 theorem tensor0S_two_eval_coordFrame_sum
@@ -122,8 +113,6 @@ theorem tensor0S_two_eval_coordFrame_sum
               else coordinateFrameAt (I := I) x₀ j x₀) := by
           simp [b, pair]
 
-
-
 omit [IsManifold I 2 M] in
 omit h_mfd in
 theorem tensor0S_two_symm_of_coordFrame [IsManifold I ∞ M]
@@ -183,9 +172,6 @@ theorem tensor0S_two_symm_of_coordFrame [IsManifold I ∞ M]
 
 section TopRegularity
 
-
-
-
 omit h_mfd in
 theorem nabla0S_two_model_coord [IsManifold I ∞ M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -226,8 +212,6 @@ theorem nabla0S_two_model_coord [IsManifold I ∞ M]
   rw [h]
   simp [slots, Fin.sum_univ_two, hupdate0, hupdate1]
   ring_nf
-
-
 
 omit h_mfd in
 theorem nabla0S_two_coord [IsManifold I ∞ M]
@@ -271,10 +255,6 @@ theorem nabla0S_two_coord [IsManifold I ∞ M]
   simp [slots, Fin.sum_univ_two, hupdate0, hupdate1]
   ring_nf
 
-
-
-
-
 omit h_mfd in
 theorem nabla0SFun_two_eval_coordFrame [IsManifold I ∞ M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -311,8 +291,6 @@ theorem nabla0SFun_two_eval_coordFrame [IsManifold I ∞ M]
     by_cases hq : q = 0 <;> simp [hq]
   simpa [coordComponent0SAt, component0S, hslots] using
     nabla0S_two_coord (I := I) cov X A x₀ hderiv j l
-
-
 
 omit h_mfd in
 theorem nabla0SFun_two_eval_coordFrame_symm_of_symm [IsManifold I ∞ M]
@@ -418,8 +396,6 @@ theorem nabla0SFun_two_eval_coordFrame_symm_of_symm [IsManifold I ∞ M]
   rw [hD, hsum_left, hsum_right]
   ring
 
-
-
 omit h_mfd in
 theorem nabla0SFun_two_symm_of_symm [IsManifold I ∞ M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -441,8 +417,6 @@ theorem nabla0SFun_two_symm_of_symm [IsManifold I ∞ M]
   simpa [coordinateFrameAt_toBasis_apply] using
     nabla0SFun_two_eval_coordFrame_symm_of_symm
       (I := I) cov X A x₀ (modelDeriv_eq_coordDeriv0SAt (I := I) X x₀ A) hsymm j l
-
-
 
 omit h_mfd in
 theorem nabla0SFun_two_eval_coordFrame_expanded [IsManifold I ∞ M]

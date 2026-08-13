@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Defs
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothScalar.MulLp
 import DifferentialGeometry.Analysis.Elliptic.Operator.VariationalLaplacian
 import DifferentialGeometry.Geometry.Operator.Laplacian
+open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section
@@ -21,24 +22,25 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def laplacianOfChartPOU (g : SmoothRiemannianMetric I M) (α : M) :
     C^∞⟮I, M; ℝ⟯ :=
-  ⟨Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff,
-    Δ_g_contMDiff (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff⟩
+  ⟨Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯),
+    Δ_g_contMDiff (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)⟩
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma laplacianOfChartPOU_apply
     (g : SmoothRiemannianMetric I M) (α : M) (x : M) :
     (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x =
-      Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff x := rfl
+      Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x := rfl
 
 noncomputable def leibnizCompensatedSource (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :

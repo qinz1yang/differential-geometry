@@ -1,18 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.RoughCarleson
 
-/-!
-# State-dependent quadratic HMF source
-
-The local-addition quadratic-gradient coefficient depends on the path value.
-Its difference therefore has a third arm in addition to the usual two
-gradient arms:
-
-`(Q(u) - Q(v)) (Dv) (Dv)`.
-
-This file records the exact split and the weighted/Carleson estimates.  The
-third arm is small through the square of the rough state radius.
--/
-
 noncomputable section
 
 open MeasureTheory
@@ -30,8 +17,6 @@ variable {V Y G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Uniform base bound and value-Lipschitz control for a state-dependent
-quadratic-gradient coefficient. -/
 structure HmfStateQuad (K L : ℝ)
     (Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F) : Prop where
   K0 : 0 ≤ K
@@ -67,7 +52,6 @@ theorem stateQuad_sub {K L D : ℝ}
   (h.state_lip z y₁ y₂).trans
     (mul_le_mul_of_nonneg_left hy h.L0)
 
-/-- Realized state-dependent quadratic-gradient source. -/
 def hmfStateQuadSrc
     (Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F)
     (p : ℝ × V → Y) (d : ℝ × V → G) (z : ℝ × V) : F :=
@@ -76,8 +60,6 @@ def hmfStateQuadSrc
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [NormedAddCommGroup Y]
   [NormedSpace ℝ Y] in
-/-- Exact three-arm difference split for the state-dependent quadratic
-source. -/
 theorem stateQuadSrc_sub
     (Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F)
     (p₁ p₂ : ℝ × V → Y) (d₁ d₂ : ℝ × V → G) (z : ℝ × V) :
@@ -90,8 +72,6 @@ theorem stateQuadSrc_sub
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
-/-- Positive-slab version of the variable-coefficient weighted bilinear
-estimate. -/
 theorem bilinWtOn
     (B : ℝ × V → G →L[ℝ] G →L[ℝ] F)
     {T K A₁ A₂ : ℝ} {d₁ d₂ : ℝ × V → G}
@@ -129,7 +109,6 @@ theorem bilinWtOn
     _ ≤ K * A₁ * A₂ :=
       mul_le_mul_of_nonneg_left hd₂ (mul_nonneg hK0 hA₁)
 
-/-- Positive-slab version of `bilinCarl_bound`. -/
 theorem bilinCarlOn
     (B : ℝ × V → G →L[ℝ] G →L[ℝ] F)
     {T K : ℝ} {C₁ C₂ : ℝ≥0∞} {d₁ d₂ : ℝ × V → G}
@@ -197,7 +176,6 @@ theorem bilinCarlOn
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [NormedSpace ℝ Y] in
-/-- Weighted estimate for all three state-quadratic difference arms. -/
 theorem stateQuadSrcWt
     {K L T R Dp Rg Dg : ℝ}
     {Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F}
@@ -235,7 +213,6 @@ theorem stateQuadSrcWt
   exact srcWt_add (srcWt_add h₁ h₂) h₃
 
 omit [NormedSpace ℝ Y] in
-/-- Carleson estimate for all three state-quadratic difference arms. -/
 theorem stateQuadSrcCarl
     {K L T R Dp : ℝ} {C₁ C₂ CΔ : ℝ≥0∞}
     {Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F}

@@ -7,8 +7,9 @@ import DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalMapContDiffOnK
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.ContDiffOnTop
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-
-
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -27,6 +28,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Geometry.Operator
 
 def chartPhaseVF (g : SmoothRiemannianMetric I M) (α : M) : E × E → E × E :=
   fun z => (z.2, - chartChristoffelContraction (I := I) g α z.2 z.2 z.1)
@@ -790,15 +792,6 @@ theorem exists_chartPhase_contDiffOn_isLocalFlow_combined_nat
     hΦ'.apply_initial (x₀, v₀) (Metric.mem_closedBall_self (by
       exact_mod_cast (le_of_lt hrN)))
   exact ⟨b, rN, εN, ρ, T, Φ, hrN, hεN, hρ_pos, hT_pos, hb_sub, hΦ', hCDOn, hinitial⟩
-
-
-
-
-
-
-
-
-
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
