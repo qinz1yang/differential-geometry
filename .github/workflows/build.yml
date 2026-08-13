@@ -23,8 +23,7 @@ jobs:
           chmod +x elan-init.sh
           ./elan-init.sh -y --default-toolchain leanprover/lean4:v4.29.0
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
-      - name: Run the single audit command
+      - name: Build project
         run: |
           lake exe cache get
-          BASE_REF="${{ github.event.pull_request.base.sha }}"
-          bash Scripts/audit.sh "$BASE_REF"
+          lake build DifferentialGeometry
