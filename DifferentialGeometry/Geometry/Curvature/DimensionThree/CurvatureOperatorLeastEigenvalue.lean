@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorCone
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
 import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.LinearAlgebra.Matrix.Trace
 
@@ -117,6 +118,60 @@ theorem curvatureOperatorMatrixAt_eigenvalues_trace_eq_sectionalSum
 noncomputable def orderedSectionalCurvaturesAt
     (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) : Fin 3 → Real :=
-  (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues
+  (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem orderedSectionalCurvaturesAt_antitone
+    (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    Antitone (orderedSectionalCurvaturesAt (I := I) x basis A) :=
+  (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀_antitone
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem orderedSectionalCurvaturesAt_two_le_one
+    (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    orderedSectionalCurvaturesAt (I := I) x basis A 2 ≤
+      orderedSectionalCurvaturesAt (I := I) x basis A 1 :=
+  (orderedSectionalCurvaturesAt_antitone (I := I) x basis A) (by decide : (1 : Fin 3) ≤ 2)
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem orderedSectionalCurvaturesAt_one_le_zero
+    (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    orderedSectionalCurvaturesAt (I := I) x basis A 1 ≤
+      orderedSectionalCurvaturesAt (I := I) x basis A 0 :=
+  (orderedSectionalCurvaturesAt_antitone (I := I) x basis A) (by decide : (0 : Fin 3) ≤ 1)
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem algebraicCurvatureOperatorQuadraticEval_eq_matrixQuad
+    (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (c : Fin 3 → Real) :
+    algebraicCurvatureOperatorQuadraticEval (I := I) (M := M) A c
+        (fun i => basis (bivectorIndex3 i).1) (fun i => basis (bivectorIndex3 i).2) =
+      ∑ i : Fin 3, ∑ j : Fin 3, c i * c j *
+        curvatureOperatorMatrixAt (I := I) x basis A i j := by
+  unfold algebraicCurvatureOperatorQuadraticEval curvatureOperatorMatrixAt
+  simp
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem bivectorBasisPairing_eq_delta
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis) (p q : Fin 3) :
+    (g.inner x (basis (bivectorIndex3 p).1) (basis (bivectorIndex3 q).1)) *
+        (g.inner x (basis (bivectorIndex3 p).2) (basis (bivectorIndex3 q).2)) -
+      (g.inner x (basis (bivectorIndex3 p).1) (basis (bivectorIndex3 q).2)) *
+        (g.inner x (basis (bivectorIndex3 p).2) (basis (bivectorIndex3 q).1)) =
+      if p = q then (1 : Real) else 0 := by
+  fin_cases p <;> fin_cases q <;>
+    simp [bivectorIndex3, horth 0 0, horth 0 1, horth 0 2, horth 1 0, horth 1 1, horth 1 2,
+      horth 2 0, horth 2 1, horth 2 2, delta3]
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
