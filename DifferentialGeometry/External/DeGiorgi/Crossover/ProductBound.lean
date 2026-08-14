@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.Crossover.ExponentialIntegrability
 
@@ -197,8 +198,7 @@ private theorem regularized_crossover_product_bound
 This is the master existence theorem powering `crossover_estimate`. -/
 theorem crossover_product_bound_exists :
     ∃ C : ℝ, 1 ≤ C ∧
-      ∀ (_hd : 2 < (d : ℝ))
-        (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
+      ∀ (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
         {u : E → ℝ}
         (_hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
         (_hsuper : IsSupersolution A.1 u),
@@ -208,7 +208,7 @@ theorem crossover_product_bound_exists :
             |u x| ^ (-(c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤ C := by
   let C : ℝ := max 1 ((crossoverJNKhalf d) ^ 2)
   refine ⟨C, le_max_left _ _, ?_⟩
-  intro hd A u hu_pos hsuper
+  intro A u hu_pos hsuper
   let Bhalf : Set E := Metric.ball (0 : E) (1 / 2 : ℝ)
   let μ : Measure E := volume.restrict Bhalf
   let p : ℝ := c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
@@ -622,8 +622,7 @@ noncomputable def C_crossover' (d : ℕ) [NeZero d] : ℝ :=
 
 theorem C_crossover'_spec :
     1 ≤ C_crossover' (d := d) ∧
-    ∀ (_hd : 2 < (d : ℝ))
-      (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
+    ∀ (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
       {u : E → ℝ}
       (_hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
       (_hsuper : IsSupersolution A.1 u),

@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.CutoffPrep.WitnessConstruction
 
@@ -111,9 +112,9 @@ theorem moser_preMoser
   let Ω : Set E := Metric.ball (0 : E) s
   let μ : Measure E := volume.restrict Ω
   let R : ℝ := (r + s) / 2
-  let η : E → ℝ := (Classical.choose (Cutoff.exists (d := d) (0 : E) (r := r) (R := R) hr (by
+  let η : E → ℝ := (cutoff (d := d) (0 : E) (r := r) (R := R) hr (by
     dsimp [R]
-    linarith))).toFun
+    linarith)).toFun
   let Cη : ℝ := 2 * (Mst : ℝ) * (s - r)⁻¹
   have hs : 0 < s := lt_trans hr hrs
   have hsr_pos : 0 < s - r := by linarith
@@ -123,8 +124,8 @@ theorem moser_preMoser
   have hR_lt_s : R < s := by
     dsimp [R]
     linarith
-  let ηCut : Cutoff (x₀ := (0 : E)) r R := Classical.choose
-    (Cutoff.exists (d := d) (0 : E) (r := r) (R := R) hr hR)
+  let ηCut : Cutoff (x₀ := (0 : E)) r R :=
+    cutoff (d := d) (0 : E) (r := r) (R := R) hr hR
   have hη : ContDiff ℝ (⊤ : ℕ∞) η := by
     simpa [η, ηCut] using ηCut.smooth
   have hη_bound : ∀ x, |η x| ≤ 1 := by

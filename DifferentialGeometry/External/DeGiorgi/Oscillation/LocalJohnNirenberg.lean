@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.Oscillation.BMO
@@ -24,7 +25,6 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 theorem john_nirenberg_level_set_decay
     {x₀ : E} {r : ℝ} {E_lam E_lam_A : Set E}
     {ι : Type*} [Countable ι] (B : ι → JNBall x₀ r)
-    (_hE_lam_meas : MeasurableSet E_lam)
     (hE_lam_A_meas : MeasurableSet E_lam_A)
     (hE_lam_fin : volume E_lam ≠ ⊤)
     (hE_lam_A_sub : E_lam_A ⊆ E_lam)
@@ -823,7 +823,6 @@ slightly larger constant prefactor `1/θ²` to absorb the base case `t ≤ A`.
   `(1/θ²) · vol(B) · exp(-A · (-log θ / A)) = (1/θ²) · vol(B) · θ ≥ vol(B)/θ ≥ vol(B)`. -/
 theorem john_nirenberg_from_base
     {u : E → ℝ} {x₀ : E} {r : ℝ} {A θ : ℝ}
-    (_hr : 0 < r) (hu_meas : Measurable u)
     (hA : 0 < A) (hθ_pos : 0 < θ) (hθ_lt : θ < 1)
     (h_decay : ∀ lam : ℝ, A ≤ lam →
       volume ({x ∈ Metric.ball x₀ r |
@@ -831,7 +830,7 @@ theorem john_nirenberg_from_base
         ENNReal.ofReal θ *
           volume ({x ∈ Metric.ball x₀ r |
             ‖u x - ⨍ y in Metric.ball x₀ r, u y ∂volume‖ > lam}))
-    (t : ℝ) (_ht : 0 < t) :
+    (t : ℝ) :
     volume ({x ∈ Metric.ball x₀ r |
       ‖u x - ⨍ y in Metric.ball x₀ r, u y ∂volume‖ > t}) ≤
     ENNReal.ofReal (1 / θ ^ 2) * volume (Metric.ball x₀ r) *
@@ -842,29 +841,16 @@ theorem john_nirenberg_from_base
   set avg := ⨍ y in Metric.ball x₀ r, u y ∂volume
   set B := Metric.ball x₀ r with hB_def
   set F : ℝ → Set E := fun s => {x ∈ B | ‖u x - avg‖ > s + A} with hF_def
-  have hB_meas : MeasurableSet B := by
-    simpa [hB_def] using (measurableSet_ball : MeasurableSet (Metric.ball x₀ r))
   have hF_sub : ∀ s, F s ⊆ B := by
     intro s x hx
     exact hx.1
-  have hF_meas : ∀ s, MeasurableSet (F s) := by
-    intro s
-    refine hB_meas.inter ?_
-    exact measurableSet_lt measurable_const ((hu_meas.sub_const avg).norm)
-  have hF_anti : ∀ s₁ s₂, s₁ ≤ s₂ → F s₂ ⊆ F s₁ := by
-    intro s₁ s₂ hs x hx
-    refine ⟨hx.1, ?_⟩
-    have hs' : s₁ + A ≤ s₂ + A := by linarith
-    exact lt_of_le_of_lt hs' hx.2
   have h_decayF : ∀ s : ℝ, 0 < s →
       volume (F (s + A)) ≤ ENNReal.ofReal θ * volume (F s) := by
     intro s hs
     have hsA : A ≤ s + A := by linarith
     simpa [F, add_assoc, avg, B] using h_decay (s + A) hsA
   have h_iter :=
-    john_nirenberg_iteration hB_meas
-      (measure_ball_lt_top (μ := volume) (x := x₀) (r := r)).ne
-      hF_sub hF_meas hF_anti hA hθ_pos hθ_lt h_decayF
+    john_nirenberg_iteration hF_sub hA hθ_pos hθ_lt h_decayF
   have hAdiv : A * (-Real.log θ / A) = -Real.log θ := by
     field_simp [hA.ne']
   have hexpA : Real.exp (-A * (-Real.log θ / A)) = θ := by
@@ -965,14 +951,11 @@ stopping-time work has already been packaged into such a family and one wants th
 exponential tail bound without rebuilding the iteration argument. -/
 theorem level_set_family_from_base
     {B : Set E} {E_lam : ℝ → Set E} {A θ : ℝ}
-    (hB_meas : MeasurableSet B) (hB_fin : volume B ≠ ⊤)
     (hE_sub : ∀ lam, E_lam lam ⊆ B)
-    (hE_meas : ∀ lam, MeasurableSet (E_lam lam))
-    (hE_anti : ∀ lam₁ lam₂, lam₁ ≤ lam₂ → E_lam lam₂ ⊆ E_lam lam₁)
     (hA : 0 < A) (hθ_pos : 0 < θ) (hθ_lt : θ < 1)
     (h_decay : ∀ lam : ℝ, A ≤ lam →
       volume (E_lam (lam + A)) ≤ ENNReal.ofReal θ * volume (E_lam lam))
-    (t : ℝ) (_ht : 0 < t) :
+    (t : ℝ) :
     volume (E_lam t) ≤
       ENNReal.ofReal (1 / θ ^ 2) * volume B *
         ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
@@ -985,14 +968,8 @@ theorem level_set_family_from_base
   have hF_sub : ∀ s, F s ⊆ B := by
     intro s
     simpa [F] using hE_sub (s + A)
-  have hF_meas : ∀ s, MeasurableSet (F s) := by
-    intro s
-    simpa [F] using hE_meas (s + A)
-  have hF_anti : ∀ s₁ s₂, s₁ ≤ s₂ → F s₂ ⊆ F s₁ := by
-    intro s₁ s₂ hs
-    simpa [F] using hE_anti (s₁ + A) (s₂ + A) (by linarith)
   have h_iter :=
-    john_nirenberg_iteration hB_meas hB_fin hF_sub hF_meas hF_anti hA hθ_pos hθ_lt
+    john_nirenberg_iteration hF_sub hA hθ_pos hθ_lt
       (by
         intro s hs
         simpa [F, add_assoc] using h_decayF s hs)
@@ -1122,7 +1099,6 @@ private lemma fivefold_cover_real_le
 
 private lemma assigned_union_half_measure_real
     {u : E → ℝ} {x₀ : E} {R M lam μ A C5 avgR : ℝ}
-    (_hR : 0 < R) (_hM : 0 < M)
     (hμ_eq : μ = lam + A)
     (hA_sub_C5_pos : 0 < A - C5)
     (hlocal_coeff :
@@ -1575,7 +1551,6 @@ decay exponentially. -/
 theorem john_nirenberg_local
     {u : E → ℝ} {x₀ : E} {R M : ℝ}
     (hR : 0 < R) (hM : 0 < M)
-    (_hu_meas : Measurable u)
     (hu_int : IntegrableOn u (Metric.ball x₀ (6 * R)) volume)
     (hu_bmo : ∀ (z : E) (s : ℝ), 0 < s →
       Metric.closedBall z s ⊆ Metric.ball x₀ (6 * R) →
@@ -1676,16 +1651,6 @@ theorem john_nirenberg_local
         _ < stopR lam hlamA p + R := by linarith
         _ ≤ 6 * R := by linarith [hrad_le, hR]
     · simp [Ebad, hlamA]
-  have hEbad_meas : ∀ lam : ℝ, MeasurableSet (Ebad lam) := by
-    intro lam
-    by_cases hlamA : A ≤ lam
-    · dsimp [Ebad]
-      rw [dif_pos hlamA]
-      exact ((isOpen_iUnion fun _ : F lam => isOpen_ball).measurableSet)
-    · dsimp [Ebad]
-      rw [dif_neg hlamA]
-      simpa [hsixB_def] using
-        (measurableSet_ball : MeasurableSet (Metric.ball x₀ (6 * R)))
   have hEbad_anti : ∀ lam₁ lam₂ : ℝ, lam₁ ≤ lam₂ → Ebad lam₂ ⊆ Ebad lam₁ := by
     intro lam₁ lam₂ h12
     by_cases h₁ : A ≤ lam₁
@@ -1930,7 +1895,7 @@ theorem john_nirenberg_local
           volume.real UMu ≤ (1 / (2 * 5 ^ d)) * volume.real ULam := by
         simpa [UMu, ULam] using
           assigned_union_half_measure_real
-            (d := d) (_hR := hR) (_hM := hM) (hμ_eq := by rfl)
+            (d := d) (hμ_eq := by rfl)
             (hA_sub_C5_pos := hA_sub_C5_pos) (hlocal_coeff := hlocal_coeff)
             (hu_int := hu_int) (hu_bmo := hu_bmo) (w := w) (hw_def := hw_def)
             (BLam := BLam) (BMu := BMu) (hBLam_disj := hBLam_disj)
@@ -1971,9 +1936,7 @@ theorem john_nirenberg_local
       simp [hEbadμ_empty, θ, μ]
   have h_exp_bad :=
     level_set_family_from_base
-      (by simpa [hsixB_def] using (measurableSet_ball : MeasurableSet (Metric.ball x₀ (6 * R))))
-      (measure_ball_lt_top (μ := volume) (x := x₀) (r := 6 * R)).ne
-      hEbad_sub hEbad_meas hEbad_anti hA_pos hθ_pos hθ_lt h_decay_bad t ht
+      hEbad_sub hA_pos hθ_pos hθ_lt h_decay_bad t
   have h_exp :
       volume ({x ∈ B | w x > t}) ≤
         ENNReal.ofReal 4 * volume sixB *

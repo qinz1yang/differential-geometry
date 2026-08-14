@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.DeGiorgiIteration.Recurrence
@@ -464,7 +465,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
         (Metric.ball (0 : E) (1 / 2 : ℝ)) volume := by
     let hwStar1 : MemW1pWitness 2 (positivePartSub u lamStar) (Metric.ball (0 : E) 1) :=
       positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := 1)
-        zero_lt_one hu1 lamStar (happroxUnit lamStar)
+        hu1 lamStar (happroxUnit lamStar)
     have hStarInt1 :
         IntegrableOn (fun x => |positivePartSub u lamStar x| ^ 2)
           (Metric.ball (0 : E) 1) volume := by
@@ -478,7 +479,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     let θ : ℝ := deGiorgiLevel lamStar n
     let hwθ1 : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball (0 : E) 1) :=
       positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := 1)
-        zero_lt_one hu1 θ (happroxUnit θ)
+        hu1 θ (happroxUnit θ)
     have hθInt1 :
         IntegrableOn (fun x => |positivePartSub u θ x| ^ 2)
           (Metric.ball (0 : E) 1) volume := by
@@ -573,7 +574,8 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     have hR_lt_s : R < s := by
       dsimp [R]
       linarith
-    obtain ⟨ηCut, _⟩ := Cutoff.exists (d := d) (0 : E) (r := r) (R := R) hr hR
+    obtain ⟨ηCut, _⟩ : ∃ η : Cutoff (x₀ := (0 : E)) r R, True :=
+      ⟨cutoff (d := d) (0 : E) (r := r) (R := R) hr hR, trivial⟩
     let η : E → ℝ := ηCut.toFun
     let Cη : ℝ := 2 * (Mst : ℝ) * (s - r)⁻¹
     have hη : ContDiff ℝ (⊤ : ℕ∞) η := ηCut.smooth
@@ -608,11 +610,11 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
           rfl
     obtain ⟨hwηθ, hsob⟩ :=
       deGiorgi_cutoffSobolev_on_concentricBalls_of_posPartApprox
-        (d := d) hd hs hr hrs huS happroxBallTheta hθl hη hη_nonneg
+        (d := d) hd hs hr hrs huS happroxBallTheta hθl hη
         hη_eq_one hη_bound hη_sub_ball_s
     let hwθ1 : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball (0 : E) 1) :=
       positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := 1)
-        zero_lt_one hu1 θ (happroxUnit θ)
+        hu1 θ (happroxUnit θ)
     let hwθs : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball (0 : E) s) :=
       hwθ1.restrict isOpen_ball (Metric.ball_subset_ball (le_of_lt hs_lt_one))
     have hweighted_unit :
@@ -623,7 +625,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
       simpa [hwθ1] using
         caccioppoli_weighted_on_ball_of_posPartApprox
           (d := d) (x₀ := (0 : E)) (s := 1) (u := u) (η := η) (Cη := Cη) (k := θ)
-          A zero_lt_one hsub hu1 (happroxUnit θ) hη hη_nonneg hη_bound
+          A hsub hu1 (happroxUnit θ) hη hη_nonneg hη_bound
           hCη hη_grad_bound hη_sub_ball1
     have hleft_int_unit :
         IntegrableOn (fun x => η x ^ 2 * ‖hwθ1.weakGrad x‖ ^ 2)

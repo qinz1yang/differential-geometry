@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.PositivePart
 import DifferentialGeometry.External.DeGiorgi.BallExtension
@@ -197,7 +198,6 @@ theorem deGiorgiCutoffTest_memW01p_of_posPartApprox
 dependence on the legacy `Cutoff` structure. -/
 theorem deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPart
     {u η : E → ℝ} {x₀ : E} {s Cη : ℝ}
-    (_hs : 0 < s)
     (hw : MemW1pWitness 2 u (Metric.ball x₀ s))
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_bound : ∀ x, |η x| ≤ 1)
@@ -224,7 +224,6 @@ theorem deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPart
 positive-part witness constructor. -/
 theorem deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPartApprox
     {u η : E → ℝ} {x₀ : E} {s Cη : ℝ}
-    (_hs : 0 < s)
     (hw : MemW1pWitness 2 u (Metric.ball x₀ s))
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
     (hη_bound : ∀ x, |η x| ≤ 1)
@@ -264,7 +263,6 @@ theorem deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPartApprox
 positive-part constructor applied to `u - k`. -/
 noncomputable def positivePartSub_memW1pWitness_on_ball
     {u : E → ℝ} {x₀ : E} {s : ℝ}
-    (_hs : 0 < s)
     (hw : MemW1pWitness 2 u (Metric.ball x₀ s))
     (k : ℝ)
     (happroxBallShift :

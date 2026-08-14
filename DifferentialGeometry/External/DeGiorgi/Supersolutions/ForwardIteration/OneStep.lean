@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.ForwardIteration.Energy
 
@@ -52,8 +53,8 @@ theorem supersolution_preMoser_forward
   have hsr_pos : 0 < s - r := by linarith
   have hR : r < R := by dsimp [R]; linarith
   have hR_lt_s : R < s := by dsimp [R]; linarith
-  let ηCut : Cutoff (x₀ := (0 : E)) r R := Classical.choose
-    (Cutoff.exists (d := d) (0 : E) (r := r) (R := R) hr hR)
+  let ηCut : Cutoff (x₀ := (0 : E)) r R :=
+    cutoff (d := d) (0 : E) (r := r) (R := R) hr hR
   let η : E → ℝ := ηCut.toFun
   let Cη : ℝ := 2 * (Mst : ℝ) * (s - r)⁻¹
   have hη : ContDiff ℝ (⊤ : ℕ∞) η := ηCut.smooth
@@ -71,7 +72,7 @@ theorem supersolution_preMoser_forward
   have hη_sub_ball : tsupport η ⊆ Ω := by
     intro x hx; exact (Metric.closedBall_subset_ball hR_lt_s) (ηCut.support_subset hx)
   obtain ⟨hwv, hvW01, henergy⟩ :=
-    superPowerCutoffFwd_energy_bound hd A hp hp1 hs_pos hs1 hu_pos hsuper hpInt
+    superPowerCutoffFwd_energy_bound A hp hp1 hs_pos hs1 hu_pos hsuper hpInt
       hη hη_bound hη_grad_bound hη_sub_ball
   let v : E → ℝ := superPowerCutoffFwd (d := d) η u p
   have hv_support : tsupport v ⊆ Ω :=

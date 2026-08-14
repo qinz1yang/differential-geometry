@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.ForwardIteration
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.InverseIteration
@@ -220,10 +221,9 @@ private noncomputable def weakHarnackForwardUpgradeLHS
         (1 / p₀)) ^ p
 
 private noncomputable def weakHarnackForwardUpgradeRHS
-    (hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     (u : E → ℝ) (p q : ℝ) : ℝ :=
-  C_weakHarnack0Forward (d := d) hd *
+  C_weakHarnack0Forward (d := d) *
     (A.1.Λ * p ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
     ∫ x in Metric.ball (0 : E) 1, |u x| ^ p ∂volume
 
@@ -241,7 +241,7 @@ private theorem weak_harnack_stage_one_forward_power_upgrade
       IntegrableOn (fun x => |u x| ^ p₀)
         (Metric.ball (0 : E) 1) volume) :
     weakHarnackForwardUpgradeLHS (d := d) A u p q p₀ ≤
-      weakHarnackForwardUpgradeRHS (d := d) hd A u p q := by
+      weakHarnackForwardUpgradeRHS (d := d) A u p q := by
   let μ : Measure E := volume.restrict (Metric.ball (0 : E) 1)
   haveI : IsFiniteMeasure μ := by
     dsimp [μ]
@@ -477,7 +477,7 @@ private theorem weak_harnack_stage_one_forward_power_upgrade
           rw [← Real.mul_rpow
             (by exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_weakHarnack0 (d := d)))
             (by positivity)]
-    _ = weakHarnackForwardUpgradeRHS (d := d) hd A u p q := by
+    _ = weakHarnackForwardUpgradeRHS (d := d) A u p q := by
           dsimp [weakHarnackForwardUpgradeRHS, C_weakHarnack0Forward, V, χ, X, β]
 
 /-- Second stage of weak Harnack: forward low-power iteration for positive
@@ -505,7 +505,7 @@ theorem weak_harnack_stage_one_forward
     (∫ x in Metric.ball (0 : E) (1 / 2 : ℝ),
         |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)) ∂volume) ^
           (p * (((d : ℝ) - 2) / (q * (d : ℝ)))) ≤
-      C_weakHarnack0Forward (d := d) hd *
+      C_weakHarnack0Forward (d := d) *
         (A.1.Λ * p ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
         ∫ x in Metric.ball (0 : E) 1, |u x| ^ p ∂volume := by
   have hq : 0 < q := lt_trans hp hpq
@@ -626,8 +626,8 @@ theorem weak_harnack_stage_one_forward
             (p / qχ) := by
               rw [hqχ_eq, hexp_eq]
     _ ≤ weakHarnackForwardUpgradeLHS (d := d) A u p q p₀ := hmain_pow
-    _ ≤ weakHarnackForwardUpgradeRHS (d := d) hd A u p q := hupgrade
-    _ = C_weakHarnack0Forward (d := d) hd *
+    _ ≤ weakHarnackForwardUpgradeRHS (d := d) A u p q := hupgrade
+    _ = C_weakHarnack0Forward (d := d) *
           (A.1.Λ * p ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
           ∫ x in Metric.ball (0 : E) 1, |u x| ^ p ∂volume := rfl
 

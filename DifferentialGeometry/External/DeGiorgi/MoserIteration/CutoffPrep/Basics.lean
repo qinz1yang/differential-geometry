@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.Sequences
 import Mathlib.Topology.MetricSpace.Thickening
@@ -765,10 +766,10 @@ noncomputable def moserClippedPosPartWitness
     moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1 hu1
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) (Metric.ball (0 : E) s) :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
-      hs huS 0 happrox0
+      huS 0 happrox0
   let hwN : MemW1pWitness 2 (positivePartSub u N) (Metric.ball (0 : E) s) :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
-      hs huS N happroxN
+      huS N happroxN
   let hwClip :
       MemW1pWitness 2
         (fun x => positivePartSub u 0 x + ((-1 : ℝ) * positivePartSub u N x))
@@ -859,11 +860,11 @@ lemma moserClippedPosPartWitness_grad_eq_on_midrange
     hu1.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) Ω :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
-      hs huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
+      huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
         hu1)
   let hwN : MemW1pWitness 2 (positivePartSub u N) Ω :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
-      hs huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
+      huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
         hu1)
   have h0_eq := positivePartSub_grad_eq_on_superlevel (d := d) Metric.isOpen_ball huS hw0
   have hN_zero := positivePartSub_grad_zero_on_sublevel (d := d) Metric.isOpen_ball hwN
@@ -890,11 +891,11 @@ lemma moserClippedPosPartWitness_grad_zero_on_nonpos
     hu1.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) Ω :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
-      hs huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
+      huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
         hu1)
   let hwN : MemW1pWitness 2 (positivePartSub u N) Ω :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
-      hs huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
+      huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
         hu1)
   have h0_zero := positivePartSub_grad_zero_on_sublevel (d := d) Metric.isOpen_ball hw0
   have hN_zero := positivePartSub_grad_zero_on_sublevel (d := d) Metric.isOpen_ball hwN
@@ -926,11 +927,11 @@ lemma moserClippedPosPartWitness_grad_zero_on_toplevel
   let huSN : MemW1pWitness 2 (fun x => u x - N) Ω := huS.sub_const Metric.isOpen_ball N
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) Ω :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
-      hs huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
+      huS 0 (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := 0) hs hs1
         hu1)
   let hwN : MemW1pWitness 2 (positivePartSub u N) Ω :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := s)
-      hs huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
+      huS N (moser_shiftApprox_on_ball_of_unitBall (d := d) (u := u) (s := s) (θ := N) hs hs1
         hu1)
   have h0_eq := positivePartSub_grad_eq_on_superlevel (d := d) Metric.isOpen_ball huS hw0
   have h0_zero := positivePartSub_grad_zero_on_sublevel (d := d) Metric.isOpen_ball hw0

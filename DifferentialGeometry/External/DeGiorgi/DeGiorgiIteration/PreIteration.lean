@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.DeGiorgiIteration.Energy
@@ -110,7 +111,7 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
     {u η : E → ℝ} {x₀ : E} {r s θ lam Csob Cη : ℝ}
     (hd : 0 < (d : ℝ))
     (A : EllipticCoeff d (Metric.ball x₀ s))
-    (hs : 0 < s) (hr : 0 < r) (hrs : r < s)
+    (hr : 0 < r) (hrs : r < s)
     (hθl : θ < lam)
     (hCsob : 0 ≤ Csob)
     (hsub : IsSubsolution A u)
@@ -143,7 +144,7 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
       ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
         Csob *
           (∫ x in Metric.ball x₀ r,
-            ‖(positivePartSub_memW1pWitness_on_ball hs hu θ happroxBallTheta).weakGrad x‖ ^ 2
+            ‖(positivePartSub_memW1pWitness_on_ball hu θ happroxBallTheta).weakGrad x‖ ^ 2
               ∂volume) *
           ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ))) :
     ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
@@ -155,7 +156,7 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let hwTheta : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu θ happroxBallTheta
+    positivePartSub_memW1pWitness_on_ball hu θ happroxBallTheta
   have hθ_int :
       Integrable (fun x => |positivePartSub u θ x| ^ 2)
         (volume.restrict (Metric.ball x₀ s)) := by
@@ -175,7 +176,7 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume
     exact
       deGiorgi_energy_estimate_on_concentricBalls_of_posPartApprox
-        A hs hr hrs hsub hu happroxBallTheta hη hη_nonneg hη_eq_one
+        A hr hrs hsub hu happroxBallTheta hη hη_nonneg hη_eq_one
         hη_bound hCη hη_grad_bound hη_sub_ball
   have hsob' :
       ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
@@ -673,7 +674,6 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_ballPosPart
     (hwθ : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball x₀ s))
     (hθl : θ < lam)
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (_hη_nonneg : ∀ x, 0 ≤ η x)
     (hη_eq_one : ∀ x ∈ Metric.ball x₀ r, η x = 1)
     (hη_bound : ∀ x, |η x| ≤ 1)
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
@@ -736,7 +736,6 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_posPartApprox
             atTop (nhds 0)))
     (hθl : θ < lam)
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (_hη_nonneg : ∀ x, 0 ≤ η x)
     (hη_eq_one : ∀ x ∈ Metric.ball x₀ r, η x = 1)
     (hη_bound : ∀ x, |η x| ≤ 1)
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
@@ -753,7 +752,7 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_posPartApprox
   have hvW01 :
       MemW01p 2 (deGiorgiCutoffTestGeneral η u θ) (Metric.ball x₀ s) :=
     deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPartApprox
-      hs hu hη hη_bound hCη hη_grad_bound hη_sub_ball θ happroxBallTheta
+      hu hη hη_bound hCη hη_grad_bound hη_sub_ball θ happroxBallTheta
   obtain ⟨hwηθ_real, hSob''⟩ :=
     deGiorgi_cutoffSobolev_prepare (d := d) hd hs hu hη hη_bound hη_sub_ball hvW01
   let hwηθ : MemW1pWitness 2 v (Metric.ball x₀ s) :=
@@ -765,7 +764,7 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_posPartApprox
       isWeakGrad := by
         simpa [v] using hwηθ_real.isWeakGrad }
   let hwθ : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu θ happroxBallTheta
+    positivePartSub_memW1pWitness_on_ball hu θ happroxBallTheta
   refine ⟨hwηθ, ?_⟩
   simpa [v, hwηθ, hwθ] using
     deGiorgi_cutoffSobolev_superlevelStep (d := d) hd hr hrs hu hwθ hθl hη_eq_one
@@ -1024,7 +1023,7 @@ theorem deGiorgi_preiter_on_concentricBalls_of_ballPosPart
     positivity
   obtain ⟨hwηθ, hsob⟩ :=
     deGiorgi_cutoffSobolev_on_concentricBalls_of_ballPosPart
-      (d := d) hd hr hrs hu hwθ hθl hη hη_nonneg hη_eq_one hη_bound hη_sub_ball
+      (d := d) hd hr hrs hu hwθ hθl hη hη_eq_one hη_bound hη_sub_ball
   let hwφ : MemW1pWitness 2 (deGiorgiCutoffTestGeneral η u θ) (Metric.ball x₀ s) :=
     deGiorgiCutoffTestWitnessWeighted
       isOpen_ball hwθ hη (by norm_num) hCη hη_bound hη_grad_bound
@@ -1093,7 +1092,7 @@ theorem deGiorgi_preiter_on_concentricBalls_of_posPartApprox
     {u η : E → ℝ} {x₀ : E} {r s θ lam Cη : ℝ}
     (hd : 2 < (d : ℝ))
     (A : EllipticCoeff d (Metric.ball x₀ s))
-    (hs : 0 < s) (hr : 0 < r) (hrs : r < s)
+    (hr : 0 < r) (hrs : r < s)
     (hsub : IsSubsolution A u)
     (hu : MemW1pWitness 2 u (Metric.ball x₀ s))
     (happroxBallTheta :
@@ -1127,7 +1126,7 @@ theorem deGiorgi_preiter_on_concentricBalls_of_posPartApprox
             ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume) ^ (2 / (d : ℝ))) *
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume := by
   let hwθ : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu θ happroxBallTheta
+    positivePartSub_memW1pWitness_on_ball hu θ happroxBallTheta
   change
     ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
       (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *

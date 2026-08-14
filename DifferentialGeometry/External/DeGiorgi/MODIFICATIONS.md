@@ -166,3 +166,39 @@ The original `LICENSE`, `README.md` and `CITATION.cff` remain unmodified.
 semantic-preserving source-style change; no statement, proof term or declaration was changed.
 
 <!-- Add entries below as modifications occur. -->
+
+### 2026-08-14 — API-quality audit repairs (declaration-level)
+
+**Files**: all files listed in `git diff --name-only` under this directory for this change set
+(`BallExtension/{ApproximationControl,Geometry,RoughInput,SmoothApproximation,SmoothCore}.lean`,
+`BallExtensionEstimates.lean`, `Crossover/{ExponentialIntegrability,LocalIntegrability,
+LogGradient,ProductBound,PublicEstimate}.lean`, `DeGiorgiIteration/{CutoffAdmissibility,Energy,
+Linfty,PreIteration}.lean`, `Holder/OscillationDecay.lean`, `MoserIteration/CutoffPrep/{Basics,
+ExactRegularization,PreEstimate,RegularizedEnergy,WitnessConstruction}.lean`,
+`Oscillation/{BMO,Campanato,LocalJohnNirenberg}.lean`, `Supersolutions/{ForwardIteration/Energy,
+ForwardIteration/OneStep,InverseEnergy,InverseOneStep,RegularizationSupport,StageOne,
+TestFunctions}.lean`, `UnitBallApproximationCore/{Dilation,Profiles}.lean`,
+`WeakFormulation/ExistenceTheory.lean`, `WeakHarnack.lean`).
+
+**Change**: API-quality audit repairs; every public statement kept true and every consumer
+updated in the same change set:
+
+- removed unused public binders (underscore-prefixed and otherwise) from ~40 declarations and
+  propagated through all call sites (`_hs : 0 < s`, `_hd : 2 < (d : ℝ)` where genuinely unused,
+  `_hu_pos`, `_hη_nonneg`, `_hα`, `_hα_le_one`, `_hψ_cpt`, `_hp`/`_hF_aesm`, `_hε`, `_hF`,
+  `_hB`/`_hB_fin`/`_hE_meas`/`_hE_anti`, `_hr`/`_ht`/`_hE_lam_meas`/`_hR`/`_hM`/`_hu_meas`,
+  and the unused-`hs` energy/preiter binders), including removing now-unused local hypotheses;
+- dropped the `hd : 2 < (d : ℝ)` hypothesis from `crossover_product_bound_exists`,
+  `C_crossover'_spec`, `crossover_estimate`, and `crossover_estimate_unaveraged` (never used);
+- deleted two vacuous private lemmas in `Crossover/LocalIntegrability.lean`
+  (`local_exp_integrability_bound`, `local_exp_integrability_inv_bound`) and the private
+  `uniform_local_exp_integrability_bound` built on them, and rewrote the stale proof-strategy
+  comment in `Crossover/PublicEstimate.lean` to describe the actual proof;
+- renamed `myCutoff` to `smoothCutoff` (and its 8 lemmas) in
+  `UnitBallApproximationCore/Profiles.lean` and `BallExtension/SmoothCore.lean`;
+- replaced `Cutoff.exists` (existential with `True` payload) by the canonical
+  `@[irreducible] def cutoff : Cutoff x₀ r R`, repointing all six call sites;
+- deleted the byte-identical alias `moser_regularized_energy_bound` in favor of
+  `moser_exact_regularized_energy_bound` (two call sites repointed);
+- added `omit [NeZero d] in` to two outer-shell lemmas in `BallExtension/Geometry.lean` and one
+  lemma in `BallExtension/RoughInput.lean` to drop redundant binders.

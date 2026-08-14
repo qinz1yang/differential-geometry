@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.BallExtension.Geometry
 
@@ -107,6 +108,7 @@ private lemma lintegral_rpow_abs_unitBallExtension_ball_two_le
           ∫⁻ x in Metric.ball (0 : E) 1, G x ∂volume := by
             ring
 
+omit [NeZero d] in
 private lemma lintegral_rpow_norm_fderiv_unitBallExtension_outerShell_le
     {p : ℝ} (hp : 1 ≤ p) {u : E → ℝ} (hu : ContDiff ℝ 1 u) :
     ∫⁻ x in unitBallOuterShell (d := d),
@@ -803,8 +805,7 @@ theorem measurable_unitBallExtension
 
 omit [NeZero d] in
 theorem eLpNorm_component_le
-    {p : ℝ} (_hp : 0 < p) {F : E → E} {i : Fin d} {μ : Measure E}
-    (_hF_aesm : AEStronglyMeasurable F μ) :
+    {p : ℝ} {F : E → E} {i : Fin d} {μ : Measure E} :
     eLpNorm (fun x => F x i) (ENNReal.ofReal p) μ ≤ eLpNorm F (ENNReal.ofReal p) μ := by
   refine eLpNorm_mono ?_
   intro x

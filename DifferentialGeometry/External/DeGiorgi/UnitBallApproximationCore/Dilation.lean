@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.UnitBallApproximationCore.Rescaling
 
@@ -52,8 +53,9 @@ omit [NeZero d] in
 theorem exists_unitBallCutoff_inside {lam : ℝ} (hlam : 1 < lam) :
     ∃ η : Cutoff (0 : E) 1 ((1 + lam) / 2),
       tsupport η.toFun ⊆ Metric.ball (0 : E) lam := by
-  obtain ⟨η, _⟩ := Cutoff.exists (d := d) (0 : E)
-    (r := 1) (R := (1 + lam) / 2) zero_lt_one (one_lt_midpoint_of_one_lt hlam)
+  let η : Cutoff (0 : E) 1 ((1 + lam) / 2) :=
+    cutoff (d := d) (0 : E) (r := 1) (R := (1 + lam) / 2) zero_lt_one
+      (one_lt_midpoint_of_one_lt hlam)
   refine ⟨η, ?_⟩
   exact η.support_subset.trans <| Metric.closedBall_subset_ball (midpoint_lt_of_one_lt hlam)
 

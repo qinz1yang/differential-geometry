@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.DeGiorgiIteration.CutoffAdmissibility
 
@@ -680,7 +681,6 @@ constructed from the concrete Chapter 02 positive-part API. -/
 theorem caccioppoli_weighted_on_ball_of_posPartApprox
     {u η : E → ℝ} {x₀ : E} {s Cη k : ℝ}
     (A : EllipticCoeff d (Metric.ball x₀ s))
-    (hs : 0 < s)
     (hsub : IsSubsolution A u)
     (hu : MemW1pWitness 2 u (Metric.ball x₀ s))
     (happroxBallShift :
@@ -707,18 +707,18 @@ theorem caccioppoli_weighted_on_ball_of_posPartApprox
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
     ∫ x in Metric.ball x₀ s, η x ^ 2 * ‖(positivePartSub_memW1pWitness_on_ball
-        hs hu k happroxBallShift).weakGrad x‖ ^ 2 ∂volume ≤
+        hu k happroxBallShift).weakGrad x‖ ^ 2 ∂volume ≤
       4 * ellipticityRatio A *
         ∫ x in Metric.ball x₀ s, ‖fderiv ℝ η x‖ ^ 2 * |positivePartSub u k x| ^ 2 ∂volume := by
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let hw_trunc : MemW1pWitness 2 (positivePartSub u k) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu k happroxBallShift
+    positivePartSub_memW1pWitness_on_ball hu k happroxBallShift
   have hη_admissible :
       MemW01p 2 (deGiorgiCutoffTestGeneral η u k) (Metric.ball x₀ s) :=
     deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPartApprox
-      hs hu hη hη_bound hCη hη_grad_bound hη_sub_ball k happroxBallShift
+      hu hη hη_bound hCη hη_grad_bound hη_sub_ball k happroxBallShift
   change
     ∫ x in Metric.ball x₀ s, η x ^ 2 * ‖hw_trunc.weakGrad x‖ ^ 2 ∂volume ≤
       4 * ellipticityRatio A *
@@ -851,7 +851,7 @@ positive-part witness constructor on the outer ball. -/
 theorem deGiorgi_energy_estimate_on_concentricBalls_of_posPartApprox
     {u η : E → ℝ} {x₀ : E} {r s Cη k : ℝ}
     (A : EllipticCoeff d (Metric.ball x₀ s))
-    (hs : 0 < s) (hr : 0 < r) (hrs : r < s)
+    (hr : 0 < r) (hrs : r < s)
     (hsub : IsSubsolution A u)
     (hu : MemW1pWitness 2 u (Metric.ball x₀ s))
     (happroxBallShift :
@@ -879,12 +879,12 @@ theorem deGiorgi_energy_estimate_on_concentricBalls_of_posPartApprox
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
     ∫ x in Metric.ball x₀ r,
-        ‖(positivePartSub_memW1pWitness_on_ball hs hu k happroxBallShift).weakGrad x‖ ^ 2
+        ‖(positivePartSub_memW1pWitness_on_ball hu k happroxBallShift).weakGrad x‖ ^ 2
           ∂volume ≤
       4 * ellipticityRatio A * Cη ^ 2 *
         ∫ x in Metric.ball x₀ s, |positivePartSub u k x| ^ 2 ∂volume := by
   let hw_trunc : MemW1pWitness 2 (positivePartSub u k) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu k happroxBallShift
+    positivePartSub_memW1pWitness_on_ball hu k happroxBallShift
   change
     ∫ x in Metric.ball x₀ r, ‖hw_trunc.weakGrad x‖ ^ 2 ∂volume ≤
       4 * ellipticityRatio A * Cη ^ 2 *

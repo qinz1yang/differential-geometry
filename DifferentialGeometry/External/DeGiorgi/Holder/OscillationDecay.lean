@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.Holder.LocalBounds
 
@@ -481,7 +482,6 @@ theorem essInf_const_sub_add_ballMeasure
 theorem oscillation_decay_from_shifted_harnack
     {α M m S i δ : ℝ}
     (hα_nonneg : 0 ≤ α)
-    (_hα_le_one : α ≤ 1)
     (hδ_nonneg : 0 ≤ δ)
     (hSi_nonneg : 0 ≤ S - i)
     (hlo : α * (S - m + δ) ≤ i - m + δ)
@@ -527,8 +527,6 @@ theorem moser_oscillation_decay_on_ball
   have hα_pos : 0 < α := by
     simpa [α] using moserDecayAlpha_pos (d := d) A
   have hα_nonneg : 0 ≤ α := hα_pos.le
-  have hα_le : α ≤ 1 := by
-    simpa [α] using moserDecayAlpha_le_one (d := d) hd A
   have hαH :
       α * Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) = 1 := by
     dsimp [α, moserDecayAlpha]
@@ -672,7 +670,7 @@ theorem moser_oscillation_decay_on_ball
       ring
     have hoscδ :
         S - i ≤ (1 - α) * (M - m) + 2 * δ :=
-      oscillation_decay_from_shifted_harnack hα_nonneg hα_le hδ_pos.le hSi_nonneg hlo' hhi'
+      oscillation_decay_from_shifted_harnack hα_nonneg hδ_pos.le hSi_nonneg hlo' hhi'
     simpa [hδ_eq] using hoscδ
   simpa [S, i, M, m, α] using hosc
 

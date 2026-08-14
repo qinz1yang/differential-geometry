@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.BallExtension.Core
 
@@ -349,6 +350,7 @@ lemma hasFDerivAt_unitBallCutoff_of_mem_outerShell {x : E}
     exact unitBallCutoff_eq_two_sub_norm_of_mem_outerShell (d := d) hy
   exact hfd_annulus.congr_of_eventuallyEq heq
 
+omit [NeZero d] in
 lemma norm_fderiv_unitBallCutoff_of_mem_outerShell {x : E}
     (hx : x ∈ unitBallOuterShell (d := d)) :
     ‖fderiv ℝ (unitBallCutoff (d := d)) x‖ = 1 := by
@@ -357,6 +359,7 @@ lemma norm_fderiv_unitBallCutoff_of_mem_outerShell {x : E}
     rcases hx with ⟨h1, _h2⟩
     have : 0 < ‖x‖ := by linarith
     simp [hx0] at this
+  haveI : Nontrivial E := ⟨(0 : E), x, hx0.symm⟩
   have hnorm : DifferentiableAt ℝ (fun y : E => ‖y‖) x :=
     differentiableAt_id.norm ℝ hx0
   have hfd_cutoff :=
@@ -364,6 +367,7 @@ lemma norm_fderiv_unitBallCutoff_of_mem_outerShell {x : E}
   rw [hfd_cutoff.fderiv, norm_neg]
   simpa using norm_fderiv_norm hnorm
 
+omit [NeZero d] in
 lemma norm_fderiv_unitBallExtension_le_of_mem_outerShell
     {u : E → ℝ} (hu : Differentiable ℝ u) {x : E}
     (hx : x ∈ unitBallOuterShell (d := d)) :

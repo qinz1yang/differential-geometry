@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.CutoffPrep.Profiles
 
@@ -27,7 +28,7 @@ noncomputable def moserPosPartWitnessUnitBall
       (by norm_num) (by norm_num) hu1
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) (Metric.ball (0 : E) 1) :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
-      (by norm_num) hu1 0 happrox0
+      hu1 0 happrox0
   have hEq : positivePartSub u 0 = fun x => max (u x) 0 := by
     funext x
     simp [positivePartSub]
@@ -53,7 +54,7 @@ lemma moserPosPartWitnessUnitBall_grad_eq_on_pos
       (by norm_num) (by norm_num) hu1
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) (Metric.ball (0 : E) 1) :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
-      (by norm_num) hu1 0 happrox0
+      hu1 0 happrox0
   have hEq : positivePartSub u 0 = fun x => max (u x) 0 := by
     funext x
     simp [positivePartSub]
@@ -73,7 +74,7 @@ lemma moserPosPartWitnessUnitBall_grad_zero_on_nonpos
       (by norm_num) (by norm_num) hu1
   let hw0 : MemW1pWitness 2 (positivePartSub u 0) (Metric.ball (0 : E) 1) :=
     positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := (1 : ℝ))
-      (by norm_num) hu1 0 happrox0
+      hu1 0 happrox0
   have hEq : positivePartSub u 0 = fun x => max (u x) 0 := by
     funext x
     simp [positivePartSub]

@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import Mathlib.Topology.Algebra.Order.LiminfLimsup
@@ -47,13 +48,13 @@ local notation "μhalf" => (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ)))
 /-- The weakened forward-stage constant that honestly absorbs the finite-measure
 `L^p` to `L^{p₀}` upgrade on the unit ball. -/
 noncomputable def C_weakHarnack0Forward
-    (d : ℕ) [NeZero d] (_hd : 2 < (d : ℝ)) : ℝ :=
+    (d : ℕ) [NeZero d] : ℝ :=
   (C_weakHarnack0 d * (volume.real (Metric.ball (0 : AmbientSpace d) 1) + 1)) ^
     (moserChi d)
 
 theorem one_le_C_weakHarnack0Forward
     (hd : 2 < (d : ℝ)) :
-    1 ≤ C_weakHarnack0Forward (d := d) hd := by
+    1 ≤ C_weakHarnack0Forward (d := d) := by
   unfold C_weakHarnack0Forward
   have hbase : 1 ≤
       C_weakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
@@ -892,7 +893,7 @@ by
 
 theorem superExactPowerCutoff_memW01_on_ball
     {u η : E → ℝ} {ε a s Cη : ℝ}
-    (_hs : 0 < s) (hs1 : s ≤ 1)
+    (hs1 : s ≤ 1)
     (hε : 0 < ε) (ha : a < 1)
     (hu1 : MemW1pWitness 2 u (Metric.ball (0 : E) 1))
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -925,7 +926,7 @@ theorem superExactPowerCutoff_memW01_on_ball
 
 theorem superExactTestCutoff_memH01_on_ball
     {u η : E → ℝ} {ε a s Cη : ℝ}
-    (_hs : 0 < s) (hs1 : s ≤ 1)
+    (hs1 : s ≤ 1)
     (hε : 0 < ε) (ha : a < 1)
     (hu1 : MemW1pWitness 2 u (Metric.ball (0 : E) 1))
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -1403,7 +1404,7 @@ theorem superExactShiftPow_comp_aemeasurable
 omit [NeZero d] in
 theorem superExactInv_shiftPow_integrableOn_ball
     {u : E → ℝ} {ε p s : ℝ}
-    (hε : 0 < ε) (hp : 0 ≤ p) (_hs : 0 < s)
+    (hε : 0 < ε) (hp : 0 ≤ p)
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s)) :
     IntegrableOn (fun x => superExactShiftPow ε (-p) (u x))
       (Metric.ball (0 : E) s) volume := by
@@ -1428,7 +1429,7 @@ theorem superExactInv_shiftPow_integrableOn_ball
 omit [NeZero d] in
 theorem superExactFwd_shiftPow_integrableOn_ball
     {u : E → ℝ} {ε p s : ℝ}
-    (hε : 0 < ε) (hp : 0 < p) (hp1 : p < 1) (_hs : 0 < s)
+    (hε : 0 < ε) (hp : 0 < p) (hp1 : p < 1)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) s, 0 < u x)
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s))
     (hpInt : IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) s) volume) :
@@ -1534,7 +1535,7 @@ lemma superExactFwd_boundTerm_pointwise
 omit [NeZero d] in
 theorem superExactInv_termB_bound_on_ball
     {u η : E → ℝ} {ε p s Cη : ℝ}
-    (hε : 0 < ε) (hp : 0 < p) (hs : 0 < s)
+    (hε : 0 < ε) (hp : 0 < p)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) s, 0 < u x)
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s))
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -1547,7 +1548,7 @@ theorem superExactInv_termB_bound_on_ball
   have hpow_int :
       IntegrableOn (fun x => superExactShiftPow ε (-p) (u x)) Ω volume :=
     superExactInv_shiftPow_integrableOn_ball (u := u) (ε := ε) (p := p) (s := s)
-      hε (by linarith) hs hu
+      hε (by linarith) hu
   have hlhs_aemeas :
       AEMeasurable
         (fun x => ‖fderiv ℝ η x‖ ^ 2 * (superExactShiftPow ε (-(p / 2)) (u x)) ^ 2)
@@ -1625,7 +1626,7 @@ lemma superExactInv_boundTerm_pointwise
 omit [NeZero d] in
 theorem superExactInv_boundTerm_bound_on_ball
     {u η : E → ℝ} {ε p s Cη : ℝ}
-    (hε : 0 < ε) (hp : 0 < p) (hs : 0 < s)
+    (hε : 0 < ε) (hp : 0 < p)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) s, 0 < u x)
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s))
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -1641,7 +1642,7 @@ theorem superExactInv_boundTerm_bound_on_ball
   have hpow_int :
       IntegrableOn (fun x => superExactShiftPow ε (-p) (u x)) Ω volume :=
     superExactInv_shiftPow_integrableOn_ball (u := u) (ε := ε) (p := p) (s := s)
-      hε (by linarith) hs hu
+      hε (by linarith) hu
   have hlhs_aemeas :
       AEMeasurable
         (fun x => ‖fderiv ℝ η x‖ ^ 2 *
@@ -1749,7 +1750,7 @@ theorem superExactInv_boundTerm_bound_on_ball
 omit [NeZero d] in
 theorem superExactFwd_boundTerm_bound_on_ball
     {u η : E → ℝ} {ε p s Cη : ℝ}
-    (hε : 0 < ε) (hp : 0 < p) (hp1 : p < 1) (hs : 0 < s)
+    (hε : 0 < ε) (hp : 0 < p) (hp1 : p < 1)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) s, 0 < u x)
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s))
     (hpInt : IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) s) volume)
@@ -1766,7 +1767,7 @@ theorem superExactFwd_boundTerm_bound_on_ball
   have hpow_int :
       IntegrableOn (fun x => superExactShiftPow ε p (u x)) Ω volume :=
     superExactFwd_shiftPow_integrableOn_ball (u := u) (ε := ε) (p := p) (s := s)
-      hε hp hp1 hs hu_pos hu hpInt
+      hε hp hp1 hu_pos hu hpInt
   have hlhs_aemeas :
       AEMeasurable
         (fun x => ‖fderiv ℝ η x‖ ^ 2 *
@@ -1866,7 +1867,7 @@ theorem superExactFwd_boundTerm_bound_on_ball
 omit [NeZero d] in
 theorem superExactFwd_termB_bound_on_ball
     {u η : E → ℝ} {ε p s Cη : ℝ}
-    (hε : 0 < ε) (hp : 0 < p) (hp1 : p < 1) (hs : 0 < s)
+    (hε : 0 < ε) (hp : 0 < p) (hp1 : p < 1)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) s, 0 < u x)
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s))
     (hpInt : IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) s) volume)
@@ -1880,7 +1881,7 @@ theorem superExactFwd_termB_bound_on_ball
   have hpow_int :
       IntegrableOn (fun x => superExactShiftPow ε p (u x)) Ω volume :=
     superExactFwd_shiftPow_integrableOn_ball (u := u) (ε := ε) (p := p) (s := s)
-      hε hp hp1 hs hu_pos hu hpInt
+      hε hp hp1 hu_pos hu hpInt
   have hlhs_int :
       IntegrableOn
         (fun x => ‖fderiv ℝ η x‖ ^ 2 * (superExactShiftPow ε (p / 2) (u x)) ^ 2)

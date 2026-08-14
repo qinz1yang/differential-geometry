@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.Crossover.LogGradient
 
@@ -223,7 +224,7 @@ theorem weak_harnack_stage_one_forward_ball
         ∫ x in Metric.ball x₀ (R / 2 : ℝ),
           |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)) ∂volume)) ^
           (p * (((d : ℝ) - 2) / (q * (d : ℝ)))) ≤
-      C_weakHarnack0Forward (d := d) hd *
+      C_weakHarnack0Forward (d := d) *
         (A.1.Λ * p ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
         ((R ^ Module.finrank ℝ E)⁻¹ *
           ∫ x in Metric.ball x₀ R, |u x| ^ p ∂volume) := by
@@ -344,11 +345,11 @@ theorem regularizedLog_unit_halfBall_meanOscillation
   let hw_u : MemW1pWitness 2 u Ω :=
     (isSupersolution_memW1p hsuper).someWitness
   let hw_v : MemW1pWitness 2 v Ω := by
-    simpa [v, Ω] using regularizedLogWitness (Ω := Ω) Metric.isOpen_ball hu_pos hw_u hε
+    simpa [v, Ω] using regularizedLogWitness (Ω := Ω) Metric.isOpen_ball hw_u hε
   let hw_v_half : MemW1pWitness 2 v Bhalf :=
     hw_v.restrict Metric.isOpen_ball (Metric.ball_subset_ball (by norm_num))
-  obtain ⟨η, _⟩ := Cutoff.exists (d := d) (0 : E)
-    (r := (1 / 2 : ℝ)) (R := (3 / 4 : ℝ)) (by norm_num) (by norm_num)
+  let η : Cutoff (0 : E) (1 / 2 : ℝ) (3 / 4 : ℝ) :=
+    cutoff (d := d) (0 : E) (r := (1 / 2 : ℝ)) (R := (3 / 4 : ℝ)) (by norm_num) (by norm_num)
   have hη_cs : HasCompactSupport η.toFun := by
     apply HasCompactSupport.intro' (K := Metric.closedBall (0 : E) (3 / 4 : ℝ))
     · exact isCompact_closedBall (0 : E) (3 / 4 : ℝ)
@@ -778,7 +779,6 @@ lemma c_crossover_mul_bmo_le_half
 lemma regularizedLog_integrableOn_ball
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ}
-    (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u)
     {x₀ : E} {R : ℝ}
     (hsub : Metric.ball x₀ R ⊆ Metric.ball (0 : E) 1)
@@ -788,7 +788,7 @@ lemma regularizedLog_integrableOn_ball
   let hw_u : MemW1pWitness 2 u Ω :=
     (isSupersolution_memW1p hsuper).someWitness
   let hw_v : MemW1pWitness 2 (regularizedLogFun (u := u) hε) Ω := by
-    simpa [Ω] using regularizedLogWitness (Ω := Ω) Metric.isOpen_ball hu_pos hw_u hε
+    simpa [Ω] using regularizedLogWitness (Ω := Ω) Metric.isOpen_ball hw_u hε
   letI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ R)) := by
     refine ⟨?_⟩
     simpa using
@@ -888,11 +888,11 @@ theorem regularizedLog_smallBallAverage_step_le
     exact lt_of_le_of_lt (dist_triangle z c y) (by linarith)
   have hintx :
       IntegrableOn v (Metric.ball x (1 / 48 : ℝ)) volume :=
-    regularizedLog_integrableOn_ball (d := d) (A := A) hu_pos hsuper
+    regularizedLog_integrableOn_ball (d := d) (A := A) hsuper
       (ball_subset_unitBall_of_mem_halfBall_of_le_eighth hx (by norm_num)) hε
   have hinty :
       IntegrableOn v (Metric.ball y (1 / 48 : ℝ)) volume :=
-    regularizedLog_integrableOn_ball (d := d) (A := A) hu_pos hsuper
+    regularizedLog_integrableOn_ball (d := d) (A := A) hsuper
       (ball_subset_unitBall_of_mem_halfBall_of_le_eighth hy (by norm_num)) hε
   have hoscx :
       (⨍ z in Metric.ball x (1 / 48 : ℝ),
@@ -969,7 +969,6 @@ theorem regularizedLog_smallBallAverage_step_le
 noncomputable def regularizedLogAEMeasurable
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ}
-    (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u)
     {ε : ℝ} (hε : 0 < ε) :
     AEMeasurable (regularizedLogFun (u := u) hε)
@@ -978,16 +977,16 @@ noncomputable def regularizedLogAEMeasurable
   let hw_u : MemW1pWitness 2 u Ω :=
     (isSupersolution_memW1p hsuper).someWitness
   let hw_v : MemW1pWitness 2 (regularizedLogFun (u := u) hε) Ω := by
-    simpa [Ω] using regularizedLogWitness (Ω := Ω) Metric.isOpen_ball hu_pos hw_u hε
+    simpa [Ω] using regularizedLogWitness (Ω := Ω) Metric.isOpen_ball hw_u hε
   simpa [Ω] using hw_v.memLp.aestronglyMeasurable.aemeasurable
 
 noncomputable def regularizedLogMeasurable
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ}
-    (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
+    (_hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u)
     {ε : ℝ} (hε : 0 < ε) : E → ℝ :=
-  (regularizedLogAEMeasurable (d := d) (A := A) hu_pos hsuper hε).mk
+  (regularizedLogAEMeasurable (d := d) (A := A) hsuper hε).mk
     (regularizedLogFun (u := u) hε)
 
 lemma regularizedLogMeasurable_measurable
@@ -999,7 +998,7 @@ lemma regularizedLogMeasurable_measurable
     Measurable (regularizedLogMeasurable (A := A) hu_pos hsuper hε) := by
   classical
   simpa [regularizedLogMeasurable] using
-    (regularizedLogAEMeasurable (d := d) (A := A) hu_pos hsuper hε).measurable_mk
+    (regularizedLogAEMeasurable (d := d) (A := A) hsuper hε).measurable_mk
 
 lemma regularizedLogMeasurable_ae_eq
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
@@ -1011,7 +1010,7 @@ lemma regularizedLogMeasurable_ae_eq
       regularizedLogMeasurable (A := A) hu_pos hsuper hε := by
   classical
   simpa [regularizedLogMeasurable] using
-    (regularizedLogAEMeasurable (d := d) (A := A) hu_pos hsuper hε).ae_eq_mk
+    (regularizedLogAEMeasurable (d := d) (A := A) hsuper hε).ae_eq_mk
 
 lemma regularizedLogMeasurable_integrableOn_ball
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
@@ -1026,7 +1025,7 @@ lemma regularizedLogMeasurable_integrableOn_ball
       (Metric.ball x₀ R) volume := by
   have hint :
       IntegrableOn (regularizedLogFun (u := u) hε) (Metric.ball x₀ R) volume :=
-    regularizedLog_integrableOn_ball (d := d) (A := A) hu_pos hsuper hsub hε
+    regularizedLog_integrableOn_ball (d := d) (A := A) hsuper hsub hε
   have hEq :
       regularizedLogFun (u := u) hε =ᵐ[volume.restrict (Metric.ball x₀ R)]
         regularizedLogMeasurable (A := A) hu_pos hsuper hε := by
@@ -1462,9 +1461,7 @@ theorem regularizedLog_smallBall_exp_average_le
     intro t ht
     have hbase :=
       john_nirenberg_local (d := d) (u := v) (x₀ := x₀) (R := (1 / 48 : ℝ))
-        (M := M) (by norm_num) hM_pos
-        (regularizedLogMeasurable_measurable (d := d) (A := A) hu_pos hsuper hε)
-        hv_int_small hv_bmo_small ht
+        (M := M) (by norm_num) hM_pos hv_int_small hv_bmo_small ht
     simpa [μ, B, f, avg, M, Measure.restrict_apply, measurableSet_ball,
       Set.inter_comm, Set.inter_left_comm, Set.inter_assoc] using hbase
   have hf_nonneg : 0 ≤ᵐ[μ] f := Eventually.of_forall fun _ => norm_nonneg _

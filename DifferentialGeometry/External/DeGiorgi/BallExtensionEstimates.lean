@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.BallExtension
@@ -186,7 +187,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
             Tendsto (fun m => eLpNorm
               (fun x => (fderiv ℝ (Φ m) x) (EuclideanSpace.single i 1) - Gψ x i)
               (ENNReal.ofReal p) volume) atTop (nhds 0) :=
-    fun n => smooth_input_unitBallExtension_smoothing (d := d) hp (hψ_smooth n) (hψ_cpt n)
+    fun n => smooth_input_unitBallExtension_smoothing (d := d) hp (hψ_smooth n)
   let G : ℕ → E → E := fun n => Classical.choose (h_step n)
   have hV_memLp : ∀ n, MemLp (unitBallExtension (d := d) (ψ n)) (ENNReal.ofReal p) volume :=
     fun n => (Classical.choose_spec (h_step n)).1

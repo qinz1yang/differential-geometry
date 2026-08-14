@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.CutoffPrep.RegularizedWitnesses
@@ -1227,35 +1228,6 @@ theorem moser_exact_regularized_energy_bound
           ∫ x in Ω, (ε + |max (u x) 0|) ^ p ∂volume := by
           ring
 
-theorem moser_regularized_energy_bound
-    (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
-    {u η : E → ℝ} {p ρ Cη ε N : ℝ}
-    (hp : 1 < p)
-    (hρ : 0 < ρ) (hρ1 : ρ < 1)
-    (hε : 0 < ε) (hN : 0 ≤ N)
-    (hsub : IsSubsolution A.1 u)
-    (hu1 : MemW1pWitness 2 u (Metric.ball (0 : E) 1))
-    (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_nonneg : ∀ x, 0 ≤ η x)
-    (hη_bound : ∀ x, |η x| ≤ 1)
-    (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
-    (hη_sub_ball : tsupport η ⊆ Metric.ball (0 : E) ρ)
-    (hqual :
-      ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) ρ)),
-        x ∈ tsupport η → max (u x) 0 < N)
-    (hpInt : IntegrableOn (fun x => (ε + |max (u x) 0|) ^ p)
-        (Metric.ball (0 : E) ρ) volume) :
-    let hwReg := moserExactRegPowerCutoffWitness (d := d) (u := u) (η := η)
-      (ε := ε) (N := N) (p := p) (Cη := Cη)
-      hε hN hu1 hη hη_bound hη_grad_bound
-    ∫ x in Metric.ball (0 : E) ρ, ‖hwReg.weakGrad x‖ ^ 2 ∂volume ≤
-      2 * Cη ^ 2 * (A.1.Λ * (p / (p - 1)) ^ 2 + 1) *
-        ∫ x in Metric.ball (0 : E) ρ, (ε + |max (u x) 0|) ^ p ∂volume := by
-  simpa using
-    moser_exact_regularized_energy_bound
-      (d := d) A (u := u) (η := η) (p := p) (ρ := ρ) (Cη := Cη) (ε := ε) (N := N)
-      hp hρ hρ1 hε hN hsub hu1 hη hη_nonneg hη_bound hη_grad_bound hη_sub_ball hqual hpInt
-
 theorem moserExactReg_energy_mainBall
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u η : E → ℝ} {p ρ Cη N : ℝ}
@@ -1285,7 +1257,7 @@ theorem moserExactReg_energy_mainBall
           ∫ x in Metric.ball (0 : E) ρ, (moserEpsSeq n + |max (u x) 0|) ^ p ∂volume := by
   intro n
   exact
-    moser_regularized_energy_bound
+    moser_exact_regularized_energy_bound
       (d := d) (A := A) (u := u) (η := η) (p := p) (ρ := ρ)
       (Cη := Cη) (ε := moserEpsSeq n) (N := N)
       (hp := hp) (hρ := hρ) (hρ1 := hρ1) (hε := moserEpsSeq_pos n) (hN := hN)

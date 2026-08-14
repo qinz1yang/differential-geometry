@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.WeakFormulation.CoefficientOperator
@@ -1365,7 +1366,7 @@ theorem dirichletProblem_unique_of_divergenceData
     (hΩ : IsOpen Ω) (hΩ_bdd : Bornology.IsBounded Ω)
     (A : EllipticCoeff d Ω)
     {u₀ : E → ℝ} (hu₀ : MemW1p 2 u₀ Ω)
-    {F : E → E} (_hF : MemLp F 2 (volume.restrict Ω))
+    {F : E → E}
     {u v : E → ℝ}
     (hu : IsDirichletWeakSolutionOfDivergenceData A u₀ F u)
     (hv : IsDirichletWeakSolutionOfDivergenceData A u₀ F v) :
@@ -1401,7 +1402,7 @@ theorem dirichletProblem_wellPosed_of_divergenceData
   obtain ⟨u, hu⟩ := dirichletProblem_exists_of_divergenceData' hd hΩ hΩ_bdd A hu₀ hF
   refine ⟨u, hu, ?_⟩
   intro v hv
-  exact dirichletProblem_unique_of_divergenceData hd hΩ hΩ_bdd A hu₀ hF hu hv
+  exact dirichletProblem_unique_of_divergenceData hd hΩ hΩ_bdd A hu₀ hu hv
 
 /-- `A`-harmonic replacements are unique up to a.e. equality. -/
 theorem aHarmonic_replacement_unique
@@ -1415,8 +1416,6 @@ theorem aHarmonic_replacement_unique
     (hh₂ : IsHomogeneousWeakSolution A h₂)
     (hdiff₂ : MemW01p 2 (fun x => h₂ x - u x) Ω) :
     h₁ =ᵐ[volume.restrict Ω] h₂ := by
-  have hF0 : MemLp (fun _ : E => (0 : E)) 2 (volume.restrict Ω) := by
-    exact MeasureTheory.MemLp.zero' (p := (2 : ENNReal)) (μ := volume.restrict Ω)
   have hs₁ : IsDirichletWeakSolutionOfDivergenceData A u (fun _ : E => (0 : E)) h₁ := by
     refine ⟨hh₁.left, hdiff₁, ?_⟩
     intro hh φ hφ hφw
@@ -1425,7 +1424,7 @@ theorem aHarmonic_replacement_unique
     refine ⟨hh₂.left, hdiff₂, ?_⟩
     intro hh φ hφ hφw
     simpa [divergenceRHSOfField, divergenceRHSIntegrandOfField] using hh₂.right hh φ hφ hφw
-  exact dirichletProblem_unique_of_divergenceData hd hΩ hΩ_bdd A hu hF0 hs₁ hs₂
+  exact dirichletProblem_unique_of_divergenceData hd hΩ hΩ_bdd A hu hs₁ hs₂
 
 /-- A-harmonic replacement: given `u ∈ W^{1,2}(B_R)`, there exists
 `h` that is A-harmonic with `h - u ∈ W₀^{1,2}(B_R)`. -/

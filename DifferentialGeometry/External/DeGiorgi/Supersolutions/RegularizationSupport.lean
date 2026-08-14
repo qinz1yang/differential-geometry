@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.TestFunctions
@@ -330,7 +331,7 @@ theorem power_half_memLp_of_integrableOn
 omit [NeZero d] in
 theorem one_add_power_half_memLp_on_ball
     {u : E → ℝ} {p s : ℝ}
-    (hp : 0 ≤ p) (_hs : 0 < s)
+    (hp : 0 ≤ p)
     (hu : MemW1pWitness 2 u (Metric.ball (0 : E) s))
     (hpInt : IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) s) volume) :
     MemLp (fun x => 1 + |u x| ^ (p / 2)) 2 (volume.restrict (Metric.ball (0 : E) s)) := by
@@ -350,7 +351,6 @@ theorem one_add_power_half_memLp_on_ball
 omit [NeZero d] in
 theorem one_add_rpow_integrableOn_ball
     {u : E → ℝ} {p s : ℝ}
-    (_hs : 0 < s)
     (hpInt : IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) s) volume) :
     IntegrableOn (fun x => 1 + |u x| ^ p) (Metric.ball (0 : E) s) volume := by
   have hone :

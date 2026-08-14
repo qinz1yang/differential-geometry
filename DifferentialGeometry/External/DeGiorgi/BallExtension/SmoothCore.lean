@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.BallExtension.RoughInput
@@ -25,10 +26,10 @@ namespace SmoothApproximationInternal
 /-- Transition profile used to smooth the explicit unit-ball extension across
 the sphere interfaces `‖x‖ = 1` and `‖x‖ = 2`. -/
 def sphereOneBlend (ε : ℝ) : E → ℝ :=
-  fun x => 1 - myCutoff (0 : E) (1 - ε) (1 + ε) x
+  fun x => 1 - smoothCutoff (0 : E) (1 - ε) (1 + ε) x
 
 def sphereTwoBlend (ε : ℝ) : E → ℝ :=
-  fun x => myCutoff (0 : E) (2 - ε) (2 + ε) x
+  fun x => smoothCutoff (0 : E) (2 - ε) (2 + ε) x
 
 def smoothUnitBallExtensionApprox (ε : ℝ) (ψ : E → ℝ) : E → ℝ :=
   fun x =>
@@ -47,7 +48,7 @@ lemma sphereOneBlend_eq_zero_of_mem_ball {ε : ℝ} (hε : 0 < ε) {x : E}
     (hx : x ∈ Metric.ball (0 : E) (1 - ε)) :
     sphereOneBlend (d := d) ε x = 0 := by
   unfold sphereOneBlend
-  rw [myCutoff_eq_one (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε)]
+  rw [smoothCutoff_eq_one (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε)]
   · ring
   · linarith
   · exact hx
@@ -57,7 +58,7 @@ lemma sphereOneBlend_eq_one_of_norm_ge {ε : ℝ} (hε : 0 < ε) {x : E}
     (hx : 1 + ε ≤ ‖x‖) :
     sphereOneBlend (d := d) ε x = 1 := by
   unfold sphereOneBlend
-  unfold myCutoff
+  unfold smoothCutoff
   have hnonpos : ((1 + ε) - ‖x‖) / ((1 + ε) - (1 - ε)) ≤ 0 := by
     have hden : 0 < (1 + ε) - (1 - ε) := by linarith
     have hnum : (1 + ε) - ‖x‖ ≤ 0 := sub_nonpos.mpr hx
@@ -68,7 +69,7 @@ omit [NeZero d] in
 lemma sphereOneBlend_eq_zero_of_norm_le {ε : ℝ} (hε : 0 < ε) {x : E}
     (hx : ‖x‖ ≤ 1 - ε) :
     sphereOneBlend (d := d) ε x = 0 := by
-  unfold sphereOneBlend myCutoff
+  unfold sphereOneBlend smoothCutoff
   have hden : 0 < (1 + ε) - (1 - ε) := by linarith
   have hx' : ‖x - 0‖ ≤ 1 - ε := by simpa using hx
   have hone : 1 ≤ ((1 + ε) - ‖x - 0‖) / ((1 + ε) - (1 - ε)) := by
@@ -85,13 +86,13 @@ lemma sphereTwoBlend_eq_one_of_mem_ball {ε : ℝ} (hε : 0 < ε) {x : E}
     (hx : x ∈ Metric.ball (0 : E) (2 - ε)) :
     sphereTwoBlend (d := d) ε x = 1 := by
   unfold sphereTwoBlend
-  rw [myCutoff_eq_one (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) (by linarith) hx]
+  rw [smoothCutoff_eq_one (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) (by linarith) hx]
 
 omit [NeZero d] in
 lemma sphereTwoBlend_eq_one_of_norm_le {ε : ℝ} (hε : 0 < ε) {x : E}
     (hx : ‖x‖ ≤ 2 - ε) :
     sphereTwoBlend (d := d) ε x = 1 := by
-  unfold sphereTwoBlend myCutoff
+  unfold sphereTwoBlend smoothCutoff
   have hden : 0 < (2 + ε) - (2 - ε) := by linarith
   have hx' : ‖x - 0‖ ≤ 2 - ε := by simpa using hx
   have hone : 1 ≤ ((2 + ε) - ‖x - 0‖) / ((2 + ε) - (2 - ε)) := by
@@ -104,7 +105,7 @@ lemma sphereTwoBlend_eq_zero_of_norm_ge {ε : ℝ} (hε : 0 < ε) {x : E}
     (hx : 2 + ε ≤ ‖x‖) :
     sphereTwoBlend (d := d) ε x = 0 := by
   unfold sphereTwoBlend
-  unfold myCutoff
+  unfold smoothCutoff
   have hnonpos : ((2 + ε) - ‖x‖) / ((2 + ε) - (2 - ε)) ≤ 0 := by
     have hden : 0 < (2 + ε) - (2 - ε) := by linarith
     have hnum : (2 + ε) - ‖x‖ ≤ 0 := sub_nonpos.mpr hx
@@ -115,41 +116,41 @@ omit [NeZero d] in
 lemma sphereOneBlend_nonneg {ε : ℝ} {x : E} :
     0 ≤ sphereOneBlend (d := d) ε x := by
   unfold sphereOneBlend
-  linarith [myCutoff_nonneg (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε) x,
-    myCutoff_le_one (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε) x]
+  linarith [smoothCutoff_nonneg (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε) x,
+    smoothCutoff_le_one (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε) x]
 
 omit [NeZero d] in
 lemma sphereOneBlend_le_one {ε : ℝ} {x : E} :
     sphereOneBlend (d := d) ε x ≤ 1 := by
   unfold sphereOneBlend
-  linarith [myCutoff_nonneg (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε) x]
+  linarith [smoothCutoff_nonneg (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε) x]
 
 omit [NeZero d] in
 lemma sphereTwoBlend_nonneg {ε : ℝ} {x : E} :
     0 ≤ sphereTwoBlend (d := d) ε x := by
   unfold sphereTwoBlend
-  exact myCutoff_nonneg (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) x
+  exact smoothCutoff_nonneg (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) x
 
 omit [NeZero d] in
 lemma sphereTwoBlend_le_one {ε : ℝ} {x : E} :
     sphereTwoBlend (d := d) ε x ≤ 1 := by
   unfold sphereTwoBlend
-  exact myCutoff_le_one (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) x
+  exact smoothCutoff_le_one (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) x
 
 omit [NeZero d] in
 lemma sphereOneBlend_fderiv_bound {ε : ℝ} (hε : 0 < ε) (x : E) :
     ‖fderiv ℝ (sphereOneBlend (d := d) ε) x‖ ≤ ↑Mst * (ε + ε)⁻¹ := by
   have hcut :
-      ‖fderiv ℝ (myCutoff (0 : E) (1 - ε) (1 + ε)) x‖ ≤ ↑Mst * ((1 + ε) - (1 - ε))⁻¹ :=
-    myCutoff_fderiv_bound (d := d) (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε) (by linarith) x
+      ‖fderiv ℝ (smoothCutoff (0 : E) (1 - ε) (1 + ε)) x‖ ≤ ↑Mst * ((1 + ε) - (1 - ε))⁻¹ :=
+    smoothCutoff_fderiv_bound (d := d) (x₀ := (0 : E)) (r := 1 - ε) (R := 1 + ε) (by linarith) x
   have hEq :
       fderiv ℝ (sphereOneBlend (d := d) ε) x =
-        -(fderiv ℝ (myCutoff (0 : E) (1 - ε) (1 + ε)) x) := by
+        -(fderiv ℝ (smoothCutoff (0 : E) (1 - ε) (1 + ε)) x) := by
     simpa [sphereOneBlend] using
-      (fderiv_const_sub (𝕜 := ℝ) (f := myCutoff (0 : E) (1 - ε) (1 + ε)) (c := (1 : ℝ)) (x := x))
+      (fderiv_const_sub (𝕜 := ℝ) (f := smoothCutoff (0 : E) (1 - ε) (1 + ε)) (c := (1 : ℝ)) (x := x))
   calc
     ‖fderiv ℝ (sphereOneBlend (d := d) ε) x‖
-        = ‖fderiv ℝ (myCutoff (0 : E) (1 - ε) (1 + ε)) x‖ := by
+        = ‖fderiv ℝ (smoothCutoff (0 : E) (1 - ε) (1 + ε)) x‖ := by
             rw [hEq, norm_neg]
   _ ≤ ↑Mst * ((1 + ε) - (1 - ε))⁻¹ := hcut
   _ = ↑Mst * (ε + ε)⁻¹ := by ring_nf
@@ -158,8 +159,8 @@ omit [NeZero d] in
 lemma sphereTwoBlend_fderiv_bound {ε : ℝ} (hε : 0 < ε) (x : E) :
     ‖fderiv ℝ (sphereTwoBlend (d := d) ε) x‖ ≤ ↑Mst * (ε + ε)⁻¹ := by
   have hcut :
-      ‖fderiv ℝ (myCutoff (0 : E) (2 - ε) (2 + ε)) x‖ ≤ ↑Mst * ((2 + ε) - (2 - ε))⁻¹ :=
-    myCutoff_fderiv_bound (d := d) (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) (by linarith) x
+      ‖fderiv ℝ (smoothCutoff (0 : E) (2 - ε) (2 + ε)) x‖ ≤ ↑Mst * ((2 + ε) - (2 - ε))⁻¹ :=
+    smoothCutoff_fderiv_bound (d := d) (x₀ := (0 : E)) (r := 2 - ε) (R := 2 + ε) (by linarith) x
   have hden : ((2 + ε) - (2 - ε))⁻¹ = (ε + ε)⁻¹ := by ring_nf
   simpa [sphereTwoBlend, hden] using hcut
 
@@ -253,7 +254,7 @@ lemma contDiff_sphereOneBlend {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1) :
     ContDiff ℝ (⊤ : ℕ∞) (sphereOneBlend (d := d) ε) := by
   unfold sphereOneBlend
   simpa using
-    (contDiff_const.sub (myCutoff_contDiff (d := d) (x₀ := (0 : E))
+    (contDiff_const.sub (smoothCutoff_contDiff (d := d) (x₀ := (0 : E))
       (r := 1 - ε) (R := 1 + ε) (by linarith) (by linarith)))
 
 omit [NeZero d] in
@@ -261,7 +262,7 @@ lemma contDiff_sphereTwoBlend {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 2) :
     ContDiff ℝ (⊤ : ℕ∞) (sphereTwoBlend (d := d) ε) := by
   unfold sphereTwoBlend
   simpa using
-    (myCutoff_contDiff (d := d) (x₀ := (0 : E))
+    (smoothCutoff_contDiff (d := d) (x₀ := (0 : E))
       (r := 2 - ε) (R := 2 + ε) (by linarith) (by linarith))
 
 omit [NeZero d] in

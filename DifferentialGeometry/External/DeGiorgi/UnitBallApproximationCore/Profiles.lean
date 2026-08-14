@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace
@@ -81,30 +82,30 @@ lemma smoothTransition_lipschitz : LipschitzWith Mst Real.smoothTransition :=
   lipschitzWith_of_nnnorm_deriv_le smoothTransition_differentiable'
     smoothTransition_nnnorm_deriv_le
 
-def myCutoff (x₀ : E) (r R : ℝ) (x : E) : ℝ :=
+def smoothCutoff (x₀ : E) (r R : ℝ) (x : E) : ℝ :=
   Real.smoothTransition ((R - ‖x - x₀‖) / (R - r))
 
 omit [NeZero d] in
-lemma myCutoff_nonneg (x₀ : E) (r R : ℝ) (x : E) : 0 ≤ myCutoff x₀ r R x :=
+lemma smoothCutoff_nonneg (x₀ : E) (r R : ℝ) (x : E) : 0 ≤ smoothCutoff x₀ r R x :=
   Real.smoothTransition.nonneg _
 
 omit [NeZero d] in
-lemma myCutoff_le_one (x₀ : E) (r R : ℝ) (x : E) : myCutoff x₀ r R x ≤ 1 :=
+lemma smoothCutoff_le_one (x₀ : E) (r R : ℝ) (x : E) : smoothCutoff x₀ r R x ≤ 1 :=
   Real.smoothTransition.le_one _
 
 omit [NeZero d] in
-lemma myCutoff_eq_one {x₀ : E} {r R : ℝ} (hrR : r < R) {x : E}
-    (hx : x ∈ Metric.ball x₀ r) : myCutoff x₀ r R x = 1 := by
-  unfold myCutoff
+lemma smoothCutoff_eq_one {x₀ : E} {r R : ℝ} (hrR : r < R) {x : E}
+    (hx : x ∈ Metric.ball x₀ r) : smoothCutoff x₀ r R x = 1 := by
+  unfold smoothCutoff
   apply Real.smoothTransition.one_of_one_le
   rw [le_div_iff₀ (sub_pos.2 hrR)]
   have : ‖x - x₀‖ < r := by rwa [← dist_eq_norm, ← Metric.mem_ball]
   linarith
 
 omit [NeZero d] in
-lemma myCutoff_eq_zero {x₀ : E} {r R : ℝ} (hrR : r < R) {x : E}
-    (hx : x ∉ Metric.closedBall x₀ R) : myCutoff x₀ r R x = 0 := by
-  unfold myCutoff
+lemma smoothCutoff_eq_zero {x₀ : E} {r R : ℝ} (hrR : r < R) {x : E}
+    (hx : x ∉ Metric.closedBall x₀ R) : smoothCutoff x₀ r R x = 0 := by
+  unfold smoothCutoff
   apply Real.smoothTransition.zero_of_nonpos
   have hx' : R < dist x x₀ := by
     rw [Metric.mem_closedBall, not_le] at hx
@@ -114,20 +115,20 @@ lemma myCutoff_eq_zero {x₀ : E} {r R : ℝ} (hrR : r < R) {x : E}
   exact div_nonpos_of_nonpos_of_nonneg (by linarith) (by linarith)
 
 omit [NeZero d] in
-lemma myCutoff_support_subset (x₀ : E) {r R : ℝ} (hrR : r < R) :
-    tsupport (myCutoff x₀ r R) ⊆ Metric.closedBall x₀ R := by
+lemma smoothCutoff_support_subset (x₀ : E) {r R : ℝ} (hrR : r < R) :
+    tsupport (smoothCutoff x₀ r R) ⊆ Metric.closedBall x₀ R := by
   apply closure_minimal (fun x hx => ?_) Metric.isClosed_closedBall
   contrapose! hx
   simp only [mem_support, ne_eq, not_not]
-  exact myCutoff_eq_zero hrR hx
+  exact smoothCutoff_eq_zero hrR hx
 
 omit [NeZero d] in
-lemma myCutoff_contDiff {x₀ : E} {r R : ℝ} (hr : 0 < r) (hrR : r < R) :
-    ContDiff ℝ (⊤ : ℕ∞) (myCutoff x₀ r R) := by
+lemma smoothCutoff_contDiff {x₀ : E} {r R : ℝ} (hr : 0 < r) (hrR : r < R) :
+    ContDiff ℝ (⊤ : ℕ∞) (smoothCutoff x₀ r R) := by
   have hRr : (0 : ℝ) < R - r := sub_pos.2 hrR
   rw [contDiff_iff_contDiffAt]
   intro x
-  unfold myCutoff
+  unfold smoothCutoff
   rcases eq_or_ne (x - x₀) 0 with hx | hx
   · have hxx : x = x₀ := sub_eq_zero.mp hx
     subst x
@@ -175,17 +176,17 @@ private lemma radial_lipschitz (x₀ : E) {r R : ℝ} (hrR : r < R) :
     exact div_le_div_of_nonneg_right key hpos.le
 
 omit [NeZero d] in
-lemma myCutoff_lipschitz (x₀ : E) {r R : ℝ} (hrR : r < R) :
+lemma smoothCutoff_lipschitz (x₀ : E) {r R : ℝ} (hrR : r < R) :
     LipschitzWith (Mst * ⟨(R - r)⁻¹, inv_nonneg.mpr (sub_pos.2 hrR).le⟩)
-      (myCutoff x₀ r R) :=
+      (smoothCutoff x₀ r R) :=
   smoothTransition_lipschitz.comp (radial_lipschitz x₀ hrR)
 
 omit [NeZero d] in
-lemma myCutoff_fderiv_bound (x₀ : E) {r R : ℝ} (hrR : r < R) (x : E) :
-    ‖fderiv ℝ (myCutoff x₀ r R) x‖ ≤ ↑Mst * (R - r)⁻¹ := by
-  have h : ‖fderiv ℝ (myCutoff x₀ r R) x‖ ≤
+lemma smoothCutoff_fderiv_bound (x₀ : E) {r R : ℝ} (hrR : r < R) (x : E) :
+    ‖fderiv ℝ (smoothCutoff x₀ r R) x‖ ≤ ↑Mst * (R - r)⁻¹ := by
+  have h : ‖fderiv ℝ (smoothCutoff x₀ r R) x‖ ≤
       ↑(Mst * ⟨(R - r)⁻¹, inv_nonneg.mpr (sub_nonneg.mpr hrR.le)⟩) :=
-    norm_fderiv_le_of_lipschitz (𝕜 := ℝ) (x₀ := x) (myCutoff_lipschitz x₀ hrR)
+    norm_fderiv_le_of_lipschitz (𝕜 := ℝ) (x₀ := x) (smoothCutoff_lipschitz x₀ hrR)
   rwa [NNReal.coe_mul, NNReal.coe_mk] at h
 
 structure Cutoff (x₀ : E) (r R : ℝ) where
@@ -198,15 +199,15 @@ structure Cutoff (x₀ : E) (r R : ℝ) where
   grad_bound : ∀ x, ‖fderiv ℝ toFun x‖ ≤ ↑Mst * (R - r)⁻¹
 
 omit [NeZero d] in
-theorem Cutoff.exists (x₀ : E) {r R : ℝ} (hr : 0 < r) (hR : r < R) :
-    ∃ _η : Cutoff x₀ r R, True :=
-  ⟨⟨myCutoff x₀ r R,
-    by simpa using (myCutoff_contDiff (x₀ := x₀) hr hR),
-    myCutoff_nonneg x₀ r R,
-    myCutoff_le_one x₀ r R,
-    fun x hx => myCutoff_eq_one (x₀ := x₀) hR hx,
-    myCutoff_support_subset x₀ hR,
-    fun x => myCutoff_fderiv_bound x₀ hR x⟩, trivial⟩
+@[irreducible] def cutoff (x₀ : E) {r R : ℝ} (hr : 0 < r) (hR : r < R) :
+    Cutoff x₀ r R :=
+  ⟨smoothCutoff x₀ r R,
+    by simpa using (smoothCutoff_contDiff (x₀ := x₀) hr hR),
+    smoothCutoff_nonneg x₀ r R,
+    smoothCutoff_le_one x₀ r R,
+    fun x hx => smoothCutoff_eq_one (x₀ := x₀) hR hx,
+    smoothCutoff_support_subset x₀ hR,
+    fun x => smoothCutoff_fderiv_bound x₀ hR x⟩
 
 omit [NeZero d] in
 theorem Lp_approx_by_continuous_compactly_supported

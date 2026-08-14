@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.Oscillation.BMO
@@ -106,7 +107,7 @@ lemma HasCampanatoBound.campanatoSeminorm_le
 
 lemma HasCampanatoBound.nonneg
     {u : E → ℝ} {x₀ : E} {R α C : ℝ}
-    (_hα : 0 < α) (hR : 0 < R) (hcamp : HasCampanatoBound u x₀ R α C) :
+    (hR : 0 < R) (hcamp : HasCampanatoBound u x₀ R α C) :
     0 ≤ C := by
   let b : CampanatoBall x₀ R := ⟨(x₀, R), ⟨hR, le_rfl, Set.Subset.rfl⟩⟩
   exact (campanatoBallValue_nonneg b).trans (hcamp.ballValue_le b)
@@ -471,7 +472,6 @@ lemma dyadicBallAverage_step_le_campanato
 
 lemma dyadicBallAverage_step_le_geometric
     {u : E → ℝ} {x₀ x : E} {R α C ρ : ℝ}
-    (_hα : 0 < α)
     (hcamp : HasCampanatoBound u x₀ R α C)
     (hρ : 0 < ρ) (hρR : ρ ≤ R) (hsub : Metric.ball x ρ ⊆ Metric.ball x₀ R)
     (n : ℕ) :
@@ -504,7 +504,7 @@ lemma dyadicBallAverage_cauchy
     exact inv_lt_one_of_one_lt₀ h2a
   exact cauchySeq_of_le_geometric (r := (2 : ℝ) ^ (-α))
     (C := (2 : ℝ) ^ d * C * ρ ^ α) hq_lt
-    (dyadicBallAverage_step_le_geometric hα hcamp hρ hρR hsub)
+    (dyadicBallAverage_step_le_geometric hcamp hρ hρR hsub)
 
 noncomputable def dyadicBallAverageLimit
     (u : E → ℝ) (x : E) (ρ : ℝ) : ℝ :=
@@ -533,7 +533,7 @@ lemma dyadicBallAverage_tail_le
     exact inv_lt_one_of_one_lt₀ h2a
   exact dist_le_of_le_geometric_of_tendsto
     (r := (2 : ℝ) ^ (-α)) (C := (2 : ℝ) ^ d * C * ρ ^ α)
-    hq_lt (dyadicBallAverage_step_le_geometric hα hcamp hρ hρR hsub)
+    hq_lt (dyadicBallAverage_step_le_geometric hcamp hρ hρR hsub)
     (tendsto_dyadicBallAverageLimit hα hcamp hρ hρR hsub) n
 
 lemma abs_halfSubballAverage_sub_ballAverage_le_campanato
@@ -683,7 +683,7 @@ lemma dyadicBallAverageLimit_holder_small
   have hρR : ρ ≤ R := by
     dsimp [ρ]
     linarith
-  have hC_nonneg : 0 ≤ C_camp := hcamp.nonneg hα hR
+  have hC_nonneg : 0 ≤ C_camp := hcamp.nonneg hR
   have hq_lt : q < 1 := by
     dsimp [q]
     rw [Real.rpow_neg (by positivity)]
@@ -878,7 +878,7 @@ lemma dyadicBallAverageLimit_holder_large
   have hρR : ρ ≤ R := by
     dsimp [ρ]
     linarith
-  have hC_nonneg : 0 ≤ C_camp := hcamp.nonneg hα hR
+  have hC_nonneg : 0 ≤ C_camp := hcamp.nonneg hR
   have hq_lt : q < 1 := by
     dsimp [q]
     rw [Real.rpow_neg (by positivity)]
@@ -1050,7 +1050,7 @@ theorem campanato_implies_holder
   have hρR : ρ ≤ R := by
     dsimp [ρ]
     linarith
-  have hC_nonneg : 0 ≤ C_camp := hcamp.nonneg hα hR
+  have hC_nonneg : 0 ≤ C_camp := hcamp.nonneg hR
   have hq_lt : q < 1 := by
     dsimp [q]
     rw [Real.rpow_neg (by positivity)]

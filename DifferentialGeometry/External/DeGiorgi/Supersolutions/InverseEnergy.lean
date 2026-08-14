@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.RegularizationSupport
@@ -107,12 +108,11 @@ private theorem inverse_termA_bound
 `η · (ε + u)^{-p/2}` lies in `W₀^{1,2}(B_s)` with the expected Caccioppoli
 energy estimate. -/
 theorem superPowerCutoff_energy_bound_reg
-    (_hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u η : E → ℝ} {p s Cη ε : ℝ}
     (hp : 0 < p)
     (hε : 0 < ε)
-    (hs : 0 < s) (hs1 : s ≤ 1)
+    (hs1 : s ≤ 1)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u)
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -143,7 +143,7 @@ theorem superPowerCutoff_energy_bound_reg
       MemW01p 2 (superExactPowerCutoff η u ε (-(p / 2))) Ω := by
     simpa [Ω] using
       superExactPowerCutoff_memW01_on_ball (d := d) (u := u) (η := η) (ε := ε)
-        (a := -(p / 2)) (s := s) (Cη := Cη) hs hs1 hε ha_pow hu1 hη
+        (a := -(p / 2)) (s := s) (Cη := Cη) hs1 hε ha_pow hu1 hη
         hη_bound hη_grad_bound hη_sub_ball
   let hwφ : MemW1pWitness 2 (superExactTestCutoff η u ε (-(1 + p))) Ω1 :=
     superExactTestCutoffWitness (d := d) (u := u) (η := η) (ε := ε) (a := -(1 + p))
@@ -274,7 +274,7 @@ theorem superPowerCutoff_energy_bound_reg
     have hpow_int :
         IntegrableOn (fun x => superExactShiftPow ε (-p) (u x)) Ω volume :=
       superExactInv_shiftPow_integrableOn_ball (u := u) (ε := ε) (p := p) (s := s)
-        hε (by linarith) hs hu
+        hε (by linarith) hu
     refine Integrable.mono' (hpow_int.const_mul (Cη ^ 2 / (1 + p)))
       hbound_aemeas.aestronglyMeasurable ?_
     filter_upwards [ae_restrict_mem Metric.isOpen_ball.measurableSet] with x hx
@@ -520,7 +520,7 @@ theorem superPowerCutoff_energy_bound_reg
         (Cη ^ 2 / (1 + p)) * ∫ x in Ω, superExactShiftPow ε (-p) (u x) ∂volume := by
     simpa [Ω, μ, boundTerm, gradEtaNorm, ψ, ψd] using
       superExactInv_boundTerm_bound_on_ball (d := d) (u := u) (η := η) (ε := ε) (p := p)
-        (s := s) (Cη := Cη) hε hp hs (fun x hx => hu_pos x (hΩ_sub_Ω1 hx)) hu hη
+        (s := s) (Cη := Cη) hε hp (fun x hx => hu_pos x (hΩ_sub_Ω1 hx)) hu hη
         hCη_nonneg hη_grad_bound
   have hTermA :
       ∫ x in Ω, termAfun x ∂volume ≤
@@ -540,7 +540,7 @@ theorem superPowerCutoff_energy_bound_reg
     have hpow_int :
         IntegrableOn (fun x => superExactShiftPow ε (-p) (u x)) Ω volume :=
       superExactInv_shiftPow_integrableOn_ball (u := u) (ε := ε) (p := p) (s := s)
-        hε (by linarith) hs hu
+        hε (by linarith) hu
     refine Integrable.mono' (hpow_int.const_mul (Cη ^ 2)) ?_ ?_
     · exact
         (((hη.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).norm.aemeasurable.pow
@@ -568,7 +568,7 @@ theorem superPowerCutoff_energy_bound_reg
             superExactShiftPow ε (-p) (u x) ∂volume
     exact superExactInv_termB_bound_on_ball
       (d := d) (u := u) (η := η) (ε := ε) (p := p) (s := s) (Cη := Cη)
-      hε hp hs (fun x hx => hu_pos x (hΩ_sub_Ω1 hx)) hu hη
+      hε hp (fun x hx => hu_pos x (hΩ_sub_Ω1 hx)) hu hη
       hCη_nonneg hη_grad_bound
   have hgrad_split :
       ∫ x in Ω, ‖hwv.weakGrad x‖ ^ 2 ∂volume ≤
@@ -622,11 +622,10 @@ theorem superPowerCutoff_energy_bound_reg
 
 
 theorem superExactInv_energy_mainBall
-    (hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u η : E → ℝ} {p s Cη : ℝ}
     (hp : 0 < p)
-    (hs : 0 < s) (hs1 : s ≤ 1)
+    (hs1 : s ≤ 1)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u)
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -664,9 +663,9 @@ theorem superExactInv_energy_mainBall
       Ω :=
     hwvBig.restrict Metric.isOpen_ball (Metric.ball_subset_ball hs1)
   obtain ⟨hwvReg, -, henergyReg⟩ :=
-    superPowerCutoff_energy_bound_reg (d := d) hd A
+    superPowerCutoff_energy_bound_reg (d := d) A
       (u := u) (η := η) (p := p) (s := s) (Cη := Cη) (ε := superEpsSeq n)
-      hp (superEpsSeq_pos n) hs hs1 hu_pos hsuper hη hη_bound hη_grad_bound hη_sub_ball
+      hp (superEpsSeq_pos n) hs1 hu_pos hsuper hη hη_bound hη_grad_bound hη_sub_ball
   have hae_grad :
       hwvReg.weakGrad =ᵐ[μ] hwv.weakGrad := by
     simpa [μ, Ω, hwv] using
@@ -684,11 +683,10 @@ theorem superExactInv_energy_mainBall
           ∫ x in Ω, superExactShiftPow (superEpsSeq n) (-p) (u x) ∂volume := henergyReg
 
 theorem superPowerCutoff_memW1p_energy_of_supersolution_core
-    (hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u η : E → ℝ} {p s Cη : ℝ}
     (hp : 0 < p)
-    (hs : 0 < s) (hs1 : s ≤ 1)
+    (hs1 : s ≤ 1)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u)
     (hpInt :
@@ -1042,7 +1040,7 @@ theorem superPowerCutoff_memW1p_energy_of_supersolution_core
     intro n
     simpa [μ, Ω] using
       (superExactInv_shiftPow_integrableOn_ball (u := u) (ε := superEpsSeq n) (p := p)
-        (s := s) (superEpsSeq_pos n) (by linarith) hs hu)
+        (s := s) (superEpsSeq_pos n) (by linarith) hu)
   have hpIntΩ : Integrable (fun x => |(u x)⁻¹| ^ p) μ := by
     simpa [μ, Ω] using hpInt
   have hRhs_le :
@@ -1067,8 +1065,8 @@ theorem superPowerCutoff_memW1p_energy_of_supersolution_core
           ≤ CE * ∫ x in Ω, superExactShiftPow (superEpsSeq n) (-p) (u x) ∂volume := by
               simpa [CE, I, Ω] using
                 (superExactInv_energy_mainBall
-                  (d := d) hd A (u := u) (η := η) (p := p) (s := s) (Cη := Cη)
-                  hp hs hs1 hu_pos hsuper hη hη_bound hη_grad_bound hη_sub_ball n)
+                  (d := d) A (u := u) (η := η) (p := p) (s := s) (Cη := Cη)
+                  hp hs1 hu_pos hsuper hη hη_bound hη_grad_bound hη_sub_ball n)
       _ ≤ CE * I := by
           exact mul_le_mul_of_nonneg_left (hRhs_le n) hCE_nonneg
   have hBn_sq_bound :
@@ -1527,11 +1525,10 @@ theorem superPowerCutoff_memW1p_energy_of_supersolution_core
   simpa [CE, I] using hmain_real
 
 theorem superPowerCutoff_energy_bound
-    (hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u η : E → ℝ} {p s Cη : ℝ}
     (hp : 0 < p)
-    (hs : 0 < s) (hs1 : s ≤ 1)
+    (hs1 : s ≤ 1)
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u)
     (hpInt :
@@ -1552,8 +1549,8 @@ theorem superPowerCutoff_energy_bound
     superPowerCutoff_tsupport_subset (d := d) (u := u) (η := η) (p := p) hη_sub_ball
   obtain ⟨hwv, henergy⟩ :=
     superPowerCutoff_memW1p_energy_of_supersolution_core
-      (d := d) hd A (u := u) (η := η) (p := p) (s := s) (Cη := Cη)
-      hp hs hs1 hu_pos hsuper hpInt hη hη_bound hη_grad_bound hη_sub_ball
+      (d := d) A (u := u) (η := η) (p := p) (s := s) (Cη := Cη)
+      hp hs1 hu_pos hsuper hpInt hη hη_bound hη_grad_bound hη_sub_ball
   have hv_compact : HasCompactSupport v :=
     hasCompactSupport_of_tsupport_subset_ball hv_support
   have hv_memW1p_real : MemW1p (ENNReal.ofReal (2 : ℝ)) v Ω := by

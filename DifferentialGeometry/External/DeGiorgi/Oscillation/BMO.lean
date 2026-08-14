@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.Common
@@ -159,10 +160,7 @@ lemma john_nirenberg_iteration_rpow_bound (θ lam A : ℝ) (hθ_pos : 0 < θ) (h
 /-- Iteration of level-set decay to exponential decay. -/
 theorem john_nirenberg_iteration
     {B : Set E} {E_lam : ℝ → Set E}
-    (_hB : MeasurableSet B) (_hB_fin : volume B ≠ ⊤)
     (hE_sub : ∀ lam, E_lam lam ⊆ B)
-    (_hE_meas : ∀ lam, MeasurableSet (E_lam lam))
-    (_hE_anti : ∀ lam₁ lam₂, lam₁ ≤ lam₂ → E_lam lam₂ ⊆ E_lam lam₁)
     {A : ℝ} (hA : 0 < A)
     {θ : ℝ} (hθ_pos : 0 < θ) (hθ_lt : θ < 1)
     (h_decay : ∀ lam : ℝ, 0 < lam → volume (E_lam (lam + A)) ≤ ENNReal.ofReal θ * volume
@@ -211,7 +209,7 @@ theorem john_nirenberg_iteration
 /-- John-Nirenberg exponential decay from a one-step decay hypothesis on pointwise level sets. -/
 theorem john_nirenberg
     {u : E → ℝ} {x₀ : E} {r t A θ : ℝ}
-    (_hr : 0 < r) (ht : 0 < t) (hu_meas : Measurable u)
+    (_hr : 0 < r) (ht : 0 < t)
     (hA : 0 < A) (hθ_pos : 0 < θ) (hθ_lt : θ < 1)
     (h_decay : ∀ lam : ℝ, 0 < lam →
       volume ({x ∈ Metric.ball x₀ r |
@@ -225,17 +223,9 @@ theorem john_nirenberg
       ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
   set avg := ⨍ y in Metric.ball x₀ r, u y ∂volume
   set E_lam : ℝ → Set E := fun lam => {x ∈ Metric.ball x₀ r | ‖u x - avg‖ > lam}
-  have hball_meas : MeasurableSet (Metric.ball x₀ r) := measurableSet_ball
   have hE_sub : ∀ lam, E_lam lam ⊆ Metric.ball x₀ r := fun lam x hx => hx.1
-  have hE_meas : ∀ lam, MeasurableSet (E_lam lam) := by
-    intro lam
-    exact hball_meas.inter (measurableSet_lt measurable_const ((hu_meas.sub_const avg).norm))
-  have hE_anti : ∀ lam₁ lam₂, lam₁ ≤ lam₂ → E_lam lam₂ ⊆ E_lam lam₁ := by
-    intro lam₁ lam₂ hle x hx
-    exact ⟨hx.1, lt_of_le_of_lt hle hx.2⟩
   simpa [E_lam, avg] using
-    john_nirenberg_iteration hball_meas (measure_ball_lt_top (μ := volume) (x := x₀) (r := r)).ne
-      hE_sub hE_meas hE_anti hA hθ_pos hθ_lt h_decay t ht
+    john_nirenberg_iteration hE_sub hA hθ_pos hθ_lt h_decay t ht
 
 /-- On balls staying inside `Metric.ball x₀ r`, the zero extension agrees with `u`. -/
 theorem indicator_bmo_bound

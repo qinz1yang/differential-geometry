@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import Mathlib.MeasureTheory.Integral.Layercake
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
@@ -511,7 +512,6 @@ noncomputable def regularizedLogFun
 noncomputable def regularizedLogWitness
     {Ω : Set E} (hΩ : IsOpen Ω)
     {u : E → ℝ}
-    (_hu_pos : ∀ x ∈ Ω, 0 < u x)
     (hw_u : MemW1pWitness 2 u Ω)
     {ε : ℝ} (hε : 0 < ε) :
     MemW1pWitness 2 (regularizedLogFun (u := u) hε) Ω :=
@@ -535,7 +535,7 @@ theorem regularizedLogWitness_grad_ae
     (hu_pos : ∀ x ∈ Ω, 0 < u x)
     (hw_u : MemW1pWitness 2 u Ω)
     {ε : ℝ} (hε : 0 < ε) :
-    let hw_v := regularizedLogWitness (Ω := Ω) hΩ hu_pos hw_u hε
+    let hw_v := regularizedLogWitness (Ω := Ω) hΩ hw_u hε
     ∀ᵐ x ∂(volume.restrict Ω), ∀ i : Fin d,
       hw_v.weakGrad x i = -(1 / (u x + ε)) * hw_u.weakGrad x i := by
   intro hw_v
@@ -544,7 +544,7 @@ theorem regularizedLogWitness_grad_ae
   have hux : 0 < u x := hu_pos x hx
   subst hw_v
   calc
-    (regularizedLogWitness (Ω := Ω) hΩ hu_pos hw_u hε).weakGrad x i =
+    (regularizedLogWitness (Ω := Ω) hΩ hw_u hε).weakGrad x i =
         deriv (smoothLogApprox hε) (u x) * hw_u.weakGrad x i := by
       unfold regularizedLogWitness
       simp [comp_smooth_bounded_witness]
@@ -557,14 +557,14 @@ theorem regularizedLogWitness_grad
     (hu_pos : ∀ x ∈ Ω, 0 < u x)
     (hw_u : MemW1pWitness 2 u Ω)
     {ε : ℝ} (hε : 0 < ε) :
-    let hw_v := regularizedLogWitness (Ω := Ω) hΩ hu_pos hw_u hε
+    let hw_v := regularizedLogWitness (Ω := Ω) hΩ hw_u hε
     ∀ x ∈ Ω, ∀ i : Fin d,
       hw_v.weakGrad x i = -(1 / (u x + ε)) * hw_u.weakGrad x i := by
   intro hw_v x hx i
   have hux : 0 < u x := hu_pos x hx
   subst hw_v
   calc
-    (regularizedLogWitness (Ω := Ω) hΩ hu_pos hw_u hε).weakGrad x i =
+    (regularizedLogWitness (Ω := Ω) hΩ hw_u hε).weakGrad x i =
         deriv (smoothLogApprox hε) (u x) * hw_u.weakGrad x i := by
       unfold regularizedLogWitness
       simp [comp_smooth_bounded_witness]

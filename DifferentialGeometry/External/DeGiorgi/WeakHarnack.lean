@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 -- Modified 2026-08-12: merged isolated tactic bullets
@@ -417,19 +418,19 @@ private noncomputable def C_chainGeom (_hd : 2 < (d : ℝ)) : ℝ :=
       ((((d : ℝ) * moserChi d) / 2) + ((d : ℝ) / 2)))
 
 private noncomputable def C_chainMain (hd : 2 < (d : ℝ)) : ℝ :=
-  C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 *
+  C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 *
     C_crossover' d * C_chainGeom (d := d) hd
 
 private theorem one_le_C_chainMain (hd : 2 < (d : ℝ)) : 1 ≤ C_chainMain (d := d) hd := by
   unfold C_chainMain
-  have h0 : 1 ≤ C_weakHarnack0Forward (d := d) hd :=
+  have h0 : 1 ≤ C_weakHarnack0Forward (d := d) :=
     one_le_C_weakHarnack0Forward (d := d) hd
   have h1 : 1 ≤ C_weakHarnack0 (d := d) ^ 3 := by
     have := one_le_C_weakHarnack0 (d := d)
     nlinarith [this, sq_nonneg (C_weakHarnack0 (d := d))]
-  have h01 : 1 ≤ C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 := by
+  have h01 : 1 ≤ C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 := by
     nlinarith [h0, h1]
-  have h01_nonneg : 0 ≤ C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 := by
+  have h01_nonneg : 0 ≤ C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 := by
     exact le_trans (by norm_num : (0 : ℝ) ≤ 1) h01
   have hgeom : 1 ≤ C_chainGeom (d := d) hd := by
     unfold C_chainGeom
@@ -491,16 +492,16 @@ private theorem one_le_C_chainMain (hd : 2 < (d : ℝ)) : 1 ≤ C_chainMain (d :
                 ((((d : ℝ) * moserChi d) / 2) + ((d : ℝ) / 2))) := by
             ring
   have hmid_nonneg : 0 ≤
-      C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 * C_crossover' d := by
+      C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 * C_crossover' d := by
     have hcross_nonneg : 0 ≤ C_crossover' d := le_trans (by norm_num) one_le_C_crossover'
     exact mul_nonneg h01_nonneg hcross_nonneg
   calc
-    (1 : ℝ) ≤ C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 := h01
-    _ = (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3) * 1 := by ring
-    _ ≤ (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3) * C_crossover' d := by
+    (1 : ℝ) ≤ C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 := h01
+    _ = (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3) * 1 := by ring
+    _ ≤ (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3) * C_crossover' d := by
         exact mul_le_mul_of_nonneg_left one_le_C_crossover' h01_nonneg
-    _ = (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 * C_crossover' d) * 1 := by ring
-    _ ≤ (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 * C_crossover' d) *
+    _ = (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 * C_crossover' d) * 1 := by ring
+    _ ≤ (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 * C_crossover' d) *
           C_chainGeom (d := d) hd := by
         exact mul_le_mul_of_nonneg_left hgeom hmid_nonneg
 
@@ -834,7 +835,7 @@ private theorem sq_le_sq_add_one {x : ℝ} (hx : 0 ≤ x) :
   nlinarith
 
 private theorem small_chain_constant_le_main (hd : 2 < (d : ℝ)) :
-    (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d * C_crossover' d) *
+    (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d * C_crossover' d) *
         C_chainGeom (d := d) hd ≤
       C_chainMain (d := d) hd := by
   have hC0_ge_one := one_le_C_weakHarnack0 (d := d)
@@ -849,7 +850,7 @@ private theorem small_chain_constant_le_main (hd : 2 < (d : ℝ)) :
         C_weakHarnack0 d * 1 ≤ C_weakHarnack0 d * (C_weakHarnack0 d ^ 2) :=
       mul_le_mul_of_nonneg_left hC0_sq_ge_one hC0_nonneg
     simpa [pow_two, pow_three, mul_assoc] using hmul
-  have hfwd_nonneg : 0 ≤ C_weakHarnack0Forward (d := d) hd :=
+  have hfwd_nonneg : 0 ≤ C_weakHarnack0Forward (d := d) :=
     le_trans (by norm_num) (one_le_C_weakHarnack0Forward (d := d) hd)
   have hcross_nonneg : 0 ≤ C_crossover' d :=
     le_trans (by norm_num) one_le_C_crossover'
@@ -861,13 +862,13 @@ private theorem small_chain_constant_le_main (hd : 2 < (d : ℝ)) :
         C_weakHarnack0 d ^ 3 * C_crossover' d :=
     mul_le_mul_of_nonneg_right hC0_pow hcross_nonneg
   have hcoeff :
-      C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d * C_crossover' d ≤
-        C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 * C_crossover' d := by
+      C_weakHarnack0Forward (d := d) * C_weakHarnack0 d * C_crossover' d ≤
+        C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 * C_crossover' d := by
     simpa [mul_assoc] using mul_le_mul_of_nonneg_left hcoeff_inner hfwd_nonneg
   calc
-    (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d * C_crossover' d) *
+    (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d * C_crossover' d) *
         C_chainGeom (d := d) hd
-        ≤ (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d ^ 3 *
+        ≤ (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d ^ 3 *
           C_crossover' d) * C_chainGeom (d := d) hd :=
       mul_le_mul_of_nonneg_right hcoeff hgeom_nonneg
     _ = C_chainMain (d := d) hd := by rw [C_chainMain]
@@ -882,7 +883,7 @@ private theorem weak_harnack_chain_constant_bound
           (c_crossover' d ^ 2 + 1) ^
             ((((d : ℝ) * moserChi d) / 2) + ((d : ℝ) / 2)) ≤
         C_chainGeom (d := d) hd) :
-    C_weakHarnack0Forward (d := d) hd *
+    C_weakHarnack0Forward (d := d) *
           (A.1.Λ * weakHarnackP0 A ^ 2 / (1 - q) ^ 2 + 1) ^
             (((d : ℝ) * moserChi d) / 2) *
           Cvol *
@@ -891,7 +892,7 @@ private theorem weak_harnack_chain_constant_bound
               (c_crossover' d ^ 2 + 1) ^ ((d : ℝ) / 2))) ≤
       C_chainMain (d := d) hd / (1 - q) ^ ((d : ℝ) * moserChi d) := by
   have h1q_pos : 0 < 1 - q := sub_pos.mpr hq1
-  have hfwd_nonneg : 0 ≤ C_weakHarnack0Forward (d := d) hd :=
+  have hfwd_nonneg : 0 ≤ C_weakHarnack0Forward (d := d) :=
     le_trans (by norm_num) (one_le_C_weakHarnack0Forward (d := d) hd)
   have hcross_nonneg : 0 ≤ C_crossover' d :=
     le_trans (by norm_num) one_le_C_crossover'
@@ -901,19 +902,19 @@ private theorem weak_harnack_chain_constant_bound
   have hC0_nonneg : 0 ≤ C_weakHarnack0 d :=
     le_trans (by norm_num) (one_le_C_weakHarnack0 (d := d))
   have hmid_nonneg :
-      0 ≤ C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d * C_crossover' d :=
+      0 ≤ C_weakHarnack0Forward (d := d) * C_weakHarnack0 d * C_crossover' d :=
     mul_nonneg (mul_nonneg hfwd_nonneg hC0_nonneg) hcross_nonneg
   have hdecay_nonneg : 0 ≤ (1 - q) ^ (-((d : ℝ) * moserChi d)) := by
     positivity
   calc
-    C_weakHarnack0Forward (d := d) hd *
+    C_weakHarnack0Forward (d := d) *
           (A.1.Λ * weakHarnackP0 A ^ 2 / (1 - q) ^ 2 + 1) ^
             (((d : ℝ) * moserChi d) / 2) *
           Cvol *
           (C_crossover' d * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 *
             (Cvol * C_weakHarnack0 d *
               (c_crossover' d ^ 2 + 1) ^ ((d : ℝ) / 2)))
-        ≤ C_weakHarnack0Forward (d := d) hd *
+        ≤ C_weakHarnack0Forward (d := d) *
             ((c_crossover' d ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
               (1 - q) ^ (-((d : ℝ) * moserChi d))) *
             Cvol *
@@ -924,7 +925,7 @@ private theorem weak_harnack_chain_constant_bound
               0 ≤ (c_crossover' d ^ 2 + 1) ^ ((d : ℝ) / 2) := by
             positivity
           have hright_nonneg :
-              0 ≤ C_weakHarnack0Forward (d := d) hd * Cvol *
+              0 ≤ C_weakHarnack0Forward (d := d) * Cvol *
                 (C_crossover' d * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 *
                   (Cvol * C_weakHarnack0 d *
                     (c_crossover' d ^ 2 + 1) ^ ((d : ℝ) / 2))) :=
@@ -934,13 +935,13 @@ private theorem weak_harnack_chain_constant_bound
           simpa [mul_assoc, mul_left_comm, mul_comm] using
             (mul_le_mul_of_nonneg_left
               (weak_harnack_forward_factor_bound hd A hq hq1) hright_nonneg)
-    _ = (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d * C_crossover' d) *
+    _ = (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d * C_crossover' d) *
           (Cvol ^ 2 * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 *
             (c_crossover' d ^ 2 + 1) ^
               ((((d : ℝ) * moserChi d) / 2) + ((d : ℝ) / 2))) *
           (1 - q) ^ (-((d : ℝ) * moserChi d)) := by
         calc
-          C_weakHarnack0Forward (d := d) hd *
+          C_weakHarnack0Forward (d := d) *
                 ((c_crossover' d ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
                   (1 - q) ^ (-((d : ℝ) * moserChi d))) *
                 Cvol *
@@ -948,19 +949,19 @@ private theorem weak_harnack_chain_constant_bound
                   (Cvol * C_weakHarnack0 d *
                     (c_crossover' d ^ 2 + 1) ^ ((d : ℝ) / 2)))
               =
-            C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d * C_crossover' d *
+            C_weakHarnack0Forward (d := d) * C_weakHarnack0 d * C_crossover' d *
               (Cvol ^ 2 * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 *
                 ((c_crossover' d ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
                   (c_crossover' d ^ 2 + 1) ^ ((d : ℝ) / 2))) *
               (1 - q) ^ (-((d : ℝ) * moserChi d)) := by
                 ring
-          _ = (C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d * C_crossover' d) *
+          _ = (C_weakHarnack0Forward (d := d) * C_weakHarnack0 d * C_crossover' d) *
                 (Cvol ^ 2 * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 *
                   (c_crossover' d ^ 2 + 1) ^
                     ((((d : ℝ) * moserChi d) / 2) + ((d : ℝ) / 2))) *
                 (1 - q) ^ (-((d : ℝ) * moserChi d)) := by
               rw [← Real.rpow_add (by positivity)]
-    _ ≤ ((C_weakHarnack0Forward (d := d) hd * C_weakHarnack0 d * C_crossover' d) *
+    _ ≤ ((C_weakHarnack0Forward (d := d) * C_weakHarnack0 d * C_crossover' d) *
           C_chainGeom (d := d) hd) *
           (1 - q) ^ (-((d : ℝ) * moserChi d)) := by
         exact mul_le_mul_of_nonneg_right
@@ -1059,7 +1060,7 @@ private theorem weak_harnack_chain_shifted
   rw [hcov_lhs, hcov_rhs] at hfwd
   rw [hΛ_eq] at hfwd
   -- Crossover estimate on the half-ball.
-  have hcross := crossover_estimate_unaveraged hd A hu_pos hsuper
+  have hcross := crossover_estimate_unaveraged A hu_pos hsuper
   -- hcross: (∫_{B_{1/2}} |u|^{p₀}) · (∫_{B_{1/2}} |u|^{-p₀}) ≤ C_cross'·vol²
 
   -- Inverse Moser estimate on the rescaled supersolution `v`.
@@ -1190,7 +1191,7 @@ private theorem weak_harnack_chain_shifted
     exact (one_le_inv₀ hpow_pos).2 hpow_le_one
   have hforward_bound :
       I_fwd ^ (p₀ * (((d : ℝ) - 2) / (q * (d : ℝ)))) ≤
-        C_weakHarnack0Forward (d := d) hd *
+        C_weakHarnack0Forward (d := d) *
           (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
           C_vol * I_pos := by
     have hI_le : I_fwd ≤ C_vol * I_fwd := by
@@ -1200,11 +1201,11 @@ private theorem weak_harnack_chain_shifted
     calc
       I_fwd ^ (p₀ * (((d : ℝ) - 2) / (q * (d : ℝ))))
           ≤ (C_vol * I_fwd) ^ (p₀ * (((d : ℝ) - 2) / (q * (d : ℝ)))) := hpow_le
-      _ ≤ C_weakHarnack0Forward (d := d) hd *
+      _ ≤ C_weakHarnack0Forward (d := d) *
             (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
             (C_vol * I_pos) := by
               simpa [I_fwd, I_pos, C_vol, q_star] using hfwd
-      _ = C_weakHarnack0Forward (d := d) hd *
+      _ = C_weakHarnack0Forward (d := d) *
             (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
             C_vol * I_pos := by ring
   have hbound_shift :
@@ -1242,7 +1243,7 @@ private theorem weak_harnack_chain_shifted
       have hJ_shift_pos : 0 < J_shift := by
         simpa [J_shift] using
           shifted_half_inv_integral_pos hp₀ hu_pos hδ hJ_shift_int
-      have hcross_shift_raw := crossover_estimate_unaveraged hd A huδ_pos hsuperδ
+      have hcross_shift_raw := crossover_estimate_unaveraged A huδ_pos hsuperδ
       have hneg_eq :
           ∫ x in ball (0 : E) (1 / 2 : ℝ), |u x + δ| ^ (-p₀) ∂volume = J_shift := by
         simpa [J_shift] using
@@ -1364,7 +1365,7 @@ private theorem weak_harnack_chain_shifted
               ((((d : ℝ) * moserChi d) / 2) + ((d : ℝ) / 2)) ≤
             C_chainGeom (d := d) hd := by
         exact chain_geom_bound_of_sq_bounds hd hC_vol_sq_bound hvol_sq_bound
-      have hfwd_const_nonneg : 0 ≤ C_weakHarnack0Forward (d := d) hd := by
+      have hfwd_const_nonneg : 0 ≤ C_weakHarnack0Forward (d := d) := by
         exact le_trans (by norm_num : (0 : ℝ) ≤ 1)
           (one_le_C_weakHarnack0Forward (d := d) hd)
       have hfactor_nonneg :
@@ -1382,7 +1383,7 @@ private theorem weak_harnack_chain_shifted
           0 ≤ C_crossover' d * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 := by
         exact mul_nonneg hcross_nonneg (sq_nonneg _)
       have hconst_bound :
-          C_weakHarnack0Forward (d := d) hd *
+          C_weakHarnack0Forward (d := d) *
               (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
               C_vol *
               (C_crossover' d * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 *
@@ -1392,25 +1393,25 @@ private theorem weak_harnack_chain_shifted
         exact weak_harnack_chain_constant_bound
           hd A hq hq1 hC_vol_nonneg hgeom_bound
       have hfront_nonneg :
-          0 ≤ C_weakHarnack0Forward (d := d) hd *
+          0 ≤ C_weakHarnack0Forward (d := d) *
             (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
             C_vol :=
         mul_nonneg (mul_nonneg hfwd_const_nonneg hfactor_nonneg) hC_vol_nonneg
       calc
         I_fwd ^ (p₀ * (((d : ℝ) - 2) / (q * (d : ℝ))))
-            ≤ C_weakHarnack0Forward (d := d) hd *
+            ≤ C_weakHarnack0Forward (d := d) *
                 (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
                 C_vol * I_pos := hforward_bound
-        _ ≤ C_weakHarnack0Forward (d := d) hd *
+        _ ≤ C_weakHarnack0Forward (d := d) *
               (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
               C_vol * I_pos_shift := by
                 exact mul_le_mul_of_nonneg_left hI_pos_mono hfront_nonneg
-        _ ≤ C_weakHarnack0Forward (d := d) hd *
+        _ ≤ C_weakHarnack0Forward (d := d) *
               (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
               C_vol *
               (C_crossover' d * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 * J_shift⁻¹) := by
                 exact mul_le_mul_of_nonneg_left hI_pos_shift hfront_nonneg
-        _ ≤ C_weakHarnack0Forward (d := d) hd *
+        _ ≤ C_weakHarnack0Forward (d := d) *
               (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
               C_vol *
               (C_crossover' d * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 *
@@ -1425,7 +1426,7 @@ private theorem weak_harnack_chain_shifted
                           (inf_u + δ) ^ p₀) := by
                   exact mul_le_mul_of_nonneg_left hJinv hcrossvol_nonneg
                 exact mul_le_mul_of_nonneg_left hinner hfront_nonneg
-        _ = (C_weakHarnack0Forward (d := d) hd *
+        _ = (C_weakHarnack0Forward (d := d) *
               (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
               C_vol *
               (C_crossover' d * (volume.real (ball (0 : E) (1 / 2 : ℝ))) ^ 2 *

@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.CutoffPrep.RegularizedEnergy
@@ -1616,7 +1617,7 @@ theorem moserPowerCutoff_memW1pWitness
         ∫ x in Ωρ, ‖(wfn n).weakGrad x‖ ^ 2 ∂volume ≤
           CE * ∫ x in Ωρ, (moserEpsSeq n + |max (u x) 0|) ^ p ∂volume := by
       simpa [CE, Ωρ, wfn, wfnBig, fn] using
-        (moser_regularized_energy_bound (d := d) A (u := u) (η := η) (p := p) (ρ := ρ)
+        (moser_exact_regularized_energy_bound (d := d) A (u := u) (η := η) (p := p) (ρ := ρ)
           (Cη := Cη) (ε := moserEpsSeq n) (N := N) hp hρ hρ1 (moserEpsSeq_pos n) hN
           hsub hu1 hη hη_nonneg hη_bound hη_grad_bound hη_sub_ρ hqualρ
           (hpIntρ_eps n))

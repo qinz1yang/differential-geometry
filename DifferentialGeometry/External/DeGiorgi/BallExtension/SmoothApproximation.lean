@@ -1,3 +1,4 @@
+-- Modified 2026-08-14: API-quality audit repairs; see MODIFICATIONS.md
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
 import DifferentialGeometry.External.DeGiorgi.BallExtension.ApproximationControl
@@ -1242,8 +1243,7 @@ already available unit-ball approximation theorem.
 -/
 theorem smooth_input_unitBallExtension_smoothing
     {p : ℝ} (hp : 1 < p) {ψ : E → ℝ}
-    (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (_hψ_cpt : HasCompactSupport ψ) :
+    (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ) :
     ∃ Gψ : E → E,
       MemLp (unitBallExtension (d := d) ψ) (ENNReal.ofReal p) volume ∧
       (∀ i : Fin d, MemLp (fun x => Gψ x i) (ENNReal.ofReal p) volume) ∧
@@ -1422,10 +1422,10 @@ theorem weakGrad_component_cauchy_bound
         unitBallExtension (d := d) ψ₂ x * (fderiv ℝ φ x) ei := by
       intro x; simp only [hψ_def, unitBallExtension_sub (d := d) ψ₁ ψ₂]; ring
     have hψ₁_memLp : MemLp (unitBallExtension (d := d) ψ₁) (ENNReal.ofReal p) volume := by
-      rcases smooth_input_unitBallExtension_smoothing (d := d) hp _hψ₁_smooth _hψ₁_cpt with
+      rcases smooth_input_unitBallExtension_smoothing (d := d) hp _hψ₁_smooth with
         ⟨_, hml, _⟩; exact hml
     have hψ₂_memLp : MemLp (unitBallExtension (d := d) ψ₂) (ENNReal.ofReal p) volume := by
-      rcases smooth_input_unitBallExtension_smoothing (d := d) hp _hψ₂_smooth _hψ₂_cpt with
+      rcases smooth_input_unitBallExtension_smoothing (d := d) hp _hψ₂_smooth with
         ⟨_, hml, _⟩; exact hml
     have hψ₁_loc : LocallyIntegrable (unitBallExtension (d := d) ψ₁)
         (volume.restrict Set.univ) := by
