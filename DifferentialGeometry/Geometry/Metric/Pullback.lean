@@ -148,11 +148,11 @@ noncomputable def Diffeomorph.pullbackMetric
   isVonNBounded x := Diffeomorph.pullbackInner_isVonNBounded g Φ x
   contMDiff := by
     classical
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_clmSection_of_eval_sections_contMDiff
       (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
       (φ := fun x : M => Diffeomorph.pullbackInner g Φ x)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_clmSection_of_eval_sections_contMDiff
       (V₂ := fun _ : M => ℝ)
       (φ := fun x : M => Diffeomorph.pullbackInner g Φ x (Y x))
     intro W

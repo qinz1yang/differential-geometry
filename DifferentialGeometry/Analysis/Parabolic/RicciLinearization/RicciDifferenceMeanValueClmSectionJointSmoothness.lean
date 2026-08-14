@@ -99,7 +99,7 @@ theorem contMDiff_clm_section_of_pointwise_joint_manifold_time
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt F₁ V₁ x₀
   have he₂ : x₀ ∈ e₂.baseSet := mem_baseSet_trivializationAt F₂ V₂ x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   have hφY : ∀ i, ContMDiff (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, F₂)) ∞
       (fun p : M × ℝ => TotalSpace.mk' F₂ (E := V₂) p.1 (φ p (Y i p.1))) := fun i => h (Y i)
   have hφY_fiber : ∀ i, ContMDiffAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, F₂) ∞
@@ -207,7 +207,7 @@ theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt F₁ V₁ x₀
   have he₂ : x₀ ∈ e₂.baseSet := mem_baseSet_trivializationAt F₂ V₂ x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   have hφY : ∀ i, ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, F₂)) ∞
       (fun p : M × ℝ => TotalSpace.mk' F₂ (E := V₂) p.1 (φ p (Y i p.1)))
       ((Set.univ : Set M) ×ˢ S) := fun i => h (Y i)

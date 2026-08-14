@@ -590,7 +590,7 @@ theorem inv_cov_coord
       (𝓘(Real, E).prod 𝓘(Real, E)) ∞
       (T% VTan) Umod := by
     exact contMDiffOn_vectorSpace_iff_contDiffOn.mpr (by simpa only [VTan] using hVfun)
-  obtain ⟨Vexts, hVexts⟩ := exists_contMDiffSection_eqOn_nhd
+  obtain ⟨Vexts, hVexts⟩ := exists_contMDiffSection_eqOn_nhds
     (I := 𝓘(Real, E)) (F := E) (V := TangentSpace 𝓘(Real, E))
     (n := (⊤ : ℕ∞)) (s := fun _ : Unit => VTan)
     (u := Umod) (p := z) (fun _ => hVsec) hUopen hzU
@@ -615,7 +615,7 @@ theorem inv_cov_coord
   have hZsec : ContMDiffOn I I.tangent ∞
       (T% Zloc) S :=
     B.inv_snd_inf hdom
-  obtain ⟨Zexts, hZexts⟩ := exists_contMDiffSection_eqOn_nhd
+  obtain ⟨Zexts, hZexts⟩ := exists_contMDiffSection_eqOn_nhds
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
     (s := fun _ : Unit => Zloc)
     (u := S) (p := y0) (fun _ => hZsec) hSopen hyS

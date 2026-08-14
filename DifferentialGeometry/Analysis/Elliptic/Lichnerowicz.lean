@@ -193,11 +193,11 @@ private theorem lichnerowicz_inequality
     rw [h_lhs_eq, h_rhs_eq]
     have h_eq_fun : ∀ y : M, Δ_g (I := I) g ⟨_, hf⟩ y = ((-lam) • f) y := by
       intro y; exact hf_eigen y
-    have h_eqOn_nhd : Δ_g (I := I) g ⟨_, hf⟩ =ᶠ[𝓝 x] ((-lam) • f) :=
+    have h_eqOn_nhds : Δ_g (I := I) g ⟨_, hf⟩ =ᶠ[𝓝 x] ((-lam) • f) :=
       Filter.Eventually.of_forall h_eq_fun
     have h_d_Δf_eq : d_Δf = (-lam) • d_f := by
       rw [hd_Δf_def, hd_f_def]
-      rw [Filter.EventuallyEq.mfderiv_eq h_eqOn_nhd]
+      rw [Filter.EventuallyEq.mfderiv_eq h_eqOn_nhds]
       exact const_smul_mfderiv (hf.mdifferentiable (by simp) x) (-lam)
     rw [h_d_Δf_eq]
     rw [ContinuousLinearMap.smul_apply, smul_eq_mul]

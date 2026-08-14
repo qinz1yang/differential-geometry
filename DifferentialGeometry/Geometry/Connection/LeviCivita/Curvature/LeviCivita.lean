@@ -594,7 +594,7 @@ private theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
   have he : x ∈ e.baseSet := by
     simp [e]
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
-  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet he
   let V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     ∑ i, (b.repr v i) • s' i
   have hV : (fun p : M => V p) =ᶠ[𝓝 x] tangentConstAt (I := I) x v := by

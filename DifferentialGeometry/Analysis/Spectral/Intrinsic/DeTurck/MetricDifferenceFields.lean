@@ -156,7 +156,7 @@ private theorem chartFrame_component_contMDiffOn_aux
         (fun b : M => TotalSpace.mk' E b (chartFrameVec (I := I) α k b))
         (chartAt H α).source := fun k => chartAlphaFrame_section_contMDiffOn (I := I) α k
   obtain ⟨Sf, hSf_eq⟩ :=
-    exists_contMDiffSection_eqOn_nhd
+    exists_contMDiffSection_eqOn_nhds
       (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => chartFrameVec (I := I) α k b)
       (u := (chartAt H α).source) (p := x₀)
       h_frame_on ((chartAt H α).open_source) hx₀
@@ -291,7 +291,7 @@ private theorem chartFrame_component3_contMDiffOn_aux
         (fun c : M => TotalSpace.mk' E c (chartFrameVec (I := I) α m c))
         (chartAt H α).source := fun m => chartAlphaFrame_section_contMDiffOn (I := I) α m
   obtain ⟨Sf, hSf_eq⟩ :=
-    exists_contMDiffSection_eqOn_nhd
+    exists_contMDiffSection_eqOn_nhds
       (s := fun m : Fin (Module.finrank ℝ E) => fun c : M => chartFrameVec (I := I) α m c)
       (u := (chartAt H α).source) (p := x₁)
       h_frame_on ((chartAt H α).open_source) hx₁
@@ -413,7 +413,7 @@ private theorem chartFrame_component4_contMDiffOn_aux
         (fun c : M => TotalSpace.mk' E c (chartFrameVec (I := I) α m c))
         (chartAt H α).source := fun m => chartAlphaFrame_section_contMDiffOn (I := I) α m
   obtain ⟨Sf, hSf_eq⟩ :=
-    exists_contMDiffSection_eqOn_nhd
+    exists_contMDiffSection_eqOn_nhds
       (s := fun m : Fin (Module.finrank ℝ E) => fun c : M => chartFrameVec (I := I) α m c)
       (u := (chartAt H α).source) (p := x₁)
       h_frame_on ((chartAt H α).open_source) hx₁

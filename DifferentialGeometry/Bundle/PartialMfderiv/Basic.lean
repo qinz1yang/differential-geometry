@@ -81,7 +81,6 @@ theorem vderiv_mlieBracket
     [FiniteDimensional Real E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
     (hY : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% Y) x)
@@ -291,7 +290,6 @@ theorem extDerivFun_apply_mlieBracket
     [FiniteDimensional Real E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
     (hY : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% Y) x)
@@ -302,43 +300,6 @@ theorem extDerivFun_apply_mlieBracket
         extDerivFun (I := I)
           (fun y : M => extDerivFun (I := I) f y (X y)) x (Y x) := by
   exact vderiv_mlieBracket (I := I) X Y f x hX hY hf
-
-theorem contMDiff_partial_deriv_fst_gen
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    (F : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; ℝ⟯) :
-    ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => deriv (fun t => F (t, p.2)) p.1) := by
-  have hrw : (fun p : ℝ × M => deriv (fun t => F (t, p.2)) p.1) =
-      fun p : ℝ × M => (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun t => F (t, p.2)) p.1) (1 : ℝ) := by
-    funext p
-    rw [mfderiv_eq_fderiv]
-    exact (fderiv_apply_one_eq_deriv (f := fun t => F (t, p.2)) (x := p.1)).symm
-  rw [hrw]
-  rw [contMDiff_infty]
-  intro n p₀
-  have harg : ContMDiff ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod I) ∞
-      (fun q : (ℝ × M) × ℝ => (q.2, q.1.2)) :=
-    ContMDiff.prodMk contMDiff_snd contMDiff_fst.snd
-  have hF : ContMDiff ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
-      (fun q : (ℝ × M) × ℝ => F (q.2, q.1.2)) :=
-    F.contMDiff.comp harg
-  have h_apply :=
-    ContMDiffAt.mfderiv_apply
-      (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
-      (f := fun (p : ℝ × M) (t : ℝ) => F (t, p.2))
-      (g := fun p : ℝ × M => p.1)
-      (g₁ := fun p : ℝ × M => p)
-      (g₂ := fun _ : ℝ × M => (1 : ℝ))
-      (x₀ := p₀)
-      (m := (n : WithTop ℕ∞))
-      ((hF.of_le (by exact_mod_cast le_top : ((n : WithTop ℕ∞) + 1) ≤ ∞)).contMDiffAt)
-      contMDiffAt_fst
-      contMDiffAt_id
-      contMDiffAt_const
-      le_rfl
-  simpa [inTangentCoordinates_model_space] using h_apply
 
 theorem timeDeriv_smoothAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -583,7 +544,7 @@ theorem extDerivFun_finset_sum_sum_mul_at
     (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)]
 
 theorem extDerivFun_apply_contMDiff
-    {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -659,7 +620,7 @@ theorem extDerivFun_apply_contMDiff
     rw [hcancel]
 
 theorem extDerivFun_apply_contMDiffAt
-    {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]

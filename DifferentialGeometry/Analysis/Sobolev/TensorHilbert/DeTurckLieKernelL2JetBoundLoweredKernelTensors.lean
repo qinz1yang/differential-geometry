@@ -275,7 +275,7 @@ private theorem dLaLoweredCovec_section_contMDiff (g₀ g₁ g_bg : SmoothRieman
   set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   have hscalar : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun x : M => g₀.inner x
         (connDiffCovDerivOp (I := I) g₁ g_bg x (Y (σ 1) x) (Y (σ 2) x) (Y (σ 3) x))

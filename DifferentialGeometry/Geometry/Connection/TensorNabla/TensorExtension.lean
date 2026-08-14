@@ -820,16 +820,16 @@ private lemma tensor02Cov_toFun_contMDiff
         (E := fun x : M => TangentSpace I x →L[ℝ]
           (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ))) x
         ((tensor02Cov cov).toFun T x)) := by
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ]
       (TangentSpace I x →L[ℝ] ℝ))
     (φ := fun x => (tensor02Cov cov).toFun T x)
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x => (tensor02Cov cov).toFun T x (Y x))
   intro Z
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun _ : M => ℝ)
     (φ := fun x => ((tensor02Cov cov).toFun T x (Y x)) (Z x))
   intro W

@@ -155,11 +155,11 @@ theorem exists_pullbackInner (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ
     (ContinuousLinearMap.precomp ℝ (mfderiv I I Φ x)).comp
       ((h.inner (Φ x)).comp (mfderiv I I Φ x)) with hQ
   refine ⟨χ, fun x => χ x • Q x, ?_, hχ, hχK, hχsupp, hχ01, fun x => rfl⟩
-  · apply cotangentCov_clmSection_smooth_aux
+  · apply contMDiff_clmSection_of_eval_sections_contMDiff
       (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
       (φ := fun x => χ x • Q x)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_clmSection_of_eval_sections_contMDiff
       (V₂ := fun _ : M => ℝ)
       (φ := fun x => (χ x • Q x) (Y x))
     intro W x₀

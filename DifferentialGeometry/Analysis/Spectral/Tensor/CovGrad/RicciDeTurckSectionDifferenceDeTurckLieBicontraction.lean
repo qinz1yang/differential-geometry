@@ -71,11 +71,11 @@ theorem connDiffOp_homSection_contMDiff (g₁ g_bg : SmoothRiemannianMetric I M)
         (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z →L[ℝ] TangentSpace I z) b
         (PDE.DeTurck.connDiff (I := I) g₁ g_bg b)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z)
     (φ := fun b : M => PDE.DeTurck.connDiff (I := I) g₁ g_bg b)
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun z : M => TangentSpace I z)
     (φ := fun b : M => PDE.DeTurck.connDiff (I := I) g₁ g_bg b (Y b))
   intro Z
@@ -569,11 +569,11 @@ theorem dLaKernelBilinSym_homSection_contMDiff (g₁ g_bg : SmoothRiemannianMetr
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ)
         x (connDiffCovDerivKernelBilinSym (I := I) g₁ g_bg x (p x) (q x))) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => connDiffCovDerivKernelBilinSym (I := I) g₁ g_bg x (p x) (q x))
   intro V0
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => connDiffCovDerivKernelBilinSym (I := I) g₁ g_bg x (p x) (q x) (V0 x))
   intro W
@@ -827,7 +827,7 @@ theorem deTurckLieWEndo_homSection_contMDiff (g₁ g_bg : SmoothRiemannianMetric
         (E := fun z : M => TangentSpace I z →L[ℝ] TangentSpace I z) x
         (deTurckLieWEndo (I := I) g₁ g_bg x)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun z : M => TangentSpace I z)
     (φ := fun x : M => deTurckLieWEndo (I := I) g₁ g_bg x)
   intro Y

@@ -586,7 +586,7 @@ theorem rm13_eval_eq_christoffelCurvCoord
   classical
   let frame := coordinateFrameAt (I := I) x₀
   let hframe := coordinateFrameAt_isLocalFrame (I := I) x₀
-  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds
     (coordinateFrameSet_open (I := I) x₀) (coordinateFrameAt_mem (I := I) x₀)
   let Xs : SmoothTangentSection (I := I) (M := M) := s' i
   let Ys : SmoothTangentSection (I := I) (M := M) := s' k

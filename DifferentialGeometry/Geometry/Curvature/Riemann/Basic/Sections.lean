@@ -30,7 +30,7 @@ theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
   have he : x ∈ e.baseSet := by
     simp [e]
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
-  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet he
   let V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     ∑ i, (b.repr v i) • s' i
   have hV : (fun p : M => V p) =ᶠ[𝓝 x] tangentConstAt (I := I) x v := by
@@ -285,7 +285,7 @@ private theorem riemannCurvatureAt_contMDiff
       dsimp [eTan]
       exact mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) x₀
     have hframe := eTan.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) bE
-    obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd eTan.open_baseSet hx₀Tan
+    obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds eTan.open_baseSet hx₀Tan
     let Xs : ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _) := s' (σ 0)
     let Ys : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -445,7 +445,7 @@ private theorem riemannCurvature04At_contMDiff
     dsimp [eTan]
     exact mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) x₀
   have hframe := eTan.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
-  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd eTan.open_baseSet hx₀Tan
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds eTan.open_baseSet hx₀Tan
   let Xs : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) := s' (σ 0)
   let Ys : ContMDiffSection I E (∞ : WithTop ℕ∞)

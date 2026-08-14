@@ -71,7 +71,7 @@ theorem g0FlatField_contMDiff (g₀ : SmoothRiemannianMetric I M) :
   set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   have hscalar : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun x : M => g₀.inner x (Z x) (Y (σ 0) x)) x₀ := by
     have h_total : ContMDiffAt I (I.prod 𝓘(ℝ, ℝ)) ∞
@@ -360,7 +360,7 @@ theorem raisedKoszulFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
     have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
     have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-    obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+    obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
     have hvec : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) x
           (raisedKoszulVec (I := I) g₀ g₁ x (Y (σ 0) x) (Y (σ 1) x))) := by
@@ -906,7 +906,7 @@ private lemma flatArmCovec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric
   set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   have hconn : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) x
         (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y (σ 0) x) (V0 x))) :=
@@ -1024,7 +1024,7 @@ theorem flatArmFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) (kind : Bo
     set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
     have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
     have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-    obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+    obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
     have hscalar : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (fun x : M => g₀.inner x
           (flatArmVec (I := I) g₀ g₁ kind x (om x) (Y (σ 0) x)) (Y (σ 1) x)) x₀ :=

@@ -202,7 +202,7 @@ theorem connDiffFib_contMDiff (g₁ g₀ : SmoothRiemannianMetric I M) :
     set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
     have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
     have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-    obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+    obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
     have hconn : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) x
           (((connDiff (I := I) g₁ g₀ x) (Y (σ 0) x)) (Y (σ 1) x))) :=

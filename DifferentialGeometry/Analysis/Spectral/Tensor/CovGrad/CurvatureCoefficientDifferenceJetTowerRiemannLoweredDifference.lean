@@ -110,7 +110,7 @@ theorem ricMixedSharpEndoFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) 
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y) x
         (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x)) := by
-  apply cotangentCov_clmSection_smooth_aux (I := I) (M := M)
+  apply contMDiff_clmSection_of_eval_sections_contMDiff (I := I) (M := M)
     (F₂ := E) (V₂ := fun y : M => TangentSpace I y)
     (φ := fun x : M => ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x)
   intro Y
@@ -421,7 +421,7 @@ theorem riemannLoweredCovec_section_contMDiff (gm gc : SmoothRiemannianMetric I 
   set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   have hscalar : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun x : M => gm.inner x
         (riemannOp (LeviCivita (I := I) gc) x (Y (σ 0) x) (Y (σ 2) x) (Y (σ 3) x))

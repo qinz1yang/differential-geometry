@@ -377,7 +377,7 @@ private lemma riemannSec_eq_zero_of_Z_eq_zero
   let basisF := Module.finBasis ℝ F
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt F V x
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) basisF
-  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet he
   obtain ⟨χ, -, hχsupp⟩ :=
     (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp
       (e.open_baseSet.mem_nhds he)

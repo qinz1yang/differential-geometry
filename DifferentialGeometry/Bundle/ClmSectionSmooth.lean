@@ -24,14 +24,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-theorem cotangentCov_clmSection_smooth_aux
+theorem contMDiff_clmSection_of_eval_sections_contMDiff
     {F₂ : Type*} [NormedAddCommGroup F₂] [NormedSpace ℝ F₂] [FiniteDimensional ℝ F₂]
     {V₂ : M → Type*} [∀ x, AddCommGroup (V₂ x)] [∀ x, Module ℝ (V₂ x)]
     [TopologicalSpace (TotalSpace F₂ V₂)] [∀ x, TopologicalSpace (V₂ x)]
     [FiberBundle F₂ V₂] [VectorBundle ℝ F₂ V₂]
-    [ContMDiffVectorBundle ∞ F₂ V₂ I]
     [∀ x, IsTopologicalAddGroup (V₂ x)] [∀ x, ContinuousSMul ℝ (V₂ x)]
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (φ : ∀ x : M, TangentSpace I x →L[ℝ] V₂ x)
     (h : ∀ (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
       ContMDiff I (I.prod 𝓘(ℝ, F₂)) ∞
@@ -50,7 +49,7 @@ theorem cotangentCov_clmSection_smooth_aux
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
   have he₂ : x₀ ∈ e₂.baseSet := mem_baseSet_trivializationAt F₂ V₂ x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   have hφY : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, F₂)) ∞
       (fun x => TotalSpace.mk' F₂ (E := V₂) x (φ x (Y i x))) := fun i => h (Y i)
   have hφY_fiber : ∀ i, ContMDiffAt I 𝓘(ℝ, F₂) ∞

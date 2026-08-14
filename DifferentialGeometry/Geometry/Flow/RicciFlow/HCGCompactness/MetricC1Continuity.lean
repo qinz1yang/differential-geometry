@@ -651,7 +651,7 @@ theorem metricCov_cont
       (t, x) := by
   classical
   obtain ⟨sec, hsec⟩ :=
-    hframe.exists_contMDiffSection_eqOn_nhd hu hx
+    hframe.exists_contMDiffSection_eqOn_nhds hu hx
   let V : Fin (a + 2) →
       ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _) :=

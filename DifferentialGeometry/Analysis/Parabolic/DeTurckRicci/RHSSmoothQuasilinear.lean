@@ -97,7 +97,7 @@ theorem liederivmetric_chart_component_smooth_in_g_w_input
     have h := chartAlphaFrame_section_contMDiffOn (I := I) α k
     exact h
   obtain ⟨S, hS_eq⟩ :=
-    exists_contMDiffSection_eqOn_nhd
+    exists_contMDiffSection_eqOn_nhds
       (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => chartFrameVec (I := I) α k b)
       (u := (chartAt H α).source) (p := x₀)
       h_frame_on ((chartAt H α).open_source) hx₀
@@ -219,7 +219,7 @@ theorem ricciTensor_chartFrameComponent_contMDiffOn
     have h := chartAlphaFrame_section_contMDiffOn (I := I) α k
     exact h
   obtain ⟨S, hS_eq⟩ :=
-    exists_contMDiffSection_eqOn_nhd
+    exists_contMDiffSection_eqOn_nhds
       (s := fun k : Fin (Module.finrank ℝ E) => fun b : M => chartFrameVec (I := I) α k b)
       (u := (chartAt H α).source) (p := x₀)
       h_frame_on ((chartAt H α).open_source) hx₀

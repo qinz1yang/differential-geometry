@@ -143,7 +143,7 @@ theorem ContMDiffSection.exists_eq_at_gen
   let b := Module.finBasis ℝ F
   have he : p ∈ e.baseSet := mem_baseSet_trivializationAt F V p
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (↑n) b
-  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet he
   refine ⟨∑ i, ((hframe.toBasisAt he).repr v i) • s' i, ?_⟩
   rw [ContMDiffSection.finset_sum_apply_gen]
   simp only [ContMDiffSection.coe_smul, Pi.smul_apply]
@@ -211,7 +211,7 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise_gen
   let b := Module.finBasis ℝ F₁
   have he : p ∈ e.baseSet := mem_baseSet_trivializationAt F₁ E₁ p
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (↑n) b
-  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet he
   obtain ⟨χ, -, hχsupp⟩ := (SmoothBumpFunction.nhds_basis_tsupport (I := I) p).mem_iff.mp
     (e.open_baseSet.mem_nhds he)
   have hcoeff_smooth : ∀ i, ContMDiff I 𝓘(ℝ) (↑n)
@@ -343,7 +343,7 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection_gen
       have he₁ : p₀.proj ∈ e₁.baseSet := mem_baseSet_trivializationAt F₁ E₁ p₀.proj
       have he₂ : p₀.proj ∈ e₂.baseSet := mem_baseSet_trivializationAt F₂ E₂ p₀.proj
       have hframe₁ := e₁.isLocalFrameOn_localFrame_baseSet I (↑n) b₁
-      obtain ⟨σ', hσ'⟩ := hframe₁.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+      obtain ⟨σ', hσ'⟩ := hframe₁.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
       have hφ_eq : ∀ᶠ x in nhds p₀,
           (e₂ ⟨x.proj, φ x.proj x.2⟩).2 =
           ∑ i, b₁.repr (e₁ x).2 i •
@@ -485,7 +485,7 @@ noncomputable def ContMDiffVectorBundleHom.ofTensorialAt_gen
     have he₁ : p₀.proj ∈ e₁.baseSet := mem_baseSet_trivializationAt F₁ E₁ p₀.proj
     have he₂ : p₀.proj ∈ e₂.baseSet := mem_baseSet_trivializationAt F₂ E₂ p₀.proj
     have hframe₁ := e₁.isLocalFrameOn_localFrame_baseSet I (↑n) b₁
-    obtain ⟨σ', hσ'⟩ := hframe₁.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+    obtain ⟨σ', hσ'⟩ := hframe₁.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
     have hφ_eq : ∀ᶠ x in nhds p₀,
         (e₂ ⟨x.proj, φ x.proj x.2⟩).2 =
         ∑ i, b₁.repr (e₁ x).2 i •

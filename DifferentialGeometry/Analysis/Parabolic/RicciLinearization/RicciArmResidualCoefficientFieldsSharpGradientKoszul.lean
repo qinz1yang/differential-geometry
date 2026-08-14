@@ -547,11 +547,11 @@ theorem sharpGradKoszulKernelBilin_homSection_contMDiff
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ) x
         (sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x (p x) (q x))) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x (p x) (q x))
   intro V0
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x (p x) (q x) (V0 x))
   intro W

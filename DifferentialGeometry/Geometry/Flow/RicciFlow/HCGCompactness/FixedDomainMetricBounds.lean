@@ -562,7 +562,7 @@ theorem metricCov2_coord
   let hframe1 : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u :=
     localFrameOneOfInf (I := I) frame hframe
   obtain ⟨sec, hsec⟩ :=
-    hframe.exists_contMDiffSection_eqOn_nhd hu hx
+    hframe.exists_contMDiffSection_eqOn_nhds hu hx
   let X :
       ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M -> Type _) := sec d
@@ -1024,7 +1024,7 @@ theorem metricCov3_coord
     localFrameOneOfInf (I := I) frame hframe
   let slot : Fin 4 -> Idx := DifferentialGeometry.Tensor.Coordinates.slots4 d a b c
   obtain ⟨sec, hsec⟩ :=
-    hframe.exists_contMDiffSection_eqOn_nhd hu hx
+    hframe.exists_contMDiffSection_eqOn_nhds hu hx
   let X :
       ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M -> Type _) := sec m

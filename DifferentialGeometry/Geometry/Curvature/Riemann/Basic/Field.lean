@@ -878,7 +878,7 @@ private theorem smooth_linear_tangentSection_pointwise
   let b := Module.finBasis Real E
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
-  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
+  obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet he
   obtain ⟨χ, -, hχsupp⟩ :=
     (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp
       (e.open_baseSet.mem_nhds he)

@@ -222,7 +222,7 @@ theorem metricCovDeriv_one_eval_localFrame
     change IsManifold I ∞ M
     infer_instance
   obtain ⟨sec, hsec⟩ :=
-    hframe.exists_contMDiffSection_eqOn_nhd hu hx
+    hframe.exists_contMDiffSection_eqOn_nhds hu hx
   let cov :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef
   let X :

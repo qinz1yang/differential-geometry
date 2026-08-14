@@ -631,11 +631,11 @@ theorem riemannMixedKernelBilin_homSection_contMDiff (g₀ g₁ : SmoothRiemanni
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ)
         x (riemannMixedKernelBilin (I := I) g₀ g₁ x (p x) (q x))) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => riemannMixedKernelBilin (I := I) g₀ g₁ x (p x) (q x))
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => riemannMixedKernelBilin (I := I) g₀ g₁ x (p x) (q x) (Y x))
   intro W

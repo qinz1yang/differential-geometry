@@ -78,7 +78,7 @@ theorem metricCovDeriv_succ_component_coordFrame
   rw [component0S_apply]
   simp only [coordinateFrameAt_toBasis_apply]
   obtain ⟨sec, hsec⟩ :=
-    (coordinateFrameAt_isLocalFrame (I := I) x).exists_contMDiffSection_eqOn_nhd
+    (coordinateFrameAt_isLocalFrame (I := I) x).exists_contMDiffSection_eqOn_nhds
       (coordinateFrameSet_open (I := I) x) (coordinateFrameAt_mem (I := I) x)
   have hsecx : ∀ i : CoordinateIdx (𝕜 := Real) E,
       sec i x = coordinateFrameAt (I := I) x i x :=

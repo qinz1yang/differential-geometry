@@ -100,7 +100,7 @@ theorem nablaRicciBilin_chartBasis_contMDiffOn
       (chartAt H α).source := by
     have h := chartBasisVec_contMDiffOn (I := I) α j
     rwa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] at h
-  obtain ⟨s', hs'_eq⟩ := exists_contMDiffSection_eqOn_nhd (I := I)
+  obtain ⟨s', hs'_eq⟩ := exists_contMDiffSection_eqOn_nhds (I := I)
     (F := E) (V := fun b : M => TangentSpace I b) (n := (⊤ : ℕ∞))
     (s := fun _ : Unit => fun b : M => chartBasisVecFiber (I := I) α j b)
     (u := (chartAt H α).source) (p := x₀)
@@ -143,7 +143,7 @@ theorem nablaRicciEndo_contMDiff
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y) x
         (nablaRicciEndo (I := I) g X x)) := by
-  apply cotangentCov_clmSection_smooth_aux (I := I) (M := M)
+  apply contMDiff_clmSection_of_eval_sections_contMDiff (I := I) (M := M)
     (F₂ := E) (V₂ := fun y : M => TangentSpace I y)
     (φ := fun x : M => nablaRicciEndo (I := I) g X x)
   intro Y

@@ -314,7 +314,7 @@ private theorem tsMetricCovec_section_contMDiff (g₀ : SmoothRiemannianMetric I
   set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   have hscalar : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun x : M => g₀.inner x (Y (σ 0) x) (Y (σ 1) x)) x₀ :=
     (contMDiff_g_inner_of_smooth_sections (I := I) g₀ (Y (σ 0)) (Y (σ 1))).contMDiffAt

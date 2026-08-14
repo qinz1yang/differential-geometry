@@ -605,7 +605,7 @@ private lemma nablaCurvSec_eq_of_Y_eventuallyEq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma exists_global_smooth_eqOn_nhd_scalar
+private lemma exists_global_smooth_eqOn_nhds_scalar
     {f : M → ℝ} {U : Set M} {x : M} (hU : IsOpen U) (hxU : x ∈ U)
     (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U) :
     ∃ F : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ F ∧ F =ᶠ[𝓝 x] f := by
@@ -659,11 +659,11 @@ private lemma nablaCurvSec_vanish_secondSlot
   have hcLoc_on : ∀ i, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (cLoc i) e.baseSet := by
     intro i b hb
     exact (contMDiffAt_localFrame_coeff bE hb (hΔ b) i).contMDiffWithinAt
-  obtain ⟨Sglob, hSglob_eq⟩ := exists_contMDiffSection_eqOn_nhd (I := I)
+  obtain ⟨Sglob, hSglob_eq⟩ := exists_contMDiffSection_eqOn_nhds (I := I)
     (V := fun z : M => TangentSpace I z) (n := (⊤ : ℕ∞)) (s := sLoc)
     (fun i => (hsLoc_on i).of_le (by exact_mod_cast le_top)) hbase_open hx_base
   have hfglob : ∀ i, ∃ F : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ F ∧ F =ᶠ[𝓝 x] cLoc i :=
-    fun i => exists_global_smooth_eqOn_nhd_scalar hbase_open hx_base (hcLoc_on i)
+    fun i => exists_global_smooth_eqOn_nhds_scalar hbase_open hx_base (hcLoc_on i)
   choose fglob hfglob_smooth hfglob_eq using hfglob
   set Ssec : Module.Basis.ofVectorSpaceIndex ℝ E → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     fun i => Sglob i with hSsec_def

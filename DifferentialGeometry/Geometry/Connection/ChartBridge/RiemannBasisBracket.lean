@@ -151,7 +151,7 @@ theorem exists_smooth_chartBasisExtension (x : M) :
     have h := chartBasisVec_contMDiffOn (I := I) x i
     simpa using h
   obtain ⟨s', hs'⟩ :=
-    exists_contMDiffSection_eqOn_nhd (I := I) (V := TangentSpace I) (n := (⊤ : ℕ∞))
+    exists_contMDiffSection_eqOn_nhds (I := I) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       (s := fun i b => chartBasisVecFiber (I := I) x i b) hs hbase_open hx_base
   refine ⟨fun i b => s' i b, fun i => (s' i).contMDiff, ?_⟩
   filter_upwards [hs'] with b hb i using hb i

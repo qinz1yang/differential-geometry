@@ -460,7 +460,7 @@ private theorem pureRDirCLMFixedFrame_homSection_contMDiff
         (E := fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace 0 s I y) x
         (pureRDirCLMFixedFrame (I := I) (M := M) g s S B x)) := by
   classical
-  refine cotangentCov_clmSection_smooth_aux
+  refine contMDiff_clmSection_of_eval_sections_contMDiff
     (φ := fun x : M => pureRDirCLMFixedFrame (I := I) (M := M) g s S B x) (fun Y => ?_)
   have hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (fun b : M => (Y : Π b : M, TangentSpace I b) b)) :=
     Y.contMDiff

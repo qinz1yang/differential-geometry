@@ -959,16 +959,16 @@ theorem riemannOp_section_contMDiff (g : SmoothRiemannianMetric I M) :
             TangentSpace I x)
         b (riemannOp (LeviCivita (I := I) g) b)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M =>
       TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)
     (φ := fun x : M => riemannOp (LeviCivita (I := I) g) x)
   intro X
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (φ := fun x : M => riemannOp (LeviCivita (I := I) g) x (X x))
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x)
     (φ := fun x : M => riemannOp (LeviCivita (I := I) g) x (X x) (Y x))
   intro Z
@@ -1038,11 +1038,11 @@ private noncomputable def localFrameSmoothExtension
   set e := trivializationAt E (TangentSpace I : M → Type _) x with he_def
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) (chartModelBasis E)
-  exact (hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he).choose
+  exact (hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet he).choose
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold I M]
     [CompleteSpace E] in
-private lemma localFrameSmoothExtension_eqOn_nhd (x : M) :
+private lemma localFrameSmoothExtension_eqOn_nhds (x : M) :
     let e := trivializationAt E (TangentSpace I : M → Type _) x
     ∀ᶠ b in 𝓝 x, ∀ i, (localFrameSmoothExtension (I := I) x i) b =
       e.localFrame (chartModelBasis E) i b := by
@@ -1050,7 +1050,7 @@ private lemma localFrameSmoothExtension_eqOn_nhd (x : M) :
   set e := trivializationAt E (TangentSpace I : M → Type _) x with he_def
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) (chartModelBasis E)
-  exact (hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he).choose_spec
+  exact (hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet he).choose_spec
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold I M]
     [CompleteSpace E] in
@@ -1093,9 +1093,9 @@ theorem ricciTensor_pairing_contMDiff
   have hS_smooth : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (T% (fun b : M => S i b)) := fun i =>
     localFrameSmoothExtension_contMDiff (I := I) x i
-  have hS_eqOn_nhd : ∀ᶠ b in 𝓝 x, ∀ i,
+  have hS_eqOn_nhds : ∀ᶠ b in 𝓝 x, ∀ i,
       S i b = e.localFrame (chartModelBasis E) i b :=
-    localFrameSmoothExtension_eqOn_nhd (I := I) x
+    localFrameSmoothExtension_eqOn_nhds (I := I) x
   have hsec_smooth : ∀ i,
       ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
         (T% (fun b : M => riemannSec (LeviCivita (I := I) g) (S i) Y W b)) := fun i =>
@@ -1134,7 +1134,7 @@ theorem ricciTensor_pairing_contMDiff
         ∑ i : Fin (Module.finrank ℝ E),
           ((chartModelBasis E).repr
             (e.continuousLinearMapAt ℝ b (riemannSec (LeviCivita (I := I) g) (S i) Y W b))) i := by
-    filter_upwards [e.open_baseSet.mem_nhds hex, hS_eqOn_nhd] with b hb hSb
+    filter_upwards [e.open_baseSet.mem_nhds hex, hS_eqOn_nhds] with b hb hSb
     have h1 : ricciTensor (I := I) g b (Y b) (W b) =
         LinearMap.trace ℝ (TangentSpace I b)
           (ricciEndo (I := I) g b (Y b) (W b)) := ricciTensor_apply g b (Y b) (W b)
@@ -1200,11 +1200,11 @@ theorem ricciTensor_contMDiff (g : SmoothRiemannianMetric I M) :
         (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) b
         (ricciTensor (I := I) g b)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => ricciTensor (I := I) g x)
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => ricciTensor (I := I) g x (Y x))
   intro W

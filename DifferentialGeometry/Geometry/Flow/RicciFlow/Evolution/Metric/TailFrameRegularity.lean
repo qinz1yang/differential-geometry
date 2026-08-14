@@ -40,7 +40,7 @@ theorem ricciFrame_mdiffAt
     MDifferentiableAt I (modelWithCornersSelf Real Real)
       (fun y : M => metricRicciAt (I := I) g y
         (vec2 (I := I) (frame i y) (frame j y))) x := by
-  obtain ⟨sec, hsec⟩ := hframe.exists_contMDiffSection_eqOn_nhd hu hx
+  obtain ⟨sec, hsec⟩ := hframe.exists_contMDiffSection_eqOn_nhds hu hx
   have hscalar :
       ContMDiff I (modelWithCornersSelf Real Real) ∞
         (fun y : M => ricciTensor (I := I) g y (sec i y) (sec j y)) :=

@@ -136,7 +136,7 @@ private theorem pureRFrozenDirCLM_homSection_contMDiff
         (E := fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace 0 m I y) x
         (pureRFrozenDirCLM (I := I) (M := M) g m B (fun y : M => W.toSection y) x)) := by
   classical
-  refine cotangentCov_clmSection_smooth_aux
+  refine contMDiff_clmSection_of_eval_sections_contMDiff
     (φ := fun x : M => pureRFrozenDirCLM (I := I) (M := M) g m B (fun y : M => W.toSection y) x)
     (fun Y => ?_)
   have hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (fun b : M => (Y : Π b : M, TangentSpace I b) b)) :=

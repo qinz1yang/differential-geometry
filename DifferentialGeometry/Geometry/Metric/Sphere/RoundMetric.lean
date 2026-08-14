@@ -82,11 +82,11 @@ noncomputable def roundMetric : SmoothRiemannianMetric (𝓡 n) (sphere (0 : E) 
     classical
     haveI : FiniteDimensional ℝ E := .of_fact_finrank_eq_succ n
     haveI : CompactSpace (sphere (0 : E) 1) := Metric.sphere.compactSpace _ _
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_clmSection_of_eval_sections_contMDiff
       (V₂ := fun x : sphere (0 : E) 1 => TangentSpace (𝓡 n) x →L[ℝ] ℝ)
       (φ := fun x : sphere (0 : E) 1 => roundInner (n := n) x)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_clmSection_of_eval_sections_contMDiff
       (V₂ := fun _ : sphere (0 : E) 1 => ℝ)
       (φ := fun x : sphere (0 : E) 1 => roundInner (n := n) x (Y x))
     intro W

@@ -205,7 +205,7 @@ theorem exists_cov_zero_at
         (by simp)
     exact hsmooth.congr_of_eventuallyEq hlocal
   obtain ⟨Vglob, hVglob⟩ :=
-    exists_contMDiffSection_eqOn_nhd
+    exists_contMDiffSection_eqOn_nhds
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := ⊤) (ι := Unit)
       (s := fun _ : Unit => Vloc) (u := e.baseSet) (p := x₀)

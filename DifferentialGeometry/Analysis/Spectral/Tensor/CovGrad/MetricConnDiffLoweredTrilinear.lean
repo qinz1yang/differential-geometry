@@ -269,7 +269,7 @@ private theorem trilinKernel_section_contMDiff
   set e₁ := trivializationAt E (TangentSpace I : M → Type _) x₀ with he₁def
   have he₁ : x₀ ∈ e₁.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
   have hframe := e₁.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
-  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhd e₁.open_baseSet he₁
+  obtain ⟨Y, hY⟩ := hframe.exists_contMDiffSection_eqOn_nhds e₁.open_baseSet he₁
   refine (hK (Y (σ 0)) (Y (σ 1)) (Y (σ 2)) x₀).congr_of_eventuallyEq ?_
   have h_base₁ : ∀ᶠ x in 𝓝 x₀, x ∈ e₁.baseSet := e₁.open_baseSet.mem_nhds he₁
   filter_upwards [h_base₁, hY] with x hx₁ hYx

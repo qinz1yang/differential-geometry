@@ -43,7 +43,7 @@ theorem totalNabla0S_eval_tangentConstInChart_contMDiffAt
   have hx₀ : x₀ ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x₀
   let hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) b
   obtain ⟨Xext, hXext⟩ :=
-    hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet hx₀
+    hframe.exists_contMDiffSection_eqOn_nhds e.open_baseSet hx₀
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     Xext (slots 0)
   have hcoeff :

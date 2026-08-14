@@ -727,11 +727,11 @@ noncomputable def limitMetric (g : ∀ k, SmoothRiemannianMetric I (A k))
   pos z v hv := S.stageInner_pos g _ (S.mem_range_rep z) v hv
   isVonNBounded z := S.stageInner_bounded g _ (S.mem_range_rep z)
   contMDiff := by
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_clmSection_of_eval_sections_contMDiff
       (V₂ := fun z : S.toSeqSystem.Lim => TangentSpace I z →L[ℝ] ℝ)
       (φ := fun z => S.stageInner g (S.toSeqSystem.rep z).1 z)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_clmSection_of_eval_sections_contMDiff
       (V₂ := fun _ : S.toSeqSystem.Lim => ℝ)
       (φ := fun z => S.stageInner g (S.toSeqSystem.rep z).1 z (Y z))
     intro W z₀

@@ -210,7 +210,7 @@ private theorem tensor03Cov_output_apply3_contMDiff
       (fun x : M => TotalSpace.mk' (E →L[ℝ] ℝ)
         (E := fun x : M => TangentSpace I x →L[ℝ] ℝ) x
         ((tensor03Cov cov).toFun S x (Y x) (Z x) (W x))) := by
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun _ : M => ℝ)
     (φ := fun x => (tensor03Cov cov).toFun S x (Y x) (Z x) (W x))
   intro U
@@ -240,7 +240,7 @@ private theorem tensor03Cov_output_apply2_contMDiff
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
         (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) x
         ((tensor03Cov cov).toFun S x (Y x) (Z x))) := by
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x => (tensor03Cov cov).toFun S x (Y x) (Z x))
   intro W
@@ -261,7 +261,7 @@ private theorem tensor03Cov_output_apply_contMDiff
         (E := fun x : M =>
           TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) x
         ((tensor03Cov cov).toFun S x (Y x))) := by
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ))
     (φ := fun x => (tensor03Cov cov).toFun S x (Y x))
   intro Z
@@ -282,7 +282,7 @@ private theorem tensor03Cov_output_contMDiff
         (E := fun x : M => TangentSpace I x →L[ℝ]
           (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))) x
         ((tensor03Cov cov).toFun S x)) := by
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_clmSection_of_eval_sections_contMDiff
     (V₂ := fun x : M => TangentSpace I x →L[ℝ]
       (TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)))
     (φ := fun x => (tensor03Cov cov).toFun S x)
