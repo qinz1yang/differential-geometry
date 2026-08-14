@@ -15,7 +15,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem tangentCoordChange_opens {V : Opens M} [Nonempty V] (p q x : V)
+theorem tangentCoordChange_opens {V : Opens M} (p q x : V)
     (hxp : (x : M) ∈ (chartAt H (p : M)).source) :
     (tangentBundleCore I V).coordChange (achart H p) (achart H q) x
       = (tangentBundleCore I M).coordChange (achart H (p : M)) (achart H (q : M)) (x : M) := by

@@ -244,7 +244,7 @@ theorem contractTraceField_contMDiff (r s : ℕ)
     rw [hβ2]
   rw [h_input, h_output]
   exact (Tensor0SBundle.model_contract_trace_naturality (𝕜 := ℝ) (E := E)
-    r s L Linv hL hR Tx).symm
+    r s L Linv hL Tx).symm
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [CompactSpace M] [I.Boundaryless]

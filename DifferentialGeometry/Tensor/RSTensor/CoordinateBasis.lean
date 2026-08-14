@@ -69,6 +69,7 @@ theorem tensor0S_sum_apply {ι : Type*} [Fintype ι]
       change T a v + (∑ i ∈ S, T i) v = T a v + ∑ i ∈ S, T i v
       rw [ih]
 
+omit [DecidableEq Idx] in
 theorem basisTensor0S_apply
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
     (slots : Fin s -> Idx) (v : Fin s -> TangentSpace I x) :

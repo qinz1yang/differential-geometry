@@ -170,7 +170,7 @@ private theorem sumFinOne {Idx : Type*} [Fintype Idx]
   simpa [Equiv.funUnique] using congrArg r (Subsingleton.elim a (0 : Fin 1))
 
 private theorem traceFlat_apply_sum
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*} [Fintype Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)

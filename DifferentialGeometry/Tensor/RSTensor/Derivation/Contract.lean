@@ -543,7 +543,6 @@ private theorem model_covariantChange_tensorWithCovector_first (r : ℕ)
 theorem model_contract_trace_naturality
     (r s : ℕ) (L Linv : E →L[𝕜] E)
     (hL : L.comp Linv = ContinuousLinearMap.id 𝕜 E)
-    (_hR : Linv.comp L = ContinuousLinearMap.id 𝕜 E)
     (T : TensorRSModel (1 + r) (s + 1) 𝕜 E) :
     model_contract_trace (𝕜 := 𝕜) (E := E) r s
       ((model_covariantChange (𝕜 := 𝕜) (E := E) (s + 1) L).comp
@@ -730,7 +729,7 @@ theorem contract_trace_trivialization_eq
     rfl
   rw [h_input, h_output]
   exact (model_contract_trace_naturality (𝕜 := 𝕜) (E := E)
-    r s L Linv hL hR Tx).symm
+    r s L Linv hL Tx).symm
 
 noncomputable def contract_covariantField_fun (r s : ℕ)
     (α : (x : M) → TensorRSSpace r (s + 1) I x)

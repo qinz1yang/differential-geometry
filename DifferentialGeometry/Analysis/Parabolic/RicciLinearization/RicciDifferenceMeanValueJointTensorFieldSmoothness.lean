@@ -316,7 +316,7 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
     rw [hβ2]
   rw [h_input, h_output]
   exact (Tensor0SBundle.model_contract_trace_naturality (𝕜 := ℝ) (E := E)
-    r s L Linv hL hR Tx).symm
+    r s L Linv hL Tx).symm
 
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in

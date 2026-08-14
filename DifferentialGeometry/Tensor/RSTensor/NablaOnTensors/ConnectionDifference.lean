@@ -229,7 +229,7 @@ theorem connectionDifferenceTensorAt_apply_slots
 theorem componentRS_connectionDifferenceTensorAt
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*} [Fintype Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (i j k : Idx) :

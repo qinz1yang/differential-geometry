@@ -76,7 +76,7 @@ theorem continuousMultilinearMapBasisElem_linearIndependent [Finite Idx]
   simp only [smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
   rwa [smul_eq_mul, mul_one] at h1
 
-def continuousMultilinearMapBasis [DecidableEq Idx]
+def continuousMultilinearMapBasis
     (basis : Module.Basis Idx 𝕜 V) (s : Nat) :
     Module.Basis (Fin s -> Idx) 𝕜
       (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => V) 𝕜) :=
@@ -88,6 +88,7 @@ def continuousMultilinearMapBasis [DecidableEq Idx]
         rw [Fintype.card_fun, Fintype.card_fin,
           finrank_continuousMultilinearMap (𝕜 := 𝕜) (F := V), hdim])).ge
 
+omit [DecidableEq Idx] in
 theorem continuousMultilinearMapBasis_apply
     (basis : Module.Basis Idx 𝕜 V) (s : Nat) (slots : Fin s -> Idx) :
     continuousMultilinearMapBasis basis s slots =
@@ -95,12 +96,14 @@ theorem continuousMultilinearMapBasis_apply
   congr_fun (Module.Basis.coe_mk
     (continuousMultilinearMapBasisElem_linearIndependent basis s) _) slots
 
+omit [DecidableEq Idx] in
 theorem continuousMultilinearMapBasis_repr
     (basis : Module.Basis Idx 𝕜 V) (s : Nat)
     (A : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => V) 𝕜)
     (slots : Fin s -> Idx) :
     (continuousMultilinearMapBasis basis s).repr A slots =
       A (fun a => basis (slots a)) := by
+  classical
   conv_rhs => rw [← (continuousMultilinearMapBasis basis s).sum_repr A]
   simp only [ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.smul_apply,
     smul_eq_mul, continuousMultilinearMapBasis_apply,
@@ -144,6 +147,7 @@ theorem component0S_congr_slots
     component0S (I := I) basis A slots = component0S (I := I) basis A slots' := by
   rw [h]
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem tensor0SBasis_repr
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
@@ -157,6 +161,7 @@ def coordMap0S
     Tensor0SSpace s I x →ₗ[𝕜] ((Fin s -> Idx) -> 𝕜) :=
   ((tensor0SBasis (I := I) basis s).equivFun).toLinearMap
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem coordMap0S_apply
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
@@ -172,6 +177,7 @@ def coordEquiv0S
     Tensor0SSpace s I x ≃ₗ[𝕜] ((Fin s -> Idx) -> 𝕜) :=
   (tensor0SBasis (I := I) basis s).equivFun
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem coordEquiv0S_apply
     (basis : Module.Basis Idx 𝕜 (TangentSpace I x))

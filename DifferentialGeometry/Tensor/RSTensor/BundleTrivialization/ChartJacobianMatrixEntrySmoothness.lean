@@ -141,7 +141,7 @@ theorem tangentCoordChangeL_entry_contMDiffAt
 omit [Module.Finite ℝ E] in
 theorem tangentCoordChangeL_entry_eq_symmL_entry_self
     (α : M) (φ : E →L[ℝ] ℝ) (w : E)
-    {b₀ : M} (_hb₀ : b₀ ∈ (chartAt H α).source) :
+    {b₀ : M} :
     φ
       ((trivializationAt E (TangentSpace I) b₀).continuousLinearMapAt ℝ b₀
         ((trivializationAt E (TangentSpace I) α).symmL ℝ b₀ w)) =
@@ -170,7 +170,7 @@ theorem tangentCoordChangeL_entry_contMDiffAt_swap
 omit [Module.Finite ℝ E] in
 theorem tangentCoordChangeL_entry_eq_continuousLinearMapAt_entry_self
     (α : M) (φ : E →L[ℝ] ℝ) (w : E)
-    {b₀ : M} (_hb₀ : b₀ ∈ (chartAt H α).source) :
+    {b₀ : M} :
     φ
       ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b₀
         ((trivializationAt E (TangentSpace I) b₀).symmL ℝ b₀ w)) =

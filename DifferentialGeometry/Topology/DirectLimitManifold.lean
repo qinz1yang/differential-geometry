@@ -813,6 +813,7 @@ noncomputable def limitMetric (g : ∀ k, SmoothRiemannianMetric I (A k))
     filter_upwards with y
     rfl
 
+omit [∀ (k : ℕ), SigmaCompactSpace (A k)] in
 theorem limitMetric_pullback (g : ∀ k, SmoothRiemannianMetric I (A k))
     (hg : S.MetricCocycle g) (k : ℕ) (a : A k) (v w : TangentSpace I a) :
     (S.limitMetric g hg).inner (S.toSeqSystem.incl k a)
@@ -838,6 +839,7 @@ theorem limitMetric_pullback (g : ∀ k, SmoothRiemannianMetric I (A k))
   rw [happ v, happ w]
   exact inner_base_eq (g k) hφk v w
 
+omit [∀ (k : ℕ), SigmaCompactSpace (A k)] in
 theorem limitMetric_of_mem (g : ∀ k, SmoothRiemannianMetric I (A k))
     (hg : S.MetricCocycle g) (k : ℕ) {z : S.toSeqSystem.Lim}
     (hz : z ∈ Set.range (S.toSeqSystem.incl k)) (v w : TangentSpace I z) :

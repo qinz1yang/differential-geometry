@@ -36,7 +36,7 @@ local instance : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
 omit [CompleteSpace E] [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M] in
 private theorem componentRS_eq_gen
     [IsManifold I 1 M]
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : Nat} {x : M}
+    {Idx : Type*} [Fintype Idx] {r s : Nat} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (T : Tensor0SBundle.TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
@@ -2262,7 +2262,7 @@ theorem connDiffBasisSymm
 
 omit [SigmaCompactSpace M] in
 theorem connDiffCompSymm
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*} [Fintype Idx]
     (h gRef : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (a b e : Idx) :

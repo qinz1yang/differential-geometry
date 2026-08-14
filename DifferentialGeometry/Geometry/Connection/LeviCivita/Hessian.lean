@@ -84,6 +84,7 @@ private theorem nabla0SFun_one_eval_smooth_slots
   simpa [V, hupdate] using h
 
 
+omit [IsManifold I 3 M] in
 private theorem leviCivita_nablaDuSec_pointwise_symm_direct
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
@@ -188,6 +189,7 @@ private theorem leviCivita_nablaDuSec_pointwise_symm_direct
   rw [hleft, hright, hleft_eval, hright_eval]
   linarith
 
+omit [IsManifold I 3 M] in
 private theorem leviCivita_nablaDuSec_coordFrame_symm
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
@@ -209,6 +211,7 @@ private theorem leviCivita_nablaDuSec_coordFrame_symm
     (coordinateFrameAt_toBasis (I := I) x i)
     (coordinateFrameAt_toBasis (I := I) x j)
 
+omit [IsManifold I 3 M] in
 private theorem leviCivita_nablaDuSec_pointwise_symm
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
@@ -230,6 +233,7 @@ private theorem leviCivita_nablaDuSec_pointwise_symm
     leviCivita_nablaDuSec_coordFrame_symm
       (I := I) g u hu duSec nablaDuSec hnabla hdu x i j
 
+omit [IsManifold I 3 M] in
 theorem hessSymm
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)
@@ -258,6 +262,7 @@ theorem hessSymm
     leviCivita_nablaDuSec_pointwise_symm
       (I := I) g u hu du Hess hnabla hdu x U V
 
+omit [IsManifold I 3 M] in
 theorem oneFormLastTwoSymmAt_of_leviCivita_du
     [SigmaCompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (u : M -> Real)

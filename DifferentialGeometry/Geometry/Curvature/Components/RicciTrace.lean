@@ -120,6 +120,7 @@ theorem ricci_diag_eq_sum_rm04_diag_of_orthonormal
       Ric Rm13 Rm04 hRic hLower i j
   simpa [ricciCompAt_apply, rm04CompAt_apply] using hcomp
 
+omit [DecidableEq Idx] in
 theorem ricciCompAt_eq_contractTrace_of_realizes
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Ric : Tensor02Section (I := I) (M := M))

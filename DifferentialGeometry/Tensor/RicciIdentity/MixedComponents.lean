@@ -38,7 +38,7 @@ def covariantCurvAction {Idx : Type*} [Fintype Idx] {n : ℕ}
     R i j m (K q) * A (Function.update K q m)
 
 theorem contractUpper_components_eq_component_applyInput
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : ℕ} {x : M}
+    {Idx : Type*} [Fintype Idx] {r s : ℕ} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (T : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) r s x)
     (theta :

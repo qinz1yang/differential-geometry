@@ -97,6 +97,7 @@ section Components
 
 variable (basis : Module.Basis Idx K (TangentSpace I x))
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem componentRS_basisTensor_apply {r s : Nat}
     (T : TensorRSSpace r s I x)
@@ -106,6 +107,7 @@ theorem componentRS_basisTensor_apply {r s : Nat}
         (fun a => basis (lower a)) := by
   rfl
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem component11_apply
     (T : TensorRSSpace 1 1 I x) (i j : Idx) :
@@ -114,6 +116,7 @@ theorem component11_apply
         (fun _ : Fin 1 => basis j) := by
   rfl
 
+omit [DecidableEq Idx] in
 @[simp]
 theorem component13_apply
     (T : TensorRSSpace 1 3 I x) (a i j k : Idx) :

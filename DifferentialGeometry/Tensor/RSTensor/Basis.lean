@@ -141,7 +141,6 @@ noncomputable def constInChart (s : ℕ) (x₀ : M)
 
 omit [CompleteSpace 𝕜] in
 theorem trivializationAt_apply (s : ℕ)
-    (_hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet)
     (T : Tensor0SSpace s I x) (v : Fin s → E) :
     letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
     ((trivializationAt (Tensor0SModel s 𝕜 E)
@@ -168,7 +167,7 @@ theorem continuousLinearEquivAt_apply (s : ℕ)
   change ((trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀) ⟨x, T⟩).2 v =
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (v i))
-  exact trivializationAt_apply (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x) s hx T v
+  exact trivializationAt_apply (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x) s T v
 
 omit [CompleteSpace 𝕜] in
 theorem continuousLinearMapAt_apply (s : ℕ)
