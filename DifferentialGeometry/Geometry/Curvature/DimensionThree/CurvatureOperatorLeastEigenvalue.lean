@@ -503,4 +503,100 @@ theorem algebraicCurvatureIdentityQuadraticEval_nonneg
         intro q _
         exact sq_nonneg _)))
 
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem curvatureOperatorMatrixAt_rayleigh_lower
+    (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (c : Fin 3 → Real) :
+    orderedSectionalCurvaturesAt (I := I) x basis A 2 * (∑ i : Fin 3, c i ^ 2) ≤
+      ∑ i : Fin 3, ∑ j : Fin 3, c i * c j *
+        curvatureOperatorMatrixAt (I := I) x basis A i j := by
+  let M : Matrix (Fin 3) (Fin 3) Real := curvatureOperatorMatrixAt (I := I) x basis A
+  let hM : M.IsHermitian := curvatureOperatorMatrixAt_isHermitian (I := I) x basis A
+  let T : EuclideanSpace Real (Fin 3) →ₗ[Real] EuclideanSpace Real (Fin 3) := M.toEuclideanLin
+  let hT : T.IsSymmetric := (Matrix.isHermitian_iff_isSymmetric (A := M)).1 hM
+  let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
+  let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) :=
+    hT.eigenvectorBasis hn
+  let xES : EuclideanSpace Real (Fin 3) := (EuclideanSpace.equiv (Fin 3) Real).symm c
+  have hquad :
+      ∑ i : Fin 3, ∑ j : Fin 3, c i * c j * curvatureOperatorMatrixAt (I := I) x basis A i j =
+        inner Real (T xES) xES := by
+    have hdot :
+        ∑ i : Fin 3, c i * (∑ j : Fin 3, curvatureOperatorMatrixAt (I := I) x basis A i j * c j) =
+          inner Real (T xES) xES := by
+      dsimp [M, T, xES]
+      simpa [WithLp.ofLp_toLp, dotProduct_comm, dotProduct, Matrix.mulVec] using
+        (EuclideanSpace.inner_eq_star_dotProduct (𝕜 := Real)
+          (x := WithLp.toLp 2 ((curvatureOperatorMatrixAt (I := I) x basis A).mulVec c))
+          (y := WithLp.toLp 2 c)).symm
+    rw [← hdot]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [Finset.mul_sum Finset.univ (fun j => curvatureOperatorMatrixAt (I := I) x basis A i j * c j) (c i)]
+    apply Finset.sum_congr rfl
+    intro j _
+    ring
+  have hdiag :
+      inner Real (T xES) xES =
+        ∑ i : Fin 3, hT.eigenvalues hn i * (b.repr xES i) ^ 2 := by
+    have happly : ∀ i : Fin 3, T (b i : EuclideanSpace Real (Fin 3)) =
+        hT.eigenvalues hn i • (b i : EuclideanSpace Real (Fin 3)) :=
+      hT.apply_eigenvectorBasis hn
+    have hx : xES = ∑ i : Fin 3, (b.repr xES i) • (b i : EuclideanSpace Real (Fin 3)) :=
+      (b.sum_repr xES).symm
+    conv_lhs => rw [hx]
+    rw [map_sum T]
+    simp_rw [map_smul T]
+    simp_rw [happly]
+    simp_rw [smul_smul]
+    have hortho : Orthonormal Real (fun i : Fin 3 => (b i : EuclideanSpace Real (Fin 3))) :=
+      b.orthonormal
+    simpa [mul_assoc, mul_comm, mul_left_comm, pow_two] using
+      (hortho.inner_sum (fun i => (b.repr xES i) * hT.eigenvalues hn i) (fun i => b.repr xES i)
+        Finset.univ)
+  have hmin : ∀ i : Fin 3, hT.eigenvalues hn 2 ≤ hT.eigenvalues hn i := by
+    intro i
+    exact (hT.eigenvalues_antitone hn) (show i ≤ (2 : Fin 3) from Nat.le_of_lt_succ i.2)
+  have hsum : ∑ i : Fin 3, hT.eigenvalues hn i * (b.repr xES i) ^ 2 ≥
+      hT.eigenvalues hn 2 * ∑ i : Fin 3, (b.repr xES i) ^ 2 := by
+    have hle : ∀ i : Fin 3, hT.eigenvalues hn 2 * (b.repr xES i) ^ 2 ≤
+        hT.eigenvalues hn i * (b.repr xES i) ^ 2 := by
+      intro i
+      exact mul_le_mul_of_nonneg_right (hmin i) (sq_nonneg _)
+    calc
+      hT.eigenvalues hn 2 * ∑ i : Fin 3, (b.repr xES i) ^ 2
+          = ∑ i : Fin 3, hT.eigenvalues hn 2 * (b.repr xES i) ^ 2 := by
+            rw [Finset.mul_sum Finset.univ (fun i => (b.repr xES i) ^ 2) (hT.eigenvalues hn 2)]
+      _ ≤ ∑ i : Fin 3, hT.eigenvalues hn i * (b.repr xES i) ^ 2 :=
+            Finset.sum_le_sum (fun i _ => hle i)
+  have hnorm : ∑ i : Fin 3, (b.repr xES i) ^ 2 = ∑ i : Fin 3, c i ^ 2 := by
+    have hrepr : ∀ i : Fin 3, b.repr xES i = inner Real (b i : EuclideanSpace Real (Fin 3)) xES :=
+      b.repr_apply_apply xES
+    have hparseval :
+        ∑ i : Fin 3, inner Real xES (b i : EuclideanSpace Real (Fin 3)) *
+          inner Real (b i : EuclideanSpace Real (Fin 3)) xES = inner Real xES xES :=
+      b.sum_inner_mul_inner xES xES
+    have hparseval' : ∑ i : Fin 3, (b.repr xES i) ^ 2 = inner Real xES xES := by
+      rw [← hparseval]
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [hrepr i, real_inner_comm, sq]
+    rw [hparseval', real_inner_self_eq_norm_sq]
+    dsimp [xES]
+    rw [EuclideanSpace.norm_eq]
+    simp only [Real.norm_eq_abs, sq_abs]
+    rw [Real.sq_sqrt (Finset.sum_nonneg (fun i _ => sq_nonneg (c i)))]
+  have hbridge :
+      hT.eigenvalues hn 2 * ∑ i : Fin 3, c i ^ 2 ≤
+        ∑ i : Fin 3, ∑ j : Fin 3, c i * c j * curvatureOperatorMatrixAt (I := I) x basis A i j := by
+    rw [hquad, hdiag]
+    rw [hnorm] at hsum
+    exact hsum
+  have hord : orderedSectionalCurvaturesAt (I := I) x basis A 2 = hT.eigenvalues hn 2 := by
+    dsimp [orderedSectionalCurvaturesAt, M]
+    rfl
+  rw [hord]
+  exact hbridge
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
