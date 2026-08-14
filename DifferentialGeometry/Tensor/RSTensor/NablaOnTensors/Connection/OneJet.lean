@@ -71,7 +71,6 @@ private theorem tangentFieldModelInChart_sum_tangentConst_model
 omit [I.Boundaryless] in
 theorem exists_cov_zero_at
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (_hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (x₀ : M) (v : TangentSpace I x₀) :
     ∃ V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
       V x₀ = v ∧ cov (fun x => V x) x₀ = 0 := by
@@ -358,14 +357,13 @@ theorem exists_cov_zero_at
 omit [I.Boundaryless] in
 theorem exists_cov_zero_at_apply
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (x₀ : M) (v : TangentSpace I x₀) :
     ∃ V : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
       V x₀ = v ∧
         ∀ W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
           ((cov (fun x => V x) x₀) (W x₀)) = 0 := by
   obtain ⟨V, hV, hcovV⟩ :=
-    exists_cov_zero_at (I := I) cov hcov x₀ v
+    exists_cov_zero_at (I := I) cov x₀ v
   refine ⟨V, hV, ?_⟩
   intro W
   rw [hcovV]

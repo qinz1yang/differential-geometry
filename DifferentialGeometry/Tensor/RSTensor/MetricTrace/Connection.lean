@@ -73,7 +73,7 @@ def connTraceOneFormAt
     ((connTraceEvalLin (I := I) g A).comp
       ((dualToCotangentLinear (I := I)).comp (tangentFlatLinear_gen (I := I) g x)))
 
-@[simp] theorem connTraceOneFormAt_apply
+theorem connTraceOneFormAt_apply
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)

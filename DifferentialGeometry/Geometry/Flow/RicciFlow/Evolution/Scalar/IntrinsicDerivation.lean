@@ -353,7 +353,7 @@ theorem scalarLaplacianTraceInFrame_coord_eq_laplacianAt
           (fun y => metricTracePair0SAt (I := I) g (S.ricci (t : Real) y))
           (trace02_smooth (I := I) g (S.ricci (t : Real))) := by
     congr 1
-  have hnab2 := nabla2Trace02 (I := I) (M := M) cov hcov hcov1 g hmc
+  have hnab2 := nabla2Trace02 (I := I) (M := M) cov hcov g hmc
     (S.ricci (t : Real)) (Idx := CoordinateIdx (𝕜 := Real) E) (x := x₀)
     basis gInv hinv
   rw [hLapTrace, hHess, scalarLapTraceAt]

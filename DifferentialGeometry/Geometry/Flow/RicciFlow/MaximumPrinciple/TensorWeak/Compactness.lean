@@ -1024,7 +1024,7 @@ theorem scalarSigns_covHess
     TensorFirstNullScalarSigns (I := I) (M := M) G
       (twoTensorSecToFamily (I := I) (M := M) S) X N epsilon delta t0 d := by
   obtain ⟨Vsec, hV, hcovVall⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 d.x1 d.v
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov d.x1 d.v
   let phi : M -> Real := fun p => B p (vec2 (I := I) (Vsec p) (Vsec p))
   have hphi :
       ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) phi := by
@@ -1197,7 +1197,6 @@ theorem scalarSigns_covZero
       (n := (∞ : WithTop ℕ∞)) 2}
     {nablaB : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3}
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (hstrict : TensorBarrierStrictSupersolutionOn (I := I) (M := M)
       G S X N nabla2Barrier nablaBarrier epsilon delta t0)
     (hnull : TensorNullEigenvectorCondition (I := I) (M := M)
@@ -1266,7 +1265,7 @@ theorem scalarSigns_covZero
             (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) y) d.x1) :
     TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
   obtain ⟨Vsec, hV, hcovVall⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov d.x1 d.v
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov d.x1 d.v
   exact scalarSigns_oneSec (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nabla2Barrier := nabla2Barrier) (nablaBarrier := nablaBarrier)

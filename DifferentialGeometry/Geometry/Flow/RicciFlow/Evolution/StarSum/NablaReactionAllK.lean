@@ -199,7 +199,7 @@ theorem nablaKRmFrozenSlot_eval
           (Fin.cons (X x₀)
             (Function.update (fun i : Fin (4 + k) => Y i x₀) q U)) := rfl
   rw [hBval, hAval]
-  exact allBut0SFreezeNabla (I := I) (S.family.connection (t : Real)) hcov
+  exact allBut0SFreezeNabla (I := I) (S.family.connection (t : Real))
     (nablaKRm04Field (I := I) S (t : Real) k) q X Y hYzero U
 
 def nablaKRmRaiseSlotSections
@@ -813,16 +813,15 @@ theorem abs_nablaK_antisym_basis_le
             Real.sqrt (compNormSqMulti (fun idx : Fin (4 + (k + 1)) → Fin n =>
               nablaKRm04Field (I := I) S (t : Real) (k + 1) x₀ (fun p => basis (idx p))))) := by
   classical
-  have hconn := connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   obtain ⟨Xa, hXa, hXacov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis a)
+    (S.family.connection (t : Real)) x₀ (basis a)
   obtain ⟨Vb, hVb, hVbcov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis b)
+    (S.family.connection (t : Real)) x₀ (basis b)
   obtain ⟨Vc, hVc, hVccov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis c)
+    (S.family.connection (t : Real)) x₀ (basis c)
   choose Vm hVm hVmcov using fun i : Fin (4 + k) =>
     TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-      (S.family.connection (t : Real)) hconn x₀ (basis (m i))
+      (S.family.connection (t : Real)) x₀ (basis (m i))
   rw [show (basis a) = Xa x₀ from hXa.symm, show (basis b) = Vb x₀ from hVb.symm,
     show (basis c) = Vc x₀ from hVc.symm,
     show (fun i : Fin (4 + k) => basis (m i)) = (fun i : Fin (4 + k) => Vm i x₀) from

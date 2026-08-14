@@ -55,7 +55,7 @@ theorem exists_ric_trace
       have hRm := iterCov_realizes (I := I) g Rm k
       have hreindex := totalNabla0SRealizes_domDomCongr (I := I) cov e _ _ hRm
       have htrace := nablaRealizes_metricTraceFirstTwo (I := I) (M := M)
-        (s := 2 + k) cov hcov g hmc _ _ hreindex
+        (s := 2 + k) cov g hmc _ _ hreindex
       rw [← he] at htrace
       have hric := iterCov_realizes (I := I) g
         (trace04Field (I := I) (M := M) g Rm) k

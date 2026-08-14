@@ -945,14 +945,14 @@ theorem abs_nablaLapComm_T1_orthoBasis_le
   classical
   have hconn := connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   obtain ⟨Xa, hXa, _⟩ := exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis a)
+    (S.family.connection (t : Real)) x₀ (basis a)
   obtain ⟨Vb, hVb, hVbcov⟩ := exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis b)
+    (S.family.connection (t : Real)) x₀ (basis b)
   obtain ⟨Vc, hVc, hVccov⟩ := exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis c)
+    (S.family.connection (t : Real)) x₀ (basis c)
   choose Vm hVm hVmcov using fun i : Fin 4 =>
     exists_cov_zero_at_apply (I := I)
-      (S.family.connection (t : Real)) hconn x₀ (basis (m i))
+      (S.family.connection (t : Real)) x₀ (basis (m i))
   have hmtail : frameTuple (I := I) frame x₀ m = (fun i : Fin 4 => Vm i x₀) := by
     funext i
     change frame (m i) x₀ = Vm i x₀

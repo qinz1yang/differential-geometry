@@ -123,12 +123,12 @@ theorem canScalHess
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       3 cov nablaRic x
   have hleft :=
-    nabla2Trace02 (I := I) (M := M) cov hcov hcov1 g
+    nabla2Trace02 (I := I) (M := M) cov hcov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       Ric basis gInv hinv (basis i) (basis j)
   have hright :=
-    nabla2Trace02 (I := I) (M := M) cov hcov hcov1 g
+    nabla2Trace02 (I := I) (M := M) cov hcov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       Ric basis gInv hinv (basis j) (basis i)
@@ -574,15 +574,15 @@ theorem canRmSecond
   dsimp [SecondBianchiAt]
   intro A X Y Z W
   obtain ⟨Asec, hAsec, hcovA⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x A
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x A
   obtain ⟨Xsec, hXsec, hcovX⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x X
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x X
   obtain ⟨Ysec, hYsec, hcovY⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x Y
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x Y
   obtain ⟨Zsec, hZsec, hcovZ⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x Z
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x Z
   obtain ⟨Wsec, hWsec, hcovW⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x W
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x W
   let Rsec : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     ⟨fun p : M =>
@@ -1071,7 +1071,7 @@ theorem canRicTrace
       (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
         (I := I) (M := M) g)
   have htrace :=
-    nablaTrace04 (I := I) (M := M) cov hcov1 g
+    nablaTrace04 (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       Rm04 basis gInv hinv A B C
@@ -1167,7 +1167,7 @@ theorem canNabla2RicTrace
   have hTrace : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov
         (metricTraceFirstTwoField (I := I) (M := M) g rmPerm) traceNablaRm := by
-    exact nablaRealizes_metricTraceFirstTwo (I := I) (M := M) cov hcov1 g
+    exact nablaRealizes_metricTraceFirstTwo (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       rmPerm nablaRmPerm hRmPerm
@@ -1197,7 +1197,7 @@ theorem canNabla2RicTrace
           gInv i j * nabla2Rm04
             (Fin.cons A (vec5 (I := I) B (basis i) C D (basis j))) := by
     rw [hnablaRic]
-    rw [nabla_metricTraceFirstTwo0S (I := I) (M := M) cov hcov1 g
+    rw [nabla_metricTraceFirstTwo0S (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       _ basis gInv hinv A (vec3 (I := I) B C D)]

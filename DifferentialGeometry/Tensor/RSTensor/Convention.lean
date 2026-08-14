@@ -117,7 +117,6 @@ theorem component11_apply
   rfl
 
 omit [DecidableEq Idx] in
-@[simp]
 theorem component13_apply
     (T : TensorRSSpace 1 3 I x) (a i j k : Idx) :
     componentRS_gen (I := I) basis T
@@ -135,7 +134,6 @@ theorem component13_apply
     · simp [h0, h1]
 
 omit [CompleteSpace K] [FiniteDimensional K E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component02_apply
     (A : Tensor0SSpace 2 I x) (i j : Idx) :
     component0S (I := I) basis A
@@ -147,7 +145,6 @@ theorem component02_apply
   by_cases h0 : q = 0 <;> simp [h0]
 
 omit [CompleteSpace K] [FiniteDimensional K E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component04_apply
     (A : Tensor0SSpace 4 I x) (i j k l : Idx) :
     component0S (I := I) basis A

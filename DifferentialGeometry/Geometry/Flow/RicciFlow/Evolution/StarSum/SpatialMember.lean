@@ -148,16 +148,15 @@ private theorem slotdiffBasisEq
               (Fin.cons (basis a)
                 (Function.update (fun i : Fin (4 + k) => basis (m i)) q (basis e))))) := by
   classical
-  have hconn := connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   obtain ⟨Xa, hXa, hXacov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x (basis a)
+    (S.family.connection (t : Real)) x (basis a)
   obtain ⟨Vb, hVb, hVbcov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x (basis b)
+    (S.family.connection (t : Real)) x (basis b)
   obtain ⟨Vc, hVc, hVccov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x (basis c)
+    (S.family.connection (t : Real)) x (basis c)
   choose Vm hVm hVmcov using fun i : Fin (4 + k) =>
     TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-      (S.family.connection (t : Real)) hconn x (basis (m i))
+      (S.family.connection (t : Real)) x (basis (m i))
   have hraw := nablaK_antisym_eq_rm04_raise_leibniz (I := I) S hS t k x Xa Vb Vc Vm
     (hVbcov Xa) (hVccov Xa) (fun i => hVmcov i Xa)
   have hq : ∀ q : Fin (4 + k),

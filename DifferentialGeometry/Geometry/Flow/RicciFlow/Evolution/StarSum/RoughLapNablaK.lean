@@ -53,7 +53,7 @@ theorem nabla_roughLap0S_nablaKRm
       (S.family.connection t) (S.base.metric t) := by
     simpa [SolutionFamily.connection, metricCov] using
       leviCivitaConnectionOfMetric_isMetricCompatible (I := I) (S.base.metric t)
-  refine (nabla_metricTraceFirstTwo0S (I := I) (M := M) (S.family.connection t) hcov
+  refine (nabla_metricTraceFirstTwo0S (I := I) (M := M) (S.family.connection t)
     (S.base.metric t) hmc (nablaKRm04Field (I := I) S t (k + 2)) basis gInv hinv X
     tail).trans ?_
   refine Finset.sum_congr rfl fun i _ => ?_

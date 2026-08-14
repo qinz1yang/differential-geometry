@@ -172,7 +172,6 @@ private theorem allBut04FreezeNabla
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (q : Fin 4)
@@ -196,7 +195,7 @@ private theorem allBut04FreezeNabla
       (n := (∞ : WithTop ℕ∞)) 1 :=
     freezeAllBut04Field (I := I) (M := M) A q Y
   obtain ⟨Usec, hUsec, hUcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x U
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x U
   let V4 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     freezeAllButSlots (I := I) Y q Usec
@@ -455,6 +454,6 @@ theorem nablaRmFrozenSlot_eval
     rfl
   rw [hBval, hAval]
   exact allBut04FreezeNabla (I := I) (M := M)
-    (S.family.connection (t : Real)) hcov (S.base.rm04 (t : Real)) q X Y hYzero U
+    (S.family.connection (t : Real)) (S.base.rm04 (t : Real)) q X Y hYzero U
 
 end DifferentialGeometry.PDE.RicciFlow

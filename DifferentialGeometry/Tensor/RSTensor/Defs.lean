@@ -28,8 +28,6 @@ variable [IsManifold I 1 M]
 variable {x' : M}
 variable {r s : ℕ}
 
-abbrev TrivialBundle : M → Type _ := fun _ ↦  𝕜
-
 @[reducible]
 def Tensor0SModel (s : ℕ) (𝕜 : Type*) (E : Type*) [NontriviallyNormedField 𝕜]
   [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E] :=

@@ -146,7 +146,6 @@ theorem connectionDifferenceOutput_apply
   rw [htail]
   rfl
 
-@[simp]
 theorem connectionDifferenceOutput_apply_slots
     (A :
       TangentSpace I x →L[Real]
@@ -211,7 +210,6 @@ theorem connectionDifferenceTensorAt_apply
       ((CovariantDerivative.difference cov cov' x) (v 1)) (v 0))
   rw [connectionDifferenceOutput_apply]
 
-@[simp]
 theorem connectionDifferenceTensorAt_apply_slots
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]

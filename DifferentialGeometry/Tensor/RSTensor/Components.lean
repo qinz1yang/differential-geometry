@@ -97,7 +97,6 @@ theorem component0S_add_gen
   rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_neg_gen
     (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (-A) slots =
@@ -105,7 +104,6 @@ theorem component0S_neg_gen
   rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_sub_gen
     (A B : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (A - B) slots =
@@ -121,7 +119,6 @@ theorem component0S_smul_gen
   rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [Fintype Idx] [DecidableEq Idx] in
-@[simp]
 theorem component0S_nsmul
     (n : ℕ) (A : Tensor0SSpace s I x) (slots : Fin s -> Idx) :
     component0S (I := I) basis (n • A) slots =
