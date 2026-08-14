@@ -528,6 +528,7 @@ import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
 import DifferentialGeometry.Analysis.ODE.IndexForm
 import DifferentialGeometry.Analysis.ODE.IndexFormNegative
 import DifferentialGeometry.Analysis.ODE.IndexFormNegativeSmooth
+import DifferentialGeometry.Analysis.ODE.BarrierInvariance
 import DifferentialGeometry.Analysis.ODE.IndexFormUniqueness
 import DifferentialGeometry.Analysis.ODE.IntegralCurveTransport
 import DifferentialGeometry.Analysis.ODE.IntegralGronwall
@@ -2345,6 +2346,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorR
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReactionTensor
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegion
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionODE
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci

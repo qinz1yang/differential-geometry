@@ -289,4 +289,103 @@ theorem hamiltonIveyBarrier_rescaled_reaction_derivative_ge_on_boundary
     exact hgen
   nlinarith
 
+theorem reactionSectionalSum3_ge_quadratic (l1 l2 l3 : Real) :
+    (4 / 3 : Real) * sectionalSum3 l1 l2 l3 ^ 2 ≤ reactionSectionalSum3 l1 l2 l3 := by
+  unfold reactionSectionalSum3 sectionalSum3
+    DifferentialGeometry.Dim3Reaction.sectionalReaction12
+    DifferentialGeometry.Dim3Reaction.sectionalReaction13
+    DifferentialGeometry.Dim3Reaction.sectionalReaction23
+  nlinarith [sq_nonneg (l1 - l2), sq_nonneg (l2 - l3), sq_nonneg (l3 - l1)]
+
+theorem hamiltonIveyBarrier_reaction_derivative_pos_on_boundary
+    {l1 l2 l3 K τ : Real} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0)
+    (hK : 0 < K) (hden : 0 < 1 + 2 * K * τ)
+    (hboundary : hamiltonIveyBarrier K τ (-l3) = sectionalSum3 l1 l2 l3) :
+    0 < reactionSectionalSum3 l1 l2 l3
+        - (Real.log ((-l3) / K) + Real.log (1 + 2 * K * τ) - 2) * reactionPinchHeight3 l1 l2 l3
+        - (-l3) * (2 * K / (1 + 2 * K * τ)) := by
+  have hXpos : 0 < -l3 := neg_pos.mpr hl3
+  have hgen := hamiltonIveyBarrier_reaction_derivative_ge_on_boundary h21 h32 hl3 hden hboundary
+  by_cases hXsub : -l3 ≤ K / (1 + 2 * K * τ)
+  · have hS' : sectionalSum3 l1 l2 l3 = -3 * (-l3) := by
+      have hbar := hamiltonIveyBarrier_le_neg_three_pinchHeight_of_subregion
+        hK hden (neg_nonneg.mpr hl3.le) hXsub
+      have hS : -3 * (-l3) ≤ sectionalSum3 l1 l2 l3 := by
+        unfold sectionalSum3
+        nlinarith [h21, h32]
+      nlinarith [hbar, hboundary, hS]
+    have hlog : Real.log ((-l3) / K) + Real.log (1 + 2 * K * τ) = 0 := by
+      have hXlog : (-l3) * (Real.log ((-l3) / K) + Real.log (1 + 2 * K * τ)) = 0 := by
+        unfold hamiltonIveyBarrier at hboundary
+        nlinarith [hboundary, hS']
+      exact (mul_eq_zero.mp hXlog).resolve_left hXpos.ne'
+    have hXeq : -l3 = K / (1 + 2 * K * τ) := by
+      have hquot : (-l3) * (1 + 2 * K * τ) / K = 1 := by
+        have hlm : Real.log ((-l3) / K * (1 + 2 * K * τ)) = 0 := by
+          rw [Real.log_mul (div_ne_zero hXpos.ne' hK.ne') hden.ne']
+          simpa using hlog
+        have heq : (-l3) / K * (1 + 2 * K * τ) = (-l3) * (1 + 2 * K * τ) / K := by ring
+        rw [heq] at hlm
+        rcases (Real.log_eq_zero.mp hlm) with h0 | h1 | h2
+        · have hpos : 0 < (-l3) * (1 + 2 * K * τ) / K := by positivity
+          linarith
+        · exact h1
+        · have hpos : 0 < (-l3) * (1 + 2 * K * τ) / K := by positivity
+          linarith
+      have hmul : (-l3) * (1 + 2 * K * τ) = K := by
+        have hmul' : (-l3) * (1 + 2 * K * τ) / K * K = 1 * K :=
+          congrArg (fun t : ℝ => t * K) hquot
+        rw [div_mul_cancel₀ _ hK.ne', one_mul] at hmul'
+        exact hmul'
+      rw [eq_div_iff hden.ne']
+      exact hmul
+    have hl1 : l1 = l3 := by
+      unfold sectionalSum3 at hS'
+      have hdiff : l1 - l3 = 0 := by
+        have hsum : (l1 - l3) + (l2 - l3) = 0 := by nlinarith
+        have h1 : 0 ≤ l1 - l3 := by linarith
+        have h2 : 0 ≤ l2 - l3 := by linarith
+        nlinarith [hsum]
+      linarith
+    have hl2 : l2 = l3 := by
+      unfold sectionalSum3 at hS'
+      have hdiff : l2 - l3 = 0 := by
+        have hsum : (l1 - l3) + (l2 - l3) = 0 := by nlinarith
+        have h1 : 0 ≤ l1 - l3 := by linarith
+        have h2 : 0 ≤ l2 - l3 := by linarith
+        nlinarith [hsum]
+      linarith
+    have hphi : reactionSectionalSum3 l1 l2 l3
+        - (Real.log ((-l3) / K) + Real.log (1 + 2 * K * τ) - 2) * reactionPinchHeight3 l1 l2 l3
+        - (-l3) * (2 * K / (1 + 2 * K * τ)) = 2 * (-l3) ^ 2 := by
+      rw [hl1, hl2, hlog]
+      have h1 : reactionSectionalSum3 l3 l3 l3 = 12 * l3 ^ 2 := by
+        unfold reactionSectionalSum3
+          DifferentialGeometry.Dim3Reaction.sectionalReaction12
+          DifferentialGeometry.Dim3Reaction.sectionalReaction13
+          DifferentialGeometry.Dim3Reaction.sectionalReaction23
+        ring
+      have h2 : reactionPinchHeight3 l3 l3 l3 = -4 * l3 ^ 2 := by
+        unfold reactionPinchHeight3
+          DifferentialGeometry.Dim3Reaction.sectionalReaction23
+        ring
+      rw [h1, h2]
+      have h3 : 12 * l3 ^ 2 - (0 - 2) * (-4 * l3 ^ 2) - (-l3) * (2 * K / (1 + 2 * K * τ)) =
+          4 * l3 ^ 2 + 2 * K * l3 / (1 + 2 * K * τ) := by
+        ring
+      rw [h3]
+      have h4 : 2 * (-l3) ^ 2 = 2 * l3 ^ 2 := by ring
+      rw [h4]
+      have h5 : l3 + K / (1 + 2 * K * τ) = 0 := by nlinarith [hXeq]
+      have h6 : K / (1 + 2 * K * τ) = -l3 := by linarith
+      rw [show 2 * K * l3 / (1 + 2 * K * τ) = 2 * (K / (1 + 2 * K * τ)) * l3 by ring]
+      rw [h6]
+      ring
+    rw [hphi]
+    exact mul_pos two_pos (sq_pos_of_ne_zero hXpos.ne')
+  · have hgt : K / (1 + 2 * K * τ) < -l3 := lt_of_not_ge hXsub
+    have hpos : 0 < 2 * (-l3) * ((-l3) - K / (1 + 2 * K * τ)) :=
+      mul_pos (mul_pos two_pos hXpos) (sub_pos.mpr hgt)
+    exact lt_of_lt_of_le hpos hgen
+
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
