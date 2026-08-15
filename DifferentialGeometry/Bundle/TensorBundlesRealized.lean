@@ -210,11 +210,15 @@ noncomputable instance tensorBundleCore :
 variable (e₁ : Trivialization F₁ (π F₁ E₁)) (e₂ : Trivialization F₂ (π F₂ E₂))
 variable [he₁ : MemTrivializationAtlas e₁] [he₂ : MemTrivializationAtlas e₂]
 
+omit [∀ (x : B), ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ (x : B), ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 @[simp]
 theorem _root_.Bundle.Trivialization.baseSet_tensorProduct :
     (e₁.tensorProduct (𝕜 := 𝕜) e₂).baseSet = e₁.baseSet ∩ e₂.baseSet :=
   rfl
 
+omit [∀ (x : B), ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ (x : B), ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 theorem _root_.Bundle.Trivialization.tensorProduct_apply
     (p : TotalSpace (F₁ ⊗[𝕜] F₂) (fun x ↦ E₁ x ⊗[𝕜] E₂ x)) :
     e₁.tensorProduct (𝕜 := 𝕜) e₂ p =
@@ -224,6 +228,8 @@ theorem _root_.Bundle.Trivialization.tensorProduct_apply
   rfl
 
 
+omit [∀ (x : B), ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ (x : B), ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 theorem tensorProduct_trivializationAt_apply_snd
     (x₀ : B) (p : TotalSpace (F₁ ⊗[𝕜] F₂) (fun x ↦ E₁ x ⊗[𝕜] E₂ x)) :
     letI : (x : B) → TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
