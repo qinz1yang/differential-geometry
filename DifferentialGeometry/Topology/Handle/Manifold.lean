@@ -174,25 +174,6 @@ theorem contMDiff_homeomorph_symm_of_chartedSpaceOfHomeomorph {𝕜 : Type*}
   have hmd : ContMDiffOn I I n h.symm c0.source := hcomp.congr (by intro z hz; exact heq z hz)
   exact hmd.contMDiffAt (c0.open_source.mem_nhds (mem_chart_source (H := H) (M := X) y))
 
-theorem contMDiff_of_contMDiff_comp_homeo {𝕜 : Type*} [NontriviallyNormedField 𝕜]
-    {E H : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [TopologicalSpace H]
-    {X : Type*} [TopologicalSpace X] [ChartedSpace H X] {X' : Type*} [TopologicalSpace X']
-    {E' H' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] [TopologicalSpace H']
-    {I' : ModelWithCorners 𝕜 E' H'} {M : Type*} [TopologicalSpace M] [ChartedSpace H' M]
-    (h : X' ≃ₜ X) (I : ModelWithCorners 𝕜 E H) (n : WithTop ℕ∞) [IsManifold I n X]
-    (f : M → X') (hf : ContMDiff I' I n (fun m : M => h (f m))) :
-    @ContMDiff 𝕜 _ E' _ _ H' _ I' M _ _ E _ _ H _ I X' _ (chartedSpaceOfHomeomorph h) n f := by
-  classical
-  letI : ChartedSpace H X' := chartedSpaceOfHomeomorph h
-  letI : IsManifold I n X' := isManifoldOfHomeomorph I h
-  have hsymm : ContMDiff I I n (h.symm) :=
-    contMDiff_homeomorph_symm_of_chartedSpaceOfHomeomorph (𝕜 := 𝕜) h I n
-  have hfun : f = fun m : M => h.symm (h (f m)) := by
-    funext m
-    exact (h.left_inv (f m)).symm
-  rw [hfun]
-  exact hsymm.comp hf
-
 noncomputable def closedCellPermute {n : ℕ} (e : Fin n ≃ Fin n) :
     EuclideanSpace ℝ (Fin n) ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin n) :=
   (EuclideanSpace.basisFun (Fin n) ℝ).reindex e |>.repr
@@ -207,11 +188,6 @@ theorem closedCellPermute_apply {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSp
 theorem closedCellPermute_norm {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
     ‖closedCellPermute e x‖ = ‖x‖ := by
   exact (closedCellPermute e).norm_map x
-
-theorem closedCellPermute_zero {n : ℕ} (e : Fin n ≃ Fin n) :
-    closedCellPermute e 0 = 0 := by
-  ext j
-  simp
 
 theorem closedCellPermute_inv {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
     closedCellPermute e.symm (closedCellPermute e x) = x := by
@@ -245,11 +221,6 @@ theorem closedCellTail_apply (n : ℕ) (x : EuclideanSpace ℝ (Fin (n + 1))) (j
     closedCellTail n x j = x (Fin.succ j) := rfl
 
 
-theorem closedCellTail_norm_sq (n : ℕ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
-    ‖closedCellTail n x‖ ^ 2 = ∑ j : Fin n, (x (Fin.succ j)) ^ 2 := by
-  rw [EuclideanSpace.norm_sq_eq]
-  simp [closedCellTail]
-
 noncomputable def closedCellCons (n : ℕ) (t : ℝ) (v : EuclideanSpace ℝ (Fin n)) :
     EuclideanSpace ℝ (Fin (n + 1)) :=
   WithLp.toLp 2 (fun j : Fin (n + 1) => Fin.cases t (fun j' : Fin n => v j') j)
@@ -282,9 +253,6 @@ theorem closedCellCons_eq_cons (n : ℕ) (t : ℝ) (v : EuclideanSpace ℝ (Fin 
 
 def closedCellSign (σ : Bool) : ℝ := if σ then 1 else -1
 
-theorem closedCellSign_ne_zero (σ : Bool) : closedCellSign σ ≠ 0 := by
-  cases σ <;> norm_num [closedCellSign]
-
 theorem closedCellSign_sq (σ : Bool) : closedCellSign σ ^ 2 = 1 := by
   cases σ <;> norm_num [closedCellSign, pow_two]
 
@@ -299,10 +267,6 @@ noncomputable def closedCellShiftSucc (n : ℕ) (c : ℝ) (x : EuclideanSpace �
 theorem closedCellShiftSucc_apply_zero (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
     closedCellShiftSucc n c x (0) = x (0) + c := by
   simp [closedCellShiftSucc]
-
-theorem closedCellShiftSucc_apply_succ (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1)))
-    (j : Fin n) : closedCellShiftSucc n c x (Fin.succ j) = x (Fin.succ j) := by
-  simp [closedCellShiftSucc, Fin.succ_ne_zero]
 
 theorem closedCellShiftSucc_apply_of_ne {n : ℕ} (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1)))
     {j : Fin (n + 1)} (hj : j ≠ (0)) :
@@ -838,9 +802,6 @@ theorem closedCellSign_decide {a : ℝ} :
   by_cases h : 0 < a
   · simp [h, closedCellSign]
   · simp [h, closedCellSign]
-
-theorem mem_closedCellInteriorChart_source (n : ℕ) (x : ClosedCell (n + 1)) (hx : ‖x.1‖ < 1) :
-    x ∈ (closedCellInteriorChart n).source := hx
 
 theorem mem_closedCellBoundaryChart_source {m : ℕ} (x : ClosedCell (m + 1)) {i : Fin (m + 1)}
     (hi : x.1 i ≠ 0) :
@@ -1975,15 +1936,6 @@ theorem standardHandleHasGroupoid (m n : ℕ) :
   letI : HasGroupoid (ClosedCell (n + 1)) (contDiffGroupoid (⊤ : ℕ∞)
       (modelWithCornersEuclideanHalfSpace (n + 1))) := closedCellHasGroupoid n
   exact hasGroupoid_prod
-
-theorem standardHandleIsManifold (m n : ℕ) :
-    @IsManifold ℝ _ (EuclideanSpace ℝ (Fin (m + 1)) × EuclideanSpace ℝ (Fin (n + 1))) _ _
-      (ModelProd (EuclideanHalfSpace (m + 1)) (EuclideanHalfSpace (n + 1))) _
-      ((modelWithCornersEuclideanHalfSpace (m + 1)).prod
-        (modelWithCornersEuclideanHalfSpace (n + 1))) (⊤ : ℕ∞)
-      (ClosedCell (m + 1) × ClosedCell (n + 1)) _ (standardHandleChartedSpaceSucc m n) := by
-  letI := standardHandleChartedSpaceSucc m n
-  exact { toHasGroupoid := standardHandleHasGroupoid m n }
 
 noncomputable def cellBoundarySphereHomeomorph (k : ℕ) :
     CellBoundary k ≃ₜ Metric.sphere (0 : EuclideanSpace ℝ (Fin k)) 1 where
