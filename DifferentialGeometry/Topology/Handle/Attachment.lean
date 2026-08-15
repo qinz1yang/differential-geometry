@@ -42,13 +42,6 @@ theorem cell_lower_cover {k l : ℕ} {X : Type u} (φ : AttachingRegion k l → 
   · exact Or.inl ⟨d, rfl⟩
   · exact Or.inr ⟨x, rfl⟩
 
-theorem cell_lower_coverage {k l : ℕ} {X : Type u} (φ : AttachingRegion k l → X) :
-    (Set.range (cell φ) ∪ Set.range (lower φ)) = Set.univ := by
-  ext z
-  constructor <;> intro hz
-  · trivial
-  · exact cell_lower_cover φ z
-
 section UnionRealization
 
 variable {k l : ℕ} {Y : Type v} [TopologicalSpace Y] {X₀ : Set Y}
@@ -86,12 +79,6 @@ theorem adjunctionHomeomorphUnionImage_cell (d : StandardHandle k l) :
   dsimp [DifferentialGeometry.Topology.adjunctionRealization,
     DifferentialGeometry.Topology.adjunctionUnionMap,
     DifferentialGeometry.Topology.adjunctionCell, DifferentialGeometry.Topology.adjunctionMk]
-
-theorem adjunctionHomeomorphUnionImage_attachingRegion (a : AttachingRegion k l) :
-    adjunctionHomeomorphUnionImage φ c hφ hc hcont hmeet hclosed
-        (cell φ (attachingInclusion k l a)) =
-      adjunctionHomeomorphUnionImage φ c hφ hc hcont hmeet hclosed (lower φ (φ a)) := by
-  rw [adjunction_coherence φ a]
 
 end UnionRealization
 
