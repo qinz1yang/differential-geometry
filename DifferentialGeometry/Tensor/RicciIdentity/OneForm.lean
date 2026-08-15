@@ -43,7 +43,6 @@ abbrev TwoTensorSection :=
 
 def NablaOneFormRealizesAt
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (alpha : OneFormSection (I := I) (M := M))
     (nablaAlpha : (x : M) ->
@@ -57,7 +56,6 @@ def NablaOneFormRealizesAt
 
 def NablaOneFormSectionRealizes
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (alpha : OneFormSection (I := I) (M := M))
     (nablaAlpha : TwoTensorSection (I := I) (M := M)) : Prop :=

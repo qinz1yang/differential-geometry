@@ -23,7 +23,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def Nabla0SRealizesAt
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (s : ℕ) (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (alpha : Tensor0SSection (I := I) (M := M) s)
     (nablaAlpha : (x : M) →
@@ -37,7 +36,6 @@ def Nabla0SRealizesAt
 
 def Nabla0SSectionRealizes
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (s : ℕ) (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (alpha : Tensor0SSection (I := I) (M := M) s)
     (nablaAlpha : Tensor0SSection (I := I) (M := M) (s + 1)) : Prop :=

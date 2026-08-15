@@ -766,7 +766,7 @@ theorem metricTraceFirstTwoField_product {k q : ℕ}
 
 set_option backward.isDefEq.respectTransparency false in
 theorem metricTraceFirstTwoField_zero {s : ℕ}
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M) :
     metricTraceFirstTwoField (I := I) (M := M) g
         (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

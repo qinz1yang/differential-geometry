@@ -736,7 +736,7 @@ private theorem unitRest_compact
   exact isCompact_range hmkCont
 
 theorem metricUnitOn_compact
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) {K : Set M} (hK : IsCompact K) :
     IsCompact {p : MetricUnitTangent (I := I) (M := M) g |
       MetricUnitTangent.base (I := I) (M := M) p ∈ K} := by

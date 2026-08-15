@@ -330,7 +330,7 @@ theorem metricUniformEquivalentOn_of_metricDerivNorm
     _ <= δ * gInf.inner x v v :=
         mul_le_mul_of_nonneg_right (hsmall x hx) hgnn
 
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem equivOn_compact
     {K : Set M} (hK : IsCompact K)
     (gRef h : SmoothRiemannianMetric I M) :
@@ -366,12 +366,13 @@ theorem equivOn_compact
     calc h.inner x v v <= c'⁻¹ * gRef.inner x v v := hub
       _ <= C * gRef.inner x v v := mul_le_mul_of_nonneg_right hc'_inv_le_C hgnn
 
-omit [CompleteSpace E] in
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem metricUniformEquivalentOn_of_compact [CompactSpace M]
     (gRef h : SmoothRiemannianMetric I M) :
     ∃ C : Real, MetricUniformEquivalentOn (I := I) Set.univ gRef h C := by
   simpa using equivOn_compact (I := I) isCompact_univ gRef h
 
+omit [SigmaCompactSpace M] in
 theorem metricDerivNorm_le_metricDerivNormSupOn [CompactSpace M]
     (gk gInf : SmoothRiemannianMetric I M) (x : M) :
     metricDerivNorm (I := I) 0 gk gInf gInf x
@@ -388,6 +389,7 @@ theorem metricDerivNorm_le_metricDerivNormSupOn [CompactSpace M]
     exact hper z
   exact le_csSup hbdd ⟨0, le_refl 0, x, Set.mem_univ x, rfl⟩
 
+omit [SigmaCompactSpace M] in
 theorem exists_uniform_equiv_of_metricCPConv [CompactSpace M]
     (gSeq : Nat -> SmoothRiemannianMetric I M) (gInf : SmoothRiemannianMetric I M)
     (hconv : MetricCPConvOn (I := I) Set.univ isCompact_univ 0 gSeq gInf gInf) :

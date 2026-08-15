@@ -41,7 +41,7 @@ def frontExtendEquiv {s s' : ℕ} (e : Fin s ≃ Fin s') : Fin (s + 1) ≃ Fin (
 
 omit [CompleteSpace E] in
 theorem nabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] {s s' : ℕ}
+    {s s' : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (e : Fin s ≃ Fin s')
@@ -83,7 +83,7 @@ theorem nabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
 
 omit [CompleteSpace E] in
 theorem totalNabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] {s s' : ℕ}
+    {s s' : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (e : Fin s ≃ Fin s')
     (Z : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -123,7 +123,7 @@ theorem totalNabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I
 
 omit [CompleteSpace E] in
 theorem totalNabla0SRealizes_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] {s s' : ℕ}
+    {s s' : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (e : Fin s ≃ Fin s')
     (Z : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
