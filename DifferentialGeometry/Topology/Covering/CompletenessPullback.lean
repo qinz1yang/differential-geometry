@@ -449,33 +449,6 @@ theorem tail_in_single_sheet [Nonempty M] [CompleteSpace M]
     · show (t (x' n)).2 ∈ ({pt} : Set (p ⁻¹' {y}))
       rw [hsnd]; exact Set.mem_singleton _
 
-omit [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M] [SecondCountableTopology M] in
-theorem sheet_homeomorph [Nonempty M] (y : M) :
-    ∃ (U : Set M) (_hU : IsOpen U) (_hyU : y ∈ U)
-      (y' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
-      (U' : Set (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M))
-      (_hU' : IsOpen U') (_hy'U : y' ∈ U') (_hproj : proj (X := M) y' = y),
-      ∃ _h : (U' ≃ₜ U), True := by
-  haveI hpc : PathConnectedSpace M :=
-    (pathConnectedSpace_iff_connectedSpace).mpr inferInstance
-  obtain ⟨γ⟩ := PathConnectedSpace.joined (default : M) y
-  set y' :
-      DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M :=
-    ⟨y, Path.Homotopic.Quotient.mk γ⟩ with hy'_def
-  have hLH :
-      IsLocalHomeomorph
-        (proj :
-          DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M → M) :=
-    UniversalCover.proj_isCoveringMap.isLocalHomeomorph
-  obtain ⟨e, hy'e, hfe⟩ := hLH y'
-  have hproj_y' : proj (X := M) y' = y := rfl
-  have hy_eq : (e : _ → M) y' = y := by
-    have h1 := congrFun hfe y'
-    exact h1.symm.trans hproj_y'
-  have hyU : y ∈ e.target := hy_eq ▸ e.map_source hy'e
-  refine ⟨e.target, e.open_target, hyU, y', e.source, e.open_source, hy'e,
-    hproj_y', e.toHomeomorphSourceTarget, trivial⟩
-
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in

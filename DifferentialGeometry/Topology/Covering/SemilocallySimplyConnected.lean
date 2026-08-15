@@ -26,8 +26,8 @@ class SemilocallySimplyConnectedSpace (X : Type*) [TopologicalSpace X] :
 
 theorem contractible_loops_nullhomotopic_in_subset
     {X : Type*} [TopologicalSpace X]
-    {U : Set X} (_hUopen : IsOpen U) [ContractibleSpace U]
-    {x : X} (_hxU : x ∈ U)
+    {U : Set X} [ContractibleSpace U]
+    {x : X}
     (γ : _root_.Path x x)
     (hγU : Set.range γ.toContinuousMap ⊆ U) :
     (⟦γ⟧ : _root_.Path.Homotopic.Quotient x x) = ⟦_root_.Path.refl x⟧ := by
@@ -95,7 +95,7 @@ theorem manifold_semilocallySimplyConnectedSpace :
   intro x
   obtain ⟨U, hU_open, hxU, hU_contr⟩ := manifold_exists_contractible_open_nhd (I := I) x
   refine ⟨U, hU_open.mem_nhds hxU, fun γ hγU => ?_⟩
-  exact contractible_loops_nullhomotopic_in_subset hU_open hxU γ hγU⟩
+  exact contractible_loops_nullhomotopic_in_subset (X := M) (U := U) γ hγU⟩
 
 end ChartContractible
 

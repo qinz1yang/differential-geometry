@@ -27,7 +27,7 @@ def proj :
 
 def basicOpen
     (p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
-    (U : Set X) (_hU : IsOpen U) (_hp : p.1 ∈ U) :
+    (U : Set X) :
     Set (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) :=
   { q | ∃ η : _root_.Path p.1 q.1,
           (∀ t, η t ∈ U) ∧
@@ -41,16 +41,15 @@ instance topology :
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) :=
   TopologicalSpace.generateFrom
     { S | ∃ (p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
-            (U : Set X) (hU : IsOpen U) (hp : p.1 ∈ U),
-              S = basicOpen p U hU hp }
+            (U : Set X) (_hU : IsOpen U) (_hp : p.1 ∈ U),
+              S = basicOpen p U }
 
 theorem basis_trans_shift
     {p q r : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X}
-    {U U' : Set X} (hU : IsOpen U) (hp : p.1 ∈ U)
-    (hU' : IsOpen U') (hq : q.1 ∈ U') (hsub : U' ⊆ U)
-    (hqp : q ∈ basicOpen p U hU hp)
-    (hrq : r ∈ basicOpen q U' hU' hq) :
-    r ∈ basicOpen p U hU hp := by
+    {U U' : Set X} (hsub : U' ⊆ U)
+    (hqp : q ∈ basicOpen p U)
+    (hrq : r ∈ basicOpen q U') :
+    r ∈ basicOpen p U := by
   obtain ⟨η, hη, hq2⟩ := hqp
   obtain ⟨η', hη', hr2⟩ := hrq
   refine ⟨η.trans η', ?_, ?_⟩
@@ -80,13 +79,12 @@ theorem basis_trans_shift
 theorem basis_intersection
     [LocPathConnectedSpace X]
     {p₁ p₂ r : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X}
-    {U₁ U₂ : Set X} (hU₁ : IsOpen U₁) (hp₁ : p₁.1 ∈ U₁)
-    (hU₂ : IsOpen U₂) (hp₂ : p₂.1 ∈ U₂)
-    (hr : r ∈ basicOpen p₁ U₁ hU₁ hp₁ ∩ basicOpen p₂ U₂ hU₂ hp₂) :
-    ∃ (V : Set X) (hV : IsOpen V) (hrV : r.1 ∈ V),
+    {U₁ U₂ : Set X} (hU₁ : IsOpen U₁) (hU₂ : IsOpen U₂)
+    (hr : r ∈ basicOpen p₁ U₁ ∩ basicOpen p₂ U₂) :
+    ∃ (V : Set X) (_hV : IsOpen V) (_hrV : r.1 ∈ V),
       V ⊆ U₁ ∩ U₂ ∧ IsPathConnected V ∧
-        basicOpen r V hV hrV ⊆
-          basicOpen p₁ U₁ hU₁ hp₁ ∩ basicOpen p₂ U₂ hU₂ hp₂ := by
+        basicOpen r V ⊆
+          basicOpen p₁ U₁ ∩ basicOpen p₂ U₂ := by
   obtain ⟨⟨η₁, hη₁, hr2_1⟩, ⟨η₂, hη₂, hr2_2⟩⟩ := hr
   have hrU₁ : r.1 ∈ U₁ := by
     have h1 := hη₁ 1
@@ -146,8 +144,8 @@ theorem basis_intersection
 theorem basis_covers
     (q : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) :
     ∃ (p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
-      (U : Set X) (hU : IsOpen U) (hp : p.1 ∈ U),
-        q ∈ basicOpen p U hU hp := by
+      (U : Set X) (_hU : IsOpen U) (_hp : p.1 ∈ U),
+        q ∈ basicOpen p U := by
   refine ⟨q, Set.univ, isOpen_univ, Set.mem_univ _, ?_⟩
   refine ⟨_root_.Path.refl q.1, fun _ => Set.mem_univ _, ?_⟩
   have hmkrefl :
@@ -163,17 +161,16 @@ theorem basis_assemble
     TopologicalSpace.IsTopologicalBasis
       { S : Set (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) |
           ∃ (p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)
-            (U : Set X) (hU : IsOpen U) (hp : p.1 ∈ U),
-              S = basicOpen p U hU hp } := by
+            (U : Set X) (_hU : IsOpen U) (_hp : p.1 ∈ U),
+              S = basicOpen p U } := by
   refine
     { exists_subset_inter := ?_
       sUnion_eq := ?_
       eq_generateFrom := rfl }
   · rintro t₁ ⟨p₁, U₁, hU₁, hp₁, rfl⟩ t₂ ⟨p₂, U₂, hU₂, hp₂, rfl⟩ x hx
     obtain ⟨V, hVopen, hxV, _hVsub, _hVpc, hVin⟩ :=
-      basis_intersection (p₁ := p₁) (p₂ := p₂) (r := x)
-        hU₁ hp₁ hU₂ hp₂ hx
-    refine ⟨basicOpen x V hVopen hxV, ⟨x, V, hVopen, hxV, rfl⟩, ?_, hVin⟩
+      basis_intersection (p₁ := p₁) (p₂ := p₂) (r := x) hU₁ hU₂ hx
+    refine ⟨basicOpen x V, ⟨x, V, hVopen, hxV, rfl⟩, ?_, hVin⟩
     refine ⟨_root_.Path.refl x.1, fun _ => hxV, ?_⟩
     have hmkrefl :
         (_root_.Path.Homotopic.Quotient.mk (_root_.Path.refl x.1) :
@@ -185,7 +182,7 @@ theorem basis_assemble
   · apply Set.eq_univ_of_forall
     intro q
     obtain ⟨p, U, hU, hp, hmem⟩ := basis_covers q
-    exact ⟨basicOpen p U hU hp, ⟨p, U, hU, hp, rfl⟩, hmem⟩
+    exact ⟨basicOpen p U, ⟨p, U, hU, hp, rfl⟩, hmem⟩
 
 theorem proj_continuous [LocPathConnectedSpace X] :
     Continuous
@@ -196,9 +193,9 @@ theorem proj_continuous [LocPathConnectedSpace X] :
   intro U hU
   rw [mem_nhds_iff] at hU
   obtain ⟨W, hWU, hWopen, hqW⟩ := hU
-  have hbasic_open : IsOpen (basicOpen q W hWopen hqW) :=
+  have hbasic_open : IsOpen (basicOpen q W) :=
     TopologicalSpace.GenerateOpen.basic _ ⟨q, W, hWopen, hqW, rfl⟩
-  have hqmem : q ∈ basicOpen q W hWopen hqW := by
+  have hqmem : q ∈ basicOpen q W := by
     refine ⟨_root_.Path.refl q.1, fun _ => hqW, ?_⟩
     have hmkrefl :
         (_root_.Path.Homotopic.Quotient.mk (_root_.Path.refl q.1) :
@@ -207,7 +204,7 @@ theorem proj_continuous [LocPathConnectedSpace X] :
       _root_.Path.Homotopic.Quotient.mk_refl q.1
     rw [hmkrefl]
     exact (_root_.Path.Homotopic.Quotient.trans_refl q.2).symm
-  have hsub : basicOpen q W hWopen hqW ⊆ proj ⁻¹' U := by
+  have hsub : basicOpen q W ⊆ proj ⁻¹' U := by
     intro s hs
     obtain ⟨η, hη, _⟩ := hs
     have hη1 : η 1 ∈ W := hη 1

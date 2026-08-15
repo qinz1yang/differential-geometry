@@ -146,16 +146,6 @@ theorem riemannOp_lift_one
       (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
       (liftedMetric (I := I) (scaleMetric (I := I) c hc g)) x' 1 hRm X Y Z
 
-omit [NeZero (Module.finrank ℝ E)] [PseudoEMetricSpace M] in
-omit [I.Boundaryless]
-  [T2Space M]
-  [SigmaCompactSpace M]
-  [ConnectedSpace M]
-  [SecondCountableTopology M] in
-theorem leviCivita_lifted_eq_pullback (g : SmoothRiemannianMetric I M) :
-    LeviCivita (I := I) (liftedMetric (I := I) g) =
-      LeviCivita (I := I) (liftedMetric (I := I) g) := rfl
-
 omit [PseudoEMetricSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] [ConnectedSpace M] [SecondCountableTopology M] in
