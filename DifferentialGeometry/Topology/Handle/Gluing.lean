@@ -265,6 +265,72 @@ theorem contMDiff_cell_of_contMDiff {E H : Type*} [NormedAddCommGroup E] [Normed
   intro d
   exact (h.left_inv (cell φ d)).symm
 
+noncomputable def handleAdjunctionDiffeomorph {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+    {E H : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [TopologicalSpace H]
+    (I : ModelWithCorners 𝕜 E H) {X : Type u} {X' : Type u'} {Y : Type v} [TopologicalSpace X]
+    [TopologicalSpace X'] [TopologicalSpace Y] [ChartedSpace H Y] (φ : AttachingRegion k l → X)
+    (φ' : AttachingRegion k l → X') (h₁ : AdjunctionSpace k l φ ≃ₜ Y)
+    (h₂ : AdjunctionSpace k l φ' ≃ₜ Y) {n : WithTop ℕ∞} [IsManifold I n Y]
+    (h : X ≃ₜ X') (hφ : ∀ a, h.toFun (φ a) = φ' a)
+    (hcomm : ∀ z : AdjunctionSpace k l φ,
+      h₂.toFun (adjunctionCongr φ φ' h hφ z) = h₁.toFun z) :
+    @Diffeomorph 𝕜 _ E _ _ E _ _ H _ H _ I I (AdjunctionSpace k l φ) _
+      (adjunctionChartedSpace φ h₁) (AdjunctionSpace k l φ') _ (adjunctionChartedSpace φ' h₂) n
+      := by
+  letI : ChartedSpace H (AdjunctionSpace k l φ) := adjunctionChartedSpace φ h₁
+  letI : ChartedSpace H (AdjunctionSpace k l φ') := adjunctionChartedSpace φ' h₂
+  letI : IsManifold I n (AdjunctionSpace k l φ) := adjunctionIsManifold I φ h₁
+  letI : IsManifold I n (AdjunctionSpace k l φ') := adjunctionIsManifold I φ' h₂
+  have hto : @ContMDiff 𝕜 _ E _ _ H _ I (AdjunctionSpace k l φ) _
+      (adjunctionChartedSpace φ h₁) E _ _ H _ I (AdjunctionSpace k l φ') _
+      (adjunctionChartedSpace φ' h₂) n (adjunctionCongr φ φ' h hφ) := by
+    have hf₁ : @ContMDiff 𝕜 _ E _ _ H _ I (AdjunctionSpace k l φ) _
+        (adjunctionChartedSpace φ h₁) E _ _ H _ I Y _ _ n h₁ :=
+      contMDiff_adjunctionHomeomorph I φ h₁
+    have hf₂ : @ContMDiff 𝕜 _ E _ _ H _ I Y _ _ E _ _ H _ I (AdjunctionSpace k l φ') _
+        (adjunctionChartedSpace φ' h₂) n h₂.symm :=
+      contMDiff_adjunctionHomeomorph_symm I φ' h₂
+    have hcomp : @ContMDiff 𝕜 _ E _ _ H _ I (AdjunctionSpace k l φ) _
+        (adjunctionChartedSpace φ h₁) E _ _ H _ I (AdjunctionSpace k l φ') _
+        (adjunctionChartedSpace φ' h₂) n
+        (fun z : AdjunctionSpace k l φ => h₂.symm.toFun (h₁.toFun z)) :=
+      hf₂.comp hf₁
+    refine hcomp.congr ?_
+    intro z
+    exact (h₂.left_inv (adjunctionCongr φ φ' h hφ z)).symm.trans
+      (congrArg h₂.symm.toFun (hcomm z))
+  have hinv : @ContMDiff 𝕜 _ E _ _ H _ I (AdjunctionSpace k l φ') _
+      (adjunctionChartedSpace φ' h₂) E _ _ H _ I (AdjunctionSpace k l φ) _
+      (adjunctionChartedSpace φ h₁) n (adjunctionCongr φ φ' h hφ).symm := by
+    have hf₁ : @ContMDiff 𝕜 _ E _ _ H _ I Y _ _ E _ _ H _ I (AdjunctionSpace k l φ) _
+        (adjunctionChartedSpace φ h₁) n h₁.symm :=
+      contMDiff_adjunctionHomeomorph_symm I φ h₁
+    have hf₂ : @ContMDiff 𝕜 _ E _ _ H _ I (AdjunctionSpace k l φ') _
+        (adjunctionChartedSpace φ' h₂) E _ _ H _ I Y _ _ n h₂ :=
+      contMDiff_adjunctionHomeomorph I φ' h₂
+    have hcomp : @ContMDiff 𝕜 _ E _ _ H _ I (AdjunctionSpace k l φ') _
+        (adjunctionChartedSpace φ' h₂) E _ _ H _ I (AdjunctionSpace k l φ) _
+        (adjunctionChartedSpace φ h₁) n
+        (fun z : AdjunctionSpace k l φ' => h₁.symm.toFun (h₂.toFun z)) :=
+      hf₁.comp hf₂
+    refine hcomp.congr ?_
+    intro z
+    have hz : h₂.toFun (adjunctionCongr φ φ' h hφ ((adjunctionCongr φ φ' h hφ).symm z)) =
+        h₁.toFun ((adjunctionCongr φ φ' h hφ).symm z) := by
+      exact hcomm ((adjunctionCongr φ φ' h hφ).symm z)
+    have hmain : h₂.toFun z = h₁.toFun ((adjunctionCongr φ φ' h hφ).symm z) := by
+      rw [← hz]
+      exact congrArg h₂.toFun ((adjunctionCongr φ φ' h hφ).apply_symm_apply z).symm
+    calc
+      (adjunctionCongr φ φ' h hφ).symm z =
+          h₁.symm.toFun (h₁.toFun ((adjunctionCongr φ φ' h hφ).symm z)) :=
+        (h₁.left_inv ((adjunctionCongr φ φ' h hφ).symm z)).symm
+      _ = h₁.symm.toFun (h₂.toFun z) := congrArg h₁.symm.toFun hmain.symm
+  exact
+    { toEquiv := adjunctionCongr φ φ' h hφ
+      contMDiff_toFun := hto
+      contMDiff_invFun := hinv }
+
 end
 
 end DifferentialGeometry.Topology.Handle
