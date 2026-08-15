@@ -125,7 +125,9 @@ noncomputable def ContMDiffSection.tensorProduct
     congr 1 <;> simp [Trivialization.continuousLinearMapAt,
       e₁.coe_linearMapAt_of_mem hx.1, e₂.coe_linearMapAt_of_mem hx.2]⟩
 
-omit [ContMDiffVectorBundle n F₁ E₁ IB] [ContMDiffVectorBundle n F₂ E₂ IB] in
+omit [ContMDiffVectorBundle n F₁ E₁ IB] [ContMDiffVectorBundle n F₂ E₂ IB]
+  [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 @[simp]
 theorem ContMDiffSection.tensorProduct_apply
     (g : ContMDiffSection IB F₁ n E₁)

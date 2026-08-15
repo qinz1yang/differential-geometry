@@ -185,7 +185,7 @@ theorem Tensor0SField.fromScalarField_toScalarField [CompleteSpace 𝕜]
 
 omit [IsManifold I (n + 1) M] in
 @[simp]
-theorem Tensor0SField.toScalarField_add [CompleteSpace 𝕜]
+theorem Tensor0SField.toScalarField_add
     (α β : Tensor0SField n 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     (α + β).toScalarField n = α.toScalarField n + β.toScalarField n := by
   ext x
@@ -195,7 +195,7 @@ theorem Tensor0SField.toScalarField_add [CompleteSpace 𝕜]
 
 omit [IsManifold I (n + 1) M] in
 @[simp]
-theorem Tensor0SField.toScalarField_smulByFun [CompleteSpace 𝕜]
+theorem Tensor0SField.toScalarField_smulByFun
     (φ : M → 𝕜) (hφ : ContMDiff I 𝓘(𝕜) n φ)
     (α : Tensor0SField n 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     (tensor0SField_smulByFun n φ hφ α).toScalarField n = φ * α.toScalarField n := by
@@ -288,14 +288,14 @@ noncomputable def Tensor0SField.toTensorRSField {s : ℕ}
 
 omit [IsManifold I (n + 1) M] in
 @[simp]
-theorem Tensor0SField.toRS0_apply {s : ℕ} [CompleteSpace 𝕜]
+theorem Tensor0SField.toRS0_apply {s : ℕ}
     (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
     (x : M) (c : Tensor0SSpace 0 I x) :
     α.toTensorRSField n x c = tensor0SSpace_evalScalar x c • α x :=
   rfl
 
 omit [IsManifold I (n + 1) M] in
-theorem Tensor0SField.toRS0_eq {s : ℕ} [CompleteSpace 𝕜]
+theorem Tensor0SField.toRS0_eq {s : ℕ}
     (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
     (x : M) :
     α.toTensorRSField n x = Tensor0SSpace.toRS0 (α x) := by

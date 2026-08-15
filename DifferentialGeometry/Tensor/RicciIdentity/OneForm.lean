@@ -63,7 +63,6 @@ def NablaOneFormSectionRealizes
 
 def Nabla2OneFormRealizesAt
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (alpha : OneFormSection (I := I) (M := M))
     (nablaAlpha : TwoTensorSection (I := I) (M := M))
@@ -80,7 +79,6 @@ def Nabla2OneFormRealizesAt
 
 theorem nabla2OneFormRealizesAt_first
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (alpha : OneFormSection (I := I) (M := M))
     (nablaAlpha : TwoTensorSection (I := I) (M := M))
@@ -93,7 +91,6 @@ theorem nabla2OneFormRealizesAt_first
 
 theorem nabla2OneFormRealizesAt_apply
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (alpha : OneFormSection (I := I) (M := M))
     (nablaAlpha : TwoTensorSection (I := I) (M := M))
@@ -110,7 +107,6 @@ theorem nabla2OneFormRealizesAt_apply
 
 theorem nabla2OneFormRealizesAt_of_totalNabla
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (alpha : OneFormSection (I := I) (M := M))
     (nablaAlpha : TwoTensorSection (I := I) (M := M))

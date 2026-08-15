@@ -55,7 +55,6 @@ theorem tensor0SField_product_apply {s q : ℕ}
 
 theorem nabla0SFun_product_eval {s q : ℕ}
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
@@ -198,7 +197,6 @@ theorem nabla0SFun_product_eval {s q : ℕ}
 
 theorem nabla_product_zero_of_zero {s q : ℕ}
     [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)

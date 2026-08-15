@@ -65,7 +65,7 @@ variable (E₂ : B → Type*) [∀ x, AddCommGroup (E₂ x)] [∀ x, Module 𝕜
     (𝕜 : Type*) [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
     (B : Type*) [TopologicalSpace B]
     (F₁ : Type*) [NormedAddCommGroup F₁] [NormedSpace 𝕜 F₁] [FiniteDimensional 𝕜 F₁]
-    (F₂ : Type*) [NormedAddCommGroup F₂] [NormedSpace 𝕜 F₂] [FiniteDimensional 𝕜 F₂]
+    (F₂ : Type*) [NormedAddCommGroup F₂] [NormedSpace 𝕜 F₂]
     (E₁ : B → Type*) [∀ x, AddCommGroup (E₁ x)] [∀ x, Module 𝕜 (E₁ x)]
     [TopologicalSpace (TotalSpace F₁ E₁)] [∀ x, TopologicalSpace (E₁ x)]
     [FiberBundle F₁ E₁] [VectorBundle 𝕜 F₁ E₁]
@@ -76,6 +76,7 @@ variable (E₂ : B → Type*) [∀ x, AddCommGroup (E₂ x)] [∀ x, Module 𝕜
   tensorFiberTopologicalSpace (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂)
     (E₁ := E₁) (E₂ := E₂) x
 
+omit [FiniteDimensional 𝕜 F₂] in
 theorem tensorFiberTopologicalSpaceInst_eq
     (x : B) :
     tensorFiberTopologicalSpaceInst 𝕜 B F₁ F₂ E₁ E₂ x =
@@ -314,11 +315,15 @@ noncomputable instance memTrivializationAtlas :
   letI : (b : B) → TopologicalSpace (E₁ b ⊗[𝕜] E₂ b) := fun b ↦ inferInstance
   exact ⟨_, ⟨e₁, e₂, he₁, he₂, rfl⟩, rfl⟩
 
+omit [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 @[simp]
 theorem _root_.Trivialization.baseSet_tensorProduct :
     (e₁.tensorProduct (𝕜 := 𝕜) e₂).baseSet = e₁.baseSet ∩ e₂.baseSet :=
   rfl
 
+omit [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 theorem _root_.Trivialization.tensorProduct_apply
     (p : TotalSpace (F₁ ⊗[𝕜] F₂) (fun x ↦ E₁ x ⊗[𝕜] E₂ x)) :
     e₁.tensorProduct (𝕜 := 𝕜) e₂ p =
@@ -327,12 +332,16 @@ theorem _root_.Trivialization.tensorProduct_apply
         (e₂.continuousLinearMapAt 𝕜 p.1).toLinearMap p.2⟩ :=
   rfl
 
+omit [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 theorem tensorProduct_trivializationAt (x₀ : B) :
       letI : (x : B) → TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
       tensorFiberTop (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂) (E₁ := E₁) (E₂ := E₂)
     trivializationAt (F₁ ⊗[𝕜] F₂) (fun x ↦ E₁ x ⊗[𝕜] E₂ x) x₀ =
       (trivializationAt F₁ E₁ x₀).tensorProduct (𝕜 := 𝕜) (trivializationAt F₂ E₂ x₀) := rfl
 
+omit [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 @[simp, mfld_simps]
 theorem tensorProduct_trivializationAt_source (x₀ : B) :
       letI : (x : B) → TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
@@ -342,6 +351,8 @@ theorem tensorProduct_trivializationAt_source (x₀ : B) :
         ((trivializationAt F₁ E₁ x₀).baseSet ∩ (trivializationAt F₂ E₂ x₀).baseSet) :=
   rfl
 
+omit [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 @[simp, mfld_simps]
 theorem tensorProduct_trivializationAt_target (x₀ : B) :
       letI : (x : B) → TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
@@ -350,6 +361,8 @@ theorem tensorProduct_trivializationAt_target (x₀ : B) :
       ((trivializationAt F₁ E₁ x₀).baseSet ∩ (trivializationAt F₂ E₂ x₀).baseSet) ×ˢ Set.univ :=
   rfl
 
+omit [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
+  [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] in
 @[simp]
 theorem tensorProduct_trivializationAt_baseSet (x₀ : B) :
     letI : (x : B) → TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=

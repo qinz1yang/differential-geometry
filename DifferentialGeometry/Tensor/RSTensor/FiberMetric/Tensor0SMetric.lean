@@ -341,7 +341,7 @@ def homCLM [AddCommGroup V] [Module Real V] [TopologicalSpace V]
 
 end MetricFiberData
 
-def scalarMetricData (_g : SmoothMetric I M) (x : M) :
+def scalarMetricData (x : M) :
     MetricFiberData (Tensor0SSpace 0 I x) :=
   MetricFiberData.pullback
     ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 0 x).toLinearEquiv.trans
@@ -400,7 +400,7 @@ def tensor0SMetricStep
 
 def tensor0SMetricData (g : SmoothMetric I M) (x : M) :
     (s : Nat) -> MetricFiberData (Tensor0SSpace s I x)
-  | 0 => scalarMetricData (I := I) g x
+  | 0 => scalarMetricData (I := I) x
   | 1 => cotangentMetricData (I := I) g x
   | s + 2 =>
       tensor0SMetricStep (I := I) g x (s + 1) (tensor0SMetricData g x (s + 1))

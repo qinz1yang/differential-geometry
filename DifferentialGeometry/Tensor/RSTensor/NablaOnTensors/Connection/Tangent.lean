@@ -239,7 +239,6 @@ theorem smoothSections_cov_contMDiffAt_one
 theorem tangentConst_cov_mdiffAt
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
-    [CompleteSpace 𝕜]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]

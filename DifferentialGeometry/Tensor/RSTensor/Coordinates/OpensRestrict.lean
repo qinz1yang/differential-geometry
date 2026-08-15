@@ -50,7 +50,7 @@ theorem tangentCoordChange_opens {V : Opens M} (p q x : V)
     (hev.eq_of_nhdsWithin ⟨(chartAt H (p : M)) (x : M), rfl⟩)
 
 omit [CompleteSpace E] in
-theorem tensor0SModelAt_opens (s : ℕ) {V : Opens M} [Nonempty V] (p x : V)
+theorem tensor0SModelAt_opens (s : ℕ) {V : Opens M} (p x : V)
     (hxp : (x : M) ∈ (chartAt H (p : M)).source)
     (A : Tensor0SBundle.Tensor0SSpace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := V) s x) :
     TensorLieDeriv.tensor0SModelAt (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := V) s p x A
@@ -82,7 +82,7 @@ noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace
     [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    (s : ℕ) [IsManifold I 1 M] {V : Opens M} [Nonempty V]
+    (s : ℕ) [IsManifold I 1 M] {V : Opens M}
     (δ : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)

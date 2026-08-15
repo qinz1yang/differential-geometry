@@ -78,7 +78,7 @@ lemma covariantDerivative_tangentConst_apply_contMDiffOn_baseSet
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov n)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
-    (x₀ : M) (v : E) [IsManifold I (n + 1) M] [IsManifold I (n + 1 + 1) M] :
+    (x₀ : M) (v : E) [IsManifold I (n + 1 + 1) M] :
     CMDiff[(trivializationAt E (TangentSpace I) x₀).baseSet] n
       (T% (fun p : M =>
         (cov (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ v) p) (X p))) := by

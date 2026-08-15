@@ -36,7 +36,6 @@ private def freezeTailSlots {s : ℕ}
 
 set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeTailField {s : ℕ}
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2))
     (Y : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -149,7 +148,6 @@ noncomputable def freezeTailField {s : ℕ}
   rfl
 
 @[simp] theorem freezeTailField_apply {s : ℕ}
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2))
     (Y : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞)
