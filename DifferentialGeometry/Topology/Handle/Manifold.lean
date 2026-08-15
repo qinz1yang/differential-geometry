@@ -248,11 +248,6 @@ theorem closedCellPermute_symm_eq {n : ℕ} (e : Fin n ≃ Fin n) :
     _ = (closedCellPermute e) (closedCellPermute e.symm x) :=
       by simpa using (closedCellPermute_inv e.symm x).symm
 
-theorem closedCellPermute_symm_apply {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n))
-    (j : Fin n) : (closedCellPermute e).symm x j = x (e j) := by
-  rw [closedCellPermute_symm_eq e]
-  rw [closedCellPermute_apply]
-  simp [Equiv.symm_symm]
 
 theorem closedCellPermute_swap_zero {n : ℕ} [NeZero n] (i : Fin n)
     (x : EuclideanSpace ℝ (Fin n)) :
@@ -269,12 +264,6 @@ noncomputable def closedCellTail (n : ℕ) (x : EuclideanSpace ℝ (Fin (n + 1))
 theorem closedCellTail_apply (n : ℕ) (x : EuclideanSpace ℝ (Fin (n + 1))) (j : Fin n) :
     closedCellTail n x j = x (Fin.succ j) := rfl
 
-noncomputable def closedCellModelTail (n : ℕ) (y : EuclideanSpace ℝ (Fin (n + 1))) :
-    EuclideanSpace ℝ (Fin n) :=
-  WithLp.toLp 2 fun j : Fin n => y (Fin.succ j)
-
-theorem closedCellModelTail_apply (n : ℕ) (y : EuclideanSpace ℝ (Fin (n + 1))) (j : Fin n) :
-    closedCellModelTail n y j = y (Fin.succ j) := rfl
 
 theorem closedCellTail_norm_sq (n : ℕ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
     ‖closedCellTail n x‖ ^ 2 = ∑ j : Fin n, (x (Fin.succ j)) ^ 2 := by
@@ -968,24 +957,6 @@ theorem closedCellTail_contDiff {m : ℕ} :
   unfold closedCellTail
   fun_prop
 
-theorem closedCellCons_contDiffOn_left {m : ℕ} :
-    ContDiffOn ℝ (⊤ : ℕ∞) (fun x : EuclideanSpace ℝ (Fin (m + 1)) =>
-      closedCellCons m (1 - ‖x‖ ^ 2) (closedCellTail m x)) Set.univ := by
-  have hcons : ContDiff ℝ (⊤ : ℕ∞) (fun x : EuclideanSpace ℝ (Fin (m + 1)) =>
-      closedCellCons m (1 - ‖x‖ ^ 2) (closedCellTail m x)) := by
-    have hpair : ContDiff ℝ (⊤ : ℕ∞) (fun x : EuclideanSpace ℝ (Fin (m + 1)) =>
-        (1 - ‖x‖ ^ 2, closedCellTail m x)) := by
-      have hnorm : ContDiff ℝ (⊤ : ℕ∞) (fun x : EuclideanSpace ℝ (Fin (m + 1)) => 1 - ‖x‖ ^ 2) := by
-        exact (contDiff_const.sub (contDiff_norm_sq ℝ))
-      exact hnorm.prodMk (closedCellTail_contDiff (m := m))
-    have hcons' : ContDiff ℝ (⊤ : ℕ∞) (fun p : ℝ × EuclideanSpace ℝ (Fin m) =>
-        closedCellCons m p.1 p.2) := closedCellCons_contDiff
-    have hcomp : ContDiff ℝ (⊤ : ℕ∞)
-        (fun x : EuclideanSpace ℝ (Fin (m + 1)) =>
-          closedCellCons m (1 - ‖x‖ ^ 2) (closedCellTail m x)) := by
-      simpa using hcons'.comp hpair
-    exact hcomp
-  exact hcons.contDiffOn
 
 noncomputable def closedCellInteriorBoundaryTransition {m : ℕ} (i : Fin (m + 1))
     (y : EuclideanSpace ℝ (Fin (m + 1))) : EuclideanSpace ℝ (Fin (m + 1)) :=
@@ -2370,16 +2341,6 @@ noncomputable def standardHandleZeroChartedSpace (l : ℕ) [Fact (l = (l - 1) + 
   exact prodChartedSpace (EuclideanSpace ℝ (Fin 0)) (ClosedCell 0)
     (EuclideanHalfSpace ((l - 1) + 1)) (ClosedCell l)
 
-@[reducible]
-noncomputable def standardHandleTopChartedSpace (k : ℕ) [Fact (k = (k - 1) + 1)] :
-    ChartedSpace (ModelProd (EuclideanHalfSpace ((k - 1) + 1)) (EuclideanSpace ℝ (Fin 0)))
-      (StandardHandle k 0) := by
-  letI : ChartedSpace (EuclideanHalfSpace ((k - 1) + 1)) (ClosedCell k) :=
-    closedCellChartedSpace k
-  letI : ChartedSpace (EuclideanSpace ℝ (Fin 0)) (ClosedCell 0) :=
-    closedCellZeroChartedSpace
-  exact prodChartedSpace (EuclideanHalfSpace ((k - 1) + 1)) (ClosedCell k)
-    (EuclideanSpace ℝ (Fin 0)) (ClosedCell 0)
 
 noncomputable def finSubSelfIso (n : ℕ) :
     EuclideanSpace ℝ (Fin (n - n)) ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin 0) :=
