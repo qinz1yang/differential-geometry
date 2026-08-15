@@ -3,7 +3,7 @@ import Mathlib.Topology.Constructions
 
 namespace DifferentialGeometry.Topology.Handle
 
-def swap (k l : ℕ) : StandardHandle k l ≃ₜ StandardHandle l k :=
+abbrev swap (k l : ℕ) : StandardHandle k l ≃ₜ StandardHandle l k :=
   Homeomorph.prodComm (X := ClosedCell k) (Y := ClosedCell l)
 
 @[simp]
