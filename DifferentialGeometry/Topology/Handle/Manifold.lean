@@ -237,26 +237,6 @@ theorem closedCellCoord_norm_le_norm {n : ℕ} (x : EuclideanSpace ℝ (Fin (n +
     ‖x (0)‖ ≤ ‖x‖ :=
   PiLp.norm_apply_le x (0)
 
-theorem closedCellPermute_symm_eq {n : ℕ} (e : Fin n ≃ Fin n) :
-    (closedCellPermute e).symm = closedCellPermute e.symm := by
-  apply LinearIsometryEquiv.ext
-  intro x
-  apply (closedCellPermute e).injective
-  calc
-    (closedCellPermute e) ((closedCellPermute e).symm x) = x :=
-      (closedCellPermute e).apply_symm_apply x
-    _ = (closedCellPermute e) (closedCellPermute e.symm x) :=
-      by simpa using (closedCellPermute_inv e.symm x).symm
-
-
-theorem closedCellPermute_swap_zero {n : ℕ} [NeZero n] (i : Fin n)
-    (x : EuclideanSpace ℝ (Fin n)) :
-    closedCellPermute (Equiv.swap i ⟨0, NeZero.pos n⟩) x ⟨0, NeZero.pos n⟩ = x i := by
-  rw [closedCellPermute_apply]
-  change x ((Equiv.swap i ⟨0, NeZero.pos n⟩).symm ⟨0, NeZero.pos n⟩) = x i
-  rw [Equiv.symm_swap]
-  simp
-
 noncomputable def closedCellTail (n : ℕ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
     EuclideanSpace ℝ (Fin n) :=
   WithLp.toLp 2 fun j : Fin n => x (Fin.succ j)
