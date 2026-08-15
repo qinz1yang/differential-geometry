@@ -307,7 +307,7 @@ private theorem unitBall_sub_average_lpNorm_le_grad_lpNorm_two
         ENNReal.ofReal (C_poinc_val d) *
           eLpNorm (fun z => ‖hw'.weakGrad z‖) 2 μ1 := by
     simpa using
-      (poincare_unitBall_W1p_public (d := d) (p := (2 : ℝ)) (by norm_num) (u := u) hw')
+      (poincare_unitBall_W1p (d := d) (p := (2 : ℝ)) (by norm_num) (u := u) hw')
   have hunit_e :
       eLpNorm (fun z => u z - ⨍ y in B1, u y ∂volume) 2 μ1 ≤
         ENNReal.ofReal (C_poinc_val d) *

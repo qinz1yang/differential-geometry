@@ -202,3 +202,13 @@ updated in the same change set:
   `moser_exact_regularized_energy_bound` (two call sites repointed);
 - added `omit [NeZero d] in` to two outer-shell lemmas in `BallExtension/Geometry.lean` and one
   lemma in `BallExtension/RoughInput.lean` to drop redundant binders.
+
+### 2026-08-15 — rename public marker out of theorem name
+
+**Files**:
+- `SobolevPoincare.lean`
+- `Crossover/LocalIntegrability.lean`
+
+**Change**: renamed `poincare_unitBall_W1p_public` to `poincare_unitBall_W1p`
+and updated its only call site. The `_public` suffix was a scratch marker and
+not part of the mathematical API name.

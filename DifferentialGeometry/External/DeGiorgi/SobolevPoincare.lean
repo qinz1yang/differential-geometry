@@ -213,7 +213,7 @@ private lemma euclidean_norm_le_sum_norms (v : EuclideanSpace ℝ (Fin d)) :
 
 /-- Poincare inequality for `W^{1,p}` witnesses on the unit ball.
 Proved by density of smooth functions + `ge_of_tendsto`. -/
-private theorem poincare_unitBall_W1p
+private theorem poincare_unitBall_W1p_aux
     {p : ℝ} (hp : 1 < p)
     {u : E → ℝ}
     (hw : MemW1pWitness (ENNReal.ofReal p) u (Metric.ball (0 : E) 1)) :
@@ -471,7 +471,7 @@ private theorem poincare_unitBall_W1p
   exact ge_of_tendsto h_rhs (Eventually.of_forall h_bound)
 
 /-- Unit-ball Poincare estimate packaged for direct reuse. -/
-theorem poincare_unitBall_W1p_public
+theorem poincare_unitBall_W1p
     {p : ℝ} (hp : 1 < p)
     {u : E → ℝ}
     (hw : MemW1pWitness (ENNReal.ofReal p) u (Metric.ball (0 : E) 1)) :
@@ -480,7 +480,7 @@ theorem poincare_unitBall_W1p_public
     ENNReal.ofReal (C_poinc_val d) *
       eLpNorm (fun x => ‖hw.weakGrad x‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : E) 1)) :=
-  poincare_unitBall_W1p (d := d) hp hw
+  poincare_unitBall_W1p_aux (d := d) hp hw
 
 /-! ## Extension gradient `eLpNorm` bound -/
 
