@@ -1921,22 +1921,6 @@ noncomputable def standardHandleChartedSpaceSucc (m n : ℕ) :
   exact prodChartedSpace (EuclideanHalfSpace (m + 1)) (ClosedCell (m + 1))
     (EuclideanHalfSpace (n + 1)) (ClosedCell (n + 1))
 
-theorem standardHandleHasGroupoid (m n : ℕ) :
-    @HasGroupoid (ModelProd (EuclideanHalfSpace (m + 1)) (EuclideanHalfSpace (n + 1))) _
-      (ClosedCell (m + 1) × ClosedCell (n + 1)) _ (standardHandleChartedSpaceSucc m n)
-      (contDiffGroupoid (⊤ : ℕ∞)
-        ((modelWithCornersEuclideanHalfSpace (m + 1)).prod
-          (modelWithCornersEuclideanHalfSpace (n + 1)))) := by
-  letI : ChartedSpace (EuclideanHalfSpace (m + 1)) (ClosedCell (m + 1)) :=
-    closedCellChartedSpaceSucc m
-  letI : ChartedSpace (EuclideanHalfSpace (n + 1)) (ClosedCell (n + 1)) :=
-    closedCellChartedSpaceSucc n
-  letI : HasGroupoid (ClosedCell (m + 1)) (contDiffGroupoid (⊤ : ℕ∞)
-      (modelWithCornersEuclideanHalfSpace (m + 1))) := closedCellHasGroupoid m
-  letI : HasGroupoid (ClosedCell (n + 1)) (contDiffGroupoid (⊤ : ℕ∞)
-      (modelWithCornersEuclideanHalfSpace (n + 1))) := closedCellHasGroupoid n
-  exact hasGroupoid_prod
-
 noncomputable def cellBoundarySphereHomeomorph (k : ℕ) :
     CellBoundary k ≃ₜ Metric.sphere (0 : EuclideanSpace ℝ (Fin k)) 1 where
   toFun := fun x => ⟨x.1, by
