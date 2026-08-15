@@ -109,16 +109,6 @@ private def andSwapHomeo {X : Type} [TopologicalSpace X] (p q : X → Prop) :
   continuous_toFun := by fun_prop
   continuous_invFun := by fun_prop
 
-def subtypeSetHomeomorph {X : Type} [TopologicalSpace X] {s t : Set X} (h : s = t) :
-    {x : X // x ∈ s} ≃ₜ {x : X // x ∈ t} where
-  toFun := fun x => ⟨x.1, by rw [← h]; exact x.2⟩
-  invFun := fun x => ⟨x.1, by rw [h]; exact x.2⟩
-  left_inv := by intro x; rfl
-  right_inv := by intro x; rfl
-  continuous_toFun := by fun_prop
-  continuous_invFun := by fun_prop
-
-
 structure MorseChart (n k : ℕ) (hk : k ≤ n) (c : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     (I : ModelWithCorners ℝ (MorseModel n) H) (f : M → ℝ) where
@@ -3430,7 +3420,7 @@ noncomputable def morseStandardHandleHomeoBounded {m k : ℕ} (hk : k ≤ m + 1)
       {y : MorseModel (m + 1) //
         y ∈ sublevel (morseNormalForm hk c) (c - ε) ∪
           {y : MorseModel (m + 1) | ‖posPart hk y‖ ≤ r}} :=
-  (morseStandardHandleHomeoUnion hk c ε r hε (ne_of_gt hr)).trans (subtypeSetHomeomorph (by
+  (morseStandardHandleHomeoUnion hk c ε r hε (ne_of_gt hr)).trans (Homeomorph.setCongr (by
     rw [modelHandleMap_range hk ε r hε hr]
     exact lowerUnion_modelHandle hk c ε r (le_of_lt hr)))
 
@@ -4177,7 +4167,7 @@ theorem morseAttachedHomotopyEquivCellAdjunction {m k : ℕ} (hk : k ≤ m + 1) 
     rw [hr₀sq]
     exact hδr
   let hUpper : morseUpperSublevel hk c r ≃ₜ upperSublevel hk c ε :=
-    subtypeSetHomeomorph (by
+    Homeomorph.setCongr (by
       have hlevel : c + r ^ 2 / 2 = c + ε := by
         rw [hr₀sq]
         ring
@@ -7682,7 +7672,7 @@ theorem isCompact_morseCollarClosedBall (m : ℕ) (R : ℝ) :
       Metric.closedBall (0 : MorseModel (m + 1)) R := by
     intro y hy
     simpa [Metric.mem_closedBall, dist_eq_norm, sub_zero] using
-      (le_trans (supNorm_le_morseNorm y) hy)
+      (le_trans (morseNorm_piNorm_le y) hy)
   exact (isCompact_closedBall (0 : MorseModel (m + 1)) R).of_isClosed_subset hclosed hsub
 
 noncomputable def morseCollarChartBallHomeo {m k : ℕ} (hk : k ≤ m + 1) (c : ℝ)
@@ -11230,8 +11220,8 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
       rw [Metric.isBounded_iff]
       refine ⟨2 * R, ?_⟩
       intro x hx y hy
-      have hx' : ‖x‖ ≤ R := le_trans (supNorm_le_morseNorm x) hx
-      have hy' : ‖y‖ ≤ R := le_trans (supNorm_le_morseNorm y) hy
+      have hx' : ‖x‖ ≤ R := le_trans (morseNorm_piNorm_le x) hx
+      have hy' : ‖y‖ ≤ R := le_trans (morseNorm_piNorm_le y) hy
       rw [dist_eq_norm]
       exact le_trans (norm_sub_le x y) (by nlinarith [hx', hy'])
     exact Metric.isCompact_iff_isClosed_bounded.2 ⟨hclosed, hbounded⟩
@@ -11247,7 +11237,7 @@ theorem contMDiff_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε δ R r�
   · by_cases hball : morseNorm n (χ.symm x) < min R rΦ
     · have hy : χ.symm x ∈ Metric.ball (0 : MorseModel n) rΦ := by
         have hlt : morseNorm n (χ.symm x) < rΦ := lt_of_lt_of_le hball (min_le_right R rΦ)
-        have hsup : ‖χ.symm x‖ ≤ morseNorm n (χ.symm x) := supNorm_le_morseNorm (χ.symm x)
+        have hsup : ‖χ.symm x‖ ≤ morseNorm n (χ.symm x) := morseNorm_piNorm_le (χ.symm x)
         rw [Metric.mem_ball, dist_zero_right]
         exact lt_of_le_of_lt hsup hlt
       have hxball : x ∈ χ '' Metric.ball (0 : MorseModel n) rΦ := by
@@ -11404,8 +11394,8 @@ private lemma isClosed_chartBallImage {n : ℕ} {M : Type}
     rw [Metric.isBounded_iff]
     refine ⟨2 * R, ?_⟩
     intro x hx y hy
-    have hx' : ‖x‖ ≤ R := le_trans (supNorm_le_morseNorm x) hx
-    have hy' : ‖y‖ ≤ R := le_trans (supNorm_le_morseNorm y) hy
+    have hx' : ‖x‖ ≤ R := le_trans (morseNorm_piNorm_le x) hx
+    have hy' : ‖y‖ ≤ R := le_trans (morseNorm_piNorm_le y) hy
     rw [dist_eq_norm]
     exact le_trans (norm_sub_le x y) (by nlinarith [hx', hy'])
   have hballComp : IsCompact ball := Metric.isCompact_iff_isClosed_bounded.2 ⟨hclosed, hbounded⟩
@@ -11581,7 +11571,7 @@ theorem no_critical_point_morseModifiedFunction {n k : ℕ} (hk : k ≤ n) (c ε
           rw [if_pos hz.1.1]
           rw [if_pos (le_of_lt hz.1.2)]
         have hy' : χ.symm x ∈ Metric.ball (0 : MorseModel n) rΦ := by
-          have hsup : ‖χ.symm x‖ ≤ morseNorm n (χ.symm x) := supNorm_le_morseNorm (χ.symm x)
+          have hsup : ‖χ.symm x‖ ≤ morseNorm n (χ.symm x) := morseNorm_piNorm_le (χ.symm x)
           rw [Metric.mem_ball, dist_zero_right]
           exact lt_of_le_of_lt hsup hΦlt
         have hleft : (χ ∘ χ.symm) =ᶠ[nhds x] id := by
@@ -18696,9 +18686,9 @@ noncomputable def morseHandleAdjunctionEquivRoundedSublevel {m k : ℕ} (hk : k 
       SublevelSpace (morseRoundedFunction hk c ε r δ R₀' R₁' data) c :=
   ((morseHandleRoundAdjunctionHomeoCapRounded hk c ε r δ θ R₀ data hε hδ hθ hδr hθr hr hεr hεr'
       hR0 hR0lt hbig hRbig hcont).trans
-    (subtypeSetHomeomorph (morseCapRoundedLowerUnion_eq_roundedAttachment hk c ε r δ θ data
+    (Homeomorph.setCongr (morseCapRoundedLowerUnion_eq_roundedAttachment hk c ε r δ θ data
       hε hδ hθ hδr hθr hr hεr' hRbig))).trans
-    (subtypeSetHomeomorph (sublevel_morseRoundedFunction_eq_roundedAttachment hk c ε r δ R₀' R₁' data
+    (Homeomorph.setCongr (sublevel_morseRoundedFunction_eq_roundedAttachment hk c ε r δ R₀' R₁' data
       hε hδ hR hR0' hbig' hRbig hR₁big hR₁₂R).symm)
 
 @[reducible]

@@ -2638,15 +2638,6 @@ theorem smoothTransition_deriv_nonneg (x : ℝ) : 0 ≤ deriv Real.smoothTransit
     have hden : 0 < (expNegInvGlue x + expNegInvGlue (1 - x)) ^ 2 := by positivity
     exact div_nonneg hnum.le hden.le
 
-theorem morseNorm_sq_split {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) :
-    morseNorm n y ^ 2 = ‖posPart hk y‖ ^ 2 + ‖negPart hk y‖ ^ 2 := by
-  calc
-    morseNorm n y ^ 2 = morseNorm n (recombine hk (negPart hk y) (posPart hk y)) ^ 2 := by
-      rw [recombine_decompose hk y]
-    _ = ‖posPart hk y‖ ^ 2 + ‖negPart hk y‖ ^ 2 := by
-      rw [morseNorm_recombine_sq hk (negPart hk y) (posPart hk y)]
-      ring
-
 theorem fderiv_morseNormalForm_direction_pos {n k : ℕ} (hk : k ≤ n) (c : ℝ) (y : MorseModel n) :
     fderiv ℝ (fun y : MorseModel n => morseNormalForm hk c y) y
       (recombine hk (0 : EuclideanSpace ℝ (Fin k)) (posPart hk y)) = ‖posPart hk y‖ ^ 2 := by
@@ -2802,7 +2793,7 @@ theorem fderiv_morseNorm_sq_direction_pos {n k : ℕ} (hk : k ≤ n) (y : MorseM
   have hsplit : (fun y : MorseModel n => morseNorm n y ^ 2) =
       (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) := by
     funext y
-    exact morseNorm_sq_split hk y
+    exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)
   rw [hsplit]
   rw [fderiv_add (f := fun y : MorseModel n => ‖posPart hk y‖ ^ 2)
     (g := fun y : MorseModel n => ‖negPart hk y‖ ^ 2) (hf := hdiffPos) (hg := hdiffNeg)]
@@ -2820,7 +2811,7 @@ theorem fderiv_morseNorm_sq_direction_neg {n k : ℕ} (hk : k ≤ n) (y : MorseM
   have hsplit : (fun y : MorseModel n => morseNorm n y ^ 2) =
       (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) := by
     funext y
-    exact morseNorm_sq_split hk y
+    exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)
   rw [hsplit]
   rw [fderiv_add (f := fun y : MorseModel n => ‖posPart hk y‖ ^ 2)
     (g := fun y : MorseModel n => ‖negPart hk y‖ ^ 2) (hf := hdiffPos) (hg := hdiffNeg)]
@@ -2839,7 +2830,7 @@ private theorem fderiv_morseNorm_sq {n k : ℕ} (hk : k ≤ n) (y w : MorseModel
   have hsplit : (fun y : MorseModel n => morseNorm n y ^ 2) =
       (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) := by
     funext y
-    exact morseNorm_sq_split hk y
+    exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)
   rw [hsplit]
   rw [fderiv_add (f := fun y : MorseModel n => ‖posPart hk y‖ ^ 2)
     (g := fun y : MorseModel n => ‖negPart hk y‖ ^ 2) (hf := hdiffPos) (hg := hdiffNeg)]
@@ -2868,7 +2859,7 @@ theorem fderiv_smoothTransitionArg_direction_pos {n k : ℕ} (hk : k ≤ n) (R�
     have hsplit : (fun y : MorseModel n => morseNorm n y ^ 2) =
         fun y : MorseModel n => ‖posPart hk y‖ ^ 2 + ‖negPart hk y‖ ^ 2 := by
       funext y
-      exact morseNorm_sq_split hk y
+      exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)
     rw [hsplit]
     exact hcont.differentiable (by exact_mod_cast (ne_top_of_lt zero_lt_one).symm) |>.differentiableAt
   have hc : ContDiff ℝ (⊤ : ℕ∞) f := by
@@ -2877,7 +2868,7 @@ theorem fderiv_smoothTransitionArg_direction_pos {n k : ℕ} (hk : k ≤ n) (R�
       rw [show (fun y : MorseModel n => morseNorm n y ^ 2) =
           (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) by
         funext y
-        exact morseNorm_sq_split hk y]
+        exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)]
       exact (contDiff_posPart_normSq hk).add (contDiff_negPart_normSq hk)
     exact (hcNorm.sub (contDiff_const : ContDiff ℝ (⊤ : ℕ∞)
       (fun _ : MorseModel n => (R₀ ^ 2 : ℝ)))).mul (contDiff_const : ContDiff ℝ (⊤ : ℕ∞)
@@ -2956,7 +2947,7 @@ theorem fderiv_smoothTransitionArg_direction_neg {n k : ℕ} (hk : k ≤ n) (R�
     have hsplit : (fun y : MorseModel n => morseNorm n y ^ 2) =
         fun y : MorseModel n => ‖posPart hk y‖ ^ 2 + ‖negPart hk y‖ ^ 2 := by
       funext y
-      exact morseNorm_sq_split hk y
+      exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)
     rw [hsplit]
     exact hcont.differentiable (by exact_mod_cast (ne_top_of_lt zero_lt_one).symm) |>.differentiableAt
   have hc : ContDiff ℝ (⊤ : ℕ∞) f := by
@@ -2965,7 +2956,7 @@ theorem fderiv_smoothTransitionArg_direction_neg {n k : ℕ} (hk : k ≤ n) (R�
       rw [show (fun y : MorseModel n => morseNorm n y ^ 2) =
           (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) by
         funext y
-        exact morseNorm_sq_split hk y]
+        exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)]
       exact (contDiff_posPart_normSq hk).add (contDiff_negPart_normSq hk)
     exact (hcNorm.sub (contDiff_const : ContDiff ℝ (⊤ : ℕ∞)
       (fun _ : MorseModel n => (R₀ ^ 2 : ℝ)))).mul (contDiff_const : ContDiff ℝ (⊤ : ℕ∞)
@@ -3053,7 +3044,7 @@ theorem fderiv_modelRoundedFunction_direction {n k : ℕ} (hk : k ≤ n) (c ε r
         rw [show (fun y : MorseModel n => morseNorm n y ^ 2) =
             (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) by
           funext y
-          exact morseNorm_sq_split hk y]
+          exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)]
         exact (contDiff_posPart_normSq hk).add (contDiff_negPart_normSq hk)
       change ContDiff ℝ (⊤ : ℕ∞) (fun y : MorseModel n =>
         (morseNorm n y ^ 2 - R₀ ^ 2) * (R₁ ^ 2 - R₀ ^ 2)⁻¹)
@@ -3139,7 +3130,7 @@ theorem fderiv_modelSublevelFamily_direction_pos {n k : ℕ} (hk : k ≤ n)
       rw [show (fun y : MorseModel n => morseNorm n y ^ 2) =
           (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) by
         funext y
-        exact morseNorm_sq_split hk y]
+        exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)]
       exact (contDiff_posPart_normSq hk).add (contDiff_negPart_normSq hk)
     have hc : ContDiff ℝ (⊤ : ℕ∞) (fun y : MorseModel n =>
         ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) := by
@@ -3299,7 +3290,7 @@ theorem fderiv_modelSublevelFamily_direction_neg {n k : ℕ} (hk : k ≤ n)
         rw [show (fun y : MorseModel n => morseNorm n y ^ 2) =
             (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) by
           funext y
-          exact morseNorm_sq_split hk y]
+          exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)]
         exact (contDiff_posPart_normSq hk).add (contDiff_negPart_normSq hk)
       have hc : ContDiff ℝ (⊤ : ℕ∞) (fun y : MorseModel n =>
           ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) := by
@@ -3454,7 +3445,7 @@ theorem differentiableAt_modelRoundedFunction {n k : ℕ} (hk : k ≤ n)
       rw [show (fun y : MorseModel n => morseNorm n y ^ 2) =
           (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) + (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) by
         funext y
-        exact morseNorm_sq_split hk y]
+        exact (by simpa [add_comm] using morseNorm_sq_eq_negPart_add_posPart hk y)]
       exact (contDiff_posPart_normSq hk).add (contDiff_negPart_normSq hk)
     have hc : ContDiff ℝ (⊤ : ℕ∞) (fun y : MorseModel n =>
         ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) := by
@@ -3486,8 +3477,7 @@ theorem modelSublevelFamily_value_split {n k : ℕ} (hk : k ≤ n) (c ε r δ R�
           ((1 - s) * Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2)) + s) *
             ‖negPart hk y‖ ^ 2) := by
   have hnorm : morseNorm n y ^ 2 = ‖negPart hk y‖ ^ 2 := by
-    rw [morseNorm_sq_split hk y, hu]
-    ring
+    rw [morseNorm_sq_eq_negPart_add_posPart hk y, hu, add_zero]
   dsimp [modelSublevelFamily]
   dsimp [modelRoundedFunction, modelAttachedFunction]
   rw [morseNormalForm_split hk c y]
@@ -3688,7 +3678,7 @@ theorem fderiv_modelSublevelFamily_ne_zero_of_eq_zero {n k : ℕ} (hk : k ≤ n)
             have : 0 < morseNorm n y ^ 2 - R₀ ^ 2 := by
               simpa using (lt_div_iff₀ hden0).mp harg_pos
             nlinarith only [this]
-          rw [morseNorm_sq_split hk y, hpp, zero_add] at hnorm_gt
+          rw [morseNorm_sq_eq_negPart_add_posPart hk y, hpp, add_zero] at hnorm_gt
           exact hnorm_gt
         have hcapv : smoothCap ε r δ (‖negPart hk y‖ ^ 2) = ‖negPart hk y‖ ^ 2 - 2 * ε := by
           have hge : r ^ 2 + 2 * ε + δ ≤ ‖negPart hk y‖ ^ 2 := by nlinarith only [hvgt, hbig]

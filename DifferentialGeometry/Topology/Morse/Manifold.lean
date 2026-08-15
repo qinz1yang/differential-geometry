@@ -1025,7 +1025,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
   have hRlt : R < r := by dsimp [R]; linarith
   have hball : ∀ y : MorseModel n, morseNorm n y ≤ R → y ∈ T ⁻¹' S := by
     intro y hy
-    have hsup : ‖y‖ ≤ R := le_trans (supNorm_le_morseNorm y) hy
+    have hsup : ‖y‖ ≤ R := le_trans (morseNorm_piNorm_le y) hy
     have hmem : y ∈ Metric.ball (0 : MorseModel n) r := by
       rw [Metric.mem_ball, dist_zero_right]
       linarith

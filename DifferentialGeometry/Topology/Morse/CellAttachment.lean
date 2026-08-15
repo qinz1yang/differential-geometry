@@ -6184,39 +6184,6 @@ theorem modelSharpUnionUnround_norm_sq_le {n k : ℕ} (hk : k ≤ n) (ε r δ : 
       _ = modelSharpUnionBound ε r (‖negPart hk y‖ ^ 2) := by ring
   nlinarith
 
-theorem norm_negPart_le_morseNorm {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) :
-    ‖negPart hk y‖ ≤ morseNorm n y := by
-  have hsq : ‖negPart hk y‖ ^ 2 ≤ morseNorm n y ^ 2 := by
-    rw [EuclideanSpace.real_norm_sq_eq (negPart hk y)]
-    rw [EuclideanSpace.real_norm_sq_eq (WithLp.toLp 2 y : EuclideanSpace ℝ (Fin n))]
-    have hinj : Function.Injective (negIdx hk) := Fin.castLE_injective hk
-    have hinjOn : Set.InjOn (negIdx hk) (↑(Finset.univ : Finset (Fin k))) := by
-      intro a ha b hb hab
-      exact hinj hab
-    let img : Finset (Fin n) := Finset.image (negIdx hk) (Finset.univ : Finset (Fin k))
-    have hsum : (∑ i : Fin k, ((negPart hk y).ofLp i) ^ 2) ≤
-        ∑ j : Fin n, ((WithLp.toLp 2 y).ofLp j) ^ 2 := by
-      calc
-        (∑ i : Fin k, ((negPart hk y).ofLp i) ^ 2) = ∑ i : Fin k, (y (negIdx hk i)) ^ 2 := by
-          apply Finset.sum_congr rfl
-          intro i hi
-          simp [negPart]
-        _ = ∑ j ∈ img, (y j) ^ 2 := by
-          dsimp [img]
-          rw [Finset.sum_image hinjOn]
-        _ ≤ ∑ j : Fin n, ((WithLp.toLp 2 y).ofLp j) ^ 2 := by
-          have hrew : (∑ j : Fin n, ((WithLp.toLp 2 y).ofLp j) ^ 2) = ∑ j : Fin n, (y j) ^ 2 := by
-            apply Finset.sum_congr rfl
-            intro j hj
-            simp
-          rw [hrew]
-          exact Finset.sum_le_sum_of_subset_of_nonneg
-            (by intro x hx; exact Finset.mem_univ x)
-            (by intro x hx hx0; positivity)
-    exact hsum
-  have habs : |‖negPart hk y‖| ≤ |morseNorm n y| := sq_le_sq.mp hsq
-  rwa [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (norm_nonneg _)] at habs
-
 theorem continuous_modelSharpUnionRound {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
     (hδ0 : 0 < δ) (hδr : δ < r ^ 2) :
     Continuous (modelSharpUnionRound hk ε r δ) := by

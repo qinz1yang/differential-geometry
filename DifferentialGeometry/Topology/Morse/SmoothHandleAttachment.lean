@@ -155,7 +155,7 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
             exact hle)))
   let hset : sublevel f (c - data.ε) ∪ U₀ = sublevel f (c - data.ε) ∪ E := by
     simp [E, U₀, hcell]
-  let hcast : Z₀ ≃ₜ Z' := subtypeSetHomeomorph hset
+  let hcast : Z₀ ≃ₜ Z' := Homeomorph.setCongr hset
   let hAdj : CellAdjunctionSpace k φ ≃ₜ Z' := by
     simpa [E, φ] using (cellAdjunctionSpaceHomeomorphLowerUnion (I := I) (hf := hf) (data := data))
   have hAdjLower : ∀ x : SublevelSpace f (c - data.ε),
