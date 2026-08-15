@@ -116,7 +116,6 @@ noncomputable def fibreEquivLoopQuotient
 
 noncomputable def fibreEquivFundamentalGroup
     {X E : Type*} [TopologicalSpace X] [TopologicalSpace E]
-    [ConnectedSpace X] [LocPathConnectedSpace X]
     [PathConnectedSpace E] [SimplyConnectedSpace E]
     {p : E → X} (hp : IsCoveringMap p) (x : X) (e' : p ⁻¹' {x}) :
     (p ⁻¹' {x}) ≃ FundamentalGroup X x :=

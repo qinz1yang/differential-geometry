@@ -184,7 +184,7 @@ theorem basis_assemble
     obtain ⟨p, U, hU, hp, hmem⟩ := basis_covers q
     exact ⟨basicOpen p U, ⟨p, U, hU, hp, rfl⟩, hmem⟩
 
-theorem proj_continuous [LocPathConnectedSpace X] :
+theorem proj_continuous :
     Continuous
       (proj :
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X → X) := by

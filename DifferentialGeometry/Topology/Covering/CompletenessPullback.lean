@@ -210,11 +210,11 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] in
-theorem tail_in_single_sheet [Nonempty M] [CompleteSpace M]
+omit [PseudoEMetricSpace M] in
+theorem tail_in_single_sheet
     [RegularSpace (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)]
     (g : SmoothRiemannianMetric I M)
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [IsRiemannianManifold I M]
     (hEnormBase : ∀ (x : M) (v : TangentSpace I x),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (hEnormCover :
@@ -453,7 +453,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] in
-theorem lift_the_limit [Nonempty M] [CompleteSpace M]
+theorem lift_the_limit [CompleteSpace M]
     [RegularSpace (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)]
     (g : SmoothRiemannianMetric I M)
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]

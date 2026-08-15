@@ -84,7 +84,7 @@ theorem isRiemannianManifold
   exact ⟨fun _ _ => rfl⟩
 
 omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] [ConnectedSpace M] in
-theorem uc_regularSpace (I : ModelWithCorners ℝ E H) [I.Boundaryless] :
+theorem uc_regularSpace (I : ModelWithCorners ℝ E H) :
     RegularSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) := by
   haveI : LocallyCompactSpace M :=
