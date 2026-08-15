@@ -208,7 +208,7 @@ noncomputable def multilinearBundle_mixedBundle_equiv
     [TopologicalSpace (TotalSpace FM EM')]
     [FiberBundle FM EM'] [VectorBundle ℝ FM EM']
     {nm : ℕ∞} [Fact (1 ≤ nm)] [ContMDiffVectorBundle nm FM EM' IM]
-    [IsManifold IM ∞ M] [SigmaCompactSpace M] [T2Space M]
+    [IsManifold IM ∞ M] [T2Space M]
     [FiniteDimensional ℝ EM] :
     ContMDiffVectorBundleEquiv ℝ IM nm
       (ContinuousMultilinearMap ℝ (fun _ : Fin s => FM) ℝ)

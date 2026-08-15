@@ -230,7 +230,7 @@ theorem Tensor0SSpace.toRS0_apply {s : ℕ} {x : M}
     Tensor0SSpace.toRS0 A c = tensor0SSpace_evalScalar x c • A :=
   rfl
 
-noncomputable def Tensor0SField.toTensorRSField {s : ℕ} [CompleteSpace 𝕜]
+noncomputable def Tensor0SField.toTensorRSField {s : ℕ}
     (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     TensorRSField n 0 s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) :=
   by

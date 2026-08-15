@@ -79,7 +79,7 @@ open Bundle Set Topology TopologicalSpace
 open scoped Manifold ContDiff
 set_option backward.isDefEq.respectTransparency false in
 noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
+    [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (s : ℕ) [IsManifold I 1 M] {V : Opens M} [Nonempty V]
