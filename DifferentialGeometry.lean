@@ -54,6 +54,7 @@ import DifferentialGeometry.Analysis.Convex.ProperConeFace
 import DifferentialGeometry.Analysis.Convex.PositiveSemidefiniteOperatorCone
 import DifferentialGeometry.Analysis.Convex.PositiveSemidefiniteMatrixCone
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
+import DifferentialGeometry.Analysis.Convex.MovingSetDistance
 import DifferentialGeometry.Analysis.Convex.SupportFunction
 import DifferentialGeometry.Analysis.Convex.Tensor02PositiveSemidefiniteCone
 import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
@@ -2477,6 +2478,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureOper
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveySupportUpper
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionReaction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionInfDist
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyCurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RicciEigenSectional
