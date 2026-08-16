@@ -2409,6 +2409,372 @@ theorem hamiltonIveyConvexMatrixRegionSupportEuclid_eq_supportFunction
     _ = supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ) v :=
           (supportFunction_rotate_diag v).symm
 
+lemma exists_rotate_diag_of_mem_region
+    {K τ : ℝ}
+    (v A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hA : A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ) :
+    ∃ B : EuclideanSpace ℝ (Fin 3 × Fin 3),
+      B ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧
+      inner ℝ v A =
+        inner ℝ (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀)) B := by
+  rcases hermitian_orthogonal_diagonalization (symmEuclid_isHermitian v) with ⟨O, hOorth, hdiag⟩
+  have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+  let B : EuclideanSpace ℝ (Fin 3 × Fin 3) := matrixToEuclid (O.transpose * euclidToMatrix A * O)
+  have hB : B ∈ hamiltonIveyConvexMatrixRegionEuclid K τ := by
+    have hAm : euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ A).1 hA
+    have hconj := (hamiltonIveyConvexMatrixRegion_orthogonal_conj
+      (Q := O) hOorth2 hOorth).1 hAm
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+    dsimp [B]
+    simpa [euclidToMatrix_matrixToEuclid] using hconj
+  have hinner :
+      inner ℝ v A = inner ℝ (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀)) B := by
+    have hAm : (euclidToMatrix A).IsHermitian := by
+      have hmem : euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ :=
+        (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ A).1 hA
+      rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hmem
+      exact hmem.1
+    have hsymm : inner ℝ v A = inner ℝ (matrixToEuclid (symmEuclid v)) (matrixToEuclid (euclidToMatrix A)) := by
+      simpa [matrixToEuclid_euclidToMatrix] using inner_matrixToEuclid_symm v (euclidToMatrix A) hAm
+    have hdiagO : inner ℝ (matrixToEuclid (symmEuclid v)) (matrixToEuclid (euclidToMatrix A)) =
+        inner ℝ (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀)) B := by
+      have hconj := inner_matrixToEuclid_orthogonal_conj (symmEuclid v) (euclidToMatrix A) O hOorth
+      dsimp [B]
+      rw [hconj]
+      -- Oᵀ (symm v) O = diag (eigenvalues₀)
+      have hdiag' : O.transpose * symmEuclid v * O =
+          Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀ := by
+        simpa using hdiag
+      rw [hdiag']
+      rfl
+    rw [hsymm]
+    exact hdiagO
+  exact ⟨B, hB, hinner⟩
+
+lemma hamiltonIveyConvexMatrixRegionSupportEuclid_rotate_diag
+    {K τ : ℝ}
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
+    hamiltonIveyConvexMatrixRegionSupportEuclid K τ v =
+      hamiltonIveyConvexMatrixRegionSupportEuclid K τ
+        (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀)) := by
+  let nv : Fin 3 → ℝ := (symmEuclid_isHermitian v).eigenvalues₀
+  have hnv_anti : Antitone nv := by
+    dsimp [nv]
+    exact (symmEuclid_isHermitian v).eigenvalues₀_antitone
+  unfold hamiltonIveyConvexMatrixRegionSupportEuclid
+  rw [symmEuclid_diag_eigenvalues₀ nv hnv_anti]
+
+lemma inner_le_supportFunction_of_mem_region
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hv : (symmEuclid_isHermitian v).eigenvalues₀ 0 < 0)
+    (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hA : A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ) :
+    inner ℝ v A ≤ hamiltonIveyConvexMatrixRegionSupportEuclid K τ v := by
+  rcases exists_rotate_diag_of_mem_region v A hA with ⟨B, hB, hinner⟩
+  let nv : Fin 3 → ℝ := (symmEuclid_isHermitian v).eigenvalues₀
+  have hnv_anti : Antitone nv := by
+    dsimp [nv]
+    exact (symmEuclid_isHermitian v).eigenvalues₀_antitone
+  have hnv0 : nv 0 < 0 := by
+    simpa [nv] using hv
+  have hBle : inner ℝ (matrixToEuclid (Matrix.diagonal nv)) B ≤
+      hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal nv)) := by
+    have hBm : euclidToMatrix B ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ B).1 hB
+    have hle1 := inner_le_support_formula_of_mem_region hnv_anti hnv0 (euclidToMatrix B) hBm
+    have hFle := support_formula_le_supportFunction_diag hK hτ hnv_anti hnv0
+      (max (-sectionalRayleighMin3 (euclidToMatrix B)) 0)
+    have hdef : hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal nv)) =
+        supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ) (matrixToEuclid (Matrix.diagonal nv)) :=
+      hamiltonIveyConvexMatrixRegionSupportEuclid_diag_eq_supportFunction hK hτ hnv_anti hnv0
+    have hle2 : hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 (euclidToMatrix B)) 0) * nv 0 +
+          max (-sectionalRayleighMin3 (euclidToMatrix B)) 0 * (2 * nv 0 - nv 1 - nv 2) ≤
+        hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal nv)) := by
+      rw [hdef]
+      exact hFle
+    exact le_trans hle1 hle2
+  have hinner' : inner ℝ v A = inner ℝ (matrixToEuclid (Matrix.diagonal nv)) B := by
+    simpa [nv] using hinner
+  rw [hamiltonIveyConvexMatrixRegionSupportEuclid_rotate_diag]
+  rw [hinner']
+  exact hBle
+
+lemma support_formula_unbounded_of_nonneg_top
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : 0 ≤ ν 0)
+    (hne : ν ≠ 0) :
+    ¬ BddAbove {x : ℝ | ∃ X : ℝ, K / (1 + 4 * K * τ) ≤ X ∧
+      x = hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)} := by
+  intro hbdd
+  rcases hbdd with ⟨C, hC⟩
+  have hc_nonneg : 0 ≤ 2 * ν 0 - ν 1 - ν 2 := by
+    have h1 : ν 1 ≤ ν 0 := hν (by decide : (0 : Fin 3) ≤ 1)
+    have h2 : ν 2 ≤ ν 0 := hν (by decide : (0 : Fin 3) ≤ 2)
+    nlinarith
+  have hsum_nonneg : 0 ≤ ν 0 + (2 * ν 0 - ν 1 - ν 2) := by nlinarith
+  have hsum_pos : 0 < ν 0 + (2 * ν 0 - ν 1 - ν 2) := by
+    rcases lt_or_eq_of_le hsum_nonneg with hlt | heq
+    · exact hlt
+    · exfalso
+      apply hne
+      funext i
+      fin_cases i
+      · change ν 0 = 0
+        nlinarith [hν0, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (0 : Fin 3) ≤ 2)]
+      · change ν 1 = 0
+        have hν0eq : ν 0 = 0 := by
+          change ν 0 = 0
+          nlinarith [hν0, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (0 : Fin 3) ≤ 2)]
+        nlinarith [hν0eq, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (1 : Fin 3) ≤ 2)]
+      · change ν 2 = 0
+        have hν0eq : ν 0 = 0 := by
+          change ν 0 = 0
+          nlinarith [hν0, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (0 : Fin 3) ≤ 2)]
+        have hν1eq : ν 1 = 0 := by
+          change ν 1 = 0
+          nlinarith [hν0eq, heq, hν (by decide : (0 : Fin 3) ≤ 1), hν (by decide : (1 : Fin 3) ≤ 2)]
+        nlinarith [hν0eq, hν1eq, hν (by decide : (1 : Fin 3) ≤ 2)]
+  let X₀ : ℝ := K / (1 + 4 * K * τ)
+  let X₁ : ℝ := K * Real.exp 4 / (1 + 2 * K * τ)
+  let X : ℝ := max X₀ (max X₁ (C / (ν 0 + (2 * ν 0 - ν 1 - ν 2)) + 1))
+  have hX₀le : X₀ ≤ X := le_max_left _ _
+  have hX₁le : X₁ ≤ X := le_trans (le_max_left _ _) (le_max_right _ _)
+  have hX₁pos : 0 < X₁ := by
+    dsimp [X₁]
+    have hden : 0 < 1 + 2 * K * τ := by
+      have hKτ : 0 ≤ 2 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    positivity
+  have hXpos : 0 < X := lt_of_lt_of_le hX₁pos hX₁le
+  have hB : X ≤ hamiltonIveyConvexBarrier K τ X := by
+    have hBh : X ≤ hamiltonIveyBarrier K τ X := by
+      -- h(τ,X) = X(L − 3) ≥ X for L ≥ 4
+      have hden : 0 < 1 + 2 * K * τ := by
+        have hKτ : 0 ≤ 2 * K * τ := by
+          have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+          nlinarith
+        nlinarith
+      have hL : 4 ≤ Real.log (X * (1 + 2 * K * τ) / K) := by
+        have harg1 : 0 < X₁ * (1 + 2 * K * τ) / K := by positivity
+        have harg2 : 0 < X * (1 + 2 * K * τ) / K := by positivity
+        have hmono : Real.log (X₁ * (1 + 2 * K * τ) / K) ≤ Real.log (X * (1 + 2 * K * τ) / K) := by
+          refine (Real.log_le_log_iff harg1 harg2).mpr ?_
+          have hmul : X₁ * (1 + 2 * K * τ) ≤ X * (1 + 2 * K * τ) :=
+            mul_le_mul_of_nonneg_right hX₁le (by positivity : 0 ≤ (1 + 2 * K * τ))
+          exact div_le_div_of_nonneg_right hmul hK.le
+        have hlogX₁ : Real.log (X₁ * (1 + 2 * K * τ) / K) = 4 := by
+          have hX₁eq : X₁ * (1 + 2 * K * τ) / K = Real.exp 4 := by
+            dsimp [X₁]
+            field_simp [hK.ne', hden.ne']
+          rw [hX₁eq]
+          exact Real.log_exp 4
+        linarith
+      -- barrier = X·(log(X/K)+log(1+2Kτ)−3) ≥ X·(4−3) = X
+      have hlog : Real.log (X / K) + Real.log (1 + 2 * K * τ) = Real.log (X * (1 + 2 * K * τ) / K) := by
+        have h1 : Real.log (X / K) = Real.log X - Real.log K := Real.log_div hXpos.ne' hK.ne'
+        have h2 : Real.log ((X * (1 + 2 * K * τ)) / K) = Real.log (X * (1 + 2 * K * τ)) - Real.log K :=
+          Real.log_div (mul_pos hXpos hden).ne' hK.ne'
+        have h3 : Real.log (X * (1 + 2 * K * τ)) = Real.log X + Real.log (1 + 2 * K * τ) :=
+          Real.log_mul hXpos.ne' hden.ne'
+        rw [h1, h2, h3]
+        ring
+      unfold hamiltonIveyBarrier
+      rw [hlog]
+      nlinarith [hL]
+    exact hBh.trans (hamiltonIveyBarrier_le_hamiltonIveyConvexBarrier K τ X)
+  have hF : C < hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) := by
+    have h1 : C < (ν 0 + (2 * ν 0 - ν 1 - ν 2)) * X := by
+      have hXbig : C / (ν 0 + (2 * ν 0 - ν 1 - ν 2)) + 1 ≤ X := by
+        dsimp [X]
+        exact le_trans (le_max_right _ _) (le_max_right _ _)
+      have hpos : 0 < ν 0 + (2 * ν 0 - ν 1 - ν 2) := hsum_pos
+      have hlt : C / (ν 0 + (2 * ν 0 - ν 1 - ν 2)) < X := by linarith
+      have hmul := mul_lt_mul_of_pos_left hlt hpos
+      have hred : (ν 0 + (2 * ν 0 - ν 1 - ν 2)) * (C / (ν 0 + (2 * ν 0 - ν 1 - ν 2))) = C :=
+        mul_div_cancel₀ C hpos.ne'
+      nlinarith
+    have hmul : (ν 0 + (2 * ν 0 - ν 1 - ν 2)) * X ≤
+        hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) := by
+      have h1' : ν 0 * X ≤ ν 0 * hamiltonIveyConvexBarrier K τ X :=
+        mul_le_mul_of_nonneg_left hB hν0
+      calc
+        (ν 0 + (2 * ν 0 - ν 1 - ν 2)) * X
+            = ν 0 * X + (2 * ν 0 - ν 1 - ν 2) * X := by ring
+        _ ≤ ν 0 * hamiltonIveyConvexBarrier K τ X + (2 * ν 0 - ν 1 - ν 2) * X := by
+              nlinarith [h1']
+        _ = hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) := by ring
+    exact lt_of_lt_of_le h1 hmul
+  have hFle : hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) ≤ C :=
+    hC ⟨X, hX₀le, rfl⟩
+  linarith
+
+lemma exists_rotate_preimage_of_mem_region
+    {K τ : ℝ}
+    (v B : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hB : B ∈ hamiltonIveyConvexMatrixRegionEuclid K τ) :
+    ∃ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
+      A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧
+      inner ℝ v A =
+        inner ℝ (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀)) B := by
+  rcases hermitian_orthogonal_diagonalization (symmEuclid_isHermitian v) with ⟨O, hOorth, hdiag⟩
+  have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+  let A : EuclideanSpace ℝ (Fin 3 × Fin 3) := matrixToEuclid (O * euclidToMatrix B * O.transpose)
+  have hA : A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ := by
+    have hBm : euclidToMatrix B ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ B).1 hB
+    have hconj := (hamiltonIveyConvexMatrixRegion_orthogonal_conj
+      (Q := O.transpose) (by simpa using hOorth) (by simpa using hOorth2)).1 hBm
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+    dsimp [A]
+    simpa [euclidToMatrix_matrixToEuclid, Matrix.transpose_transpose] using hconj
+  have hinner : inner ℝ v A =
+      inner ℝ (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀)) B := by
+    have hBm : euclidToMatrix B ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ B).1 hB
+    have hBh : (euclidToMatrix B).IsHermitian := by
+      rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hBm
+      exact hBm.1
+    have hsymm : inner ℝ v A = inner ℝ (matrixToEuclid (symmEuclid v)) (matrixToEuclid (euclidToMatrix A)) := by
+      have hAh : (euclidToMatrix A).IsHermitian := by
+        have hAm : euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ :=
+          (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ A).1 hA
+        rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hAm
+        exact hAm.1
+      simpa [matrixToEuclid_euclidToMatrix] using inner_matrixToEuclid_symm v (euclidToMatrix A) hAh
+    have hconj := inner_matrixToEuclid_orthogonal_conj (symmEuclid v) (euclidToMatrix A) O hOorth
+    have hdiag' : O.transpose * symmEuclid v * O =
+        Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀ := by
+      simpa using hdiag
+    calc
+      inner ℝ v A = inner ℝ (matrixToEuclid (symmEuclid v)) (matrixToEuclid (euclidToMatrix A)) := hsymm
+      _ = inner ℝ (matrixToEuclid (O.transpose * symmEuclid v * O))
+            (matrixToEuclid (O.transpose * euclidToMatrix A * O)) := hconj
+      _ = inner ℝ (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀))
+            (matrixToEuclid (O.transpose * euclidToMatrix A * O)) := by
+            rw [hdiag']
+            rfl
+      _ = inner ℝ (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀)) B := by
+            dsimp [A]
+            rw [euclidToMatrix_matrixToEuclid]
+            have hmat : O.transpose * (O * euclidToMatrix B * O.transpose) * O = euclidToMatrix B := by
+              simp only [Matrix.mul_assoc]
+              rw [hOorth2]
+              simp only [Matrix.mul_one]
+              rw [← Matrix.mul_assoc]
+              rw [hOorth2]
+              simp only [Matrix.one_mul]
+            rw [hmat, matrixToEuclid_euclidToMatrix]
+  exact ⟨A, hA, hinner⟩
+
+lemma mem_finiteSupportDirections_hamiltonIvey_region_iff
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
+    v ∈ finiteSupportDirections (hamiltonIveyConvexMatrixRegionEuclid K τ) ↔
+      (symmEuclid_isHermitian v).eigenvalues₀ 0 < 0 ∨ symmEuclid v = 0 := by
+  constructor
+  · intro hv
+    by_contra h
+    have hν0ge : ¬ (symmEuclid_isHermitian v).eigenvalues₀ 0 < 0 := by
+      intro hneg
+      exact h (Or.inl hneg)
+    have hsymm_ne : symmEuclid v ≠ 0 := by
+      intro hz
+      exact h (Or.inr hz)
+    have hν0 : 0 ≤ (symmEuclid_isHermitian v).eigenvalues₀ 0 := le_of_not_gt hν0ge
+    let nv : Fin 3 → ℝ := (symmEuclid_isHermitian v).eigenvalues₀
+    have hnv_anti : Antitone nv := by
+      dsimp [nv]
+      exact (symmEuclid_isHermitian v).eigenvalues₀_antitone
+    have hnv_ne : nv ≠ 0 := by
+      intro hnv0
+      apply hsymm_ne
+      rcases hermitian_orthogonal_diagonalization (symmEuclid_isHermitian v) with ⟨O, hOorth, hdiag⟩
+      have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+      have hnv0' : (symmEuclid_isHermitian v).eigenvalues₀ = 0 := by
+        simpa [nv] using hnv0
+      have hd : Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀ = 0 := by
+        rw [hnv0']
+        ext i j
+        simp [Matrix.diagonal]
+      have hdiag0 : O.transpose * symmEuclid v * O = 0 := by
+        simpa [hd] using hdiag
+      calc
+        symmEuclid v = O * (O.transpose * symmEuclid v * O) * O.transpose := by
+          simp only [Matrix.mul_assoc]
+          rw [hOorth]
+          simp only [Matrix.mul_one]
+          rw [← Matrix.mul_assoc]
+          rw [hOorth]
+          simp
+        _ = O * 0 * O.transpose := by rw [hdiag0]
+        _ = 0 := by simp
+    have hbdd_diag : BddAbove {x : ℝ | ∃ B : EuclideanSpace ℝ (Fin 3 × Fin 3),
+        B ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧
+          x = inner ℝ (matrixToEuclid (Matrix.diagonal nv)) B} := by
+      rcases hv with ⟨C, hC⟩
+      refine ⟨C, ?_⟩
+      rintro x ⟨B, hB, rfl⟩
+      rcases exists_rotate_preimage_of_mem_region v B hB with ⟨A, hA, hinner⟩
+      have hinner' : inner ℝ v A = inner ℝ (matrixToEuclid (Matrix.diagonal nv)) B := by
+        simpa [nv] using hinner
+      have hle : inner ℝ v A ≤ C := hC ⟨A, hA, rfl⟩
+      rwa [hinner'] at hle
+    have hFsubset : {x : ℝ | ∃ X : ℝ, K / (1 + 4 * K * τ) ≤ X ∧
+          x = hamiltonIveyConvexBarrier K τ X * nv 0 + X * (2 * nv 0 - nv 1 - nv 2)} ⊆
+        {x : ℝ | ∃ B : EuclideanSpace ℝ (Fin 3 × Fin 3),
+          B ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧
+            x = inner ℝ (matrixToEuclid (Matrix.diagonal nv)) B} := by
+      rintro x ⟨X, hX₀le, rfl⟩
+      let l : Fin 3 → ℝ := ![hamiltonIveyConvexBarrier K τ X + 2 * X, -X, -X]
+      have hDmem : Matrix.diagonal l ∈ hamiltonIveyConvexMatrixRegion K τ :=
+        diagonal_extremal_mem_region hK hτ hX₀le
+      have hDmemE : matrixToEuclid (Matrix.diagonal l) ∈ hamiltonIveyConvexMatrixRegionEuclid K τ := by
+        rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+        simpa [l, euclidToMatrix_matrixToEuclid] using hDmem
+      have hinner : inner ℝ (matrixToEuclid (Matrix.diagonal nv)) (matrixToEuclid (Matrix.diagonal l)) =
+          hamiltonIveyConvexBarrier K τ X * nv 0 + X * (2 * nv 0 - nv 1 - nv 2) := by
+        have hdd := inner_diag_diag nv l
+        rw [hdd]
+        simp [l, Fin.sum_univ_three]
+        ring
+      exact ⟨matrixToEuclid (Matrix.diagonal l), hDmemE, hinner.symm⟩
+    have hbddF : BddAbove {x : ℝ | ∃ X : ℝ, K / (1 + 4 * K * τ) ≤ X ∧
+          x = hamiltonIveyConvexBarrier K τ X * nv 0 + X * (2 * nv 0 - nv 1 - nv 2)} :=
+      BddAbove.mono hFsubset hbdd_diag
+    exact (support_formula_unbounded_of_nonneg_top hK hτ hnv_anti hν0 hnv_ne) hbddF
+  · rintro (hv | hsymm0)
+    · -- ν̃₁ < 0: finite via bound
+      have hbdd : BddAbove {x : ℝ | ∃ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
+          A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧ x = inner ℝ v A} := by
+        refine ⟨hamiltonIveyConvexMatrixRegionSupportEuclid K τ v, ?_⟩
+        rintro x ⟨A, hA, rfl⟩
+        exact inner_le_supportFunction_of_mem_region hK hτ v hv A hA
+      exact hbdd
+    · -- symm v = 0: inner v A = 0 for all A ∈ region
+      have hbdd : BddAbove {x : ℝ | ∃ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
+          A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧ x = inner ℝ v A} := by
+        refine ⟨0, ?_⟩
+        rintro x ⟨A, hA, rfl⟩
+        have hAh : (euclidToMatrix A).IsHermitian := by
+          have hAm : euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ :=
+            (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ A).1 hA
+          rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hAm
+          exact hAm.1
+        have hz : inner ℝ v A = 0 := by
+          have h := inner_matrixToEuclid_symm v (euclidToMatrix A) hAh
+          rw [hsymm0] at h
+          have hzero : inner ℝ (matrixToEuclid 0) (matrixToEuclid (euclidToMatrix A)) = 0 := by
+            rw [inner_matrixToEuclid]
+            simp [matrixToEuclid]
+          have hmain : inner ℝ v (matrixToEuclid (euclidToMatrix A)) = 0 := h.trans hzero
+          simpa [matrixToEuclid_euclidToMatrix] using hmain
+        rw [hz]
+      exact hbdd
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
