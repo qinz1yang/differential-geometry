@@ -368,6 +368,29 @@ theorem flowInverseMetricComponents_inversePropertyRight
   have hrow := congrFun (congrFun hmain' i) j
   simpa [Matrix.mul_apply, flowInverseMetricComponents, flowMetricGramMatrix] using hrow
 
+theorem continuousOn_matrixInv_of_det_ne_zero
+    {X : Type*} [TopologicalSpace X] {s : Set X}
+    {G : X → Matrix (Fin 3) (Fin 3) ℝ}
+    (hG : ContinuousOn G s) (hdet : ∀ x ∈ s, (G x).det ≠ 0) :
+    ContinuousOn (fun x => (G x)⁻¹) s := by
+  have hdet' : ContinuousOn (fun x : X => (G x).det) s := by
+    have hc : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => A.det) := by fun_prop
+    exact hc.comp_continuousOn hG
+  have hdetInv : ContinuousOn (fun x : X => Ring.inverse (G x).det) s := by
+    have hmain : ContinuousOn (fun x : X => (G x).det⁻¹) s :=
+      hdet'.inv₀ (fun x hx => hdet x hx)
+    refine hmain.congr ?_
+    intro x hx
+    exact congrFun Ring.inverse_eq_inv' (G x).det
+  have hadj : ContinuousOn (fun x : X => Matrix.adjugate (G x)) s := by
+    have hc : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => Matrix.adjugate A) := by fun_prop
+    exact hc.comp_continuousOn hG
+  have hsmul : ContinuousOn (fun x : X => Ring.inverse (G x).det • Matrix.adjugate (G x)) s :=
+    hdetInv.smul hadj
+  refine hsmul.congr ?_
+  intro x hx
+  exact Matrix.inv_def (G x)
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
