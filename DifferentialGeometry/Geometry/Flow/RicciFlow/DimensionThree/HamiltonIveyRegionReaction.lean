@@ -3060,6 +3060,74 @@ lemma hamiltonIveyBarrier_at_star_point
       _ = (ν 1 + ν 2) / ν 0 := hlogX
   rw [hlog]
 
+lemma support_formula_at_star_point
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν0 : ν 0 < 0) :
+    hamiltonIveyConvexBarrier K τ (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * ν 0 +
+        (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * (2 * ν 0 - ν 1 - ν 2) =
+      min (scalarSectionalLowerBarrier3 K τ * ν 0 +
+            (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * (2 * ν 0 - ν 1 - ν 2))
+        (-(ν 0 * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)))) := by
+  let Xs : ℝ := K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)
+  have hmin := support_formula_min_branch (K := K) (τ := τ) hν0 Xs
+  -- hmin : B K τ Xs * ν0 + Xs*c = min (s*ν0 + Xs*c) (h-barrier*ν0 + Xs*c)
+  -- and h-barrier*ν0 + Xs*c = −ν0·Xs via hamiltonIveyBarrier_at_star_point
+  have hbar := hamiltonIveyBarrier_at_star_point (K := K) (τ := τ) (ν := ν) hK hτ
+  have hb : hamiltonIveyBarrier K τ Xs * ν 0 + Xs * (2 * ν 0 - ν 1 - ν 2) =
+      -(ν 0 * Xs) := by
+    rw [hbar]
+    have hcalc : Xs * ((ν 1 + ν 2) / ν 0 - 3) * ν 0 + Xs * (2 * ν 0 - ν 1 - ν 2) =
+        -(ν 0 * Xs) := by
+      -- Xs·((ν1+ν2)/ν0 − 3)·ν0 + Xs·(2ν0−ν1−ν2) = Xs·(ν1+ν2 − 3ν0 + 2ν0 −ν1 −ν2) = −ν0Xs
+      field_simp [Ne.symm hν0.ne']
+      ring
+    simp [Xs, hcalc]
+  rw [hmin, hb]
+
+
+
+lemma hasDerivAt_scalarSectionalLowerBarrier3
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀) :
+    HasDerivAt (fun τ : ℝ => scalarSectionalLowerBarrier3 K τ)
+      (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2) τ₀ := by
+  unfold scalarSectionalLowerBarrier3
+  have hden : 0 < 1 + 4 * K * τ₀ := by
+    have hKτ : 0 ≤ 4 * K * τ₀ := by
+      have h1 : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀
+      nlinarith
+    nlinarith
+  have hlin : HasDerivAt (fun τ : ℝ => 1 + 4 * K * τ) (4 * K) τ₀ := by
+    have h1 : HasDerivAt (fun τ : ℝ => (4 * K) * τ) (4 * K) τ₀ := by
+      simpa [mul_one] using (hasDerivAt_id τ₀).const_mul (4 * K)
+    simpa [add_comm, mul_comm] using (h1.add_const 1)
+  have hq : HasDerivAt (fun τ : ℝ => (-3 * K) / (1 + 4 * K * τ))
+      ((0 * (1 + 4 * K * τ₀) - (-3 * K) * (4 * K)) / (1 + 4 * K * τ₀) ^ 2) τ₀ := by
+    exact (hasDerivAt_const (x := τ₀) (c := (-3 * K : ℝ))).div hlin (by positivity)
+  convert hq using 1
+  field_simp [hden.ne']
+  ring
+
+lemma hasDerivAt_star_point
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀)
+    (t : ℝ) :
+    HasDerivAt (fun τ : ℝ => K * Real.exp t / (1 + 2 * K * τ))
+      (-2 * K * (K * Real.exp t / (1 + 2 * K * τ₀) ^ 2)) τ₀ := by
+  have hden : 0 < 1 + 2 * K * τ₀ := by
+    have hKτ : 0 ≤ 2 * K * τ₀ := by
+      have h1 : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀
+      nlinarith
+    nlinarith
+  have hlin : HasDerivAt (fun τ : ℝ => 1 + 2 * K * τ) (2 * K) τ₀ := by
+    have h1 : HasDerivAt (fun τ : ℝ => (2 * K) * τ) (2 * K) τ₀ := by
+      simpa [mul_one] using (hasDerivAt_id τ₀).const_mul (2 * K)
+    simpa [add_comm, mul_comm] using (h1.add_const 1)
+  have hq : HasDerivAt (fun τ : ℝ => (K * Real.exp t) / (1 + 2 * K * τ))
+      ((0 * (1 + 2 * K * τ₀) - (K * Real.exp t) * (2 * K)) / (1 + 2 * K * τ₀) ^ 2) τ₀ := by
+    exact (hasDerivAt_const (x := τ₀) (c := (K * Real.exp t : ℝ))).div hlin (by positivity)
+  convert hq using 1
+  field_simp [hden.ne']
+  ring
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
