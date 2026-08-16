@@ -3966,6 +3966,473 @@ lemma continuousAt_kink_point {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀) 
     exact abs_sub_lt_iff.mpr ⟨by linarith [hmain.2], by linarith [hmain.1]⟩
   simpa [dist_eq_norm] using hdist
 
+lemma hamiltonIveyBarrier_x_deriv_pos
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀) {X : ℝ}
+    (hX : K * Real.exp 2 / (1 + 2 * K * τ₀) < X) :
+    0 < Real.log (X / K) + Real.log (1 + 2 * K * τ₀) - 2 := by
+  have hden : 0 < 1 + 2 * K * τ₀ := by
+    have hKτ : 0 ≤ 2 * K * τ₀ := by
+      have h1 : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀
+      nlinarith
+    nlinarith
+  have hXpos : 0 < X := lt_of_lt_of_le (by positivity) (le_of_lt hX)
+  have harg1 : 0 < (K * Real.exp 2 / (1 + 2 * K * τ₀)) * (1 + 2 * K * τ₀) / K := by positivity
+  have harg2 : 0 < X * (1 + 2 * K * τ₀) / K := by
+    exact div_pos (mul_pos hXpos hden) hK
+  have hmono : Real.log ((K * Real.exp 2 / (1 + 2 * K * τ₀)) * (1 + 2 * K * τ₀) / K) <
+      Real.log (X * (1 + 2 * K * τ₀) / K) := by
+    refine (Real.log_lt_log_iff harg1 harg2).mpr ?_
+    have hmul : (K * Real.exp 2 / (1 + 2 * K * τ₀)) * (1 + 2 * K * τ₀) < X * (1 + 2 * K * τ₀) :=
+      mul_lt_mul_of_pos_right hX hden
+    exact div_lt_div_of_pos_right hmul hK
+  have hlogE : Real.log ((K * Real.exp 2 / (1 + 2 * K * τ₀)) * (1 + 2 * K * τ₀) / K) = 2 := by
+    have hXeq : (K * Real.exp 2 / (1 + 2 * K * τ₀)) * (1 + 2 * K * τ₀) / K = Real.exp 2 := by
+      field_simp [hK.ne', hden.ne']
+    rw [hXeq]
+    exact Real.log_exp 2
+  have hlogX : Real.log (X / K) + Real.log (1 + 2 * K * τ₀) =
+      Real.log (X * (1 + 2 * K * τ₀) / K) := by
+    have h1 : Real.log (X / K) = Real.log X - Real.log K := Real.log_div hXpos.ne' hK.ne'
+    have h2 : Real.log ((X * (1 + 2 * K * τ₀)) / K) = Real.log (X * (1 + 2 * K * τ₀)) - Real.log K :=
+      Real.log_div (mul_pos hXpos hden).ne' hK.ne'
+    have h3 : Real.log (X * (1 + 2 * K * τ₀)) = Real.log X + Real.log (1 + 2 * K * τ₀) :=
+      Real.log_mul hXpos.ne' hden.ne'
+    rw [h1, h2, h3]
+    ring_nf
+  rw [hlogX]
+  linarith
+
+lemma exists_hamiltonIveyBarrier_tau_deriv_eq_slope
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀) {τ : ℝ}
+    (hτpos : 0 < τ) (hτne : τ ≠ τ₀) (X2τ : ℝ) :
+    ∃ ξ : ℝ, ξ ∈ Set.Ioo (min τ τ₀) (max τ τ₀) ∧
+      X2τ * (2 * K) / (1 + 2 * K * ξ) =
+        (hamiltonIveyBarrier K τ X2τ - hamiltonIveyBarrier K τ₀ X2τ) / (τ - τ₀) := by
+  let a : ℝ := min τ τ₀
+  let b : ℝ := max τ τ₀
+  have hab : a < b := (min_lt_max.mpr hτne)
+  have hslice : ∀ t : ℝ, t ∈ Set.Icc a b →
+      HasDerivAt (fun u : ℝ => hamiltonIveyBarrier K u X2τ)
+        (X2τ * (2 * K) / (1 + 2 * K * t)) t := by
+    intro t ht
+    have hminpos : 0 < min τ τ₀ := lt_min hτpos hτ₀
+    have ht0 : 0 ≤ t := by
+      have hale : a ≤ t := ht.1
+      dsimp [a] at hale
+      linarith
+    exact hasDerivAt_hamiltonIveyBarrier_tau (K := K) (τ₀ := t) (X := X2τ) hK ht0
+  have hcont : ContinuousOn (fun u : ℝ => hamiltonIveyBarrier K u X2τ) (Set.Icc a b) :=
+    HasDerivAt.continuousOn hslice
+  have hdiff : DifferentiableOn ℝ (fun u : ℝ => hamiltonIveyBarrier K u X2τ) (Set.Ioo a b) := by
+    intro t ht
+    have hmem : t ∈ Set.Icc a b := ⟨le_of_lt ht.1, le_of_lt ht.2⟩
+    exact (hslice t hmem).differentiableAt.differentiableWithinAt
+  rcases exists_deriv_eq_slope (fun u : ℝ => hamiltonIveyBarrier K u X2τ) hab hcont hdiff
+    with ⟨ξ, hξ, hξeq⟩
+  refine ⟨ξ, hξ, ?_⟩
+  have hξmem : ξ ∈ Set.Icc a b := ⟨le_of_lt hξ.1, le_of_lt hξ.2⟩
+  have hminpos : 0 < min τ τ₀ := lt_min hτpos hτ₀
+  have hξ0 : 0 ≤ ξ := by
+    have hale : a ≤ ξ := hξmem.1
+    dsimp [a] at hale
+    linarith
+  have hderiv : deriv (fun u : ℝ => hamiltonIveyBarrier K u X2τ) ξ =
+      X2τ * (2 * K) / (1 + 2 * K * ξ) :=
+    (hasDerivAt_hamiltonIveyBarrier_tau (K := K) (τ₀ := ξ) (X := X2τ) hK hξ0).deriv
+  rw [hderiv] at hξeq
+  by_cases hle : τ ≤ τ₀
+  · have hmin : min τ τ₀ = τ := min_eq_left hle
+    have hmax : max τ τ₀ = τ₀ := max_eq_right hle
+    have hmain : (hamiltonIveyBarrier K b X2τ - hamiltonIveyBarrier K a X2τ) / (b - a) =
+        (hamiltonIveyBarrier K τ X2τ - hamiltonIveyBarrier K τ₀ X2τ) / (τ - τ₀) := by
+      dsimp [a, b]
+      rw [hmin, hmax]
+      rw [show τ - τ₀ = -(τ₀ - τ) by ring]
+      rw [show hamiltonIveyBarrier K τ X2τ - hamiltonIveyBarrier K τ₀ X2τ =
+          -(hamiltonIveyBarrier K τ₀ X2τ - hamiltonIveyBarrier K τ X2τ) by ring]
+      rw [neg_div_neg_eq]
+    exact hξeq.trans hmain
+  · have hlt : τ₀ < τ := lt_of_not_ge hle
+    have hmin : min τ τ₀ = τ₀ := min_eq_right (le_of_lt hlt)
+    have hmax : max τ τ₀ = τ := max_eq_left (le_of_lt hlt)
+    have hmain : (hamiltonIveyBarrier K b X2τ - hamiltonIveyBarrier K a X2τ) / (b - a) =
+        (hamiltonIveyBarrier K τ X2τ - hamiltonIveyBarrier K τ₀ X2τ) / (τ - τ₀) := by
+      dsimp [a, b]
+      rw [hmin, hmax]
+    exact hξeq.trans hmain
+
+lemma exists_hamiltonIveyBarrier_x_deriv_eq_slope
+    {K τ₀ : ℝ} (hK : 0 < K) {X X2τ : ℝ}
+    (hXpos : 0 < X) (hX2pos : 0 < X2τ) (hXne : X ≠ X2τ) :
+    ∃ η : ℝ, η ∈ Set.Ioo (min X X2τ) (max X X2τ) ∧
+      Real.log (η / K) + Real.log (1 + 2 * K * τ₀) - 2 =
+        (hamiltonIveyBarrier K τ₀ X2τ - hamiltonIveyBarrier K τ₀ X) / (X2τ - X) := by
+  let a : ℝ := min X X2τ
+  let b : ℝ := max X X2τ
+  have hab : a < b := (min_lt_max.mpr hXne)
+  have hslice : ∀ y : ℝ, y ∈ Set.Icc a b →
+      HasDerivAt (fun u : ℝ => hamiltonIveyBarrier K τ₀ u)
+        (Real.log (y / K) + Real.log (1 + 2 * K * τ₀) - 2) y := by
+    intro y hy
+    have hminpos : 0 < min X X2τ := lt_min hXpos hX2pos
+    have hy0 : 0 < y := by
+      have hale : a ≤ y := hy.1
+      dsimp [a] at hale
+      linarith
+    exact hasDerivAt_hamiltonIveyBarrier_x (K := K) (τ := τ₀) (X := y) hK hy0
+  have hcont : ContinuousOn (fun u : ℝ => hamiltonIveyBarrier K τ₀ u) (Set.Icc a b) :=
+    HasDerivAt.continuousOn hslice
+  have hdiff : DifferentiableOn ℝ (fun u : ℝ => hamiltonIveyBarrier K τ₀ u) (Set.Ioo a b) := by
+    intro y hy
+    have hmem : y ∈ Set.Icc a b := ⟨le_of_lt hy.1, le_of_lt hy.2⟩
+    exact (hslice y hmem).differentiableAt.differentiableWithinAt
+  rcases exists_deriv_eq_slope (fun u : ℝ => hamiltonIveyBarrier K τ₀ u) hab hcont hdiff
+    with ⟨η, hη, hηeq⟩
+  refine ⟨η, hη, ?_⟩
+  have hηmem : η ∈ Set.Icc a b := ⟨le_of_lt hη.1, le_of_lt hη.2⟩
+  have hminpos : 0 < min X X2τ := lt_min hXpos hX2pos
+  have hη0 : 0 < η := by
+    have hale : a ≤ η := hηmem.1
+    dsimp [a] at hale
+    linarith
+  have hderiv : deriv (fun u : ℝ => hamiltonIveyBarrier K τ₀ u) η =
+      Real.log (η / K) + Real.log (1 + 2 * K * τ₀) - 2 :=
+    (hasDerivAt_hamiltonIveyBarrier_x (K := K) (τ := τ₀) (X := η) hK hη0).deriv
+  rw [hderiv] at hηeq
+  by_cases hle : X ≤ X2τ
+  · have hmin : min X X2τ = X := min_eq_left hle
+    have hmax : max X X2τ = X2τ := max_eq_right hle
+    have hmain : (hamiltonIveyBarrier K τ₀ b - hamiltonIveyBarrier K τ₀ a) / (b - a) =
+        (hamiltonIveyBarrier K τ₀ X2τ - hamiltonIveyBarrier K τ₀ X) / (X2τ - X) := by
+      dsimp [a, b]
+      rw [hmin, hmax]
+    exact hηeq.trans hmain
+  · have hlt : X2τ < X := lt_of_not_ge hle
+    have hmin : min X X2τ = X2τ := min_eq_right (le_of_lt hlt)
+    have hmax : max X X2τ = X := max_eq_left (le_of_lt hlt)
+    have hmain : (hamiltonIveyBarrier K τ₀ b - hamiltonIveyBarrier K τ₀ a) / (b - a) =
+        (hamiltonIveyBarrier K τ₀ X2τ - hamiltonIveyBarrier K τ₀ X) / (X2τ - X) := by
+      dsimp [a, b]
+      rw [hmin, hmax]
+      rw [show X2τ - X = -(X - X2τ) by ring]
+      rw [show hamiltonIveyBarrier K τ₀ X2τ - hamiltonIveyBarrier K τ₀ X =
+          -(hamiltonIveyBarrier K τ₀ X - hamiltonIveyBarrier K τ₀ X2τ) by ring]
+      rw [neg_div_neg_eq]
+    exact hηeq.trans hmain
+
+lemma hasDerivAt_hamiltonIveyKinkPoint
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀) :
+    HasDerivAt (fun τ : ℝ => hamiltonIveyKinkPoint hK τ)
+      ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+        hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+        (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) τ₀ := by
+  let X : ℝ := hamiltonIveyKinkPoint hK τ₀
+  let X₂ : ℝ → ℝ := fun τ => hamiltonIveyKinkPoint hK τ
+  let E₀ : ℝ := K * Real.exp 2 / (1 + 2 * K * τ₀)
+  let hX : ℝ → ℝ := fun y => Real.log (y / K) + Real.log (1 + 2 * K * τ₀) - 2
+  let hτfun : ℝ × ℝ → ℝ := fun p => p.2 * (2 * K) / (1 + 2 * K * p.1)
+  let s : ℝ → ℝ := fun τ => scalarSectionalLowerBarrier3 K τ
+  let s' : ℝ := 12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2
+  have hEpos : 0 < E₀ := by
+    dsimp [E₀]
+    positivity
+  have hXgtE : E₀ < X := by
+    simpa [E₀, X] using kink_point_above_E hK hτ₀.le
+  have hXpos : 0 < X := lt_of_lt_of_le hEpos (le_of_lt hXgtE)
+  have hX2_cont : ContinuousAt X₂ τ₀ := by
+    simpa [X₂] using continuousAt_kink_point hK hτ₀
+  have hX2E : ∀ᶠ τ in 𝓝 τ₀, E₀ < X₂ τ := by
+    have hgap : 0 < X - E₀ := by linarith
+    have hev : ∀ᶠ τ in 𝓝 τ₀, dist (X₂ τ) X < X - E₀ :=
+      (Metric.tendsto_nhds.mp hX2_cont.tendsto) (X - E₀) hgap
+    filter_upwards [hev] with τ hτ
+    have habs : |X₂ τ - X| < X - E₀ := by simpa [dist_eq_norm, Real.norm_eq_abs] using hτ
+    have h1 : -(X - E₀) < X₂ τ - X := (abs_lt.mp habs).1
+    linarith
+  have hτpos_nhd : ∀ᶠ τ in 𝓝 τ₀, τ₀ / 2 < τ := Ioi_mem_nhds (half_lt_self hτ₀)
+  have hXpos0 : 0 < hX X := by
+    dsimp [hX]
+    exact hamiltonIveyBarrier_x_deriv_pos hK hτ₀.le (by simpa [E₀] using hXgtE)
+  let ξ : ℝ → ℝ := fun τ =>
+    if h : τ₀ / 2 < τ ∧ E₀ < X₂ τ ∧ τ ≠ τ₀ then
+      Classical.choose (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀
+        (lt_of_lt_of_le (half_pos hτ₀) (le_of_lt h.1)) h.2.2 (X₂ τ))
+    else τ₀
+  let η : ℝ → ℝ := fun τ =>
+    if h : τ₀ / 2 < τ ∧ E₀ < X₂ τ ∧ τ ≠ τ₀ ∧ X₂ τ ≠ X then
+      Classical.choose (exists_hamiltonIveyBarrier_x_deriv_eq_slope (τ₀ := τ₀) hK hXpos
+        (lt_of_lt_of_le hEpos (le_of_lt h.2.1)) (Ne.symm h.2.2.2))
+    else X
+  have hξ_spec : ∀ τ : ℝ, τ₀ / 2 < τ → E₀ < X₂ τ → τ ≠ τ₀ →
+      ξ τ ∈ Set.Ioo (min τ τ₀) (max τ τ₀) ∧
+      hτfun (ξ τ, X₂ τ) =
+        (hamiltonIveyBarrier K τ (X₂ τ) - hamiltonIveyBarrier K τ₀ (X₂ τ)) / (τ - τ₀) := by
+    intro τ hτpos hτE hτne
+    have hτ0 : 0 < τ := lt_of_lt_of_le (half_pos hτ₀) (le_of_lt hτpos)
+    have hguard : τ₀ / 2 < τ ∧ E₀ < X₂ τ ∧ τ ≠ τ₀ := ⟨hτpos, hτE, hτne⟩
+    have hspec := Classical.choose_spec (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ))
+    have hξdef : ξ τ = Classical.choose (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ)) := by
+      dsimp [ξ]
+      rw [dif_pos hguard]
+    rw [hξdef]
+    constructor
+    · exact hspec.1
+    · simpa [hτfun] using hspec.2
+  have hη_spec : ∀ τ : ℝ, τ₀ / 2 < τ → E₀ < X₂ τ → τ ≠ τ₀ → X₂ τ ≠ X →
+      η τ ∈ Set.Ioo (min X (X₂ τ)) (max X (X₂ τ)) ∧
+      hX (η τ) * (X₂ τ - X) = hamiltonIveyBarrier K τ₀ (X₂ τ) - s τ₀ := by
+    intro τ hτpos hτE hτne hX2ne
+    have hX2pos : 0 < X₂ τ := lt_of_lt_of_le hEpos (le_of_lt hτE)
+    have hguard : τ₀ / 2 < τ ∧ E₀ < X₂ τ ∧ τ ≠ τ₀ ∧ X₂ τ ≠ X := ⟨hτpos, hτE, hτne, hX2ne⟩
+    have hspec := Classical.choose_spec (exists_hamiltonIveyBarrier_x_deriv_eq_slope (τ₀ := τ₀) hK hXpos hX2pos (Ne.symm hX2ne))
+    have hηdef : η τ = Classical.choose (exists_hamiltonIveyBarrier_x_deriv_eq_slope (τ₀ := τ₀) hK hXpos hX2pos (Ne.symm hX2ne)) := by
+      dsimp [η]
+      rw [dif_pos hguard]
+    rw [hηdef]
+    constructor
+    · exact hspec.1
+    · have hk : hamiltonIveyBarrier K τ₀ X = s τ₀ := by
+        dsimp [s, X]
+        exact kink_point_eq hK hτ₀.le
+      have hXden : X₂ τ - X ≠ 0 := sub_ne_zero.mpr hX2ne
+      have hmain : hX (Classical.choose (exists_hamiltonIveyBarrier_x_deriv_eq_slope (τ₀ := τ₀) hK hXpos hX2pos (Ne.symm hX2ne))) *
+            (X₂ τ - X) = hamiltonIveyBarrier K τ₀ (X₂ τ) - hamiltonIveyBarrier K τ₀ X := by
+        have h : hX (Classical.choose (exists_hamiltonIveyBarrier_x_deriv_eq_slope (τ₀ := τ₀) hK hXpos hX2pos (Ne.symm hX2ne))) =
+            (hamiltonIveyBarrier K τ₀ (X₂ τ) - hamiltonIveyBarrier K τ₀ X) / (X₂ τ - X) := by
+          dsimp [hX]
+          exact hspec.2
+        calc
+          hX (Classical.choose (exists_hamiltonIveyBarrier_x_deriv_eq_slope (τ₀ := τ₀) hK hXpos hX2pos (Ne.symm hX2ne))) * (X₂ τ - X)
+              = ((hamiltonIveyBarrier K τ₀ (X₂ τ) - hamiltonIveyBarrier K τ₀ X) / (X₂ τ - X)) *
+                  (X₂ τ - X) := by rw [h]
+          _ = hamiltonIveyBarrier K τ₀ (X₂ τ) - hamiltonIveyBarrier K τ₀ X := by
+                exact div_mul_cancel₀ _ hXden
+      simpa [hk, s] using hmain
+  have hx_identity : ∀ τ : ℝ, τ₀ / 2 < τ → E₀ < X₂ τ → τ ≠ τ₀ →
+      hamiltonIveyBarrier K τ₀ (X₂ τ) - s τ₀ = hX (η τ) * (X₂ τ - X) := by
+    intro τ hτpos hτE hτne
+    by_cases hX2ne : X₂ τ ≠ X
+    · have hspec := hη_spec τ hτpos hτE hτne hX2ne
+      exact hspec.2.symm
+    · have hX2eq : X₂ τ = X := not_not.mp hX2ne
+      have hηdef : η τ = X := by
+        dsimp [η]
+        rw [dif_neg]
+        intro hg
+        exact hX2ne hg.2.2.2
+      rw [hX2eq, hηdef]
+      have hk : hamiltonIveyBarrier K τ₀ X = s τ₀ := by
+        dsimp [s, X]
+        exact kink_point_eq hK hτ₀.le
+      simp [hk]
+  have hτ_identity : ∀ τ : ℝ, τ₀ / 2 < τ → E₀ < X₂ τ → τ ≠ τ₀ →
+      s τ - hamiltonIveyBarrier K τ₀ (X₂ τ) = hτfun (ξ τ, X₂ τ) * (τ - τ₀) := by
+    intro τ hτpos hτE hτne
+    have hτ0 : 0 < τ := lt_of_lt_of_le (half_pos hτ₀) (le_of_lt hτpos)
+    have hguard : τ₀ / 2 < τ ∧ E₀ < X₂ τ ∧ τ ≠ τ₀ := ⟨hτpos, hτE, hτne⟩
+    have hspec := Classical.choose_spec (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ))
+    have hξdef : ξ τ = Classical.choose (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ)) := by
+      dsimp [ξ]
+      rw [dif_pos hguard]
+    rw [hξdef]
+    have hk : hamiltonIveyBarrier K τ (X₂ τ) = s τ := by
+      dsimp [s, X₂]
+      exact kink_point_eq hK (le_of_lt hτ0)
+    have hspec2' : hτfun (Classical.choose (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ)), X₂ τ) =
+        (hamiltonIveyBarrier K τ (X₂ τ) - hamiltonIveyBarrier K τ₀ (X₂ τ)) / (τ - τ₀) := by
+      simpa [hτfun] using hspec.2
+    rw [hspec2']
+    rw [div_mul_cancel₀ _ (sub_ne_zero.mpr hτne)]
+    rw [hk]
+  have hidentity : ∀ᶠ τ in 𝓝 τ₀, τ ≠ τ₀ → slope X₂ τ₀ τ =
+      (slope s τ₀ τ - hτfun (ξ τ, X₂ τ)) / hX (η τ) := by
+    filter_upwards [hτpos_nhd, hX2E] with τ hτpos hτE
+    intro hτne
+    have hx := hx_identity τ hτpos hτE hτne
+    have ht := hτ_identity τ hτpos hτE hτne
+    have hηpos : 0 < hX (η τ) := by
+      by_cases hX2ne : X₂ τ ≠ X
+      · have hspec := hη_spec τ hτpos hτE hτne hX2ne
+        have hηlo : min X (X₂ τ) < η τ := hspec.1.1
+        have hmin_gt : E₀ < min X (X₂ τ) := lt_min hXgtE hτE
+        dsimp [hX]
+        exact hamiltonIveyBarrier_x_deriv_pos hK hτ₀.le (by linarith [hmin_gt, hηlo])
+      · have hX2eq : X₂ τ = X := not_not.mp hX2ne
+        have hηdef : η τ = X := by
+          dsimp [η]
+          rw [dif_neg]
+          intro hg
+          exact hX2ne hg.2.2.2
+        rw [hηdef]
+        dsimp [hX]
+        exact hamiltonIveyBarrier_x_deriv_pos hK hτ₀.le hXgtE
+    have hηne : hX (η τ) ≠ 0 := ne_of_gt hηpos
+    have hsum : s τ - s τ₀ = hτfun (ξ τ, X₂ τ) * (τ - τ₀) + hX (η τ) * (X₂ τ - X) := by
+      calc
+        s τ - s τ₀ = (s τ - hamiltonIveyBarrier K τ₀ (X₂ τ)) +
+            (hamiltonIveyBarrier K τ₀ (X₂ τ) - s τ₀) := by ring
+        _ = hτfun (ξ τ, X₂ τ) * (τ - τ₀) + hX (η τ) * (X₂ τ - X) := by rw [ht, hx]
+    have hq : (X₂ τ - X) / (τ - τ₀) = (slope s τ₀ τ - hτfun (ξ τ, X₂ τ)) / hX (η τ) := by
+      have hs_slope : slope s τ₀ τ = (s τ - s τ₀) / (τ - τ₀) := by
+        rw [slope_def_field]
+      have hsum2 : (s τ - s τ₀) / (τ - τ₀) =
+          hτfun (ξ τ, X₂ τ) + hX (η τ) * ((X₂ τ - X) / (τ - τ₀)) := by
+        rw [hsum]
+        field_simp [sub_ne_zero.mpr hτne]
+      have hqeq : hX (η τ) * ((X₂ τ - X) / (τ - τ₀)) = slope s τ₀ τ - hτfun (ξ τ, X₂ τ) := by
+        rw [hs_slope]
+        linarith [hsum2]
+      rw [eq_div_iff hηne]
+      rw [mul_comm]
+      exact hqeq
+    calc
+      slope X₂ τ₀ τ = (X₂ τ - X) / (τ - τ₀) := by
+        rw [slope_def_field]
+      _ = (slope s τ₀ τ - hτfun (ξ τ, X₂ τ)) / hX (η τ) := hq
+  have hξ_bound : ∀ τ : ℝ, |ξ τ - τ₀| ≤ |τ - τ₀| := by
+    intro τ
+    by_cases hg : τ₀ / 2 < τ ∧ E₀ < X₂ τ ∧ τ ≠ τ₀
+    · have hspec := hξ_spec τ hg.1 hg.2.1 hg.2.2
+      have hξlo : min τ τ₀ < ξ τ := hspec.1.1
+      have hξhi : ξ τ < max τ τ₀ := hspec.1.2
+      by_cases hle : τ ≤ τ₀
+      · have hmin : min τ τ₀ = τ := min_eq_left hle
+        have hmax : max τ τ₀ = τ₀ := max_eq_right hle
+        have hlo : τ < ξ τ := by simpa [hmin] using hξlo
+        have hhi : ξ τ < τ₀ := by simpa [hmax] using hξhi
+        rw [abs_of_neg (sub_neg.mpr hhi)]
+        rw [abs_of_neg (sub_neg.mpr (lt_of_le_of_ne hle hg.2.2))]
+        linarith
+      · have hgt : τ₀ < τ := lt_of_not_ge hle
+        have hmin : min τ τ₀ = τ₀ := min_eq_right (le_of_lt hgt)
+        have hmax : max τ τ₀ = τ := max_eq_left (le_of_lt hgt)
+        have hlo : τ₀ < ξ τ := by simpa [hmin] using hξlo
+        have hhi : ξ τ < τ := by simpa [hmax] using hξhi
+        rw [abs_of_pos (sub_pos.mpr hlo)]
+        rw [abs_of_pos (sub_pos.mpr hgt)]
+        linarith
+    · have hξdef : ξ τ = τ₀ := by
+        dsimp [ξ]
+        rw [dif_neg hg]
+      rw [hξdef]
+      simp
+  have hη_bound : ∀ τ : ℝ, |η τ - X| ≤ |X₂ τ - X| := by
+    intro τ
+    by_cases hg : τ₀ / 2 < τ ∧ E₀ < X₂ τ ∧ τ ≠ τ₀ ∧ X₂ τ ≠ X
+    · have hspec := hη_spec τ hg.1 hg.2.1 hg.2.2.1 hg.2.2.2
+      have hηlo : min X (X₂ τ) < η τ := hspec.1.1
+      have hηhi : η τ < max X (X₂ τ) := hspec.1.2
+      by_cases hle : X ≤ X₂ τ
+      · have hmin : min X (X₂ τ) = X := min_eq_left hle
+        have hmax : max X (X₂ τ) = X₂ τ := max_eq_right hle
+        have hlo : X < η τ := by simpa [hmin] using hηlo
+        have hhi : η τ < X₂ τ := by simpa [hmax] using hηhi
+        rw [abs_of_pos (sub_pos.mpr hlo)]
+        rw [abs_of_pos (sub_pos.mpr (lt_of_lt_of_le hlo (le_of_lt hhi)))]
+        linarith
+      · have hgt : X₂ τ < X := lt_of_not_ge hle
+        have hmin : min X (X₂ τ) = X₂ τ := min_eq_right (le_of_lt hgt)
+        have hmax : max X (X₂ τ) = X := max_eq_left (le_of_lt hgt)
+        have hlo : X₂ τ < η τ := by simpa [hmin] using hηlo
+        have hhi : η τ < X := by simpa [hmax] using hηhi
+        rw [abs_of_neg (sub_neg.mpr hhi)]
+        rw [abs_of_neg (sub_neg.mpr hgt)]
+        linarith
+    · have hηdef : η τ = X := by
+        dsimp [η]
+        rw [dif_neg hg]
+      rw [hηdef]
+      simp
+  have hτdiff_zero : Filter.Tendsto (fun τ : ℝ => |τ - τ₀|) (𝓝 τ₀) (𝓝 (0 : ℝ)) := by
+    have hτ : Filter.Tendsto (fun τ : ℝ => τ - τ₀) (𝓝 τ₀) (𝓝 (0 : ℝ)) := by
+      simpa using (Continuous.tendsto continuous_id τ₀).sub (tendsto_const_nhds (x := τ₀))
+    simpa [Real.norm_eq_abs] using hτ.norm
+  have hX₂_zero : Filter.Tendsto (fun τ : ℝ => |X₂ τ - X|) (𝓝 τ₀) (𝓝 (0 : ℝ)) := by
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have h := (Metric.tendsto_nhds.mp hX2_cont.tendsto) ε hε
+    filter_upwards [h] with τ hτ
+    simpa [dist_eq_norm, Real.norm_eq_abs] using hτ
+  have hξ_zero : Filter.Tendsto (fun τ : ℝ => |ξ τ - τ₀|) (𝓝 τ₀) (𝓝 (0 : ℝ)) :=
+    squeeze_zero (fun τ => abs_nonneg _) hξ_bound hτdiff_zero
+  have hη_zero : Filter.Tendsto (fun τ : ℝ => |η τ - X|) (𝓝 τ₀) (𝓝 (0 : ℝ)) :=
+    squeeze_zero (fun τ => abs_nonneg _) hη_bound hX₂_zero
+  have hξ_tendsto : Filter.Tendsto ξ (𝓝 τ₀) (𝓝 τ₀) := by
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have h := (Metric.tendsto_nhds.mp hξ_zero) ε hε
+    filter_upwards [h] with τ hτ
+    simpa [dist_eq_norm, Real.norm_eq_abs] using hτ
+  have hη_tendsto : Filter.Tendsto η (𝓝 τ₀) (𝓝 X) := by
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have h := (Metric.tendsto_nhds.mp hη_zero) ε hε
+    filter_upwards [h] with τ hτ
+    simpa [dist_eq_norm, Real.norm_eq_abs] using hτ
+  have hξval : ξ τ₀ = τ₀ := by simp [ξ]
+  have hX₂val : X₂ τ₀ = X := rfl
+  have hξ_cont : ContinuousAt ξ τ₀ := by
+    change Filter.Tendsto ξ (𝓝 τ₀) (𝓝 (ξ τ₀))
+    rw [hξval]
+    exact hξ_tendsto
+  have hX₂_cont' : ContinuousAt X₂ τ₀ := by
+    change Filter.Tendsto X₂ (𝓝 τ₀) (𝓝 (X₂ τ₀))
+    rw [hX₂val]
+    exact hX2_cont.tendsto
+  have hprod_tendsto : Filter.Tendsto (fun τ : ℝ => (ξ τ, X₂ τ)) (𝓝 τ₀) (𝓝 (τ₀, X)) := by
+    have h := (ContinuousAt.prodMk hξ_cont hX₂_cont').tendsto
+    simpa [hξval, hX₂val] using h
+  have hτfun_cont : ContinuousAt hτfun (τ₀, X) := by
+    dsimp [hτfun]
+    have hden : (1 + 2 * K * τ₀ : ℝ) ≠ 0 := by
+      have hpos : 0 < 1 + 2 * K * τ₀ := by
+        have hKτ : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀.le
+        nlinarith
+      exact ne_of_gt hpos
+    have hc : ContinuousAt (fun p : ℝ × ℝ => (p.2 * (2 * K) : ℝ)) (τ₀, X) := by fun_prop
+    have hd : ContinuousAt (fun p : ℝ × ℝ => (1 + 2 * K * p.1 : ℝ)) (τ₀, X) := by fun_prop
+    have hdinv : ContinuousAt (fun p : ℝ × ℝ => ((1 + 2 * K * p.1 : ℝ)⁻¹)) (τ₀, X) := hd.inv₀ hden
+    have hmul : ContinuousAt (fun p : ℝ × ℝ => (p.2 * (2 * K) : ℝ) * (1 + 2 * K * p.1)⁻¹)
+        (τ₀, X) := hc.mul hdinv
+    simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hmul
+  have hX_cont : ContinuousAt hX X := by
+    have hXK : X / K ≠ 0 := div_ne_zero hXpos.ne' hK.ne'
+    have hdiv : ContinuousAt (fun y : ℝ => y / K) X := (continuousAt_id.div₀ continuousAt_const hK.ne')
+    have hlog : ContinuousAt (fun y : ℝ => Real.log (y / K)) X := hdiv.log hXK
+    have hlogc : ContinuousAt (fun y : ℝ => Real.log (1 + 2 * K * τ₀)) X := by fun_prop
+    have hsum : ContinuousAt (fun y : ℝ => Real.log (y / K) + Real.log (1 + 2 * K * τ₀)) X :=
+      hlog.add hlogc
+    have hsub : ContinuousAt (fun y : ℝ => Real.log (y / K) + Real.log (1 + 2 * K * τ₀) - 2) X :=
+      hsum.sub continuousAt_const
+    change ContinuousAt (fun y : ℝ => Real.log (y / K) + Real.log (1 + 2 * K * τ₀) - 2) X
+    exact hsub
+  have hτcomp : Filter.Tendsto (fun τ : ℝ => hτfun (ξ τ, X₂ τ)) (𝓝 τ₀) (𝓝 (hτfun (τ₀, X))) :=
+    hτfun_cont.tendsto.comp hprod_tendsto
+  have hXcomp : Filter.Tendsto (fun τ : ℝ => hX (η τ)) (𝓝 τ₀) (𝓝 (hX X)) :=
+    hX_cont.tendsto.comp hη_tendsto
+  have hs_tendsto : Filter.Tendsto (fun τ : ℝ => slope s τ₀ τ) (𝓝[≠] τ₀) (𝓝 s') :=
+    (hasDerivAt_scalarSectionalLowerBarrier3 hK hτ₀.le).tendsto_slope
+  have hnum : Filter.Tendsto (fun τ : ℝ => slope s τ₀ τ - hτfun (ξ τ, X₂ τ))
+      (𝓝[≠] τ₀) (𝓝 (s' - hτfun (τ₀, X))) :=
+    hs_tendsto.sub (hτcomp.mono_left nhdsWithin_le_nhds)
+  have hden : Filter.Tendsto (fun τ : ℝ => hX (η τ)) (𝓝[≠] τ₀) (𝓝 (hX X)) :=
+    hXcomp.mono_left nhdsWithin_le_nhds
+  have hX_ne : hX X ≠ 0 := ne_of_gt hXpos0
+  have hquot : Filter.Tendsto (fun τ : ℝ => (slope s τ₀ τ - hτfun (ξ τ, X₂ τ)) / hX (η τ))
+      (𝓝[≠] τ₀) (𝓝 ((s' - hτfun (τ₀, X)) / hX X)) :=
+    hnum.div hden hX_ne
+  have hq_eq : (fun τ : ℝ => slope X₂ τ₀ τ) =ᶠ[𝓝[≠] τ₀]
+      (fun τ : ℝ => (slope s τ₀ τ - hτfun (ξ τ, X₂ τ)) / hX (η τ)) := by
+    rw [Filter.EventuallyEq]
+    rw [eventually_nhdsWithin_iff]
+    simpa using hidentity
+  have hq : Filter.Tendsto (fun τ : ℝ => slope X₂ τ₀ τ) (𝓝[≠] τ₀)
+      (𝓝 ((s' - hτfun (τ₀, X)) / hX X)) :=
+    hquot.congr' hq_eq.symm
+  have hmain : HasDerivAt X₂ ((s' - hτfun (τ₀, X)) / hX X) τ₀ :=
+    (hasDerivAt_iff_tendsto_slope).mpr hq
+  convert hmain using 1
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
