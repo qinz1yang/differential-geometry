@@ -996,16 +996,30 @@ theorem supportUpperDiag_eq_coe_sub_inner
     rw [show vec2 (I := I) (basis i) (basis i) 0 = basis i by rfl]
     rw [show vec2 (I := I) (basis i) (basis i) 1 = basis i by rfl]
     rw [horth i i]
-    simp [delta3]
-    change hamiltonIveySupportCoefficient K a t0 t -
-      ((pinchSec (I := I) S (hamiltonIveySupportPinchDelta a) t) x)
-        (vec2 (I := I) (basis i) (basis i)) =
-      C + δ * S.scalar t x - S.ricciAt t x (vec2 (I := I) (basis i) (basis i))
-    have hpinch := pinchSec_at_trace (I := I) (M := M) S (hamiltonIveySupportPinchDelta a) t x
-    rw [hpinch]
-    simp [Tensor0SSpace.sub_apply, Tensor0SSpace.smul_apply, δ, C,
-      SolutionOn.ricciAt, SolutionFamily.ricciAt, metricTensorField_apply, vec2,
-      horth i i, delta3]
+    have hdii : DifferentialGeometry.Geometry.Curvature.delta3 i i = 1 := by
+      norm_num [DifferentialGeometry.Geometry.Curvature.delta3]
+    rw [hdii]
+    have hpinch := pinchSec_at_trace (I := I) (M := M) S ((1 + a) / (2 * a)) t x
+    have hpinch_eval :
+        (pinchSec (I := I) S ((1 + a) / (2 * a)) t x)
+            (vec2 (I := I) (basis i) (basis i)) =
+          S.ricciAt t x (vec2 (I := I) (basis i) (basis i)) -
+            hamiltonIveySupportPinchDelta a * S.scalar t x := by
+      rw [hpinch]
+      rw [Tensor0SSpace.sub_apply]
+      rw [Tensor0SSpace.smul_apply]
+      simp only [metricTensorField_apply, Fin.isValue, smul_eq_mul]
+      rw [show vec2 (I := I) (basis i) (basis i) 0 = basis i by rfl]
+      rw [show vec2 (I := I) (basis i) (basis i) 1 = basis i by rfl]
+      rw [horth i i]
+      have hdii' : DifferentialGeometry.Geometry.Curvature.delta3 i i = 1 := by
+        norm_num [DifferentialGeometry.Geometry.Curvature.delta3]
+      rw [hdii']
+      rw [SolutionOn.scalar_eq_metricTrace]
+      rw [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionOn.family_metric]
+      simp only [mul_one]
+      rfl
+    rw [hpinch_eval]
     ring
   have hdiag := inner_hamiltonIveySupportUpperDiagNormal_diag
     (a := a) (delta := δ) (i := i)
@@ -1294,6 +1308,7 @@ theorem supportUpperDiag_nonneg_of_uhlenbeck_halfspaces
 
 
 
+omit [CompleteSpace E] [IsManifold I 2 M] [SigmaCompactSpace M] [T2Space M] in
 theorem supportUpperDiag_parabolic_ineq
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}

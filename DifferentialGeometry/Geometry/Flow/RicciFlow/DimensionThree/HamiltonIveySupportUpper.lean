@@ -186,11 +186,12 @@ theorem inner_hamiltonIveySupportUpperDiagNormal_full_eq_diag
       (matrixToEuclid A) =
     inner ℝ (matrixToEuclid (hamiltonIveySupportUpperDiagNormal a delta i))
       (matrixToEuclid (Matrix.diagonal (fun j => A j j))) := by
+  classical
   rw [inner_matrixToEuclid, inner_matrixToEuclid]
-  simp [matrixToEuclid, hamiltonIveySupportUpperDiagNormal, Matrix.diagonal,
-    WithLp.ofLp_toLp]
+  simp only [matrixToEuclid, hamiltonIveySupportUpperDiagNormal, Matrix.diagonal,
+    Matrix.of_apply, WithLp.ofLp_toLp, ite_mul, mul_ite, mul_zero, zero_mul]
   rw [sum_diag_eq, sum_diag_eq]
-  simp [hamiltonIveySupportUpperDiagNormal, Matrix.diagonal]
+  simp only [↓reduceIte]
 
 theorem inner_hamiltonIveySupportUpperDiagNormal_diag
     (a delta : Real) (i : Fin 3) (d : Fin 3 → Real) :
@@ -199,28 +200,13 @@ theorem inner_hamiltonIveySupportUpperDiagNormal_diag
       a * ((1 - 2 * delta) *
             (∑ j : Fin 3, if j = hamiltonIveySupportUpperMissingPlaneIndex i then 0 else d j) -
           2 * delta * d (hamiltonIveySupportUpperMissingPlaneIndex i)) := by
+  classical
   rw [inner_matrixToEuclid]
-  simp [matrixToEuclid, hamiltonIveySupportUpperDiagNormal, Matrix.diagonal,
-    WithLp.ofLp_toLp]
-  have hsimpl :
-      (∑ x : Fin 3 × Fin 3,
-        if x.1 = x.2 then
-          if x.1 = x.2 then
-            if x.1 = hamiltonIveySupportUpperMissingPlaneIndex i then -(a * (2 * delta) * d x.1)
-            else a * (1 - 2 * delta) * d x.1
-          else 0
-        else 0) =
-      (∑ x : Fin 3 × Fin 3,
-        if x.1 = x.2 then
-          if x.1 = hamiltonIveySupportUpperMissingPlaneIndex i then -(a * (2 * delta) * d x.1)
-          else a * (1 - 2 * delta) * d x.1
-        else 0) := by
-    apply Finset.sum_congr rfl
-    intro x hx
-    by_cases h : x.1 = x.2 <;> simp [h]
-  rw [hsimpl, sum_diag_eq]
-  fin_cases i <;>
-    simp [hamiltonIveySupportUpperMissingPlaneIndex, Fin.sum_univ_three] <;> ring
+  simp only [matrixToEuclid, hamiltonIveySupportUpperDiagNormal, Matrix.diagonal,
+    Matrix.of_apply, WithLp.ofLp_toLp, ite_mul, mul_ite, mul_zero, zero_mul]
+  rw [sum_diag_eq]
+  fin_cases i <;> simp only [Fin.sum_univ_three, hamiltonIveySupportUpperMissingPlaneIndex] <;>
+    norm_num <;> simp only [Fin.reduceEq, ↓reduceIte] <;> ring
 
 theorem hamiltonIveySupportPinchDelta_den_ne
     {a : Real} (ha : 0 < a) :
