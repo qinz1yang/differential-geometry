@@ -16,6 +16,7 @@ open Bundle Set
 open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
+open DifferentialGeometry.Dim3Reaction
 open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators NNReal
 
 def hamiltonIveyMatrixReaction (A : Matrix (Fin 3) (Fin 3) Real) :
@@ -1286,6 +1287,21 @@ theorem hamiltonIveyConvexMatrixRegionEuclid_fiber_tangent
   have hfreq : ∃ᶠ t : ℝ in 𝓝[>] 0, A + t • uhlenbeckCurvatureOperatorReactionState A ∈
       hamiltonIveyConvexMatrixRegionEuclid K tau := hev.frequently
   exact mem_posTangentConeAt_of_frequently_mem hfreq
+
+def opFromR (R : Fin 3 → Fin 3 → ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
+  fun i j => rm R (bivectorIndex3 i).1 (bivectorIndex3 i).2 (bivectorIndex3 j).2 (bivectorIndex3 j).1
+
+lemma curvatureOperatorReactionMatrix_eq_hamiltonIveyMatrixReaction
+    (R : Fin 3 → Fin 3 → ℝ) (hR : ∀ i j, R i j = R j i) :
+    (fun i j : Fin 3 => -2 * Bsharp R (bivectorIndex3 i).1 (bivectorIndex3 i).2
+        (bivectorIndex3 j).2 (bivectorIndex3 j).1) =
+      hamiltonIveyMatrixReaction (opFromR R) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Bsharp, Bt, rm, opFromR, hamiltonIveyMatrixReaction, Matrix.mul_apply,
+      Matrix.adjugate_apply, bivectorIndex3, kd, sc, Fin.sum_univ_three,
+      Matrix.det_fin_three, Matrix.updateRow_apply,
+      hR] <;> ring
 
 end DifferentialGeometry.PDE.RicciFlow
 
