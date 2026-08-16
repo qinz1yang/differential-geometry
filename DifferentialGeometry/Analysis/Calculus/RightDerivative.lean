@@ -126,4 +126,54 @@ theorem eventually_pos_of_hasDerivAt_pos
     nlinarith
   exact lt_of_lt_of_le (mul_pos hψ2 htpos) (le_of_lt hgt)
 
+theorem eventually_pos_of_continuousAt_pos
+    (g : ℝ → ℝ) (hg : ContinuousAt g 0) (hg0 : 0 < g 0) :
+    ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < g t := by
+  have hlt : g 0 / 2 < g 0 := by linarith
+  have hh : ∀ᶠ t : ℝ in 𝓝 0, g 0 / 2 < g t :=
+    hg.eventually (Ioi_mem_nhds hlt)
+  have hh' : ∀ᶠ t : ℝ in 𝓝[>] 0, g 0 / 2 < g t := hh.filter_mono nhdsWithin_le_nhds
+  filter_upwards [hh', self_mem_nhdsWithin] with t ht _htm
+  have hgt : 0 < g t := by
+    have hhalf : 0 < g 0 / 2 := half_pos hg0
+    exact lt_of_lt_of_le hhalf (le_of_lt ht)
+  exact hgt
+
+theorem eventually_neg_of_continuousAt_neg
+    (g : ℝ → ℝ) (hg : ContinuousAt g 0) (hg0 : g 0 < 0) :
+    ∀ᶠ t : ℝ in 𝓝[>] 0, g t < 0 := by
+  have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < -g t :=
+    eventually_pos_of_continuousAt_pos (fun t => -g t) hg.neg (by linarith)
+  filter_upwards [hev] with t ht
+  linarith
+
+theorem eventually_le_of_continuousAt_lt
+    (g : ℝ → ℝ) (hg : ContinuousAt g 0) (c : ℝ) (hgc : g 0 < c) :
+    ∀ᶠ t : ℝ in 𝓝[>] 0, g t ≤ c := by
+  have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < c - g t :=
+    eventually_pos_of_continuousAt_pos (fun t => c - g t) (continuousAt_const.sub hg) (by linarith)
+  filter_upwards [hev] with t ht
+  linarith
+
+theorem exists_pos_Ioo_of_eventually_nhdsWithin
+    (P : ℝ → Prop) (hev : ∀ᶠ t : ℝ in 𝓝[>] 0, P t) :
+    ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Ioo 0 eps → P t := by
+  have hev_nhds : ∀ᶠ t : ℝ in 𝓝 0, t ∈ Set.Ioi 0 → P t :=
+    eventually_nhdsWithin_iff.mp hev
+  rcases Metric.eventually_nhds_iff.mp hev_nhds with ⟨eps, heps, hball⟩
+  let eps' : ℝ := eps / 2
+  refine ⟨eps', half_pos heps, ?_⟩
+  intro t ht
+  have htpos : 0 < t := ht.1
+  have htle : t ≤ eps / 2 := by
+    dsimp [eps'] at ht
+    exact le_of_lt ht.2
+  have htlt : t < eps := by
+    have hhalf : eps / 2 < eps := half_lt_self heps
+    nlinarith [htle]
+  have hdist : dist t 0 < eps := by
+    rw [Real.dist_eq, sub_zero, abs_of_pos htpos]
+    exact htlt
+  exact hball hdist htpos
+
 end DifferentialGeometry

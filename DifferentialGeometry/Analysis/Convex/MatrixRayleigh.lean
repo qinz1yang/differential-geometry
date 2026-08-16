@@ -8,7 +8,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Analysis.Convex
 
-open scoped BigOperators
+open scoped BigOperators Matrix
 
 def sectionalRayleigh3 (A : Matrix (Fin 3) (Fin 3) Real)
     (x : EuclideanSpace Real (Fin 3)) : Real :=
@@ -437,5 +437,74 @@ theorem sectionalRayleighMin3_zero : sectionalRayleighMin3 (0 : Matrix (Fin 3) (
     funext x
     simp [sectionalRayleigh3]
   simp [hzero]
+
+theorem hermitian_orthogonal_diagonalization
+    {A : Matrix (Fin 3) (Fin 3) Real} (hA : A.IsHermitian) :
+    ∃ O : Matrix (Fin 3) (Fin 3) Real,
+      O * O.transpose = 1 ∧
+      O.transpose * A * O = Matrix.diagonal hA.eigenvalues₀ := by
+  let T : EuclideanSpace Real (Fin 3) →ₗ[Real] EuclideanSpace Real (Fin 3) := A.toEuclideanLin
+  let hT : T.IsSymmetric := by
+    dsimp [T]
+    exact (Matrix.isHermitian_iff_isSymmetric (A := A)).1 hA
+  let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
+  let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) := hT.eigenvectorBasis hn
+  let O : Matrix (Fin 3) (Fin 3) Real :=
+    (EuclideanSpace.basisFun (Fin 3) Real).toBasis.toMatrix b.toBasis
+  refine ⟨O, ?_, ?_⟩
+  · have hO_mem : O ∈ Matrix.unitaryGroup (Fin 3) Real := by
+      dsimp [O]
+      exact (EuclideanSpace.basisFun (Fin 3) Real).toMatrix_orthonormalBasis_mem_unitary b
+    have hOO : O * star O = 1 := Matrix.mem_unitaryGroup_iff.mp hO_mem
+    simpa [star, Matrix.conjTranspose] using hOO
+  · have hO_col : ∀ i : Fin 3, O *ᵥ Pi.single i (1 : Real) = b i := by
+      intro i
+      ext j
+      simp [O, Matrix.mulVec, Module.Basis.toMatrix_apply, EuclideanSpace.basisFun_repr]
+    have hOorth : O.transpose * O = 1 := by
+      have hO_mem' : O ∈ Matrix.unitaryGroup (Fin 3) Real := by
+        dsimp [O]
+        exact (EuclideanSpace.basisFun (Fin 3) Real).toMatrix_orthonormalBasis_mem_unitary b
+      have hOO' : star O * O = 1 := Matrix.mem_unitaryGroup_iff'.mp hO_mem'
+      simpa [star, Matrix.conjTranspose] using hOO'
+    have hOinv : ∀ i : Fin 3, O.transpose *ᵥ b i = Pi.single i (1 : Real) := by
+      intro i
+      calc
+        O.transpose *ᵥ b i = O.transpose *ᵥ (O *ᵥ Pi.single i (1 : Real)) := by
+          rw [← hO_col i]
+        _ = (O.transpose * O) *ᵥ Pi.single i (1 : Real) := by
+          rw [Matrix.mulVec_mulVec]
+        _ = 1 *ᵥ Pi.single i (1 : Real) := by
+          rw [hOorth]
+        _ = Pi.single i (1 : Real) := by
+          ext j
+          simp [Matrix.mulVec, Matrix.one_apply, Pi.single_apply]
+    have hAeig : ∀ i : Fin 3, A *ᵥ (b i).ofLp = (hT.eigenvalues hn i) • (b i).ofLp := by
+      intro i
+      have h := hT.apply_eigenvectorBasis hn i
+      have hof : (T (b i)).ofLp = (hT.eigenvalues hn i • b i).ofLp := congrArg WithLp.ofLp h
+      have hTval : (T (b i)).ofLp = A *ᵥ (b i).ofLp := by
+        simp [T, Matrix.toEuclideanLin, Matrix.toLpLin_apply]
+      simp [← hTval, hof, WithLp.ofLp_smul]
+    apply Matrix.toEuclideanLin.injective <| (EuclideanSpace.basisFun (Fin 3) Real).toBasis.ext fun i ↦ ?_
+    change Matrix.toEuclideanLin (O.transpose * A * O) (EuclideanSpace.basisFun (Fin 3) Real i) =
+      Matrix.toEuclideanLin (Matrix.diagonal (hT.eigenvalues hn)) (EuclideanSpace.basisFun (Fin 3) Real i)
+    simp only [Matrix.toEuclideanLin, Matrix.toLpLin_apply,
+      EuclideanSpace.basisFun_apply, PiLp.ofLp_single, ← Matrix.mulVec_mulVec, hO_col,
+      ← Matrix.mulVec_mulVec, hAeig,
+      Matrix.diagonal_mulVec_single, Matrix.mulVec_smul, hOinv,
+      WithLp.toLp_smul, PiLp.toLp_single, mul_one]
+    apply PiLp.ext fun j ↦ ?_
+    simp only [PiLp.smul_apply, PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+
+theorem diagonal_eigenvalues_tuple {A : Matrix (Fin 3) (Fin 3) Real} (hA : A.IsHermitian) :
+    Matrix.diagonal hA.eigenvalues₀ =
+      Matrix.diagonal ![hA.eigenvalues₀ 0, hA.eigenvalues₀ 1, hA.eigenvalues₀ 2] := by
+  have hfun : hA.eigenvalues₀ = fun i : Fin 3 =>
+      ![hA.eigenvalues₀ 0, hA.eigenvalues₀ 1, hA.eigenvalues₀ 2] i := by
+    ext i
+    fin_cases i <;> rfl
+  rw [hfun]
+  rfl
 
 end DifferentialGeometry.Analysis.Convex

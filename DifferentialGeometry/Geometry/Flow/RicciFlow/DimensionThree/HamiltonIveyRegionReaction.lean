@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
 import Mathlib.Analysis.SpecialFunctions.Exp
+import Mathlib.Analysis.Calculus.LocalExtr.Basic
 
 set_option autoImplicit false
 
@@ -15,7 +16,7 @@ open Bundle Set
 open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
-open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators
+open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators NNReal
 
 def hamiltonIveyMatrixReaction (A : Matrix (Fin 3) (Fin 3) Real) :
     Matrix (Fin 3) (Fin 3) Real :=
@@ -556,19 +557,6 @@ private lemma barrier_g_continuousAt
   have hlin2 : ContinuousAt (fun t : ℝ => S + t * S') 0 := by fun_prop
   exact hlin2.sub hcontB
 
-private lemma barrier_g_eventually_pos
-    (g : ℝ → ℝ) (hg : ContinuousAt g 0) (hg0 : 0 < g 0) :
-    ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < g t := by
-  have hlt : g 0 / 2 < g 0 := by linarith
-  have hh : ∀ᶠ t : ℝ in 𝓝 0, g 0 / 2 < g t :=
-    hg.eventually (Ioi_mem_nhds hlt)
-  have hh' : ∀ᶠ t : ℝ in 𝓝[>] 0, g 0 / 2 < g t := hh.filter_mono nhdsWithin_le_nhds
-  filter_upwards [hh', self_mem_nhdsWithin] with t ht _htm
-  have hgt : 0 < g t := by
-    have hhalf : 0 < g 0 / 2 := half_pos hg0
-    exact lt_of_lt_of_le hhalf (le_of_lt ht)
-  exact hgt
-
 lemma barrier_ineq_small
     {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
     (l1 l2 l3 : ℝ) (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0)
@@ -593,7 +581,8 @@ lemma barrier_ineq_small
   · have hg_cont : ContinuousAt g 0 := by
       dsimp [g]
       exact barrier_g_continuousAt K tau X X' S S' hK htau
-    have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < g t := barrier_g_eventually_pos g hg_cont hg0pos
+    have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < g t :=
+      DifferentialGeometry.eventually_pos_of_continuousAt_pos g hg_cont hg0pos
     have hev_nhds : ∀ᶠ t : ℝ in 𝓝 0, t ∈ Set.Ioi 0 → 0 < g t :=
       eventually_nhdsWithin_iff.mp hev
     rcases Metric.eventually_nhds_iff.mp hev_nhds with ⟨eps, heps, hball⟩
@@ -697,6 +686,484 @@ lemma barrier_ineq_small
       ring_nf at hB' ⊢
       exact hB'
 
+
+lemma sectionalRayleighMin3_diagonal_eq_last
+    (l1 l2 l3 : ℝ) (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) :
+    sectionalRayleighMin3 (Matrix.diagonal ![l1, l2, l3]) = l3 := by
+  have hge : ∀ i : Fin 3, l3 ≤ ![l1, l2, l3] i := by
+    intro i
+    fin_cases i <;> simp <;> linarith
+  have hle : sectionalRayleighMin3 (Matrix.diagonal ![l1, l2, l3]) ≤ l3 := by
+    simpa using (sectionalRayleighMin3_diagonal_le ![l1, l2, l3] (2 : Fin 3))
+  have hge' : l3 ≤ sectionalRayleighMin3 (Matrix.diagonal ![l1, l2, l3]) :=
+    sectionalRayleighMin3_diagonal_ge ![l1, l2, l3] hge
+  exact le_antisymm hle hge'
+
+lemma reactionDiagonal_trace (l1 l2 l3 : ℝ) :
+    (hamiltonIveyMatrixReaction (Matrix.diagonal ![l1, l2, l3])).trace =
+      reactionSectionalSum3 l1 l2 l3 := by
+  rw [hamiltonIveyMatrixReaction_diagonal]
+  unfold reactionSectionalSum3
+  simp [DifferentialGeometry.Dim3Reaction.sectionalReaction12,
+    DifferentialGeometry.Dim3Reaction.sectionalReaction13,
+    DifferentialGeometry.Dim3Reaction.sectionalReaction23, Fin.sum_univ_three]
+
+lemma diagonal_add_smul_reaction
+    (l1 l2 l3 t : ℝ) :
+    Matrix.diagonal ![l1, l2, l3] +
+        t • hamiltonIveyMatrixReaction (Matrix.diagonal ![l1, l2, l3]) =
+      Matrix.diagonal ![l1 + t * (2 * (l1 ^ 2 + l2 * l3)),
+        l2 + t * (2 * (l2 ^ 2 + l1 * l3)),
+        l3 + t * (2 * (l3 ^ 2 + l1 * l2))] := by
+  rw [hamiltonIveyMatrixReaction_diagonal]
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [Matrix.diagonal]
+
+lemma continuousAt_hamiltonIveyBarrier_comp_nonneg
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
+    (f : ℝ → ℝ) (hf : ContinuousAt f 0) :
+    ContinuousAt (fun t : ℝ => hamiltonIveyBarrier K (tau + t) (max (f t) 0)) 0 := by
+  have hdenpos : 0 < 1 + 2 * K * tau := by
+    have hKtau : 0 ≤ 2 * K * tau := by
+      have hKtau' : 0 ≤ K * tau := mul_nonneg hK.le htau
+      nlinarith
+    nlinarith
+  have hX : ContinuousAt (fun t : ℝ => max (f t) 0) 0 := hf.max continuousAt_const
+  have hfun : (fun t : ℝ => hamiltonIveyBarrier K (tau + t) (max (f t) 0)) =
+      fun t : ℝ => (max (f t) 0) * Real.log (max (f t) 0) +
+        (max (f t) 0) * (Real.log (1 + 2 * K * (tau + t)) - 3 - Real.log K) := by
+    funext t
+    exact hamiltonIveyBarrier_eq_mul_log_add_linear (K := K) (τ := tau + t) (X := max (f t) 0) hK
+  rw [hfun]
+  have h1 : ContinuousAt (fun t : ℝ => (max (f t) 0) * Real.log (max (f t) 0)) 0 :=
+    Real.continuous_mul_log.continuousAt.comp hX
+  have hlog : ContinuousAt (fun t : ℝ => Real.log (1 + 2 * K * (tau + t))) 0 := by
+    have hlin' : ContinuousAt (fun t : ℝ => 1 + 2 * K * (tau + t)) 0 := by fun_prop
+    exact hlin'.log (ne_of_gt (by
+      have hpos : 0 < 1 + 2 * K * (tau + 0) := by
+        have hKtau : 0 ≤ 2 * K * tau := by
+          have hKtau' : 0 ≤ K * tau := mul_nonneg hK.le htau
+          nlinarith
+        nlinarith
+      simpa using hpos))
+  have h2 : ContinuousAt (fun t : ℝ =>
+      (max (f t) 0) * (Real.log (1 + 2 * K * (tau + t)) - 3 - Real.log K)) 0 := by
+    have hc : ContinuousAt (fun t : ℝ =>
+        Real.log (1 + 2 * K * (tau + t)) - 3 - Real.log K) 0 := by
+      exact (hlog.sub_const 3).sub_const (Real.log K)
+    exact hX.mul hc
+  exact h1.add h2
+
+lemma zero_mem_hamiltonIveyConvexMatrixRegion
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau) :
+    (0 : Matrix (Fin 3) (Fin 3) ℝ) ∈ hamiltonIveyConvexMatrixRegion K tau := by
+  rw [hamiltonIveyConvexMatrixRegion_eq_violation]
+  refine ⟨by simp, ?_, ?_⟩
+  · exact le_max_right _ _
+  · unfold hamiltonIveyConvexBarrier
+    rw [sectionalRayleighMin3_zero, neg_zero, max_self]
+    have hscalar : scalarSectionalLowerBarrier3 K tau ≤ 0 := by
+      unfold scalarSectionalLowerBarrier3
+      have hden : 0 < 1 + 4 * K * tau := by
+        have hKtau : 0 ≤ 4 * K * tau := by
+          have hKtau' : 0 ≤ K * tau := mul_nonneg hK.le htau
+          nlinarith
+        nlinarith
+      have hnonpos : -3 * K ≤ 0 := by nlinarith
+      exact div_nonpos_of_nonpos_of_nonneg hnonpos hden.le
+    have hbar0 : hamiltonIveyBarrier K tau 0 = 0 := by
+      unfold hamiltonIveyBarrier
+      ring
+    rw [hbar0]
+    simp [Matrix.trace_zero, hscalar]
+
+theorem hamiltonIveyConvexMatrixRegion_reaction_small_time_diagonal
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
+    (l1 l2 l3 : ℝ) (h21 : l2 ≤ l1) (h32 : l3 ≤ l2)
+    (hAmem : Matrix.diagonal ![l1, l2, l3] ∈ hamiltonIveyConvexMatrixRegion K tau) :
+    ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
+      Matrix.diagonal ![l1, l2, l3] +
+        t • hamiltonIveyMatrixReaction (Matrix.diagonal ![l1, l2, l3]) ∈
+        hamiltonIveyConvexMatrixRegion K (tau + t) := by
+  let D : Matrix (Fin 3) (Fin 3) ℝ := Matrix.diagonal ![l1, l2, l3]
+  let S : ℝ := l1 + l2 + l3
+  let S' : ℝ := reactionSectionalSum3 l1 l2 l3
+  let X : ℝ := max (-l3) 0
+  have hS'eq : S' = 2 * (l1 ^ 2 + l2 * l3) + 2 * (l2 ^ 2 + l1 * l3) + 2 * (l3 ^ 2 + l1 * l2) := by
+    dsimp [S', reactionSectionalSum3]
+    simp [DifferentialGeometry.Dim3Reaction.sectionalReaction12,
+      DifferentialGeometry.Dim3Reaction.sectionalReaction13,
+      DifferentialGeometry.Dim3Reaction.sectionalReaction23]
+  have hmin0 : sectionalRayleighMin3 D = l3 := by
+    dsimp [D]
+    exact sectionalRayleighMin3_diagonal_eq_last l1 l2 l3 h21 h32
+  have hAmemV : hamiltonIveyConvexMatrixRegionViolation K tau D := by
+    rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hAmem
+    simpa [D] using hAmem
+  have hbar : hamiltonIveyConvexBarrier K tau X ≤ S := by
+    dsimp [S, X]
+    have h := hAmemV.2.2
+    simpa [D, hmin0, Fin.sum_univ_three] using h
+  have hSbar : scalarSectionalLowerBarrier3 K tau ≤ S := by
+    have hle := (scalarSectionalLowerBarrier3_le_hamiltonIveyConvexBarrier K tau X).trans hbar
+    exact hle
+  have hS'nonneg : 0 ≤ S' := by
+    rw [hS'eq]
+    exact reactionSum3_nonneg l1 l2 l3
+  have hS'ge : 4 * S ^ 2 / 3 ≤ S' := by
+    rw [hS'eq]
+    dsimp [S]
+    exact reactionSum3_ge_sq l1 l2 l3
+  by_cases hl3 : l3 < 0
+  · have hXeq : X = -l3 := by
+      dsimp [X]
+      exact max_eq_left (neg_nonneg.mpr hl3.le)
+    have hB : hamiltonIveyBarrier K tau (-l3) ≤ S := by
+      have hle := hbar
+      unfold hamiltonIveyConvexBarrier at hle
+      rw [hXeq] at hle
+      exact (max_le_iff.mp hle).2
+    rcases barrier_ineq_small hK htau l1 l2 l3 h21 h32 hl3 hB with ⟨ε1, hε1, hbar1⟩
+    rcases scalarBarrier_ineq_small hK htau S S' hSbar hS'nonneg hS'ge with ⟨ε2, hε2, hscalar1⟩
+    rcases reactionDiag_minEig l1 l2 l3 h21 h32 with ⟨ε3, hε3, hm1⟩
+    have hm_cont : ContinuousAt
+        (fun t : ℝ => sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D)) 0 :=
+      (continuous_sectionalRayleighMin3_comp
+        (by fun_prop : Continuous (fun t : ℝ => D + t • hamiltonIveyMatrixReaction D))).continuousAt
+    have hmneg_ev : ∀ᶠ t : ℝ in 𝓝[>] 0,
+        sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D) < 0 := by
+      have hev := eventually_neg_of_continuousAt_neg
+        (fun t : ℝ => sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D)) hm_cont
+        (by simpa [hmin0] using hl3)
+      exact hev
+    rcases exists_pos_Ioo_of_eventually_nhdsWithin
+      (fun t : ℝ => sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D) < 0) hmneg_ev with
+      ⟨ε4, hε4, hmneg1⟩
+    let eps : ℝ := min (min ε1 ε2) (min ε3 (ε4 / 2))
+    refine ⟨eps, ?_, ?_⟩
+    · dsimp [eps]
+      positivity
+    · intro t ht
+      by_cases ht0 : t = 0
+      · subst t
+        have hmem0 : D ∈ hamiltonIveyConvexMatrixRegion K tau := by
+          simpa [D] using hAmem
+        simpa [D] using hmem0
+      · have htpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht0)
+        have ht1 : t ∈ Set.Icc 0 ε1 := ⟨ht.1, le_trans ht.2 (by dsimp [eps]; exact le_trans (min_le_left _ _) (min_le_left _ _))⟩
+        have ht2 : t ∈ Set.Icc 0 ε2 := ⟨ht.1, le_trans ht.2 (by dsimp [eps]; exact le_trans (min_le_left _ _) (min_le_right _ _))⟩
+        have ht3 : t ∈ Set.Icc 0 ε3 := ⟨ht.1, le_trans ht.2 (by dsimp [eps]; exact le_trans (min_le_right _ _) (min_le_left _ _))⟩
+        have ht4 : t < ε4 := by
+          have htle : t ≤ ε4 / 2 := le_trans ht.2 (by dsimp [eps]; exact le_trans (min_le_right _ _) (min_le_right _ _))
+          exact lt_of_le_of_lt htle (half_lt_self hε4)
+        have hdiag : D + t • hamiltonIveyMatrixReaction D =
+            Matrix.diagonal ![l1 + t * (2 * (l1 ^ 2 + l2 * l3)),
+              l2 + t * (2 * (l2 ^ 2 + l1 * l3)),
+              l3 + t * (2 * (l3 ^ 2 + l1 * l2))] := by
+          dsimp [D]
+          exact diagonal_add_smul_reaction l1 l2 l3 t
+        have htrD : D.trace = l1 + l2 + l3 := by
+          dsimp [D]
+          simp [Fin.sum_univ_three]
+        have htr : (D + t • hamiltonIveyMatrixReaction D).trace = S + t * S' := by
+          rw [Matrix.trace_add, Matrix.trace_smul]
+          have htrQ : (hamiltonIveyMatrixReaction D).trace = S' := by
+            dsimp [D, S']
+            exact reactionDiagonal_trace l1 l2 l3
+          dsimp [S]
+          rw [htrD, htrQ]
+        have hm_eq : sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D) =
+            l3 + t * (2 * (l3 ^ 2 + l1 * l2)) := by
+          rw [hdiag]
+          exact hm1 t ht3
+        have hbar_t : hamiltonIveyBarrier K (tau + t) (-(l3 + t * (2 * (l3 ^ 2 + l1 * l2)))) ≤ S + t * S' := by
+          have h := hbar1 t ht1
+          rw [← hS'eq] at h
+          simpa [S] using h
+        have hscalar_t : scalarSectionalLowerBarrier3 K (tau + t) ≤ S + t * S' :=
+          hscalar1 t ht2
+        have hbarrier_le : hamiltonIveyBarrier K (tau + t)
+            (max (-sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D)) 0) ≤ S + t * S' := by
+          have hmneg_t : sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D) < 0 :=
+            hmneg1 t ⟨htpos, ht4⟩
+          rw [max_eq_left (neg_nonneg.mpr hmneg_t.le), hm_eq]
+          exact hbar_t
+        have hmem' : D + t • hamiltonIveyMatrixReaction D ∈ hamiltonIveyConvexMatrixRegion K (tau + t) := by
+          rw [hamiltonIveyConvexMatrixRegion_eq_violation]
+          refine ⟨?_, ?_, ?_⟩
+          · rw [hdiag]
+            exact Matrix.isHermitian_diagonal (fun i : Fin 3 =>
+              ![l1 + t * (2 * (l1 ^ 2 + l2 * l3)),
+                l2 + t * (2 * (l2 ^ 2 + l1 * l3)),
+                l3 + t * (2 * (l3 ^ 2 + l1 * l2))] i)
+          · exact le_max_right _ _
+          · unfold hamiltonIveyConvexBarrier
+            rw [htr]
+            exact max_le hscalar_t hbarrier_le
+        simpa [D] using hmem'
+  · have hl3ge : 0 ≤ l3 := le_of_not_gt hl3
+    have hXeq : X = 0 := by
+      dsimp [X]
+      rw [max_eq_right (neg_nonpos.mpr hl3ge)]
+    have hSge0 : 0 ≤ S := by
+      have hle := hbar
+      unfold hamiltonIveyConvexBarrier at hle
+      rw [hXeq] at hle
+      have hb0 : hamiltonIveyBarrier K tau 0 = 0 := by
+        unfold hamiltonIveyBarrier
+        ring
+      rw [hb0] at hle
+      exact (max_le_iff.mp hle).2
+    by_cases hS0 : S = 0
+    · have hl1 : l1 = 0 := by
+        dsimp [S] at hS0
+        nlinarith [h21, h32, hl3ge]
+      have hl2 : l2 = 0 := by
+        dsimp [S] at hS0
+        nlinarith [h21, h32, hl3ge]
+      have hl30 : l3 = 0 := by
+        dsimp [S] at hS0
+        nlinarith [h21, h32, hl3ge]
+      refine ⟨1, by norm_num, ?_⟩
+      intro t ht
+      have hD0 : D = 0 := by
+        dsimp [D]
+        ext i j
+        fin_cases i <;> fin_cases j <;> simp [Matrix.diagonal] <;> simp [hl1, hl2, hl30]
+      have hmem0 : (0 : Matrix (Fin 3) (Fin 3) ℝ) ∈ hamiltonIveyConvexMatrixRegion K (tau + t) :=
+        zero_mem_hamiltonIveyConvexMatrixRegion hK (by linarith [ht.1, htau])
+      have hQ0 : hamiltonIveyMatrixReaction D = 0 := by
+        rw [hD0]
+        simp [hamiltonIveyMatrixReaction]
+      have hsum0 : D + t • hamiltonIveyMatrixReaction D = 0 := by
+        rw [hD0]
+        simp [hamiltonIveyMatrixReaction]
+      simpa [D, hsum0] using hmem0
+    · have hSpos : 0 < S := lt_of_le_of_ne hSge0 (Ne.symm hS0)
+      have hm_cont : ContinuousAt
+          (fun t : ℝ => sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D)) 0 :=
+        (continuous_sectionalRayleighMin3_comp
+          (by fun_prop : Continuous (fun t : ℝ => D + t • hamiltonIveyMatrixReaction D))).continuousAt
+      let g : ℝ → ℝ := fun t => hamiltonIveyBarrier K (tau + t)
+        (max (-sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D)) 0)
+      have hg_cont : ContinuousAt g 0 := by
+        dsimp [g]
+        exact continuousAt_hamiltonIveyBarrier_comp_nonneg hK htau
+          (fun t : ℝ => -sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D)) hm_cont.neg
+      have hg0 : g 0 = 0 := by
+        dsimp [g]
+        have hm0' : sectionalRayleighMin3 (D + 0 • hamiltonIveyMatrixReaction D) = l3 := by
+          simpa [D] using hmin0
+        have hbar0 : hamiltonIveyBarrier K tau 0 = 0 := by
+          unfold hamiltonIveyBarrier
+          ring
+        convert hbar0 using 1
+        · have hle' : -sectionalRayleighMin3 D ≤ 0 := by
+            rw [hmin0]
+            exact neg_nonpos.mpr hl3ge
+          have hmax' : max (-sectionalRayleighMin3 D) 0 = 0 := max_eq_right hle'
+          simp [hmax']
+      have hg_ev : ∀ᶠ t : ℝ in 𝓝[>] 0, g t ≤ S / 2 := by
+        have hlt : g 0 < S / 2 := by
+          rw [hg0]
+          linarith
+        exact eventually_le_of_continuousAt_lt g hg_cont (S / 2) hlt
+      rcases exists_pos_Ioo_of_eventually_nhdsWithin
+        (fun t : ℝ => g t ≤ S / 2) hg_ev with ⟨ε5, hε5, hg5⟩
+      rcases scalarBarrier_ineq_small hK htau S S' hSbar hS'nonneg hS'ge with ⟨ε2, hε2, hscalar1⟩
+      let eps : ℝ := min ε2 (ε5 / 2)
+      refine ⟨eps, ?_, ?_⟩
+      · dsimp [eps]
+        positivity
+      · intro t ht
+        by_cases ht0 : t = 0
+        · subst t
+          have hmem0 : D ∈ hamiltonIveyConvexMatrixRegion K tau := by
+            simpa [D] using hAmem
+          simpa [D] using hmem0
+        · have htpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht0)
+          have ht2 : t ∈ Set.Icc 0 ε2 := ⟨ht.1, le_trans ht.2 (by dsimp [eps]; exact min_le_left _ _)⟩
+          have ht5 : t < ε5 := by
+            have htle : t ≤ ε5 / 2 := le_trans ht.2 (by dsimp [eps]; exact min_le_right _ _)
+            exact lt_of_le_of_lt htle (half_lt_self hε5)
+          have hdiag : D + t • hamiltonIveyMatrixReaction D =
+              Matrix.diagonal ![l1 + t * (2 * (l1 ^ 2 + l2 * l3)),
+                l2 + t * (2 * (l2 ^ 2 + l1 * l3)),
+                l3 + t * (2 * (l3 ^ 2 + l1 * l2))] := by
+            dsimp [D]
+            exact diagonal_add_smul_reaction l1 l2 l3 t
+          have htrD : D.trace = l1 + l2 + l3 := by
+            dsimp [D]
+            simp [Fin.sum_univ_three]
+          have htr : (D + t • hamiltonIveyMatrixReaction D).trace = S + t * S' := by
+            rw [Matrix.trace_add, Matrix.trace_smul]
+            have htrQ : (hamiltonIveyMatrixReaction D).trace = S' := by
+              dsimp [D, S']
+              exact reactionDiagonal_trace l1 l2 l3
+            dsimp [S]
+            rw [htrD, htrQ]
+          have hscalar_t : scalarSectionalLowerBarrier3 K (tau + t) ≤ S + t * S' :=
+            hscalar1 t ht2
+          have hbarrier_le : hamiltonIveyBarrier K (tau + t)
+              (max (-sectionalRayleighMin3 (D + t • hamiltonIveyMatrixReaction D)) 0) ≤ S + t * S' := by
+            have hg_t : g t ≤ S / 2 := hg5 t ⟨htpos, ht5⟩
+            have hS'nonneg_t : 0 ≤ t * S' := mul_nonneg ht.1 hS'nonneg
+            dsimp [g] at hg_t
+            nlinarith
+          have hmem' : D + t • hamiltonIveyMatrixReaction D ∈ hamiltonIveyConvexMatrixRegion K (tau + t) := by
+            rw [hamiltonIveyConvexMatrixRegion_eq_violation]
+            refine ⟨?_, ?_, ?_⟩
+            · rw [hdiag]
+              exact Matrix.isHermitian_diagonal (fun i : Fin 3 =>
+                ![l1 + t * (2 * (l1 ^ 2 + l2 * l3)),
+                  l2 + t * (2 * (l2 ^ 2 + l1 * l3)),
+                  l3 + t * (2 * (l3 ^ 2 + l1 * l2))] i)
+            · exact le_max_right _ _
+            · unfold hamiltonIveyConvexBarrier
+              rw [htr]
+              exact max_le hscalar_t hbarrier_le
+          simpa [D] using hmem'
+
+theorem hamiltonIveyConvexMatrixRegion_reaction_small_time
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
+    (A : Matrix (Fin 3) (Fin 3) Real) (hA : A.IsHermitian)
+    (hAmem : A ∈ hamiltonIveyConvexMatrixRegion K tau) :
+    ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
+      A + t • hamiltonIveyMatrixReaction A ∈ hamiltonIveyConvexMatrixRegion K (tau + t) := by
+  rcases hermitian_orthogonal_diagonalization hA with ⟨O, hOorth, hdiag⟩
+  let d0 : ℝ := hA.eigenvalues₀ 0
+  let d1 : ℝ := hA.eigenvalues₀ 1
+  let d2 : ℝ := hA.eigenvalues₀ 2
+  let D : Matrix (Fin 3) (Fin 3) Real := Matrix.diagonal ![d0, d1, d2]
+  have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+  have hdiag' : O.transpose * A * O = Matrix.diagonal ![d0, d1, d2] := by
+    dsimp [d0, d1, d2]
+    rw [← diagonal_eigenvalues_tuple hA]
+    exact hdiag
+  have hDmem : D ∈ hamiltonIveyConvexMatrixRegion K tau := by
+    have hconv := (hamiltonIveyConvexMatrixRegion_orthogonal_conj (Q := O) hOorth2 hOorth).1 hAmem
+    simpa [D, hdiag'] using hconv
+  have h21 : d1 ≤ d0 := by
+    dsimp [d1, d0]
+    exact hA.eigenvalues₀_antitone (by decide)
+  have h32 : d2 ≤ d1 := by
+    dsimp [d2, d1]
+    exact hA.eigenvalues₀_antitone (by decide)
+  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time_diagonal hK htau d0 d1 d2 h21 h32 hDmem
+    with ⟨eps, heps, hDstep⟩
+  refine ⟨eps, heps, ?_⟩
+  intro t ht
+  have hDstep' : D + t • hamiltonIveyMatrixReaction D ∈ hamiltonIveyConvexMatrixRegion K (tau + t) := by
+    simpa [D] using hDstep t ht
+  have hAconj : A = O * D * O.transpose := by
+    dsimp [D]
+    rw [← hdiag']
+    calc
+      A = ((O * O.transpose) * A) * (O * O.transpose) := by
+        rw [hOorth]
+        simp
+      _ = O * (O.transpose * A * O) * O.transpose := by
+        repeat rw [Matrix.mul_assoc]
+  have hQconj : hamiltonIveyMatrixReaction A = O * hamiltonIveyMatrixReaction D * O.transpose := by
+    have h := hamiltonIveyMatrixReaction_orthogonal_conj (O := O) (A := D) hOorth
+    rw [← hAconj] at h
+    exact h
+  have hsum : A + t • hamiltonIveyMatrixReaction A =
+      O * (D + t • hamiltonIveyMatrixReaction D) * O.transpose := by
+    rw [hAconj]
+    rw [hamiltonIveyMatrixReaction_orthogonal_conj (O := O) (A := D) hOorth]
+    calc
+      O * D * O.transpose + t • (O * hamiltonIveyMatrixReaction D * O.transpose)
+          = (O * D + O * (t • hamiltonIveyMatrixReaction D)) * O.transpose := by
+            rw [← Matrix.smul_mul, ← Matrix.mul_smul, ← Matrix.add_mul]
+      _ = (O * (D + t • hamiltonIveyMatrixReaction D)) * O.transpose := by
+            rw [← Matrix.mul_add]
+  have hmem' : O * (D + t • hamiltonIveyMatrixReaction D) * O.transpose ∈
+      hamiltonIveyConvexMatrixRegion K (tau + t) := by
+    have hconv := (hamiltonIveyConvexMatrixRegion_orthogonal_conj (Q := O.transpose)
+      (by simpa using hOorth) (by simpa using hOorth2)).1 hDstep'
+    simpa [Matrix.transpose_transpose] using hconv
+  simpa [hsum] using hmem'
+
+noncomputable def hamiltonIveyConvexMatrixSlabEuclid (K T : ℝ) :
+    Set (WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ)) :=
+  {q | (WithLp.ofLp q).2 ∈ Set.Icc 0 T ∧
+    (WithLp.ofLp q).1 ∈ hamiltonIveyConvexMatrixRegionEuclid K (WithLp.ofLp q).2}
+
+theorem hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
+    (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hAmem : A ∈ hamiltonIveyConvexMatrixRegionEuclid K tau) :
+    ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
+      A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+        hamiltonIveyConvexMatrixRegionEuclid K (tau + t) := by
+  let M : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix A
+  have hMmem : M ∈ hamiltonIveyConvexMatrixRegion K tau := by
+    simpa [M] using (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K tau A).1 hAmem
+  have hMherm : M.IsHermitian := by
+    rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hMmem
+    exact hMmem.1
+  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time hK htau M hMherm hMmem
+    with ⟨eps, heps, hstep⟩
+  refine ⟨eps, heps, ?_⟩
+  intro t ht
+  have hstep' : M + t • hamiltonIveyMatrixReaction M ∈
+      hamiltonIveyConvexMatrixRegion K (tau + t) := hstep t ht
+  have hsum : A + t • uhlenbeckCurvatureOperatorReactionState A =
+      matrixToEuclid (M + t • hamiltonIveyMatrixReaction M) := by
+    dsimp [uhlenbeckCurvatureOperatorReactionState, M]
+    ext ij
+    simp [matrixToEuclid, euclidToMatrix]
+  rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+  rw [hsum]
+  rw [euclidToMatrix_matrixToEuclid]
+  exact hstep'
+
+theorem hamiltonIveyConvexMatrixSlabEuclid_reaction_tangent
+    {K T : ℝ} (hK : 0 < K)
+    {tau : ℝ} (htau : tau ∈ Set.Ico 0 T)
+    (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hAmem : A ∈ hamiltonIveyConvexMatrixRegionEuclid K tau) :
+    WithLp.toLp 2 (uhlenbeckCurvatureOperatorReactionState A, (1 : Real)) ∈
+      posTangentConeAt (hamiltonIveyConvexMatrixSlabEuclid K T) (WithLp.toLp 2 (A, tau)) := by
+  let x : WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ) := WithLp.toLp 2 (A, tau)
+  let y : WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ) :=
+    WithLp.toLp 2 (uhlenbeckCurvatureOperatorReactionState A, (1 : Real))
+  rcases hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time hK htau.1 A hAmem
+    with ⟨eps, heps, hstep⟩
+  let eps' : ℝ := min eps ((T - tau) / 2)
+  have hTminus : 0 < T - tau := sub_pos.mpr htau.2
+  have heps' : 0 < eps' := by
+    dsimp [eps']
+    exact lt_min heps (half_pos hTminus)
+  have htbound : ∀ᶠ t : ℝ in 𝓝[>] 0, t < eps' := by
+    rw [eventually_nhdsWithin_iff]
+    apply Filter.mem_of_superset (Ioo_mem_nhds (neg_lt_zero.mpr heps') heps')
+    intro t ht
+    exact fun _ => ht.2
+  have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, x + t • y ∈ hamiltonIveyConvexMatrixSlabEuclid K T := by
+    filter_upwards [htbound, self_mem_nhdsWithin] with t ht' htpos
+    have htle : t ≤ eps' := le_of_lt ht'
+    have htstep : A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+        hamiltonIveyConvexMatrixRegionEuclid K (tau + t) :=
+      hstep t ⟨htpos.le, le_trans htle (min_le_left _ _)⟩
+    have htausmall : tau + t ≤ T := by
+      have ht' : t ≤ (T - tau) / 2 := le_trans htle (min_le_right _ _)
+      nlinarith [hTminus]
+    have htau' : 0 ≤ tau + t := by linarith [htau.1, (show 0 < t from htpos)]
+    have hcurve : x + t • y = WithLp.toLp 2 (A + t • uhlenbeckCurvatureOperatorReactionState A, tau + t) := by
+      dsimp [x, y]
+      rw [← WithLp.toLp_smul, ← WithLp.toLp_add]
+      congr 1
+      ext <;> simp
+    rw [hcurve]
+    rw [show hamiltonIveyConvexMatrixSlabEuclid K T =
+        {q | (WithLp.ofLp q).2 ∈ Set.Icc 0 T ∧
+          (WithLp.ofLp q).1 ∈ hamiltonIveyConvexMatrixRegionEuclid K (WithLp.ofLp q).2} by rfl]
+    simp [htau', htausmall, htstep]
+  have hfreq : ∃ᶠ t : ℝ in 𝓝[>] 0, x + t • y ∈ hamiltonIveyConvexMatrixSlabEuclid K T :=
+    hev.frequently
+  exact mem_posTangentConeAt_of_frequently_mem hfreq
 
 end DifferentialGeometry.PDE.RicciFlow
 
