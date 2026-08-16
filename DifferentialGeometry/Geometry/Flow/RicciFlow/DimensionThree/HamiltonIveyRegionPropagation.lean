@@ -495,7 +495,6 @@ theorem curvatureOperatorRegionPropagationOn_of_uhlenbeckData_shifted
       (I := I) (M := M) S' hK hT pulledRm' roughLapD' B'
       hU' hlap' hjoint' hsmooth' R' hR' hrm' hB' hTsub' hTreg'
       hbound' hCdist_cont' hinit' hpull'
-  -- transfer to S
   intro t ht x
   rcases hprop (t - t0) (by
     rw [Set.mem_Icc] at ht ⊢

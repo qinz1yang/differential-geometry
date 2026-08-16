@@ -1965,7 +1965,6 @@ theorem isClosed_hamiltonIveyConvexMatrixSlab
     have h := ContinuousOn.preimage_isClosed_of_isClosed hbar_cont hSD_closed
       (isClosed_Iic : IsClosed (Set.Iic (0 : ℝ)))
     simpa [Set.preimage, Set.Iic] using h
-  -- Now show slab equals H ∩ (S ∩ D ∩ B) (D redundant but okay)
   have hset : hamiltonIveyConvexMatrixSlab K T =
       {q : Q | (WithLp.ofLp q).1.IsHermitian} ∩
         (S ∩ D ∩ {q : Q |
@@ -1992,7 +1991,6 @@ theorem isClosed_hamiltonIveyConvexMatrixSlab
 theorem convex_hamiltonIveyConvexMatrixSlab_slice
     {K T τ : ℝ} (hK : 0 < K) (hτ : τ ∈ Set.Icc 0 T) :
     Convex ℝ {A : Matrix (Fin 3) (Fin 3) ℝ | (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T} := by
-  -- The slice is exactly hamiltonIveyConvexMatrixRegion K τ
   have hset : {A : Matrix (Fin 3) (Fin 3) ℝ | (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T} =
       hamiltonIveyConvexMatrixRegion K τ := by
     ext A
@@ -2004,7 +2002,6 @@ theorem isClosed_hamiltonIveyConvexMatrixSlab_slice
     {K T τ : ℝ} (hK : 0 < K) :
     IsClosed {A : Matrix (Fin 3) (Fin 3) ℝ | (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T} := by
   have hcont : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => WithLp.toLp 2 (A, τ)) := by
-    -- toLp continuous, pair continuous
     have hA : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => A) := continuous_id
     have hτ : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => τ) := continuous_const
     exact (WithLp.prod_continuous_toLp (p := 2) (α := Matrix (Fin 3) (Fin 3) ℝ) (β := ℝ)).comp (hA.prodMk hτ)

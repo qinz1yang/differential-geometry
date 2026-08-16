@@ -1081,7 +1081,6 @@ theorem supportUpperDiag_initial_inner_le
   have hrepr := supportUpperDiag_eq_coe_sub_inner
     (I := I) (M := M) S (K := K) (a := a) (t0 := t0) (t := t0)
     basis horth i
-  -- hrepr : a * Q = a*C - inner ν A
   have hle : 0 ≤ a * hamiltonIveySupportCoefficient K a t0 t0 -
       inner ℝ (matrixToEuclid (hamiltonIveySupportUpperDiagNormal a
         (hamiltonIveySupportPinchDelta a) i))

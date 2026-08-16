@@ -2294,7 +2294,6 @@ lemma supportFunction_rotate_diag
   have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
   have hdiag' : O.transpose * S * O = Matrix.diagonal nv := by
     simpa [S, nv] using hdiag
-  -- the map A ↦ matrixToEuclid (Oᵀ (euclidToMatrix A) O) is a bijection of the region
   let φ : EuclideanSpace ℝ (Fin 3 × Fin 3) → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
     fun A => matrixToEuclid (O.transpose * euclidToMatrix A * O)
   have hφ_mem : ∀ A, A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ →
@@ -2331,7 +2330,6 @@ lemma supportFunction_rotate_diag
       rw [hOorth2]
       simp only [Matrix.one_mul]
     rw [hmat, matrixToEuclid_euclidToMatrix]
-  -- inner v A = inner (diag nv) (φ A) for A ∈ region
   have hinner_eq : ∀ A, A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ →
       inner ℝ v A = inner ℝ (matrixToEuclid (Matrix.diagonal nv)) (φ A) := by
     intro A hA
@@ -2350,7 +2348,6 @@ lemma supportFunction_rotate_diag
       _ = inner ℝ (matrixToEuclid (Matrix.diagonal nv)) (φ A) := by
             dsimp [φ]
             rw [hdiag']
-  -- supportFunction v = sSup {inner v A | A ∈ region} = sSup {inner (diag nv) B | B ∈ region}
   unfold supportFunction
   congr 1
   ext x
@@ -2442,7 +2439,6 @@ lemma exists_rotate_diag_of_mem_region
       have hconj := inner_matrixToEuclid_orthogonal_conj (symmEuclid v) (euclidToMatrix A) O hOorth
       dsimp [B]
       rw [hconj]
-      -- Oᵀ (symm v) O = diag (eigenvalues₀)
       have hdiag' : O.transpose * symmEuclid v * O =
           Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀ := by
         simpa using hdiag
@@ -2552,7 +2548,6 @@ lemma support_formula_unbounded_of_nonneg_top
   have hXpos : 0 < X := lt_of_lt_of_le hX₁pos hX₁le
   have hB : X ≤ hamiltonIveyConvexBarrier K τ X := by
     have hBh : X ≤ hamiltonIveyBarrier K τ X := by
-      -- h(τ,X) = X(L − 3) ≥ X for L ≥ 4
       have hden : 0 < 1 + 2 * K * τ := by
         have hKτ : 0 ≤ 2 * K * τ := by
           have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
@@ -2573,7 +2568,6 @@ lemma support_formula_unbounded_of_nonneg_top
           rw [hX₁eq]
           exact Real.log_exp 4
         linarith
-      -- barrier = X·(log(X/K)+log(1+2Kτ)−3) ≥ X·(4−3) = X
       have hlog : Real.log (X / K) + Real.log (1 + 2 * K * τ) = Real.log (X * (1 + 2 * K * τ) / K) := by
         have h1 : Real.log (X / K) = Real.log X - Real.log K := Real.log_div hXpos.ne' hK.ne'
         have h2 : Real.log ((X * (1 + 2 * K * τ)) / K) = Real.log (X * (1 + 2 * K * τ)) - Real.log K :=
@@ -2874,7 +2868,6 @@ lemma support_formula_continuousOn
         exact mul_pos hK (Real.exp_pos (S / ν 0))
       exact hXm) hX
     have hL : S / ν 0 ≤ Real.log (X * (1 + 2 * K * τ) / K) := by
-      -- log(X(1+2Kτ)/K) ≥ log(X/K) ≥ log(Xmax/K) = S/ν0
       have hdenτ : 0 < 1 + 2 * K * τ := by
         have hKτ : 0 ≤ 2 * K * τ := by
           have h1' : 0 ≤ K * τ := mul_nonneg hK.le hτ.1
@@ -2918,7 +2911,6 @@ lemma support_formula_continuousOn
       BddAbove {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧ x = F τ X} := by
     intro τ hτ
     have hbddF := support_formula_bddAbove hK hτ.1 hν0
-    -- hbddF : BddAbove {x | ∃X ≥ 0, x = barrier-formula} — the formula is F τ X
     simpa [F] using hbddF
   have hsup_eq : ∀ τ : ℝ, τ ∈ Set.Icc 0 T →
       sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧ x = F τ X} =
@@ -3070,15 +3062,12 @@ lemma support_formula_at_star_point
         (-(ν 0 * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)))) := by
   let Xs : ℝ := K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)
   have hmin := support_formula_min_branch (K := K) (τ := τ) hν0 Xs
-  -- hmin : B K τ Xs * ν0 + Xs*c = min (s*ν0 + Xs*c) (h-barrier*ν0 + Xs*c)
-  -- and h-barrier*ν0 + Xs*c = −ν0·Xs via hamiltonIveyBarrier_at_star_point
   have hbar := hamiltonIveyBarrier_at_star_point (K := K) (τ := τ) (ν := ν) hK hτ
   have hb : hamiltonIveyBarrier K τ Xs * ν 0 + Xs * (2 * ν 0 - ν 1 - ν 2) =
       -(ν 0 * Xs) := by
     rw [hbar]
     have hcalc : Xs * ((ν 1 + ν 2) / ν 0 - 3) * ν 0 + Xs * (2 * ν 0 - ν 1 - ν 2) =
         -(ν 0 * Xs) := by
-      -- Xs·((ν1+ν2)/ν0 − 3)·ν0 + Xs·(2ν0−ν1−ν2) = Xs·(ν1+ν2 − 3ν0 + 2ν0 −ν1 −ν2) = −ν0Xs
       field_simp [Ne.symm hν0.ne']
       ring
     simp [Xs, hcalc]
@@ -3712,17 +3701,14 @@ lemma hasDerivAt_hamiltonIveyBarrier_tau
     have hlog' : HasDerivAt Real.log ((1 : ℝ) / (1 + 2 * K * τ₀)) (1 + 2 * K * τ₀) := by
       simpa [one_div] using (Real.hasDerivAt_log (show 1 + 2 * K * τ₀ ≠ 0 from ne_of_gt hden))
     have hcomp := hlog'.comp τ₀ hlin
-    -- hcomp : HasDerivAt (fun τ => log (1 + 2Kτ)) ((1/(1+2Kτ₀)) · (2K)) τ₀
     convert hcomp using 1
     ring
-  -- derivative of X·log(1+2Kτ) is X·(2K)/(1+2Kτ)
   have hmul : HasDerivAt (fun τ : ℝ => X * Real.log (1 + 2 * K * τ))
       (X * ((2 * K) / (1 + 2 * K * τ₀))) τ₀ := by
     simpa [mul_comm] using hlog.const_mul X
   have hconst : HasDerivAt (fun τ : ℝ => X * Real.log X + X * (-3 - Real.log K)) 0 τ₀ := by
     simpa using (hasDerivAt_const (x := τ₀) (c := (X * Real.log X + X * (-3 - Real.log K) : ℝ)))
   have hsum := hmul.add hconst
-  -- the function: X·log X + X·(log(1+2Kτ) − 3 − log K) = (X·log X + X·(−3−log K)) + X·log(1+2Kτ)
   convert hsum using 1
   · funext τ
     dsimp
@@ -3753,7 +3739,6 @@ lemma kink_point_unique {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
     {X : ℝ} (hXgt : K * Real.exp 2 / (1 + 2 * K * τ) < X)
     (hXeq : hamiltonIveyBarrier K τ X = scalarSectionalLowerBarrier3 K τ) :
     X = hamiltonIveyKinkPoint hK τ := by
-  -- strict mono on (E, ∞): both X and X₂ > E — X₂ = X
   have hmono := strictMonoOn_hamiltonIveyBarrier_above_E hK hτ
   have hX₂gt : K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK τ :=
     kink_point_above_E hK hτ
@@ -3877,7 +3862,6 @@ lemma continuousAt_kink_point {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀) 
   have hX₂gt : K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK τ := kink_point_above_E hK hτpos.le
   have hX₂eq : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) = scalarSectionalLowerBarrier3 K τ := kink_point_eq hK hτpos.le
   have hmono := strictMonoOn_hamiltonIveyBarrier_above_E (K := K) (τ := τ) hK hτpos.le
-  -- X₂(τ) < X + ε'
   have hX₂lt : hamiltonIveyKinkPoint hK τ < X + ε' := by
     by_contra hnot
     have hge : X + ε' ≤ hamiltonIveyKinkPoint hK τ := le_of_not_gt hnot
@@ -4441,7 +4425,6 @@ lemma hamiltonIveyBarrierStarPoint_fhValue
       -(ν 0 * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ))) := by
   let Xs : ℝ := K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)
   have hbar := hamiltonIveyBarrier_at_star_point (K := K) (τ := τ) (ν := ν) hK hτ
-  -- hbar : h τ Xs = Xs * ((ν1+ν2)/ν0 - 3)
   calc
     hamiltonIveyBarrier K τ Xs * ν 0 + Xs * (2 * ν 0 - ν 1 - ν 2)
         = (Xs * ((ν 1 + ν 2) / ν 0 - 3)) * ν 0 + Xs * (2 * ν 0 - ν 1 - ν 2) := by rw [hbar]
@@ -4959,9 +4942,7 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclid_eq_zero_of_symm_zero
   have hν : ¬ (symmEuclid_isHermitian v).eigenvalues₀ 0 < 0 := by
     intro hlt
     have hzero : (symmEuclid_isHermitian v).eigenvalues₀ 0 = 0 := by
-      -- symm v = 0: the Hermitian matrix is zero, eigenvalues are zero
       have hz : symmEuclid v = 0 := hv
-      -- eigenvalues of the zero Hermitian matrix
       have heig : (symmEuclid_isHermitian v).eigenvalues = 0 := by
         exact (Matrix.IsHermitian.eigenvalues_eq_zero_iff (hA := symmEuclid_isHermitian v)).mpr hv
       let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
