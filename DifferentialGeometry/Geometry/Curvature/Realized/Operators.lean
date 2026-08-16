@@ -505,6 +505,56 @@ theorem laplacianAt_nonpos_at_spatial_max
   rw [hfun, hlin] at hneg
   linarith
 
+theorem laplacianAt_smul_at
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
+    (t : Time) (a : Real) {f : M → Real} {x : M}
+    (hf : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x) :
+    laplacianAt (I := I) G t (a • f) x = a * laplacianAt (I := I) G t f x := by
+  unfold laplacianAt
+  exact laplacian_smul_at (I := I) (G.connection t) (G.metric t) a hf hgrad
+
+theorem laplacianAt_nonpos_at_spatial_max_of_isInteriorPoint
+    [I.Boundaryless]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
+    (G : MetricConnectionFamily (I := I) (M := M) Time)
+    (t : Time) {f : M → Real} {x : M}
+    (hmax : IsLocalMax f x)
+    (hx : I.IsInteriorPoint x)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
+    (hf_near : ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y)
+    (hgrad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) f y) x) :
+    laplacianAt (I := I) G t f x ≤ 0 := by
+  have hneggrad : MDiffAt (T% fun y : M =>
+      gradientFun (I := I) (G.metric t) (-f) y) x := by
+    have heq : (fun y : M => gradientFun (I := I) (G.metric t) (-f) y) =ᶠ[nhds x]
+        (fun y : M => -gradientFun (I := I) (G.metric t) f y) := by
+      filter_upwards [hf_near] with y hy
+      exact gradientFun_neg (I := I) (G.metric t) hy
+    have htotal :
+        (T% fun y : M => gradientFun (I := I) (G.metric t) (-f) y) =ᶠ[nhds x]
+          (T% fun y : M => -gradientFun (I := I) (G.metric t) f y) := by
+      filter_upwards [heq] with y hy
+      change TotalSpace.mk' E y (gradientFun (I := I) (G.metric t) (-f) y) =
+        TotalSpace.mk' E y (-gradientFun (I := I) (G.metric t) f y)
+      rw [hy]
+    exact (mdifferentiableAt_neg_section hgrad).congr_of_eventuallyEq htotal
+  have hneg : 0 ≤ laplacianAt (I := I) G t (-f) x := by
+    unfold laplacianAt
+    exact laplacian_nonneg_at_spatial_min_of_metricCompatible_of_isInteriorPoint
+      (I := I) (G.connection t) (G.metric t) (G.metricCompatible t)
+      hmax.neg hx hf.neg (hf_near.mono (fun _y hy => hy.neg)) hneggrad
+  have hlin := laplacianAt_smul_at (I := I) G t (-1 : Real) hf_near hgrad
+  have hfun : (-f) = (-1 : Real) • f := by
+    funext y
+    simp
+  rw [hfun, hlin] at hneg
+  linarith
+
 theorem heatOperatorWithDrift_at_spatial_min_nonneg_of_isInteriorPoint
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
