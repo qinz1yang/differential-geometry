@@ -456,15 +456,18 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
     (hL : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
       LipschitzWith L (fun q : WithLp 2 (F × ℝ) =>
         WithLp.toLp 2 (reaction (WithLp.ofLp q).2 x (WithLp.ofLp q).1, (1 : Real))))
-    (htangent : ∀ τ : Real, τ ∈ Set.Icc 0 T → ∀ x : M, ∀ p : F, p ∈ C τ →
+    (htangent : ∀ τ : Real, τ ∈ Set.Ico 0 T → ∀ x : M, ∀ p : F, p ∈ C τ →
       (WithLp.toLp 2 (reaction τ x p, (1 : Real))) ∈ posTangentConeAt K
         (WithLp.toLp 2 (p, τ)))
+    (htangent_fiber : ∀ τ : Real, τ ∈ Set.Icc 0 T → ∀ x : M, ∀ p : F, p ∈ C τ →
+      reaction τ x p ∈ posTangentConeAt (C τ) p)
     (hinit : ∀ x : M, u 0 x ∈ C 0) :
     ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, u t x ∈ C t := by
+  classical
   let F' : Type _ := WithLp 2 (F × ℝ)
   let u' : Real → M → F' := fun t x => WithLp.toLp 2 (u t x, t)
   let reac' : Real → M → F' → F' := fun _t x q =>
-    WithLp.toLp 2 (reaction (WithLp.ofLp q).2 x (WithLp.ofLp q).1, 1)
+    WithLp.toLp 2 (reaction (WithLp.ofLp q).2 x (WithLp.ofLp q).1, (1 : Real))
   have hsol' : IsInnerProductHeatReactionOn
       (RealTimeInterval.closed 0 T hT) G reac' u' := by
     refine ⟨?_, ?_, ?_⟩
@@ -559,25 +562,316 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
       LipschitzWith L (reac' t x) := by
     intro t ht x
     simpa [reac'] using hL t ht x
-  have htan' : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M, ∀ q : F', q ∈ K →
-      reac' t x q ∈ posTangentConeAt K q := by
-    intro t ht x q hq
-    rw [hK_eq] at hq
-    have hqτ : (WithLp.ofLp q).2 ∈ Set.Icc 0 T := hq.1
-    have hqp : (WithLp.ofLp q).1 ∈ C (WithLp.ofLp q).2 := hq.2
-    simpa [reac', WithLp.toLp_ofLp] using
-      htangent (WithLp.ofLp q).2 hqτ x (WithLp.ofLp q).1 hqp
-  have hinit' : ∀ x : M, u' 0 x ∈ K := by
-    intro x
-    rw [hK_eq]
-    exact ⟨⟨le_rfl, hT⟩, by simpa [u'] using hinit x⟩
-  have hmain := closed_convex_heat_reaction_mem_of_tangent
-    (I := I) (M := M) G hT K hKne hKclosed hKconvex reac' u' hsol' L hL' htan' hinit'
+  have hIco : ∀ t : Real, t ∈ Set.Ico 0 T → ∀ x : M, u' t x ∈ K := by
+    intro t ht x
+    by_contra hout
+    have htpos : 0 < t := by
+      by_contra htzero
+      have : t = 0 := le_antisymm (not_lt.mp htzero) ht.1
+      exact hout (by
+        rw [hK_eq]
+        constructor
+        · constructor
+          · have h0 : 0 ≤ (u' t x).ofLp.2 := by simp [u', this]
+            exact h0
+          · have hT' : (u' t x).ofLp.2 ≤ T := by simpa [u', this] using hT
+            exact hT'
+        · simpa [u', this] using hinit x)
+    let KK : Real := (L : Real) + 1
+    let d : Real × M → Real := fun q ↦
+      Real.exp (-KK * q.1) * Metric.infDist (u' q.1 q.2) K
+    let Q : Set (Real × M) := Set.Icc 0 t ×ˢ (Set.univ : Set M)
+    have hQcompact : IsCompact Q :=
+      (isCompact_Icc (a := (0 : Real)) (b := t)).prod CompactSpace.isCompact_univ
+    have hQne : Q.Nonempty :=
+      ⟨(0, x), Set.mk_mem_prod ⟨le_rfl, htpos.le⟩ (Set.mem_univ x)⟩
+    have hQsub : Q ⊆ (RealTimeInterval.closed 0 T hT).carrier ×ˢ univ := by
+      intro q hq
+      exact ⟨⟨hq.1.1, hq.1.2.trans ht.2.le⟩, hq.2⟩
+    have hdcont : ContinuousOn d Q := by
+      have hexp : Continuous (fun q : Real × M ↦ Real.exp (-KK * q.1)) := by
+        fun_prop
+      have hinf : ContinuousOn (fun q : Real × M => Metric.infDist (u' q.1 q.2) K) Q := by
+        have hcont : ContinuousOn (fun q : Real × M => u' q.1 q.2) Q :=
+          hsol'.jointCont.mono hQsub
+        exact (Metric.continuous_infDist_pt K).comp_continuousOn hcont
+      exact hexp.continuousOn.mul hinf
+    obtain ⟨q₀, hq₀Q, hq₀max⟩ := hQcompact.exists_isMaxOn hQne hdcont
+    have hdtxpos : 0 < d (t, x) := by
+      apply mul_pos (Real.exp_pos _)
+      exact (hKclosed.notMem_iff_infDist_pos hKne).mp hout
+    have hdq₀pos : 0 < d q₀ := lt_of_lt_of_le hdtxpos (hq₀max ⟨⟨ht.1, le_rfl⟩, mem_univ x⟩)
+    have hq₀tpos : 0 < q₀.1 := by
+      by_contra hnonpos
+      have hzero : q₀.1 = 0 := le_antisymm (not_lt.mp hnonpos) hq₀Q.1.1
+      have : d q₀ = 0 := by
+        have hinit' : u' 0 q₀.2 ∈ K := by
+          rw [hK_eq]
+          exact ⟨⟨le_rfl, hT⟩, by simpa [u'] using hinit q₀.2⟩
+        simp [d, hzero, Metric.infDist_zero_of_mem hinit']
+      linarith
+    have hq₀reg : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).regular := by
+      change q₀.1 ∈ Set.Ioo 0 T
+      exact ⟨hq₀tpos, lt_of_le_of_lt hq₀Q.1.2 ht.2⟩
+    obtain ⟨p, hpK, hpmin⟩ :=
+      exists_norm_eq_iInf_of_complete_convex hKne hKclosed.isComplete hKconvex (u' q₀.1 q₀.2)
+    let ν' : F' := u' q₀.1 q₀.2 - p
+    have hdist₀ : Metric.infDist (u' q₀.1 q₀.2) K = ‖ν'‖ := by
+      rw [Metric.infDist_eq_iInf]
+      rw [show ν' = u' q₀.1 q₀.2 - p from rfl]
+      rw [show (fun z : K => dist (u' q₀.1 q₀.2) ↑z) = fun z : K => ‖u' q₀.1 q₀.2 - ↑z‖ by
+        funext z
+        exact dist_eq_norm _ _]
+      rw [hpmin]
+    have hνpos : 0 < ‖ν'‖ := by
+      have : 0 < Metric.infDist (u' q₀.1 q₀.2) K := by
+        exact (mul_pos_iff_of_pos_left (Real.exp_pos (-KK * q₀.1))).mp
+          (by simpa [d] using hdq₀pos)
+      simpa [hdist₀] using this
+    have hnormal : ∀ q ∈ K, inner ℝ ν' (q - p) ≤ 0 := by
+      exact (norm_eq_iInf_iff_real_inner_le_zero hKconvex hpK).mp hpmin
+    have hsupport : ∀ s : Real, ∀ y : M,
+        inner ℝ (u' s y - p) ν' ≤ Metric.infDist (u' s y) K * ‖ν'‖ := by
+      intro s y
+      obtain ⟨q, hqK, hqmin⟩ :=
+        exists_norm_eq_iInf_of_complete_convex hKne hKclosed.isComplete hKconvex (u' s y)
+      have hqdist : ‖u' s y - q‖ = Metric.infDist (u' s y) K := by
+        rw [Metric.infDist_eq_iInf]
+        rw [show (fun z : K => dist (u' s y) ↑z) = fun z : K => ‖u' s y - ↑z‖ by
+          funext z
+          exact dist_eq_norm _ _]
+        rw [← hqmin]
+      calc
+        inner ℝ (u' s y - p) ν' =
+            inner ℝ (u' s y - q) ν' + inner ℝ (q - p) ν' := by
+          rw [← inner_add_left]
+          congr 2
+          abel
+        _ ≤ ‖u' s y - q‖ * ‖ν'‖ + 0 :=
+          add_le_add (real_inner_le_norm _ _) (by simpa [real_inner_comm] using hnormal q hqK)
+        _ = Metric.infDist (u' s y) K * ‖ν'‖ := by rw [hqdist, add_zero]
+    let z : Real → M → Real := fun s y ↦
+      Real.exp (-KK * s) * inner ℝ (u' s y - p) ν'
+    have hzmax : ∀ r ∈ Q, z r.1 r.2 ≤ z q₀.1 q₀.2 := by
+      intro r hr
+      have hleft := mul_le_mul_of_nonneg_left (hsupport r.1 r.2)
+        (Real.exp_pos (-KK * r.1)).le
+      have hright := mul_le_mul_of_nonneg_right (hq₀max hr) (norm_nonneg ν')
+      have hz₀ : z q₀.1 q₀.2 = d q₀ * ‖ν'‖ := by
+        simp only [z, d, ν', real_inner_self_eq_norm_sq, hdist₀]
+        ring
+      calc
+        z r.1 r.2 ≤ Real.exp (-KK * r.1) *
+            (Metric.infDist (u' r.1 r.2) K * ‖ν'‖) := hleft
+        _ = d r * ‖ν'‖ := by simp only [d]; ring
+        _ ≤ d q₀ * ‖ν'‖ := hright
+        _ = z q₀.1 q₀.2 := hz₀.symm
+    have hzspatial : IsLocalMax (z q₀.1) q₀.2 := by
+      exact Filter.Eventually.of_forall (fun y ↦
+        hzmax (q₀.1, y) ⟨hq₀Q.1, mem_univ y⟩)
+    have hq₀carrier : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).carrier :=
+      (RealTimeInterval.closed 0 T hT).regular_subset hq₀reg
+    have hzslice : ContMDiff I 𝓘(Real, Real) ∞ (z q₀.1) := by
+      simpa only [z, innerScalarization, inner_sub_left] using
+        contMDiff_const.mul
+          ((hsol'.scalarSliceSmooth ν' q₀.1 hq₀carrier).sub contMDiff_const)
+    have hzlap : laplacianAt (I := I) G q₀.1 (z q₀.1) q₀.2 ≤ 0 :=
+      laplacianAt_nonpos_at_spatial_max (I := I) G q₀.1 hzspatial hzslice
+    have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
+      intro s hs
+      exact hzmax (s, q₀.2) ⟨⟨hs.1, hs.2.trans hq₀Q.1.2⟩, mem_univ q₀.2⟩
+    have hscalarEq := hsol'.equation ν' q₀.1 hq₀reg q₀.2
+    have hexpDeriv : HasDerivAt (fun s : Real ↦ Real.exp (-KK * s))
+        (Real.exp (-KK * q₀.1) * (-KK)) q₀.1 := by
+      have hinner : HasDerivAt (fun s : Real ↦ -KK * s) (-KK) q₀.1 := by
+        simpa using (hasDerivAt_id q₀.1).const_mul (-KK)
+      simpa only [Function.comp_apply] using
+        (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner
+    have hzderiv : HasDerivAt (fun s ↦ z s q₀.2)
+        (Real.exp (-KK * q₀.1) *
+            (laplacianAt (I := I) G q₀.1 (innerScalarization u' ν' q₀.1) q₀.2 +
+              inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν') -
+          KK * Real.exp (-KK * q₀.1) * inner ℝ (u' q₀.1 q₀.2 - p) ν') q₀.1 := by
+      convert hexpDeriv.mul (hscalarEq.sub_const (inner ℝ p ν')) using 1
+      · funext s
+        simp only [z, innerScalarization, inner_sub_left, Pi.mul_apply]
+      · simp only [innerScalarization, inner_sub_left]
+        ring
+    have hztime : 0 ≤
+        Real.exp (-KK * q₀.1) *
+            (laplacianAt (I := I) G q₀.1 (innerScalarization u' ν' q₀.1) q₀.2 +
+              inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν') -
+          KK * Real.exp (-KK * q₀.1) * inner ℝ (u' q₀.1 q₀.2 - p) ν' :=
+      deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc hq₀tpos hztimeMax hzderiv
+    have hscalarSmooth := hsol'.scalarSliceSmooth ν' q₀.1 hq₀carrier
+    have hscalarMDiff : ∀ y : M,
+        MDifferentiableAt I 𝓘(Real, Real) (innerScalarization u' ν' q₀.1) y :=
+      fun y ↦ hscalarSmooth.mdifferentiable (by simp) y
+    have hzlapEq : laplacianAt (I := I) G q₀.1 (z q₀.1) q₀.2 =
+        Real.exp (-KK * q₀.1) *
+          laplacianAt (I := I) G q₀.1 (innerScalarization u' ν' q₀.1) q₀.2 := by
+      have hsub : laplacianAt (I := I) G q₀.1
+          (fun y : M ↦ innerScalarization u' ν' q₀.1 y - inner ℝ p ν') q₀.2 =
+          laplacianAt (I := I) G q₀.1 (innerScalarization u' ν' q₀.1) q₀.2 := by
+        exact laplacian_sub_const (I := I) (G.connection q₀.1) (G.metric q₀.1)
+          (inner ℝ p ν') hscalarMDiff q₀.2
+      have hsubSmooth : ContMDiff I 𝓘(Real, Real) ∞
+          (fun y : M ↦ innerScalarization u' ν' q₀.1 y - inner ℝ p ν') :=
+        hscalarSmooth.sub contMDiff_const
+      have hsmul := laplacianAt_smul (I := I) G q₀.1
+        (Real.exp (-KK * q₀.1))
+        (fun y ↦ hsubSmooth.mdifferentiable (by simp) y)
+        (gradientFun_mdiffAt (I := I) (G.metric q₀.1) hsubSmooth q₀.2)
+      have hfun : z q₀.1 = Real.exp (-KK * q₀.1) •
+          (fun y : M ↦ innerScalarization u' ν' q₀.1 y - inner ℝ p ν') := by
+        funext y
+        dsimp [z, innerScalarization]
+        congr 1
+        rw [inner_sub_left]
+        rw [real_inner_comm]
+        rfl
+      rw [hfun, hsmul, hsub]
+    have hparabolicNonneg : 0 ≤
+        Real.exp (-KK * q₀.1) *
+          (inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν' - KK * ‖ν'‖ ^ 2) := by
+      rw [hzlapEq] at hzlap
+      rw [show u' q₀.1 q₀.2 - p = ν' from rfl,
+        real_inner_self_eq_norm_sq] at hztime
+      nlinarith [Real.exp_pos (-KK * q₀.1)]
+    have hpK' : (WithLp.ofLp p).2 ∈ Set.Icc 0 T ∧ (WithLp.ofLp p).1 ∈ C (WithLp.ofLp p).2 := by
+      rw [hK_eq] at hpK
+      exact hpK
+    have hreactionp : inner ℝ ν' (reac' q₀.1 q₀.2 p) ≤ 0 := by
+      have hmax : IsMaxOn (fun q : F' ↦ inner ℝ ν' q) K p := by
+        intro q hq
+        change inner ℝ ν' q ≤ inner ℝ ν' p
+        rw [← sub_nonpos]
+        simpa [inner_sub_right] using hnormal q hq
+      by_cases hp2lt : (WithLp.ofLp p).2 < T
+      · have htau : (WithLp.ofLp p).2 ∈ Set.Ico 0 T := ⟨hpK'.1.1, hp2lt⟩
+        have htan := htangent (WithLp.ofLp p).2 htau q₀.2 (WithLp.ofLp p).1 hpK'.2
+        have hcone : reac' q₀.1 q₀.2 p ∈ posTangentConeAt K p := by
+          simpa [reac', WithLp.toLp_ofLp] using htan
+        exact hmax.localize.hasFDerivWithinAt_nonpos
+          (innerSL ℝ ν').hasFDerivAt.hasFDerivWithinAt hcone
+      · have hp2eq : (WithLp.ofLp p).2 = T := le_antisymm hpK'.1.2 (le_of_not_gt hp2lt)
+        have hν2 : (WithLp.ofLp ν').2 = q₀.1 - T := by
+          dsimp [ν']
+          change (WithLp.ofLp (u' q₀.1 q₀.2 - p)).2 = q₀.1 - T
+          have h2 : (WithLp.ofLp (u' q₀.1 q₀.2 - p)).2 = q₀.1 - (WithLp.ofLp p).2 := by
+            rw [WithLp.ofLp_sub]
+            simp [u']
+          rw [h2, hp2eq]
+        have hmaxf : IsMaxOn (fun q : F ↦ inner ℝ (WithLp.ofLp ν').1 q) (C T) (WithLp.ofLp p).1 := by
+          intro q hq
+          have hqK : WithLp.toLp 2 (q, T) ∈ K := by
+            rw [hK_eq]
+            constructor
+            · change T ∈ Set.Icc 0 T
+              exact ⟨hT, le_rfl⟩
+            · simpa [hp2eq] using hq
+          change inner ℝ (WithLp.ofLp ν').1 q ≤ inner ℝ (WithLp.ofLp ν').1 (WithLp.ofLp p).1
+          have hq' := hnormal (WithLp.toLp 2 (q, T)) hqK
+          have hsub : WithLp.toLp 2 (q, T) - p =
+              WithLp.toLp 2 (q - (WithLp.ofLp p).1, T - (WithLp.ofLp p).2) := by
+            rw [← WithLp.ofLp_toLp 2 (WithLp.toLp 2 (q, T) - p)]
+            congr 1
+          rw [hsub] at hq'
+          rw [WithLp.prod_inner_apply] at hq'
+          rw [hp2eq] at hq'
+          have hq'' : inner ℝ (WithLp.ofLp ν').1 (q - (WithLp.ofLp p).1) ≤ 0 := by
+            have hq''' : inner ℝ (WithLp.ofLp ν').1 (q - (WithLp.ofLp p).1) +
+                (WithLp.ofLp ν').2 * (T - T) ≤ 0 := by
+              simpa [hp2eq] using hq'
+            linarith
+          change inner ℝ (WithLp.ofLp ν').1 q ≤ inner ℝ (WithLp.ofLp ν').1 (WithLp.ofLp p).1
+          have hq''' : inner ℝ (WithLp.ofLp ν').1 q - inner ℝ (WithLp.ofLp ν').1 (WithLp.ofLp p).1 ≤ 0 := by
+            have hx := hq''
+            rw [inner_sub_right] at hx
+            exact hx
+          exact sub_nonpos.mp hq'''
+        have hp1 : (WithLp.ofLp p).1 ∈ C T := by
+          have h := hpK'.2
+          rw [hp2eq] at h
+          exact h
+        have htanf := htangent_fiber T ⟨hT, le_rfl⟩ q₀.2 (WithLp.ofLp p).1 hp1
+        have hreacf : inner ℝ (WithLp.ofLp ν').1 (reaction T q₀.2 (WithLp.ofLp p).1) ≤ 0 :=
+          hmaxf.localize.hasFDerivWithinAt_nonpos
+            (innerSL ℝ (WithLp.ofLp ν').1).hasFDerivAt.hasFDerivWithinAt htanf
+        have hmain : inner ℝ ν' (reac' q₀.1 q₀.2 p) ≤ 0 := by
+          dsimp [reac']
+          rw [WithLp.prod_inner_apply]
+          have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
+            intro a b
+            rw [mul_comm]
+            rfl
+          rw [hreal]
+          change inner ℝ (WithLp.ofLp ν').1 (reaction (WithLp.ofLp p).2 q₀.2 (WithLp.ofLp p).1) +
+              (WithLp.ofLp ν').2 * 1 ≤ 0
+          rw [hp2eq]
+          have hq0lt : q₀.1 - T < 0 := sub_neg.mpr hq₀reg.2
+          nlinarith [hreacf, hν2, hq0lt]
+        exact hmain
+    have hLip := (hL' q₀.1 hq₀reg q₀.2).norm_sub_le
+      (u' q₀.1 q₀.2) p
+    have hinnerLip : inner ℝ ν'
+        (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2) - reac' q₀.1 q₀.2 p) ≤
+          (L : Real) * ‖ν'‖ ^ 2 := by
+      calc
+        _ ≤ ‖ν'‖ * ‖reac' q₀.1 q₀.2 (u' q₀.1 q₀.2) -
+            reac' q₀.1 q₀.2 p‖ := real_inner_le_norm _ _
+        _ ≤ ‖ν'‖ * ((L : Real) * ‖u' q₀.1 q₀.2 - p‖) :=
+          mul_le_mul_of_nonneg_left hLip (norm_nonneg ν')
+        _ = (L : Real) * ‖ν'‖ ^ 2 := by rw [show u' q₀.1 q₀.2 - p = ν' from rfl]; ring
+    have hreaction :
+        inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν' ≤
+          (L : Real) * ‖ν'‖ ^ 2 := by
+      rw [real_inner_comm] at hreactionp hinnerLip
+      rw [inner_sub_left] at hinnerLip
+      linarith
+    have hstrict :
+        Real.exp (-KK * q₀.1) *
+          (inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν' - KK * ‖ν'‖ ^ 2) < 0 := by
+      apply mul_neg_of_pos_of_neg (Real.exp_pos _)
+      dsimp [KK]
+      nlinarith [sq_pos_of_pos hνpos]
+    linarith
   intro t ht x
-  have hmem : u' t x ∈ K := hmain t ht x
-  rw [hK_eq] at hmem
-  exact hmem.2
-
+  rcases eq_or_lt_of_le ht.2 with htEq | htlt
+  · by_cases hTzero : T = 0
+    · have htzero : t = 0 := by rw [htEq, hTzero]
+      simpa [htzero] using hinit x
+    · have hTpos : 0 < T := lt_of_le_of_ne hT (Ne.symm hTzero)
+      rw [htEq]
+      have hcont := hsol'.jointCont (T, x) ⟨⟨hT, le_rfl⟩, mem_univ x⟩
+      have htend : Filter.Tendsto (fun s : Real ↦ u' s x)
+          (𝓝[<] T) (𝓝 (u' T x)) := by
+        have hpair : Filter.Tendsto (fun s : Real ↦ (s, x))
+            (𝓝[<] T) (𝓝 (T, x)) := by
+          refine Filter.Tendsto.prodMk_nhds ?_ tendsto_const_nhds
+          exact nhdsWithin_le_nhds
+        have hevent : ∀ᶠ s in 𝓝[<] T,
+            (s, x) ∈ Set.Icc (0 : Real) T ×ˢ (Set.univ : Set M) := by
+          have hpos : Set.Ioi (0 : Real) ∈ 𝓝 T := Ioi_mem_nhds hTpos
+          have hpos' : Set.Ioi (0 : Real) ∈ 𝓝[<] T := nhdsWithin_le_nhds hpos
+          filter_upwards [hpos', self_mem_nhdsWithin] with s hs hslt
+          exact ⟨⟨le_of_lt hs, le_of_lt hslt⟩, Set.mem_univ x⟩
+        have hpairWithin : Filter.Tendsto (fun s : Real ↦ (s, x))
+            (𝓝[<] T) (𝓝[Set.Icc 0 T ×ˢ Set.univ] (T, x)) := by
+          rw [tendsto_nhdsWithin_iff]
+          exact ⟨hpair, hevent⟩
+        exact hcont.tendsto.comp hpairWithin
+      have hmemK : u' T x ∈ K := by
+        apply hKclosed.mem_of_tendsto htend
+        have hpos : Set.Ioi (0 : Real) ∈ 𝓝 T := Ioi_mem_nhds hTpos
+        have hpos' : Set.Ioi (0 : Real) ∈ 𝓝[<] T := nhdsWithin_le_nhds hpos
+        filter_upwards [hpos', self_mem_nhdsWithin] with s hs hslt
+        exact hIco s ⟨le_of_lt hs, hslt⟩ x
+      rw [hK_eq] at hmemK
+      exact hmemK.2
+  · have hmemK := hIco t ⟨ht.1, htlt⟩ x
+    rw [hK_eq] at hmemK
+    exact hmemK.2
 
 theorem timeDepHalfspace_heat_reaction_mem_of_tangent
     [I.Boundaryless] [CompactSpace M]

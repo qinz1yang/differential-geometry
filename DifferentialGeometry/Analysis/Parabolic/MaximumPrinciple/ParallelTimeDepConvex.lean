@@ -142,9 +142,11 @@ theorem parallelTimeDepConvex_heat_reaction_mem_of_tangent
       LipschitzWith L (fun q : WithLp 2 (F x₀ × ℝ) =>
         WithLp.toLp 2 (transportedReactionFamily F P x₀ reaction (WithLp.ofLp q).2 x
           (WithLp.ofLp q).1, (1 : Real))))
-    (htangent : ∀ τ : Real, τ ∈ Set.Icc 0 T → ∀ x : M, ∀ p : F x₀, p ∈ C τ x₀ →
+    (htangent : ∀ τ : Real, τ ∈ Set.Ico 0 T → ∀ x : M, ∀ p : F x₀, p ∈ C τ x₀ →
       WithLp.toLp 2 (transportedReactionFamily F P x₀ reaction τ x p, (1 : Real)) ∈
         posTangentConeAt K (WithLp.toLp 2 (p, τ)))
+    (htangent_fiber : ∀ τ : Real, τ ∈ Set.Icc 0 T → ∀ x : M, ∀ p : F x₀, p ∈ C τ x₀ →
+      transportedReactionFamily F P x₀ reaction τ x p ∈ posTangentConeAt (C τ x₀) p)
     (hinit : ∀ x : M, u 0 x ∈ C 0 x) :
     ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, u t x ∈ C t x := by
   have hfixed : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
@@ -152,7 +154,7 @@ theorem parallelTimeDepConvex_heat_reaction_mem_of_tangent
     apply closed_convex_heat_reaction_mem_of_timeDep_tangent
       (I := I) (M := M) G hT (fun τ => C τ x₀) K hK_eq hKne hKclosed hKconvex
         (transportedReactionFamily F P x₀ reaction)
-        (transportedSectionFamily F P x₀ u) hsol L hL htangent
+        (transportedSectionFamily F P x₀ u) hsol L hL htangent htangent_fiber
     intro x
     exact (hC.transport_mem_iff 0 x x₀ (u 0 x)).2 (hinit x)
   intro t ht x

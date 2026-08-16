@@ -360,12 +360,14 @@ theorem uhlenbeckCurvatureOperator_mem_timeDepConvex_of_tangent
       LipschitzWith L (fun q : WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ) =>
         WithLp.toLp 2 (uhlenbeckCurvatureOperatorReaction B (WithLp.ofLp q).2 x (WithLp.ofLp q).1,
           (1 : Real))))
-    (htangent : ∀ τ : Real, τ ∈ Set.Icc 0 T → ∀ x : M, ∀ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
+    (htangent : ∀ τ : Real, τ ∈ Set.Ico 0 T → ∀ x : M, ∀ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
       A ∈ C τ →
         WithLp.toLp 2 (uhlenbeckCurvatureOperatorReaction B τ x A, (1 : Real)) ∈
           posTangentConeAt {q : WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ) |
             (WithLp.ofLp q).2 ∈ Set.Icc 0 T ∧ (WithLp.ofLp q).1 ∈ C (WithLp.ofLp q).2}
             (WithLp.toLp 2 (A, τ)))
+    (htangent_fiber : ∀ τ : Real, τ ∈ Set.Icc 0 T → ∀ x : M, ∀ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
+      A ∈ C τ → uhlenbeckCurvatureOperatorReaction B τ x A ∈ posTangentConeAt (C τ) A)
     (hinit : ∀ x : M, uhlenbeckCurvatureOperatorMatrix pulledRm 0 x ∈ C 0) :
     ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
       uhlenbeckCurvatureOperatorMatrix pulledRm t x ∈ C t := by
@@ -391,7 +393,7 @@ theorem uhlenbeckCurvatureOperator_mem_timeDepConvex_of_tangent
   exact closed_convex_heat_reaction_mem_of_timeDep_tangent
     (I := I) (M := M) G hT C K rfl hKne hKclosed hKconvex
     (uhlenbeckCurvatureOperatorReaction B)
-    (uhlenbeckCurvatureOperatorMatrix pulledRm) hsol L hL htangent hinit
+    (uhlenbeckCurvatureOperatorMatrix pulledRm) hsol L hL htangent htangent_fiber hinit
 
 
 
