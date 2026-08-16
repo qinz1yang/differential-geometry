@@ -18,6 +18,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Dim3Reaction
 open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators NNReal
+open scoped Matrix.Norms.Frobenius
 
 def hamiltonIveyMatrixReaction (A : Matrix (Fin 3) (Fin 3) Real) :
     Matrix (Fin 3) (Fin 3) Real :=
@@ -1302,6 +1303,268 @@ lemma curvatureOperatorReactionMatrix_eq_hamiltonIveyMatrixReaction
       Matrix.adjugate_apply, bivectorIndex3, kd, sc, Fin.sum_univ_three,
       Matrix.det_fin_three, Matrix.updateRow_apply,
       hR] <;> ring
+
+lemma euclid_entry_le_norm (a : EuclideanSpace ℝ (Fin 3 × Fin 3)) (ij : Fin 3 × Fin 3) :
+    |a ij| ≤ ‖a‖ := by
+  simpa [abs_of_nonneg] using (PiLp.norm_apply_le a ij)
+
+lemma matrixToEuclid_norm (A : Matrix (Fin 3) (Fin 3) ℝ) : ‖matrixToEuclid A‖ = ‖A‖ := by
+  rw [Matrix.frobenius_norm_def]
+  unfold matrixToEuclid
+  rw [PiLp.norm_eq_of_L2]
+  simp only [Real.sqrt_eq_rpow]
+  congr 1
+  rw [← Finset.sum_product']
+  rw [Finset.univ_product_univ]
+  apply Finset.sum_congr rfl
+  intro x hx
+  simp
+
+lemma matrixToEuclid_mul_norm_le (A B : Matrix (Fin 3) (Fin 3) ℝ) :
+    ‖matrixToEuclid (A * B)‖ ≤ ‖matrixToEuclid A‖ * ‖matrixToEuclid B‖ := by
+  rw [matrixToEuclid_norm, matrixToEuclid_norm, matrixToEuclid_norm]
+  exact Matrix.frobenius_norm_mul A B
+
+lemma matrixToEuclid_sub (A B : Matrix (Fin 3) (Fin 3) ℝ) :
+    matrixToEuclid (A - B) = matrixToEuclid A - matrixToEuclid B := by
+  ext ij
+  rfl
+
+lemma matrixToEuclid_add (A B : Matrix (Fin 3) (Fin 3) ℝ) :
+    matrixToEuclid (A + B) = matrixToEuclid A + matrixToEuclid B := by
+  ext ij
+  rfl
+
+lemma matrixToEuclid_smul (c : ℝ) (A : Matrix (Fin 3) (Fin 3) ℝ) :
+    matrixToEuclid (c • A) = c • matrixToEuclid A := by
+  ext ij
+  rfl
+
+lemma euclid_norm_le_of_entry_le {D : Matrix (Fin 3) (Fin 3) ℝ} {C : ℝ} (hC : 0 ≤ C)
+    (hD : ∀ i j, |D i j| ≤ C) : ‖matrixToEuclid D‖ ≤ 3 * C := by
+  rw [matrixToEuclid_norm, Matrix.frobenius_norm_def, ← Real.sqrt_eq_rpow]
+  rw [← Real.sqrt_sq (by positivity : 0 ≤ 3 * C)]
+  apply Real.sqrt_le_sqrt
+  calc
+      (∑ i, ∑ j, ‖D i j‖ ^ (2 : ℝ)) = ∑ i, ∑ j, ‖D i j‖ ^ 2 := by
+        simp_rw [Real.rpow_two]
+    _ = ∑ ij : Fin 3 × Fin 3, ‖D ij.1 ij.2‖ ^ 2 := by
+        rw [← Finset.sum_product', Finset.univ_product_univ]
+    _ ≤ ∑ ij : Fin 3 × Fin 3, C ^ 2 := by
+        apply Finset.sum_le_sum
+        intro ij hij
+        exact pow_le_pow_left₀ (by positivity) (by simpa [abs_of_nonneg] using hD ij.1 ij.2) 2
+    _ = (3 * C) ^ 2 := by
+        simp [Finset.sum_const, Finset.card_univ]
+        ring
+
+lemma matrix_product_entry_sub_abs_le
+    (A B : Matrix (Fin 3) (Fin 3) ℝ) (R : ℝ) (hR : 0 ≤ R)
+    (hA : ‖matrixToEuclid A‖ ≤ R) (hB : ‖matrixToEuclid B‖ ≤ R)
+    (p q r s : Fin 3) :
+    |A p q * A r s - B p q * B r s| ≤ 2 * R * ‖matrixToEuclid (A - B)‖ := by
+  have h1 : |A p q - B p q| ≤ ‖matrixToEuclid (A - B)‖ := by
+    have h := euclid_entry_le_norm (matrixToEuclid (A - B)) (p, q)
+    simpa [matrixToEuclid_sub] using h
+  have h2 : |A r s| ≤ R := by
+    have h := euclid_entry_le_norm (matrixToEuclid A) (r, s)
+    simpa using le_trans h hA
+  have h3 : |B p q| ≤ R := by
+    have h := euclid_entry_le_norm (matrixToEuclid B) (p, q)
+    simpa using le_trans h hB
+  have h4 : |A r s - B r s| ≤ ‖matrixToEuclid (A - B)‖ := by
+    have h := euclid_entry_le_norm (matrixToEuclid (A - B)) (r, s)
+    simpa [matrixToEuclid_sub] using h
+  calc
+    |A p q * A r s - B p q * B r s| ≤
+        |A p q * A r s - B p q * A r s| + |B p q * A r s - B p q * B r s| := by
+      simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using
+        abs_sub_le (A p q * A r s) (B p q * A r s) (B p q * B r s)
+    _ = |A p q - B p q| * |A r s| + |B p q| * |A r s - B r s| := by
+      rw [← sub_mul, ← mul_sub, abs_mul, abs_mul]
+    _ ≤ ‖matrixToEuclid (A - B)‖ * R + R * ‖matrixToEuclid (A - B)‖ := by
+      exact add_le_add (mul_le_mul h1 h2 (abs_nonneg _) (norm_nonneg _))
+        (mul_le_mul h3 h4 (abs_nonneg _) hR)
+    _ = 2 * R * ‖matrixToEuclid (A - B)‖ := by ring
+
+lemma two_monomial_sub_abs_le (x1 x2 y1 y2 z1 z2 w1 w2 : ℝ) :
+    |(x1 * x2 - y1 * y2) - (z1 * z2 - w1 * w2)| ≤
+      |x1 * x2 - z1 * z2| + |y1 * y2 - w1 * w2| := by
+  have h : (x1 * x2 - y1 * y2) - (z1 * z2 - w1 * w2) =
+      (x1 * x2 - z1 * z2) - (y1 * y2 - w1 * w2) := by ring
+  rw [h]
+  simpa [sub_zero, abs_neg, abs_sub_comm] using
+    (abs_sub_le (x1 * x2 - z1 * z2) (0 : ℝ) (y1 * y2 - w1 * w2))
+
+lemma two_monomial_sub_abs_le' (x1 x2 y1 y2 z1 z2 w1 w2 : ℝ) :
+    |-(x1 * x2) + y1 * y2 - (-(z1 * z2) + w1 * w2)| ≤
+      |x1 * x2 - z1 * z2| + |y1 * y2 - w1 * w2| := by
+  have h : -(x1 * x2) + y1 * y2 - (-(z1 * z2) + w1 * w2) =
+      (y1 * y2 - x1 * x2) - (w1 * w2 - z1 * z2) := by ring
+  rw [h]
+  simpa [add_comm] using two_monomial_sub_abs_le y1 y2 x1 x2 w1 w2 z1 z2
+
+lemma matrix_adjugate_sub_norm_le
+    (A B : Matrix (Fin 3) (Fin 3) ℝ) (R : ℝ) (hR : 0 ≤ R)
+    (hA : ‖matrixToEuclid A‖ ≤ R) (hB : ‖matrixToEuclid B‖ ≤ R) :
+    ‖matrixToEuclid (A.adjugate - B.adjugate)‖ ≤
+      12 * R * ‖matrixToEuclid (A - B)‖ := by
+  have hnorm : ‖matrixToEuclid (A.adjugate - B.adjugate)‖ ≤
+      3 * (4 * R * ‖matrixToEuclid (A - B)‖) := by
+    apply euclid_norm_le_of_entry_le
+    · positivity
+    · intro i j
+      simp_rw [Matrix.adjugate_fin_three]
+      fin_cases i <;> fin_cases j <;> simp
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 1 1 2 2
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 1 2 2 1
+        have h := two_monomial_sub_abs_le (A 1 1) (A 2 2) (A 1 2) (A 2 1)
+          (B 1 1) (B 2 2) (B 1 2) (B 2 1)
+        nlinarith
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 2 2 1
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 1 2 2
+        have h := two_monomial_sub_abs_le' (A 0 1) (A 2 2) (A 0 2) (A 2 1)
+          (B 0 1) (B 2 2) (B 0 2) (B 2 1)
+        nlinarith
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 1 1 2
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 2 1 1
+        have h := two_monomial_sub_abs_le (A 0 1) (A 1 2) (A 0 2) (A 1 1)
+          (B 0 1) (B 1 2) (B 0 2) (B 1 1)
+        nlinarith
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 1 2 2 0
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 1 0 2 2
+        have h := two_monomial_sub_abs_le' (A 1 0) (A 2 2) (A 1 2) (A 2 0)
+          (B 1 0) (B 2 2) (B 1 2) (B 2 0)
+        nlinarith
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 0 2 2
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 2 2 0
+        have h := two_monomial_sub_abs_le (A 0 0) (A 2 2) (A 0 2) (A 2 0)
+          (B 0 0) (B 2 2) (B 0 2) (B 2 0)
+        nlinarith
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 2 1 0
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 0 1 2
+        have h := two_monomial_sub_abs_le' (A 0 0) (A 1 2) (A 0 2) (A 1 0)
+          (B 0 0) (B 1 2) (B 0 2) (B 1 0)
+        nlinarith
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 1 0 2 1
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 1 1 2 0
+        have h := two_monomial_sub_abs_le (A 1 0) (A 2 1) (A 1 1) (A 2 0)
+          (B 1 0) (B 2 1) (B 1 1) (B 2 0)
+        nlinarith
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 1 2 0
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 0 2 1
+        have h := two_monomial_sub_abs_le' (A 0 0) (A 2 1) (A 0 1) (A 2 0)
+          (B 0 0) (B 2 1) (B 0 1) (B 2 0)
+        nlinarith
+      · have h1 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 0 1 1
+        have h2 := matrix_product_entry_sub_abs_le A B R hR hA hB 0 1 1 0
+        have h := two_monomial_sub_abs_le (A 0 0) (A 1 1) (A 0 1) (A 1 0)
+          (B 0 0) (B 1 1) (B 0 1) (B 1 0)
+        nlinarith
+  nlinarith [hnorm]
+
+lemma euclidToMatrix_norm_eq (a : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
+    ‖euclidToMatrix a‖ = ‖a‖ := by
+  have h := matrixToEuclid_norm (euclidToMatrix a)
+  rw [matrixToEuclid_euclidToMatrix] at h
+  exact h.symm
+
+lemma matrix_square_sub_norm_le
+    (A B : Matrix (Fin 3) (Fin 3) ℝ) (R : ℝ)
+    (hA : ‖matrixToEuclid A‖ ≤ R) (hB : ‖matrixToEuclid B‖ ≤ R) :
+    ‖matrixToEuclid (A * A - B * B)‖ ≤ 2 * R * ‖matrixToEuclid (A - B)‖ := by
+  have hident : A * A - B * B = A * (A - B) + (A - B) * B := by
+    ext i j
+    simp [Matrix.mul_apply, sub_mul, mul_sub]
+  calc
+    ‖matrixToEuclid (A * A - B * B)‖ = ‖matrixToEuclid (A * (A - B) + (A - B) * B)‖ := by
+      rw [hident]
+    _ ≤ ‖matrixToEuclid (A * (A - B))‖ + ‖matrixToEuclid ((A - B) * B)‖ := by
+      rw [matrixToEuclid_add]
+      exact norm_add_le _ _
+    _ ≤ ‖matrixToEuclid A‖ * ‖matrixToEuclid (A - B)‖ +
+        ‖matrixToEuclid (A - B)‖ * ‖matrixToEuclid B‖ := by
+      exact add_le_add (matrixToEuclid_mul_norm_le A (A - B))
+        (matrixToEuclid_mul_norm_le (A - B) B)
+    _ ≤ R * ‖matrixToEuclid (A - B)‖ + ‖matrixToEuclid (A - B)‖ * R := by
+      have h1 : ‖matrixToEuclid A‖ * ‖matrixToEuclid (A - B)‖ ≤
+          R * ‖matrixToEuclid (A - B)‖ :=
+        mul_le_mul_of_nonneg_right hA (norm_nonneg _)
+      have h2 : ‖matrixToEuclid (A - B)‖ * ‖matrixToEuclid B‖ ≤
+          ‖matrixToEuclid (A - B)‖ * R :=
+        mul_le_mul_of_nonneg_left hB (norm_nonneg _)
+      exact add_le_add h1 h2
+    _ = 2 * R * ‖matrixToEuclid (A - B)‖ := by ring
+
+lemma hamiltonIveyMatrixReaction_sub_norm_le
+    (A B : Matrix (Fin 3) (Fin 3) ℝ) (R : ℝ) (hR : 0 ≤ R)
+    (hA : ‖matrixToEuclid A‖ ≤ R) (hB : ‖matrixToEuclid B‖ ≤ R) :
+    ‖matrixToEuclid (hamiltonIveyMatrixReaction A - hamiltonIveyMatrixReaction B)‖ ≤
+      28 * R * ‖matrixToEuclid (A - B)‖ := by
+  have hsq := matrix_square_sub_norm_le A B R hA hB
+  have hadj := matrix_adjugate_sub_norm_le A B R hR hA hB
+  have hsum : matrixToEuclid (A * A - B * B + (A.adjugate - B.adjugate)) =
+      matrixToEuclid (A * A - B * B) + matrixToEuclid (A.adjugate - B.adjugate) := by
+    exact matrixToEuclid_add (A * A - B * B) (A.adjugate - B.adjugate)
+  have hnorm : ‖matrixToEuclid (A * A - B * B + (A.adjugate - B.adjugate))‖ ≤
+      2 * R * ‖matrixToEuclid (A - B)‖ + 12 * R * ‖matrixToEuclid (A - B)‖ := by
+    rw [hsum]
+    exact (norm_add_le (matrixToEuclid (A * A - B * B))
+      (matrixToEuclid (A.adjugate - B.adjugate))).trans (add_le_add hsq hadj)
+  calc
+    ‖matrixToEuclid (hamiltonIveyMatrixReaction A - hamiltonIveyMatrixReaction B)‖ = ‖
+        matrixToEuclid ((2 : ℝ) • (A * A - B * B + (A.adjugate - B.adjugate)))‖ := by
+      congr 1
+      ext ij
+      unfold hamiltonIveyMatrixReaction
+      simp only [matrixToEuclid, WithLp.ofLp_toLp, Matrix.sub_apply, Matrix.smul_apply,
+        Matrix.add_apply, smul_eq_mul]
+      ring
+    _ = 2 * ‖matrixToEuclid (A * A - B * B + (A.adjugate - B.adjugate))‖ := by
+      rw [matrixToEuclid_smul (2 : ℝ)]
+      rw [norm_smul]
+      norm_num
+    _ ≤ 2 * (2 * R * ‖matrixToEuclid (A - B)‖ + 12 * R * ‖matrixToEuclid (A - B)‖) := by
+      exact mul_le_mul_of_nonneg_left hnorm (by norm_num)
+    _ = 28 * R * ‖matrixToEuclid (A - B)‖ := by ring
+
+lemma uhlenbeckCurvatureOperatorReactionState_sub_norm_le
+    (a b : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (R : ℝ) (hR : 0 ≤ R) (ha : ‖a‖ ≤ R) (hb : ‖b‖ ≤ R) :
+    ‖uhlenbeckCurvatureOperatorReactionState a - uhlenbeckCurvatureOperatorReactionState b‖ ≤
+      28 * R * ‖a - b‖ := by
+  let A : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix a
+  let B : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix b
+  have hA : ‖matrixToEuclid A‖ ≤ R := by
+    dsimp [A]
+    simpa [euclidToMatrix_norm_eq] using ha
+  have hB : ‖matrixToEuclid B‖ ≤ R := by
+    dsimp [B]
+    simpa [euclidToMatrix_norm_eq] using hb
+  have hmain : ‖matrixToEuclid (hamiltonIveyMatrixReaction A - hamiltonIveyMatrixReaction B)‖ ≤
+      28 * R * ‖matrixToEuclid (A - B)‖ :=
+    hamiltonIveyMatrixReaction_sub_norm_le A B R hR hA hB
+  have hdiff : matrixToEuclid (A - B) = a - b := by
+    dsimp [A, B]
+    rw [matrixToEuclid_sub]
+    rw [matrixToEuclid_euclidToMatrix, matrixToEuclid_euclidToMatrix]
+  have hlhs : matrixToEuclid (hamiltonIveyMatrixReaction A - hamiltonIveyMatrixReaction B) =
+      uhlenbeckCurvatureOperatorReactionState a - uhlenbeckCurvatureOperatorReactionState b := by
+    dsimp [A, B, uhlenbeckCurvatureOperatorReactionState]
+    rw [matrixToEuclid_sub]
+  rw [hlhs, hdiff] at hmain
+  exact hmain
+
+theorem uhlenbeckCurvatureOperatorReactionState_lipschitzOn_closedBall
+    (R : ℝ) (hR : 0 ≤ R) :
+    ∃ L : NNReal, LipschitzOnWith L uhlenbeckCurvatureOperatorReactionState
+      (Metric.closedBall 0 R) := by
+  refine ⟨⟨28 * R, by positivity⟩, ?_⟩
+  refine LipschitzOnWith.of_dist_le_mul ?_
+  intro a ha b hb
+  rw [dist_eq_norm, dist_eq_norm]
+  exact uhlenbeckCurvatureOperatorReactionState_sub_norm_le a b R hR
+    (mem_closedBall_zero_iff.mp ha) (mem_closedBall_zero_iff.mp hb)
 
 end DifferentialGeometry.PDE.RicciFlow
 
