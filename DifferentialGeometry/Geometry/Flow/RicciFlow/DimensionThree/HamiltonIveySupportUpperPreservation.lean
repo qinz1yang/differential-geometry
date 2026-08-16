@@ -568,6 +568,132 @@ theorem hamiltonIveySupportUpperReact_barrier_diff
     (t0 := t0) (t := t) (c := c) (g := S.base.metric t) (x := x)
     (A := (hamiltonIveySupportUpperSec S K a t0) t x) ha hdim v]
 
+theorem hamiltonIveySupportUpperReactLip_ltc_eq
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    {K a t0 t : Real} {x : M}
+    (ha : 0 < a)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3) :
+    (3 : Real) • shiftRic3At (I := I) (M := M) (hamiltonIveySupportPinchDelta a)
+        (S.base.metric t)
+        (hamiltonIveySupportCoefficient K a t0 t •
+            metricTensorField (I := I) (S.base.metric t) x -
+          (hamiltonIveySupportUpperSec S K a t0) t x) -
+      metricTracePair0SAt (I := I) (S.base.metric t)
+        (shiftRic3At (I := I) (M := M) (hamiltonIveySupportPinchDelta a)
+          (S.base.metric t)
+          (hamiltonIveySupportCoefficient K a t0 t •
+              metricTensorField (I := I) (S.base.metric t) x -
+            (hamiltonIveySupportUpperSec S K a t0) t x)) •
+        metricTensorField (I := I) (S.base.metric t) x =
+      metricTracePair0SAt (I := I) (S.base.metric t)
+          ((hamiltonIveySupportUpperSec S K a t0) t x) •
+          metricTensorField (I := I) (S.base.metric t) x -
+        (3 : Real) • (hamiltonIveySupportUpperSec S K a t0) t x := by
+  let g : SmoothRiemannianMetric I M := S.base.metric t
+  let δ : Real := hamiltonIveySupportPinchDelta a
+  let c : Real := hamiltonIveySupportCoefficient K a t0 t
+  let Sx : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x :=
+    (hamiltonIveySupportUpperSec S K a t0) t x
+  let Q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x :=
+    c • metricTensorField (I := I) g x - Sx
+  letI : DistribSMul ℝ (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
+    (tensor0SSpace_module (𝕜 := ℝ) 2 x).toDistribMulAction.toDistribSMul
+  letI : DistribMulAction ℝ (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
+    (tensor0SSpace_module (𝕜 := ℝ) 2 x).toDistribMulAction
+  letI : MulAction ℝ (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
+    (tensor0SSpace_module (𝕜 := ℝ) 2 x).toDistribMulAction.toMulAction
+  have hden0 : (1 : Real) - 3 * ((1 + a) / (2 * a)) ≠ 0 := by
+    have hcalc : 1 - 3 * ((1 + a) / (2 * a)) = -(a + 3) / (2 * a) := by
+      field_simp [ha.ne']
+      ring
+    rw [hcalc]
+    have hnum : -(a + 3) ≠ 0 := by
+      rw [neg_ne_zero]
+      nlinarith
+    exact div_ne_zero hnum (mul_ne_zero two_ne_zero ha.ne')
+  have hden : (1 : Real) - 3 * δ ≠ 0 := by
+    dsimp [δ]
+    exact hden0
+  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) g x hdim
+  have hRic : shiftRic3At (I := I) (M := M) δ g Q =
+      Q + (δ * metricTracePair0SAt (I := I) g Q / (1 - 3 * δ)) •
+        metricTensorField (I := I) g x := by
+    unfold shiftRic3At shiftScalar3At
+    congr 1
+    congr 1
+    ring
+  have htr : metricTracePair0SAt (I := I) g
+        (Q + (δ * metricTracePair0SAt (I := I) g Q / (1 - 3 * δ)) •
+          metricTensorField (I := I) g x) =
+      metricTracePair0SAt (I := I) g Q +
+        3 * (δ * metricTracePair0SAt (I := I) g Q / (1 - 3 * δ)) := by
+    rw [metricTracePair0SAt_add (I := I) (M := M) g Q
+      ((δ * metricTracePair0SAt (I := I) g Q / (1 - 3 * δ)) •
+        metricTensorField (I := I) g x)]
+    rw [metricTracePair0SAt_smul (I := I) (M := M) g
+      (δ * metricTracePair0SAt (I := I) g Q / (1 - 3 * δ))
+      (metricTensorField (I := I) g x)]
+    rw [metricTrace_metric3 (I := I) (M := M) basis horth]
+    ring
+  have htrRic : metricTracePair0SAt (I := I) g (shiftRic3At (I := I) (M := M) δ g Q) =
+      metricTracePair0SAt (I := I) g Q / (1 - 3 * δ) := by
+    rw [hRic]
+    rw [htr]
+    field_simp [hden]
+    ring
+  -- C := 3•Ric - tr(Ric)•g = 3Q - tr(Q)•g = tr(S)•g - 3S
+  have hQ : Q = c • metricTensorField (I := I) g x - Sx := rfl
+  have htrQ : metricTracePair0SAt (I := I) g Q =
+      3 * c - metricTracePair0SAt (I := I) g Sx := by
+    rw [hQ]
+    rw [metricTracePair0SAt_sub (I := I) (M := M) g
+      (c • metricTensorField (I := I) g x) Sx]
+    rw [metricTracePair0SAt_smul (I := I) (M := M) g c
+      (metricTensorField (I := I) g x)]
+    rw [metricTrace_metric3 (I := I) (M := M) basis horth]
+    ring
+  have hmain : (3 : Real) • shiftRic3At (I := I) (M := M) δ g Q -
+      metricTracePair0SAt (I := I) g (shiftRic3At (I := I) (M := M) δ g Q) •
+        metricTensorField (I := I) g x =
+      metricTracePair0SAt (I := I) g Sx • metricTensorField (I := I) g x -
+        (3 : Real) • Sx := by
+    rw [hRic, htr]
+    let s : Real := δ * metricTracePair0SAt (I := I) g Q / (1 - 3 * δ)
+    have hsmul1 : (3 : Real) • (Q + s • metricTensorField (I := I) g x) =
+        (3 : Real) • Q + (3 * s) • metricTensorField (I := I) g x := by
+      calc
+        (3 : Real) • (Q + s • metricTensorField (I := I) g x) =
+            (3 : Real) • Q + (3 : Real) • (s • metricTensorField (I := I) g x) := by
+          exact smul_add (3 : ℝ) Q (s • metricTensorField (I := I) g x)
+        _ = (3 : Real) • Q + (3 * s) • metricTensorField (I := I) g x := by
+          exact congrArg (fun T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x =>
+            (3 : ℝ) • Q + T) (smul_smul (3 : ℝ) s (metricTensorField (I := I) g x))
+    rw [hsmul1]
+    have haddsmul : (metricTracePair0SAt (I := I) g Q + 3 * s) • metricTensorField (I := I) g x =
+        metricTracePair0SAt (I := I) g Q • metricTensorField (I := I) g x +
+          (3 * s) • metricTensorField (I := I) g x := by
+      exact add_smul (metricTracePair0SAt (I := I) g Q) (3 * s) (metricTensorField (I := I) g x)
+    dsimp [s]
+    rw [haddsmul]
+    dsimp [s]
+    abel_nf
+    rw [hQ, htrQ]
+    have hsmul2 : (3 : Real) • (c • metricTensorField (I := I) g x - Sx) =
+        (3 * c) • metricTensorField (I := I) g x - (3 : ℝ) • Sx := by
+      have h1 := smul_sub (3 : ℝ) (c • metricTensorField (I := I) g x) Sx
+      -- h1 : 3 • (c•g - S) = 3 • (c•g) - 3 • S
+      simpa [smul_smul] using h1
+    rw [hsmul2]
+    have hsubsmul : (3 * c - metricTracePair0SAt (I := I) g Sx) • metricTensorField (I := I) g x =
+        (3 * c) • metricTensorField (I := I) g x -
+          metricTracePair0SAt (I := I) g Sx • metricTensorField (I := I) g x := by
+      exact sub_smul (3 * c) (metricTracePair0SAt (I := I) g Sx) (metricTensorField (I := I) g x)
+    rw [hsubsmul]
+    abel_nf
+  exact hmain
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
