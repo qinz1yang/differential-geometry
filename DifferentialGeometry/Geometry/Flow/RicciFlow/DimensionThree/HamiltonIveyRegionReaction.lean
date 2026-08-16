@@ -2268,6 +2268,147 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclid_diag_eq_supportFunction
     exact le_trans hinner hFle
   exact le_antisymm hdef_le hsup_le
 
+lemma inner_symm_of_region_mem
+    {K τ : ℝ}
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hA : A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ) :
+    inner ℝ v A =
+      inner ℝ (matrixToEuclid (symmEuclid v)) (matrixToEuclid (euclidToMatrix A)) := by
+  have hAm : (euclidToMatrix A).IsHermitian := by
+    have hmem : euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ A).1 hA
+    rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hmem
+    exact hmem.1
+  simpa [matrixToEuclid_euclidToMatrix] using inner_matrixToEuclid_symm v (euclidToMatrix A) hAm
+
+lemma supportFunction_rotate_diag
+    {K τ : ℝ}
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
+    supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ) v =
+      supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ)
+        (matrixToEuclid (Matrix.diagonal (symmEuclid_isHermitian v).eigenvalues₀)) := by
+  let S : Matrix (Fin 3) (Fin 3) ℝ := symmEuclid v
+  let nv : Fin 3 → ℝ := (symmEuclid_isHermitian v).eigenvalues₀
+  rcases hermitian_orthogonal_diagonalization (symmEuclid_isHermitian v) with ⟨O, hOorth, hdiag⟩
+  have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+  have hdiag' : O.transpose * S * O = Matrix.diagonal nv := by
+    simpa [S, nv] using hdiag
+  -- the map A ↦ matrixToEuclid (Oᵀ (euclidToMatrix A) O) is a bijection of the region
+  let φ : EuclideanSpace ℝ (Fin 3 × Fin 3) → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    fun A => matrixToEuclid (O.transpose * euclidToMatrix A * O)
+  have hφ_mem : ∀ A, A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ →
+      φ A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ := by
+    intro A hA
+    have hAm : euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ A).1 hA
+    have hconj := (hamiltonIveyConvexMatrixRegion_orthogonal_conj
+      (Q := O) hOorth2 hOorth).1 hAm
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+    dsimp [φ]
+    simpa [euclidToMatrix_matrixToEuclid] using hconj
+  have hφ_inv : ∀ B, B ∈ hamiltonIveyConvexMatrixRegionEuclid K τ →
+      ∃ A, A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧ φ A = B := by
+    intro B hB
+    let A : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+      matrixToEuclid (O * euclidToMatrix B * O.transpose)
+    have hBm : euclidToMatrix B ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ B).1 hB
+    have hA : A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ := by
+      have hconj := (hamiltonIveyConvexMatrixRegion_orthogonal_conj
+        (Q := O.transpose) (by simpa using hOorth) (by simpa using hOorth2)).1 hBm
+      rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+      dsimp [A]
+      simpa [euclidToMatrix_matrixToEuclid, Matrix.transpose_transpose] using hconj
+    refine ⟨A, hA, ?_⟩
+    dsimp [φ, A]
+    rw [euclidToMatrix_matrixToEuclid]
+    have hmat : O.transpose * (O * euclidToMatrix B * O.transpose) * O = euclidToMatrix B := by
+      simp only [Matrix.mul_assoc]
+      rw [hOorth2]
+      simp only [Matrix.mul_one]
+      rw [← Matrix.mul_assoc]
+      rw [hOorth2]
+      simp only [Matrix.one_mul]
+    rw [hmat, matrixToEuclid_euclidToMatrix]
+  -- inner v A = inner (diag nv) (φ A) for A ∈ region
+  have hinner_eq : ∀ A, A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ →
+      inner ℝ v A = inner ℝ (matrixToEuclid (Matrix.diagonal nv)) (φ A) := by
+    intro A hA
+    have hAm : (euclidToMatrix A).IsHermitian := by
+      have hmem : euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ :=
+        (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ A).1 hA
+      rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hmem
+      exact hmem.1
+    calc
+      inner ℝ v A = inner ℝ (matrixToEuclid S) (matrixToEuclid (euclidToMatrix A)) := by
+            dsimp [S]
+            exact inner_symm_of_region_mem v A hA
+      _ = inner ℝ (matrixToEuclid (O.transpose * S * O))
+            (matrixToEuclid (O.transpose * (euclidToMatrix A) * O)) := by
+            exact inner_matrixToEuclid_orthogonal_conj S (euclidToMatrix A) O hOorth
+      _ = inner ℝ (matrixToEuclid (Matrix.diagonal nv)) (φ A) := by
+            dsimp [φ]
+            rw [hdiag']
+  -- supportFunction v = sSup {inner v A | A ∈ region} = sSup {inner (diag nv) B | B ∈ region}
+  unfold supportFunction
+  congr 1
+  ext x
+  constructor
+  · rintro ⟨A, hA, rfl⟩
+    refine ⟨φ A, hφ_mem A hA, ?_⟩
+    exact hinner_eq A hA
+  · rintro ⟨B, hB, rfl⟩
+    rcases hφ_inv B hB with ⟨A, hA, rfl⟩
+    refine ⟨A, hA, ?_⟩
+    exact (hinner_eq A hA).symm
+
+lemma symmEuclid_diag_eigenvalues₀ (ν : Fin 3 → ℝ) (hν : Antitone ν) :
+    (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν))).eigenvalues₀ = ν := by
+  have hsymm : symmEuclid (matrixToEuclid (Matrix.diagonal ν)) = Matrix.diagonal ν := by
+    ext i j
+    dsimp [symmEuclid, euclidToMatrix]
+    by_cases h : i = j
+    · simp [h, matrixToEuclid, Matrix.diagonal]
+      ring
+    · simp [h, matrixToEuclid, Matrix.diagonal, Ne.symm h]
+  have hchar : (symmEuclid (matrixToEuclid (Matrix.diagonal ν))).charpoly =
+      (Matrix.diagonal ν).charpoly := by
+    rw [hsymm]
+  have heig' : (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν))).eigenvalues₀ =
+      (Matrix.isHermitian_diagonal ν).eigenvalues₀ :=
+    eigenvalues₀_eq_of_charpoly_eq_real
+      (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν)))
+      (Matrix.isHermitian_diagonal ν) hchar
+  have heig : (Matrix.isHermitian_diagonal ν).eigenvalues₀ = ν :=
+    diagonal_eigenvalues₀_eq_of_antitone ν hν
+  exact heig'.trans heig
+
+theorem hamiltonIveyConvexMatrixRegionSupportEuclid_eq_supportFunction
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hv : (symmEuclid_isHermitian v).eigenvalues₀ 0 < 0) :
+    hamiltonIveyConvexMatrixRegionSupportEuclid K τ v =
+      supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ) v := by
+  let nv : Fin 3 → ℝ := (symmEuclid_isHermitian v).eigenvalues₀
+  have hnv_anti : Antitone nv := by
+    dsimp [nv]
+    exact (symmEuclid_isHermitian v).eigenvalues₀_antitone
+  have hnv0 : nv 0 < 0 := by
+    simpa [nv] using hv
+  have hdef : hamiltonIveyConvexMatrixRegionSupportEuclid K τ v =
+      hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal nv)) := by
+    unfold hamiltonIveyConvexMatrixRegionSupportEuclid
+    rw [symmEuclid_diag_eigenvalues₀ nv hnv_anti]
+  calc
+    hamiltonIveyConvexMatrixRegionSupportEuclid K τ v
+        = hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal nv)) := hdef
+    _ = supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ)
+          (matrixToEuclid (Matrix.diagonal nv)) :=
+          hamiltonIveyConvexMatrixRegionSupportEuclid_diag_eq_supportFunction hK hτ hnv_anti hnv0
+    _ = supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ) v :=
+          (supportFunction_rotate_diag v).symm
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
