@@ -3472,6 +3472,220 @@ lemma support_formula_le_candidate_star_of_le
   rw [hmin, hG]
   exact hle_min
 
+lemma strictMonoOn_hamiltonIveyBarrier_above_E
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    StrictMonoOn (hamiltonIveyBarrier K τ)
+      (Set.Ioi (K * Real.exp 2 / (1 + 2 * K * τ))) := by
+  refine strictMonoOn_of_deriv_pos (D := Set.Ioi (K * Real.exp 2 / (1 + 2 * K * τ)))
+    (convex_Ioi (r := (K * Real.exp 2 / (1 + 2 * K * τ)))) ?_ ?_
+  · exact (continuous_hamiltonIveyBarrier (K := K) (τ := τ) hK).continuousOn
+  · intro x hx
+    have hx' : x ∈ Set.Ioi (K * Real.exp 2 / (1 + 2 * K * τ)) := by simpa [interior_Ioi] using hx
+    have hden : 0 < 1 + 2 * K * τ := by
+      have hKτ : 0 ≤ 2 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    have hxpos : 0 < x := lt_of_lt_of_le (by positivity) (le_of_lt hx')
+    have hd : deriv (fun Y : ℝ => hamiltonIveyBarrier K τ Y) x =
+        Real.log (x / K) + Real.log (1 + 2 * K * τ) - 2 := deriv_hamiltonIveyBarrier_x hK hxpos
+    rw [hd]
+    have hlog : 2 < Real.log (x / K) + Real.log (1 + 2 * K * τ) := by
+      have harg1 : 0 < (K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K := by positivity
+      have harg2 : 0 < x * (1 + 2 * K * τ) / K := by
+        exact div_pos (mul_pos hxpos hden) hK
+      have hmono : Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K) <
+          Real.log (x * (1 + 2 * K * τ) / K) := by
+        refine (Real.log_lt_log_iff harg1 harg2).mpr ?_
+        have hmul : (K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) < x * (1 + 2 * K * τ) :=
+          mul_lt_mul_of_pos_right hx' hden
+        exact div_lt_div_of_pos_right hmul hK
+      have hlogE : Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K) = 2 := by
+        have hXeq : (K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K = Real.exp 2 := by
+          field_simp [hK.ne', hden.ne']
+        rw [hXeq]
+        exact Real.log_exp 2
+      have hlogX : Real.log (x / K) + Real.log (1 + 2 * K * τ) =
+          Real.log (x * (1 + 2 * K * τ) / K) := by
+        have h1 : Real.log (x / K) = Real.log x - Real.log K := Real.log_div hxpos.ne' hK.ne'
+        have h2 : Real.log ((x * (1 + 2 * K * τ)) / K) = Real.log (x * (1 + 2 * K * τ)) - Real.log K :=
+          Real.log_div (mul_pos hxpos hden).ne' hK.ne'
+        have h3 : Real.log (x * (1 + 2 * K * τ)) = Real.log x + Real.log (1 + 2 * K * τ) :=
+          Real.log_mul hxpos.ne' hden.ne'
+        rw [h1, h2, h3]
+        ring_nf
+      rw [hlogX]
+      linarith
+    linarith
+
+lemma hamiltonIveyBarrier_gt_scalarLower_at_exp_four
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    scalarSectionalLowerBarrier3 K τ <
+      hamiltonIveyBarrier K τ (K * Real.exp 4 / (1 + 2 * K * τ)) := by
+  have hval : hamiltonIveyBarrier K τ (K * Real.exp 4 / (1 + 2 * K * τ)) =
+      K * Real.exp 4 / (1 + 2 * K * τ) := by
+    have hden : 0 < 1 + 2 * K * τ := by
+      have hKτ : 0 ≤ 2 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    have hXpos : 0 < K * Real.exp 4 / (1 + 2 * K * τ) := by positivity
+    have hlog : Real.log ((K * Real.exp 4 / (1 + 2 * K * τ)) / K) + Real.log (1 + 2 * K * τ) = 4 := by
+      have hXeq : (K * Real.exp 4 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K = Real.exp 4 := by
+        field_simp [hK.ne', hden.ne']
+      have h1 : Real.log ((K * Real.exp 4 / (1 + 2 * K * τ)) / K) =
+          Real.log (K * Real.exp 4 / (1 + 2 * K * τ)) - Real.log K :=
+        Real.log_div hXpos.ne' hK.ne'
+      have h2 : Real.log ((K * Real.exp 4 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K) =
+          Real.log ((K * Real.exp 4 / (1 + 2 * K * τ)) * (1 + 2 * K * τ)) - Real.log K :=
+        Real.log_div (mul_pos hXpos hden).ne' hK.ne'
+      have h3 : Real.log ((K * Real.exp 4 / (1 + 2 * K * τ)) * (1 + 2 * K * τ)) =
+          Real.log (K * Real.exp 4 / (1 + 2 * K * τ)) + Real.log (1 + 2 * K * τ) :=
+        Real.log_mul hXpos.ne' hden.ne'
+      calc
+        Real.log ((K * Real.exp 4 / (1 + 2 * K * τ)) / K) + Real.log (1 + 2 * K * τ)
+            = Real.log ((K * Real.exp 4 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K) := by
+              rw [h1, h2, h3]
+              ring_nf
+        _ = 4 := by
+              rw [hXeq]
+              exact Real.log_exp 4
+    unfold hamiltonIveyBarrier
+    rw [hlog]
+    ring
+  have hsc : scalarSectionalLowerBarrier3 K τ < K * Real.exp 4 / (1 + 2 * K * τ) := by
+    unfold scalarSectionalLowerBarrier3
+    have hden4 : 0 < 1 + 4 * K * τ := by
+      have hKτ : 0 ≤ 4 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    have hden2 : 0 < 1 + 2 * K * τ := by
+      have hKτ : 0 ≤ 2 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    rw [div_lt_div_iff₀ hden4 hden2]
+    have hneg : -3 * K * (1 + 2 * K * τ) < 0 := by nlinarith
+    have hpos : 0 < K * Real.exp 4 * (1 + 4 * K * τ) := by positivity
+    linarith
+  rw [hval]
+  exact hsc
+
+lemma hamiltonIveyBarrier_lt_scalarLower_at_E
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    hamiltonIveyBarrier K τ (K * Real.exp 2 / (1 + 2 * K * τ)) < scalarSectionalLowerBarrier3 K τ := by
+  have hval : hamiltonIveyBarrier K τ (K * Real.exp 2 / (1 + 2 * K * τ)) =
+      -(K * Real.exp 2 / (1 + 2 * K * τ)) := by
+    have hden : 0 < 1 + 2 * K * τ := by
+      have hKτ : 0 ≤ 2 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    have hXpos : 0 < K * Real.exp 2 / (1 + 2 * K * τ) := by positivity
+    have hlog : Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) / K) + Real.log (1 + 2 * K * τ) = 2 := by
+      have hXeq : (K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K = Real.exp 2 := by
+        field_simp [hK.ne', hden.ne']
+      have h1 : Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) / K) =
+          Real.log (K * Real.exp 2 / (1 + 2 * K * τ)) - Real.log K :=
+        Real.log_div hXpos.ne' hK.ne'
+      have h2 : Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K) =
+          Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ)) - Real.log K :=
+        Real.log_div (mul_pos hXpos hden).ne' hK.ne'
+      have h3 : Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ)) =
+          Real.log (K * Real.exp 2 / (1 + 2 * K * τ)) + Real.log (1 + 2 * K * τ) :=
+        Real.log_mul hXpos.ne' hden.ne'
+      calc
+        Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) / K) + Real.log (1 + 2 * K * τ)
+            = Real.log ((K * Real.exp 2 / (1 + 2 * K * τ)) * (1 + 2 * K * τ) / K) := by
+              rw [h1, h2, h3]
+              ring_nf
+        _ = 2 := by
+              rw [hXeq]
+              exact Real.log_exp 2
+    unfold hamiltonIveyBarrier
+    rw [hlog]
+    ring
+  have hEgt : 3 * K / (1 + 4 * K * τ) < K * Real.exp 2 / (1 + 2 * K * τ) := by
+    have hden4 : 0 < 1 + 4 * K * τ := by
+      have hKτ : 0 ≤ 4 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    have hden2 : 0 < 1 + 2 * K * τ := by
+      have hKτ : 0 ≤ 2 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    rw [div_lt_div_iff₀ hden4 hden2]
+    have hE2 : 3 < Real.exp 2 := by
+      have h1 : (2 : ℝ) < Real.exp 1 := Real.exp_one_gt_two
+      have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
+        rw [← Real.exp_add]
+        norm_num
+      rw [h2]
+      nlinarith
+    have hKτ : 0 ≤ K * τ := mul_nonneg hK.le hτ
+    have h1 : 3 * (1 + 2 * K * τ) < Real.exp 2 * (1 + 2 * K * τ) :=
+      mul_lt_mul_of_pos_right hE2 hden2
+    have h2 : Real.exp 2 * (1 + 2 * K * τ) ≤ Real.exp 2 * (1 + 4 * K * τ) := by
+      have hle : 1 + 2 * K * τ ≤ 1 + 4 * K * τ := by nlinarith
+      exact mul_le_mul_of_nonneg_left hle (le_of_lt (Real.exp_pos 2))
+    have h3 : 3 * (1 + 2 * K * τ) < Real.exp 2 * (1 + 4 * K * τ) := lt_of_lt_of_le h1 h2
+    have hmul := mul_lt_mul_of_pos_left h3 hK
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hmul
+  have hconv : -(K * Real.exp 2 / (1 + 2 * K * τ)) < -3 * K / (1 + 4 * K * τ) := by
+    simpa [neg_div] using (neg_lt_neg_iff.mpr hEgt)
+  rw [hval]
+  unfold scalarSectionalLowerBarrier3
+  exact hconv
+
+lemma exists_kink_point
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    ∃ X : ℝ, K * Real.exp 2 / (1 + 2 * K * τ) < X ∧
+      hamiltonIveyBarrier K τ X = scalarSectionalLowerBarrier3 K τ := by
+  let E : ℝ := K * Real.exp 2 / (1 + 2 * K * τ)
+  let X₁ : ℝ := K * Real.exp 4 / (1 + 2 * K * τ)
+  have hE₁ : E ≤ X₁ := by
+    have hE2 : Real.exp 2 ≤ Real.exp 4 := (Real.exp_le_exp.mpr (by norm_num : (2 : ℝ) ≤ 4))
+    dsimp [E, X₁]
+    have hden : 0 < 1 + 2 * K * τ := by
+      have hKτ : 0 ≤ 2 * K * τ := by
+        have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+        nlinarith
+      nlinarith
+    exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hE2 hK.le) hden.le
+  have hcont : ContinuousOn (hamiltonIveyBarrier K τ) (Set.Icc E X₁) :=
+    (continuous_hamiltonIveyBarrier (K := K) (τ := τ) hK).continuousOn.mono (by
+      intro x hx
+      exact Set.mem_univ x)
+  have hElt : hamiltonIveyBarrier K τ E < scalarSectionalLowerBarrier3 K τ :=
+    hamiltonIveyBarrier_lt_scalarLower_at_E hK hτ
+  have hXgt : scalarSectionalLowerBarrier3 K τ < hamiltonIveyBarrier K τ X₁ :=
+    hamiltonIveyBarrier_gt_scalarLower_at_exp_four hK hτ
+  have himg : Set.Icc (hamiltonIveyBarrier K τ E) (hamiltonIveyBarrier K τ X₁) ⊆
+      (hamiltonIveyBarrier K τ) '' Set.Icc E X₁ := intermediate_value_Icc hE₁ hcont
+  have hmem : scalarSectionalLowerBarrier3 K τ ∈
+      Set.Icc (hamiltonIveyBarrier K τ E) (hamiltonIveyBarrier K τ X₁) := ⟨hElt.le, hXgt.le⟩
+  rcases himg hmem with ⟨X, hX, hEq⟩
+  refine ⟨X, ?_, hEq⟩
+  have hXge : E ≤ X := hX.1
+  have hXne : X ≠ E := by
+    intro hz
+    have : hamiltonIveyBarrier K τ E = scalarSectionalLowerBarrier3 K τ := by
+      simpa [hz] using hEq
+    exact (ne_of_lt hElt) this
+  exact lt_of_le_of_ne hXge (Ne.symm hXne)
+
+noncomputable def hamiltonIveyKinkPoint {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) : ℝ :=
+  Classical.choose (exists_kink_point hK hτ)
+
+lemma hamiltonIveyKinkPoint_spec
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK hτ ∧
+      hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK hτ) = scalarSectionalLowerBarrier3 K τ :=
+  Classical.choose_spec (exists_kink_point hK hτ)
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
