@@ -233,6 +233,96 @@ theorem sectionalRayleighMin3_diagonal_ge
           exact Finset.sum_le_sum (fun i _ =>
             mul_le_mul_of_nonneg_right (hm i) (sq_nonneg (x i)))
 
+lemma small_order_ge
+    (a b a' b' : Real) (hab : b ≤ a)
+    (h0 : a = b → a' = b') :
+    ∃ ε : Real, 0 < ε ∧ ∀ t : Real, t ∈ Set.Icc 0 ε →
+      b + t * b' ≤ a + t * a' := by
+  by_cases hab' : a = b
+  · subst a
+    rw [h0 rfl]
+    refine ⟨1, by norm_num, ?_⟩
+    intro t ht
+    exact le_rfl
+  · have hgt : b < a := lt_of_le_of_ne hab (Ne.symm hab')
+    by_cases hle : a' ≤ b'
+    · let eps : Real := (a - b) / (b' - a' + 1)
+      refine ⟨eps, ?_, ?_⟩
+      · dsimp [eps]
+        have hden : 0 < b' - a' + 1 := by nlinarith
+        exact div_pos (sub_pos.mpr hgt) hden
+      · intro t ht
+        have hb' : b - a ≤ t * (a' - b') := by
+          have htl : t ≤ (a - b) / (b' - a' + 1) := by
+            dsimp [eps] at ht
+            exact ht.2
+          have hden : 0 < b' - a' + 1 := by nlinarith
+          have h1 : t * (b' - a' + 1) ≤ a - b := by
+            rw [le_div_iff₀ hden] at htl
+            exact htl
+          nlinarith
+        nlinarith [hb']
+    · refine ⟨1, by norm_num, ?_⟩
+      intro t ht
+      have hle' : b' ≤ a' := le_of_lt (lt_of_not_ge hle)
+      have hcoef : 0 ≤ t := ht.1
+      nlinarith
+
+lemma reactionDiag_order0_ge2 (l1 l2 l3 : Real) :
+    l1 = l3 → 2 * (l1 ^ 2 + l2 * l3) = 2 * (l3 ^ 2 + l1 * l2) := by
+  intro h
+  rw [h]
+  ring
+
+lemma reactionDiag_order1_ge2 (l1 l2 l3 : Real) :
+    l2 = l3 → 2 * (l2 ^ 2 + l1 * l3) = 2 * (l3 ^ 2 + l1 * l2) := by
+  intro h
+  rw [h]
+
+lemma reactionDiag_minEig (l1 l2 l3 : Real) (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) :
+    ∃ ε : Real, 0 < ε ∧ ∀ t : Real, t ∈ Set.Icc 0 ε →
+      sectionalRayleighMin3 (Matrix.diagonal
+        ![l1 + t * (2 * (l1 ^ 2 + l2 * l3)),
+          l2 + t * (2 * (l2 ^ 2 + l1 * l3)),
+          l3 + t * (2 * (l3 ^ 2 + l1 * l2))]) =
+        l3 + t * (2 * (l3 ^ 2 + l1 * l2)) := by
+  obtain ⟨ε1, hε1, h1⟩ := small_order_ge l1 l3
+    (2 * (l1 ^ 2 + l2 * l3)) (2 * (l3 ^ 2 + l1 * l2))
+    (le_trans h32 h21) (reactionDiag_order0_ge2 l1 l2 l3)
+  obtain ⟨ε2, hε2, h2⟩ := small_order_ge l2 l3
+    (2 * (l2 ^ 2 + l1 * l3)) (2 * (l3 ^ 2 + l1 * l2))
+    h32 (reactionDiag_order1_ge2 l1 l2 l3)
+  refine ⟨min ε1 ε2, lt_min hε1 hε2, ?_⟩
+  intro t ht
+  have ht1 : t ∈ Set.Icc 0 ε1 := ⟨ht.1, le_trans ht.2 (min_le_left _ _)⟩
+  have ht2 : t ∈ Set.Icc 0 ε2 := ⟨ht.1, le_trans ht.2 (min_le_right _ _)⟩
+  let d : Fin 3 → Real := fun i =>
+    if i = 0 then l1 + t * (2 * (l1 ^ 2 + l2 * l3))
+    else if i = 1 then l2 + t * (2 * (l2 ^ 2 + l1 * l3))
+    else l3 + t * (2 * (l3 ^ 2 + l1 * l2))
+  have hd : Matrix.diagonal ![l1 + t * (2 * (l1 ^ 2 + l2 * l3)),
+      l2 + t * (2 * (l2 ^ 2 + l1 * l3)),
+      l3 + t * (2 * (l3 ^ 2 + l1 * l2))] = Matrix.diagonal d := by
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [Matrix.diagonal, d]
+  have hge : ∀ i : Fin 3, l3 + t * (2 * (l3 ^ 2 + l1 * l2)) ≤ d i := by
+    intro i
+    fin_cases i
+    · dsimp [d]
+      exact h1 t ht1
+    · dsimp [d]
+      exact h2 t ht2
+    · dsimp [d]
+      exact le_rfl
+  have hle : sectionalRayleighMin3 (Matrix.diagonal d) ≤
+      l3 + t * (2 * (l3 ^ 2 + l1 * l2)) := by
+    simpa [d] using (sectionalRayleighMin3_diagonal_le d (2 : Fin 3))
+  have hge' : l3 + t * (2 * (l3 ^ 2 + l1 * l2)) ≤
+      sectionalRayleighMin3 (Matrix.diagonal d) :=
+    sectionalRayleighMin3_diagonal_ge d hge
+  rw [hd]
+  exact le_antisymm hle hge'
+
 theorem hamiltonIveyMatrixReaction_orthogonal_conj
     (O A : Matrix (Fin 3) (Fin 3) Real)
     (hO : O * O.transpose = 1) :
