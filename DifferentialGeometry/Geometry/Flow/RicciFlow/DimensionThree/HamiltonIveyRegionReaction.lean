@@ -3677,14 +3677,57 @@ lemma exists_kink_point
     exact (ne_of_lt hElt) this
   exact lt_of_le_of_ne hXge (Ne.symm hXne)
 
-noncomputable def hamiltonIveyKinkPoint {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) : ℝ :=
-  Classical.choose (exists_kink_point hK hτ)
+noncomputable def hamiltonIveyKinkPoint {K : ℝ} (hK : 0 < K) (τ : ℝ) : ℝ :=
+  if hτ : 0 ≤ τ then Classical.choose (exists_kink_point hK hτ) else 0
 
 lemma hamiltonIveyKinkPoint_spec
     {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
-    K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK hτ ∧
-      hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK hτ) = scalarSectionalLowerBarrier3 K τ :=
-  Classical.choose_spec (exists_kink_point hK hτ)
+    K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK τ ∧
+      hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) = scalarSectionalLowerBarrier3 K τ := by
+  have hdef : hamiltonIveyKinkPoint hK τ = Classical.choose (exists_kink_point hK hτ) := by
+    dsimp [hamiltonIveyKinkPoint]
+    simp [hτ]
+  rw [hdef]
+  exact Classical.choose_spec (exists_kink_point hK hτ)
+
+lemma hasDerivAt_hamiltonIveyBarrier_tau
+    {K τ₀ X : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀) :
+    HasDerivAt (fun τ : ℝ => hamiltonIveyBarrier K τ X)
+      (X * (2 * K) / (1 + 2 * K * τ₀)) τ₀ := by
+  have hfun : (fun τ : ℝ => hamiltonIveyBarrier K τ X) =
+      fun τ : ℝ => X * Real.log X + X * (Real.log (1 + 2 * K * τ) - 3 - Real.log K) := by
+    funext τ
+    exact hamiltonIveyBarrier_eq_mul_log_add_linear (K := K) (τ := τ) (X := X) hK
+  rw [hfun]
+  have hden : 0 < 1 + 2 * K * τ₀ := by
+    have hKτ : 0 ≤ 2 * K * τ₀ := by
+      have h1 : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀
+      nlinarith
+    nlinarith
+  have hlin : HasDerivAt (fun τ : ℝ => 1 + 2 * K * τ) (2 * K) τ₀ := by
+    have h1 : HasDerivAt (fun τ : ℝ => (2 * K) * τ) (2 * K) τ₀ := by
+      simpa [mul_one] using (hasDerivAt_id τ₀).const_mul (2 * K)
+    simpa [add_comm, mul_comm] using (h1.add_const 1)
+  have hlog : HasDerivAt (fun τ : ℝ => Real.log (1 + 2 * K * τ)) ((2 * K) / (1 + 2 * K * τ₀)) τ₀ := by
+    have hlog' : HasDerivAt Real.log ((1 : ℝ) / (1 + 2 * K * τ₀)) (1 + 2 * K * τ₀) := by
+      simpa [one_div] using (Real.hasDerivAt_log (show 1 + 2 * K * τ₀ ≠ 0 from ne_of_gt hden))
+    have hcomp := hlog'.comp τ₀ hlin
+    -- hcomp : HasDerivAt (fun τ => log (1 + 2Kτ)) ((1/(1+2Kτ₀)) · (2K)) τ₀
+    convert hcomp using 1
+    ring
+  -- derivative of X·log(1+2Kτ) is X·(2K)/(1+2Kτ)
+  have hmul : HasDerivAt (fun τ : ℝ => X * Real.log (1 + 2 * K * τ))
+      (X * ((2 * K) / (1 + 2 * K * τ₀))) τ₀ := by
+    simpa [mul_comm] using hlog.const_mul X
+  have hconst : HasDerivAt (fun τ : ℝ => X * Real.log X + X * (-3 - Real.log K)) 0 τ₀ := by
+    simpa using (hasDerivAt_const (x := τ₀) (c := (X * Real.log X + X * (-3 - Real.log K) : ℝ)))
+  have hsum := hmul.add hconst
+  -- the function: X·log X + X·(log(1+2Kτ) − 3 − log K) = (X·log X + X·(−3−log K)) + X·log(1+2Kτ)
+  convert hsum using 1
+  · funext τ
+    dsimp
+    ring_nf
+  · ring
 
 end DifferentialGeometry.PDE.RicciFlow
 
