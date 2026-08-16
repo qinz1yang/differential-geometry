@@ -990,6 +990,16 @@ theorem hamiltonIveySupportUpperReact_eq_block
   rw [shiftReactBlock3_eq_of_ne (delta := delta) (a := -p) (b := -r) (c := -s) hden]
 
 omit [SigmaCompactSpace M] [T2Space M] [IsManifold I 2 M] in
+theorem hamiltonIveySupportUpperReactBlockPoly_not_nonneg :
+    ¬ (∀ a c q p r s : Real, 0 < a -> 0 < c -> 0 ≤ p -> 0 ≤ r ->
+      p * r - s ^ 2 ≥ 0 ->
+      0 ≤ hamiltonIveySupportUpperReactBlockPoly a c q p r s) := by
+  intro h
+  have hle := h 25 54 0.000000005 133 4 6 (by norm_num) (by norm_num)
+    (by norm_num) (by norm_num) (by norm_num)
+  norm_num [hamiltonIveySupportUpperReactBlockPoly] at hle
+
+omit [SigmaCompactSpace M] [T2Space M] [IsManifold I 2 M] in
 theorem hamiltonIveySupportUpperReactBlockPoly_tangent_eq
     {a X c q l1 : Real} (ha : a ≠ 0) (ha3 : a + 3 ≠ 0) (hc : c = X / a) :
     hamiltonIveySupportUpperReactBlockPoly a c q
