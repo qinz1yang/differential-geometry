@@ -426,7 +426,7 @@ theorem hamiltonIveySupportUpperReact_barrier_diff
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
-    {K a epsilon d t0 t : Real} {x : M}
+    {K a epsilon d t0 tbar t : Real} {x : M}
     (ha : 0 < a)
     (hdim : Module.finrank Real (TangentSpace I x) = 3)
     (v : TangentSpace I x) :
@@ -434,11 +434,11 @@ theorem hamiltonIveySupportUpperReact_barrier_diff
         (tensorBarrierFamily (I := I) (M := M) (fun s : Real => S.base.metric s)
           (twoTensorSecToFamily (I := I) (M := M)
             (hamiltonIveySupportUpperSec S K a t0))
-          epsilon d t0 t)) x v v -
+          epsilon d tbar t)) x v v -
       (hamiltonIveySupportUpperReact (I := I) (M := M) K a t0 t (S.base.metric t)
         (twoTensorSecToFamily (I := I) (M := M)
           (hamiltonIveySupportUpperSec S K a t0) t)) x v v =
-        (epsilon * (d + t - t0)) *
+        (epsilon * (d + t - tbar)) *
           (((2 * hamiltonIveySupportCoefficient K a t0 t /
               (1 - 3 * hamiltonIveySupportPinchDelta a)) : Real) *
               ((S.base.metric t).inner x v v) +
@@ -464,8 +464,8 @@ theorem hamiltonIveySupportUpperReact_barrier_diff
     tensorBarrierFamily (I := I) (M := M) (fun s : Real => S.base.metric s)
       (twoTensorSecToFamily (I := I) (M := M)
         (hamiltonIveySupportUpperSec S K a t0))
-      epsilon d t0 t
-  let c : Real := epsilon * (d + t - t0)
+      epsilon d tbar t
+  let c : Real := epsilon * (d + t - tbar)
   have hBarr : Barr = fun x v w => Araw x v w + c * (S.base.metric t).inner x v w := by
     funext x v w
     simp [Barr, Araw, c, tensorBarrierFamily_apply]
@@ -479,7 +479,7 @@ theorem hamiltonIveySupportUpperReact_barrier_diff
         (G := fun s : Real => S.base.metric s)
         (S := twoTensorSecToFamily (I := I) (M := M)
           (hamiltonIveySupportUpperSec S K a t0))
-        (epsilon := epsilon) (delta := d) (t0 := t0) (t := t) (x := x)
+        (epsilon := epsilon) (delta := d) (t0 := tbar) (t := t) (x := x)
         (twoTensorSecToFamily_bilin (I := I) (M := M)
           (hamiltonIveySupportUpperSec S K a t0) t x)
   have hsymB : TwoTensorSymmetricAt (I := I) (M := M) Barr x := by
@@ -487,7 +487,7 @@ theorem hamiltonIveySupportUpperReact_barrier_diff
       (G := fun s : Real => S.base.metric s)
       (S := twoTensorSecToFamily (I := I) (M := M)
         (hamiltonIveySupportUpperSec S K a t0))
-      (epsilon := epsilon) (delta := d) (t0 := t0) (t := t) (x := x)
+      (epsilon := epsilon) (delta := d) (t0 := tbar) (t := t) (x := x)
       ((hamiltonIveySupportUpperSec_symm (I := I) S K a t0 Set.univ)
         t (by simp) x)
   have hrealB :
@@ -693,6 +693,325 @@ theorem hamiltonIveySupportUpperReactLip_ltc_eq
     rw [hsubsmul]
     abel_nf
   exact hmain
+
+theorem hamiltonIveySupportUpperSec_absBound_Icc
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {K a t0 T : Real} (hK : 0 < K) (ha : 0 < a) (ht0 : t0 ≤ 0)
+    {tstart t1 : Real}
+    (hTsub : Set.Icc 0 T ⊆ D.carrier)
+    (hsub : Set.Icc tstart t1 ⊆ Set.Icc 0 T) :
+    ∃ C : Real, 0 ≤ C ∧
+      ∀ t, t ∈ Set.Icc tstart t1 -> ∀ x (v : TangentSpace I x),
+        |quad02 (I := I) (M := M)
+          ((hamiltonIveySupportUpperSec S K a t0) t x) v| ≤
+          C * (S.base.metric t).inner x v v := by
+  let G : Real -> SmoothRiemannianMetric I M := fun t => S.base.metric t
+  let A : (t : Real) -> (x : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
+      (I := I) (M := M) 2 x :=
+    fun t x => (hamiltonIveySupportUpperSec S K a t0) t x
+  have hsubD : Set.Icc tstart t1 ⊆ D.carrier := by
+    intro t ht
+    exact hTsub (hsub ht)
+  have hGcont :
+      Continuous (metricTimeBundleQuad (I := I) (M := M) G (Set.Icc tstart t1)) := by
+    simpa [G, SolutionOn.family] using
+      metricTimeBundleQuad_cont_of_metricFamilySmoothOn (I := I) (M := M)
+        S.family.metric hS.smoothMetric hsubD
+  have hcompact :
+      IsCompact
+        (Set.univ :
+          Set (MetricUnitTangentTimeSlab (I := I) (M := M) G
+            (Set.Icc tstart t1))) :=
+    metricUnitTimeSlab_icc_compact_of_bundle (I := I) (M := M)
+      G tstart t1 (S.base.metric tstart) hGcont
+  have hcont :
+      Continuous
+        (fun p : MetricUnitTangentTimeSlab (I := I) (M := M) G
+            (Set.Icc tstart t1) =>
+          |quad02 (I := I) (M := M)
+            (A (MetricUnitTangentTimeSlab.time (I := I) (M := M) p)
+              (MetricUnitTangentTimeSlab.base (I := I) (M := M) p))
+            (MetricUnitTangentTimeSlab.vec (I := I) (M := M) p)|) :=
+    timeSlabAbsQuadCont (I := I) (M := M) G A (Set.Icc tstart t1)
+      (hamiltonIveySupportUpperSec_tangentBundle_cont (I := I) S hS hK ha ht0 hTsub hsub)
+  obtain ⟨C, hC, hbound⟩ :=
+    compactUnitTimeSlab_absBound (I := I) (M := M) G A (Set.Icc tstart t1) hcompact hcont
+  refine ⟨C, hC, ?_⟩
+  intro t ht x v
+  simpa [G, A, quad02] using hbound t ht x v
+
+theorem hamiltonIveySupportUpperSec_trace_abs_le
+    {C : Real} (g : SmoothRiemannianMetric I M) {x : M}
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (hA : ∀ v : TangentSpace I x,
+      |quad02 (I := I) (M := M) A v| ≤ C * g.inner x v v) :
+    |metricTracePair0SAt (I := I) g A| ≤ 3 * C := by
+  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt (I := I) g x hdim
+  have htr : metricTracePair0SAt (I := I) g A =
+      ∑ i : Fin 3, A (vec2 (I := I) (basis i) (basis i)) := by
+    rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis
+      DifferentialGeometry.Geometry.Curvature.delta3
+      (orthonormal_invBasis3 (I := I) g basis horth) A]
+    simp [DifferentialGeometry.Geometry.Curvature.delta3]
+  rw [htr]
+  have hAbsSum : |∑ i : Fin 3, A (vec2 (I := I) (basis i) (basis i))| ≤
+        ∑ i : Fin 3, |A (vec2 (I := I) (basis i) (basis i))| := by
+    simpa using
+      (Finset.abs_sum_le_sum_abs (fun i : Fin 3 => A (vec2 (I := I) (basis i) (basis i))) Finset.univ)
+  calc
+    |∑ i : Fin 3, A (vec2 (I := I) (basis i) (basis i))| ≤
+        ∑ i : Fin 3, |A (vec2 (I := I) (basis i) (basis i))| := hAbsSum
+    _ ≤ ∑ i : Fin 3, C := by
+      apply Finset.sum_le_sum
+      intro i hi
+      have h := hA (basis i)
+      have hq : quad02 (I := I) (M := M) A (basis i) =
+          A (vec2 (I := I) (basis i) (basis i)) := by
+        rw [← eval02_self (I := I) (M := M) A (basis i)]
+        unfold eval02 DifferentialGeometry.Geometry.Curvature.vec2
+        rfl
+      rw [hq] at h
+      have hgi : g.inner x (basis i) (basis i) = 1 := by
+        have hh := horth i i
+        simpa [DifferentialGeometry.Geometry.Curvature.delta3] using hh
+      rw [hgi] at h
+      exact le_trans h (by rw [mul_one])
+    _ = 3 * C := by
+      simp
+
+theorem hamiltonIveySupportUpperSec_eval_contOn
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {K a t0 T : Real} (hK : 0 < K) (ha : 0 < a) (ht0 : t0 ≤ 0)
+    (hTsub : Set.Icc 0 T ⊆ D.carrier)
+    (x : M) (v w : TangentSpace I x) :
+    ContinuousOn
+      (fun t : Real =>
+        twoTensorSecToFamily (I := I) (M := M)
+          (hamiltonIveySupportUpperSec S K a t0) t x v w)
+      (Set.Icc 0 T) := by
+  have hcont :=
+    tensorEval_contOn (I := I) (M := M)
+      (hamiltonIveySupportUpperSecFamilyContinuousOnSet (I := I) S hS hK ha ht0 hTsub)
+      x v w
+  simpa [twoTensorSecToFamily] using hcont
+
+theorem hamiltonIveySupportSmallBarrierLip_bound
+    {δ C0 ccap c e gvv trS Svv : Real}
+    (hden : 1 - 3 * δ ≠ 0) (hgvv : 0 ≤ gvv)
+    (hcap : |c| ≤ ccap)
+    (hSq : |Svv| ≤ C0 * gvv) (hTr : |trS| ≤ 3 * C0) :
+    |e * ((2 * c / (1 - 3 * δ)) * gvv +
+        ((2 * δ - 1) / (1 - 3 * δ)) * (trS * gvv - 3 * Svv))| ≤
+      (2 * ccap / |1 - 3 * δ| + 6 * C0 * |(2 * δ - 1) / (1 - 3 * δ)|) * |e * gvv| := by
+  have hdpos : 0 < |1 - 3 * δ| := abs_pos.mpr hden
+  have hc1 : |2 * c / (1 - 3 * δ)| ≤ 2 * ccap / |1 - 3 * δ| := by
+    rw [abs_div, abs_mul]
+    rw [abs_of_nonneg (by positivity : 0 ≤ (2 : Real))]
+    have hmul : 2 * |c| ≤ 2 * ccap := mul_le_mul_of_nonneg_left hcap (by positivity)
+    rw [div_le_div_iff₀ hdpos hdpos]
+    exact mul_le_mul_of_nonneg_right hmul (le_of_lt hdpos)
+  have hB1 : |trS * gvv - 3 * Svv| ≤ 3 * C0 * gvv + 3 * C0 * gvv := by
+    have habs : |trS * gvv - 3 * Svv| ≤ |trS * gvv| + |3 * Svv| := by
+      simpa [abs_neg] using abs_add_le (trS * gvv) (-(3 * Svv))
+    have h2 : |trS * gvv| ≤ |trS| * gvv := by
+      rw [abs_mul, abs_of_nonneg hgvv]
+    have h3 : |3 * Svv| ≤ 3 * |Svv| := by
+      rw [abs_mul, abs_of_nonneg (by positivity : 0 ≤ (3 : Real))]
+    have h4 : |trS| * gvv ≤ 3 * C0 * gvv := by
+      exact mul_le_mul_of_nonneg_right hTr hgvv
+    have h5 : 3 * |Svv| ≤ 3 * (C0 * gvv) := by
+      exact mul_le_mul_of_nonneg_left hSq (by positivity : 0 ≤ (3 : Real))
+    nlinarith [habs, h2, h3, h4, h5]
+  have hB : |((2 * δ - 1) / (1 - 3 * δ)) * (trS * gvv - 3 * Svv)| ≤
+      6 * C0 * |(2 * δ - 1) / (1 - 3 * δ)| * gvv := by
+    rw [abs_mul]
+    calc
+      |(2 * δ - 1) / (1 - 3 * δ)| * |trS * gvv - 3 * Svv| ≤
+          |(2 * δ - 1) / (1 - 3 * δ)| * (3 * C0 * gvv + 3 * C0 * gvv) := by
+        exact mul_le_mul_of_nonneg_left hB1 (abs_nonneg _)
+      _ = 6 * C0 * |(2 * δ - 1) / (1 - 3 * δ)| * gvv := by ring
+  have hA : |(2 * c / (1 - 3 * δ)) * gvv| ≤ 2 * ccap / |1 - 3 * δ| * gvv := by
+    rw [abs_mul]
+    rw [abs_of_nonneg hgvv]
+    exact mul_le_mul_of_nonneg_right hc1 hgvv
+  have hSum : |(2 * c / (1 - 3 * δ)) * gvv + ((2 * δ - 1) / (1 - 3 * δ)) * (trS * gvv - 3 * Svv)| ≤
+      2 * ccap / |1 - 3 * δ| * gvv + 6 * C0 * |(2 * δ - 1) / (1 - 3 * δ)| * gvv := by
+    exact (abs_add_le _ _).trans (add_le_add hA hB)
+  calc
+    |e * ((2 * c / (1 - 3 * δ)) * gvv + ((2 * δ - 1) / (1 - 3 * δ)) * (trS * gvv - 3 * Svv))| =
+        |e| * |(2 * c / (1 - 3 * δ)) * gvv + ((2 * δ - 1) / (1 - 3 * δ)) * (trS * gvv - 3 * Svv)| := by
+          rw [abs_mul]
+    _ ≤ |e| * (2 * ccap / |1 - 3 * δ| * gvv + 6 * C0 * |(2 * δ - 1) / (1 - 3 * δ)| * gvv) := by
+          exact mul_le_mul_of_nonneg_left hSum (abs_nonneg e)
+    _ = (2 * ccap / |1 - 3 * δ| + 6 * C0 * |(2 * δ - 1) / (1 - 3 * δ)|) * |e| * gvv := by ring
+    _ = (2 * ccap / |1 - 3 * δ| + 6 * C0 * |(2 * δ - 1) / (1 - 3 * δ)|) * |e * gvv| := by
+          rw [abs_mul, abs_of_nonneg hgvv]
+          ring
+
+theorem hamiltonIveySupportUpperBarrierReg
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {K a t0 T : Real} (hK : 0 < K) (ha : 0 < a) (ht0 : t0 ≤ 0)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (hTsub : Set.Icc 0 T ⊆ D.carrier)
+    (hTreg : Set.Ioc 0 T ⊆ D.regular) :
+    TensorBarrierRegularityOn (I := I) (M := M)
+      (fun t : Real => S.base.metric t)
+      (twoTensorSecToFamily (I := I) (M := M)
+        (hamiltonIveySupportUpperSec S K a t0))
+      (fun _t x => (0 : TangentSpace I x))
+      (hamiltonIveySupportUpperReact (I := I) (M := M) K a t0) T where
+  tensor_eval_continuous := by
+    intro x v w
+    exact hamiltonIveySupportUpperSec_eval_contOn (I := I) S hS hK ha ht0 hTsub x v w
+  metric_eval_continuous := by
+    intro x v w
+    simpa [SolutionOn.family] using
+      ((hS.smoothMetric.coeff_cont x v w).mono hTsub)
+  barrier_eval_continuous := by
+    intro epsilon d tbar hsub x v w
+    have hScont :
+        ContinuousOn
+          (fun t : Real =>
+            twoTensorSecToFamily (I := I) (M := M)
+              (hamiltonIveySupportUpperSec S K a t0) t x v w)
+          (Set.Icc tbar (tbar + d)) :=
+      (hamiltonIveySupportUpperSec_eval_contOn (I := I) S hS hK ha ht0 hTsub x v w).mono hsub
+    have hGcont :
+        ContinuousOn
+          (fun t : Real => (S.base.metric t).inner x v w)
+          (Set.Icc tbar (tbar + d)) := by
+      exact
+        (by
+          simpa [SolutionOn.family] using
+            ((hS.smoothMetric.coeff_cont x v w).mono hTsub) :
+          ContinuousOn
+            (fun t : Real => (S.base.metric t).inner x v w)
+            (Set.Icc 0 T)).mono hsub
+    have hcoef :
+        ContinuousOn (fun t : Real => epsilon * (d + t - tbar))
+          (Set.Icc tbar (tbar + d)) := by
+      have hlin : Continuous (fun t : Real => d + t - tbar) :=
+        (continuous_const.add continuous_id).sub continuous_const
+      exact (continuous_const.mul hlin).continuousOn
+    simpa [tensorBarrierFamily] using hScont.add (hcoef.mul hGcont)
+  metricGainControl :=
+    pinchMetricGain (I := I) (M := M) S hS hTsub hTreg
+  smallBarrierLip := by
+    intro delta0 tbar hdelta0 hsub0
+    let δ : Real := hamiltonIveySupportPinchDelta a
+    let ccap : Real := K * Real.exp (a + 2) / a
+    have htbar0 : 0 ≤ tbar := (hsub0 ⟨le_rfl, by linarith⟩).1
+    have hden0 : (1 : Real) - 3 * ((1 + a) / (2 * a)) ≠ 0 := by
+      have hcalc : 1 - 3 * ((1 + a) / (2 * a)) = -(a + 3) / (2 * a) := by
+        field_simp [ha.ne']
+        ring
+      rw [hcalc]
+      have hnum : -(a + 3) ≠ 0 := by
+        rw [neg_ne_zero]
+        nlinarith
+      exact div_ne_zero hnum (mul_ne_zero two_ne_zero ha.ne')
+    have hden : (1 : Real) - 3 * δ ≠ 0 := by
+      dsimp [δ]
+      exact hden0
+    have hdpos : 0 < |1 - 3 * δ| := abs_pos.mpr hden
+    have hcpos : 0 < ccap := by
+      dsimp [ccap]
+      positivity
+    rcases hamiltonIveySupportUpperSec_absBound_Icc (I := I) S hS hK ha ht0 hTsub
+      (tstart := tbar) (t1 := tbar + delta0) (by intro t ht; exact hsub0 ht)
+      with ⟨C0, hC0, hbound⟩
+    refine ⟨2 * ccap / |1 - 3 * δ| + 6 * C0 * |(2 * δ - 1) / (1 - 3 * δ)|, ?_, ?_⟩
+    · positivity
+    · intro epsilon d hepsilon hd hdle t ht x v
+      let e : Real := epsilon * (d + t - tbar)
+      let g : SmoothRiemannianMetric I M := S.base.metric t
+      let Sx : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x :=
+        (hamiltonIveySupportUpperSec S K a t0) t x
+      let gvv : Real := g.inner x v v
+      have htd0 : t ∈ Set.Icc tbar (tbar + delta0) :=
+        ⟨ht.1, by linarith [ht.2, hdle]⟩
+      have ht0' : 0 ≤ t - t0 := by
+        linarith [ht.1]
+      have hdiff := hamiltonIveySupportUpperReact_barrier_diff (I := I) S (ha := ha)
+        (K := K) (epsilon := epsilon) (d := d) (t0 := t0) (tbar := tbar) (t := t)
+        (x := x) (hdim := hdim x) v
+      have hCvv :
+          ((3 : Real) • shiftRic3At (I := I) (M := M) δ g
+              (hamiltonIveySupportCoefficient K a t0 t • metricTensorField (I := I) g x - Sx) -
+            metricTracePair0SAt (I := I) g
+              (shiftRic3At (I := I) (M := M) δ g
+                (hamiltonIveySupportCoefficient K a t0 t • metricTensorField (I := I) g x - Sx)) •
+              metricTensorField (I := I) g x)
+            (vec2 (I := I) v v) =
+          metricTracePair0SAt (I := I) g Sx * gvv - (3 : Real) * Sx (vec2 (I := I) v v) := by
+        dsimp [g, Sx, δ, gvv]
+        rw [hamiltonIveySupportUpperReactLip_ltc_eq (I := I) S (ha := ha) (K := K)
+          (a := a) (t0 := t0) (t := t) (x := x) (hdim := hdim x)]
+        conv_lhs => rw [sub_eq_add_neg]
+        change (metricTracePair0SAt (I := I) (S.base.metric t) ((hamiltonIveySupportUpperSec S K a t0) t x) •
+              metricTensorField (I := I) (S.base.metric t) x) (vec2 (I := I) v v) +
+            (-((3 : Real) • (hamiltonIveySupportUpperSec S K a t0) t x)) (vec2 (I := I) v v) =
+          metricTracePair0SAt (I := I) (S.base.metric t) ((hamiltonIveySupportUpperSec S K a t0) t x) *
+              ((S.base.metric t).inner x v v) -
+            (3 : Real) * ((hamiltonIveySupportUpperSec S K a t0) t x) (vec2 (I := I) v v)
+        simp only [Tensor0SSpace.smul_apply, Tensor0SSpace.neg_apply, metricTensorField_apply]
+        have h0 : vec2 (I := I) v v 0 = v := by
+          unfold DifferentialGeometry.Geometry.Curvature.vec2
+          simp
+        have h1 : vec2 (I := I) v v 1 = v := by
+          unfold DifferentialGeometry.Geometry.Curvature.vec2
+          norm_num
+        rw [h0, h1]
+        simp only [smul_eq_mul]
+        ring
+      have hgvv : 0 ≤ gvv := by
+        by_cases hv : v = 0
+        · subst v
+          simp [gvv]
+        · exact le_of_lt ((S.base.metric t).pos x v hv)
+      have hc : |hamiltonIveySupportCoefficient K a t0 t| ≤ ccap := by
+        dsimp [ccap]
+        rw [abs_of_nonneg (le_of_lt (hamiltonIveySupportCoefficient_pos hK ha ht0'))]
+        unfold hamiltonIveySupportCoefficient
+        have hdenle : a ≤ a * (1 + 2 * K * (t - t0)) := by
+          have h2 : 0 ≤ 2 * K * (t - t0) := by positivity
+          have h3 : 0 ≤ a * (2 * K * (t - t0)) := mul_nonneg ha.le h2
+          nlinarith
+        have hnum0 : 0 ≤ K * Real.exp (a + 2) := by positivity
+        exact div_le_div_of_nonneg_left hnum0 ha hdenle
+      have hSq : |Sx (vec2 (I := I) v v)| ≤ C0 * gvv := by
+        have hb := hbound t htd0 x v
+        dsimp [Sx, gvv] at hb ⊢
+        have hq : quad02 (I := I) (M := M) ((hamiltonIveySupportUpperSec S K a t0) t x) v =
+            ((hamiltonIveySupportUpperSec S K a t0) t x) (vec2 (I := I) v v) := by
+          simp [quad02, vec2_self_eq_const]
+        rw [hq] at hb
+        exact hb
+      have hTr : |metricTracePair0SAt (I := I) g Sx| ≤ 3 * C0 := by
+        exact hamiltonIveySupportUpperSec_trace_abs_le (I := I) g (hdim x) Sx (by
+          intro u
+          exact hbound t htd0 x u)
+      have hmain := hamiltonIveySupportSmallBarrierLip_bound
+        (δ := δ) (C0 := C0) (ccap := ccap) (c := hamiltonIveySupportCoefficient K a t0 t)
+        (e := e) (gvv := gvv)
+        (trS := metricTracePair0SAt (I := I) g Sx) (Svv := Sx (vec2 (I := I) v v))
+        hden hgvv hc hSq hTr
+      conv_lhs => rw [← neg_sub]
+      rw [abs_neg]
+      rw [hdiff]
+      dsimp [g, Sx, δ] at hCvv
+      rw [hCvv]
+      simpa [e, gvv, g, Sx, δ] using hmain
 
 end DifferentialGeometry.PDE.RicciFlow
 
