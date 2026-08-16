@@ -419,6 +419,111 @@ theorem hamiltonIveyMatrixReaction_orthogonal_conj
           rw [← Matrix.smul_mul]
           rw [Matrix.mul_smul]
 
+lemma lip {K tau t : Real} (hK : 0 < K) (htau : 0 <= tau) (ht : 0 <= t) :
+    scalarSectionalLowerBarrier3 K (tau + t) <= scalarSectionalLowerBarrier3 K tau + 12 * K ^ 2 * t := by
+  unfold scalarSectionalLowerBarrier3
+  have hmain : 3 * K / (1 + 4 * K * tau) - 3 * K / (1 + 4 * K * (tau + t)) <= 12 * K ^ 2 * t := by
+    have hden1 : 0 < 1 + 4 * K * tau := by positivity
+    have hden2 : 0 < 1 + 4 * K * (tau + t) := by positivity
+    have hsum : 3 * K / (1 + 4 * K * tau) - 3 * K / (1 + 4 * K * (tau + t)) =
+        3 * K * (4 * K * t) / ((1 + 4 * K * tau) * (1 + 4 * K * (tau + t))) := by
+      field_simp [hden1.ne', hden2.ne']
+      ring
+    rw [hsum]
+    have hdenle : 1 <= (1 + 4 * K * tau) * (1 + 4 * K * (tau + t)) := by
+      have h1 : 1 <= 1 + 4 * K * tau := by nlinarith
+      have h2 : 1 <= 1 + 4 * K * (tau + t) := by nlinarith
+      nlinarith [mul_le_mul h1 h2 (by norm_num) (by positivity)]
+    have habpos : 0 < (1 + 4 * K * tau) * (1 + 4 * K * (tau + t)) := by positivity
+    have h12 : 0 <= 12 * K ^ 2 * t := by positivity
+    have hfac : 3 * K * (4 * K * t) = 12 * K ^ 2 * t := by ring
+    rw [hfac]
+    rw [div_le_iff₀ habpos]
+    nlinarith [hdenle]
+  have hconv1 : -3 * K / (1 + 4 * K * (tau + t)) = -(3 * K / (1 + 4 * K * (tau + t))) := by ring
+  have hconv2 : -3 * K / (1 + 4 * K * tau) = -(3 * K / (1 + 4 * K * tau)) := by ring
+  rw [hconv1, hconv2]
+  linarith [hmain]
+
+lemma concave {K tau t : Real} (hK : 0 < K) (htau : 0 <= tau) (ht : 0 <= t) :
+    scalarSectionalLowerBarrier3 K (tau + t) <= scalarSectionalLowerBarrier3 K tau + (12 * K ^ 2 / (1 + 4 * K * tau) ^ 2) * t := by
+  unfold scalarSectionalLowerBarrier3
+  have hmain : 3 * K / (1 + 4 * K * tau) - 3 * K / (1 + 4 * K * (tau + t)) <=
+      (12 * K ^ 2 / (1 + 4 * K * tau) ^ 2) * t := by
+    have hden1 : 0 < 1 + 4 * K * tau := by positivity
+    have hden2 : 0 < 1 + 4 * K * (tau + t) := by positivity
+    have hsum : 3 * K / (1 + 4 * K * tau) - 3 * K / (1 + 4 * K * (tau + t)) =
+        3 * K * (4 * K * t) / ((1 + 4 * K * tau) * (1 + 4 * K * (tau + t))) := by
+      field_simp [hden1.ne', hden2.ne']
+      ring
+    rw [hsum]
+    have hab : (1 + 4 * K * tau) * (1 + 4 * K * (tau + t)) >= (1 + 4 * K * tau) ^ 2 := by
+      have h2 : 1 + 4 * K * tau <= 1 + 4 * K * (tau + t) := by nlinarith
+      have hpos : 0 <= 1 + 4 * K * tau := by positivity
+      nlinarith [mul_le_mul hpos h2 (by positivity) (by positivity)]
+    have hdenprod : 0 < (1 + 4 * K * tau) * (1 + 4 * K * (tau + t)) := by positivity
+    have hnum : 12 * K ^ 2 * t / ((1 + 4 * K * tau) * (1 + 4 * K * (tau + t))) <=
+        12 * K ^ 2 * t / (1 + 4 * K * tau) ^ 2 := by
+      have hpos2 : 0 < (1 + 4 * K * tau) ^ 2 := by positivity
+      have h12 : 0 <= 12 * K ^ 2 * t := by positivity
+      exact div_le_div_of_nonneg_left h12 hpos2 hab
+    have hfac : 3 * K * (4 * K * t) = 12 * K ^ 2 * t := by ring
+    rw [hfac]
+    have hnum' : 12 * K ^ 2 * t / ((1 + 4 * K * tau) * (1 + 4 * K * (tau + t))) <=
+        (12 * K ^ 2 / (1 + 4 * K * tau) ^ 2) * t := by
+      simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hnum
+    exact hnum'
+  have hconv1 : -3 * K / (1 + 4 * K * (tau + t)) = -(3 * K / (1 + 4 * K * (tau + t))) := by ring
+  have hconv2 : -3 * K / (1 + 4 * K * tau) = -(3 * K / (1 + 4 * K * tau)) := by ring
+  rw [hconv1, hconv2]
+  linarith [hmain]
+
+
+lemma scalarBarrier_ineq_small
+    {K tau : Real} (hK : 0 < K) (htau : 0 <= tau)
+    (S S' : Real) (hSb : scalarSectionalLowerBarrier3 K tau <= S) (hS' : 0 <= S') (hS'ge : 4 * S ^ 2 / 3 <= S') :
+    ∃ eps : Real, 0 < eps ∧ ∀ t : Real, t ∈ Set.Icc 0 eps →
+      scalarSectionalLowerBarrier3 K (tau + t) <= S + t * S' := by
+  by_cases hS : S = scalarSectionalLowerBarrier3 K tau
+  · refine ⟨1, by norm_num, ?_⟩
+    intro t ht
+    have hconc := concave (K := K) (tau := tau) (t := t) hK htau ht.1
+    have hrel : 4 * (scalarSectionalLowerBarrier3 K tau) ^ 2 / 3 = 12 * K ^ 2 / (1 + 4 * K * tau) ^ 2 := by
+      unfold scalarSectionalLowerBarrier3
+      field_simp
+      ring
+    have hS'ge' : 4 * (scalarSectionalLowerBarrier3 K tau) ^ 2 / 3 <= S' := by
+      simpa [hS] using hS'ge
+    have hSb' : 12 * K ^ 2 / (1 + 4 * K * tau) ^ 2 <= S' := by
+      simpa [hrel] using hS'ge'
+    have hsc : scalarSectionalLowerBarrier3 K tau + (12 * K ^ 2 / (1 + 4 * K * tau) ^ 2) * t <= S + t * S' := by
+      rw [hS]
+      have ht' : 0 <= t := ht.1
+      have hmul : (12 * K ^ 2 / (1 + 4 * K * tau) ^ 2) * t <= S' * t :=
+        mul_le_mul_of_nonneg_right hSb' ht'
+      nlinarith
+    exact le_trans hconc hsc
+  · have hgt : scalarSectionalLowerBarrier3 K tau < S := lt_of_le_of_ne hSb (Ne.symm hS)
+    let eps : Real := (S - scalarSectionalLowerBarrier3 K tau) / (12 * K ^ 2)
+    refine ⟨eps, ?_, ?_⟩
+    · dsimp [eps]
+      have hKsq : 0 < 12 * K ^ 2 := by positivity
+      exact div_pos (sub_pos.mpr hgt) hKsq
+    · intro t ht
+      have htl : t <= (S - scalarSectionalLowerBarrier3 K tau) / (12 * K ^ 2) := by
+        dsimp [eps] at ht
+        exact ht.2
+      have hKsq : 0 < 12 * K ^ 2 := by positivity
+      have hlip := lip (K := K) (tau := tau) (t := t) hK htau ht.1
+      have hmain : scalarSectionalLowerBarrier3 K tau + 12 * K ^ 2 * t <= S := by
+        have h1 : t * (12 * K ^ 2) <= S - scalarSectionalLowerBarrier3 K tau := by
+          rw [le_div_iff₀ hKsq] at htl
+          nlinarith
+        nlinarith
+      have hle : scalarSectionalLowerBarrier3 K (tau + t) <= S := le_trans hlip hmain
+      exact le_trans hle (by nlinarith [mul_nonneg ht.1 hS'])
+
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
