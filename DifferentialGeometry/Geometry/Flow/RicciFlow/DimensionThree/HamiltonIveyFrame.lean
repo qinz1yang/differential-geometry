@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
+import Mathlib
 
 set_option autoImplicit false
 
@@ -167,6 +168,72 @@ theorem frameODE_linear_solution
       dsimp [L]
       rfl
     simpa [iota, hLγ, hLf, f] using hcomp
+
+theorem basisOfFinrank
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E]
+    (hdim : Module.finrank ℝ E = 3) :
+    Nonempty (Module.Basis (Fin 3) ℝ E) := by
+  classical
+  let b := Module.Basis.ofVectorSpace ℝ E
+  have hcard : Fintype.card (Module.Basis.ofVectorSpaceIndex ℝ E) = 3 := by
+    rw [← hdim]
+    exact (Module.finrank_eq_card_basis b).symm
+  let e : Module.Basis.ofVectorSpaceIndex ℝ E ≃ Fin 3 := Fintype.equivFinOfCardEq hcard
+  exact ⟨b.reindex e⟩
+
+def referenceFrameOfBasis
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    (b : Module.Basis (Fin 3) ℝ E) :
+    Fin 3 → (x : M) → TangentSpace I x :=
+  fun a _x => b a
+
+theorem uhlenbeckFrameOn
+    {M : Type*} [TopologicalSpace M]
+    {T : ℝ} (hT : 0 < T)
+    (R : ℝ → M → Fin 3 → Fin 3 → ℝ)
+    (hR : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ l k : Fin 3, |R t x l k| ≤ 1)
+    (hRcont : ∀ l k : Fin 3,
+      ContinuousOn (fun q : ℝ × M => R q.1 q.2 l k)
+        (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+    (A₀ : M → Fin 3 → Fin 3 → ℝ) :
+    ∃ iota : ℝ → M → Fin 3 → Fin 3 → ℝ,
+      (∀ x : M, ∀ a k : Fin 3, iota 0 x a k = A₀ x a k) ∧
+      ∀ t : ℝ, t ∈ Set.Ico 0 T → ∀ x : M, ∀ a k : Fin 3,
+        HasDerivWithinAt (fun s : ℝ => iota s x a k)
+          (∑ l : Fin 3, R t x l k * iota t x a l) (Set.Ici 0) t := by
+  classical
+  have hRcont_x : ∀ x : M, ∀ l k : Fin 3,
+      ContinuousOn (fun t : ℝ => R t x l k) (Set.Icc 0 T) := by
+    intro x l k
+    have hmap : ContinuousOn (fun t : ℝ => (t, x)) (Set.Icc 0 T) := by fun_prop
+    have hsub : Set.MapsTo (fun t : ℝ => (t, x)) (Set.Icc 0 T)
+        (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
+      intro t ht
+      exact ⟨ht, trivial⟩
+    have hc := (hRcont l k).comp hmap hsub
+    simpa using hc
+  have hEx : ∀ x : M, ∃ gamma : ℝ → Fin 3 → Fin 3 → ℝ,
+      (∀ a k : Fin 3, gamma 0 a k = A₀ x a k) ∧
+      ∀ t : ℝ, t ∈ Set.Ico 0 T → ∀ a k : Fin 3,
+        HasDerivWithinAt (fun s : ℝ => gamma s a k)
+          (∑ l : Fin 3, R t x l k * gamma t a l) (Set.Ici 0) t := by
+    intro x
+    rcases frameODE_linear_solution hT (fun t l k => R t x l k)
+      (fun t ht l k => hR t ht x l k) (hRcont_x x) (A₀ x) with ⟨γ, h0, _hcont, hderiv⟩
+    exact ⟨γ, h0, hderiv⟩
+  choose gamma hgamma using hEx
+  let iota : ℝ → M → Fin 3 → Fin 3 → ℝ := fun t x a k => gamma x t a k
+  refine ⟨iota, ?_, ?_⟩
+  · intro x a k
+    have h0 := (hgamma x).1 a k
+    simpa [iota] using h0
+  · intro t ht x a k
+    have hd := (hgamma x).2 t ht a k
+    simpa [iota] using hd
 
 end DifferentialGeometry.PDE.RicciFlow
 
