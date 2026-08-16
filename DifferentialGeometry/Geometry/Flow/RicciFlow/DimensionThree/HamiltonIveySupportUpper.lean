@@ -855,6 +855,141 @@ theorem hamiltonIveySupportUpperReactBlock_eq_poly
   ring_nf
 
 omit [SigmaCompactSpace M] [T2Space M] [IsManifold I 2 M] in
+theorem hamiltonIveySupportUpperReact_eq_block
+    {K a t0 t : Real} {g : SmoothRiemannianMetric I M} {x : M}
+    {Araw : RawTwoTensorField (I := I) (M := M)}
+    {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
+    {p r s : Real}
+    (ha : 0 < a)
+    (hsym : TwoTensorSymmetricAt (I := I) (M := M) Araw x)
+    (hbilin : TwoTensorBilinearAt (I := I) (M := M) Araw x)
+    (hblock : ShiftBlockAt (I := I) (M := M) g Araw x basis p r s) :
+    (hamiltonIveySupportUpperReact (I := I) (M := M) K a t0 t g Araw) x (basis 0) (basis 0) =
+      hamiltonIveySupportUpperReactBlock a (hamiltonIveySupportCoefficient K a t0 t)
+        (2 * K / (1 + 2 * K * (t - t0))) p r s := by
+  rw [hamiltonIveySupportUpperReact]
+  rw [Tensor02ReactionAt.toRawSymm_eval_of_bilin
+    (I := I) (M := M)
+    (fun t g _x A => hamiltonIveySupportUpperReactAt (I := I) K a t0 t g A)
+    t g Araw x hbilin (basis 0) (basis 0)]
+  let T : Tensor02At (I := I) (M := M) x :=
+    tensor02OfRawAt (I := I) (M := M)
+      (rawSym2 (I := I) (M := M) Araw) x
+      (rawSym2_bilin (I := I) (M := M) hbilin)
+  have hreal : Tensor02RealizesRawAt (I := I) (M := M) Araw x T := by
+    intro v w
+    rw [tensor02OfRawAt_realizes (I := I) (M := M)]
+    exact rawSym2_eq_of_symm (I := I) (M := M) hsym v w
+  let negAraw : RawTwoTensorField (I := I) (M := M) :=
+    fun y v w => - Araw y v w
+  have hreal_neg : Tensor02RealizesRawAt (I := I) (M := M) negAraw x (-T) := by
+    intro v w
+    rw [Tensor0SSpace.neg_apply]
+    rw [hreal v w]
+  have hblock_neg : ShiftBlockAt (I := I) (M := M) g negAraw x basis (-p) (-r) (-s) := by
+    refine ⟨hblock.orthonormal, ?_⟩
+    intro i j
+    dsimp [negAraw]
+    rw [hblock.components i j]
+    fin_cases i <;> fin_cases j <;> simp [shiftBlockS3]
+  change hamiltonIveySupportUpperReactAt (I := I) K a t0 t g T (vec2 (I := I) (basis 0) (basis 0)) =
+      hamiltonIveySupportUpperReactBlock a (hamiltonIveySupportCoefficient K a t0 t)
+        (2 * K / (1 + 2 * K * (t - t0))) p r s
+  dsimp [hamiltonIveySupportUpperReactAt]
+  let C : Real := hamiltonIveySupportCoefficient K a t0 t
+  let Cder : Real := hamiltonIveySupportCoefficientDeriv K a t0 t
+  let delta : Real := hamiltonIveySupportPinchDelta a
+  have hden : 1 - 3 * delta ≠ 0 := by
+    dsimp [delta]
+    exact hamiltonIveySupportPinchDelta_den_ne ha
+  have hmetric00 : (metricTensorField (I := I) g x) (vec2 (I := I) (basis 0) (basis 0)) = 1 := by
+    simp [metricTensorField_apply, hblock.orthonormal 0 0, vec2,
+      DifferentialGeometry.Geometry.Curvature.vec2,
+      DifferentialGeometry.Geometry.Curvature.delta3]
+  have hQ' : C • (metricTensorField (I := I) g x) - T =
+      (-T) + C • (metricTensorField (I := I) g x) := by
+    abel
+  have hRicNeg_comp : ∀ i j : Fin 3,
+      shiftRic3At (I := I) (M := M) delta g (-T)
+          (vec2 (I := I) (basis i) (basis j)) =
+        shiftRicBlock3 delta (-p) (-r) (-s) i j := by
+    intro i j
+    exact shiftRic3At_comp_of_shiftBlock (I := I) (M := M) hreal_neg hblock_neg i j
+  have hRicQ00 :
+      (shiftRic3At (I := I) (M := M) delta g (C • (metricTensorField (I := I) g x) - T))
+          (vec2 (I := I) (basis 0) (basis 0)) =
+        shiftRicBlock3 delta (-p) (-r) (-s) 0 0 + C / (1 - 3 * delta) := by
+    rw [hQ']
+    rw [shiftRic_add_g (I := I) (M := M) (δ := delta) (c := C)
+      basis hblock.orthonormal hden (-T)]
+    simp only [Tensor0SBundle.Tensor0SSpace.add_apply, Tensor0SBundle.Tensor0SSpace.smul_apply,
+      hmetric00, smul_eq_mul]
+    rw [hRicNeg_comp 0 0]
+    ring
+  have hshift_base :
+      (shiftNAt (I := I) (M := M) delta t g x (-T))
+          (vec2 (I := I) (basis 0) (basis 0)) =
+        shiftReactBlock3 delta (-p) (-r) (-s) := by
+    exact shiftNAt_comp_shiftBlock (I := I) (M := M) hreal_neg hblock_neg
+  have hshiftQ :
+      (shiftNAt (I := I) (M := M) delta t g x
+          (C • (metricTensorField (I := I) g x) - T))
+          (vec2 (I := I) (basis 0) (basis 0)) =
+        shiftReactBlock3 delta (-p) (-r) (-s) +
+          (C / (1 - 3 * delta)) * (2 * delta - 1) *
+            (3 * (shiftRic3At (I := I) (M := M) delta g (-T))
+                (vec2 (I := I) (basis 0) (basis 0)) -
+              metricTracePair0SAt (I := I) g
+                (shiftRic3At (I := I) (M := M) delta g (-T))) := by
+    rw [hQ']
+    have hdiff := shiftNAt_add_g_comp (I := I) (M := M)
+      (delta := delta) (c := C) (t := t) basis hblock.orthonormal hden (-T)
+    have hdiff' := congrArg (fun X : Real => X + (shiftNAt (I := I) (M := M) delta t g x (-T))
+        (vec2 (I := I) (basis 0) (basis 0))) hdiff
+    have hQeq :
+        (shiftNAt (I := I) (M := M) delta t g x
+          ((-T) + C • (metricTensorField (I := I) g x)))
+          (vec2 (I := I) (basis 0) (basis 0)) =
+          (shiftNAt (I := I) (M := M) delta t g x (-T))
+            (vec2 (I := I) (basis 0) (basis 0)) +
+          (C / (1 - 3 * delta)) * (2 * delta - 1) *
+            (3 * (shiftRic3At (I := I) (M := M) delta g (-T))
+                (vec2 (I := I) (basis 0) (basis 0)) -
+              metricTracePair0SAt (I := I) g
+                (shiftRic3At (I := I) (M := M) delta g (-T))) := by
+      linarith
+    rw [hQeq, hshift_base]
+  have hTrace :
+      metricTracePair0SAt (I := I) g
+          (shiftRic3At (I := I) (M := M) delta g (-T)) =
+        ricciScal3 (shiftRicBlock3 delta (-p) (-r) (-s)) := by
+    rw [metricTrace_comp_orthonormal (I := I) (M := M) basis hblock.orthonormal
+      (shiftRic3At (I := I) (M := M) delta g (-T))]
+    simp [hRicNeg_comp]
+  have hmain :
+      (Cder • (metricTensorField (I := I) g x) -
+          (2 * C) • shiftRic3At (I := I) (M := M) delta g
+            (C • (metricTensorField (I := I) g x) - T) -
+        shiftNAt (I := I) (M := M) delta t g x
+          (C • (metricTensorField (I := I) g x) - T))
+        (vec2 (I := I) (basis 0) (basis 0)) =
+      Cder - 2 * C * (shiftRicBlock3 delta (-p) (-r) (-s) 0 0 + C / (1 - 3 * delta)) -
+        (shiftReactBlock3 delta (-p) (-r) (-s) +
+          (C / (1 - 3 * delta)) * (2 * delta - 1) *
+            (3 * shiftRicBlock3 delta (-p) (-r) (-s) 0 0 -
+              ricciScal3 (shiftRicBlock3 delta (-p) (-r) (-s)))) := by
+    simp only [Tensor0SBundle.Tensor0SSpace.sub_apply, Tensor0SBundle.Tensor0SSpace.smul_apply,
+      hmetric00, hRicQ00, hshiftQ, hTrace, hRicNeg_comp 0 0, smul_eq_mul]
+    ring
+  rw [hmain]
+  have hCder : Cder = -(2 * K / (1 + 2 * K * (t - t0))) * C := by
+    dsimp [Cder, C, hamiltonIveySupportCoefficientDeriv, hamiltonIveySupportCoefficient]
+    field_simp
+  rw [hCder]
+  unfold hamiltonIveySupportUpperReactBlock
+  rw [shiftReactBlock3_eq_of_ne (delta := delta) (a := -p) (b := -r) (c := -s) hden]
+
+omit [SigmaCompactSpace M] [T2Space M] [IsManifold I 2 M] in
 theorem hamiltonIveySupportUpperReactBlockPoly_tangent_eq
     {a X c q l1 : Real} (ha : a ≠ 0) (ha3 : a + 3 ≠ 0) (hc : c = X / a) :
     hamiltonIveySupportUpperReactBlockPoly a c q
