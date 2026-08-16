@@ -206,9 +206,12 @@ theorem closed_convex_timeDep_heat_reaction_mem_of_support_tangent
     (u : Real → M → F)
     (hsol : IsInnerProductHeatReactionOn
       (RealTimeInterval.closed 0 T hT.le) G reaction u)
+    (R : ℝ)
+    (hbound : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, ‖u t x‖ ≤ R)
+    (hCzero : ∀ t : Real, (0 : F) ∈ C t)
     (L : NNReal)
     (hL : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
-      LipschitzWith L (reaction t x))
+      LipschitzOnWith L (reaction t x) (Metric.closedBall 0 (2 * R)))
     (hCdist_cont : ContinuousOn
       (fun q : Real × M => Metric.infDist (u q.1 q.2) (C q.1))
       (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
@@ -444,8 +447,30 @@ theorem closed_convex_timeDep_heat_reaction_mem_of_support_tangent
     have htan := htangent q₀.1 hq₀carrier q₀.2 p hpC ν' hν'N hsupp_eq
     have hreactionp : inner ℝ ν' (reaction q₀.1 q₀.2 p) ≤ support' q₀.1 ν' := by
       simpa [real_inner_comm] using htan
+    have hRge : 0 ≤ R := by
+      have hb := hbound 0 ⟨le_rfl, le_of_lt hT⟩ q₀.2
+      exact le_trans (norm_nonneg _) hb
+    have hu_ball : u q₀.1 q₀.2 ∈ Metric.closedBall (0 : F) (2 * R) := by
+      have hb : ‖u q₀.1 q₀.2‖ ≤ 2 * R := by
+        have hb0 := hbound q₀.1 hq₀carrier q₀.2
+        nlinarith
+      rw [Metric.mem_closedBall]
+      simpa [dist_eq_norm, sub_zero] using hb
+    have hp_ball : p ∈ Metric.closedBall (0 : F) (2 * R) := by
+      have hdist : ‖p‖ ≤ ‖u q₀.1 q₀.2‖ + ‖u q₀.1 q₀.2 - p‖ :=
+        norm_le_norm_add_norm_sub (u q₀.1 q₀.2) p
+      have hinf : Metric.infDist (u q₀.1 q₀.2) (C q₀.1) ≤ ‖u q₀.1 q₀.2‖ := by
+        simpa [dist_eq_norm, sub_zero] using
+          Metric.infDist_le_dist_of_mem (x := u q₀.1 q₀.2) (hCzero q₀.1)
+      have hdistp : ‖u q₀.1 q₀.2 - p‖ = Metric.infDist (u q₀.1 q₀.2) (C q₀.1) := by
+        simpa [ν'] using hdist₀.symm
+      have hb : ‖p‖ ≤ 2 * R := by
+        have hb0 := hbound q₀.1 hq₀carrier q₀.2
+        nlinarith
+      rw [Metric.mem_closedBall]
+      simpa [dist_eq_norm, sub_zero] using hb
     have hLip := (hL q₀.1 hq₀reg q₀.2).norm_sub_le
-      (u q₀.1 q₀.2) p
+      hu_ball hp_ball
     have hinnerLip : inner ℝ ν'
         (reaction q₀.1 q₀.2 (u q₀.1 q₀.2) - reaction q₀.1 q₀.2 p) ≤
           (L : Real) * ‖ν'‖ ^ 2 := by
