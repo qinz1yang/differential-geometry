@@ -373,6 +373,21 @@ lemma hasDerivAt_barrier_comp
     field_simp [hX.ne', hdenpos.ne']
     ring_nf)
 
+lemma reactionSum3_nonneg (l1 l2 l3 : Real) :
+    0 ≤ 2 * (l1 ^ 2 + l2 * l3) + 2 * (l2 ^ 2 + l1 * l3) + 2 * (l3 ^ 2 + l1 * l2) := by
+  have hsq : 0 ≤ (l1 + l2) ^ 2 + (l1 + l3) ^ 2 + (l2 + l3) ^ 2 := by positivity
+  nlinarith
+
+lemma reactionSum3_ge_sq (l1 l2 l3 : Real) :
+    4 * ((l1 + l2 + l3) ^ 2) / 3 ≤
+      2 * (l1 ^ 2 + l2 * l3) + 2 * (l2 ^ 2 + l1 * l3) + 2 * (l3 ^ 2 + l1 * l2) := by
+  have hnorm : 2 * (l1 ^ 2 + l2 * l3) + 2 * (l2 ^ 2 + l1 * l3) + 2 * (l3 ^ 2 + l1 * l2) =
+      (l1 + l2) ^ 2 + (l1 + l3) ^ 2 + (l2 + l3) ^ 2 := by ring
+  rw [hnorm]
+  have hsq : 0 ≤ ((l1 + l2) - (l1 + l3)) ^ 2 + ((l1 + l2) - (l2 + l3)) ^ 2 +
+      ((l1 + l3) - (l2 + l3)) ^ 2 := by positivity
+  nlinarith
+
 theorem hamiltonIveyMatrixReaction_orthogonal_conj
     (O A : Matrix (Fin 3) (Fin 3) Real)
     (hO : O * O.transpose = 1) :
