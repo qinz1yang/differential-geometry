@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.Core
 import Mathlib
 
 set_option autoImplicit false
@@ -8,8 +9,9 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry.Analysis.ODE
+open DifferentialGeometry.Geometry.Curvature
 open Set Filter
-open scoped BigOperators Topology NNReal
+open scoped BigOperators Topology NNReal Manifold ContDiff
 
 theorem frameODE_linear_solution
     {T : ℝ} (hT : 0 < T)
@@ -234,6 +236,137 @@ theorem uhlenbeckFrameOn
   · intro t ht x a k
     have hd := (hgamma x).2 t ht a k
     simpa [iota] using hd
+
+theorem gramMatrix_posDef_of_basisFrame
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (b : Module.Basis (Fin 3) ℝ E) :
+    Matrix.PosDef (fun i j : Fin 3 =>
+      g.inner x (referenceFrameOfBasis b i x) (referenceFrameOfBasis b j x)) := by
+  classical
+  let cd : InnerProductSpace.Core ℝ (TangentSpace I x) := g.toRiemannianMetric.toCore x
+  have hc : ContinuousAt (fun v : TangentSpace I x => cd.inner v v) 0 :=
+    g.toRiemannianMetric.continuousAt x
+  have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
+      RCLike.re (cd.inner v v) < 1} :=
+    g.toRiemannianMetric.isVonNBounded x
+  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+    cd.toNormedAddCommGroupOfTopology hc hbnd
+  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+    InnerProductSpace.ofCoreOfTopology cd hc hbnd
+  have hinner_eq : ∀ u v : TangentSpace I x, (inner ℝ u v : ℝ) = g.inner x u v :=
+    fun u v => rfl
+  let v : Fin 3 → TangentSpace I x := fun i => referenceFrameOfBasis b i x
+  have hgram_eq : (Matrix.gram ℝ v : Matrix (Fin 3) (Fin 3) ℝ) =
+      (fun i j : Fin 3 =>
+        g.inner x (referenceFrameOfBasis b i x) (referenceFrameOfBasis b j x)) := by
+    ext i j
+    simp [Matrix.gram, v, hinner_eq]
+  have hli : LinearIndependent ℝ v := by
+    simpa [referenceFrameOfBasis] using b.linearIndependent
+  have hpd : (Matrix.gram ℝ v).PosDef :=
+    Matrix.posDef_gram_of_linearIndependent hli
+  simpa [hgram_eq] using hpd
+
+def flowMetricGramMatrix
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (frame : Fin 3 → (x : M) → TangentSpace I x) :
+    Real → M → Matrix (Fin 3) (Fin 3) ℝ :=
+  fun t x i j => (S.base.metric t).inner x (frame i x) (frame j x)
+
+def flowInverseMetricComponents
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (frame : Fin 3 → (x : M) → TangentSpace I x) :
+    Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3) :=
+  fun t x i j => (flowMetricGramMatrix S frame t x)⁻¹ i j
+
+theorem flowInverseMetricComponents_inverseProperty
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (b : Module.Basis (Fin 3) ℝ E) (t : ℝ) (x : M) :
+    ∀ i j : Fin 3,
+      (∑ k : Fin 3,
+        flowInverseMetricComponents S (referenceFrameOfBasis b) t x i k *
+          (S.base.metric t).inner x (referenceFrameOfBasis b k x)
+            (referenceFrameOfBasis b j x)) =
+        if i = j then 1 else 0 := by
+  classical
+  intro i j
+  have hpd : (flowMetricGramMatrix S (referenceFrameOfBasis b) t x).PosDef := by
+    simpa [flowMetricGramMatrix] using
+      (gramMatrix_posDef_of_basisFrame (S.base.metric t) x b)
+  have hu : IsUnit (flowMetricGramMatrix S (referenceFrameOfBasis b) t x) :=
+    Matrix.PosDef.isUnit hpd
+  haveI : Invertible (flowMetricGramMatrix S (referenceFrameOfBasis b) t x) :=
+    hu.invertible
+  have hmain := Matrix.inv_mul_cancel_left_of_invertible
+    (A := flowMetricGramMatrix S (referenceFrameOfBasis b) t x)
+    (B := (1 : Matrix (Fin 3) (Fin 3) ℝ))
+  -- hmain : G⁻¹ * (G * 1) = 1
+  have hmain' : (flowMetricGramMatrix S (referenceFrameOfBasis b) t x)⁻¹ *
+      (flowMetricGramMatrix S (referenceFrameOfBasis b) t x) = 1 := by
+    have h1 := congrArg (fun M : Matrix (Fin 3) (Fin 3) ℝ =>
+      (flowMetricGramMatrix S (referenceFrameOfBasis b) t x)⁻¹ * M)
+      (Matrix.mul_one (flowMetricGramMatrix S (referenceFrameOfBasis b) t x))
+    exact h1.symm.trans hmain
+  have hrow := congrFun (congrFun hmain' i) j
+  -- (G⁻¹ * G) i j = δ_ij — expand the sum
+  simpa [Matrix.mul_apply, flowInverseMetricComponents, flowMetricGramMatrix] using hrow
+
+theorem flowInverseMetricComponents_inversePropertyRight
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (b : Module.Basis (Fin 3) ℝ E) (t : ℝ) (x : M) :
+    ∀ i j : Fin 3,
+      (∑ k : Fin 3,
+        (S.base.metric t).inner x (referenceFrameOfBasis b i x)
+            (referenceFrameOfBasis b k x) *
+          flowInverseMetricComponents S (referenceFrameOfBasis b) t x k j) =
+        if i = j then 1 else 0 := by
+  classical
+  intro i j
+  have hpd : (flowMetricGramMatrix S (referenceFrameOfBasis b) t x).PosDef := by
+    simpa [flowMetricGramMatrix] using
+      (gramMatrix_posDef_of_basisFrame (S.base.metric t) x b)
+  have hu : IsUnit (flowMetricGramMatrix S (referenceFrameOfBasis b) t x) :=
+    Matrix.PosDef.isUnit hpd
+  haveI : Invertible (flowMetricGramMatrix S (referenceFrameOfBasis b) t x) :=
+    hu.invertible
+  have hmain := Matrix.mul_inv_cancel_right_of_invertible
+    (A := flowMetricGramMatrix S (referenceFrameOfBasis b) t x)
+    (B := (1 : Matrix (Fin 3) (Fin 3) ℝ))
+  have hmain' : (flowMetricGramMatrix S (referenceFrameOfBasis b) t x) *
+      (flowMetricGramMatrix S (referenceFrameOfBasis b) t x)⁻¹ = 1 := by
+    have h1 := congrArg (fun M : Matrix (Fin 3) (Fin 3) ℝ =>
+      M * (flowMetricGramMatrix S (referenceFrameOfBasis b) t x)⁻¹)
+      (one_mul (flowMetricGramMatrix S (referenceFrameOfBasis b) t x))
+    exact h1.symm.trans hmain
+  have hrow := congrFun (congrFun hmain' i) j
+  simpa [Matrix.mul_apply, flowInverseMetricComponents, flowMetricGramMatrix] using hrow
 
 end DifferentialGeometry.PDE.RicciFlow
 
