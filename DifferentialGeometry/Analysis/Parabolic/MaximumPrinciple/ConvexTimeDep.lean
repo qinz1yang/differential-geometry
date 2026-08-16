@@ -219,7 +219,7 @@ theorem closed_convex_timeDep_heat_reaction_mem_of_support_tangent
       ContinuousOn (fun t : Real => support t ν) (Set.Icc 0 T))
     (hsupport_time : ∀ ν : F, ν ∈ N → ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t →
       HasDerivAt (fun s : Real => support s ν) (support' t ν) t)
-    (htangent : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, ∀ p : F,
+    (htangent : ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M, ∀ p : F,
       p ∈ C t → ∀ ν : F, ν ∈ N → support t ν = inner ℝ ν p →
         inner ℝ (reaction t x p) ν ≤ support' t ν)
     (hinit : ∀ x : M, u 0 x ∈ C 0) :
@@ -444,7 +444,7 @@ theorem closed_convex_timeDep_heat_reaction_mem_of_support_tangent
         have hpos : 0 < Real.exp (-KK * q₀.1) := Real.exp_pos _
         nlinarith
       nlinarith [hL', hztime, Real.exp_pos (-KK * q₀.1)]
-    have htan := htangent q₀.1 hq₀carrier q₀.2 p hpC ν' hν'N hsupp_eq
+    have htan := htangent q₀.1 hq₀carrier hq₀tpos q₀.2 p hpC ν' hν'N hsupp_eq
     have hreactionp : inner ℝ ν' (reaction q₀.1 q₀.2 p) ≤ support' q₀.1 ν' := by
       simpa [real_inner_comm] using htan
     have hRge : 0 ≤ R := by

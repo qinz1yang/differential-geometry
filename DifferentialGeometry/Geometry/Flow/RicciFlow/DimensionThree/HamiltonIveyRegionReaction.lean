@@ -5165,6 +5165,65 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclid_reaction_le_deriv
     ring
   exact ge_of_tendsto hquot hmain
 
+lemma hamiltonIveyMatrixReaction_isHermitian
+    {A : Matrix (Fin 3) (Fin 3) ℝ} (hA : A.IsHermitian) :
+    (hamiltonIveyMatrixReaction A).IsHermitian := by
+  unfold hamiltonIveyMatrixReaction
+  have hsq : (A * A).IsHermitian := by
+    unfold Matrix.IsHermitian
+    rw [Matrix.conjTranspose_mul]
+    rw [hA]
+  have hsum : (A * A + A.adjugate).IsHermitian := hsq.add hA.adjugate
+  have hsum' : ((A * A + A.adjugate) + (A * A + A.adjugate)).IsHermitian := hsum.add hsum
+  have h2x : 2 • (A * A + A.adjugate) = (A * A + A.adjugate) + (A * A + A.adjugate) := by
+    rw [two_nsmul]
+  rw [h2x]
+  exact hsum'
+
+lemma uhlenbeckCurvatureOperatorReactionState_isHermitian
+    (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hA : (euclidToMatrix A).IsHermitian) :
+    (euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A)).IsHermitian := by
+  dsimp [uhlenbeckCurvatureOperatorReactionState]
+  rw [euclidToMatrix_matrixToEuclid]
+  exact hamiltonIveyMatrixReaction_isHermitian hA
+
+lemma inner_reactionState_zero_of_symm_zero
+    (ν A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hν : symmEuclid ν = 0)
+    (hA : (euclidToMatrix A).IsHermitian) :
+    inner ℝ (uhlenbeckCurvatureOperatorReactionState A) ν = 0 := by
+  have hAh := uhlenbeckCurvatureOperatorReactionState_isHermitian A hA
+  have h := inner_matrixToEuclid_symm ν (euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A)) hAh
+  rw [hν] at h
+  have hzero : inner ℝ (matrixToEuclid (0 : Matrix (Fin 3) (Fin 3) ℝ))
+      (matrixToEuclid (euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A))) = 0 := by
+    rw [inner_matrixToEuclid]
+    simp [matrixToEuclid]
+  have hmain : inner ℝ ν (matrixToEuclid (euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A))) = 0 :=
+    h.trans hzero
+  rw [real_inner_comm]
+  rw [← matrixToEuclid_euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A)]
+  exact hmain
+
+lemma hamiltonIveyConvexMatrixRegionSupportDeriv_eq_zero_of_symm_zero
+    {K : ℝ} (hK : 0 < K) (τ : ℝ) (ν : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hν : symmEuclid ν = 0) :
+    hamiltonIveyConvexMatrixRegionSupportDeriv K hK τ ν = 0 := by
+  unfold hamiltonIveyConvexMatrixRegionSupportDeriv
+  have hnot : ¬ (symmEuclid_isHermitian ν).eigenvalues₀ 0 < 0 := by
+    intro hlt
+    have hzero : (symmEuclid_isHermitian ν).eigenvalues₀ 0 = 0 := by
+      have heig : (symmEuclid_isHermitian ν).eigenvalues = 0 := by
+        exact (Matrix.IsHermitian.eigenvalues_eq_zero_iff (hA := symmEuclid_isHermitian ν)).mpr hν
+      let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
+      have h0 : (symmEuclid_isHermitian ν).eigenvalues (e 0) = 0 := congrFun heig (e 0)
+      have hdef : (symmEuclid_isHermitian ν).eigenvalues (e 0) =
+          (symmEuclid_isHermitian ν).eigenvalues₀ (e.symm (e 0)) := rfl
+      rw [hdef, Equiv.symm_apply_apply] at h0
+      exact h0
+    linarith
+  rw [if_neg hnot]
 end DifferentialGeometry.PDE.RicciFlow
 
 end

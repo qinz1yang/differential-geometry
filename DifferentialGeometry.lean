@@ -2478,6 +2478,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveySupportUpper
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyCurvatureEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RicciEigenSectional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonPositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjCriticalSpan

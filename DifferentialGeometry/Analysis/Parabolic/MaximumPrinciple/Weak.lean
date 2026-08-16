@@ -885,6 +885,106 @@ theorem strict_barrier_nonnegative_of_positive_time
       linarith
     exact not_lt_of_ge hbarrier hbarrier_neg
 
+theorem strict_barrier_nonnegative_of_positive_time_interior
+    [I.Boundaryless]
+    [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (T : Real)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (w : Real -> M -> Real)
+    (hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2) (spacetimeSlab (M := M) T))
+    (hw0 : forall x : M, 0 <= w 0 x)
+    (hw_time : forall t : Real, t ∈ Set.Ioo 0 T ->
+      forall x : M, DifferentiableWithinAt Real (fun s : Real => w s x) (Set.Icc 0 T) t)
+    (hw_mdiff : forall t : Real, t ∈ Set.Ioo 0 T ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real) (w t) x)
+    (hw_grad : forall t : Real, t ∈ Set.Ioo 0 T ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (w t) y) x)
+    (hnegative : forall t : Real, t ∈ Set.Ioo 0 T ->
+      forall x : M, w t x < 0 ->
+        0 <= parabolicOperatorWithDrift (I := I) G T X w t x) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x := by
+  classical
+  have hIco : forall t : Real, t ∈ Set.Ico 0 T -> forall x : M, 0 <= w t x := by
+    intro t ht x
+    by_cases ht0 : t = 0
+    · subst t
+      exact hw0 x
+    · have hT' : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht0)
+      have hsub : spacetimeSlab (M := M) t ⊆ spacetimeSlab (M := M) T := by
+        intro p hp
+        exact ⟨⟨hp.1.1, le_trans hp.1.2 (le_of_lt ht.2)⟩, hp.2⟩
+      have hmain := strict_barrier_nonnegative_of_positive_time
+        (I := I) (M := M) G t X w
+        (hw_cont.mono hsub) hw0
+        (fun s hs hspos x => by
+          have hset : Set.Icc 0 T ∈ 𝓝 s := Filter.mem_of_superset
+            (Ioo_mem_nhds hspos (lt_of_le_of_lt hs.2 ht.2))
+            (by intro y hy; exact ⟨le_of_lt hy.1, le_of_lt hy.2⟩)
+          have hdiff : DifferentiableAt Real (fun s => w s x) s :=
+            (hw_time s ⟨hspos, lt_of_le_of_lt hs.2 ht.2⟩ x).differentiableAt hset
+          exact (hdiff.hasDerivAt.hasDerivWithinAt (s := Set.Icc 0 t)).differentiableWithinAt)
+        (fun s hs hspos x => hw_mdiff s ⟨hspos, lt_of_le_of_lt hs.2 ht.2⟩ x)
+        (fun s hs hspos x => hw_grad s ⟨hspos, lt_of_le_of_lt hs.2 ht.2⟩ x)
+        (fun s hs hspos x hwneg => by
+          have hsT : s ∈ Set.Ioo 0 T := ⟨hspos, lt_of_le_of_lt hs.2 ht.2⟩
+          have hnegT := hnegative s hsT x hwneg
+          have hdiffT : DifferentiableWithinAt Real (fun s => w s x) (Set.Icc 0 T) s :=
+            hw_time s hsT x
+          have hdiff : DifferentiableAt Real (fun s => w s x) s :=
+            hdiffT.differentiableAt (Filter.mem_of_superset (Ioo_mem_nhds hsT.1 hsT.2)
+              (by intro y hy; exact ⟨le_of_lt hy.1, le_of_lt hy.2⟩))
+          have hderiv_eq : derivWithin (fun s => w s x) (Set.Icc 0 t) s =
+              derivWithin (fun s => w s x) (Set.Icc 0 T) s := by
+            have huniq_t : UniqueDiffWithinAt Real (Set.Icc 0 t) s :=
+              (uniqueDiffOn_Icc hT').uniqueDiffWithinAt hs
+            have huniq_T : UniqueDiffWithinAt Real (Set.Icc 0 T) s := by
+              exact (uniqueDiffOn_Icc (a := (0 : ℝ)) (b := T) (lt_trans hspos hsT.2)).uniqueDiffWithinAt
+                ⟨hspos.le, le_of_lt hsT.2⟩
+            have h1 : derivWithin (fun s => w s x) (Set.Icc 0 t) s = deriv (fun s => w s x) s := by
+              exact (hdiff.hasDerivAt.hasDerivWithinAt).derivWithin huniq_t
+            have h2 : derivWithin (fun s => w s x) (Set.Icc 0 T) s = deriv (fun s => w s x) s := by
+              exact (hdiff.hasDerivAt.hasDerivWithinAt).derivWithin huniq_T
+            rw [h1, h2]
+          unfold parabolicOperatorWithDrift at hnegT ⊢
+          rw [← hderiv_eq] at hnegT
+          exact hnegT)
+      exact hmain t ⟨ht.1, le_rfl⟩ x
+  intro t ht x
+  by_cases hTpos : 0 < T
+  · rcases eq_or_lt_of_le ht.2 with htEq | htlt
+    · rw [htEq]
+      have htend : Tendsto (fun s : Real => w s x) (𝓝[<] T) (𝓝 (w T x)) := by
+        have hmem : (T, x) ∈ spacetimeSlab (M := M) T := ⟨⟨le_of_lt hTpos, le_rfl⟩, mem_univ x⟩
+        have hcont := hw_cont.continuousWithinAt hmem
+        have hpair : Tendsto (fun s : Real => (s, x)) (𝓝[<] T) (𝓝 (T, x)) := by
+          refine Filter.Tendsto.prodMk_nhds ?_ tendsto_const_nhds
+          exact (continuous_id.tendsto T).mono_left nhdsWithin_le_nhds
+        have hpairWithin : Tendsto (fun s : Real => (s, x))
+            (𝓝[<] T) (𝓝[spacetimeSlab (M := M) T] (T, x)) := by
+          rw [tendsto_nhdsWithin_iff]
+          constructor
+          · exact hpair
+          · have hpos : Set.Ioi (0 : Real) ∈ 𝓝[<] T := by
+              have h : Set.Ioi (0 : Real) ∈ 𝓝 T := Ioi_mem_nhds hTpos
+              exact nhdsWithin_le_nhds h
+            filter_upwards [hpos, self_mem_nhdsWithin] with s hs hslt
+            exact ⟨⟨le_of_lt hs, le_of_lt hslt⟩, mem_univ x⟩
+        simpa using hcont.tendsto.comp hpairWithin
+      have hevent : ∀ᶠ s in 𝓝[<] T, 0 ≤ w s x := by
+        have hpos : Set.Ioi (0 : Real) ∈ 𝓝[<] T := by
+          have h : Set.Ioi (0 : Real) ∈ 𝓝 T := Ioi_mem_nhds hTpos
+          exact nhdsWithin_le_nhds h
+        filter_upwards [hpos, self_mem_nhdsWithin] with s hs hslt
+        exact hIco s ⟨le_of_lt hs, hslt⟩ x
+      exact ge_of_tendsto htend hevent
+    · exact hIco t ⟨ht.1, htlt⟩ x
+  · have ht0 : t = 0 := by linarith [ht.1, ht.2, hTpos]
+    subst t
+    exact hw0 x
+
 theorem strict_barrier_positive_region
     [I.Boundaryless]
     [CompactSpace M]
