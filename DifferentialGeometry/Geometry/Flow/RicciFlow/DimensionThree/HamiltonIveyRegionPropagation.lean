@@ -524,6 +524,69 @@ theorem curvatureOperatorRegionPropagationOn_of_uhlenbeckData_shifted
       rwa [← hmat_eq] at hm
     exact hmem'
 
+
+theorem hamilton_ivey_pinching_of_uhlenbeckData
+    [I.Boundaryless] [CompactSpace M] [T2Space M]
+    [IsManifold I 1 M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {t0 T K : ℝ} (hK : 0 < K) (hT : 0 < T)
+    (pulledRm roughLapD B : FourComp M (Fin 3))
+    (hU : UhlenbeckCurvatureEvolutionInFrameOn (D := D) pulledRm roughLapD B)
+    (hlap : ∀ t : Real, t ∈ D.carrier → ∀ x : M, ∀ ij : Fin 3 × Fin 3,
+      roughLapD t x (bivectorIndex3 ij.1).1 (bivectorIndex3 ij.1).2
+          (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1 =
+        laplacianAt (I := I) (flowG (I := I) S) t
+          (fun y : M => uhlenbeckCurvatureOperatorMatrix pulledRm t y ij) x)
+    (hjoint : ContinuousOn (fun q : Real × M => uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2)
+      (D.carrier ×ˢ (Set.univ : Set M)))
+    (hsmooth : ∀ ij : Fin 3 × Fin 3, ∀ t : Real, t ∈ D.carrier →
+      ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => uhlenbeckCurvatureOperatorMatrix pulledRm t x ij))
+    (R : Real → M → Fin 3 → Fin 3 → ℝ)
+    (hR : ∀ t x i j, R t x i j = R t x j i)
+    (hrm : ∀ t x a b c d, pulledRm t x a b c d = rm (R t x) a b c d)
+    (hB : ∀ t x a b c d, B t x a b c d = bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d)
+    (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
+    (hreg : Set.Ioc t0 (t0 + T) ⊆ D.regular)
+    (hbound : ∃ R : ℝ, 0 ≤ R ∧ ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      ‖uhlenbeckCurvatureOperatorMatrix pulledRm t x‖ ≤ R)
+    (hCdist_cont : ContinuousOn
+      (fun q : Real × M => Metric.infDist (uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2)
+        (hamiltonIveyConvexMatrixRegionEuclid K (q.1 - t0)))
+      (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M)))
+    (hinit : ∀ x : M, uhlenbeckCurvatureOperatorMatrix pulledRm t0 x ∈
+      hamiltonIveyConvexMatrixRegionEuclid K 0)
+    (hpull : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      ∃ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+        OrthonormalBasisAt (I := I) (S.base.metric t) x basis ∧
+          ∀ a b c d : Fin 3,
+            pulledRm t x a b c d =
+              tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+                (basis a) (basis b) (basis c) (basis d)) :
+    (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      -6 * K / (1 + 4 * K * (t - t0)) ≤ S.scalar t x) ∧
+    (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      ∀ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+        OrthonormalBasisAt (I := I) (S.base.metric t) x basis →
+        orderedSectionalCurvaturesAt (I := I) x basis
+            ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) (S.base.metric t) x⟩ 2 < 0 →
+          S.scalar t x ≥
+            2 * (-orderedSectionalCurvaturesAt (I := I) x basis
+              ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                (I := I) (S.base.metric t) x⟩ 2) *
+              (Real.log ((-orderedSectionalCurvaturesAt (I := I) x basis
+                ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                  (I := I) (S.base.metric t) x⟩ 2) / K) +
+                Real.log (1 + 2 * K * (t - t0)) - 3)) := by
+  have hprop := curvatureOperatorRegionPropagationOn_of_uhlenbeckData_shifted
+    (I := I) (M := M) S hK hT pulledRm roughLapD B hU hlap hjoint hsmooth R hR hrm hB
+    hslab hreg hbound hCdist_cont hinit hpull
+  exact hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
+    (I := I) (M := M) S hK hslab hprop
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
