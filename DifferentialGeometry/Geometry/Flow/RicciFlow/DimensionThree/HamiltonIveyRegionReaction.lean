@@ -4433,6 +4433,471 @@ lemma hasDerivAt_hamiltonIveyKinkPoint
     (hasDerivAt_iff_tendsto_slope).mpr hq
   convert hmain using 1
 
+lemma hamiltonIveyBarrierStarPoint_fhValue
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν0 : ν 0 < 0) :
+    hamiltonIveyBarrier K τ (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * ν 0 +
+        (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * (2 * ν 0 - ν 1 - ν 2) =
+      -(ν 0 * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ))) := by
+  let Xs : ℝ := K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)
+  have hbar := hamiltonIveyBarrier_at_star_point (K := K) (τ := τ) (ν := ν) hK hτ
+  -- hbar : h τ Xs = Xs * ((ν1+ν2)/ν0 - 3)
+  calc
+    hamiltonIveyBarrier K τ Xs * ν 0 + Xs * (2 * ν 0 - ν 1 - ν 2)
+        = (Xs * ((ν 1 + ν 2) / ν 0 - 3)) * ν 0 + Xs * (2 * ν 0 - ν 1 - ν 2) := by rw [hbar]
+    _ = -(ν 0 * Xs) := by
+          field_simp [Ne.symm hν0.ne']
+          ring
+
+lemma hamiltonIveyBarrierKink_fhValue
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} :
+    hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) * ν 0 +
+        hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2) =
+      scalarSectionalLowerBarrier3 K τ * ν 0 +
+        hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2) := by
+  have hk := kink_point_eq hK hτ
+  rw [hk]
+
+lemma hamiltonIveyKinkStarValues_eq_of_crossing
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν0 : ν 0 < 0)
+    (hcross : hamiltonIveyKinkPoint hK τ =
+      K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) :
+    -(ν 0 * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ))) =
+      scalarSectionalLowerBarrier3 K τ * ν 0 +
+        hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2) := by
+  have hfh2 : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) * ν 0 +
+        hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2) =
+      scalarSectionalLowerBarrier3 K τ * ν 0 +
+        hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2) :=
+    hamiltonIveyBarrierKink_fhValue hK hτ
+  have hfh1 : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) * ν 0 +
+        hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2) =
+      -(ν 0 * (hamiltonIveyKinkPoint hK τ)) := by
+    have h1 := hamiltonIveyBarrierStarPoint_fhValue hK hτ hν0
+    rwa [← hcross] at h1
+  rw [← hcross]
+  exact hfh1.symm.trans hfh2
+
+lemma support_formula_eq_kink_or_star
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0) :
+    hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal ν)) =
+      if hamiltonIveyKinkPoint hK τ ≤
+          K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ) then
+        -(ν 0 * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)))
+      else
+        scalarSectionalLowerBarrier3 K τ * ν 0 +
+          hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2) := by
+  let Xs : ℝ := K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)
+  let X₂ : ℝ := hamiltonIveyKinkPoint hK τ
+  let G₁ : ℝ := -(ν 0 * Xs)
+  let G₂ : ℝ := scalarSectionalLowerBarrier3 K τ * ν 0 + X₂ * (2 * ν 0 - ν 1 - ν 2)
+  let F : ℝ → ℝ := fun X => hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)
+  let Fh : ℝ → ℝ := fun X => hamiltonIveyBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)
+  let Fs : ℝ → ℝ := fun X => scalarSectionalLowerBarrier3 K τ * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)
+  let Fset : Set ℝ := {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧ x = F X}
+  have hXspos : 0 < Xs := by
+    dsimp [Xs]
+    positivity
+  have hX2pos : 0 ≤ X₂ := by
+    have hgt : K * Real.exp 2 / (1 + 2 * K * τ) < X₂ := kink_point_above_E hK hτ
+    have hEpos : 0 < K * Real.exp 2 / (1 + 2 * K * τ) := by positivity
+    exact le_of_lt (lt_of_lt_of_le hEpos (le_of_lt hgt))
+  have hc : 0 ≤ 2 * ν 0 - ν 1 - ν 2 := by
+    have h1 : ν 1 ≤ ν 0 := hν (by decide : (0 : Fin 3) ≤ 1)
+    have h2 : ν 2 ≤ ν 0 := hν (by decide : (0 : Fin 3) ≤ 2)
+    nlinarith
+  have hF_eq_min : ∀ X : ℝ, F X = min (Fs X) (Fh X) := by
+    intro X
+    have h := support_formula_min_branch (K := K) (τ := τ) hν0 X
+    simpa [F, Fs, Fh] using h
+  have hF_le_Fh : ∀ X : ℝ, F X ≤ Fh X := by
+    intro X
+    rw [hF_eq_min X]
+    exact min_le_right _ _
+  have hF_le_Fs : ∀ X : ℝ, F X ≤ Fs X := by
+    intro X
+    rw [hF_eq_min X]
+    exact min_le_left _ _
+  have hFh_Xs : Fh Xs = G₁ := by
+    dsimp [Fh, G₁, Xs]
+    exact hamiltonIveyBarrierStarPoint_fhValue hK hτ hν0
+  have hFh_X2 : Fh X₂ = G₂ := by
+    dsimp [Fh, G₂, X₂]
+    exact hamiltonIveyBarrierKink_fhValue hK hτ
+  have hFs_X2 : Fs X₂ = G₂ := by
+    dsimp [Fs, G₂]
+  have hFs_mono : MonotoneOn Fs (Set.univ : Set ℝ) := by
+    intro x hx y hy hxy
+    dsimp [Fs]
+    have hmul : x * (2 * ν 0 - ν 1 - ν 2) ≤ y * (2 * ν 0 - ν 1 - ν 2) :=
+      mul_le_mul_of_nonneg_right hxy hc
+    linarith
+  have hFh_left : ∀ {x y : ℝ}, 0 ≤ x → x ≤ y → y ≤ Xs → Fh x ≤ Fh y := by
+    intro x y hx hxy hy
+    have hmono := monotoneOn_Fh_left (K := K) (τ := τ) hK hτ hν hν0
+    exact hmono ⟨hx, le_trans hxy hy⟩ ⟨le_trans hx hxy, hy⟩ hxy
+  have hFh_right : ∀ {x y : ℝ}, Xs ≤ x → x ≤ y → Fh y ≤ Fh x := by
+    intro x y hx hxy
+    have hmono := antitoneOn_Fh_right (K := K) (τ := τ) hK hτ hν hν0
+    exact hmono hx (le_trans hx hxy) hxy
+  have hdef_eq : hamiltonIveyConvexMatrixRegionSupportEuclid K τ
+      (matrixToEuclid (Matrix.diagonal ν)) = sSup Fset := by
+    have hsymm : symmEuclid (matrixToEuclid (Matrix.diagonal ν)) = Matrix.diagonal ν := by
+      ext i j
+      dsimp [symmEuclid, euclidToMatrix]
+      by_cases h : i = j
+      · simp [h, matrixToEuclid, Matrix.diagonal]
+        ring
+      · simp [h, matrixToEuclid, Matrix.diagonal, Ne.symm h]
+    have hν' : (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν))).eigenvalues₀ = ν := by
+      have hchar : (symmEuclid (matrixToEuclid (Matrix.diagonal ν))).charpoly =
+          (Matrix.diagonal ν).charpoly := by
+        rw [hsymm]
+      have heig' : (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν))).eigenvalues₀ =
+          (Matrix.isHermitian_diagonal ν).eigenvalues₀ :=
+        eigenvalues₀_eq_of_charpoly_eq_real
+          (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν)))
+          (Matrix.isHermitian_diagonal ν) hchar
+      have heig : (Matrix.isHermitian_diagonal ν).eigenvalues₀ = ν :=
+        diagonal_eigenvalues₀_eq_of_antitone ν hν
+      exact heig'.trans heig
+    unfold hamiltonIveyConvexMatrixRegionSupportEuclid
+    rw [hν']
+    dsimp [F]
+    exact (if_pos hν0).trans rfl
+  have hbddF : BddAbove Fset := by
+    dsimp [Fset, F]
+    exact support_formula_bddAbove hK hτ hν0
+  have hFne : Fset.Nonempty := by
+    refine ⟨F 0, ?_⟩
+    exact ⟨0, le_rfl, rfl⟩
+  have hF_le_choice : ∀ X : ℝ, 0 ≤ X → F X ≤ (if X₂ ≤ Xs then G₁ else G₂) := by
+    intro X hX
+    by_cases h2s : X₂ ≤ Xs
+    · rw [if_pos h2s]
+      by_cases hXle : X ≤ Xs
+      · have hmain : Fh X ≤ Fh Xs := hFh_left (x := X) (y := Xs) hX hXle le_rfl
+        exact le_trans (hF_le_Fh X) (le_trans hmain hFh_Xs.le)
+      · have hXsle : Xs ≤ X := le_of_not_ge hXle
+        have hmain : Fh X ≤ Fh Xs := hFh_right (x := Xs) (y := X) le_rfl hXsle
+        exact le_trans (hF_le_Fh X) (le_trans hmain hFh_Xs.le)
+    · rw [if_neg h2s]
+      by_cases hXle : X ≤ X₂
+      · have hmain : Fs X ≤ Fs X₂ := hFs_mono trivial trivial hXle
+        exact le_trans (hF_le_Fs X) (le_trans hmain hFs_X2.le)
+      · have hX2le : X₂ ≤ X := le_of_not_ge hXle
+        have hX2gtXs : Xs < X₂ := lt_of_not_ge h2s
+        have hmain : Fh X ≤ Fh X₂ := hFh_right (x := X₂) (y := X) (le_of_lt hX2gtXs) hX2le
+        exact le_trans (hF_le_Fh X) (le_trans hmain hFh_X2.le)
+  have hsup_le : hamiltonIveyConvexMatrixRegionSupportEuclid K τ
+      (matrixToEuclid (Matrix.diagonal ν)) ≤ (if X₂ ≤ Xs then G₁ else G₂) := by
+    rw [hdef_eq]
+    refine csSup_le hFne ?_
+    rintro x ⟨X, hX, rfl⟩
+    exact hF_le_choice X hX
+  have hsup_ge : (if X₂ ≤ Xs then G₁ else G₂) ≤ hamiltonIveyConvexMatrixRegionSupportEuclid K τ
+      (matrixToEuclid (Matrix.diagonal ν)) := by
+    by_cases h2s : X₂ ≤ Xs
+    · have hX2gtE : K * Real.exp 2 / (1 + 2 * K * τ) < X₂ := kink_point_above_E hK hτ
+      have hXsgtE : K * Real.exp 2 / (1 + 2 * K * τ) < Xs := by
+        linarith
+      have hs_le_hXs : scalarSectionalLowerBarrier3 K τ ≤ hamiltonIveyBarrier K τ Xs := by
+        have hmono := (strictMonoOn_hamiltonIveyBarrier_above_E hK hτ).monotoneOn
+        have hle := hmono hX2gtE hXsgtE h2s
+        have hX2eq : hamiltonIveyBarrier K τ X₂ = scalarSectionalLowerBarrier3 K τ := kink_point_eq hK hτ
+        dsimp [X₂] at hX2eq
+        linarith
+      have hG1_le_FsXs : G₁ ≤ Fs Xs := by
+        have hmain : Fh Xs ≤ Fs Xs := by
+          dsimp [Fs, Fh]
+          have hmul : hamiltonIveyBarrier K τ Xs * ν 0 ≤ scalarSectionalLowerBarrier3 K τ * ν 0 := by
+            simpa [mul_comm] using (mul_le_mul_of_nonpos_left hs_le_hXs hν0.le)
+          linarith
+        simpa [hFh_Xs] using hmain
+      have hF_Xs : F Xs = G₁ := by
+        rw [hF_eq_min Xs]
+        have hle : Fh Xs ≤ Fs Xs := by
+          simpa [hFh_Xs] using hG1_le_FsXs
+        rw [min_eq_right hle]
+        exact hFh_Xs
+      have hmem : G₁ ∈ Fset := by
+        refine ⟨Xs, le_of_lt hXspos, ?_⟩
+        exact hF_Xs.symm
+      rw [if_pos h2s]
+      rw [hdef_eq]
+      exact le_csSup hbddF hmem
+    · have hF_X2 : F X₂ = G₂ := by
+        rw [hF_eq_min X₂]
+        rw [hFs_X2, hFh_X2]
+        exact min_self G₂
+      have hmem : G₂ ∈ Fset := by
+        refine ⟨X₂, hX2pos, ?_⟩
+        exact hF_X2.symm
+      rw [if_neg h2s]
+      rw [hdef_eq]
+      exact le_csSup hbddF hmem
+  exact le_antisymm hsup_le hsup_ge
+
+lemma hasDerivAt_of_eventually_or
+    {f g₁ g₂ : ℝ → ℝ} {a x : ℝ}
+    (h₁ : HasDerivAt g₁ a x) (h₂ : HasDerivAt g₂ a x)
+    (hx : g₁ x = g₂ x) (hf : f x = g₁ x)
+    (hchoice : ∀ᶠ y in 𝓝[≠] x, f y = g₁ y ∨ f y = g₂ y) :
+    HasDerivAt f a x := by
+  rw [hasDerivAt_iff_tendsto_slope]
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have e₁ : ∀ᶠ y in 𝓝[≠] x, dist (slope g₁ x y) a < ε :=
+    (Metric.tendsto_nhds.mp h₁.tendsto_slope) ε hε
+  have e₂ : ∀ᶠ y in 𝓝[≠] x, dist (slope g₂ x y) a < ε :=
+    (Metric.tendsto_nhds.mp h₂.tendsto_slope) ε hε
+  filter_upwards [e₁, e₂, hchoice] with y h₁' h₂' hc
+  rcases hc with hfy | hfy
+  · have hslope : slope f x y = slope g₁ x y := by
+      rw [slope_def_field, slope_def_field]
+      rw [hfy, hf]
+    simpa [hslope] using h₁'
+  · have hslope : slope f x y = slope g₂ x y := by
+      rw [slope_def_field, slope_def_field]
+      rw [hfy, hf, hx]
+    simpa [hslope] using h₂'
+
+lemma hamiltonIveyKinkStarDerivatives_eq_of_crossing
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀)
+    {ν : Fin 3 → ℝ} (hν0 : ν 0 < 0)
+    (hcross : hamiltonIveyKinkPoint hK τ₀ =
+      K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀)) :
+    (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+      ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+        hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+        (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
+          (2 * ν 0 - ν 1 - ν 2)) =
+      -(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2))) := by
+  let X : ℝ := hamiltonIveyKinkPoint hK τ₀
+  let Xs : ℝ := K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀)
+  let c : ℝ := 2 * ν 0 - ν 1 - ν 2
+  let a : ℝ := (ν 1 + ν 2) / ν 0
+  let S : ℝ := 12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2
+  have hden : (1 + 2 * K * τ₀ : ℝ) ≠ 0 := by
+    have hpos : 0 < 1 + 2 * K * τ₀ := by
+      have hKτ : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀.le
+      nlinarith
+    exact ne_of_gt hpos
+  have hXpos : 0 < X := by
+    have hE : K * Real.exp 2 / (1 + 2 * K * τ₀) < X := by simpa [X] using kink_point_above_E hK hτ₀.le
+    have hEpos : 0 < K * Real.exp 2 / (1 + 2 * K * τ₀) := by positivity
+    exact lt_of_lt_of_le hEpos (le_of_lt hE)
+  have hXs' : X / K = Real.exp a / (1 + 2 * K * τ₀) := by
+    change hamiltonIveyKinkPoint hK τ₀ / K = Real.exp a / (1 + 2 * K * τ₀)
+    rw [hcross]
+    field_simp [hden, hK.ne']
+    simp [a]
+  have hdenpos : 0 < 1 + 2 * K * τ₀ := by
+    have hKτ : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀.le
+    nlinarith
+  have hlogXs : Real.log (Real.exp a / (1 + 2 * K * τ₀)) = a - Real.log (1 + 2 * K * τ₀) := by
+    rw [Real.log_div (Real.exp_pos a).ne' hdenpos.ne']
+    rw [Real.log_exp a]
+  have hXlog : Real.log (X / K) + Real.log (1 + 2 * K * τ₀) = a := by
+    rw [hXs', hlogXs]
+    ring
+  have hXh : Real.log (X / K) + Real.log (1 + 2 * K * τ₀) - 2 = a - 2 := by linarith
+  have hνa : ν 0 * a = ν 1 + ν 2 := by
+    dsimp [a]
+    field_simp [Ne.symm hν0.ne']
+  have hFhX : ν 0 * (a - 2) + c = 0 := by
+    dsimp [c]
+    linarith [hνa]
+  have hc' : c = -(ν 0 * (a - 2)) := by
+    linarith [hFhX]
+  have hXeq : K * Real.exp ((ν 1 + ν 2) / ν 0) = X * (1 + 2 * K * τ₀) := by
+    change K * Real.exp ((ν 1 + ν 2) / ν 0) = hamiltonIveyKinkPoint hK τ₀ * (1 + 2 * K * τ₀)
+    rw [hcross]
+    field_simp [hden, hK.ne']
+  have ha_ne : a - 2 ≠ 0 := by
+    intro h2
+    have hν2 : (ν 1 + ν 2) / ν 0 = 2 := by linarith
+    have hE : Xs = K * Real.exp 2 / (1 + 2 * K * τ₀) := by
+      dsimp [Xs, a]
+      rw [hν2]
+    have hElt : hamiltonIveyBarrier K τ₀ (K * Real.exp 2 / (1 + 2 * K * τ₀)) <
+        scalarSectionalLowerBarrier3 K τ₀ := hamiltonIveyBarrier_lt_scalarLower_at_E hK hτ₀.le
+    have hXseq : hamiltonIveyBarrier K τ₀ Xs = scalarSectionalLowerBarrier3 K τ₀ := by
+      simpa [X, hcross] using kink_point_eq hK hτ₀.le
+    rw [hE] at hXseq
+    exact (ne_of_lt hElt) hXseq
+  have hmain : S * ν 0 + ((S - X * (2 * K) / (1 + 2 * K * τ₀)) / (a - 2)) * c =
+      2 * K ^ 2 * ν 0 * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2 := by
+    rw [hc']
+    have hcalc : S * ν 0 + (S - X * (2 * K) / (1 + 2 * K * τ₀)) / (a - 2) *
+        (-(ν 0 * (a - 2))) = ν 0 * (X * (2 * K) / (1 + 2 * K * τ₀)) := by
+      field_simp [ha_ne]
+      ring
+    rw [hcalc]
+    have h' : Real.exp ((ν 1 + ν 2) / ν 0) = X * (1 + 2 * K * τ₀) / K := by
+      rw [← hXeq]
+      field_simp [hK.ne']
+    rw [h']
+    field_simp [hden]
+  have hfinal : (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+      ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 - X * (2 * K) / (1 + 2 * K * τ₀)) /
+        (Real.log (X / K) + Real.log (1 + 2 * K * τ₀) - 2)) * c) =
+      -(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2))) := by
+    rw [hXh]
+    calc
+      (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+          ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 - X * (2 * K) / (1 + 2 * K * τ₀)) / (a - 2)) * c)
+          = 2 * K ^ 2 * ν 0 * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2 := hmain
+      _ = -(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2))) := by
+            field_simp [hden]
+  simpa [X, c] using hfinal
+
+lemma hasDerivAt_hamiltonIveyKinkBranchSupportFunction
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀)
+    {ν : Fin 3 → ℝ} :
+    HasDerivAt (fun τ : ℝ =>
+        scalarSectionalLowerBarrier3 K τ * ν 0 +
+          hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2))
+      (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+        ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+          hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+          (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
+            (2 * ν 0 - ν 1 - ν 2)) τ₀ := by
+  have h1 := hasDerivAt_scalarSectionalLowerBarrier3 (K := K) (τ₀ := τ₀) hK hτ₀.le
+  have h2 := hasDerivAt_hamiltonIveyKinkPoint (K := K) (τ₀ := τ₀) hK hτ₀
+  have h1' : HasDerivAt (fun τ : ℝ => scalarSectionalLowerBarrier3 K τ * ν 0)
+      (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0) τ₀ := h1.mul_const (ν 0)
+  have h2' : HasDerivAt (fun τ : ℝ => hamiltonIveyKinkPoint hK τ * (2 * ν 0 - ν 1 - ν 2))
+      (((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+        hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+        (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
+          (2 * ν 0 - ν 1 - ν 2)) τ₀ := h2.mul_const (2 * ν 0 - ν 1 - ν 2)
+  simpa [mul_assoc] using h1'.add h2'
+
+lemma hamiltonIveyConvexMatrixRegionSupportEuclid_diag_hasDerivAt
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀)
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0) :
+    HasDerivAt (fun τ : ℝ => hamiltonIveyConvexMatrixRegionSupportEuclid K τ
+        (matrixToEuclid (Matrix.diagonal ν)))
+      (if hamiltonIveyKinkPoint hK τ₀ ≤
+          K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) then
+        -(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))
+      else
+        12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+          ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+            hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+            (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
+              (2 * ν 0 - ν 1 - ν 2)) τ₀ := by
+  let X₂ : ℝ → ℝ := fun τ => hamiltonIveyKinkPoint hK τ
+  let Xs : ℝ → ℝ := fun τ => K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)
+  let G₁ : ℝ → ℝ := fun τ => -(ν 0 * Xs τ)
+  let G₂ : ℝ → ℝ := fun τ =>
+    scalarSectionalLowerBarrier3 K τ * ν 0 + X₂ τ * (2 * ν 0 - ν 1 - ν 2)
+  let supp : ℝ → ℝ := fun τ =>
+    hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal ν))
+  have hτ0_nhd : ∀ᶠ τ in 𝓝 τ₀, 0 ≤ τ := Ici_mem_nhds hτ₀
+  have hsupp_eq : ∀ᶠ τ in 𝓝 τ₀, supp τ = (if X₂ τ ≤ Xs τ then G₁ τ else G₂ τ) := by
+    filter_upwards [hτ0_nhd] with τ hτ
+    exact support_formula_eq_kink_or_star (K := K) (τ := τ) hK hτ hν hν0
+  have hX₂cont : ContinuousAt X₂ τ₀ := by
+    simpa [X₂] using continuousAt_kink_point hK hτ₀
+  have hXscont : ContinuousAt Xs τ₀ := by
+    dsimp [Xs]
+    have hden : (1 + 2 * K * τ₀ : ℝ) ≠ 0 := by
+      have hpos : 0 < 1 + 2 * K * τ₀ := by
+        have hKτ : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀.le
+        nlinarith
+      exact ne_of_gt hpos
+    have hnum : ContinuousAt (fun τ : ℝ => (K * Real.exp ((ν 1 + ν 2) / ν 0) : ℝ)) τ₀ := by fun_prop
+    have hlin : ContinuousAt (fun τ : ℝ => (1 + 2 * K * τ : ℝ)) τ₀ := by fun_prop
+    exact hnum.div hlin hden
+  have hG₁deriv : HasDerivAt G₁
+      (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ := by
+    have h := hasDerivAt_candidate_B (K := K) (τ₀ := τ₀) hK hτ₀.le (ν := ν)
+    simpa [G₁, Xs] using h
+  have hG₂deriv : HasDerivAt G₂
+      (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+        ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+          hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+          (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
+            (2 * ν 0 - ν 1 - ν 2)) τ₀ := by
+    have h := hasDerivAt_hamiltonIveyKinkBranchSupportFunction (K := K) (τ₀ := τ₀) hK hτ₀ (ν := ν)
+    simpa [G₂, X₂] using h
+  by_cases hle : X₂ τ₀ ≤ Xs τ₀
+  · by_cases hlt : X₂ τ₀ < Xs τ₀
+    · have hneg : X₂ τ₀ - Xs τ₀ < 0 := sub_neg.mpr hlt
+      have hgap : 0 < -(X₂ τ₀ - Xs τ₀) := by linarith
+      have hcont : ContinuousAt (fun τ : ℝ => X₂ τ - Xs τ) τ₀ := hX₂cont.sub hXscont
+      have hev : ∀ᶠ τ in 𝓝 τ₀, dist (X₂ τ - Xs τ) (X₂ τ₀ - Xs τ₀) < -(X₂ τ₀ - Xs τ₀) :=
+        (Metric.tendsto_nhds.mp hcont.tendsto) (-(X₂ τ₀ - Xs τ₀)) hgap
+      have hnhd : ∀ᶠ τ in 𝓝 τ₀, supp τ = G₁ τ := by
+        filter_upwards [hev, hsupp_eq] with τ hd hform
+        have h1 : X₂ τ - Xs τ - (X₂ τ₀ - Xs τ₀) < -(X₂ τ₀ - Xs τ₀) :=
+          (abs_lt.mp (by simpa [dist_eq_norm, Real.norm_eq_abs] using hd)).2
+        have hltτ : X₂ τ < Xs τ := by linarith
+        rw [hform, if_pos (le_of_lt hltτ)]
+      have hmain : HasDerivAt supp
+          (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ :=
+        hG₁deriv.congr_of_eventuallyEq hnhd
+      simpa [X₂, Xs, hle] using hmain
+    · have hcross : X₂ τ₀ = Xs τ₀ := le_antisymm hle (le_of_not_gt hlt)
+      have hval : G₁ τ₀ = G₂ τ₀ := by
+        have h := hamiltonIveyKinkStarValues_eq_of_crossing hK hτ₀.le hν0
+          (by simpa [X₂, Xs] using hcross)
+        simpa [G₁, G₂] using h
+      have hderiv_eq : (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+            ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+              hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+              (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
+                (2 * ν 0 - ν 1 - ν 2)) =
+          -(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2))) :=
+        hamiltonIveyKinkStarDerivatives_eq_of_crossing hK hτ₀ hν0
+          (by simpa [X₂, Xs] using hcross)
+      have hchoice : ∀ᶠ τ in 𝓝[≠] τ₀, supp τ = G₁ τ ∨ supp τ = G₂ τ := by
+        rw [eventually_nhdsWithin_iff]
+        filter_upwards [hsupp_eq] with τ hform
+        intro hτne
+        by_cases h : X₂ τ ≤ Xs τ
+        · left
+          rw [hform, if_pos h]
+        · right
+          rw [hform, if_neg h]
+      have hsupp₀ : supp τ₀ = G₁ τ₀ := by
+        change hamiltonIveyConvexMatrixRegionSupportEuclid K τ₀ (matrixToEuclid (Matrix.diagonal ν)) = G₁ τ₀
+        rw [support_formula_eq_kink_or_star hK hτ₀.le hν hν0]
+        have hle' : hamiltonIveyKinkPoint hK τ₀ ≤ K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) := by
+          simpa [X₂, Xs] using hle
+        rw [if_pos hle']
+      have hG₂deriv' : HasDerivAt G₂
+          (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ :=
+        hG₂deriv.congr_deriv hderiv_eq
+      have hmain : HasDerivAt supp
+          (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ :=
+        hasDerivAt_of_eventually_or hG₁deriv hG₂deriv' hval hsupp₀ hchoice
+      simpa [X₂, Xs, hle] using hmain
+  · have hgt : Xs τ₀ < X₂ τ₀ := lt_of_not_ge hle
+    have hpos : 0 < X₂ τ₀ - Xs τ₀ := sub_pos.mpr hgt
+    have hcont : ContinuousAt (fun τ : ℝ => X₂ τ - Xs τ) τ₀ := hX₂cont.sub hXscont
+    have hev : ∀ᶠ τ in 𝓝 τ₀, dist (X₂ τ - Xs τ) (X₂ τ₀ - Xs τ₀) < X₂ τ₀ - Xs τ₀ :=
+      (Metric.tendsto_nhds.mp hcont.tendsto) (X₂ τ₀ - Xs τ₀) hpos
+    have hnhd : ∀ᶠ τ in 𝓝 τ₀, supp τ = G₂ τ := by
+      filter_upwards [hev, hsupp_eq] with τ hd hform
+      have h1 : -(X₂ τ₀ - Xs τ₀) < X₂ τ - Xs τ - (X₂ τ₀ - Xs τ₀) :=
+        (abs_lt.mp (by simpa [dist_eq_norm, Real.norm_eq_abs] using hd)).1
+      have hgtτ : Xs τ < X₂ τ := by linarith
+      rw [hform, if_neg (not_le_of_gt hgtτ)]
+    have hmain : HasDerivAt supp
+        (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+          ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
+            hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /
+            (Real.log (hamiltonIveyKinkPoint hK τ₀ / K) + Real.log (1 + 2 * K * τ₀) - 2)) *
+              (2 * ν 0 - ν 1 - ν 2)) τ₀ :=
+      hG₂deriv.congr_of_eventuallyEq hnhd
+    simpa [X₂, Xs, hle] using hmain
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
