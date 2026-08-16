@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyCurvatureEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ConvexTimeDep
 
 set_option autoImplicit false
@@ -241,6 +242,71 @@ theorem uhlenbeckCurvatureOperatorMatrix_mem_hamiltonIveyRegion
   have hmax : max t 0 = t := max_eq_left ht.1
   simpa [C, u, hmax] using hmem
 
+theorem curvatureOperatorRegionPropagationOn_of_uhlenbeckData
+    [I.Boundaryless] [CompactSpace M] [T2Space M]
+    [IsManifold I 1 M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {T K : ℝ} (hK : 0 < K) (hT : 0 < T)
+    (pulledRm roughLapD B : FourComp M (Fin 3))
+    (hU : UhlenbeckCurvatureEvolutionInFrameOn (D := D) pulledRm roughLapD B)
+    (hlap : ∀ t : Real, t ∈ D.carrier → ∀ x : M, ∀ ij : Fin 3 × Fin 3,
+      roughLapD t x (bivectorIndex3 ij.1).1 (bivectorIndex3 ij.1).2
+          (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1 =
+        laplacianAt (I := I) (flowG (I := I) S) t
+          (fun y : M => uhlenbeckCurvatureOperatorMatrix pulledRm t y ij) x)
+    (hjoint : ContinuousOn (fun q : Real × M => uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2)
+      (D.carrier ×ˢ (Set.univ : Set M)))
+    (hsmooth : ∀ ij : Fin 3 × Fin 3, ∀ t : Real, t ∈ D.carrier →
+      ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => uhlenbeckCurvatureOperatorMatrix pulledRm t x ij))
+    (R : Real → M → Fin 3 → Fin 3 → ℝ)
+    (hR : ∀ t x i j, R t x i j = R t x j i)
+    (hrm : ∀ t x a b c d, pulledRm t x a b c d = rm (R t x) a b c d)
+    (hB : ∀ t x a b c d, B t x a b c d = bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d)
+    (hTsub : Set.Icc 0 T ⊆ D.carrier)
+    (hTreg : Set.Ioc 0 T ⊆ D.regular)
+    (hbound : ∃ R : ℝ, 0 ≤ R ∧ ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
+      ‖uhlenbeckCurvatureOperatorMatrix pulledRm t x‖ ≤ R)
+    (hCdist_cont : ContinuousOn
+      (fun q : Real × M => Metric.infDist (uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2)
+        (hamiltonIveyConvexMatrixRegionEuclid K q.1))
+      (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hinit : ∀ x : M, uhlenbeckCurvatureOperatorMatrix pulledRm 0 x ∈
+      hamiltonIveyConvexMatrixRegionEuclid K 0)
+    (hpull : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
+      ∃ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+        OrthonormalBasisAt (I := I) (S.base.metric t) x basis ∧
+          ∀ a b c d : Fin 3,
+            pulledRm t x a b c d =
+              tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+                (basis a) (basis b) (basis c) (basis d)) :
+    CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K 0 T := by
+  have hmain := uhlenbeckCurvatureOperatorMatrix_mem_hamiltonIveyRegion
+    (I := I) (M := M) hK hT (flowG (I := I) S)
+    pulledRm roughLapD B hU hlap hjoint hsmooth R hR hrm hB hTsub hTreg
+    hbound hCdist_cont hinit
+  intro t ht x
+  have ht' : t ∈ Set.Icc 0 T := by simpa using ht
+  have hmem := hmain t ht' x
+  rcases hpull t ht' x with ⟨basis, horth, hpull'⟩
+  let A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+      (I := I) (S.base.metric t) x⟩
+  have hmat := uhlenbeckCurvatureOperatorMatrixAsMatrix_eq_curvatureOperatorMatrixAt
+    (I := I) (M := M) (x := x) (basis := basis) (A := A) (pulledRm := pulledRm) (t := t) hpull'
+  have hu_eq : uhlenbeckCurvatureOperatorMatrix pulledRm t x =
+      matrixToEuclid (curvatureOperatorMatrixAt (I := I) x basis A) := by
+    have h1 := uhlenbeckCurvatureOperatorMatrix_eq_matrixToEuclid (pulledRm := pulledRm) (t := t) (x := x)
+    rw [h1, hmat]
+  have hmem' : matrixToEuclid (curvatureOperatorMatrixAt (I := I) x basis A) ∈
+      hamiltonIveyConvexMatrixRegionEuclid K t := by
+    rwa [hu_eq] at hmem
+  have hmatmem : curvatureOperatorMatrixAt (I := I) x basis A ∈ hamiltonIveyConvexMatrixRegion K t := by
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff] at hmem'
+    simpa [euclidToMatrix_matrixToEuclid] using hmem'
+  simpa using ⟨basis, horth, hmatmem⟩
 end DifferentialGeometry.PDE.RicciFlow
 
 end
