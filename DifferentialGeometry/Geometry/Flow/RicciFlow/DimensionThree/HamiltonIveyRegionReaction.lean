@@ -3159,6 +3159,154 @@ lemma hasDerivAt_candidate_B
     simpa [mul_comm, mul_left_comm, mul_assoc] using h2.const_mul (ν 0)
   exact h2'.neg
 
+lemma hasDerivAt_hamiltonIveyBarrier_x
+    {K τ X : ℝ} (hK : 0 < K) (hX : 0 < X) :
+    HasDerivAt (fun Y : ℝ => hamiltonIveyBarrier K τ Y)
+      (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) X := by
+  have hfun : (fun Y : ℝ => hamiltonIveyBarrier K τ Y) =
+      fun Y : ℝ => Y * Real.log Y + Y * (Real.log (1 + 2 * K * τ) - 3 - Real.log K) := by
+    funext Y
+    exact hamiltonIveyBarrier_eq_mul_log_add_linear (K := K) (τ := τ) (X := Y) hK
+  rw [hfun]
+  have h1 : HasDerivAt (fun Y : ℝ => Y * Real.log Y) (Real.log X + 1) X := Real.hasDerivAt_mul_log hX.ne'
+  have h2 : HasDerivAt (fun Y : ℝ => Y * (Real.log (1 + 2 * K * τ) - 3 - Real.log K))
+      (Real.log (1 + 2 * K * τ) - 3 - Real.log K) X := by
+    simpa [mul_comm] using ((hasDerivAt_id X).mul_const (Real.log (1 + 2 * K * τ) - 3 - Real.log K))
+  have hsum := h1.add h2
+  convert hsum using 1
+  have hlog : Real.log X - Real.log K = Real.log (X / K) := by
+    rw [Real.log_div hX.ne' hK.ne']
+  linarith
+
+lemma deriv_hamiltonIveyBarrier_x
+    {K τ X : ℝ} (hK : 0 < K) (hX : 0 < X) :
+    deriv (fun Y : ℝ => hamiltonIveyBarrier K τ Y) X =
+      Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2 :=
+  (hasDerivAt_hamiltonIveyBarrier_x hK hX).deriv
+
+
+lemma monotoneOn_Fh_left
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0) :
+    MonotoneOn (fun X : ℝ =>
+        hamiltonIveyBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2))
+      (Set.Icc 0 (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ))) := by
+  let Fh : ℝ → ℝ := fun X => hamiltonIveyBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)
+  let Xs : ℝ := K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)
+  have hden : 0 < 1 + 2 * K * τ := by
+    have hKτ : 0 ≤ 2 * K * τ := by
+      have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+      nlinarith
+    nlinarith
+  have hXspos : 0 < Xs := by
+    dsimp [Xs]
+    positivity
+  have hc : 0 ≤ 2 * ν 0 - ν 1 - ν 2 := by
+    have h1 : ν 1 ≤ ν 0 := hν (by decide : (0 : Fin 3) ≤ 1)
+    have h2 : ν 2 ≤ ν 0 := hν (by decide : (0 : Fin 3) ≤ 2)
+    nlinarith
+  have hFh_cont : ContinuousOn Fh (Set.Icc 0 Xs) := by
+    dsimp [Fh]
+    have hB : ContinuousOn (fun X : ℝ => hamiltonIveyBarrier K τ X) (Set.Icc 0 Xs) :=
+      (continuous_hamiltonIveyBarrier (K := K) (τ := τ) hK).continuousOn
+    have hBν : ContinuousOn (fun X : ℝ => hamiltonIveyBarrier K τ X * ν 0) (Set.Icc 0 Xs) :=
+      hB.mul continuousOn_const
+    have hXc : ContinuousOn (fun X : ℝ => X * (2 * ν 0 - ν 1 - ν 2)) (Set.Icc 0 Xs) := by
+      simpa [mul_comm] using (continuousOn_id.mul (continuousOn_const (s := Set.Icc 0 Xs) (c := (2 * ν 0 - ν 1 - ν 2))))
+    exact hBν.add hXc
+  have hFh_diff : DifferentiableOn ℝ Fh (interior (Set.Icc 0 Xs)) := by
+    intro X hX
+    have hX' : X ∈ Set.Ioo 0 Xs := by simpa [interior_Icc] using hX
+    have hXpos : 0 < X := hX'.1
+    have hBd : HasDerivAt (fun Y : ℝ => hamiltonIveyBarrier K τ Y * ν 0)
+        ((Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * ν 0) X :=
+      (hasDerivAt_hamiltonIveyBarrier_x hK hXpos).mul_const (ν 0)
+    have hXd : HasDerivAt (fun Y : ℝ => Y * (2 * ν 0 - ν 1 - ν 2))
+        (2 * ν 0 - ν 1 - ν 2) X := by
+      simpa [mul_comm] using ((hasDerivAt_id X).mul_const (2 * ν 0 - ν 1 - ν 2))
+    exact (hBd.add hXd).differentiableAt.differentiableWithinAt
+  have hFh_deriv : ∀ X : ℝ, X ∈ interior (Set.Icc 0 Xs) →
+      0 ≤ deriv Fh X := by
+    intro X hX
+    have hX' : X ∈ Set.Ioo 0 Xs := by simpa [interior_Icc] using hX
+    have hXpos : 0 < X := hX'.1
+    have hXle : X ≤ Xs := le_of_lt hX'.2
+    have hBd : HasDerivAt (fun Y : ℝ => hamiltonIveyBarrier K τ Y * ν 0)
+        ((Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * ν 0) X :=
+      (hasDerivAt_hamiltonIveyBarrier_x hK hXpos).mul_const (ν 0)
+    have hXd : HasDerivAt (fun Y : ℝ => Y * (2 * ν 0 - ν 1 - ν 2))
+        (2 * ν 0 - ν 1 - ν 2) X := by
+      simpa [mul_comm] using ((hasDerivAt_id X).mul_const (2 * ν 0 - ν 1 - ν 2))
+    have hlog : Real.log (X / K) + Real.log (1 + 2 * K * τ) ≤ (ν 1 + ν 2) / ν 0 := by
+      have harg1 : 0 < X * (1 + 2 * K * τ) / K := by
+        exact div_pos (mul_pos hXpos hden) hK
+      have harg2 : 0 < Xs * (1 + 2 * K * τ) / K := by
+        dsimp [Xs]
+        positivity
+      have hmono : Real.log (X * (1 + 2 * K * τ) / K) ≤ Real.log (Xs * (1 + 2 * K * τ) / K) := by
+        refine (Real.log_le_log_iff harg1 harg2).mpr ?_
+        have hmul : X * (1 + 2 * K * τ) ≤ Xs * (1 + 2 * K * τ) :=
+          mul_le_mul_of_nonneg_right hXle (by positivity : 0 ≤ (1 + 2 * K * τ))
+        exact div_le_div_of_nonneg_right hmul hK.le
+      have hlogXs : Real.log (Xs * (1 + 2 * K * τ) / K) = (ν 1 + ν 2) / ν 0 := by
+        have hXeq : Xs * (1 + 2 * K * τ) / K = Real.exp ((ν 1 + ν 2) / ν 0) := by
+          dsimp [Xs]
+          field_simp [hK.ne', hden.ne']
+        rw [hXeq]
+        exact Real.log_exp ((ν 1 + ν 2) / ν 0)
+      have hlogX : Real.log (X / K) + Real.log (1 + 2 * K * τ) =
+          Real.log (X * (1 + 2 * K * τ) / K) := by
+        have h1 : Real.log (X / K) = Real.log X - Real.log K := Real.log_div hXpos.ne' hK.ne'
+        have h2 : Real.log ((X * (1 + 2 * K * τ)) / K) = Real.log (X * (1 + 2 * K * τ)) - Real.log K :=
+          Real.log_div (mul_pos hXpos hden).ne' hK.ne'
+        have h3 : Real.log (X * (1 + 2 * K * τ)) = Real.log X + Real.log (1 + 2 * K * τ) :=
+          Real.log_mul hXpos.ne' hden.ne'
+        rw [h1, h2, h3]
+        ring_nf
+      linarith
+    have hmain : 0 ≤ ((Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * ν 0 +
+        (2 * ν 0 - ν 1 - ν 2)) := by
+      have hconv : (ν 1 + ν 2) / ν 0 - 2 = (2 * ν 0 - ν 1 - ν 2) / (-ν 0) := by
+        field_simp [Ne.symm hν0.ne']
+        ring_nf
+      have hle : Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2 ≤ (2 * ν 0 - ν 1 - ν 2) / (-ν 0) := by
+        rw [← hconv]
+        linarith
+      have hneg : 0 < -ν 0 := by linarith
+      have hred : (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * (-ν 0) ≤ 2 * ν 0 - ν 1 - ν 2 := by
+        have h1 : (-ν 0) * (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) ≤
+            2 * ν 0 - ν 1 - ν 2 := by
+          calc
+            (-ν 0) * (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2)
+                ≤ (-ν 0) * ((2 * ν 0 - ν 1 - ν 2) / (-ν 0)) :=
+                  mul_le_mul_of_nonneg_left hle (le_of_lt hneg)
+            _ = 2 * ν 0 - ν 1 - ν 2 := by
+                  rw [mul_div_cancel₀ (2 * ν 0 - ν 1 - ν 2) (show -ν 0 ≠ 0 by positivity)]
+        calc
+          (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * (-ν 0)
+              = (-ν 0) * (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) := by ring
+          _ ≤ 2 * ν 0 - ν 1 - ν 2 := h1
+      have hle' : -((Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * ν 0) ≤
+          2 * ν 0 - ν 1 - ν 2 := by
+        rw [← mul_neg]
+        exact hred
+      linarith
+    have hBd' : deriv (fun Y : ℝ => hamiltonIveyBarrier K τ Y * ν 0) X =
+        (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * ν 0 := hBd.deriv
+    have hXd' : deriv (fun Y : ℝ => Y * (2 * ν 0 - ν 1 - ν 2)) X = 2 * ν 0 - ν 1 - ν 2 := hXd.deriv
+    have hderiv : deriv Fh X =
+        ((Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * ν 0 + (2 * ν 0 - ν 1 - ν 2)) := by
+      change deriv ((fun Y : ℝ => hamiltonIveyBarrier K τ Y * ν 0) +
+        (fun Y : ℝ => Y * (2 * ν 0 - ν 1 - ν 2))) X = _
+      rw [deriv_add]
+      · rw [hBd', hXd']
+      · exact hBd.differentiableAt
+      · exact hXd.differentiableAt
+    rw [hderiv]
+    exact hmain
+  exact monotoneOn_of_deriv_nonneg (D := Set.Icc 0 Xs)
+    (convex_Icc (r := (0 : ℝ)) (s := Xs)) hFh_cont hFh_diff hFh_deriv
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
