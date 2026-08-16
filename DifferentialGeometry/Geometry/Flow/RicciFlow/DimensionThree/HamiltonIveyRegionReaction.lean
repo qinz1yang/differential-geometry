@@ -2989,6 +2989,77 @@ theorem hamiltonIveyConvexMatrixRegionSupportEuclid_continuousOn
     rfl
   exact hmain.congr (fun τ hτ => hdef τ)
 
+lemma support_formula_min_branch
+    {K τ : ℝ}
+    {ν : Fin 3 → ℝ} (hν0 : ν 0 < 0) (X : ℝ) :
+    hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) =
+      min (scalarSectionalLowerBarrier3 K τ * ν 0 + X * (2 * ν 0 - ν 1 - ν 2))
+        (hamiltonIveyBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)) := by
+  unfold hamiltonIveyConvexBarrier
+  have hν0le : ν 0 ≤ 0 := hν0.le
+  have hmul : max (scalarSectionalLowerBarrier3 K τ) (hamiltonIveyBarrier K τ X) * ν 0 =
+      min (scalarSectionalLowerBarrier3 K τ * ν 0) (hamiltonIveyBarrier K τ X * ν 0) := by
+    by_cases h : scalarSectionalLowerBarrier3 K τ ≤ hamiltonIveyBarrier K τ X
+    · rw [max_eq_right h]
+      rw [min_eq_right (mul_le_mul_of_nonpos_right h hν0le)]
+    · have h' : hamiltonIveyBarrier K τ X ≤ scalarSectionalLowerBarrier3 K τ := le_of_not_ge h
+      rw [max_eq_left h']
+      rw [min_eq_left (mul_le_mul_of_nonpos_right h' hν0le)]
+  rw [hmul]
+  have hdist : min (scalarSectionalLowerBarrier3 K τ * ν 0) (hamiltonIveyBarrier K τ X * ν 0) +
+        X * (2 * ν 0 - ν 1 - ν 2) =
+      min (scalarSectionalLowerBarrier3 K τ * ν 0 + X * (2 * ν 0 - ν 1 - ν 2))
+        (hamiltonIveyBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)) := by
+    let a : ℝ := scalarSectionalLowerBarrier3 K τ * ν 0
+    let b : ℝ := hamiltonIveyBarrier K τ X * ν 0
+    let c : ℝ := X * (2 * ν 0 - ν 1 - ν 2)
+    apply le_antisymm
+    · refine le_min ?_ ?_
+      · exact add_le_add_left (min_le_left a b) c
+      · exact add_le_add_left (min_le_right a b) c
+    · by_cases h : a ≤ b
+      · rw [min_eq_left h, min_eq_left (add_le_add_left h c)]
+      · have h' : b ≤ a := le_of_not_ge h
+        rw [min_eq_right h', min_eq_right (add_le_add_left h' c)]
+  exact hdist
+
+
+lemma hamiltonIveyBarrier_at_star_point
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} :
+    hamiltonIveyBarrier K τ (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) =
+      (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * ((ν 1 + ν 2) / ν 0 - 3) := by
+  let Xs : ℝ := K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)
+  have hden : 0 < 1 + 2 * K * τ := by
+    have hKτ : 0 ≤ 2 * K * τ := by
+      have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+      nlinarith
+    nlinarith
+  have hXpos : 0 < Xs := by
+    dsimp [Xs]
+    positivity
+  unfold hamiltonIveyBarrier
+  have hXeq : Xs * (1 + 2 * K * τ) / K = Real.exp ((ν 1 + ν 2) / ν 0) := by
+    dsimp [Xs]
+    field_simp [hK.ne', hden.ne']
+  have hlogX : Real.log (Xs * (1 + 2 * K * τ) / K) = (ν 1 + ν 2) / ν 0 := by
+    rw [hXeq]
+    exact Real.log_exp ((ν 1 + ν 2) / ν 0)
+  have h1 : Real.log (Xs / K) = Real.log Xs - Real.log K := Real.log_div hXpos.ne' hK.ne'
+  have h2 : Real.log ((Xs * (1 + 2 * K * τ)) / K) =
+      Real.log (Xs * (1 + 2 * K * τ)) - Real.log K :=
+    Real.log_div (mul_pos hXpos hden).ne' hK.ne'
+  have h3 : Real.log (Xs * (1 + 2 * K * τ)) = Real.log Xs + Real.log (1 + 2 * K * τ) :=
+    Real.log_mul hXpos.ne' hden.ne'
+  have hlog : Real.log (Xs / K) + Real.log (1 + 2 * K * τ) = (ν 1 + ν 2) / ν 0 := by
+    calc
+      Real.log (Xs / K) + Real.log (1 + 2 * K * τ)
+          = Real.log (Xs * (1 + 2 * K * τ) / K) := by
+            rw [h1, h2, h3]
+            ring_nf
+      _ = (ν 1 + ν 2) / ν 0 := hlogX
+  rw [hlog]
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
