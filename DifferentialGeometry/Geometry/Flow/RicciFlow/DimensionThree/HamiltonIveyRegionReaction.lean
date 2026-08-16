@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegion
+import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
 
 set_option autoImplicit false
@@ -9,6 +10,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
+open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators
@@ -119,6 +121,117 @@ theorem hamiltonIveyMatrixReaction_diagonal
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.diagonal, Matrix.mul_apply] <;>
     simp [diagProduct_erase, Fin.reduceEq, ↓reduceIte] <;> ring
+
+theorem sectionalRayleigh3_diagonal
+    (d : Fin 3 → Real) (x : EuclideanSpace ℝ (Fin 3)) :
+    sectionalRayleigh3 (Matrix.diagonal d) x = ∑ i : Fin 3, d i * (x i) ^ 2 := by
+  unfold sectionalRayleigh3
+  simp only [Matrix.diagonal]
+  have hdiag : ∀ i : Fin 3,
+      (∑ x_2 : Fin 3, (if i = x_2 then d i else 0) * x.ofLp x_2) =
+        d i * x.ofLp i := by
+    intro i
+    rw [Finset.sum_eq_single i]
+    · simp
+    · intro x_2 _ hx2
+      rw [if_neg (Ne.symm hx2)]
+      simp
+    · intro h; exact absurd (Finset.mem_univ i) h
+  calc
+    ∑ i : Fin 3, x i * (∑ x_2 : Fin 3, (if i = x_2 then d i else 0) * x.ofLp x_2)
+        = ∑ i : Fin 3, x i * (d i * x i) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          rw [hdiag i]
+    _ = ∑ i : Fin 3, d i * (x i) ^ 2 := by
+          apply Finset.sum_congr rfl
+          intro i _
+          ring
+
+theorem sectionalRayleighMin3_diagonal_le
+    (d : Fin 3 → Real) (j : Fin 3) :
+    sectionalRayleighMin3 (Matrix.diagonal d) ≤ d j := by
+  let e : EuclideanSpace ℝ (Fin 3) :=
+    WithLp.toLp 2 (fun i : Fin 3 => if i = j then (1 : ℝ) else 0)
+  have hsphere : e ∈ Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 := by
+    rw [mem_sphere_zero_iff_norm]
+    dsimp [e]
+    rw [EuclideanSpace.norm_eq]
+    simp only [Real.norm_eq_abs, sq_abs]
+    rw [show (∑ i : Fin 3, (if i = j then (1 : ℝ) else 0) ^ 2) = 1 by
+      rw [Finset.sum_eq_single j]
+      · simp
+      · intro i _ hi; simp [hi]
+      · intro h; exact absurd (Finset.mem_univ j) h]
+    norm_num
+  have hcont : Continuous (fun x : EuclideanSpace ℝ (Fin 3) =>
+      sectionalRayleigh3 (Matrix.diagonal d) x) := by
+    simpa using continuous_sectionalRayleigh3.comp
+      ((continuous_const (y := Matrix.diagonal d)).prodMk continuous_id)
+  have hbdd : BddBelow (sectionalRayleigh3 (Matrix.diagonal d) ''
+      Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) := by
+    exact (isCompact_sphere (0 : EuclideanSpace ℝ (Fin 3)) 1).bddBelow_image
+      hcont.continuousOn
+  unfold sectionalRayleighMin3
+  have hval : sectionalRayleigh3 (Matrix.diagonal d) e = d j := by
+    rw [sectionalRayleigh3_diagonal]
+    dsimp [e]
+    rw [show (∑ i : Fin 3, d i * (if i = j then (1 : ℝ) else 0) ^ 2) = d j by
+      rw [Finset.sum_eq_single j]
+      · simp
+      · intro i _ hi; simp [hi]
+      · intro h; exact absurd (Finset.mem_univ j) h]
+  have him : d j ∈ sectionalRayleigh3 (Matrix.diagonal d) ''
+      Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 := by
+    exact hval ▸ Set.mem_image_of_mem (sectionalRayleigh3 (Matrix.diagonal d)) hsphere
+  exact (csInf_le hbdd (hval ▸ him))
+
+theorem sectionalRayleighMin3_diagonal_ge
+    (d : Fin 3 → Real) {m : Real}
+    (hm : ∀ i : Fin 3, m ≤ d i) :
+    m ≤ sectionalRayleighMin3 (Matrix.diagonal d) := by
+  have hcont : Continuous (fun x : EuclideanSpace ℝ (Fin 3) =>
+      sectionalRayleigh3 (Matrix.diagonal d) x) := by
+    simpa using continuous_sectionalRayleigh3.comp
+      ((continuous_const (y := Matrix.diagonal d)).prodMk continuous_id)
+  have hbdd : BddBelow (sectionalRayleigh3 (Matrix.diagonal d) ''
+      Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) := by
+    exact (isCompact_sphere (0 : EuclideanSpace ℝ (Fin 3)) 1).bddBelow_image
+      hcont.continuousOn
+  have hne : (sectionalRayleigh3 (Matrix.diagonal d) ''
+      Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1).Nonempty := by
+    have hsphere0 : (WithLp.toLp 2 (fun i : Fin 3 => if i = 0 then (1 : ℝ) else 0)) ∈
+        Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 := by
+      rw [mem_sphere_zero_iff_norm]
+      rw [EuclideanSpace.norm_eq]
+      simp only [Real.norm_eq_abs, sq_abs]
+      rw [show (∑ i : Fin 3, (if i = 0 then (1 : ℝ) else 0) ^ 2) = 1 by
+        rw [Finset.sum_eq_single 0]
+        · simp
+        · intro i _ hi; simp [hi]
+        · intro h; exact absurd (Finset.mem_univ (0 : Fin 3)) h]
+      norm_num
+    exact ⟨sectionalRayleigh3 (Matrix.diagonal d)
+      (WithLp.toLp 2 (fun i : Fin 3 => if i = 0 then (1 : ℝ) else 0)),
+      ⟨_, hsphere0, rfl⟩⟩
+  unfold sectionalRayleighMin3
+  apply le_csInf hne
+  rintro y ⟨x, hx, rfl⟩
+  rw [sectionalRayleigh3_diagonal]
+  have hsumsq : (∑ i : Fin 3, (x i) ^ 2) = 1 := by
+    have hnorm : ‖x‖ = 1 := (mem_sphere_zero_iff_norm).mp hx
+    have hsq : (∑ i : Fin 3, (x i) ^ 2) = ‖x‖ ^ 2 := by
+      rw [EuclideanSpace.norm_eq]
+      simp only [Real.norm_eq_abs, sq_abs]
+      rw [Real.sq_sqrt (Finset.sum_nonneg (fun i _ => sq_nonneg (x i)))]
+    rw [hsq, hnorm]
+    norm_num
+  calc
+    m = m * (∑ i : Fin 3, (x i) ^ 2) := by rw [hsumsq, mul_one]
+    _ = ∑ i : Fin 3, m * (x i) ^ 2 := by rw [Finset.mul_sum]
+    _ ≤ ∑ i : Fin 3, d i * (x i) ^ 2 := by
+          exact Finset.sum_le_sum (fun i _ =>
+            mul_le_mul_of_nonneg_right (hm i) (sq_nonneg (x i)))
 
 theorem hamiltonIveyMatrixReaction_orthogonal_conj
     (O A : Matrix (Fin 3) (Fin 3) Real)
