@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorR
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegion
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
+import Mathlib.Analysis.SpecialFunctions.Exp
 
 set_option autoImplicit false
 
@@ -322,6 +323,55 @@ lemma reactionDiag_minEig (l1 l2 l3 : Real) (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) 
     sectionalRayleighMin3_diagonal_ge d hge
   rw [hd]
   exact le_antisymm hle hge'
+
+lemma hasDerivAt_barrier_comp
+    (K τ X X' : Real) (hK : 0 < K) (hτ : 0 ≤ τ) (hX : 0 < X) :
+    HasDerivAt (fun t : Real =>
+      hamiltonIveyBarrier K (τ + t) (X + t * X'))
+      ((Real.log (X / K) + Real.log (1 + 2 * K * τ) - 2) * X' +
+        X * (2 * K / (1 + 2 * K * τ))) 0 := by
+  have hdenpos : 0 < 1 + 2 * K * τ := by
+    have hKτ : 0 ≤ 2 * K * τ := by
+      have hKτ' : 0 ≤ K * τ := mul_nonneg hK.le hτ
+      nlinarith
+    nlinarith
+  have hinnerX : HasDerivAt (fun t : Real => (X + t * X') / K) (X' / K) 0 := by
+    have hlin : HasDerivAt (fun t : Real => X + t * X') X' 0 := by
+      simpa [add_comm, add_left_comm, add_assoc] using
+        ((hasDerivAt_id 0).mul_const X').const_add X
+    simpa [div_eq_mul_inv] using hlin.div_const K
+  have hlogX : HasDerivAt (fun t : Real => Real.log ((X + t * X') / K))
+      (X' / X) 0 := by
+    have hlog := hinnerX.log (by
+      rw [show (X + 0 * X') / K = X / K by ring]
+      exact div_ne_zero hX.ne' hK.ne')
+    exact hlog.congr_deriv (by
+      field_simp [hX.ne', hK.ne']
+      ring)
+  have hinnerτ : HasDerivAt (fun t : Real => 1 + 2 * K * (τ + t)) (2 * K) 0 := by
+    have hlin : HasDerivAt (fun t : Real => (2 * K) * (τ + t)) (2 * K) 0 := by
+      simpa using (((hasDerivAt_id 0).const_add τ).const_mul (2 * K))
+    simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hlin.const_add 1
+  have hlogτ : HasDerivAt (fun t : Real => Real.log (1 + 2 * K * (τ + t)))
+      (2 * K / (1 + 2 * K * τ)) 0 := by
+    have hlog := hinnerτ.log (ne_of_gt (by simpa using hdenpos))
+    exact hlog.congr_deriv (by ring)
+  have hsum : HasDerivAt (fun t : Real =>
+      Real.log ((X + t * X') / K) + Real.log (1 + 2 * K * (τ + t)) - 3)
+      (X' / X + 2 * K / (1 + 2 * K * τ)) 0 := by
+    simpa using (hlogX.add hlogτ).sub_const 3
+  have hlin2 : HasDerivAt (fun t : Real => X + t * X') X' 0 := by
+    simpa [add_comm, add_left_comm, add_assoc] using
+      ((hasDerivAt_id 0).mul_const X').const_add X
+  have hB : HasDerivAt (fun t : Real =>
+      (X + t * X') * (Real.log ((X + t * X') / K) + Real.log (1 + 2 * K * (τ + t)) - 3))
+      (X' * (Real.log (X / K) + Real.log (1 + 2 * K * τ) - 3) +
+        X * (X' / X + 2 * K / (1 + 2 * K * τ))) 0 := by
+    simpa using hlin2.mul hsum
+  unfold hamiltonIveyBarrier
+  exact hB.congr_deriv (by
+    field_simp [hX.ne', hdenpos.ne']
+    ring_nf)
 
 theorem hamiltonIveyMatrixReaction_orthogonal_conj
     (O A : Matrix (Fin 3) (Fin 3) Real)
