@@ -37,6 +37,10 @@ structure IsBundleHeatReactionOn
     (D : RealTimeInterval) (G : MetricConnectionFamily (I := I) (M := M) Real)
     (source : Real → (x : M) → V x → V x → Real)
     (u : Real → (x : M) → V x) : Prop where
+  scalarJointCont :
+    ∀ ν : Cₛ^∞⟮I; F, V⟯,
+      ContinuousOn (fun q : Real × M => bundleInnerScalarization u ν q.1 q.2)
+        (D.carrier ×ˢ (Set.univ : Set M))
   scalarSliceSmooth :
     ∀ ν : Cₛ^∞⟮I; F, V⟯, ∀ t : Real, t ∈ D.carrier →
       ContMDiff I 𝓘(Real, Real) ∞ (bundleInnerScalarization u ν t)
@@ -47,3 +51,4 @@ structure IsBundleHeatReactionOn
           source t x (u t x) (ν x)) t
 
 end DifferentialGeometry.Analysis.Parabolic
+
