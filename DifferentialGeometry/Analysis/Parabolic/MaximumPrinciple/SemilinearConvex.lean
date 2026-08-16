@@ -44,7 +44,7 @@ structure IsInnerProductHeatReactionOn
         (laplacianAt (I := I) G t (innerScalarization u y t) x +
           inner Real (reaction t x (u t x)) y) t
 
-private theorem deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc
+theorem deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc
     {f : Real → Real} {a d : Real} (ha : 0 < a)
     (hmax : IsMaxOn f (Set.Icc 0 a) a)
     (hderiv : HasDerivAt f d a) :
