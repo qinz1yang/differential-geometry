@@ -307,6 +307,223 @@ theorem curvatureOperatorRegionPropagationOn_of_uhlenbeckData
     rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff] at hmem'
     simpa [euclidToMatrix_matrixToEuclid] using hmem'
   simpa using ⟨basis, horth, hmatmem⟩
+
+omit [FiniteDimensional Real E] in
+lemma curvatureOperatorMatrixAt_eq_of_val_eq
+    {x : M} {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
+    {A A' : algebraicCurvatureTensorSubmodule (I := I) (M := M) x}
+    (h : A.1 = A'.1) :
+    curvatureOperatorMatrixAt (I := I) x basis A = curvatureOperatorMatrixAt (I := I) x basis A' := by
+  cases A with
+  | mk v p =>
+    cases A' with
+    | mk v' p' =>
+      change v = v' at h
+      subst v'
+      rfl
+
+theorem curvatureOperatorRegionPropagationOn_of_uhlenbeckData_shifted
+    [I.Boundaryless] [CompactSpace M] [T2Space M]
+    [IsManifold I 1 M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {t0 T K : ℝ} (hK : 0 < K) (hT : 0 < T)
+    (pulledRm roughLapD B : FourComp M (Fin 3))
+    (hU : UhlenbeckCurvatureEvolutionInFrameOn (D := D) pulledRm roughLapD B)
+    (hlap : ∀ t : Real, t ∈ D.carrier → ∀ x : M, ∀ ij : Fin 3 × Fin 3,
+      roughLapD t x (bivectorIndex3 ij.1).1 (bivectorIndex3 ij.1).2
+          (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1 =
+        laplacianAt (I := I) (flowG (I := I) S) t
+          (fun y : M => uhlenbeckCurvatureOperatorMatrix pulledRm t y ij) x)
+    (hjoint : ContinuousOn (fun q : Real × M => uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2)
+      (D.carrier ×ˢ (Set.univ : Set M)))
+    (hsmooth : ∀ ij : Fin 3 × Fin 3, ∀ t : Real, t ∈ D.carrier →
+      ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => uhlenbeckCurvatureOperatorMatrix pulledRm t x ij))
+    (R : Real → M → Fin 3 → Fin 3 → ℝ)
+    (hR : ∀ t x i j, R t x i j = R t x j i)
+    (hrm : ∀ t x a b c d, pulledRm t x a b c d = rm (R t x) a b c d)
+    (hB : ∀ t x a b c d, B t x a b c d = bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d)
+    (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
+    (hreg : Set.Ioc t0 (t0 + T) ⊆ D.regular)
+    (hbound : ∃ R : ℝ, 0 ≤ R ∧ ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      ‖uhlenbeckCurvatureOperatorMatrix pulledRm t x‖ ≤ R)
+    (hCdist_cont : ContinuousOn
+      (fun q : Real × M => Metric.infDist (uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2)
+        (hamiltonIveyConvexMatrixRegionEuclid K (q.1 - t0)))
+      (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M)))
+    (hinit : ∀ x : M, uhlenbeckCurvatureOperatorMatrix pulledRm t0 x ∈
+      hamiltonIveyConvexMatrixRegionEuclid K 0)
+    (hpull : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      ∃ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+        OrthonormalBasisAt (I := I) (S.base.metric t) x basis ∧
+          ∀ a b c d : Fin 3,
+            pulledRm t x a b c d =
+              tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+                (basis a) (basis b) (basis c) (basis d)) :
+    CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T := by
+  let S' : SolutionOn (I := I) (M := M) (D.timeShift t0) := S.timeShift t0
+  let pulledRm' : FourComp M (Fin 3) := fun t x a b c d => pulledRm (t + t0) x a b c d
+  let roughLapD' : FourComp M (Fin 3) := fun t x a b c d => roughLapD (t + t0) x a b c d
+  let B' : FourComp M (Fin 3) := fun t x a b c d => B (t + t0) x a b c d
+  let R' : Real → M → Fin 3 → Fin 3 → ℝ := fun t x i j => R (t + t0) x i j
+  have hU' : UhlenbeckCurvatureEvolutionInFrameOn (D := D.timeShift t0) pulledRm' roughLapD' B' := by
+    intro t x a b c d
+    have htD : (t : Real) + t0 ∈ D.regular := by
+      have ht' : (t : Real) ∈ (D.timeShift t0).regular := t.property
+      change (t : Real) + t0 ∈ D.regular at ht'
+      exact ht'
+    have hderiv := hU ⟨(t : Real) + t0, htD⟩ x a b c d
+    have hg : HasDerivWithinAt (fun s : Real => s + t0) 1 (D.timeShift t0).carrier (t : Real) := by
+      exact ((hasDerivAt_id (t : Real)).add_const t0).hasDerivWithinAt
+    have hmaps : Set.MapsTo (fun s : Real => s + t0) (D.timeShift t0).carrier D.carrier := by
+      intro s hs
+      change s + t0 ∈ D.carrier
+      exact hs
+    have hcomp := hderiv.comp (x := (t : Real)) hg hmaps
+    simpa [pulledRm', roughLapD', B', uhlenbeckCurvatureEvolutionRHSInFrame] using hcomp
+  have hTsub' : Set.Icc 0 T ⊆ (D.timeShift t0).carrier := by
+    intro s hs
+    change s + t0 ∈ D.carrier
+    exact hslab ⟨by linarith [hs.1], by linarith [hs.2]⟩
+  have hTreg' : Set.Ioc 0 T ⊆ (D.timeShift t0).regular := by
+    intro s hs
+    change s + t0 ∈ D.regular
+    exact hreg ⟨by linarith [hs.1], by linarith [hs.2]⟩
+  have hlap' : ∀ t : Real, t ∈ (D.timeShift t0).carrier → ∀ x : M, ∀ ij : Fin 3 × Fin 3,
+      roughLapD' t x (bivectorIndex3 ij.1).1 (bivectorIndex3 ij.1).2
+          (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1 =
+        laplacianAt (I := I) (flowG (I := I) S') t
+          (fun y : M => uhlenbeckCurvatureOperatorMatrix pulledRm' t y ij) x := by
+    intro t ht x ij
+    have htc : (t : Real) + t0 ∈ D.carrier := by
+      change t + t0 ∈ D.carrier
+      exact ht
+    have h := hlap (t + t0) htc x ij
+    have hlap_eq : laplacianAt (I := I) (flowG (I := I) S') t
+        (fun y : M => uhlenbeckCurvatureOperatorMatrix pulledRm' t y ij) x =
+      laplacianAt (I := I) (flowG (I := I) S) (t + t0)
+        (fun y : M => uhlenbeckCurvatureOperatorMatrix pulledRm (t + t0) y ij) x := by
+      simp [laplacianAt, S', flowG, SolutionOn.timeShift, SolutionFamily.timeShift,
+        SolutionFamily.connection, pulledRm', uhlenbeckCurvatureOperatorMatrix]
+    rw [← hlap_eq] at h
+    simpa [roughLapD'] using h
+  have hjoint' : ContinuousOn (fun q : Real × M => uhlenbeckCurvatureOperatorMatrix pulledRm' q.1 q.2)
+      ((D.timeShift t0).carrier ×ˢ (Set.univ : Set M)) := by
+    have hmap : Continuous (fun q : Real × M => (q.1 + t0, q.2)) :=
+      (continuous_fst.add continuous_const).prodMk continuous_snd
+    have hmapOn : ContinuousOn (fun q : Real × M => (q.1 + t0, q.2))
+        ((D.timeShift t0).carrier ×ˢ (Set.univ : Set M)) := hmap.continuousOn
+    have hmaps : Set.MapsTo (fun q : Real × M => (q.1 + t0, q.2))
+        ((D.timeShift t0).carrier ×ˢ (Set.univ : Set M))
+        (D.carrier ×ˢ (Set.univ : Set M)) := by
+      intro q hq
+      exact ⟨by
+        change q.1 + t0 ∈ D.carrier
+        exact hq.1, hq.2⟩
+    have hc := hjoint.comp hmapOn hmaps
+    simpa [pulledRm', uhlenbeckCurvatureOperatorMatrix, Function.comp_def] using hc
+  have hsmooth' : ∀ ij : Fin 3 × Fin 3, ∀ t : Real, t ∈ (D.timeShift t0).carrier →
+      ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => uhlenbeckCurvatureOperatorMatrix pulledRm' t x ij) := by
+    intro ij t ht
+    have htc : (t : Real) + t0 ∈ D.carrier := by
+      change t + t0 ∈ D.carrier
+      exact ht
+    simpa [pulledRm', uhlenbeckCurvatureOperatorMatrix] using hsmooth ij (t + t0) htc
+  have hR' : ∀ t x i j, R' t x i j = R' t x j i := by
+    intro t x i j
+    exact hR (t + t0) x i j
+  have hrm' : ∀ t x a b c d, pulledRm' t x a b c d = rm (R' t x) a b c d := by
+    intro t x a b c d
+    dsimp [pulledRm', R']
+    exact hrm (t + t0) x a b c d
+  have hB' : ∀ t x a b c d, B' t x a b c d =
+      bTensorDown (fun a' b' c' d' => pulledRm' t x a' b' c' d') a b c d := by
+    intro t x a b c d
+    dsimp [B', pulledRm']
+    exact hB (t + t0) x a b c d
+  have hbound' : ∃ R₀ : ℝ, 0 ≤ R₀ ∧ ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
+      ‖uhlenbeckCurvatureOperatorMatrix pulledRm' t x‖ ≤ R₀ := by
+    rcases hbound with ⟨R₀, hR₀, hb⟩
+    refine ⟨R₀, hR₀, ?_⟩
+    intro t ht x
+    dsimp [pulledRm', uhlenbeckCurvatureOperatorMatrix]
+    exact hb (t + t0) ⟨by linarith [ht.1], by linarith [ht.2]⟩ x
+  have hCdist_cont' : ContinuousOn
+      (fun q : Real × M => Metric.infDist (uhlenbeckCurvatureOperatorMatrix pulledRm' q.1 q.2)
+        (hamiltonIveyConvexMatrixRegionEuclid K q.1))
+      (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
+    have hmap : Continuous (fun q : Real × M => (q.1 + t0, q.2)) :=
+      (continuous_fst.add continuous_const).prodMk continuous_snd
+    have hmapOn : ContinuousOn (fun q : Real × M => (q.1 + t0, q.2))
+        (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := hmap.continuousOn
+    have hmaps : Set.MapsTo (fun q : Real × M => (q.1 + t0, q.2))
+        (Set.Icc 0 T ×ˢ (Set.univ : Set M))
+        (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M)) := by
+      intro q hq
+      exact ⟨⟨by linarith [hq.1.1], by linarith [hq.1.2]⟩, hq.2⟩
+    have hc := hCdist_cont.comp hmapOn hmaps
+    refine hc.congr ?_
+    intro q hq
+    have hq1 : uhlenbeckCurvatureOperatorMatrix pulledRm (q.1 + t0) q.2 =
+        uhlenbeckCurvatureOperatorMatrix pulledRm' q.1 q.2 := by
+      dsimp [pulledRm', uhlenbeckCurvatureOperatorMatrix]
+    have hq2 : hamiltonIveyConvexMatrixRegionEuclid K (q.1 + t0 - t0) =
+        hamiltonIveyConvexMatrixRegionEuclid K q.1 := by
+      rw [show q.1 + t0 - t0 = q.1 by ring]
+    simp [hq1]
+  have hinit' : ∀ x : M, uhlenbeckCurvatureOperatorMatrix pulledRm' 0 x ∈
+      hamiltonIveyConvexMatrixRegionEuclid K 0 := by
+    intro x
+    dsimp [pulledRm', uhlenbeckCurvatureOperatorMatrix]
+    simpa using hinit x
+  have hpull' : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
+      ∃ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+        OrthonormalBasisAt (I := I) (S.base.metric (t + t0)) x basis ∧
+          ∀ a b c d : Fin 3,
+            pulledRm (t + t0) x a b c d =
+              tensor04StdAt (I := I) (M := M) (S.base.rm04 (t + t0) x)
+                (basis a) (basis b) (basis c) (basis d) := by
+    intro t ht x
+    rcases hpull (t + t0) ⟨by linarith [ht.1], by linarith [ht.2]⟩ x with ⟨basis, horth, hp'⟩
+    exact ⟨basis, horth, hp'⟩
+  have hprop : CurvatureOperatorRegionPropagationOn (I := I) (M := M) S' K 0 T :=
+    curvatureOperatorRegionPropagationOn_of_uhlenbeckData
+      (I := I) (M := M) S' hK hT pulledRm' roughLapD' B'
+      hU' hlap' hjoint' hsmooth' R' hR' hrm' hB' hTsub' hTreg'
+      hbound' hCdist_cont' hinit' hpull'
+  -- transfer to S
+  intro t ht x
+  rcases hprop (t - t0) (by
+    rw [Set.mem_Icc] at ht ⊢
+    constructor <;> linarith) x with ⟨basis, horth, hmem⟩
+  refine ⟨basis, ?_, ?_⟩
+  · simpa [S', SolutionOn.timeShift, SolutionFamily.timeShift] using horth
+  · let hA : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+      ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (I := I) (S.base.metric t) x⟩
+    let hA' : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+      ⟨S'.base.rm04 (t - t0) x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (I := I) (S'.base.metric (t - t0)) x⟩
+    have hAeq : hA = hA' := by
+      apply Subtype.ext
+      change S.base.rm04 t x = S'.base.rm04 (t - t0) x
+      have h' : S'.base.rm04 (t - t0) x = S.base.rm04 ((t - t0) + t0) x := by
+        dsimp [S', SolutionOn.timeShift, SolutionFamily.timeShift, SolutionFamily.rm04]
+      rw [h', show t - t0 + t0 = t by ring]
+    have hmat_eq : curvatureOperatorMatrixAt (I := I) x basis hA =
+        curvatureOperatorMatrixAt (I := I) x basis hA' := by
+      rw [hAeq]
+    have hmem' : curvatureOperatorMatrixAt (I := I) x basis hA ∈
+        hamiltonIveyConvexMatrixRegion K (t - t0) := by
+      have hm : curvatureOperatorMatrixAt (I := I) x basis hA' ∈
+          hamiltonIveyConvexMatrixRegion K (t - t0) := by
+        simpa [hA', show (t - t0) - 0 = t - t0 by ring] using hmem
+      rwa [← hmat_eq] at hm
+    exact hmem'
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
