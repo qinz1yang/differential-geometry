@@ -422,6 +422,152 @@ theorem hamiltonIveySupportUpperReactAt_shiftCoeff_diff
       _ = c * (2 * ccoefL / (1 - 3 * δ) * gvv + (2 * δ - 1) / (1 - 3 * δ) * Cvv) := by ring
   exact hmain
 
+theorem hamiltonIveySupportUpperReact_barrier_diff
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    [SigmaCompactSpace M] [T2Space M]
+    (S : SolutionOn (I := I) (M := M) D)
+    {K a epsilon d t0 t : Real} {x : M}
+    (ha : 0 < a)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (v : TangentSpace I x) :
+    (hamiltonIveySupportUpperReact (I := I) (M := M) K a t0 t (S.base.metric t)
+        (tensorBarrierFamily (I := I) (M := M) (fun s : Real => S.base.metric s)
+          (twoTensorSecToFamily (I := I) (M := M)
+            (hamiltonIveySupportUpperSec S K a t0))
+          epsilon d t0 t)) x v v -
+      (hamiltonIveySupportUpperReact (I := I) (M := M) K a t0 t (S.base.metric t)
+        (twoTensorSecToFamily (I := I) (M := M)
+          (hamiltonIveySupportUpperSec S K a t0) t)) x v v =
+        (epsilon * (d + t - t0)) *
+          (((2 * hamiltonIveySupportCoefficient K a t0 t /
+              (1 - 3 * hamiltonIveySupportPinchDelta a)) : Real) *
+              ((S.base.metric t).inner x v v) +
+            ((2 * hamiltonIveySupportPinchDelta a - 1) /
+              (1 - 3 * hamiltonIveySupportPinchDelta a)) *
+              (((3 : Real) • shiftRic3At (I := I) (M := M)
+                  (hamiltonIveySupportPinchDelta a) (S.base.metric t)
+                  (hamiltonIveySupportCoefficient K a t0 t •
+                      metricTensorField (I := I) (S.base.metric t) x -
+                    (hamiltonIveySupportUpperSec S K a t0) t x) -
+                metricTracePair0SAt (I := I) (S.base.metric t)
+                  (shiftRic3At (I := I) (M := M)
+                    (hamiltonIveySupportPinchDelta a) (S.base.metric t)
+                    (hamiltonIveySupportCoefficient K a t0 t •
+                        metricTensorField (I := I) (S.base.metric t) x -
+                      (hamiltonIveySupportUpperSec S K a t0) t x)) •
+                  metricTensorField (I := I) (S.base.metric t) x)
+                (vec2 (I := I) v v))) := by
+  let Araw : RawTwoTensorField (I := I) (M := M) :=
+    twoTensorSecToFamily (I := I) (M := M)
+      (hamiltonIveySupportUpperSec S K a t0) t
+  let Barr : RawTwoTensorField (I := I) (M := M) :=
+    tensorBarrierFamily (I := I) (M := M) (fun s : Real => S.base.metric s)
+      (twoTensorSecToFamily (I := I) (M := M)
+        (hamiltonIveySupportUpperSec S K a t0))
+      epsilon d t0 t
+  let c : Real := epsilon * (d + t - t0)
+  have hBarr : Barr = fun x v w => Araw x v w + c * (S.base.metric t).inner x v w := by
+    funext x v w
+    simp [Barr, Araw, c, tensorBarrierFamily_apply]
+  have hbilinA : TwoTensorBilinearAt (I := I) (M := M) Araw x := by
+    simpa [Araw] using
+      twoTensorSecToFamily_bilin (I := I) (M := M)
+        (hamiltonIveySupportUpperSec S K a t0) t x
+  have hbilinB : TwoTensorBilinearAt (I := I) (M := M) Barr x := by
+    simpa [Barr] using
+      barrierBilinearAt (I := I) (M := M)
+        (G := fun s : Real => S.base.metric s)
+        (S := twoTensorSecToFamily (I := I) (M := M)
+          (hamiltonIveySupportUpperSec S K a t0))
+        (epsilon := epsilon) (delta := d) (t0 := t0) (t := t) (x := x)
+        (twoTensorSecToFamily_bilin (I := I) (M := M)
+          (hamiltonIveySupportUpperSec S K a t0) t x)
+  have hsymB : TwoTensorSymmetricAt (I := I) (M := M) Barr x := by
+    exact barrierSymmAt (I := I) (M := M)
+      (G := fun s : Real => S.base.metric s)
+      (S := twoTensorSecToFamily (I := I) (M := M)
+        (hamiltonIveySupportUpperSec S K a t0))
+      (epsilon := epsilon) (delta := d) (t0 := t0) (t := t) (x := x)
+      ((hamiltonIveySupportUpperSec_symm (I := I) S K a t0 Set.univ)
+        t (by simp) x)
+  have hrealB :
+      Tensor02RealizesRawAt (I := I) (M := M) (rawSym2 (I := I) (M := M) Barr) x
+        ((hamiltonIveySupportUpperSec S K a t0) t x +
+          c • metricTensorField (I := I) (S.base.metric t) x) := by
+    intro X Y
+    rw [rawSym2_eq_of_symm (I := I) (M := M) hsymB X Y]
+    rw [hBarr]
+    have hadd :
+        ((hamiltonIveySupportUpperSec S K a t0) t x +
+            c • metricTensorField (I := I) (S.base.metric t) x)
+            (vec2 (I := I) X Y) =
+          (hamiltonIveySupportUpperSec S K a t0) t x (vec2 (I := I) X Y) +
+            (c • metricTensorField (I := I) (S.base.metric t) x) (vec2 (I := I) X Y) :=
+      Tensor0SSpace.add_apply 2 x ((hamiltonIveySupportUpperSec S K a t0) t x)
+        (c • metricTensorField (I := I) (S.base.metric t) x) (vec2 (I := I) X Y)
+    rw [hadd]
+    rw [show (c • metricTensorField (I := I) (S.base.metric t) x) (vec2 (I := I) X Y) =
+          c * metricTensorField (I := I) (S.base.metric t) x (vec2 (I := I) X Y) from
+        Tensor0SSpace.smul_apply 2 x c (metricTensorField (I := I) (S.base.metric t) x)
+          (vec2 (I := I) X Y)]
+    simp only [metricTensorField_apply]
+    have h0 : vec2 (I := I) X Y 0 = X := by
+      unfold DifferentialGeometry.Geometry.Curvature.vec2
+      simp
+    have h1 : vec2 (I := I) X Y 1 = Y := by
+      unfold DifferentialGeometry.Geometry.Curvature.vec2
+      norm_num
+    rw [h0, h1]
+    dsimp [Araw]
+    rw [twoTensorSecToFamily_apply]
+  have hrealBundled :
+      Tensor02RealizesRawAt (I := I) (M := M) (rawSym2 (I := I) (M := M) Barr) x
+        (tensor02OfRawAt (I := I) (M := M)
+          (rawSym2 (I := I) (M := M) Barr) x
+          (rawSym2_bilin (I := I) (M := M) hbilinB)) :=
+    tensor02OfRawAt_realizes (I := I) (M := M)
+      (rawSym2 (I := I) (M := M) Barr) x
+      (rawSym2_bilin (I := I) (M := M) hbilinB)
+  have hB : tensor02OfRawAt (I := I) (M := M)
+        (rawSym2 (I := I) (M := M) Barr) x
+        (rawSym2_bilin (I := I) (M := M) hbilinB) =
+      (hamiltonIveySupportUpperSec S K a t0) t x +
+        c • metricTensorField (I := I) (S.base.metric t) x :=
+    tensor02_realizes_ext (I := I) (M := M) hrealBundled hrealB
+  rw [hamiltonIveySupportUpperReact, Tensor02ReactionAt.toRawSymm_eval_of_bilin
+    (I := I) (M := M) (fun _t g _x A => hamiltonIveySupportUpperReactAt (I := I) K a t0 _t g A)
+    t (S.base.metric t) Barr x hbilinB]
+  rw [hB]
+  have hrealA :
+      Tensor02RealizesRawAt (I := I) (M := M) (rawSym2 (I := I) (M := M) Araw) x
+        ((hamiltonIveySupportUpperSec S K a t0) t x) := by
+    intro X Y
+    change (hamiltonIveySupportUpperSec S K a t0) t x (vec2 (I := I) X Y) =
+      (rawSym2 (I := I) (M := M) Araw) x X Y
+    rw [rawSym2_eq_of_symm (I := I) (M := M)
+      ((hamiltonIveySupportUpperSec_symm (I := I) S K a t0 Set.univ) t (by simp) x) X Y]
+    rw [twoTensorSecToFamily_apply]
+  have hrealBundledA :
+      Tensor02RealizesRawAt (I := I) (M := M) (rawSym2 (I := I) (M := M) Araw) x
+        (tensor02OfRawAt (I := I) (M := M)
+          (rawSym2 (I := I) (M := M) Araw) x
+          (rawSym2_bilin (I := I) (M := M) hbilinA)) :=
+    tensor02OfRawAt_realizes (I := I) (M := M)
+      (rawSym2 (I := I) (M := M) Araw) x
+      (rawSym2_bilin (I := I) (M := M) hbilinA)
+  have hA : tensor02OfRawAt (I := I) (M := M)
+        (rawSym2 (I := I) (M := M) Araw) x
+        (rawSym2_bilin (I := I) (M := M) hbilinA) =
+      (hamiltonIveySupportUpperSec S K a t0) t x :=
+    tensor02_realizes_ext (I := I) (M := M) hrealBundledA hrealA
+  rw [Tensor02ReactionAt.toRawSymm_eval_of_bilin
+    (I := I) (M := M) (fun _t g _x A => hamiltonIveySupportUpperReactAt (I := I) K a t0 _t g A)
+    t (S.base.metric t) Araw x hbilinA]
+  rw [hA]
+  rw [hamiltonIveySupportUpperReactAt_shiftCoeff_diff (I := I) (K := K) (a := a)
+    (t0 := t0) (t := t) (c := c) (g := S.base.metric t) (x := x)
+    (A := (hamiltonIveySupportUpperSec S K a t0) t x) ha hdim v]
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
