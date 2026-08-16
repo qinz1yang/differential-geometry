@@ -1567,24 +1567,6 @@ theorem uhlenbeckCurvatureOperatorReactionState_lipschitzOn_closedBall
   exact uhlenbeckCurvatureOperatorReactionState_sub_norm_le a b R hR
     (mem_closedBall_zero_iff.mp ha) (mem_closedBall_zero_iff.mp hb)
 
-noncomputable def hamiltonIveyConvexMatrixRegionSupportEuclid (K τ : ℝ)
-    (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) : ℝ :=
-  let A : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix v
-  let S : Matrix (Fin 3) (Fin 3) ℝ := (1 / 2 : ℝ) • (A + A.transpose)
-  let hS : S.IsHermitian := by
-    dsimp [S]
-    unfold Matrix.IsHermitian
-    ext i j
-    simp [Matrix.transpose_apply, smul_eq_mul, add_comm]
-    ring
-  let v1 : ℝ := hS.eigenvalues₀ 0
-  let v2 : ℝ := hS.eigenvalues₀ 1
-  let v3 : ℝ := hS.eigenvalues₀ 2
-  if hlt : v1 < 0 then
-    sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
-      x = hamiltonIveyConvexBarrier K τ X * v1 + X * (2 * v1 - v2 - v3)}
-  else 0
-
 noncomputable def symmEuclid (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
     Matrix (Fin 3) (Fin 3) ℝ :=
   (1 / 2 : ℝ) • (euclidToMatrix v + (euclidToMatrix v).transpose)
@@ -1596,6 +1578,16 @@ theorem symmEuclid_isHermitian (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
   ext i j
   simp [Matrix.transpose_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, add_comm]
   ring
+
+noncomputable def hamiltonIveyConvexMatrixRegionSupportEuclid (K τ : ℝ)
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) : ℝ :=
+  let ν₁ : ℝ := (symmEuclid_isHermitian v).eigenvalues₀ 0
+  let ν₂ : ℝ := (symmEuclid_isHermitian v).eigenvalues₀ 1
+  let ν₃ : ℝ := (symmEuclid_isHermitian v).eigenvalues₀ 2
+  if ν₁ < 0 then
+    sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
+      x = hamiltonIveyConvexBarrier K τ X * ν₁ + X * (2 * ν₁ - ν₂ - ν₃)}
+  else 0
 
 lemma inner_matrixToEuclid_symm
     (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) (A : Matrix (Fin 3) (Fin 3) ℝ)
@@ -1844,6 +1836,437 @@ lemma inner_diag_le_eigen_bound
     simp [Finset.sum_add_distrib, Fin.sum_univ_three]
     ring
   simpa [X, a, hcalc] using hsum
+
+lemma hamiltonIveyConvexBarrier_eq_scalarLower_at_feasible_point
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    hamiltonIveyConvexBarrier K τ (K / (1 + 4 * K * τ)) =
+      scalarSectionalLowerBarrier3 K τ := by
+  unfold hamiltonIveyConvexBarrier scalarSectionalLowerBarrier3
+  have hden4 : 0 < 1 + 4 * K * τ := by
+    have hKτ : 0 ≤ 4 * K * τ := by
+      have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+      nlinarith
+    nlinarith
+  have hden2 : 0 < 1 + 2 * K * τ := by
+    have hKτ : 0 ≤ 2 * K * τ := by
+      have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+      nlinarith
+    nlinarith
+  have hXpos : 0 < K / (1 + 4 * K * τ) := div_pos hK hden4
+  have hXsub : K / (1 + 4 * K * τ) ≤ K / (1 + 2 * K * τ) := by
+    exact div_le_div_of_nonneg_left hK.le hden2 (by nlinarith)
+  have hbar_le : hamiltonIveyBarrier K τ (K / (1 + 4 * K * τ)) ≤
+      -3 * (K / (1 + 4 * K * τ)) :=
+    hamiltonIveyBarrier_le_neg_three_pinchHeight_of_subregion hK hden2 hXpos.le hXsub
+  have hEq : -3 * (K / (1 + 4 * K * τ)) = -3 * K / (1 + 4 * K * τ) := by
+    field_simp [hden4.ne']
+  have hbarsc : hamiltonIveyBarrier K τ (K / (1 + 4 * K * τ)) ≤
+      -3 * K / (1 + 4 * K * τ) := by
+    simpa [hEq] using hbar_le
+  rw [max_eq_left hbarsc]
+
+lemma barrier_ge_scalar (K τ X : ℝ) :
+    scalarSectionalLowerBarrier3 K τ ≤ hamiltonIveyConvexBarrier K τ X := by
+  unfold hamiltonIveyConvexBarrier
+  exact le_max_left _ _
+
+lemma support_formula_le_at_feasible_point
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0)
+    {X : ℝ} (hXle : X ≤ K / (1 + 4 * K * τ)) :
+    hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) ≤
+      hamiltonIveyConvexBarrier K τ (K / (1 + 4 * K * τ)) * ν 0 +
+        (K / (1 + 4 * K * τ)) * (2 * ν 0 - ν 1 - ν 2) := by
+  let B : ℝ → ℝ := fun Y => hamiltonIveyConvexBarrier K τ Y
+  have hBge : B (K / (1 + 4 * K * τ)) ≤ B X := by
+    have hB0 : B (K / (1 + 4 * K * τ)) = scalarSectionalLowerBarrier3 K τ := by
+      simpa [B] using hamiltonIveyConvexBarrier_eq_scalarLower_at_feasible_point hK hτ
+    have hB : scalarSectionalLowerBarrier3 K τ ≤ B X := by
+      simpa [B] using barrier_ge_scalar K τ X
+    rw [hB0]
+    exact hB
+  have hc_nonneg : 0 ≤ 2 * ν 0 - ν 1 - ν 2 := by
+    have h1 : ν 1 ≤ ν 0 := hν (by decide : (0 : Fin 3) ≤ 1)
+    have h2 : ν 2 ≤ ν 0 := hν (by decide : (0 : Fin 3) ≤ 2)
+    nlinarith
+  have hXle' : X - K / (1 + 4 * K * τ) ≤ 0 := by linarith
+  have hmul : ν 0 * (B X - B (K / (1 + 4 * K * τ))) ≤ 0 := by
+    have hneg : ν 0 ≤ 0 := hν0.le
+    exact mul_nonpos_of_nonpos_of_nonneg hneg (sub_nonneg.mpr hBge)
+  have hlin : (X - K / (1 + 4 * K * τ)) * (2 * ν 0 - ν 1 - ν 2) ≤ 0 := by
+    exact mul_nonpos_of_nonpos_of_nonneg hXle' hc_nonneg
+  dsimp [B] at hBge
+  nlinarith
+
+lemma diagonal_extremal_mem_region
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {X : ℝ} (hX : K / (1 + 4 * K * τ) ≤ X) :
+    Matrix.diagonal ![hamiltonIveyConvexBarrier K τ X + 2 * X, -X, -X] ∈
+      hamiltonIveyConvexMatrixRegion K τ := by
+  let D : Matrix (Fin 3) (Fin 3) ℝ :=
+    Matrix.diagonal ![hamiltonIveyConvexBarrier K τ X + 2 * X, -X, -X]
+  let d : Fin 3 → ℝ := ![hamiltonIveyConvexBarrier K τ X + 2 * X, -X, -X]
+  have hd_antitone : Antitone d := by
+    have hB : -3 * X ≤ hamiltonIveyConvexBarrier K τ X := by
+      have hsc : scalarSectionalLowerBarrier3 K τ ≤ hamiltonIveyConvexBarrier K τ X :=
+        barrier_ge_scalar K τ X
+      have hsc_le : -3 * X ≤ scalarSectionalLowerBarrier3 K τ := by
+        unfold scalarSectionalLowerBarrier3
+        have hden : 0 < 1 + 4 * K * τ := by
+          have hKτ : 0 ≤ 4 * K * τ := by
+            have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+            nlinarith
+          nlinarith
+        have hX₀ : K ≤ X * (1 + 4 * K * τ) := by
+          exact (div_le_iff₀ hden).mp hX
+        rw [le_div_iff₀ hden]
+        nlinarith
+      exact hsc_le.trans hsc
+    intro i j hij
+    fin_cases i <;> fin_cases j
+    · simp [d]
+    · dsimp [d]
+      nlinarith [hB]
+    · dsimp [d]
+      nlinarith [hB]
+    · norm_num at hij
+    · simp [d]
+    · simp [d]
+    · norm_num at hij
+    · simp [d]
+    · simp [d]
+  rw [hamiltonIveyConvexMatrixRegion_eq_violation]
+  refine ⟨?_, ?_, ?_⟩
+  · exact Matrix.isHermitian_diagonal d
+  · have hmin : sectionalRayleighMin3 D = -X := by
+      have heig : (Matrix.isHermitian_diagonal d).eigenvalues₀ = d :=
+        diagonal_eigenvalues₀_eq_of_antitone d hd_antitone
+      have hmineig : sectionalRayleighMin3 D = (Matrix.isHermitian_diagonal d).eigenvalues₀ 2 := by
+        exact sectionalRayleighMin3_eq_eigenvalue_min (hA := Matrix.isHermitian_diagonal d)
+      rw [hmineig, heig]
+      simp [d]
+    rw [hmin]
+    exact le_max_right _ _
+  · have hmin : sectionalRayleighMin3 D = -X := by
+      have heig : (Matrix.isHermitian_diagonal d).eigenvalues₀ = d :=
+        diagonal_eigenvalues₀_eq_of_antitone d hd_antitone
+      have hmineig : sectionalRayleighMin3 D = (Matrix.isHermitian_diagonal d).eigenvalues₀ 2 := by
+        exact sectionalRayleighMin3_eq_eigenvalue_min (hA := Matrix.isHermitian_diagonal d)
+      rw [hmineig, heig]
+      simp [d]
+    rw [hmin]
+    have htrace : D.trace = hamiltonIveyConvexBarrier K τ X := by
+      dsimp [D, d]
+      rw [Matrix.trace]
+      simp [Matrix.diag, Fin.sum_univ_three]
+      ring
+    rw [htrace]
+    have hX0 : 0 ≤ X := by
+      have hX₀pos : 0 < K / (1 + 4 * K * τ) := by
+        have hden : 0 < 1 + 4 * K * τ := by
+          have hKτ : 0 ≤ 4 * K * τ := by
+            have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+            nlinarith
+          nlinarith
+        exact div_pos hK hden
+      linarith
+    simp [hX0]
+
+lemma inner_diag_diag (ν l : Fin 3 → ℝ) :
+    inner ℝ (matrixToEuclid (Matrix.diagonal ν)) (matrixToEuclid (Matrix.diagonal l)) =
+      ∑ i : Fin 3, ν i * l i := by
+  rw [inner_matrixToEuclid]
+  rw [Fintype.sum_prod_type]
+  apply Finset.sum_congr rfl
+  intro i hi
+  rw [Finset.sum_eq_single i]
+  · simp [matrixToEuclid, Matrix.diagonal]
+  · intro j _ hj
+    simp [Matrix.diagonal, Ne.symm hj]
+  · intro h
+    exact absurd (Finset.mem_univ i) h
+
+lemma inner_le_support_formula_of_mem_region
+    {K τ : ℝ}
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0)
+    (A : Matrix (Fin 3) (Fin 3) ℝ)
+    (hA : A ∈ hamiltonIveyConvexMatrixRegion K τ) :
+    inner ℝ (matrixToEuclid (Matrix.diagonal ν)) (matrixToEuclid A) ≤
+      hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 A) 0) * ν 0 +
+        max (-sectionalRayleighMin3 A) 0 * (2 * ν 0 - ν 1 - ν 2) := by
+  rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hA
+  rcases hA with ⟨hAh, hX0, hbar⟩
+  have hle := inner_diag_le_eigen_bound hν A hAh
+  have hmin : sectionalRayleighMin3 A = hAh.eigenvalues₀ 2 :=
+    sectionalRayleighMin3_eq_eigenvalue_min (hA := hAh)
+  have hle' : inner ℝ (matrixToEuclid (Matrix.diagonal ν)) (matrixToEuclid A) ≤
+      ν 0 * A.trace + (2 * ν 0 - ν 1 - ν 2) * max (-sectionalRayleighMin3 A) 0 := by
+    simpa [hmin] using hle
+  have hmul : ν 0 * A.trace ≤
+      ν 0 * hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 A) 0) := by
+    exact mul_le_mul_of_nonpos_left hbar hν0.le
+  have hmain : ν 0 * A.trace + (2 * ν 0 - ν 1 - ν 2) * max (-sectionalRayleighMin3 A) 0 ≤
+      hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 A) 0) * ν 0 +
+        max (-sectionalRayleighMin3 A) 0 * (2 * ν 0 - ν 1 - ν 2) := by
+    rw [mul_comm (hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 A) 0)) (ν 0)]
+    nlinarith [hmul]
+  exact le_trans hle' hmain
+
+
+lemma support_formula_tail_nonpos
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν0 : ν 0 < 0)
+    {X : ℝ} (hX : 0 < X)
+    (hL : (ν 0 + ν 1 + ν 2) / ν 0 ≤ Real.log (X * (1 + 2 * K * τ) / K)) :
+    hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) ≤ 0 := by
+  let S : ℝ := ν 0 + ν 1 + ν 2
+  let L : ℝ := Real.log (X * (1 + 2 * K * τ) / K)
+  have hBh : hamiltonIveyBarrier K τ X ≤ hamiltonIveyConvexBarrier K τ X :=
+    hamiltonIveyBarrier_le_hamiltonIveyConvexBarrier K τ X
+  have hmul : ν 0 * hamiltonIveyConvexBarrier K τ X ≤ ν 0 * hamiltonIveyBarrier K τ X :=
+    mul_le_mul_of_nonpos_left hBh hν0.le
+  have hden : 0 < 1 + 2 * K * τ := by
+    have hKτ : 0 ≤ 2 * K * τ := by
+      have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+      nlinarith
+    nlinarith
+  have harg : 0 < X * (1 + 2 * K * τ) / K := by positivity
+  have hlog : Real.log (X / K) + Real.log (1 + 2 * K * τ) = L := by
+    dsimp [L]
+    have h1 : Real.log (X / K) = Real.log X - Real.log K :=
+      Real.log_div hX.ne' hK.ne'
+    have h2 : Real.log ((X * (1 + 2 * K * τ)) / K) =
+        Real.log (X * (1 + 2 * K * τ)) - Real.log K :=
+      Real.log_div (mul_pos hX hden).ne' hK.ne'
+    have h3 : Real.log (X * (1 + 2 * K * τ)) =
+        Real.log X + Real.log (1 + 2 * K * τ) :=
+      Real.log_mul hX.ne' hden.ne'
+    rw [h1, h2, h3]
+    ring_nf
+  have hbar : hamiltonIveyBarrier K τ X = X * (L - 3) := by
+    unfold hamiltonIveyBarrier
+    rw [hlog]
+  have hmain : ν 0 * hamiltonIveyBarrier K τ X + X * (2 * ν 0 - ν 1 - ν 2) =
+      X * (ν 0 * L - S) := by
+    dsimp [S]
+    rw [hbar]
+    ring
+  have hFle : hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) ≤
+      X * (ν 0 * L - S) := by
+    rw [← hmain]
+    nlinarith
+  have hL' : ν 0 * L - S ≤ 0 := by
+    have hm := mul_le_mul_of_nonpos_left hL hν0.le
+    have hred : ν 0 * (S / ν 0) = S := mul_div_cancel₀ S (Ne.symm hν0.ne')
+    dsimp [S] at hm hred ⊢
+    nlinarith
+  nlinarith [hFle, hL']
+
+lemma support_formula_bddAbove
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν0 : ν 0 < 0) :
+    BddAbove {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
+      x = hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)} := by
+  let F : ℝ → ℝ := fun X => hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)
+  let S : ℝ := ν 0 + ν 1 + ν 2
+  let X₁ : ℝ := K * Real.exp (S / ν 0) / (1 + 2 * K * τ)
+  have hden : 0 < 1 + 2 * K * τ := by
+    have hKτ : 0 ≤ 2 * K * τ := by
+      have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+      nlinarith
+    nlinarith
+  have hX₁ : 0 < X₁ := by
+    dsimp [X₁]
+    positivity
+  have htail : ∀ X, X₁ ≤ X → F X ≤ 0 := by
+    intro X hX
+    have hXpos : 0 < X := lt_of_lt_of_le hX₁ hX
+    have harg1 : 0 < X₁ * (1 + 2 * K * τ) / K := by positivity
+    have harg2 : 0 < X * (1 + 2 * K * τ) / K := by positivity
+    have hmono : Real.log (X₁ * (1 + 2 * K * τ) / K) ≤
+        Real.log (X * (1 + 2 * K * τ) / K) := by
+      refine (Real.log_le_log_iff harg1 harg2).mpr ?_
+      have hmul : X₁ * (1 + 2 * K * τ) ≤ X * (1 + 2 * K * τ) :=
+        mul_le_mul_of_nonneg_right hX (by positivity : 0 ≤ (1 + 2 * K * τ))
+      exact div_le_div_of_nonneg_right hmul hK.le
+    have hlogX₁ : Real.log (X₁ * (1 + 2 * K * τ) / K) = S / ν 0 := by
+      have hX₁eq : X₁ * (1 + 2 * K * τ) / K = Real.exp (S / ν 0) := by
+        dsimp [X₁]
+        field_simp [hK.ne', hden.ne']
+      rw [hX₁eq]
+      exact Real.log_exp (S / ν 0)
+    have hL : S / ν 0 ≤ Real.log (X * (1 + 2 * K * τ) / K) := by
+      linarith
+    exact support_formula_tail_nonpos hK hτ hν0 hXpos hL
+  have hcont : ContinuousOn F (Set.Icc 0 X₁) := by
+    dsimp [F]
+    have hB : ContinuousOn (fun X : ℝ => hamiltonIveyConvexBarrier K τ X) (Set.Icc 0 X₁) :=
+      (continuous_hamiltonIveyConvexBarrier hK).continuousOn
+    have hBν : ContinuousOn (fun X : ℝ => hamiltonIveyConvexBarrier K τ X * ν 0)
+        (Set.Icc 0 X₁) := hB.mul continuousOn_const
+    have hXc : ContinuousOn (fun X : ℝ => X * (2 * ν 0 - ν 1 - ν 2))
+        (Set.Icc 0 X₁) := by fun_prop
+    exact hBν.add hXc
+  have hbdd₁ : BddAbove (F '' Set.Icc 0 X₁) :=
+    (isCompact_Icc (a := (0 : ℝ)) (b := X₁)).bddAbove_image hcont
+  rcases hbdd₁ with ⟨C, hC⟩
+  refine ⟨max C 0, ?_⟩
+  rintro x ⟨X, hX, rfl⟩
+  by_cases hX₁le : X ≤ X₁
+  · have hXmem : X ∈ Set.Icc 0 X₁ := ⟨hX, hX₁le⟩
+    have hle : F X ≤ C := hC ⟨X, hXmem, rfl⟩
+    exact le_trans hle (le_max_left _ _)
+  · have hX₁le' : X₁ ≤ X := le_of_lt (lt_of_not_ge hX₁le)
+    exact le_trans (htail X hX₁le') (le_max_right _ _)
+
+
+lemma support_formula_feasible_le_supportFunction
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0)
+    (X : ℝ) (hX₀ : K / (1 + 4 * K * τ) ≤ X) :
+    hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) ≤
+      supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ)
+        (matrixToEuclid (Matrix.diagonal ν)) := by
+  let l : Fin 3 → ℝ := ![hamiltonIveyConvexBarrier K τ X + 2 * X, -X, -X]
+  let D : Matrix (Fin 3) (Fin 3) ℝ := Matrix.diagonal l
+  let S : Set ℝ := {y | ∃ B : EuclideanSpace ℝ (Fin 3 × Fin 3),
+    B ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧
+      y = inner ℝ (matrixToEuclid (Matrix.diagonal ν)) B}
+  have hbdd : BddAbove S := by
+    have hbddF := support_formula_bddAbove hK hτ hν0
+    rcases hbddF with ⟨C, hC⟩
+    refine ⟨C, ?_⟩
+    rintro y ⟨B, hBmem, rfl⟩
+    have hBm : euclidToMatrix B ∈ hamiltonIveyConvexMatrixRegion K τ := by
+      exact (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ B).1 hBmem
+    have hinner : inner ℝ (matrixToEuclid (Matrix.diagonal ν)) B ≤
+        hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 (euclidToMatrix B)) 0) * ν 0 +
+          max (-sectionalRayleighMin3 (euclidToMatrix B)) 0 * (2 * ν 0 - ν 1 - ν 2) :=
+      inner_le_support_formula_of_mem_region hν hν0 (euclidToMatrix B) hBm
+    have hF : hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 (euclidToMatrix B)) 0) * ν 0 +
+          max (-sectionalRayleighMin3 (euclidToMatrix B)) 0 * (2 * ν 0 - ν 1 - ν 2) ≤ C := by
+      exact hC ⟨max (-sectionalRayleighMin3 (euclidToMatrix B)) 0, (le_max_right _ _), rfl⟩
+    exact le_trans hinner hF
+  have hDmem : D ∈ hamiltonIveyConvexMatrixRegion K τ :=
+    diagonal_extremal_mem_region hK hτ hX₀
+  have hDmemE : matrixToEuclid D ∈ hamiltonIveyConvexMatrixRegionEuclid K τ := by
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+    simpa [D, l, euclidToMatrix_matrixToEuclid] using hDmem
+  have hinner_eq : inner ℝ (matrixToEuclid (Matrix.diagonal ν)) (matrixToEuclid D) =
+      hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) := by
+    have hdd := inner_diag_diag ν l
+    dsimp [D, l] at hdd
+    rw [hdd]
+    simp [Fin.sum_univ_three]
+    ring
+  unfold supportFunction
+  exact le_csSup hbdd ⟨matrixToEuclid D, hDmemE, hinner_eq.symm⟩
+
+lemma support_formula_le_supportFunction_diag
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0) (X : ℝ) :
+    hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2) ≤
+      supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ)
+        (matrixToEuclid (Matrix.diagonal ν)) := by
+  by_cases hX₀ : K / (1 + 4 * K * τ) ≤ X
+  · exact support_formula_feasible_le_supportFunction hK hτ hν hν0 X hX₀
+  · have hX₀le : X ≤ K / (1 + 4 * K * τ) := le_of_not_ge hX₀
+    have hFle := support_formula_le_at_feasible_point hK hτ hν hν0 hX₀le
+    have hF₀le : hamiltonIveyConvexBarrier K τ (K / (1 + 4 * K * τ)) * ν 0 +
+          (K / (1 + 4 * K * τ)) * (2 * ν 0 - ν 1 - ν 2) ≤
+        supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ)
+          (matrixToEuclid (Matrix.diagonal ν)) :=
+      support_formula_feasible_le_supportFunction hK hτ hν hν0
+        (K / (1 + 4 * K * τ)) le_rfl
+    exact le_trans hFle hF₀le
+
+lemma hamiltonIveyConvexMatrixRegionSupportEuclid_diag_eq_supportFunction
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {ν : Fin 3 → ℝ} (hν : Antitone ν) (hν0 : ν 0 < 0) :
+    hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal ν)) =
+      supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ)
+        (matrixToEuclid (Matrix.diagonal ν)) := by
+  have hsymm : symmEuclid (matrixToEuclid (Matrix.diagonal ν)) = Matrix.diagonal ν := by
+    ext i j
+    dsimp [symmEuclid, euclidToMatrix]
+    by_cases h : i = j
+    · simp [h, matrixToEuclid, Matrix.diagonal]
+      ring
+    · simp [h, matrixToEuclid, Matrix.diagonal, Ne.symm h]
+  have hν' : (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν))).eigenvalues₀ = ν := by
+    have hchar : (symmEuclid (matrixToEuclid (Matrix.diagonal ν))).charpoly =
+        (Matrix.diagonal ν).charpoly := by
+      rw [hsymm]
+    have heig' : (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν))).eigenvalues₀ =
+        (Matrix.isHermitian_diagonal ν).eigenvalues₀ :=
+      eigenvalues₀_eq_of_charpoly_eq_real
+        (symmEuclid_isHermitian (matrixToEuclid (Matrix.diagonal ν)))
+        (Matrix.isHermitian_diagonal ν) hchar
+    have heig : (Matrix.isHermitian_diagonal ν).eigenvalues₀ = ν :=
+      diagonal_eigenvalues₀_eq_of_antitone ν hν
+    exact heig'.trans heig
+  let Fset : Set ℝ := {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
+    x = hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)}
+  have hdef_eq : hamiltonIveyConvexMatrixRegionSupportEuclid K τ
+      (matrixToEuclid (Matrix.diagonal ν)) = sSup Fset := by
+    unfold hamiltonIveyConvexMatrixRegionSupportEuclid
+    rw [hν']
+    dsimp
+    exact (if_pos hν0).trans rfl
+  have hbddF : BddAbove Fset := by
+    dsimp [Fset]
+    exact support_formula_bddAbove hK hτ hν0
+  have hFne : Fset.Nonempty :=
+    ⟨hamiltonIveyConvexBarrier K τ 0 * ν 0 + 0 * (2 * ν 0 - ν 1 - ν 2), 0, le_rfl, rfl⟩
+  have hdef_le : hamiltonIveyConvexMatrixRegionSupportEuclid K τ
+      (matrixToEuclid (Matrix.diagonal ν)) ≤
+      supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ)
+        (matrixToEuclid (Matrix.diagonal ν)) := by
+    rw [hdef_eq]
+    refine csSup_le hFne ?_
+    rintro x ⟨X, hX, rfl⟩
+    exact support_formula_le_supportFunction_diag hK hτ hν hν0 X
+  have hsup_le : supportFunction (hamiltonIveyConvexMatrixRegionEuclid K τ)
+      (matrixToEuclid (Matrix.diagonal ν)) ≤
+      hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal ν)) := by
+    let S : Set ℝ := {y | ∃ B : EuclideanSpace ℝ (Fin 3 × Fin 3),
+      B ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧
+        y = inner ℝ (matrixToEuclid (Matrix.diagonal ν)) B}
+    have hSne : S.Nonempty := by
+      rcases nonempty_hamiltonIveyConvexMatrixRegionEuclid hK hτ with ⟨B, hB⟩
+      refine ⟨inner ℝ (matrixToEuclid (Matrix.diagonal ν)) B, B, hB, rfl⟩
+    have hbddS : BddAbove S := by
+      have hbddF' := support_formula_bddAbove hK hτ hν0
+      rcases hbddF' with ⟨C, hC⟩
+      refine ⟨C, ?_⟩
+      rintro y ⟨B, hBmem, rfl⟩
+      have hBm : euclidToMatrix B ∈ hamiltonIveyConvexMatrixRegion K τ := by
+        exact (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ B).1 hBmem
+      have hinner : inner ℝ (matrixToEuclid (Matrix.diagonal ν)) B ≤
+          hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 (euclidToMatrix B)) 0) * ν 0 +
+            max (-sectionalRayleighMin3 (euclidToMatrix B)) 0 * (2 * ν 0 - ν 1 - ν 2) :=
+        inner_le_support_formula_of_mem_region hν hν0 (euclidToMatrix B) hBm
+      have hF : hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 (euclidToMatrix B)) 0) * ν 0 +
+            max (-sectionalRayleighMin3 (euclidToMatrix B)) 0 * (2 * ν 0 - ν 1 - ν 2) ≤ C := by
+        exact hC ⟨max (-sectionalRayleighMin3 (euclidToMatrix B)) 0, (le_max_right _ _), rfl⟩
+      exact le_trans hinner hF
+    unfold supportFunction
+    refine csSup_le hSne ?_
+    rintro y ⟨B, hBmem, rfl⟩
+    have hBm : euclidToMatrix B ∈ hamiltonIveyConvexMatrixRegion K τ := by
+      exact (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ B).1 hBmem
+    have hinner : inner ℝ (matrixToEuclid (Matrix.diagonal ν)) B ≤
+        hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 (euclidToMatrix B)) 0) * ν 0 +
+          max (-sectionalRayleighMin3 (euclidToMatrix B)) 0 * (2 * ν 0 - ν 1 - ν 2) :=
+      inner_le_support_formula_of_mem_region hν hν0 (euclidToMatrix B) hBm
+    have hFle : hamiltonIveyConvexBarrier K τ (max (-sectionalRayleighMin3 (euclidToMatrix B)) 0) * ν 0 +
+          max (-sectionalRayleighMin3 (euclidToMatrix B)) 0 * (2 * ν 0 - ν 1 - ν 2) ≤
+        hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (Matrix.diagonal ν)) := by
+      rw [hdef_eq]
+      exact le_csSup hbddF
+        ⟨max (-sectionalRayleighMin3 (euclidToMatrix B)) 0, (le_max_right _ _), rfl⟩
+    exact le_trans hinner hFle
+  exact le_antisymm hdef_le hsup_le
 
 end DifferentialGeometry.PDE.RicciFlow
 

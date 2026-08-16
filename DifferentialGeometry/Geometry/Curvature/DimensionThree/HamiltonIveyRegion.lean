@@ -104,7 +104,7 @@ theorem diagonal_eigenvalues₀_eq_of_antitone
   rw [hd_sorted] at hsort
   exact List.ofFn_inj.mp hsort.symm
 
-private theorem eigenvalues₀_eq_of_charpoly_eq_real
+theorem eigenvalues₀_eq_of_charpoly_eq_real
     {A B : Matrix (Fin 3) (Fin 3) Real} (hA : A.IsHermitian) (hB : B.IsHermitian)
     (hchar : A.charpoly = B.charpoly) :
     hA.eigenvalues₀ = hB.eigenvalues₀ := by
