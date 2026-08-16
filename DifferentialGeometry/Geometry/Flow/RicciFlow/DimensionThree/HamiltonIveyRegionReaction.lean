@@ -3729,6 +3729,243 @@ lemma hasDerivAt_hamiltonIveyBarrier_tau
     ring_nf
   · ring
 
+lemma continuousAt_hamiltonIveyBarrier_tau
+    {K τ₀ X : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀) :
+    ContinuousAt (fun τ : ℝ => hamiltonIveyBarrier K τ X) τ₀ := by
+  have hd := hasDerivAt_hamiltonIveyBarrier_tau (K := K) (τ₀ := τ₀) (X := X) hK hτ₀.le
+  exact hd.continuousAt
+
+lemma continuousAt_scalarSectionalLowerBarrier3_tau
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀) :
+    ContinuousAt (fun τ : ℝ => scalarSectionalLowerBarrier3 K τ) τ₀ := by
+  have hd := hasDerivAt_scalarSectionalLowerBarrier3 (K := K) (τ₀ := τ₀) hK hτ₀.le
+  exact hd.continuousAt
+
+lemma kink_point_above_E {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK τ :=
+  (hamiltonIveyKinkPoint_spec hK hτ).1
+
+lemma kink_point_eq {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) = scalarSectionalLowerBarrier3 K τ :=
+  (hamiltonIveyKinkPoint_spec hK hτ).2
+
+lemma kink_point_unique {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    {X : ℝ} (hXgt : K * Real.exp 2 / (1 + 2 * K * τ) < X)
+    (hXeq : hamiltonIveyBarrier K τ X = scalarSectionalLowerBarrier3 K τ) :
+    X = hamiltonIveyKinkPoint hK τ := by
+  -- strict mono on (E, ∞): both X and X₂ > E — X₂ = X
+  have hmono := strictMonoOn_hamiltonIveyBarrier_above_E hK hτ
+  have hX₂gt : K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK τ :=
+    kink_point_above_E hK hτ
+  by_contra hne
+  have hlt : hamiltonIveyKinkPoint hK τ < X ∨ X < hamiltonIveyKinkPoint hK τ := lt_or_gt_of_ne (Ne.symm hne)
+  rcases hlt with hlt | hgt
+  · have hle : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) <
+      hamiltonIveyBarrier K τ X := hmono hX₂gt hXgt hlt
+    have hle' : scalarSectionalLowerBarrier3 K τ < scalarSectionalLowerBarrier3 K τ := by
+      rw [kink_point_eq hK hτ, hXeq] at hle
+      exact hle
+    exact (lt_irrefl _) hle'
+  · have hle : hamiltonIveyBarrier K τ X < hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) :=
+      hmono hXgt hX₂gt hgt
+    have hle' : scalarSectionalLowerBarrier3 K τ < scalarSectionalLowerBarrier3 K τ := by
+      rw [kink_point_eq hK hτ, hXeq] at hle
+      exact hle
+    exact (lt_irrefl _) hle'
+
+lemma continuousAt_kink_point {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 < τ₀) :
+    ContinuousAt (fun τ : ℝ => hamiltonIveyKinkPoint hK τ) τ₀ := by
+  let X : ℝ := hamiltonIveyKinkPoint hK τ₀
+  have hXgt : K * Real.exp 2 / (1 + 2 * K * τ₀) < X := kink_point_above_E hK hτ₀.le
+  have hXeq : hamiltonIveyBarrier K τ₀ X = scalarSectionalLowerBarrier3 K τ₀ := kink_point_eq hK hτ₀.le
+  refine Metric.tendsto_nhds.mpr ?_
+  intro ε hε
+  let δ₀ : ℝ := (X - K * Real.exp 2 / (1 + 2 * K * τ₀)) / 2
+  have hδ₀pos : 0 < δ₀ := by
+    dsimp [δ₀]
+    have hpos : 0 < X - K * Real.exp 2 / (1 + 2 * K * τ₀) := by linarith
+    linarith
+  let ε' : ℝ := min ε δ₀
+  have hε'pos : 0 < ε' := lt_min hε hδ₀pos
+  have hXεgt : K * Real.exp 2 / (1 + 2 * K * τ₀) < X - ε' := by
+    have hle : ε' ≤ δ₀ := by
+      dsimp [ε']
+      exact min_le_right _ _
+    have hmain : X - (X - K * Real.exp 2 / (1 + 2 * K * τ₀)) / 2 >
+        K * Real.exp 2 / (1 + 2 * K * τ₀) := by
+      have h2 : X - (X - K * Real.exp 2 / (1 + 2 * K * τ₀)) / 2 =
+          (X + K * Real.exp 2 / (1 + 2 * K * τ₀)) / 2 := by ring
+      rw [h2]
+      linarith
+    have hXεge : X - ε' ≥ X - δ₀ := by
+      dsimp [ε', δ₀]
+      have hle' : min ε ((X - K * Real.exp 2 / (1 + 2 * K * τ₀)) / 2) ≤
+          (X - K * Real.exp 2 / (1 + 2 * K * τ₀)) / 2 := min_le_right _ _
+      linarith
+    exact lt_of_lt_of_le hmain hXεge
+  have hgap1 : 0 < hamiltonIveyBarrier K τ₀ (X + ε') - scalarSectionalLowerBarrier3 K τ₀ := by
+    have hmono := strictMonoOn_hamiltonIveyBarrier_above_E (K := K) (τ := τ₀) hK hτ₀.le
+    have hlt : hamiltonIveyBarrier K τ₀ X < hamiltonIveyBarrier K τ₀ (X + ε') :=
+      hmono hXgt (by linarith : K * Real.exp 2 / (1 + 2 * K * τ₀) < X + ε')
+        (by linarith : X < X + ε')
+    have hmain : scalarSectionalLowerBarrier3 K τ₀ < hamiltonIveyBarrier K τ₀ (X + ε') := by
+      simpa [hXeq] using hlt
+    linarith
+  have hgap2 : 0 < scalarSectionalLowerBarrier3 K τ₀ - hamiltonIveyBarrier K τ₀ (X - ε') := by
+    have hmono := strictMonoOn_hamiltonIveyBarrier_above_E (K := K) (τ := τ₀) hK hτ₀.le
+    have hlt : hamiltonIveyBarrier K τ₀ (X - ε') < hamiltonIveyBarrier K τ₀ X :=
+      hmono hXεgt hXgt (by linarith : X - ε' < X)
+    have hmain : hamiltonIveyBarrier K τ₀ (X - ε') < scalarSectionalLowerBarrier3 K τ₀ := by
+      simpa [hXeq] using hlt
+    linarith
+  let η₁ : ℝ := (hamiltonIveyBarrier K τ₀ (X + ε') - scalarSectionalLowerBarrier3 K τ₀) / 4
+  have hη₁pos : 0 < η₁ := by
+    dsimp [η₁]
+    linarith
+  let η₂ : ℝ := (scalarSectionalLowerBarrier3 K τ₀ - hamiltonIveyBarrier K τ₀ (X - ε')) / 4
+  have hη₂pos : 0 < η₂ := by
+    dsimp [η₂]
+    linarith
+  let η : ℝ := min η₁ η₂
+  have hηpos : 0 < η := lt_min hη₁pos hη₂pos
+  have hηle1 : η ≤ η₁ := by
+    dsimp [η]
+    exact min_le_left _ _
+  have hηle2 : η ≤ η₂ := by
+    dsimp [η]
+    exact min_le_right _ _
+  have hs_cont : ContinuousAt (fun τ : ℝ => scalarSectionalLowerBarrier3 K τ) τ₀ :=
+    continuousAt_scalarSectionalLowerBarrier3_tau hK hτ₀
+  have hs_ev : ∀ᶠ τ in 𝓝 τ₀, |scalarSectionalLowerBarrier3 K τ - scalarSectionalLowerBarrier3 K τ₀| < η := by
+    have h := (Metric.tendsto_nhds.mp hs_cont.tendsto) η hηpos
+    simpa [dist_eq_norm] using h
+  have hX_cont : ContinuousAt (fun τ : ℝ => hamiltonIveyBarrier K τ X) τ₀ :=
+    continuousAt_hamiltonIveyBarrier_tau hK hτ₀
+  have hX_ev : ∀ᶠ τ in 𝓝 τ₀, |hamiltonIveyBarrier K τ X - hamiltonIveyBarrier K τ₀ X| < η := by
+    have h := (Metric.tendsto_nhds.mp hX_cont.tendsto) η hηpos
+    simpa [dist_eq_norm] using h
+  have hXp_cont : ContinuousAt (fun τ : ℝ => hamiltonIveyBarrier K τ (X + ε')) τ₀ :=
+    continuousAt_hamiltonIveyBarrier_tau hK hτ₀
+  have hXp_ev : ∀ᶠ τ in 𝓝 τ₀, |hamiltonIveyBarrier K τ (X + ε') - hamiltonIveyBarrier K τ₀ (X + ε')| < η := by
+    have h := (Metric.tendsto_nhds.mp hXp_cont.tendsto) η hηpos
+    simpa [dist_eq_norm] using h
+  have hXm_cont : ContinuousAt (fun τ : ℝ => hamiltonIveyBarrier K τ (X - ε')) τ₀ :=
+    continuousAt_hamiltonIveyBarrier_tau hK hτ₀
+  have hXm_ev : ∀ᶠ τ in 𝓝 τ₀, |hamiltonIveyBarrier K τ (X - ε') - hamiltonIveyBarrier K τ₀ (X - ε')| < η := by
+    have h := (Metric.tendsto_nhds.mp hXm_cont.tendsto) η hηpos
+    simpa [dist_eq_norm] using h
+  have hE_cont : ContinuousAt (fun τ : ℝ => K * Real.exp 2 / (1 + 2 * K * τ)) τ₀ := by
+    have hden : 1 + 2 * K * τ₀ ≠ 0 := by
+      have hpos : 0 < 1 + 2 * K * τ₀ := by
+        have hKτ : 0 ≤ 2 * K * τ₀ := by
+          have h1 : 0 ≤ K * τ₀ := mul_nonneg hK.le hτ₀.le
+          nlinarith
+        nlinarith
+      exact ne_of_gt hpos
+    have hnum : ContinuousAt (fun τ : ℝ => K * Real.exp 2) τ₀ := continuousAt_const
+    have hlin : ContinuousAt (fun τ : ℝ => 1 + 2 * K * τ) τ₀ := by fun_prop
+    exact hnum.div hlin hden
+  have hE_ev : ∀ᶠ τ in 𝓝 τ₀, K * Real.exp 2 / (1 + 2 * K * τ) < X - ε' := by
+    have hgap : 0 < X - ε' - K * Real.exp 2 / (1 + 2 * K * τ₀) := by linarith
+    have h := (Metric.tendsto_nhds.mp hE_cont.tendsto) (X - ε' - K * Real.exp 2 / (1 + 2 * K * τ₀)) hgap
+    filter_upwards [h] with τ hτ
+    have h1 := (abs_lt.mp hτ).2
+    have h2 : K * Real.exp 2 / (1 + 2 * K * τ₀) < X - ε' := hXεgt
+    linarith
+  have hpos_ev : ∀ᶠ τ in 𝓝 τ₀, 0 < τ := Ioi_mem_nhds hτ₀
+  filter_upwards [hs_ev, hX_ev, hXp_ev, hXm_ev, hE_ev, hpos_ev] with τ hτs hτX hτXp hτXm hτE hτpos
+  have hX₂gt : K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK τ := kink_point_above_E hK hτpos.le
+  have hX₂eq : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) = scalarSectionalLowerBarrier3 K τ := kink_point_eq hK hτpos.le
+  have hmono := strictMonoOn_hamiltonIveyBarrier_above_E (K := K) (τ := τ) hK hτpos.le
+  -- X₂(τ) < X + ε'
+  have hX₂lt : hamiltonIveyKinkPoint hK τ < X + ε' := by
+    by_contra hnot
+    have hge : X + ε' ≤ hamiltonIveyKinkPoint hK τ := le_of_not_gt hnot
+    have hX₂gtE : K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK τ := hX₂gt
+    have hXgtE : K * Real.exp 2 / (1 + 2 * K * τ) < X + ε' := by
+      have hXgtE' : K * Real.exp 2 / (1 + 2 * K * τ) < X - ε' := hτE
+      linarith
+    have hle1 : hamiltonIveyBarrier K τ (X + ε') ≤ hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) :=
+      hmono.monotoneOn hXgtE hX₂gtE hge
+    have hstep1 : hamiltonIveyBarrier K τ (X + ε') > hamiltonIveyBarrier K τ X := by
+      have hXgtE2 : K * Real.exp 2 / (1 + 2 * K * τ) < X := by linarith
+      exact hmono hXgtE2 hXgtE (by linarith : X < X + ε')
+    have hstep2 : hamiltonIveyBarrier K τ X > scalarSectionalLowerBarrier3 K τ₀ - η := by
+      have hmain : hamiltonIveyBarrier K τ₀ X - η < hamiltonIveyBarrier K τ X := by
+        have h1 : |hamiltonIveyBarrier K τ X - hamiltonIveyBarrier K τ₀ X| < η := hτX
+        have h1' : -η < hamiltonIveyBarrier K τ X - hamiltonIveyBarrier K τ₀ X := (abs_lt.mp h1).1
+        linarith
+      have hXeq' : hamiltonIveyBarrier K τ₀ X = scalarSectionalLowerBarrier3 K τ₀ := hXeq
+      linarith
+    have hstep3 : hamiltonIveyBarrier K τ (X + ε') ≥ hamiltonIveyBarrier K τ₀ (X + ε') - η := by
+      have h1 : |hamiltonIveyBarrier K τ (X + ε') - hamiltonIveyBarrier K τ₀ (X + ε')| < η := hτXp
+      have h1' : hamiltonIveyBarrier K τ₀ (X + ε') - hamiltonIveyBarrier K τ (X + ε') < η := by
+        have h1'' : -η < hamiltonIveyBarrier K τ (X + ε') - hamiltonIveyBarrier K τ₀ (X + ε') := (abs_lt.mp h1).1
+        linarith
+      linarith
+    have hbig : scalarSectionalLowerBarrier3 K τ > scalarSectionalLowerBarrier3 K τ₀ + 3 * η := by
+      have hgap : hamiltonIveyBarrier K τ₀ (X + ε') = scalarSectionalLowerBarrier3 K τ₀ + 4 * η₁ := by
+        dsimp [η₁]
+        ring_nf
+      have h1 : hamiltonIveyBarrier K τ (X + ε') > scalarSectionalLowerBarrier3 K τ₀ + 3 * η := by
+        have h1' : hamiltonIveyBarrier K τ₀ (X + ε') - hamiltonIveyBarrier K τ (X + ε') < η := by
+          have h1'' : -η < hamiltonIveyBarrier K τ (X + ε') - hamiltonIveyBarrier K τ₀ (X + ε') := (abs_lt.mp hτXp).1
+          linarith
+        linarith
+      have h2 : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) ≥ hamiltonIveyBarrier K τ (X + ε') := hle1
+      have h3 : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) = scalarSectionalLowerBarrier3 K τ := hX₂eq
+      linarith
+    have hsmall : scalarSectionalLowerBarrier3 K τ < scalarSectionalLowerBarrier3 K τ₀ + η := by
+      have h1 : |scalarSectionalLowerBarrier3 K τ - scalarSectionalLowerBarrier3 K τ₀| < η := hτs
+      have h1' : scalarSectionalLowerBarrier3 K τ - scalarSectionalLowerBarrier3 K τ₀ < η := (abs_lt.mp h1).2
+      linarith
+    linarith
+  have hX₂gt' : X - ε' < hamiltonIveyKinkPoint hK τ := by
+    by_contra hnot
+    have hle : hamiltonIveyKinkPoint hK τ ≤ X - ε' := le_of_not_gt hnot
+    have hX₂gtE : K * Real.exp 2 / (1 + 2 * K * τ) < hamiltonIveyKinkPoint hK τ := hX₂gt
+    have hXmgtE : K * Real.exp 2 / (1 + 2 * K * τ) < X - ε' := hτE
+    have hle1 : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) ≤ hamiltonIveyBarrier K τ (X - ε') :=
+      hmono.monotoneOn hX₂gtE hXmgtE hle
+    have hstep1 : hamiltonIveyBarrier K τ (X - ε') < hamiltonIveyBarrier K τ X := by
+      have hXgtE2 : K * Real.exp 2 / (1 + 2 * K * τ) < X := by linarith
+      exact hmono hXmgtE hXgtE2 (by linarith : X - ε' < X)
+    have hstep2 : hamiltonIveyBarrier K τ X < scalarSectionalLowerBarrier3 K τ₀ + η := by
+      have h1 : |hamiltonIveyBarrier K τ X - hamiltonIveyBarrier K τ₀ X| < η := hτX
+      have h1' : hamiltonIveyBarrier K τ X - hamiltonIveyBarrier K τ₀ X < η := (abs_lt.mp h1).2
+      have hXeq' : hamiltonIveyBarrier K τ₀ X = scalarSectionalLowerBarrier3 K τ₀ := hXeq
+      linarith
+    have hstep3 : hamiltonIveyBarrier K τ (X - ε') ≤ hamiltonIveyBarrier K τ₀ (X - ε') + η := by
+      have h1 : |hamiltonIveyBarrier K τ (X - ε') - hamiltonIveyBarrier K τ₀ (X - ε')| < η := hτXm
+      have h1' : hamiltonIveyBarrier K τ (X - ε') - hamiltonIveyBarrier K τ₀ (X - ε') < η := (abs_lt.mp h1).2
+      linarith
+    have hsmall : scalarSectionalLowerBarrier3 K τ < scalarSectionalLowerBarrier3 K τ₀ - 3 * η := by
+      have hgap : hamiltonIveyBarrier K τ₀ (X - ε') = scalarSectionalLowerBarrier3 K τ₀ - 4 * η₂ := by
+        dsimp [η₂]
+        ring_nf
+      have h1 : hamiltonIveyBarrier K τ (X - ε') < scalarSectionalLowerBarrier3 K τ₀ - 3 * η := by
+        have h1' : hamiltonIveyBarrier K τ (X - ε') - hamiltonIveyBarrier K τ₀ (X - ε') < η := (abs_lt.mp hτXm).2
+        linarith
+      have h2 : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) ≤ hamiltonIveyBarrier K τ (X - ε') := hle1
+      have h3 : hamiltonIveyBarrier K τ (hamiltonIveyKinkPoint hK τ) = scalarSectionalLowerBarrier3 K τ := hX₂eq
+      linarith
+    have hbig : scalarSectionalLowerBarrier3 K τ₀ - η < scalarSectionalLowerBarrier3 K τ := by
+      have h1 : |scalarSectionalLowerBarrier3 K τ - scalarSectionalLowerBarrier3 K τ₀| < η := hτs
+      have h1' : -η < scalarSectionalLowerBarrier3 K τ - scalarSectionalLowerBarrier3 K τ₀ := (abs_lt.mp h1).1
+      linarith
+    linarith
+  have hdist : dist (hamiltonIveyKinkPoint hK τ) X < ε := by
+    have hle' : X - ε' < hamiltonIveyKinkPoint hK τ ∧ hamiltonIveyKinkPoint hK τ < X + ε' := ⟨hX₂gt', hX₂lt⟩
+    have hmain : X - ε < hamiltonIveyKinkPoint hK τ ∧ hamiltonIveyKinkPoint hK τ < X + ε := by
+      have hεle : ε' ≤ ε := min_le_left _ _
+      constructor
+      · linarith [hle'.1, hεle]
+      · linarith [hle'.2, hεle]
+    rw [dist_eq_norm]
+    rw [Real.norm_eq_abs]
+    exact abs_sub_lt_iff.mpr ⟨by linarith [hmain.2], by linarith [hmain.1]⟩
+  simpa [dist_eq_norm] using hdist
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
