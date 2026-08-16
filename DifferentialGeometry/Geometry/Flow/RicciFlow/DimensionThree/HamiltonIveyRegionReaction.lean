@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegion
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
+import DifferentialGeometry.Analysis.Convex.SupportFunction
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
 import Mathlib.Analysis.SpecialFunctions.Exp
@@ -1583,6 +1584,266 @@ noncomputable def hamiltonIveyConvexMatrixRegionSupportEuclid (K τ : ℝ)
     sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
       x = hamiltonIveyConvexBarrier K τ X * v1 + X * (2 * v1 - v2 - v3)}
   else 0
+
+noncomputable def symmEuclid (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
+    Matrix (Fin 3) (Fin 3) ℝ :=
+  (1 / 2 : ℝ) • (euclidToMatrix v + (euclidToMatrix v).transpose)
+
+theorem symmEuclid_isHermitian (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
+    (symmEuclid v).IsHermitian := by
+  dsimp [symmEuclid]
+  unfold Matrix.IsHermitian
+  ext i j
+  simp [Matrix.transpose_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, add_comm]
+  ring
+
+lemma inner_matrixToEuclid_symm
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) (A : Matrix (Fin 3) (Fin 3) ℝ)
+    (hA : A.IsHermitian) :
+    inner ℝ v (matrixToEuclid A) =
+      inner ℝ (matrixToEuclid (symmEuclid v)) (matrixToEuclid A) := by
+  rw [inner_matrixToEuclid, inner_matrixToEuclid]
+  dsimp [symmEuclid]
+  have hAij : ∀ i j : Fin 3, A i j = A j i := by
+    intro i j
+    have h1 := congrFun (congrFun hA i) j
+    simpa [Matrix.conjTranspose] using h1.symm
+  have hswap :
+      (∑ ij : Fin 3 × Fin 3, v (ij.2, ij.1) * A ij.1 ij.2) =
+        (∑ ij : Fin 3 × Fin 3, v (ij.1, ij.2) * A ij.1 ij.2) := by
+    calc
+      (∑ ij : Fin 3 × Fin 3, v (ij.2, ij.1) * A ij.1 ij.2)
+          = (∑ ij : Fin 3 × Fin 3, v (ij.1, ij.2) * A ij.2 ij.1) := by
+            refine Finset.sum_bij (fun ij _ => (ij.2, ij.1)) ?_ ?_ ?_ ?_
+            · intro ij hij
+              simp
+            · intro a ha b hb h
+              exact Prod.ext (congrArg Prod.snd h) (congrArg Prod.fst h)
+            · intro b hb
+              refine ⟨(b.2, b.1), ⟨by simp, ?_⟩⟩
+              change (b.1, b.2) = b
+              exact Prod.ext rfl rfl
+            · intro ij hij
+              rfl
+        _ = (∑ ij : Fin 3 × Fin 3, v (ij.1, ij.2) * A ij.1 ij.2) := by
+          apply Finset.sum_congr rfl
+          intro ij hij
+          simp [hAij ij.1 ij.2]
+  calc
+    (∑ ij : Fin 3 × Fin 3, v (ij.1, ij.2) * A ij.1 ij.2)
+        = (1 / 2 : ℝ) * (∑ ij : Fin 3 × Fin 3, v (ij.1, ij.2) * A ij.1 ij.2) +
+            (1 / 2 : ℝ) * (∑ ij : Fin 3 × Fin 3, v (ij.2, ij.1) * A ij.1 ij.2) := by
+          rw [hswap]
+          ring
+    _ = (∑ ij : Fin 3 × Fin 3,
+            (1 / 2 : ℝ) * (v (ij.1, ij.2) + v (ij.2, ij.1)) * A ij.1 ij.2) := by
+          calc
+            (1 / 2 : ℝ) * (∑ ij : Fin 3 × Fin 3, v (ij.1, ij.2) * A ij.1 ij.2) +
+                (1 / 2 : ℝ) * (∑ ij : Fin 3 × Fin 3, v (ij.2, ij.1) * A ij.1 ij.2)
+                = (∑ ij : Fin 3 × Fin 3, (1 / 2 : ℝ) * (v (ij.1, ij.2) * A ij.1 ij.2)) +
+                    (∑ ij : Fin 3 × Fin 3, (1 / 2 : ℝ) * (v (ij.2, ij.1) * A ij.1 ij.2)) := by
+                  rw [Finset.mul_sum, Finset.mul_sum]
+            _ = (∑ ij : Fin 3 × Fin 3,
+                    (1 / 2 : ℝ) * (v (ij.1, ij.2) + v (ij.2, ij.1)) * A ij.1 ij.2) := by
+                  rw [← Finset.sum_add_distrib]
+                  apply Finset.sum_congr rfl
+                  intro ij hij
+                  ring
+
+lemma sum_pair_swap_three (f : Fin 3 × Fin 3 → ℝ) :
+    (∑ p : Fin 3 × Fin 3, f (p.2, p.1)) = ∑ p : Fin 3 × Fin 3, f p := by
+  refine Finset.sum_bij (fun p _ => (p.2, p.1)) ?_ ?_ ?_ ?_
+  · intro p hp
+    simp
+  · intro a ha b hb h
+    exact Prod.ext (congrArg Prod.snd h) (congrArg Prod.fst h)
+  · intro b hb
+    refine ⟨(b.2, b.1), ⟨by simp, ?_⟩⟩
+    change (b.1, b.2) = b
+    exact Prod.ext rfl rfl
+  · intro p hp
+    rfl
+
+lemma matrixDot_eq_trace_transpose_mul
+    (N A : Matrix (Fin 3) (Fin 3) ℝ) :
+    (∑ ij : Fin 3 × Fin 3, N ij.1 ij.2 * A ij.1 ij.2) =
+      Matrix.trace (N.transpose * A) := by
+  rw [Matrix.trace]
+  simp only [Matrix.diag, Matrix.mul_apply, Matrix.transpose_apply]
+  rw [Fintype.sum_prod_type]
+  rw [Finset.sum_comm]
+
+theorem inner_matrixToEuclid_orthogonal_conj
+    (N A O : Matrix (Fin 3) (Fin 3) ℝ) (hOorth : O * O.transpose = 1) :
+    inner ℝ (matrixToEuclid N) (matrixToEuclid A) =
+      inner ℝ (matrixToEuclid (O.transpose * N * O))
+        (matrixToEuclid (O.transpose * A * O)) := by
+  have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+  calc
+    inner ℝ (matrixToEuclid N) (matrixToEuclid A)
+        = (∑ ij : Fin 3 × Fin 3, N ij.1 ij.2 * A ij.1 ij.2) := by
+          rw [inner_matrixToEuclid]
+          change (∑ ij : Fin 3 × Fin 3, N ij.1 ij.2 * A ij.1 ij.2) =
+            (∑ ij : Fin 3 × Fin 3, N ij.1 ij.2 * A ij.1 ij.2)
+          rfl
+    _ = Matrix.trace (N.transpose * A) :=
+          matrixDot_eq_trace_transpose_mul N A
+    _ = Matrix.trace (O.transpose * (N.transpose * A) * O) := by
+          have hcyc := Matrix.trace_mul_cycle O.transpose (N.transpose * A) O
+          rw [hOorth] at hcyc
+          simpa [Matrix.one_mul] using hcyc.symm
+    _ = Matrix.trace ((O.transpose * N * O).transpose * (O.transpose * A * O)) := by
+          congr 1
+          simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
+          rw [show O * (O.transpose * (A * O)) = A * O by
+            rw [← Matrix.mul_assoc, hOorth]
+            simp]
+    _ = (∑ ij : Fin 3 × Fin 3,
+          (O.transpose * N * O) ij.1 ij.2 * (O.transpose * A * O) ij.1 ij.2) :=
+          (matrixDot_eq_trace_transpose_mul (O.transpose * N * O) (O.transpose * A * O)).symm
+    _ = inner ℝ (matrixToEuclid (O.transpose * N * O))
+          (matrixToEuclid (O.transpose * A * O)) := by
+          rw [inner_matrixToEuclid]
+          change (∑ ij : Fin 3 × Fin 3,
+              (O.transpose * N * O) ij.1 ij.2 * (O.transpose * A * O) ij.1 ij.2) =
+            (∑ ij : Fin 3 × Fin 3,
+              (O.transpose * N * O) ij.1 ij.2 * (O.transpose * A * O) ij.1 ij.2)
+          rfl
+
+lemma sum_eigenvalues_eq_sum_eigenvalues₀
+    (A : Matrix (Fin 3) (Fin 3) ℝ) (hA : A.IsHermitian) :
+    (∑ i : Fin 3, hA.eigenvalues i) = ∑ i : Fin 3, hA.eigenvalues₀ i := by
+  let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
+  have hsum := Fintype.sum_equiv e.symm
+    (f := fun i => hA.eigenvalues₀ (e.symm i))
+    (g := fun i => hA.eigenvalues₀ i)
+    (by intro i; rfl)
+  simpa [e, Matrix.IsHermitian.eigenvalues] using hsum
+
+lemma weight_sum_orth (O : Matrix (Fin 3) (Fin 3) ℝ) (hOorth2 : O.transpose * O = 1)
+    (i : Fin 3) :
+    (∑ j : Fin 3, (O j i) ^ 2) = 1 := by
+  have hOO : (O.transpose * O) i i = 1 := by
+    have h1 := congrFun (congrFun hOorth2 i) i
+    simpa [Matrix.one_apply] using h1
+  have hmain : (O.transpose * O) i i = ∑ j : Fin 3, (O j i) ^ 2 := by
+    simp [Matrix.mul_apply, Matrix.transpose_apply, sq]
+  rw [hmain] at hOO
+  exact hOO
+
+lemma inner_diag_le_eigen_bound
+    {ν : Fin 3 → ℝ} (hν : Antitone ν)
+    (A : Matrix (Fin 3) (Fin 3) ℝ) (hA : A.IsHermitian) :
+    inner ℝ (matrixToEuclid (Matrix.diagonal ν)) (matrixToEuclid A) ≤
+      ν 0 * A.trace + (2 * ν 0 - ν 1 - ν 2) * max (-hA.eigenvalues₀ 2) 0 := by
+  rcases hermitian_orthogonal_diagonalization hA with ⟨O, hOorth, hdiag⟩
+  have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+  let a : Fin 3 → ℝ := hA.eigenvalues₀
+  let d : Matrix (Fin 3) (Fin 3) ℝ := O.transpose * Matrix.diagonal ν * O
+  let X : ℝ := max (-a 2) 0
+  have hdiag_expand : ∀ i : Fin 3, d i i = ∑ j : Fin 3, ν j * (O j i) ^ 2 := by
+    intro i
+    dsimp [d]
+    simp only [Matrix.diagonal, Matrix.mul_apply, Matrix.transpose_apply, Matrix.of_apply,
+      mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, sq]
+    apply Finset.sum_congr rfl
+    intro x hx
+    ring
+  have hd_le : ∀ i : Fin 3, d i i ≤ ν 0 := by
+    intro i
+    calc
+      d i i = ∑ j : Fin 3, ν j * (O j i) ^ 2 := hdiag_expand i
+      _ ≤ ν 0 * (∑ j : Fin 3, (O j i) ^ 2) := by
+            rw [Finset.mul_sum]
+            apply Finset.sum_le_sum
+            intro j hj
+            exact mul_le_mul_of_nonneg_right (hν (Fin.zero_le j)) (sq_nonneg (O j i))
+      _ = ν 0 := by
+            rw [weight_sum_orth O hOorth2 i]
+            simp
+  have hd_sum : (∑ i : Fin 3, d i i) = ∑ i : Fin 3, ν i := by
+    calc
+      (∑ i : Fin 3, d i i) = ∑ i : Fin 3, ∑ j : Fin 3, ν j * (O j i) ^ 2 := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            exact hdiag_expand i
+      _ = ∑ j : Fin 3, ν j * (∑ i : Fin 3, (O j i) ^ 2) := by
+            rw [Finset.sum_comm]
+            apply Finset.sum_congr rfl
+            intro j hj
+            rw [Finset.mul_sum]
+      _ = ∑ i : Fin 3, ν i := by
+            apply Finset.sum_congr rfl
+            intro j hj
+            have hw : (∑ i : Fin 3, (O j i) ^ 2) = 1 := by
+              have hOO : (O * O.transpose) j j = 1 := by
+                have h1 := congrFun (congrFun hOorth j) j
+                simpa [Matrix.one_apply] using h1
+              have hmain : (O * O.transpose) j j = ∑ i : Fin 3, (O j i) ^ 2 := by
+                simp [Matrix.mul_apply, Matrix.transpose_apply, sq]
+              rw [hmain] at hOO
+              exact hOO
+            rw [hw]
+            ring
+  have ha_ge : ∀ i : Fin 3, 0 ≤ a i + X := by
+    intro i
+    have hi_le : i ≤ (2 : Fin 3) := by fin_cases i <;> decide
+    have ha2 : a 2 ≤ a i := hA.eigenvalues₀_antitone hi_le
+    have hX : 0 ≤ a 2 + X := by
+      dsimp [X]
+      have hle : -a 2 ≤ max (-a 2) 0 := le_max_left _ _
+      linarith
+    nlinarith
+  have htrace : A.trace = ∑ i : Fin 3, a i := by
+    rw [Matrix.IsHermitian.trace_eq_sum_eigenvalues hA]
+    simpa [a] using sum_eigenvalues_eq_sum_eigenvalues₀ A hA
+  have hsum : inner ℝ (matrixToEuclid (Matrix.diagonal ν)) (matrixToEuclid A) ≤
+      ν 0 * (∑ i : Fin 3, (a i + X)) - X * (∑ i : Fin 3, ν i) := by
+    have hconj := inner_matrixToEuclid_orthogonal_conj (Matrix.diagonal ν) A O hOorth
+    rw [hconj, hdiag]
+    rw [inner_matrixToEuclid]
+    have hmain : (∑ ij : Fin 3 × Fin 3, d ij.1 ij.2 * (Matrix.diagonal a) ij.1 ij.2) ≤
+        ν 0 * (∑ i : Fin 3, (a i + X)) - X * (∑ i : Fin 3, ν i) := by
+      calc
+        (∑ ij : Fin 3 × Fin 3, d ij.1 ij.2 * (Matrix.diagonal a) ij.1 ij.2)
+            = (∑ i : Fin 3, d i i * a i) := by
+              rw [Fintype.sum_prod_type]
+              apply Finset.sum_congr rfl
+              intro i hi
+              rw [Finset.sum_eq_single i]
+              · simp [Matrix.diagonal]
+              · intro j _ hj
+                simp [Matrix.diagonal, Ne.symm hj]
+              · intro h
+                exact absurd (Finset.mem_univ i) h
+        _ = (∑ i : Fin 3, d i i * (a i + X)) - X * (∑ i : Fin 3, d i i) := by
+              calc
+                (∑ i : Fin 3, d i i * a i)
+                    = ∑ i : Fin 3, (d i i * (a i + X) - d i i * X) := by
+                      apply Finset.sum_congr rfl
+                      intro i hi
+                      ring
+                _ = (∑ i : Fin 3, d i i * (a i + X)) - X * (∑ i : Fin 3, d i i) := by
+                      rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+                      apply Finset.sum_congr rfl
+                      intro i hi
+                      ring_nf
+        _ ≤ ν 0 * (∑ i : Fin 3, (a i + X)) - X * (∑ i : Fin 3, ν i) := by
+              have h1 : (∑ i : Fin 3, d i i * (a i + X)) ≤ ν 0 * (∑ i : Fin 3, (a i + X)) := by
+                rw [Finset.mul_sum]
+                apply Finset.sum_le_sum
+                intro i hi
+                exact mul_le_mul_of_nonneg_right (hd_le i) (ha_ge i)
+              rw [hd_sum]
+              linarith
+    simpa [d, a, hmain]
+  have hX0 : 0 ≤ X := le_max_right _ _
+  have hcalc : ν 0 * (∑ i : Fin 3, (a i + X)) - X * (∑ i : Fin 3, ν i) =
+      ν 0 * A.trace + (2 * ν 0 - ν 1 - ν 2) * X := by
+    rw [htrace]
+    simp [Finset.sum_add_distrib, Fin.sum_univ_three]
+    ring
+  simpa [X, a, hcalc] using hsum
 
 end DifferentialGeometry.PDE.RicciFlow
 
