@@ -1566,6 +1566,24 @@ theorem uhlenbeckCurvatureOperatorReactionState_lipschitzOn_closedBall
   exact uhlenbeckCurvatureOperatorReactionState_sub_norm_le a b R hR
     (mem_closedBall_zero_iff.mp ha) (mem_closedBall_zero_iff.mp hb)
 
+noncomputable def hamiltonIveyConvexMatrixRegionSupportEuclid (K τ : ℝ)
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) : ℝ :=
+  let A : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix v
+  let S : Matrix (Fin 3) (Fin 3) ℝ := (1 / 2 : ℝ) • (A + A.transpose)
+  let hS : S.IsHermitian := by
+    dsimp [S]
+    unfold Matrix.IsHermitian
+    ext i j
+    simp [Matrix.transpose_apply, smul_eq_mul, add_comm]
+    ring
+  let v1 : ℝ := hS.eigenvalues₀ 0
+  let v2 : ℝ := hS.eigenvalues₀ 1
+  let v3 : ℝ := hS.eigenvalues₀ 2
+  if hlt : v1 < 0 then
+    sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
+      x = hamiltonIveyConvexBarrier K τ X * v1 + X * (2 * v1 - v2 - v3)}
+  else 0
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
