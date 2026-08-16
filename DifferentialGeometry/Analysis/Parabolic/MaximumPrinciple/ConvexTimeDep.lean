@@ -188,6 +188,174 @@ theorem closed_convex_timeDep_heat_reaction_mem_of_support_family
   have hw_nonneg_at : 0 ≤ w t x := hw_nonneg t ht x
   exact sub_nonneg.mp (by simpa [w, cν, uν, innerScalarization, real_inner_comm] using hw_nonneg_at)
 
+omit [CompleteSpace F] in
+theorem closed_convex_timeDep_heat_reaction_mem_of_support_family_unbounded
+    [I.Boundaryless] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 < T)
+    (C : Real → Set F) (N : Set F) (support : Real → F → Real)
+    (hsupp : ∀ t p, p ∈ C t ↔ ∀ ν : F, ν ∈ N → inner ℝ ν p ≤ support t ν)
+    (reaction : Real → M → F → F)
+    (u : Real → M → F)
+    (hsol : IsInnerProductHeatReactionOn
+      (RealTimeInterval.closed 0 T hT.le) G reaction u)
+    (hregular : ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t →
+      t ∈ (RealTimeInterval.closed 0 T hT.le).regular)
+    (hsupport_cont : ∀ ν : F, ν ∈ N →
+      ContinuousOn (fun t : Real => support t ν) (Set.Icc 0 T))
+    (hsupport_time : ∀ ν : F, ν ∈ N → ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t →
+      DifferentiableWithinAt Real (fun s : Real => support s ν) (Set.Icc 0 T) t)
+    (hreaction : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M, ∀ p : F, ∀ ν : F,
+      ν ∈ N → support t ν < inner ℝ ν p →
+        inner ℝ (reaction t x p) ν ≤ derivWithin (fun s : Real => support s ν) (Set.Icc 0 T) t)
+    (hinit : ∀ x : M, u 0 x ∈ C 0) :
+    ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, u t x ∈ C t := by
+  intro t ht x
+  rw [hsupp]
+  intro ν hν
+  let uν : Real → M → Real := innerScalarization u ν
+  let cν : Real → Real := fun s => support s ν
+  let w : Real → M → Real := fun s y => cν s - uν s y
+  have hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2)
+      (spacetimeSlab (M := M) T) := by
+    have hlin : ContinuousOn (fun p : Real × M => cν p.1)
+        (spacetimeSlab (M := M) T) := by
+      refine (hsupport_cont ν hν).comp continuous_fst.continuousOn ?_
+      intro p hp
+      exact hp.1
+    have hscalar_cont : ContinuousOn (fun p : Real × M => uν p.1 p.2)
+        (spacetimeSlab (M := M) T) := by
+      have hjoint := hsol.jointCont
+      have hsub : spacetimeSlab (M := M) T ⊆
+          (RealTimeInterval.closed 0 T hT.le).carrier ×ˢ (Set.univ : Set M) := by
+        intro p hp
+        exact ⟨hp.1, hp.2⟩
+      have hcont := hjoint.mono hsub
+      have hinner : ContinuousOn (fun p : Real × M => inner ℝ ν (u p.1 p.2))
+          (spacetimeSlab (M := M) T) :=
+        (innerSL ℝ ν).continuous.comp_continuousOn hcont
+      have hinner' : ContinuousOn (fun p : Real × M => inner ℝ (u p.1 p.2) ν)
+          (spacetimeSlab (M := M) T) := by
+        convert hinner using 1
+        ext p
+        exact real_inner_comm _ _
+      simpa [uν, innerScalarization] using hinner'
+    simpa [w, cν] using hlin.sub hscalar_cont
+  have hw0 : ∀ x : M, 0 ≤ w 0 x := by
+    intro x
+    have hu0 : u 0 x ∈ C 0 := hinit x
+    have hle := (hsupp 0 (u 0 x)).mp hu0 ν hν
+    dsimp [w, cν, uν, innerScalarization]
+    exact sub_nonneg.mpr (by simpa [real_inner_comm] using hle)
+  have hw_time : ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
+      DifferentiableWithinAt Real (fun s : Real => w s x) (Set.Icc 0 T) t := by
+    intro s hs hs_pos x
+    have hdiff_support : DifferentiableWithinAt Real (fun r : Real => support r ν)
+        (Set.Icc 0 T) s := hsupport_time ν hν s hs hs_pos
+    have hreg : s ∈ (RealTimeInterval.closed 0 T hT.le).regular := hregular s hs hs_pos
+    have hderiv := hsol.equation ν s hreg x
+    have hdiff_u : DifferentiableWithinAt Real (fun r : Real => uν r x)
+        (Set.Icc 0 T) s := hderiv.differentiableAt.differentiableWithinAt
+    simpa [w, cν, uν, innerScalarization] using hdiff_support.sub hdiff_u
+  have hw_mdiff : ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
+      MDifferentiableAt I 𝓘(Real, Real) (w t) x := by
+    intro s hs _ x
+    have hs_carrier : s ∈ (RealTimeInterval.closed 0 T hT.le).carrier := hs
+    have hsmooth := hsol.scalarSliceSmooth ν s hs_carrier
+    have hmdiff : MDifferentiableAt I 𝓘(Real, Real) (uν s) x :=
+      hsmooth.mdifferentiable (by simp) x
+    simpa [w, cν, uν, innerScalarization] using
+      (mdifferentiableAt_const : MDifferentiableAt I 𝓘(Real, Real)
+        (fun _y : M => support s ν) x).sub hmdiff
+  have hw_grad : ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (w t) y) x := by
+    intro s hs _ x
+    have hs_carrier : s ∈ (RealTimeInterval.closed 0 T hT.le).carrier := hs
+    have hsmooth := hsol.scalarSliceSmooth ν s hs_carrier
+    have hfw : ContMDiff I 𝓘(Real, Real) ∞ (w s) := by
+      simpa [w, cν, uν, innerScalarization] using contMDiff_const.sub hsmooth
+    exact gradientFun_mdiffAt (I := I) (G.metric s) hfw x
+  have hnegative : ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
+      w t x < 0 →
+        0 ≤ parabolicOperatorWithDrift (I := I) G T (fun _t x => (0 : TangentSpace I x)) w t x := by
+    intro s hs hs_pos x hwneg
+    have hreg : s ∈ (RealTimeInterval.closed 0 T hT.le).regular := hregular s hs hs_pos
+    have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) s :=
+      (uniqueDiffOn_Icc hT).uniqueDiffWithinAt hs
+    have hderiv_u := hsol.equation ν s hreg x
+    have hderiv_u_within :
+        derivWithin (fun r : Real => uν r x) (Set.Icc 0 T) s =
+          laplacianAt (I := I) G s (uν s) x + inner ℝ (reaction s x (u s x)) ν := by
+      have h := hderiv_u.hasDerivWithinAt.derivWithin huniq
+      simpa [uν, innerScalarization] using h
+    have hpar_u :
+        parabolicOperatorWithDrift (I := I) G T (fun _t x => (0 : TangentSpace I x)) uν s x =
+          inner ℝ (reaction s x (u s x)) ν := by
+      unfold parabolicOperatorWithDrift
+      rw [hderiv_u_within]
+      simp [uν, heatOperatorWithDrift]
+    have hsupport_time_s : DifferentiableWithinAt Real
+        (fun r : Real => support r ν) (Set.Icc 0 T) s :=
+      hsupport_time ν hν s hs hs_pos
+    have hsupport_space : ∀ y : M,
+        MDifferentiableAt I 𝓘(Real, Real) (fun _ : M => support s ν) y :=
+      fun y => mdifferentiableAt_const
+    have hsupport_grad : MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric s) (fun _ : M => support s ν) y) x :=
+      gradientFun_mdiffAt (I := I) (G.metric s) contMDiff_const x
+    have hu_time_s : DifferentiableWithinAt Real
+        (fun r : Real => uν r x) (Set.Icc 0 T) s :=
+      hderiv_u.differentiableAt.differentiableWithinAt
+    have hu_space_s : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) (uν s) y :=
+      fun y => (hsol.scalarSliceSmooth ν s hs).mdifferentiable (by simp) y
+    have hu_grad_s : MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric s) (uν s) y) x :=
+      gradientFun_mdiffAt (I := I) (G.metric s) (hsol.scalarSliceSmooth ν s hs) x
+    have hpar_support :
+        parabolicOperatorWithDrift (I := I) G T (fun _t x => (0 : TangentSpace I x))
+            (fun _r _y => support _r ν) s x =
+          derivWithin (fun r : Real => support r ν) (Set.Icc 0 T) s := by
+      unfold parabolicOperatorWithDrift
+      simp only [heatOperatorWithDrift, driftTerm_zero_drift, laplacianAt]
+      have hlap0 : laplacian (I := I) (G.connection s) (G.metric s)
+          (fun _ : M => support s ν) x = 0 :=
+        laplacian_const (I := I) (G.connection s) (G.metric s)
+          (support s ν) x
+      rw [hlap0]
+      ring
+    have hpar_sub := parabolic_sub (I := I) G T
+      (fun _t x => (0 : TangentSpace I x))
+      (fun r y => support r ν) uν s x
+      hsupport_time_s hu_time_s hsupport_space hu_space_s hsupport_grad hu_grad_s
+    have hpar_w :
+        parabolicOperatorWithDrift (I := I) G T (fun _t x => (0 : TangentSpace I x)) w s x =
+          derivWithin (fun r : Real => support r ν) (Set.Icc 0 T) s -
+            inner ℝ (reaction s x (u s x)) ν := by
+      rw [show parabolicOperatorWithDrift (I := I) G T
+            (fun _t x => (0 : TangentSpace I x)) w s x =
+          parabolicOperatorWithDrift (I := I) G T
+            (fun _t x => (0 : TangentSpace I x))
+            (fun r y => support r ν - uν r y) s x by rfl]
+      rw [hpar_sub, hpar_support, hpar_u]
+    have hviol : support s ν < inner ℝ ν (u s x) := by
+      have hwneg' : cν s < uν s x := by
+        dsimp [w] at hwneg
+        linarith
+      simpa [cν, uν, innerScalarization, real_inner_comm] using hwneg'
+    have hreaction := hreaction s ⟨hs_pos, hreg.2⟩ x (u s x) ν hν hviol
+    have hreaction' : inner ℝ (reaction s x (u s x)) ν ≤
+        derivWithin (fun r : Real => support r ν) (Set.Icc 0 T) s := by
+      simpa [real_inner_comm] using hreaction
+    rw [hpar_w]
+    exact sub_nonneg.mpr hreaction'
+  have hw_nonneg := strict_barrier_nonnegative_of_positive_time (I := I)
+    (G := G) (T := T) (X := fun _t x => (0 : TangentSpace I x)) (w := w)
+    hw_cont hw0 hw_time hw_mdiff hw_grad hnegative
+  have hw_nonneg_at : 0 ≤ w t x := hw_nonneg t ht x
+  exact sub_nonneg.mp (by simpa [w, cν, uν, innerScalarization, real_inner_comm] using hw_nonneg_at)
+
 
 
 include E in
