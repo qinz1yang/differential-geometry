@@ -2775,6 +2775,220 @@ lemma mem_finiteSupportDirections_hamiltonIvey_region_iff
         rw [hz]
       exact hbdd
 
+lemma continuousOn_sSup_image_Icc
+    {T Xmax : ℝ} (hX : 0 ≤ Xmax)
+    (F : ℝ → ℝ → ℝ)
+    (hcont : ContinuousOn (fun p : ℝ × ℝ => F p.1 p.2) (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax)) :
+    ContinuousOn (fun τ : ℝ => sSup ((fun X : ℝ => F τ X) '' Set.Icc 0 Xmax)) (Set.Icc 0 T) := by
+  have hslab : IsCompact (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) :=
+    (isCompact_Icc (a := (0 : ℝ)) (b := T)).prod (isCompact_Icc (a := (0 : ℝ)) (b := Xmax))
+  have hUC : UniformContinuousOn (fun p : ℝ × ℝ => F p.1 p.2)
+      (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) :=
+    hslab.uniformContinuousOn_of_continuous hcont
+  have hbdds : ∀ s : ℝ, s ∈ Set.Icc 0 T →
+      BddAbove ((fun X : ℝ => F s X) '' Set.Icc 0 Xmax) := by
+    intro s hs
+    have hslice : ContinuousOn (fun X : ℝ => F s X) (Set.Icc 0 Xmax) := by
+      have hmap : ContinuousOn (fun X : ℝ => (s, X)) (Set.Icc 0 Xmax) := by fun_prop
+      have hsub : Set.MapsTo (fun X : ℝ => (s, X)) (Set.Icc 0 Xmax)
+          (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) := by
+        intro X hX
+        exact ⟨hs, hX⟩
+      exact hcont.comp hmap hsub
+    exact (isCompact_Icc (a := (0 : ℝ)) (b := Xmax)).bddAbove_image hslice
+  have hne : ∀ s : ℝ, ((fun X : ℝ => F s X) '' Set.Icc 0 Xmax).Nonempty := by
+    intro s
+    exact ⟨F s 0, 0, ⟨le_rfl, hX⟩, rfl⟩
+  intro τ₀ hτ₀
+  refine Metric.continuousWithinAt_iff.mpr ?_
+  intro ε hε
+  rcases (Metric.uniformContinuousOn_iff.mp hUC) (ε / 2) (by positivity) with ⟨δ, hδpos, hδ⟩
+  refine ⟨δ, hδpos, ?_⟩
+  intro τ hτ hdist
+  have hmain : ∀ X : ℝ, X ∈ Set.Icc 0 Xmax → |F τ X - F τ₀ X| ≤ ε / 2 := by
+    intro X hX
+    have hx : (τ, X) ∈ Set.Icc 0 T ×ˢ Set.Icc 0 Xmax := ⟨hτ, hX⟩
+    have hy : (τ₀, X) ∈ Set.Icc 0 T ×ˢ Set.Icc 0 Xmax := ⟨hτ₀, hX⟩
+    have hdx : dist (τ, X) (τ₀, X) < δ := by
+      have hd0 : 0 ≤ dist τ τ₀ := dist_nonneg
+      rw [Prod.dist_eq]
+      rw [dist_self]
+      rw [max_eq_left hd0]
+      exact hdist
+    have hlt := hδ (τ, X) hx (τ₀, X) hy hdx
+    exact le_of_lt hlt
+  have hg_le : sSup ((fun X : ℝ => F τ X) '' Set.Icc 0 Xmax) ≤
+      sSup ((fun X : ℝ => F τ₀ X) '' Set.Icc 0 Xmax) + ε / 2 := by
+    refine csSup_le (hne τ) ?_
+    rintro y ⟨X, hX, rfl⟩
+    have h1 : F τ X ≤ F τ₀ X + ε / 2 := by linarith [(abs_le.mp (hmain X hX)).2]
+    have h2 : F τ₀ X ≤ sSup ((fun X : ℝ => F τ₀ X) '' Set.Icc 0 Xmax) :=
+      le_csSup (hbdds τ₀ hτ₀) ⟨X, hX, rfl⟩
+    linarith
+  have hg_ge : sSup ((fun X : ℝ => F τ₀ X) '' Set.Icc 0 Xmax) ≤
+      sSup ((fun X : ℝ => F τ X) '' Set.Icc 0 Xmax) + ε / 2 := by
+    refine csSup_le (hne τ₀) ?_
+    rintro y ⟨X, hX, rfl⟩
+    have h1 : F τ₀ X ≤ F τ X + ε / 2 := by linarith [(abs_le.mp (hmain X hX)).1]
+    have h2 : F τ X ≤ sSup ((fun X : ℝ => F τ X) '' Set.Icc 0 Xmax) :=
+      le_csSup (hbdds τ hτ) ⟨X, hX, rfl⟩
+    linarith
+  rw [dist_eq_norm]
+  rw [Real.norm_eq_abs]
+  rw [abs_sub_lt_iff]
+  constructor <;> linarith
+
+
+lemma support_formula_continuousOn
+    {K T : ℝ} (hK : 0 < K)
+    {ν : Fin 3 → ℝ} (hν0 : ν 0 < 0) :
+    ContinuousOn (fun τ : ℝ => sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
+      x = hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)})
+      (Set.Icc 0 T) := by
+  let F : ℝ → ℝ → ℝ := fun τ X => hamiltonIveyConvexBarrier K τ X * ν 0 + X * (2 * ν 0 - ν 1 - ν 2)
+  let S : ℝ := ν 0 + ν 1 + ν 2
+  let Xmax : ℝ := K * Real.exp (S / ν 0)
+  have hXmax : 0 ≤ Xmax := by
+    dsimp [Xmax]
+    exact le_of_lt (mul_pos hK (Real.exp_pos (S / ν 0)))
+  have hBcont : ContinuousOn (fun p : ℝ × ℝ => hamiltonIveyConvexBarrier K p.1 p.2)
+      (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) := by
+    have hfull := continuousOn_hamiltonIveyConvexBarrier_time_nonneg (K := K) (T := T) hK
+    exact hfull.mono (by
+      rintro p hp
+      exact ⟨hp.1, hp.2.1⟩)
+  have hFcont : ContinuousOn (fun p : ℝ × ℝ => F p.1 p.2)
+      (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) := by
+    dsimp [F]
+    have hBν : ContinuousOn (fun p : ℝ × ℝ => hamiltonIveyConvexBarrier K p.1 p.2 * ν 0)
+        (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) := hBcont.mul continuousOn_const
+    have hXc : ContinuousOn (fun p : ℝ × ℝ => p.2 * (2 * ν 0 - ν 1 - ν 2))
+        (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) := by
+      simpa [mul_comm] using (continuousOn_snd.mul (continuousOn_const (s := Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) (c := (2 * ν 0 - ν 1 - ν 2))))
+    exact hBν.add hXc
+  have htail0 : ∀ τ : ℝ, τ ∈ Set.Icc 0 T → ∀ X : ℝ, Xmax ≤ X → F τ X ≤ 0 := by
+    intro τ hτ X hX
+    have hXpos : 0 < X := lt_of_lt_of_le (by
+      have hXm : 0 < Xmax := by
+        dsimp [Xmax]
+        exact mul_pos hK (Real.exp_pos (S / ν 0))
+      exact hXm) hX
+    have hL : S / ν 0 ≤ Real.log (X * (1 + 2 * K * τ) / K) := by
+      -- log(X(1+2Kτ)/K) ≥ log(X/K) ≥ log(Xmax/K) = S/ν0
+      have hdenτ : 0 < 1 + 2 * K * τ := by
+        have hKτ : 0 ≤ 2 * K * τ := by
+          have h1' : 0 ≤ K * τ := mul_nonneg hK.le hτ.1
+          nlinarith
+        nlinarith
+      have harg1 : 0 < X * (1 + 2 * K * τ) / K := by
+        exact div_pos (mul_pos hXpos hdenτ) hK
+      have harg2 : 0 < Xmax / K := by
+        dsimp [Xmax]
+        exact div_pos (mul_pos hK (Real.exp_pos (S / ν 0))) hK
+      have hmono : Real.log (Xmax / K) ≤ Real.log (X * (1 + 2 * K * τ) / K) := by
+        refine (Real.log_le_log_iff harg2 harg1).mpr ?_
+        have h1 : Xmax ≤ X * (1 + 2 * K * τ) := by
+          have hτ0 : 0 ≤ 2 * K * τ := by
+            have h1' : 0 ≤ K * τ := mul_nonneg hK.le hτ.1
+            nlinarith
+          nlinarith
+        have h2 : Xmax / K ≤ X * (1 + 2 * K * τ) / K := by
+          exact div_le_div_of_nonneg_right h1 hK.le
+        exact h2
+      have hlogXmax : Real.log (Xmax / K) = S / ν 0 := by
+        have hXeq : Xmax / K = Real.exp (S / ν 0) := by
+          dsimp [Xmax]
+          field_simp [hK.ne']
+        rw [hXeq]
+        exact Real.log_exp (S / ν 0)
+      linarith
+    exact support_formula_tail_nonpos hK hτ.1 hν0 hXpos hL
+  have hbdd0 : ∀ τ : ℝ, τ ∈ Set.Icc 0 T →
+      BddAbove ((fun X : ℝ => F τ X) '' Set.Icc 0 Xmax) := by
+    intro τ hτ
+    have hslice : ContinuousOn (fun X : ℝ => F τ X) (Set.Icc 0 Xmax) := by
+      have hmap : ContinuousOn (fun X : ℝ => (τ, X)) (Set.Icc 0 Xmax) := by fun_prop
+      have hsub : Set.MapsTo (fun X : ℝ => (τ, X)) (Set.Icc 0 Xmax)
+          (Set.Icc 0 T ×ˢ Set.Icc 0 Xmax) := by
+        intro X hX
+        exact ⟨hτ, hX⟩
+      exact hFcont.comp hmap hsub
+    exact (isCompact_Icc (a := (0 : ℝ)) (b := Xmax)).bddAbove_image hslice
+  have hbddAll : ∀ τ : ℝ, τ ∈ Set.Icc 0 T →
+      BddAbove {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧ x = F τ X} := by
+    intro τ hτ
+    have hbddF := support_formula_bddAbove hK hτ.1 hν0
+    -- hbddF : BddAbove {x | ∃X ≥ 0, x = barrier-formula} — the formula is F τ X
+    simpa [F] using hbddF
+  have hsup_eq : ∀ τ : ℝ, τ ∈ Set.Icc 0 T →
+      sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧ x = F τ X} =
+        sSup ((fun X : ℝ => F τ X) '' Set.Icc 0 Xmax) := by
+    intro τ hτ
+    apply le_antisymm
+    · refine csSup_le ?_ ?_
+      · rcases hbdd0 τ hτ with ⟨C, hC⟩
+        refine ⟨F τ 0, ?_⟩
+        exact ⟨0, le_rfl, rfl⟩
+      · rintro x ⟨X, hX, rfl⟩
+        by_cases hXle : X ≤ Xmax
+        · have hXmem : X ∈ Set.Icc 0 Xmax := ⟨hX, hXle⟩
+          exact le_csSup (hbdd0 τ hτ) ⟨X, hXmem, rfl⟩
+        · have htail : F τ X ≤ 0 := htail0 τ hτ X (le_of_not_ge hXle)
+          have h0le : 0 ≤ sSup ((fun X : ℝ => F τ X) '' Set.Icc 0 Xmax) := by
+            have hB0 : hamiltonIveyConvexBarrier K τ 0 = 0 := by
+              unfold hamiltonIveyConvexBarrier
+              have hsc : scalarSectionalLowerBarrier3 K τ ≤ 0 := by
+                unfold scalarSectionalLowerBarrier3
+                have hden : 0 < 1 + 4 * K * τ := by
+                  have hKτ : 0 ≤ 4 * K * τ := by
+                    have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ.1
+                    nlinarith
+                  nlinarith
+                have hdiv : -3 * K / (1 + 4 * K * τ) ≤ 0 := by
+                  exact div_nonpos_of_nonpos_of_nonneg (by nlinarith : -3 * K ≤ 0) hden.le
+                exact hdiv
+              have hb0 : hamiltonIveyBarrier K τ 0 = 0 := by
+                unfold hamiltonIveyBarrier
+                simp
+              rw [hb0]
+              exact max_eq_right hsc
+            have h0 : F τ 0 = 0 := by
+              dsimp [F]
+              rw [hB0]
+              ring
+            have hmem : 0 ∈ ((fun X : ℝ => F τ X) '' Set.Icc 0 Xmax) := by
+              refine ⟨0, ⟨le_rfl, hXmax⟩, ?_⟩
+              exact h0
+            exact le_csSup (hbdd0 τ hτ) hmem
+          linarith
+    · refine csSup_le ?_ ?_
+      · rcases hbddAll τ hτ with ⟨C, hC⟩
+        refine ⟨F τ 0, ?_⟩
+        exact ⟨0, ⟨le_rfl, hXmax⟩, rfl⟩
+      · rintro x ⟨X, hX, rfl⟩
+        exact le_csSup (hbddAll τ hτ) ⟨X, hX.1, rfl⟩
+  have hmain := continuousOn_sSup_image_Icc (hX := hXmax) (F := F) hFcont
+  exact hmain.congr (fun τ hτ => by simpa [F] using hsup_eq τ hτ)
+
+theorem hamiltonIveyConvexMatrixRegionSupportEuclid_continuousOn
+    {K T : ℝ} (hK : 0 < K)
+    (v : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hv : (symmEuclid_isHermitian v).eigenvalues₀ 0 < 0) :
+    ContinuousOn (fun τ : ℝ => hamiltonIveyConvexMatrixRegionSupportEuclid K τ v) (Set.Icc 0 T) := by
+  let nv : Fin 3 → ℝ := (symmEuclid_isHermitian v).eigenvalues₀
+  have hnv0 : nv 0 < 0 := by
+    simpa [nv] using hv
+  have hmain := support_formula_continuousOn (K := K) (T := T) hK (ν := nv) hnv0
+  have hdef : ∀ τ : ℝ, hamiltonIveyConvexMatrixRegionSupportEuclid K τ v =
+      sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
+        x = hamiltonIveyConvexBarrier K τ X * nv 0 + X * (2 * nv 0 - nv 1 - nv 2)} := by
+    intro τ
+    unfold hamiltonIveyConvexMatrixRegionSupportEuclid
+    dsimp [nv]
+    rw [if_pos hv]
+    rfl
+  exact hmain.congr (fun τ hτ => hdef τ)
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
