@@ -3128,6 +3128,37 @@ lemma hasDerivAt_star_point
   field_simp [hden.ne']
   ring
 
+lemma hasDerivAt_candidate_A
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀)
+    {ν : Fin 3 → ℝ} :
+    HasDerivAt (fun τ : ℝ =>
+        scalarSectionalLowerBarrier3 K τ * ν 0 +
+          (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * (2 * ν 0 - ν 1 - ν 2))
+      (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
+        (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)) *
+          (2 * ν 0 - ν 1 - ν 2)) τ₀ := by
+  have h1 := hasDerivAt_scalarSectionalLowerBarrier3 (K := K) (τ₀ := τ₀) hK hτ₀
+  have h2 := hasDerivAt_star_point (K := K) (τ₀ := τ₀) hK hτ₀ ((ν 1 + ν 2) / ν 0)
+  have h1' : HasDerivAt (fun τ : ℝ => scalarSectionalLowerBarrier3 K τ * ν 0)
+      (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0) τ₀ := h1.mul_const (ν 0)
+  have h2' : HasDerivAt (fun τ : ℝ =>
+      (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)) * (2 * ν 0 - ν 1 - ν 2))
+      ((-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)) *
+        (2 * ν 0 - ν 1 - ν 2)) τ₀ := h2.mul_const (2 * ν 0 - ν 1 - ν 2)
+  simpa [mul_comm, mul_left_comm, mul_assoc] using h1'.add h2'
+
+lemma hasDerivAt_candidate_B
+    {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀)
+    {ν : Fin 3 → ℝ} :
+    HasDerivAt (fun τ : ℝ =>
+        -(ν 0 * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ))))
+      (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ := by
+  have h2 := hasDerivAt_star_point (K := K) (τ₀ := τ₀) hK hτ₀ ((ν 1 + ν 2) / ν 0)
+  have h2' : HasDerivAt (fun τ : ℝ => ν 0 * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ)))
+      (ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2))) τ₀ := by
+    simpa [mul_comm, mul_left_comm, mul_assoc] using h2.const_mul (ν 0)
+  exact h2'.neg
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
