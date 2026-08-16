@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.Nagumo
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ProperCone
+import Mathlib.Analysis.LocallyConvex.Separation
+import Mathlib.Analysis.InnerProductSpace.Dual
 
 set_option autoImplicit false
 
@@ -60,6 +62,27 @@ private theorem deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc
     simp [ContinuousLinearMap.toSpanSingleton_apply, mul_comm]
   rw [heval] at hnonpos
   nlinarith
+
+lemma mem_closed_convex_iff_forall_exists_inner_le
+    {F : Type uF} [NormedAddCommGroup F] [InnerProductSpace Real F] [CompleteSpace F]
+    {C : Set F} (hclosed : IsClosed C) (hconvex : Convex Real C) (p : F) :
+    p ∈ C ↔ ∀ ν : F, ∃ q ∈ C, inner ℝ ν p ≤ inner ℝ ν q := by
+  constructor
+  · intro hp ν
+    exact ⟨p, hp, le_rfl⟩
+  · intro hp
+    have hInter := iInter_halfSpaces_eq (E := F) (s := C) hconvex hclosed
+    rw [← hInter]
+    simp only [mem_iInter, mem_setOf_eq]
+    intro l
+    let ν : F := (InnerProductSpace.toDual ℝ F).symm l
+    have hl : l = InnerProductSpace.toDual ℝ F ν := by
+      dsimp [ν]
+      simp
+    rcases hp ν with ⟨q, hq, hle⟩
+    refine ⟨q, hq, ?_⟩
+    rw [hl]
+    simpa [InnerProductSpace.toDual_apply_apply] using hle
 
 include completeF in
 theorem closed_convex_heat_reaction_mem_of_supporting_normal
@@ -414,6 +437,416 @@ theorem properCone_heat_reaction_mem_of_mapsTo
       (C.convex.segment_subset hp (C.add_mem hp (hreaction t ht x hp)))
     simpa using htan
   · exact hinit
+theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
+    [I.Boundaryless] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 ≤ T)
+    (C : Real → Set F)
+    (K : Set (WithLp 2 (F × ℝ)))
+    (hK_eq : K = {q : WithLp 2 (F × ℝ) |
+      (WithLp.ofLp q).2 ∈ Set.Icc 0 T ∧ (WithLp.ofLp q).1 ∈ C (WithLp.ofLp q).2})
+    (hKne : K.Nonempty) (hKclosed : IsClosed K) (hKconvex : Convex Real K)
+    (reaction : Real → M → F → F)
+    (u : Real → M → F)
+    (hsol : IsInnerProductHeatReactionOn
+      (RealTimeInterval.closed 0 T hT) G reaction u)
+    (L : NNReal)
+    (hL : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
+      LipschitzWith L (fun q : WithLp 2 (F × ℝ) =>
+        WithLp.toLp 2 (reaction (WithLp.ofLp q).2 x (WithLp.ofLp q).1, (1 : Real))))
+    (htangent : ∀ τ : Real, τ ∈ Set.Icc 0 T → ∀ x : M, ∀ p : F, p ∈ C τ →
+      (WithLp.toLp 2 (reaction τ x p, (1 : Real))) ∈ posTangentConeAt K
+        (WithLp.toLp 2 (p, τ)))
+    (hinit : ∀ x : M, u 0 x ∈ C 0) :
+    ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, u t x ∈ C t := by
+  let F' : Type _ := WithLp 2 (F × ℝ)
+  let u' : Real → M → F' := fun t x => WithLp.toLp 2 (u t x, t)
+  let reac' : Real → M → F' → F' := fun _t x q =>
+    WithLp.toLp 2 (reaction (WithLp.ofLp q).2 x (WithLp.ofLp q).1, 1)
+  have hsol' : IsInnerProductHeatReactionOn
+      (RealTimeInterval.closed 0 T hT) G reac' u' := by
+    refine ⟨?_, ?_, ?_⟩
+    · have hcont : ContinuousOn (fun q : Real × M => u q.1 q.2)
+          ((RealTimeInterval.closed 0 T hT).carrier ×ˢ (Set.univ : Set M)) := hsol.jointCont
+      have htime : ContinuousOn (fun q : Real × M => q.1)
+          ((RealTimeInterval.closed 0 T hT).carrier ×ˢ (Set.univ : Set M)) := continuous_fst.continuousOn
+      have hprod : ContinuousOn (fun q : Real × M => (u q.1 q.2, q.1))
+          ((RealTimeInterval.closed 0 T hT).carrier ×ˢ (Set.univ : Set M)) := hcont.prodMk htime
+      exact (WithLp.prod_continuous_toLp (p := 2) (α := F) (β := ℝ)).comp_continuousOn' hprod
+    · intro y t ht
+      have h1 : ContMDiff I 𝓘(Real, Real) ∞ (innerScalarization u (WithLp.ofLp y).1 t) :=
+        hsol.scalarSliceSmooth (WithLp.ofLp y).1 t ht
+      have hconst : ContMDiff I 𝓘(Real, Real) ∞ (fun _x : M => (WithLp.ofLp y).2 * t) := contMDiff_const
+      have hsum := h1.add hconst
+      change ContMDiff I 𝓘(Real, Real) ∞ (fun x : M => inner ℝ (u' t x) y)
+      have hfun : (fun x : M => inner ℝ (u' t x) y) =
+          fun x : M => innerScalarization u (WithLp.ofLp y).1 t x + (WithLp.ofLp y).2 * t := by
+        funext x
+        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
+          intro a b
+          rw [mul_comm]
+          rfl
+        rw [real_inner_comm, WithLp.prod_inner_apply]
+        simp only [u']
+        simp [innerScalarization, real_inner_comm, hreal]
+      rw [hfun]
+      exact hsum
+    · intro y t ht x
+      have h1 := hsol.equation (WithLp.ofLp y).1 t ht x
+      have hid : HasDerivAt (fun s : Real => (WithLp.ofLp y).2 * s) (WithLp.ofLp y).2 t := by
+        simpa using (hasDerivAt_id t).const_mul (WithLp.ofLp y).2
+      have hsum := h1.add hid
+      have hfun : (fun s : Real => innerScalarization u (WithLp.ofLp y).1 s x + (WithLp.ofLp y).2 * s) =
+          fun s : Real => inner ℝ (u' s x) y := by
+        funext s
+        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
+          intro a b
+          rw [mul_comm]
+          rfl
+        rw [real_inner_comm, WithLp.prod_inner_apply]
+        simp only [u']
+        simp [innerScalarization, real_inner_comm, hreal]
+      have htarget :
+          laplacianAt (I := I) G t (innerScalarization u (WithLp.ofLp y).1 t) x +
+              inner ℝ (reaction t x (u t x)) (WithLp.ofLp y).1 + (WithLp.ofLp y).2 =
+            laplacianAt (I := I) G t (fun x : M => inner ℝ (u' t x) y) x +
+              inner ℝ (reac' t x (u' t x)) y := by
+        have hlapl : laplacianAt (I := I) G t (fun x : M => inner ℝ (u' t x) y) x =
+            laplacianAt (I := I) G t (innerScalarization u (WithLp.ofLp y).1 t) x := by
+          have hfunx : (fun x : M => inner ℝ (u' t x) y) =
+              fun x : M => innerScalarization u (WithLp.ofLp y).1 t x + (WithLp.ofLp y).2 * t := by
+            funext x
+            have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
+              intro a b
+              rw [mul_comm]
+              rfl
+            rw [real_inner_comm, WithLp.prod_inner_apply]
+            simp only [u']
+            simp [innerScalarization, real_inner_comm, hreal]
+          rw [hfunx]
+          have hconst : ContMDiff I 𝓘(Real, Real) ∞ (fun _ : M => (WithLp.ofLp y).2 * t) := contMDiff_const
+          have hsum_lap := laplacianAt_add (I := I) G (t := t)
+            (f := innerScalarization u (WithLp.ofLp y).1 t)
+            (h := fun _ : M => (WithLp.ofLp y).2 * t) (x := x)
+            ((hsol.scalarSliceSmooth (WithLp.ofLp y).1 t ((RealTimeInterval.closed 0 T hT).regular_subset ht)).mdifferentiable (by simp))
+            (hconst.mdifferentiable (by simp))
+            (gradientFun_mdiffAt (I := I) (G.metric t) (hsol.scalarSliceSmooth (WithLp.ofLp y).1 t ((RealTimeInterval.closed 0 T hT).regular_subset ht)) x)
+            (gradientFun_mdiffAt (I := I) (G.metric t) hconst x)
+          have hconst_lap : laplacianAt (I := I) G t (fun _ : M => (WithLp.ofLp y).2 * t) x = 0 := by
+            change laplacian (I := I) (G.connection t) (G.metric t)
+                (fun _ : M => (WithLp.ofLp y).2 * t) x = 0
+            exact laplacian_const (I := I) (G.connection t) (G.metric t) ((WithLp.ofLp y).2 * t) x
+          rw [hconst_lap] at hsum_lap
+          simpa using hsum_lap
+        rw [hlapl]
+        rw [real_inner_comm, WithLp.prod_inner_apply]
+        simp only [u', reac']
+        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
+          intro a b
+          rw [mul_comm]
+          rfl
+        simp [real_inner_comm, hreal]
+        ring
+      change HasDerivAt (fun s : Real => inner ℝ (u' s x) y)
+        (laplacianAt (I := I) G t (fun x : M => inner ℝ (u' t x) y) x +
+          inner ℝ (reac' t x (u' t x)) y) t
+      rw [← hfun]
+      rw [← htarget]
+      exact hsum
+  have hL' : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
+      LipschitzWith L (reac' t x) := by
+    intro t ht x
+    simpa [reac'] using hL t ht x
+  have htan' : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M, ∀ q : F', q ∈ K →
+      reac' t x q ∈ posTangentConeAt K q := by
+    intro t ht x q hq
+    rw [hK_eq] at hq
+    have hqτ : (WithLp.ofLp q).2 ∈ Set.Icc 0 T := hq.1
+    have hqp : (WithLp.ofLp q).1 ∈ C (WithLp.ofLp q).2 := hq.2
+    simpa [reac', WithLp.toLp_ofLp] using
+      htangent (WithLp.ofLp q).2 hqτ x (WithLp.ofLp q).1 hqp
+  have hinit' : ∀ x : M, u' 0 x ∈ K := by
+    intro x
+    rw [hK_eq]
+    exact ⟨⟨le_rfl, hT⟩, by simpa [u'] using hinit x⟩
+  have hmain := closed_convex_heat_reaction_mem_of_tangent
+    (I := I) (M := M) G hT K hKne hKclosed hKconvex reac' u' hsol' L hL' htan' hinit'
+  intro t ht x
+  have hmem : u' t x ∈ K := hmain t ht x
+  rw [hK_eq] at hmem
+  exact hmem.2
+
+
+theorem timeDepHalfspace_heat_reaction_mem_of_tangent
+    [I.Boundaryless] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 ≤ T)
+    (ν : F) (hν : ν ≠ 0) (s : Real → Real)
+    (hsdiff : ∀ t : Real, t ∈ Set.Icc 0 T →
+      DifferentiableWithinAt Real s (Set.Icc 0 T) t)
+    (reaction : Real → M → F → F)
+    (u : Real → M → F)
+    (hsol : IsInnerProductHeatReactionOn
+      (RealTimeInterval.closed 0 T hT) G reaction u)
+    (L : NNReal)
+    (hL : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
+      LipschitzWith L (reaction t x))
+    (htangent : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M, ∀ p : F,
+      inner ℝ ν p = s t →
+        inner ℝ ν (reaction t x p) ≤
+          derivWithin s (Set.Icc 0 T) t)
+    (hinit : ∀ x : M, inner ℝ ν (u 0 x) ≤ s 0) :
+    ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, inner ℝ ν (u t x) ≤ s t := by
+  classical
+  let c : Real → Real := fun t => s t / ‖ν‖ ^ 2
+  let v : Real → M → F := fun t x => u t x - c t • ν
+  let reac' : Real → M → F → F := fun t x p =>
+    reaction t x (p + c t • ν) - (derivWithin s (Set.Icc 0 T) t / ‖ν‖ ^ 2) • ν
+  have hnorm_ne : ‖ν‖ ≠ 0 := norm_ne_zero_iff.mpr hν
+  have hnorm2_ne : ‖ν‖ ^ 2 ≠ 0 := pow_ne_zero 2 hnorm_ne
+  have hsol' : IsInnerProductHeatReactionOn
+      (RealTimeInterval.closed 0 T hT) G reac' v := by
+    refine ⟨?_, ?_, ?_⟩
+    · have hc_cont : ContinuousOn c (Set.Icc 0 T) := by
+        intro t ht
+        exact (hsdiff t ht).continuousWithinAt.div_const (‖ν‖ ^ 2)
+      have hc_cont' : ContinuousOn (fun q : Real × M => c q.1)
+          ((RealTimeInterval.closed 0 T hT).carrier ×ˢ (Set.univ : Set M)) :=
+        hc_cont.comp continuous_fst.continuousOn (by intro q hq; exact hq.1)
+      have hsmul_cont : Continuous fun r : Real => r • ν :=
+        continuous_id.smul continuous_const
+      have hconst_smul : ContinuousOn (fun q : Real × M => c q.1 • ν)
+          ((RealTimeInterval.closed 0 T hT).carrier ×ˢ (Set.univ : Set M)) :=
+        hsmul_cont.comp_continuousOn hc_cont'
+      have hsub : ContinuousOn (fun q : Real × M => u q.1 q.2 - c q.1 • ν)
+          ((RealTimeInterval.closed 0 T hT).carrier ×ˢ (Set.univ : Set M)) :=
+        hsol.jointCont.sub hconst_smul
+      simpa [v, sub_eq_add_neg] using hsub
+    · intro y t ht
+      have h1 := hsol.scalarSliceSmooth y t ht
+      have hconst : ContMDiff I 𝓘(Real, Real) ∞
+          (fun _x : M => c t * inner ℝ ν y) := contMDiff_const
+      change ContMDiff I 𝓘(Real, Real) ∞
+        (fun x : M => inner ℝ (u t x - (s t / ‖ν‖ ^ 2) • ν) y)
+      simpa [c, innerScalarization, inner_sub_left, real_inner_smul_left]
+        using h1.sub hconst
+    · intro y t ht x
+      have htIcc : t ∈ Set.Icc 0 T := ⟨le_of_lt ht.1, le_of_lt ht.2⟩
+      have hsdw : HasDerivWithinAt s (derivWithin s (Set.Icc 0 T) t) (Set.Icc 0 T) t :=
+        (hsdiff t htIcc).hasDerivWithinAt
+      have hsd : HasDerivAt s (derivWithin s (Set.Icc 0 T) t) t :=
+        hsdw.hasDerivAt (Icc_mem_nhds ht.1 ht.2)
+      have hcd : HasDerivAt (fun r : Real => c r) (derivWithin s (Set.Icc 0 T) t / ‖ν‖ ^ 2) t := by
+        simpa [c] using hsd.div_const (‖ν‖ ^ 2)
+      have hB : HasDerivAt (fun r : Real => c r * inner ℝ ν y)
+          ((derivWithin s (Set.Icc 0 T) t / ‖ν‖ ^ 2) * inner ℝ ν y) t :=
+        hcd.mul_const (inner ℝ ν y)
+      have hA := hsol.equation y t ht x
+      have hAB : HasDerivAt (fun r : Real =>
+          innerScalarization u y r x - c r * inner ℝ ν y)
+          (laplacianAt (I := I) G t (innerScalarization u y t) x +
+              inner ℝ (reaction t x (u t x)) y -
+            (derivWithin s (Set.Icc 0 T) t / ‖ν‖ ^ 2) * inner ℝ ν y) t := by
+        simpa [innerScalarization] using hA.sub hB
+      have hfun : (fun r : Real => innerScalarization v y r x) =
+          fun r : Real => innerScalarization u y r x - c r * inner ℝ ν y := by
+        funext r
+        simp [v, c, innerScalarization, inner_sub_left, real_inner_smul_left]
+      have hlap_eq : laplacianAt (I := I) G t (innerScalarization v y t) x =
+          laplacianAt (I := I) G t (innerScalarization u y t) x := by
+        have hconst : ContMDiff I 𝓘(Real, Real) ∞
+            (fun _x : M => c t * inner ℝ ν y) := contMDiff_const
+        have hconst_mdiff : ∀ z : M,
+            MDifferentiableAt I 𝓘(Real, Real) (fun _x : M => c t * inner ℝ ν y) z :=
+          fun z => hconst.mdifferentiable (by simp) z
+        have hlap_const : laplacianAt (I := I) G t
+            (fun _x : M => c t * inner ℝ ν y) x = 0 := by
+          change laplacian (I := I) (G.connection t) (G.metric t)
+              (fun _x : M => c t * inner ℝ ν y) x = 0
+          exact laplacian_const (I := I) (G.connection t) (G.metric t)
+            (c t * inner ℝ ν y) x
+        have hf_mdiff : ∀ z : M,
+            MDifferentiableAt I 𝓘(Real, Real) (innerScalarization u y t) z :=
+          fun z => (hsol.scalarSliceSmooth y t
+            ((RealTimeInterval.closed 0 T hT).regular_subset ht)).mdifferentiable (by simp) z
+        have hsub_lap := laplacian_sub_const (I := I) (G.connection t) (G.metric t)
+          (f := innerScalarization u y t) (c := c t * inner ℝ ν y) hf_mdiff x
+        have hfunx : innerScalarization v y t =
+            innerScalarization u y t - fun _x : M => c t * inner ℝ ν y := by
+          funext z
+          simp [v, c, innerScalarization, inner_sub_left, real_inner_smul_left]
+        rw [hfunx]
+        change laplacian (G.connection t) (G.metric t)
+            (fun y_1 : M => innerScalarization u y t y_1 - c t * inner ℝ ν y) x =
+          laplacian (G.connection t) (G.metric t) (innerScalarization u y t) x
+        rw [hsub_lap]
+      have htarget : laplacianAt (I := I) G t (innerScalarization v y t) x +
+          inner ℝ (reac' t x (v t x)) y =
+          laplacianAt (I := I) G t (innerScalarization u y t) x +
+            inner ℝ (reaction t x (u t x)) y -
+            (derivWithin s (Set.Icc 0 T) t / ‖ν‖ ^ 2) * inner ℝ ν y := by
+        rw [hlap_eq]
+        have hv : v t x = u t x - c t • ν := rfl
+        have hvadd : v t x + c t • ν = u t x := by
+          rw [hv]
+          abel
+        have hinner_reac : inner ℝ (reac' t x (v t x)) y =
+            inner ℝ (reaction t x (u t x)) y -
+              (derivWithin s (Set.Icc 0 T) t / ‖ν‖ ^ 2) * inner ℝ ν y := by
+          dsimp [reac']
+          rw [hvadd]
+          rw [inner_sub_left, real_inner_smul_left]
+        rw [hinner_reac]
+        ring
+      rw [← hfun] at hAB
+      convert hAB using 1
+  let hC : Set F := {p | inner ℝ ν p ≤ 0}
+  have hCne : hC.Nonempty := ⟨0, by simp [hC]⟩
+  have hCclosed : IsClosed hC := isClosed_le (continuous_const.inner continuous_id) continuous_const
+  have hCconvex : Convex Real hC := by
+    rw [convex_iff_forall_pos]
+    intro p hp q hq a b ha hb hab
+    change inner ℝ ν (a • p + b • q) ≤ 0
+    have hxy : inner ℝ ν (a • p + b • q) = a * inner ℝ ν p + b * inner ℝ ν q := by
+      rw [inner_add_right, real_inner_smul_right, real_inner_smul_right]
+    rw [hxy]
+    have hp' : inner ℝ ν p ≤ 0 := by simpa [hC] using hp
+    have hq' : inner ℝ ν q ≤ 0 := by simpa [hC] using hq
+    nlinarith [hp', hq']
+  have hL' : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
+      LipschitzWith L (reac' t x) := by
+    intro t ht x
+    refine LipschitzWith.of_dist_le_mul ?_
+    intro a b
+    have h := (hL t ht x).dist_le_mul (a + c t • ν) (b + c t • ν)
+    simpa [reac', dist_eq_norm, sub_eq_add_neg, add_assoc, add_left_comm, add_comm,
+      add_sub_assoc] using h
+  have htan' : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M, ∀ p : F, p ∈ hC →
+      reac' t x p ∈ posTangentConeAt hC p := by
+    intro t ht x p hp
+    by_cases hp_int : inner ℝ ν p < 0
+    · let w : F := reac' t x p
+      let δ : ℝ := (- inner ℝ ν p) / (2 * (|inner ℝ ν w| + 1))
+      have hδ : 0 < δ := by
+        have hnum : 0 < - inner ℝ ν p := neg_pos.mpr hp_int
+        have hden : 0 < 2 * (|inner ℝ ν w| + 1) := by positivity
+        dsimp [δ]
+        exact div_pos hnum hden
+      have hev : ∀ᶠ r : ℝ in 𝓝[>] 0, p + r • w ∈ hC := by
+        rw [eventually_nhdsWithin_iff]
+        refine mem_of_superset (Ioo_mem_nhds (neg_lt_zero.mpr hδ) hδ) ?_
+        intro r hr hrpos
+        have hrlt : r < δ := hr.2
+        change inner ℝ ν (p + r • w) ≤ 0
+        rw [inner_add_right, real_inner_smul_right]
+        have hle_abs : inner ℝ ν w ≤ |inner ℝ ν w| := le_abs_self _
+        have h1 : r * inner ℝ ν w ≤ r * |inner ℝ ν w| :=
+          mul_le_mul_of_nonneg_left hle_abs (le_of_lt hrpos)
+        have habs_nonneg : 0 ≤ |inner ℝ ν w| := abs_nonneg _
+        have hdenpos : 0 < |inner ℝ ν w| + 1 := by nlinarith
+        have h2a : r * |inner ℝ ν w| ≤ r * (|inner ℝ ν w| + 1) :=
+          mul_le_mul_of_nonneg_left (by nlinarith) (le_of_lt hrpos)
+        have h2 : r * |inner ℝ ν w| < δ * (|inner ℝ ν w| + 1) :=
+          lt_of_le_of_lt h2a (mul_lt_mul_of_pos_right hrlt hdenpos)
+        have hδeq : δ * (|inner ℝ ν w| + 1) = (- inner ℝ ν p) / 2 := by
+          dsimp [δ]
+          field_simp
+        have hneg : inner ℝ ν p + r * inner ℝ ν w < 0 := by
+          nlinarith [hp_int, h1, h2, hδeq]
+        exact le_of_lt hneg
+      exact mem_posTangentConeAt_of_frequently_mem (Eventually.frequently hev)
+    · have hp' : inner ℝ ν p ≤ 0 := by simpa [hC] using hp
+      have hp0 : inner ℝ ν p = 0 := by
+        exact le_antisymm hp' (le_of_not_gt hp_int)
+      let q : F := p + c t • ν
+      have hq_eq : inner ℝ ν q = s t := by
+        dsimp [q, c]
+        rw [inner_add_right, real_inner_smul_right, real_inner_self_eq_norm_sq, hp0, zero_add]
+        field_simp [hnorm2_ne]
+      have hreac_le := htangent t ht x q hq_eq
+      have hw : inner ℝ ν (reac' t x p) ≤ 0 := by
+        dsimp [reac']
+        rw [inner_sub_right, real_inner_smul_right, real_inner_self_eq_norm_sq]
+        dsimp [q] at hq_eq hreac_le
+        field_simp [hnorm2_ne]
+        nlinarith
+      have hpw : p + reac' t x p ∈ hC := by
+        change inner ℝ ν (p + reac' t x p) ≤ 0
+        rw [inner_add_right]
+        nlinarith [hw]
+      have hseg : openSegment ℝ p (p + reac' t x p) ⊆ hC :=
+        hCconvex.openSegment_subset hp hpw
+      simpa using (sub_mem_posTangentConeAt_of_openSegment_subset hseg)
+  have hinit' : ∀ x : M, v 0 x ∈ hC := by
+    intro x
+    have hsmul : inner ℝ ν ((s 0 / ‖ν‖ ^ 2) • ν) = s 0 := by
+      rw [real_inner_smul_right, real_inner_self_eq_norm_sq]
+      field_simp [hnorm2_ne]
+    have hv : inner ℝ ν (u 0 x - (s 0 / ‖ν‖ ^ 2) • ν) ≤ 0 := by
+      rw [inner_sub_right, hsmul]
+      linarith [hinit x]
+    change v 0 x ∈ hC
+    change inner ℝ ν (u 0 x - (s 0 / ‖ν‖ ^ 2) • ν) ≤ 0
+    exact hv
+  have hmain := closed_convex_heat_reaction_mem_of_tangent
+    (I := I) (M := M) G hT hC hCne hCclosed hCconvex reac' v hsol' L hL' htan' hinit'
+  intro t ht x
+  have hv : v t x ∈ hC := hmain t ht x
+  change inner ℝ ν (u t x - (s t / ‖ν‖ ^ 2) • ν) ≤ 0 at hv
+  have hv' : inner ℝ ν (u t x) - inner ℝ ν ((s t / ‖ν‖ ^ 2) • ν) ≤ 0 := by
+    simpa [inner_sub_right] using hv
+  have hsmul : inner ℝ ν ((s t / ‖ν‖ ^ 2) • ν) = s t := by
+    rw [real_inner_smul_right, real_inner_self_eq_norm_sq]
+    field_simp [hnorm2_ne]
+  linarith
+
+
+theorem closed_convex_timeDep_heat_reaction_mem_of_supporting_normal
+    [I.Boundaryless] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real} (hT : 0 ≤ T)
+    (C : Real → Set F)
+    (support : Real → F → Real)
+    (hsupp : ∀ t : Real, ∀ p : F, p ∈ C t ↔ ∀ ν : F, inner ℝ ν p ≤ support t ν)
+    (h0 : ∀ t : Real, support t 0 = 0)
+    (hsdiff : ∀ ν : F, ∀ t : Real, t ∈ Set.Icc 0 T →
+      DifferentiableWithinAt Real (fun s : Real => support s ν) (Set.Icc 0 T) t)
+    (reaction : Real → M → F → F)
+    (u : Real → M → F)
+    (hsol : IsInnerProductHeatReactionOn
+      (RealTimeInterval.closed 0 T hT) G reaction u)
+    (L : NNReal)
+    (hL : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
+      LipschitzWith L (reaction t x))
+    (hreaction : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M, ∀ p : F,
+      ∀ ν : F, ν ≠ 0 → inner ℝ ν p = support t ν →
+        inner ℝ ν (reaction t x p) ≤
+          derivWithin (fun s : Real => support s ν) (Set.Icc 0 T) t)
+    (hinit : ∀ x : M, u 0 x ∈ C 0) :
+    ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, u t x ∈ C t := by
+  intro t ht x
+  rw [hsupp]
+  intro ν
+  by_cases hν : ν = 0
+  · subst ν
+    simp [h0]
+  · have hνne : ν ≠ 0 := hν
+    have hinitν : ∀ y : M, inner ℝ ν (u 0 y) ≤ support 0 ν := by
+      intro y
+      have hu0 : u 0 y ∈ C 0 := hinit y
+      exact (hsupp 0 (u 0 y)).1 hu0 ν
+    exact timeDepHalfspace_heat_reaction_mem_of_tangent
+      (I := I) (M := M) G hT ν hνne (fun s => support s ν) (hsdiff ν)
+      reaction u hsol L hL
+      (fun t ht x p hp_eq => hreaction t ht x p ν hνne hp_eq)
+      hinitν t ht x
+
 
 end
 

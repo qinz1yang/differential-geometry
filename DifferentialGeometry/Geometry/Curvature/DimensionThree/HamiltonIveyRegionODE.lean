@@ -695,4 +695,120 @@ theorem hamiltonIveyBarrier_le_sectionalSum_of_reactionODE
   dsimp [u] at hu
   exact sub_nonneg.mp hu
 
+theorem hamiltonIveyConvexBarrier_le_sectionalSum_of_reactionODE
+    (h1 : ∀ t : ℝ, HasDerivAt l1 (2 * (l1 t ^ 2 + l2 t * l3 t)) t)
+    (h2 : ∀ t : ℝ, HasDerivAt l2 (2 * (l2 t ^ 2 + l1 t * l3 t)) t)
+    (h3 : ∀ t : ℝ, HasDerivAt l3 (2 * (l3 t ^ 2 + l1 t * l2 t)) t)
+    (hab : a ≤ b) (hK : 0 < K)
+    (h21 : l2 a ≤ l1 a) (h32 : l3 a ≤ l2 a) (hpinch : -K ≤ l3 a) :
+    ∀ t ∈ Set.Icc a b,
+      hamiltonIveyConvexBarrier K (t - a) (pinchHeight3 (l3 t)) ≤
+        sectionalSum3 (l1 t) (l2 t) (l3 t) := by
+  intro t ht
+  have hscalar := sectionalSum_lower_of_reactionODE
+    h1 h2 h3 hab hK h21 h32 hpinch t ht
+  have hpin := hamiltonIveyBarrier_le_sectionalSum_of_reactionODE
+    h1 h2 h3 hab hK h21 h32 hpinch t ht
+  unfold hamiltonIveyConvexBarrier scalarSectionalLowerBarrier3
+  exact max_le hscalar hpin
+
+theorem hamiltonIveyBarrier_le_sectionalSum_of_reactionODE_from
+    (h1 : ∀ t : ℝ, HasDerivAt l1 (2 * (l1 t ^ 2 + l2 t * l3 t)) t)
+    (h2 : ∀ t : ℝ, HasDerivAt l2 (2 * (l2 t ^ 2 + l1 t * l3 t)) t)
+    (h3 : ∀ t : ℝ, HasDerivAt l3 (2 * (l3 t ^ 2 + l1 t * l2 t)) t)
+    {t0 T K : Real} (hT : 0 ≤ T) (hK : 0 < K)
+    (h21 : l2 t0 ≤ l1 t0) (h32 : l3 t0 ≤ l2 t0) (hpinch : -K ≤ l3 t0) :
+    ∀ t ∈ Set.Icc t0 (t0 + T),
+      hamiltonIveyBarrier K (t - t0) (pinchHeight3 (l3 t)) ≤
+        sectionalSum3 (l1 t) (l2 t) (l3 t) := by
+  exact hamiltonIveyBarrier_le_sectionalSum_of_reactionODE h1 h2 h3
+    (by linarith) hK h21 h32 hpinch
+
+theorem hamiltonIveyConvexBarrier_le_sectionalSum_of_reactionODE_from
+    (h1 : ∀ t : ℝ, HasDerivAt l1 (2 * (l1 t ^ 2 + l2 t * l3 t)) t)
+    (h2 : ∀ t : ℝ, HasDerivAt l2 (2 * (l2 t ^ 2 + l1 t * l3 t)) t)
+    (h3 : ∀ t : ℝ, HasDerivAt l3 (2 * (l3 t ^ 2 + l1 t * l2 t)) t)
+    {t0 T K : Real} (hT : 0 ≤ T) (hK : 0 < K)
+    (h21 : l2 t0 ≤ l1 t0) (h32 : l3 t0 ≤ l2 t0) (hpinch : -K ≤ l3 t0) :
+    ∀ t ∈ Set.Icc t0 (t0 + T),
+      hamiltonIveyConvexBarrier K (t - t0) (pinchHeight3 (l3 t)) ≤
+        sectionalSum3 (l1 t) (l2 t) (l3 t) := by
+  exact hamiltonIveyConvexBarrier_le_sectionalSum_of_reactionODE h1 h2 h3
+    (by linarith) hK h21 h32 hpinch
+
+theorem diagonal_reactionODE_mem_hamiltonIveyConvexMatrixRegion
+    (h1 : ∀ t : ℝ, HasDerivAt l1 (2 * (l1 t ^ 2 + l2 t * l3 t)) t)
+    (h2 : ∀ t : ℝ, HasDerivAt l2 (2 * (l2 t ^ 2 + l1 t * l3 t)) t)
+    (h3 : ∀ t : ℝ, HasDerivAt l3 (2 * (l3 t ^ 2 + l1 t * l2 t)) t)
+    {t0 T K : Real} (hT : 0 ≤ T) (hK : 0 < K)
+    (h21 : l2 t0 ≤ l1 t0) (h32 : l3 t0 ≤ l2 t0) (hpinch : -K ≤ l3 t0) :
+    ∀ t ∈ Set.Icc t0 (t0 + T),
+      Matrix.diagonal (fun i : Fin 3 => if i = 0 then l1 t else if i = 1 then l2 t else l3 t) ∈
+        hamiltonIveyConvexMatrixRegion K (t - t0) := by
+  intro t ht
+  let d : Fin 3 → ℝ := fun i => if i = 0 then l1 t else if i = 1 then l2 t else l3 t
+  have hord := reactionODE_order_preserved h1 h2 h3 (by linarith) h21 h32 t ht
+  have hd : Antitone d := by
+    intro i j hij
+    dsimp [d]
+    fin_cases i <;> fin_cases j <;> simp at hij ⊢ <;>
+      linarith [hord.1, hord.2]
+  have heig := diagonal_eigenvalues₀_eq_of_antitone d hd
+  have hbar := hamiltonIveyConvexBarrier_le_sectionalSum_of_reactionODE_from
+    h1 h2 h3 hT hK h21 h32 hpinch t ht
+  refine ⟨Matrix.isHermitian_diagonal d, ?_, ?_⟩
+  · exact le_max_right _ _
+  · have htrace : (Matrix.diagonal d).trace = sectionalSum3 (l1 t) (l2 t) (l3 t) := by
+      rw [Matrix.trace_diagonal]
+      simp [d, sectionalSum3, Fin.sum_univ_three]
+    have heig₂ : (Matrix.isHermitian_diagonal d).eigenvalues₀ 2 = l3 t := by
+      rw [heig]
+      simp [d]
+    rw [htrace]
+    simpa [d, heig₂, pinchHeight3] using hbar
+
+theorem diagonal_reactionODE_mem_hamiltonIveyConvexMatrixRegion_K_one
+    (h1 : ∀ t : ℝ, HasDerivAt l1 (2 * (l1 t ^ 2 + l2 t * l3 t)) t)
+    (h2 : ∀ t : ℝ, HasDerivAt l2 (2 * (l2 t ^ 2 + l1 t * l3 t)) t)
+    (h3 : ∀ t : ℝ, HasDerivAt l3 (2 * (l3 t ^ 2 + l1 t * l2 t)) t)
+    {t0 T : Real} (hT : 0 ≤ T)
+    (h21 : l2 t0 ≤ l1 t0) (h32 : l3 t0 ≤ l2 t0) (hpinch : -1 ≤ l3 t0) :
+    ∀ t ∈ Set.Icc t0 (t0 + T),
+      Matrix.diagonal (fun i : Fin 3 => if i = 0 then l1 t else if i = 1 then l2 t else l3 t) ∈
+        hamiltonIveyConvexMatrixRegion 1 (t - t0) :=
+  diagonal_reactionODE_mem_hamiltonIveyConvexMatrixRegion
+    h1 h2 h3 hT (by norm_num : 0 < (1 : Real)) h21 h32 hpinch
+
+theorem hamiltonIveyBarrier_K_one_le_sectionalSum_of_reactionODE
+    (h1 : ∀ t : ℝ, HasDerivAt l1 (2 * (l1 t ^ 2 + l2 t * l3 t)) t)
+    (h2 : ∀ t : ℝ, HasDerivAt l2 (2 * (l2 t ^ 2 + l1 t * l3 t)) t)
+    (h3 : ∀ t : ℝ, HasDerivAt l3 (2 * (l3 t ^ 2 + l1 t * l2 t)) t)
+    (hab : a ≤ b) (h21 : l2 a ≤ l1 a) (h32 : l3 a ≤ l2 a)
+    (hpinch : -1 ≤ l3 a) :
+    ∀ t ∈ Set.Icc a b,
+      hamiltonIveyBarrier 1 (t - a) (pinchHeight3 (l3 t)) ≤
+        sectionalSum3 (l1 t) (l2 t) (l3 t) := by
+  exact hamiltonIveyBarrier_le_sectionalSum_of_reactionODE h1 h2 h3 hab
+    (by norm_num : 0 < (1 : Real)) h21 h32 hpinch
+
+theorem sectionalSum_asymptotic_pinching_of_reactionODE
+    (h1 : ∀ t : ℝ, HasDerivAt l1 (2 * (l1 t ^ 2 + l2 t * l3 t)) t)
+    (h2 : ∀ t : ℝ, HasDerivAt l2 (2 * (l2 t ^ 2 + l1 t * l3 t)) t)
+    (h3 : ∀ t : ℝ, HasDerivAt l3 (2 * (l3 t ^ 2 + l1 t * l2 t)) t)
+    (hab : a ≤ b) (hK : 0 < K)
+    (h21 : l2 a ≤ l1 a) (h32 : l3 a ≤ l2 a) (hpinch : -K ≤ l3 a)
+    {δ : Real} (hδ : 0 < δ) :
+    ∀ t ∈ Set.Icc a b,
+      pinchHeight3 (l3 t) ≤
+        2 * δ * sectionalSum3 (l1 t) (l2 t) (l3 t) +
+          2 * δ * K * Real.exp (2 + (2 * δ)⁻¹) := by
+  intro t ht
+  have hbar := hamiltonIveyBarrier_le_sectionalSum_of_reactionODE
+    h1 h2 h3 hab hK h21 h32 hpinch t ht
+  have hτ : 0 ≤ t - a := sub_nonneg.mpr ht.1
+  have hden : 0 < 1 + 2 * K * (t - a) := by
+    nlinarith [mul_nonneg (mul_pos two_pos hK).le hτ]
+  exact pinchHeight_le_linear_sectionalSum_of_barrier hK hδ hτ
+    (le_max_right _ _) hbar
+
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

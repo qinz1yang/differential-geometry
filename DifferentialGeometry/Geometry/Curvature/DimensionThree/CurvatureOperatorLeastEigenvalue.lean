@@ -122,6 +122,35 @@ noncomputable def orderedSectionalCurvaturesAt
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
+theorem curvatureOperatorMatrixAt_trace_eq_sum_orderedSectionalCurvaturesAt
+    (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    (curvatureOperatorMatrixAt (I := I) x basis A).trace =
+      ∑ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A i := by
+  have htrace := curvatureOperatorMatrixAt_eigenvalues_trace_eq_sectionalSum
+    (I := I) x basis A
+  have hperm :
+      ∑ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A i =
+        ∑ i : Fin 3,
+          (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues i := by
+    unfold orderedSectionalCurvaturesAt Matrix.IsHermitian.eigenvalues
+    let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
+    have hsum := Fintype.sum_equiv e.symm
+      (f := fun i => (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀
+        (e.symm i))
+      (g := fun i => (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀ i)
+      (by intro i; rfl)
+    simpa [e, Matrix.IsHermitian.eigenvalues] using hsum.symm
+  calc
+    (curvatureOperatorMatrixAt (I := I) x basis A).trace =
+        ∑ i : Fin 3,
+          (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues i := by
+      exact Matrix.IsHermitian.trace_eq_sum_eigenvalues
+        (hA := curvatureOperatorMatrixAt_isHermitian (I := I) x basis A)
+    _ = ∑ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A i := hperm.symm
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
 theorem orderedSectionalCurvaturesAt_antitone
     (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
@@ -1205,5 +1234,17 @@ theorem leastCurvatureOperatorEigenvalueAt_eq_sectionalMin
   rw [hext, csInf_Ici]
   ring
 
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem orderedSectionalCurvaturesAt_two_basisIndependent
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis₁ basis₂ : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth₁ : OrthonormalBasisAt (I := I) g x basis₁)
+    (horth₂ : OrthonormalBasisAt (I := I) g x basis₂)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    orderedSectionalCurvaturesAt (I := I) x basis₁ A 2 =
+      orderedSectionalCurvaturesAt (I := I) x basis₂ A 2 := by
+  rw [← leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I) g x basis₁ horth₁ A,
+    ← leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I) g x basis₂ horth₂ A]
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

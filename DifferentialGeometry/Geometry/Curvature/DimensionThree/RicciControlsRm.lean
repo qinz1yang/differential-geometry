@@ -198,6 +198,98 @@ theorem ricciEigen3
       fin_cases i <;> fin_cases j <;>
         simpa [ricciCompAt_apply, ricciDiag3, l1, l2, l3, delta3] using hcomp
 
+theorem ricciEigen3_ordered
+    (g : SmoothRiemannianMetric I M)
+    (Ric : Tensor02At (I := I) (M := M) x)
+    (hdim : Module.finrank Real (TangentSpace I x) = 3)
+    (hsymm : RicciSymAt (I := I) Ric) :
+    exists basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+      exists l1 l2 l3 : Real,
+        OrthonormalBasisAt (I := I) g x basis /\
+        l2 <= l1 /\ l3 <= l2 /\
+        RicciDiagAt (I := I) Ric (ricciEigenScalar3 l1 l2 l3)
+          l1 l2 l3 basis := by
+  classical
+  let D := (tangentMetricData_gen (I := I) g x).metric
+  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  letI : NormedAddCommGroup (TangentSpace I x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _
+      D.toCore
+  letI : InnerProductSpace Real (TangentSpace I x) :=
+    @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
+  let T := ricciEndAt (I := I) g Ric
+  have hT : T.IsSymmetric := by
+    intro X Y
+    rw [MetricFiberData.toCore_inner D (T X) Y,
+      MetricFiberData.toCore_inner D X (T Y)]
+    change g.inner x (T X) Y = g.inner x X (T Y)
+    calc
+      g.inner x (T X) Y = Ric (vec2 X Y) := by
+        exact ricciEnd_inner (I := I) g Ric X Y
+      _ = Ric (vec2 Y X) := hsymm X Y
+      _ = g.inner x (T Y) X := by
+        exact (ricciEnd_inner (I := I) g Ric Y X).symm
+      _ = g.inner x X (T Y) := by
+        exact g.symm x (T Y) X
+  let ob := hT.eigenvectorBasis hdim
+  let basis : Module.Basis (Fin 3) Real (TangentSpace I x) := ob.toBasis
+  let l1 : Real := hT.eigenvalues hdim 0
+  let l2 : Real := hT.eigenvalues hdim 1
+  let l3 : Real := hT.eigenvalues hdim 2
+  have horth : OrthonormalBasisAt (I := I) g x basis := by
+    intro i j
+    have hinner :
+        Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
+      MetricFiberData.toCore_inner D (ob i) (ob j)
+    have hob := ob.inner_eq_ite i j
+    change g.inner x (basis i) (basis j) = delta3 i j
+    rw [← TangentMetricData_gen.inner_eq_gen (tangentMetricData_gen (I := I) g x)
+      (basis i) (basis j)]
+    change D.inner (basis i) (basis j) = delta3 i j
+    change D.inner (ob i) (ob j) = delta3 i j
+    rw [← hinner]
+    simpa [delta3] using hob
+  have hdiag : RicciDiagAt (I := I) Ric (ricciEigenScalar3 l1 l2 l3)
+      l1 l2 l3 basis := by
+    constructor
+    · rfl
+    · intro i j
+      have heig := hT.apply_eigenvectorBasis hdim i
+      have hcomp :
+          Ric (vec2 (basis i) (basis j)) =
+            hT.eigenvalues hdim i * delta3 i j := by
+        calc
+          Ric (vec2 (basis i) (basis j)) =
+              g.inner x (T (basis i)) (basis j) := by
+                exact (ricciEnd_inner (I := I) g Ric (basis i) (basis j)).symm
+          _ = g.inner x ((hT.eigenvalues hdim i) • basis i) (basis j) := by
+                change g.inner x (T (ob i)) (ob j) =
+                  g.inner x ((hT.eigenvalues hdim i) • ob i) (ob j)
+                simpa [ob] using congrArg (fun v => g.inner x v (ob j)) heig
+          _ = hT.eigenvalues hdim i * delta3 i j := by
+                have horthij :
+                    g.inner x (basis i) (basis j) = delta3 i j := by
+                  change g.inner x (ob i) (ob j) = delta3 i j
+                  have hinner :
+                      Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
+                    MetricFiberData.toCore_inner D (ob i) (ob j)
+                  have hob := ob.inner_eq_ite i j
+                  rw [← TangentMetricData_gen.inner_eq_gen
+                    (tangentMetricData_gen (I := I) g x) (ob i) (ob j)]
+                  change D.inner (ob i) (ob j) = delta3 i j
+                  rw [← hinner]
+                  simpa [delta3] using hob
+                simp [horthij]
+      fin_cases i <;> fin_cases j <;>
+        simpa [ricciCompAt_apply, ricciDiag3, l1, l2, l3, delta3] using hcomp
+  have h21 : l2 <= l1 := by
+    dsimp [l1, l2]
+    exact hT.eigenvalues_antitone hdim (by decide : (0 : Fin 3) <= 1)
+  have h32 : l3 <= l2 := by
+    dsimp [l2, l3]
+    exact hT.eigenvalues_antitone hdim (by decide : (1 : Fin 3) <= 2)
+  exact ⟨basis, l1, l2, l3, horth, h21, h32, hdiag⟩
+
 theorem ricciEigenBasis3
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02At (I := I) (M := M) x)

@@ -51,6 +51,9 @@ import DifferentialGeometry.Analysis.Calculus.TimeJetMatch
 import DifferentialGeometry.Analysis.Calculus.TimeSliceBootstrap
 import DifferentialGeometry.Analysis.Calculus.TimeSliceSwap
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
+import DifferentialGeometry.Analysis.Convex.PositiveSemidefiniteOperatorCone
+import DifferentialGeometry.Analysis.Convex.PositiveSemidefiniteMatrixCone
+import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Convex.Tensor02PositiveSemidefiniteCone
 import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.ChartFrameNormGlobalSmooth
@@ -812,9 +815,14 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelConeStro
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelTensorNullDistribution
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ProperCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSemidefiniteMatrix
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SemilinearConvex
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ConvexTimeDep
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ComponentwiseHeatReaction
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelTimeDepConvex
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.FiniteMinimumUpperSupport
 import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTrace
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTraceEnergy
@@ -2465,6 +2473,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckSolutionC1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurckVFTimeFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Ham3ShortAxioms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureOperatorPreservation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveySupportUpper
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RicciEigenSectional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonPositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjCriticalSpan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjCriticalTame
@@ -2626,6 +2637,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerNormRegularit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerSwapRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Uhlenbeck
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ExtendShiInputs
@@ -2872,6 +2884,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Compactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Final
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.FirstNull
+import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.QuadraticLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Limit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.TensorBackedReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ParabolicRescaling
