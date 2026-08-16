@@ -5,7 +5,7 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 noncomputable section
 
 open Filter MeasureTheory Set
-open scoped ContDiff Interval
+open scoped ContDiff Interval Topology
 
 namespace DifferentialGeometry
 
@@ -97,5 +97,33 @@ theorem contDiffOn_of_right
   have htcd : t ∈ Ioo c d := ⟨hct, htd⟩
   exact ((hsmooth t (Ioo_subset_Icc_self htcd)).contDiffAt
     (Icc_mem_nhds hct htd)).contDiffWithinAt
+
+theorem eventually_pos_of_hasDerivAt_pos
+    (g : ℝ → ℝ) (ψ : ℝ) (hψ : 0 < ψ) (hg0 : g 0 = 0)
+    (hg : HasDerivAt g ψ 0) :
+    ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < g t := by
+  have hlim' : Tendsto (slope g 0) (𝓝[≠] 0) (𝓝 ψ) :=
+    hasDerivAt_iff_tendsto_slope.mp hg
+  have hmono : Tendsto (slope g 0) (𝓝[>] 0) (𝓝 ψ) :=
+    hlim'.mono_left (nhdsWithin_mono 0 (by intro x hx; exact ne_of_gt hx))
+  have hsimpa : (fun t : ℝ => slope g 0 t) = fun t : ℝ => g t / t := by
+    funext t
+    dsimp [slope]
+    rw [hg0]
+    ring_nf
+  have hlim : Tendsto (fun t : ℝ => g t / t) (𝓝[>] 0) (𝓝 ψ) := by
+    simpa [hsimpa] using hmono
+  have hψ2 : 0 < ψ / 2 := half_pos hψ
+  have hψ2' : ψ / 2 < ψ := by linarith
+  have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, ψ / 2 < g t / t :=
+    hlim.eventually (lt_mem_nhds hψ2')
+  filter_upwards [hev, self_mem_nhdsWithin] with t ht ht_mem
+  have htpos : 0 < t := ht_mem
+  have hgt : (ψ / 2) * t < g t := by
+    have hmul := mul_lt_mul_of_pos_right ht htpos
+    have hcancel : (g t / t) * t = g t := by
+      field_simp [htpos.ne']
+    nlinarith
+  exact lt_of_lt_of_le (mul_pos hψ2 htpos) (le_of_lt hgt)
 
 end DifferentialGeometry

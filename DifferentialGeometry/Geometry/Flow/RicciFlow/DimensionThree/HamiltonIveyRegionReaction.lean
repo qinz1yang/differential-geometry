@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegion
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
+import DifferentialGeometry.Analysis.Calculus.RightDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
 import Mathlib.Analysis.SpecialFunctions.Exp
 
@@ -21,7 +22,7 @@ def hamiltonIveyMatrixReaction (A : Matrix (Fin 3) (Fin 3) Real) :
   2 • (A * A + A.adjugate)
 
 def uhlenbeckCurvatureOperatorReactionState
-    (_t : Real) (A : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
+    (A : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
     EuclideanSpace ℝ (Fin 3 × Fin 3) :=
   matrixToEuclid (hamiltonIveyMatrixReaction (euclidToMatrix A))
 
@@ -522,6 +523,179 @@ lemma scalarBarrier_ineq_small
         nlinarith
       have hle : scalarSectionalLowerBarrier3 K (tau + t) <= S := le_trans hlip hmain
       exact le_trans hle (by nlinarith [mul_nonneg ht.1 hS'])
+
+private lemma barrier_g_continuousAt
+    (K tau X X' S S' : ℝ) (hK : 0 < K) (htau : 0 ≤ tau) :
+    ContinuousAt (fun t : ℝ => S + t * S' - hamiltonIveyBarrier K (tau + t) (X + t * X')) 0 := by
+  have hcontB : ContinuousAt (fun t : ℝ => hamiltonIveyBarrier K (tau + t) (X + t * X')) 0 := by
+    have hfun : (fun t : ℝ => hamiltonIveyBarrier K (tau + t) (X + t * X')) =
+        fun t : ℝ => (X + t * X') * Real.log (X + t * X') +
+          (X + t * X') * (Real.log (1 + 2 * K * (tau + t)) - 3 - Real.log K) := by
+      funext t
+      exact hamiltonIveyBarrier_eq_mul_log_add_linear (K := K) (τ := tau + t) (X := X + t * X') hK
+    rw [hfun]
+    have hx : ContinuousAt (fun t : ℝ => X + t * X') 0 := by fun_prop
+    have h1 : ContinuousAt (fun t : ℝ => (X + t * X') * Real.log (X + t * X')) 0 :=
+      Real.continuous_mul_log.continuousAt.comp hx
+    have hlog : ContinuousAt (fun t : ℝ => Real.log (1 + 2 * K * (tau + t))) 0 := by
+      have hlin' : ContinuousAt (fun t : ℝ => 1 + 2 * K * (tau + t)) 0 := by fun_prop
+      exact hlin'.log (ne_of_gt (by
+        have hpos : 0 < 1 + 2 * K * (tau + 0) := by
+          have hKtau : 0 ≤ 2 * K * tau := by
+            have hKtau' : 0 ≤ K * tau := mul_nonneg hK.le htau
+            nlinarith
+          nlinarith
+        simpa using hpos))
+    have h2 : ContinuousAt (fun t : ℝ =>
+        (X + t * X') * (Real.log (1 + 2 * K * (tau + t)) - 3 - Real.log K)) 0 := by
+      have hc : ContinuousAt (fun t : ℝ =>
+          Real.log (1 + 2 * K * (tau + t)) - 3 - Real.log K) 0 := by
+        exact (hlog.sub_const 3).sub_const (Real.log K)
+      exact hx.mul hc
+    exact h1.add h2
+  have hlin2 : ContinuousAt (fun t : ℝ => S + t * S') 0 := by fun_prop
+  exact hlin2.sub hcontB
+
+private lemma barrier_g_eventually_pos
+    (g : ℝ → ℝ) (hg : ContinuousAt g 0) (hg0 : 0 < g 0) :
+    ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < g t := by
+  have hlt : g 0 / 2 < g 0 := by linarith
+  have hh : ∀ᶠ t : ℝ in 𝓝 0, g 0 / 2 < g t :=
+    hg.eventually (Ioi_mem_nhds hlt)
+  have hh' : ∀ᶠ t : ℝ in 𝓝[>] 0, g 0 / 2 < g t := hh.filter_mono nhdsWithin_le_nhds
+  filter_upwards [hh', self_mem_nhdsWithin] with t ht _htm
+  have hgt : 0 < g t := by
+    have hhalf : 0 < g 0 / 2 := half_pos hg0
+    exact lt_of_lt_of_le hhalf (le_of_lt ht)
+  exact hgt
+
+lemma barrier_ineq_small
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
+    (l1 l2 l3 : ℝ) (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0)
+    (hB : hamiltonIveyBarrier K tau (-l3) ≤ l1 + l2 + l3) :
+    ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
+      hamiltonIveyBarrier K (tau + t) (-(l3 + t * (2 * (l3 ^ 2 + l1 * l2)))) ≤
+        (l1 + l2 + l3) + t * (2 * (l1 ^ 2 + l2 * l3) + 2 * (l2 ^ 2 + l1 * l3) + 2 * (l3 ^ 2 + l1 * l2)) := by
+  let X : ℝ := -l3
+  let X' : ℝ := -(2 * (l3 ^ 2 + l1 * l2))
+  let S : ℝ := l1 + l2 + l3
+  let S' : ℝ := 2 * (l1 ^ 2 + l2 * l3) + 2 * (l2 ^ 2 + l1 * l3) + 2 * (l3 ^ 2 + l1 * l2)
+  let g : ℝ → ℝ := fun t => S + t * S' - hamiltonIveyBarrier K (tau + t) (X + t * X')
+  have hX : 0 < X := by dsimp [X]; linarith
+  have hg0 : g 0 = S - hamiltonIveyBarrier K tau X := by
+    dsimp [g, X]
+    ring_nf
+  have hg0ge : 0 ≤ g 0 := by
+    rw [hg0]
+    dsimp [S, X]
+    linarith [hB]
+  by_cases hg0pos : 0 < g 0
+  · have hg_cont : ContinuousAt g 0 := by
+      dsimp [g]
+      exact barrier_g_continuousAt K tau X X' S S' hK htau
+    have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < g t := barrier_g_eventually_pos g hg_cont hg0pos
+    have hev_nhds : ∀ᶠ t : ℝ in 𝓝 0, t ∈ Set.Ioi 0 → 0 < g t :=
+      eventually_nhdsWithin_iff.mp hev
+    rcases Metric.eventually_nhds_iff.mp hev_nhds with ⟨eps, heps, hball⟩
+    let eps' : ℝ := eps / 2
+    refine ⟨eps', half_pos heps, ?_⟩
+    intro t ht
+    by_cases ht0 : t = 0
+    · subst t
+      have hbar0 : hamiltonIveyBarrier K tau X ≤ S := by
+        dsimp [S, X]
+        exact hB
+      simpa [X, X', S, S'] using hbar0
+    · have htpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht0)
+      have htle : t ≤ eps / 2 := by simpa [eps'] using ht.2
+      have htlt : t < eps := by
+        have hhalf : eps / 2 < eps := half_lt_self heps
+        nlinarith [htle]
+      have hdist : dist t 0 < eps := by
+        rw [Real.dist_eq, sub_zero, abs_of_pos htpos]
+        exact htlt
+      have hgt : 0 < g t := hball hdist htpos
+      have hB' : hamiltonIveyBarrier K (tau + t) (X + t * X') ≤ S + t * S' := by
+        dsimp [g] at hgt
+        nlinarith
+      dsimp [X, X', S, S'] at hB' ⊢
+      ring_nf at hB' ⊢
+      exact hB'
+  · have hg0eq : g 0 = 0 := by
+      rw [hg0]
+      have hle : S - hamiltonIveyBarrier K tau X ≤ 0 := by
+        dsimp [S, X]
+        have hnot : ¬ 0 < S - hamiltonIveyBarrier K tau X := by
+          simpa [hg0] using hg0pos
+        linarith
+      exact le_antisymm hle (by simpa [hg0] using hg0ge)
+    have hboundary : hamiltonIveyBarrier K tau (-l3) = l1 + l2 + l3 := by
+      have hg0eq' : S - hamiltonIveyBarrier K tau X = 0 := by
+        simpa [g, X] using hg0eq
+      have hle2 : l1 + l2 + l3 ≤ hamiltonIveyBarrier K tau (-l3) := by
+        dsimp [S, X] at hg0eq'
+        linarith
+      exact le_antisymm hB hle2
+    have hψ : 0 < S' - (Real.log (X / K) + Real.log (1 + 2 * K * tau) - 2) * X' -
+        X * (2 * K / (1 + 2 * K * tau)) := by
+      have hden : 0 < 1 + 2 * K * tau := by
+        have hKtau : 0 ≤ 2 * K * tau := by
+          have hKtau' : 0 ≤ K * tau := mul_nonneg hK.le htau
+          nlinarith
+        nlinarith
+      have hmain := hamiltonIveyBarrier_reaction_derivative_pos_on_boundary
+        (l1 := l1) (l2 := l2) (l3 := l3) (K := K) (τ := tau)
+        h21 h32 hl3 hK hden hboundary
+      simpa [S', X, X', reactionSectionalSum3, reactionPinchHeight3,
+        DifferentialGeometry.Dim3Reaction.sectionalReaction12,
+        DifferentialGeometry.Dim3Reaction.sectionalReaction13,
+        DifferentialGeometry.Dim3Reaction.sectionalReaction23] using hmain
+    have hg_deriv : HasDerivAt g (S' - (Real.log (X / K) + Real.log (1 + 2 * K * tau) - 2) * X' -
+        X * (2 * K / (1 + 2 * K * tau))) 0 := by
+      have hBderiv := hasDerivAt_barrier_comp (K := K) (τ := tau) (X := X) (X' := X') hK htau hX
+      have hlin : HasDerivAt (fun t : ℝ => S + t * S') S' 0 := by
+        simpa using ((hasDerivAt_id 0).mul_const S').const_add S
+      have hd : HasDerivAt (fun t : ℝ => hamiltonIveyBarrier K (tau + t) (X + t * X'))
+          ((Real.log (X / K) + Real.log (1 + 2 * K * tau) - 2) * X' +
+            X * (2 * K / (1 + 2 * K * tau))) 0 := hBderiv
+      have hg' : HasDerivAt (fun t : ℝ => S + t * S' - hamiltonIveyBarrier K (tau + t) (X + t * X'))
+          (S' - ((Real.log (X / K) + Real.log (1 + 2 * K * tau) - 2) * X' +
+            X * (2 * K / (1 + 2 * K * tau)))) 0 := hlin.sub hd
+      have hg'' : HasDerivAt (fun t : ℝ => S + t * S' - hamiltonIveyBarrier K (tau + t) (X + t * X'))
+          (S' - (Real.log (X / K) + Real.log (1 + 2 * K * tau) - 2) * X' -
+            X * (2 * K / (1 + 2 * K * tau))) 0 := by
+        convert hg' using 1
+        ring_nf
+      simpa [g] using hg''
+    have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, 0 < g t :=
+      DifferentialGeometry.eventually_pos_of_hasDerivAt_pos g _ hψ hg0eq hg_deriv
+    have hev_nhds : ∀ᶠ t : ℝ in 𝓝 0, t ∈ Set.Ioi 0 → 0 < g t :=
+      eventually_nhdsWithin_iff.mp hev
+    rcases Metric.eventually_nhds_iff.mp hev_nhds with ⟨eps, heps, hball⟩
+    let eps' : ℝ := eps / 2
+    refine ⟨eps', half_pos heps, ?_⟩
+    intro t ht
+    by_cases ht0 : t = 0
+    · subst t
+      have hbar0 : hamiltonIveyBarrier K tau X ≤ S := by
+        dsimp [S, X]
+        exact hB
+      simpa [X, X', S, S'] using hbar0
+    · have htpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht0)
+      have htle : t ≤ eps / 2 := by simpa [eps'] using ht.2
+      have htlt : t < eps := by
+        have hhalf : eps / 2 < eps := half_lt_self heps
+        nlinarith [htle]
+      have hdist : dist t 0 < eps := by
+        rw [Real.dist_eq, sub_zero, abs_of_pos htpos]
+        exact htlt
+      have hgt : 0 < g t := hball hdist htpos
+      have hB' : hamiltonIveyBarrier K (tau + t) (X + t * X') ≤ S + t * S' := by
+        dsimp [g] at hgt
+        nlinarith
+      dsimp [X, X', S, S'] at hB' ⊢
+      ring_nf at hB' ⊢
+      exact hB'
 
 
 end DifferentialGeometry.PDE.RicciFlow
