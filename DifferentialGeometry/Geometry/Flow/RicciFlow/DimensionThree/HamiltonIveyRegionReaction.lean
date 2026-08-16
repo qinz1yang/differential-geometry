@@ -1165,6 +1165,128 @@ theorem hamiltonIveyConvexMatrixSlabEuclid_reaction_tangent
     hev.frequently
   exact mem_posTangentConeAt_of_frequently_mem hfreq
 
+lemma hamiltonIveyBarrier_mono_time
+    {K τ τ' X : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (hX : 0 ≤ X) (hττ' : τ ≤ τ') :
+    hamiltonIveyBarrier K τ X ≤ hamiltonIveyBarrier K τ' X := by
+  have hden1 : 0 < 1 + 2 * K * τ := by
+    have hKτ : 0 ≤ 2 * K * τ := by
+      have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+      nlinarith
+    nlinarith
+  have hden2 : 0 < 1 + 2 * K * τ' := by
+    have hKτ : 0 ≤ 2 * K * τ' := by
+      have h1 : 0 ≤ K * τ' := mul_nonneg hK.le (le_trans hτ hττ')
+      nlinarith
+    nlinarith
+  unfold hamiltonIveyBarrier
+  by_cases hX0 : X = 0
+  · subst hX0
+    simp
+  · have hlog : Real.log (X / K) = Real.log X - Real.log K := Real.log_div hX0 hK.ne'
+    have hlog' : Real.log (X / K) = Real.log X - Real.log K := Real.log_div hX0 hK.ne'
+    have hle : Real.log (1 + 2 * K * τ) ≤ Real.log (1 + 2 * K * τ') := by
+      exact (Real.log_le_log_iff hden1 hden2).mpr (by nlinarith)
+    have hXpos : 0 < X := lt_of_le_of_ne hX (Ne.symm hX0)
+    rw [hlog]
+    nlinarith [mul_le_mul_of_nonneg_left hle hX]
+
+theorem hamiltonIveyConvexMatrixRegion_antitone_time
+    {K τ τ' : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (hττ' : τ ≤ τ') :
+    hamiltonIveyConvexMatrixRegion K τ' ⊆ hamiltonIveyConvexMatrixRegion K τ := by
+  intro A hA
+  rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hA ⊢
+  refine ⟨hA.1, ?_, ?_⟩
+  · exact hA.2.1
+  · let X : ℝ := max (-sectionalRayleighMin3 A) 0
+    have hX : 0 ≤ X := le_max_right _ _
+    have hmono := hamiltonIveyBarrier_mono_time (K := K) (X := X) hK hτ hX hττ'
+    have hscalar : scalarSectionalLowerBarrier3 K τ ≤ scalarSectionalLowerBarrier3 K τ' := by
+      unfold scalarSectionalLowerBarrier3
+      have hd1 : 0 < 1 + 4 * K * τ := by
+        have hKτ : 0 ≤ 4 * K * τ := by
+          have h1 : 0 ≤ K * τ := mul_nonneg hK.le hτ
+          nlinarith
+        nlinarith
+      have hd2 : 0 < 1 + 4 * K * τ' := by
+        have hKτ : 0 ≤ 4 * K * τ' := by
+          have h1 : 0 ≤ K * τ' := mul_nonneg hK.le (le_trans hτ hττ')
+          nlinarith
+        nlinarith
+      have hdiv : 3 * K / (1 + 4 * K * τ') ≤ 3 * K / (1 + 4 * K * τ) := by
+        rw [div_le_div_iff₀ hd2 hd1]
+        nlinarith [mul_le_mul_of_nonneg_right hττ' (by positivity : 0 ≤ 12 * K * K)]
+      have hconv1 : -3 * K / (1 + 4 * K * τ) = -(3 * K / (1 + 4 * K * τ)) := by ring
+      have hconv2 : -3 * K / (1 + 4 * K * τ') = -(3 * K / (1 + 4 * K * τ')) := by ring
+      rw [hconv1, hconv2]
+      linarith
+    have hconv : hamiltonIveyConvexBarrier K τ X ≤ hamiltonIveyConvexBarrier K τ' X := by
+      unfold hamiltonIveyConvexBarrier
+      exact max_le_max hscalar hmono
+    have hmain := hA.2.2
+    dsimp [X] at hmain hconv
+    exact le_trans hconv hmain
+
+theorem hamiltonIveyConvexMatrixRegion_reaction_small_time_fixed
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
+    (A : Matrix (Fin 3) (Fin 3) Real) (hA : A.IsHermitian)
+    (hAmem : A ∈ hamiltonIveyConvexMatrixRegion K tau) :
+    ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
+      A + t • hamiltonIveyMatrixReaction A ∈ hamiltonIveyConvexMatrixRegion K tau := by
+  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time hK htau A hA hAmem
+    with ⟨eps, heps, hstep⟩
+  refine ⟨eps, heps, ?_⟩
+  intro t ht
+  have hstep' : A + t • hamiltonIveyMatrixReaction A ∈ hamiltonIveyConvexMatrixRegion K (tau + t) :=
+    hstep t ht
+  exact hamiltonIveyConvexMatrixRegion_antitone_time (K := K) hK htau (by linarith [ht.1]) hstep'
+
+theorem hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time_fixed
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
+    (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hAmem : A ∈ hamiltonIveyConvexMatrixRegionEuclid K tau) :
+    ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
+      A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+        hamiltonIveyConvexMatrixRegionEuclid K tau := by
+  let M : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix A
+  have hMmem : M ∈ hamiltonIveyConvexMatrixRegion K tau := by
+    simpa [M] using (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K tau A).1 hAmem
+  have hMherm : M.IsHermitian := by
+    rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hMmem
+    exact hMmem.1
+  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time_fixed hK htau M hMherm hMmem
+    with ⟨eps, heps, hstep⟩
+  refine ⟨eps, heps, ?_⟩
+  intro t ht
+  have hstep' : M + t • hamiltonIveyMatrixReaction M ∈
+      hamiltonIveyConvexMatrixRegion K tau := hstep t ht
+  have hsum : A + t • uhlenbeckCurvatureOperatorReactionState A =
+      matrixToEuclid (M + t • hamiltonIveyMatrixReaction M) := by
+    dsimp [uhlenbeckCurvatureOperatorReactionState, M]
+    ext ij
+    simp [matrixToEuclid, euclidToMatrix]
+  rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+  rw [hsum]
+  rw [euclidToMatrix_matrixToEuclid]
+  exact hstep'
+
+theorem hamiltonIveyConvexMatrixRegionEuclid_fiber_tangent
+    {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
+    (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
+    (hAmem : A ∈ hamiltonIveyConvexMatrixRegionEuclid K tau) :
+    uhlenbeckCurvatureOperatorReactionState A ∈ posTangentConeAt
+      (hamiltonIveyConvexMatrixRegionEuclid K tau) A := by
+  rcases hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time_fixed hK htau A hAmem
+    with ⟨eps, heps, hstep⟩
+  have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+      hamiltonIveyConvexMatrixRegionEuclid K tau := by
+    rw [eventually_nhdsWithin_iff]
+    apply Filter.mem_of_superset (Ioo_mem_nhds (neg_lt_zero.mpr heps) heps)
+    intro t ht _htpos
+    exact hstep t ⟨_htpos.le, le_of_lt ht.2⟩
+  have hfreq : ∃ᶠ t : ℝ in 𝓝[>] 0, A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+      hamiltonIveyConvexMatrixRegionEuclid K tau := hev.frequently
+  exact mem_posTangentConeAt_of_frequently_mem hfreq
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
