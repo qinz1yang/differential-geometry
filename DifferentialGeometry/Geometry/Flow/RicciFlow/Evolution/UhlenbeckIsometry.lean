@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProdu
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensor
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
@@ -15,6 +16,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Set Filter
 open DifferentialGeometry.Analysis.ODE
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open scoped BigOperators Topology NNReal Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -1035,6 +1037,110 @@ theorem uhlenbeckPulledRm04At_apply_basis
         iota t x a i * iota t x b j * iota t x c k * iota t x d l *
           (S.base.rm04 t x) (vec4 (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l)) := by
           simp [smul_eq_mul, Finset.mul_sum, mul_assoc, mul_left_comm, mul_comm]
+
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem uhlenbeckEndomorphism_invertible
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hiota0 : ∀ x : M, ∀ a k : Idx, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Idx,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) :
+    Function.Bijective (uhlenbeckEndomorphismAt (basisAt x) iota t) := by
+  have hinj : Function.Injective (uhlenbeckEndomorphismAt (basisAt x) iota t) := by
+    intro v w hvw
+    by_contra hne
+    have hpos : 0 < (S.family.metric 0).inner x (v - w) (v - w) :=
+      (S.family.metric 0).pos x (v - w) (sub_ne_zero.mpr hne)
+    have hiso := uhlenbeckEndomorphism_isometry (I := I) (M := M) hT S basisAt iota hiota0 hgram ht x (v - w) (v - w)
+    have hU : uhlenbeckEndomorphismAt (basisAt x) iota t (v - w) = 0 := by
+      simp [hvw]
+    have hz : (S.family.metric t).inner x 0 0 = 0 := by simp
+    have hvv : (S.family.metric 0).inner x (v - w) (v - w) = 0 := by
+      rw [← hiso]
+      simp [hU]
+    linarith
+  exact ⟨hinj, (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+    (K := ℝ) (V := TangentSpace I x) (V₂ := TangentSpace I x) rfl
+      (f := (uhlenbeckEndomorphismAt (basisAt x) iota t).toLinearMap)).mp hinj⟩
+
+noncomputable def uhlenbeckMovingBasis
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hiota0 : ∀ x : M, ∀ a k : Idx, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Idx,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (t : ℝ) (ht : t ∈ Set.Icc 0 T) (x : M) :
+    Module.Basis Idx Real (TangentSpace I x) :=
+  (basisAt x).map (LinearMap.linearEquivOfInjective
+    (uhlenbeckEndomorphismAt (basisAt x) iota t).toLinearMap
+    (uhlenbeckEndomorphism_invertible hT S basisAt iota hiota0 hgram ht x).1 rfl)
+
+omit [SigmaCompactSpace M] [T2Space M] in
+@[simp] lemma uhlenbeckMovingBasis_apply
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hiota0 : ∀ x : M, ∀ a k : Idx, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Idx,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (t : ℝ) (ht : t ∈ Set.Icc 0 T) (x : M) (a : Idx) :
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x a =
+      uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x a) := by
+  unfold uhlenbeckMovingBasis
+  simp
+
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem uhlenbeckMovingBasis_orthonormalBasisAt
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (x : M) (horth0 : OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) :
+    OrthonormalBasisAt (I := I) (S.base.metric t) x
+      (uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x) := by
+  intro i j
+  rw [uhlenbeckMovingBasis_apply, uhlenbeckMovingBasis_apply]
+  exact (uhlenbeckEndomorphism_isometry (I := I) (M := M) hT S basisAt iota hiota0 hgram ht x
+    (basisAt x i) (basisAt x j)).trans (horth0 i j)
+
+omit [SigmaCompactSpace M] in
+theorem curvatureOperatorMatrixAt_pulledTensor_eq_original_moving
+    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) :
+    curvatureOperatorMatrixAt x (basisAt x)
+        ⟨uhlenbeckPulledRm04At S basisAt iota t x,
+          uhlenbeckPulledRm04At_mem_algebraicCurvatureTensorSubmodule S basisAt iota t x⟩ =
+      curvatureOperatorMatrixAt x (uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x)
+        ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x⟩ := by
+  ext i j
+  unfold curvatureOperatorMatrixAt
+  rw [uhlenbeckPulledRm04At_apply]
+  simp [uhlenbeckMovingBasis_apply]
 
 end FlowFrame
 
