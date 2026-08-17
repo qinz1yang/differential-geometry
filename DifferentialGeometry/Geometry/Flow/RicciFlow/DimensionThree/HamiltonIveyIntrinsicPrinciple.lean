@@ -2092,6 +2092,134 @@ theorem fiberRegionPropagationOn_of_bundleMaximumPrinciple
 
 end FiberMaximumPrinciple
 
+section FiberHeatReactionSolution
+
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Geometry.Operator
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem tensor04StdAt_compU_apply_all
+    {x : M} (X : Tensor04At (I := I) (M := M) x)
+    (U : TangentSpace I x →L[ℝ] TangentSpace I x)
+    (v y z w : TangentSpace I x) :
+    tensor04StdAt (I := I) (M := M) (X.compContinuousLinearMap (fun _ : Fin 4 => U)) v y z w =
+      tensor04StdAt (I := I) (M := M) X (U v) (U y) (U z) (U w) := by
+  change (X : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+      (fun i : Fin 4 => U (vec4 v y z w i)) =
+    (X : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+      (vec4 (U v) (U y) (U z) (U w))
+  congr 1
+  funext i
+  fin_cases i <;> simp [vec4]
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem basis_repr_uhlenbeckEndomorphism_apply_basis
+    {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (a j : Fin 3) :
+    basis.repr (uhlenbeckEndomorphismAt basis iota t (basis a)) j =
+      iota t x a j := by
+  rw [uhlenbeckEndomorphism_apply_basis]
+  rw [Module.Basis.repr_sum_self basis (fun k : Fin 3 => iota t x a k)]
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem sum_fin4_eq_sum_i_j_k_l (F : (Fin 4 → Fin 3) → ℝ) :
+    (∑ J : Fin 4 → Fin 3, F J) =
+      ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+        F (slots4 i j k l) := by
+  classical
+  let e : (Fin 4 → Fin 3) ≃ (((Fin 3 × Fin 3) × Fin 3) × Fin 3) :=
+    { toFun := fun f => (((f 0, f 1), f 2), f 3)
+      invFun := fun p => slots4 p.1.1.1 p.1.1.2 p.1.2 p.2
+      left_inv := by
+        intro f
+        funext a
+        fin_cases a <;> simp [slots4]
+      right_inv := by
+        intro p
+        rcases p with ⟨⟨⟨i, j⟩, k⟩, l⟩
+        simp [slots4] }
+  rw [Fintype.sum_equiv e F (fun p => F (e.symm p))
+    (fun x => congrArg F (e.left_inv x).symm)]
+  · repeat rw [Fintype.sum_prod_type]
+    rfl
+
+variable {T : ℝ} (hT : 0 < T) [I.Boundaryless]
+variable (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+variable (hS : IsSolutionOn (I := I) S)
+variable (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+variable (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+variable (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [I.Boundaryless] in
+theorem pulledRmComp_eq_uhlenbeckPullbackRmInFrame
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M) (a b c d : Fin 3) :
+    pulledRmComp S basisAt iota t x a b c d =
+      uhlenbeckPullbackRmInFrame iota
+        (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+        t x a b c d := by
+  classical
+  let e : Fin 3 → TangentSpace I x := fun i => uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x i)
+  let P : Fin 3 → Fin 3 → ℝ := fun j i => iota t x i j
+  have hP : ∀ i j : Fin 3, P j i = (basisAt x).repr (e i) j := by
+    intro i j
+    dsimp [e, P]
+    exact (basis_repr_uhlenbeckEndomorphism_apply_basis (I := I) (basisAt x) iota t i j).symm
+  have hmain := rm04Comp_expand (I := I) S t e (basisAt x) P hP a b c d
+  calc
+    pulledRmComp S basisAt iota t x a b c d
+        = tensor04StdAt (I := I) (M := M)
+            (uhlenbeckPulledRm04At S basisAt iota t x)
+            (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
+          rfl
+    _ = tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+          (e a) (e b) (e c) (e d) := by
+          rw [uhlenbeckPulledRm04At_apply]
+    _ = S.base.rm04 t x (vec4 (e a) (e b) (e c) (e d)) := by
+          rfl
+    _ = ∑ J : Fin 4 → Fin 3,
+          S.base.rm04 t x (fun p : Fin 4 => basisAt x (J p)) *
+            (∏ p : Fin 4, P (J p) (slots4 a b c d p)) := hmain
+    _ = ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+          tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+            (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l) *
+            (iota t x a i * iota t x b j * iota t x c k * iota t x d l) := by
+          rw [sum_fin4_eq_sum_i_j_k_l]
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro k _
+          apply Finset.sum_congr rfl
+          intro l _
+          rw [tensor04StdAt]
+          apply congrArg₂ (fun X Y : ℝ => X * Y)
+          · congr 1
+            funext p
+            fin_cases p <;> rfl
+          · simp [slots4, P, Fin.prod_univ_four]
+    _ = uhlenbeckPullbackRmInFrame iota
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+          t x a b c d := by
+          simp only [uhlenbeckPullbackRmInFrame, solutionRm04CompInFrame, rm04Comp, tensor04StdAt]
+          apply Finset.sum_congr rfl
+          intro i _
+          apply Finset.sum_congr rfl
+          intro j _
+          apply Finset.sum_congr rfl
+          intro k _
+          apply Finset.sum_congr rfl
+          intro l _
+          ring_nf
+
+end FiberHeatReactionSolution
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
