@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Uhlenbeck
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProducer
+import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
@@ -204,7 +206,7 @@ theorem movingFrameGram_valueConstant_of_ricciFlow
     (hmetric : MetricCompRicciFlowInFrameOn (D := D) metricComp Ric)
     (hframe : FrameRicciODEInFrameOn (D := D) frameComp Rup)
     (hcompat : RicciEndomorphismCompatibleInFrame metricComp Ric Rup)
-    (hTreg : Set.Ioc 0 T ⊆ D.regular)
+    (hTreg : Set.Ioo 0 T ⊆ D.regular)
     (hgram_cont : ∀ x : M, ∀ a b : Idx,
       ContinuousOn (fun s : ℝ => movingFrameGramInFrame metricComp frameComp s x a b)
         (Set.Icc 0 T))
@@ -214,7 +216,7 @@ theorem movingFrameGram_valueConstant_of_ricciFlow
   let f : ℝ → ℝ := fun s => movingFrameGramInFrame metricComp frameComp s x a b
   have hzero : ∀ s : ℝ, s ∈ Set.Ioo 0 t → HasDerivAt f 0 s := by
     intro s hs
-    have hsreg : s ∈ D.regular := hTreg ⟨hs.1, hs.2.le.trans ht.2⟩
+    have hsreg : s ∈ D.regular := hTreg ⟨hs.1, lt_of_lt_of_le hs.2 ht.2⟩
     have hderiv := evolvingFrameGram_constant_of_ricciFlow (D := D)
       metricComp Ric frameComp Rup hmetric hframe hcompat
       ⟨s, hsreg⟩ x a b
@@ -348,6 +350,304 @@ theorem uhlenbeckIotaOfSolution
     exact (Classical.choose_spec (hEx x)).2.1
   · intro t ht x a k
     exact (Classical.choose_spec (hEx x)).2.2 t ht a k
+
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem metricCompInFrame_symm
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {Idx : Type*}
+    (S : SolutionOn (I := I) (M := M) D)
+    (frame : Idx → (x : M) → TangentSpace I x)
+    (t : Real) (x : M) (i j : Idx) :
+    metricCompInFrame (I := I) S frame t x i j =
+      metricCompInFrame (I := I) S frame t x j i := by
+  simpa [metricCompInFrame] using (S.family.metric t).symm x (frame i x) (frame j x)
+
+omit [SigmaCompactSpace M] in
+theorem ricciCompInFrame_symm
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {Idx : Type*}
+    [I.Boundaryless]
+    (S : SolutionOn (I := I) (M := M) D)
+    (frame : Idx → (x : M) → TangentSpace I x)
+    (t : Real) (x : M) (i j : Idx) :
+    ricciCompInFrame (I := I) S frame t x i j =
+      ricciCompInFrame (I := I) S frame t x j i := by
+  unfold ricciCompInFrame
+  change metricRicciAt (I := I) (S.family.metric t) x (vec2 (frame i x) (frame j x)) =
+    metricRicciAt (I := I) (S.family.metric t) x (vec2 (frame j x) (frame i x))
+  simpa [metricRicciAt_apply_eq_ricciTensor] using
+    (metricRicciAt_apply_eq_ricciTensor (I := I) (M := M) (S.family.metric t) x
+      (frame i x) (frame j x)).trans
+      (ricciTensor_symm (I := I) (S.family.metric t) x (frame i x) (frame j x))
+
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem uhlenbeckRup_mul_metricComp_eq_ricci
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
+    (frame : Idx → (x : M) → TangentSpace I x)
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k * metricCompInFrame (I := I) S frame t x k j =
+        if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
+    (t : Real) (x : M) (l j : Idx) :
+    (∑ k : Idx, uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+        metricCompInFrame (I := I) S frame t x k j) =
+      ricciCompInFrame (I := I) S frame t x l j := by
+  classical
+  calc
+    (∑ k : Idx, uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+        metricCompInFrame (I := I) S frame t x k j)
+        = (∑ k : Idx, (∑ a : Idx, gInv t x k a * ricciCompInFrame (I := I) S frame t x l a) *
+            metricCompInFrame (I := I) S frame t x k j) := by
+          refine Finset.sum_congr rfl fun k _ => ?_
+          dsimp [uhlenbeckRupOfSolution, ricciOneUpCompInFrame]
+    _ = (∑ k : Idx, ∑ a : Idx,
+          gInv t x k a * ricciCompInFrame (I := I) S frame t x l a *
+            metricCompInFrame (I := I) S frame t x k j) := by
+          refine Finset.sum_congr rfl fun k _ => ?_
+          rw [Finset.sum_mul]
+    _ = (∑ a : Idx, ∑ k : Idx,
+          gInv t x k a * ricciCompInFrame (I := I) S frame t x l a *
+            metricCompInFrame (I := I) S frame t x k j) := by
+          rw [Finset.sum_comm]
+    _ = (∑ a : Idx, ricciCompInFrame (I := I) S frame t x l a *
+          (∑ k : Idx, gInv t x k a * metricCompInFrame (I := I) S frame t x k j)) := by
+          refine Finset.sum_congr rfl fun a _ => ?_
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl fun k _ => ?_
+          ring
+    _ = (∑ a : Idx, ricciCompInFrame (I := I) S frame t x l a * (if a = j then 1 else 0)) := by
+          refine Finset.sum_congr rfl fun a _ => ?_
+          have hinner : (∑ k : Idx, gInv t x k a * metricCompInFrame (I := I) S frame t x k j) =
+              if a = j then 1 else 0 := by
+            calc
+              (∑ k : Idx, gInv t x k a * metricCompInFrame (I := I) S frame t x k j)
+                  = (∑ k : Idx, gInv t x a k * metricCompInFrame (I := I) S frame t x k j) := by
+                    refine Finset.sum_congr rfl fun k _ => ?_
+                    rw [hginv_symm t x a k]
+              _ = if a = j then 1 else 0 := hgInv t x a j
+          rw [hinner]
+    _ = ricciCompInFrame (I := I) S frame t x l j := by
+          simp
+
+omit [SigmaCompactSpace M] in
+theorem ricciOneUpCompatible_of_inverseMetric
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    [I.Boundaryless]
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
+    (frame : Idx → (x : M) → TangentSpace I x)
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k * metricCompInFrame (I := I) S frame t x k j =
+        if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i) :
+    RicciEndomorphismCompatibleInFrame
+      (metricCompInFrame (I := I) S frame)
+      (ricciCompInFrame (I := I) S frame)
+      (uhlenbeckRupOfSolution (I := I) S gInv frame) := by
+  classical
+  intro t x v w
+  constructor
+  · calc
+      (∑ l : Idx, ∑ k : Idx, ∑ j : Idx,
+          v l * uhlenbeckRupOfSolution (I := I) S gInv frame t x l k * w j *
+            metricCompInFrame (I := I) S frame t x k j)
+          = (∑ l : Idx, ∑ j : Idx, ∑ k : Idx,
+              v l * uhlenbeckRupOfSolution (I := I) S gInv frame t x l k * w j *
+                metricCompInFrame (I := I) S frame t x k j) := by
+            refine Finset.sum_congr rfl fun l _ => ?_
+            rw [Finset.sum_comm]
+      _ = (∑ l : Idx, ∑ j : Idx,
+          v l * w j * ricciCompInFrame (I := I) S frame t x l j) := by
+            refine Finset.sum_congr rfl fun l _ => ?_
+            refine Finset.sum_congr rfl fun j _ => ?_
+            calc
+              (∑ k : Idx,
+                  v l * uhlenbeckRupOfSolution (I := I) S gInv frame t x l k * w j *
+                    metricCompInFrame (I := I) S frame t x k j)
+                  = v l * w j *
+                      (∑ k : Idx,
+                        uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                          metricCompInFrame (I := I) S frame t x k j) := by
+                    calc
+                      (∑ k : Idx,
+                          v l * uhlenbeckRupOfSolution (I := I) S gInv frame t x l k * w j *
+                            metricCompInFrame (I := I) S frame t x k j)
+                          = (∑ k : Idx,
+                              v l * w j *
+                                (uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                                  metricCompInFrame (I := I) S frame t x k j)) := by
+                            refine Finset.sum_congr rfl fun k _ => ?_
+                            ring
+                      _ = v l * w j *
+                          (∑ k : Idx,
+                            uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                              metricCompInFrame (I := I) S frame t x k j) := by
+                            rw [← Finset.mul_sum]
+              _ = v l * w j * ricciCompInFrame (I := I) S frame t x l j := by
+                    rw [uhlenbeckRup_mul_metricComp_eq_ricci (I := I) (M := M) S gInv frame
+                      hgInv hginv_symm t x l j]
+      _ = (∑ i : Idx, ∑ j : Idx, v i * w j * ricciCompInFrame (I := I) S frame t x i j) := by
+            rfl
+  · calc
+      (∑ i : Idx, ∑ l : Idx, ∑ k : Idx,
+          v i * w l * uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+            metricCompInFrame (I := I) S frame t x i k)
+          = (∑ i : Idx, ∑ l : Idx, ∑ k : Idx,
+              v i * w l * uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                metricCompInFrame (I := I) S frame t x k i) := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            apply Finset.sum_congr rfl
+            intro l hl
+            apply Finset.sum_congr rfl
+            intro k hk
+            rw [metricCompInFrame_symm (I := I) (M := M) S frame t x i k]
+      _ = (∑ i : Idx, ∑ l : Idx,
+          v i * w l * ricciCompInFrame (I := I) S frame t x l i) := by
+            have hinner : ∀ i l : Idx,
+                (∑ k : Idx, uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                    metricCompInFrame (I := I) S frame t x k i) =
+                  ricciCompInFrame (I := I) S frame t x l i := by
+              intro i l
+              exact uhlenbeckRup_mul_metricComp_eq_ricci (I := I) (M := M) S gInv frame
+                hgInv hginv_symm t x l i
+            apply Finset.sum_congr rfl
+            intro i hi
+            apply Finset.sum_congr rfl
+            intro l hl
+            calc
+              (∑ k : Idx,
+                  v i * w l * uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                    metricCompInFrame (I := I) S frame t x k i)
+                  = v i * w l *
+                      (∑ k : Idx,
+                        uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                          metricCompInFrame (I := I) S frame t x k i) := by
+                    calc
+                      (∑ k : Idx,
+                          v i * w l * uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                            metricCompInFrame (I := I) S frame t x k i)
+                          = (∑ k : Idx,
+                              v i * w l *
+                                (uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                                  metricCompInFrame (I := I) S frame t x k i)) := by
+                            apply Finset.sum_congr rfl
+                            intro k hk
+                            ring
+                      _ = v i * w l *
+                          (∑ k : Idx,
+                            uhlenbeckRupOfSolution (I := I) S gInv frame t x l k *
+                              metricCompInFrame (I := I) S frame t x k i) := by
+                            rw [← Finset.mul_sum]
+              _ = v i * w l * ricciCompInFrame (I := I) S frame t x l i := by
+                    rw [hinner i l]
+      _ = (∑ i : Idx, ∑ j : Idx, v i * w j * ricciCompInFrame (I := I) S frame t x i j) := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            apply Finset.sum_congr rfl
+            intro l hl
+            rw [ricciCompInFrame_symm (I := I) (M := M) S frame t x l i]
+
+theorem movingFrameGram_continuousOn_of_metricFamily
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSmoothSolutionOn (I := I) S)
+    {Idx : Type*} [Fintype Idx]
+    (frameComp : MatrixComp M Idx)
+    (hframe_cont : ∀ x : M, ContinuousOn (fun t : ℝ => frameComp t x) (Set.Icc 0 T))
+    (frame : Idx → (x : M) → TangentSpace I x)
+    {x : M} (a b : Idx) :
+    ContinuousOn (fun s : ℝ =>
+      movingFrameGramInFrame (metricCompInFrame (I := I) S frame) frameComp s x a b)
+      (Set.Icc 0 T) := by
+  classical
+  refine continuousOn_finset_sum Finset.univ ?_
+  intro i hi
+  refine continuousOn_finset_sum Finset.univ ?_
+  intro j hj
+  have hproj : ∀ p q : Idx, Continuous (fun F : Idx → Idx → ℝ => F p q) := by
+    intro p q
+    change Continuous (fun F : (j : Idx) → Idx → ℝ => (F p) q)
+    have h1 : Continuous (fun F : (j : Idx) → Idx → ℝ => F p) :=
+      continuous_apply (i := p)
+    have h2 : Continuous (fun G : (j : Idx) → ℝ => G q) :=
+      continuous_apply (i := q)
+    exact h2.comp h1
+  have hi_cont : ContinuousOn (fun s : ℝ => frameComp s x a i) (Set.Icc 0 T) :=
+    (hproj a i).comp_continuousOn (hframe_cont x)
+  have hj_cont : ContinuousOn (fun s : ℝ => frameComp s x b j) (Set.Icc 0 T) :=
+    (hproj b j).comp_continuousOn (hframe_cont x)
+  have hmetric_cont : ContinuousOn (fun s : ℝ =>
+      metricCompInFrame (I := I) S frame s x i j) (Set.Icc 0 T) := by
+    have hc := hS.isSolution.smoothMetric.coeff_cont x (frame i x) (frame j x)
+    have hsub : Set.Icc 0 T ⊆ (RealTimeInterval.closed 0 T hT.le).carrier := by
+      intro s hs
+      exact hs
+    simpa [metricCompInFrame] using hc.mono hsub
+  exact ((hi_cont.mul hj_cont).mul hmetric_cont).congr (fun s hs => by
+    simp)
+
+theorem uhlenbeckIota_isometry
+    {T : ℝ} (hT : 0 < T)
+    [I.Boundaryless]
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSmoothSolutionOn (I := I) S)
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
+    (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
+    (hginv_cont : ∀ i j : Idx, ContinuousOn
+      (fun q : ℝ × M => gInv q.1 q.2 i j) (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hricci_cont : ∀ (x : M) (v w : TangentSpace I x),
+      ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T))
+    (frame : Idx → (x : M) → TangentSpace I x)
+    (hgInv : ∀ t x i j,
+      ∑ k : Idx, gInv t x i k * metricCompInFrame (I := I) S frame t x k j =
+        if i = j then 1 else 0)
+    (hginv_symm : ∀ t x i j, gInv t x i j = gInv t x j i)
+    (A₀ : Idx → Idx → ℝ) :
+    ∃ iota : MatrixComp M Idx,
+      (∀ x : M, ∀ a k : Idx, iota 0 x a k = A₀ a k) ∧
+      FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
+        (uhlenbeckRupOfSolution (I := I) S gInv frame) ∧
+      ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Idx,
+        movingFrameGramInFrame (metricCompInFrame (I := I) S frame) iota t x a b =
+          movingFrameGramInFrame (metricCompInFrame (I := I) S frame) iota 0 x a b := by
+  classical
+  obtain ⟨iota, hiota0, hiota_cont, hiota_deriv⟩ :=
+    uhlenbeckIotaOfSolution (I := I) (M := M) hT S gInv hginv_cont hricci_cont frame A₀
+  have hframeODE : FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
+      (uhlenbeckRupOfSolution (I := I) S gInv frame) := by
+    intro t x a k
+    exact (hiota_deriv (t : ℝ) ⟨le_of_lt t.2.1, t.2.2⟩ x a k).mono (by
+      intro s hs
+      exact hs.1)
+  refine ⟨iota, hiota0, hframeODE, ?_⟩
+  intro t ht x a b
+  have hcompat := ricciOneUpCompatible_of_inverseMetric (I := I) (M := M) S gInv frame
+    hgInv hginv_symm
+  have hmetric : MetricCompRicciFlowInFrameOn (D := RealTimeInterval.closed 0 T hT.le)
+      (metricCompInFrame (I := I) S frame) (ricciCompInFrame (I := I) S frame) := by
+    intro τ x i j
+    exact metricCompInFrame_timeDeriv (I := I) S hS.isSolution frame τ x i j
+  have hgram_cont : ∀ x : M, ∀ a b : Idx,
+      ContinuousOn (fun s : ℝ =>
+        movingFrameGramInFrame (metricCompInFrame (I := I) S frame) iota s x a b)
+        (Set.Icc 0 T) := by
+    intro x a b
+    exact movingFrameGram_continuousOn_of_metricFamily (I := I) (M := M) hT S hS
+      iota hiota_cont frame a b
+  exact movingFrameGram_valueConstant_of_ricciFlow
+    (D := RealTimeInterval.closed 0 T hT.le) (T := T)
+    (metricCompInFrame (I := I) S frame) (ricciCompInFrame (I := I) S frame)
+    iota (uhlenbeckRupOfSolution (I := I) S gInv frame)
+    hmetric hframeODE hcompat (by
+      intro s hs
+      change s ∈ Set.Ioo 0 T
+      exact hs)
+    hgram_cont ht x a b
 
 end FlowFrame
 
