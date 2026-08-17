@@ -2574,6 +2574,97 @@ theorem iotaT_mul_iota_eq_gInv
     _ = solutionInverseMetricComponents (I := I) (M := M) S basisAt t x j j' := by
           rfl
 
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [I.Boundaryless] in
+theorem laplacianAt_congr_flowG
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) {t : ℝ} {x : M}
+    {f h : M → ℝ}
+    (hf : ContMDiffAt I 𝓘(Real, Real) ∞ f x)
+    (hh : ContMDiffAt I 𝓘(Real, Real) ∞ h x)
+    (heq : f =ᶠ[𝓝 x] h) :
+    laplacianAt (I := I) (flowG (I := I) S) t f x =
+      laplacianAt (I := I) (flowG (I := I) S) t h x := by
+  unfold laplacianAt
+  change laplacian (I := I) (S.base.connection t) (S.base.metric t) f x =
+    laplacian (I := I) (S.base.connection t) (S.base.metric t) h x
+  exact laplacian_congr_of_eventuallyEq (I := I) (S.base.connection t) (S.base.metric t) hf hh heq
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [I.Boundaryless] in
+theorem pulledRmComp_entry_continuousOn_time
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota_cont : ∀ x : M, ContinuousOn (fun t : ℝ => iota t x) (Set.Icc 0 T))
+    (x : M) (a b c d : Fin 3) :
+    ContinuousOn (fun s : ℝ => pulledRmComp S basisAt iota s x a b c d) (Set.Icc 0 T) := by
+  classical
+  rw [continuousOn_iff_continuous_restrict]
+  let P := {s : ℝ // s ∈ Set.Icc 0 T}
+  have hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 (Set.Icc 0 T)
+      (fun t y => S.base.rm04 t y) := by
+    exact Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M) hS.rm04Cont (by intro s hs; exact hs)
+  have hiota_entry : ∀ k j : Fin 3, Continuous (fun p : P => iota p.1 x k j) := by
+    intro k j
+    have h1 : ∀ i : Fin 3, ContinuousOn (fun t : ℝ => iota t x i) (Set.Icc 0 T) :=
+      continuousOn_pi.mp (hiota_cont x)
+    have h2 : ∀ j' : Fin 3, ContinuousOn (fun t : ℝ => iota t x k j') (Set.Icc 0 T) :=
+      continuousOn_pi.mp (h1 k)
+    exact (h2 j).comp_continuous continuous_subtype_val (by intro p; exact p.2)
+  have hU : ∀ k : Fin 3, Continuous (fun p : P =>
+      uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x k)) := by
+    intro k
+    have hsum : (fun p : P => uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x k)) =
+        fun p : P => ∑ j : Fin 3, iota p.1 x k j • basisAt x j := by
+      funext p
+      exact uhlenbeckEndomorphism_apply_basis (basisAt x) iota p.1 k
+    rw [hsum]
+    refine continuous_finset_sum Finset.univ ?_
+    intro j _
+    exact (hiota_entry k j).smul continuous_const
+  have heval := Tensor0SFamilyContinuousOnSet.eval_continuous (I := I) (M := M) (s := 4)
+    (K := Set.Icc 0 T) (A := fun t y => S.base.rm04 t y) hA
+    (P := P) (τ := fun p : P => p.1) (b := fun p : P => x)
+    continuous_subtype_val (fun p : P => p.2) continuous_const
+    (v := fun n : Fin 4 => fun p : P =>
+      vec4 (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x a))
+           (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x b))
+           (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x c))
+           (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x d)) n)
+    (by
+      intro n
+      fin_cases n
+      · change Continuous (fun p : P =>
+          TotalSpace.mk' E (E := fun y : M => TangentSpace I y) x
+            (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x a)))
+        exact tangentSection_cont_constBase_of_fiber_cont (I := I) (hU a)
+      · change Continuous (fun p : P =>
+          TotalSpace.mk' E (E := fun y : M => TangentSpace I y) x
+            (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x b)))
+        exact tangentSection_cont_constBase_of_fiber_cont (I := I) (hU b)
+      · change Continuous (fun p : P =>
+          TotalSpace.mk' E (E := fun y : M => TangentSpace I y) x
+            (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x c)))
+        exact tangentSection_cont_constBase_of_fiber_cont (I := I) (hU c)
+      · change Continuous (fun p : P =>
+          TotalSpace.mk' E (E := fun y : M => TangentSpace I y) x
+            (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x d)))
+        exact tangentSection_cont_constBase_of_fiber_cont (I := I) (hU d))
+  refine heval.congr ?_
+  intro p
+  unfold pulledRmComp
+  change S.base.rm04 p.1 x (fun i : Fin 4 =>
+    vec4 (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x a))
+         (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x b))
+         (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x c))
+         (uhlenbeckEndomorphismAt (basisAt x) iota p.1 (basisAt x d)) i) =
+    tensor04StdAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota p.1 x)
+      (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d)
+  rw [uhlenbeckPulledRm04At_apply]
+  rfl
+
 end FiberHeatReactionSolution
 
 end DifferentialGeometry.PDE.RicciFlow
