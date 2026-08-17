@@ -19,6 +19,7 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
+variable [SigmaCompactSpace M] [T2Space M]
 
 omit [FiniteDimensional Real E] [CompleteSpace E] in
 theorem eq_of_hasDerivAt_zero_on_Ioo {f : ℝ → ℝ} {t : ℝ} (ht : 0 ≤ t)
@@ -225,5 +226,129 @@ theorem movingFrameGram_valueConstant_of_ricciFlow
     exact ⟨hs.1, le_trans hs.2 ht.2⟩
   have hmain := eq_of_hasDerivAt_zero_on_Ioo ht.1 hcont hzero
   simpa [f] using hmain
+
+section FlowFrame
+
+variable {Idx : Type*} [Fintype Idx]
+
+noncomputable def uhlenbeckRupOfSolution
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
+    (frame : Idx → (x : M) → TangentSpace I x) : MatrixComp M Idx :=
+  fun t x i k => ricciOneUpCompInFrame (I := I) S gInv frame t x i k
+
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem uhlenbeckRup_entry_continuousOn
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
+    (hginv_cont : ∀ i j : Idx, ContinuousOn
+      (fun q : ℝ × M => gInv q.1 q.2 i j) (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hricci_cont : ∀ (x : M) (v w : TangentSpace I x),
+      ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T))
+    (frame : Idx → (x : M) → TangentSpace I x)
+    {x : M} (i k : Idx) :
+    ContinuousOn (fun t : ℝ => uhlenbeckRupOfSolution (I := I) S gInv frame t x i k)
+      (Set.Icc 0 T) := by
+  classical
+  refine continuousOn_finset_sum Finset.univ ?_
+  intro a ha
+  have hginv : ContinuousOn (fun t : ℝ => gInv t x k a) (Set.Icc 0 T) := by
+    have hmap : ContinuousOn (fun t : ℝ => (t, x)) (Set.Icc 0 T) := by
+      fun_prop
+    have hsub : Set.MapsTo (fun t : ℝ => (t, x)) (Set.Icc 0 T)
+        (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
+      intro t ht
+      exact ⟨ht, trivial⟩
+    have hc := (hginv_cont k a).comp hmap hsub
+    simpa using hc
+  have hricci : ContinuousOn (fun t : ℝ => ricciCompInFrame (I := I) S frame t x i a)
+      (Set.Icc 0 T) := by
+    simpa [ricciCompInFrame] using hricci_cont x (frame i x) (frame a x)
+  simpa [uhlenbeckRupOfSolution, ricciOneUpCompInFrame, Finset.mul_sum] using hginv.mul hricci
+
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem uhlenbeckIotaOfSolution
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    {Idx : Type*} [Fintype Idx] [Nonempty Idx]
+    (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
+    (hginv_cont : ∀ i j : Idx, ContinuousOn
+      (fun q : ℝ × M => gInv q.1 q.2 i j) (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hricci_cont : ∀ (x : M) (v w : TangentSpace I x),
+      ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T))
+    (frame : Idx → (x : M) → TangentSpace I x)
+    (A₀ : Idx → Idx → ℝ) :
+    ∃ iota : MatrixComp M Idx,
+      (∀ x : M, ∀ a k : Idx, iota 0 x a k = A₀ a k) ∧
+      (∀ x : M, ContinuousOn (fun t : ℝ => iota t x) (Set.Icc 0 T)) ∧
+      ∀ t : ℝ, t ∈ Set.Ico 0 T → ∀ x : M, ∀ a k : Idx,
+        HasDerivWithinAt (fun s : ℝ => iota s x a k)
+          (∑ l : Idx, uhlenbeckRupOfSolution (I := I) S gInv frame t x l k * iota t x a l)
+          (Set.Ici 0) t := by
+  classical
+  have hRup_cont : ∀ x : M, ∀ i k : Idx,
+      ContinuousOn (fun t : ℝ => uhlenbeckRupOfSolution (I := I) S gInv frame t x i k)
+        (Set.Icc 0 T) := by
+    intro x i k
+    exact uhlenbeckRup_entry_continuousOn (I := I) (M := M) hT S
+      gInv hginv_cont hricci_cont frame i k
+  have hEx : ∀ x : M, ∃ iota : ℝ → Idx → Idx → ℝ,
+      (∀ a k : Idx, iota 0 a k = A₀ a k) ∧
+      ContinuousOn iota (Set.Icc 0 T) ∧
+      ∀ t : ℝ, t ∈ Set.Ico 0 T → ∀ a k : Idx,
+        HasDerivWithinAt (fun s : ℝ => iota s a k)
+          (∑ l : Idx, uhlenbeckRupOfSolution (I := I) S gInv frame t x l k * iota t a l)
+          (Set.Ici 0) t := by
+    intro x
+    have hbdd : ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ l k : Idx,
+        |uhlenbeckRupOfSolution (I := I) S gInv frame t x l k| ≤ C := by
+      have hmax : ∀ (i k : Idx), ∃ M : ℝ, ∀ t : ℝ, t ∈ Set.Icc 0 T →
+          |uhlenbeckRupOfSolution (I := I) S gInv frame t x i k| ≤ M := by
+        intro i k
+        have hc : ContinuousOn (fun t : ℝ =>
+            |uhlenbeckRupOfSolution (I := I) S gInv frame t x i k|) (Set.Icc 0 T) :=
+          (hRup_cont x i k).norm
+        have hne : (Set.Icc (0 : ℝ) T).Nonempty := ⟨0, ⟨le_rfl, le_of_lt hT⟩⟩
+        obtain ⟨q, hq, hmaxq⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_isMaxOn hne hc
+        exact ⟨|uhlenbeckRupOfSolution (I := I) S gInv frame q x i k|,
+          fun t ht => hmaxq ⟨ht.1, ht.2⟩⟩
+      have hpos_choose : ∀ (i k : Idx), 0 ≤ (hmax i k).choose := by
+        intro i k
+        exact le_trans (abs_nonneg _) ((hmax i k).choose_spec 0 ⟨le_rfl, le_of_lt hT⟩)
+      let C : ℝ := ∑ i : Idx, ∑ k : Idx, (hmax i k).choose
+      refine ⟨C, ?_, ?_⟩
+      · exact Finset.sum_nonneg (fun i hi =>
+          Finset.sum_nonneg (fun k hk => hpos_choose i k))
+      · intro t ht l k
+        have hle : |uhlenbeckRupOfSolution (I := I) S gInv frame t x l k| ≤
+            (hmax l k).choose := (hmax l k).choose_spec t ht
+        calc
+          |uhlenbeckRupOfSolution (I := I) S gInv frame t x l k| ≤
+              (hmax l k).choose := hle
+          _ ≤ C := by
+                dsimp [C]
+                have h1 : (hmax l k).choose ≤ ∑ k' : Idx, (hmax l k').choose := by
+                  refine Finset.single_le_sum (fun i' hi' => hpos_choose l i')
+                    (Finset.mem_univ k)
+                have h2 : ∑ k' : Idx, (hmax l k').choose ≤ C := by
+                  refine Finset.single_le_sum (fun i' hi' =>
+                    Finset.sum_nonneg (fun k' hk' => hpos_choose i' k'))
+                    (Finset.mem_univ l)
+                exact le_trans h1 h2
+    rcases uhlenbeckFrameODE_solution hT (uhlenbeckRupOfSolution (I := I) S gInv frame · x)
+      hbdd (fun l k => hRup_cont x l k) A₀ with ⟨γ, hγ0, hγcont, hγderiv⟩
+    exact ⟨γ, hγ0, hγcont, hγderiv⟩
+  let iota : MatrixComp M Idx := fun t x a k => (Classical.choose (hEx x)) t a k
+  refine ⟨iota, ?_, ?_, ?_⟩
+  · intro x a k
+    exact (Classical.choose_spec (hEx x)).1 a k
+  · intro x
+    exact (Classical.choose_spec (hEx x)).2.1
+  · intro t ht x a k
+    exact (Classical.choose_spec (hEx x)).2.2 t ht a k
+
+end FlowFrame
 
 end DifferentialGeometry.PDE.RicciFlow
