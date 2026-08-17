@@ -3279,6 +3279,184 @@ theorem nablaKRm04Field_one_bianchi123_cond
           rw [← hcycV, ← hcyc2V, ← hVat]
     _ = 0 := hsum'
 
+omit [SigmaCompactSpace M] in
+theorem nablaKRm04Field_two_anti23_cond
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
+    (u v : TangentSpace I x) (slots : Fin 4 → TangentSpace I x) :
+    (nablaKRm04Field (I := I) S t 2 x)
+        (Fin.cons u (Fin.cons v (slots ∘ Equiv.swap (0 : Fin 4) (1 : Fin 4)))) +
+      (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (Fin.cons v slots)) = 0 := by
+  classical
+  let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x u).choose
+  have hX : X x = u :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x u).choose_spec
+  let V5 : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x (Fin.cases v (fun i : Fin 4 => slots i) a)).choose
+  have hV5 : ∀ a : Fin 5, V5 a x = Fin.cases v (fun i : Fin 4 => slots i) a := fun a =>
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x (Fin.cases v (fun i : Fin 4 => slots i) a)).choose_spec
+  let perms : Bool → Equiv.Perm (Fin 5) :=
+    fun k => if k then succPerm (Equiv.swap (0 : Fin 4) (1 : Fin 4)) else 1
+  let c : Bool → ℝ := fun _ => 1
+  have hhid : ∀ p : M, ∀ s5 : Fin 5 → TangentSpace I p,
+      (∑ k : Bool, c k * (nablaKRm04Field (I := I) S t 1 p)
+          (fun a : Fin 5 => s5 (perms k a))) = 0 := by
+    intro p s5
+    have h1 := nablaKRm04Field_one_anti12_cond (I := I) S t p (s5 0) (fun i : Fin 4 => s5 (i.succ))
+    rw [Fintype.sum_bool]
+    change (1 : ℝ) * (nablaKRm04Field (I := I) S t 1 p)
+          (fun a : Fin 5 => s5 (succPerm (Equiv.swap (0 : Fin 4) (1 : Fin 4)) a)) +
+      (1 : ℝ) * (nablaKRm04Field (I := I) S t 1 p) (fun a : Fin 5 => s5 a) = 0
+    simp only [one_mul]
+    calc
+      (nablaKRm04Field (I := I) S t 1 p)
+          (fun a : Fin 5 => s5 (succPerm (Equiv.swap (0 : Fin 4) (1 : Fin 4)) a)) +
+        (nablaKRm04Field (I := I) S t 1 p) (fun a : Fin 5 => s5 a)
+          = (nablaKRm04Field (I := I) S t 1 p)
+              (Fin.cons (s5 0) ((fun i : Fin 4 => s5 (i.succ)) ∘ Equiv.swap (0 : Fin 4) (1 : Fin 4))) +
+            (nablaKRm04Field (I := I) S t 1 p) (Fin.cons (s5 0) (fun i : Fin 4 => s5 (i.succ))) := by
+            congr 1
+            · congr 1
+              rw [← fin_cons_comp_succPerm (s5 0) (fun i : Fin 4 => s5 (i.succ))
+                (Equiv.swap (0 : Fin 4) (1 : Fin 4))]
+              rw [fin_cons_tail (fun i : Fin 5 => s5 i)]
+              rfl
+            · congr 1
+              rw [fin_cons_tail (fun i : Fin 5 => s5 i)]
+    _ = 0 := h1
+  have hmain := TotalNabla0SRealizes.deriv_linear_combination
+    (I := I) (s := 5) (cov := S.family.connection t)
+    (α := nablaKRm04Field (I := I) S t 1) (nablaAlpha := nablaKRm04Field (I := I) S t 2)
+    (h := nablaKRm04Field_realizes (I := I) S t 1)
+    (perms := perms) (c := c)
+    (hid := hhid) X V5 x
+  have hsum0 : (nablaKRm04Field (I := I) S t 2 x)
+        (Fin.cons u (fun a : Fin 5 => V5 (succPerm (Equiv.swap (0 : Fin 4) (1 : Fin 4)) a) x)) +
+      (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (fun a : Fin 5 => V5 a x)) = 0 := by
+    rw [Fintype.sum_bool] at hmain
+    rw [hX] at hmain
+    change (1 : ℝ) * (nablaKRm04Field (I := I) S t 2 x)
+        (Fin.cons u (fun a : Fin 5 => V5 (succPerm (Equiv.swap (0 : Fin 4) (1 : Fin 4)) a) x)) +
+      (1 : ℝ) * (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (fun a : Fin 5 => V5 a x)) = 0 at hmain
+    simpa using hmain
+  have hVat5 : (fun a : Fin 5 => V5 a x) = Fin.cons v (fun i : Fin 4 => slots i) := by
+    funext a
+    exact hV5 a
+  have hswap5 : (fun a : Fin 5 => V5 (succPerm (Equiv.swap (0 : Fin 4) (1 : Fin 4)) a) x) =
+      Fin.cons v (fun i : Fin 4 => slots (Equiv.swap (0 : Fin 4) (1 : Fin 4) i)) := by
+    funext a
+    rw [hV5]
+    cases a using Fin.cases with
+    | zero => simp [succPerm]
+    | succ i' => simp [succPerm]
+  calc
+    (nablaKRm04Field (I := I) S t 2 x)
+        (Fin.cons u (Fin.cons v (slots ∘ Equiv.swap (0 : Fin 4) (1 : Fin 4)))) +
+      (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (Fin.cons v slots))
+        = (nablaKRm04Field (I := I) S t 2 x)
+            (Fin.cons u (fun a : Fin 5 => V5 (succPerm (Equiv.swap (0 : Fin 4) (1 : Fin 4)) a) x)) +
+          (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (fun a : Fin 5 => V5 a x)) := by
+          congr 1
+          · congr 1
+            rw [hswap5]
+            rfl
+          · congr 1
+            rw [hVat5]
+    _ = 0 := hsum0
+
+omit [SigmaCompactSpace M] in
+theorem nablaKRm04Field_two_anti45_cond
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
+    (u v : TangentSpace I x) (slots : Fin 4 → TangentSpace I x) :
+    (nablaKRm04Field (I := I) S t 2 x)
+        (Fin.cons u (Fin.cons v (slots ∘ Equiv.swap (2 : Fin 4) (3 : Fin 4)))) +
+      (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (Fin.cons v slots)) = 0 := by
+  classical
+  let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x u).choose
+  have hX : X x = u :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x u).choose_spec
+  let V5 : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x (Fin.cases v (fun i : Fin 4 => slots i) a)).choose
+  have hV5 : ∀ a : Fin 5, V5 a x = Fin.cases v (fun i : Fin 4 => slots i) a := fun a =>
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x (Fin.cases v (fun i : Fin 4 => slots i) a)).choose_spec
+  let perms : Bool → Equiv.Perm (Fin 5) :=
+    fun k => if k then succPerm (Equiv.swap (2 : Fin 4) (3 : Fin 4)) else 1
+  let c : Bool → ℝ := fun _ => 1
+  have hhid : ∀ p : M, ∀ s5 : Fin 5 → TangentSpace I p,
+      (∑ k : Bool, c k * (nablaKRm04Field (I := I) S t 1 p)
+          (fun a : Fin 5 => s5 (perms k a))) = 0 := by
+    intro p s5
+    have h1 := nablaKRm04Field_one_anti34_cond (I := I) S t p (s5 0) (fun i : Fin 4 => s5 (i.succ))
+    rw [Fintype.sum_bool]
+    change (1 : ℝ) * (nablaKRm04Field (I := I) S t 1 p)
+          (fun a : Fin 5 => s5 (succPerm (Equiv.swap (2 : Fin 4) (3 : Fin 4)) a)) +
+      (1 : ℝ) * (nablaKRm04Field (I := I) S t 1 p) (fun a : Fin 5 => s5 a) = 0
+    simp only [one_mul]
+    calc
+      (nablaKRm04Field (I := I) S t 1 p)
+          (fun a : Fin 5 => s5 (succPerm (Equiv.swap (2 : Fin 4) (3 : Fin 4)) a)) +
+        (nablaKRm04Field (I := I) S t 1 p) (fun a : Fin 5 => s5 a)
+          = (nablaKRm04Field (I := I) S t 1 p)
+              (Fin.cons (s5 0) ((fun i : Fin 4 => s5 (i.succ)) ∘ Equiv.swap (2 : Fin 4) (3 : Fin 4))) +
+            (nablaKRm04Field (I := I) S t 1 p) (Fin.cons (s5 0) (fun i : Fin 4 => s5 (i.succ))) := by
+            congr 1
+            · congr 1
+              rw [← fin_cons_comp_succPerm (s5 0) (fun i : Fin 4 => s5 (i.succ))
+                (Equiv.swap (2 : Fin 4) (3 : Fin 4))]
+              rw [fin_cons_tail (fun i : Fin 5 => s5 i)]
+              rfl
+            · congr 1
+              rw [fin_cons_tail (fun i : Fin 5 => s5 i)]
+    _ = 0 := h1
+  have hmain := TotalNabla0SRealizes.deriv_linear_combination
+    (I := I) (s := 5) (cov := S.family.connection t)
+    (α := nablaKRm04Field (I := I) S t 1) (nablaAlpha := nablaKRm04Field (I := I) S t 2)
+    (h := nablaKRm04Field_realizes (I := I) S t 1)
+    (perms := perms) (c := c)
+    (hid := hhid) X V5 x
+  have hsum0 : (nablaKRm04Field (I := I) S t 2 x)
+        (Fin.cons u (fun a : Fin 5 => V5 (succPerm (Equiv.swap (2 : Fin 4) (3 : Fin 4)) a) x)) +
+      (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (fun a : Fin 5 => V5 a x)) = 0 := by
+    rw [Fintype.sum_bool] at hmain
+    rw [hX] at hmain
+    change (1 : ℝ) * (nablaKRm04Field (I := I) S t 2 x)
+        (Fin.cons u (fun a : Fin 5 => V5 (succPerm (Equiv.swap (2 : Fin 4) (3 : Fin 4)) a) x)) +
+      (1 : ℝ) * (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (fun a : Fin 5 => V5 a x)) = 0 at hmain
+    simpa using hmain
+  have hVat5 : (fun a : Fin 5 => V5 a x) = Fin.cons v (fun i : Fin 4 => slots i) := by
+    funext a
+    exact hV5 a
+  have hswap5 : (fun a : Fin 5 => V5 (succPerm (Equiv.swap (2 : Fin 4) (3 : Fin 4)) a) x) =
+      Fin.cons v (fun i : Fin 4 => slots (Equiv.swap (2 : Fin 4) (3 : Fin 4) i)) := by
+    funext a
+    rw [hV5]
+    cases a using Fin.cases with
+    | zero => simp [succPerm]
+    | succ i' => simp [succPerm]
+  calc
+    (nablaKRm04Field (I := I) S t 2 x)
+        (Fin.cons u (Fin.cons v (slots ∘ Equiv.swap (2 : Fin 4) (3 : Fin 4)))) +
+      (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (Fin.cons v slots))
+        = (nablaKRm04Field (I := I) S t 2 x)
+            (Fin.cons u (fun a : Fin 5 => V5 (succPerm (Equiv.swap (2 : Fin 4) (3 : Fin 4)) a) x)) +
+          (nablaKRm04Field (I := I) S t 2 x) (Fin.cons u (fun a : Fin 5 => V5 a x)) := by
+          congr 1
+          · congr 1
+            rw [hswap5]
+            rfl
+          · congr 1
+            rw [hVat5]
+    _ = 0 := hsum0
+
 end RoughLapAlgebraic
 
 end DifferentialGeometry.PDE.RicciFlow
