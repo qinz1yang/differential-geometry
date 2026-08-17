@@ -2454,6 +2454,126 @@ theorem pulledRmComp_eq_rm_ricci_moving
     _ = rm (fun i j : Fin 3 => S.ricciAt t x (vec2 (I := I) (moving i) (moving j))) a b c d := by
           simpa using hmain
 
+
+omit [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+private theorem tangentSection_cont_constBase_of_fiber_cont
+    {x : M} {P : Type*} [TopologicalSpace P] {w : P → TangentSpace I x}
+    (hw : Continuous w) :
+    Continuous (fun p : P =>
+      TotalSpace.mk' E (E := fun y : M => TangentSpace I y) x (w p)) := by
+  classical
+  let e := trivializationAt E (TangentSpace I) x
+  have hx : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
+  have hlin : Continuous (fun p : P => e.linearMapAt ℝ x (w p)) := by
+    have h1 : e.linearMapAt ℝ x = e.linearEquivAt ℝ x hx := e.linearMapAt_def_of_mem hx
+    rw [h1]
+    exact (e.linearEquivAt ℝ x hx).toLinearMap.continuous_of_finiteDimensional.comp hw
+  have hpair : ContinuousOn (fun p : P => (x, e.linearMapAt ℝ x (w p))) univ := by
+    exact ContinuousOn.prodMk continuousOn_const hlin.continuousOn
+  have hsec : ContinuousOn (fun p : P =>
+      TotalSpace.mk' E (E := fun y : M => TangentSpace I y) x (e.symm x (e.linearMapAt ℝ x (w p)))) univ := by
+    have hc := e.continuousOn_symm.comp hpair (by intro p _; exact ⟨hx, trivial⟩)
+    exact hc
+  have hcont : Continuous (fun p : P =>
+      TotalSpace.mk' E (E := fun y : M => TangentSpace I y) x (e.symm x (e.linearMapAt ℝ x (w p)))) :=
+    continuousOn_univ.mp hsec
+  refine hcont.congr ?_
+  intro p
+  congr 1
+  rw [e.linearMapAt_apply, if_pos hx]
+  rw [e.symm_apply_apply_mk hx (w p)]
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+  [I.Boundaryless] in
+theorem iotaT_mul_iota_eq_gInv
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) (j j' : Fin 3) :
+    (∑ e : Fin 3, iota t x e j * iota t x e j') =
+      solutionInverseMetricComponents (I := I) (M := M) S basisAt t x j j' := by
+  classical
+  let Mtx : Matrix (Fin 3) (Fin 3) ℝ := solutionGramMatrix (I := I) (M := M) S basisAt t x
+  let L : Matrix (Fin 3) (Fin 3) ℝ := fun a k => iota t x a k
+  have hMunit : IsUnit Mtx.det :=
+    solutionGramMatrix_det_isUnit (I := I) (M := M) S basisAt t x
+  have hgramδ : ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+        if a = b then 1 else 0 := by
+    intro a b
+    have h1 := hgram t ht x a b
+    have h2 : movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b =
+        if a = b then 1 else 0 := by
+      unfold movingFrameGramInFrame
+      rw [Finset.sum_eq_single a]
+      · rw [Finset.sum_eq_single b]
+        · have haa : iota 0 x a a = 1 := by rw [hiota0 x a a, if_pos rfl]
+          have hbb : iota 0 x b b = 1 := by rw [hiota0 x b b, if_pos rfl]
+          rw [haa, hbb]
+          norm_num
+          change metricCompInFrame (I := I) S (fun a x => basisAt x a) 0 x a b = if a = b then 1 else 0
+          simpa [metricCompInFrame, delta3] using horth0 x a b
+        · intro k _ hk
+          rw [hiota0 x b k]
+          rw [if_neg (Ne.symm hk)]
+          simp
+        · intro hb
+          exact False.elim (hb (Finset.mem_univ b))
+      · intro k _ hk
+        rw [hiota0 x a k]
+        rw [if_neg (Ne.symm hk)]
+        simp
+      · intro ha
+        exact False.elim (ha (Finset.mem_univ a))
+    rw [h1, h2]
+  have horth : ∀ a b : Fin 3, (L * Mtx * L.transpose) a b = if a = b then 1 else 0 := by
+    intro a b
+    calc
+      (L * Mtx * L.transpose) a b
+          = movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b := by
+            unfold movingFrameGramInFrame
+            simp only [Matrix.mul_apply, Matrix.transpose_apply, L, Mtx,
+              solutionGramMatrix, Matrix.of_apply, Finset.sum_mul]
+            rw [Finset.sum_comm]
+            apply Finset.sum_congr rfl
+            intro i _
+            apply Finset.sum_congr rfl
+            intro j _
+            ring
+      _ = if a = b then 1 else 0 := hgramδ a b
+  have horthM : L * Mtx * L.transpose = 1 := by
+    ext a b
+    rw [Matrix.one_apply]
+    exact horth a b
+  have hcomm : L.transpose * (L * Mtx) = 1 := by
+    exact mul_eq_one_comm.2 (by simpa [Matrix.mul_assoc] using horthM)
+  have hLLM : (L.transpose * L) * Mtx = 1 := by
+    simpa [Matrix.mul_assoc] using hcomm
+  have hLL : L.transpose * L = Mtx⁻¹ := by
+    calc
+      L.transpose * L = (L.transpose * L) * 1 := by rw [Matrix.mul_one]
+      _ = (L.transpose * L) * (Mtx * Mtx⁻¹) := by rw [← Matrix.mul_nonsing_inv Mtx hMunit]
+      _ = ((L.transpose * L) * Mtx) * Mtx⁻¹ := by
+            simp only [Matrix.mul_assoc]
+      _ = Mtx⁻¹ := by
+            rw [hLLM]
+            simp
+  have hentry := congrFun (congrFun hLL j) j'
+  calc
+    (∑ e : Fin 3, iota t x e j * iota t x e j')
+        = (L.transpose * L) j j' := by
+          simp [Matrix.mul_apply, L]
+    _ = Mtx⁻¹ j j' := hentry
+    _ = solutionInverseMetricComponents (I := I) (M := M) S basisAt t x j j' := by
+          rfl
+
 end FiberHeatReactionSolution
 
 end DifferentialGeometry.PDE.RicciFlow
