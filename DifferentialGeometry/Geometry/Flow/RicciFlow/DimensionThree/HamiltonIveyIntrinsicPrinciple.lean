@@ -2665,6 +2665,7 @@ theorem pulledRmComp_entry_continuousOn_time
   rw [uhlenbeckPulledRm04At_apply]
   rfl
 
+
 end FiberHeatReactionSolution
 
 end DifferentialGeometry.PDE.RicciFlow
