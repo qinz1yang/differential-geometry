@@ -1131,6 +1131,233 @@ theorem fiberProjW_sub
   rw [hconv]
   exact hzero
 
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+omit [IsManifold I 1 M] in
+theorem fiberProjW_norm_le
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (ν : Tensor04At (I := I) (M := M) x) :
+    tensor04FiberNorm (I := I) g x (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) ≤
+      tensor04FiberNorm (I := I) g x ν := by
+  let pν : algebraicCurvatureTensorSubmodule (I := I) (M := M) x := fiberProjW (I := I) g x ν
+  have hspec : inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x) =
+      inner0S (I := I) g x 4 ν (pν : Tensor04At (I := I) (M := M) x) :=
+    fiberProjW_spec (I := I) g x ν pν
+  have hsq : inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) ν =
+      inner0S (I := I) g x 4 ν (pν : Tensor04At (I := I) (M := M) x) :=
+    inner0S_comm (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) ν
+  have hnormSq : normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) =
+      inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) ν := by
+    rw [normSq0S]
+    exact hspec.trans hsq.symm
+  have hmain := inner0S_sq_le_mul (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) ν
+  have hmain2 : (normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x)) ^ 2 ≤
+      normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) * normSq0S (I := I) g x 4 ν := by
+    rw [hnormSq] at hmain ⊢
+    simpa [normSq0S] using hmain
+  have hnn : 0 ≤ normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) := by
+    rw [normSq0S]
+    exact MetricFiberData.inner_nonneg (tensor0SMetricData (I := I) g x 4) (pν : Tensor04At (I := I) (M := M) x)
+  have hnnν : 0 ≤ normSq0S (I := I) g x 4 ν := by
+    rw [normSq0S]
+    exact MetricFiberData.inner_nonneg (tensor0SMetricData (I := I) g x 4) ν
+  have hleq : normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) ≤
+      normSq0S (I := I) g x 4 ν := by
+    by_cases hz : normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) = 0
+    · rw [hz]
+      exact hnnν
+    · have hpos : 0 < normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) :=
+        lt_of_le_of_ne hnn (Ne.symm hz)
+      have hmain3 : normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) *
+            normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) ≤
+          normSq0S (I := I) g x 4 ν * normSq0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) := by
+        simpa [pow_two, mul_comm, mul_left_comm, mul_assoc] using hmain2
+      exact le_of_mul_le_mul_right hmain3 hpos
+  unfold tensor04FiberNorm
+  exact Real.sqrt_le_sqrt hleq
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem regionSupportVector_norm_le
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x (basisAt x))
+    (ν : Tensor04At (I := I) (M := M) x) :
+    ‖regionSupportVector g basisAt x ν‖ ≤ tensor04FiberNorm (I := I) g x ν / 2 := by
+  let pν : algebraicCurvatureTensorSubmodule (I := I) (M := M) x := fiberProjW (I := I) g x ν
+  have hmain := inner0S_eq_four_mul_inner_regionProjMatrix (I := I) g x (basisAt x) horth pν.2
+    (pν : Tensor04At (I := I) (M := M) x)
+  have hid : fiberProjW (I := I) g x (pν : Tensor04At (I := I) (M := M) x) = pν :=
+    Subtype.ext (fiberProjW_idem (I := I) g x ν)
+  have hreg : matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) (pν : Tensor04At (I := I) (M := M) x)) =
+      matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) pν) := by
+    unfold regionProjMatrix
+    rw [hid]
+  have hw : matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) pν) =
+      regionSupportVector g basisAt x ν := by
+    unfold regionSupportVector
+    rw [regionProjMatrix]
+  have h4 : inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x) =
+      4 * ‖regionSupportVector g basisAt x ν‖ ^ 2 := by
+    have hA : matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) (pν : Tensor04At (I := I) (M := M) x)) =
+        regionSupportVector g basisAt x ν := hreg.trans hw
+    rw [hA, hw] at hmain
+    simpa [norm_sq_eq_re_inner] using hmain
+  have hsqrt : ‖regionSupportVector g basisAt x ν‖ =
+      Real.sqrt (inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x)) / 2 := by
+    have hnn : 0 ≤ inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x) :=
+      MetricFiberData.inner_nonneg (tensor0SMetricData (I := I) g x 4) (pν : Tensor04At (I := I) (M := M) x)
+    have hsq : ‖regionSupportVector g basisAt x ν‖ ^ 2 =
+        inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x) / 4 := by
+      linarith [h4]
+    have hsqrt' : Real.sqrt (‖regionSupportVector g basisAt x ν‖ ^ 2) = ‖regionSupportVector g basisAt x ν‖ :=
+      Real.sqrt_sq (norm_nonneg (regionSupportVector g basisAt x ν))
+    calc
+      ‖regionSupportVector g basisAt x ν‖ = Real.sqrt (‖regionSupportVector g basisAt x ν‖ ^ 2) := hsqrt'.symm
+      _ = Real.sqrt (inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x) / 4) := by rw [hsq]
+      _ = Real.sqrt (inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x)) / Real.sqrt 4 := by
+            rw [Real.sqrt_div hnn (4 : ℝ)]
+      _ = Real.sqrt (inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x)) / 2 := by norm_num
+  calc
+    ‖regionSupportVector g basisAt x ν‖
+        = Real.sqrt (inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x)) / 2 := hsqrt
+    _ ≤ tensor04FiberNorm (I := I) g x ν / 2 := by
+      have hle : tensor04FiberNorm (I := I) g x (pν : Tensor04At (I := I) (M := M) x) ≤
+          tensor04FiberNorm (I := I) g x ν := fiberProjW_norm_le (I := I) g x ν
+      have hle' : Real.sqrt (inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (pν : Tensor04At (I := I) (M := M) x)) ≤
+          tensor04FiberNorm (I := I) g x ν := by
+        unfold tensor04FiberNorm at hle ⊢
+        exact hle
+      exact div_le_div_of_nonneg_right hle' (by norm_num)
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem regionSupportVector_sub
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (x : M) (ν₁ ν₂ : Tensor04At (I := I) (M := M) x) :
+    regionSupportVector g basisAt x (ν₁ - ν₂) =
+      regionSupportVector g basisAt x ν₁ - regionSupportVector g basisAt x ν₂ := by
+  unfold regionSupportVector regionProjMatrix
+  have hsub' : fiberProjW (I := I) g x (ν₁ - ν₂) =
+      fiberProjW (I := I) g x ν₁ - fiberProjW (I := I) g x ν₂ :=
+    Subtype.ext (fiberProjW_sub (I := I) g x ν₁ ν₂)
+  rw [hsub']
+  ext ij
+  simp only [matrixToEuclid, curvatureOperatorMatrixAt]
+  exact Tensor0SSpace.sub_apply 4 x (fiberProjW (I := I) g x ν₁ : Tensor04At (I := I) (M := M) x)
+    (fiberProjW (I := I) g x ν₂ : Tensor04At (I := I) (M := M) x)
+    (vec4 (basisAt x (bivectorIndex3 ij.1).1) (basisAt x (bivectorIndex3 ij.1).2)
+      (basisAt x (bivectorIndex3 ij.2).2) (basisAt x (bivectorIndex3 ij.2).1))
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem regionSource_lipschitzOn_closedBall_uniform
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
+    {R : ℝ} (hR : 0 ≤ R) :
+    ∃ L : NNReal, ∀ x : M, ∀ ν : Tensor04At (I := I) (M := M) x,
+      letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+        (tensor0SMetricData (I := I) g x 4).toCore
+      letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+        @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
+      letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+        @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
+      LipschitzOnWith (L * ‖ν‖₊)
+        (fun p : Tensor04At (I := I) (M := M) x => regionSource g basisAt x p ν)
+        (Metric.closedBall 0 (2 * R)) := by
+  classical
+  rcases uhlenbeckCurvatureOperatorReactionState_lipschitzOn_closedBall R hR with ⟨Lst, hLst⟩
+  refine ⟨Lst, ?_⟩
+  intro x ν
+  letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+    (tensor0SMetricData (I := I) g x 4).toCore
+  letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
+  letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+    @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
+  have hnorm_eq : ∀ A : Tensor04At (I := I) (M := M) x,
+      tensor04FiberNorm (I := I) g x A = ‖A‖ := tensor04FiberNorm_eq_norm (I := I) g x
+  have hw : ∀ A : Tensor04At (I := I) (M := M) x,
+      ‖regionSupportVector g basisAt x A‖ ≤ ‖A‖ / 2 := by
+    intro A
+    have h := regionSupportVector_norm_le (I := I) g x basisAt (horth x) A
+    rwa [hnorm_eq A] at h
+  have hAball : ∀ A : Tensor04At (I := I) (M := M) x,
+      A ∈ Metric.closedBall 0 (2 * R) →
+        regionSupportVector g basisAt x A ∈ Metric.closedBall 0 R := by
+    intro A hA
+    have hA' : ‖A‖ ≤ 2 * R := by
+      simpa [dist_eq_norm, sub_zero] using (Metric.mem_closedBall.mp hA)
+    have hle := hw A
+    rw [Metric.mem_closedBall]
+    rw [dist_eq_norm, sub_zero]
+    nlinarith
+  refine LipschitzOnWith.of_dist_le_mul ?_
+  intro p hp q hq
+  rw [dist_eq_norm, dist_eq_norm]
+  let Ap : EuclideanSpace ℝ (Fin 3 × Fin 3) := regionSupportVector g basisAt x p
+  let Aq : EuclideanSpace ℝ (Fin 3 × Fin 3) := regionSupportVector g basisAt x q
+  let wν : EuclideanSpace ℝ (Fin 3 × Fin 3) := regionSupportVector g basisAt x ν
+  have hsrc : regionSource g basisAt x p ν - regionSource g basisAt x q ν =
+      4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState Ap -
+        uhlenbeckCurvatureOperatorReactionState Aq) wν := by
+    dsimp [Ap, Aq, wν]
+    unfold regionSource
+    simp only [regionSupportVector]
+    rw [← mul_sub]
+    congr 1
+    rw [← inner_sub_left]
+  have h1 : |inner ℝ (uhlenbeckCurvatureOperatorReactionState Ap -
+      uhlenbeckCurvatureOperatorReactionState Aq) wν| ≤
+      ‖uhlenbeckCurvatureOperatorReactionState Ap - uhlenbeckCurvatureOperatorReactionState Aq‖ * ‖wν‖ := by
+    have h := norm_inner_le_norm (𝕜 := ℝ) (uhlenbeckCurvatureOperatorReactionState Ap -
+      uhlenbeckCurvatureOperatorReactionState Aq) wν
+    simpa [Real.norm_eq_abs] using h
+  have h2 : ‖uhlenbeckCurvatureOperatorReactionState Ap - uhlenbeckCurvatureOperatorReactionState Aq‖ ≤
+      (Lst : ℝ) * ‖Ap - Aq‖ := by
+    have hLip := hLst.dist_le_mul Ap (hAball p hp) Aq (hAball q hq)
+    simpa [dist_eq_norm, Ap, Aq] using hLip
+  have h3 : ‖wν‖ ≤ ‖ν‖ / 2 := by
+    dsimp [wν]
+    exact hw ν
+  have h4 : ‖Ap - Aq‖ ≤ ‖p - q‖ / 2 := by
+    have hsub : regionSupportVector g basisAt x (p - q) =
+        regionSupportVector g basisAt x p - regionSupportVector g basisAt x q :=
+      regionSupportVector_sub (I := I) g basisAt x p q
+    have h := hw (p - q)
+    rwa [hsub] at h
+  have habs : |regionSource g basisAt x p ν - regionSource g basisAt x q ν| ≤ (Lst : ℝ) * ‖ν‖ * ‖p - q‖ := by
+    rw [hsrc]
+    calc
+      |4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState Ap -
+          uhlenbeckCurvatureOperatorReactionState Aq) wν|
+          = 4 * |inner ℝ (uhlenbeckCurvatureOperatorReactionState Ap -
+              uhlenbeckCurvatureOperatorReactionState Aq) wν| := by
+            rw [abs_mul]
+            norm_num
+      _ ≤ 4 * (‖uhlenbeckCurvatureOperatorReactionState Ap -
+          uhlenbeckCurvatureOperatorReactionState Aq‖ * ‖wν‖) := by
+            exact mul_le_mul_of_nonneg_left h1 (by norm_num)
+      _ ≤ 4 * (((Lst : ℝ) * ‖Ap - Aq‖) * (‖ν‖ / 2)) := by
+            exact mul_le_mul_of_nonneg_left (mul_le_mul h2 h3 (norm_nonneg _)
+              (mul_nonneg (NNReal.coe_nonneg Lst) (norm_nonneg _))) (by norm_num)
+      _ ≤ 4 * (((Lst : ℝ) * (‖p - q‖ / 2)) * (‖ν‖ / 2)) := by
+            exact mul_le_mul_of_nonneg_left (mul_le_mul (mul_le_mul_of_nonneg_left h4 (NNReal.coe_nonneg Lst))
+              le_rfl (by positivity) (by positivity)) (by norm_num)
+      _ = (Lst : ℝ) * ‖ν‖ * ‖p - q‖ := by ring
+  have hcoef : (Lst : ℝ) * ‖ν‖ = ((Lst * ‖ν‖₊ : NNReal) : ℝ) := by
+    rw [NNReal.coe_mul]
+    simp
+  rw [Real.norm_eq_abs]
+  calc
+    |regionSource g basisAt x p ν - regionSource g basisAt x q ν| ≤ (Lst : ℝ) * ‖ν‖ * ‖p - q‖ := habs
+    _ = ((Lst * ‖ν‖₊ : NNReal) : ℝ) * ‖p - q‖ := by rw [hcoef]
+
 end PulledScalarization
 
 
