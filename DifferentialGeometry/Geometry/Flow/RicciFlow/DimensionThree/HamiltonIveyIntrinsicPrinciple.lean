@@ -823,6 +823,135 @@ theorem regionSource_le_regionSupportDeriv_of_tangent
 
 end RegionSupportTime
 
+section FiberRegionTopology
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem continuous_tensor04StdAt_eval (x : M) (X Y Z W : TangentSpace I x) :
+    Continuous (fun A : Tensor04At (I := I) (M := M) x => tensor04StdAt (I := I) (M := M) A X Y Z W) := by
+  let g : Tensor04At (I := I) (M := M) x →ₗ[ℝ] ℝ :=
+    { toFun := fun A => tensor04StdAt (I := I) (M := M) A X Y Z W
+      map_add' := by
+        intro A B
+        change tensor04StdAt (I := I) (M := M) (A + B) X Y Z W =
+          tensor04StdAt (I := I) (M := M) A X Y Z W + tensor04StdAt (I := I) (M := M) B X Y Z W
+        simp [Tensor0SSpace.add_apply]
+      map_smul' := by
+        intro c A
+        change tensor04StdAt (I := I) (M := M) (c • A) X Y Z W =
+          c * tensor04StdAt (I := I) (M := M) A X Y Z W
+        simp [Tensor0SSpace.smul_apply, smul_eq_mul] }
+  haveI : FiniteDimensional ℝ (Tensor04At (I := I) (M := M) x) := by
+    change FiniteDimensional ℝ (Tensor0SSpace 4 I x)
+    exact tensor0SSpace_finiteDimensional 4 x
+  exact g.continuous_of_finiteDimensional
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem isClosed_algebraicCurvatureTensorSubmodule (x : M) :
+    IsClosed (algebraicCurvatureTensorSubmodule (I := I) (M := M) x : Set (Tensor04At (I := I) (M := M) x)) := by
+  have hEq : (algebraicCurvatureTensorSubmodule (I := I) (M := M) x : Set (Tensor04At (I := I) (M := M) x)) =
+      {A | (∀ X Y Z W : TangentSpace I x,
+          tensor04StdAt (I := I) (M := M) A X Y Z W = -tensor04StdAt (I := I) (M := M) A Y X Z W) ∧
+        (∀ X Y Z W : TangentSpace I x,
+          tensor04StdAt (I := I) (M := M) A X Y Z W = -tensor04StdAt (I := I) (M := M) A X Y W Z) ∧
+        (∀ X Y Z W : TangentSpace I x,
+          tensor04StdAt (I := I) (M := M) A X Y Z W +
+            tensor04StdAt (I := I) (M := M) A Y Z X W +
+            tensor04StdAt (I := I) (M := M) A Z X Y W = 0)} := by
+    ext A
+    exact mem_algebraicCurvatureTensorSubmodule_iff_symmetries (I := I) (M := M)
+  rw [hEq]
+  have hanti1 : IsClosed {A : Tensor04At (I := I) (M := M) x | ∀ X Y Z W : TangentSpace I x,
+      tensor04StdAt (I := I) (M := M) A X Y Z W = -tensor04StdAt (I := I) (M := M) A Y X Z W} := by
+    rw [show {A : Tensor04At (I := I) (M := M) x | ∀ X Y Z W : TangentSpace I x,
+          tensor04StdAt (I := I) (M := M) A X Y Z W = -tensor04StdAt (I := I) (M := M) A Y X Z W} =
+        ⋂ X : TangentSpace I x, ⋂ Y : TangentSpace I x, ⋂ Z : TangentSpace I x,
+          ⋂ W : TangentSpace I x, {A : Tensor04At (I := I) (M := M) x |
+            tensor04StdAt (I := I) (M := M) A X Y Z W + tensor04StdAt (I := I) (M := M) A Y X Z W = 0} from by
+      ext A
+      simp [eq_neg_iff_add_eq_zero]]
+    exact isClosed_iInter (fun X => isClosed_iInter (fun Y => isClosed_iInter (fun Z => isClosed_iInter (fun W =>
+      isClosed_eq ((continuous_tensor04StdAt_eval x X Y Z W).add (continuous_tensor04StdAt_eval x Y X Z W))
+        continuous_const))))
+  have hanti2 : IsClosed {A : Tensor04At (I := I) (M := M) x | ∀ X Y Z W : TangentSpace I x,
+      tensor04StdAt (I := I) (M := M) A X Y Z W = -tensor04StdAt (I := I) (M := M) A X Y W Z} := by
+    rw [show {A : Tensor04At (I := I) (M := M) x | ∀ X Y Z W : TangentSpace I x,
+          tensor04StdAt (I := I) (M := M) A X Y Z W = -tensor04StdAt (I := I) (M := M) A X Y W Z} =
+        ⋂ X : TangentSpace I x, ⋂ Y : TangentSpace I x, ⋂ Z : TangentSpace I x,
+          ⋂ W : TangentSpace I x, {A : Tensor04At (I := I) (M := M) x |
+            tensor04StdAt (I := I) (M := M) A X Y Z W + tensor04StdAt (I := I) (M := M) A X Y W Z = 0} from by
+      ext A
+      simp [eq_neg_iff_add_eq_zero]]
+    exact isClosed_iInter (fun X => isClosed_iInter (fun Y => isClosed_iInter (fun Z => isClosed_iInter (fun W =>
+      isClosed_eq ((continuous_tensor04StdAt_eval x X Y Z W).add (continuous_tensor04StdAt_eval x X Y W Z))
+        continuous_const))))
+  have hbianchi : IsClosed {A : Tensor04At (I := I) (M := M) x | ∀ X Y Z W : TangentSpace I x,
+      tensor04StdAt (I := I) (M := M) A X Y Z W + tensor04StdAt (I := I) (M := M) A Y Z X W +
+        tensor04StdAt (I := I) (M := M) A Z X Y W = 0} := by
+    rw [show {A : Tensor04At (I := I) (M := M) x | ∀ X Y Z W : TangentSpace I x,
+          tensor04StdAt (I := I) (M := M) A X Y Z W + tensor04StdAt (I := I) (M := M) A Y Z X W +
+            tensor04StdAt (I := I) (M := M) A Z X Y W = 0} =
+        ⋂ X : TangentSpace I x, ⋂ Y : TangentSpace I x, ⋂ Z : TangentSpace I x,
+          ⋂ W : TangentSpace I x, {A : Tensor04At (I := I) (M := M) x |
+            tensor04StdAt (I := I) (M := M) A X Y Z W + tensor04StdAt (I := I) (M := M) A Y Z X W +
+              tensor04StdAt (I := I) (M := M) A Z X Y W = 0} from by
+      ext A
+      simp]
+    exact isClosed_iInter (fun X => isClosed_iInter (fun Y => isClosed_iInter (fun Z => isClosed_iInter (fun W =>
+      isClosed_eq (((continuous_tensor04StdAt_eval x X Y Z W).add (continuous_tensor04StdAt_eval x Y Z X W)).add
+        (continuous_tensor04StdAt_eval x Z X Y W)) continuous_const))))
+  exact hanti1.inter (hanti2.inter hbianchi)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem convex_fiberHamiltonIveyRegion
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (x : M) :
+    Convex ℝ (fiberHamiltonIveyRegion basisAt K τ x) := by
+  let f : Tensor04At (I := I) (M := M) x →ₗ[ℝ] EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    { toFun := fun A => matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) (basisAt x) A)
+      map_add' := by
+        intro A B
+        ext ij
+        simp [matrixToEuclid, intrinsicFiberCurvatureOperatorMatrix]
+      map_smul' := by
+        intro c A
+        ext ij
+        simp [matrixToEuclid, intrinsicFiberCurvatureOperatorMatrix] }
+  have hpre : Convex ℝ (f ⁻¹' hamiltonIveyConvexMatrixRegionEuclid K τ) :=
+    Convex.linear_preimage (convex_hamiltonIveyConvexMatrixRegionEuclid hK hτ) f
+  have hEq : intrinsicFiberHamiltonIveyRegion (I := I) basisAt K τ x =
+      fiberHamiltonIveyRegion basisAt K τ x :=
+    intrinsicFiberHamiltonIveyRegion_eq_fiberHamiltonIveyRegion (I := I) basisAt K τ x
+  rw [← hEq]
+  rw [intrinsicFiberHamiltonIveyRegion]
+  change Convex ℝ ((algebraicCurvatureTensorSubmodule (I := I) (M := M) x : Set (Tensor04At (I := I) (M := M) x)) ∩
+    {A | matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) (basisAt x) A) ∈ hamiltonIveyConvexMatrixRegionEuclid K τ})
+  exact (Submodule.convex (algebraicCurvatureTensorSubmodule (I := I) (M := M) x)).inter hpre
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem nonempty_fiberHamiltonIveyRegion
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (x : M) :
+    (fiberHamiltonIveyRegion basisAt K τ x).Nonempty := by
+  refine ⟨0, ?_⟩
+  rw [fiberHamiltonIveyRegion]
+  refine ⟨by simp, ?_⟩
+  simpa [curvatureOperatorMatrixAt] using (zero_mem_hamiltonIveyConvexMatrixRegion hK hτ)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem zero_mem_fiberHamiltonIveyRegion
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (x : M) :
+    (0 : Tensor04At (I := I) (M := M) x) ∈ fiberHamiltonIveyRegion basisAt K τ x := by
+  rw [fiberHamiltonIveyRegion]
+  refine ⟨by simp, ?_⟩
+  simpa [curvatureOperatorMatrixAt] using (zero_mem_hamiltonIveyConvexMatrixRegion hK hτ)
+
+end FiberRegionTopology
+
 
 end DifferentialGeometry.PDE.RicciFlow
 
