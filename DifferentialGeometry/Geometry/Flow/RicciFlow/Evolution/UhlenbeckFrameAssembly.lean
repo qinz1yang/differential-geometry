@@ -21,6 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
 
+omit [SigmaCompactSpace M] in
 theorem ricciAt_continuousOn_perPoint
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))

@@ -549,6 +549,7 @@ theorem ricciOneUpCompatible_of_inverseMetric
             intro l hl
             rw [ricciCompInFrame_symm (I := I) (M := M) S frame t x l i]
 
+omit [SigmaCompactSpace M] in
 theorem movingFrameGram_continuousOn_of_metricFamily
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
@@ -588,6 +589,7 @@ theorem movingFrameGram_continuousOn_of_metricFamily
   exact ((hi_cont.mul hj_cont).mul hmetric_cont).congr (fun s hs => by
     simp)
 
+omit [SigmaCompactSpace M] in
 theorem uhlenbeckIota_isometry
     {T : ℝ} (hT : 0 < T)
     [I.Boundaryless]
