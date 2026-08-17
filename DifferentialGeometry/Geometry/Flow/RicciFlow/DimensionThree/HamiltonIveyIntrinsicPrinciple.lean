@@ -13,6 +13,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set Filter
+open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Tensor0SBundle
@@ -205,6 +206,7 @@ theorem exists_fiberProjW (g : SmoothRiemannianMetric I M) (x : M)
     inner0S (I := I) g x 4 ν (q : Tensor04At (I := I) (M := M) x)
   simpa [L, f] using hq
 
+@[irreducible]
 noncomputable def fiberProjW (g : SmoothRiemannianMetric I M) (x : M)
     (ν : Tensor04At (I := I) (M := M) x) :
     algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
@@ -216,8 +218,8 @@ theorem fiberProjW_spec (g : SmoothRiemannianMetric I M) (x : M)
     (ν : Tensor04At (I := I) (M := M) x)
     (q : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
     inner0S (I := I) g x 4 (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) q =
-      inner0S (I := I) g x 4 ν (q : Tensor04At (I := I) (M := M) x) :=
-  Classical.choose_spec (exists_fiberProjW (I := I) g x ν) q
+      inner0S (I := I) g x 4 ν (q : Tensor04At (I := I) (M := M) x) := by
+  simpa [fiberProjW] using (Classical.choose_spec (exists_fiberProjW (I := I) g x ν) q)
 
 omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
   [SigmaCompactSpace M] [T2Space M] in
@@ -320,6 +322,13 @@ def regionNormalDirections
 end IntrinsicRegionData
 
 section RegionMatrixLemmas
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem inner0S_comm (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
+    (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
+    inner0S (I := I) g x s A B = inner0S (I := I) g x s B A := by
+  unfold inner0S
+  exact (tensor0SMetricData (I := I) g x s).inner_comm A B
 
 omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
   [SigmaCompactSpace M] [T2Space M] in
@@ -468,7 +477,201 @@ theorem mem_regionNormalDirections_iff_mem_fiberNormalDirections
         apply curvatureOperatorMatrixAt_independent_of_witness
       simpa [hw, regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν] using hz
 
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem sSup_inner0S_proj_eq
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (K τ : ℝ) (x : M) (ν : Tensor04At (I := I) (M := M) x) :
+    sSup {r : ℝ | ∃ q : Tensor04At (I := I) (M := M) x,
+        q ∈ fiberHamiltonIveyRegion basisAt K τ x ∧ r = inner0S (I := I) g x 4 q ν} =
+      sSup {r : ℝ | ∃ q : Tensor04At (I := I) (M := M) x,
+        q ∈ fiberHamiltonIveyRegion basisAt K τ x ∧
+          r = inner0S (I := I) g x 4 q (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x)} := by
+  congr 1
+  ext r
+  constructor
+  · rintro ⟨q, hq, rfl⟩
+    refine ⟨q, hq, ?_⟩
+    rw [inner0S_comm (I := I) g x 4 q ν]
+    rw [inner0S_comm (I := I) g x 4 q (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x)]
+    rcases hq with ⟨hqalg, hqmat⟩
+    exact (fiberProjW_inner_eq (I := I) g x ν ⟨q, hqalg⟩).symm
+  · rintro ⟨q, hq, rfl⟩
+    refine ⟨q, hq, ?_⟩
+    rw [inner0S_comm (I := I) g x 4 q (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x)]
+    rw [inner0S_comm (I := I) g x 4 q ν]
+    rcases hq with ⟨hqalg, hqmat⟩
+    exact fiberProjW_inner_eq (I := I) g x ν ⟨q, hqalg⟩
+
 end RegionMatrixLemmas
+
+section RegionCharacterization
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem fiberRegion_mem_iff_forall_normalDirections
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (x : M)
+    (p : Tensor04At (I := I) (M := M) x)
+    (hp : p ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    p ∈ fiberHamiltonIveyRegion basisAt K τ x ↔
+      ∀ ν : Tensor04At (I := I) (M := M) x,
+        ν ∈ regionNormalDirections (I := I) g basisAt x →
+          inner0S (I := I) g x 4 ν p ≤ regionSupport (I := I) g basisAt K τ x ν := by
+  constructor
+  · intro hpC ν hν
+    let w : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+      matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν)
+    have hinner : inner0S (I := I) g x 4 ν p =
+        4 * inner ℝ w (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩)) := by
+      calc
+        inner0S (I := I) g x 4 ν p = inner0S (I := I) g x 4 p ν := by
+          exact inner0S_comm (I := I) g x 4 ν p
+        _ = 4 * inner ℝ w (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩)) := by
+          simpa [w] using (inner0S_eq_four_mul_inner_regionProjMatrix (I := I) g x (basisAt x) (horth0 x) hp ν)
+    have hsupport : regionSupport (I := I) g basisAt K τ x ν =
+        4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ w := by
+      rfl
+    have hwfs : w ∈ finiteSupportDirections (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
+      rw [mem_finiteSupportDirections_hamiltonIvey_region_iff hK hτ w]
+      exact hν
+    rcases hpC with ⟨hAlg, hmat⟩
+    have hpmat : matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩) ∈
+        hamiltonIveyConvexMatrixRegionEuclid K τ := by
+      rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+      have hw : curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hAlg⟩ =
+          curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩ := by
+        apply curvatureOperatorMatrixAt_independent_of_witness
+      rwa [hw]
+    have hmain := (hamiltonIveyConvexMatrixRegionEuclid_mem_iff_forall_support_le hK hτ
+      (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩))).mp
+      hpmat w hwfs
+    calc
+      inner0S (I := I) g x 4 ν p
+          = 4 * inner ℝ w (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hp⟩)) := hinner
+      _ ≤ 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ w := by
+            nlinarith [hmain]
+      _ = regionSupport (I := I) g basisAt K τ x ν := hsupport.symm
+  · intro hle
+    have hback := (fiberHamiltonIveyRegion_mem_iff_forall_support_le (I := I) g basisAt horth0 hK hτ x p hp).mpr
+    apply hback
+    intro ν hν
+    rcases hν with ⟨hνalg, hc⟩
+    have hνN : ν ∈ regionNormalDirections (I := I) g basisAt x := by
+      exact (mem_regionNormalDirections_iff_mem_fiberNormalDirections (I := I) g basisAt x hνalg).mpr ⟨hνalg, hc⟩
+    have hle' := hle ν hνN
+    have hsup : regionSupport (I := I) g basisAt K τ x ν =
+        fiberHamiltonIveySupport g basisAt K τ x ν := by
+      exact regionSupport_eq_fiberHamiltonIveySupport_of_mem_algebraic (I := I) g basisAt K τ x hνalg
+    rw [inner0S_comm (I := I) g x 4 ν p] at hle'
+    rw [← hsup]
+    exact hle'
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem regionSupport_eq_sSup
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (x : M)
+    {ν : Tensor04At (I := I) (M := M) x}
+    (hν : ν ∈ regionNormalDirections (I := I) g basisAt x) :
+    regionSupport (I := I) g basisAt K τ x ν =
+      sSup {r : ℝ | ∃ q : Tensor04At (I := I) (M := M) x,
+        q ∈ fiberHamiltonIveyRegion basisAt K τ x ∧ r = inner0S (I := I) g x 4 q ν} := by
+  have hν₀alg : (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    (fiberProjW (I := I) g x ν).2
+  have hreg : regionProjMatrix (I := I) g (basisAt x)
+        (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) =
+      regionProjMatrix (I := I) g (basisAt x) ν := by
+    unfold regionProjMatrix
+    have hself : fiberProjW (I := I) g x
+          (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) =
+        fiberProjW (I := I) g x ν := by
+      apply Subtype.ext
+      exact fiberProjW_self (I := I) g x (fiberProjW (I := I) g x ν).2
+    rw [hself]
+  have hν₀N : (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) ∈
+      fiberHamiltonIveyNormalDirections basisAt x := by
+    exact (mem_regionNormalDirections_iff_mem_fiberNormalDirections (I := I) g basisAt x hν₀alg).mp
+      (by
+        rw [regionNormalDirections]
+        simp only [Set.mem_setOf_eq]
+        simpa [hreg] using hν)
+  have hmain := fiberHamiltonIveySupport_eq_sSup (I := I) g basisAt horth0 hK hτ x hν₀N
+  have hsup : fiberHamiltonIveySupport g basisAt K τ x
+        (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) =
+      regionSupport (I := I) g basisAt K τ x ν := by
+    unfold regionSupport fiberHamiltonIveySupport
+    rw [dif_pos hν₀alg]
+    rw [← hreg]
+    rw [regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν₀alg]
+  calc
+    regionSupport (I := I) g basisAt K τ x ν
+        = fiberHamiltonIveySupport g basisAt K τ x
+            (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) := hsup.symm
+    _ = sSup {r : ℝ | ∃ q : Tensor04At (I := I) (M := M) x,
+          q ∈ fiberHamiltonIveyRegion basisAt K τ x ∧
+            r = inner0S (I := I) g x 4 q (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x)} := hmain
+    _ = sSup {r : ℝ | ∃ q : Tensor04At (I := I) (M := M) x,
+          q ∈ fiberHamiltonIveyRegion basisAt K τ x ∧ r = inner0S (I := I) g x 4 q ν} := by
+          congr 1
+          ext r
+          constructor <;> rintro ⟨q, hq, rfl⟩ <;> refine ⟨q, hq, ?_⟩
+          · rw [inner0S_comm (I := I) g x 4 q ν]
+            rw [inner0S_comm (I := I) g x 4 q (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x)]
+            rcases hq with ⟨hqalg, hqmat⟩
+            exact fiberProjW_inner_eq (I := I) g x ν ⟨q, hqalg⟩
+          · rw [inner0S_comm (I := I) g x 4 q (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x)]
+            rw [inner0S_comm (I := I) g x 4 q ν]
+            rcases hq with ⟨hqalg, hqmat⟩
+            exact (fiberProjW_inner_eq (I := I) g x ν ⟨q, hqalg⟩).symm
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem regionNormalDirections_of_normal
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (x : M)
+    {p : Tensor04At (I := I) (M := M) x}
+    (hp : p ∈ fiberHamiltonIveyRegion basisAt K τ x)
+    {ν : Tensor04At (I := I) (M := M) x}
+    (hnormal : ∀ q : Tensor04At (I := I) (M := M) x,
+      q ∈ fiberHamiltonIveyRegion basisAt K τ x → inner0S (I := I) g x 4 ν (q - p) ≤ 0) :
+    ν ∈ regionNormalDirections (I := I) g basisAt x := by
+  let pν : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    fiberProjW (I := I) g x ν
+  have hν₀alg : (pν : Tensor04At (I := I) (M := M) x) ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    pν.2
+  have hnormal' : ∀ q : Tensor04At (I := I) (M := M) x,
+      q ∈ fiberHamiltonIveyRegion basisAt K τ x → inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (q - p) ≤ 0 := by
+    intro q hq
+    have h1 := hnormal q hq
+    rcases hq with ⟨hqalg, hqmat⟩
+    rcases hp with ⟨hpalg, hpmat⟩
+    have h2 : inner0S (I := I) g x 4 (pν : Tensor04At (I := I) (M := M) x) (q - p) =
+        inner0S (I := I) g x 4 ν (q - p) := by
+      exact fiberProjW_inner_eq (I := I) g x ν
+        ⟨(q - p), Submodule.sub_mem (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) hqalg hpalg⟩
+    rwa [h2]
+  have hν₀N : (pν : Tensor04At (I := I) (M := M) x) ∈ fiberHamiltonIveyNormalDirections basisAt x :=
+    fiberHamiltonIveyRegion_normal (I := I) g basisAt horth0 hK hτ x hp hν₀alg hnormal'
+  have hν₀R : (pν : Tensor04At (I := I) (M := M) x) ∈ regionNormalDirections (I := I) g basisAt x :=
+    (mem_regionNormalDirections_iff_mem_fiberNormalDirections (I := I) g basisAt x hν₀alg).mpr hν₀N
+  rw [regionNormalDirections] at hν₀R ⊢
+  simp only [Set.mem_setOf_eq] at hν₀R ⊢
+  have hreg : regionProjMatrix (I := I) g (basisAt x) (pν : Tensor04At (I := I) (M := M) x) =
+      regionProjMatrix (I := I) g (basisAt x) ν := by
+    unfold regionProjMatrix
+    have hself : fiberProjW (I := I) g x (pν : Tensor04At (I := I) (M := M) x) = pν := by
+      apply Subtype.ext
+      exact fiberProjW_self (I := I) g x pν.2
+    rw [hself]
+  simpa [hreg] using hν₀R
+
+end RegionCharacterization
 
 
 end DifferentialGeometry.PDE.RicciFlow
