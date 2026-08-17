@@ -6742,6 +6742,8 @@ theorem compLinearMap_mem_algebraicCurvatureTensorSubmodule
   · intro u v y z
     exact hform.bianchi _ _ _ _
 
+omit [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem fiberProjW_compUhlenbeck_commute
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
