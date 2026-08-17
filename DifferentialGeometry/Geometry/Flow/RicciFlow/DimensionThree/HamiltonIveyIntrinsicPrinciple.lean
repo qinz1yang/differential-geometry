@@ -2096,6 +2096,7 @@ section FiberHeatReactionSolution
 
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Dim3Reaction
 
 omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M]
   [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
@@ -2217,6 +2218,241 @@ theorem pulledRmComp_eq_uhlenbeckPullbackRmInFrame
           apply Finset.sum_congr rfl
           intro l _
           ring_nf
+
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+omit [I.Boundaryless] in
+theorem identityInvMetric_inverseInBasis_of_orthonormal
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis) :
+    MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Fin 3)) := by
+  intro i j
+  constructor
+  · calc
+      (∑ k : Fin 3, identityInvMetric (Idx := Fin 3) i k * g.inner x (basis k) (basis j))
+          = g.inner x (basis i) (basis j) := by
+            rw [Finset.sum_eq_single i]
+            · simp [identityInvMetric]
+            · intro k _ hk
+              rw [identityInvMetric, diagonalInvMetric]
+              rw [if_neg (Ne.symm hk)]
+              ring
+            · intro hi
+              exact False.elim (hi (Finset.mem_univ i))
+    _ = if i = j then 1 else 0 := by
+          simpa [delta3] using horth i j
+  · calc
+      (∑ k : Fin 3, g.inner x (basis i) (basis k) * identityInvMetric (Idx := Fin 3) k j)
+          = g.inner x (basis i) (basis j) := by
+            rw [Finset.sum_eq_single j]
+            · simp [identityInvMetric]
+            · intro k _ hk
+              rw [identityInvMetric, diagonalInvMetric]
+              rw [if_neg hk]
+              ring
+            · intro hj
+              exact False.elim (hj (Finset.mem_univ j))
+    _ = if i = j then 1 else 0 := by
+          simpa [delta3] using horth i j
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+  [I.Boundaryless] in
+theorem fiberInner_compUhlenbeck_isometry_full
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M)
+    (A B : Tensor04At (I := I) (M := M) x) :
+    inner0S (I := I) (S.base.metric 0) x 4
+        (A.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))
+        (B.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)) =
+      inner0S (I := I) (S.base.metric t) x 4 A B := by
+  classical
+  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
+  let U : TangentSpace I x →L[ℝ] TangentSpace I x :=
+    uhlenbeckEndomorphismAt (basisAt x) iota t
+  have horth_moving : OrthonormalBasisAt (I := I) (S.base.metric t) x moving :=
+    uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M) hT S basisAt iota hiota0 hgram x
+      (horth0 x) ht
+  have hinv0 : MetricInverseInBasis_gen (I := I) (S.base.metric 0) x (basisAt x)
+      (identityInvMetric (Idx := Fin 3)) :=
+    identityInvMetric_inverseInBasis_of_orthonormal (I := I) (S.base.metric 0) x (basisAt x) (horth0 x)
+  have hinvt : MetricInverseInBasis_gen (I := I) (S.base.metric t) x moving
+      (identityInvMetric (Idx := Fin 3)) :=
+    identityInvMetric_inverseInBasis_of_orthonormal (I := I) (S.base.metric t) x moving horth_moving
+  have hdiag : ∀ (g : SmoothRiemannianMetric I M)
+      (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+      (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Fin 3)))
+      (A B : Tensor04At (I := I) (M := M) x),
+      inner0S (I := I) g x 4 A B =
+        ∑ I0 : Fin 4 → Fin 3,
+          tensor0SComponent (I := I) A (fun i => basis i) I0 *
+            tensor0SComponent (I := I) B (fun i => basis i) I0 := by
+    intro g basis hinv A B
+    rw [inner0S_eq_coord (I := I) g x 4 basis (identityInvMetric (Idx := Fin 3)) hinv A B]
+    exact coordInner0S_identity_eq_sum (I := I) (x := x) 4 A B basis
+  calc
+    inner0S (I := I) (S.base.metric 0) x 4
+        (A.compContinuousLinearMap (fun _ : Fin 4 => U))
+        (B.compContinuousLinearMap (fun _ : Fin 4 => U))
+        = ∑ I0 : Fin 4 → Fin 3,
+            tensor0SComponent (I := I) (A.compContinuousLinearMap (fun _ : Fin 4 => U))
+                (fun i => basisAt x i) I0 *
+              tensor0SComponent (I := I) (B.compContinuousLinearMap (fun _ : Fin 4 => U))
+                (fun i => basisAt x i) I0 :=
+          hdiag (S.base.metric 0) (basisAt x) hinv0 _ _
+    _ = ∑ I0 : Fin 4 → Fin 3,
+            tensor0SComponent (I := I) A (fun i => moving i) I0 *
+              tensor0SComponent (I := I) B (fun i => moving i) I0 := by
+          apply Finset.sum_congr rfl
+          intro I0 _
+          rfl
+    _ = inner0S (I := I) (S.base.metric t) x 4 A B :=
+          (hdiag (S.base.metric t) moving hinvt A B).symm
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M]
+  [T2Space M] [I.Boundaryless] in
+theorem metricTraceFirstTwo0SAt_eq_metricTrace0S2TensorInBasis
+    (g : SmoothRiemannianMetric I M) {x : M} {s : ℕ}
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Fin 3)))
+    (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2) x)
+    (tail : Fin s → TangentSpace I x) :
+    metricTraceFirstTwo0SAt (I := I) g T tail =
+      metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3)) T tail := by
+  rw [metricTrace0S2TensorInBasis_apply]
+  unfold metricTraceFirstTwo0SAt
+  rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis (identityInvMetric (Idx := Fin 3)) hinv]
+  unfold metricTrace0S2InBasis
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [freezeFirstTwo0S_apply]
+
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+omit [I.Boundaryless] in
+theorem compUhlenbeck_mem_algebraicCurvatureTensorSubmodule
+    {x : M}
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) (t : Real)
+    (X : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    (X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+        (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t) ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
+  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) (X : Tensor04At (I := I) (M := M) x)) :=
+    (mem_algebraicCurvatureTensorSubmodule (I := I) (M := M)).mp X.2
+  rw [show (X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+        (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t) ∈
+        algebraicCurvatureTensorSubmodule (I := I) (M := M) x ↔
+      IsAlgCurvForm (tensor04StdAt (I := I) (M := M)
+        ((X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+          (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))) from
+    mem_algebraicCurvatureTensorSubmodule (I := I) (M := M)]
+  change IsAlgCurvForm (fun v y z w =>
+    tensor04StdAt (I := I) (M := M)
+      ((X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+        (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)) v y z w)
+  simp_rw [tensor04StdAt_compU_apply_all]
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro x₁ x₂ y z w
+    rw [map_add (uhlenbeckEndomorphismAt (basisAt x) iota t)]
+    exact hform.add_left _ _ _ _ _
+  · intro a u y z w
+    rw [map_smul (uhlenbeckEndomorphismAt (basisAt x) iota t)]
+    exact hform.smul_left _ _ _ _ _
+  · intro u v y z
+    exact hform.anti_first _ _ _ _
+  · intro u v y z
+    exact hform.anti_last _ _ _ _
+  · intro u v y z
+    exact hform.bianchi _ _ _ _
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+  [I.Boundaryless] in
+theorem curvatureOperatorMatrixAt_compU_eq_moving
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    curvatureOperatorMatrixAt (I := I) x (basisAt x)
+        ⟨(A : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+          (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t),
+          compUhlenbeck_mem_algebraicCurvatureTensorSubmodule basisAt iota t A⟩ =
+      curvatureOperatorMatrixAt (I := I) x
+        (uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x) A := by
+  classical
+  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
+  ext p q
+  unfold curvatureOperatorMatrixAt
+  rw [tensor04StdAt_compU_apply_all (A : Tensor04At (I := I) (M := M) x)
+    (uhlenbeckEndomorphismAt (basisAt x) iota t)]
+  simp [uhlenbeckMovingBasis_apply]
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [I.Boundaryless] in
+theorem pulledRmComp_eq_rm_ricci_moving
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) (a b c d : Fin 3) :
+    pulledRmComp S basisAt iota t x a b c d =
+      rm (fun i j : Fin 3 => S.ricciAt t x (vec2 (I := I)
+        (uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x i)
+        (uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x j))) a b c d := by
+  classical
+  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
+  have horth_moving : ∀ i j : Fin 3,
+      (S.base.metric t).inner x (moving i) (moving j) = kd i j := by
+    intro i j
+    have h := uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M) hT S basisAt iota hiota0 hgram x
+      (horth0 x) ht
+    rw [h i j]
+    rfl
+  have hmain := rm04Comp_ortho_eq_rm (I := I) (M := M) S t (hdim x) moving horth_moving (slots4 a b c d)
+  calc
+    pulledRmComp S basisAt iota t x a b c d
+        = tensor04StdAt (I := I) (M := M)
+            (uhlenbeckPulledRm04At S basisAt iota t x)
+            (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
+          rfl
+    _ = tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+          (moving a) (moving b) (moving c) (moving d) := by
+          rw [uhlenbeckPulledRm04At_apply]
+          dsimp [moving]
+          simp [uhlenbeckMovingBasis_apply]
+    _ = S.base.rm04 t x (fun p : Fin 4 => moving (slots4 a b c d p)) := by
+          rw [tensor04StdAt]
+          apply congrArg (S.base.rm04 t x)
+          funext p
+          fin_cases p <;> simp [vec4, slots4]
+    _ = rm (fun i j : Fin 3 => S.ricciAt t x (vec2 (I := I) (moving i) (moving j))) a b c d := by
+          simpa using hmain
 
 end FiberHeatReactionSolution
 
