@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Uhlenbeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProducer
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.AlgebraicTensor
+import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
@@ -776,6 +778,263 @@ theorem uhlenbeckEndomorphism_isometry
   change Bt v w = (S.family.metric 0).inner x v w
   rw [hB, hB0]
   rfl
+
+private lemma continuousMultilinearMap_update_sum
+    {ι : Type*} [Fintype ι]
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+    (f : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => V) ℝ)
+    (m : Fin 4 → V) (i : Fin 4) (c : ι → ℝ) (v : ι → V) :
+    f (Function.update m i (∑ p : ι, c p • v p)) =
+      ∑ p : ι, c p • f (Function.update m i (v p)) := by
+  classical
+  let L : V →ₗ[ℝ] ℝ :=
+    { toFun := fun x => f (Function.update m i x)
+      map_add' := by intro x y; simp
+      map_smul' := by intro r x; simp }
+  calc
+    f (Function.update m i (∑ p : ι, c p • v p)) = L (∑ p : ι, c p • v p) := rfl
+    _ = ∑ p : ι, L (c p • v p) := by rw [map_sum]
+    _ = ∑ p : ι, c p • f (Function.update m i (v p)) := by
+      refine Finset.sum_congr rfl ?_
+      intro p hp
+      simp [L]
+
+noncomputable def uhlenbeckPulledRm04At
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx) (t : ℝ) (x : M) :
+    Tensor04At (I := I) (M := M) x :=
+  (S.base.rm04 t x).compContinuousLinearMap
+    (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)
+
+omit [SigmaCompactSpace M] in
+theorem uhlenbeckPulledRm04At_apply
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx) (t : ℝ) (x : M) (X Y Z W : TangentSpace I x) :
+    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W =
+      tensor04StdAt (S.base.rm04 t x)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t X)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t Y)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t Z)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t W) := by
+  change (S.base.rm04 t x :
+      ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+      (fun i : Fin 4 =>
+        uhlenbeckEndomorphismAt (basisAt x) iota t (vec4 X Y Z W i)) =
+    (S.base.rm04 t x) (vec4 (uhlenbeckEndomorphismAt (basisAt x) iota t X)
+      (uhlenbeckEndomorphismAt (basisAt x) iota t Y)
+      (uhlenbeckEndomorphismAt (basisAt x) iota t Z)
+      (uhlenbeckEndomorphismAt (basisAt x) iota t W))
+  congr 1
+  funext i
+  fin_cases i <;> simp [vec4]
+
+omit [SigmaCompactSpace M] in
+theorem uhlenbeckPulledRm04At_mem_algebraicCurvatureTensorSubmodule
+    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx) (t : ℝ) (x : M) :
+    uhlenbeckPulledRm04At S basisAt iota t x ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
+  rw [mem_algebraicCurvatureTensorSubmodule]
+  let Rm : Tensor04At (I := I) (M := M) x := S.base.rm04 t x
+  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) Rm) :=
+    mem_algebraicCurvatureTensorSubmodule.mp
+      (metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x)
+  change IsAlgCurvForm (fun X Y Z W =>
+    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W)
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro x₁ x₂ y z w
+    rw [uhlenbeckPulledRm04At_apply, uhlenbeckPulledRm04At_apply,
+      uhlenbeckPulledRm04At_apply]
+    rw [show uhlenbeckEndomorphismAt (basisAt x) iota t (x₁ + x₂) =
+        uhlenbeckEndomorphismAt (basisAt x) iota t x₁ +
+          uhlenbeckEndomorphismAt (basisAt x) iota t x₂ from by simp]
+    exact hform.add_left _ _ _ _ _
+  · intro a u y z w
+    rw [uhlenbeckPulledRm04At_apply, uhlenbeckPulledRm04At_apply]
+    rw [show uhlenbeckEndomorphismAt (basisAt x) iota t (a • u) =
+        a • uhlenbeckEndomorphismAt (basisAt x) iota t u from by simp]
+    exact hform.smul_left _ _ _ _ _
+  · intro u v y z
+    rw [uhlenbeckPulledRm04At_apply, uhlenbeckPulledRm04At_apply]
+    exact hform.anti_first _ _ _ _
+  · intro u v y z
+    rw [uhlenbeckPulledRm04At_apply, uhlenbeckPulledRm04At_apply]
+    exact hform.anti_last _ _ _ _
+  · intro u v y z
+    rw [uhlenbeckPulledRm04At_apply, uhlenbeckPulledRm04At_apply,
+      uhlenbeckPulledRm04At_apply]
+    exact hform.bianchi _ _ _ _
+
+omit [SigmaCompactSpace M] in
+theorem uhlenbeckPulledRm04At_apply_basis
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx) (t : ℝ) (x : M) (a b c d : Idx) :
+    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
+      uhlenbeckPullbackRmInFrame iota
+        (fun s x a b c d => tensor04StdAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+        t x a b c d := by
+  classical
+  change (S.base.rm04 t x :
+      ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+      (fun i : Fin 4 =>
+        uhlenbeckEndomorphismAt (basisAt x) iota t
+          (vec4 (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) i)) =
+    uhlenbeckPullbackRmInFrame iota
+      (fun s x a b c d => tensor04StdAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+      t x a b c d
+  simp only [uhlenbeckPullbackRmInFrame, tensor04StdAt_apply]
+  let g : Fin 4 → TangentSpace I x := fun _ => 0
+  have harg : (fun i : Fin 4 =>
+      uhlenbeckEndomorphismAt (basisAt x) iota t
+        (vec4 (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) i)) =
+      Function.update (Function.update (Function.update (Function.update g 3
+        (∑ l : Idx, iota t x d l • basisAt x l)) 2 (∑ k : Idx, iota t x c k • basisAt x k))
+        1 (∑ j : Idx, iota t x b j • basisAt x j)) 0 (∑ i : Idx, iota t x a i • basisAt x i) := by
+    funext i
+    fin_cases i <;> simp [g, vec4, uhlenbeckEndomorphism_apply_basis]
+  rw [harg]
+  let m0 : Fin 4 → TangentSpace I x :=
+    Function.update (Function.update (Function.update g 3
+      (∑ l : Idx, iota t x d l • basisAt x l)) 2 (∑ k : Idx, iota t x c k • basisAt x k))
+      1 (∑ j : Idx, iota t x b j • basisAt x j)
+  have h0 : (S.base.rm04 t x) (Function.update m0 0 (∑ p : Idx, iota t x a p • basisAt x p)) =
+      ∑ p : Idx, iota t x a p • (S.base.rm04 t x) (Function.update m0 0 (basisAt x p)) := by
+    exact continuousMultilinearMap_update_sum (f := (S.base.rm04 t x)) (m := m0)
+      (i := (0 : Fin 4)) (c := fun p : Idx => iota t x a p) (v := fun p : Idx => basisAt x p)
+  rw [h0]
+  have h1 : ∀ p : Idx,
+      (S.base.rm04 t x) (Function.update m0 0 (basisAt x p)) =
+      ∑ j : Idx, iota t x b j • (S.base.rm04 t x)
+        (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x j)) := by
+    intro p
+    calc
+      (S.base.rm04 t x) (Function.update m0 0 (basisAt x p))
+          = (S.base.rm04 t x) (Function.update (Function.update m0 0 (basisAt x p)) 1
+              ((Function.update m0 0 (basisAt x p)) (1 : Fin 4))) := by
+            rw [Function.update_eq_self (a := (1 : Fin 4))
+              (f := Function.update m0 0 (basisAt x p))]
+      _ = ∑ j : Idx, iota t x b j • (S.base.rm04 t x)
+            (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x j)) := by
+            rw [show (Function.update m0 0 (basisAt x p)) (1 : Fin 4) =
+                ∑ j : Idx, iota t x b j • basisAt x j from rfl]
+            exact continuousMultilinearMap_update_sum (f := (S.base.rm04 t x))
+              (m := Function.update m0 0 (basisAt x p)) (i := (1 : Fin 4))
+              (c := fun j : Idx => iota t x b j) (v := fun j : Idx => basisAt x j)
+  have h2 : ∀ p q : Idx,
+      (S.base.rm04 t x) (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) =
+      ∑ k : Idx, iota t x c k • (S.base.rm04 t x)
+        (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) 2
+          (basisAt x k)) := by
+    intro p q
+    calc
+      (S.base.rm04 t x) (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q))
+          = (S.base.rm04 t x) (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+              (basisAt x q)) 2 ((Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q))
+                (2 : Fin 4))) := by
+            rw [Function.update_eq_self (a := (2 : Fin 4))
+              (f := Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q))]
+      _ = ∑ k : Idx, iota t x c k • (S.base.rm04 t x)
+            (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) 2
+              (basisAt x k)) := by
+            rw [show (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) (2 : Fin 4) =
+                ∑ k : Idx, iota t x c k • basisAt x k from rfl]
+            exact continuousMultilinearMap_update_sum (f := (S.base.rm04 t x))
+              (m := Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q))
+              (i := (2 : Fin 4)) (c := fun k : Idx => iota t x c k) (v := fun k : Idx => basisAt x k)
+  have h3 : ∀ p q r : Idx,
+      (S.base.rm04 t x) (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+        (basisAt x q)) 2 (basisAt x r)) =
+      ∑ l : Idx, iota t x d l • (S.base.rm04 t x)
+        (Function.update (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+          (basisAt x q)) 2 (basisAt x r)) 3 (basisAt x l)) := by
+    intro p q r
+    calc
+      (S.base.rm04 t x) (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+          (basisAt x q)) 2 (basisAt x r))
+          = (S.base.rm04 t x) (Function.update (Function.update (Function.update (Function.update m0 0
+              (basisAt x p)) 1 (basisAt x q)) 2 (basisAt x r)) 3
+              ((Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) 2
+                (basisAt x r)) (3 : Fin 4))) := by
+            rw [Function.update_eq_self (a := (3 : Fin 4))
+              (f := Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+                (basisAt x q)) 2 (basisAt x r))]
+      _ = ∑ l : Idx, iota t x d l • (S.base.rm04 t x)
+            (Function.update (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+              (basisAt x q)) 2 (basisAt x r)) 3 (basisAt x l)) := by
+            rw [show (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+                (basisAt x q)) 2 (basisAt x r)) (3 : Fin 4) =
+                ∑ l : Idx, iota t x d l • basisAt x l from rfl]
+            exact continuousMultilinearMap_update_sum (f := (S.base.rm04 t x))
+              (m := Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+                (basisAt x q)) 2 (basisAt x r)) (i := (3 : Fin 4))
+              (c := fun l : Idx => iota t x d l) (v := fun l : Idx => basisAt x l)
+  have hbase : ∀ p q r l : Idx,
+      (S.base.rm04 t x) (Function.update (Function.update (Function.update (Function.update m0 0
+        (basisAt x p)) 1 (basisAt x q)) 2 (basisAt x r)) 3 (basisAt x l)) =
+      (S.base.rm04 t x) (vec4 (basisAt x p) (basisAt x q) (basisAt x r) (basisAt x l)) := by
+    intro p q r l
+    congr 1
+    funext n
+    fin_cases n <;> simp [m0, vec4]
+  calc
+    ∑ p : Idx, iota t x a p • (S.base.rm04 t x) (Function.update m0 0 (basisAt x p))
+        = ∑ p : Idx, iota t x a p • (∑ j : Idx, iota t x b j •
+            (S.base.rm04 t x) (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x j))) := by
+          refine Finset.sum_congr rfl ?_
+          intro p hp
+          rw [h1 p]
+    _ = ∑ p : Idx, iota t x a p • (∑ j : Idx, iota t x b j • (∑ k : Idx, iota t x c k •
+            (S.base.rm04 t x) (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+              (basisAt x j)) 2 (basisAt x k)))) := by
+          refine Finset.sum_congr rfl ?_
+          intro p hp
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro j hj
+          rw [h2 p j]
+    _ = ∑ p : Idx, iota t x a p • (∑ j : Idx, iota t x b j • (∑ k : Idx, iota t x c k • (∑ l : Idx,
+            iota t x d l • (S.base.rm04 t x) (Function.update (Function.update (Function.update
+              (Function.update m0 0 (basisAt x p)) 1 (basisAt x j)) 2 (basisAt x k)) 3 (basisAt x l))))) := by
+          refine Finset.sum_congr rfl ?_
+          intro p hp
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro j hj
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro k hk
+          rw [h3 p j k]
+    _ = ∑ p : Idx, iota t x a p • (∑ j : Idx, iota t x b j • (∑ k : Idx, iota t x c k • (∑ l : Idx,
+            iota t x d l • (S.base.rm04 t x) (vec4 (basisAt x p) (basisAt x j) (basisAt x k) (basisAt x l))))) := by
+          refine Finset.sum_congr rfl ?_
+          intro p hp
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro j hj
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro k hk
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro l hl
+          rw [hbase p j k l]
+    _ = ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
+        iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+          (S.base.rm04 t x) (vec4 (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l)) := by
+          simp [smul_eq_mul, Finset.mul_sum, mul_assoc, mul_left_comm, mul_comm]
 
 end FlowFrame
 
