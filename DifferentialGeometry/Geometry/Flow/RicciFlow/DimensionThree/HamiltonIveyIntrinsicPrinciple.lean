@@ -673,6 +673,156 @@ theorem regionNormalDirections_of_normal
 
 end RegionCharacterization
 
+section RegionSupportTime
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem regionSupport_continuousOn_time
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    {K T : ℝ} (hK : 0 < K) (x : M) (ν : Tensor04At (I := I) (M := M) x) :
+    ContinuousOn (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν) (Set.Icc 0 T) := by
+  let w : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν)
+  by_cases hlt : (symmEuclid_isHermitian w).eigenvalues₀ 0 < 0
+  · have hmain := hamiltonIveyConvexMatrixRegionSupportEuclid_continuousOn (K := K) (T := T) hK w hlt
+    have hmain4 : ContinuousOn (fun τ : ℝ => 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ w)
+        (Set.Icc 0 T) := hmain.const_mul 4
+    have hfun : (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν) =
+        fun τ : ℝ => 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ w := by
+      funext τ
+      simp [regionSupport, w]
+    simpa [hfun] using hmain4
+  · have hconst : ∀ τ : ℝ, regionSupport (I := I) g basisAt K τ x ν = 0 := by
+      intro τ
+      unfold regionSupport hamiltonIveyConvexMatrixRegionSupportEuclid
+      rw [if_neg hlt]
+      simp
+    have hconst0 : (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν) =
+        fun _ : ℝ => 0 := by
+      funext τ
+      exact hconst τ
+    simpa [hconst0] using (continuousOn_const : ContinuousOn (fun _ : ℝ => (0 : ℝ)) (Set.Icc 0 T))
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem regionSupport_hasDerivAt_time
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    {K : ℝ} (hK : 0 < K) {t : ℝ} (ht : 0 < t) (x : M) (ν : Tensor04At (I := I) (M := M) x) :
+    HasDerivAt (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν)
+      (regionSupportDeriv (I := I) g basisAt hK t x ν) t := by
+  let w : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν)
+  by_cases hlt : (symmEuclid_isHermitian w).eigenvalues₀ 0 < 0
+  · have hmain := hamiltonIveyConvexMatrixRegionSupportEuclid_hasDerivAt hK ht w
+    have hmain4 : HasDerivAt (fun τ : ℝ => 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ w)
+        (4 * hamiltonIveyConvexMatrixRegionSupportDeriv K hK t w) t := hmain.const_mul 4
+    have hfun : (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν) =
+        fun τ : ℝ => 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ w := by
+      funext τ
+      simp [regionSupport, w]
+    have hmain4' : HasDerivAt (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν)
+        (4 * hamiltonIveyConvexMatrixRegionSupportDeriv K hK t w) t := by
+      simpa [hfun] using hmain4
+    simpa [regionSupportDeriv, w] using hmain4'
+  · have hnot : ¬ (symmEuclid_isHermitian w).eigenvalues₀ 0 < 0 := hlt
+    have hconst : ∀ τ : ℝ, regionSupport (I := I) g basisAt K τ x ν = 0 := by
+      intro τ
+      unfold regionSupport hamiltonIveyConvexMatrixRegionSupportEuclid
+      rw [if_neg hlt]
+      simp
+    have hmain : HasDerivAt (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν) 0 t := by
+      simpa [hconst] using (hasDerivAt_const (x := t) (c := (0 : ℝ)))
+    have hz : regionSupportDeriv (I := I) g basisAt hK t x ν = 0 := by
+      unfold regionSupportDeriv hamiltonIveyConvexMatrixRegionSupportDeriv
+      rw [if_neg hnot]
+      simp
+    simpa [hz] using hmain
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem regionSource_le_regionSupportDeriv_of_tangent
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
+    {K t : ℝ} (hK : 0 < K) (ht : 0 < t) (x : M)
+    {p ν : Tensor04At (I := I) (M := M) x}
+    (hp : p ∈ fiberHamiltonIveyRegion basisAt K t x)
+    (hν : ν ∈ regionNormalDirections (I := I) g basisAt x)
+    (htangent : regionSupport (I := I) g basisAt K t x ν = inner0S (I := I) g x 4 ν p) :
+    regionSource (I := I) g basisAt x p ν ≤
+      regionSupportDeriv (I := I) g basisAt hK t x ν := by
+  rcases hp with ⟨hpalg, hpmat⟩
+  let w : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν)
+  let A : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hpalg⟩)
+  have hA : A ∈ hamiltonIveyConvexMatrixRegionEuclid K t := by
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+    simpa [A, euclidToMatrix_matrixToEuclid] using hpmat
+  have hinner : inner0S (I := I) g x 4 ν p = 4 * inner ℝ w A := by
+    calc
+      inner0S (I := I) g x 4 ν p = inner0S (I := I) g x 4 p ν := by
+        exact inner0S_comm (I := I) g x 4 ν p
+      _ = 4 * inner ℝ (matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν))
+          (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨p, hpalg⟩)) := by
+        exact inner0S_eq_four_mul_inner_regionProjMatrix (I := I) g x (basisAt x) (horth0 x) hpalg ν
+  have hsupport : regionSupport (I := I) g basisAt K t x ν = 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K t w := by
+    rfl
+  have htouching : hamiltonIveyConvexMatrixRegionSupportEuclid K t w = inner ℝ w A := by
+    have h4 : 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K t w = 4 * inner ℝ w A := by
+      rw [← hsupport, ← hinner]
+      exact htangent
+    nlinarith
+  rcases hν with hlt | hz
+  · have hmain := hamiltonIveyConvexMatrixRegionSupportEuclid_reaction_le_deriv hK (le_of_lt ht) w hlt A hA htouching
+      (hamiltonIveyConvexMatrixRegionSupportDeriv K hK t w)
+      (hamiltonIveyConvexMatrixRegionSupportEuclid_hasDerivAt hK ht w)
+    have hsource : regionSource (I := I) g basisAt x p ν =
+        4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState A) w := by
+      unfold regionSource
+      rw [regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hpalg]
+    have hderiv : regionSupportDeriv (I := I) g basisAt hK t x ν =
+        4 * hamiltonIveyConvexMatrixRegionSupportDeriv K hK t w := by
+      rfl
+    rw [hsource, hderiv]
+    exact mul_le_mul_of_nonneg_left hmain (by norm_num)
+  · have hsymm0 : symmEuclid w = 0 := by
+      change symmEuclid (matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν)) = 0
+      exact hz
+    have hw0 : w = 0 := by
+      have hwreg : euclidToMatrix w = regionProjMatrix (I := I) g (basisAt x) ν := by
+        rw [euclidToMatrix_matrixToEuclid]
+      have hM : (euclidToMatrix w).IsSymm := by
+        rw [hwreg]
+        have hherm : (curvatureOperatorMatrixAt (I := I) x (basisAt x)
+            (fiberProjW (I := I) g x ν)).IsHermitian := by
+          exact curvatureOperatorMatrixAt_isHermitian x (basisAt x) (fiberProjW (I := I) g x ν)
+        exact Matrix.IsSymm.ext (fun i j => by
+          have hh := congrFun (congrFun hherm i) j
+          simpa [Matrix.conjTranspose, star_trivial] using hh)
+      have hzeroM : euclidToMatrix w = 0 := by
+        have h := symmEuclid_matrixToEuclid_symm (M := euclidToMatrix w) hM
+        rw [matrixToEuclid_euclidToMatrix] at h
+        rw [hsymm0] at h
+        exact h.symm
+      rw [← matrixToEuclid_euclidToMatrix w, hzeroM]
+      ext ij
+      simp [matrixToEuclid]
+    have hsource0 : regionSource (I := I) g basisAt x p ν = 0 := by
+      rw [regionSource]
+      rw [show matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν) = w from rfl, hw0]
+      simp
+    have hderiv0 : regionSupportDeriv (I := I) g basisAt hK t x ν = 0 := by
+      rw [regionSupportDeriv]
+      rw [show matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν) = w from rfl]
+      rw [hamiltonIveyConvexMatrixRegionSupportDeriv_eq_zero_of_symm_zero hK t w hsymm0]
+      simp
+    rw [hsource0, hderiv0]
+
+end RegionSupportTime
+
 
 end DifferentialGeometry.PDE.RicciFlow
 
