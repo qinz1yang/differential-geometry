@@ -2484,6 +2484,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyInnerLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RicciEigenSectional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonPositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjCriticalSpan
