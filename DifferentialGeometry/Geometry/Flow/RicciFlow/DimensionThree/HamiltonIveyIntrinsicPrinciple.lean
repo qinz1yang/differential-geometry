@@ -6742,8 +6742,6 @@ theorem compLinearMap_mem_algebraicCurvatureTensorSubmodule
   · intro u v y z
     exact hform.bianchi _ _ _ _
 
-omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
-  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem fiberProjW_compUhlenbeck_commute
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
@@ -6759,7 +6757,8 @@ theorem fiberProjW_compUhlenbeck_commute
     (fiberProjW (I := I) (S.base.metric 0) x
         (A.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))
       : Tensor04At (I := I) (M := M) x) =
-      (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+      ContinuousMultilinearMap.compContinuousLinearMap
+        (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
         (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t) := by
   classical
   let U : TangentSpace I x →L[ℝ] TangentSpace I x := uhlenbeckEndomorphismAt (basisAt x) iota t
@@ -6776,9 +6775,10 @@ theorem fiberProjW_compUhlenbeck_commute
     exact e.symm_apply_apply v
   have hcompUinv : ∀ B : Tensor04At (I := I) (M := M) x, compU (compUinv B) = B := by
     intro B
-    apply Tensor0SSpace.ext 4 x
+    apply tensor0SSpace_ext 4 x
     intro v
-    change (B.compContinuousLinearMap (fun _ : Fin 4 => Uinv)).compContinuousLinearMap
+    change ContinuousMultilinearMap.compContinuousLinearMap
+        (ContinuousMultilinearMap.compContinuousLinearMap B (fun _ : Fin 4 => Uinv))
         (fun _ : Fin 4 => U) v = B v
     rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
       ContinuousMultilinearMap.compContinuousLinearMap_apply]
@@ -6790,19 +6790,20 @@ theorem fiberProjW_compUhlenbeck_commute
         (fiberProjW (I := I) (S.base.metric 0) x
           (A.compContinuousLinearMap (fun _ : Fin 4 => U))) q =
       inner0S (I := I) (S.base.metric 0) x 4
-        ((fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
-          .compContinuousLinearMap (fun _ : Fin 4 => U)) q := by
+        (ContinuousMultilinearMap.compContinuousLinearMap
+          (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
+          (fun _ : Fin 4 => U)) q := by
     intro q
     let q' : Tensor04At (I := I) (M := M) x :=
-      (q : Tensor04At (I := I) (M := M) x).compContinuousLinearMap (fun _ : Fin 4 => Uinv)
+      ContinuousMultilinearMap.compContinuousLinearMap
+        (q : Tensor04At (I := I) (M := M) x) (fun _ : Fin 4 => Uinv)
     have hq' : q' ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
       exact compLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) Uinv
         ⟨q, q.2⟩
     have hqU : q'.compContinuousLinearMap (fun _ : Fin 4 => U) = (q : Tensor04At (I := I) (M := M) x) := by
       dsimp [q']
       exact hcompUinv (q : Tensor04At (I := I) (M := M) x)
-    have hiso := fiberInner_compUhlenbeck_isometry_full hT S basisAt iota hiota0 hgram horth0 ht x
-      (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x) q'
+    have hiso := fiberInner_compUhlenbeck_isometry_full hT S basisAt iota hiota0 hgram horth0 ht x A q'
     calc
       inner0S (I := I) (S.base.metric 0) x 4
           (fiberProjW (I := I) (S.base.metric 0) x
@@ -6816,20 +6817,25 @@ theorem fiberProjW_compUhlenbeck_commute
               (q'.compContinuousLinearMap (fun _ : Fin 4 => U)) := by
               rw [hqU]
       _ = inner0S (I := I) (S.base.metric t) x 4 A q' := by
-              exact hiso.symm
+              exact hiso
       _ = inner0S (I := I) (S.base.metric t) x 4
               (fiberProjW (I := I) (S.base.metric t) x A) q' := by
               rw [fiberProjW_spec (I := I) (S.base.metric t) x A ⟨q', hq'⟩]
       _ = inner0S (I := I) (S.base.metric 0) x 4
-              ((fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
-                .compContinuousLinearMap (fun _ : Fin 4 => U)) q := by
-              simpa [q', hqU] using (hiso.symm)
+              (ContinuousMultilinearMap.compContinuousLinearMap
+                (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
+                (fun _ : Fin 4 => U)) q := by
+              have hiso' := fiberInner_compUhlenbeck_isometry_full hT S basisAt iota hiota0 hgram horth0 ht x
+                (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x) q'
+              rw [← hqU]
+              exact hiso'.symm
   let p : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
     fiberProjW (I := I) (S.base.metric 0) x
       (A.compContinuousLinearMap (fun _ : Fin 4 => U))
   let u : algebraicCurvatureTensorSubmodule (I := I) (M := M) x := ⟨
-    (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
-      .compContinuousLinearMap (fun _ : Fin 4 => U),
+    ContinuousMultilinearMap.compContinuousLinearMap
+      (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
+      (fun _ : Fin 4 => U),
     compLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) U
       (fiberProjW (I := I) (S.base.metric t) x A)⟩
   have hdiff : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) x,
@@ -6838,8 +6844,9 @@ theorem fiberProjW_compUhlenbeck_commute
     have h1 := hchar q
     have h2 : inner0S (I := I) (S.base.metric 0) x 4 u q =
         inner0S (I := I) (S.base.metric 0) x 4
-          ((fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
-            .compContinuousLinearMap (fun _ : Fin 4 => U)) q := by
+          (ContinuousMultilinearMap.compContinuousLinearMap
+            (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
+            (fun _ : Fin 4 => U)) q := by
       rfl
     have hsub : inner0S (I := I) (S.base.metric 0) x 4 ((p - u) : Tensor04At (I := I) (M := M) x) q =
         inner0S (I := I) (S.base.metric 0) x 4 (p : Tensor04At (I := I) (M := M) x) q -
