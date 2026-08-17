@@ -3459,6 +3459,2956 @@ theorem nablaKRm04Field_two_anti45_cond
 
 end RoughLapAlgebraic
 
+open Bundle Set Filter
+open DifferentialGeometry.Analysis.Convex
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Curvature.DimensionThree
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators
+open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Dim3Reaction
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E] [CompleteSpace E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+variable [SigmaCompactSpace M] [T2Space M]
+variable {T : ℝ} (hT : 0 < T) [I.Boundaryless]
+variable (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+variable (hS : IsSolutionOn (I := I) S)
+variable (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+variable (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+variable (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+variable (iota : MatrixComp M (Fin 3))
+variable (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+variable (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+  movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+  movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+
+
+section Helpers
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem fiberRegion_metricInverseInBasis_identity_of_orthonormal
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (horth : ∀ i j : Idx, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
+    MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
+  classical
+  intro i j
+  refine ⟨?_, ?_⟩
+  · rw [Finset.sum_eq_single i]
+    · rw [identityInvMetric_apply_self, one_mul]
+      exact horth i j
+    · intro k _ hk
+      rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne (fun h => hk h.symm), zero_mul]
+    · intro h
+      exact absurd (Finset.mem_univ i) h
+  · rw [Finset.sum_eq_single j]
+    · rw [identityInvMetric_apply_self, mul_one]
+      exact horth i j
+    · intro k _ hk
+      rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hk, mul_zero]
+    · intro h
+      exact absurd (Finset.mem_univ j) h
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M]
+  [T2Space M] [I.Boundaryless] in
+theorem fiberRegion_metricTraceFirstTwo0SAt_eq_metricTrace0S2InBasis
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M) {x : M} {s : ℕ}
+    (basis : Module.Basis Idx Real (TangentSpace I x))
+    (gInv : Idx → Idx → ℝ)
+    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2) x)
+    (tail : Fin s → TangentSpace I x) :
+    metricTraceFirstTwo0SAt (I := I) g T tail =
+      metricTrace0S2InBasis (I := I) basis gInv T tail := by
+  unfold metricTraceFirstTwo0SAt
+  rw [metricTracePair0SAt_eq_sum_basis (I := I) g basis gInv hinv (freezeFirstTwo0S (I := I) T tail)]
+  unfold metricTrace0S2InBasis
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [freezeFirstTwo0S_apply]
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem fiberInner_compUhlenbeck_isometry_general
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M)
+    (X Y : Tensor04At (I := I) (M := M) x) :
+    inner0S (I := I) (S.base.metric 0) x 4
+        (X.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))
+        (Y.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)) =
+      inner0S (I := I) (S.base.metric t) x 4 X Y := by
+  classical
+  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
+  have hmovingOrth : ∀ i j : Fin 3,
+      (S.base.metric t).inner x (moving i) (moving j) = delta3 i j := by
+    intro i j
+    dsimp [moving]
+    exact uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M) hT S basisAt iota hiota0 hgram x
+      (horth0 x) ht i j
+  have hinv0 : MetricInverseInBasis (I := I) (S.base.metric 0) x (basisAt x)
+      (identityInvMetric (Idx := Fin 3)) := by
+    have h := fiberRegion_metricInverseInBasis_identity_of_orthonormal (I := I)
+      (S.base.metric 0) (basisAt x) (by
+        intro i j
+        simpa [delta3] using horth0 x i j)
+    exact h
+  have hinvT : MetricInverseInBasis (I := I) (S.base.metric t) x moving
+      (identityInvMetric (Idx := Fin 3)) := by
+    have h := fiberRegion_metricInverseInBasis_identity_of_orthonormal (I := I)
+      (S.base.metric t) moving hmovingOrth
+    exact h
+  have hU : ∀ a : Fin 3,
+      uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x a) = moving a := by
+    intro a
+    exact (uhlenbeckMovingBasis_apply (I := I) (M := M) hT S basisAt iota hiota0 hgram t ht x a).symm
+  let Xc : Tensor04At (I := I) (M := M) x :=
+    X.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)
+  let Yc : Tensor04At (I := I) (M := M) x :=
+    Y.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)
+  have hleft : inner0S (I := I) (S.base.metric 0) x 4 Xc Yc =
+      coordInner0S (I := I) (x := x) 4 (identityInvMetric (Idx := Fin 3)) Xc Yc (basisAt x) := by
+    exact inner0S_eq_coord (I := I) (S.base.metric 0) x 4 (basisAt x)
+      (identityInvMetric (Idx := Fin 3)) hinv0 Xc Yc
+  have hright : inner0S (I := I) (S.base.metric t) x 4 X Y =
+      coordInner0S (I := I) (x := x) 4 (identityInvMetric (Idx := Fin 3)) X Y moving := by
+    exact inner0S_eq_coord (I := I) (S.base.metric t) x 4 moving
+      (identityInvMetric (Idx := Fin 3)) hinvT X Y
+  have hXcomp : ∀ I0 : Fin 4 → Fin 3,
+      tensor0SComponent (I := I) Xc (fun i : Fin 3 => basisAt x i) I0 =
+        tensor0SComponent (I := I) X (fun i : Fin 3 => moving i) I0 := by
+    intro I0
+    change (X : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (fun a : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x (I0 a))) =
+      (X : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (fun a : Fin 4 => moving (I0 a))
+    have harg : (fun a : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x (I0 a))) =
+        fun a : Fin 4 => moving (I0 a) := by
+      funext a
+      exact hU (I0 a)
+    rw [harg]
+  have hYcomp : ∀ J0 : Fin 4 → Fin 3,
+      tensor0SComponent (I := I) Yc (fun i : Fin 3 => basisAt x i) J0 =
+        tensor0SComponent (I := I) Y (fun i : Fin 3 => moving i) J0 := by
+    intro J0
+    change (Y : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (fun a : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x (J0 a))) =
+      (Y : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (fun a : Fin 4 => moving (J0 a))
+    have harg : (fun a : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x (J0 a))) =
+        fun a : Fin 4 => moving (J0 a) := by
+      funext a
+      exact hU (J0 a)
+    rw [harg]
+  calc
+    inner0S (I := I) (S.base.metric 0) x 4 Xc Yc
+        = coordInner0S (I := I) (x := x) 4 (identityInvMetric (Idx := Fin 3)) Xc Yc (basisAt x) := hleft
+    _ = coordInner0S (I := I) (x := x) 4 (identityInvMetric (Idx := Fin 3)) X Y moving := by
+          unfold coordInner0S
+          apply Finset.sum_congr rfl
+          intro I0 _
+          apply Finset.sum_congr rfl
+          intro J0 _
+          rw [hXcomp I0, hYcomp J0]
+    _ = inner0S (I := I) (S.base.metric t) x 4 X Y := hright.symm
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+lemma fiberRegion_tensor_sum_antiPair
+    {n : ℕ} {x : M}
+    (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) n x)
+    (s d : Fin n → TangentSpace I x)
+    (σ : Fin n → Fin n)
+    (hσinv : ∀ a : Fin n, σ (σ a) = a)
+    (hβ : ∀ u : Fin n → TangentSpace I x, β u + β (u ∘ σ) = 0) :
+    (∑ a : Fin n, β (Function.update s a (d a))) +
+        (∑ a : Fin n, β (Function.update (s ∘ σ) a (d (σ a)))) = 0 := by
+  classical
+  have hupdate : ∀ a : Fin n,
+      Function.update (s ∘ σ) (σ a) (d a) = (Function.update s a (d a)) ∘ σ := by
+    intro a
+    funext b
+    by_cases h : b = σ a
+    · have hb : σ b = a := by
+        rw [h]
+        exact hσinv a
+      simp [Function.update, h, hσinv a]
+    · have hb : σ b ≠ a := by
+        intro hb
+        apply h
+        have hσb : σ (σ b) = σ a := congrArg σ hb
+        rwa [hσinv b] at hσb
+      simp [Function.update, h, hb]
+  have hreindex : (∑ a : Fin n, β (Function.update (s ∘ σ) a (d (σ a)))) =
+      ∑ a : Fin n, β (Function.update (s ∘ σ) (σ a) (d a)) := by
+    refine Finset.sum_bij (fun a _ => σ a) ?_ ?_ ?_ ?_
+    · intro a ha
+      simp
+    · intro a₁ ha₁ a₂ ha₂ h
+      have h' := congrArg σ h
+      rwa [hσinv a₁, hσinv a₂] at h'
+    · intro b hb
+      refine ⟨σ b, by simp, ?_⟩
+      exact hσinv b
+    · intro a ha
+      rw [hσinv a]
+  calc
+    (∑ a : Fin n, β (Function.update s a (d a))) +
+        (∑ a : Fin n, β (Function.update (s ∘ σ) a (d (σ a))))
+        = (∑ a : Fin n, β (Function.update s a (d a))) +
+            (∑ a : Fin n, β (Function.update (s ∘ σ) (σ a) (d a))) := by
+          rw [hreindex]
+    _ = (∑ a : Fin n, (β (Function.update s a (d a)) +
+          β (Function.update (s ∘ σ) (σ a) (d a)))) := by
+          simp [Finset.sum_add_distrib]
+    _ = 0 := by
+          simp [hupdate, hβ]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+lemma fiberRegion_tensor_sum_cyclePair
+    {n : ℕ} {x : M}
+    (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) n x)
+    (s d : Fin n → TangentSpace I x)
+    (τ : Fin n → Fin n)
+    (hτ3id : ∀ a : Fin n, τ (τ (τ a)) = a)
+    (hβ : ∀ u : Fin n → TangentSpace I x, β u + β (u ∘ τ) + β (u ∘ τ ∘ τ) = 0) :
+    (∑ a : Fin n, β (Function.update s a (d a))) +
+        (∑ a : Fin n, β (Function.update (s ∘ τ) a (d (τ a)))) +
+        (∑ a : Fin n, β (Function.update (s ∘ τ ∘ τ) a (d (τ (τ a))))) = 0 := by
+  classical
+  have hupdate1 : ∀ a : Fin n,
+      Function.update (s ∘ τ) (τ (τ a)) (d a) = (Function.update s a (d a)) ∘ τ := by
+    intro a
+    funext b
+    by_cases h : b = τ (τ a)
+    · have hb : τ b = a := by
+        rw [h]
+        exact hτ3id a
+      simp [Function.update, h, hτ3id a]
+    · have hb : τ b ≠ a := by
+        intro hb
+        apply h
+        have hτb : τ (τ (τ b)) = τ (τ a) := congrArg τ (congrArg τ hb)
+        rwa [hτ3id b] at hτb
+      simp [Function.update, h, hb]
+  have hupdate2 : ∀ a : Fin n,
+      Function.update (s ∘ τ ∘ τ) (τ a) (d a) = (Function.update s a (d a)) ∘ τ ∘ τ := by
+    intro a
+    funext b
+    by_cases h : b = τ a
+    · have hb : τ (τ b) = a := by
+        rw [h]
+        exact hτ3id a
+      simp [Function.update, h, hτ3id a]
+    · have hb : τ (τ b) ≠ a := by
+        intro hb
+        apply h
+        have hτb : τ (τ (τ b)) = τ a := congrArg τ hb
+        rwa [hτ3id b] at hτb
+      simp [Function.update, h, hb]
+  have hreindex1 : (∑ a : Fin n, β (Function.update (s ∘ τ) a (d (τ a)))) =
+      ∑ a : Fin n, β (Function.update (s ∘ τ) (τ (τ a)) (d a)) := by
+    refine Finset.sum_bij (fun a _ => τ a) ?_ ?_ ?_ ?_
+    · intro a ha
+      simp
+    · intro a₁ ha₁ a₂ ha₂ h
+      have h' := congrArg τ (congrArg τ h)
+      rwa [hτ3id a₁, hτ3id a₂] at h'
+    · intro b hb
+      refine ⟨τ (τ b), by simp, ?_⟩
+      exact hτ3id b
+    · intro a ha
+      rw [hτ3id a]
+  have hreindex2 : (∑ a : Fin n, β (Function.update (s ∘ τ ∘ τ) a (d (τ (τ a))))) =
+      ∑ a : Fin n, β (Function.update (s ∘ τ ∘ τ) (τ a) (d a)) := by
+    refine Finset.sum_bij (fun a _ => τ (τ a)) ?_ ?_ ?_ ?_
+    · intro a ha
+      simp
+    · intro a₁ ha₁ a₂ ha₂ h
+      have h' := congrArg τ h
+      rwa [hτ3id a₁, hτ3id a₂] at h'
+    · intro b hb
+      refine ⟨τ b, by simp, ?_⟩
+      exact hτ3id b
+    · intro a ha
+      rw [hτ3id a]
+  calc
+    (∑ a : Fin n, β (Function.update s a (d a))) +
+        (∑ a : Fin n, β (Function.update (s ∘ τ) a (d (τ a)))) +
+        (∑ a : Fin n, β (Function.update (s ∘ τ ∘ τ) a (d (τ (τ a)))))
+        = (∑ a : Fin n, β (Function.update s a (d a))) +
+            (∑ a : Fin n, β (Function.update (s ∘ τ) (τ (τ a)) (d a))) +
+            (∑ a : Fin n, β (Function.update (s ∘ τ ∘ τ) (τ a) (d a))) := by
+          rw [hreindex1, hreindex2]
+    _ = (∑ a : Fin n, (β (Function.update s a (d a)) +
+          β (Function.update (s ∘ τ) (τ (τ a)) (d a)) +
+          β (Function.update (s ∘ τ ∘ τ) (τ a) (d a)))) := by
+          simp [Finset.sum_add_distrib]
+    _ = 0 := by
+          simp [hupdate1, hupdate2, hβ]
+
+omit [CompleteSpace E] [IsManifold I 3 M] [SigmaCompactSpace M] [I.Boundaryless] in
+lemma fiberRegion_nabla_of_algCurvForm
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (α : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 4)
+    (nablaα : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5)
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 cov α nablaα)
+    (hAlg : ∀ y : M, IsAlgCurvForm
+      (fun X Y Z W : TangentSpace I y => tensor04StdAt (I := I) (M := M) (α y) X Y Z W))
+    (x : M) :
+    ∀ u X Y Z W : TangentSpace I x,
+      nablaα x (Fin.cons u (vec4 X Y Z W)) = -nablaα x (Fin.cons u (vec4 Y X Z W)) ∧
+      nablaα x (Fin.cons u (vec4 X Y Z W)) = -nablaα x (Fin.cons u (vec4 X Y W Z)) ∧
+      nablaα x (Fin.cons u (vec4 X Y Z W)) + nablaα x (Fin.cons u (vec4 Y Z X W)) +
+        nablaα x (Fin.cons u (vec4 Z X Y W)) = 0 := by
+  classical
+  intro u X Y Z W
+  let U : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose
+  have hU : U x = u :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose_spec
+  let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+      (vec4 X Y Z W a)).choose
+  have hV : ∀ a : Fin 4, V a x = vec4 X Y Z W a := fun a =>
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+      (vec4 X Y Z W a)).choose_spec
+  let s : Fin 4 → TangentSpace I x := fun b => V b x
+  let d : Fin 4 → TangentSpace I x := fun a => (cov (fun p : M => V a p) x) (U x)
+  let f : M → ℝ := fun p => α p (fun a : Fin 4 => V a p)
+  have hslots : (fun a : Fin 4 => V a x) = vec4 X Y Z W := by
+    funext a
+    exact hV a
+  have hderiv : nablaα x (Fin.cons u (vec4 X Y Z W)) =
+      extDerivFun (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := by
+    have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U V x
+    simpa [hU, s, d, f, hslots] using h
+  have hmdiff_f : MDifferentiableAt I 𝓘(Real, Real) f x :=
+    ContMDiffAt.mdifferentiableAt
+      (tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) α V x)
+      (by simp)
+  have hderiv_perm : ∀ (Wp : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
+      (hW : (fun a : Fin 4 => Wp a x) = vec4 Y X Z W),
+      nablaα x (Fin.cons u (vec4 Y X Z W)) =
+        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => Wp a p)) x (U x) -
+          ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => Wp b x) a
+            ((cov (fun p : M => Wp a p) x) (U x))) := by
+    intro Wp hW
+    have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U Wp x
+    simpa [hU, hW] using h
+  have hanti1 : nablaα x (Fin.cons u (vec4 X Y Z W)) = -nablaα x (Fin.cons u (vec4 Y X Z W)) := by
+    let σ01 : Fin 4 → Fin 4 := fun a => if a = 0 then 1 else if a = 1 then 0 else a
+    let V01 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fun a => V (σ01 a)
+    have hV01 : (fun a : Fin 4 => V01 a x) = vec4 Y X Z W := by
+      funext a
+      fin_cases a <;> simp [V01, σ01, hV, vec4]
+    have hderiv01 : nablaα x (Fin.cons u (vec4 Y X Z W)) =
+        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V01 a p)) x (U x) -
+          ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V01 b x) a
+            ((cov (fun p : M => V01 a p) x) (U x))) := hderiv_perm V01 hV01
+    have hfun01 : (fun p : M => α p (fun a : Fin 4 => V01 a p)) =
+        fun p : M => -α p (fun a : Fin 4 => V a p) := by
+      funext p
+      have hrec1 : (fun a : Fin 4 => V01 a p) = vec4 (V 1 p) (V 0 p) (V 2 p) (V 3 p) := by
+        funext a
+        fin_cases a <;> simp [V01, σ01, vec4]
+      have hrec2 : (fun a : Fin 4 => V a p) = vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
+        funext a
+        fin_cases a <;> simp [vec4]
+      calc
+        α p (fun a : Fin 4 => V01 a p)
+            = tensor04StdAt (I := I) (M := M) (α p) (V 1 p) (V 0 p) (V 2 p) (V 3 p) := by
+              rw [hrec1]
+              rfl
+        _ = -tensor04StdAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
+              exact (hAlg p).anti_first (V 1 p) (V 0 p) (V 2 p) (V 3 p)
+        _ = -α p (fun a : Fin 4 => V a p) := by
+              rw [hrec2]
+              rfl
+    have hext01 : extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V01 a p)) x (U x) =
+        -extDerivFun (I := I) f x (U x) := by
+      have hneg : extDerivFun (I := I) (fun p : M => -α p (fun a : Fin 4 => V a p)) x (U x) =
+          -extDerivFun (I := I) f x (U x) :=
+        DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at (I := I) (f := f) (x := x) (U x) hmdiff_f
+      rw [← hfun01] at hneg
+      simpa [f] using hneg
+    have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ σ01) = 0 := by
+      intro v
+      have h1 : α x v = tensor04StdAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
+        congr 1
+        funext b
+        fin_cases b <;> simp [vec4]
+      have h2 : α x (v ∘ σ01) = tensor04StdAt (I := I) (M := M) (α x) (v 1) (v 0) (v 2) (v 3) := by
+        congr 1
+        funext b
+        fin_cases b <;> simp [σ01, vec4]
+      have hanti := (hAlg x).anti_first (v 0) (v 1) (v 2) (v 3)
+      rw [h1, h2, hanti]
+      ring
+    have hsum01 : (∑ a : Fin 4, α x (Function.update s a (d a))) =
+        -(∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V01 b x) a
+          ((cov (fun p : M => V01 a p) x) (U x)))) := by
+      have hpair := fiberRegion_tensor_sum_antiPair (α x) s d σ01
+        (by intro a; fin_cases a <;> simp [σ01]) hβ
+      have hsimpa : (∑ a : Fin 4, α x (Function.update (s ∘ σ01) a (d (σ01 a)))) =
+          ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V01 b x) a
+            ((cov (fun p : M => V01 a p) x) (U x))) := by
+        apply Finset.sum_congr rfl
+        intro a _
+        congr 1
+      linarith [hpair, hsimpa]
+    calc
+      nablaα x (Fin.cons u (vec4 X Y Z W))
+          = extDerivFun (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := hderiv
+      _ = -nablaα x (Fin.cons u (vec4 Y X Z W)) := by
+            rw [hderiv01]
+            rw [hext01, hsum01]
+            ring
+  have hanti2 : nablaα x (Fin.cons u (vec4 X Y Z W)) = -nablaα x (Fin.cons u (vec4 X Y W Z)) := by
+    let σ23 : Fin 4 → Fin 4 := fun a => if a = 2 then 3 else if a = 3 then 2 else a
+    let V23 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fun a => V (σ23 a)
+    have hV23 : (fun a : Fin 4 => V23 a x) = vec4 X Y W Z := by
+      funext a
+      fin_cases a <;> simp [V23, σ23, hV, vec4]
+    have hderiv23 : nablaα x (Fin.cons u (vec4 X Y W Z)) =
+        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V23 a p)) x (U x) -
+          ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V23 b x) a
+            ((cov (fun p : M => V23 a p) x) (U x))) := by
+      have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U V23 x
+      simpa [hU, hV23] using h
+    have hfun23 : (fun p : M => α p (fun a : Fin 4 => V23 a p)) =
+        fun p : M => -α p (fun a : Fin 4 => V a p) := by
+      funext p
+      have hrec1 : (fun a : Fin 4 => V23 a p) = vec4 (V 0 p) (V 1 p) (V 3 p) (V 2 p) := by
+        funext a
+        fin_cases a <;> simp [V23, σ23, vec4]
+      have hrec2 : (fun a : Fin 4 => V a p) = vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
+        funext a
+        fin_cases a <;> simp [vec4]
+      calc
+        α p (fun a : Fin 4 => V23 a p)
+            = tensor04StdAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 3 p) (V 2 p) := by
+              rw [hrec1]
+              rfl
+        _ = -tensor04StdAt (I := I) (M := M) (α p) (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
+              exact (hAlg p).anti_last (V 0 p) (V 1 p) (V 3 p) (V 2 p)
+        _ = -α p (fun a : Fin 4 => V a p) := by
+              rw [hrec2]
+              rfl
+    have hext23 : extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V23 a p)) x (U x) =
+        -extDerivFun (I := I) f x (U x) := by
+      have hneg : extDerivFun (I := I) (fun p : M => -α p (fun a : Fin 4 => V a p)) x (U x) =
+          -extDerivFun (I := I) f x (U x) :=
+        DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at (I := I) (f := f) (x := x) (U x) hmdiff_f
+      rw [← hfun23] at hneg
+      simpa [f] using hneg
+    have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ σ23) = 0 := by
+      intro v
+      have h1 : α x v = tensor04StdAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
+        congr 1
+        funext b
+        fin_cases b <;> simp [vec4]
+      have h2 : α x (v ∘ σ23) = tensor04StdAt (I := I) (M := M) (α x) (v 0) (v 1) (v 3) (v 2) := by
+        congr 1
+        funext b
+        fin_cases b <;> simp [σ23, vec4]
+      have hanti := (hAlg x).anti_last (v 0) (v 1) (v 2) (v 3)
+      rw [h1, h2, hanti]
+      ring
+    have hsum23 : (∑ a : Fin 4, α x (Function.update s a (d a))) =
+        -(∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V23 b x) a
+          ((cov (fun p : M => V23 a p) x) (U x)))) := by
+      have hpair := fiberRegion_tensor_sum_antiPair (α x) s d σ23
+        (by intro a; fin_cases a <;> simp [σ23]) hβ
+      have hsimpa : (∑ a : Fin 4, α x (Function.update (s ∘ σ23) a (d (σ23 a)))) =
+          ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V23 b x) a
+            ((cov (fun p : M => V23 a p) x) (U x))) := by
+        apply Finset.sum_congr rfl
+        intro a _
+        congr 1
+      linarith [hpair, hsimpa]
+    calc
+      nablaα x (Fin.cons u (vec4 X Y Z W))
+          = extDerivFun (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a)) := hderiv
+      _ = -nablaα x (Fin.cons u (vec4 X Y W Z)) := by
+            rw [hderiv23]
+            rw [hext23, hsum23]
+            ring
+  have hbianchi : nablaα x (Fin.cons u (vec4 X Y Z W)) + nablaα x (Fin.cons u (vec4 Y Z X W)) +
+      nablaα x (Fin.cons u (vec4 Z X Y W)) = 0 := by
+    let τ : Fin 4 → Fin 4 := fun a => if a = 0 then 1 else if a = 1 then 2 else if a = 2 then 0 else a
+    let V2 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fun a => V (τ a)
+    let V3 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fun a => V (τ (τ a))
+    have hV2 : (fun a : Fin 4 => V2 a x) = vec4 Y Z X W := by
+      funext a
+      fin_cases a <;> simp [V2, τ, hV, vec4]
+    have hV3 : (fun a : Fin 4 => V3 a x) = vec4 Z X Y W := by
+      funext a
+      fin_cases a <;> simp [V3, τ, hV, vec4]
+    have hderiv2 : nablaα x (Fin.cons u (vec4 Y Z X W)) =
+        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) -
+          ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V2 b x) a
+            ((cov (fun p : M => V2 a p) x) (U x))) := by
+      have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U V2 x
+      simpa [hU, hV2] using h
+    have hderiv3 : nablaα x (Fin.cons u (vec4 Z X Y W)) =
+        extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) -
+          ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V3 b x) a
+            ((cov (fun p : M => V3 a p) x) (U x))) := by
+      have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) hA U V3 x
+      simpa [hU, hV3] using h
+    have hfun2 : (fun p : M => α p (fun a : Fin 4 => V2 a p)) =
+        fun p : M => α p (vec4 (V 1 p) (V 2 p) (V 0 p) (V 3 p)) := by
+      funext p
+      congr 1
+      funext a
+      fin_cases a <;> simp [V2, τ, vec4]
+    have hfun3 : (fun p : M => α p (fun a : Fin 4 => V3 a p)) =
+        fun p : M => α p (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p)) := by
+      funext p
+      congr 1
+      funext a
+      fin_cases a <;> simp [V3, τ, vec4]
+    have hfun : (fun p : M => α p (fun a : Fin 4 => V a p)) +
+        (fun p : M => α p (fun a : Fin 4 => V2 a p)) +
+        (fun p : M => α p (fun a : Fin 4 => V3 a p)) = 0 := by
+      funext p
+      have hrec1 : (fun a : Fin 4 => V a p) = vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p) := by
+        funext a
+        fin_cases a <;> simp [vec4]
+      have hb := (hAlg p).bianchi (V 0 p) (V 1 p) (V 2 p) (V 3 p)
+      have h2p : α p (fun a : Fin 4 => V2 a p) = α p (vec4 (V 1 p) (V 2 p) (V 0 p) (V 3 p)) := by
+        congr 1
+        funext a
+        fin_cases a <;> simp [V2, τ, vec4]
+      have h3p : α p (fun a : Fin 4 => V3 a p) = α p (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p)) := by
+        congr 1
+        funext a
+        fin_cases a <;> simp [V3, τ, vec4]
+      calc
+        α p (fun a : Fin 4 => V a p) + α p (fun a : Fin 4 => V2 a p) + α p (fun a : Fin 4 => V3 a p)
+            = α p (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) +
+                α p (vec4 (V 1 p) (V 2 p) (V 0 p) (V 3 p)) +
+                α p (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p)) := by
+              rw [hrec1, h2p, h3p]
+        _ = 0 := hb
+    have hext2 : extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) =
+        -extDerivFun (I := I) f x (U x) - extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) := by
+      let f2 : M → ℝ := fun p => α p (fun a : Fin 4 => V2 a p)
+      let f3 : M → ℝ := fun p => α p (fun a : Fin 4 => V3 a p)
+      have h1 : extDerivFun (I := I) (f + f2 + f3) x (U x) = 0 := by
+        have hzero : f + f2 + f3 = 0 := hfun
+        simp [hzero]
+      have hmd1 : MDifferentiableAt I 𝓘(Real, Real) f x := hmdiff_f
+      have hmd2 : MDifferentiableAt I 𝓘(Real, Real) f2 x :=
+        ContMDiffAt.mdifferentiableAt
+          (tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) α V2 x)
+          (by simp)
+      have hmd3 : MDifferentiableAt I 𝓘(Real, Real) f3 x :=
+        ContMDiffAt.mdifferentiableAt
+          (tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) α V3 x)
+          (by simp)
+      have h12 := extDerivFun_add (I := I) (g := f) (g' := f2) (x := x) hmd1 hmd2
+      have h123 := extDerivFun_add (I := I) (g := f + f2) (g' := f3) (x := x) (hmd1.add hmd2) hmd3
+      have hsum_deriv : extDerivFun (I := I) (f + f2 + f3) x (U x) =
+          extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x) +
+            extDerivFun (I := I) f3 x (U x) := by
+        calc
+          extDerivFun (I := I) (f + f2 + f3) x (U x)
+              = extDerivFun (I := I) (f + f2) x (U x) + extDerivFun (I := I) f3 x (U x) := by
+                simpa [ContinuousLinearMap.add_apply] using congr(($(h123) : _) (U x))
+          _ = (extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x)) +
+                extDerivFun (I := I) f3 x (U x) := by
+                have happ : extDerivFun (I := I) (f + f2) x (U x) =
+                    extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x) := by
+                  simpa [ContinuousLinearMap.add_apply] using congr(($(h12) : _) (U x))
+                rw [happ]
+          _ = extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x) +
+                extDerivFun (I := I) f3 x (U x) := by
+                simp [add_assoc]
+      have htotal : extDerivFun (I := I) f x (U x) + extDerivFun (I := I) f2 x (U x) +
+            extDerivFun (I := I) f3 x (U x) = 0 := by
+        rwa [hsum_deriv] at h1
+      linarith
+    have hβ : ∀ v : Fin 4 → TangentSpace I x, α x v + α x (v ∘ τ) + α x (v ∘ τ ∘ τ) = 0 := by
+      intro v
+      have h1 : α x v = tensor04StdAt (I := I) (M := M) (α x) (v 0) (v 1) (v 2) (v 3) := by
+        congr 1
+        funext b
+        fin_cases b <;> simp [vec4]
+      have h2 : α x (v ∘ τ) = tensor04StdAt (I := I) (M := M) (α x) (v 1) (v 2) (v 0) (v 3) := by
+        congr 1
+        funext b
+        fin_cases b <;> simp [τ, vec4]
+      have h3 : α x (v ∘ τ ∘ τ) = tensor04StdAt (I := I) (M := M) (α x) (v 2) (v 0) (v 1) (v 3) := by
+        congr 1
+        funext b
+        fin_cases b <;> simp [τ, vec4]
+      have hb := (hAlg x).bianchi (v 0) (v 1) (v 2) (v 3)
+      rw [h1, h2, h3]
+      exact hb
+    have hsum2 : (∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V2 b x) a
+          ((cov (fun p : M => V2 a p) x) (U x)))) =
+        ∑ a : Fin 4, α x (Function.update (s ∘ τ) a (d (τ a))) := by
+      apply Finset.sum_congr rfl
+      intro a _
+      congr 1
+    have hsum3 : (∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V3 b x) a
+          ((cov (fun p : M => V3 a p) x) (U x)))) =
+        ∑ a : Fin 4, α x (Function.update (s ∘ τ ∘ τ) a (d (τ (τ a)))) := by
+      apply Finset.sum_congr rfl
+      intro a _
+      congr 1
+    have hpair := fiberRegion_tensor_sum_cyclePair (α x) s d τ
+      (by intro a; fin_cases a <;> simp [τ]) hβ
+    have hS : (∑ a : Fin 4, α x (Function.update s a (d a))) +
+        (∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V2 b x) a
+          ((cov (fun p : M => V2 a p) x) (U x)))) +
+        (∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V3 b x) a
+          ((cov (fun p : M => V3 a p) x) (U x)))) = 0 := by
+      simpa [hsum2, hsum3] using hpair
+    calc
+      nablaα x (Fin.cons u (vec4 X Y Z W)) + nablaα x (Fin.cons u (vec4 Y Z X W)) +
+          nablaα x (Fin.cons u (vec4 Z X Y W))
+          = (extDerivFun (I := I) f x (U x) - ∑ a : Fin 4, α x (Function.update s a (d a))) +
+              (extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V2 a p)) x (U x) -
+                ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V2 b x) a
+                  ((cov (fun p : M => V2 a p) x) (U x)))) +
+              (extDerivFun (I := I) (fun p : M => α p (fun a : Fin 4 => V3 a p)) x (U x) -
+                ∑ a : Fin 4, α x (Function.update (fun b : Fin 4 => V3 b x) a
+                  ((cov (fun p : M => V3 a p) x) (U x)))) := by
+            rw [hderiv, hderiv2, hderiv3]
+      _ = 0 := by
+            rw [hext2]
+            linarith [hS]
+  exact ⟨hanti1, hanti2, hbianchi⟩
+
+def fiberRegion_fin5_cons {α : Type*} (a0 : α) (f : Fin 4 → α) : Fin 5 → α :=
+  fun a => Fin.cases (motive := fun _ : Fin 5 => α) a0 f a
+
+@[simp] lemma fiberRegion_fin5_cons_zero {α : Type*} (a0 : α) (f : Fin 4 → α) :
+    fiberRegion_fin5_cons a0 f 0 = a0 := by
+  change Fin.cases (motive := fun _ : Fin 5 => α) a0 f 0 = a0
+  simp
+
+@[simp] lemma fiberRegion_fin5_cons_succ {α : Type*} (a0 : α) (f : Fin 4 → α) (i : Fin 4) :
+    fiberRegion_fin5_cons a0 f i.succ = f i := by
+  change Fin.cases (motive := fun _ : Fin 5 => α) a0 f i.succ = f i
+  simp
+
+@[simp] lemma fiberRegion_fin5_cons_apply {α : Type*} (a0 : α) (f : Fin 4 → α) :
+    fiberRegion_fin5_cons a0 f 1 = f 0 ∧
+      fiberRegion_fin5_cons a0 f 2 = f 1 ∧
+      fiberRegion_fin5_cons a0 f 3 = f 2 ∧
+      fiberRegion_fin5_cons a0 f 4 = f 3 := by
+  constructor
+  · simpa using (fiberRegion_fin5_cons_succ a0 f (0 : Fin 4))
+  · constructor
+    · simpa using (fiberRegion_fin5_cons_succ a0 f (1 : Fin 4))
+    · constructor
+      · simpa using (fiberRegion_fin5_cons_succ a0 f (2 : Fin 4))
+      · simpa using (fiberRegion_fin5_cons_succ a0 f (3 : Fin 4))
+
+lemma fiberRegion_fin5_cons_eq_cons {α : Type*} (a0 : α) (f : Fin 4 → α) :
+    fiberRegion_fin5_cons a0 f = Fin.cons a0 f := by
+  funext b
+  cases b using Fin.cases with
+  | zero => rfl
+  | succ i => rfl
+
+omit [CompleteSpace E] [IsManifold I 3 M] [SigmaCompactSpace M] [I.Boundaryless] in
+lemma fiberRegion_nabla2_of_algCurvForm
+    (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
+    (α : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 4)
+    (nablaα : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5)
+    (nabla2α : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 6)
+    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 cov α nablaα)
+    (h2A : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 cov nablaα nabla2α)
+    (hAlg : ∀ y : M, IsAlgCurvForm
+      (fun X Y Z W : TangentSpace I y => tensor04StdAt (I := I) (M := M) (α y) X Y Z W))
+    (x : M) :
+    ∀ u1 u2 X Y Z W : TangentSpace I x,
+      nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) =
+          -nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y X Z W))) ∧
+      nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) =
+          -nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y W Z))) ∧
+      nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) +
+          nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y Z X W))) +
+          nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Z X Y W))) = 0 := by
+  classical
+  have hSym5 : ∀ y : M, ∀ u X Y Z W : TangentSpace I y,
+      nablaα y (Fin.cons u (vec4 X Y Z W)) = -nablaα y (Fin.cons u (vec4 Y X Z W)) ∧
+      nablaα y (Fin.cons u (vec4 X Y Z W)) = -nablaα y (Fin.cons u (vec4 X Y W Z)) ∧
+      nablaα y (Fin.cons u (vec4 X Y Z W)) + nablaα y (Fin.cons u (vec4 Y Z X W)) +
+        nablaα y (Fin.cons u (vec4 Z X Y W)) = 0 :=
+    fun y => fiberRegion_nabla_of_algCurvForm (I := I) cov α nablaα hA hAlg y
+  intro u1 u2 X Y Z W
+  let U1 : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose
+  have hU1 : U1 x = u1 :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose_spec
+  let U2 : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose
+  have hU2 : U2 x = u2 :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose_spec
+  let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+      (vec4 X Y Z W a)).choose
+  have hV : ∀ a : Fin 4, V a x = vec4 X Y Z W a := fun a =>
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+      (vec4 X Y Z W a)).choose_spec
+  let W2 : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    fiberRegion_fin5_cons U2 V
+  let s5 : Fin 5 → TangentSpace I x := fun b => W2 b x
+  let d5 : Fin 5 → TangentSpace I x := fun a => (cov (fun p : M => W2 a p) x) (U1 x)
+  let f : M → ℝ := fun p => nablaα p (fun a : Fin 5 => W2 a p)
+  have hslots : (fun a : Fin 5 => W2 a x) = fiberRegion_fin5_cons u2 (vec4 X Y Z W) := by
+    funext a
+    fin_cases a <;> simp [W2, hU2, hV, vec4]
+  have hderiv : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) =
+      extDerivFun (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := by
+    have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2 x
+    simpa [hU1, s5, d5, f, hslots] using h
+  have hmdiff_f : MDifferentiableAt I 𝓘(Real, Real) f x :=
+    ContMDiffAt.mdifferentiableAt
+      (tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) nablaα W2 x)
+      (by simp)
+  have hrec5 : ∀ v : Fin 5 → TangentSpace I x,
+      v = fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4)) := by
+    intro v
+    funext b
+    fin_cases b <;> simp [vec4]
+  have hanti1 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) =
+      -nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y X Z W))) := by
+    let σ12 : Fin 5 → Fin 5 := fun a => if a = 1 then 2 else if a = 2 then 1 else a
+    let V01 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fun a => V (if a = 0 then 1 else if a = 1 then 0 else a)
+    have hV01 : ∀ a : Fin 4, V01 a x = vec4 Y X Z W a := by
+      intro a
+      fin_cases a <;> simp [V01, hV, vec4]
+    let W2' : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fiberRegion_fin5_cons U2 V01
+    have hslots01 : (fun a : Fin 5 => W2' a x) = fiberRegion_fin5_cons u2 (vec4 Y X Z W) := by
+      funext a
+      fin_cases a <;> simp [W2', hU2, hV01, vec4]
+    have hderiv01 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y X Z W))) =
+        extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2' a p)) x (U1 x) -
+          ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2' b x) a
+            ((cov (fun p : M => W2' a p) x) (U1 x))) := by
+      have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2' x
+      simpa [hU1, hslots01] using h
+    have hfun01 : (fun p : M => nablaα p (fun a : Fin 5 => W2' a p)) =
+        fun p : M => -nablaα p (fun a : Fin 5 => W2 a p) := by
+      funext p
+      have hrec1 : (fun a : Fin 5 => W2' a p) = fiberRegion_fin5_cons (U2 p) (vec4 (V 1 p) (V 0 p) (V 2 p) (V 3 p)) := by
+        funext a
+        refine Fin.cases (motive := fun a => W2' a p =
+            (fiberRegion_fin5_cons (U2 p) (vec4 (V 1 p) (V 0 p) (V 2 p) (V 3 p)) : Fin 5 → TangentSpace I p) a) ?_ ?_ a
+        · simp [W2']
+        · intro i
+          change V01 i p = (vec4 (V 1 p) (V 0 p) (V 2 p) (V 3 p)) i
+          fin_cases i <;> simp [V01, vec4]
+      have hrec2 : (fun a : Fin 5 => W2 a p) = fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) := by
+        funext a
+        refine Fin.cases (motive := fun a => W2 a p =
+            (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) : Fin 5 → TangentSpace I p) a) ?_ ?_ a
+        · simp [W2]
+        · intro i
+          change V i p = (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) i
+          fin_cases i <;> simp [vec4]
+      have hsym := (hSym5 p (U2 p) (V 1 p) (V 0 p) (V 2 p) (V 3 p)).1
+      calc
+        nablaα p (fun a : Fin 5 => W2' a p)
+            = nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 1 p) (V 0 p) (V 2 p) (V 3 p))) := by
+              rw [hrec1]
+        _ = -nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p))) := hsym
+        _ = -nablaα p (fun a : Fin 5 => W2 a p) := by
+              rw [hrec2]
+    have hext01 : extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2' a p)) x (U1 x) =
+        -extDerivFun (I := I) f x (U1 x) := by
+      have hneg : extDerivFun (I := I) (fun p : M => -nablaα p (fun a : Fin 5 => W2 a p)) x (U1 x) =
+          -extDerivFun (I := I) f x (U1 x) :=
+        DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at (I := I) (f := f) (x := x) (U1 x) hmdiff_f
+      rw [← hfun01] at hneg
+      simpa [f] using hneg
+    have hβ : ∀ v : Fin 5 → TangentSpace I x, nablaα x v + nablaα x (v ∘ σ12) = 0 := by
+      intro v
+      have h1 : nablaα x v = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4))) := by
+        rw [← hrec5 v]
+      have h2 : nablaα x (v ∘ σ12) = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 2) (v 1) (v 3) (v 4))) := by
+        congr 1
+        funext b
+        refine Fin.cases (motive := fun b => (v ∘ σ12) b =
+            (fiberRegion_fin5_cons (v 0) (vec4 (v 2) (v 1) (v 3) (v 4)) : Fin 5 → TangentSpace I x) b) ?_ ?_ b
+        · simp [σ12]
+        · intro i
+          change v (σ12 i.succ) = (vec4 (v 2) (v 1) (v 3) (v 4)) i
+          fin_cases i <;> simp [σ12, vec4]
+      have hsym := (hSym5 x (v 0) (v 1) (v 2) (v 3) (v 4)).1
+      calc
+        nablaα x v + nablaα x (v ∘ σ12)
+            = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4))) +
+                nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 2) (v 1) (v 3) (v 4))) := by
+              rw [h1, h2]
+        _ = 0 := by
+              rw [fiberRegion_fin5_cons_eq_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4)),
+                fiberRegion_fin5_cons_eq_cons (v 0) (vec4 (v 2) (v 1) (v 3) (v 4))]
+              rw [hsym]
+              ring
+    have hpair : (∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a))) +
+        (∑ a : Fin 5, nablaα x (Function.update (s5 ∘ σ12) a (d5 (σ12 a)))) = 0 :=
+      fiberRegion_tensor_sum_antiPair (nablaα x) s5 d5 σ12
+        (by intro a; fin_cases a <;> simp [σ12]) hβ
+    have hsimpa : (∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2' b x) a
+          ((cov (fun p : M => W2' a p) x) (U1 x)))) =
+        ∑ a : Fin 5, nablaα x (Function.update (s5 ∘ σ12) a (d5 (σ12 a))) := by
+      apply Finset.sum_congr rfl
+      intro a _
+      congr 1
+      funext b
+      fin_cases a <;> fin_cases b <;> simp [s5, W2, W2', V01, σ12, d5, hU2, hV, vec4]
+    have hsum01 : (∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a))) =
+        -(∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2' b x) a
+          ((cov (fun p : M => W2' a p) x) (U1 x)))) := by
+      rw [hsimpa]
+      linarith [hpair]
+    calc
+      nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W)))
+          = extDerivFun (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := hderiv
+      _ = -nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y X Z W))) := by
+            rw [hderiv01]
+            rw [hext01, hsum01]
+            ring
+  have hanti2 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) =
+      -nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y W Z))) := by
+    let σ34 : Fin 5 → Fin 5 := fun a => if a = 3 then 4 else if a = 4 then 3 else a
+    let V02 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fun a => V (if a = 2 then 3 else if a = 3 then 2 else a)
+    have hV02 : ∀ a : Fin 4, V02 a x = vec4 X Y W Z a := by
+      intro a
+      fin_cases a <;> simp [V02, hV, vec4]
+    let W2'' : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fiberRegion_fin5_cons U2 V02
+    have hslots02 : (fun a : Fin 5 => W2'' a x) = fiberRegion_fin5_cons u2 (vec4 X Y W Z) := by
+      funext a
+      fin_cases a <;> simp [W2'', hU2, hV02, vec4]
+    have hderiv02 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y W Z))) =
+        extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2'' a p)) x (U1 x) -
+          ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2'' b x) a
+            ((cov (fun p : M => W2'' a p) x) (U1 x))) := by
+      have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2'' x
+      simpa [hU1, hslots02] using h
+    have hfun02 : (fun p : M => nablaα p (fun a : Fin 5 => W2'' a p)) =
+        fun p : M => -nablaα p (fun a : Fin 5 => W2 a p) := by
+      funext p
+      have hrec1 : (fun a : Fin 5 => W2'' a p) = fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 3 p) (V 2 p)) := by
+        funext a
+        refine Fin.cases (motive := fun a => W2'' a p =
+            (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 3 p) (V 2 p)) : Fin 5 → TangentSpace I p) a) ?_ ?_ a
+        · simp [W2'']
+        · intro i
+          change V02 i p = (vec4 (V 0 p) (V 1 p) (V 3 p) (V 2 p)) i
+          fin_cases i <;> simp [V02, vec4]
+      have hrec2 : (fun a : Fin 5 => W2 a p) = fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) := by
+        funext a
+        refine Fin.cases (motive := fun a => W2 a p =
+            (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) : Fin 5 → TangentSpace I p) a) ?_ ?_ a
+        · simp [W2]
+        · intro i
+          change V i p = (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) i
+          fin_cases i <;> simp [vec4]
+      have hsym := (hSym5 p (U2 p) (V 0 p) (V 1 p) (V 3 p) (V 2 p)).2.1
+      calc
+        nablaα p (fun a : Fin 5 => W2'' a p)
+            = nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 3 p) (V 2 p))) := by
+              rw [hrec1]
+        _ = -nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p))) := hsym
+        _ = -nablaα p (fun a : Fin 5 => W2 a p) := by
+              rw [hrec2]
+    have hext02 : extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2'' a p)) x (U1 x) =
+        -extDerivFun (I := I) f x (U1 x) := by
+      have hneg : extDerivFun (I := I) (fun p : M => -nablaα p (fun a : Fin 5 => W2 a p)) x (U1 x) =
+          -extDerivFun (I := I) f x (U1 x) :=
+        DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at (I := I) (f := f) (x := x) (U1 x) hmdiff_f
+      rw [← hfun02] at hneg
+      simpa [f] using hneg
+    have hβ : ∀ v : Fin 5 → TangentSpace I x, nablaα x v + nablaα x (v ∘ σ34) = 0 := by
+      intro v
+      have h1 : nablaα x v = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4))) := by
+        rw [← hrec5 v]
+      have h2 : nablaα x (v ∘ σ34) = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 4) (v 3))) := by
+        congr 1
+        funext b
+        refine Fin.cases (motive := fun b => (v ∘ σ34) b =
+            (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 4) (v 3)) : Fin 5 → TangentSpace I x) b) ?_ ?_ b
+        · simp [σ34]
+        · intro i
+          change v (σ34 i.succ) = (vec4 (v 1) (v 2) (v 4) (v 3)) i
+          fin_cases i <;> simp [σ34, vec4]
+      have hsym := (hSym5 x (v 0) (v 1) (v 2) (v 3) (v 4)).2.1
+      calc
+        nablaα x v + nablaα x (v ∘ σ34)
+            = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4))) +
+                nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 4) (v 3))) := by
+              rw [h1, h2]
+        _ = 0 := by
+              rw [fiberRegion_fin5_cons_eq_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4)),
+                fiberRegion_fin5_cons_eq_cons (v 0) (vec4 (v 1) (v 2) (v 4) (v 3))]
+              rw [hsym]
+              ring
+    have hpair : (∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a))) +
+        (∑ a : Fin 5, nablaα x (Function.update (s5 ∘ σ34) a (d5 (σ34 a)))) = 0 :=
+      fiberRegion_tensor_sum_antiPair (nablaα x) s5 d5 σ34
+        (by intro a; fin_cases a <;> simp [σ34]) hβ
+    have hsimpa : (∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2'' b x) a
+          ((cov (fun p : M => W2'' a p) x) (U1 x)))) =
+        ∑ a : Fin 5, nablaα x (Function.update (s5 ∘ σ34) a (d5 (σ34 a))) := by
+      apply Finset.sum_congr rfl
+      intro a _
+      congr 1
+      funext b
+      fin_cases a <;> fin_cases b <;> simp [s5, W2, W2'', V02, σ34, d5, hU2, hV, vec4]
+    have hsum02 : (∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a))) =
+        -(∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2'' b x) a
+          ((cov (fun p : M => W2'' a p) x) (U1 x)))) := by
+      rw [hsimpa]
+      linarith [hpair]
+    calc
+      nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W)))
+          = extDerivFun (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a)) := hderiv
+      _ = -nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y W Z))) := by
+            rw [hderiv02]
+            rw [hext02, hsum02]
+            ring
+  have hbianchi : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) +
+      nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y Z X W))) +
+      nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Z X Y W))) = 0 := by
+    let τ : Fin 5 → Fin 5 := fun a => if a = 1 then 2 else if a = 2 then 3 else if a = 3 then 1 else a
+    let V2 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fun a => V (if a = 0 then 1 else if a = 1 then 2 else if a = 2 then 0 else a)
+    let V3 : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fun a => V (if a = 0 then 2 else if a = 1 then 0 else if a = 2 then 1 else a)
+    have hV2 : ∀ a : Fin 4, V2 a x = vec4 Y Z X W a := by
+      intro a
+      fin_cases a <;> simp [V2, hV, vec4]
+    have hV3 : ∀ a : Fin 4, V3 a x = vec4 Z X Y W a := by
+      intro a
+      fin_cases a <;> simp [V3, hV, vec4]
+    let W2b : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fiberRegion_fin5_cons U2 V2
+    let W2c : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+      fiberRegion_fin5_cons U2 V3
+    have hslots2 : (fun a : Fin 5 => W2b a x) = fiberRegion_fin5_cons u2 (vec4 Y Z X W) := by
+      funext a
+      fin_cases a <;> simp [W2b, hU2, hV2, vec4]
+    have hslots3 : (fun a : Fin 5 => W2c a x) = fiberRegion_fin5_cons u2 (vec4 Z X Y W) := by
+      funext a
+      fin_cases a <;> simp [W2c, hU2, hV3, vec4]
+    have hderiv2 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y Z X W))) =
+        extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2b a p)) x (U1 x) -
+          ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2b b x) a
+            ((cov (fun p : M => W2b a p) x) (U1 x))) := by
+      have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2b x
+      simpa [hU1, hslots2] using h
+    have hderiv3 : nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Z X Y W))) =
+        extDerivFun (I := I) (fun p : M => nablaα p (fun a : Fin 5 => W2c a p)) x (U1 x) -
+          ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2c b x) a
+            ((cov (fun p : M => W2c a p) x) (U1 x))) := by
+      have h := TotalNabla0SRealizes.eval_smooth_slots (I := I) h2A U1 W2c x
+      simpa [hU1, hslots3] using h
+    let f2 : M → ℝ := fun p => nablaα p (fun a : Fin 5 => W2b a p)
+    let f3 : M → ℝ := fun p => nablaα p (fun a : Fin 5 => W2c a p)
+    have hfun : f + f2 + f3 = 0 := by
+      funext p
+      have hrec1 : (fun a : Fin 5 => W2 a p) = fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) := by
+        funext a
+        refine Fin.cases (motive := fun a => W2 a p =
+            (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) : Fin 5 → TangentSpace I p) a) ?_ ?_ a
+        · simp [W2]
+        · intro i
+          change V i p = (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p)) i
+          fin_cases i <;> simp [vec4]
+      have hrec2 : (fun a : Fin 5 => W2b a p) = fiberRegion_fin5_cons (U2 p) (vec4 (V 1 p) (V 2 p) (V 0 p) (V 3 p)) := by
+        funext a
+        refine Fin.cases (motive := fun a => W2b a p =
+            (fiberRegion_fin5_cons (U2 p) (vec4 (V 1 p) (V 2 p) (V 0 p) (V 3 p)) : Fin 5 → TangentSpace I p) a) ?_ ?_ a
+        · simp [W2b]
+        · intro i
+          change V2 i p = (vec4 (V 1 p) (V 2 p) (V 0 p) (V 3 p)) i
+          fin_cases i <;> simp [V2, vec4]
+      have hrec3 : (fun a : Fin 5 => W2c a p) = fiberRegion_fin5_cons (U2 p) (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p)) := by
+        funext a
+        refine Fin.cases (motive := fun a => W2c a p =
+            (fiberRegion_fin5_cons (U2 p) (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p)) : Fin 5 → TangentSpace I p) a) ?_ ?_ a
+        · simp [W2c]
+        · intro i
+          change V3 i p = (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p)) i
+          fin_cases i <;> simp [V3, vec4]
+      have hsym := (hSym5 p (U2 p) (V 0 p) (V 1 p) (V 2 p) (V 3 p)).2.2
+      calc
+        nablaα p (fun a : Fin 5 => W2 a p) + nablaα p (fun a : Fin 5 => W2b a p) +
+            nablaα p (fun a : Fin 5 => W2c a p)
+            = nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 0 p) (V 1 p) (V 2 p) (V 3 p))) +
+                nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 1 p) (V 2 p) (V 0 p) (V 3 p))) +
+                nablaα p (fiberRegion_fin5_cons (U2 p) (vec4 (V 2 p) (V 0 p) (V 1 p) (V 3 p))) := by
+              rw [hrec1, hrec2, hrec3]
+        _ = 0 := hsym
+    have hext2 : extDerivFun (I := I) f2 x (U1 x) =
+        -extDerivFun (I := I) f x (U1 x) - extDerivFun (I := I) f3 x (U1 x) := by
+      have h1 : extDerivFun (I := I) (f + f2 + f3) x (U1 x) = 0 := by
+        have hzero : f + f2 + f3 = 0 := hfun
+        simp [hzero]
+      have hmd1 : MDifferentiableAt I 𝓘(Real, Real) f x := hmdiff_f
+      have hmd2 : MDifferentiableAt I 𝓘(Real, Real) f2 x :=
+        ContMDiffAt.mdifferentiableAt
+          (tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) nablaα W2b x)
+          (by simp)
+      have hmd3 : MDifferentiableAt I 𝓘(Real, Real) f3 x :=
+        ContMDiffAt.mdifferentiableAt
+          (tensor0SField_eval_smooth_slots_contMDiffAt (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) nablaα W2c x)
+          (by simp)
+      have h12 := extDerivFun_add (I := I) (g := f) (g' := f2) (x := x) hmd1 hmd2
+      have h123 := extDerivFun_add (I := I) (g := f + f2) (g' := f3) (x := x) (hmd1.add hmd2) hmd3
+      have hsum_deriv : extDerivFun (I := I) (f + f2 + f3) x (U1 x) =
+          extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x) +
+            extDerivFun (I := I) f3 x (U1 x) := by
+        calc
+          extDerivFun (I := I) (f + f2 + f3) x (U1 x)
+              = extDerivFun (I := I) (f + f2) x (U1 x) + extDerivFun (I := I) f3 x (U1 x) := by
+                simpa [ContinuousLinearMap.add_apply] using congr(($(h123) : _) (U1 x))
+          _ = (extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x)) +
+                extDerivFun (I := I) f3 x (U1 x) := by
+                have happ : extDerivFun (I := I) (f + f2) x (U1 x) =
+                    extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x) := by
+                  simpa [ContinuousLinearMap.add_apply] using congr(($(h12) : _) (U1 x))
+                rw [happ]
+          _ = extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x) +
+                extDerivFun (I := I) f3 x (U1 x) := by
+                simp [add_assoc]
+      have htotal : extDerivFun (I := I) f x (U1 x) + extDerivFun (I := I) f2 x (U1 x) +
+            extDerivFun (I := I) f3 x (U1 x) = 0 := by
+        rwa [hsum_deriv] at h1
+      linarith
+    have hβ : ∀ v : Fin 5 → TangentSpace I x,
+        nablaα x v + nablaα x (v ∘ τ) + nablaα x (v ∘ τ ∘ τ) = 0 := by
+      intro v
+      have h1 : nablaα x v = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4))) := by
+        rw [← hrec5 v]
+      have h2 : nablaα x (v ∘ τ) = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 2) (v 3) (v 1) (v 4))) := by
+        congr 1
+        funext b
+        refine Fin.cases (motive := fun b => (v ∘ τ) b =
+            (fiberRegion_fin5_cons (v 0) (vec4 (v 2) (v 3) (v 1) (v 4)) : Fin 5 → TangentSpace I x) b) ?_ ?_ b
+        · simp [τ]
+        · intro i
+          change v (τ i.succ) = (vec4 (v 2) (v 3) (v 1) (v 4)) i
+          fin_cases i <;> simp [τ, vec4]
+      have h3 : nablaα x (v ∘ τ ∘ τ) = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 3) (v 1) (v 2) (v 4))) := by
+        congr 1
+        funext b
+        refine Fin.cases (motive := fun b => (v ∘ τ ∘ τ) b =
+            (fiberRegion_fin5_cons (v 0) (vec4 (v 3) (v 1) (v 2) (v 4)) : Fin 5 → TangentSpace I x) b) ?_ ?_ b
+        · simp [τ]
+        · intro i
+          change v (τ (τ i.succ)) = (vec4 (v 3) (v 1) (v 2) (v 4)) i
+          fin_cases i <;> simp [τ, vec4]
+      have hsym := (hSym5 x (v 0) (v 1) (v 2) (v 3) (v 4)).2.2
+      calc
+        nablaα x v + nablaα x (v ∘ τ) + nablaα x (v ∘ τ ∘ τ)
+            = nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4))) +
+                nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 2) (v 3) (v 1) (v 4))) +
+                nablaα x (fiberRegion_fin5_cons (v 0) (vec4 (v 3) (v 1) (v 2) (v 4))) := by
+              rw [h1, h2, h3]
+        _ = 0 := by
+              rw [fiberRegion_fin5_cons_eq_cons (v 0) (vec4 (v 1) (v 2) (v 3) (v 4)),
+                fiberRegion_fin5_cons_eq_cons (v 0) (vec4 (v 2) (v 3) (v 1) (v 4)),
+                fiberRegion_fin5_cons_eq_cons (v 0) (vec4 (v 3) (v 1) (v 2) (v 4))]
+              exact hsym
+    have hW2b : ∀ a : Fin 5, (fun p : M => W2b a p) = fun p : M => W2 (τ a) p := by
+      intro a
+      funext p
+      fin_cases a <;> simp [W2b, W2, V2, τ]
+    have hW2c : ∀ a : Fin 5, (fun p : M => W2c a p) = fun p : M => W2 (τ (τ a)) p := by
+      intro a
+      funext p
+      fin_cases a <;> simp [W2c, W2, V3, τ]
+    have hupd2 : ∀ a : Fin 5,
+        Function.update (fun b : Fin 5 => W2b b x) a ((cov (fun p : M => W2b a p) x) (U1 x)) =
+          Function.update (s5 ∘ τ) a (d5 (τ a)) := by
+      intro a
+      apply funext
+      intro b
+      rcases eq_or_ne b a with rfl | hb
+      · rw [hW2b b]
+        simp [Function.update, d5]
+      · have hf : W2b b x = (s5 ∘ τ) b := by
+          fin_cases b <;> simp [s5, W2, W2b, V2, τ, hV, vec4]
+        simp [Function.update, hb, hf]
+    have hupd3 : ∀ a : Fin 5,
+        Function.update (fun b : Fin 5 => W2c b x) a ((cov (fun p : M => W2c a p) x) (U1 x)) =
+          Function.update (s5 ∘ τ ∘ τ) a (d5 (τ (τ a))) := by
+      intro a
+      apply funext
+      intro b
+      rcases eq_or_ne b a with rfl | hb
+      · rw [hW2c b]
+        simp [Function.update, d5]
+      · have hf : W2c b x = (s5 ∘ τ ∘ τ) b := by
+          fin_cases b <;> simp [s5, W2, W2c, V3, τ, hV, vec4]
+        simp [Function.update, hb, hf]
+    have hsum2 : (∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2b b x) a
+          ((cov (fun p : M => W2b a p) x) (U1 x)))) =
+        ∑ a : Fin 5, nablaα x (Function.update (s5 ∘ τ) a (d5 (τ a))) := by
+      apply Finset.sum_congr rfl
+      intro a _
+      rw [hupd2 a]
+    have hsum3 : (∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2c b x) a
+          ((cov (fun p : M => W2c a p) x) (U1 x)))) =
+        ∑ a : Fin 5, nablaα x (Function.update (s5 ∘ τ ∘ τ) a (d5 (τ (τ a)))) := by
+      apply Finset.sum_congr rfl
+      intro a _
+      rw [hupd3 a]
+    have hpair := fiberRegion_tensor_sum_cyclePair (nablaα x) s5 d5 τ
+      (by intro a; fin_cases a <;> simp [τ]) hβ
+    have hS : (∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a))) +
+        (∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2b b x) a
+          ((cov (fun p : M => W2b a p) x) (U1 x)))) +
+        (∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2c b x) a
+          ((cov (fun p : M => W2c a p) x) (U1 x)))) = 0 := by
+      simpa [hsum2, hsum3] using hpair
+    calc
+      nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 X Y Z W))) +
+          nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Y Z X W))) +
+          nabla2α x (Fin.cons u1 (fiberRegion_fin5_cons u2 (vec4 Z X Y W)))
+          = (extDerivFun (I := I) f x (U1 x) - ∑ a : Fin 5, nablaα x (Function.update s5 a (d5 a))) +
+              (extDerivFun (I := I) f2 x (U1 x) -
+                ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2b b x) a
+                  ((cov (fun p : M => W2b a p) x) (U1 x)))) +
+              (extDerivFun (I := I) f3 x (U1 x) -
+                ∑ a : Fin 5, nablaα x (Function.update (fun b : Fin 5 => W2c b x) a
+                  ((cov (fun p : M => W2c a p) x) (U1 x)))) := by
+            rw [hderiv, hderiv2, hderiv3]
+      _ = 0 := by
+            rw [hext2]
+            linarith [hS]
+  exact ⟨hanti1, hanti2, hbianchi⟩
+
+omit [SigmaCompactSpace M] [I.Boundaryless] in
+theorem fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (t : ℝ) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x)) :
+    metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
+        (nablaKRm04Field (I := I) S t 2 x) ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
+  classical
+  have hA1 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4
+      (S.base.connection t) (S.base.rm04 t) (nablaKRm04Field (I := I) S t 1) := by
+    simpa [nablaKRm04Field_zero] using (nablaKRm04Field_realizes (I := I) S t 0)
+  have hA2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5
+      (S.base.connection t) (nablaKRm04Field (I := I) S t 1) (nablaKRm04Field (I := I) S t 2) := by
+    simpa using (nablaKRm04Field_realizes (I := I) S t 1)
+  have hAlg : ∀ y : M, IsAlgCurvForm
+      (fun X Y Z W : TangentSpace I y => tensor04StdAt (I := I) (M := M) (S.base.rm04 t y) X Y Z W) := by
+    intro y
+    exact mem_algebraicCurvatureTensorSubmodule.mp
+      (metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) y)
+  have hSym6 : ∀ u1 u2 X Y Z W : TangentSpace I x,
+      nablaKRm04Field (I := I) S t 2 x (Fin.cons u1 (Fin.cons u2 (vec4 X Y Z W))) =
+          -nablaKRm04Field (I := I) S t 2 x (Fin.cons u1 (Fin.cons u2 (vec4 Y X Z W))) ∧
+      nablaKRm04Field (I := I) S t 2 x (Fin.cons u1 (Fin.cons u2 (vec4 X Y Z W))) =
+          -nablaKRm04Field (I := I) S t 2 x (Fin.cons u1 (Fin.cons u2 (vec4 X Y W Z))) ∧
+      nablaKRm04Field (I := I) S t 2 x (Fin.cons u1 (Fin.cons u2 (vec4 X Y Z W))) +
+          nablaKRm04Field (I := I) S t 2 x (Fin.cons u1 (Fin.cons u2 (vec4 Y Z X W))) +
+          nablaKRm04Field (I := I) S t 2 x (Fin.cons u1 (Fin.cons u2 (vec4 Z X Y W))) = 0 :=
+    fiberRegion_nabla2_of_algCurvForm (I := I) (S.base.connection t) (S.base.rm04 t)
+      (nablaKRm04Field (I := I) S t 1) (nablaKRm04Field (I := I) S t 2) hA1 hA2 hAlg x
+  let T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 6 x :=
+    nablaKRm04Field (I := I) S t 2 x
+  let R : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
+    metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3)) T
+  have hRapply : ∀ tail : Fin 4 → TangentSpace I x,
+      R tail = ∑ i : Fin 3, ∑ j : Fin 3,
+        identityInvMetric (Idx := Fin 3) i j * T (metricTraceInput (I := I) (basis i) (basis j) tail) := by
+    intro tail
+    rw [metricTrace0S2TensorInBasis_apply]
+    rfl
+  have hcons : ∀ (u1 u2 : TangentSpace I x) (tail : Fin 4 → TangentSpace I x),
+      metricTraceInput (I := I) u1 u2 tail = Fin.cons u1 (Fin.cons u2 tail) := by
+    intro u1 u2 tail
+    rfl
+  rw [mem_algebraicCurvatureTensorSubmodule_iff_symmetries]
+  refine ⟨?_, ?_, ?_⟩
+  · intro X Y Z W
+    have hsym_per : ∀ i j : Fin 3,
+        T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) =
+          -T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y X Z W)) := by
+      intro i j
+      have h := (hSym6 (basis i) (basis j) X Y Z W).1
+      simpa [T, hcons] using h
+    calc
+      tensor04StdAt (I := I) (M := M) R X Y Z W
+          = ∑ i : Fin 3, ∑ j : Fin 3,
+              identityInvMetric (Idx := Fin 3) i j *
+                T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) := by
+            simpa [R] using hRapply (vec4 X Y Z W)
+      _ = -∑ i : Fin 3, ∑ j : Fin 3,
+              identityInvMetric (Idx := Fin 3) i j *
+                T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y X Z W)) := by
+            simp_rw [hsym_per]
+            simp [Finset.sum_neg_distrib, mul_neg]
+      _ = -tensor04StdAt (I := I) (M := M) R Y X Z W := by
+            rw [← hRapply (vec4 Y X Z W)]
+            rfl
+  · intro X Y Z W
+    have hsym_per : ∀ i j : Fin 3,
+        T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) =
+          -T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y W Z)) := by
+      intro i j
+      have h := (hSym6 (basis i) (basis j) X Y Z W).2.1
+      simpa [T, hcons] using h
+    calc
+      tensor04StdAt (I := I) (M := M) R X Y Z W
+          = ∑ i : Fin 3, ∑ j : Fin 3,
+              identityInvMetric (Idx := Fin 3) i j *
+                T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) := by
+            simpa [R] using hRapply (vec4 X Y Z W)
+      _ = -∑ i : Fin 3, ∑ j : Fin 3,
+              identityInvMetric (Idx := Fin 3) i j *
+                T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y W Z)) := by
+            simp_rw [hsym_per]
+            simp [Finset.sum_neg_distrib, mul_neg]
+      _ = -tensor04StdAt (I := I) (M := M) R X Y W Z := by
+            rw [← hRapply (vec4 X Y W Z)]
+            rfl
+  · intro X Y Z W
+    have hsym_per : ∀ i j : Fin 3,
+        T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) +
+            T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W)) +
+            T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W)) = 0 := by
+      intro i j
+      have h := (hSym6 (basis i) (basis j) X Y Z W).2.2
+      simpa [T, hcons] using h
+    calc
+      tensor04StdAt (I := I) (M := M) R X Y Z W +
+          tensor04StdAt (I := I) (M := M) R Y Z X W +
+          tensor04StdAt (I := I) (M := M) R Z X Y W
+          = (∑ i : Fin 3, ∑ j : Fin 3,
+              identityInvMetric (Idx := Fin 3) i j *
+                T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W))) +
+              (∑ i : Fin 3, ∑ j : Fin 3,
+                identityInvMetric (Idx := Fin 3) i j *
+                  T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W))) +
+              (∑ i : Fin 3, ∑ j : Fin 3,
+                identityInvMetric (Idx := Fin 3) i j *
+                  T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W))) := by
+            rw [show tensor04StdAt (I := I) (M := M) R X Y Z W =
+                ∑ i : Fin 3, ∑ j : Fin 3, identityInvMetric (Idx := Fin 3) i j *
+                  T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) from by
+              simpa [R] using hRapply (vec4 X Y Z W)]
+            rw [show tensor04StdAt (I := I) (M := M) R Y Z X W =
+                ∑ i : Fin 3, ∑ j : Fin 3, identityInvMetric (Idx := Fin 3) i j *
+                  T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W)) from by
+              simpa [R] using hRapply (vec4 Y Z X W)]
+            rw [show tensor04StdAt (I := I) (M := M) R Z X Y W =
+                ∑ i : Fin 3, ∑ j : Fin 3, identityInvMetric (Idx := Fin 3) i j *
+                  T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W)) from by
+              simpa [R] using hRapply (vec4 Z X Y W)]
+      _ = 0 := by
+            have hper2 : ∀ i j : Fin 3,
+                identityInvMetric (Idx := Fin 3) i j *
+                    T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) +
+                  identityInvMetric (Idx := Fin 3) i j *
+                    T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W)) +
+                  identityInvMetric (Idx := Fin 3) i j *
+                    T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W)) = 0 := by
+              intro i j
+              have h := hsym_per i j
+              calc
+                identityInvMetric (Idx := Fin 3) i j *
+                      T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) +
+                    identityInvMetric (Idx := Fin 3) i j *
+                      T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W)) +
+                    identityInvMetric (Idx := Fin 3) i j *
+                      T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W))
+                    = identityInvMetric (Idx := Fin 3) i j *
+                        (T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) +
+                          T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W)) +
+                          T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W))) := by
+                      ring
+                _ = 0 := by
+                      rw [h]
+                      ring
+            calc
+              (∑ i : Fin 3, ∑ j : Fin 3,
+                    identityInvMetric (Idx := Fin 3) i j *
+                      T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W))) +
+                  (∑ i : Fin 3, ∑ j : Fin 3,
+                    identityInvMetric (Idx := Fin 3) i j *
+                      T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W))) +
+                  (∑ i : Fin 3, ∑ j : Fin 3,
+                    identityInvMetric (Idx := Fin 3) i j *
+                      T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W)))
+                  = ∑ i : Fin 3, ∑ j : Fin 3,
+                      (identityInvMetric (Idx := Fin 3) i j *
+                          T (metricTraceInput (I := I) (basis i) (basis j) (vec4 X Y Z W)) +
+                        identityInvMetric (Idx := Fin 3) i j *
+                          T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Y Z X W)) +
+                        identityInvMetric (Idx := Fin 3) i j *
+                          T (metricTraceInput (I := I) (basis i) (basis j) (vec4 Z X Y W))) := by
+                    rw [← Finset.sum_add_distrib]
+                    rw [← Finset.sum_add_distrib]
+                    apply Finset.sum_congr rfl
+                    intro i _
+                    rw [← Finset.sum_add_distrib]
+                    rw [← Finset.sum_add_distrib]
+              _ = 0 := by
+                    apply Finset.sum_eq_zero
+                    intro i _
+                    apply Finset.sum_eq_zero
+                    intro j _
+                    exact hper2 i j
+
+omit [IsManifold I 3 M] [SigmaCompactSpace M] [I.Boundaryless] in
+theorem fiberRegion_roughLapRm04_component_eq
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    {t : ℝ} (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (hOrth : OrthonormalBasisAt (I := I) (S.base.metric t) x basis)
+    (a b c d : Fin 3) :
+    metricTraceFirstTwo0SAt (I := I) (S.base.metric t) (nablaKRm04Field (I := I) S t 2 x)
+        (vec4 (I := I) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d)) =
+      tensor04StdAt (I := I) (M := M)
+        (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
+          (nablaKRm04Field (I := I) S t 2 x))
+        (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
+  have hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+      (identityInvMetric (Idx := Fin 3)) := by
+    exact fiberRegion_metricInverseInBasis_identity_of_orthonormal (I := I)
+      (S.base.metric t) basis (by
+        intro i j
+        simpa [delta3] using hOrth i j)
+  rw [fiberRegion_metricTraceFirstTwo0SAt_eq_metricTrace0S2InBasis (I := I) (S.base.metric t) basis
+    (identityInvMetric (Idx := Fin 3)) hinv (nablaKRm04Field (I := I) S t 2 x)
+    (vec4 (I := I) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))]
+  rw [← metricTrace0S2TensorInBasis_apply]
+  rfl
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [I.Boundaryless] in
+theorem pulledRmComp_pullback
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) :
+    UhlenbeckPullbackRmComponents iota
+      (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+      (pulledRmComp S basisAt iota) := by
+  intro t x a b c d
+  change tensor04StdAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota t x)
+      (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
+    uhlenbeckPullbackRmInFrame iota
+      (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) t x a b c d
+  simpa [solutionRm04CompInFrame, rm04Comp] using
+    uhlenbeckPulledRm04At_apply_basis (I := I) (M := M) S basisAt iota t x a b c d
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [I.Boundaryless] in
+lemma fiberRegion_pulledComponent_continuousOn_time
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiotaCont : ∀ x : M, ContinuousOn (fun t : ℝ => iota t x) (Set.Icc 0 T))
+    (x : M) (a b c d : Fin 3) :
+    ContinuousOn (fun s : ℝ => tensor04StdAt (I := I) (M := M)
+        (uhlenbeckPulledRm04At S basisAt iota s x)
+        (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+      (Set.Icc 0 T) := by
+  classical
+  have hiota_comp : ∀ a k : Fin 3, ContinuousOn (fun s : ℝ => iota s x a k) (Set.Icc 0 T) := by
+    intro a k
+    have h1 : ContinuousOn (fun s : ℝ => iota s x a) (Set.Icc 0 T) := (continuousOn_pi.mp (hiotaCont x)) a
+    exact (continuousOn_pi.mp h1) k
+  have hrm04_comp : ∀ v w y z : TangentSpace I x,
+      ContinuousOn (fun s : ℝ => tensor04StdAt (I := I) (M := M) (S.base.rm04 s x) v w y z)
+        (Set.Icc 0 T) := by
+    intro v w y z
+    rw [continuousOn_iff_continuous_restrict]
+    let P : Set ℝ := Set.Icc 0 T
+    have hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 P
+        (fun t x => S.base.rm04 t x) := by
+      exact Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
+        hS.rm04Cont (by intro s hs; exact hs)
+    have heval := Tensor0SFamilyContinuousOnSet.eval_continuous (I := I) (M := M) (s := 4)
+      (K := P) (A := fun t x => S.base.rm04 t x) hA
+      (P := {q : ℝ // q ∈ P}) (τ := fun p : {q : ℝ // q ∈ P} => p.1)
+      (b := fun p : {q : ℝ // q ∈ P} => x)
+      continuous_subtype_val (fun p : {q : ℝ // q ∈ P} => p.2) continuous_const
+      (v := fun i : Fin 4 => fun p : {q : ℝ // q ∈ P} =>
+        if i = 0 then v else if i = 1 then w else if i = 2 then y else z)
+      (by
+        intro i
+        fin_cases i
+        · exact continuous_const
+        · exact continuous_const
+        · exact continuous_const
+        · exact continuous_const)
+    have hmain : Continuous (fun p : {q : ℝ // q ∈ P} =>
+        tensor04StdAt (I := I) (M := M) (S.base.rm04 p.1 x) v w y z) := by
+      refine heval.congr (fun p => ?_)
+      rfl
+    simpa [P] using hmain
+  have hpoly : ∀ s : ℝ,
+      tensor04StdAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota s x)
+          (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
+        ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+          iota s x a i * iota s x b j * iota s x c k * iota s x d l *
+            tensor04StdAt (I := I) (M := M) (S.base.rm04 s x)
+              (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l) := by
+    intro s
+    have h := uhlenbeckPulledRm04At_apply_basis (I := I) (M := M) S basisAt iota s x a b c d
+    simpa [solutionRm04CompInFrame, rm04Comp] using h
+  rw [continuousOn_congr (fun s hs => hpoly s)]
+  refine continuousOn_finset_sum Finset.univ ?_
+  intro i _
+  refine continuousOn_finset_sum Finset.univ ?_
+  intro j _
+  refine continuousOn_finset_sum Finset.univ ?_
+  intro k _
+  refine continuousOn_finset_sum Finset.univ ?_
+  intro l _
+  simpa [mul_assoc] using
+    ((((hiota_comp a i).mul (hiota_comp b j)).mul (hiota_comp c k)).mul (hiota_comp d l)).mul
+      (hrm04_comp (basisAt x i) (basisAt x j) (basisAt x k) (basisAt x l))
+
+
+omit [I.Boundaryless] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] in
+theorem fiberRegion_rm04Comp_expand_gen
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) {x : M}
+    (e : Fin 3 → TangentSpace I x)
+    (f : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (P : Fin 3 → Fin 3 → ℝ)
+    (hP : ∀ i j : Fin 3, P j i = f.repr (e i) j)
+    (H : Fin 4 → Fin 3) :
+    S.base.rm04 t x (fun p : Fin 4 => e (H p)) =
+      ∑ J : Fin 4 → Fin 3,
+        S.base.rm04 t x (fun p : Fin 4 => f (J p)) *
+          (∏ p : Fin 4, P (J p) (H p)) := by
+  classical
+  have hsum := tensor0S_apply_eq_sum (𝕜 := ℝ) (I := I) f (S.base.rm04 t x)
+    (fun p : Fin 4 => e (H p))
+  rw [hsum]
+  refine Finset.sum_congr rfl fun J _ => ?_
+  rw [show component0S (I := I) f (S.base.rm04 t x) J =
+      S.base.rm04 t x (fun p : Fin 4 => f (J p)) by rfl]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro p _
+  exact fixedFrame_coord_eq f e P hP (H p) (J p)
+
+theorem fiberRegion_sum_comp_perm
+    (σ : Equiv.Perm (Fin 4)) (F : (Fin 4 → Fin 3) → ℝ) :
+    (∑ J : Fin 4 → Fin 3, F (fun p : Fin 4 => J (σ p))) = ∑ J : Fin 4 → Fin 3, F J := by
+  classical
+  let e : (Fin 4 → Fin 3) ≃ (Fin 4 → Fin 3) := {
+    toFun := fun J : Fin 4 → Fin 3 => fun p : Fin 4 => J (σ p)
+    invFun := fun J : Fin 4 → Fin 3 => fun p : Fin 4 => J (σ.symm p)
+    left_inv := by
+      intro J
+      funext p
+      simp
+    right_inv := by
+      intro J
+      funext p
+      simp
+  }
+  exact Fintype.sum_equiv e (fun J => F (fun p : Fin 4 => J (σ p))) (fun J => F J)
+    (by intro J; rfl)
+
+theorem fiberRegion_sum_lin_comb (w A B1 B2 B3 B4 D : (Fin 4 → Fin 3) → ℝ) :
+    (∑ J : Fin 4 → Fin 3, w J * A J)
+        - 2 * ((∑ J : Fin 4 → Fin 3, w J * B1 J) - (∑ J : Fin 4 → Fin 3, w J * B2 J)
+            + (∑ J : Fin 4 → Fin 3, w J * B3 J) - (∑ J : Fin 4 → Fin 3, w J * B4 J))
+        - (∑ J : Fin 4 → Fin 3, w J * D J)
+      = (∑ J : Fin 4 → Fin 3,
+          w J * (A J + (-2 * (B1 J - B2 J + B3 J - B4 J) - D J))) := by
+  rw [show (∑ J : Fin 4 → Fin 3,
+        w J * (A J + (-2 * (B1 J - B2 J + B3 J - B4 J) - D J))) =
+      (∑ J : Fin 4 → Fin 3,
+        (w J * A J + w J * (-2 * (B1 J - B2 J + B3 J - B4 J)) - w J * D J)) by
+    refine Finset.sum_congr rfl fun J _ => ?_
+    ring]
+  rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+  rw [show (∑ J : Fin 4 → Fin 3, w J * (-2 * (B1 J - B2 J + B3 J - B4 J))) =
+      (∑ J : Fin 4 → Fin 3, -2 * (w J * (B1 J - B2 J + B3 J - B4 J))) by
+    refine Finset.sum_congr rfl fun J _ => ?_
+    ring]
+  rw [← Finset.mul_sum]
+  rw [show (∑ J : Fin 4 → Fin 3, w J * (B1 J - B2 J + B3 J - B4 J)) =
+      (∑ J : Fin 4 → Fin 3, w J * B1 J) - (∑ J : Fin 4 → Fin 3, w J * B2 J)
+        + (∑ J : Fin 4 → Fin 3, w J * B3 J) - (∑ J : Fin 4 → Fin 3, w J * B4 J) by
+    rw [show (∑ J : Fin 4 → Fin 3,
+          w J * (B1 J - B2 J + B3 J - B4 J)) =
+        (∑ J : Fin 4 → Fin 3,
+          (w J * B1 J - w J * B2 J + w J * B3 J - w J * B4 J)) by
+      refine Finset.sum_congr rfl fun J _ => ?_
+      ring]
+    rw [Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.sum_sub_distrib]]
+  ring
+omit [IsManifold I 3 M] in
+theorem fiberRegion_solutionRm04FixedFrameEvolution
+    (T : ℝ) (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x)) :
+    Riemann04BTensorWithRicciDriftEvolutionInFrameOn
+      (D := RealTimeInterval.closed 0 T hT.le)
+      (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+      (fun t x a b c d =>
+        metricTraceFirstTwo0SAt (I := I) (S.base.metric t) (nablaKRm04Field (I := I) S t 2 x)
+          (vec4 (I := I) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d)))
+      (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+        (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+      (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+        (fun a x => basisAt x a)) := by
+  classical
+  intro t x a b c d
+  let D : RealTimeInterval := RealTimeInterval.closed 0 T hT.le
+  rcases exists_orthonormalBasisAt (I := I) (S.base.metric (t : ℝ)) x (hdim x) with ⟨f, hf⟩
+  let e : Fin 3 → TangentSpace I x := fun i => basisAt x i
+  let P : Fin 3 → Fin 3 → ℝ := fun j i => f.repr (e i) j
+  have hP : ∀ i j : Fin 3, P j i = f.repr (e i) j := by
+    intro i j
+    rfl
+  have horth : ∀ i j : Fin 3, (S.base.metric (t : ℝ)).inner x (f i) (f j) = kd i j := by
+    intro i j
+    simpa [kd, delta3] using hf i j
+  let gInvAt : Fin 3 → Fin 3 → ℝ := fun i j =>
+    solutionInverseMetricComponents S basisAt (t : ℝ) x i j
+  have hginv : ∀ i j : Fin 3,
+      (∑ k : Fin 3, gInvAt i k * (S.base.metric (t : ℝ)).inner x (e k) (e j)) = kd i j := by
+    intro i j
+    have h := solutionInverseMetricComponents_mul_metric (I := I) (M := M) S basisAt (t : ℝ) x i j
+    simpa [gInvAt, e, metricCompInFrame, kd] using h
+  have hbase : ∀ I0 : Fin 4 → Fin 3,
+      HasDerivWithinAt
+        (fun r : ℝ => S.base.rm04 r x (fun p : Fin 4 => f (I0 p)))
+        (tensor0SComponent (I := I)
+            (metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
+              (nablaKRm04Field (I := I) S (t : ℝ) 2 x))
+            (fun i => f i) I0 +
+          (-2 * (Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (I0 0) (I0 1) (I0 2) (I0 3) -
+                Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (I0 0) (I0 1) (I0 3) (I0 2) +
+                Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (I0 0) (I0 2) (I0 1) (I0 3) -
+                Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (I0 0) (I0 3) (I0 1) (I0 2)) -
+            drift (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+              (I0 0) (I0 1) (I0 2) (I0 3)))
+        (RealTimeInterval.closed 0 T hT.le).carrier (t : ℝ) := by
+    intro I0
+    have h := rm04Base_of_sol (I := I) (M := M) S hS t hdim x f horth I0
+    simpa [kd] using h
+  have hfun : (fun r : ℝ => S.base.rm04 r x (vec4 (I := I) (e a) (e b) (e c) (e d))) =
+      fun r : ℝ => ∑ J : Fin 4 → Fin 3,
+        (∏ p : Fin 4, P (J p) (slots4 a b c d p)) * S.base.rm04 r x (fun p : Fin 4 => f (J p)) := by
+    funext r
+    have hgen := fiberRegion_rm04Comp_expand_gen (I := I) S r e f P hP (slots4 a b c d)
+    calc
+      S.base.rm04 r x (vec4 (I := I) (e a) (e b) (e c) (e d))
+          = S.base.rm04 r x (fun p : Fin 4 => e (slots4 a b c d p)) := by
+            congr 1
+            funext p
+            fin_cases p <;> simp [slots4, vec4]
+      _ = ∑ J : Fin 4 → Fin 3,
+            (∏ p : Fin 4, P (J p) (slots4 a b c d p)) * S.base.rm04 r x (fun p : Fin 4 => f (J p)) := by
+            simpa [mul_comm, mul_left_comm, mul_assoc] using hgen
+  have hmain : HasDerivWithinAt
+      (fun r : ℝ => ∑ J : Fin 4 → Fin 3,
+        (∏ p : Fin 4, P (J p) (slots4 a b c d p)) * S.base.rm04 r x (fun p : Fin 4 => f (J p)))
+      (∑ J : Fin 4 → Fin 3, (∏ p : Fin 4, P (J p) (slots4 a b c d p)) *
+        (tensor0SComponent (I := I)
+            (metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
+              (nablaKRm04Field (I := I) S (t : ℝ) 2 x))
+            (fun i => f i) J +
+          (-2 * (Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (J 0) (J 1) (J 2) (J 3) -
+                Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (J 0) (J 1) (J 3) (J 2) +
+                Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (J 0) (J 2) (J 1) (J 3) -
+                Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (J 0) (J 3) (J 1) (J 2)) -
+            drift (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+              (J 0) (J 1) (J 2) (J 3))))
+      (RealTimeInterval.closed 0 T hT.le).carrier (t : ℝ) := by
+    refine HasDerivWithinAt.fun_sum ?_
+    intro J _hJ
+    exact (hbase J).const_mul (∏ p : Fin 4, P (J p) (slots4 a b c d p))
+  have hfin : HasDerivWithinAt
+      (fun r : ℝ => solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)
+        r x a b c d)
+      (metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : ℝ)) (nablaKRm04Field (I := I) S (t : ℝ) 2 x)
+          (vec4 (I := I) (e a) (e b) (e c) (e d)) -
+        2 * (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a b c d -
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a b d c +
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a c b d -
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a d b c) -
+        riemann04RicciDriftInFrame
+          (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+            (fun a x => basisAt x a))
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+          (t : ℝ) x a b c d)
+      (RealTimeInterval.closed 0 T hT.le).carrier (t : ℝ) := by
+    have hT1 := roughLapRm04_fixedFrame_pullback (I := I) (M := M) S (t : ℝ) e f P hP horth a b c d
+    have hT2 := uhlenbeckBTensorInFrame_fixedFrame_pullback (I := I) (M := M) S (t : ℝ) (hdim x) e f P
+      (solutionInverseMetricComponents S basisAt) hP horth hginv a b c d
+    have hT3 := riemann04RicciDriftInFrame_fixedFrame_pullback (I := I) (M := M) S (t : ℝ) (hdim x) e f P
+      (solutionInverseMetricComponents S basisAt) hP horth hginv a b c d
+    let σ23 : Equiv.Perm (Fin 4) := {
+      toFun := fun p => if p = 2 then 3 else if p = 3 then 2 else p
+      invFun := fun p => if p = 2 then 3 else if p = 3 then 2 else p
+      left_inv := by intro p; fin_cases p <;> simp
+      right_inv := by intro p; fin_cases p <;> simp
+    }
+    have hσ23_0 : σ23 0 = 0 := by decide
+    have hσ23_1 : σ23 1 = 1 := by decide
+    have hσ23_2 : σ23 2 = 3 := by decide
+    have hσ23_3 : σ23 3 = 2 := by decide
+    have hB0 : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a b c d =
+        ∑ I0 : Fin 4 → Fin 3,
+          (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+            Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+              (I0 0) (I0 1) (I0 2) (I0 3) := by
+      have hA : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a b c d =
+          uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a)) (t : ℝ) x a b c d := by
+        simp [uhlenbeckBTensorInFrame, solutionRm04CompInFrame, rm04Comp, e]
+      exact hA.trans hT2
+    have hdrift : riemann04RicciDriftInFrame
+          (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+            (fun a x => basisAt x a))
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+          (t : ℝ) x a b c d =
+        ∑ I0 : Fin 4 → Fin 3,
+          (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+            drift (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+              (I0 0) (I0 1) (I0 2) (I0 3) := by
+      have hA : riemann04RicciDriftInFrame
+            (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+              (fun a x => basisAt x a))
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+            (t : ℝ) x a b c d =
+          riemann04RicciDriftInFrame
+            (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+              (fun a _ => e a))
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a))
+            (t : ℝ) x a b c d := by
+        simp [riemann04RicciDriftInFrame, solutionRicciOneUpInFrame, solutionRm04CompInFrame, rm04Comp, e]
+      exact hA.trans hT3
+    have hlap : metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : ℝ)) (nablaKRm04Field (I := I) S (t : ℝ) 2 x)
+          (vec4 (I := I) (e a) (e b) (e c) (e d)) =
+        ∑ I0 : Fin 4 → Fin 3,
+          (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+            tensor0SComponent (metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
+              (nablaKRm04Field (I := I) S (t : ℝ) 2 x)) (fun i => f i) I0 := by
+      exact hT1.trans rfl
+    have hT2b := uhlenbeckBTensorInFrame_fixedFrame_pullback (I := I) (M := M) S (t : ℝ) (hdim x) e f P
+      (solutionInverseMetricComponents S basisAt) hP horth hginv a b d c
+    have hA1 : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a b d c =
+        uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a)) (t : ℝ) x a b d c := by
+      simp [uhlenbeckBTensorInFrame, solutionRm04CompInFrame, rm04Comp, e]
+    have hB1 : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a b d c =
+        ∑ J : Fin 4 → Fin 3,
+          (∏ p : Fin 4, P (J p) (slots4 a b c d p)) *
+            Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+              (J 0) (J 1) (J 3) (J 2) := by
+      calc
+        uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a b d c
+            = uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a)) (t : ℝ) x a b d c := hA1
+        _ = ∑ I0 : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (I0 p) (slots4 a b d c p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 1) (I0 2) (I0 3) := hT2b
+        _ = ∑ J : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (J (σ23 p)) (slots4 a b d c p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J (σ23 0)) (J (σ23 1)) (J (σ23 2)) (J (σ23 3)) := by
+              rw [← fiberRegion_sum_comp_perm σ23 (fun J =>
+                (∏ p : Fin 4, P (J p) (slots4 a b d c p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J 0) (J 1) (J 2) (J 3))]
+        _ = ∑ J : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (J p) (slots4 a b c d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J 0) (J 1) (J 3) (J 2) := by
+              refine Finset.sum_congr rfl fun J _ => ?_
+              simp only [Fin.prod_univ_four, slots4, Fin.isValue, Fin.reduceEq, reduceIte]
+              rw [hσ23_0, hσ23_1, hσ23_2, hσ23_3]
+              ring
+    let σ12 : Equiv.Perm (Fin 4) := {
+      toFun := fun p => if p = 1 then 2 else if p = 2 then 1 else p
+      invFun := fun p => if p = 1 then 2 else if p = 2 then 1 else p
+      left_inv := by intro p; fin_cases p <;> simp
+      right_inv := by intro p; fin_cases p <;> simp
+    }
+    have hσ12_0 : σ12 0 = 0 := by decide
+    have hσ12_1 : σ12 1 = 2 := by decide
+    have hσ12_2 : σ12 2 = 1 := by decide
+    have hσ12_3 : σ12 3 = 3 := by decide
+    let σ13 : Equiv.Perm (Fin 4) := {
+      toFun := fun p => if p = 1 then 3 else if p = 2 then 1 else if p = 3 then 2 else p
+      invFun := fun p => if p = 2 then 3 else if p = 3 then 1 else if p = 1 then 2 else p
+      left_inv := by intro p; fin_cases p <;> simp
+      right_inv := by intro p; fin_cases p <;> simp
+    }
+    have hσ13_0 : σ13 0 = 0 := by decide
+    have hσ13_1 : σ13 1 = 3 := by decide
+    have hσ13_2 : σ13 2 = 1 := by decide
+    have hσ13_3 : σ13 3 = 2 := by decide
+    have hT2c := uhlenbeckBTensorInFrame_fixedFrame_pullback (I := I) (M := M) S (t : ℝ) (hdim x) e f P
+      (solutionInverseMetricComponents S basisAt) hP horth hginv a c b d
+    have hA2 : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a c b d =
+        uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a)) (t : ℝ) x a c b d := by
+      simp [uhlenbeckBTensorInFrame, solutionRm04CompInFrame, rm04Comp, e]
+    have hB2 : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a c b d =
+        ∑ J : Fin 4 → Fin 3,
+          (∏ p : Fin 4, P (J p) (slots4 a b c d p)) *
+            Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+              (J 0) (J 2) (J 1) (J 3) := by
+      calc
+        uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a c b d
+            = uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a)) (t : ℝ) x a c b d := hA2
+        _ = ∑ I0 : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (I0 p) (slots4 a c b d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 1) (I0 2) (I0 3) := hT2c
+        _ = ∑ J : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (J (σ12 p)) (slots4 a c b d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J (σ12 0)) (J (σ12 1)) (J (σ12 2)) (J (σ12 3)) := by
+              rw [← fiberRegion_sum_comp_perm σ12 (fun J =>
+                (∏ p : Fin 4, P (J p) (slots4 a c b d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J 0) (J 1) (J 2) (J 3))]
+        _ = ∑ J : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (J p) (slots4 a b c d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J 0) (J 2) (J 1) (J 3) := by
+              refine Finset.sum_congr rfl fun J _ => ?_
+              simp only [Fin.prod_univ_four, slots4, Fin.isValue, Fin.reduceEq, reduceIte]
+              rw [hσ12_0, hσ12_1, hσ12_2, hσ12_3]
+              ring
+    have hT2d := uhlenbeckBTensorInFrame_fixedFrame_pullback (I := I) (M := M) S (t : ℝ) (hdim x) e f P
+      (solutionInverseMetricComponents S basisAt) hP horth hginv a d b c
+    have hA3 : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a d b c =
+        uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a)) (t : ℝ) x a d b c := by
+      simp [uhlenbeckBTensorInFrame, solutionRm04CompInFrame, rm04Comp, e]
+    have hB3 : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a d b c =
+        ∑ J : Fin 4 → Fin 3,
+          (∏ p : Fin 4, P (J p) (slots4 a b c d p)) *
+            Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+              (J 0) (J 3) (J 1) (J 2) := by
+      calc
+        uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)) (t : ℝ) x a d b c
+            = uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a)) (t : ℝ) x a d b c := hA3
+        _ = ∑ I0 : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (I0 p) (slots4 a d b c p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 1) (I0 2) (I0 3) := hT2d
+        _ = ∑ J : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (J (σ13 p)) (slots4 a d b c p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J (σ13 0)) (J (σ13 1)) (J (σ13 2)) (J (σ13 3)) := by
+              rw [← fiberRegion_sum_comp_perm σ13 (fun J =>
+                (∏ p : Fin 4, P (J p) (slots4 a d b c p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J 0) (J 1) (J 2) (J 3))]
+        _ = ∑ J : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (J p) (slots4 a b c d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (J 0) (J 3) (J 1) (J 2) := by
+              refine Finset.sum_congr rfl fun J _ => ?_
+              simp only [Fin.prod_univ_four, slots4, Fin.isValue, Fin.reduceEq, reduceIte]
+              rw [hσ13_0, hσ13_1, hσ13_2, hσ13_3]
+              ring
+    have hRHS : metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : ℝ)) (nablaKRm04Field (I := I) S (t : ℝ) 2 x)
+          (vec4 (I := I) (e a) (e b) (e c) (e d)) -
+        2 * (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a b c d -
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a b d c +
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a c b d -
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a d b c) -
+        riemann04RicciDriftInFrame
+          (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+            (fun a x => basisAt x a))
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+          (t : ℝ) x a b c d
+        = (∑ I0 : Fin 4 → Fin 3,
+            (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+              tensor0SComponent (metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
+                (nablaKRm04Field (I := I) S (t : ℝ) 2 x)) (fun i => f i) I0)
+          - 2 * ((∑ I0 : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 1) (I0 2) (I0 3))
+              - (∑ I0 : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 1) (I0 3) (I0 2))
+              + (∑ I0 : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 2) (I0 1) (I0 3))
+              - (∑ I0 : Fin 4 → Fin 3,
+                (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 3) (I0 1) (I0 2)))
+          - (∑ I0 : Fin 4 → Fin 3,
+              (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+                drift (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (I0 0) (I0 1) (I0 2) (I0 3)) := by
+      rw [hlap, hB0, hB1, hB2, hB3, hdrift]
+    have hEq : metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : ℝ)) (nablaKRm04Field (I := I) S (t : ℝ) 2 x)
+          (vec4 (I := I) (e a) (e b) (e c) (e d)) -
+        2 * (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a b c d -
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a b d c +
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a c b d -
+            uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+              (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+              (t : ℝ) x a d b c) -
+        riemann04RicciDriftInFrame
+          (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+            (fun a x => basisAt x a))
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+          (t : ℝ) x a b c d
+        = ∑ I0 : Fin 4 → Fin 3, (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+            (tensor0SComponent (I := I)
+                (metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
+                  (nablaKRm04Field (I := I) S (t : ℝ) 2 x))
+                (fun i => f i) I0 +
+              (-2 * (Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                      (I0 0) (I0 1) (I0 2) (I0 3) -
+                    Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                      (I0 0) (I0 1) (I0 3) (I0 2) +
+                    Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                      (I0 0) (I0 2) (I0 1) (I0 3) -
+                    Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                      (I0 0) (I0 3) (I0 1) (I0 2)) -
+                drift (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                  (I0 0) (I0 1) (I0 2) (I0 3))) := by
+      rw [hRHS]
+      rw [fiberRegion_sum_lin_comb (fun I0 : Fin 4 → Fin 3 => ∏ p : Fin 4, P (I0 p) (slots4 a b c d p))
+          (fun I0 => tensor0SComponent (metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
+            (nablaKRm04Field (I := I) S (t : ℝ) 2 x)) (fun i => f i) I0)
+          (fun I0 => Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j))) (I0 0) (I0 1) (I0 2) (I0 3))
+          (fun I0 => Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j))) (I0 0) (I0 1) (I0 3) (I0 2))
+          (fun I0 => Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j))) (I0 0) (I0 2) (I0 1) (I0 3))
+          (fun I0 => Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j))) (I0 0) (I0 3) (I0 1) (I0 2))
+          (fun I0 => drift (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j))) (I0 0) (I0 1) (I0 2) (I0 3))]
+    have hdev : HasDerivWithinAt
+        (fun r : ℝ => S.base.rm04 r x (vec4 (I := I) (e a) (e b) (e c) (e d)))
+        (∑ I0 : Fin 4 → Fin 3, (∏ p : Fin 4, P (I0 p) (slots4 a b c d p)) *
+          (tensor0SComponent (I := I)
+              (metricTrace0S2TensorInBasis (I := I) f (identityInvMetric (Idx := Fin 3))
+                (nablaKRm04Field (I := I) S (t : ℝ) 2 x))
+              (fun i => f i) I0 +
+            (-2 * (Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 1) (I0 2) (I0 3) -
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 1) (I0 3) (I0 2) +
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 2) (I0 1) (I0 3) -
+                  Bt (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                    (I0 0) (I0 3) (I0 1) (I0 2)) -
+              drift (fun i j : Fin 3 => S.ricciAt (t : ℝ) x (vec2 (I := I) (f i) (f j)))
+                (I0 0) (I0 1) (I0 2) (I0 3)))) D.carrier (t : ℝ) := by
+      rw [hfun]
+      exact hmain
+    simpa [hEq, e, solutionRm04CompInFrame, rm04Comp] using hdev
+  simpa [solutionRicciOneUpInFrame, e] using hfin
+
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem fiberRegion_pullbackTensorAt_apply
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M)
+    (A : Tensor04At (I := I) (M := M) x) (X Y Z W : TangentSpace I x) :
+    tensor04StdAt (I := I) (M := M) (uhlenbeckPullbackTensorAt basisAt iota t x A) X Y Z W =
+      tensor04StdAt (I := I) (M := M) A
+        (uhlenbeckEndomorphismAt (basisAt x) iota t X)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t Y)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t Z)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t W) := by
+  change (A : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+      (fun i : Fin 4 =>
+        uhlenbeckEndomorphismAt (basisAt x) iota t (vec4 X Y Z W i)) =
+    (A : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+      (vec4 (uhlenbeckEndomorphismAt (basisAt x) iota t X)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t Y)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t Z)
+        (uhlenbeckEndomorphismAt (basisAt x) iota t W))
+  congr 1
+  funext i
+  fin_cases i <;> simp [vec4]
+
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem fiberRegion_sum4_factor (A B C D : Fin 3 → ℝ) :
+    (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, A i * B j * C k * D l) =
+      (∑ i : Fin 3, A i) * (∑ j : Fin 3, B j) * (∑ k : Fin 3, C k) * (∑ l : Fin 3, D l) := by
+  calc
+    (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, A i * B j * C k * D l)
+        = ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, A i * B j * C k * (∑ l : Fin 3, D l) := by
+          refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
+            Finset.sum_congr rfl fun k _ => ?_
+          rw [← Finset.mul_sum]
+    _ = ∑ i : Fin 3, ∑ j : Fin 3, (A i * B j) * (∑ k : Fin 3, C k * (∑ l : Fin 3, D l)) := by
+          refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+          rw [show (∑ k : Fin 3, A i * B j * C k * (∑ l : Fin 3, D l)) =
+              ∑ k : Fin 3, (A i * B j) * (C k * (∑ l : Fin 3, D l)) by
+            refine Finset.sum_congr rfl fun k _ => ?_
+            rw [mul_assoc]]
+          rw [← Finset.mul_sum]
+    _ = ∑ i : Fin 3, A i * (∑ j : Fin 3, B j * (∑ k : Fin 3, C k * (∑ l : Fin 3, D l))) := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [show (∑ j : Fin 3, (A i * B j) * (∑ k : Fin 3, C k * (∑ l : Fin 3, D l))) =
+              ∑ j : Fin 3, A i * (B j * (∑ k : Fin 3, C k * (∑ l : Fin 3, D l))) by
+            refine Finset.sum_congr rfl fun j _ => ?_
+            rw [← mul_assoc]]
+          rw [← Finset.mul_sum]
+    _ = (∑ i : Fin 3, A i) * ((∑ j : Fin 3, B j) * ((∑ k : Fin 3, C k) * (∑ l : Fin 3, D l))) := by
+          rw [← Finset.sum_mul]
+          rw [← Finset.sum_mul]
+          rw [← Finset.sum_mul]
+    _ = (∑ i : Fin 3, A i) * (∑ j : Fin 3, B j) * (∑ k : Fin 3, C k) * (∑ l : Fin 3, D l) := by
+          rw [mul_assoc, mul_assoc]
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem fiberRegion_sum5_swap
+    (F : Fin 3 → Fin 3 → Fin 3 → Fin 3 → (Fin 4 → Fin 3) → ℝ) :
+    (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, ∑ I0 : Fin 4 → Fin 3, F i j k l I0) =
+      ∑ I0 : Fin 4 → Fin 3, ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, F i j k l I0 := by
+  rw [show (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, ∑ I0 : Fin 4 → Fin 3, F i j k l I0) =
+      ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ I0 : Fin 4 → Fin 3, ∑ l : Fin 3, F i j k l I0 by
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
+      Finset.sum_congr rfl fun k _ => ?_
+    rw [Finset.sum_comm]]
+  rw [show (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ I0 : Fin 4 → Fin 3, ∑ l : Fin 3, F i j k l I0) =
+      ∑ i : Fin 3, ∑ j : Fin 3, ∑ I0 : Fin 4 → Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, F i j k l I0 by
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+    rw [Finset.sum_comm]]
+  rw [show (∑ i : Fin 3, ∑ j : Fin 3, ∑ I0 : Fin 4 → Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, F i j k l I0) =
+      ∑ i : Fin 3, ∑ I0 : Fin 4 → Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, F i j k l I0 by
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Finset.sum_comm]]
+  rw [show (∑ i : Fin 3, ∑ I0 : Fin 4 → Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, F i j k l I0) =
+      ∑ I0 : Fin 4 → Fin 3, ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, F i j k l I0 by
+    rw [Finset.sum_comm]]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem fiberRegion_compU_mem_algebraicCurvatureTensorSubmodule
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M)
+    (A : Tensor04At (I := I) (M := M) x)
+    (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    uhlenbeckPullbackTensorAt basisAt iota t x A ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
+  rw [mem_algebraicCurvatureTensorSubmodule]
+  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) A) :=
+    mem_algebraicCurvatureTensorSubmodule.mp hA
+  change IsAlgCurvForm (fun X Y Z W =>
+    tensor04StdAt (uhlenbeckPullbackTensorAt basisAt iota t x A) X Y Z W)
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro x₁ x₂ y z w
+    rw [fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A (x₁ + x₂) y z w,
+      fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A x₁ y z w,
+      fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A x₂ y z w]
+    rw [show uhlenbeckEndomorphismAt (basisAt x) iota t (x₁ + x₂) =
+        uhlenbeckEndomorphismAt (basisAt x) iota t x₁ +
+          uhlenbeckEndomorphismAt (basisAt x) iota t x₂ from by simp]
+    exact hform.add_left _ _ _ _ _
+  · intro a u y z w
+    rw [fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A (a • u) y z w,
+      fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A u y z w]
+    rw [show uhlenbeckEndomorphismAt (basisAt x) iota t (a • u) =
+        a • uhlenbeckEndomorphismAt (basisAt x) iota t u from by simp]
+    exact hform.smul_left _ _ _ _ _
+  · intro u v y z
+    rw [fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A u v y z,
+      fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A v u y z]
+    exact hform.anti_first _ _ _ _
+  · intro u v y z
+    rw [fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A u v y z,
+      fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A u v z y]
+    exact hform.anti_last _ _ _ _
+  · intro u v y z
+    rw [fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A u v y z,
+      fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A v y u z,
+      fiberRegion_pullbackTensorAt_apply (I := I) (M := M) basisAt iota t x A y u v z]
+    exact hform.bianchi _ _ _ _
+
+omit [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] in
+theorem fiberRegion_pulledTensor_scalarization_eq
+    (g : DifferentialGeometry.SmoothRiemannianMetric I M)
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M)
+    (horth : OrthonormalBasisAt (I := I) g x (basisAt x))
+    (A : Tensor04At (I := I) (M := M) x)
+    (hAlg : uhlenbeckPullbackTensorAt basisAt iota t x A ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (ν : Tensor04At (I := I) (M := M) x) :
+    inner0S (I := I) g x 4 (uhlenbeckPullbackTensorAt basisAt iota t x A) ν =
+      4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix
+        (fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+          (uhlenbeckPullbackTensorAt basisAt iota t' x' A)
+          (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d)) t x)
+        (regionSupportVector g basisAt x ν) := by
+  have hmat : uhlenbeckCurvatureOperatorMatrix
+        (fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+          (uhlenbeckPullbackTensorAt basisAt iota t' x' A)
+          (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d)) t x =
+      matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x)
+        ⟨uhlenbeckPullbackTensorAt basisAt iota t x A, hAlg⟩) := by
+    have hmain := uhlenbeckCurvatureOperatorMatrixAsMatrix_eq_curvatureOperatorMatrixAt
+      (I := I) (M := M) (x := x) (basis := basisAt x)
+      (A := ⟨uhlenbeckPullbackTensorAt basisAt iota t x A, hAlg⟩)
+      (pulledRm := fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+        (uhlenbeckPullbackTensorAt basisAt iota t' x' A)
+        (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d))
+      (t := t)
+      (by intro a b c d; rfl)
+    rw [← hmain]
+    unfold matrixToEuclid uhlenbeckCurvatureOperatorMatrixAsMatrix uhlenbeckCurvatureOperatorMatrix
+    rfl
+  have hmain := inner0S_eq_four_mul_inner_regionProjMatrix (I := I) g x (basisAt x) horth hAlg ν
+  rw [← hmat] at hmain
+  rw [real_inner_comm] at hmain
+  simpa [regionSupportVector] using hmain
+
+omit [I.Boundaryless] [IsManifold I 2 M] [IsManifold I 3 M] in
+theorem fiberRegion_pulledRmComp_eq_rm
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) :
+    ∀ a b c d : Fin 3,
+      pulledRmComp S basisAt iota t x a b c d =
+        rm (fun i j : Fin 3 => S.ricciAt t x (vec2 (I := I)
+          (uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x i)
+          (uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x j))) a b c d := by
+  intro a b c d
+  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
+  have hmovingOrth : ∀ i j : Fin 3, (S.base.metric t).inner x (moving i) (moving j) = kd i j := by
+    intro i j
+    dsimp [moving]
+    exact uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M) hT S basisAt iota hiota0 hgram x
+      (horth0 x) ht i j
+  calc
+    pulledRmComp S basisAt iota t x a b c d
+        = tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x)
+            (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := rfl
+    _ = tensor04StdAt (S.base.rm04 t x) (moving a) (moving b) (moving c) (moving d) := by
+          rw [uhlenbeckPulledRm04At_apply]
+          simp [moving, uhlenbeckMovingBasis_apply]
+    _ = S.base.rm04 t x (vec4 (I := I) (moving a) (moving b) (moving c) (moving d)) := rfl
+    _ = rm (fun i j : Fin 3 => S.ricciAt t x (vec2 (I := I) (moving i) (moving j))) a b c d := by
+          have h := rm04Comp_ortho_eq_rm (I := I) S t (hdim x) moving hmovingOrth (slots4 a b c d)
+          simpa [slots4, Fin.isValue, Fin.reduceEq, reduceIte] using h
+
+omit [I.Boundaryless] [IsManifold I 2 M] [IsManifold I 3 M] in
+theorem fiberRegion_pulledBTensor_eq_bTensorDown
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) (a b c d : Fin 3) :
+    uhlenbeckPullbackRmInFrame iota
+        (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+        t x a b c d =
+      bTensorDown (fun a' b' c' d' => pulledRmComp S basisAt iota t x a' b' c' d') a b c d := by
+  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
+  let e : Fin 3 → TangentSpace I x := fun a => basisAt x a
+  let P : Fin 3 → Fin 3 → ℝ := fun j i => moving.repr (basisAt x i) j
+  have hP : ∀ i j : Fin 3, P j i = moving.repr (basisAt x i) j := by
+    intro i j
+    rfl
+  have hmovingOrth : ∀ i j : Fin 3, (S.base.metric t).inner x (moving i) (moving j) = kd i j := by
+    intro i j
+    dsimp [moving]
+    exact uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M) hT S basisAt iota hiota0 hgram x
+      (horth0 x) ht i j
+  have hginv : ∀ i j : Fin 3,
+      (∑ k : Fin 3, solutionInverseMetricComponents S basisAt t x i k *
+        (S.base.metric t).inner x (basisAt x k) (basisAt x j)) = kd i j := by
+    intro i j
+    have h := solutionInverseMetricComponents_mul_metric (I := I) (M := M) S basisAt t x i j
+    simpa [metricCompInFrame, kd] using h
+  have hiotaP : ∀ u v : Fin 3, (∑ i : Fin 3, iota t x u i * P v i) = kd u v := by
+    intro u v
+    calc
+      (∑ i : Fin 3, iota t x u i * P v i)
+          = moving.repr (∑ i : Fin 3, iota t x u i • basisAt x i) v := by
+            rw [map_sum]
+            simp [P, smul_eq_mul]
+      _ = moving.repr (moving u) v := by
+            congr 1
+            rw [uhlenbeckMovingBasis_apply, uhlenbeckEndomorphism_apply_basis]
+      _ = kd u v := by
+            rw [moving.repr_self u, Finsupp.single_apply]
+            simp [kd]
+  let Rf : Fin 3 → Fin 3 → ℝ := fun i j => S.ricciAt t x (vec2 (I := I) (moving i) (moving j))
+  have hBpull : uhlenbeckPullbackRmInFrame iota
+        (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+        t x a b c d =
+      Bt Rf a b c d := by
+    calc
+      uhlenbeckPullbackRmInFrame iota
+          (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+          t x a b c d
+          = ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+              iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+                  (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+                  t x i j k l := rfl
+      _ = ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+              iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                (∑ I0 : Fin 4 → Fin 3,
+                  (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3)) := by
+            refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
+              Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
+            have h := uhlenbeckBTensorInFrame_fixedFrame_pullback (I := I) (M := M) S t (hdim x)
+              (fun a => basisAt x a) moving P (solutionInverseMetricComponents S basisAt)
+              hP hmovingOrth hginv i j k l
+            have hval : uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+                  (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+                  t x i j k l =
+                (∑ I0 : Fin 4 → Fin 3,
+                  (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3)) := by
+              calc
+                uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+                    (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+                    t x i j k l
+                    = uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+                        (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a _ => e a))
+                        t x i j k l := by
+                      unfold uhlenbeckBTensorInFrame
+                      refine Finset.sum_congr rfl fun e0 _ => Finset.sum_congr rfl fun g0 _ =>
+                        Finset.sum_congr rfl fun f0 _ => Finset.sum_congr rfl fun r0 _ => ?_
+                      simp [solutionRm04CompInFrame, rm04Comp, e]
+                _ = (∑ I0 : Fin 4 → Fin 3,
+                      (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3)) := by
+                      simpa [Rf] using h
+            rw [hval]
+      _ = ∑ I0 : Fin 4 → Fin 3,
+              Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
+                (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                  iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                    (∏ p : Fin 4, P (I0 p) (slots4 i j k l p))) := by
+            have hstep1 : (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                  iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                    (∑ I0 : Fin 4 → Fin 3,
+                      (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3))) =
+                ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, ∑ I0 : Fin 4 → Fin 3,
+                  iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                    (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) := by
+              refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
+                Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
+              rw [Finset.mul_sum]
+              refine Finset.sum_congr rfl fun I0 _ => ?_
+              ring
+            have hstep2 : (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3, ∑ I0 : Fin 4 → Fin 3,
+                  iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                    (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3)) =
+                ∑ I0 : Fin 4 → Fin 3, ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                  iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                    (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) := by
+              exact fiberRegion_sum5_swap (fun i j k l I0 =>
+                iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                  (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3))
+            have hstep3 : (∑ I0 : Fin 4 → Fin 3, ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                  iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                    (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3)) =
+                ∑ I0 : Fin 4 → Fin 3,
+                  Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
+                    (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                      iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                        (∏ p : Fin 4, P (I0 p) (slots4 i j k l p))) := by
+              refine Finset.sum_congr rfl fun I0 _ => ?_
+              rw [show (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                    iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                      (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3)) =
+                  Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
+                    (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                      iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                        (∏ p : Fin 4, P (I0 p) (slots4 i j k l p))) by
+                calc
+                  (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                      iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                        (∏ p : Fin 4, P (I0 p) (slots4 i j k l p)) * Bt Rf (I0 0) (I0 1) (I0 2) (I0 3))
+                      = Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
+                          (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                            iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                              (∏ p : Fin 4, P (I0 p) (slots4 i j k l p))) := by
+                        simp only [Finset.mul_sum]
+                        refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
+                          Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
+                        ring]
+            exact (hstep1.trans hstep2).trans hstep3
+      _ = ∑ I0 : Fin 4 → Fin 3,
+              Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
+                ((∑ i : Fin 3, iota t x a i * P (I0 0) i) *
+                  (∑ j : Fin 3, iota t x b j * P (I0 1) j) *
+                  (∑ k : Fin 3, iota t x c k * P (I0 2) k) *
+                  (∑ l : Fin 3, iota t x d l * P (I0 3) l)) := by
+            refine Finset.sum_congr rfl fun I0 _ => ?_
+            rw [show (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                  iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                    (∏ p : Fin 4, P (I0 p) (slots4 i j k l p))) =
+                (∑ i : Fin 3, iota t x a i * P (I0 0) i) *
+                  (∑ j : Fin 3, iota t x b j * P (I0 1) j) *
+                  (∑ k : Fin 3, iota t x c k * P (I0 2) k) *
+                  (∑ l : Fin 3, iota t x d l * P (I0 3) l) by
+              simp only [Fin.prod_univ_four, slots4, Fin.isValue, Fin.reduceEq, reduceIte]
+              rw [show (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                    iota t x a i * iota t x b j * iota t x c k * iota t x d l *
+                      (P (I0 0) i * P (I0 1) j * P (I0 2) k * P (I0 3) l)) =
+                  (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+                    (iota t x a i * P (I0 0) i) * (iota t x b j * P (I0 1) j) *
+                      (iota t x c k * P (I0 2) k) * (iota t x d l * P (I0 3) l)) by
+                refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
+                  Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
+                ring]
+              exact fiberRegion_sum4_factor (fun i => iota t x a i * P (I0 0) i)
+                (fun j => iota t x b j * P (I0 1) j)
+                (fun k => iota t x c k * P (I0 2) k)
+                (fun l => iota t x d l * P (I0 3) l)]
+      _ = ∑ I0 : Fin 4 → Fin 3,
+              Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
+                (kd a (I0 0) * kd b (I0 1) * kd c (I0 2) * kd d (I0 3)) := by
+            refine Finset.sum_congr rfl fun I0 _ => ?_
+            rw [hiotaP a (I0 0), hiotaP b (I0 1), hiotaP c (I0 2), hiotaP d (I0 3)]
+      _ = Bt Rf a b c d := by
+            rw [Finset.sum_eq_single (slots4 a b c d)]
+            · simp [slots4, kd]
+            · intro I0 _ hI0
+              have hne : ∃ p : Fin 4, I0 p ≠ slots4 a b c d p := by
+                by_contra h
+                apply hI0
+                funext p
+                by_contra hne
+                exact h ⟨p, hne⟩
+              rcases hne with ⟨p, hp⟩
+              have hzero : kd (slots4 a b c d p) (I0 p) = 0 := by
+                rw [kd, if_neg]
+                exact hp.symm
+              calc
+                Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
+                    (kd a (I0 0) * kd b (I0 1) * kd c (I0 2) * kd d (I0 3))
+                    = Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
+                        (∏ q : Fin 4, kd (slots4 a b c d q) (I0 q)) := by
+                      simp [Fin.prod_univ_four, slots4, Fin.isValue, Fin.reduceEq, reduceIte]
+                _ = Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) * 0 := by
+                      rw [Finset.prod_eq_zero (f := fun q : Fin 4 => kd (slots4 a b c d q) (I0 q)) (by simp) hzero]
+                _ = 0 := by ring
+            · intro h
+              exact absurd (Finset.mem_univ (slots4 a b c d)) h
+  calc
+    uhlenbeckPullbackRmInFrame iota
+        (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+          (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+        t x a b c d
+        = Bt Rf a b c d := hBpull
+    _ = bTensorDown (fun a' b' c' d' => pulledRmComp S basisAt iota t x a' b' c' d') a b c d := by
+          have hrm : ∀ u v w z : Fin 3,
+              pulledRmComp S basisAt iota t x u v w z =
+                rm Rf u v w z := by
+            intro u v w z
+            have h := fiberRegion_pulledRmComp_eq_rm (I := I) (M := M) hT S basisAt iota hiota0 hgram
+              hdim horth0 ht x u v w z
+            simpa [Rf, moving] using h
+          unfold Bt bTensorDown
+          refine Finset.sum_congr rfl fun e _ => Finset.sum_congr rfl fun f _ => ?_
+          change rm Rf a e b f * rm Rf c e d f =
+            pulledRmComp S basisAt iota t x a e b f * pulledRmComp S basisAt iota t x c e d f
+          rw [hrm a e b f, hrm c e d f]
+
+omit [I.Boundaryless] [IsManifold I 2 M] [IsManifold I 3 M] in
+theorem fiberRegion_reaction_eq_reactionState
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) :
+    uhlenbeckCurvatureOperatorReaction
+        (fun t' x' a b c d => uhlenbeckPullbackRmInFrame iota
+          (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+          t' x' a b c d)
+        t x (uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x) =
+      uhlenbeckCurvatureOperatorReactionState
+        (uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x) := by
+  let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
+  let Rf : Fin 3 → Fin 3 → ℝ := fun i j => S.ricciAt t x (vec2 (I := I) (moving i) (moving j))
+  have hR : ∀ i j : Fin 3, Rf i j = Rf j i := by
+    intro i j
+    unfold Rf
+    exact ricciAt_symm (I := I) (M := M) S t x (moving i) (moving j)
+  have hrm : ∀ a b c d : Fin 3,
+      pulledRmComp S basisAt iota t x a b c d = rm Rf a b c d := by
+    intro a b c d
+    have h := fiberRegion_pulledRmComp_eq_rm (I := I) (M := M) hT S basisAt iota hiota0 hgram
+      hdim horth0 ht x a b c d
+    simpa [Rf, moving] using h
+  have hB : ∀ a b c d : Fin 3,
+      uhlenbeckPullbackRmInFrame iota
+          (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+            (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+          t x a b c d =
+        bTensorDown (fun a' b' c' d' => pulledRmComp S basisAt iota t x a' b' c' d') a b c d := by
+    intro a b c d
+    exact fiberRegion_pulledBTensor_eq_bTensorDown (I := I) (M := M) hT S basisAt iota hiota0 hgram
+      hdim horth0 ht x a b c d
+  exact uhlenbeckReaction_eq_reactionState_at (pulledRm := pulledRmComp S basisAt iota)
+    (B := fun t' x' a b c d => uhlenbeckPullbackRmInFrame iota
+      (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+        (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+      t' x' a b c d)
+    t x Rf hR hrm hB
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+lemma fiberRegion_continuousMultilinearMap_update_sum
+    {ι : Type*} [Fintype ι] {x : M}
+    (f : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+    (m : Fin 4 → TangentSpace I x) (i : Fin 4)
+    (c : ι → ℝ) (v : ι → TangentSpace I x) :
+    f (Function.update m i (∑ p : ι, c p • v p)) =
+      ∑ p : ι, c p * f (Function.update m i (v p)) := by
+  classical
+  have hsum : (∑ p : ι, c p • v p) = ∑ p ∈ Finset.univ, c p • v p := by simp
+  have hsum2 : (∑ p : ι, c p * f (Function.update m i (v p))) =
+      ∑ p ∈ Finset.univ, c p * f (Function.update m i (v p)) := by
+    simp
+  rw [hsum, hsum2]
+  induction (Finset.univ : Finset ι) using Finset.induction_on with
+  | empty =>
+      simp only [Finset.sum_empty]
+      rw [← zero_smul ℝ (0 : TangentSpace I x)]
+      rw [ContinuousMultilinearMap.map_update_smul f m i (0 : ℝ) (0 : TangentSpace I x)]
+      simp
+  | insert a s ha ih =>
+      rw [Finset.sum_insert ha]
+      rw [ContinuousMultilinearMap.map_update_add f m i (c a • v a) (∑ p ∈ s, c p • v p)]
+      rw [ContinuousMultilinearMap.map_update_smul f m i (c a) (v a)]
+      rw [ih]
+      simp [Finset.sum_insert ha, smul_eq_mul]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+lemma fiberRegion_pulledTensor_apply_basis
+    {x : M} (Q : Tensor04At (I := I) (M := M) x)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (a b c d : Fin 3) :
+    tensor04StdAt (I := I) (M := M)
+        (Q.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))
+        (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
+      uhlenbeckPullbackRmInFrame iota
+        (fun _s x a b c d => tensor04StdAt (I := I) (M := M) Q
+          (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+        t x a b c d := by
+  classical
+  change (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+      (fun i : Fin 4 =>
+        uhlenbeckEndomorphismAt (basisAt x) iota t
+          (vec4 (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) i)) =
+    uhlenbeckPullbackRmInFrame iota
+      (fun s x a b c d => tensor04StdAt (I := I) (M := M) Q
+        (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+      t x a b c d
+  simp only [uhlenbeckPullbackRmInFrame, tensor04StdAt_apply]
+  let g : Fin 4 → TangentSpace I x := fun _ => 0
+  have harg : (fun i : Fin 4 =>
+      uhlenbeckEndomorphismAt (basisAt x) iota t
+        (vec4 (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) i)) =
+      Function.update (Function.update (Function.update (Function.update g 3
+        (∑ l : Fin 3, iota t x d l • basisAt x l)) 2 (∑ k : Fin 3, iota t x c k • basisAt x k))
+        1 (∑ j : Fin 3, iota t x b j • basisAt x j)) 0 (∑ i : Fin 3, iota t x a i • basisAt x i) := by
+    funext i
+    fin_cases i <;> simp [g, vec4, uhlenbeckEndomorphism_apply_basis]
+  rw [harg]
+  let m0 : Fin 4 → TangentSpace I x :=
+    Function.update (Function.update (Function.update g 3
+      (∑ l : Fin 3, iota t x d l • basisAt x l)) 2 (∑ k : Fin 3, iota t x c k • basisAt x k))
+      1 (∑ j : Fin 3, iota t x b j • basisAt x j)
+  have h0 : (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+      (Function.update m0 0 (∑ p : Fin 3, iota t x a p • basisAt x p)) =
+      ∑ p : Fin 3, iota t x a p * (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update m0 0 (basisAt x p)) := by
+    have h := fiberRegion_continuousMultilinearMap_update_sum (f := Q) m0 (0 : Fin 4)
+      (fun p : Fin 3 => iota t x a p) (fun p : Fin 3 => basisAt x p)
+    simpa [smul_eq_mul] using h
+  rw [h0]
+  have h1 : ∀ p : Fin 3,
+      (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update m0 0 (basisAt x p)) =
+      ∑ j : Fin 3, iota t x b j * (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x j)) := by
+    intro p
+    have h := fiberRegion_continuousMultilinearMap_update_sum (f := Q)
+      (Function.update m0 0 (basisAt x p)) (1 : Fin 4)
+      (fun j : Fin 3 => iota t x b j) (fun j : Fin 3 => basisAt x j)
+    have hself : (Function.update (Function.update m0 0 (basisAt x p)) 1
+        (∑ j : Fin 3, iota t x b j • basisAt x j)) = Function.update m0 0 (basisAt x p) := by
+      funext n
+      by_cases hn : n = 1
+      · subst hn
+        simp [m0]
+      · simp [hn]
+    simpa [hself, smul_eq_mul] using h
+  have h2 : ∀ p q : Fin 3,
+      (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) =
+      ∑ k : Fin 3, iota t x c k * (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) 2
+          (basisAt x k)) := by
+    intro p q
+    have h := fiberRegion_continuousMultilinearMap_update_sum (f := Q)
+      (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) (2 : Fin 4)
+      (fun k : Fin 3 => iota t x c k) (fun k : Fin 3 => basisAt x k)
+    have hself : (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) 2
+        (∑ k : Fin 3, iota t x c k • basisAt x k)) =
+        Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q) := by
+      funext n
+      by_cases hn : n = 2
+      · subst hn
+        simp [m0]
+      · simp [hn]
+    simpa [hself, smul_eq_mul] using h
+  have h3 : ∀ p q r : Fin 3,
+      (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+          (basisAt x q)) 2 (basisAt x r)) =
+      ∑ l : Fin 3, iota t x d l * (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+          (basisAt x q)) 2 (basisAt x r)) 3 (basisAt x l)) := by
+    intro p q r
+    have h := fiberRegion_continuousMultilinearMap_update_sum (f := Q)
+      (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+        (basisAt x q)) 2 (basisAt x r)) (3 : Fin 4)
+      (fun l : Fin 3 => iota t x d l) (fun l : Fin 3 => basisAt x l)
+    have hself : (Function.update (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+          (basisAt x q)) 2 (basisAt x r)) 3
+        (∑ l : Fin 3, iota t x d l • basisAt x l)) =
+        Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x q)) 2 (basisAt x r) := by
+      funext n
+      by_cases hn : n = 3
+      · subst hn
+        simp [m0]
+      · simp [hn]
+    simpa [hself, smul_eq_mul] using h
+  have hbase : ∀ p q r l : Fin 3,
+      (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update (Function.update (Function.update (Function.update m0 0
+          (basisAt x p)) 1 (basisAt x q)) 2 (basisAt x r)) 3 (basisAt x l)) =
+      (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (vec4 (basisAt x p) (basisAt x q) (basisAt x r) (basisAt x l)) := by
+    intro p q r l
+    congr 1
+    funext n
+    fin_cases n <;> simp [m0, vec4]
+  calc
+    ∑ p : Fin 3, iota t x a p * (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+        (Function.update m0 0 (basisAt x p))
+        = ∑ p : Fin 3, iota t x a p * (∑ j : Fin 3, iota t x b j *
+            (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+              (Function.update (Function.update m0 0 (basisAt x p)) 1 (basisAt x j))) := by
+          refine Finset.sum_congr rfl ?_
+          intro p hp
+          rw [h1 p]
+    _ = ∑ p : Fin 3, iota t x a p * (∑ j : Fin 3, iota t x b j * (∑ k : Fin 3, iota t x c k *
+            (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+              (Function.update (Function.update (Function.update m0 0 (basisAt x p)) 1
+                (basisAt x j)) 2 (basisAt x k)))) := by
+          refine Finset.sum_congr rfl ?_
+          intro p hp
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro j hj
+          rw [h2 p j]
+    _ = ∑ p : Fin 3, iota t x a p * (∑ j : Fin 3, iota t x b j * (∑ k : Fin 3, iota t x c k * (∑ l : Fin 3,
+            iota t x d l * (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+              (Function.update (Function.update (Function.update
+                (Function.update m0 0 (basisAt x p)) 1 (basisAt x j)) 2 (basisAt x k)) 3 (basisAt x l))))) := by
+          refine Finset.sum_congr rfl ?_
+          intro p hp
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro j hj
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro k hk
+          rw [h3 p j k]
+    _ = ∑ p : Fin 3, iota t x a p * (∑ j : Fin 3, iota t x b j * (∑ k : Fin 3, iota t x c k * (∑ l : Fin 3,
+            iota t x d l * (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+              (vec4 (basisAt x p) (basisAt x j) (basisAt x k) (basisAt x l))))) := by
+          refine Finset.sum_congr rfl ?_
+          intro p hp
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro j hj
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro k hk
+          apply congrArg
+          refine Finset.sum_congr rfl ?_
+          intro l hl
+          rw [hbase p j k l]
+    _ = ∑ p : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+          iota t x a p * iota t x b j * iota t x c k * iota t x d l *
+            (Q : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
+              (vec4 (basisAt x p) (basisAt x j) (basisAt x k) (basisAt x l)) := by
+          simp [Finset.mul_sum, mul_assoc, mul_left_comm, mul_comm]
+
+theorem fiberRegionHeatReactionOn
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (hiotaCont : ∀ x : M, ContinuousOn (fun t : ℝ => iota t x) (Set.Icc 0 T))
+    (hiotaODE : BundleIsomorphismODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
+      (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+        (fun a x => basisAt x a))) :
+    (by
+      letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+        fun x => @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
+      letI : ∀ x : M, InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+        fun x => @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
+      letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
+        fun x => inferInstance
+      exact IsBundleHeatReactionOn
+        (V := fun x : M => Tensor04At (I := I) (M := M) x)
+        (fiberRegionFlat (I := I) (M := M) S basisAt iota)
+        (RealTimeInterval.closed 0 T hT.le) (flowG (I := I) S)
+        (fiberRegionSource hT (I := I) (M := M) S basisAt)
+        (uhlenbeckPulledRm04At S basisAt iota)) := by
+  classical
+  letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+    fun x => @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
+  letI : ∀ x : M, InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+    fun x => @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
+  letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
+    fun x => inferInstance
+  classical
+  let D : RealTimeInterval := RealTimeInterval.closed 0 T hT.le
+  let u : Real → (x : M) → Tensor04At (I := I) (M := M) x := uhlenbeckPulledRm04At S basisAt iota
+  let A : Real → M → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    fun t x => uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x
+  let w (x : M) (ν : Tensor04At (I := I) (M := M) x) : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    regionSupportVector (I := I) (S.base.metric 0) basisAt x ν
+  have hAlg : ∀ (t : ℝ) (x : M), u t x ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
+    intro t x
+    exact uhlenbeckPulledRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (M := M) S basisAt iota t x
+  have hscalar_eq : ∀ (s : ℝ) (x : M) (ν : Tensor04At (I := I) (M := M) x),
+      inner ℝ (u s x) ν = 4 * inner ℝ (A s x) (w x ν) := by
+    intro s x ν
+    rw [tensor04_fiberInner_eq (I := I) (S.base.metric 0) x (u s x) ν]
+    have hmain := pulledScalarization_eq (I := I) (S.base.metric 0) S basisAt iota s x (horth0 x)
+      (hAlg s x) ν
+    simpa [A, w, u] using hmain
+  let roughLapRm04 : FourComp M (Fin 3) := fun t x a b c d =>
+    metricTraceFirstTwo0SAt (I := I) (S.base.metric t) (nablaKRm04Field (I := I) S t 2 x)
+      (vec4 (I := I) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+  let Borig : FourComp M (Fin 3) :=
+    uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+      (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+  have hrm := fiberRegion_solutionRm04FixedFrameEvolution (T := T) hT S hS hdim basisAt
+  let roughLapD : FourComp M (Fin 3) := fun t x a b c d =>
+    ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+      iota t x a i * iota t x b j * iota t x c k * iota t x d l * roughLapRm04 t x i j k l
+  let Bpull : FourComp M (Fin 3) := fun t x a b c d =>
+    ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+      iota t x a i * iota t x b j * iota t x c k * iota t x d l * Borig t x i j k l
+  have hlap : UhlenbeckLaplacianPullbackComponents iota roughLapRm04 roughLapD := by
+    intro t x a b c d
+    rfl
+  have hB : UhlenbeckPullbackBComponents iota Borig Bpull := by
+    intro t x a b c d
+    rfl
+  have hU : UhlenbeckCurvatureEvolutionInFrameOn (D := D)
+      (pulledRmComp S basisAt iota) roughLapD Bpull := by
+    exact uhlenbeckCurvatureEvolutionInFrameOn_of_ricciFlow (D := D) iota
+      (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+      (pulledRmComp S basisAt iota) roughLapRm04 roughLapD Borig Bpull
+      (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+        (fun a x => basisAt x a))
+      hiotaODE (pulledRmComp_pullback (I := I) (M := M) hT S basisAt iota) hlap hB hrm
+  have hU_deriv : ∀ (t : ℝ) (ht : t ∈ D.regular) (x : M) (a b c d : Fin 3),
+      HasDerivAt (fun s : ℝ => pulledRmComp S basisAt iota s x a b c d)
+        (uhlenbeckCurvatureEvolutionRHSInFrame roughLapD Bpull t x a b c d) t := by
+    intro t ht x a b c d
+    have h := hU ⟨t, ht⟩ x a b c d
+    exact h.hasDerivAt (D.regular_mem_nhds ht)
+  refine ⟨?scalarJointCont, ?scalarSliceSmooth, ?equation⟩
+  · intro ν t ht x hflat
+    have hAcomp : ∀ ij : Fin 3 × Fin 3,
+        ContinuousOn (fun s : ℝ => (A s x).ofLp ij) (Set.Icc 0 T) := by
+      intro ij
+      have h := fiberRegion_pulledComponent_continuousOn_time (I := I) (M := M) hT S hS basisAt iota
+        hiotaCont x (bivectorIndex3 ij.1).1 (bivectorIndex3 ij.1).2 (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1
+      simpa [A, uhlenbeckCurvatureOperatorMatrix] using h
+    have hsum : ContinuousOn (fun s : ℝ => ∑ ij : Fin 3 × Fin 3,
+        (A s x).ofLp ij * (w x (ν x)).ofLp ij) (Set.Icc 0 T) := by
+      refine continuousOn_finset_sum Finset.univ ?_
+      intro ij _
+      exact (hAcomp ij).mul continuousOn_const
+    have hinner_cont : ContinuousOn (fun s : ℝ => inner ℝ (A s x) (w x (ν x))) (Set.Icc 0 T) := by
+      have hEq : (fun s : ℝ => inner ℝ (A s x) (w x (ν x))) =
+          fun s : ℝ => ∑ ij : Fin 3 × Fin 3, (A s x).ofLp ij * (w x (ν x)).ofLp ij := by
+        funext s
+        rw [PiLp.inner_apply]
+        simp [inner, mul_comm]
+      simpa [hEq] using hsum
+    have hmain : ContinuousOn (fun s : ℝ => bundleInnerScalarization u ν s x) (Set.Icc 0 T) := by
+      have hfun : (fun s : ℝ => bundleInnerScalarization u ν s x) =
+          fun s : ℝ => 4 * inner ℝ (A s x) (w x (ν x)) := by
+        funext s
+        unfold bundleInnerScalarization
+        rw [hscalar_eq s x (ν x)]
+      rw [hfun]
+      exact hinner_cont.const_mul 4
+    simpa [D] using hmain.continuousWithinAt ht
+  · intro ν t ht x hflat
+    rcases hflat with ⟨η, nablaη, nabla2η, basis, hOrth, heqν, hη, h2η, hflat1, hflat2⟩
+    have hlocal : (fun y : M => bundleInnerScalarization u ν t y) =ᶠ[𝓝 x]
+        fun y : M => inner0S (I := I) (S.base.metric t) y 4 (S.base.rm04 t y) (η y) := by
+      filter_upwards [heqν] with y hy
+      unfold bundleInnerScalarization
+      rw [tensor04_fiberInner_eq (I := I) (S.base.metric 0) y (u t y) (ν y)]
+      have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+        horth0 ht y (S.base.rm04 t y) (η y)
+      have hu : u t y = (S.base.rm04 t y).compContinuousLinearMap
+          (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt y) iota t) := rfl
+      rw [hu, hy]
+      simpa [uhlenbeckPullbackTensorAt] using hiso
+    have hsm : ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+        (fun y : M => inner0S (I := I) (S.base.metric t) y 4 (S.base.rm04 t y) (η y)) x :=
+      (inner0S_contMDiff (I := I) (S.base.metric t) (S.base.rm04 t) η).contMDiffAt
+    exact hsm.congr_of_eventuallyEq hlocal
+  · intro ν t ht x hflat
+    rcases hflat with ⟨η, nablaη, nabla2η, basis, hOrth, heqν, hη, h2η, hflat1, hflat2⟩
+    let wv : EuclideanSpace ℝ (Fin 3 × Fin 3) := w x (ν x)
+    have hscalar_fun : (fun s : ℝ => bundleInnerScalarization u ν s x) =
+        fun s : ℝ => 4 * inner ℝ (A s x) wv := by
+      funext s
+      unfold bundleInnerScalarization
+      rw [tensor04_fiberInner_eq (I := I) (S.base.metric 0) x (u s x) (ν x)]
+      have hmain := pulledScalarization_eq (I := I) (S.base.metric 0) S basisAt iota s x (horth0 x)
+        (hAlg s x) (ν x)
+      simpa [A, w, wv, u] using hmain
+    have hAderiv_comp : ∀ ij : Fin 3 × Fin 3,
+        HasDerivAt (fun s : ℝ => (A s x).ofLp ij)
+          ((uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
+            (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij) t := by
+      intro ij
+      let a : Fin 3 := (bivectorIndex3 ij.1).1
+      let b : Fin 3 := (bivectorIndex3 ij.1).2
+      let c : Fin 3 := (bivectorIndex3 ij.2).2
+      let d : Fin 3 := (bivectorIndex3 ij.2).1
+      have hd := hU_deriv t ht x a b c d
+      have hA : (fun s : ℝ => (A s x).ofLp ij) = fun s : ℝ => pulledRmComp S basisAt iota s x a b c d := by
+        funext s
+        simp [A, uhlenbeckCurvatureOperatorMatrix, a, b, c, d]
+      have hrhs : uhlenbeckCurvatureEvolutionRHSInFrame roughLapD Bpull t x a b c d =
+          (uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
+            (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij := by
+        simp [uhlenbeckCurvatureEvolutionRHSInFrame, uhlenbeckCurvatureOperatorMatrix,
+          uhlenbeckCurvatureOperatorReaction, a, b, c, d]
+        ring
+      rw [hA]
+      exact hd.congr_deriv hrhs
+    have hscalar_deriv : HasDerivAt (fun s : ℝ => 4 * inner ℝ (A s x) wv)
+        (4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
+            uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)) wv) t := by
+      have hinner : HasDerivAt (fun s : ℝ => inner ℝ (A s x) wv)
+          (inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
+            uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)) wv) t := by
+        have hsum : HasDerivAt (fun s : ℝ => ∑ ij : Fin 3 × Fin 3, (A s x).ofLp ij * wv.ofLp ij)
+            (∑ ij : Fin 3 × Fin 3,
+              ((uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
+                (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij) * wv.ofLp ij) t := by
+          have hraw : HasDerivAt (fun s : ℝ => ∑ ij ∈ (Finset.univ : Finset (Fin 3 × Fin 3)),
+                (A s x).ofLp ij * wv.ofLp ij)
+              (∑ ij ∈ (Finset.univ : Finset (Fin 3 × Fin 3)),
+                ((uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
+                  (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij) * wv.ofLp ij) t := by
+            exact HasDerivAt.sum (u := Finset.univ) (fun ij hij => (hAderiv_comp ij).mul_const (wv.ofLp ij))
+          simpa using hraw
+        have hinner_eq : (fun s : ℝ => inner ℝ (A s x) wv) =
+            fun s : ℝ => ∑ ij : Fin 3 × Fin 3, (A s x).ofLp ij * wv.ofLp ij := by
+          funext s
+          rw [PiLp.inner_apply]
+          simp [inner, mul_comm]
+        have hderiv_eq : (∑ ij : Fin 3 × Fin 3,
+              ((uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
+                (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij) * wv.ofLp ij) =
+            inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
+              uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)) wv := by
+          rw [PiLp.inner_apply]
+          simp [inner, mul_comm]
+        simpa [hinner_eq, hderiv_eq] using hsum
+      simpa [mul_add] using hinner.const_mul 4
+    have hlapAt : laplacianAt (I := I) (flowG (I := I) S) t
+          (bundleInnerScalarization u ν t) x =
+        4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x) wv := by
+      have hlocal : (fun y : M => bundleInnerScalarization u ν t y) =ᶠ[𝓝 x]
+          fun y : M => inner0S (I := I) (S.base.metric t) y 4 (S.base.rm04 t y) (η y) := by
+        filter_upwards [heqν] with y hy
+        unfold bundleInnerScalarization
+        rw [tensor04_fiberInner_eq (I := I) (S.base.metric 0) y (u t y) (ν y)]
+        have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+          horth0 (D.regular_subset ht) y (S.base.rm04 t y) (η y)
+        have hu : u t y = (S.base.rm04 t y).compContinuousLinearMap
+            (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt y) iota t) := rfl
+        rw [hu, hy]
+        simpa [uhlenbeckPullbackTensorAt] using hiso
+      have hsm : ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+          (fun y : M => inner0S (I := I) (S.base.metric t) y 4 (S.base.rm04 t y) (η y)) x :=
+        (inner0S_contMDiff (I := I) (S.base.metric t) (S.base.rm04 t) η).contMDiffAt
+      have hsm' : ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+          (bundleInnerScalarization u ν t) x := hsm.congr_of_eventuallyEq hlocal
+      have hlap0 : laplacian (I := I) ((flowG (I := I) S).connection t) ((flowG (I := I) S).metric t)
+            (fun y : M => inner0S (I := I) (S.base.metric t) y 4 (S.base.rm04 t y) (η y)) x =
+          inner0S (I := I) (S.base.metric t) x 4
+            (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
+              (nablaKRm04Field (I := I) S t 2 x)) (η x) := by
+        have hA1 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4
+            (S.base.connection t) (S.base.rm04 t) (nablaKRm04Field (I := I) S t 1) := by
+          simpa [nablaKRm04Field_zero] using (nablaKRm04Field_realizes (I := I) S t 0)
+        have hA2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5
+            (S.base.connection t) (nablaKRm04Field (I := I) S t 1) (nablaKRm04Field (I := I) S t 2) := by
+          simpa using (nablaKRm04Field_realizes (I := I) S t 1)
+        have hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+            (identityInvMetric (Idx := Fin 3)) := by
+          exact fiberRegion_metricInverseInBasis_identity_of_orthonormal (I := I)
+            (S.base.metric t) basis (by
+              intro i j
+              simpa [delta3] using hOrth i j)
+        have hlap1 := laplacianAt_inner0S_eq_inner_roughLap_flowG_of_flat (I := I) (M := M) S
+          (S.base.rm04 t) (nablaKRm04Field (I := I) S t 1) (nablaKRm04Field (I := I) S t 2)
+          η nablaη nabla2η hA1 hA2 hη h2η basis (identityInvMetric (Idx := Fin 3)) hinv
+          hflat1 hflat2
+        simpa [laplacianAt] using hlap1
+      have hlap1 : laplacian (I := I) ((flowG (I := I) S).connection t) ((flowG (I := I) S).metric t)
+          (bundleInnerScalarization u ν t) x =
+          inner0S (I := I) (S.base.metric t) x 4
+            (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
+              (nablaKRm04Field (I := I) S t 2 x)) (η x) := by
+        exact laplacian_congr_of_eventuallyEq (I := I) ((flowG (I := I) S).connection t)
+          ((flowG (I := I) S).metric t) hsm' hsm hlocal |>.trans hlap0
+      let R : Tensor04At (I := I) (M := M) x :=
+        metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
+          (nablaKRm04Field (I := I) S t 2 x)
+      have hR : R ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+        fiberRegion_roughLapRm04_mem_algebraicCurvatureTensorSubmodule (I := I) (M := M) hT S t x basis
+      have hcomp : ∀ a b c d : Fin 3,
+          roughLapD t x a b c d = tensor04StdAt (I := I) (M := M)
+            (uhlenbeckPullbackTensorAt basisAt iota t x R)
+            (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
+        intro a b c d
+        calc
+          roughLapD t x a b c d
+              = uhlenbeckPullbackRmInFrame iota roughLapRm04 t x a b c d := rfl
+          _ = uhlenbeckPullbackRmInFrame iota
+                (fun s y a' b' c' d' =>
+                  metricTraceFirstTwo0SAt (I := I) (S.base.metric s) (nablaKRm04Field (I := I) S s 2 y)
+                    (vec4 (I := I) (basisAt y a') (basisAt y b') (basisAt y c') (basisAt y d')))
+                t x a b c d := rfl
+          _ = uhlenbeckPullbackRmInFrame iota
+                (fun s y a' b' c' d' =>
+                  tensor04StdAt (I := I) (M := M)
+                    (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
+                      (nablaKRm04Field (I := I) S s 2 y))
+                    (basisAt y a') (basisAt y b') (basisAt y c') (basisAt y d'))
+                t x a b c d := by
+                apply Finset.sum_congr rfl; intro i _
+                apply Finset.sum_congr rfl; intro j _
+                apply Finset.sum_congr rfl; intro k _
+                apply Finset.sum_congr rfl; intro l _
+                simpa using (congrArg (fun z : ℝ => iota t x a i * iota t x b j * iota t x c k * iota t x d l * z)
+                  (fiberRegion_roughLapRm04_component_eq (I := I) (M := M) hT S basisAt x basis hOrth i j k l))
+          _ = tensor04StdAt (I := I) (M := M) (uhlenbeckPullbackTensorAt basisAt iota t x R)
+                (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
+                rw [show uhlenbeckPullbackRmInFrame iota
+                      (fun s y a' b' c' d' =>
+                        tensor04StdAt (I := I) (M := M)
+                          (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
+                            (nablaKRm04Field (I := I) S s 2 y))
+                          (basisAt y a') (basisAt y b') (basisAt y c') (basisAt y d'))
+                      t x a b c d =
+                    uhlenbeckPullbackRmInFrame iota
+                      (fun s y a' b' c' d' =>
+                        tensor04StdAt (I := I) (M := M) R
+                          (basisAt y a') (basisAt y b') (basisAt y c') (basisAt y d'))
+                      t x a b c d by
+                    unfold uhlenbeckPullbackRmInFrame
+                    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
+                      Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
+                    simp [R]]
+                exact (fiberRegion_pulledTensor_apply_basis (I := I) (M := M) R basisAt iota t a b c d).symm
+      have hRalg : uhlenbeckPullbackTensorAt basisAt iota t x R ∈
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+        fiberRegion_compU_mem_algebraicCurvatureTensorSubmodule (I := I) (M := M) basisAt iota t x R hR
+      have hiso := fiberInner_compUhlenbeck_isometry_general (I := I) (M := M) hT S basisAt iota hiota0 hgram
+        horth0 (D.regular_subset ht) x R (η x)
+      have hνx : ν x = uhlenbeckPullbackTensorAt basisAt iota t x (η x) := by
+        exact heqν.self_of_nhds
+      have hscal := fiberRegion_pulledTensor_scalarization_eq (I := I) (M := M)
+        basisAt (S.base.metric 0) iota t x (horth0 x) R hRalg (ν x)
+      have hmat : uhlenbeckCurvatureOperatorMatrix
+            (fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+              (uhlenbeckPullbackTensorAt basisAt iota t' x' R)
+              (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d)) t x =
+          uhlenbeckCurvatureOperatorMatrix roughLapD t x := by
+        unfold uhlenbeckCurvatureOperatorMatrix
+        apply congrArg
+        funext ij
+        exact (hcomp (bivectorIndex3 ij.1).1 (bivectorIndex3 ij.1).2 (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1).symm
+      calc
+        laplacianAt (I := I) (flowG (I := I) S) t (bundleInnerScalarization u ν t) x
+            = inner0S (I := I) (S.base.metric t) x 4 R (η x) := hlap1
+        _ = inner0S (I := I) (S.base.metric 0) x 4 (uhlenbeckPullbackTensorAt basisAt iota t x R) (ν x) := by
+              calc
+                inner0S (I := I) (S.base.metric t) x 4 R (η x)
+                    = inner0S (I := I) (S.base.metric 0) x 4
+                        (uhlenbeckPullbackTensorAt basisAt iota t x R)
+                        (uhlenbeckPullbackTensorAt basisAt iota t x (η x)) := by
+                          simpa [uhlenbeckPullbackTensorAt] using hiso.symm
+                _ = inner0S (I := I) (S.base.metric 0) x 4
+                      (uhlenbeckPullbackTensorAt basisAt iota t x R) (ν x) := by
+                      rw [hνx]
+        _ = 4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix
+              (fun t' x' a b c d => tensor04StdAt (I := I) (M := M)
+                (uhlenbeckPullbackTensorAt basisAt iota t' x' R)
+                (basisAt x' a) (basisAt x' b) (basisAt x' c) (basisAt x' d)) t x)
+              (regionSupportVector (I := I) (S.base.metric 0) basisAt x (ν x)) := hscal
+        _ = 4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x) wv := by
+              rw [hmat]
+    have hsource : fiberRegionSource hT (I := I) (M := M) S basisAt t x (u t x) (ν x) =
+        4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState (A t x)) wv := by
+      unfold fiberRegionSource
+      have hmain := regionSource_at_pulled_eq (I := I) (S.base.metric 0) S basisAt iota t x
+        (hAlg t x) (ν x)
+      simpa [A, w, wv, u] using hmain
+    have hreaction : uhlenbeckCurvatureOperatorReaction Bpull t x (A t x) =
+        uhlenbeckCurvatureOperatorReactionState (A t x) := by
+      simpa [A, Bpull, Borig, uhlenbeckPullbackRmInFrame] using
+        (fiberRegion_reaction_eq_reactionState (I := I) (M := M) hT S basisAt iota
+          hiota0 hgram hdim horth0 (D.regular_subset ht) x)
+    have htarget : laplacianAt (I := I) (flowG (I := I) S) t (bundleInnerScalarization u ν t) x +
+          fiberRegionSource hT (I := I) (M := M) S basisAt t x (u t x) (ν x) =
+        4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
+          uhlenbeckCurvatureOperatorReactionState (A t x)) wv := by
+      rw [hlapAt, hsource]
+      simp [inner_add_left, mul_add]
+    have hfun : (fun s : ℝ => bundleInnerScalarization u ν s x) =
+        fun s : ℝ => 4 * inner ℝ (A s x) wv := by
+      funext s
+      unfold bundleInnerScalarization
+      rw [hscalar_eq s x (ν x)]
+    have hderiv' : HasDerivAt (fun s : ℝ => 4 * inner ℝ (A s x) wv)
+        (4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
+          uhlenbeckCurvatureOperatorReactionState (A t x)) wv) t := by
+      simpa [hreaction] using hscalar_deriv
+    simpa [u, hfun] using (hderiv'.congr_deriv htarget.symm)
+end Helpers
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
