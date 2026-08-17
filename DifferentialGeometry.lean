@@ -2646,6 +2646,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerSwapRegularit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Uhlenbeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProducer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ExtendShiInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness
