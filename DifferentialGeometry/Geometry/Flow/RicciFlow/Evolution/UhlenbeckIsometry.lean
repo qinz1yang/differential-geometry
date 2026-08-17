@@ -249,8 +249,8 @@ theorem uhlenbeckRup_entry_continuousOn
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
-    (hginv_cont : ∀ i j : Idx, ContinuousOn
-      (fun q : ℝ × M => gInv q.1 q.2 i j) (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hginv_cont : ∀ x : M, ∀ i j : Idx, ContinuousOn
+      (fun t : ℝ => gInv t x i j) (Set.Icc 0 T))
     (hricci_cont : ∀ (x : M) (v w : TangentSpace I x),
       ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T))
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -260,15 +260,8 @@ theorem uhlenbeckRup_entry_continuousOn
   classical
   refine continuousOn_finset_sum Finset.univ ?_
   intro a ha
-  have hginv : ContinuousOn (fun t : ℝ => gInv t x k a) (Set.Icc 0 T) := by
-    have hmap : ContinuousOn (fun t : ℝ => (t, x)) (Set.Icc 0 T) := by
-      fun_prop
-    have hsub : Set.MapsTo (fun t : ℝ => (t, x)) (Set.Icc 0 T)
-        (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
-      intro t ht
-      exact ⟨ht, trivial⟩
-    have hc := (hginv_cont k a).comp hmap hsub
-    simpa using hc
+  have hginv : ContinuousOn (fun t : ℝ => gInv t x k a) (Set.Icc 0 T) :=
+    hginv_cont x k a
   have hricci : ContinuousOn (fun t : ℝ => ricciCompInFrame (I := I) S frame t x i a)
       (Set.Icc 0 T) := by
     simpa [ricciCompInFrame] using hricci_cont x (frame i x) (frame a x)
@@ -280,8 +273,8 @@ theorem uhlenbeckIotaOfSolution
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     {Idx : Type*} [Fintype Idx] [Nonempty Idx]
     (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
-    (hginv_cont : ∀ i j : Idx, ContinuousOn
-      (fun q : ℝ × M => gInv q.1 q.2 i j) (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hginv_cont : ∀ x : M, ∀ i j : Idx, ContinuousOn
+      (fun t : ℝ => gInv t x i j) (Set.Icc 0 T))
     (hricci_cont : ∀ (x : M) (v w : TangentSpace I x),
       ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T))
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -602,8 +595,8 @@ theorem uhlenbeckIota_isometry
     (hS : IsSmoothSolutionOn (I := I) S)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
     (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
-    (hginv_cont : ∀ i j : Idx, ContinuousOn
-      (fun q : ℝ × M => gInv q.1 q.2 i j) (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+    (hginv_cont : ∀ x : M, ∀ i j : Idx, ContinuousOn
+      (fun t : ℝ => gInv t x i j) (Set.Icc 0 T))
     (hricci_cont : ∀ (x : M) (v w : TangentSpace I x),
       ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T))
     (frame : Idx → (x : M) → TangentSpace I x)
