@@ -6618,11 +6618,11 @@ theorem eigenvalues₀_smul_of_nonneg
                   = (O.transpose * O) * (c • D₀) * (O.transpose * O) := by
                       simp [Matrix.mul_assoc]
               _ = c • D₀ := by
-                      rw [hOt, hO]
-                      simp
+                      simp [hOt]
       _ = Matrix.diagonal (c • hS.eigenvalues₀) := by
             ext i j
             simp [D₀, Matrix.diagonal, smul_eq_mul]
+            rfl
   have hanti : Antitone (c • hS.eigenvalues₀) := by
     intro i j hij
     change c * hS.eigenvalues₀ j ≤ c * hS.eigenvalues₀ i
@@ -6683,8 +6683,7 @@ theorem regionNormalDirections_conj_scale_condition
         exact eigenvalues₀_eq_of_charpoly_eq_real
           (symmEuclid_isHermitian (matrixToEuclid (ρ • (O.transpose * M * O)))) hρB
           (by
-            rw [hSM]
-            rfl)
+            rw [hSM])
       have hMain2 : hρB.eigenvalues₀ = ρ • hB.eigenvalues₀ :=
         eigenvalues₀_smul_of_nonneg (hS := hB) hρ hρB
       have hMain3 : ρ • hB.eigenvalues₀ =
@@ -6692,7 +6691,7 @@ theorem regionNormalDirections_conj_scale_condition
         have hconj : hB.eigenvalues₀ = (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ :=
           eigenvalues₀_conj_of_orthogonal (S := symmEuclid (matrixToEuclid M))
             (symmEuclid_isHermitian (matrixToEuclid M)) hO
-        rw [hconj]
+        rw [show hB.eigenvalues₀ = (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ from hconj]
       have hMain : (symmEuclid_isHermitian (matrixToEuclid (ρ • (O.transpose * M * O)))).eigenvalues₀ =
           ρ • (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ :=
         hMain1.trans (hMain2.trans hMain3)
