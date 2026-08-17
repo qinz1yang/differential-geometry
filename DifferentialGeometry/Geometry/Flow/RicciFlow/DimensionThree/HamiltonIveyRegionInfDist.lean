@@ -222,9 +222,14 @@ theorem hamiltonIveyRegion_approx
           rw [Fin.sum_univ_three]
         rw [Matrix.trace_diagonal]
         dsimp [d, s, lam]
-        simp [Fin.sum_univ_three]
-        rw [show A.trace = lam 0 + lam 1 + lam 2 by exact htr]
-        ring
+        have htr' : A.trace = lam 0 + lam 1 + lam 2 := htr
+        have hsum : (∑ i : Fin 3, (![lam 0 + c, lam 1 + c, lam 2] : Fin 3 → ℝ) i) =
+            (lam 0 + lam 1 + lam 2) + 2 * c := by
+          simp only [Fin.sum_univ_three, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one,
+            Matrix.cons_val]
+          ring
+        rw [htr']
+        simpa using hsum
       rw [ht]
       exact hBle
   have hQtA'Q : O.transpose * A' * O = Matrix.diagonal d := by
