@@ -952,6 +952,187 @@ theorem zero_mem_fiberHamiltonIveyRegion
 
 end FiberRegionTopology
 
+section PulledScalarization
+
+noncomputable def regionSupportVector
+    (g : SmoothRiemannianMetric I M)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (x : M) (ν : Tensor04At (I := I) (M := M) x) : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+  matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν)
+
+noncomputable def pulledRmComp
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) : FourComp M (Fin 3) :=
+  fun t x a b c d => tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x)
+    (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d)
+
+noncomputable def uhlenbeckPullbackTensorAt
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M)
+    (A : Tensor04At (I := I) (M := M) x) : Tensor04At (I := I) (M := M) x :=
+  A.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)
+
+omit [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] in
+theorem pulledMatrix_eq_curvatureOperatorMatrixAt
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M)
+    (hAlg : uhlenbeckPulledRm04At S basisAt iota t x ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x =
+      matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x)
+        ⟨uhlenbeckPulledRm04At S basisAt iota t x, hAlg⟩) := by
+  have hmain := uhlenbeckCurvatureOperatorMatrixAsMatrix_eq_curvatureOperatorMatrixAt
+    (I := I) (M := M) (x := x) (basis := basisAt x)
+    (A := ⟨uhlenbeckPulledRm04At S basisAt iota t x, hAlg⟩)
+    (pulledRm := pulledRmComp S basisAt iota) (t := t)
+    (by intro a b c d; rfl)
+  rw [← hmain]
+  unfold matrixToEuclid uhlenbeckCurvatureOperatorMatrixAsMatrix
+    uhlenbeckCurvatureOperatorMatrix pulledRmComp
+  rfl
+
+omit [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] in
+theorem pulledScalarization_eq
+    (g : SmoothRiemannianMetric I M)
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M)
+    (horth : OrthonormalBasisAt (I := I) g x (basisAt x))
+    (hAlg : uhlenbeckPulledRm04At S basisAt iota t x ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (ν : Tensor04At (I := I) (M := M) x) :
+    inner0S (I := I) g x 4 (uhlenbeckPulledRm04At S basisAt iota t x) ν =
+      4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x)
+        (regionSupportVector g basisAt x ν) := by
+  have hmain := inner0S_eq_four_mul_inner_regionProjMatrix (I := I) g x (basisAt x) horth hAlg ν
+  rw [← pulledMatrix_eq_curvatureOperatorMatrixAt (I := I) (M := M) S basisAt iota t x hAlg] at hmain
+  rw [real_inner_comm] at hmain
+  simpa [regionSupportVector] using hmain
+
+omit [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] in
+theorem regionSource_at_pulled_eq
+    (g : SmoothRiemannianMetric I M)
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3)) (t : ℝ) (x : M)
+    (hAlg : uhlenbeckPulledRm04At S basisAt iota t x ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (ν : Tensor04At (I := I) (M := M) x) :
+    regionSource g basisAt x (uhlenbeckPulledRm04At S basisAt iota t x) ν =
+      4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState
+        (uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x))
+        (regionSupportVector g basisAt x ν) := by
+  have hreg : regionProjMatrix (I := I) g (basisAt x) (uhlenbeckPulledRm04At S basisAt iota t x) =
+      curvatureOperatorMatrixAt (I := I) x (basisAt x)
+        ⟨uhlenbeckPulledRm04At S basisAt iota t x, hAlg⟩ :=
+    regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hAlg
+  unfold regionSource
+  rw [hreg]
+  rw [← pulledMatrix_eq_curvatureOperatorMatrixAt (I := I) (M := M) S basisAt iota t x hAlg]
+  simp [regionSupportVector]
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem inner0S_add_left (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
+    (A B C : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
+    inner0S (I := I) g x s (A + B) C =
+      inner0S (I := I) g x s A C + inner0S (I := I) g x s B C := by
+  let D : MetricFiberData (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :=
+    tensor0SMetricData (I := I) g x s
+  change D.flat (A + B) C = D.flat A C + D.flat B C
+  have hmap : D.flat (A + B) = D.flat A + D.flat B :=
+    LinearMap.map_add (D.flat : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x →ₗ[ℝ]
+      Module.Dual ℝ (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)) A B
+  have h := congrArg (fun (f : Module.Dual ℝ (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)) => f C) hmap
+  simp [LinearMap.add_apply]
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem inner0S_sub_left (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
+    (A B C : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :
+    inner0S (I := I) g x s (A - B) C =
+      inner0S (I := I) g x s A C - inner0S (I := I) g x s B C := by
+  let D : MetricFiberData (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) :=
+    tensor0SMetricData (I := I) g x s
+  change D.flat (A - B) C = D.flat A C - D.flat B C
+  have hmap : D.flat (A - B) = D.flat A - D.flat B :=
+    LinearMap.map_sub (D.flat : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x →ₗ[ℝ]
+      Module.Dual ℝ (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)) A B
+  have h := congrArg (fun (f : Module.Dual ℝ (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)) => f C) hmap
+  simp [LinearMap.sub_apply]
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem fiberProjW_sub
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (ν₁ ν₂ : Tensor04At (I := I) (M := M) x) :
+    (fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) =
+      (fiberProjW (I := I) g x ν₁ : Tensor04At (I := I) (M := M) x) -
+        (fiberProjW (I := I) g x ν₂ : Tensor04At (I := I) (M := M) x) := by
+  let W : Submodule ℝ (Tensor04At (I := I) (M := M) x) :=
+    algebraicCurvatureTensorSubmodule (I := I) (M := M) x
+  let d : W := fiberProjW (I := I) g x (ν₁ - ν₂) - fiberProjW (I := I) g x ν₁ + fiberProjW (I := I) g x ν₂
+  have hchar : ∀ q : W, inner0S (I := I) g x 4 (d : Tensor04At (I := I) (M := M) x) q = 0 := by
+    intro q
+    have h1 := fiberProjW_spec (I := I) g x (ν₁ - ν₂) q
+    have h2 := fiberProjW_spec (I := I) g x ν₁ q
+    have h3 := fiberProjW_spec (I := I) g x ν₂ q
+    have h12 : inner0S (I := I) g x 4 (ν₁ - ν₂) (q : Tensor04At (I := I) (M := M) x) =
+          inner0S (I := I) g x 4 ν₁ (q : Tensor04At (I := I) (M := M) x) -
+            inner0S (I := I) g x 4 ν₂ (q : Tensor04At (I := I) (M := M) x) :=
+        inner0S_sub_left (I := I) g x 4 ν₁ ν₂ (q : Tensor04At (I := I) (M := M) x)
+    have hdq : inner0S (I := I) g x 4 (d : Tensor04At (I := I) (M := M) x) q =
+        inner0S (I := I) g x 4 (fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) q -
+          inner0S (I := I) g x 4 (fiberProjW (I := I) g x ν₁ : Tensor04At (I := I) (M := M) x) q +
+            inner0S (I := I) g x 4 (fiberProjW (I := I) g x ν₂ : Tensor04At (I := I) (M := M) x) q := by
+      dsimp [d]
+      change inner0S (I := I) g x 4
+          ((fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) -
+            (fiberProjW (I := I) g x ν₁ : Tensor04At (I := I) (M := M) x) +
+            (fiberProjW (I := I) g x ν₂ : Tensor04At (I := I) (M := M) x)) (q : Tensor04At (I := I) (M := M) x) =
+        inner0S (I := I) g x 4 (fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) (q : Tensor04At (I := I) (M := M) x) -
+          inner0S (I := I) g x 4 (fiberProjW (I := I) g x ν₁ : Tensor04At (I := I) (M := M) x) (q : Tensor04At (I := I) (M := M) x) +
+            inner0S (I := I) g x 4 (fiberProjW (I := I) g x ν₂ : Tensor04At (I := I) (M := M) x) (q : Tensor04At (I := I) (M := M) x)
+      rw [inner0S_add_left (I := I) g x 4, inner0S_sub_left (I := I) g x 4]
+    have hsub : inner0S (I := I) g x 4
+        ((fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) - ν₁ + ν₂) q = 0 := by
+      change inner0S (I := I) g x 4
+          ((fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) - ν₁ + ν₂) (q : Tensor04At (I := I) (M := M) x) = 0
+      rw [inner0S_add_left (I := I) g x 4, inner0S_sub_left (I := I) g x 4]
+      linarith [h1, h2, h3, h12]
+    calc
+      inner0S (I := I) g x 4 (d : Tensor04At (I := I) (M := M) x) q
+          = inner0S (I := I) g x 4 (fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) q -
+              inner0S (I := I) g x 4 (fiberProjW (I := I) g x ν₁ : Tensor04At (I := I) (M := M) x) q +
+                inner0S (I := I) g x 4 (fiberProjW (I := I) g x ν₂ : Tensor04At (I := I) (M := M) x) q := hdq
+      _ = 0 := by
+        linarith [hsub, h1, h2, h3, h12]
+  have hself : inner0S (I := I) g x 4 (d : Tensor04At (I := I) (M := M) x) (d : Tensor04At (I := I) (M := M) x) = 0 := by
+    simpa using hchar ⟨(d : Tensor04At (I := I) (M := M) x), by
+      exact Submodule.add_mem W (Submodule.sub_mem W (fiberProjW (I := I) g x (ν₁ - ν₂)).2 (fiberProjW (I := I) g x ν₁).2)
+        (fiberProjW (I := I) g x ν₂).2⟩
+  have hzero : (d : Tensor04At (I := I) (M := M) x) = 0 := by
+    change (tensor0SMetricData (I := I) g x 4).inner (d : Tensor04At (I := I) (M := M) x)
+      (d : Tensor04At (I := I) (M := M) x) = 0 at hself
+    exact ((tensor0SMetricData (I := I) g x 4).inner_self_eq_zero_iff (d : Tensor04At (I := I) (M := M) x)).mp hself
+  change (fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) =
+    (fiberProjW (I := I) g x ν₁ : Tensor04At (I := I) (M := M) x) -
+      (fiberProjW (I := I) g x ν₂ : Tensor04At (I := I) (M := M) x)
+  rw [← sub_eq_zero]
+  have hconv : (fiberProjW (I := I) g x (ν₁ - ν₂) : Tensor04At (I := I) (M := M) x) -
+      ((fiberProjW (I := I) g x ν₁ : Tensor04At (I := I) (M := M) x) -
+        (fiberProjW (I := I) g x ν₂ : Tensor04At (I := I) (M := M) x)) =
+      (d : Tensor04At (I := I) (M := M) x) := by
+    dsimp [d]
+    abel
+  rw [hconv]
+  exact hzero
+
+end PulledScalarization
+
 
 end DifferentialGeometry.PDE.RicciFlow
 
