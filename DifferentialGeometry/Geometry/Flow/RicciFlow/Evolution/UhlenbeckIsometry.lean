@@ -649,6 +649,134 @@ theorem uhlenbeckIota_isometry
       exact hs)
     hgram_cont ht x a b
 
+noncomputable def uhlenbeckEndomorphismAt
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx) (t : Real) :
+    TangentSpace I x →L[ℝ] TangentSpace I x :=
+  basis.constrL (fun a : Idx => ∑ k : Idx, iota t x a k • basis k)
+
+omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
+@[simp] lemma uhlenbeckEndomorphism_apply_basis
+    {Idx : Type*} [Fintype Idx]
+    {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx) (t : Real) (a : Idx) :
+    uhlenbeckEndomorphismAt basis iota t (basis a) =
+      ∑ k : Idx, iota t x a k • basis k := by
+  unfold uhlenbeckEndomorphismAt
+  exact basis.constrL_basis (fun a : Idx => ∑ k : Idx, iota t x a k • basis k) a
+
+omit [SigmaCompactSpace M] [T2Space M] in
+lemma uhlenbeckEndomorphism_gram_pair
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    {Idx : Type*} [Fintype Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx) (t : Real) (x : M) (a b : Idx) :
+    (S.family.metric t).inner x
+      (uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x a))
+      (uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x b)) =
+    movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b := by
+  classical
+  rw [uhlenbeckEndomorphism_apply_basis, uhlenbeckEndomorphism_apply_basis]
+  unfold movingFrameGramInFrame
+  calc
+    (S.family.metric t).inner x
+        (∑ k : Idx, iota t x a k • basisAt x k)
+        (∑ l : Idx, iota t x b l • basisAt x l) =
+      ∑ l : Idx, ∑ k : Idx,
+        iota t x a k * (iota t x b l *
+          (S.family.metric t).inner x (basisAt x k) (basisAt x l)) := by
+        simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum',
+          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+          Finset.mul_sum, mul_left_comm]
+    _ = ∑ i : Idx, ∑ j : Idx,
+        iota t x a i * (iota t x b j *
+          (S.family.metric t).inner x (basisAt x i) (basisAt x j)) := by
+        exact Finset.sum_comm (s := (Finset.univ : Finset Idx)) (t := (Finset.univ : Finset Idx))
+          (f := fun l k : Idx => iota t x a k * (iota t x b l *
+            (S.family.metric t).inner x (basisAt x k) (basisAt x l)))
+    _ = ∑ i : Idx, ∑ j : Idx,
+        iota t x a i * iota t x b j *
+          metricCompInFrame (I := I) S (fun a x => basisAt x a) t x i j := by
+        simp only [mul_assoc, metricCompInFrame_apply]
+
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem uhlenbeckEndomorphism_isometry
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
+    (iota : MatrixComp M Idx)
+    (hiota0 : ∀ x : M, ∀ a k : Idx, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Idx,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) (v w : TangentSpace I x) :
+    (S.family.metric t).inner x
+      (uhlenbeckEndomorphismAt (basisAt x) iota t v)
+      (uhlenbeckEndomorphismAt (basisAt x) iota t w) =
+    (S.family.metric 0).inner x v w := by
+  classical
+  have hU0 : ∀ a : Idx,
+      uhlenbeckEndomorphismAt (basisAt x) iota 0 (basisAt x a) = basisAt x a := by
+    intro a
+    rw [uhlenbeckEndomorphism_apply_basis]
+    simp [hiota0 x]
+  let Bt : TangentSpace I x →ₗ[ℝ] (TangentSpace I x →ₗ[ℝ] ℝ) :=
+    { toFun := fun v =>
+        { toFun := fun z => (S.family.metric t).inner x
+            (uhlenbeckEndomorphismAt (basisAt x) iota t v)
+            (uhlenbeckEndomorphismAt (basisAt x) iota t z)
+          map_add' := by intro z w; simp
+          map_smul' := by intro c z; simp }
+      map_add' := by intro v w; ext z; simp
+      map_smul' := by intro c v; ext z; simp }
+  let B0 : TangentSpace I x →ₗ[ℝ] (TangentSpace I x →ₗ[ℝ] ℝ) :=
+    { toFun := fun v =>
+        { toFun := fun z => (S.family.metric 0).inner x
+            (uhlenbeckEndomorphismAt (basisAt x) iota 0 v)
+            (uhlenbeckEndomorphismAt (basisAt x) iota 0 z)
+          map_add' := by intro z w; simp
+          map_smul' := by intro c z; simp }
+      map_add' := by intro v w; ext z; simp
+      map_smul' := by intro c v; ext z; simp }
+  let J0 : TangentSpace I x →ₗ[ℝ] (TangentSpace I x →ₗ[ℝ] ℝ) :=
+    { toFun := fun v =>
+        { toFun := fun z => (S.family.metric 0).inner x v z
+          map_add' := by intro z w; simp
+          map_smul' := by intro c z; simp }
+      map_add' := by intro v w; ext z; simp
+      map_smul' := by intro c v; ext z; simp }
+  have hB : Bt = B0 := by
+    apply (basisAt x).ext
+    intro a
+    apply (basisAt x).ext
+    intro b
+    change (S.family.metric t).inner x
+        (uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x a))
+        (uhlenbeckEndomorphismAt (basisAt x) iota t (basisAt x b)) =
+      (S.family.metric 0).inner x
+        (uhlenbeckEndomorphismAt (basisAt x) iota 0 (basisAt x a))
+        (uhlenbeckEndomorphismAt (basisAt x) iota 0 (basisAt x b))
+    rw [uhlenbeckEndomorphism_gram_pair]
+    rw [hgram t ht x a b]
+    rw [← uhlenbeckEndomorphism_gram_pair (S := S) (basisAt := basisAt) (iota := iota)
+      (t := 0) (x := x) (a := a) (b := b)]
+  have hB0 : B0 = J0 := by
+    apply (basisAt x).ext
+    intro a
+    apply (basisAt x).ext
+    intro b
+    change (S.family.metric 0).inner x
+        (uhlenbeckEndomorphismAt (basisAt x) iota 0 (basisAt x a))
+        (uhlenbeckEndomorphismAt (basisAt x) iota 0 (basisAt x b)) =
+      (S.family.metric 0).inner x (basisAt x a) (basisAt x b)
+    rw [hU0 a, hU0 b]
+  change Bt v w = (S.family.metric 0).inner x v w
+  rw [hB, hB0]
+  rfl
+
 end FlowFrame
 
 end DifferentialGeometry.PDE.RicciFlow
