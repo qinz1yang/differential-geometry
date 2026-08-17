@@ -158,6 +158,63 @@ theorem fiberInner_compUhlenbeck_isometry
         (Y : Tensor04At (I := I) (M := M) x) := by
           rw [hright]
 
+
+omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem uhlenbeckEndomorphism_zero_eq_id
+    {x : M}
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0) :
+    uhlenbeckEndomorphismAt (basisAt x) iota 0 = (1 : TangentSpace I x →L[ℝ] TangentSpace I x) := by
+  classical
+  apply ContinuousLinearMap.ext
+  intro v
+  have hv : v = ∑ a : Fin 3, (basisAt x).repr v a • basisAt x a :=
+    ((basisAt x).sum_repr v).symm
+  have hU : ∀ a : Fin 3, uhlenbeckEndomorphismAt (basisAt x) iota 0 (basisAt x a) = basisAt x a := by
+    intro a
+    rw [uhlenbeckEndomorphism_apply_basis]
+    have hi : iota 0 x a a = 1 := by simpa using hiota0 x a a
+    have hne : ∀ k : Fin 3, k ≠ a → iota 0 x a k = 0 := by
+      intro k hk
+      have hna : a ≠ k := fun h => hk h.symm
+      simpa [hna] using hiota0 x a k
+    have hsum : (∑ k : Fin 3, iota 0 x a k • basisAt x k) = basisAt x a := by
+      calc
+        (∑ k : Fin 3, iota 0 x a k • basisAt x k)
+            = ∑ k : Fin 3, (if k = a then (1 : ℝ) else 0) • basisAt x k := by
+              refine Finset.sum_congr rfl ?_
+              intro k hk
+              by_cases h : k = a
+              · subst h
+                simp [hi]
+              · have h0 : iota 0 x a k = 0 := hne k h
+                have hka : k ≠ a := h
+                simp [h0, hka]
+        _ = basisAt x a := by
+              simp
+    exact hsum
+  rw [hv]
+  rw [map_sum]
+  simp [hU]
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] in
+theorem uhlenbeckPulledRm04At_zero_eq_rm04
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (x : M) :
+    uhlenbeckPulledRm04At S basisAt iota 0 x = S.base.rm04 0 x := by
+  apply ContinuousMultilinearMap.ext
+  intro m
+  change (S.base.rm04 0 x) (fun i : Fin 4 =>
+      uhlenbeckEndomorphismAt (basisAt x) iota 0 (m i)) = (S.base.rm04 0 x) m
+  rw [show uhlenbeckEndomorphismAt (basisAt x) iota 0 = (1 : TangentSpace I x →L[ℝ] TangentSpace I x) from
+    uhlenbeckEndomorphism_zero_eq_id basisAt iota hiota0]
+  simp
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
