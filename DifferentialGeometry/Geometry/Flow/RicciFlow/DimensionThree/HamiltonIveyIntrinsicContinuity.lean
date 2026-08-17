@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.Core
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionInfDist
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyBundleRegion
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
 
 set_option autoImplicit false
@@ -2651,6 +2652,763 @@ theorem fiberInfDist_continuousOn
   simpa [m] using intrinsicFiberInfDist_eq_two_mul_matrixInfDist (I := I) (M := M) hT S basisAt iota K
     (q := q) hq horth0 hK
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem inner_basis_repr3
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (X : TangentSpace I x) (k : Fin 3) :
+    g.inner x X (basis k) = basis.repr X k := by
+  classical
+  rw [inner_eq_sum_repr3 (I := I) horth X (basis k)]
+  have hsingle : ∀ i : Fin 3, basis.repr (basis k) i = if i = k then 1 else 0 := by
+    intro i
+    rw [basis.repr_self k, Finsupp.single_apply]
+    by_cases h : k = i
+    · rw [if_pos h, if_pos h.symm]
+    · rw [if_neg h, if_neg (fun hi => h hi.symm)]
+  calc
+    (∑ i : Fin 3, basis.repr X i * basis.repr (basis k) i) =
+        ∑ i : Fin 3, basis.repr X i * (if i = k then 1 else 0) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [hsingle i]
+    _ = basis.repr X k := by
+      rw [Finset.sum_eq_single k]
+      · rw [if_pos rfl]
+        simp
+      · intro i _ hik
+        rw [if_neg hik]
+        simp
+      · intro hk
+        exact absurd (Finset.mem_univ k) hk
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem intrinsicFiberBivectorTwoForm_eq_repr
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (p : Fin 3) (X Y : TangentSpace I x) :
+    intrinsicFiberBivectorTwoForm (I := I) g basis p X Y =
+      basis.repr X (bivectorIndex3 p).1 * basis.repr Y (bivectorIndex3 p).2 -
+        basis.repr X (bivectorIndex3 p).2 * basis.repr Y (bivectorIndex3 p).1 := by
+  unfold intrinsicFiberBivectorTwoForm
+  rw [inner_basis_repr3 (I := I) g basis horth X (bivectorIndex3 p).1]
+  rw [inner_basis_repr3 (I := I) g basis horth X (bivectorIndex3 p).2]
+  rw [inner_basis_repr3 (I := I) g basis horth Y (bivectorIndex3 p).1]
+  rw [inner_basis_repr3 (I := I) g basis horth Y (bivectorIndex3 p).2]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 1 M]
+    [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+    [NeZero (Module.finrank ℝ E)] in
+private lemma bivectorSum_prod_eq
+    (a b c d : Fin 3 → ℝ) :
+    (∑ p : Fin 3,
+        (a (bivectorIndex3 p).1 * b (bivectorIndex3 p).2 - a (bivectorIndex3 p).2 * b (bivectorIndex3 p).1) *
+          (c (bivectorIndex3 p).1 * d (bivectorIndex3 p).2 - c (bivectorIndex3 p).2 * d (bivectorIndex3 p).1)) =
+      (∑ k : Fin 3, a k * c k) * (∑ k : Fin 3, b k * d k) -
+        (∑ k : Fin 3, a k * d k) * (∑ k : Fin 3, b k * c k) := by
+  classical
+  rw [Fin.sum_univ_three]
+  rw [show (∑ k : Fin 3, a k * c k) = a 0 * c 0 + a 1 * c 1 + a 2 * c 2 by rw [Fin.sum_univ_three]]
+  rw [show (∑ k : Fin 3, b k * d k) = b 0 * d 0 + b 1 * d 1 + b 2 * d 2 by rw [Fin.sum_univ_three]]
+  rw [show (∑ k : Fin 3, a k * d k) = a 0 * d 0 + a 1 * d 1 + a 2 * d 2 by rw [Fin.sum_univ_three]]
+  rw [show (∑ k : Fin 3, b k * c k) = b 0 * c 0 + b 1 * c 1 + b 2 * c 2 by rw [Fin.sum_univ_three]]
+  simp [bivectorIndex3]
+  ring
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem intrinsicFiberBivectorTwoForm_sum_pair
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (X Y Z W : TangentSpace I x) :
+    (∑ p : Fin 3,
+        intrinsicFiberBivectorTwoForm (I := I) g basis p X Y *
+          intrinsicFiberBivectorTwoForm (I := I) g basis p Z W) =
+      g.inner x X Z * g.inner x Y W - g.inner x X W * g.inner x Y Z := by
+  classical
+  simp_rw [intrinsicFiberBivectorTwoForm_eq_repr (I := I) g basis horth]
+  rw [inner_eq_sum_repr3 (I := I) horth X Z, inner_eq_sum_repr3 (I := I) horth Y W,
+    inner_eq_sum_repr3 (I := I) horth X W, inner_eq_sum_repr3 (I := I) horth Y Z]
+  exact bivectorSum_prod_eq (basis.repr X) (basis.repr Y) (basis.repr Z) (basis.repr W)
+
+omit [E : Type*] [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [CompleteSpace E] [H : Type*] [TopologicalSpace H] [I : ModelWithCorners ℝ E H]
+    [M : Type*] [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M]
+    [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem delta3_bivector_mul
+    (i j : Fin 3) :
+    delta3 (bivectorIndex3 i).1 (bivectorIndex3 j).1 *
+        delta3 (bivectorIndex3 i).2 (bivectorIndex3 j).2 -
+      delta3 (bivectorIndex3 i).1 (bivectorIndex3 j).2 *
+        delta3 (bivectorIndex3 i).2 (bivectorIndex3 j).1 = delta3 i j := by
+  fin_cases i <;> fin_cases j <;> simp [bivectorIndex3, delta3]
+
+noncomputable def intrinsicFrameChangeMatrix
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (b b' : Module.Basis (Fin 3) ℝ (TangentSpace I x)) :
+    Matrix (Fin 3) (Fin 3) ℝ :=
+  fun p i => intrinsicFiberBivectorTwoForm (I := I) g b p
+    (b' (bivectorIndex3 i).1) (b' (bivectorIndex3 i).2)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem intrinsicFrameChangeMatrix_orthogonal
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (b b' : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (hb : OrthonormalBasisAt (I := I) g x b)
+    (hb' : OrthonormalBasisAt (I := I) g x b') :
+    intrinsicFrameChangeMatrix (I := I) g b b' *
+        (intrinsicFrameChangeMatrix (I := I) g b b').transpose = 1 := by
+  classical
+  let O : Matrix (Fin 3) (Fin 3) ℝ := intrinsicFrameChangeMatrix (I := I) g b b'
+  have hOtO : O.transpose * O = 1 := by
+    ext i j
+    rw [Matrix.mul_apply, Matrix.one_apply]
+    change (∑ p : Fin 3, intrinsicFrameChangeMatrix (I := I) g b b' p i *
+          intrinsicFrameChangeMatrix (I := I) g b b' p j) =
+        if i = j then 1 else 0
+    simp only [intrinsicFrameChangeMatrix]
+    rw [intrinsicFiberBivectorTwoForm_sum_pair (I := I) g b hb
+      (b' (bivectorIndex3 i).1) (b' (bivectorIndex3 i).2)
+      (b' (bivectorIndex3 j).1) (b' (bivectorIndex3 j).2)]
+    rw [hb' (bivectorIndex3 i).1 (bivectorIndex3 j).1, hb' (bivectorIndex3 i).2 (bivectorIndex3 j).2,
+      hb' (bivectorIndex3 i).1 (bivectorIndex3 j).2, hb' (bivectorIndex3 i).2 (bivectorIndex3 j).1]
+    simpa [delta3] using delta3_bivector_mul i j
+  exact matrixTransposeMul_orthogonal (O := O.transpose) (by simpa [Matrix.transpose_transpose] using hOtO)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+private lemma matrix_conj_dot
+    (M O : Matrix (Fin 3) (Fin 3) ℝ) (i j : Fin 3) :
+    (O.transpose * M * O) i j = ∑ p : Fin 3, ∑ q : Fin 3, M p q * O p i * O q j := by
+  classical
+  rw [Matrix.mul_assoc]
+  simp only [Matrix.mul_apply, Matrix.transpose_apply]
+  simp_rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro p _
+  apply Finset.sum_congr rfl
+  intro q _
+  ring
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem intrinsicFiberCurvatureOperatorMatrix_conj_of_orthonormal
+    (g : SmoothRiemannianMetric I M) {x : M}
+    (b b' : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (hb : OrthonormalBasisAt (I := I) g x b)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    intrinsicFiberCurvatureOperatorMatrix (I := I) b' (A : Tensor04At x) =
+      (intrinsicFrameChangeMatrix (I := I) g b b').transpose *
+        intrinsicFiberCurvatureOperatorMatrix (I := I) b (A : Tensor04At x) *
+        intrinsicFrameChangeMatrix (I := I) g b b' := by
+  classical
+  let Mat : Matrix (Fin 3) (Fin 3) ℝ := intrinsicFiberCurvatureOperatorMatrix (I := I) b (A : Tensor04At x)
+  let O : Matrix (Fin 3) (Fin 3) ℝ := intrinsicFrameChangeMatrix (I := I) g b b'
+  have hsymm : ∀ i j : Fin 3, Mat i j = Mat j i := by
+    intro i j
+    have hM : (curvatureOperatorMatrixAt (I := I) x b A).IsHermitian :=
+      curvatureOperatorMatrixAt_isHermitian (I := I) x b A
+    have h := congrFun (congrFun hM i) j
+    simpa [Mat, Matrix.conjTranspose, star_trivial] using h.symm
+  have hTensor_mem : intrinsicFiberOperatorTensor (I := I) g b Mat ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    intrinsicFiberOperatorTensor_mem_algebraicCurvatureTensorSubmodule_of_symm (I := I) g b Mat hsymm
+  have hTensor_map : intrinsicFiberCurvatureOperatorMatrix (I := I) b
+      (intrinsicFiberOperatorTensor (I := I) g b Mat) = Mat :=
+    intrinsicFiberCurvatureOperatorMatrix_of_intrinsicFiberOperatorTensor (I := I) g b hb Mat
+  have hA_eq : intrinsicFiberOperatorTensor (I := I) g b Mat = (A : Tensor04At x) := by
+    have hzero : (⟨intrinsicFiberOperatorTensor (I := I) g b Mat, hTensor_mem⟩ :
+        algebraicCurvatureTensorSubmodule (I := I) (M := M) x) - A = 0 := by
+      apply curvatureOperatorMatrixAt_eq_zero_of_orthonormal (I := I) (M := M) g x b hb
+      change intrinsicFiberCurvatureOperatorMatrix (I := I) b
+          (intrinsicFiberOperatorTensor (I := I) g b Mat - (A : Tensor04At x)) = 0
+      rw [intrinsicFiberCurvatureOperatorMatrix_sub]
+      rw [hTensor_map]
+      change Mat - Mat = 0
+      simp
+    exact congrArg (fun Y : algebraicCurvatureTensorSubmodule (I := I) (M := M) x =>
+      (Y : Tensor04At (I := I) (M := M) x)) (sub_eq_zero.mp hzero)
+  ext i j
+  calc
+    intrinsicFiberCurvatureOperatorMatrix (I := I) b' (A : Tensor04At x) i j
+        = tensor04StdAt (I := I) (M := M) (A : Tensor04At x)
+            (b' (bivectorIndex3 i).1) (b' (bivectorIndex3 i).2)
+            (b' (bivectorIndex3 j).2) (b' (bivectorIndex3 j).1) := rfl
+    _ = tensor04StdAt (I := I) (M := M) (intrinsicFiberOperatorTensor (I := I) g b Mat)
+            (b' (bivectorIndex3 i).1) (b' (bivectorIndex3 i).2)
+            (b' (bivectorIndex3 j).2) (b' (bivectorIndex3 j).1) := by rw [hA_eq]
+    _ = ∑ p : Fin 3, ∑ q : Fin 3,
+          Mat p q * intrinsicFiberBivectorTwoForm (I := I) g b p (b' (bivectorIndex3 i).1) (b' (bivectorIndex3 i).2) *
+            intrinsicFiberBivectorTwoForm (I := I) g b q (b' (bivectorIndex3 j).1) (b' (bivectorIndex3 j).2) :=
+          intrinsicFiberOperatorTensor_apply (I := I) g b Mat
+            (b' (bivectorIndex3 i).1) (b' (bivectorIndex3 i).2)
+            (b' (bivectorIndex3 j).2) (b' (bivectorIndex3 j).1)
+    _ = (O.transpose * Mat * O) i j := by
+          rw [show (O.transpose * Mat * O) i j = ∑ p : Fin 3, ∑ q : Fin 3,
+              Mat p q * O p i * O q j from matrix_conj_dot Mat O i j]
+          apply Finset.sum_congr rfl
+          intro p hp
+          apply Finset.sum_congr rfl
+          intro q hq
+          simp only [O, intrinsicFrameChangeMatrix]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem infDist_matrixToEuclid_orthogonal_conj
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    (A O : Matrix (Fin 3) (Fin 3) ℝ) (hOorth : O * O.transpose = 1) :
+    Metric.infDist (matrixToEuclid A) (hamiltonIveyConvexMatrixRegionEuclid K τ) =
+    Metric.infDist (matrixToEuclid (O.transpose * A * O)) (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
+  classical
+  let T : EuclideanSpace ℝ (Fin 3 × Fin 3) → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    fun v => matrixToEuclid (O.transpose * euclidToMatrix v * O)
+  let U : EuclideanSpace ℝ (Fin 3 × Fin 3) → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    fun v => matrixToEuclid (O * euclidToMatrix v * O.transpose)
+  let S : Set (EuclideanSpace ℝ (Fin 3 × Fin 3)) := hamiltonIveyConvexMatrixRegionEuclid K τ
+  have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+  have hT_inner : ∀ v w, inner ℝ (T v) (T w) = inner ℝ v w := by
+    intro v w
+    have h := inner_matrixToEuclid_orthogonal_conj (euclidToMatrix v) (euclidToMatrix w) O hOorth
+    simpa [T, matrixToEuclid_euclidToMatrix] using h.symm
+  have hU_inner : ∀ v w, inner ℝ (U v) (U w) = inner ℝ v w := by
+    intro v w
+    have h := inner_matrixToEuclid_orthogonal_conj (euclidToMatrix v) (euclidToMatrix w) O.transpose hOorth2
+    simpa [U, matrixToEuclid_euclidToMatrix] using h.symm
+  have hT_sub : ∀ v, v ∈ S → T v ∈ S := by
+    intro v hv
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+    change euclidToMatrix (matrixToEuclid (O.transpose * euclidToMatrix v * O)) ∈
+      hamiltonIveyConvexMatrixRegion K τ
+    rw [euclidToMatrix_matrixToEuclid]
+    have hvmat : euclidToMatrix v ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ v).1 hv
+    exact (hamiltonIveyConvexMatrixRegion_orthogonal_conj (K := K) (τ := τ)
+      (A := euclidToMatrix v) (Q := O) hOorth2 hOorth).1 hvmat
+  have hU_sub : ∀ v, v ∈ S → U v ∈ S := by
+    intro v hv
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+    change euclidToMatrix (matrixToEuclid (O * euclidToMatrix v * O.transpose)) ∈
+      hamiltonIveyConvexMatrixRegion K τ
+    rw [euclidToMatrix_matrixToEuclid]
+    have hvmat : euclidToMatrix v ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ v).1 hv
+    exact (hamiltonIveyConvexMatrixRegion_orthogonal_conj (K := K) (τ := τ)
+      (A := euclidToMatrix v) (Q := O.transpose) hOorth hOorth2).1 hvmat
+  have hTU : ∀ v, T (U v) = v := by
+    intro v
+    dsimp [T, U]
+    rw [euclidToMatrix_matrixToEuclid]
+    have hmm : O.transpose * (O * euclidToMatrix v * O.transpose) * O = euclidToMatrix v := by
+      rw [show O.transpose * (O * euclidToMatrix v * O.transpose) * O =
+          (O.transpose * O) * euclidToMatrix v * (O.transpose * O) by
+        repeat rw [Matrix.mul_assoc]]
+      rw [hOorth2]
+      simp
+    rw [hmm]
+    exact matrixToEuclid_euclidToMatrix v
+  have hnormT : ∀ u, ‖T u‖ = ‖u‖ := by
+    intro u
+    have hsq : ‖T u‖ ^ 2 = ‖u‖ ^ 2 := by
+      rw [norm_sq_eq_re_inner (𝕜 := ℝ) (T u), norm_sq_eq_re_inner (𝕜 := ℝ) u]
+      simpa using (hT_inner u u)
+    have h := (sq_eq_sq_iff_abs_eq_abs (‖T u‖) (‖u‖)).mp hsq
+    rw [abs_of_nonneg (norm_nonneg (T u)), abs_of_nonneg (norm_nonneg u)] at h
+    exact h
+  have hdistT : ∀ v w, dist (T v) (T w) = dist v w := by
+    intro v w
+    rw [dist_eq_norm, dist_eq_norm]
+    have hsq : ‖T v - T w‖ ^ 2 = ‖v - w‖ ^ 2 := by
+      rw [norm_sq_eq_re_inner (𝕜 := ℝ) (T v - T w), norm_sq_eq_re_inner (𝕜 := ℝ) (v - w)]
+      calc
+        inner ℝ (T v - T w) (T v - T w)
+            = inner ℝ (T v) (T v) - inner ℝ (T v) (T w) - inner ℝ (T w) (T v) + inner ℝ (T w) (T w) := by
+              rw [inner_sub_left (T v) (T w) (T v - T w)]
+              rw [inner_sub_right (T v) (T v) (T w)]
+              rw [inner_sub_right (T w) (T v) (T w)]
+              ring
+        _ = inner ℝ v v - inner ℝ v w - inner ℝ w v + inner ℝ w w := by
+              rw [hT_inner v v, hT_inner v w, hT_inner w v, hT_inner w w]
+        _ = inner ℝ (v - w) (v - w) := by
+              rw [inner_sub_left v w (v - w)]
+              rw [inner_sub_right v v w]
+              rw [inner_sub_right w v w]
+              ring
+    have h := (sq_eq_sq_iff_abs_eq_abs (‖T v - T w‖) (‖v - w‖)).mp hsq
+    rw [abs_of_nonneg (norm_nonneg (T v - T w)), abs_of_nonneg (norm_nonneg (v - w))] at h
+    exact h
+  have hne : S.Nonempty := nonempty_hamiltonIveyConvexMatrixRegionEuclid hK hτ
+  have hle1 : Metric.infDist (T (matrixToEuclid A)) S ≤ Metric.infDist (matrixToEuclid A) S := by
+    apply (Metric.le_infDist hne).mpr
+    intro y hy
+    have hyT : T y ∈ S := hT_sub y hy
+    have h1 : Metric.infDist (T (matrixToEuclid A)) S ≤ dist (T (matrixToEuclid A)) (T y) :=
+      Metric.infDist_le_dist_of_mem hyT
+    calc
+      Metric.infDist (T (matrixToEuclid A)) S ≤ dist (T (matrixToEuclid A)) (T y) := h1
+      _ = dist (matrixToEuclid A) y := hdistT (matrixToEuclid A) y
+  have hle2 : Metric.infDist (matrixToEuclid A) S ≤ Metric.infDist (T (matrixToEuclid A)) S := by
+    apply (Metric.le_infDist hne).mpr
+    intro y hy
+    have hyU : U y ∈ S := hU_sub y hy
+    have h1 : Metric.infDist (matrixToEuclid A) S ≤ dist (matrixToEuclid A) (U y) :=
+      Metric.infDist_le_dist_of_mem hyU
+    have h2 : dist (matrixToEuclid A) (U y) = dist (T (matrixToEuclid A)) y := by
+      have hd := hdistT (matrixToEuclid A) (U y)
+      rw [hTU y] at hd
+      exact hd.symm
+    calc
+      Metric.infDist (matrixToEuclid A) S ≤ dist (matrixToEuclid A) (U y) := h1
+      _ = dist (T (matrixToEuclid A)) y := h2
+  simpa [T, S, euclidToMatrix_matrixToEuclid] using le_antisymm hle2 hle1
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem curvatureOperatorMatrixEuclid_infDist_eq_of_orthonormalBases
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (b b' : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (hb : OrthonormalBasisAt (I := I) g x b)
+    (hb' : OrthonormalBasisAt (I := I) g x b')
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) :
+    Metric.infDist (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) b (A : Tensor04At x)))
+      (hamiltonIveyConvexMatrixRegionEuclid K τ) =
+    Metric.infDist (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) b' (A : Tensor04At x)))
+      (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
+  classical
+  let Mat : Matrix (Fin 3) (Fin 3) ℝ := intrinsicFiberCurvatureOperatorMatrix (I := I) b (A : Tensor04At x)
+  let O : Matrix (Fin 3) (Fin 3) ℝ := intrinsicFrameChangeMatrix (I := I) g b b'
+  have hconj : intrinsicFiberCurvatureOperatorMatrix (I := I) b' (A : Tensor04At x) = O.transpose * Mat * O := by
+    simpa [Mat, O] using intrinsicFiberCurvatureOperatorMatrix_conj_of_orthonormal (I := I) (M := M) g b b' hb A
+  have hOorth : O * O.transpose = 1 := by
+    simpa [O] using intrinsicFrameChangeMatrix_orthogonal (I := I) (M := M) g b b' hb hb'
+  calc
+    Metric.infDist (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) b (A : Tensor04At x)))
+        (hamiltonIveyConvexMatrixRegionEuclid K τ)
+        = Metric.infDist (matrixToEuclid Mat) (hamiltonIveyConvexMatrixRegionEuclid K τ) := by rfl
+    _ = Metric.infDist (matrixToEuclid (O.transpose * Mat * O)) (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
+          exact infDist_matrixToEuclid_orthogonal_conj hK hτ Mat O hOorth
+    _ = Metric.infDist (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) b' (A : Tensor04At x)))
+          (hamiltonIveyConvexMatrixRegionEuclid K τ) := by rw [hconj]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [NeZero (Module.finrank ℝ E)] in
+theorem intrinsicFiberHamiltonIveyRegion_eq_fiberHamiltonIveyRegion
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (K τ : ℝ) (x : M) :
+    intrinsicFiberHamiltonIveyRegion (I := I) basisAt K τ x =
+      fiberHamiltonIveyRegion basisAt K τ x := by
+  ext A
+  rw [mem_intrinsicFiberHamiltonIveyRegion]
+  constructor
+  · intro hA
+    refine ⟨hA.1, ?_⟩
+    have hX : intrinsicFiberCurvatureOperatorMatrix (I := I) (basisAt x) A =
+        curvatureOperatorMatrixAt (I := I) x (basisAt x)
+          (⟨A, hA.1⟩ : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :=
+      (intrinsicFiberCurvatureOperatorMatrix_eq_curvatureOperatorMatrixAt (I := I) (basisAt x)
+        (⟨A, hA.1⟩ : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)).symm
+    rw [← hX]
+    have h1 := (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ
+      (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x)
+        (⟨A, hA.1⟩ : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)))).1 hA.2
+    rwa [euclidToMatrix_matrixToEuclid] at h1
+  · rintro ⟨h, hmat⟩
+    constructor
+    · exact h
+    · have hX : intrinsicFiberCurvatureOperatorMatrix (I := I) (basisAt x) A =
+          curvatureOperatorMatrixAt (I := I) x (basisAt x)
+            (⟨A, h⟩ : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :=
+        (intrinsicFiberCurvatureOperatorMatrix_eq_curvatureOperatorMatrixAt (I := I) (basisAt x)
+          (⟨A, h⟩ : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)).symm
+      rw [hX]
+      exact (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K τ
+        (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x)
+          (⟨A, h⟩ : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)))).2 (by simpa using hmat)
+
+
+omit [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+    [NeZero (Module.finrank ℝ E)] in
+noncomputable def intrinsicFrameIndex
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (x : M) (a : Fin 3) : Fin (Module.finrank ℝ E) :=
+  ⟨a.val, by
+    have hfe : Module.finrank ℝ E = Module.finrank ℝ (TangentSpace I x) := by
+      have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
+        rw [TangentBundle.trivializationAt_baseSet]
+        exact mem_chart_source H x
+      exact ((trivializationAt E (TangentSpace I) x).linearEquivAt ℝ x hx).finrank_eq.symm
+    rw [hfe, hdim x]
+    exact a.isLt⟩
+
+omit [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+noncomputable def intrinsicFlowFrame
+    (g : SmoothRiemannianMetric I M)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (α : M) (q : ℝ × M) (a : Fin 3) : TangentSpace I q.2 :=
+  intrinsicChartFrameNorm (I := I) g α (intrinsicFrameIndex (I := I) hdim q.2 a) q.2
+
+omit [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+noncomputable def flowFrameOperatorMatrix
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (α : M) (q : ℝ × M) : Matrix (Fin 3) (Fin 3) ℝ :=
+  fun i j =>
+    tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+      (intrinsicFlowFrame (I := I) (S.base.metric q.1) hdim α q (bivectorIndex3 i).1)
+      (intrinsicFlowFrame (I := I) (S.base.metric q.1) hdim α q (bivectorIndex3 i).2)
+      (intrinsicFlowFrame (I := I) (S.base.metric q.1) hdim α q (bivectorIndex3 j).2)
+      (intrinsicFlowFrame (I := I) (S.base.metric q.1) hdim α q (bivectorIndex3 j).1)
+
+omit [SigmaCompactSpace M] in
+theorem intrinsicFiberInfDist_eq_two_mul_flowFrameMatrixInfDist
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (α : M) {K : ℝ} (hK : 0 < K) {q : ℝ × M}
+    (hq : q ∈ Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) :
+    intrinsicFiberInfDist hT S basisAt iota K q.1 q.2 =
+      2 * Metric.infDist (matrixToEuclid (flowFrameOperatorMatrix (I := I) hT S hdim α q))
+        (hamiltonIveyConvexMatrixRegionEuclid K q.1) := by
+  classical
+  let gτ : SmoothRiemannianMetric I M := S.base.metric q.1
+  let e : Fin 3 → TangentSpace I q.2 :=
+    fun a => intrinsicFlowFrame (I := I) gτ hdim α q a
+  have hU : q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
+    smoothOrthoOpen_subset_baseSet (I := I) (M := M) α hq.2
+  have hidx_inj : Function.Injective (intrinsicFrameIndex (I := I) hdim q.2) := by
+    intro a b h
+    apply Fin.ext
+    simpa using (congrArg (fun i : Fin (Module.finrank ℝ E) => i.val) h)
+  have horth_e : ∀ a b : Fin 3, gτ.inner q.2 (e a) (e b) = if a = b then 1 else 0 := by
+    intro a b
+    have horth := intrinsicChartFrameNorm_orthonormal (I := I) gτ α hU
+      (intrinsicFrameIndex (I := I) hdim q.2 a) (intrinsicFrameIndex (I := I) hdim q.2 b)
+    change gτ.inner q.2
+        (intrinsicChartFrameNorm (I := I) gτ α (intrinsicFrameIndex (I := I) hdim q.2 a) q.2)
+        (intrinsicChartFrameNorm (I := I) gτ α (intrinsicFrameIndex (I := I) hdim q.2 b) q.2) =
+      if a = b then 1 else 0
+    rw [horth]
+    by_cases hab : a = b
+    · rw [if_pos hab, if_pos (by rw [hab])]
+    · rw [if_neg hab, if_neg (fun h => hab (hidx_inj h))]
+  have hli : LinearIndependent ℝ e := by
+    rw [Fintype.linearIndependent_iff]
+    intro c hc i
+    have hpair : gτ.inner q.2 (∑ j, c j • e j) (e i) = 0 := by
+      rw [hc]
+      simp
+    rw [map_sum, ContinuousLinearMap.sum_apply] at hpair
+    rw [Finset.sum_eq_single i] at hpair
+    · rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply,
+        horth_e i i, if_pos rfl, smul_eq_mul, mul_one] at hpair
+      exact hpair
+    · intro j _ hji
+      rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply,
+        horth_e j i, if_neg (by simpa using hji), smul_zero]
+    · intro hi
+      exact absurd (Finset.mem_univ i) hi
+  have hcard : Fintype.card (Fin 3) = Module.finrank ℝ (TangentSpace I q.2) := by
+    rw [Fintype.card_fin, hdim q.2]
+  have hsp : Submodule.span ℝ (Set.range e) = ⊤ :=
+    hli.span_eq_top_of_card_eq_finrank hcard
+  let gsb : Module.Basis (Fin 3) ℝ (TangentSpace I q.2) := Module.Basis.mk hli hsp.symm.le
+  have hgsb : (gsb : Fin 3 → TangentSpace I q.2) = e := by
+    funext a
+    exact Module.Basis.mk_apply hli hsp.symm.le a
+  have horth_gsb : OrthonormalBasisAt (I := I) gτ q.2 gsb := by
+    intro i j
+    rw [hgsb]
+    simpa [delta3] using horth_e i j
+  have ht : q.1 ∈ Set.Icc 0 T := hq.1
+  let mov : Module.Basis (Fin 3) ℝ (TangentSpace I q.2) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram q.1 ht q.2
+  have horth_mov : OrthonormalBasisAt (I := I) gτ q.2 mov := by
+    simpa [mov, gτ] using uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M)
+      hT S basisAt iota hiota0 hgram q.2 (horth0 q.2) ht
+  have hstep1 : intrinsicFiberInfDist hT S basisAt iota K q.1 q.2 =
+      2 * Metric.infDist
+        (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) (basisAt q.2)
+          (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)))
+        (hamiltonIveyConvexMatrixRegionEuclid K q.1) := by
+    simpa using intrinsicFiberInfDist_eq_two_mul_matrixInfDist (I := I) (M := M) hT S basisAt iota K
+      (q := q) (by exact ⟨hq.1, trivial⟩) horth0 hK
+  have hstep2 : intrinsicFiberCurvatureOperatorMatrix (I := I) (basisAt q.2)
+        (uhlenbeckPulledRm04At S basisAt iota q.1 q.2) =
+      intrinsicFiberCurvatureOperatorMatrix (I := I) mov (S.base.rm04 q.1 q.2) := by
+    simpa [mov] using (curvatureOperatorMatrixAt_pulledTensor_eq_original_moving (I := I) (M := M)
+      hT S basisAt iota hiota0 hgram ht q.2)
+  have hstep3 : Metric.infDist
+        (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) mov (S.base.rm04 q.1 q.2)))
+        (hamiltonIveyConvexMatrixRegionEuclid K q.1) =
+      Metric.infDist
+        (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) gsb (S.base.rm04 q.1 q.2)))
+        (hamiltonIveyConvexMatrixRegionEuclid K q.1) :=
+    curvatureOperatorMatrixEuclid_infDist_eq_of_orthonormalBases (I := I) (M := M) gτ q.2 mov gsb
+      horth_mov horth_gsb
+      ⟨S.base.rm04 q.1 q.2, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) gτ q.2⟩
+      hK hq.1.1
+  have hstep4 : intrinsicFiberCurvatureOperatorMatrix (I := I) gsb (S.base.rm04 q.1 q.2) =
+      flowFrameOperatorMatrix (I := I) hT S hdim α q := by
+    ext i j
+    simp [flowFrameOperatorMatrix, hgsb, e, gτ]
+  calc
+    intrinsicFiberInfDist hT S basisAt iota K q.1 q.2
+        = 2 * Metric.infDist
+            (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) (basisAt q.2)
+              (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)))
+            (hamiltonIveyConvexMatrixRegionEuclid K q.1) := hstep1
+    _ = 2 * Metric.infDist
+            (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) mov (S.base.rm04 q.1 q.2)))
+            (hamiltonIveyConvexMatrixRegionEuclid K q.1) := by rw [hstep2]
+    _ = 2 * Metric.infDist
+            (matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) gsb (S.base.rm04 q.1 q.2)))
+            (hamiltonIveyConvexMatrixRegionEuclid K q.1) := by rw [hstep3]
+    _ = 2 * Metric.infDist (matrixToEuclid (flowFrameOperatorMatrix (I := I) hT S hdim α q))
+            (hamiltonIveyConvexMatrixRegionEuclid K q.1) := by rw [hstep4]
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] in
+private lemma flowFrameOperatorMatrix_continuousOn_local
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (α : M) :
+    ContinuousOn (fun q : ℝ × M =>
+      matrixToEuclid (flowFrameOperatorMatrix (I := I) hT S hdim α q))
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) := by
+  classical
+  let U : Set M := smoothOrthoOpen (I := I) (M := M) α
+  have hU_base : ∀ q : ℝ × M, q ∈ Set.Icc 0 T ×ˢ U →
+      q.2 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    intro q hq
+    exact smoothOrthoOpen_subset_baseSet (I := I) (M := M) α hq.2
+  let e (a : Fin 3) (q : ℝ × M) : TangentSpace I q.2 :=
+    intrinsicFlowFrame (I := I) (S.base.metric q.1) hdim α q a
+  have he_cont : ∀ a : Fin 3,
+      ContinuousOn (fun q : ℝ × M =>
+        TotalSpace.mk' E (E := fun y : M => TangentSpace I y) q.2 (e a q))
+        (Set.Icc 0 T ×ˢ U) := by
+    intro a
+    have hmain := intrinsicChartFrameNorm_continuousOn_param (I := I) (M := M) hT S hS α
+      (intrinsicFrameIndex (I := I) hdim α a)
+    refine hmain.congr ?_
+    intro q hq
+    change TotalSpace.mk' E (E := fun y : M => TangentSpace I y) q.2
+        (intrinsicChartFrameNorm (I := I) (S.base.metric q.1) α
+          (intrinsicFrameIndex (I := I) hdim q.2 a) q.2) =
+      TotalSpace.mk' E (E := fun y : M => TangentSpace I y) q.2
+        (intrinsicChartFrameNorm (I := I) (S.base.metric q.1) α
+          (intrinsicFrameIndex (I := I) hdim α a) q.2)
+    apply congrArg (fun i : Fin (Module.finrank ℝ E) =>
+      TotalSpace.mk' E (E := fun y : M => TangentSpace I y) q.2
+        (intrinsicChartFrameNorm (I := I) (S.base.metric q.1) α i q.2))
+    apply Fin.ext
+    rfl
+  have hentry4 : ∀ a b c d : Fin 3,
+      ContinuousOn (fun q : ℝ × M =>
+        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+          (e a q) (e b q) (e c q) (e d q))
+        (Set.Icc 0 T ×ˢ U) := by
+    intro a b c d
+    have hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 (Set.Icc 0 T)
+        (fun t x => S.base.rm04 t x) := by
+      exact Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
+        hS.rm04Cont (by intro s hs; exact hs)
+    rw [continuousOn_iff_continuous_restrict]
+    let P := {q : ℝ × M // q.1 ∈ Set.Icc 0 T ∧ q.2 ∈ U}
+    have heval := Tensor0SFamilyContinuousOnSet.eval_continuous (I := I) (M := M) (s := 4)
+      (K := Set.Icc 0 T) (A := fun t x => S.base.rm04 t x) hA
+      (P := P) (τ := fun p : P => p.1.1) (b := fun p : P => p.1.2)
+      (continuous_fst.comp continuous_subtype_val) (fun p : P => p.2.1)
+      (continuous_snd.comp continuous_subtype_val)
+      (v := fun n : Fin 4 => fun p : P =>
+        if n = 0 then e a p.1 else if n = 1 then e b p.1 else if n = 2 then e c p.1 else e d p.1)
+      (by
+        intro n
+        fin_cases n
+        · simp
+          simpa using (continuousOn_iff_continuous_restrict.mp (he_cont a))
+        · simp
+          simpa using (continuousOn_iff_continuous_restrict.mp (he_cont b))
+        · simp
+          simpa using (continuousOn_iff_continuous_restrict.mp (he_cont c))
+        · simp
+          simpa using (continuousOn_iff_continuous_restrict.mp (he_cont d)))
+    refine heval.congr (fun p => ?_)
+    change (S.base.rm04 p.1.1 p.1.2)
+        (fun n : Fin 4 => if n = 0 then e a p.1 else if n = 1 then e b p.1 else if n = 2 then e c p.1 else e d p.1) =
+      tensor04StdAt (I := I) (M := M) (S.base.rm04 p.1.1 p.1.2)
+        (e a p.1) (e b p.1) (e c p.1) (e d p.1)
+    rw [tensor04StdAt]
+    congr 1
+  have hmat_local : ContinuousOn (fun q : ℝ × M =>
+      matrixToEuclid (fun i j : Fin 3 =>
+        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+          (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
+          (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q)))
+      (Set.Icc 0 T ×ˢ U) := by
+    have hfun : ContinuousOn (fun q : ℝ × M =>
+        fun ij : Fin 3 × Fin 3 =>
+        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+          (e (bivectorIndex3 ij.1).1 q) (e (bivectorIndex3 ij.1).2 q)
+          (e (bivectorIndex3 ij.2).2 q) (e (bivectorIndex3 ij.2).1 q))
+        (Set.Icc 0 T ×ˢ U) := by
+      rw [continuousOn_iff_continuous_restrict]
+      let P := {q : ℝ × M // q.1 ∈ Set.Icc 0 T ∧ q.2 ∈ U}
+      exact continuous_pi (by
+        intro ij
+        simpa using (continuousOn_iff_continuous_restrict.mp (hentry4 (bivectorIndex3 ij.1).1
+          (bivectorIndex3 ij.1).2 (bivectorIndex3 ij.2).2 (bivectorIndex3 ij.2).1)))
+    exact (PiLp.continuous_toLp (p := 2) (β := fun _ : Fin 3 × Fin 3 => ℝ)).comp_continuousOn hfun
+  simpa [flowFrameOperatorMatrix, e] using hmat_local
+
+omit [SigmaCompactSpace M] in
+private lemma fiberInfDist_continuousOn_local
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (α : M) {K : ℝ} (hK : 0 < K) :
+    ContinuousOn (fun q : ℝ × M => intrinsicFiberInfDist hT S basisAt iota K q.1 q.2)
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) := by
+  classical
+  let m : ℝ × M → EuclideanSpace ℝ (Fin 3 × Fin 3) := fun q =>
+    matrixToEuclid (flowFrameOperatorMatrix (I := I) hT S hdim α q)
+  have hm_cont : ContinuousOn m (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) := by
+    simpa [m] using flowFrameOperatorMatrix_continuousOn_local (I := I) (M := M) hT S hS hdim α
+  have hg : ContinuousOn (fun r : ℝ × (EuclideanSpace ℝ (Fin 3 × Fin 3)) =>
+      Metric.infDist r.2 (hamiltonIveyConvexMatrixRegionEuclid K r.1))
+      (Set.Icc 0 T ×ˢ (Set.univ : Set (EuclideanSpace ℝ (Fin 3 × Fin 3)))) :=
+    continuousOn_infDist_hamiltonIveyRegion hK
+  have hh : ContinuousOn (fun q : ℝ × M => (q.1, m q))
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) :=
+    (continuous_fst.continuousOn).prodMk hm_cont
+  have hmaps : Set.MapsTo (fun q : ℝ × M => (q.1, m q))
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α)
+      (Set.Icc 0 T ×ˢ (Set.univ : Set (EuclideanSpace ℝ (Fin 3 × Fin 3)))) := by
+    intro q hq
+    exact ⟨hq.1, trivial⟩
+  have hcomp : ContinuousOn (fun q : ℝ × M =>
+      Metric.infDist ((q.1, m q)).2 (hamiltonIveyConvexMatrixRegionEuclid K ((q.1, m q)).1))
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) :=
+    hg.comp' hh hmaps
+  have htwo : ContinuousOn (fun q : ℝ × M =>
+      2 * Metric.infDist ((q.1, m q)).2 (hamiltonIveyConvexMatrixRegionEuclid K ((q.1, m q)).1))
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) :=
+    (continuousOn_const.mul hcomp)
+  refine htwo.congr ?_
+  intro q hq
+  simpa [m] using intrinsicFiberInfDist_eq_two_mul_flowFrameMatrixInfDist (I := I) (M := M)
+    hT S basisAt iota hiota0 hgram horth0 hdim α hK (q := q) hq
+
+omit [SigmaCompactSpace M] in
+theorem fiberInfDist_continuousOn'
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    {K : ℝ} (hK : 0 < K) :
+    ContinuousOn (fun q : ℝ × M => intrinsicFiberInfDist hT S basisAt iota K q.1 q.2)
+      (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
+  classical
+  intro q hq
+  let α : M := q.2
+  have hlocal := fiberInfDist_continuousOn_local (I := I) (M := M) hT S hS hdim basisAt horth0 iota
+    hiota0 hgram α hK
+  have hqL : q ∈ Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α := by
+    exact ⟨hq.1, mem_smoothOrthoOpen (I := I) (M := M) α⟩
+  have hL : ContinuousWithinAt
+      (fun r : ℝ × M => intrinsicFiberInfDist hT S basisAt iota K r.1 r.2)
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) q :=
+    hlocal.continuousWithinAt hqL
+  have hmem_nhds : (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) ∈
+      𝓝[(Set.Icc 0 T ×ˢ (Set.univ : Set M))] q := by
+    rw [mem_nhdsWithin]
+    refine ⟨Set.univ ×ˢ smoothOrthoOpen (I := I) (M := M) α, ?_, ?_, ?_⟩
+    · exact isOpen_univ.prod (smoothOrthoOpen_open (I := I) (M := M) α)
+    · exact ⟨trivial, mem_smoothOrthoOpen (I := I) (M := M) α⟩
+    · intro r hr
+      have hEq : (Set.univ ×ˢ smoothOrthoOpen (I := I) (M := M) α) ∩
+          (Set.Icc 0 T ×ˢ (Set.univ : Set M)) =
+          Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α := by
+        rw [Set.prod_inter_prod]
+        simp
+      exact (hEq ▸ hr)
+  have heq : 𝓝[(Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α)] q =
+      𝓝[(Set.Icc 0 T ×ˢ (Set.univ : Set M))] q := by
+    apply le_antisymm
+    · exact nhdsWithin_mono q (by
+        intro r hr
+        exact Set.mem_prod.mpr ⟨(Set.mem_prod.mp hr).1, trivial⟩)
+    · exact (nhdsWithin_le_iff (s := (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
+        (t := (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α)) (x := q)).mpr hmem_nhds
+  change Tendsto (fun r : ℝ × M =>
+      intrinsicFiberInfDist hT S basisAt iota K r.1 r.2)
+    (𝓝[(Set.Icc 0 T ×ˢ (Set.univ : Set M))] q)
+    (𝓝 (intrinsicFiberInfDist hT S basisAt iota K q.1 q.2))
+  rw [← heq]
+  exact hL
+
+omit [SigmaCompactSpace M] in
+theorem fiberInfDist_continuousOn_regionFile
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    {K : ℝ} (hK : 0 < K) :
+    ContinuousOn (fun q : ℝ × M =>
+      letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) q.2) :=
+        (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore
+      letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) q.2) :=
+        @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) q.2)
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore
+      letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) q.2) :=
+        @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) q.2)
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore.toCore
+      Metric.infDist (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)
+        (fiberHamiltonIveyRegion basisAt K q.1 q.2))
+      (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
+  classical
+  have h := fiberInfDist_continuousOn' (I := I) (M := M) hT S hS hdim basisAt horth0 iota hiota0 hgram hK
+  refine h.congr ?_
+  intro q hq
+  simp [intrinsicFiberInfDist, intrinsicFiberHamiltonIveyRegion_eq_fiberHamiltonIveyRegion (I := I) basisAt K q.1 q.2]
 end DifferentialGeometry.PDE.RicciFlow
 
 end
