@@ -74,6 +74,7 @@ noncomputable def solutionUhlenbeckIota
       (I := I) (M := M) S basisAt t x i j)
     (fun a k => if a = k then 1 else 0))
 
+omit [SigmaCompactSpace M] in
 theorem solutionUhlenbeckIota_spec
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
@@ -104,6 +105,7 @@ theorem solutionUhlenbeckIota_spec
       (I := I) (M := M) S basisAt t x i j)
     (fun a k => if a = k then 1 else 0))
 
+omit [SigmaCompactSpace M] in
 theorem solutionUhlenbeckIota_identity_initial_gram
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
@@ -124,6 +126,7 @@ theorem solutionUhlenbeckIota_identity_initial_gram
     simpa [delta3] using horth0 x i j
   simp [movingFrameGramInFrame, hiota0, horth, Finset.sum_ite_eq]
 
+omit [SigmaCompactSpace M] in
 theorem exists_uhlenbeckIota_of_finrank
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
