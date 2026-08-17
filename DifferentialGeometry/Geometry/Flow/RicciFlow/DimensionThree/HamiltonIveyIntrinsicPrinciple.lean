@@ -2977,6 +2977,105 @@ theorem TotalNabla0SRealizes.deriv_linear_combination {s : ℕ}
 
 end FiberHeatReactionSolutionProof
 
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem vec4_self {x : M} (slots : Fin 4 → TangentSpace I x) :
+    (fun a : Fin 4 => slots a) = vec4 (slots 0) (slots 1) (slots 2) (slots 3) := by
+  funext a
+  cases a using Fin.cases with
+  | zero => simp [vec4]
+  | succ a0 =>
+      cases a0 using Fin.cases with
+      | zero => simp [vec4]
+      | succ a1 =>
+          cases a1 using Fin.cases with
+          | zero => simp [vec4]
+          | succ a2 =>
+              cases a2 using Fin.cases with
+              | zero => simp [vec4]
+              | succ a3 => exact Fin.elim0 a3
+
+section RoughLapAlgebraic
+
+variable {D : RealTimeInterval}
+
+omit [SigmaCompactSpace M] in
+theorem nablaKRm04Field_one_anti12_cond
+    (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)
+    (u : TangentSpace I x) (slots : Fin 4 → TangentSpace I x) :
+    (nablaKRm04Field (I := I) S t 1 x)
+        (Fin.cons u (slots ∘ Equiv.swap (0 : Fin 4) (1 : Fin 4))) +
+      (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u slots) = 0 := by
+  classical
+  let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x u).choose
+  have hX : X x = u :=
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x u).choose_spec
+  let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
+    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x (slots a)).choose
+  have hV : ∀ a : Fin 4, V a x = slots a := fun a =>
+    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (n := (⊤ : ℕ∞)) x (slots a)).choose_spec
+  let perms : Bool → Equiv.Perm (Fin 4) :=
+    fun k => if k then Equiv.swap (0 : Fin 4) (1 : Fin 4) else 1
+  let c : Bool → ℝ := fun _ => 1
+  have hhid : ∀ p : M, ∀ s : Fin 4 → TangentSpace I p,
+      (∑ k : Bool, c k * (S.base.rm04 t p) (fun a : Fin 4 => s (perms k a))) = 0 := by
+    intro p s
+    have hA : (S.base.rm04 t p) = metricRm04At (I := I) (M := M) (S.base.metric t) p := by
+      rfl
+    have hform := (mem_algebraicCurvatureTensorSubmodule_iff_symmetries (I := I) (M := M)).1
+      (metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) p)
+    have h1 := hform.1 (s 0) (s 1) (s 2) (s 3)
+    rw [Fintype.sum_bool]
+    change (1 : ℝ) * (S.base.rm04 t p)
+          (fun a : Fin 4 => s (Equiv.swap (0 : Fin 4) (1 : Fin 4) a)) +
+      (1 : ℝ) * (S.base.rm04 t p) (fun a : Fin 4 => s a) = 0
+    simp only [one_mul]
+    rw [vec4_comp_swap01 s, vec4_self s, hA]
+    change tensor04StdAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
+        (s 1) (s 0) (s 2) (s 3) +
+      tensor04StdAt (I := I) (M := M) (metricRm04At (I := I) (M := M) (S.base.metric t) p)
+        (s 0) (s 1) (s 2) (s 3) = 0
+    rw [h1]
+    ring
+  have hmain := TotalNabla0SRealizes.deriv_linear_combination
+    (I := I) (s := 4) (cov := S.family.connection t)
+    (α := S.base.rm04 t) (nablaAlpha := nablaKRm04Field (I := I) S t 1)
+    (h := nablaKRm04Field_realizes (I := I) S t 0)
+    (perms := perms) (c := c)
+    (hid := hhid) X V x
+  have hsum' : (nablaKRm04Field (I := I) S t 1 x)
+        (Fin.cons u (fun a : Fin 4 => V (Equiv.swap (0 : Fin 4) (1 : Fin 4) a) x)) +
+      (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u (fun a : Fin 4 => V a x)) = 0 := by
+    rw [Fintype.sum_bool] at hmain
+    rw [hX] at hmain
+    change (1 : ℝ) * (nablaKRm04Field (I := I) S t 1 x)
+        (Fin.cons u (fun a : Fin 4 => V (Equiv.swap (0 : Fin 4) (1 : Fin 4) a) x)) +
+      (1 : ℝ) * (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u (fun a : Fin 4 => V a x)) = 0 at hmain
+    simpa using hmain
+  have hVat : (fun a : Fin 4 => V a x) = slots := by
+    funext a
+    exact hV a
+  have hswapV : (fun a : Fin 4 => V (Equiv.swap (0 : Fin 4) (1 : Fin 4) a) x) =
+      slots ∘ Equiv.swap (0 : Fin 4) (1 : Fin 4) := by
+    funext a
+    exact hV (Equiv.swap (0 : Fin 4) (1 : Fin 4) a)
+  calc
+    (nablaKRm04Field (I := I) S t 1 x)
+        (Fin.cons u (slots ∘ Equiv.swap (0 : Fin 4) (1 : Fin 4))) +
+      (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u slots)
+        = (nablaKRm04Field (I := I) S t 1 x)
+            (Fin.cons u (fun a : Fin 4 => V (Equiv.swap (0 : Fin 4) (1 : Fin 4) a) x)) +
+          (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u (fun a : Fin 4 => V a x)) := by
+          rw [← hswapV, ← hVat]
+    _ = 0 := hsum'
+
+end RoughLapAlgebraic
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
