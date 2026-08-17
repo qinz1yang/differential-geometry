@@ -2483,6 +2483,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyCurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RicciEigenSectional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonPositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjCriticalSpan
@@ -2649,6 +2650,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckInverseMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckFrameAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ExtendShiInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HCGCompactness

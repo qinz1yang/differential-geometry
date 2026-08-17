@@ -42,20 +42,18 @@ structure IsBundleHeatReactionOn (F : Type uF) [NormedAddCommGroup F]
     [InnerProductSpace Real F] [CompleteSpace F]
     [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
     [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V]
-    (Flat : (x : M) → Cₛ^∞⟮I; F, V⟯ → Prop)
+    (Flat : Real → (x : M) → ((x : M) → V x) → Prop)
     (D : RealTimeInterval) (G : MetricConnectionFamily (I := I) (M := M) Real)
     (source : Real → (x : M) → V x → V x → Real)
     (u : Real → (x : M) → V x) : Prop where
   scalarJointCont :
-    ∀ ν : Cₛ^∞⟮I; F, V⟯,
-      ContinuousOn (fun q : Real × M => bundleInnerScalarization u ν q.1 q.2)
-        (D.carrier ×ˢ (Set.univ : Set M))
+    ∀ ν : (x : M) → V x, ∀ t : Real, t ∈ D.carrier → ∀ x : M, Flat t x ν →
+      ContinuousAt (fun s : Real => bundleInnerScalarization u ν s x) t
   scalarSliceSmooth :
-    ∀ ν : Cₛ^∞⟮I; F, V⟯, ∀ t : Real, t ∈ D.carrier →
-      ContMDiff I 𝓘(Real, Real) ∞ (bundleInnerScalarization u ν t)
+    ∀ ν : (x : M) → V x, ∀ t : Real, t ∈ D.carrier → ∀ x : M, Flat t x ν →
+      ContMDiffAt I 𝓘(Real, Real) ∞ (bundleInnerScalarization u ν t) x
   equation :
-    ∀ ν : Cₛ^∞⟮I; F, V⟯, ∀ t : Real, t ∈ D.regular → ∀ x : M,
-      Flat x ν →
+    ∀ ν : (x : M) → V x, ∀ t : Real, t ∈ D.regular → ∀ x : M, Flat t x ν →
       HasDerivAt (fun s : Real => bundleInnerScalarization u ν s x)
         (laplacianAt (I := I) G t (bundleInnerScalarization u ν t) x +
           source t x (u t x) (ν x)) t
@@ -64,16 +62,29 @@ structure HasFlatSupportSections (I : ModelWithCorners Real E H) (F : Type uF)
     [NormedAddCommGroup F] [InnerProductSpace Real F] [CompleteSpace F]
     [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
     [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V]
-    (Flat : (x : M) → Cₛ^∞⟮I; F, V⟯ → Prop)
+    (Flat : Real → (x : M) → ((x : M) → V x) → Prop)
     (N : (x : M) → Set (V x)) (support : Real → (x : M) → V x → Real) : Prop where
   exists_flat : ∀ t : Real, ∀ x₀ : M, ∀ ν' : V x₀, ν' ∈ N x₀ →
-    ∃ ν : Cₛ^∞⟮I; F, V⟯,
-      Flat x₀ ν ∧
+    ∃ ν : (x : M) → V x,
+      Flat t x₀ ν ∧
       ν x₀ = ν' ∧
       (∀ x : M, ν x ∈ N x) ∧
       (∀ x : M, ‖ν x‖ ≤ ‖ν'‖) ∧
       ∃ U : Set M, IsOpen U ∧ x₀ ∈ U ∧ ∀ y : M, y ∈ U →
         support t y (ν y) = support t x₀ ν'
+
+omit [FiniteDimensional Real E] [CompleteSpace E] in
+private lemma contMDiffAt_mdifferentiableAt_nhds {f : M → Real} {x : M}
+    (hf : ContMDiffAt I 𝓘(Real, Real) ∞ f x) :
+    ∀ᶠ y in nhds x, MDifferentiableAt I 𝓘(Real, Real) f y := by
+  have hf1 : ContMDiffAt I 𝓘(Real, Real) 1 f x := hf.of_le (by simp)
+  rcases (contMDiffAt_iff_contMDiffOn_nhds (by simp : (1 : WithTop ℕ∞) ≠ ∞)).mp hf1 with
+    ⟨u, hu, hu'⟩
+  have hxint : x ∈ interior u := mem_interior_iff_mem_nhds.mpr hu
+  have hv : ContMDiffOn I 𝓘(Real, Real) 1 f (interior u) := hu'.mono interior_subset
+  filter_upwards [isOpen_interior.mem_nhds hxint] with y hy
+  exact (hv y hy).mdifferentiableWithinAt (by simp : (1 : WithTop ℕ∞) ≠ 0) |>.mdifferentiableAt
+    (isOpen_interior.mem_nhds hy)
 
 omit [CompleteSpace E] in
 theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
@@ -81,7 +92,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
-    (Flat : (x : M) → Cₛ^∞⟮I; F, V⟯ → Prop)
+    (Flat : Real → (x : M) → ((x : M) → V x) → Prop)
     (C : Real → (x : M) → Set (V x)) (N : (x : M) → Set (V x))
     (support support' : Real → (x : M) → V x → Real)
     (hCclosed : ∀ t x, IsClosed (C t x))
@@ -105,9 +116,9 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
       (fun q : Real × M => Metric.infDist (u q.1 q.2) (C q.1 q.2))
       (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
     (hflat : HasFlatSupportSections (I := I) F Flat N support)
-    (hsupport_cont : ∀ ν : Cₛ^∞⟮I; F, V⟯, ∀ x : M,
+    (hsupport_cont : ∀ ν : (x : M) → V x, ∀ x : M,
       ContinuousOn (fun t : Real => support t x (ν x)) (Set.Icc 0 T))
-    (hsupport_time : ∀ ν : Cₛ^∞⟮I; F, V⟯, ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
+    (hsupport_time : ∀ ν : (x : M) → V x, ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
       HasDerivAt (fun s : Real => support s x (ν x)) (support' t x (ν x)) t)
     (htangent : ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M, ∀ p : V x,
       p ∈ C t x → ∀ ν : V x, ν ∈ N x → support t x ν = inner ℝ ν p →
@@ -272,20 +283,21 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
     have heq_z : (z q₀.1) =ᶠ[nhds q₀.2] z' := by
       filter_upwards [hUmem] with y hy
       simp [z, z', c, bundleInnerScalarization, hflatU y hy]
-    have hz'ContMDiff : ContMDiff I 𝓘(Real, Real) ∞ z' := by
-      have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier
+    have hz'ContMDiffAt : ContMDiffAt I 𝓘(Real, Real) ∞ z' q₀.2 := by
+      have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier q₀.2 hν₀flat
       dsimp [z']
-      exact contMDiff_const.mul (hg.sub contMDiff_const)
+      exact contMDiffAt_const.mul (hg.sub contMDiffAt_const)
     have hzContMDiffAt : ContMDiffAt I 𝓘(Real, Real) ∞ (z q₀.1) q₀.2 :=
-      hz'ContMDiff.contMDiffAt.congr_of_eventuallyEq heq_z
+      hz'ContMDiffAt.congr_of_eventuallyEq heq_z
     have hf : MDifferentiableAt I 𝓘(Real, Real) (z q₀.1) q₀.2 :=
       hzContMDiffAt.mdifferentiableAt (by simp)
     have hf_near : ∀ᶠ y in nhds q₀.2, MDifferentiableAt I 𝓘(Real, Real) (z q₀.1) y := by
-      filter_upwards [heq_z.eventuallyEq_nhds] with y hy
-      exact (hz'ContMDiff.contMDiffAt.mdifferentiableAt (by simp)).congr_of_eventuallyEq hy
+      filter_upwards [heq_z.eventuallyEq_nhds,
+        contMDiffAt_mdifferentiableAt_nhds hz'ContMDiffAt] with y hy hz'y
+      exact hz'y.congr_of_eventuallyEq hy
     have hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric q₀.1) (z q₀.1) y) q₀.2 := by
       have hgrad' : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric q₀.1) z' y) q₀.2 :=
-        (gradientFun_contMDiffAt (I := I) (G.metric q₀.1) hz'ContMDiff.contMDiffAt).mdifferentiableAt
+        (gradientFun_contMDiffAt (I := I) (G.metric q₀.1) hz'ContMDiffAt).mdifferentiableAt
           (by simp)
       have hgrad_eq : (fun y : M => gradientFun (I := I) (G.metric q₀.1) (z q₀.1) y) =ᶠ[nhds q₀.2]
           (fun y : M => gradientFun (I := I) (G.metric q₀.1) z' y) := by
@@ -341,18 +353,18 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
       deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc hq₀tpos hztimeMax hzderiv
     have hz'f_near : ∀ᶠ y in nhds q₀.2, MDifferentiableAt I 𝓘(Real, Real)
         (fun y : M => bundleInnerScalarization u ν₀ q₀.1 y - c) y := by
-      have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier
-      exact Filter.Eventually.of_forall (fun y =>
-        (hg.mdifferentiable (by simp) y).sub mdifferentiableAt_const)
+      have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier q₀.2 hν₀flat
+      exact contMDiffAt_mdifferentiableAt_nhds (hg.sub contMDiffAt_const)
     have hz'grad : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric q₀.1)
         (fun y : M => bundleInnerScalarization u ν₀ q₀.1 y - c) y) q₀.2 := by
-      have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier
-      exact gradientFun_mdiffAt (I := I) (G.metric q₀.1) (hg.sub contMDiff_const) q₀.2
+      have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier q₀.2 hν₀flat
+      exact (gradientFun_contMDiffAt (I := I) (G.metric q₀.1) (hg.sub contMDiffAt_const)).mdifferentiableAt
+        (by simp)
     have hzlapEq : laplacianAt (I := I) G q₀.1 (z q₀.1) q₀.2 =
         Real.exp (-KK * q₀.1) *
           laplacianAt (I := I) G q₀.1 (bundleInnerScalarization u ν₀ q₀.1) q₀.2 := by
       have hcongr := laplacian_congr_of_eventuallyEq (I := I) (G.connection q₀.1) (G.metric q₀.1)
-        hzContMDiffAt hz'ContMDiff.contMDiffAt heq_z
+        hzContMDiffAt hz'ContMDiffAt heq_z
       have hsmul : laplacian (I := I) (G.connection q₀.1) (G.metric q₀.1) z' q₀.2 =
           Real.exp (-KK * q₀.1) * laplacian (I := I) (G.connection q₀.1) (G.metric q₀.1)
             (fun y : M => bundleInnerScalarization u ν₀ q₀.1 y - c) q₀.2 := by
@@ -364,12 +376,12 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
           laplacianAt (I := I) G q₀.1 (bundleInnerScalarization u ν₀ q₀.1) q₀.2 := by
         have hg_near : ∀ᶠ y in nhds q₀.2, MDifferentiableAt I 𝓘(Real, Real)
             (bundleInnerScalarization u ν₀ q₀.1) y := by
-          have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier
-          exact Filter.Eventually.of_forall (fun y => hg.mdifferentiable (by simp) y)
+          have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier q₀.2 hν₀flat
+          exact contMDiffAt_mdifferentiableAt_nhds hg
         have hgradg : MDiffAt (T% fun y : M => gradientFun (I := I) (G.metric q₀.1)
             (bundleInnerScalarization u ν₀ q₀.1) y) q₀.2 := by
-          have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier
-          exact gradientFun_mdiffAt (I := I) (G.metric q₀.1) hg q₀.2
+          have hg := hsol.scalarSliceSmooth ν₀ q₀.1 hq₀carrier q₀.2 hν₀flat
+          exact (gradientFun_contMDiffAt (I := I) (G.metric q₀.1) hg).mdifferentiableAt (by simp)
         have hadd := laplacian_add_const (I := I) (G.connection q₀.1) (G.metric q₀.1) (-c)
           hg_near hgradg
         simpa [laplacianAt, sub_eq_add_neg, add_comm] using hadd
@@ -456,7 +468,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
         rw [hsupp T x (u T x)]
         intro ν hν
         rcases hflat.exists_flat T x ν hν with
-          ⟨ν₀, _hν₀flat, hν₀at, hν₀N, _hν₀norm, _U, _hUopen, _hx₀U, _hflatU⟩
+          ⟨ν₀, hν₀flat, hν₀at, hν₀N, _hν₀norm, _U, _hUopen, _hx₀U, _hflatU⟩
         have h1 : Filter.Tendsto (fun s : Real => support s x (ν₀ x)) (𝓝[<] T)
             (𝓝 (support T x (ν₀ x))) := by
           have hwithin : Filter.Tendsto (fun s : Real => support s x (ν₀ x))
@@ -478,23 +490,12 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
           exact hwithin.mono_left hfilter
         have h2 : Filter.Tendsto (fun s : Real => inner ℝ (u s x) (ν₀ x))
             (𝓝[<] T) (𝓝 (inner ℝ (u T x) (ν₀ x))) := by
-          have hpair : Filter.Tendsto (fun s : Real ↦ (s, x))
-              (𝓝[<] T) (𝓝 (T, x)) := by
-            refine Filter.Tendsto.prodMk_nhds ?_ tendsto_const_nhds
-            exact nhdsWithin_le_nhds
-          have hevent : ∀ᶠ s in 𝓝[<] T,
-              (s, x) ∈ Set.Icc (0 : Real) T ×ˢ (Set.univ : Set M) := by
-            have hpos : Set.Ioi (0 : Real) ∈ 𝓝 T := Ioi_mem_nhds hTpos
-            have hpos' : Set.Ioi (0 : Real) ∈ 𝓝[<] T := nhdsWithin_le_nhds hpos
-            filter_upwards [hpos', self_mem_nhdsWithin] with s hs hslt
-            exact ⟨⟨le_of_lt hs, le_of_lt hslt⟩, Set.mem_univ x⟩
-          have hpairWithin : Filter.Tendsto (fun s : Real ↦ (s, x))
-              (𝓝[<] T) (𝓝[Set.Icc 0 T ×ˢ Set.univ] (T, x)) := by
-            rw [tendsto_nhdsWithin_iff]
-            exact ⟨hpair, hevent⟩
-          have hcont := (hsol.scalarJointCont ν₀ (T, x)
-            ⟨⟨le_of_lt hTpos, le_rfl⟩, Set.mem_univ x⟩)
-          simpa [bundleInnerScalarization, real_inner_comm] using hcont.tendsto.comp hpairWithin
+          have hcont : ContinuousAt (fun s : Real => bundleInnerScalarization u ν₀ s x) T :=
+            hsol.scalarJointCont ν₀ T ⟨le_of_lt hTpos, le_rfl⟩ x hν₀flat
+          have hcont' : Tendsto (fun s : Real => bundleInnerScalarization u ν₀ s x)
+              (𝓝[<] T) (𝓝 (bundleInnerScalarization u ν₀ T x)) :=
+            hcont.tendsto.mono_left nhdsWithin_le_nhds
+          simpa [bundleInnerScalarization, real_inner_comm] using hcont'
         have htend' : Filter.Tendsto
             (fun s : Real => inner ℝ (u s x) (ν₀ x) - support s x (ν₀ x))
             (𝓝[<] T) (𝓝 (inner ℝ (u T x) (ν₀ x) - support T x (ν₀ x))) :=
