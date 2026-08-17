@@ -24,7 +24,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 theorem ricciAt_continuousOn_perPoint
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (hS : IsSmoothSolutionOn (I := I) S)
+    (hS : IsSolutionOn (I := I) S)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T) := by
   classical
@@ -32,7 +32,7 @@ theorem ricciAt_continuousOn_perPoint
   have hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
       (fun t x => S.ricci t x) := by
     exact DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.mono
-      (I := I) (M := M) hS.ricciRegular.ricci_cont (by intro s hs; exact hs)
+      (I := I) (M := M) hS.ricciCont (by intro s hs; exact hs)
   have hcont : Continuous (fun p : K =>
       (S.ricci p.1 x) (fun i : Fin 2 => if i = 0 then v else w)) := by
     have heval :=
@@ -57,14 +57,14 @@ theorem ricciAt_continuousOn_perPoint
 noncomputable def solutionUhlenbeckIota
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (hS : IsSmoothSolutionOn (I := I) S)
+    (hS : IsSolutionOn (I := I) S)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (_horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x)) :
     MatrixComp M (Fin 3) :=
   Classical.choose (uhlenbeckIota_isometry (I := I) (M := M) hT S hS
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
     (fun x i j => solutionInverseMetricComponents_entry_continuousOn
-      (I := I) (M := M) hT S hS.isSolution basisAt x i j)
+      (I := I) (M := M) hT S hS basisAt x i j)
     (fun x v w => ricciAt_continuousOn_perPoint (I := I) (M := M) hT S hS x v w)
     (fun a x => basisAt x a)
     (fun t x i j => solutionInverseMetricComponents_mul_metric
@@ -76,7 +76,7 @@ noncomputable def solutionUhlenbeckIota
 theorem solutionUhlenbeckIota_spec
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (hS : IsSmoothSolutionOn (I := I) S)
+    (hS : IsSolutionOn (I := I) S)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x)) :
     (∀ x : M, ∀ a k : Fin 3,
@@ -94,7 +94,7 @@ theorem solutionUhlenbeckIota_spec
   exact Classical.choose_spec (uhlenbeckIota_isometry (I := I) (M := M) hT S hS
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
     (fun x i j => solutionInverseMetricComponents_entry_continuousOn
-      (I := I) (M := M) hT S hS.isSolution basisAt x i j)
+      (I := I) (M := M) hT S hS basisAt x i j)
     (fun x v w => ricciAt_continuousOn_perPoint (I := I) (M := M) hT S hS x v w)
     (fun a x => basisAt x a)
     (fun t x i j => solutionInverseMetricComponents_mul_metric
@@ -106,7 +106,7 @@ theorem solutionUhlenbeckIota_spec
 theorem solutionUhlenbeckIota_identity_initial_gram
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (hS : IsSmoothSolutionOn (I := I) S)
+    (hS : IsSolutionOn (I := I) S)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
     (t : ℝ) (ht : t ∈ Set.Icc 0 T) (x : M) (a b : Fin 3) :
@@ -126,7 +126,7 @@ theorem solutionUhlenbeckIota_identity_initial_gram
 theorem exists_uhlenbeckIota_of_finrank
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (hS : IsSmoothSolutionOn (I := I) S)
+    (hS : IsSolutionOn (I := I) S)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3) :
     ∃ iota : MatrixComp M (Fin 3),
       (∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0) ∧

@@ -552,7 +552,7 @@ theorem ricciOneUpCompatible_of_inverseMetric
 theorem movingFrameGram_continuousOn_of_metricFamily
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (hS : IsSmoothSolutionOn (I := I) S)
+    (hS : IsSolutionOn (I := I) S)
     {Idx : Type*} [Fintype Idx]
     (frameComp : MatrixComp M Idx)
     (hframe_cont : ∀ x : M, ContinuousOn (fun t : ℝ => frameComp t x) (Set.Icc 0 T))
@@ -580,7 +580,7 @@ theorem movingFrameGram_continuousOn_of_metricFamily
     (hproj b j).comp_continuousOn (hframe_cont x)
   have hmetric_cont : ContinuousOn (fun s : ℝ =>
       metricCompInFrame (I := I) S frame s x i j) (Set.Icc 0 T) := by
-    have hc := hS.isSolution.smoothMetric.coeff_cont x (frame i x) (frame j x)
+    have hc := hS.smoothMetric.coeff_cont x (frame i x) (frame j x)
     have hsub : Set.Icc 0 T ⊆ (RealTimeInterval.closed 0 T hT.le).carrier := by
       intro s hs
       exact hs
@@ -592,7 +592,7 @@ theorem uhlenbeckIota_isometry
     {T : ℝ} (hT : 0 < T)
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
-    (hS : IsSmoothSolutionOn (I := I) S)
+    (hS : IsSolutionOn (I := I) S)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
     (gInv : Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (hginv_cont : ∀ x : M, ∀ i j : Idx, ContinuousOn
@@ -628,7 +628,7 @@ theorem uhlenbeckIota_isometry
   have hmetric : MetricCompRicciFlowInFrameOn (D := RealTimeInterval.closed 0 T hT.le)
       (metricCompInFrame (I := I) S frame) (ricciCompInFrame (I := I) S frame) := by
     intro τ x i j
-    exact metricCompInFrame_timeDeriv (I := I) S hS.isSolution frame τ x i j
+    exact metricCompInFrame_timeDeriv (I := I) S hS frame τ x i j
   have hgram_cont : ∀ x : M, ∀ a b : Idx,
       ContinuousOn (fun s : ℝ =>
         movingFrameGramInFrame (metricCompInFrame (I := I) S frame) iota s x a b)
