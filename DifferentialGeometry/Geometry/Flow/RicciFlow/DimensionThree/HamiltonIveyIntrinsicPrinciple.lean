@@ -6704,6 +6704,172 @@ theorem regionNormalDirections_conj_scale_condition
     simp
 
 end FlatSectionHelpers
+section FlatSectionProjection
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem compLinearMap_mem_algebraicCurvatureTensorSubmodule
+    {x : M} (L : TangentSpace I x →L[ℝ] TangentSpace I x)
+    (X : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    (X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+        (fun _ : Fin 4 => L) ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
+  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) (X : Tensor04At (I := I) (M := M) x)) :=
+    (mem_algebraicCurvatureTensorSubmodule (I := I) (M := M)).mp X.2
+  rw [show (X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+        (fun _ : Fin 4 => L) ∈
+        algebraicCurvatureTensorSubmodule (I := I) (M := M) x ↔
+      IsAlgCurvForm (tensor04StdAt (I := I) (M := M)
+        ((X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+          (fun _ : Fin 4 => L))) from
+    mem_algebraicCurvatureTensorSubmodule (I := I) (M := M)]
+  change IsAlgCurvForm (fun v y z w =>
+    tensor04StdAt (I := I) (M := M)
+      ((X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+        (fun _ : Fin 4 => L)) v y z w)
+  simp_rw [tensor04StdAt_compU_apply_all]
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · intro x₁ x₂ y z w
+    rw [map_add (L : TangentSpace I x →L[ℝ] TangentSpace I x)]
+    exact hform.add_left _ _ _ _ _
+  · intro a u y z w
+    rw [map_smul (L : TangentSpace I x →L[ℝ] TangentSpace I x)]
+    exact hform.smul_left _ _ _ _ _
+  · intro u v y z
+    exact hform.anti_first _ _ _ _
+  · intro u v y z
+    exact hform.anti_last _ _ _ _
+  · intro u v y z
+    exact hform.bianchi _ _ _ _
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem fiberProjW_compUhlenbeck_commute
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M)
+    (A : Tensor04At (I := I) (M := M) x) :
+    (fiberProjW (I := I) (S.base.metric 0) x
+        (A.compContinuousLinearMap (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))
+      : Tensor04At (I := I) (M := M) x) =
+      (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
+        (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t) := by
+  classical
+  let U : TangentSpace I x →L[ℝ] TangentSpace I x := uhlenbeckEndomorphismAt (basisAt x) iota t
+  let compU : Tensor04At (I := I) (M := M) x → Tensor04At (I := I) (M := M) x :=
+    fun B => B.compContinuousLinearMap (fun _ : Fin 4 => U)
+  let e : TangentSpace I x ≃ₗ[ℝ] TangentSpace I x :=
+    LinearEquiv.ofBijective U.toLinearMap (uhlenbeckEndomorphism_invertible hT S basisAt iota hiota0 hgram ht x)
+  let Uinv : TangentSpace I x →L[ℝ] TangentSpace I x := e.symm.toContinuousLinearMap
+  let compUinv : Tensor04At (I := I) (M := M) x → Tensor04At (I := I) (M := M) x :=
+    fun B => B.compContinuousLinearMap (fun _ : Fin 4 => Uinv)
+  have hUinvU : ∀ v : TangentSpace I x, Uinv (U v) = v := by
+    intro v
+    change e.symm (e v) = v
+    exact e.symm_apply_apply v
+  have hcompUinv : ∀ B : Tensor04At (I := I) (M := M) x, compU (compUinv B) = B := by
+    intro B
+    apply Tensor0SSpace.ext 4 x
+    intro v
+    change (B.compContinuousLinearMap (fun _ : Fin 4 => Uinv)).compContinuousLinearMap
+        (fun _ : Fin 4 => U) v = B v
+    rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply]
+    congr 1
+    funext i
+    exact hUinvU (v i)
+  have hchar : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) x,
+      inner0S (I := I) (S.base.metric 0) x 4
+        (fiberProjW (I := I) (S.base.metric 0) x
+          (A.compContinuousLinearMap (fun _ : Fin 4 => U))) q =
+      inner0S (I := I) (S.base.metric 0) x 4
+        ((fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
+          .compContinuousLinearMap (fun _ : Fin 4 => U)) q := by
+    intro q
+    let q' : Tensor04At (I := I) (M := M) x :=
+      (q : Tensor04At (I := I) (M := M) x).compContinuousLinearMap (fun _ : Fin 4 => Uinv)
+    have hq' : q' ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
+      exact compLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) Uinv
+        ⟨q, q.2⟩
+    have hqU : q'.compContinuousLinearMap (fun _ : Fin 4 => U) = (q : Tensor04At (I := I) (M := M) x) := by
+      dsimp [q']
+      exact hcompUinv (q : Tensor04At (I := I) (M := M) x)
+    have hiso := fiberInner_compUhlenbeck_isometry_full hT S basisAt iota hiota0 hgram horth0 ht x
+      (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x) q'
+    calc
+      inner0S (I := I) (S.base.metric 0) x 4
+          (fiberProjW (I := I) (S.base.metric 0) x
+            (A.compContinuousLinearMap (fun _ : Fin 4 => U))) q
+          = inner0S (I := I) (S.base.metric 0) x 4
+              (A.compContinuousLinearMap (fun _ : Fin 4 => U)) q := by
+              exact fiberProjW_spec (I := I) (S.base.metric 0) x
+                (A.compContinuousLinearMap (fun _ : Fin 4 => U)) q
+      _ = inner0S (I := I) (S.base.metric 0) x 4
+              (A.compContinuousLinearMap (fun _ : Fin 4 => U))
+              (q'.compContinuousLinearMap (fun _ : Fin 4 => U)) := by
+              rw [hqU]
+      _ = inner0S (I := I) (S.base.metric t) x 4 A q' := by
+              exact hiso.symm
+      _ = inner0S (I := I) (S.base.metric t) x 4
+              (fiberProjW (I := I) (S.base.metric t) x A) q' := by
+              rw [fiberProjW_spec (I := I) (S.base.metric t) x A ⟨q', hq'⟩]
+      _ = inner0S (I := I) (S.base.metric 0) x 4
+              ((fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
+                .compContinuousLinearMap (fun _ : Fin 4 => U)) q := by
+              simpa [q', hqU] using (hiso.symm)
+  let p : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    fiberProjW (I := I) (S.base.metric 0) x
+      (A.compContinuousLinearMap (fun _ : Fin 4 => U))
+  let u : algebraicCurvatureTensorSubmodule (I := I) (M := M) x := ⟨
+    (fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
+      .compContinuousLinearMap (fun _ : Fin 4 => U),
+    compLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) U
+      (fiberProjW (I := I) (S.base.metric t) x A)⟩
+  have hdiff : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) x,
+      inner0S (I := I) (S.base.metric 0) x 4 ((p - u) : Tensor04At (I := I) (M := M) x) q = 0 := by
+    intro q
+    have h1 := hchar q
+    have h2 : inner0S (I := I) (S.base.metric 0) x 4 u q =
+        inner0S (I := I) (S.base.metric 0) x 4
+          ((fiberProjW (I := I) (S.base.metric t) x A : Tensor04At (I := I) (M := M) x)
+            .compContinuousLinearMap (fun _ : Fin 4 => U)) q := by
+      rfl
+    have hsub : inner0S (I := I) (S.base.metric 0) x 4 ((p - u) : Tensor04At (I := I) (M := M) x) q =
+        inner0S (I := I) (S.base.metric 0) x 4 (p : Tensor04At (I := I) (M := M) x) q -
+          inner0S (I := I) (S.base.metric 0) x 4 (u : Tensor04At (I := I) (M := M) x) q := by
+      change (tensor0SMetricData (I := I) (S.base.metric 0) x 4).flat
+          ((p : Tensor04At (I := I) (M := M) x) - u) (q : Tensor04At (I := I) (M := M) x) =
+        (tensor0SMetricData (I := I) (S.base.metric 0) x 4).flat
+          (p : Tensor04At (I := I) (M := M) x) (q : Tensor04At (I := I) (M := M) x) -
+        (tensor0SMetricData (I := I) (S.base.metric 0) x 4).flat
+          (u : Tensor04At (I := I) (M := M) x) (q : Tensor04At (I := I) (M := M) x)
+      simp [map_sub]
+    rw [hsub]
+    rw [h2] at h1
+    linarith
+  have hself : inner0S (I := I) (S.base.metric 0) x 4
+      ((p - u) : Tensor04At (I := I) (M := M) x) (p - u) = 0 := by
+    simpa using hdiff ⟨(p - u : Tensor04At (I := I) (M := M) x), by
+      exact Submodule.sub_mem (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) p.2 u.2⟩
+  have hzero : (p - u : Tensor04At (I := I) (M := M) x) = 0 := by
+    change (tensor0SMetricData (I := I) (S.base.metric 0) x 4).inner
+        ((p - u : Tensor04At (I := I) (M := M) x)) (p - u) = 0 at hself
+    exact ((tensor0SMetricData (I := I) (S.base.metric 0) x 4).inner_self_eq_zero_iff
+      (p - u : Tensor04At (I := I) (M := M) x)).mp hself
+  have hpeq : p = u := by
+    apply Subtype.ext
+    exact sub_eq_zero.mp hzero
+  simpa [p, u] using congrArg Subtype.val hpeq
+
+end FlatSectionProjection
+
 
 end DifferentialGeometry.PDE.RicciFlow
 
