@@ -2668,6 +2668,315 @@ theorem pulledRmComp_entry_continuousOn_time
 
 end FiberHeatReactionSolution
 
+section FiberHeatReactionSolutionProof
+
+open DifferentialGeometry.Tensor.Coordinates
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private def succPerm {s : ℕ} (e : Equiv.Perm (Fin s)) : Equiv.Perm (Fin (s + 1)) where
+  toFun := fun i => Fin.cases (0 : Fin (s + 1)) (fun i' : Fin s => Fin.succ (e i')) i
+  invFun := fun i => Fin.cases (0 : Fin (s + 1)) (fun i' : Fin s => Fin.succ (e.symm i')) i
+  left_inv := by
+    intro i
+    cases i using Fin.cases with
+    | zero => rfl
+    | succ i' => simp
+  right_inv := by
+    intro i
+    cases i using Fin.cases with
+    | zero => rfl
+    | succ i' => simp
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem fin_cons_comp_succPerm {s : ℕ} {V : Type*} (u : V) (f : Fin s → V)
+    (e : Equiv.Perm (Fin s)) :
+    (Fin.cons u f) ∘ succPerm e = Fin.cons u (f ∘ e) := by
+  funext i
+  cases i using Fin.cases with
+  | zero => simp [succPerm]
+  | succ i' => simp [succPerm, Function.comp_def]
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem fin_cons_tail {s : ℕ} {V : Type*} (f : Fin (s + 1) → V) :
+    Fin.cons (f 0) (fun i : Fin s => f (i.succ)) = f := by
+  funext i
+  cases i using Fin.cases with
+  | zero => simp
+  | succ i' => simp
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem update_comp_perm {s : ℕ} {V : Type*} (e : Equiv.Perm (Fin s))
+    (slots : Fin s → V) (a : Fin s) (w : V) :
+    Function.update (fun b : Fin s => slots (e b)) a w =
+      (Function.update slots (e a) w) ∘ e := by
+  funext b
+  by_cases hb : b = a
+  · subst hb
+    simp [Function.update]
+  · have hne : e b ≠ e a := fun h => hb (e.injective h)
+    simp [Function.update, hb, hne]
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private def finCycle012 : Equiv.Perm (Fin 4) where
+  toFun := fun i => if i = 0 then 1 else if i = 1 then 2 else if i = 2 then 0 else 3
+  invFun := fun i => if i = 0 then 2 else if i = 1 then 0 else if i = 2 then 1 else 3
+  left_inv := by intro i; fin_cases i <;> simp
+  right_inv := by intro i; fin_cases i <;> simp
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem vec4_comp_swap01 {x : M} (slots : Fin 4 → TangentSpace I x) :
+    (fun a : Fin 4 => slots (Equiv.swap (0 : Fin 4) (1 : Fin 4) a)) =
+      vec4 (slots 1) (slots 0) (slots 2) (slots 3) := by
+  funext a
+  cases a using Fin.cases with
+  | zero => simp [vec4]
+  | succ a0 =>
+      cases a0 using Fin.cases with
+      | zero => simp [vec4]
+      | succ a1 =>
+          cases a1 using Fin.cases with
+          | zero => simp [vec4, Equiv.swap_apply_def]
+          | succ a2 =>
+              cases a2 using Fin.cases with
+              | zero => simp [vec4, Equiv.swap_apply_def]
+              | succ a3 => exact Fin.elim0 a3
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem vec4_comp_swap23 {x : M} (slots : Fin 4 → TangentSpace I x) :
+    (fun a : Fin 4 => slots (Equiv.swap (2 : Fin 4) (3 : Fin 4) a)) =
+      vec4 (slots 0) (slots 1) (slots 3) (slots 2) := by
+  funext a
+  cases a using Fin.cases with
+  | zero => simp [vec4, Equiv.swap_apply_def]
+  | succ a0 =>
+      cases a0 using Fin.cases with
+      | zero => simp [vec4, Equiv.swap_apply_def]
+      | succ a1 =>
+          cases a1 using Fin.cases with
+          | zero => simp [vec4]
+          | succ a2 =>
+              cases a2 using Fin.cases with
+              | zero => simp [vec4]
+              | succ a3 => exact Fin.elim0 a3
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem vec4_comp_cycle012 {x : M} (slots : Fin 4 → TangentSpace I x) :
+    (fun a : Fin 4 => slots (finCycle012 a)) =
+      vec4 (slots 1) (slots 2) (slots 0) (slots 3) := by
+  funext a
+  cases a using Fin.cases with
+  | zero => simp [vec4, finCycle012]
+  | succ a0 =>
+      cases a0 using Fin.cases with
+      | zero => simp [vec4, finCycle012]
+      | succ a1 =>
+          cases a1 using Fin.cases with
+          | zero => simp [vec4, finCycle012]
+          | succ a2 =>
+              cases a2 using Fin.cases with
+              | zero => simp [vec4, finCycle012]
+              | succ a3 => exact Fin.elim0 a3
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem vec4_comp_cycle012_sq {x : M} (slots : Fin 4 → TangentSpace I x) :
+    (fun a : Fin 4 => slots ((finCycle012.trans finCycle012) a)) =
+      vec4 (slots 2) (slots 0) (slots 1) (slots 3) := by
+  funext a
+  cases a using Fin.cases with
+  | zero => simp [vec4, finCycle012]
+  | succ a0 =>
+      cases a0 using Fin.cases with
+      | zero => simp [vec4, finCycle012]
+      | succ a1 =>
+          cases a1 using Fin.cases with
+          | zero => simp [vec4, finCycle012]
+          | succ a2 =>
+              cases a2 using Fin.cases with
+              | zero => simp [vec4, finCycle012]
+              | succ a3 => exact Fin.elim0 a3
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem metricTraceInput_eq_cons_cons {x : M} {s : ℕ}
+    (X Y : TangentSpace I x) (tail : Fin s → TangentSpace I x) :
+    metricTraceInput (I := I) X Y tail = Fin.cons X (Fin.cons Y tail) := by
+  rfl
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem extDerivFun_zero_at {x : M} (v : TangentSpace I x) :
+    extDerivFun (I := I) (fun _ : M => (0 : Real)) x v = 0 := by
+  rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv (I := I) (fun _ : M => (0 : Real)) x v]
+  simp
+  rfl
+
+omit [CompleteSpace E] [FiniteDimensional Real E] [IsManifold I ∞ M] [IsManifold I 1 M]
+  [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+private theorem mdiffAt_const_mul {f : M → ℝ} {x : M} (c : ℝ)
+    (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
+    MDifferentiableAt I 𝓘(Real, Real) (fun p : M => c * f p) x := by
+  have hfun : (fun p : M => c * f p) = f * (fun _ : M => c) := by
+    funext p
+    simp [Pi.mul_apply, mul_comm]
+  rw [hfun]
+  exact hf.mul (mdifferentiableAt_const (I := I) (I' := 𝓘(Real, Real)) (c := c) (x := x))
+
+omit [CompleteSpace E] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem TotalNabla0SRealizes.deriv_linear_combination {s : ℕ}
+    {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
+    {α : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) s}
+    {nablaAlpha : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) (s + 1)}
+    (h : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      s cov α nablaAlpha)
+    {ι : Type*} [Fintype ι]
+    (perms : ι → Equiv.Perm (Fin s)) (c : ι → ℝ)
+    (hid : ∀ p : M, ∀ slots : Fin s → TangentSpace I p,
+      (∑ k : ι, c k * α p (fun a : Fin s => slots (perms k a))) = 0)
+    (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
+    (V : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
+    (x : M) :
+    (∑ k : ι, c k * nablaAlpha x (Fin.cons (X x) (fun a : Fin s => V (perms k a) x))) = 0 := by
+  classical
+  have hEV : ∀ k : ι,
+      nablaAlpha x (Fin.cons (X x) (fun a : Fin s => V (perms k a) x)) =
+        extDerivFun (I := I) (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x) -
+          ∑ a : Fin s, α x (Function.update (fun b : Fin s => V (perms k b) x) a
+            ((cov (fun p : M => V (perms k a) p) x) (X x))) := by
+    intro k
+    exact TotalNabla0SRealizes.eval_smooth_slots (I := I) h X (fun a : Fin s => V (perms k a)) x
+  have hgdiff : ∀ k : ι, MDifferentiableAt I 𝓘(Real, Real)
+      (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x := by
+    intro k
+    exact (tensor0SField_eval_smooth_slots_contMDiffAt (I := I) α
+      (fun a : Fin s => V (perms k a)) x).mdifferentiableAt (by simp)
+  have hgzero : (fun p : M => ∑ k : ι, c k * α p (fun a : Fin s => V (perms k a) p)) =ᶠ[𝓝 x]
+      fun _ : M => (0 : Real) := by
+    filter_upwards with p
+    exact hid p (fun a : Fin s => V a p)
+  have hExt : (∑ k : ι, c k * extDerivFun (I := I)
+      (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x)) = 0 := by
+    calc
+      (∑ k : ι, c k * extDerivFun (I := I)
+          (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x))
+          = ∑ k : ι, extDerivFun (I := I)
+              (fun p : M => c k * α p (fun a : Fin s => V (perms k a) p)) x (X x) := by
+            refine Finset.sum_congr rfl ?_
+            intro k _
+            rw [extDerivFun_const_mul_apply (I := I) (c k) (X x) (hgdiff k)]
+      _ = extDerivFun (I := I)
+            (fun p : M => ∑ k : ι, c k * α p (fun a : Fin s => V (perms k a) p)) x (X x) := by
+          have hfun : (fun p : M => ∑ k : ι, c k * α p (fun a : Fin s => V (perms k a) p)) =
+              Finset.univ.sum (fun k : ι => fun p : M => c k * α p (fun a : Fin s => V (perms k a) p)) := by
+            funext p
+            simp [Finset.sum_apply]
+          rw [hfun]
+          rw [extDerivFun_finset_sum (I := I) (t := Finset.univ)
+            (f := fun k : ι => fun p : M => c k * α p (fun a : Fin s => V (perms k a) p))
+            (x := x) (v := X x) (by
+              intro k _
+              exact mdiffAt_const_mul (c k) (hgdiff k))]
+      _ = 0 := by
+          rw [extDerivFun_congr_eventually (I := I) (v := X x) hgzero]
+          exact extDerivFun_zero_at (I := I) (X x)
+  have hreindex : ∀ k : ι,
+      (∑ a : Fin s, α x (Function.update (fun b : Fin s => V (perms k b) x) a
+          ((cov (fun p : M => V (perms k a) p) x) (X x)))) =
+        ∑ a' : Fin s, α x ((Function.update (fun b : Fin s => V b x) a'
+          ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k)) := by
+    intro k
+    calc
+      (∑ a : Fin s, α x (Function.update (fun b : Fin s => V (perms k b) x) a
+          ((cov (fun p : M => V (perms k a) p) x) (X x))))
+          = ∑ a' : Fin s, α x (Function.update (fun b : Fin s => V (perms k b) x) ((perms k).symm a')
+              ((cov (fun p : M => V a' p) x (X x)))) := by
+            rw [← Equiv.sum_comp (perms k).symm (fun a : Fin s =>
+              α x (Function.update (fun b : Fin s => V (perms k b) x) a
+                ((cov (fun p : M => V (perms k a) p) x (X x)))))]
+            refine Finset.sum_congr rfl ?_
+            intro a' _
+            congr 1
+            simp [Equiv.apply_symm_apply]
+      _ = ∑ a' : Fin s, α x ((Function.update (fun b : Fin s => V b x) a'
+              ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k)) := by
+            refine Finset.sum_congr rfl ?_
+            intro a' _
+            rw [update_comp_perm (perms k) (fun b : Fin s => V b x) ((perms k).symm a')
+              (cov (fun p : M => V a' p) x (X x))]
+            simp [Equiv.apply_symm_apply, Function.comp_def]
+  have hCorr : (∑ k : ι, c k * (∑ a : Fin s, α x
+      (Function.update (fun b : Fin s => V (perms k b) x) a
+        ((cov (fun p : M => V (perms k a) p) x) (X x))))) = 0 := by
+    calc
+      (∑ k : ι, c k * (∑ a : Fin s, α x
+          (Function.update (fun b : Fin s => V (perms k b) x) a
+            ((cov (fun p : M => V (perms k a) p) x) (X x)))))
+          = ∑ k : ι, c k * (∑ a' : Fin s, α x ((Function.update (fun b : Fin s => V b x) a'
+              ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k))) := by
+            refine Finset.sum_congr rfl ?_
+            intro k _
+            rw [hreindex k]
+      _ = ∑ a' : Fin s, ∑ k : ι, c k * α x ((Function.update (fun b : Fin s => V b x) a'
+              ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k)) := by
+            have hmul : (∑ k : ι, c k * (∑ a' : Fin s, α x ((Function.update (fun b : Fin s => V b x) a'
+                  ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k)))) =
+                ∑ k : ι, ∑ a' : Fin s, c k * α x ((Function.update (fun b : Fin s => V b x) a'
+                  ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k)) := by
+              refine Finset.sum_congr rfl ?_
+              intro k _
+              calc
+                c k * (∑ a' : Fin s, α x ((Function.update (fun b : Fin s => V b x) a'
+                      ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k)))
+                    = (∑ a' : Fin s, α x ((Function.update (fun b : Fin s => V b x) a'
+                          ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k))) * c k := by
+                        rw [mul_comm]
+                _ = ∑ a' : Fin s, (α x ((Function.update (fun b : Fin s => V b x) a'
+                          ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k))) * c k := by
+                        rw [Finset.sum_mul]
+                _ = ∑ a' : Fin s, c k * α x ((Function.update (fun b : Fin s => V b x) a'
+                          ((cov (fun p : M => V a' p) x) (X x))) ∘ (perms k)) := by
+                        refine Finset.sum_congr rfl ?_
+                        intro a' _
+                        rw [mul_comm]
+            rw [hmul]
+            rw [Finset.sum_comm]
+      _ = 0 := by
+            refine Finset.sum_eq_zero ?_
+            intro a' _
+            simpa [Function.comp_def] using
+              (hid x (Function.update (fun b : Fin s => V b x) a'
+                ((cov (fun p : M => V a' p) x) (X x))))
+  calc
+    (∑ k : ι, c k * nablaAlpha x (Fin.cons (X x) (fun a : Fin s => V (perms k a) x)))
+        = ∑ k : ι, c k * (extDerivFun (I := I)
+            (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x) -
+          ∑ a : Fin s, α x (Function.update (fun b : Fin s => V (perms k b) x) a
+            ((cov (fun p : M => V (perms k a) p) x) (X x)))) := by
+          refine Finset.sum_congr rfl ?_
+          intro k _
+          rw [hEV k]
+    _ = (∑ k : ι, c k * extDerivFun (I := I)
+          (fun p : M => α p (fun a : Fin s => V (perms k a) p)) x (X x)) -
+        (∑ k : ι, c k * (∑ a : Fin s, α x
+          (Function.update (fun b : Fin s => V (perms k b) x) a
+            ((cov (fun p : M => V (perms k a) p) x) (X x))))) := by
+          simp [Finset.sum_sub_distrib, mul_sub]
+    _ = 0 := by
+          rw [hExt, hCorr]
+          ring
+
+end FiberHeatReactionSolutionProof
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
