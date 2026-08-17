@@ -42,6 +42,7 @@ structure IsBundleHeatReactionOn (F : Type uF) [NormedAddCommGroup F]
     [InnerProductSpace Real F] [CompleteSpace F]
     [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
     [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V]
+    (Flat : (x : M) → Cₛ^∞⟮I; F, V⟯ → Prop)
     (D : RealTimeInterval) (G : MetricConnectionFamily (I := I) (M := M) Real)
     (source : Real → (x : M) → V x → V x → Real)
     (u : Real → (x : M) → V x) : Prop where
@@ -54,6 +55,7 @@ structure IsBundleHeatReactionOn (F : Type uF) [NormedAddCommGroup F]
       ContMDiff I 𝓘(Real, Real) ∞ (bundleInnerScalarization u ν t)
   equation :
     ∀ ν : Cₛ^∞⟮I; F, V⟯, ∀ t : Real, t ∈ D.regular → ∀ x : M,
+      Flat x ν →
       HasDerivAt (fun s : Real => bundleInnerScalarization u ν s x)
         (laplacianAt (I := I) G t (bundleInnerScalarization u ν t) x +
           source t x (u t x) (ν x)) t
@@ -62,9 +64,11 @@ structure HasFlatSupportSections (I : ModelWithCorners Real E H) (F : Type uF)
     [NormedAddCommGroup F] [InnerProductSpace Real F] [CompleteSpace F]
     [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
     [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V]
+    (Flat : (x : M) → Cₛ^∞⟮I; F, V⟯ → Prop)
     (N : (x : M) → Set (V x)) (support : Real → (x : M) → V x → Real) : Prop where
   exists_flat : ∀ t : Real, ∀ x₀ : M, ∀ ν' : V x₀, ν' ∈ N x₀ →
     ∃ ν : Cₛ^∞⟮I; F, V⟯,
+      Flat x₀ ν ∧
       ν x₀ = ν' ∧
       (∀ x : M, ν x ∈ N x) ∧
       (∀ x : M, ‖ν x‖ ≤ ‖ν'‖) ∧
@@ -77,6 +81,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 < T)
+    (Flat : (x : M) → Cₛ^∞⟮I; F, V⟯ → Prop)
     (C : Real → (x : M) → Set (V x)) (N : (x : M) → Set (V x))
     (support support' : Real → (x : M) → V x → Real)
     (hCclosed : ∀ t x, IsClosed (C t x))
@@ -89,7 +94,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
       (∀ q : V x, q ∈ C t x → inner ℝ ν (q - p) ≤ 0) → ν ∈ N x)
     (source : Real → (x : M) → V x → V x → Real)
     (u : Real → (x : M) → V x)
-    (hsol : IsBundleHeatReactionOn F (RealTimeInterval.closed 0 T hT.le) G source u)
+    (hsol : IsBundleHeatReactionOn F Flat (RealTimeInterval.closed 0 T hT.le) G source u)
     (R : ℝ)
     (hbound : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, ‖u t x‖ ≤ R)
     (hCzero : ∀ t x, (0 : V x) ∈ C t x)
@@ -99,7 +104,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
     (hCdist_cont : ContinuousOn
       (fun q : Real × M => Metric.infDist (u q.1 q.2) (C q.1 q.2))
       (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
-    (hflat : HasFlatSupportSections (I := I) F N support)
+    (hflat : HasFlatSupportSections (I := I) F Flat N support)
     (hsupport_cont : ∀ ν : Cₛ^∞⟮I; F, V⟯, ∀ x : M,
       ContinuousOn (fun t : Real => support t x (ν x)) (Set.Icc 0 T))
     (hsupport_time : ∀ ν : Cₛ^∞⟮I; F, V⟯, ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
@@ -175,7 +180,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
       exact (norm_eq_iInf_iff_real_inner_le_zero (hCconvex q₀.1 q₀.2) hpC).mp hpmin
     have hν'N : ν' ∈ N q₀.2 := hNnormal q₀.1 q₀.2 p hpC ν' hnormal
     rcases hflat.exists_flat q₀.1 q₀.2 ν' hν'N with
-      ⟨ν₀, hν₀at, hν₀N, hν₀norm, U, hUopen, hx₀U, hflatU⟩
+      ⟨ν₀, hν₀flat, hν₀at, hν₀N, hν₀norm, U, hUopen, hx₀U, hflatU⟩
     have hsupp_eq : support q₀.1 q₀.2 ν' = inner ℝ ν' p := by
       apply le_antisymm
       · rw [hsupport_sup q₀.1 q₀.2 ν' hν'N]
@@ -301,7 +306,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
     have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
       intro s hs
       exact hzmax (s, q₀.2) ⟨⟨hs.1, hs.2.trans hq₀Q.1.2⟩, mem_univ q₀.2⟩
-    have hscalarEq := hsol.equation ν₀ q₀.1 hq₀reg q₀.2
+    have hscalarEq := hsol.equation ν₀ q₀.1 hq₀reg q₀.2 hν₀flat
     have hsupport_time_s : HasDerivAt (fun r : Real => support r q₀.2 (ν₀ q₀.2))
         (support' q₀.1 q₀.2 (ν₀ q₀.2)) q₀.1 :=
       hsupport_time ν₀ q₀.1 hq₀carrier hq₀tpos q₀.2
@@ -451,7 +456,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
         rw [hsupp T x (u T x)]
         intro ν hν
         rcases hflat.exists_flat T x ν hν with
-          ⟨ν₀, hν₀at, hν₀N, _hν₀norm, _U, _hUopen, _hx₀U, _hflatU⟩
+          ⟨ν₀, _hν₀flat, hν₀at, hν₀N, _hν₀norm, _U, _hUopen, _hx₀U, _hflatU⟩
         have h1 : Filter.Tendsto (fun s : Real => support s x (ν₀ x)) (𝓝[<] T)
             (𝓝 (support T x (ν₀ x))) := by
           have hwithin : Filter.Tendsto (fun s : Real => support s x (ν₀ x))
