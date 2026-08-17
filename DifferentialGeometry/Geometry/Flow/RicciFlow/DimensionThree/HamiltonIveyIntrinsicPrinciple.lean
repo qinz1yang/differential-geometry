@@ -6573,6 +6573,137 @@ theorem hamiltonIveyConvexMatrixRegionSupportEuclid_conj
   have heig := symmEuclid_matrixToEuclid_conj_eigenvalues₀ M O hO
   simp_rw [heig]
 
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem symmEuclid_matrixToEuclid_smul
+    (c : ℝ) (X : Matrix (Fin 3) (Fin 3) ℝ) :
+    symmEuclid (matrixToEuclid (c • X)) = c • symmEuclid (matrixToEuclid X) := by
+  unfold symmEuclid
+  ext i j
+  simp only [euclidToMatrix_matrixToEuclid, Matrix.smul_apply, Matrix.add_apply,
+    Matrix.transpose_apply, smul_eq_mul]
+  ring
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem eigenvalues₀_smul_of_nonneg
+    {S : Matrix (Fin 3) (Fin 3) ℝ} (hS : S.IsHermitian) {c : ℝ} (hc : 0 ≤ c)
+    (hcS : (c • S).IsHermitian) :
+    hcS.eigenvalues₀ = c • hS.eigenvalues₀ := by
+  classical
+  rcases hermitian_orthogonal_diagonalization hS with ⟨O, hO, hdiag⟩
+  have hOt : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hO
+  let D₀ : Matrix (Fin 3) (Fin 3) ℝ := Matrix.diagonal hS.eigenvalues₀
+  have hdiag' : O.transpose * S * O = D₀ := by simpa [D₀] using hdiag
+  have hSrep : S = O * D₀ * O.transpose := by
+    have h1 : S = (O * O.transpose) * S * (O * O.transpose) := by
+      rw [hO]
+      simp
+    calc
+      S = (O * O.transpose) * S * (O * O.transpose) := h1
+      _ = O * (O.transpose * S * O) * O.transpose := by
+            simp [Matrix.mul_assoc]
+      _ = O * D₀ * O.transpose := by
+            rw [hdiag']
+  have hdiagc : O.transpose * (c • S) * O = Matrix.diagonal (c • hS.eigenvalues₀) := by
+    calc
+      O.transpose * (c • S) * O
+          = O.transpose * (c • (O * D₀ * O.transpose)) * O := by
+              rw [show c • S = c • (O * D₀ * O.transpose) from by rw [hSrep]]
+      _ = O.transpose * (O * (c • D₀) * O.transpose) * O := by
+              rw [← Matrix.smul_mul, ← Matrix.mul_smul]
+      _ = c • D₀ := by
+            calc
+              O.transpose * (O * (c • D₀) * O.transpose) * O
+                  = (O.transpose * O) * (c • D₀) * (O.transpose * O) := by
+                      simp [Matrix.mul_assoc]
+              _ = c • D₀ := by
+                      rw [hOt, hO]
+                      simp
+      _ = Matrix.diagonal (c • hS.eigenvalues₀) := by
+            ext i j
+            simp [D₀, Matrix.diagonal, smul_eq_mul]
+  have hanti : Antitone (c • hS.eigenvalues₀) := by
+    intro i j hij
+    change c * hS.eigenvalues₀ j ≤ c * hS.eigenvalues₀ i
+    exact mul_le_mul_of_nonneg_left (hS.eigenvalues₀_antitone hij) hc
+  have hdiagE : (Matrix.isHermitian_diagonal (c • hS.eigenvalues₀)).eigenvalues₀ =
+      c • hS.eigenvalues₀ :=
+    diagonal_eigenvalues₀_eq_of_antitone (c • hS.eigenvalues₀) hanti
+  have hOcS : (O.transpose * (c • S) * O).IsHermitian := by
+    have hconj' : (O.conjTranspose * (c • S) * O).IsHermitian :=
+      Matrix.isHermitian_conjTranspose_mul_mul O hcS
+    simpa using hconj'
+  have hStep1 : hcS.eigenvalues₀ = hOcS.eigenvalues₀ :=
+    (eigenvalues₀_conj_of_orthogonal (S := c • S) hcS hO).symm
+  have hStep2a : hOcS.eigenvalues₀ =
+      (Matrix.isHermitian_diagonal (c • hS.eigenvalues₀)).eigenvalues₀ := by
+    exact eigenvalues₀_eq_of_charpoly_eq_real hOcS
+      (Matrix.isHermitian_diagonal (c • hS.eigenvalues₀))
+      (by rw [hdiagc])
+  have hStep2 : hOcS.eigenvalues₀ = c • hS.eigenvalues₀ := hStep2a.trans hdiagE
+  exact hStep1.trans hStep2
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem regionNormalDirections_conj_scale_condition
+    {M O : Matrix (Fin 3) (Fin 3) ℝ} {ρ : ℝ}
+    (hρ : 0 ≤ ρ) (hO : O * O.transpose = 1)
+    (hM : (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ 0 < 0 ∨
+      symmEuclid (matrixToEuclid M) = 0) :
+    (symmEuclid_isHermitian (matrixToEuclid (ρ • (O.transpose * M * O)))).eigenvalues₀ 0 < 0 ∨
+      symmEuclid (matrixToEuclid (ρ • (O.transpose * M * O))) = 0 := by
+  have hSM : symmEuclid (matrixToEuclid (ρ • (O.transpose * M * O))) =
+      ρ • (O.transpose * symmEuclid (matrixToEuclid M) * O) := by
+    calc
+      symmEuclid (matrixToEuclid (ρ • (O.transpose * M * O)))
+          = ρ • symmEuclid (matrixToEuclid (O.transpose * M * O)) := by
+              exact symmEuclid_matrixToEuclid_smul ρ (O.transpose * M * O)
+      _ = ρ • (O.transpose * symmEuclid (matrixToEuclid M) * O) := by
+              rw [symmEuclid_conj]
+  rcases hM with hneg | hzero
+  · by_cases hρ₀ : ρ = 0
+    · subst ρ
+      right
+      rw [hSM]
+      simp
+    · left
+      have hρpos : 0 < ρ := lt_of_le_of_ne hρ (Ne.symm hρ₀)
+      have hB : (O.transpose * symmEuclid (matrixToEuclid M) * O).IsHermitian := by
+        have hc : (O.conjTranspose * symmEuclid (matrixToEuclid M) * O).IsHermitian :=
+          Matrix.isHermitian_conjTranspose_mul_mul O (symmEuclid_isHermitian (matrixToEuclid M))
+        simpa using hc
+      have hρB : (ρ • (O.transpose * symmEuclid (matrixToEuclid M) * O)).IsHermitian := by
+        unfold Matrix.IsHermitian
+        rw [Matrix.conjTranspose_smul]
+        rw [hB]
+        simp [star_trivial]
+      have hMain1 : (symmEuclid_isHermitian (matrixToEuclid (ρ • (O.transpose * M * O)))).eigenvalues₀ =
+          hρB.eigenvalues₀ := by
+        exact eigenvalues₀_eq_of_charpoly_eq_real
+          (symmEuclid_isHermitian (matrixToEuclid (ρ • (O.transpose * M * O)))) hρB
+          (by
+            rw [hSM]
+            rfl)
+      have hMain2 : hρB.eigenvalues₀ = ρ • hB.eigenvalues₀ :=
+        eigenvalues₀_smul_of_nonneg (hS := hB) hρ hρB
+      have hMain3 : ρ • hB.eigenvalues₀ =
+          ρ • (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ := by
+        have hconj : hB.eigenvalues₀ = (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ :=
+          eigenvalues₀_conj_of_orthogonal (S := symmEuclid (matrixToEuclid M))
+            (symmEuclid_isHermitian (matrixToEuclid M)) hO
+        rw [hconj]
+      have hMain : (symmEuclid_isHermitian (matrixToEuclid (ρ • (O.transpose * M * O)))).eigenvalues₀ =
+          ρ • (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ :=
+        hMain1.trans (hMain2.trans hMain3)
+      rw [hMain]
+      have hlt : ρ * (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ 0 < 0 :=
+        mul_neg_of_pos_of_neg hρpos hneg
+      simpa using hlt
+  · right
+    rw [hSM, hzero]
+    simp
+
 end FlatSectionHelpers
 
 end DifferentialGeometry.PDE.RicciFlow
