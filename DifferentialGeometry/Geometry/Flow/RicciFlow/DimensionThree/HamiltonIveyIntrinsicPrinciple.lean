@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyI
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyInnerLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyCurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyFixedFrameEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRadialTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
 
 set_option autoImplicit false
@@ -6408,6 +6409,171 @@ theorem fiberRegionHeatReactionOn
       simpa [hreaction] using hscalar_deriv
     simpa [u, hfun] using (hderiv'.congr_deriv htarget.symm)
 end Helpers
+
+section FlatSectionHelpers
+
+open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian.Exponential
+open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem inner0S_four_orthonormalBasis_sq
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (A B : Tensor04At (I := I) (M := M) x) :
+    inner0S (I := I) g x 4 A B =
+      ∑ I0 : Fin 4 → Fin 3,
+        A (fun a => basis (I0 a)) * B (fun a => basis (I0 a)) := by
+  classical
+  let gInv : Fin 3 → Fin 3 → ℝ := fun i j => if i = j then 1 else 0
+  have hinv : MetricInverseInBasis (I := I) g x basis gInv := by
+    intro i j
+    constructor
+    · calc
+        (∑ k : Fin 3, gInv i k * g.inner x (basis k) (basis j))
+            = g.inner x (basis i) (basis j) := by
+              rw [Finset.sum_eq_single i]
+              · simp [gInv]
+              · intro k _ hk
+                have hik : i ≠ k := Ne.symm hk
+                simp [gInv, hik]
+              · intro hi
+                exact False.elim (hi (Finset.mem_univ i))
+        _ = if i = j then 1 else 0 := by
+              simpa [delta3] using horth i j
+    · calc
+        (∑ k : Fin 3, g.inner x (basis i) (basis k) * gInv k j)
+            = g.inner x (basis i) (basis j) := by
+              rw [Finset.sum_eq_single j]
+              · simp [gInv]
+              · intro k _ hk
+                have hkj : k ≠ j := Ne.symm (Ne.symm hk)
+                simp [gInv, hkj]
+              · intro hj
+                exact False.elim (hj (Finset.mem_univ j))
+        _ = if i = j then 1 else 0 := by
+              simpa [delta3] using horth i j
+  have hdelta : ∀ I0 J0 : Fin 4 → Fin 3,
+      (∏ a : Fin 4, gInv (I0 a) (J0 a)) = if I0 = J0 then 1 else 0 := by
+    intro I0 J0
+    by_cases hIJ : I0 = J0
+    · subst J0
+      simp [gInv]
+    · have hne : ∃ a : Fin 4, I0 a ≠ J0 a := by
+        by_contra h
+        apply hIJ
+        funext a
+        by_contra hne'
+        exact h ⟨a, hne'⟩
+      rcases hne with ⟨a, hne⟩
+      have hzero : gInv (I0 a) (J0 a) = 0 := by
+        simp [gInv, hne]
+      rw [Finset.prod_eq_zero (Finset.mem_univ a) hzero]
+      rw [if_neg hIJ]
+  calc
+    inner0S (I := I) g x 4 A B
+        = coordInner0S (I := I) (x := x) 4 gInv A B basis := by
+            exact inner0S_eq_coord (I := I) g x 4 basis gInv hinv A B
+    _ = ∑ I0 : Fin 4 → Fin 3, ∑ J0 : Fin 4 → Fin 3,
+          (∏ a : Fin 4, gInv (I0 a) (J0 a)) * A (fun a => basis (I0 a)) *
+            B (fun a => basis (J0 a)) := by
+          unfold coordInner0S
+          apply Finset.sum_congr rfl
+          intro I0 _
+          apply Finset.sum_congr rfl
+          intro J0 _
+          simp
+    _ = ∑ I0 : Fin 4 → Fin 3, A (fun a => basis (I0 a)) * B (fun a => basis (I0 a)) := by
+          apply Finset.sum_congr rfl
+          intro I0 _
+          simp_rw [hdelta I0]
+          rw [Finset.sum_eq_single I0]
+          · simp
+          · intro J0 _ hJ0
+            rw [if_neg (Ne.symm hJ0)]
+            ring
+          · intro hJ0
+            exact False.elim (hJ0 (Finset.mem_univ I0))
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem symmEuclid_conj
+    (O M : Matrix (Fin 3) (Fin 3) ℝ) :
+    symmEuclid (matrixToEuclid (O.transpose * M * O)) =
+      O.transpose * symmEuclid (matrixToEuclid M) * O := by
+  unfold symmEuclid
+  simp only [euclidToMatrix_matrixToEuclid]
+  have hT : (O.transpose * M * O).transpose = O.transpose * M.transpose * O := by
+    simp [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
+  calc
+    (1 / 2 : ℝ) • (O.transpose * M * O + (O.transpose * M * O).transpose)
+        = (1 / 2 : ℝ) • (O.transpose * M * O + O.transpose * M.transpose * O) := by rw [hT]
+    _ = (1 / 2 : ℝ) • (O.transpose * (M * O) + O.transpose * (M.transpose * O)) := by
+          rw [Matrix.mul_assoc, Matrix.mul_assoc]
+    _ = (1 / 2 : ℝ) • (O.transpose * (M * O + M.transpose * O)) := by
+          rw [← Matrix.mul_add]
+    _ = (1 / 2 : ℝ) • (O.transpose * ((M + M.transpose) * O)) := by
+          rw [Matrix.add_mul]
+    _ = (1 / 2 : ℝ) • (O.transpose * (M + M.transpose) * O) := by
+          rw [← Matrix.mul_assoc]
+    _ = ((1 / 2 : ℝ) • (O.transpose * (M + M.transpose))) * O := by
+          rw [← Matrix.smul_mul]
+    _ = (O.transpose * ((1 / 2 : ℝ) • (M + M.transpose))) * O := by
+          rw [← Matrix.mul_smul]
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem charpoly_conj_of_orthogonal
+    {S : Matrix (Fin 3) (Fin 3) ℝ}
+    {O : Matrix (Fin 3) (Fin 3) ℝ} (hO : O * O.transpose = 1) :
+    (O.transpose * S * O).charpoly = S.charpoly := by
+  have hmul := Matrix.charpoly_mul_comm O.transpose (S * O)
+  rw [show O.transpose * (S * O) = O.transpose * S * O by simp [Matrix.mul_assoc]] at hmul
+  rw [hmul]
+  rw [show (S * O) * O.transpose = S * (O * O.transpose) by simp [Matrix.mul_assoc]]
+  rw [hO, Matrix.mul_one]
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem eigenvalues₀_conj_of_orthogonal
+    {S : Matrix (Fin 3) (Fin 3) ℝ} (hS : S.IsHermitian)
+    {O : Matrix (Fin 3) (Fin 3) ℝ} (hO : O * O.transpose = 1) :
+    (show (O.transpose * S * O).IsHermitian from by
+      have hconj : (O.conjTranspose * S * O).IsHermitian :=
+        Matrix.isHermitian_conjTranspose_mul_mul O hS
+      simpa using hconj).eigenvalues₀ = hS.eigenvalues₀ := by
+  exact eigenvalues₀_eq_of_charpoly_eq_real
+    (show (O.transpose * S * O).IsHermitian from by
+      have hconj : (O.conjTranspose * S * O).IsHermitian :=
+        Matrix.isHermitian_conjTranspose_mul_mul O hS
+      simpa using hconj) hS (charpoly_conj_of_orthogonal hO)
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem symmEuclid_matrixToEuclid_conj_eigenvalues₀
+    (M O : Matrix (Fin 3) (Fin 3) ℝ) (hO : O * O.transpose = 1) :
+    (symmEuclid_isHermitian (matrixToEuclid (O.transpose * M * O))).eigenvalues₀ =
+      (symmEuclid_isHermitian (matrixToEuclid M)).eigenvalues₀ := by
+  exact eigenvalues₀_eq_of_charpoly_eq_real
+    (symmEuclid_isHermitian (matrixToEuclid (O.transpose * M * O)))
+    (symmEuclid_isHermitian (matrixToEuclid M))
+    (by
+      rw [symmEuclid_conj]
+      exact charpoly_conj_of_orthogonal hO)
+
+omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
+  [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem hamiltonIveyConvexMatrixRegionSupportEuclid_conj
+    (K τ : ℝ) (M O : Matrix (Fin 3) (Fin 3) ℝ) (hO : O * O.transpose = 1) :
+    hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid (O.transpose * M * O)) =
+      hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid M) := by
+  unfold hamiltonIveyConvexMatrixRegionSupportEuclid
+  have heig := symmEuclid_matrixToEuclid_conj_eigenvalues₀ M O hO
+  simp_rw [heig]
+
+end FlatSectionHelpers
 
 end DifferentialGeometry.PDE.RicciFlow
 
