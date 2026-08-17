@@ -16,6 +16,7 @@ open Bundle Set Filter
 open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators
 
@@ -79,6 +80,7 @@ noncomputable def modelF_core
       ext i
       exact hsq i
     exact (b.repr.map_eq_zero_iff).mp hz
+
 
 section IntrinsicRegionData
 
@@ -1494,6 +1496,32 @@ theorem fiberRegion_mem_iff_forall_normalDirections_full
 
 end PulledScalarization
 
+section FiberRegionFlatPredicate
+
+noncomputable def fiberRegionFlat
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (t : ℝ) (x₀ : M) (ν : (x : M) → Tensor04At (I := I) (M := M) x) : Prop :=
+  ∃ (η : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 4)
+    (nablaη : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 5)
+    (nabla2η : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 6)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x₀)),
+    OrthonormalBasisAt (I := I) (S.base.metric t) x₀ basis ∧
+    (∀ᶠ y in 𝓝 x₀, ν y = uhlenbeckPullbackTensorAt (I := I) basisAt iota t y (η y)) ∧
+    TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4
+      (S.base.connection t) η nablaη ∧
+    TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5
+      (S.base.connection t) nablaη nabla2η ∧
+    nablaη x₀ = 0 ∧
+    metricTrace0S2TensorInBasis (I := I) (basis := basis)
+      (identityInvMetric (Idx := Fin 3)) (nabla2η x₀) = 0
+
+end FiberRegionFlatPredicate
 
 end DifferentialGeometry.PDE.RicciFlow
 
