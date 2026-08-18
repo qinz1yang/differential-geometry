@@ -8,37 +8,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 
 set_option autoImplicit false
 
@@ -498,7 +467,6 @@ theorem mem_regionNormalDirections_iff_mem_fiberNormalDirections
     rw [fiberHamiltonIveyNormalDirections] at h
     simp only [Set.mem_setOf_eq] at h
     rcases h with ⟨hν', hlt⟩
-    -- hν' : ν ∈ submodule, hlt : eigen₀(curvOpMat ⟨ν, hν'⟩) < 0 ∨ ...
     rw [regionNormalDirections]
     simp only [Set.mem_setOf_eq]
     rcases hlt with hlt | hz
@@ -7527,8 +7495,6 @@ theorem radialTransportSection_injective [I.Boundaryless] [T2Space M]
 
 section TensorTransport
 
-variable [NeZero (Module.finrank ℝ E)]
-
 noncomputable def radialTransportLinearMapAt (g : SmoothRiemannianMetric I M) (p y : M) :
     E →ₗ[ℝ] E :=
   { toFun := fun v => radialTransportSection g p v y
@@ -7996,6 +7962,389 @@ theorem radialTransportTensorExtension_inner_self_le
           1 * inner0S (I := I) g p 4 η₀ η₀ :=
         mul_le_mul_of_nonneg_right hcc hinner
       _ = inner0S (I := I) g p 4 η₀ η₀ := one_mul _
+
+omit [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] in
+private theorem localizedRadialTransportSection_nabla_center_zero
+    (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
+    (W : ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hW : (fun y => W y) =ᶠ[𝓝 p] radialTransportSection (I := I) g p v)
+    (X : TangentSpace I p) :
+    (LeviCivita (I := I) g).toFun (fun y => W y) p X = 0 := by
+  have hWtotal : (T% fun y => W y) =ᶠ[𝓝 p]
+      (T% fun y => radialTransportSection (I := I) g p v y) := by
+    filter_upwards [hW] with y hy
+    rw [hy]
+  have hRsm : ContMDiffAt I I.tangent ∞
+      (T% fun y => radialTransportSection (I := I) g p v y) p :=
+    W.contMDiff.contMDiffAt.congr_of_eventuallyEq hWtotal.symm
+  have hWmd : MDiffAt (T% fun y => W y) p :=
+    W.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+  have hRmd : MDiffAt (T% fun y => radialTransportSection (I := I) g p v y) p :=
+    hRsm.mdifferentiableAt (by simp)
+  have heq := (LeviCivita (I := I) g).isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+    hWmd hRmd Filter.univ_mem hW
+  rw [heq]
+  exact radialTransportSection_nabla_center_zero (I := I) g p v X hRmd
+
+omit [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] in
+private theorem localizedRadialTransportSection_nabla2_center_zero
+    (g : SmoothRiemannianMetric I M) (p : M) (v w : TangentSpace I p)
+    (W : ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hW : (fun y => W y) =ᶠ[𝓝 p] radialTransportSection (I := I) g p v) :
+    (LeviCivita (I := I) g).toFun
+      (covApply (LeviCivita (I := I) g) (linearExtensionTangent (I := I) p w)
+        (fun y => W y)) p w = 0 := by
+  let X := linearExtensionTangent (I := I) p w
+  let R := radialTransportSection (I := I) g p v
+  let D := covApply (LeviCivita (I := I) g) X (fun y => W y)
+  let D0 := fun y => (LeviCivita (I := I) g).toFun R y
+    (coordExtensionTangent (I := I) p w y)
+  have hWtotal : (T% fun y => W y) =ᶠ[𝓝 p] (T% fun y => R y) := by
+    filter_upwards [hW] with y hy
+    rw [hy]
+  have hRsm : ContMDiffAt I I.tangent ∞ (T% fun y => R y) p :=
+    W.contMDiff.contMDiffAt.congr_of_eventuallyEq hWtotal.symm
+  have hXsm : ContMDiff I I.tangent ∞ (T% X) :=
+    linearExtensionTangent_smooth (I := I) p w
+  have hDsm : ContMDiff I I.tangent ∞ (T% D) := by
+    rw [← contMDiffOn_univ]
+    apply covApply_contMDiffOn (cov := LeviCivita (I := I) g) hXsm
+    rw [show ((∞ : WithTop ℕ∞) + 1) = ∞ by rw [ENat.coe_top_add_one]]
+    exact W.contMDiff
+  have hXeq : X =ᶠ[𝓝 p] coordExtensionTangent (I := I) p w := by
+    filter_upwards [(linExtBump (I := I) p).eventuallyEq_one] with y hy
+    simp [X, linearExtensionTangent_apply, hy]
+  have hEqSet : {y : M | W y = R y} ∈ 𝓝 p := by
+    simpa only [R] using hW
+  obtain ⟨U, hUsub, hUopen, hpU⟩ := mem_nhds_iff.mp hEqSet
+  have hUnhds : U ∈ 𝓝 p := hUopen.mem_nhds hpU
+  have hD : D =ᶠ[𝓝 p] D0 := by
+    filter_upwards [hUnhds, hXeq] with y hyU hXy
+    have hWRy : (fun z => W z) =ᶠ[𝓝 y] R := by
+      filter_upwards [hUopen.mem_nhds hyU] with z hz
+      exact hUsub hz
+    have hWRtotal_y : (T% fun z => W z) =ᶠ[𝓝 y] (T% fun z => R z) := by
+      filter_upwards [hWRy] with z hz
+      rw [hz]
+    have hWmd_y : MDiffAt (T% fun z => W z) y :=
+      W.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
+    have hRsm_y : ContMDiffAt I I.tangent ∞ (T% fun z => R z) y :=
+      W.contMDiff.contMDiffAt.congr_of_eventuallyEq hWRtotal_y.symm
+    have hRmd_y : MDiffAt (T% fun z => R z) y :=
+      hRsm_y.mdifferentiableAt (by simp)
+    have hcov_y := (LeviCivita (I := I) g).isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+      hWmd_y hRmd_y Filter.univ_mem hWRy
+    simp only [D, D0, covApply_apply]
+    rw [hcov_y, hXy]
+  have hDtotal : (T% D) =ᶠ[𝓝 p] (T% D0) := by
+    filter_upwards [hD] with y hy
+    rw [hy]
+  have hD0sm : ContMDiffAt I I.tangent ∞ (T% D0) p :=
+    hDsm.contMDiffAt.congr_of_eventuallyEq hDtotal.symm
+  have hDmd : MDiffAt (T% D) p :=
+    hDsm.contMDiffAt.mdifferentiableAt (by simp)
+  have hD0md : MDiffAt (T% D0) p := hD0sm.mdifferentiableAt (by simp)
+  have heq := (LeviCivita (I := I) g).isCovariantDerivativeOnUniv.congr_of_eventuallyEq
+    hDmd hD0md Filter.univ_mem hD
+  change (LeviCivita (I := I) g).toFun D p w = 0
+  rw [heq]
+  exact radialTransportSection_nabla2_center_zero (I := I) g p v w hRsm
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] in
+private theorem radialTransportTensorExtension_eval_eventually_eq
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y)
+    (J : Fin 4 → Fin 3) :
+    (fun y => radialTransportTensorExtension g p basis η₀ W y
+      (fun a => W (J a) y)) =ᶠ[𝓝 p]
+      fun _ => η₀ (fun a => basis (J a)) := by
+  have hA := radialTransportTensorExtension_eventually_eq
+    (I := I) g p basis horth η₀ χ W hsupport hW
+  have hD : radialTransportSectionDomain (I := I) g p ∈ 𝓝 p :=
+    (radialTransportSectionDomain_isOpen (I := I) g p).mem_nhds
+      (mem_radialTransportSectionDomain_self (I := I) g p)
+  filter_upwards [hA, χ.eventuallyEq_one, hD] with y hAy hχy hy
+  simp only [Pi.one_apply] at hχy
+  rw [hAy, radialTransportSectionTensor, dif_pos hy]
+  change η₀ (fun a => radialTransportInverseAt g p y hy (W (J a) y)) = _
+  congr 1
+  funext a
+  rw [hW, hχy, one_smul]
+  change radialTransportInverseAt g p y hy
+      (radialTransportLinearMapAt g p y (basis (J a))) = basis (J a)
+  exact radialTransportInverseAt_left_inverse (I := I) g p y hy (basis (J a))
+
+omit [IsManifold I 3 M] in
+theorem radialTransportTensorExtension_nabla_center_zero
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y)
+    (d : CanonicalSpatialDerivs0S (I := I) (M := M) (LeviCivita (I := I) g)
+      (radialTransportTensorExtension g p basis η₀ W)) :
+    d.nablaA p = 0 := by
+  apply ext0S_basis (I := I) basis
+  intro idx
+  change d.nablaA p (fun a => basis (idx a)) = 0
+  let X : ContMDiffSection I E ∞ (TangentSpace I : M → Type _) := W (idx 0)
+  let V : Fin 4 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) :=
+    fun a => W (idx a.succ)
+  have hWp : ∀ i : Fin 3, W i p = basis i := by
+    intro i
+    rw [hW, χ.eq_one, one_smul]
+    exact radialTransportSection_center (I := I) g p (basis i) 0 (by
+      rw [norm_zero]
+      exact radialRadius_pos (I := I) g p)
+  have hslots : (fun a : Fin 5 => basis (idx a)) =
+      Fin.cons (X p) (fun a : Fin 4 => V a p) := by
+    funext a
+    refine Fin.cases ?_ (fun j => ?_) a
+    · simp [X, hWp]
+    · simp [V, hWp]
+  have hfirst := d.first.eval_smooth_slots (I := I) X V p
+  have hscalar := radialTransportTensorExtension_eval_eventually_eq
+    (I := I) g p basis horth η₀ χ W hsupport hW (fun a => idx a.succ)
+  have hderiv : extDerivFun (I := I)
+      (fun y : M => radialTransportTensorExtension g p basis η₀ W y
+        (fun a : Fin 4 => V a y)) p (X p) = 0 := by
+    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_congr_eventually
+      (I := I) (v := X p) (by simpa [V] using hscalar)]
+    simp [extDerivFun]
+  have hconn : ∀ a : Fin 4,
+      (LeviCivita (I := I) g).toFun (fun y => V a y) p (X p) = 0 := by
+    intro a
+    have hVi : (fun y => V a y) =ᶠ[𝓝 p]
+        radialTransportSection (I := I) g p (basis (idx a.succ)) := by
+      filter_upwards [χ.eventuallyEq_one] with y hy
+      simp only [Pi.one_apply] at hy
+      simp [V, hW, hy]
+    exact localizedRadialTransportSection_nabla_center_zero
+      (I := I) g p (basis (idx a.succ)) (V a) hVi (X p)
+  rw [hslots, hfirst, hderiv]
+  have hsum : (∑ a : Fin 4,
+      radialTransportTensorExtension g p basis η₀ W p
+        (Function.update (fun b : Fin 4 => V b p) a
+          ((LeviCivita (I := I) g).toFun (fun y => V a y) p (X p)))) = 0 := by
+    apply Finset.sum_eq_zero
+    intro a _
+    rw [hconn a]
+    exact (radialTransportTensorExtension g p basis η₀ W p).toMultilinearMap.map_update_zero
+      (fun b => V b p) a
+  rw [hsum, sub_zero]
+
+omit [IsManifold I 3 M] in
+private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y)
+    (d : CanonicalSpatialDerivs0S (I := I) (M := M) (LeviCivita (I := I) g)
+      (radialTransportTensorExtension g p basis η₀ W))
+    (a : Fin 3) (J : Fin 4 → Fin 3) :
+    d.nabla2A p (Fin.cons (basis a) (Fin.cons (basis a) (fun j => basis (J j)))) = 0 := by
+  let A := radialTransportTensorExtension g p basis η₀ W
+  let X : ContMDiffSection I E ∞ (TangentSpace I : M → Type _) :=
+    ⟨linearExtensionTangent (I := I) p (basis a),
+      linearExtensionTangent_smooth (I := I) p (basis a)⟩
+  let V : Fin 4 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) :=
+    fun j => W (J j)
+  have hXp : X p = basis a := by
+    exact linearExtensionTangent_eq (I := I) p (basis a)
+  have hWp : ∀ i : Fin 3, W i p = basis i := by
+    intro i
+    rw [hW, χ.eq_one, one_smul]
+    exact radialTransportSection_center (I := I) g p (basis i) 0 (by
+      rw [norm_zero]
+      exact radialRadius_pos (I := I) g p)
+  have hVp : ∀ j : Fin 4, V j p = basis (J j) := by
+    intro j
+    exact hWp (J j)
+  have hVi : ∀ j : Fin 4, (fun y => V j y) =ᶠ[𝓝 p]
+      radialTransportSection (I := I) g p (basis (J j)) := by
+    intro j
+    filter_upwards [χ.eventuallyEq_one] with y hy
+    simp only [Pi.one_apply] at hy
+    simp [V, hW, hy]
+  let D : Fin 4 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) := fun j =>
+    ⟨covApply (LeviCivita (I := I) g) (fun y => X y) (fun y => V j y), by
+      rw [← contMDiffOn_univ]
+      apply covApply_contMDiffOn (cov := LeviCivita (I := I) g) X.contMDiff
+      rw [show ((∞ : WithTop ℕ∞) + 1) = ∞ by rw [ENat.coe_top_add_one]]
+      exact (V j).contMDiff⟩
+  have hD0 : ∀ j : Fin 4, D j p = 0 := by
+    intro j
+    change (LeviCivita (I := I) g).toFun (fun y => V j y) p (X p) = 0
+    exact localizedRadialTransportSection_nabla_center_zero
+      (I := I) g p (basis (J j)) (V j) (hVi j) (X p)
+  have hD2 : ∀ j : Fin 4,
+      (LeviCivita (I := I) g).toFun (fun y => D j y) p (X p) = 0 := by
+    intro j
+    have hmain := localizedRadialTransportSection_nabla2_center_zero
+      (I := I) g p (basis (J j)) (basis a) (V j) (hVi j)
+    change (LeviCivita (I := I) g).toFun
+      (covApply (LeviCivita (I := I) g)
+        (linearExtensionTangent (I := I) p (basis a)) (fun y => V j y)) p (X p) = 0
+    rw [hXp]
+    exact hmain
+  have hnabla : d.nablaA p = 0 :=
+    radialTransportTensorExtension_nabla_center_zero
+      (I := I) g p basis horth η₀ χ W hsupport hW d
+  let q : Fin 4 → M → ℝ := fun j y =>
+    A y (fun b => (Function.update V j (D j)) b y)
+  have hqsm : ∀ j : Fin 4, ContMDiff I 𝓘(ℝ, ℝ) ∞ (q j) := by
+    intro j
+    let Vj : Fin 4 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) :=
+      Function.update V j (D j)
+    have hsm := DifferentialGeometry.TensorMultilinear.contMDiff_tensor0SField_apply
+      (I := I) (M := M) A Vj
+    simpa only [q, Vj] using hsm
+  have hqderiv : ∀ j : Fin 4, extDerivFun (I := I) (q j) p (X p) = 0 := by
+    intro j
+    let Vj : Fin 4 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) :=
+      Function.update V j (D j)
+    have hfirst := d.first.eval_smooth_slots (I := I) X Vj p
+    have hsum : (∑ k : Fin 4, A p
+        (Function.update (fun b : Fin 4 => Vj b p) k
+          ((LeviCivita (I := I) g).toFun (fun y => Vj k y) p (X p)))) = 0 := by
+      apply Finset.sum_eq_zero
+      intro k _
+      by_cases hkj : k = j
+      · subst k
+        have hcov : (LeviCivita (I := I) g).toFun (fun y => Vj j y) p (X p) = 0 := by
+          simpa [Vj] using hD2 j
+        rw [hcov]
+        exact (A p).map_update_zero (fun b => Vj b p) j
+      · apply (A p).map_coord_zero j
+        rw [Function.update_of_ne (Ne.symm hkj)]
+        simp [Vj, hD0]
+    rw [hnabla] at hfirst
+    simp only [Tensor0SSpace.zero_apply] at hfirst
+    rw [hsum, sub_zero] at hfirst
+    simpa [q, Vj] using hfirst.symm
+  let f : M → ℝ := fun y => A y (fun j => V j y)
+  have hfconst : f =ᶠ[𝓝 p] fun _ => η₀ (fun j => basis (J j)) := by
+    simpa [f, A, V] using radialTransportTensorExtension_eval_eventually_eq
+      (I := I) g p basis horth η₀ χ W hsupport hW J
+  have hEqSet : {y : M | f y = η₀ (fun j => basis (J j))} ∈ 𝓝 p := by
+    simpa only [Filter.EventuallyEq, Pi.one_apply] using hfconst
+  obtain ⟨U, hUsub, hUopen, hpU⟩ := mem_nhds_iff.mp hEqSet
+  have hzeroFirst : (fun y => extDerivFun (I := I) f y (X y)) =ᶠ[𝓝 p] 0 := by
+    filter_upwards [hUopen.mem_nhds hpU] with y hy
+    have hfy : f =ᶠ[𝓝 y] fun _ => η₀ (fun j => basis (J j)) := by
+      filter_upwards [hUopen.mem_nhds hy] with z hz
+      exact hUsub hz
+    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_congr_eventually
+      (I := I) (v := X y) hfy]
+    simp [extDerivFun]
+  let V5 : Fin 5 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) := Fin.cons X V
+  let G : M → ℝ := fun y => d.nablaA y (fun j => V5 j y)
+  have hG : G =ᶠ[𝓝 p] fun y => -(∑ j : Fin 4, q j y) := by
+    filter_upwards [hzeroFirst] with y hy
+    simp only [Pi.zero_apply] at hy
+    have hfirst := d.first.eval_smooth_slots (I := I) X V y
+    have hXV : (fun j : Fin 5 => V5 j y) =
+        Fin.cons (X y) (fun j => V j y) := by
+      funext j
+      refine Fin.cases ?_ (fun k => ?_) j <;> rfl
+    change d.nablaA y (fun j : Fin 5 => V5 j y) = _
+    rw [hXV]
+    rw [hfirst, hy, zero_sub]
+    simp only [q, A]
+    apply congrArg Neg.neg
+    apply Finset.sum_congr rfl
+    intro j _
+    congr 1
+    funext b
+    by_cases hbj : b = j
+    · subst b
+      simp [D, covApply_apply]
+    · simp [Function.update_of_ne hbj]
+  have hsumqmd : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => ∑ j : Fin 4, q j y) p := by
+    change MDifferentiableAt I 𝓘(ℝ, ℝ) (Finset.univ.sum q) p
+    apply DifferentialGeometry.Tensor.RicciIdentity.mdiffAt_finset_sum
+    intro j _
+    exact (hqsm j).contMDiffAt.mdifferentiableAt (by simp)
+  have hGderiv : extDerivFun (I := I) G p (X p) = 0 := by
+    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_congr_eventually
+      (I := I) (v := X p) hG]
+    rw [DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at
+      (I := I) (x := p) (X p) hsumqmd]
+    change -extDerivFun (I := I) (Finset.univ.sum q) p (X p) = 0
+    rw [DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_finset_sum_at
+      (I := I) Finset.univ q (X p) (fun j _ =>
+        (hqsm j).contMDiffAt.mdifferentiableAt (by simp))]
+    simp [hqderiv]
+  have hV5p : ∀ j : Fin 5,
+      V5 j p = Fin.cases (basis a) (fun k => basis (J k)) j := by
+    intro j
+    refine Fin.cases ?_ (fun k => ?_) j
+    · simpa [V5] using hXp
+    · simpa [V5] using hVp k
+  have hslots :
+      (Fin.cons (basis a) (Fin.cons (basis a) (fun j => basis (J j))) :
+        Fin 6 → TangentSpace I p) =
+      (Fin.cons (X p) (fun j : Fin 5 => V5 j p) : Fin 6 → TangentSpace I p) := by
+    funext j
+    refine Fin.cases ?_ (fun k => ?_) j
+    · simpa using hXp.symm
+    · simpa using (hV5p k).symm
+  have hsecond := d.second.eval_smooth_slots (I := I) X V5 p
+  have hsum2 : (∑ k : Fin 5, d.nablaA p
+      (Function.update (fun b : Fin 5 => V5 b p) k
+        ((LeviCivita (I := I) g).toFun (fun y => V5 k y) p (X p)))) = 0 := by
+    rw [hnabla]
+    simp
+  rw [hslots, hsecond]
+  change extDerivFun (I := I) G p (X p) - _ = 0
+  rw [hGderiv, hsum2, sub_zero]
+
+omit [IsManifold I 3 M] in
+theorem radialTransportTensorExtension_metricTrace_center_zero
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y)
+    (d : CanonicalSpatialDerivs0S (I := I) (M := M) (LeviCivita (I := I) g)
+      (radialTransportTensorExtension g p basis η₀ W)) :
+    metricTrace0S2TensorInBasis (I := I) basis
+      (identityInvMetric (Idx := Fin 3)) (d.nabla2A p) = 0 := by
+  apply ext0S_basis (I := I) basis
+  intro J
+  change metricTrace0S2TensorInBasis (I := I) basis
+    (identityInvMetric (Idx := Fin 3)) (d.nabla2A p)
+      (fun a => basis (J a)) = 0
+  rw [metricTrace0S2TensorInBasis_apply]
+  unfold metricTrace0S2InBasis
+  apply Finset.sum_eq_zero
+  intro i _
+  rw [Finset.sum_eq_single i]
+  · rw [identityInvMetric_apply_self, one_mul]
+    exact radialTransportTensorExtension_nabla2_diagonal_center_zero
+      (I := I) g p basis horth η₀ χ W hsupport hW d i J
+  · intro j _ hji
+    rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hji.symm, zero_mul]
+  · intro hi
+    exact absurd (Finset.mem_univ i) hi
 
 end TensorTransport
 
