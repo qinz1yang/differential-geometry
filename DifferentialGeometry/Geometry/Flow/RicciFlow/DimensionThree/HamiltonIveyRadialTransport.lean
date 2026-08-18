@@ -2480,7 +2480,7 @@ private def radialContractionFun (g : SmoothRiemannianMetric I M) (p : M) : E ×
 
 omit [T2Space M] in
 lemma radialTransportODE_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
-    ∃ ρ : ℝ, 0 < ρ ∧
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ expMapC2Radius (I := I) g p / 2 ∧
       ContDiffOn ℝ ∞
         (fun q : ℝ × E × E =>
           - chartChristoffelContraction (I := I) g p
@@ -2495,6 +2495,8 @@ lemma radialTransportODE_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
   obtain ⟨ρ₂, hρ₂_pos, hρ₂_le_c2, h2⟩ := chartCurveDirDeriv_contDiffOn (I := I) g p
   let ρ : ℝ := min ρ₁ ρ₂
   have hρ_pos : 0 < ρ := lt_min hρ₁_pos hρ₂_pos
+  have hρ_le_c2 : ρ ≤ expMapC2Radius (I := I) g p / 2 := by
+    exact le_trans (min_le_left _ _) hρ₁_le_c2
   have hρ₁_le : ρ ≤ ρ₁ := min_le_left _ _
   have hρ₂_le : ρ ≤ ρ₂ := min_le_right _ _
   set U : Set (ℝ × E × E) := (Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) ×ˢ (Set.univ : Set E) with hU_def
@@ -2591,7 +2593,7 @@ lemma radialTransportODE_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
   have hneg : ContDiffOn ℝ ∞
       (fun q : ℝ × E × E => - radialContractionFun g p (ccrv q, (cdrv q, q.2.2))) U :=
     hΓc.neg
-  refine ⟨ρ, hρ_pos, ?_⟩
+  refine ⟨ρ, hρ_pos, hρ_le_c2, ?_⟩
   simpa [hU_def, hccrv_def, hcdrv_def, radialContractionFun] using hneg
 
 end RadialTransportSectionSmooth
