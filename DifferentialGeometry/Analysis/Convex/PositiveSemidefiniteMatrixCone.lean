@@ -25,7 +25,6 @@ def matEvalCLM (x : EuclideanSpace ℝ ι) : MatrixData ι →L[ℝ] ℝ :=
       c * (∑ i, x i * (∑ j, A (i, j) * x j))
     simp [Finset.mul_sum, mul_left_comm, mul_comm]
   cont := by
-    -- Pi finite, fun_prop maybe
     fun_prop }
 
 def matSymEvalCLM (i j : ι) : MatrixData ι →L[ℝ] ℝ :=

@@ -63,7 +63,6 @@ theorem continuousWithinAt_infDist_of_seqClosedGraph_of_approx
   have hε3 : 0 < ε / 3 := by positivity
   have hε2 : 0 < ε / 2 := by positivity
   have hε6 : 0 < ε / 6 := by positivity
-  -- upper estimate
   have hlt₀ : Metric.infDist p₀ (C τ₀) < d₀ + ε / 3 := by
     rw [show d₀ = Metric.infDist p₀ (C τ₀) from rfl]
     exact lt_add_of_pos_right _ hε3
@@ -98,7 +97,6 @@ theorem continuousWithinAt_infDist_of_seqClosedGraph_of_approx
       have h3 : dist q₀ (qn₁ n) < ε / 3 := by simpa [dist_comm] using hqni.2
       nlinarith
     linarith
-  -- lower estimate
   have hlsc : ∀ᶠ n in atTop, d₀ < Metric.infDist (pn n) (C (τn n)) + ε := by
     by_contra hnot
     have hfreq : ∃ᶠ n in atTop, Metric.infDist (pn n) (C (τn n)) + ε ≤ d₀ := by

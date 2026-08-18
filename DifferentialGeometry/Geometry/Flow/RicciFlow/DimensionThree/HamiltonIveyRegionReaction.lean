@@ -2741,15 +2741,13 @@ lemma mem_finiteSupportDirections_hamiltonIvey_region_iff
       BddAbove.mono hFsubset hbdd_diag
     exact (support_formula_unbounded_of_nonneg_top hK hτ hnv_anti hν0 hnv_ne) hbddF
   · rintro (hv | hsymm0)
-    · -- ν̃₁ < 0: finite via bound
-      have hbdd : BddAbove {x : ℝ | ∃ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
+    · have hbdd : BddAbove {x : ℝ | ∃ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
           A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧ x = inner ℝ v A} := by
         refine ⟨hamiltonIveyConvexMatrixRegionSupportEuclid K τ v, ?_⟩
         rintro x ⟨A, hA, rfl⟩
         exact inner_le_supportFunction_of_mem_region hK hτ v hv A hA
       exact hbdd
-    · -- symm v = 0: inner v A = 0 for all A ∈ region
-      have hbdd : BddAbove {x : ℝ | ∃ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
+    · have hbdd : BddAbove {x : ℝ | ∃ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
           A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧ x = inner ℝ v A} := by
         refine ⟨0, ?_⟩
         rintro x ⟨A, hA, rfl⟩
