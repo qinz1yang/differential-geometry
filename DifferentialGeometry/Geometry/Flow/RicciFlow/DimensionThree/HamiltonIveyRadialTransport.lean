@@ -973,7 +973,8 @@ theorem radialTransportSection_center (g : SmoothRiemannianMetric I M) (p : M)
   rw [radialParallelTransportSection_initial (I := I) g p hX η₀] at h
   exact h
 
-theorem radialTransportSection_nabla_center_zero (g : SmoothRiemannianMetric I M) (p : M)
+private theorem radialTransportSection_nabla_center_zero_of_norm_lt
+    (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : TangentSpace I p) {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     (hη : MDiffAt (T% (radialTransportSection g p η₀)) p) :
     (LeviCivita (I := I) g).toFun (radialTransportSection g p η₀) p X = 0 := by
@@ -1014,6 +1015,38 @@ theorem radialTransportSection_nabla_center_zero (g : SmoothRiemannianMetric I M
     rw [hγ0] at hmain
     exact hmain
   exact hfinal
+
+theorem radialTransportSection_nabla_center_zero (g : SmoothRiemannianMetric I M) (p : M)
+    (η₀ X : TangentSpace I p)
+    (hη : MDiffAt (T% (radialTransportSection g p η₀)) p) :
+    (LeviCivita (I := I) g).toFun (radialTransportSection g p η₀) p X = 0 := by
+  let d : ℝ := radialRadius (I := I) g p / (2 * (‖(X : E)‖ + 1))
+  have hd_pos : 0 < d := by
+    dsimp [d]
+    exact div_pos (radialRadius_pos (I := I) g p) (by positivity)
+  have hd_ne : d ≠ 0 := ne_of_gt hd_pos
+  have hsmall : ‖(d • X : E)‖ < radialRadius (I := I) g p := by
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos hd_pos]
+    have hden : (‖(X : E)‖ + 1 : ℝ) ≠ 0 := by positivity
+    have hd1 : d * (‖(X : E)‖ + 1) = radialRadius (I := I) g p / 2 := by
+      dsimp [d]
+      field_simp [hden]
+    have hlt : d * ‖(X : E)‖ < radialRadius (I := I) g p / 2 := by
+      rw [← hd1]
+      exact mul_lt_mul_of_pos_left (by linarith) hd_pos
+    linarith [radialRadius_pos (I := I) g p]
+  have hzero := radialTransportSection_nabla_center_zero_of_norm_lt
+    (I := I) g p η₀ hsmall hη
+  have hlin : (LeviCivita (I := I) g).toFun
+      (radialTransportSection g p η₀) p (d • X) =
+      d • (LeviCivita (I := I) g).toFun
+        (radialTransportSection g p η₀) p X := by
+    exact map_smul _ d X
+  have hd_zero : d • (LeviCivita (I := I) g).toFun
+      (radialTransportSection g p η₀) p X = 0 := by
+    rw [← hlin]
+    exact hzero
+  exact (smul_eq_zero.mp hd_zero).resolve_left hd_ne
 
 end RadialTransportSection
 
@@ -1179,33 +1212,8 @@ lemma radialTransportSection_chartE_firstOrder
   set σ : Π y : M, TangentSpace I y := radialTransportSection (I := I) g p η₀ with hσ
   have hmd : MDiffAt (T% σ) p := by simpa [hσ] using hη
   have hconn : (LeviCivita (I := I) g).toFun σ p (trivFromE (I := I) p p v) = 0 := by
-    set w : TangentSpace I p := trivFromE (I := I) p p v with hw
-    set d : ℝ := radialRadius (I := I) g p / (2 * (‖(w : E)‖ + 1)) with hd
-    have hd_pos : 0 < d := by
-      unfold d
-      exact div_pos (radialRadius_pos (I := I) g p) (by positivity)
-    have hd_ne : d ≠ 0 := ne_of_gt hd_pos
-    have hX : ‖(d • w : E)‖ < radialRadius (I := I) g p := by
-      rw [norm_smul, Real.norm_eq_abs, abs_of_pos hd_pos]
-      have hden : (‖(w : E)‖ + 1 : ℝ) ≠ 0 := by positivity
-      have hd1 : d * (‖(w : E)‖ + 1) = radialRadius (I := I) g p / 2 := by
-        unfold d
-        field_simp [hden]
-      have hlt : d * ‖(w : E)‖ < radialRadius (I := I) g p / 2 := by
-        rw [← hd1]
-        exact mul_lt_mul_of_pos_left (by linarith) hd_pos
-      have hrad_pos : 0 < radialRadius (I := I) g p := radialRadius_pos (I := I) g p
-      linarith
-    have hconn0 := radialTransportSection_nabla_center_zero (I := I) g p η₀ hX hmd
-    have hlin : (LeviCivita (I := I) g).toFun σ p (d • w) =
-        d • (LeviCivita (I := I) g).toFun σ p w := by
-      change ((LeviCivita (I := I) g).toFun σ p : TangentSpace I p →L[ℝ] TangentSpace I p) (d • w) =
-        d • ((LeviCivita (I := I) g).toFun σ p : TangentSpace I p →L[ℝ] TangentSpace I p) w
-      exact map_smul _ d w
-    have hc : d • (LeviCivita (I := I) g).toFun σ p w = 0 := by
-      rw [← hlin]
-      simpa [hσ] using hconn0
-    exact (smul_eq_zero.mp hc).resolve_left hd_ne
+    simpa [hσ] using radialTransportSection_nabla_center_zero
+      (I := I) g p η₀ (trivFromE (I := I) p p v) hmd
   have hgood : p ∈ chartLeviCivitaGoodSet (I := I) p :=
     self_mem_chartLeviCivitaGoodSet (I := I) p
   have hchart := LeviCivita_chart_apply (I := I) g p hgood hmd (trivFromE (I := I) p p v)
