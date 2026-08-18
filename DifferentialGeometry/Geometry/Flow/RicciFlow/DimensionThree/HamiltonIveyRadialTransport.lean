@@ -12,6 +12,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.LinearExtensionTangent
 
 noncomputable section
 
@@ -2045,21 +2046,18 @@ lemma chartE_covDerivAt (g : SmoothRiemannianMetric I M) (p : M)
   rw [hc]
   rw [trivToE_trivFromE (I := I) p (chartLeviCivitaGoodSet_mem_baseSet (I := I) hy)]
 
-theorem radialTransportSection_nabla2_chartBasis_center_zero
-    (g : SmoothRiemannianMetric I M) (p : M) (η₀ : TangentSpace I p)
-    (a : Fin (Module.finrank ℝ E))
+theorem radialTransportSection_nabla2_center_zero
+    (g : SmoothRiemannianMetric I M) (p : M) (η₀ w : TangentSpace I p)
     (hη : ContMDiffAt I I.tangent (∞ : WithTop ℕ∞)
       (T% (radialTransportSection (I := I) g p η₀)) p) :
     (LeviCivita (I := I) g).toFun
       (fun y : M => (LeviCivita (I := I) g).toFun (radialTransportSection (I := I) g p η₀) y
-        (chartBasisVecFiber (I := I) p a y)) p
-      (chartBasisVecFiber (I := I) p a p) = 0 := by
+        (coordExtensionTangent (I := I) p w y)) p w = 0 := by
   classical
   set σ : Π y : M, TangentSpace I y := radialTransportSection (I := I) g p η₀ with hσ
   set W' : Π y : M, TangentSpace I y := fun y =>
-    (LeviCivita (I := I) g).toFun σ y (chartBasisVecFiber (I := I) p a y) with hW'
-  set v₀ : E := chartModelBasis E a with hv₀
-  set w : TangentSpace I p := chartBasisVecFiber (I := I) p a p with hw
+    (LeviCivita (I := I) g).toFun σ y (coordExtensionTangent (I := I) p w y) with hW'
+  set v₀ : E := tangentCoord (I := I) p w with hv₀
   set c : ℝ := radialRadius (I := I) g p / (2 * (‖(w : E)‖ + 1)) with hc_def
   set X : TangentSpace I p := c • w with hX_def
   set γ : ℝ → M := fun s => expMap (I := I) g p (s • X) with hγ
@@ -2069,7 +2067,7 @@ theorem radialTransportSection_nabla2_chartBasis_center_zero
       chartChristoffelContraction (I := I) g p v₀ (f (chartCurve (I := I) p γ t))
         (chartCurve (I := I) p γ t) with hN_def
   have hwE : (w : E) = v₀ := by
-    simpa [w, hv₀] using (chartBasisVecFiber_self_coe (I := I) p a)
+    simpa [hv₀, tangentCoord] using (trivToE_self_eq (I := I) p w).symm
   have hc_pos : 0 < c := by
     unfold c
     exact div_pos (radialRadius_pos (I := I) g p) (by positivity)
@@ -2134,10 +2132,11 @@ theorem radialTransportSection_nabla2_chartBasis_center_zero
         (fun y : M => (⟨y, (leviCivitaConnectionOfMetric (I := I) g).toFun σ y⟩ :
           TotalSpace (E →L[ℝ] E) (fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y))) V := by
       exact (hcov hV_open).contMDiff hσV
-    have hDaV : ContMDiffOn I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞) (chartBasisVec (I := I) p a) V := by
+    have hDaV : ContMDiffOn I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞)
+        (T% (coordExtensionTangent (I := I) p w)) V := by
       have hbase : ContMDiffOn I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞)
-          (chartBasisVec (I := I) p a) e.baseSet :=
-        (chartBasisVec_contMDiffOn (I := I) p a).of_le
+          (T% (coordExtensionTangent (I := I) p w)) e.baseSet :=
+        (coordExtensionTangent_contMDiffOn (I := I) p w).of_le
           (by exact WithTop.coe_le_coe.2 (le_top : (1 : ℕ∞) ≤ (⊤ : ℕ∞)))
       exact hbase.mono (fun y hy => hy.2)
     have hW'V : ContMDiffOn I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞) (T% W') V := by
@@ -2211,10 +2210,14 @@ theorem radialTransportSection_nabla2_chartBasis_center_zero
       have hγsV : γ s ∈ V := ⟨hs_u₀,
         chartLeviCivitaGoodSet_mem_baseSet (I := I) hs_good⟩
       exact (hσV.contMDiffAt (hV_open.mem_nhds hγsV)).mdifferentiableAt (by norm_num)
-    have hchart := chartE_covDerivAt (I := I) g p hs_good hσy (chartBasisVecFiber (I := I) p a (γ s))
+    have hchart := chartE_covDerivAt (I := I) g p hs_good hσy
+      (coordExtensionTangent (I := I) p w (γ s))
     rw [hchart]
-    rw [chartBasisVecFiber_trivToE (I := I) p a
-      (chartLeviCivitaGoodSet_mem_baseSet (I := I) hs_good)]
+    have hdir : trivToE (I := I) p (γ s)
+        (coordExtensionTangent (I := I) p w (γ s)) = v₀ := by
+      simpa [hv₀] using chartE_section_repr_coordExtensionTangent_eq
+        (I := I) p w (chartLeviCivitaGoodSet_mem_baseSet (I := I) hs_good)
+    rw [hdir]
     rw [hsec_id s hs_src]
     rfl
   have hrep_deriv0 : deriv (chartRepAt (I := I) γ (fun s => W' (γ s)) 0) 0 = 0 := by
@@ -2223,10 +2226,11 @@ theorem radialTransportSection_nabla2_chartBasis_center_zero
   have hWp : trivToE (I := I) p p (W' p) = 0 := by
     rw [hW']
     have hchartp := chartE_covDerivAt (I := I) g p (self_mem_chartLeviCivitaGoodSet (I := I) p) hσmd
-      (chartBasisVecFiber (I := I) p a p)
+      (coordExtensionTangent (I := I) p w p)
     rw [hchartp]
-    rw [chartBasisVecFiber_trivToE (I := I) p a
-      (chartLeviCivitaGoodSet_mem_baseSet (I := I) (self_mem_chartLeviCivitaGoodSet (I := I) p))]
+    have hdir : trivToE (I := I) p p (coordExtensionTangent (I := I) p w p) = v₀ := by
+      simp [hv₀]
+    rw [hdir]
     have hfo := radialTransportSection_chartE_firstOrder (I := I) g p η₀ hσmd (v := v₀)
     rw [← hσ, ← hf] at hfo
     exact hfo
@@ -2272,7 +2276,45 @@ theorem radialTransportSection_nabla2_chartBasis_center_zero
     exact hmain
   have hW'0 : (LeviCivita (I := I) g).toFun W' p w = 0 :=
     (smul_eq_zero.mp hc0).resolve_left hc_ne
-  simpa [hW', hw, hσ] using hW'0
+  simpa [hW', hσ, coordExtensionTangent_self] using hW'0
+
+theorem radialTransportSection_nabla2_chartBasis_center_zero
+    (g : SmoothRiemannianMetric I M) (p : M) (η₀ : TangentSpace I p)
+    (a : Fin (Module.finrank ℝ E))
+    (hη : ContMDiffAt I I.tangent (∞ : WithTop ℕ∞)
+      (T% (radialTransportSection (I := I) g p η₀)) p) :
+    (LeviCivita (I := I) g).toFun
+      (fun y : M => (LeviCivita (I := I) g).toFun (radialTransportSection (I := I) g p η₀) y
+        (chartBasisVecFiber (I := I) p a y)) p
+      (chartBasisVecFiber (I := I) p a p) = 0 := by
+  let w : TangentSpace I p := chartBasisVecFiber (I := I) p a p
+  have hcoord : (fun y : M => coordExtensionTangent (I := I) p w y) =
+      chartBasisVecFiber (I := I) p a := by
+    have hwcoord : tangentCoord (I := I) p w = chartModelBasis E a := by
+      have hself : tangentCoord (I := I) p w = (w : E) := by
+        simpa [tangentCoord] using trivToE_self_eq (I := I) p w
+      have hmodel : (w : E) = chartModelBasis E a := by
+        change chartBasisVecFiber (I := I) p a p = chartModelBasis E a
+        exact chartBasisVecFiber_self_coe (I := I) p a
+      exact hself.trans hmodel
+    funext y
+    change (trivializationAt E (TangentSpace I) p).symmL ℝ y
+        (tangentCoord (I := I) p w) =
+      (trivializationAt E (TangentSpace I) p).symmL ℝ y (chartModelBasis E a)
+    rw [hwcoord]
+  have hmain := radialTransportSection_nabla2_center_zero (I := I) g p η₀ w hη
+  have hcovcoord :
+      (fun y : M => (LeviCivita (I := I) g).toFun
+        (radialTransportSection (I := I) g p η₀) y
+          (coordExtensionTangent (I := I) p w y)) =
+      (fun y : M => (LeviCivita (I := I) g).toFun
+        (radialTransportSection (I := I) g p η₀) y
+          (chartBasisVecFiber (I := I) p a y)) := by
+    exact congrArg (fun V : (y : M) → TangentSpace I y =>
+      fun y : M => (LeviCivita (I := I) g).toFun
+        (radialTransportSection (I := I) g p η₀) y (V y)) hcoord
+  rw [hcovcoord] at hmain
+  simpa only [w] using hmain
 
 end SecondOrderFlatness
 
