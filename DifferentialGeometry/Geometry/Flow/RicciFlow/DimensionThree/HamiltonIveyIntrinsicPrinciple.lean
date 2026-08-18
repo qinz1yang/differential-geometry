@@ -8934,7 +8934,7 @@ end TensorTransport
 
 end RadialTransportLinear
 
-set_option linter.unusedSectionVars false in
+omit [I.Boundaryless] in
 private theorem curvatureOperatorRegionPropagationOn_zero_aux
     {T : Real} (hT : 0 < T) [I.Boundaryless] [CompactSpace M] [Nonempty M]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
@@ -8995,8 +8995,7 @@ private theorem curvatureOperatorRegionPropagationOn_zero_aux
     (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 hK hfiber
   simpa [CurvatureOperatorRegionPropagationOn] using hprop
 
-set_option linter.unusedSectionVars false in
-@[nolint unusedArguments]
+omit [I.Boundaryless] in
 theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound
     [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
@@ -9046,6 +9045,110 @@ theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound
         simpa [S0, SolutionOn.timeRestrict] using hprop0
       exact curvatureOperatorRegionPropagationOn_timeShift
         (I := I) (M := M) S hpropShift
+
+omit [I.Boundaryless] in
+theorem hamilton_ivey_pinching
+    [I.Boundaryless] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {t0 T K : Real} (hT : 0 < T) (hK : 0 < K)
+    (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
+    (hreg : Set.Ioo t0 (t0 + T) ⊆ D.regular)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (hinit : ∀ x : M,
+      CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+        ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I) (S.base.metric t0) x⟩ K) :
+    (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      -6 * K / (1 + 4 * K * (t - t0)) ≤ S.scalar t x) ∧
+    (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      ∀ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+        OrthonormalBasisAt (I := I) (S.base.metric t) x basis →
+        orderedSectionalCurvaturesAt (I := I) x basis
+            ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) (S.base.metric t) x⟩ 2 < 0 →
+          S.scalar t x ≥
+            2 * (-orderedSectionalCurvaturesAt (I := I) x basis
+              ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                (I := I) (S.base.metric t) x⟩ 2) *
+              (Real.log ((-orderedSectionalCurvaturesAt (I := I) x basis
+                ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                  (I := I) (S.base.metric t) x⟩ 2) / K) +
+                Real.log (1 + 2 * K * (t - t0)) - 3)) := by
+  have hprop := curvatureOperatorRegionPropagationOn_of_initial_lower_bound
+    (I := I) (M := M) S hS hT hK hslab hreg hdim hinit
+  exact hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
+    (I := I) (M := M) S hK hslab hprop
+
+omit [I.Boundaryless] in
+theorem hamilton_ivey_pinching_one
+    [I.Boundaryless] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {t0 T : Real} (hT : 0 < T)
+    (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
+    (hreg : Set.Ioo t0 (t0 + T) ⊆ D.regular)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (hinit : ∀ x : M,
+      CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+        ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I) (S.base.metric t0) x⟩ 1) :
+    (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      -6 / (1 + 4 * (t - t0)) ≤ S.scalar t x) ∧
+    (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      ∀ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+        OrthonormalBasisAt (I := I) (S.base.metric t) x basis →
+        orderedSectionalCurvaturesAt (I := I) x basis
+            ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) (S.base.metric t) x⟩ 2 < 0 →
+          S.scalar t x ≥
+            2 * (-orderedSectionalCurvaturesAt (I := I) x basis
+              ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                (I := I) (S.base.metric t) x⟩ 2) *
+              (Real.log (-orderedSectionalCurvaturesAt (I := I) x basis
+                ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+                  (I := I) (S.base.metric t) x⟩ 2) +
+                Real.log (1 + 2 * (t - t0)) - 3)) := by
+  have hmain := hamilton_ivey_pinching (I := I) (M := M) S hS hT
+    (by norm_num : 0 < (1 : Real)) hslab hreg hdim hinit
+  constructor
+  · intro t ht x
+    have h := hmain.1 t ht x
+    norm_num at h ⊢
+    simpa [one_mul] using h
+  · intro t ht x basis horth hneg
+    have h := hmain.2 t ht x basis horth hneg
+    norm_num at h ⊢
+    simpa [one_mul] using h
+
+omit [I.Boundaryless] in
+theorem hamilton_ivey_asymptotic_pinching
+    [I.Boundaryless] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {t0 T K delta : Real} (hT : 0 < T) (hK : 0 < K) (hdelta : 0 < delta)
+    (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
+    (hreg : Set.Ioo t0 (t0 + T) ⊆ D.regular)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (hinit : ∀ x : M,
+      CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+        ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I) (S.base.metric t0) x⟩ K) :
+    ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
+      ∀ basis : Module.Basis (Fin 3) Real (TangentSpace I x),
+        OrthonormalBasisAt (I := I) (S.base.metric t) x basis →
+        pinchHeight3 (orderedSectionalCurvaturesAt (I := I) x basis
+            ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) (S.base.metric t) x⟩ 2) ≤
+          delta * S.scalar t x +
+            2 * delta * K * Real.exp (2 + (2 * delta)⁻¹) := by
+  have hprop := curvatureOperatorRegionPropagationOn_of_initial_lower_bound
+    (I := I) (M := M) S hS hT hK hslab hreg hdim hinit
+  exact hamilton_ivey_asymptotic_pinching_of_curvatureOperatorRegionPropagation
+    (I := I) (M := M) S hK hdelta hprop
 
 
 
