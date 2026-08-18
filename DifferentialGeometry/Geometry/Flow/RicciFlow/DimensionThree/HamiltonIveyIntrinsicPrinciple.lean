@@ -14,6 +14,8 @@ import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 
 set_option autoImplicit false
 
@@ -6896,6 +6898,8 @@ end FlatSectionProjection
 
 
 
+
+
 section RadialTransportLinear
 
 open DifferentialGeometry.Geometry.Riemannian
@@ -6907,10 +6911,12 @@ open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Connection
 
-variable [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+variable [NeZero (Module.finrank ℝ E)]
 variable [T2Space (TangentBundle I M)]
 
-theorem radialParallelTransportSection_add (g : SmoothRiemannianMetric I M) (p : M)
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem radialParallelTransportSection_add [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     (u w : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
     radialParallelTransportSection (I := I) g p hX (u + w) t =
@@ -7033,7 +7039,9 @@ theorem radialParallelTransportSection_add (g : SmoothRiemannianMetric I M) (p :
     exact hround_l.symm.trans ((congrArg ((trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)) hchart).trans hround_r)
   simpa [Puv, Pu, Pw] using hsec
 
-theorem radialParallelTransportSection_smul (g : SmoothRiemannianMetric I M) (p : M)
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem radialParallelTransportSection_smul [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     (c : ℝ) (u : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
     radialParallelTransportSection (I := I) g p hX (c • u) t =
@@ -7054,8 +7062,10 @@ theorem radialParallelTransportSection_smul (g : SmoothRiemannianMetric I M) (p 
         (c := (0 : TangentSpace I (expMap (I := I) g p (t • X)))) (by
           rw [add_zero]
           exact (hadd.symm.trans hleft))
-    simp [hz]
-    exact (zero_smul ℝ (radialParallelTransportSection (I := I) g p hX u t)).symm
+    rw [show (0 : ℝ) • u = 0 by exact zero_smul ℝ u]
+    rw [show (0 : ℝ) • radialParallelTransportSection (I := I) g p hX u t = 0 by
+      exact zero_smul ℝ (radialParallelTransportSection (I := I) g p hX u t)]
+    exact hz
   · let γ : ℝ → M := fun s => expMap (I := I) g p (s • X)
     let Pcu : ∀ s, TangentSpace I (γ s) := radialParallelTransportSection (I := I) g p hX (c • u)
     let Pu : ∀ s, TangentSpace I (γ s) := radialParallelTransportSection (I := I) g p hX u
@@ -7162,7 +7172,9 @@ theorem radialParallelTransportSection_smul (g : SmoothRiemannianMetric I M) (p 
       exact hround_l.symm.trans ((congrArg ((trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)) hchart).trans hround_r)
     simpa [Pcu, Pu] using hsec
 
-theorem radialTransportSection_linear_add (g : SmoothRiemannianMetric I M) (p : M)
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem radialTransportSection_linear_add [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
     (u w : TangentSpace I p) (y : M) :
     radialTransportSection g p (u + w) y =
       radialTransportSection g p u y + radialTransportSection g p w y := by
@@ -7181,7 +7193,9 @@ theorem radialTransportSection_linear_add (g : SmoothRiemannianMetric I M) (p : 
     simp_rw [radialTransportSection, dif_neg hnot]
     simp
 
-theorem radialTransportSection_linear_smul (g : SmoothRiemannianMetric I M) (p : M)
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem radialTransportSection_linear_smul [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
     (c : ℝ) (u : TangentSpace I p) (y : M) :
     radialTransportSection g p (c • u) y = c • radialTransportSection g p u y := by
   classical
@@ -7200,6 +7214,8 @@ theorem radialTransportSection_linear_smul (g : SmoothRiemannianMetric I M) (p :
     simp
 
 end RadialTransportLinear
+
+
 
 
 
