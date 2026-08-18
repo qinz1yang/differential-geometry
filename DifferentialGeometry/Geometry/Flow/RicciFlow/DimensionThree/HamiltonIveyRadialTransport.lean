@@ -2858,6 +2858,306 @@ lemma mem_radialTransportSectionDomain_self (g : SmoothRiemannianMetric I M) (p 
   rw [normalChartAt_centre (I := I) g p]
   simpa using (radialRadius_pos (I := I) g p)
 
+omit [T2Space M] in
+private lemma chartExpCoord_localInverse (g : SmoothRiemannianMetric I M) (p : M) :
+    ∃ W : Set E, IsOpen W ∧ extChartAt I p p ∈ W ∧
+      ∃ ψ : E → E, ψ (extChartAt I p p) = 0 ∧
+        ContDiffOn ℝ ∞ ψ W ∧
+        (∀ᶠ x in 𝓝 (0 : E), ψ (extChartAt I p (expMapE g p x)) = x) := by
+  classical
+  set Φ : E → E := fun x => extChartAt I p (expMapE g p x) with hΦ
+  have hΦ0 : Φ 0 = extChartAt I p p := by
+    change extChartAt I p (expMap (I := I) g p (0 : TangentSpace I p)) = extChartAt I p p
+    rw [expMap_zero]
+  have hcd : ContDiffAt ℝ ∞ Φ 0 := by
+    simpa [hΦ] using (chartExpCoord_contDiffAt (I := I) g p)
+  have hfd : HasFDerivAt Φ (ContinuousLinearMap.id ℝ E) 0 := by
+    simpa [hΦ] using (chartExpCoord_hasFDerivAt_zero (I := I) g p)
+  let f' : E ≃L[ℝ] E := ContinuousLinearEquiv.refl ℝ E
+  have hfd' : HasFDerivAt Φ (f' : E →L[ℝ] E) 0 := by
+    simpa [f'] using hfd
+  have hn : (∞ : WithTop ℕ∞) ≠ 0 := by simp
+  let e : OpenPartialHomeomorph E E := hcd.toOpenPartialHomeomorph Φ hfd' hn
+  have he_target : Φ 0 ∈ e.target := hcd.image_mem_toOpenPartialHomeomorph_target hfd' hn
+  let ψ : E → E := hcd.localInverse hfd' hn
+  have hψ0 : ψ (Φ 0) = 0 := hcd.localInverse_apply_image hfd' hn
+  have hleft : ∀ᶠ x in 𝓝 (0 : E), ψ (Φ x) = x := by
+    simpa [ψ] using (hcd.hasStrictFDerivAt' hfd' hn).eventually_left_inverse
+  have hψ_cont0 : ContinuousAt ψ (Φ 0) := by
+    simpa [ψ] using (hcd.to_localInverse hfd' hn).continuousAt
+  have hcd1 : ContDiffAt ℝ 1 Φ 0 := hcd.of_le (by simp)
+  obtain ⟨A, ⟨u₀, hu₀, hA_deriv⟩, hA_cd0⟩ :=
+    (contDiffAt_succ_iff_hasFDerivAt (𝕜 := ℝ) (n := 0)).mp hcd1
+  have hA0 : A 0 = ContinuousLinearMap.id ℝ E := by
+    have h₁ : HasFDerivAt Φ (A 0) 0 := hA_deriv 0 (mem_of_mem_nhds hu₀)
+    have h₂ : HasFDerivAt Φ (ContinuousLinearMap.id ℝ E) 0 := by
+      simpa [hΦ] using (chartExpCoord_hasFDerivAt_zero (I := I) g p)
+    exact h₁.unique h₂
+  have hunit0 : IsUnit (A 0) := by
+    rw [hA0]
+    exact isUnit_one
+  have hA_unit_nhd : {y : E | IsUnit (A y)} ∈ 𝓝 (0 : E) :=
+    hA_cd0.continuousAt.preimage_mem_nhds (Units.isOpen.mem_nhds hunit0)
+  obtain ⟨δ, hδ_pos, hδ⟩ := expMap_contMDiffAt_infty_of_norm_lt (I := I) g p
+  obtain ⟨δ_u, hδu_pos, hδu_ball⟩ := Metric.mem_nhds_iff.mp hu₀
+  obtain ⟨δ_A, hδA_pos, hδA_ball⟩ := Metric.mem_nhds_iff.mp hA_unit_nhd
+  let ε : ℝ := min δ (min δ_u (min δ_A (expMapC2Radius (I := I) g p)))
+  have hε_pos : 0 < ε := by
+    dsimp [ε]
+    exact lt_min hδ_pos (lt_min hδu_pos (lt_min hδA_pos (expMapC2Radius_pos (I := I) g p)))
+  have hε_le_δ : ε ≤ δ := min_le_left _ _
+  have hε_le_δu : ε ≤ δ_u := le_trans (min_le_right _ _) (min_le_left _ _)
+  have hε_le_δA : ε ≤ δ_A := le_trans (min_le_right _ _) (le_trans (min_le_right _ _) (min_le_left _ _))
+  have hε_le_c2 : ε ≤ expMapC2Radius (I := I) g p :=
+    le_trans (min_le_right _ _) (le_trans (min_le_right _ _) (min_le_right _ _))
+  have hψ_small_nhd : {ξ : E | ‖ψ ξ‖ < ε} ∈ 𝓝 (Φ 0) := by
+    have hb : (0 : E) ∈ ball (0 : E) ε := by simpa using hε_pos
+    have hpre : ψ ⁻¹' (ball (0 : E) ε) ∈ 𝓝 (Φ 0) :=
+      hψ_cont0.preimage_mem_nhds (isOpen_ball.mem_nhds (by simpa [hψ0] using hb))
+    convert hpre using 1
+    ext ξ
+    simp [mem_ball, dist_zero_right]
+  have hW_nhd : e.target ∩ {ξ : E | ‖ψ ξ‖ < ε} ∈ 𝓝 (Φ 0) :=
+    Filter.inter_mem (e.open_target.mem_nhds he_target) hψ_small_nhd
+  obtain ⟨W, hW_sub, hW_open, hW_mem⟩ := _root_.mem_nhds_iff.mp hW_nhd
+  have hW_target : W ⊆ e.target := fun ξ hξ => (hW_sub hξ).1
+  have hW_small : W ⊆ {ξ : E | ‖ψ ξ‖ < ε} := fun ξ hξ => (hW_sub hξ).2
+  have hψ_cdAt : ∀ ξ ∈ W, ContDiffAt ℝ ∞ ψ ξ := by
+    intro ξ hξ
+    have hξ_target : ξ ∈ e.target := hW_target hξ
+    have hξ_small : ‖ψ ξ‖ < ε := hW_small hξ
+    set x : E := ψ ξ with hx
+    have hx_ε : ‖x‖ < ε := by simpa [hx] using hξ_small
+    have hx_δ : ‖x‖ < δ := lt_of_lt_of_le hx_ε hε_le_δ
+    have hx_δu : ‖x‖ < δ_u := lt_of_lt_of_le hx_ε hε_le_δu
+    have hx_δA : ‖x‖ < δ_A := lt_of_lt_of_le hx_ε hε_le_δA
+    have hx_c2 : ‖x‖ < expMapC2Radius (I := I) g p := lt_of_lt_of_le hx_ε hε_le_c2
+    have hx_ball_u : x ∈ ball (0 : E) δ_u := by
+      rw [mem_ball, dist_zero_right]
+      exact hx_δu
+    have hx_u₀ : x ∈ u₀ := hδu_ball hx_ball_u
+    have hx_ball_A : x ∈ ball (0 : E) δ_A := by
+      rw [mem_ball, dist_zero_right]
+      exact hx_δA
+    have hunit_x : IsUnit (A x) := hδA_ball hx_ball_A
+    have hsrc_exp : expMap (I := I) g p (show TangentSpace I p from x) ∈ (chartAt H p).source := by
+      have hnorm : ‖(1 : ℝ) • (show TangentSpace I p from x : E)‖ < expMapC2Radius (I := I) g p := by
+        simpa [one_smul] using hx_c2
+      simpa [one_smul] using
+        (radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p (v := show TangentSpace I p from x) (s := 1) hnorm)
+    have hmd_exp : ContMDiffAt 𝓘(ℝ, E) I ∞
+        (fun u : E => (expMap (I := I) g p (show TangentSpace I p from u) : M)) x :=
+      hδ x hx_δ
+    have hφ_exp : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I p)
+        (expMap (I := I) g p (show TangentSpace I p from x)) :=
+      contMDiffAt_extChartAt' (I := I) (n := ∞) (x := p)
+        (x' := expMap (I := I) g p (show TangentSpace I p from x)) hsrc_exp
+    have hmd_Φ : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, E) ∞
+        (fun u : E => extChartAt I p (expMap (I := I) g p (show TangentSpace I p from u))) x :=
+      hφ_exp.comp x hmd_exp
+    have hcdΦx : ContDiffAt ℝ ∞ Φ x := by
+      have hfun : (fun u : E => extChartAt I p (expMap (I := I) g p (show TangentSpace I p from u))) = Φ := by
+        funext u
+        rw [hΦ]
+        rfl
+      rw [hfun] at hmd_Φ
+      exact contMDiffAt_iff_contDiffAt.mp hmd_Φ
+    have hf' : HasFDerivAt Φ (A x) x := hA_deriv x hx_u₀
+    obtain ⟨u, hu⟩ := hunit_x
+    let L : E ≃L[ℝ] E := ContinuousLinearEquiv.unitsEquiv ℝ E u
+    have hL : (L : E →L[ℝ] E) = A x := by
+      ext x'
+      change ContinuousLinearEquiv.unitsEquiv ℝ E u x' = A x x'
+      rw [ContinuousLinearEquiv.unitsEquiv_apply, hu]
+    have hf'' : HasFDerivAt Φ (L : E →L[ℝ] E) x := by
+      simpa [hL] using hf'
+    have hψ_cdξ : ContDiffAt ℝ ∞ ψ ξ := by
+      have h := e.contDiffAt_symm (a := ξ) (f₀' := L) hξ_target hf'' hcdΦx
+      simpa [ψ] using h
+    exact hψ_cdξ
+  have hψ_cdOn : ContDiffOn ℝ ∞ ψ W := (IsOpen.contDiffOn_iff hW_open).2 hψ_cdAt
+  refine ⟨W, hW_open, ?_, ψ, ?_, hψ_cdOn, ?_⟩
+  · rw [← hΦ0]
+    exact hW_mem
+  · rw [← hΦ0]
+    exact hψ0
+  · simpa [hΦ] using hleft
+
+omit [T2Space M] in
+private lemma radialTransportSection_chartE_repr_eq (g : SmoothRiemannianMetric I M)
+    (p : M) (η₀ : TangentSpace I p) {ψ : E → E} {y : M}
+    (hy : y ∈ (normalChartAt (I := I) g p).source)
+    (hx : ψ (extChartAt I p y) = normalChartAt (I := I) g p y) :
+    chartE_section_repr (I := I) p (radialTransportSection (I := I) g p η₀) y =
+      radialTransportChartRep g p η₀ (ψ (extChartAt I p y)) 1 := by
+  classical
+  set σ : Π y : M, TangentSpace I y := radialTransportSection (I := I) g p η₀ with hσ
+  set x : E := normalChartAt (I := I) g p y with hx_def
+  have hy_exp : y = expMap (I := I) g p (show TangentSpace I p from (1 : ℝ) • x) := by
+    have hsymm : (normalChartAt (I := I) g p).symm x = y := by
+      rw [hx_def]
+      exact normalChartAt_left_inv (I := I) g p hy
+    have htgt : x ∈ (normalChartAt (I := I) g p).symm.source := by
+      rw [hx_def]
+      have hmap : (normalChartAt (I := I) g p) y ∈ (normalChartAt (I := I) g p).target :=
+        (normalChartAt (I := I) g p).map_source hy
+      simpa using hmap
+    have hexp : (normalChartAt (I := I) g p).symm x =
+        expMap (I := I) g p (show TangentSpace I p from x) :=
+      normalChartAt_symm_apply (I := I) g p htgt
+    rw [← hsymm, hexp]
+    simp [one_smul]
+  calc
+    chartE_section_repr (I := I) p σ y
+        = chartE_section_repr (I := I) p σ (expMap (I := I) g p
+            (show TangentSpace I p from (1 : ℝ) • x)) := by
+      rw [← hy_exp]
+    _ = radialTransportChartRep g p η₀ x 1 := rfl
+    _ = radialTransportChartRep g p η₀ (ψ (extChartAt I p y)) 1 := by
+      rw [← hx]
+
+omit [T2Space M] in
+theorem radialTransportSection_contMDiffOn (g : SmoothRiemannianMetric I M) (p : M)
+    (η₀ : TangentSpace I p) :
+    ∃ U : Set M, U ∈ 𝓝 p ∧ U ⊆ radialTransportSectionDomain (I := I) g p ∧
+      ContMDiffOn I I.tangent ∞ (T% (radialTransportSection (I := I) g p η₀)) U := by
+  classical
+  set σ : Π y : M, TangentSpace I y := radialTransportSection (I := I) g p η₀ with hσ
+  set φ : M → E := (extChartAt I p : M → E) with hφ
+  set Φ : E → E := fun x => φ (expMapE g p x) with hΦ
+  obtain ⟨ρ, hρ_pos, hρ_cd⟩ := radialTransportSection_chartE_value_contDiffOn (I := I) g p η₀
+  obtain ⟨W, hW_open, hW_φp, ψ, hψ_φp, hψ_cd, hψ_left⟩ :=
+    chartExpCoord_localInverse (I := I) g p
+  obtain ⟨A, hA_nhd, hA⟩ := hψ_left.exists_mem
+  have hNC_cont : ContinuousAt (normalChartAt (I := I) g p) p := by
+    have hsrc_nhd : (normalChartAt (I := I) g p).source ∈ 𝓝 p :=
+      (normalChartAt_open_source (I := I) g p).mem_nhds (normalChartAt_source (I := I) g p)
+    have hNC_at : ContMDiffAt I 𝓘(ℝ, E) 1 (normalChartAt (I := I) g p) p :=
+      (normalChartAt_contMDiffOn (I := I) g p p (normalChartAt_source (I := I) g p)).contMDiffAt
+        hsrc_nhd
+    exact hNC_at.continuousAt
+  have hBρ_p : {y : M | ‖normalChartAt (I := I) g p y‖ < ρ} ∈ 𝓝 p := by
+    have hρ_nhd : ball (0 : E) ρ ∈ 𝓝 (normalChartAt (I := I) g p p) := by
+      rw [normalChartAt_centre (I := I) g p]
+      exact isOpen_ball.mem_nhds (by rw [mem_ball, dist_zero_right]; simpa using hρ_pos)
+    have hpre : (normalChartAt (I := I) g p) ⁻¹' (ball (0 : E) ρ) ∈ 𝓝 p :=
+      hNC_cont.preimage_mem_nhds hρ_nhd
+    convert hpre using 1
+    ext y
+    simp [mem_ball, dist_zero_right]
+  let V : Set M := (chartAt H p).source ∩ φ ⁻¹' W ∩ (normalChartAt (I := I) g p).source ∩
+    (normalChartAt (I := I) g p) ⁻¹' A ∩ {y : M | ‖normalChartAt (I := I) g p y‖ < ρ}
+  have hpV : p ∈ V := by
+    refine ⟨⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩
+    · exact mem_chart_source H p
+    · simpa [hφ] using hW_φp
+    · exact normalChartAt_source (I := I) g p
+    · change normalChartAt (I := I) g p p ∈ A
+      rw [normalChartAt_centre (I := I) g p]
+      exact mem_of_mem_nhds hA_nhd
+    · change ‖normalChartAt (I := I) g p p‖ < ρ
+      rw [normalChartAt_centre (I := I) g p]
+      simpa using hρ_pos
+  have hV_nhd : V ∈ 𝓝 p := by
+    have h1 : (chartAt H p).source ∈ 𝓝 p :=
+      (chartAt H p).open_source.mem_nhds (mem_chart_source H p)
+    have h2 : φ ⁻¹' W ∈ 𝓝 p :=
+      (contMDiffAt_extChartAt (I := I) (n := ∞) (x := p)).continuousAt.preimage_mem_nhds
+        (hW_open.mem_nhds (by simpa [hφ] using hW_φp))
+    have h3 : (normalChartAt (I := I) g p).source ∈ 𝓝 p :=
+      (normalChartAt_open_source (I := I) g p).mem_nhds (normalChartAt_source (I := I) g p)
+    have h4 : (normalChartAt (I := I) g p) ⁻¹' A ∈ 𝓝 p := by
+      have hA_p : A ∈ 𝓝 (normalChartAt (I := I) g p p) := by
+        rw [normalChartAt_centre (I := I) g p]
+        exact hA_nhd
+      exact hNC_cont.preimage_mem_nhds hA_p
+    have h5 : {y : M | ‖normalChartAt (I := I) g p y‖ < ρ} ∈ 𝓝 p := hBρ_p
+    exact Filter.inter_mem (Filter.inter_mem (Filter.inter_mem (Filter.inter_mem h1 h2) h3) h4) h5
+  obtain ⟨U₀, hU₀_sub, hU₀_open, hU₀_mem⟩ := _root_.mem_nhds_iff.mp hV_nhd
+  have hident : ∀ y ∈ V,
+      ψ (φ y) = normalChartAt (I := I) g p y ∧
+        chartE_section_repr (I := I) p σ y = radialTransportChartRep g p η₀ (ψ (φ y)) 1 := by
+    intro y hyV
+    have hy_nc : y ∈ (normalChartAt (I := I) g p).source := hyV.1.1.2
+    have hyA : normalChartAt (I := I) g p y ∈ A := hyV.1.2
+    set x : E := normalChartAt (I := I) g p y with hx
+    have hxA : x ∈ A := by simpa [hx] using hyA
+    have hψΦx : ψ (extChartAt I p (expMapE g p x)) = x := hA x hxA
+    have hy_exp : y = expMap (I := I) g p (show TangentSpace I p from (1 : ℝ) • x) := by
+      have hsymm : (normalChartAt (I := I) g p).symm x = y := by
+        rw [hx]
+        exact normalChartAt_left_inv (I := I) g p hy_nc
+      have htgt : x ∈ (normalChartAt (I := I) g p).symm.source := by
+        rw [hx]
+        have hmap : (normalChartAt (I := I) g p) y ∈ (normalChartAt (I := I) g p).target :=
+          (normalChartAt (I := I) g p).map_source hy_nc
+        simpa using hmap
+      have hexp : (normalChartAt (I := I) g p).symm x =
+          expMap (I := I) g p (show TangentSpace I p from x) :=
+        normalChartAt_symm_apply (I := I) g p htgt
+      rw [← hsymm, hexp]
+      simp [one_smul]
+    have hΦx : Φ x = φ y := by
+      have hE : expMapE g p x = expMap (I := I) g p (show TangentSpace I p from (1 : ℝ) • x) := by
+        simp [expMapE, one_smul]
+      calc
+        Φ x = φ (expMapE g p x) := by rw [hΦ]
+        _ = φ (expMap (I := I) g p (show TangentSpace I p from (1 : ℝ) • x)) := by rw [hE]
+        _ = φ y := by rw [← hy_exp]
+    have hx_eq : ψ (φ y) = x := by
+      rw [← hΦx]
+      simpa [hΦ] using hψΦx
+    refine ⟨?_, ?_⟩
+    · simpa [hx] using hx_eq
+    · exact radialTransportSection_chartE_repr_eq (I := I) g p η₀ hy_nc hx_eq
+  let D : Set M := radialTransportSectionDomain (I := I) g p
+  let U : Set M := U₀ ∩ D
+  refine ⟨U, ?_, ?_, ?_⟩
+  · exact Filter.inter_mem (hU₀_open.mem_nhds hU₀_mem)
+      ((radialTransportSectionDomain_isOpen (I := I) g p).mem_nhds
+        (mem_radialTransportSectionDomain_self (I := I) g p))
+  · intro y hy
+    exact hy.2
+  · intro y hy
+    have hy₀ : y ∈ U₀ := hy.1
+    have hyV : y ∈ V := hU₀_sub hy₀
+    have hy_src : y ∈ (chartAt H p).source := hyV.1.1.1.1
+    have hyφW : φ y ∈ W := hyV.1.1.1.2
+    have hyBρ : ‖normalChartAt (I := I) g p y‖ < ρ := hyV.2
+    set x : E := normalChartAt (I := I) g p y with hx
+    have hxρ : ‖x‖ < ρ := by simpa [hx] using hyBρ
+    have hx_eq : ψ (φ y) = x := by
+      have := (hident y hyV).1
+      simpa [hx] using this
+    have hR : ContDiffAt ℝ ∞ (fun x' : E => radialTransportChartRep g p η₀ x' 1) (ψ (φ y)) := by
+      rw [hx_eq]
+      have hx_ball : x ∈ ball (0 : E) ρ := by
+        rw [mem_ball, dist_zero_right]
+        exact hxρ
+      exact hρ_cd.contDiffAt (isOpen_ball.mem_nhds hx_ball)
+    have hFφ : ContMDiffAt I 𝓘(ℝ, E) ∞
+        (fun y' : M => radialTransportChartRep g p η₀ (ψ (φ y')) 1) y := by
+      have hψy : ContDiffAt ℝ ∞ ψ (φ y) :=
+        hψ_cd.contDiffAt (hW_open.mem_nhds hyφW)
+      have hF : ContDiffAt ℝ ∞ (fun ξ : E => radialTransportChartRep g p η₀ (ψ ξ) 1) (φ y) :=
+        hR.comp (φ y) hψy
+      have hF_md : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, E) ∞
+          (fun ξ : E => radialTransportChartRep g p η₀ (ψ ξ) 1) (φ y) :=
+        hF.contMDiffAt
+      have hφy : ContMDiffAt I 𝓘(ℝ, E) ∞ φ y :=
+        contMDiffAt_extChartAt' (I := I) (n := ∞) (x := p) (x' := y) hy_src
+      exact hF_md.comp y hφy
+    have hchart_y : ContMDiffAt I 𝓘(ℝ, E) ∞ (chartE_section_repr (I := I) p σ) y := by
+      refine hFφ.congr_of_eventuallyEq ?_
+      filter_upwards [hU₀_open.mem_nhds hy₀] with y' hy'
+      exact (hident y' (hU₀_sub hy')).2
+    have hy_base : y ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
+      rw [TangentBundle.trivializationAt_baseSet]
+      exact hy_src
+    have hsec : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞ (T% σ) y :=
+      (contMDiffAt_section_iff_chartE I p σ hy_base).mpr hchart_y
+    exact hsec.contMDiffWithinAt
+
 end RadialTransportSectionSmooth
 
 end RicciFlow
