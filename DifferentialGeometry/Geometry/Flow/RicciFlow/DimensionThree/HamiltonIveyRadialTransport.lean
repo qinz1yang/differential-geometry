@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
+import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
+import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
+import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Endpoint
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
@@ -2272,6 +2275,73 @@ theorem radialTransportSection_nabla2_chartBasis_center_zero
   simpa [hW', hw, hσ] using hW'0
 
 end SecondOrderFlatness
+
+section RadialTransportSectionSmooth
+
+variable [T2Space M]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
+  [T2Space M] [T2Space (TangentBundle I M)] in
+lemma chartChristoffelContraction_full_contDiffOn_infty (g : SmoothRiemannianMetric I M)
+    (α : M) :
+    ContDiffOn ℝ ∞
+      (fun z : E × E × E => chartChristoffelContraction (I := I) g α z.2.1 z.2.2 z.1)
+      ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) := by
+  classical
+  have hfst : ContDiff ℝ ∞ (fun z : E × E × E => z.1) :=
+    contDiff_fst (𝕜 := ℝ) (E := E) (F := E × E)
+  have hproj21 : ContDiff ℝ ∞ (fun z : E × E × E => z.2.1) := by
+    have h1 : ContDiff ℝ ∞ (Prod.snd : E × (E × E) → E × E) :=
+      contDiff_snd (𝕜 := ℝ) (E := E) (F := E × E)
+    have h2 : ContDiff ℝ ∞ (Prod.fst : E × E → E) :=
+      contDiff_fst (𝕜 := ℝ) (E := E) (F := E)
+    exact h2.comp h1
+  have hproj22 : ContDiff ℝ ∞ (fun z : E × E × E => z.2.2) := by
+    have h1 : ContDiff ℝ ∞ (Prod.snd : E × (E × E) → E × E) :=
+      contDiff_snd (𝕜 := ℝ) (E := E) (F := E × E)
+    have h2 : ContDiff ℝ ∞ (Prod.snd : E × E → E) :=
+      contDiff_snd (𝕜 := ℝ) (E := E) (F := E)
+    exact h2.comp h1
+  unfold chartChristoffelContraction
+  refine ContDiffOn.sum (fun k _ => ?_)
+  have hscalar : ContDiffOn ℝ ∞
+      (fun z : E × E × E =>
+        ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+          chartChristoffel (I := I) g α i j k z.1 *
+            chartCoord (E := E) i z.2.1 * chartCoord (E := E) j z.2.2)
+      ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) := by
+    refine ContDiffOn.sum (fun i _ => ?_)
+    refine ContDiffOn.sum (fun j _ => ?_)
+    have hΓ : ContDiffOn ℝ ∞
+        (fun z : E × E × E => chartChristoffel (I := I) g α i j k z.1)
+        ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) := by
+      have hbase : ContDiffOn ℝ ∞ (chartChristoffel (I := I) g α i j k)
+          (interior (extChartAt I α).target) :=
+        chartChristoffel_contDiffOn_interior (I := I) g α i j k
+      have hmapsto : MapsTo (fun z : E × E × E => z.1)
+          ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E))
+          (interior (extChartAt I α).target) := fun _ hp => hp.1
+      exact hbase.comp hfst.contDiffOn hmapsto
+    have hCLM_i : ContDiff ℝ ∞ (((chartModelBasis E).coord i).toContinuousLinearMap) :=
+      ((chartModelBasis E).coord i).toContinuousLinearMap.contDiff
+    have hCLM_j : ContDiff ℝ ∞ (((chartModelBasis E).coord j).toContinuousLinearMap) :=
+      ((chartModelBasis E).coord j).toContinuousLinearMap.contDiff
+    have hvi : ContDiffOn ℝ ∞
+        (fun z : E × E × E => chartCoord (E := E) i z.2.1)
+        ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) :=
+      (hCLM_i.comp hproj21).contDiffOn
+    have hwj : ContDiffOn ℝ ∞
+        (fun z : E × E × E => chartCoord (E := E) j z.2.2)
+        ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) :=
+      (hCLM_j.comp hproj22).contDiffOn
+    exact (hΓ.mul hvi).mul hwj
+  have hconstk : ContDiffOn ℝ ∞
+      (fun _ : E × E × E => (chartModelBasis E) k)
+      ((interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) :=
+    contDiffOn_const
+  exact hscalar.smul hconstk
+
+end RadialTransportSectionSmooth
 
 end RicciFlow
 end PDE
