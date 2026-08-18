@@ -2280,6 +2280,8 @@ section RadialTransportSectionSmooth
 
 variable [T2Space M]
 
+open DifferentialGeometry.Analysis.ODE.Flow
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
   [T2Space M] [T2Space (TangentBundle I M)] in
 lemma chartChristoffelContraction_full_contDiffOn_infty (g : SmoothRiemannianMetric I M)
@@ -2595,6 +2597,152 @@ lemma radialTransportODE_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
     hΓc.neg
   refine ⟨ρ, hρ_pos, hρ_le_c2, ?_⟩
   simpa [hU_def, hccrv_def, hcdrv_def, radialContractionFun] using hneg
+
+omit [T2Space M] in
+noncomputable def radialTransportODEValue (g : SmoothRiemannianMetric I M) (p : M)
+    (t : ℝ) (x w : E) : E :=
+  - chartChristoffelContraction (I := I) g p
+    (deriv (chartCurve (I := I) p
+      (fun s : ℝ => expMap (I := I) g p (show TangentSpace I p from s • x))) t) w
+    (chartCurve (I := I) p
+      (fun s : ℝ => expMap (I := I) g p (show TangentSpace I p from s • x)) t)
+
+omit [T2Space M] in
+lemma radialTransportODEValue_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ expMapC2Radius (I := I) g p / 2 ∧
+      ContDiffOn ℝ ∞
+        (fun q : ℝ × E × E => radialTransportODEValue g p q.1 q.2.1 q.2.2)
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) ×ˢ (Set.univ : Set E)) := by
+  obtain ⟨ρ, hρ_pos, hρ_le, hcd⟩ := radialTransportODE_contDiffOn (I := I) g p
+  refine ⟨ρ, hρ_pos, hρ_le, ?_⟩
+  change ContDiffOn ℝ ∞
+      (fun q : ℝ × E × E => radialTransportODEValue g p q.1 q.2.1 q.2.2)
+      ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) ×ˢ (Set.univ : Set E))
+  exact hcd
+
+omit [T2Space M] in
+noncomputable def radialTransportChartRep (g : SmoothRiemannianMetric I M) (p : M)
+    (η₀ : TangentSpace I p) (x : E) (t : ℝ) : E :=
+  chartE_section_repr (I := I) p (radialTransportSection (I := I) g p η₀)
+    (expMap (I := I) g p (show TangentSpace I p from t • x))
+
+omit [T2Space M] in
+theorem radialTransportSection_chartE_value_contDiffOn (g : SmoothRiemannianMetric I M)
+    (p : M) (η₀ : TangentSpace I p) :
+    ∃ ρ : ℝ, 0 < ρ ∧
+      ContDiffOn ℝ ∞ (fun x : E => radialTransportChartRep g p η₀ x 1) (ball (0 : E) ρ) := by
+  classical
+  set σ : Π y : M, TangentSpace I y := radialTransportSection (I := I) g p η₀ with hσ
+  obtain ⟨ρ, hρ_pos, hρ_le_c2, hODE_cd⟩ := radialTransportODE_contDiffOn (I := I) g p
+  set J : Set ℝ := Ioo (-1 : ℝ) 1 with hJ_def
+  set V : Set (E × E) := ball (0 : E) ρ ×ˢ (Set.univ : Set E) with hV_def
+  set v : ℝ → (E × E) → (E × E) := fun t q => (0, radialTransportODEValue g p t q.1 q.2) with hv_def
+  have hODE_cd' : ContDiffOn ℝ ∞
+      (fun q : ℝ × (E × E) => radialTransportODEValue g p q.1 q.2.1 q.2.2) (J ×ˢ V) := by
+    change ContDiffOn ℝ ∞
+        (fun q : ℝ × E × E => radialTransportODEValue g p q.1 q.2.1 q.2.2)
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) ×ˢ (Set.univ : Set E))
+    exact hODE_cd
+  have hv : ContDiffOn ℝ ∞ (uncurry v) (J ×ˢ V) := by
+    have h₁ : ContDiffOn ℝ ∞ (fun q : ℝ × (E × E) => (0 : E)) (J ×ˢ V) :=
+      contDiffOn_const
+    have h₂ : ContDiffOn ℝ ∞ (fun q : ℝ × (E × E) => radialTransportODEValue g p q.1 q.2.1 q.2.2) (J ×ˢ V) :=
+      hODE_cd'
+    have hfun : uncurry v =
+        fun q : ℝ × (E × E) => (0, radialTransportODEValue g p q.1 q.2.1 q.2.2) := by
+      funext q
+      rfl
+    rw [hfun]
+    exact h₁.prodMk h₂
+  set a₀ : E → E × E := fun x => (x, chartE_section_repr (I := I) p σ p) with ha₀_def
+  have ha₀ : ContDiffOn ℝ ∞ a₀ (ball (0 : E) ρ) := by
+    have h₁ : ContDiff ℝ ∞ (fun x : E => x) := contDiff_id
+    have h₂ : ContDiff ℝ ∞ (fun _ : E => chartE_section_repr (I := I) p σ p) := contDiff_const
+    simpa [a₀] using (h₁.prodMk h₂).contDiffOn
+  set γ : E → ℝ → E × E := fun x t => (x, radialTransportChartRep g p η₀ x t) with hγ_def
+  have hY_ode : ∀ x ∈ ball (0 : E) ρ, ∀ t ∈ Ioo (-1 : ℝ) 1,
+      HasDerivAt (fun s : ℝ => radialTransportChartRep g p η₀ x s)
+        (radialTransportODEValue g p t x (radialTransportChartRep g p η₀ x t)) t := by
+    intro x hx t ht
+    have hX : ‖(show TangentSpace I p from x : E)‖ < radialRadius (I := I) g p := by
+      have hxρ : ‖x‖ < ρ := by simpa [dist_eq_norm] using (mem_ball.mp hx)
+      have hlt : ‖x‖ < expMapC2Radius (I := I) g p / 2 := lt_of_lt_of_le hxρ hρ_le_c2
+      rw [radialRadius]
+      exact hlt
+    have hraw := radialTransportSection_chartRep_hasDerivAt (I := I) g p hX η₀ ht
+    simpa [radialTransportChartRep, radialTransportODEValue, hσ] using hraw
+  have hγ_ode : ∀ x ∈ ball (0 : E) ρ,
+      γ x 0 = a₀ x ∧ IsIntegralCurveOn (γ x) v (Set.Icc (0 : ℝ) (1 / 2)) := by
+    intro x hx
+    constructor
+    · have hY0 : radialTransportChartRep g p η₀ x 0 = chartE_section_repr (I := I) p σ p := by
+        change chartE_section_repr (I := I) p σ
+            (expMap (I := I) g p ((0 : ℝ) • (show TangentSpace I p from x))) =
+          chartE_section_repr (I := I) p σ p
+        rw [radialCurve_zero (I := I) g p (show TangentSpace I p from x)]
+      simp [γ, a₀, hY0]
+    · intro t ht
+      have htIoo : t ∈ Ioo (-1 : ℝ) 1 := ⟨by linarith [ht.1], by linarith [ht.2]⟩
+      have hODE_t := hY_ode x hx t htIoo
+      have hfst : HasDerivWithinAt (fun s : ℝ => x) (0 : E) (Set.Icc (0 : ℝ) (1 / 2)) t := by
+        simpa using (hasDerivAt_const t (c := x)).hasDerivWithinAt
+      have hsnd : HasDerivWithinAt (fun s : ℝ => radialTransportChartRep g p η₀ x s)
+          (radialTransportODEValue g p t x (radialTransportChartRep g p η₀ x t))
+          (Set.Icc (0 : ℝ) (1 / 2)) t :=
+        hODE_t.hasDerivWithinAt
+      have hprod : HasDerivWithinAt (fun s : ℝ => (x, radialTransportChartRep g p η₀ x s))
+          ((0 : E), radialTransportODEValue g p t x (radialTransportChartRep g p η₀ x t))
+          (Set.Icc (0 : ℝ) (1 / 2)) t :=
+        hfst.prodMk hsnd
+      simpa [γ, v, hv_def] using hprod
+  have hstay : ∀ x ∈ ball (0 : E) ρ, MapsTo (γ x) (Set.Icc (0 : ℝ) (1 / 2)) V := by
+    intro x hx t ht
+    exact ⟨hx, Set.mem_univ _⟩
+  have hres := ode_slice_right_on (E := E × E) (P := E) (J := J) (V := V) (v := v)
+    (hJ := isOpen_Ioo) (hV := isOpen_ball.prod isOpen_univ) (hv := hv)
+    (A := ball (0 : E) ρ) (hA := isOpen_ball)
+    (a := 0) (b := 1 / 2) (hI := by intro t ht; exact ⟨by linarith [ht.1], by linarith [ht.2]⟩)
+    (a₀ := a₀) (ha₀ := ha₀) (γ := γ) (hγ := hγ_ode) (hstay := hstay)
+  have hhalf : ContDiffOn ℝ ∞
+      (fun x : E => radialTransportChartRep g p η₀ x (1 / 2)) (ball (0 : E) ρ) := by
+    have hslice : ContDiffOn ℝ ∞ (fun x : E => γ x (1 / 2)) (ball (0 : E) ρ) :=
+      hres (1 / 2) ⟨by norm_num, by norm_num⟩
+    have hsnd' : ContDiffOn ℝ ∞ (fun x : E => (γ x (1 / 2)).2) (ball (0 : E) ρ) := hslice.snd
+    simpa [hγ_def] using hsnd'
+  have hdouble : ContDiff ℝ ∞ (fun x : E => (2 : ℝ) • x) := by fun_prop
+  have hdoubleOn : ContDiffOn ℝ ∞ (fun x : E => radialTransportChartRep g p η₀ ((2 : ℝ) • x) (1 / 2))
+      (ball (0 : E) (ρ / 2)) := by
+    have hmaps : MapsTo (fun x : E => (2 : ℝ) • x) (ball (0 : E) (ρ / 2)) (ball (0 : E) ρ) := by
+      intro x hx
+      have hxρ : ‖x‖ < ρ / 2 := by simpa [dist_eq_norm] using (mem_ball.mp hx)
+      rw [mem_ball, dist_zero_right]
+      rw [norm_smul, Real.norm_eq_abs]
+      have h2 : |(2 : ℝ)| = 2 := by norm_num
+      rw [h2]
+      have hnorm : 2 * ‖x‖ < ρ := by linarith
+      exact hnorm
+    exact hhalf.comp hdouble.contDiffOn hmaps
+  have hid : ∀ x : E,
+      radialTransportChartRep g p η₀ x 1 = radialTransportChartRep g p η₀ ((2 : ℝ) • x) (1 / 2) := by
+    intro x
+    set v : TangentSpace I p := show TangentSpace I p from x with hv'
+    have hsmul : (1 / 2 : ℝ) • ((2 : ℝ) • v) = (1 : ℝ) • v := by
+      rw [smul_smul]
+      congr 1
+      norm_num
+    have hval : expMap (I := I) g p ((1 : ℝ) • v) =
+        expMap (I := I) g p ((1 / 2 : ℝ) • ((2 : ℝ) • v)) := by
+      rw [hsmul]
+    change chartE_section_repr (I := I) p σ (expMap (I := I) g p ((1 : ℝ) • v)) =
+      chartE_section_repr (I := I) p σ (expMap (I := I) g p ((1 / 2 : ℝ) • ((2 : ℝ) • v)))
+    rw [hval]
+  refine ⟨ρ / 2, by positivity, ?_⟩
+  have hgoal : ContDiffOn ℝ ∞
+      (fun x : E => radialTransportChartRep g p η₀ x 1) (ball (0 : E) (ρ / 2)) := by
+    refine hdoubleOn.congr ?_
+    intro x hx
+    exact hid x
+  exact hgoal
 
 end RadialTransportSectionSmooth
 
