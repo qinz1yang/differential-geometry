@@ -2744,6 +2744,120 @@ theorem radialTransportSection_chartE_value_contDiffOn (g : SmoothRiemannianMetr
     exact hid x
   exact hgoal
 
+omit [T2Space M] in
+noncomputable def expMapE (g : SmoothRiemannianMetric I M) (p : M) (x : E) : M :=
+  expMap (I := I) g p x
+
+omit [T2Space M] [NeZero (Module.finrank ℝ E)] in
+lemma chartExpCoord_contDiffAt (g : SmoothRiemannianMetric I M) (p : M) :
+    ContDiffAt ℝ ∞
+      (fun x : E => extChartAt I p (expMapE g p x)) 0 := by
+  classical
+  obtain ⟨δ, hδ_pos, hδ⟩ := expMap_contMDiffAt_infty_of_norm_lt (I := I) g p
+  have hδ0 : ‖(0 : E)‖ < δ := by simpa using hδ_pos
+  have hexp : ContMDiffAt 𝓘(ℝ, E) I ∞ (fun x : E => (expMapE g p x : M)) 0 := by
+    simpa [expMapE] using hδ (0 : E) hδ0
+  have hsrc : p ∈ (chartAt H p).source := mem_chart_source H p
+  have hφ : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I p) p :=
+    contMDiffAt_extChartAt' (I := I) (n := ∞) (x := p) (x' := p) hsrc
+  have hφAt : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I p) (expMapE g p 0) := by
+    convert hφ using 1
+    simpa [expMapE] using (expMap_zero (I := I) g p)
+  have hcomp : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, E) ∞
+      ((extChartAt I p) ∘ fun x : E => expMapE g p x) 0 :=
+    hφAt.comp 0 hexp
+  exact contMDiffAt_iff_contDiffAt.mp hcomp
+
+omit [T2Space M] in
+lemma chartExpCoord_fderiv_zero (g : SmoothRiemannianMetric I M) (p : M) :
+    fderiv ℝ (fun x : E => extChartAt I p (expMapE g p x)) 0 =
+      ContinuousLinearMap.id ℝ E := by
+  classical
+  set z : E → E := fun x => extChartAt I p (expMapE g p x) with hz
+  have hz1 : ContDiffAt ℝ 1 z 0 :=
+    (chartExpCoord_contDiffAt (I := I) g p).of_le (by norm_num)
+  have hzdiff : DifferentiableAt ℝ z 0 := hz1.differentiableAt_one
+  apply ContinuousLinearMap.ext
+  intro v
+  have hιd : DifferentiableAt ℝ (fun t : ℝ => t • v) 0 := by
+    have hL : (fun t : ℝ => t • v) = ContinuousLinearMap.toSpanSingleton ℝ v := by
+      funext t
+      rfl
+    rw [hL]
+    exact (ContinuousLinearMap.toSpanSingleton ℝ v).hasFDerivAt.differentiableAt
+  have hι1 : (fderiv ℝ (fun t : ℝ => t • v) 0) (1 : ℝ) = v := by
+    have hL : (fun t : ℝ => t • v) = ContinuousLinearMap.toSpanSingleton ℝ v := by
+      funext t
+      rfl
+    rw [hL]
+    have hfd : fderiv ℝ (ContinuousLinearMap.toSpanSingleton ℝ v) 0 =
+        ContinuousLinearMap.toSpanSingleton ℝ v :=
+      (ContinuousLinearMap.toSpanSingleton ℝ v).hasFDerivAt.fderiv
+    rw [hfd]
+    simp
+  have hdir : (fderiv ℝ z 0) v = deriv (fun t : ℝ => z (t • v)) 0 := by
+    have hdrv : deriv (fun t : ℝ => z (t • v)) 0 =
+        (fderiv ℝ (fun t : ℝ => z (t • v)) 0) (1 : ℝ) := rfl
+    rw [hdrv]
+    have hfun : (fun t : ℝ => z (t • v)) = z ∘ (fun t : ℝ => t • v) := rfl
+    rw [hfun]
+    have hzAt : DifferentiableAt ℝ z ((fun t : ℝ => t • v) 0) := by simpa using hzdiff
+    have hchain := fderiv_comp (x := 0) hzAt hιd
+    rw [hchain]
+    rw [ContinuousLinearMap.comp_apply]
+    rw [hι1]
+    rw [zero_smul]
+  have hderiv : deriv (fun t : ℝ => z (t • v)) 0 = v := by
+    have hzv : (fun t : ℝ => z (t • v)) = chartCurve (I := I) p
+        (fun s : ℝ => expMap (I := I) g p (show TangentSpace I p from s • v)) := by
+      funext t
+      simp [z, expMapE]
+    rw [hzv]
+    simpa using (radialCurve_chartCurve_deriv_zero (I := I) g p (show TangentSpace I p from v))
+  rw [hdir]
+  exact hderiv
+
+omit [T2Space M] in
+lemma chartExpCoord_hasFDerivAt_zero (g : SmoothRiemannianMetric I M) (p : M) :
+    HasFDerivAt (fun x : E => extChartAt I p (expMapE g p x))
+      (ContinuousLinearMap.id ℝ E) 0 := by
+  classical
+  have hz1 : ContDiffAt ℝ 1 (fun x : E => extChartAt I p (expMapE g p x)) 0 :=
+    (chartExpCoord_contDiffAt (I := I) g p).of_le (by norm_num)
+  have hfd : HasFDerivAt (fun x : E => extChartAt I p (expMapE g p x))
+      (fderiv ℝ (fun x : E => extChartAt I p (expMapE g p x)) 0) 0 :=
+    hz1.differentiableAt_one.hasFDerivAt
+  convert hfd using 1
+  exact (chartExpCoord_fderiv_zero (I := I) g p).symm
+
+omit [T2Space M] in
+noncomputable def radialTransportSectionDomain (g : SmoothRiemannianMetric I M) (p : M) : Set M :=
+  {y : M | y ∈ (normalChartAt (I := I) g p).source ∧
+    ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p}
+
+omit [T2Space M] in
+lemma radialTransportSectionDomain_isOpen (g : SmoothRiemannianMetric I M) (p : M) :
+    IsOpen (radialTransportSectionDomain (I := I) g p) := by
+  classical
+  unfold radialTransportSectionDomain
+  have hcont : ContinuousOn (normalChartAt (I := I) g p) (normalChartAt (I := I) g p).source :=
+    (normalChartAt_contMDiffOn (I := I) g p).continuousOn
+  have hopen1 : IsOpen ((normalChartAt (I := I) g p).source ∩
+      (normalChartAt (I := I) g p) ⁻¹' (ball (0 : E) (radialRadius (I := I) g p))) :=
+    hcont.isOpen_inter_preimage (normalChartAt (I := I) g p).open_source isOpen_ball
+  convert hopen1 using 1
+  ext y
+  simp [mem_ball, dist_zero_right]
+
+omit [T2Space M] in
+lemma mem_radialTransportSectionDomain_self (g : SmoothRiemannianMetric I M) (p : M) :
+    p ∈ radialTransportSectionDomain (I := I) g p := by
+  classical
+  unfold radialTransportSectionDomain
+  refine ⟨normalChartAt_source (I := I) g p, ?_⟩
+  rw [normalChartAt_centre (I := I) g p]
+  simpa using (radialRadius_pos (I := I) g p)
+
 end RadialTransportSectionSmooth
 
 end RicciFlow
