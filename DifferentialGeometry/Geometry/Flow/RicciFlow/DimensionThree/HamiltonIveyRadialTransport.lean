@@ -2341,6 +2341,138 @@ lemma chartChristoffelContraction_full_contDiffOn_infty (g : SmoothRiemannianMet
     contDiffOn_const
   exact hscalar.smul hconstk
 
+omit [T2Space M] in
+lemma chartCurveDir_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
+    ∃ ρ : ℝ, 0 < ρ ∧
+      ContDiffOn ℝ ∞
+        (fun q : ℝ × E =>
+          chartCurve (I := I) p
+            (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2)) q.1)
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ)) := by
+  classical
+  obtain ⟨δ, hδ_pos, hδ⟩ := expMap_contMDiffAt_infty_of_norm_lt (I := I) g p
+  let ρ : ℝ := min (δ / 2) (expMapC2Radius (I := I) g p / 2)
+  have hρ_pos : 0 < ρ := lt_min (half_pos hδ_pos) (half_pos (expMapC2Radius_pos (I := I) g p))
+  refine ⟨ρ, hρ_pos, ?_⟩
+  rw [IsOpen.contDiffOn_iff (isOpen_Ioo.prod isOpen_ball)]
+  rintro ⟨t, x⟩ ⟨ht, hx⟩
+  have hw : ‖t • x‖ < δ := by
+    have hnorm : ‖t • x‖ ≤ ‖x‖ := by
+      rw [norm_smul, Real.norm_eq_abs]
+      have habs : |t| ≤ 1 := by
+        rw [abs_le]
+        exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+      exact (mul_le_mul_of_nonneg_right habs (norm_nonneg x)).trans_eq (one_mul _)
+    have hxρ : ‖x‖ < ρ := by simpa [dist_eq_norm] using (mem_ball.mp hx)
+    have hlt : ‖x‖ < δ := lt_of_le_of_lt (le_of_lt hxρ) (by
+      have hρ_le : ρ ≤ δ / 2 := min_le_left _ _
+      linarith)
+    exact lt_of_le_of_lt hnorm hlt
+  have hexpAt : ContMDiffAt 𝓘(ℝ, E) I ∞
+      (fun u : E => (expMap (I := I) g p (show TangentSpace I p from u) : M)) (t • x) :=
+    hδ (t • x) hw
+  have hsmul : ContMDiffAt 𝓘(ℝ, ℝ × E) 𝓘(ℝ, E) ∞ (fun q : ℝ × E => q.1 • q.2) (t, x) := by
+    have hcd : ContDiff ℝ ∞ (fun q : ℝ × E => q.1 • q.2) := by fun_prop
+    exact (contMDiffAt_iff_contDiffAt.mpr hcd.contDiffAt)
+  have hcomp1 : ContMDiffAt 𝓘(ℝ, ℝ × E) I ∞
+      (fun q : ℝ × E => (expMap (I := I) g p (show TangentSpace I p from q.1 • q.2) : M)) (t, x) :=
+    hexpAt.comp (t, x) hsmul
+  have hw2 : ‖t • x‖ < expMapC2Radius (I := I) g p := by
+    have hnorm : ‖t • x‖ ≤ ‖x‖ := by
+      rw [norm_smul, Real.norm_eq_abs]
+      have habs : |t| ≤ 1 := by
+        rw [abs_le]
+        exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+      exact (mul_le_mul_of_nonneg_right habs (norm_nonneg x)).trans_eq (one_mul _)
+    have hxρ : ‖x‖ < ρ := by simpa [dist_eq_norm] using (mem_ball.mp hx)
+    have hlt : ‖x‖ < expMapC2Radius (I := I) g p := lt_of_le_of_lt (le_of_lt hxρ) (by
+      have hρ_le : ρ ≤ expMapC2Radius (I := I) g p / 2 := min_le_right _ _
+      linarith)
+    exact lt_of_le_of_lt hnorm hlt
+  have hsrc : expMap (I := I) g p (show TangentSpace I p from t • x) ∈ (chartAt H p).source := by
+    simpa using (radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p hw2)
+  have hext : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I p)
+      (expMap (I := I) g p (show TangentSpace I p from t • x)) :=
+    contMDiffAt_extChartAt' (I := I) (n := ∞) (x := p) (x' := expMap (I := I) g p (show TangentSpace I p from t • x)) hsrc
+  have hfull : ContMDiffAt 𝓘(ℝ, ℝ × E) 𝓘(ℝ, E) ∞
+      (fun q : ℝ × E =>
+        extChartAt I p (expMap (I := I) g p (show TangentSpace I p from q.1 • q.2))) (t, x) :=
+    hext.comp (t, x) hcomp1
+  have hfun : (fun q : ℝ × E =>
+        chartCurve (I := I) p
+          (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2)) q.1) =
+      fun q : ℝ × E =>
+        extChartAt I p (expMap (I := I) g p (show TangentSpace I p from q.1 • q.2)) := by
+    funext q
+    rfl
+  rw [hfun]
+  exact contMDiffAt_iff_contDiffAt.mp hfull
+
+omit [T2Space M] in
+lemma chartCurveDirDeriv_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
+    ∃ ρ : ℝ, 0 < ρ ∧
+      ContDiffOn ℝ ∞
+        (fun q : ℝ × E =>
+          deriv (chartCurve (I := I) p
+            (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2))) q.1)
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ)) := by
+  classical
+  obtain ⟨ρ, hρ_pos, hF⟩ := chartCurveDir_contDiffOn (I := I) g p
+  set U : Set (ℝ × E) := (Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) with hU_def
+  have hU_open : IsOpen U := isOpen_Ioo.prod isOpen_ball
+  set F : ℝ × E → E := fun q =>
+    chartCurve (I := I) p
+      (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2)) q.1 with hF_def
+  have hF' : ContDiffOn ℝ ∞ F U := by simpa [hF_def] using hF
+  have hfd : ContDiffOn ℝ ∞ (fderiv ℝ F) U :=
+    hF'.fderiv_of_isOpen hU_open (by simp)
+  have happ : ContDiffOn ℝ ∞ (fun q : ℝ × E => (fderiv ℝ F q) (1, 0)) U := by
+    have hconst : ContDiffOn ℝ ∞ (fun _ : ℝ × E => ((1 : ℝ), (0 : E))) U :=
+      contDiffOn_const
+    exact hfd.clm_apply hconst
+  have hdeq : ∀ q : ℝ × E, q ∈ U →
+      deriv (fun s : ℝ => chartCurve (I := I) p
+        (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2)) s) q.1 =
+      (fderiv ℝ F (q.1, q.2)) (1, 0) := by
+    intro q hq
+    have hFdiff : DifferentiableAt ℝ F (q.1, q.2) :=
+      ((hF' (q.1, q.2) hq).differentiableWithinAt (by decide)).differentiableAt
+        (hU_open.mem_nhds hq)
+    have hι : DifferentiableAt ℝ (fun s : ℝ => (s, q.2)) q.1 := by
+      have h1 : HasFDerivAt (fun s : ℝ => s) (ContinuousLinearMap.id ℝ ℝ) q.1 :=
+        (ContinuousLinearMap.id ℝ ℝ).hasFDerivAt
+      have h2 : HasFDerivAt (fun _ : ℝ => q.2) (0 : ℝ →L[ℝ] E) q.1 :=
+        hasFDerivAt_const (c := q.2) (x := q.1)
+      exact (h1.prodMk h2).differentiableAt
+    have hchain : fderiv ℝ (fun s : ℝ => F (s, q.2)) q.1 =
+        (fderiv ℝ F (q.1, q.2)).comp (fderiv ℝ (fun s : ℝ => (s, q.2)) q.1) := by
+      have hfun : (fun s : ℝ => F (s, q.2)) = F ∘ fun s : ℝ => (s, q.2) := rfl
+      rw [hfun]
+      exact fderiv_comp (x := q.1) hFdiff hι
+    have hιd : fderiv ℝ (fun s : ℝ => (s, q.2)) q.1 = ContinuousLinearMap.inl ℝ ℝ E := by
+      have h1 : HasFDerivAt (fun s : ℝ => s) (ContinuousLinearMap.id ℝ ℝ) q.1 :=
+        (ContinuousLinearMap.id ℝ ℝ).hasFDerivAt
+      have h2 : HasFDerivAt (fun _ : ℝ => q.2) (0 : ℝ →L[ℝ] E) q.1 :=
+        hasFDerivAt_const (c := q.2) (x := q.1)
+      have hιF : HasFDerivAt (fun s : ℝ => (s, q.2))
+          ((ContinuousLinearMap.id ℝ ℝ).prod (0 : ℝ →L[ℝ] E)) q.1 := h1.prodMk h2
+      have hval : fderiv ℝ (fun s : ℝ => (s, q.2)) q.1 =
+          (ContinuousLinearMap.id ℝ ℝ).prod (0 : ℝ →L[ℝ] E) := hιF.fderiv
+      simpa using hval
+    have hderiv_eq : deriv (fun s : ℝ => F (s, q.2)) q.1 =
+        (fderiv ℝ (fun s : ℝ => F (s, q.2)) q.1) (1 : ℝ) := rfl
+    rw [hderiv_eq, hchain, hιd]
+    simp
+  have htarget : ContDiffOn ℝ ∞
+      (fun q : ℝ × E =>
+        deriv (chartCurve (I := I) p
+          (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2))) q.1) U := by
+    refine happ.congr ?_
+    intro q hq
+    exact hdeq q hq
+  refine ⟨ρ, hρ_pos, ?_⟩
+  simpa [hU_def] using htarget
+
 end RadialTransportSectionSmooth
 
 end RicciFlow
