@@ -60,12 +60,13 @@ structure IsBundleHeatReactionOn [∀ x, NormedAddCommGroup (V x)] [∀ x, Inner
 
 omit F [NormedAddCommGroup F] [InnerProductSpace Real F] [CompleteSpace F]
   [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V] in
-structure HasFlatSupportSections (I : ModelWithCorners Real E H)
+structure HasFlatSupportSectionsOn (I : ModelWithCorners Real E H)
     [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
     [∀ x, CompleteSpace (V x)]
+    (timeSet : Set Real)
     (Flat : Real → (x : M) → ((x : M) → V x) → Prop)
     (N : (x : M) → Set (V x)) (support : Real → (x : M) → V x → Real) : Prop where
-  exists_flat : ∀ t : Real, ∀ x₀ : M, ∀ ν' : V x₀, ν' ∈ N x₀ →
+  exists_flat : ∀ t : Real, t ∈ timeSet → ∀ x₀ : M, ∀ ν' : V x₀, ν' ∈ N x₀ →
     ∃ ν : (x : M) → V x,
       Flat t x₀ ν ∧
       ν x₀ = ν' ∧
@@ -117,7 +118,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
     (hCdist_cont : ContinuousOn
       (fun q : Real × M => Metric.infDist (u q.1 q.2) (C q.1 q.2))
       (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
-    (hflat : HasFlatSupportSections (I := I) Flat N support)
+    (hflat : HasFlatSupportSectionsOn (I := I) (Set.Icc 0 T) Flat N support)
     (hsupport_cont : ∀ ν : (x : M) → V x, ∀ x : M,
       ContinuousOn (fun t : Real => support t x (ν x)) (Set.Icc 0 T))
     (hsupport_time : ∀ ν : (x : M) → V x, ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
@@ -192,7 +193,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
     have hnormal : ∀ q ∈ C q₀.1 q₀.2, inner ℝ ν' (q - p) ≤ 0 := by
       exact (norm_eq_iInf_iff_real_inner_le_zero (hCconvex q₀.1 q₀.2) hpC).mp hpmin
     have hν'N : ν' ∈ N q₀.2 := hNnormal q₀.1 q₀.2 p hpC ν' hnormal
-    rcases hflat.exists_flat q₀.1 q₀.2 ν' hν'N with
+    rcases hflat.exists_flat q₀.1 hq₀carrier q₀.2 ν' hν'N with
       ⟨ν₀, hν₀flat, hν₀at, hν₀N, hν₀norm, U, hUopen, hx₀U, hflatU⟩
     have hsupp_eq : support q₀.1 q₀.2 ν' = inner ℝ ν' p := by
       apply le_antisymm
@@ -469,7 +470,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
       have hmemC : u T x ∈ C T x := by
         rw [hsupp T x (u T x)]
         intro ν hν
-        rcases hflat.exists_flat T x ν hν with
+        rcases hflat.exists_flat T ⟨hT.le, le_rfl⟩ x ν hν with
           ⟨ν₀, hν₀flat, hν₀at, hν₀N, _hν₀norm, _U, _hUopen, _hx₀U, _hflatU⟩
         have hfilterT : 𝓝[Set.Iio T] T ≤ 𝓝[Set.Icc 0 T] T := by
           have hmem : Set.Icc 0 T ∈ 𝓝[Set.Iio T] T := by

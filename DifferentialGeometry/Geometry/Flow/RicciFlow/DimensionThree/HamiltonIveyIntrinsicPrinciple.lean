@@ -1148,6 +1148,51 @@ theorem fiberProjW_sub
   rw [hconv]
   exact hzero
 
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M]
+  [T2Space M] in
+theorem fiberProjW_smul
+    (g : SmoothRiemannianMetric I M) (x : M) (c : ℝ)
+    (A : Tensor04At (I := I) (M := M) x) :
+    (fiberProjW (I := I) g x (c • A) : Tensor04At (I := I) (M := M) x) =
+      c • (fiberProjW (I := I) g x A : Tensor04At (I := I) (M := M) x) := by
+  let p : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    fiberProjW (I := I) g x (c • A)
+  let u : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    c • fiberProjW (I := I) g x A
+  have hchar : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) x,
+      inner0S (I := I) g x 4 (p : Tensor04At (I := I) (M := M) x) q =
+        inner0S (I := I) g x 4 (u : Tensor04At (I := I) (M := M) x) q := by
+    intro q
+    rw [show inner0S (I := I) g x 4 (p : Tensor04At (I := I) (M := M) x) q =
+      inner0S (I := I) g x 4 (c • A) q from
+        fiberProjW_spec (I := I) g x (c • A) q]
+    change (tensor0SMetricData (I := I) g x 4).flat (c • A) q =
+      (tensor0SMetricData (I := I) g x 4).flat
+        (c • (fiberProjW (I := I) g x A : Tensor04At (I := I) (M := M) x)) q
+    rw [map_smul, map_smul]
+    exact congrArg (fun z : ℝ => c • z) (fiberProjW_spec (I := I) g x A q).symm
+  have hdiff : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) x,
+      inner0S (I := I) g x 4
+        ((p - u : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+          Tensor04At (I := I) (M := M) x) q = 0 := by
+    intro q
+    rw [show ((p - u : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+        Tensor04At (I := I) (M := M) x) =
+      (p : Tensor04At (I := I) (M := M) x) -
+        (u : Tensor04At (I := I) (M := M) x) by rfl]
+    rw [inner0S_sub_left (I := I) g x 4]
+    exact sub_eq_zero.mpr (hchar q)
+  have hself := hdiff (p - u)
+  have hzero : ((p - u : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+      Tensor04At (I := I) (M := M) x) = 0 := by
+    exact ((tensor0SMetricData (I := I) g x 4).inner_self_eq_zero_iff
+      (((p - u : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+        Tensor04At (I := I) (M := M) x))).mp hself
+  have hpu : p = u := by
+    apply Subtype.ext
+    exact sub_eq_zero.mp hzero
+  exact congrArg Subtype.val hpu
+
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [IsManifold I 1 M] in
 theorem fiberProjW_norm_le
@@ -1873,7 +1918,7 @@ theorem isClosed_fiberHamiltonIveyRegion
   exact ((hanti1.inter hanti2).inter hbianchi).inter (hclosedE.preimage hfcont)
 
 omit [I.Boundaryless] in
-theorem fiberRegionPropagationOn_of_bundleMaximumPrinciple
+theorem fiberRegionPropagationOn_of_flatSupport
     {T : ℝ} (hT : 0 < T) [I.Boundaryless] [CompactSpace M] [NeZero (Module.finrank ℝ E)]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
@@ -1912,7 +1957,7 @@ theorem fiberRegionPropagationOn_of_bundleMaximumPrinciple
           inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
       letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
         fun x => inferInstance
-      exact HasFlatSupportSections (I := I)
+      exact HasFlatSupportSectionsOn (I := I) (Set.Icc 0 T)
         (V := fun x : M => Tensor04At (I := I) (M := M) x)
         (fiberRegionFlat (I := I) (M := M) S basisAt iota)
         (regionNormalDirections (I := I) (S.base.metric 0) basisAt)
@@ -6878,6 +6923,46 @@ theorem fiberProjW_compUhlenbeck_commute
     exact sub_eq_zero.mp hzero
   simpa [p, u] using congrArg Subtype.val hpeq
 
+omit [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem regionProjMatrix_uhlenbeckPullback_eq_moving
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
+        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M)
+    (A : Tensor04At (I := I) (M := M) x) :
+    regionProjMatrix (I := I) (S.base.metric 0) (basisAt x)
+        (uhlenbeckPullbackTensorAt (I := I) basisAt iota t x A) =
+      regionProjMatrix (I := I) (S.base.metric t)
+        (uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x) A := by
+  unfold regionProjMatrix
+  let pt : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    fiberProjW (I := I) (S.base.metric t) x A
+  let p0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    fiberProjW (I := I) (S.base.metric 0) x
+      (uhlenbeckPullbackTensorAt (I := I) basisAt iota t x A)
+  let u : algebraicCurvatureTensorSubmodule (I := I) (M := M) x := ⟨
+    ContinuousMultilinearMap.compContinuousLinearMap
+      (pt : Tensor04At (I := I) (M := M) x)
+      (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t),
+    compUhlenbeck_mem_algebraicCurvatureTensorSubmodule basisAt iota t pt⟩
+  have hproj := fiberProjW_compUhlenbeck_commute
+    (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht x A
+  have hpu : p0 = u := by
+    apply Subtype.ext
+    simpa [p0, u, pt, uhlenbeckPullbackTensorAt] using hproj
+  change curvatureOperatorMatrixAt (I := I) x (basisAt x) p0 = _
+  rw [hpu]
+  simpa [u, pt] using curvatureOperatorMatrixAt_compU_eq_moving
+    (I := I) (M := M) hT S basisAt iota hiota0 hgram ht x
+      (fiberProjW (I := I) (S.base.metric t) x A)
+
 end FlatSectionProjection
 
 
@@ -7856,14 +7941,15 @@ theorem radialTransportTensorExtension_initial
     χ.eq_one, one_pow, one_smul, radialTransportSectionTensor_initial]
 
 set_option linter.unusedSectionVars false in
-theorem radialTransportSectionTensor_isometry [I.Boundaryless] [T2Space M]
+@[nolint unusedArguments]
+theorem radialTransportSectionTensor_inner_eq [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (p : M)
     (hdim : Module.finrank Real (TangentSpace I p) = 3)
-    (η₀ : Tensor04At (I := I) (M := M) p) (y : M)
+    (A B : Tensor04At (I := I) (M := M) p) (y : M)
     (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
-    inner0S (I := I) g y 4 (radialTransportSectionTensor g p η₀ y)
-        (radialTransportSectionTensor g p η₀ y) =
-      inner0S (I := I) g p 4 η₀ η₀ := by
+    inner0S (I := I) g y 4 (radialTransportSectionTensor g p A y)
+        (radialTransportSectionTensor g p B y) =
+      inner0S (I := I) g p 4 A B := by
   classical
   let basis₀ : Module.Basis (Fin 3) Real (TangentSpace I p) :=
     Classical.choose (exists_orthonormalBasisAt (I := I) g p hdim)
@@ -7892,27 +7978,251 @@ theorem radialTransportSectionTensor_isometry [I.Boundaryless] [T2Space M]
       rfl
     rw [hTa, hTb]
     simpa [horth₀ a b] using hinner
-  have hξ : ∀ I0 : Fin 4 → Fin 3,
-      (radialTransportSectionTensor g p η₀ y) (fun a => basisY (I0 a)) = η₀ (fun a => basis₀ (I0 a)) := by
-    intro I0
+  have hcomponent : ∀ C : Tensor04At (I := I) (M := M) p, ∀ J : Fin 4 → Fin 3,
+      (radialTransportSectionTensor g p C y) (fun a => basisY (J a)) =
+        C (fun a => basis₀ (J a)) := by
+    intro C J
     rw [radialTransportSectionTensor]
     rw [dif_pos hy]
-    have hTval : ∀ a : Fin 4, (basisY (I0 a) : E) = radialTransportLinearMapAt g p y (basis₀ (I0 a)) := by
+    have hTval : ∀ a : Fin 4,
+        (basisY (J a) : E) = radialTransportLinearMapAt g p y (basis₀ (J a)) := by
       intro a
       dsimp [basisY]
-      change (T (basis₀ (I0 a)) : E) = radialTransportLinearMapAt g p y (basis₀ (I0 a))
+      change (T (basis₀ (J a)) : E) = radialTransportLinearMapAt g p y (basis₀ (J a))
       dsimp [T]
-    change η₀ (fun a => radialTransportInverseAt g p y hy (basisY (I0 a))) = η₀ (fun a => basis₀ (I0 a))
+    change C (fun a => radialTransportInverseAt g p y hy (basisY (J a))) =
+      C (fun a => basis₀ (J a))
     congr 1
     funext a
     rw [hTval a]
-    exact radialTransportInverseAt_left_inverse (I := I) g p y hy (basis₀ (I0 a))
+    exact radialTransportInverseAt_left_inverse (I := I) g p y hy (basis₀ (J a))
   rw [inner0S_four_orthonormalBasis_sq (I := I) g y basisY horthY
-    (radialTransportSectionTensor g p η₀ y) (radialTransportSectionTensor g p η₀ y)]
-  rw [inner0S_four_orthonormalBasis_sq (I := I) g p basis₀ horth₀ η₀ η₀]
+    (radialTransportSectionTensor g p A y) (radialTransportSectionTensor g p B y)]
+  rw [inner0S_four_orthonormalBasis_sq (I := I) g p basis₀ horth₀ A B]
   apply Finset.sum_congr rfl
-  intro I0 hI0
-  rw [hξ I0]
+  intro J _
+  rw [hcomponent A J, hcomponent B J]
+
+set_option linter.unusedSectionVars false in
+@[nolint unusedArguments]
+theorem radialTransportSectionTensor_isometry [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (hdim : Module.finrank Real (TangentSpace I p) = 3)
+    (η₀ : Tensor04At (I := I) (M := M) p) (y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
+    inner0S (I := I) g y 4 (radialTransportSectionTensor g p η₀ y)
+        (radialTransportSectionTensor g p η₀ y) =
+      inner0S (I := I) g p 4 η₀ η₀ :=
+  radialTransportSectionTensor_inner_eq (I := I) g p hdim η₀ η₀ y hy
+
+set_option linter.unusedSectionVars false in
+@[nolint unusedArguments]
+theorem fiberProjW_radialTransport_commute [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (hdim : Module.finrank Real (TangentSpace I p) = 3)
+    (A : Tensor04At (I := I) (M := M) p) (y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
+    (fiberProjW (I := I) g y (radialTransportSectionTensor g p A y) :
+        Tensor04At (I := I) (M := M) y) =
+      radialTransportSectionTensor g p
+        (fiberProjW (I := I) g p A : Tensor04At (I := I) (M := M) p) y := by
+  classical
+  let Tlin : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
+  have hTbij : Function.Bijective Tlin := by
+    have hTinj : Function.Injective Tlin := by
+      intro a b hab
+      exact radialTransportSection_injective (I := I) g p y hy
+        (by simpa [Tlin, radialTransportLinearMapAt] using hab)
+    have hTsurj : Function.Surjective Tlin :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+        (K := ℝ) (V := E) (V₂ := E) rfl).mp hTinj
+    exact ⟨hTinj, hTsurj⟩
+  let e : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective Tlin hTbij
+  let T : E →L[ℝ] E := e.toContinuousLinearEquiv.toContinuousLinearMap
+  let Tinv : E →L[ℝ] E := radialTransportInverseAt g p y hy
+  have hTinvT : ∀ v : TangentSpace I p, Tinv (T v) = v := by
+    intro v
+    change radialTransportInverseAt g p y hy (radialTransportLinearMapAt g p y v) = v
+    exact radialTransportInverseAt_left_inverse (I := I) g p y hy v
+  have hTTinv : ∀ v : TangentSpace I y, T (Tinv v) = v := by
+    intro v
+    obtain ⟨w, rfl⟩ := hTbij.2 v
+    change T (Tinv (T w)) = T w
+    rw [hTinvT]
+  let pY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y :=
+    fiberProjW (I := I) g y (radialTransportSectionTensor g p A y)
+  let p0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) p :=
+    fiberProjW (I := I) g p A
+  have hp0transport : radialTransportSectionTensor g p
+        (p0 : Tensor04At (I := I) (M := M) p) y ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) y := by
+    rw [radialTransportSectionTensor, dif_pos hy]
+    exact compLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) Tinv p0
+  let uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y :=
+    ⟨radialTransportSectionTensor g p
+      (p0 : Tensor04At (I := I) (M := M) p) y, hp0transport⟩
+  have hchar : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) y,
+      inner0S (I := I) g y 4 (pY : Tensor04At (I := I) (M := M) y) q =
+        inner0S (I := I) g y 4 (uY : Tensor04At (I := I) (M := M) y) q := by
+    intro q
+    let q0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) p := ⟨
+      (q : Tensor04At (I := I) (M := M) y).compContinuousLinearMap
+        (fun _ : Fin 4 => T),
+      compLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) T q⟩
+    have hqtransport : radialTransportSectionTensor g p
+        (q0 : Tensor04At (I := I) (M := M) p) y =
+        (q : Tensor04At (I := I) (M := M) y) := by
+      rw [radialTransportSectionTensor, dif_pos hy]
+      apply tensor0SSpace_ext 4 y
+      intro v
+      change (q : Tensor04At (I := I) (M := M) y)
+        (fun i => T (Tinv (v i))) = (q : Tensor04At (I := I) (M := M) y) v
+      congr 1
+      funext i
+      exact hTTinv (v i)
+    calc
+      inner0S (I := I) g y 4 (pY : Tensor04At (I := I) (M := M) y) q
+          = inner0S (I := I) g y 4 (radialTransportSectionTensor g p A y)
+              (q : Tensor04At (I := I) (M := M) y) := by
+                exact fiberProjW_spec (I := I) g y (radialTransportSectionTensor g p A y) q
+      _ = inner0S (I := I) g y 4 (radialTransportSectionTensor g p A y)
+              (radialTransportSectionTensor g p
+                (q0 : Tensor04At (I := I) (M := M) p) y) := by rw [hqtransport]
+      _ = inner0S (I := I) g p 4 A (q0 : Tensor04At (I := I) (M := M) p) :=
+            radialTransportSectionTensor_inner_eq (I := I) g p hdim A q0 y hy
+      _ = inner0S (I := I) g p 4 (p0 : Tensor04At (I := I) (M := M) p) q0 := by
+            exact (fiberProjW_spec (I := I) g p A q0).symm
+      _ = inner0S (I := I) g y 4
+              (radialTransportSectionTensor g p
+                (p0 : Tensor04At (I := I) (M := M) p) y)
+              (radialTransportSectionTensor g p
+                (q0 : Tensor04At (I := I) (M := M) p) y) :=
+            (radialTransportSectionTensor_inner_eq (I := I) g p hdim p0 q0 y hy).symm
+      _ = inner0S (I := I) g y 4 (uY : Tensor04At (I := I) (M := M) y) q := by
+            rw [hqtransport]
+  have hdiff : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) y,
+      inner0S (I := I) g y 4
+        ((pY - uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) :
+          Tensor04At (I := I) (M := M) y) q = 0 := by
+    intro q
+    rw [show ((pY - uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) :
+        Tensor04At (I := I) (M := M) y) =
+      (pY : Tensor04At (I := I) (M := M) y) -
+        (uY : Tensor04At (I := I) (M := M) y) by rfl]
+    rw [inner0S_sub_left (I := I) g y 4]
+    exact sub_eq_zero.mpr (hchar q)
+  have hself := hdiff (pY - uY)
+  have hzero : ((pY - uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) :
+      Tensor04At (I := I) (M := M) y) = 0 := by
+    exact ((tensor0SMetricData (I := I) g y 4).inner_self_eq_zero_iff
+      (((pY - uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) :
+        Tensor04At (I := I) (M := M) y))).mp hself
+  have hpu : pY = uY := by
+    apply Subtype.ext
+    exact sub_eq_zero.mp hzero
+  exact congrArg Subtype.val hpu
+
+omit [I.Boundaryless] in
+private theorem radialTransportTensorExtension_regionProjMatrix_eq_conj
+    [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → Real) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y)
+    (y : M) (hy : y ∈ radialTransportSectionDomain (I := I) g p)
+    (basis' : Module.Basis (Fin 3) Real (TangentSpace I y))
+    (horth' : OrthonormalBasisAt (I := I) g y basis') :
+    ∃ O : Matrix (Fin 3) (Fin 3) Real,
+      O * O.transpose = 1 ∧
+      regionProjMatrix (I := I) g basis'
+          (radialTransportTensorExtension g p basis η₀ W y) =
+        (χ y) ^ 4 •
+          (O.transpose * regionProjMatrix (I := I) g basis η₀ * O) := by
+  classical
+  let Tlin : E →ₗ[Real] E := radialTransportLinearMapAt g p y
+  have hTbij : Function.Bijective Tlin := by
+    have hTinj : Function.Injective Tlin := by
+      intro a b hab
+      exact radialTransportSection_injective (I := I) g p y hy
+        (by simpa [Tlin, radialTransportLinearMapAt] using hab)
+    have hTsurj : Function.Surjective Tlin :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+        (K := Real) (V := E) (V₂ := E) rfl).mp hTinj
+    exact ⟨hTinj, hTsurj⟩
+  let e : E ≃ₗ[Real] E := LinearEquiv.ofBijective Tlin hTbij
+  let basisY : Module.Basis (Fin 3) Real (TangentSpace I y) := basis.map e
+  have horthY : OrthonormalBasisAt (I := I) g y basisY := by
+    intro a b
+    have hinner := radialTransportSection_inner_eq (I := I) g p (basis a) (basis b) y hy
+    have hTa : (basisY a : TangentSpace I y) =
+        radialTransportSection (I := I) g p (basis a) y := by
+      dsimp [basisY]
+      change (e (basis a) : TangentSpace I y) = _
+      rfl
+    have hTb : (basisY b : TangentSpace I y) =
+        radialTransportSection (I := I) g p (basis b) y := by
+      dsimp [basisY]
+      change (e (basis b) : TangentSpace I y) = _
+      rfl
+    rw [hTa, hTb]
+    simpa [horth a b] using hinner
+  let O : Matrix (Fin 3) (Fin 3) Real :=
+    intrinsicFrameChangeMatrix (I := I) g basisY basis'
+  have hO : O * O.transpose = 1 :=
+    intrinsicFrameChangeMatrix_orthogonal (I := I) (M := M) g basisY basis' horthY horth'
+  refine ⟨O, hO, ?_⟩
+  let A₀ : algebraicCurvatureTensorSubmodule (I := I) (M := M) p :=
+    fiberProjW (I := I) g p η₀
+  let AY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y :=
+    fiberProjW (I := I) g y (radialTransportSectionTensor g p η₀ y)
+  have hAY : (AY : Tensor04At (I := I) (M := M) y) =
+      radialTransportSectionTensor g p
+        (A₀ : Tensor04At (I := I) (M := M) p) y := by
+    exact fiberProjW_radialTransport_commute (I := I) g p
+      (Module.finrank_eq_card_basis basis) η₀ y hy
+  have hmatrixY : curvatureOperatorMatrixAt (I := I) y basisY AY =
+      curvatureOperatorMatrixAt (I := I) p basis A₀ := by
+    ext i j
+    rw [show curvatureOperatorMatrixAt (I := I) y basisY AY i j =
+        intrinsicFiberCurvatureOperatorMatrix (I := I) basisY
+          (AY : Tensor04At (I := I) (M := M) y) i j by rfl]
+    rw [hAY]
+    simp only [intrinsicFiberCurvatureOperatorMatrix_apply]
+    rw [radialTransportSectionTensor, dif_pos hy]
+    change (A₀ : Tensor04At (I := I) (M := M) p)
+        (fun a ↦ radialTransportInverseAt g p y hy
+          (vec4 (basisY (bivectorIndex3 i).1) (basisY (bivectorIndex3 i).2)
+            (basisY (bivectorIndex3 j).2) (basisY (bivectorIndex3 j).1) a)) =
+      (A₀ : Tensor04At (I := I) (M := M) p)
+        (vec4 (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+          (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1))
+    congr 1
+    funext a
+    fin_cases a <;>
+      change radialTransportInverseAt g p y hy
+        (radialTransportLinearMapAt g p y _) = _ <;>
+      exact radialTransportInverseAt_left_inverse (I := I) g p y hy _
+  have hconj : curvatureOperatorMatrixAt (I := I) y basis' AY =
+      O.transpose * curvatureOperatorMatrixAt (I := I) y basisY AY * O := by
+    simpa [O] using intrinsicFiberCurvatureOperatorMatrix_conj_of_orthonormal
+      (I := I) (M := M) g basisY basis' horthY AY
+  rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW y]
+  unfold regionProjMatrix
+  have hproj := fiberProjW_smul (I := I) g y ((χ y) ^ 4)
+    (radialTransportSectionTensor g p η₀ y)
+  ext i j
+  change tensor04StdAt (I := I) (M := M)
+      (fiberProjW (I := I) g y
+        ((χ y) ^ 4 • radialTransportSectionTensor g p η₀ y) :
+          Tensor04At (I := I) (M := M) y) _ _ _ _ = _
+  rw [hproj]
+  change (χ y) ^ 4 * curvatureOperatorMatrixAt (I := I) y basis' AY i j = _
+  rw [hconj, hmatrixY]
+  rfl
 
 set_option linter.unusedSectionVars false in
 theorem radialTransportTensorExtension_inner_self_le
@@ -8345,6 +8655,278 @@ theorem radialTransportTensorExtension_metricTrace_center_zero
     rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hji.symm, zero_mul]
   · intro hi
     exact absurd (Finset.mem_univ i) hi
+
+open DifferentialGeometry.Analysis.Parabolic
+
+omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)] [I.Boundaryless] in
+theorem fiberRegion_hasFlatSupportSectionsOn
+    {T : Real} (hT : 0 < T) [I.Boundaryless]
+    [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x ↦ basisAt x a)) iota t x a b =
+        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x ↦ basisAt x a)) iota 0 x a b)
+    (K : Real) :
+    (by
+      letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+        fun x ↦ @InnerProductSpace.Core.toNormedAddCommGroup Real
+          (Tensor04At (I := I) (M := M) x) inferInstance inferInstance inferInstance
+          (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
+      letI : ∀ x : M, InnerProductSpace Real (Tensor04At (I := I) (M := M) x) :=
+        fun x ↦ @InnerProductSpace.ofCore Real (Tensor04At (I := I) (M := M) x)
+          inferInstance inferInstance inferInstance
+          (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
+      letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
+        fun _ ↦ inferInstance
+      exact HasFlatSupportSectionsOn (I := I) (Set.Icc 0 T)
+        (V := fun x : M ↦ Tensor04At (I := I) (M := M) x)
+        (fiberRegionFlat (I := I) (M := M) S basisAt iota)
+        (regionNormalDirections (I := I) (S.base.metric 0) basisAt)
+        (fiberRegionSupport hT (I := I) (M := M) S basisAt K)) := by
+  classical
+  letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+    fun x ↦ @InnerProductSpace.Core.toNormedAddCommGroup Real
+      (Tensor04At (I := I) (M := M) x) inferInstance inferInstance inferInstance
+      (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
+  letI : ∀ x : M, InnerProductSpace Real (Tensor04At (I := I) (M := M) x) :=
+    fun x ↦ @InnerProductSpace.ofCore Real (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance
+      (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
+  letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
+    fun _ ↦ inferInstance
+  refine ⟨?_⟩
+  intro t ht x₀ ν' hν'
+  let U : TangentSpace I x₀ →L[Real] TangentSpace I x₀ :=
+    uhlenbeckEndomorphismAt (basisAt x₀) iota t
+  let e : TangentSpace I x₀ ≃ₗ[Real] TangentSpace I x₀ :=
+    LinearEquiv.ofBijective U.toLinearMap
+      (uhlenbeckEndomorphism_invertible hT S basisAt iota hiota0 hgram ht x₀)
+  let Uinv : TangentSpace I x₀ →L[Real] TangentSpace I x₀ :=
+    e.symm.toContinuousLinearEquiv.toContinuousLinearMap
+  have hUinvU : ∀ v : TangentSpace I x₀, Uinv (U v) = v := by
+    intro v
+    change e.symm (e v) = v
+    exact e.symm_apply_apply v
+  let η₀ : Tensor04At (I := I) (M := M) x₀ :=
+    ν'.compContinuousLinearMap (fun _ : Fin 4 ↦ Uinv)
+  have hpull : uhlenbeckPullbackTensorAt (I := I) basisAt iota t x₀ η₀ = ν' := by
+    apply tensor0SSpace_ext 4 x₀
+    intro v
+    change ν' (fun a ↦ Uinv (U (v a))) = ν' v
+    congr 1
+    funext a
+    exact hUinvU (v a)
+  let basis : Module.Basis (Fin 3) Real (TangentSpace I x₀) :=
+    uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x₀
+  have horth : OrthonormalBasisAt (I := I) (S.base.metric t) x₀ basis :=
+    uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M)
+      hT S basisAt iota hiota0 hgram x₀ (horth0 x₀) ht
+  obtain ⟨χ, W, hsupport, hW, _⟩ :=
+    exists_localized_radial_transport_sections (I := I) (S.base.metric t) x₀
+      (fun i ↦ basis i)
+  let η : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 4 :=
+    radialTransportTensorExtension (S.base.metric t) x₀ basis η₀ W
+  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
+      (S.base.connection t) (∞ : WithTop ℕ∞) := by
+    simpa [SolutionFamily.connection, metricCov] using
+      metricCov_smooth (I := I) (M := M) (S.base.metric t)
+  let d : CanonicalSpatialDerivs0S (I := I) (M := M) (S.base.connection t) η :=
+    CanonicalSpatialDerivs0S.of_smooth_connection
+      (E := E) (H := H) (I := I) (M := M) (S.base.connection t) hcov η
+  let ν : (x : M) → Tensor04At (I := I) (M := M) x := fun y ↦
+    uhlenbeckPullbackTensorAt (I := I) basisAt iota t y (η y)
+  refine ⟨ν, ?_, ?_, ?_, ?_, ?_⟩
+  · refine ⟨η, d.nablaA, d.nabla2A, basis, horth, ?_, d.first, d.second, ?_, ?_⟩
+    · exact Filter.Eventually.of_forall (fun _ ↦ rfl)
+    · exact radialTransportTensorExtension_nabla_center_zero
+        (I := I) (S.base.metric t) x₀ basis horth η₀ χ W hsupport hW d
+    · exact radialTransportTensorExtension_metricTrace_center_zero
+        (I := I) (S.base.metric t) x₀ basis horth η₀ χ W hsupport hW d
+  · dsimp [ν, η]
+    rw [radialTransportTensorExtension_initial
+      (I := I) (S.base.metric t) x₀ basis horth η₀ χ W hsupport hW]
+    exact hpull
+  · intro y
+    by_cases hχ : χ y = 0
+    · have hηy : η y = 0 := by
+        dsimp [η]
+        rw [radialTransportTensorExtension_eq_smul
+          (I := I) (S.base.metric t) x₀ basis horth η₀ χ W hsupport hW y]
+        simp [hχ]
+      have hνy : ν y = 0 := by
+        dsimp [ν]
+        rw [hηy]
+        apply tensor0SSpace_ext 4 y
+        intro v
+        rfl
+      rw [hνy, regionNormalDirections]
+      right
+      have hproj0 : (fiberProjW (I := I) (S.base.metric 0) y
+          (0 : Tensor04At (I := I) (M := M) y) :
+          Tensor04At (I := I) (M := M) y) = 0 := by
+        simpa using fiberProjW_smul (I := I) (S.base.metric 0) y 0
+          (0 : Tensor04At (I := I) (M := M) y)
+      unfold regionProjMatrix
+      rw [show fiberProjW (I := I) (S.base.metric 0) y
+          (0 : Tensor04At (I := I) (M := M) y) = 0 by
+        apply Subtype.ext
+        exact hproj0]
+      have hmatrix0 : curvatureOperatorMatrixAt (I := I) y (basisAt y)
+          (0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) = 0 := by
+        ext i j
+        rfl
+      rw [hmatrix0]
+      ext i j
+      simp [symmEuclid, matrixToEuclid, euclidToMatrix]
+    · have hy : y ∈ radialTransportSectionDomain (I := I) (S.base.metric t) x₀ :=
+        hsupport (subset_closure (show y ∈ Function.support (χ : M → Real) from hχ))
+      let basisY : Module.Basis (Fin 3) Real (TangentSpace I y) :=
+        uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht y
+      have horthY : OrthonormalBasisAt (I := I) (S.base.metric t) y basisY :=
+        uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M)
+          hT S basisAt iota hiota0 hgram y (horth0 y) ht
+      obtain ⟨O, hO, hmatrix⟩ :=
+        radialTransportTensorExtension_regionProjMatrix_eq_conj
+          (I := I) (S.base.metric t) x₀ basis horth η₀ χ W hsupport hW y hy basisY horthY
+      have hpullY := regionProjMatrix_uhlenbeckPullback_eq_moving
+        (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht y (η y)
+      have hcenter := regionProjMatrix_uhlenbeckPullback_eq_moving
+        (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht x₀ η₀
+      have hcenterEq : regionProjMatrix (I := I) (S.base.metric t) basis η₀ =
+          regionProjMatrix (I := I) (S.base.metric 0) (basisAt x₀) ν' := by
+        rw [← hpull]
+        simpa [basis] using hcenter.symm
+      have hmatrixTotal :
+          regionProjMatrix (I := I) (S.base.metric 0) (basisAt y) (ν y) =
+            (χ y) ^ 4 •
+              (O.transpose *
+                regionProjMatrix (I := I) (S.base.metric 0) (basisAt x₀) ν' * O) := by
+        calc
+          regionProjMatrix (I := I) (S.base.metric 0) (basisAt y) (ν y) =
+              regionProjMatrix (I := I) (S.base.metric t) basisY (η y) := by
+                simpa [ν, basisY] using hpullY
+          _ = (χ y) ^ 4 •
+                (O.transpose * regionProjMatrix (I := I) (S.base.metric t) basis η₀ * O) :=
+              hmatrix
+          _ = (χ y) ^ 4 •
+                (O.transpose *
+                  regionProjMatrix (I := I) (S.base.metric 0) (basisAt x₀) ν' * O) := by
+              rw [hcenterEq]
+      rw [regionNormalDirections] at hν' ⊢
+      simp only [Set.mem_setOf_eq] at hν' ⊢
+      have hρ : 0 ≤ (χ y) ^ 4 := pow_nonneg (χ.nonneg : 0 ≤ χ y) 4
+      have hmain := regionNormalDirections_conj_scale_condition
+        (M := regionProjMatrix (I := I) (S.base.metric 0) (basisAt x₀) ν')
+        (O := O) (ρ := (χ y) ^ 4) hρ hO hν'
+      simpa only [hmatrixTotal] using hmain
+  · intro y
+    have hisoY := fiberInner_compUhlenbeck_isometry_full
+      (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht y (η y) (η y)
+    have hrad := radialTransportTensorExtension_inner_self_le
+      (I := I) (S.base.metric t) x₀ (hdim x₀) basis horth η₀ χ W hsupport hW y
+    have hiso0 := fiberInner_compUhlenbeck_isometry_full
+      (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht x₀ η₀ η₀
+    have hinner : inner Real (ν y) (ν y) ≤ inner Real ν' ν' := by
+      rw [tensor04_fiberInner_eq (I := I) (S.base.metric 0) y (ν y) (ν y)]
+      rw [show inner0S (I := I) (S.base.metric 0) y 4 (ν y) (ν y) =
+          inner0S (I := I) (S.base.metric t) y 4 (η y) (η y) by
+        simpa [ν, uhlenbeckPullbackTensorAt] using hisoY]
+      apply hrad.trans_eq
+      calc
+        inner0S (I := I) (S.base.metric t) x₀ 4 η₀ η₀ =
+            inner0S (I := I) (S.base.metric 0) x₀ 4
+              (uhlenbeckPullbackTensorAt (I := I) basisAt iota t x₀ η₀)
+              (uhlenbeckPullbackTensorAt (I := I) basisAt iota t x₀ η₀) := by
+                simpa [uhlenbeckPullbackTensorAt] using hiso0.symm
+        _ = inner0S (I := I) (S.base.metric 0) x₀ 4 ν' ν' := by rw [hpull]
+        _ = inner Real ν' ν' :=
+          (tensor04_fiberInner_eq (I := I) (S.base.metric 0) x₀ ν' ν').symm
+    rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq] at hinner
+    nlinarith [norm_nonneg (ν y), norm_nonneg ν']
+  · have hevent : ∀ᶠ y in nhds x₀,
+        fiberRegionSupport hT (I := I) (M := M) S basisAt K t y (ν y) =
+          fiberRegionSupport hT (I := I) (M := M) S basisAt K t x₀ ν' := by
+      have hdomain : radialTransportSectionDomain (I := I) (S.base.metric t) x₀ ∈ nhds x₀ :=
+        (radialTransportSectionDomain_isOpen (I := I) (S.base.metric t) x₀).mem_nhds
+          (mem_radialTransportSectionDomain_self (I := I) (S.base.metric t) x₀)
+      filter_upwards [χ.eventuallyEq_one, hdomain] with y hχ hy
+      simp only [Pi.one_apply] at hχ
+      let basisY : Module.Basis (Fin 3) Real (TangentSpace I y) :=
+        uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht y
+      have horthY : OrthonormalBasisAt (I := I) (S.base.metric t) y basisY :=
+        uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M)
+          hT S basisAt iota hiota0 hgram y (horth0 y) ht
+      obtain ⟨O, hO, hmatrix⟩ :=
+        radialTransportTensorExtension_regionProjMatrix_eq_conj
+          (I := I) (S.base.metric t) x₀ basis horth η₀ χ W hsupport hW y hy basisY horthY
+      have hpullY := regionProjMatrix_uhlenbeckPullback_eq_moving
+        (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht y (η y)
+      have hcenter := regionProjMatrix_uhlenbeckPullback_eq_moving
+        (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht x₀ η₀
+      unfold fiberRegionSupport regionSupport
+      rw [show regionProjMatrix (I := I) (S.base.metric 0) (basisAt y) (ν y) =
+          regionProjMatrix (I := I) (S.base.metric t) basisY (η y) by
+        simpa [ν, basisY] using hpullY]
+      rw [hmatrix, hχ, one_pow, one_smul]
+      rw [show regionProjMatrix (I := I) (S.base.metric t) basis η₀ =
+          regionProjMatrix (I := I) (S.base.metric 0) (basisAt x₀) ν' by
+        rw [← hpull]
+        simpa [basis] using hcenter.symm]
+      rw [hamiltonIveyConvexMatrixRegionSupportEuclid_conj K (max t 0)
+        (regionProjMatrix (I := I) (S.base.metric 0) (basisAt x₀) ν') O hO]
+    have hset : {y : M |
+        fiberRegionSupport hT (I := I) (M := M) S basisAt K t y (ν y) =
+          fiberRegionSupport hT (I := I) (M := M) S basisAt K t x₀ ν'} ∈ nhds x₀ :=
+      hevent
+    obtain ⟨V, hVsub, hVopen, hx₀V⟩ := mem_nhds_iff.mp hset
+    exact ⟨V, hVopen, hx₀V, fun y hy ↦ hVsub hy⟩
+
+omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)] [I.Boundaryless] in
+theorem fiberRegionPropagationOn_of_bundleMaximumPrinciple
+    {T : Real} (hT : 0 < T) [I.Boundaryless] [CompactSpace M]
+    [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
+    (iota : MatrixComp M (Fin 3))
+    (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
+    (hgram : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x ↦ basisAt x a)) iota t x a b =
+        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x ↦ basisAt x a)) iota 0 x a b)
+    {K : Real} (hK : 0 < K)
+    (hinit : ∀ x : M,
+      uhlenbeckPulledRm04At S basisAt iota 0 x ∈ fiberHamiltonIveyRegion basisAt K 0 x)
+    (hsol : by
+      letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+        fun x ↦ @InnerProductSpace.Core.toNormedAddCommGroup Real
+          (Tensor04At (I := I) (M := M) x) inferInstance inferInstance inferInstance
+          (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
+      letI : ∀ x : M, InnerProductSpace Real (Tensor04At (I := I) (M := M) x) :=
+        fun x ↦ @InnerProductSpace.ofCore Real (Tensor04At (I := I) (M := M) x)
+          inferInstance inferInstance inferInstance
+          (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
+      letI : ∀ x : M, CompleteSpace (Tensor04At (I := I) (M := M) x) :=
+        fun _ ↦ inferInstance
+      exact IsBundleHeatReactionOn
+        (V := fun x : M ↦ Tensor04At (I := I) (M := M) x)
+        (fiberRegionFlat (I := I) (M := M) S basisAt iota)
+        (RealTimeInterval.closed 0 T hT.le) (flowG (I := I) S)
+        (fiberRegionSource hT (I := I) (M := M) S basisAt)
+        (uhlenbeckPulledRm04At S basisAt iota)) :
+    ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
+      uhlenbeckPulledRm04At S basisAt iota t x ∈ fiberHamiltonIveyRegion basisAt K t x := by
+  apply fiberRegionPropagationOn_of_flatSupport
+    (I := I) (M := M) hT S hS hdim basisAt horth0 iota hiota0 hgram hK hinit hsol
+  exact fiberRegion_hasFlatSupportSectionsOn
+    (I := I) (M := M) hT S hdim basisAt horth0 iota hiota0 hgram K
 
 end TensorTransport
 
