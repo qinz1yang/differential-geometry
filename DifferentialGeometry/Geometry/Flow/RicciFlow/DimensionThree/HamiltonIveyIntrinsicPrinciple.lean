@@ -8,6 +8,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Topology.FiberBundleT2
 
 set_option autoImplicit false
 
@@ -8932,6 +8933,119 @@ end TensorTransport
 
 
 end RadialTransportLinear
+
+set_option linter.unusedSectionVars false in
+private theorem curvatureOperatorRegionPropagationOn_zero_aux
+    {T : Real} (hT : 0 < T) [I.Boundaryless] [CompactSpace M] [Nonempty M]
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    {K : Real} (hK : 0 < K)
+    (hinit : ∀ x : M,
+      CurvatureOperatorLowerBoundAt (I := I) (S.base.metric 0) x
+        ⟨S.base.rm04 0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I) (S.base.metric 0) x⟩ K) :
+    CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K 0 T := by
+  classical
+  letI : NeZero (Module.finrank Real E) := ⟨by
+    intro hzero
+    have hthree := hdim (Classical.choice (inferInstance : Nonempty M))
+    have hthree' : Module.finrank Real E = 3 := by
+      simpa only [TangentSpace] using hthree
+    omega⟩
+  let basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x) :=
+    fun x ↦ Classical.choose
+      (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))
+  have horth0 : ∀ x : M,
+      OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x) := by
+    intro x
+    exact Classical.choose_spec
+      (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))
+  let iota : MatrixComp M (Fin 3) := intrinsicUhlenbeckIota hT S hS basisAt horth0
+  have hspec := intrinsicUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt horth0
+  have hiota0 : ∀ x : M, ∀ a k : Fin 3,
+      iota 0 x a k = if a = k then 1 else 0 := by
+    simpa [iota] using hspec.1
+  have hiotaCont : ∀ x : M,
+      ContinuousOn (fun t : Real ↦ iota t x) (Set.Icc 0 T) := by
+    simpa [iota] using hspec.2.1
+  have hiotaODE : BundleIsomorphismODEInFrameOn
+      (D := RealTimeInterval.closed 0 T hT.le) iota
+      (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+        (fun a x ↦ basisAt x a)) := by
+    simpa [iota, BundleIsomorphismODEInFrameOn, uhlenbeckRupOfSolution,
+      solutionRicciOneUpInFrame] using hspec.2.2.1
+  have hgram : ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x ↦ basisAt x a))
+          iota t x a b =
+        movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x ↦ basisAt x a))
+          iota 0 x a b := by
+    simpa [iota] using hspec.2.2.2
+  have hsol := fiberRegionHeatReactionOn (I := I) (M := M) hT S hS hdim
+    basisAt horth0 iota hiota0 hgram hiotaCont hiotaODE
+  have hinitFiber : ∀ x : M,
+      uhlenbeckPulledRm04At S basisAt iota 0 x ∈
+        fiberHamiltonIveyRegion basisAt K 0 x := by
+    intro x
+    exact pulledCurvature_initial_mem_fiberRegion (I := I) (M := M) hT S basisAt iota
+      hiota0 horth0 hK x (hinit x)
+  have hfiber := fiberRegionPropagationOn_of_bundleMaximumPrinciple
+    (I := I) (M := M) hT S hS hdim basisAt horth0 iota hiota0 hgram hK hinitFiber hsol
+  have hprop := curvatureOperatorRegionPropagationOn_of_fiberRegion_mem
+    (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 hK hfiber
+  simpa [CurvatureOperatorRegionPropagationOn] using hprop
+
+set_option linter.unusedSectionVars false in
+@[nolint unusedArguments]
+theorem curvatureOperatorRegionPropagationOn_of_initial_lower_bound
+    [I.Boundaryless] [CompactSpace M]
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {t0 T K : Real} (hT : 0 < T) (hK : 0 < K)
+    (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
+    (hreg : Set.Ioo t0 (t0 + T) ⊆ D.regular)
+    (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
+    (hinit : ∀ x : M,
+      CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+        ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+          (I := I) (S.base.metric t0) x⟩ K) :
+    CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T := by
+  classical
+  cases isEmpty_or_nonempty M with
+  | inl hM =>
+      letI := hM
+      intro t ht x
+      exact isEmptyElim x
+  | inr hM =>
+      letI := hM
+      let Sshift : SolutionOn (I := I) (M := M) (D.timeShift t0) := S.timeShift t0
+      let D0 : RealTimeInterval := RealTimeInterval.closed 0 T hT.le
+      let S0 : SolutionOn (I := I) (M := M) D0 := Sshift.timeRestrict D0
+      have hSshift : IsSolutionOn (I := I) Sshift := by
+        exact isSolutionOn_timeShift (I := I) hS t0
+      have hS0 : IsSolutionOn (I := I) S0 := by
+        apply isSoln_timeRestrict (I := I) hSshift
+        · intro t ht
+          change t + t0 ∈ D.carrier
+          exact hslab ⟨by linarith [ht.1], by linarith [ht.2]⟩
+        · intro t ht
+          change t + t0 ∈ D.regular
+          exact hreg ⟨by linarith [ht.1], by linarith [ht.2]⟩
+      have hinit0 : ∀ x : M,
+          CurvatureOperatorLowerBoundAt (I := I) (S0.base.metric 0) x
+            ⟨S0.base.rm04 0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) (S0.base.metric 0) x⟩ K := by
+        intro x
+        simpa [S0, Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
+          SolutionFamily.timeShift, SolutionFamily.rm04] using hinit x
+      have hprop0 := curvatureOperatorRegionPropagationOn_zero_aux
+        (I := I) (M := M) hT S0 hS0 hdim hK hinit0
+      have hpropShift : CurvatureOperatorRegionPropagationOn
+          (I := I) (M := M) Sshift K 0 T := by
+        simpa [S0, SolutionOn.timeRestrict] using hprop0
+      exact curvatureOperatorRegionPropagationOn_timeShift
+        (I := I) (M := M) S hpropShift
 
 
 
