@@ -13,6 +13,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.CorrectionContraction
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LinearExtensionTangent
+import Mathlib.Geometry.Manifold.BumpFunction
 
 noncomputable section
 
@@ -3199,6 +3200,44 @@ theorem radialTransportSection_contMDiffOn (g : SmoothRiemannianMetric I M) (p :
     have hsec : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞ (T% σ) y :=
       (contMDiffAt_section_iff_chartE I p σ hy_base).mpr hchart_y
     exact hsec.contMDiffWithinAt
+
+theorem exists_localized_radial_transport_sections
+    {ι : Type*} [Finite ι]
+    (g : SmoothRiemannianMetric I M) (p : M) (v : ι → TangentSpace I p) :
+    ∃ (χ : SmoothBumpFunction I p)
+      (W : ι → ContMDiffSection I E ∞ (TangentSpace I : M → Type _)),
+      tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p ∧
+      (∀ i y, W i y = χ y • radialTransportSection (I := I) g p (v i) y) ∧
+      (∀ᶠ y in 𝓝 p, ∀ i, W i y = radialTransportSection (I := I) g p (v i) y) := by
+  classical
+  choose U hU_nhds _ hU_smooth using
+    fun i : ι => radialTransportSection_contMDiffOn (I := I) g p (v i)
+  let D : Set M := radialTransportSectionDomain (I := I) g p
+  let V : Set M := interior (D ∩ ⋂ i : ι, U i)
+  have hD_nhds : D ∈ 𝓝 p :=
+    (radialTransportSectionDomain_isOpen (I := I) g p).mem_nhds
+      (mem_radialTransportSectionDomain_self (I := I) g p)
+  have hInter_nhds : (⋂ i : ι, U i) ∈ 𝓝 p := Filter.iInter_mem.mpr hU_nhds
+  have hpV : p ∈ V :=
+    mem_interior_iff_mem_nhds.mpr (Filter.inter_mem hD_nhds hInter_nhds)
+  have hV_open : IsOpen V := isOpen_interior
+  have hV_nhds : V ∈ 𝓝 p := hV_open.mem_nhds hpV
+  obtain ⟨χ, hχ_tsupport⟩ :=
+    (SmoothBumpFunction.nhds_basis_support (I := I) (c := p) hV_nhds).ex_mem
+  let W : ι → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) := fun i =>
+    ⟨fun y => χ y • radialTransportSection (I := I) g p (v i) y,
+      ContMDiffOn.smul_section_of_tsupport
+        χ.contMDiff.contMDiffOn hV_open hχ_tsupport
+          ((hU_smooth i).mono (interior_subset.trans
+            (inter_subset_right.trans (iInter_subset U i))))⟩
+  refine ⟨χ, W, ?_, ?_, ?_⟩
+  · exact hχ_tsupport.trans (interior_subset.trans inter_subset_left)
+  · intro i y
+    rfl
+  · filter_upwards [χ.eventuallyEq_one] with y hy i
+    change χ y • radialTransportSection (I := I) g p (v i) y = _
+    have hy' : χ y = 1 := by simpa using hy
+    rw [hy', one_smul]
 
 end RadialTransportSectionSmooth
 
