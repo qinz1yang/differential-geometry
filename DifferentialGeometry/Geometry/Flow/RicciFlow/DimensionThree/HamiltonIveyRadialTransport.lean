@@ -2343,7 +2343,7 @@ lemma chartChristoffelContraction_full_contDiffOn_infty (g : SmoothRiemannianMet
 
 omit [T2Space M] in
 lemma chartCurveDir_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
-    ∃ ρ : ℝ, 0 < ρ ∧
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ expMapC2Radius (I := I) g p / 2 ∧
       ContDiffOn ℝ ∞
         (fun q : ℝ × E =>
           chartCurve (I := I) p
@@ -2353,7 +2353,8 @@ lemma chartCurveDir_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
   obtain ⟨δ, hδ_pos, hδ⟩ := expMap_contMDiffAt_infty_of_norm_lt (I := I) g p
   let ρ : ℝ := min (δ / 2) (expMapC2Radius (I := I) g p / 2)
   have hρ_pos : 0 < ρ := lt_min (half_pos hδ_pos) (half_pos (expMapC2Radius_pos (I := I) g p))
-  refine ⟨ρ, hρ_pos, ?_⟩
+  have hρ_le : ρ ≤ expMapC2Radius (I := I) g p / 2 := min_le_right _ _
+  refine ⟨ρ, hρ_pos, hρ_le, ?_⟩
   rw [IsOpen.contDiffOn_iff (isOpen_Ioo.prod isOpen_ball)]
   rintro ⟨t, x⟩ ⟨ht, hx⟩
   have hw : ‖t • x‖ < δ := by
@@ -2410,14 +2411,14 @@ lemma chartCurveDir_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
 
 omit [T2Space M] in
 lemma chartCurveDirDeriv_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
-    ∃ ρ : ℝ, 0 < ρ ∧
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ expMapC2Radius (I := I) g p / 2 ∧
       ContDiffOn ℝ ∞
         (fun q : ℝ × E =>
           deriv (chartCurve (I := I) p
             (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2))) q.1)
         ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ)) := by
   classical
-  obtain ⟨ρ, hρ_pos, hF⟩ := chartCurveDir_contDiffOn (I := I) g p
+  obtain ⟨ρ, hρ_pos, hρ_le, hF⟩ := chartCurveDir_contDiffOn (I := I) g p
   set U : Set (ℝ × E) := (Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) with hU_def
   have hU_open : IsOpen U := isOpen_Ioo.prod isOpen_ball
   set F : ℝ × E → E := fun q =>
@@ -2470,8 +2471,128 @@ lemma chartCurveDirDeriv_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
     refine happ.congr ?_
     intro q hq
     exact hdeq q hq
-  refine ⟨ρ, hρ_pos, ?_⟩
+  refine ⟨ρ, hρ_pos, hρ_le, ?_⟩
   simpa [hU_def] using htarget
+
+omit [T2Space M] in
+private def radialContractionFun (g : SmoothRiemannianMetric I M) (p : M) : E × E × E → E :=
+  fun z => chartChristoffelContraction (I := I) g p z.2.1 z.2.2 z.1
+
+omit [T2Space M] in
+lemma radialTransportODE_contDiffOn (g : SmoothRiemannianMetric I M) (p : M) :
+    ∃ ρ : ℝ, 0 < ρ ∧
+      ContDiffOn ℝ ∞
+        (fun q : ℝ × E × E =>
+          - chartChristoffelContraction (I := I) g p
+            (deriv (chartCurve (I := I) p
+              (fun t : ℝ => expMap (I := I) g p (t • q.2.1))) q.1)
+            q.2.2
+            (chartCurve (I := I) p
+              (fun t : ℝ => expMap (I := I) g p (t • q.2.1)) q.1))
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) ×ˢ (Set.univ : Set E)) := by
+  classical
+  obtain ⟨ρ₁, hρ₁_pos, hρ₁_le_c2, h1⟩ := chartCurveDir_contDiffOn (I := I) g p
+  obtain ⟨ρ₂, hρ₂_pos, hρ₂_le_c2, h2⟩ := chartCurveDirDeriv_contDiffOn (I := I) g p
+  let ρ : ℝ := min ρ₁ ρ₂
+  have hρ_pos : 0 < ρ := lt_min hρ₁_pos hρ₂_pos
+  have hρ₁_le : ρ ≤ ρ₁ := min_le_left _ _
+  have hρ₂_le : ρ ≤ ρ₂ := min_le_right _ _
+  set U : Set (ℝ × E × E) := (Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ) ×ˢ (Set.univ : Set E) with hU_def
+  have hU_open : IsOpen U := isOpen_Ioo.prod (isOpen_ball.prod isOpen_univ)
+  have hΓ : ContDiffOn ℝ ∞ (radialContractionFun g p)
+      ((interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) := by
+    change ContDiffOn ℝ ∞
+        (fun z : E × E × E => chartChristoffelContraction (I := I) g p z.2.1 z.2.2 z.1)
+        ((interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E))
+    exact chartChristoffelContraction_full_contDiffOn_infty (I := I) g p
+  set ccrv : (ℝ × E × E) → E := fun q =>
+    chartCurve (I := I) p
+      (fun t : ℝ => expMap (I := I) g p (t • q.2.1)) q.1 with hccrv_def
+  set cdrv : (ℝ × E × E) → E := fun q =>
+    deriv (chartCurve (I := I) p
+      (fun t : ℝ => expMap (I := I) g p (t • q.2.1))) q.1 with hcdrv_def
+  have hπ : ContDiff ℝ ∞ (fun q : ℝ × E × E => (q.1, q.2.1)) := by
+    have hfst1 : ContDiff ℝ ∞ (fun q : ℝ × (E × E) => q.1) :=
+      contDiff_fst (𝕜 := ℝ) (E := ℝ) (F := E × E)
+    have hsnd : ContDiff ℝ ∞ (Prod.snd : ℝ × (E × E) → E × E) :=
+      contDiff_snd (𝕜 := ℝ) (E := ℝ) (F := E × E)
+    have hfst2 : ContDiff ℝ ∞ (Prod.fst : E × E → E) :=
+      contDiff_fst (𝕜 := ℝ) (E := E) (F := E)
+    exact hfst1.prodMk (hfst2.comp hsnd)
+  have hccrv_on : ContDiffOn ℝ ∞ ccrv U := by
+    have h1' : ContDiffOn ℝ ∞
+        (fun q : ℝ × E =>
+          chartCurve (I := I) p
+            (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2)) q.1)
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ)) :=
+      h1.mono (Set.prod_mono (le_refl _) (Metric.ball_subset_ball hρ₁_le))
+    have hmap : MapsTo (fun q : ℝ × E × E => (q.1, q.2.1)) U
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ)) := by
+      intro q hq
+      rcases hq with ⟨ht, hx, _⟩
+      exact ⟨ht, hx⟩
+    exact h1'.comp (hπ.contDiffOn) hmap
+  have hcdrv_on : ContDiffOn ℝ ∞ cdrv U := by
+    have h2' : ContDiffOn ℝ ∞
+        (fun q : ℝ × E =>
+          deriv (chartCurve (I := I) p
+            (fun t : ℝ => expMap (I := I) g p (show TangentSpace I p from t • q.2))) q.1)
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ)) :=
+      h2.mono (Set.prod_mono (le_refl _) (Metric.ball_subset_ball hρ₂_le))
+    have hmap : MapsTo (fun q : ℝ × E × E => (q.1, q.2.1)) U
+        ((Ioo (-1 : ℝ) 1) ×ˢ (ball (0 : E) ρ)) := by
+      intro q hq
+      rcases hq with ⟨ht, hx, _⟩
+      exact ⟨ht, hx⟩
+    exact h2'.comp (hπ.contDiffOn) hmap
+  have hw_proj : ContDiffOn ℝ ∞ (fun q : ℝ × E × E => q.2.2) U := by
+    have hsnd : ContDiff ℝ ∞ (Prod.snd : ℝ × (E × E) → E × E) :=
+      contDiff_snd (𝕜 := ℝ) (E := ℝ) (F := E × E)
+    have hsnd2 : ContDiff ℝ ∞ (Prod.snd : E × E → E) :=
+      contDiff_snd (𝕜 := ℝ) (E := E) (F := E)
+    exact (hsnd2.comp hsnd).contDiffOn
+  have hinner : ContDiffOn ℝ ∞ (fun q : ℝ × E × E => (ccrv q, (cdrv q, q.2.2))) U :=
+    hccrv_on.prodMk (hcdrv_on.prodMk hw_proj)
+  have hsrc_mem : ∀ q : ℝ × E × E, q ∈ U →
+      expMap (I := I) g p (q.1 • q.2.1) ∈ (chartAt H p).source := by
+    intro q hq
+    rcases hq with ⟨ht, hx, _⟩
+    have hnorm : ‖q.1 • q.2.1‖ ≤ ‖q.2.1‖ := by
+      rw [norm_smul, Real.norm_eq_abs]
+      have habs : |q.1| ≤ 1 := by
+        rw [abs_le]
+        exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+      exact (mul_le_mul_of_nonneg_right habs (norm_nonneg (q.2.1))).trans_eq (one_mul _)
+    have hxρ : ‖q.2.1‖ < ρ := by simpa [dist_eq_norm] using (mem_ball.mp hx)
+    have hlt : ‖q.1 • q.2.1‖ < expMapC2Radius (I := I) g p := by
+      have : ‖q.2.1‖ < expMapC2Radius (I := I) g p := lt_of_le_of_lt (le_of_lt hxρ) (by linarith)
+      exact lt_of_le_of_lt hnorm this
+    simpa [one_smul] using
+      (radialCurve_mem_chartAt_source_of_norm_lt (I := I) g p
+        (s := 1) (v := (q.1 • q.2.1 : TangentSpace I p)) (by simpa using hlt))
+  have hmapsto : MapsTo (fun q : ℝ × E × E => (ccrv q, (cdrv q, q.2.2))) U
+      ((interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) ×ˢ (Set.univ : Set E)) := by
+    intro q hq
+    refine ⟨?_, ?_, ?_⟩
+    · have hsrc : expMap (I := I) g p (q.1 • q.2.1) ∈ (chartAt H p).source :=
+        hsrc_mem q hq
+      have hsrc' : expMap (I := I) g p (q.1 • q.2.1) ∈ (extChartAt I p).source := by
+        simpa [extChartAt_source] using hsrc
+      have htgt : extChartAt I p (expMap (I := I) g p (q.1 • q.2.1)) ∈
+          (extChartAt I p).target :=
+        (extChartAt I p).map_source hsrc'
+      simpa [hccrv_def] using
+        (extChartAt_target_subset_interior_of_boundaryless (I := I) p htgt)
+    · exact Set.mem_univ _
+    · exact Set.mem_univ _
+  have hΓc : ContDiffOn ℝ ∞
+      (fun q : ℝ × E × E => radialContractionFun g p (ccrv q, (cdrv q, q.2.2))) U := by
+    exact hΓ.comp (s := U) (f := fun q : ℝ × E × E => (ccrv q, (cdrv q, q.2.2))) hinner hmapsto
+  have hneg : ContDiffOn ℝ ∞
+      (fun q : ℝ × E × E => - radialContractionFun g p (ccrv q, (cdrv q, q.2.2))) U :=
+    hΓc.neg
+  refine ⟨ρ, hρ_pos, ?_⟩
+  simpa [hU_def, hccrv_def, hcdrv_def, radialContractionFun] using hneg
 
 end RadialTransportSectionSmooth
 
