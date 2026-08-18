@@ -32,6 +32,12 @@ import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 
 set_option autoImplicit false
 
@@ -6932,6 +6938,12 @@ end FlatSectionProjection
 
 
 
+
+
+
+
+
+
 section RadialTransportLinear
 
 open DifferentialGeometry.Geometry.Riemannian
@@ -7574,13 +7586,151 @@ noncomputable def radialTransportSectionTensor [I.Boundaryless] [T2Space M]
   classical
   exact fun y =>
     if h : y ∈ radialTransportSectionDomain (I := I) g p then
-      η₀.compContinuousLinearMap (fun _ : Fin 4 => (0 : E →L[ℝ] E))
+      η₀.compContinuousLinearMap (fun _ : Fin 4 => (radialTransportInverseAt g p y h : E →L[ℝ] E))
     else 0
+
+
+set_option linter.unusedSectionVars false in
+lemma mem_radialTransportSectionDomain_expMap [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
+    {s : ℝ} (hs : s ∈ Set.Ioo (-1 : ℝ) 1) :
+    expMap (I := I) g p (s • X) ∈ radialTransportSectionDomain (I := I) g p := by
+  classical
+  have hs_norm : ‖s • (X : E)‖ < expMapC2Radius (I := I) g p :=
+    norm_smul_lt_expMapC2Radius_of_lt_radialRadius (I := I) g p hX ⟨hs.1.le, by linarith [hs.2]⟩
+  have hs_rad : ‖s • (X : E)‖ < radialRadius (I := I) g p := by
+    have hnorm : ‖s • (X : E)‖ ≤ ‖(X : E)‖ := by
+      rw [norm_smul, Real.norm_eq_abs]
+      have habs : |s| ≤ 1 := by
+        rw [abs_le]
+        exact ⟨by linarith [hs.1], by linarith [hs.2]⟩
+      exact (mul_le_mul_of_nonneg_right habs (norm_nonneg (X : E))).trans_eq (one_mul _)
+    exact lt_of_le_of_lt hnorm hX
+  unfold radialTransportSectionDomain
+  constructor
+  · exact expMap_mem_normalChartAt_source_of_norm_lt_radialRadius (I := I) g p hs_norm
+  · have hv : normalChartAt (I := I) g p (expMap (I := I) g p (s • X)) = s • (X : E) :=
+      normalChartAt_expMap_smul (I := I) g p (X : E) s (ball_subset_normalChartAt_target
+        (I := I) g p hs_norm)
+    rw [hv]
+    exact hs_rad
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportInverseAt_transport_eq [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
+    {s : ℝ} (hs : s ∈ Set.Ioo (-1 : ℝ) 1)
+    (v : E) :
+    radialTransportInverseAt g p (expMap (I := I) g p (s • X))
+      (mem_radialTransportSectionDomain_expMap (I := I) g p hX hs)
+      (radialParallelTransportSection (I := I) g p hX v s) = v := by
+  classical
+  let y : M := expMap (I := I) g p (s • X)
+  have hmem : y ∈ radialTransportSectionDomain (I := I) g p :=
+    mem_radialTransportSectionDomain_expMap (I := I) g p hX hs
+  have h := radialTransportInverseAt_left_inverse (I := I) g p y hmem v
+  have hval : radialTransportLinearMapAt g p y v = radialParallelTransportSection (I := I) g p hX v s := by
+    dsimp [radialTransportLinearMapAt, y]
+    exact radialTransportSection_pullback_eq (I := I) g p v hX hs
+  rw [hval] at h
+  exact h
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportSectionTensor_initial [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (η₀ : Tensor04At (I := I) (M := M) p) :
+    radialTransportSectionTensor g p η₀ p = η₀ := by
+  classical
+  have hmem : p ∈ radialTransportSectionDomain (I := I) g p :=
+    mem_radialTransportSectionDomain_self (I := I) g p
+  rw [radialTransportSectionTensor]
+  rw [dif_pos hmem]
+  have hid : (radialTransportInverseAt g p p hmem : E →L[ℝ] E) = ContinuousLinearMap.id ℝ E := by
+    ext v
+    have hc : radialTransportSection g p v p = v :=
+      radialTransportSection_center (I := I) g p v 0 (by
+        rw [norm_zero]
+        exact radialRadius_pos (I := I) g p)
+    have hlin : radialTransportLinearMapAt g p p v = v := by
+      simpa [radialTransportLinearMapAt] using hc
+    have h := radialTransportInverseAt_left_inverse (I := I) g p p hmem v
+    simpa [hlin] using h
+  rw [hid]
+  apply ContinuousMultilinearMap.ext
+  intro v
+  rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  rfl
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportSectionTensor_isometry [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (hdim : Module.finrank Real (TangentSpace I p) = 3)
+    (η₀ : Tensor04At (I := I) (M := M) p) (y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
+    inner0S (I := I) g y 4 (radialTransportSectionTensor g p η₀ y)
+        (radialTransportSectionTensor g p η₀ y) =
+      inner0S (I := I) g p 4 η₀ η₀ := by
+  classical
+  let basis₀ : Module.Basis (Fin 3) Real (TangentSpace I p) :=
+    Classical.choose (exists_orthonormalBasisAt (I := I) g p hdim)
+  have horth₀ : OrthonormalBasisAt (I := I) g p basis₀ :=
+    Classical.choose_spec (exists_orthonormalBasisAt (I := I) g p hdim)
+  let T : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective (radialTransportLinearMapAt g p y) (by
+    have hT : Function.Injective (radialTransportLinearMapAt g p y) := by
+      intro a b hab
+      exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
+    have hsurj : Function.Surjective (radialTransportLinearMapAt g p y) :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+    exact ⟨hT, hsurj⟩)
+  let basisY : Module.Basis (Fin 3) Real (TangentSpace I y) := basis₀.map T
+  have horthY : OrthonormalBasisAt (I := I) g y basisY := by
+    intro a b
+    have hinner := radialTransportSection_inner_eq (I := I) g p (basis₀ a) (basis₀ b) y hy
+    have hTa : (basisY a : TangentSpace I y) = radialTransportSection g p (basis₀ a) y := by
+      dsimp [basisY]
+      change (T (basis₀ a) : TangentSpace I y) = radialTransportSection g p (basis₀ a) y
+      dsimp [T]
+      rfl
+    have hTb : (basisY b : TangentSpace I y) = radialTransportSection g p (basis₀ b) y := by
+      dsimp [basisY]
+      change (T (basis₀ b) : TangentSpace I y) = radialTransportSection g p (basis₀ b) y
+      dsimp [T]
+      rfl
+    rw [hTa, hTb]
+    simpa [horth₀ a b] using hinner
+  have hξ : ∀ I0 : Fin 4 → Fin 3,
+      (radialTransportSectionTensor g p η₀ y) (fun a => basisY (I0 a)) = η₀ (fun a => basis₀ (I0 a)) := by
+    intro I0
+    rw [radialTransportSectionTensor]
+    rw [dif_pos hy]
+    have hTval : ∀ a : Fin 4, (basisY (I0 a) : E) = radialTransportLinearMapAt g p y (basis₀ (I0 a)) := by
+      intro a
+      dsimp [basisY]
+      change (T (basis₀ (I0 a)) : E) = radialTransportLinearMapAt g p y (basis₀ (I0 a))
+      dsimp [T]
+    change η₀ (fun a => radialTransportInverseAt g p y hy (basisY (I0 a))) = η₀ (fun a => basis₀ (I0 a))
+    congr 1
+    funext a
+    rw [hTval a]
+    exact radialTransportInverseAt_left_inverse (I := I) g p y hy (basis₀ (I0 a))
+  rw [inner0S_four_orthonormalBasis_sq (I := I) g y basisY horthY
+    (radialTransportSectionTensor g p η₀ y) (radialTransportSectionTensor g p η₀ y)]
+  rw [inner0S_four_orthonormalBasis_sq (I := I) g p basis₀ horth₀ η₀ η₀]
+  apply Finset.sum_congr rfl
+  intro I0 hI0
+  rw [hξ I0]
 
 end TensorTransport
 
 
 end RadialTransportLinear
+
+
+
+
+
+
 
 
 
