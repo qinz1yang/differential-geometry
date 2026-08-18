@@ -23,6 +23,15 @@ import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 
 set_option autoImplicit false
 
@@ -6914,6 +6923,15 @@ end FlatSectionProjection
 
 
 
+
+
+
+
+
+
+
+
+
 section RadialTransportLinear
 
 open DifferentialGeometry.Geometry.Riemannian
@@ -7493,7 +7511,85 @@ theorem radialTransportSection_injective [I.Boundaryless] [T2Space M]
     have hpos' : 0 < g.inner p (v - w) (v - w) := g.pos p (v - w) hne
     linarith)
 
+
+section TensorTransport
+
+variable [NeZero (Module.finrank ℝ E)]
+
+noncomputable def radialTransportLinearMapAt (g : SmoothRiemannianMetric I M) (p y : M) :
+    E →ₗ[ℝ] E :=
+  { toFun := fun v => radialTransportSection g p v y
+    map_add' := by
+      intro a b
+      exact radialTransportSection_linear_add (I := I) g p a b y
+    map_smul' := by
+      intro a b
+      exact radialTransportSection_linear_smul (I := I) g p a b y }
+
+noncomputable def radialTransportInverseAt [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) : E →L[ℝ] E :=
+  let T : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
+  let T : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
+  let hT : Function.Injective T := by
+    intro a b hab
+    exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
+  let hsurj : Function.Surjective T :=
+    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+  let e : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective T ⟨hT, hsurj⟩
+  (e.symm.toContinuousLinearEquiv).toContinuousLinearMap
+
+set_option linter.unusedSectionVars false in
+@[simp] theorem radialTransportInverseAt_apply [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) (v : E) :
+    radialTransportInverseAt g p y hy v =
+      (LinearEquiv.ofBijective (radialTransportLinearMapAt g p y)
+        (by
+          have hT : Function.Injective (radialTransportLinearMapAt g p y) := by
+            intro a b hab
+            exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
+          have hsurj : Function.Surjective (radialTransportLinearMapAt g p y) :=
+            (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+          exact ⟨hT, hsurj⟩)).symm v := by
+  rfl
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportInverseAt_left_inverse [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) (v : E) :
+    radialTransportInverseAt g p y hy (radialTransportLinearMapAt g p y v) = v := by
+  rw [radialTransportInverseAt_apply]
+  exact (LinearEquiv.ofBijective (radialTransportLinearMapAt g p y) (by
+    have hT : Function.Injective (radialTransportLinearMapAt g p y) := by
+      intro a b hab
+      exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
+    have hsurj : Function.Surjective (radialTransportLinearMapAt g p y) :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+    exact ⟨hT, hsurj⟩)).symm_apply_apply v
+
+noncomputable def radialTransportSectionTensor [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (η₀ : Tensor04At (I := I) (M := M) p) : ∀ y : M, Tensor04At (I := I) (M := M) y := by
+  classical
+  exact fun y =>
+    if h : y ∈ radialTransportSectionDomain (I := I) g p then
+      η₀.compContinuousLinearMap (fun _ : Fin 4 => (0 : E →L[ℝ] E))
+    else 0
+
+end TensorTransport
+
+
 end RadialTransportLinear
+
+
+
+
+
+
+
+
+
 
 
 
