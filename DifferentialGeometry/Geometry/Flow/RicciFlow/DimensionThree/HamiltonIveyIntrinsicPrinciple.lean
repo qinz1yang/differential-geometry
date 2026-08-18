@@ -21,6 +21,8 @@ import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 
 set_option autoImplicit false
 
@@ -6910,6 +6912,8 @@ end FlatSectionProjection
 
 
 
+
+
 section RadialTransportLinear
 
 open DifferentialGeometry.Geometry.Riemannian
@@ -7424,7 +7428,74 @@ theorem radialParallelTransportSection_inner_eq [I.Boundaryless] [T2Space M]
     exact h
   rw [← hfs, ← hf0]
   exact hconst
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem radialTransportSection_inner_eq [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M) (u w : TangentSpace I p) (y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
+    g.inner y (radialTransportSection g p u y) (radialTransportSection g p w y) = g.inner p u w := by
+  classical
+  have hcond : y ∈ (normalChartAt (I := I) g p).source ∧
+      ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p := by
+    simpa [radialTransportSectionDomain] using hy
+  let x : E := normalChartAt (I := I) g p y
+  have hEq : y = expMap (I := I) g p ((1 : ℝ) • x) := by
+    have hsymm : (normalChartAt (I := I) g p).symm x = y := by
+      rw [show x = normalChartAt (I := I) g p y by rfl]
+      exact normalChartAt_left_inv (I := I) g p hcond.1
+    have htgt : x ∈ (normalChartAt (I := I) g p).symm.source := by
+      rw [show x = normalChartAt (I := I) g p y by rfl]
+      have hmap : normalChartAt (I := I) g p y ∈ (normalChartAt (I := I) g p).target :=
+        (normalChartAt (I := I) g p).map_source hcond.1
+      simpa using hmap
+    have hexp : (normalChartAt (I := I) g p).symm x = expMap (I := I) g p x :=
+      normalChartAt_symm_apply (I := I) g p htgt
+    rw [← hsymm, hexp]
+    simp
+  have hval_u : radialTransportSection g p u y = radialParallelTransportSection (I := I) g p hcond.2 u 1 := by
+    simp_rw [radialTransportSection, dif_pos hcond]
+  have hval_w : radialTransportSection g p w y = radialParallelTransportSection (I := I) g p hcond.2 w 1 := by
+    simp_rw [radialTransportSection, dif_pos hcond]
+  have hmain := radialParallelTransportSection_inner_eq (I := I) g p hcond.2 u w (s := 1)
+    ⟨by norm_num, by norm_num⟩
+  rw [hval_u, hval_w]
+  have hbase : g.inner y (radialParallelTransportSection (I := I) g p hcond.2 u 1)
+        (radialParallelTransportSection (I := I) g p hcond.2 w 1) =
+      g.inner (expMap (I := I) g p ((1 : ℝ) • x))
+        (radialParallelTransportSection (I := I) g p hcond.2 u 1)
+        (radialParallelTransportSection (I := I) g p hcond.2 w 1) := by
+    exact congrArg (fun z : M => g.inner z (radialParallelTransportSection (I := I) g p hcond.2 u 1)
+      (radialParallelTransportSection (I := I) g p hcond.2 w 1)) hEq
+  rw [hbase]
+  simpa [x] using hmain
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem radialTransportSection_injective [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M) (y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
+    Function.Injective (fun v : TangentSpace I p => radialTransportSection g p v y) := by
+  intro v w hvw
+  have hmain := radialTransportSection_inner_eq (I := I) g p (v - w) (v - w) y hy
+  have hv : radialTransportSection g p (v - w) y = 0 := by
+    have hlin : radialTransportSection g p (v - w) y = radialTransportSection g p v y - radialTransportSection g p w y := by
+      have h1 := radialTransportSection_linear_add (I := I) g p v (-w) y
+      have h2 := radialTransportSection_linear_smul (I := I) g p (-1) w y
+      rw [show -w = (-1 : ℝ) • w by simp] at h1
+      rw [h2] at h1
+      simpa [sub_eq_add_neg] using h1
+    simpa [sub_eq_add_neg, hvw] using hlin
+  have hzero : g.inner p (v - w) (v - w) = 0 := by
+    rw [← hmain]
+    rw [hv]
+    simp
+  exact sub_eq_zero.mp (by
+    by_contra hne
+    have hpos' : 0 < g.inner p (v - w) (v - w) := g.pos p (v - w) hne
+    linarith)
+
 end RadialTransportLinear
+
+
 
 
 
