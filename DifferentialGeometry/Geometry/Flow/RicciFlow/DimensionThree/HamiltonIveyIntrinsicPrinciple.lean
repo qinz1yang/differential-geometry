@@ -16,6 +16,11 @@ import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 
 set_option autoImplicit false
 
@@ -6900,6 +6905,11 @@ end FlatSectionProjection
 
 
 
+
+
+
+
+
 section RadialTransportLinear
 
 open DifferentialGeometry.Geometry.Riemannian
@@ -6909,6 +6919,9 @@ open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.Variation
+open DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve
+open DifferentialGeometry.Integral.DivergenceTheorem
+open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Connection
 
 variable [NeZero (Module.finrank ℝ E)]
@@ -7213,7 +7226,210 @@ theorem radialTransportSection_linear_smul [I.Boundaryless] [T2Space M]
     simp_rw [radialTransportSection, dif_neg hnot]
     simp
 
+
+
+set_option linter.unusedSectionVars false in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+lemma radialParallelTransportSection_chartGram_hasDerivAt_zero [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
+    (u w : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Ioo (-1 : ℝ) 2) :
+    HasDerivAt (fun τ : ℝ =>
+      chartGramAlongCurve (I := I) g p (fun τ0 : ℝ => expMap (I := I) g p (τ0 • X))
+        (chartRepAt (I := I) (fun τ0 : ℝ => expMap (I := I) g p (τ0 • X))
+          (radialParallelTransportSection (I := I) g p hX u) 0)
+        (chartRepAt (I := I) (fun τ0 : ℝ => expMap (I := I) g p (τ0 • X))
+          (radialParallelTransportSection (I := I) g p hX w) 0) τ) 0 t := by
+  classical
+  let γ : ℝ → M := fun t0 => expMap (I := I) g p (t0 • X)
+  let Pu : ∀ t0, TangentSpace I (γ t0) := radialParallelTransportSection (I := I) g p hX u
+  let Pw : ∀ t0, TangentSpace I (γ t0) := radialParallelTransportSection (I := I) g p hX w
+  let V : ℝ → E := chartRepAt (I := I) γ Pu 0
+  let W : ℝ → E := chartRepAt (I := I) γ Pw 0
+  let uPrime : ℝ → E := fun t0 => deriv (chartCurve (I := I) p γ) t0
+  let o : Set ℝ := Set.Ioo (-1 : ℝ) 2
+  have hdom : ∀ t0 : ℝ, t0 ∈ o → ‖t0 • (X : E)‖ < expMapC2Radius (I := I) g p := by
+    intro t0 ht0
+    exact norm_smul_lt_expMapC2Radius_of_lt_radialRadius (I := I) g p hX ⟨ht0.1.le, ht0.2.le⟩
+  have hIcc : ∀ t0 : ℝ, t0 ∈ o → t0 ∈ Set.Icc (-1 : ℝ) 2 := by
+    intro t0 ht0
+    exact ⟨ht0.1.le, ht0.2.le⟩
+  have hγdiff : ∀ t0 : ℝ, t0 ∈ o → DifferentiableAt ℝ (chartCurve (I := I) p γ) t0 := by
+    intro t0 ht0
+    let U : Set ℝ := {u0 : ℝ | ‖u0 • (X : E)‖ < expMapC2Radius (I := I) g p}
+    have hcd : ContDiffOn ℝ 2 (chartCurve (I := I) p γ) U := by
+      simpa [γ, U] using (radialCurve_chartCurve_contDiffOn (I := I) g p (v := X))
+    have hUnhd : U ∈ 𝓝 t0 := (radialCurve_domain_isOpen (I := I) g p X).mem_nhds (hdom t0 ht0)
+    exact (hcd.contDiffAt hUnhd).differentiableAt (by norm_num : (2 : WithTop ℕ∞) ≠ 0)
+  have hsrc_o : ∀ t0 ∈ o, γ t0 ∈ (chartAt H p).source := by
+    intro t0 ht0
+    exact radialCurve_mem_chartAt_source_of_lt_radialRadius (I := I) g p hX (hIcc t0 ht0)
+  have hmem : ∀ t0 ∈ o, chartCurve (I := I) p γ t0 ∈ interior (extChartAt I p).target := by
+    intro t0 ht0
+    have hxsrc : γ t0 ∈ (extChartAt I p).source := by
+      rw [extChartAt_source]
+      exact hsrc_o t0 ht0
+    have hxtarget : chartCurve (I := I) p γ t0 ∈ (extChartAt I p).target :=
+      (extChartAt I p).map_source hxsrc
+    exact extChartAt_target_subset_interior_of_boundaryless (I := I) p hxtarget
+  have hVpar : IsParallelChart (I := I) g p γ uPrime V o := by
+    constructor
+    · intro t0 ht0
+      exact (hγdiff t0 ht0).hasDerivAt
+    · intro t0 ht0
+      have hd := radialParallelTransportSection_ode (I := I) g p hX u (hIcc t0 ht0)
+      have hd' : HasDerivAt (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX u) 0)
+          (- chartChristoffelContraction (I := I) g p (uPrime t0)
+            (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX u) 0 t0)
+            (chartCurve (I := I) p γ t0)) t0 :=
+        hd.hasDerivAt (Icc_mem_nhds ht0.1 ht0.2)
+      simpa [V, Pu] using hd'
+  have hWpar : IsParallelChart (I := I) g p γ uPrime W o := by
+    constructor
+    · intro t0 ht0
+      exact (hγdiff t0 ht0).hasDerivAt
+    · intro t0 ht0
+      have hd := radialParallelTransportSection_ode (I := I) g p hX w (hIcc t0 ht0)
+      have hd' : HasDerivAt (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX w) 0)
+          (- chartChristoffelContraction (I := I) g p (uPrime t0)
+            (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX w) 0 t0)
+            (chartCurve (I := I) p γ t0)) t0 :=
+        hd.hasDerivAt (Icc_mem_nhds ht0.1 ht0.2)
+      simpa [W, Pw] using hd'
+  have hderiv : ∀ t0 ∈ o, HasDerivAt
+      (fun τ : ℝ => chartGramAlongCurve (I := I) g p γ V W τ) 0 t0 := by
+    intro t0 ht0
+    let Vprime : ℝ → E := fun _ => - chartChristoffelContraction (I := I) g p (uPrime t0) (V t0)
+      (chartCurve (I := I) p γ t0)
+    let Wprime : ℝ → E := fun _ => - chartChristoffelContraction (I := I) g p (uPrime t0) (W t0)
+      (chartCurve (I := I) p γ t0)
+    have hV : HasDerivAt V (Vprime t0) t0 := by
+      simpa [Vprime] using (hVpar.hasDerivAt ht0)
+    have hW : HasDerivAt W (Wprime t0) t0 := by
+      simpa [Wprime] using (hWpar.hasDerivAt ht0)
+    have hmain := chartGramAlongCurve_hasDerivAt_covariant (I := I) g p γ V W
+      (uPrime := uPrime) (Vprime := Vprime) (Wprime := Wprime) (t := t0)
+      ((hγdiff t0 ht0).hasDerivAt) (hmem t0 ht0) hV hW
+    have hVzero : Vprime t0 + chartChristoffelContraction (I := I) g p (uPrime t0) (V t0)
+        (chartCurve (I := I) p γ t0) = 0 := by
+      simp [Vprime]
+    have hWzero : Wprime t0 + chartChristoffelContraction (I := I) g p (uPrime t0) (W t0)
+        (chartCurve (I := I) p γ t0) = 0 := by
+      simp [Wprime]
+    rw [hVzero, hWzero] at hmain
+    simpa [hVzero, hWzero] using hmain
+  have hgoal : HasDerivAt (fun τ : ℝ =>
+      chartGramAlongCurve (I := I) g p γ V W τ) 0 t := hderiv t ht
+  simpa [γ, Pu, Pw, V, W] using hgoal
+
+set_option linter.unusedSectionVars false in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+lemma chartGramAlongCurve_eq_inner [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (γ : ℝ → M) (V W : ℝ → E) (t : ℝ)
+    (hsrc : γ t ∈ (chartAt H p).source) :
+    chartGramAlongCurve (I := I) g p γ V W t =
+      g.inner (γ t) ((trivializationAt E (TangentSpace I) p).symmL ℝ (γ t) (V t))
+        ((trivializationAt E (TangentSpace I) p).symmL ℝ (γ t) (W t)) := by
+  rw [chartGramAlongCurve_def]
+  have hgram : ∀ i j : Fin (Module.finrank ℝ E),
+      chartGramOnE (I := I) g p i j (chartCurve (I := I) p γ t) =
+        chartGramMatrix (I := I) g p (γ t) i j := by
+    intro i j
+    rw [chartGramOnE_def]
+    rw [chartCurve_def]
+    rw [(extChartAt I p).left_inv (by rw [extChartAt_source]; exact hsrc)]
+  simp_rw [hgram]
+  have hmain := inner_eq_chartGramOnE_bilinear_on_baseSet (I := I) g p (x := γ t) (V t) (W t)
+  exact hmain.symm
+
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem radialParallelTransportSection_inner_eq [I.Boundaryless] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (p : M)
+    {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
+    (u w : TangentSpace I p) {s : ℝ} (hs : s ∈ Set.Ioo (-1 : ℝ) 2) :
+    g.inner (expMap (I := I) g p (s • X))
+      (radialParallelTransportSection (I := I) g p hX u s)
+      (radialParallelTransportSection (I := I) g p hX w s) = g.inner p u w := by
+  classical
+  let γ : ℝ → M := fun t => expMap (I := I) g p (t • X)
+  let Pu : ∀ t, TangentSpace I (γ t) := radialParallelTransportSection (I := I) g p hX u
+  let Pw : ∀ t, TangentSpace I (γ t) := radialParallelTransportSection (I := I) g p hX w
+  let V : ℝ → E := chartRepAt (I := I) γ Pu 0
+  let W : ℝ → E := chartRepAt (I := I) γ Pw 0
+  let f : ℝ → ℝ := fun t => chartGramAlongCurve (I := I) g p γ V W t
+  let o : Set ℝ := Set.Ioo (-1 : ℝ) 2
+  have hγ0 : γ 0 = p := by
+    dsimp [γ]
+    exact radialCurve_zero (I := I) g p X
+  have hsrc_o : ∀ t ∈ o, γ t ∈ (chartAt H p).source := by
+    intro t ht
+    exact radialCurve_mem_chartAt_source_of_lt_radialRadius (I := I) g p hX ⟨ht.1.le, ht.2.le⟩
+  have hderiv : ∀ t ∈ o, HasDerivAt f 0 t := by
+    intro t ht
+    have h := radialParallelTransportSection_chartGram_hasDerivAt_zero (I := I) g p hX u w ht
+    simpa [f, γ, Pu, Pw, V, W] using h
+  have hconst : f s = f 0 :=
+    isOpen_Ioo.is_const_of_deriv_eq_zero isPreconnected_Ioo
+      (fun t ht => (hderiv t ht).differentiableAt.differentiableWithinAt)
+      (fun t ht => (hderiv t ht).deriv) hs ⟨by norm_num, by norm_num⟩
+  have hfs : f s = g.inner (expMap (I := I) g p (s • X))
+      (radialParallelTransportSection (I := I) g p hX u s)
+      (radialParallelTransportSection (I := I) g p hX w s) := by
+    have hb : (γ s) ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
+      rw [TangentBundle.trivializationAt_baseSet]
+      exact hsrc_o s hs
+    have hV₀ : (trivializationAt E (TangentSpace I) p).symmL ℝ (γ s) (V s) = radialParallelTransportSection (I := I) g p hX u s := by
+      change (trivializationAt E (TangentSpace I) p).symmL ℝ (γ s)
+          ((trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ s)
+            (radialParallelTransportSection (I := I) g p hX u s)) =
+        radialParallelTransportSection (I := I) g p hX u s
+      rw [hγ0]
+      exact (trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hb
+        (radialParallelTransportSection (I := I) g p hX u s)
+    have hW₀ : (trivializationAt E (TangentSpace I) p).symmL ℝ (γ s) (W s) = radialParallelTransportSection (I := I) g p hX w s := by
+      change (trivializationAt E (TangentSpace I) p).symmL ℝ (γ s)
+          ((trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ s)
+            (radialParallelTransportSection (I := I) g p hX w s)) =
+        radialParallelTransportSection (I := I) g p hX w s
+      rw [hγ0]
+      exact (trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hb
+        (radialParallelTransportSection (I := I) g p hX w s)
+    unfold f
+    rw [← hV₀, ← hW₀]
+    exact chartGramAlongCurve_eq_inner (I := I) g p γ V W s (hsrc_o s hs)
+  have hf0 : f 0 = g.inner p u w := by
+    have hb : p ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
+      rw [TangentBundle.trivializationAt_baseSet]
+      exact mem_chart_source H p
+    have hV₀ : (trivializationAt E (TangentSpace I) p).symmL ℝ p (V 0) = u := by
+      change (trivializationAt E (TangentSpace I) p).symmL ℝ p
+          ((trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0)
+            (radialParallelTransportSection (I := I) g p hX u 0)) = u
+      rw [hγ0]
+      rw [radialParallelTransportSection_initial (I := I) g p hX u]
+      exact (trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hb u
+    have hW₀ : (trivializationAt E (TangentSpace I) p).symmL ℝ p (W 0) = w := by
+      change (trivializationAt E (TangentSpace I) p).symmL ℝ p
+          ((trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0)
+            (radialParallelTransportSection (I := I) g p hX w 0)) = w
+      rw [hγ0]
+      rw [radialParallelTransportSection_initial (I := I) g p hX w]
+      exact (trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hb w
+    unfold f
+    rw [← hV₀, ← hW₀]
+    have h := chartGramAlongCurve_eq_inner (I := I) g p γ V W 0 (hsrc_o 0 ⟨by norm_num, by norm_num⟩)
+    rw [hγ0] at h
+    exact h
+  rw [← hfs, ← hf0]
+  exact hconst
 end RadialTransportLinear
+
+
+
+
+
 
 
 
