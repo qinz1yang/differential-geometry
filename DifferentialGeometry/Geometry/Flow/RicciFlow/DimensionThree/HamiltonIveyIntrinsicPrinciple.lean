@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyFixedFrameEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRadialTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
@@ -7542,7 +7543,6 @@ noncomputable def radialTransportInverseAt [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (p y : M)
     (hy : y ∈ radialTransportSectionDomain (I := I) g p) : E →L[ℝ] E :=
   let T : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
-  let T : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
   let hT : Function.Injective T := by
     intro a b hab
     exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
@@ -7662,6 +7662,233 @@ theorem radialTransportSectionTensor_initial [I.Boundaryless] [T2Space M]
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rfl
 
+omit [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 2 M] [IsManifold I 3 M]
+  [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+  [T2Space (TangentBundle I M)] in
+private theorem tensor04Field_sum_apply
+    {ι : Type*} [Fintype ι]
+    (A : ι → Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+      (n := ∞) 4)
+    (y : M) :
+    (∑ i, A i) y = ∑ i, A i y := by
+  let L :
+      Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 4 →+
+        ((z : M) → Tensor0SSpace 4 I z) :=
+    { toFun := fun B z => B z
+      map_zero' := by rfl
+      map_add' := by intro B C; rfl }
+  have h := congrFun (map_sum L A Finset.univ) y
+  change (∑ i, A i) y = (∑ i, fun z => A i z) y at h
+  rw [Finset.sum_apply] at h
+  exact h
+
+noncomputable def radialTransportTensorExtension
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _)) :
+    Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 4 :=
+  ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+    η₀ (fun a => basis (slots4 i j k l a)) •
+      metricFormSection (I := I) (M := M) g 4 (fun a => W (slots4 i j k l a))
+
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M]
+  [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+  [T2Space (TangentBundle I M)] in
+theorem radialTransportTensorExtension_apply
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (y : M) (v : Fin 4 → TangentSpace I y) :
+    radialTransportTensorExtension g p basis η₀ W y v =
+      ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+        η₀ (fun a => basis (slots4 i j k l a)) *
+          ∏ a : Fin 4, g.inner y (W (slots4 i j k l a) y) (v a) := by
+  rw [radialTransportTensorExtension, tensor04Field_sum_apply, tensor0SSpace_sum_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [tensor04Field_sum_apply, tensor0SSpace_sum_apply]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [tensor04Field_sum_apply, tensor0SSpace_sum_apply]
+  apply Finset.sum_congr rfl
+  intro k _
+  rw [tensor04Field_sum_apply, tensor0SSpace_sum_apply]
+  apply Finset.sum_congr rfl
+  intro l _
+  change (η₀ (fun a => basis (slots4 i j k l a)) •
+    metricFormSection (I := I) (M := M) g 4
+      (fun a => W (slots4 i j k l a)) y) v = _
+  rw [Tensor0SSpace.smul_apply]
+  change η₀ (fun a => basis (slots4 i j k l a)) * Tensor0SSpace.toModel
+    (metricFormSection (I := I) (M := M) g 4
+      (fun a => W (slots4 i j k l a)) y) v = _
+  rw [toModel_metricFormSection,
+    DifferentialGeometry.Integral.L2.separableFormAt_apply]
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportSectionTensor_apply_eq_sum
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p) (y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p)
+    (v : Fin 4 → TangentSpace I y) :
+    radialTransportSectionTensor g p η₀ y v =
+      ∑ J : Fin 4 → Fin 3,
+        η₀ (fun a => basis (J a)) *
+          ∏ a : Fin 4, g.inner y
+            (radialTransportSection (I := I) g p (basis (J a)) y) (v a) := by
+  classical
+  let T : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective (radialTransportLinearMapAt g p y) (by
+    have hT : Function.Injective (radialTransportLinearMapAt g p y) := by
+      intro a b hab
+      exact radialTransportSection_injective (I := I) g p y hy
+        (by simpa [radialTransportLinearMapAt] using hab)
+    have hsurj : Function.Surjective (radialTransportLinearMapAt g p y) :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+        (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+    exact ⟨hT, hsurj⟩)
+  let basisY : Module.Basis (Fin 3) ℝ (TangentSpace I y) := basis.map T
+  have horthY : OrthonormalBasisAt (I := I) g y basisY := by
+    intro a b
+    have hinner := radialTransportSection_inner_eq (I := I) g p (basis a) (basis b) y hy
+    have hTa : (basisY a : TangentSpace I y) =
+        radialTransportSection (I := I) g p (basis a) y := by
+      dsimp [basisY]
+      change (T (basis a) : TangentSpace I y) = _
+      rfl
+    have hTb : (basisY b : TangentSpace I y) =
+        radialTransportSection (I := I) g p (basis b) y := by
+      dsimp [basisY]
+      change (T (basis b) : TangentSpace I y) = _
+      rfl
+    rw [hTa, hTb]
+    simpa [horth a b] using hinner
+  rw [tensor0S_apply_eq_sum (I := I) basisY (radialTransportSectionTensor g p η₀ y) v]
+  apply Finset.sum_congr rfl
+  intro J _
+  have hcoeff : radialTransportSectionTensor g p η₀ y (fun a => basisY (J a)) =
+      η₀ (fun a => basis (J a)) := by
+    rw [radialTransportSectionTensor, dif_pos hy]
+    change η₀ (fun a => radialTransportInverseAt g p y hy (basisY (J a))) = _
+    congr 1
+    funext a
+    change radialTransportInverseAt g p y hy
+        (radialTransportLinearMapAt g p y (basis (J a))) = basis (J a)
+    exact radialTransportInverseAt_left_inverse (I := I) g p y hy (basis (J a))
+  rw [component0S_apply, hcoeff]
+  congr 1
+  apply Finset.prod_congr rfl
+  intro a _
+  have hinv : MetricInverseInBasis (I := I) g y basisY
+      (identityInvMetric (Idx := Fin 3)) :=
+    fiberRegion_metricInverseInBasis_identity_of_orthonormal (I := I) g basisY horthY
+  rw [DifferentialGeometry.Geometry.Curvature.basis_coord_eq_sum_inv_inner
+    (I := I) g basisY (identityInvMetric (Idx := Fin 3)) hinv]
+  rw [Finset.sum_eq_single (J a)]
+  · rw [identityInvMetric_apply_self, one_mul]
+    rfl
+  · intro b _ hba
+    rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hba.symm, zero_mul]
+  · intro ha
+    exact absurd (Finset.mem_univ (J a)) ha
+
+private def fin4SlotsEquiv : (Fin 4 → Fin 3) ≃ (((Fin 3 × Fin 3) × Fin 3) × Fin 3) where
+  toFun f := (((f 0, f 1), f 2), f 3)
+  invFun p := slots4 p.1.1.1 p.1.1.2 p.1.2 p.2
+  left_inv f := by
+    funext a
+    fin_cases a <;> simp [slots4]
+  right_inv p := by
+    rcases p with ⟨⟨⟨i, j⟩, k⟩, l⟩
+    simp [slots4]
+
+private lemma sum_fin_four_fun {α : Type*} [AddCommMonoid α]
+    (F : (Fin 4 → Fin 3) → α) :
+    (∑ I0 : Fin 4 → Fin 3, F I0) =
+      ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
+        F (slots4 i j k l) := by
+  classical
+  rw [Fintype.sum_equiv fin4SlotsEquiv F
+    (fun p : (((Fin 3 × Fin 3) × Fin 3) × Fin 3) =>
+      F (slots4 p.1.1.1 p.1.1.2 p.1.2 p.2))]
+  · repeat rw [Fintype.sum_prod_type]
+  · intro I0
+    congr
+    funext a
+    fin_cases a <;> simp [fin4SlotsEquiv, slots4]
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportTensorExtension_eq_smul
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y)
+    (y : M) :
+    radialTransportTensorExtension g p basis η₀ W y =
+      (χ y) ^ 4 • radialTransportSectionTensor g p η₀ y := by
+  classical
+  apply tensor0SSpace_ext
+  intro v
+  rw [radialTransportTensorExtension_apply, Tensor0SSpace.smul_apply]
+  by_cases hχ : χ y = 0
+  · simp_rw [hW]
+    simp [hχ]
+  · have hySupport : y ∈ Function.support (χ : M → ℝ) := hχ
+    have hyTsupport : y ∈ tsupport (χ : M → ℝ) := subset_closure hySupport
+    have hy : y ∈ radialTransportSectionDomain (I := I) g p := hsupport hyTsupport
+    rw [radialTransportSectionTensor_apply_eq_sum g p basis horth η₀ y hy v]
+    rw [sum_fin_four_fun]
+    simp_rw [hW, map_smul (g.inner y), ContinuousLinearMap.smul_apply, smul_eq_mul,
+      Fin.prod_univ_four]
+    simp only [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    apply Finset.sum_congr rfl
+    intro k _
+    apply Finset.sum_congr rfl
+    intro l _
+    ring
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportTensorExtension_eventually_eq
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y) :
+    ∀ᶠ y in 𝓝 p,
+      radialTransportTensorExtension g p basis η₀ W y =
+        radialTransportSectionTensor g p η₀ y := by
+  filter_upwards [χ.eventuallyEq_one] with y hy
+  rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW y]
+  simp [hy]
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportTensorExtension_initial
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y) :
+    radialTransportTensorExtension g p basis η₀ W p = η₀ := by
+  rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW p,
+    χ.eq_one, one_pow, one_smul, radialTransportSectionTensor_initial]
+
 set_option linter.unusedSectionVars false in
 theorem radialTransportSectionTensor_isometry [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -7720,6 +7947,55 @@ theorem radialTransportSectionTensor_isometry [I.Boundaryless] [T2Space M]
   apply Finset.sum_congr rfl
   intro I0 hI0
   rw [hξ I0]
+
+set_option linter.unusedSectionVars false in
+theorem radialTransportTensorExtension_inner_self_le
+    (g : SmoothRiemannianMetric I M) (p : M)
+    (hdim : Module.finrank ℝ (TangentSpace I p) = 3)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
+    (horth : OrthonormalBasisAt (I := I) g p basis)
+    (η₀ : Tensor04At (I := I) (M := M) p)
+    (χ : SmoothBumpFunction I p)
+    (W : Fin 3 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
+    (hsupport : tsupport (χ : M → ℝ) ⊆ radialTransportSectionDomain (I := I) g p)
+    (hW : ∀ i y, W i y = χ y • radialTransportSection (I := I) g p (basis i) y)
+    (y : M) :
+    inner0S (I := I) g y 4 (radialTransportTensorExtension g p basis η₀ W y)
+        (radialTransportTensorExtension g p basis η₀ W y) ≤
+      inner0S (I := I) g p 4 η₀ η₀ := by
+  classical
+  rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW y]
+  by_cases hχ : χ y = 0
+  · have hinner : 0 ≤ inner0S (I := I) g p 4 η₀ η₀ :=
+      MetricFiberData.inner_nonneg (tensor0SMetricData (I := I) g p 4) η₀
+    simpa [hχ, inner0S, MetricFiberData.inner] using hinner
+  · have hySupport : y ∈ Function.support (χ : M → ℝ) := hχ
+    have hyTsupport : y ∈ tsupport (χ : M → ℝ) := subset_closure hySupport
+    have hy : y ∈ radialTransportSectionDomain (I := I) g p := hsupport hyTsupport
+    let c : ℝ := (χ y) ^ 4
+    have hscale : inner0S (I := I) g y 4
+          (c • radialTransportSectionTensor g p η₀ y)
+          (c • radialTransportSectionTensor g p η₀ y) =
+        c * c * inner0S (I := I) g y 4
+          (radialTransportSectionTensor g p η₀ y)
+          (radialTransportSectionTensor g p η₀ y) := by
+      unfold inner0S MetricFiberData.inner
+      simp [map_smul, smul_eq_mul]
+      ring
+    rw [show (χ y) ^ 4 = c by rfl, hscale,
+      radialTransportSectionTensor_isometry (I := I) g p hdim η₀ y hy]
+    have hc0 : 0 ≤ c := pow_nonneg (χ.nonneg : 0 ≤ χ y) 4
+    have hc1 : c ≤ 1 := by
+      dsimp [c]
+      exact pow_le_one₀ (χ.nonneg : 0 ≤ χ y) (χ.le_one : χ y ≤ 1)
+    have hcc : c * c ≤ 1 := by nlinarith
+    have hinner : 0 ≤ inner0S (I := I) g p 4 η₀ η₀ :=
+      MetricFiberData.inner_nonneg (tensor0SMetricData (I := I) g p 4) η₀
+    calc
+      c * c * inner0S (I := I) g p 4 η₀ η₀ ≤
+          1 * inner0S (I := I) g p 4 η₀ η₀ :=
+        mul_le_mul_of_nonneg_right hcc hinner
+      _ = inner0S (I := I) g p 4 η₀ η₀ := one_mul _
 
 end TensorTransport
 
