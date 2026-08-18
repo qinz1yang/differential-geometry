@@ -6,6 +6,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyFixedFrameEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRadialTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
+import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
 
 set_option autoImplicit false
 
@@ -6878,6 +6886,326 @@ theorem fiberProjW_compUhlenbeck_commute
   simpa [p, u] using congrArg Subtype.val hpeq
 
 end FlatSectionProjection
+
+
+
+
+
+
+
+
+
+
+section RadialTransportLinear
+
+open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian.Exponential
+open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
+open DifferentialGeometry.Geometry.Riemannian.AlongCurve
+open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+open DifferentialGeometry.Geometry.Riemannian.Geodesic
+open DifferentialGeometry.Geometry.Riemannian.Variation
+open DifferentialGeometry.Geometry.Connection
+
+variable [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+variable [T2Space (TangentBundle I M)]
+
+theorem radialParallelTransportSection_add (g : SmoothRiemannianMetric I M) (p : M)
+    {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
+    (u w : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
+    radialParallelTransportSection (I := I) g p hX (u + w) t =
+      radialParallelTransportSection (I := I) g p hX u t +
+        radialParallelTransportSection (I := I) g p hX w t := by
+  classical
+  let γ : ℝ → M := fun s => expMap (I := I) g p (s • X)
+  let Puv : ∀ s, TangentSpace I (γ s) := radialParallelTransportSection (I := I) g p hX (u + w)
+  let Pu : ∀ s, TangentSpace I (γ s) := radialParallelTransportSection (I := I) g p hX u
+  let Pw : ∀ s, TangentSpace I (γ s) := radialParallelTransportSection (I := I) g p hX w
+  let Y₁ : ℝ → E := chartRepAt (I := I) γ Puv 0
+  let Y₂ : ℝ → E := chartRepAt (I := I) γ Pu 0 + chartRepAt (I := I) γ Pw 0
+  have hIcc_sub : Set.Icc (0 : ℝ) 1 ⊆ Set.Icc (-1 : ℝ) 2 := by
+    intro s hs
+    exact ⟨by linarith [hs.1], by linarith [hs.2]⟩
+  let U : Set ℝ := {s : ℝ | ‖s • (X : E)‖ < expMapC2Radius (I := I) g p}
+  have hsub : Set.Icc (0 : ℝ) 1 ⊆ U := by
+    intro s hs
+    exact norm_smul_lt_expMapC2Radius_of_lt_radialRadius (I := I) g p hX (hIcc_sub hs)
+  have hcd : ContDiffOn ℝ 2 (chartCurve (I := I) p γ) U := by
+    simpa [γ, U] using (radialCurve_chartCurve_contDiffOn (I := I) g p (v := X))
+  have hcd1 : ContDiffOn ℝ 1 (chartCurve (I := I) p γ) U :=
+    hcd.of_le (WithTop.coe_le_coe.2 (by norm_num : (1 : ℕ∞) ≤ (2 : ℕ∞)))
+  have hu : ContinuousOn (fun τ : ℝ => deriv (chartCurve (I := I) p γ) τ) (Set.Icc 0 1) := by
+    have hd : ContDiffOn ℝ 0 (deriv (chartCurve (I := I) p γ)) U :=
+      hcd1.deriv_of_isOpen (radialCurve_domain_isOpen (I := I) g p X)
+        (by norm_num : (0 : WithTop ℕ∞) + 1 ≤ (1 : WithTop ℕ∞))
+    exact (hd.continuousOn).mono hsub
+  have hγ : ContinuousOn (chartCurve (I := I) p γ) (Set.Icc 0 1) := by
+    have hφ : ContinuousOn (extChartAt I p) (extChartAt I p).source :=
+      continuousOn_extChartAt (I := I) p
+    have hmaps : Set.MapsTo γ (Set.Icc 0 1) (extChartAt I p).source := by
+      intro s hs
+      rw [extChartAt_source]
+      exact radialCurve_mem_chartAt_source_of_lt_radialRadius (I := I) g p hX (hIcc_sub hs)
+    have hγcont : ContinuousOn γ U :=
+      (radialCurve_contMDiffOn_two (I := I) g p (v := X)).continuousOn
+    exact hφ.comp (hγcont.mono hsub) hmaps
+  have hsrc : ∀ τ ∈ Set.Icc (0 : ℝ) 1, γ τ ∈ (chartAt H p).source := by
+    intro τ hτ
+    exact radialCurve_mem_chartAt_source_of_lt_radialRadius (I := I) g p hX (hIcc_sub hτ)
+  have hODE : ∀ (η₀ : TangentSpace I p), ∀ τ ∈ Set.Icc (0 : ℝ) 1,
+      HasDerivWithinAt (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX η₀) 0)
+        (- chartChristoffelContraction (I := I) g p
+          (deriv (chartCurve (I := I) p γ) τ)
+          (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX η₀) 0 τ)
+          (chartCurve (I := I) p γ τ))
+        (Set.Icc (0 : ℝ) 1) τ := by
+    intro η₀ τ hτ
+    have hd := radialParallelTransportSection_ode (I := I) g p hX η₀ (hIcc_sub hτ)
+    exact hd.mono (by intro s hs; exact hIcc_sub hs)
+  have hY₁ : ∀ τ ∈ Set.Icc (0 : ℝ) 1, HasDerivWithinAt Y₁
+      (- chartChristoffelContraction (I := I) g p
+        (deriv (chartCurve (I := I) p γ) τ) (Y₁ τ) (chartCurve (I := I) p γ τ))
+      (Set.Icc (0 : ℝ) 1) τ := by
+    intro τ hτ
+    have hd := hODE (u + w) τ hτ
+    simpa [Y₁, Puv] using hd
+  have hY₂ : ∀ τ ∈ Set.Icc (0 : ℝ) 1, HasDerivWithinAt Y₂
+      (- chartChristoffelContraction (I := I) g p
+        (deriv (chartCurve (I := I) p γ) τ) (Y₂ τ) (chartCurve (I := I) p γ τ))
+      (Set.Icc (0 : ℝ) 1) τ := by
+    intro τ hτ
+    have hdu := hODE u τ hτ
+    have hdw := hODE w τ hτ
+    have hsum := hdu.add hdw
+    have hfun : (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX u) 0 +
+          chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX w) 0) = Y₂ := by
+      rfl
+    have hderiv : - chartChristoffelContraction (I := I) g p
+          (deriv (chartCurve (I := I) p γ) τ)
+          (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX u) 0 τ)
+          (chartCurve (I := I) p γ τ) +
+        - chartChristoffelContraction (I := I) g p
+          (deriv (chartCurve (I := I) p γ) τ)
+          (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX w) 0 τ)
+          (chartCurve (I := I) p γ τ) =
+        - chartChristoffelContraction (I := I) g p
+          (deriv (chartCurve (I := I) p γ) τ) (Y₂ τ) (chartCurve (I := I) p γ τ) := by
+        rw [show Y₂ τ = chartRepAt (I := I) γ Pu 0 τ + chartRepAt (I := I) γ Pw 0 τ by rfl]
+        rw [show chartRepAt (I := I) γ Pu 0 τ = chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX u) 0 τ by rfl]
+        rw [show chartRepAt (I := I) γ Pw 0 τ = chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX w) 0 τ by rfl]
+        rw [ChartChristoffel.contraction_add_right]
+        abel
+    convert hsum using 1
+    · exact hderiv.symm
+  have h0eq : Y₁ 0 = Y₂ 0 := by
+    dsimp [Y₁, Y₂]
+    have h1 : (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0)
+        (radialParallelTransportSection (I := I) g p hX (u + w) 0) =
+      (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0) u +
+        (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0) w := by
+      rw [radialParallelTransportSection_initial (I := I) g p hX (u + w)]
+      exact map_add ((trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0)) u w
+    simpa [Puv, Pu, Pw, radialParallelTransportSection_initial] using h1
+  have hEq01 : Set.EqOn Y₁ Y₂ (Set.Icc (0 : ℝ) 1) :=
+    parallel_local_uniqueness_on_Icc (I := I) g p γ
+      (fun τ => deriv (chartCurve (I := I) p γ) τ) (by norm_num) ⟨le_rfl, by norm_num⟩
+      hu hγ hsrc hY₁ hY₂ h0eq
+  have hEq_t : Y₁ t = Y₂ t := hEq01 ht
+  have hchart : chartRepAt (I := I) γ Puv 0 t = chartRepAt (I := I) γ Pu 0 t + chartRepAt (I := I) γ Pw 0 t := by
+    simpa [Y₁, Y₂] using hEq_t
+  have hmem : γ t ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
+    rw [TangentBundle.trivializationAt_baseSet]
+    exact hsrc t ht
+  have hsec : Puv t = Pu t + Pw t := by
+    change (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ t) (Puv t) =
+      (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ t) (Pu t) +
+        (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ t) (Pw t) at hchart
+    rw [show γ 0 = p from (radialCurve_zero (I := I) g p X)] at hchart
+    have hround_l : (trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)
+        ((trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ (γ t) (Puv t)) = Puv t :=
+      (trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hmem (Puv t)
+    have hround_r : (trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)
+        ((trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ (γ t) (Pu t) +
+          (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ (γ t) (Pw t)) = Pu t + Pw t := by
+      rw [map_add]
+      rw [(trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hmem (Pu t)]
+      rw [(trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hmem (Pw t)]
+    exact hround_l.symm.trans ((congrArg ((trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)) hchart).trans hround_r)
+  simpa [Puv, Pu, Pw] using hsec
+
+theorem radialParallelTransportSection_smul (g : SmoothRiemannianMetric I M) (p : M)
+    {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
+    (c : ℝ) (u : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
+    radialParallelTransportSection (I := I) g p hX (c • u) t =
+      c • radialParallelTransportSection (I := I) g p hX u t := by
+  classical
+  by_cases hc : c = 0
+  · subst c
+    have hz : radialParallelTransportSection (I := I) g p hX 0 t = 0 := by
+      have hadd : radialParallelTransportSection (I := I) g p hX (0 + 0) t =
+          radialParallelTransportSection (I := I) g p hX 0 t + radialParallelTransportSection (I := I) g p hX 0 t :=
+        radialParallelTransportSection_add (I := I) g p hX 0 0 ht
+      have hleft : radialParallelTransportSection (I := I) g p hX (0 + 0) t =
+          radialParallelTransportSection (I := I) g p hX 0 t := by
+        congr 1
+        abel
+      exact add_left_cancel (a := radialParallelTransportSection (I := I) g p hX 0 t)
+        (b := radialParallelTransportSection (I := I) g p hX 0 t)
+        (c := (0 : TangentSpace I (expMap (I := I) g p (t • X)))) (by
+          rw [add_zero]
+          exact (hadd.symm.trans hleft))
+    simp [hz]
+    exact (zero_smul ℝ (radialParallelTransportSection (I := I) g p hX u t)).symm
+  · let γ : ℝ → M := fun s => expMap (I := I) g p (s • X)
+    let Pcu : ∀ s, TangentSpace I (γ s) := radialParallelTransportSection (I := I) g p hX (c • u)
+    let Pu : ∀ s, TangentSpace I (γ s) := radialParallelTransportSection (I := I) g p hX u
+    let Y₁ : ℝ → E := chartRepAt (I := I) γ Pcu 0
+    let Y₂ : ℝ → E := c • chartRepAt (I := I) γ Pu 0
+    have hIcc_sub : Set.Icc (0 : ℝ) 1 ⊆ Set.Icc (-1 : ℝ) 2 := by
+      intro s hs
+      exact ⟨by linarith [hs.1], by linarith [hs.2]⟩
+    let U : Set ℝ := {s : ℝ | ‖s • (X : E)‖ < expMapC2Radius (I := I) g p}
+    have hsub : Set.Icc (0 : ℝ) 1 ⊆ U := by
+      intro s hs
+      exact norm_smul_lt_expMapC2Radius_of_lt_radialRadius (I := I) g p hX (hIcc_sub hs)
+    have hcd : ContDiffOn ℝ 2 (chartCurve (I := I) p γ) U := by
+      simpa [γ, U] using (radialCurve_chartCurve_contDiffOn (I := I) g p (v := X))
+    have hcd1 : ContDiffOn ℝ 1 (chartCurve (I := I) p γ) U :=
+      hcd.of_le (WithTop.coe_le_coe.2 (by norm_num : (1 : ℕ∞) ≤ (2 : ℕ∞)))
+    have hu : ContinuousOn (fun τ : ℝ => deriv (chartCurve (I := I) p γ) τ) (Set.Icc 0 1) := by
+      have hd : ContDiffOn ℝ 0 (deriv (chartCurve (I := I) p γ)) U :=
+        hcd1.deriv_of_isOpen (radialCurve_domain_isOpen (I := I) g p X)
+          (by norm_num : (0 : WithTop ℕ∞) + 1 ≤ (1 : WithTop ℕ∞))
+      exact (hd.continuousOn).mono hsub
+    have hγ : ContinuousOn (chartCurve (I := I) p γ) (Set.Icc 0 1) := by
+      have hφ : ContinuousOn (extChartAt I p) (extChartAt I p).source :=
+        continuousOn_extChartAt (I := I) p
+      have hmaps : Set.MapsTo γ (Set.Icc 0 1) (extChartAt I p).source := by
+        intro s hs
+        rw [extChartAt_source]
+        exact radialCurve_mem_chartAt_source_of_lt_radialRadius (I := I) g p hX (hIcc_sub hs)
+      have hγcont : ContinuousOn γ U :=
+        (radialCurve_contMDiffOn_two (I := I) g p (v := X)).continuousOn
+      exact hφ.comp (hγcont.mono hsub) hmaps
+    have hsrc : ∀ τ ∈ Set.Icc (0 : ℝ) 1, γ τ ∈ (chartAt H p).source := by
+      intro τ hτ
+      exact radialCurve_mem_chartAt_source_of_lt_radialRadius (I := I) g p hX (hIcc_sub hτ)
+    have hODE : ∀ (η₀ : TangentSpace I p), ∀ τ ∈ Set.Icc (0 : ℝ) 1,
+        HasDerivWithinAt (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX η₀) 0)
+          (- chartChristoffelContraction (I := I) g p
+            (deriv (chartCurve (I := I) p γ) τ)
+            (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX η₀) 0 τ)
+            (chartCurve (I := I) p γ τ))
+          (Set.Icc (0 : ℝ) 1) τ := by
+      intro η₀ τ hτ
+      have hd := radialParallelTransportSection_ode (I := I) g p hX η₀ (hIcc_sub hτ)
+      exact hd.mono (by intro s hs; exact hIcc_sub hs)
+    have hY₁ : ∀ τ ∈ Set.Icc (0 : ℝ) 1, HasDerivWithinAt Y₁
+        (- chartChristoffelContraction (I := I) g p
+          (deriv (chartCurve (I := I) p γ) τ) (Y₁ τ) (chartCurve (I := I) p γ τ))
+        (Set.Icc (0 : ℝ) 1) τ := by
+      intro τ hτ
+      have hd := hODE (c • u) τ hτ
+      simpa [Y₁, Pcu] using hd
+    have hY₂ : ∀ τ ∈ Set.Icc (0 : ℝ) 1, HasDerivWithinAt Y₂
+        (- chartChristoffelContraction (I := I) g p
+          (deriv (chartCurve (I := I) p γ) τ) (Y₂ τ) (chartCurve (I := I) p γ τ))
+        (Set.Icc (0 : ℝ) 1) τ := by
+      intro τ hτ
+      have hdu := hODE u τ hτ
+      have hsmul := hdu.const_smul c
+      have hfun : (c • chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX u) 0) = Y₂ := by
+        rfl
+      have hderiv : c • (- chartChristoffelContraction (I := I) g p
+            (deriv (chartCurve (I := I) p γ) τ)
+            (chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX u) 0 τ)
+            (chartCurve (I := I) p γ τ)) =
+          - chartChristoffelContraction (I := I) g p
+            (deriv (chartCurve (I := I) p γ) τ) (Y₂ τ) (chartCurve (I := I) p γ τ) := by
+        rw [show Y₂ τ = c • chartRepAt (I := I) γ Pu 0 τ by rfl]
+        rw [show chartRepAt (I := I) γ Pu 0 τ = chartRepAt (I := I) γ (radialParallelTransportSection (I := I) g p hX u) 0 τ by rfl]
+        rw [ChartChristoffel.contraction_smul_right]
+        rw [smul_neg]
+      convert hsmul using 1
+      · exact hderiv.symm
+    have h0eq : Y₁ 0 = Y₂ 0 := by
+      dsimp [Y₁, Y₂]
+      have h1 : (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0)
+          (radialParallelTransportSection (I := I) g p hX (c • u) 0) =
+          c • (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0)
+            (radialParallelTransportSection (I := I) g p hX u 0) := by
+        rw [radialParallelTransportSection_initial (I := I) g p hX (c • u)]
+        rw [radialParallelTransportSection_initial (I := I) g p hX u]
+        exact map_smul ((trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ 0)) c u
+      simpa [Pcu, Pu, radialParallelTransportSection_initial] using h1
+    have hEq01 : Set.EqOn Y₁ Y₂ (Set.Icc (0 : ℝ) 1) :=
+      parallel_local_uniqueness_on_Icc (I := I) g p γ
+        (fun τ => deriv (chartCurve (I := I) p γ) τ) (by norm_num) ⟨le_rfl, by norm_num⟩
+        hu hγ hsrc hY₁ hY₂ h0eq
+    have hEq_t : Y₁ t = Y₂ t := hEq01 ht
+    have hchart : chartRepAt (I := I) γ Pcu 0 t = c • chartRepAt (I := I) γ Pu 0 t := by
+      simpa [Y₁, Y₂] using hEq_t
+    have hmem : γ t ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
+      rw [TangentBundle.trivializationAt_baseSet]
+      exact hsrc t ht
+    have hsec : Pcu t = c • Pu t := by
+      change (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ t) (Pcu t) =
+        c • (trivializationAt E (TangentSpace I) (γ 0)).continuousLinearMapAt ℝ (γ t) (Pu t) at hchart
+      rw [show γ 0 = p from (radialCurve_zero (I := I) g p X)] at hchart
+      have hround_l : (trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)
+          ((trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ (γ t) (Pcu t)) = Pcu t :=
+        (trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hmem (Pcu t)
+      have hround_r : (trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)
+          (c • (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ (γ t) (Pu t)) = c • Pu t := by
+        rw [map_smul]
+        rw [(trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hmem (Pu t)]
+      exact hround_l.symm.trans ((congrArg ((trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)) hchart).trans hround_r)
+    simpa [Pcu, Pu] using hsec
+
+theorem radialTransportSection_linear_add (g : SmoothRiemannianMetric I M) (p : M)
+    (u w : TangentSpace I p) (y : M) :
+    radialTransportSection g p (u + w) y =
+      radialTransportSection g p u y + radialTransportSection g p w y := by
+  classical
+  by_cases hy : y ∈ radialTransportSectionDomain (I := I) g p
+  · rw [radialTransportSection]
+    have hcond : y ∈ (normalChartAt (I := I) g p).source ∧
+        ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p := by
+      simpa [radialTransportSectionDomain] using hy
+    simp_rw [radialTransportSection, dif_pos hcond]
+    exact radialParallelTransportSection_add (I := I) g p hcond.2 u w (t := 1)
+      ⟨by norm_num, by norm_num⟩
+  · have hnot : ¬(y ∈ (normalChartAt (I := I) g p).source ∧
+        ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p) := by
+      simpa [radialTransportSectionDomain] using hy
+    simp_rw [radialTransportSection, dif_neg hnot]
+    simp
+
+theorem radialTransportSection_linear_smul (g : SmoothRiemannianMetric I M) (p : M)
+    (c : ℝ) (u : TangentSpace I p) (y : M) :
+    radialTransportSection g p (c • u) y = c • radialTransportSection g p u y := by
+  classical
+  by_cases hy : y ∈ radialTransportSectionDomain (I := I) g p
+  · rw [radialTransportSection]
+    have hcond : y ∈ (normalChartAt (I := I) g p).source ∧
+        ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p := by
+      simpa [radialTransportSectionDomain] using hy
+    simp_rw [radialTransportSection, dif_pos hcond]
+    exact radialParallelTransportSection_smul (I := I) g p hcond.2 c u (t := 1)
+      ⟨by norm_num, by norm_num⟩
+  · have hnot : ¬(y ∈ (normalChartAt (I := I) g p).source ∧
+        ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p) := by
+      simpa [radialTransportSectionDomain] using hy
+    simp_rw [radialTransportSection, dif_neg hnot]
+    simp
+
+end RadialTransportLinear
+
+
+
+
+
+
 
 
 end DifferentialGeometry.PDE.RicciFlow
