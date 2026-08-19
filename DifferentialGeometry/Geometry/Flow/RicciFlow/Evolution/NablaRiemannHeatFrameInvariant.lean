@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannReactionBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.NablaRiemannHeatSolution
+import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -26,28 +27,6 @@ section FrameInvariance
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I 1 M]
-    [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem metricInverseInBasis_identity_of_orthonormal
-    (g : SmoothMetric_gen I M) {x : M}
-    (basis : Module.Basis Idx Real (TangentSpace I x))
-    (horth : ∀ i j : Idx,
-      g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
-  classical
-  intro i j
-  refine ⟨?_, ?_⟩
-  · rw [Finset.sum_eq_single i]
-    · rw [identityInvMetric_apply_self, one_mul]; exact horth i j
-    · intro k _ hk
-      rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne (fun h => hk h.symm), zero_mul]
-    · intro h; exact absurd (Finset.mem_univ i) h
-  · rw [Finset.sum_eq_single j]
-    · rw [identityInvMetric_apply_self, mul_one]; exact horth i j
-    · intro k _ hk
-      rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hk, mul_zero]
-    · intro h; exact absurd (Finset.mem_univ j) h
-
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
@@ -62,7 +41,8 @@ theorem compNormSqMulti_orthoBasis_eq_normSq0S
       normSq0S (I := I) g x s A := by
   classical
   rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis
-    (metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth) A]
+    (Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
+      (I := I) g basis horth) A]
   unfold compNormSqMulti
   refine Finset.sum_congr rfl fun idx _ => ?_
   rfl
