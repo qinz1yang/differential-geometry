@@ -136,7 +136,7 @@ private lemma to02Tensor_trivialization_eq {x₀ x : M}
   simp [to02Tensor_eCLM, hom_trivializationAt, Trivialization.continuousLinearMap_apply]
   rfl
 
-theorem joint_to02 [IsManifold I ∞ M] {S : Set ℝ}
+theorem joint_to02 {S : Set ℝ}
     (A : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1 →L[ℝ] ℝ)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞

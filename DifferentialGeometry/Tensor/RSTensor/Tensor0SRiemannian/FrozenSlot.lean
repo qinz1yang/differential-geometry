@@ -23,7 +23,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeAllBut0SField {s : ℕ}
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (q : Fin s)
@@ -119,7 +118,6 @@ noncomputable def freezeAllBut0SField {s : ℕ}
   simp only [F, oneFormAtSlot0S_apply]
 
 @[simp] theorem freezeAllBut0SField_apply {s : ℕ}
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (q : Fin s)
@@ -131,7 +129,6 @@ noncomputable def freezeAllBut0SField {s : ℕ}
   rfl
 
 theorem freezeAllBut0SField_apply_vec {s : ℕ}
-    [CompleteSpace E]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (q : Fin s)
@@ -157,8 +154,7 @@ private theorem updateSlots_apply {s : ℕ}
   · simp [Function.update_of_ne hi]
 
 theorem freezeNabla_leibniz {s : ℕ}
-    [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space M] [IsManifold I 1 M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -339,8 +335,7 @@ theorem freezeNabla_leibniz {s : ℕ}
         rw [hAtot]
 
 theorem allBut0SFreezeNabla {s : ℕ}
-    [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [T2Space M] [IsManifold I 1 M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

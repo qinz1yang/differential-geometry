@@ -384,9 +384,8 @@ theorem mixedRicciIdentityCoord_of_second_product_identities
 
 omit [IsManifold I ∞ M] in
 theorem coordDeriv_applyInput_eq_contractUpper
-    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 1 M]
     [IsManifold I (∞ : WithTop ℕ∞) M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {r s : ℕ}
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (T : TensorRSField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

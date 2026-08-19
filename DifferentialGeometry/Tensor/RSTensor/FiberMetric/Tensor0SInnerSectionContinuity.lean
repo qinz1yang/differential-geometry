@@ -83,7 +83,7 @@ lemma continuousAt_clm_of_basis_continuousAt
   exact lt_of_le_of_lt hChain (by linarith)
 
 lemma continuousAt_bilin_of_basis_continuousAt
-    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {N : Type*} [TopologicalSpace N]
     {ι : Type*} [Finite ι] (v : Module.Basis ι ℝ F)
     {u : N → F →L[ℝ] F →L[ℝ] ℝ} {x₀ : N}

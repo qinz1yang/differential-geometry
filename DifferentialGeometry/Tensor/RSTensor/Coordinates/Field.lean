@@ -295,7 +295,7 @@ theorem Tensor0SField.toRS0_apply {s : ℕ}
   rfl
 
 omit [IsManifold I (n + 1) M] in
-theorem Tensor0SField.toRS0_eq {s : ℕ} [CompleteSpace 𝕜]
+theorem Tensor0SField.toRS0_eq {s : ℕ}
     (α : Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M))
     (x : M) :
     α.toTensorRSField n x = Tensor0SSpace.toRS0 (α x) := by

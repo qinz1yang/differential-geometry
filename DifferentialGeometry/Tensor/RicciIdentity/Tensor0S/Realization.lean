@@ -23,7 +23,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def Nabla0SRealizesAt
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (s : ℕ) (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (alpha : Tensor0SSection (I := I) (M := M) s)
     (nablaAlpha : (x : M) →
@@ -37,7 +36,6 @@ def Nabla0SRealizesAt
 
 def Nabla0SSectionRealizes
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (s : ℕ) (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (alpha : Tensor0SSection (I := I) (M := M) s)
     (nablaAlpha : Tensor0SSection (I := I) (M := M) (s + 1)) : Prop :=
@@ -45,7 +43,6 @@ def Nabla0SSectionRealizes
 
 def Nabla20SRealizesAt
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (s : ℕ) (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (alpha : Tensor0SSection (I := I) (M := M) s)
     (nablaAlpha : Tensor0SSection (I := I) (M := M) (s + 1))
@@ -62,7 +59,6 @@ def Nabla20SRealizesAt
 
 theorem Nabla0SSectionRealizes.eval_smooth_slots
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {s : ℕ} {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     {alpha : Tensor0SSection (I := I) (M := M) s}
     {nablaAlpha : Tensor0SSection (I := I) (M := M) (s + 1)}
@@ -95,7 +91,6 @@ theorem Nabla0SSectionRealizes.eval_smooth_slots
 
 theorem Nabla0SSectionRealizes.eval_point_vector_smooth_slots
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [T2Space M]
     {s : ℕ} {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     {alpha : Tensor0SSection (I := I) (M := M) s}
@@ -121,7 +116,6 @@ theorem Nabla0SSectionRealizes.eval_point_vector_smooth_slots
 
 theorem Nabla0SSectionRealizes.eval_C1_slots
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {s : ℕ} {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     {alpha : Tensor0SSection (I := I) (M := M) s}
     {nablaAlpha : Tensor0SSection (I := I) (M := M) (s + 1)}
@@ -156,7 +150,6 @@ theorem Nabla0SSectionRealizes.eval_C1_slots
 
 theorem Nabla20SRealizesAt.eval_smooth_slots
     [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     {s : ℕ} {cov : CovariantDerivative I E (TangentSpace I : M → Type _)}
     {alpha : Tensor0SSection (I := I) (M := M) s}
     {nablaAlpha : Tensor0SSection (I := I) (M := M) (s + 1)}

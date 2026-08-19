@@ -82,7 +82,7 @@ noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace
     [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    (s : ℕ) [IsManifold I 1 M] {V : Opens M} [Nonempty V]
+    (s : ℕ) [IsManifold I 1 M] {V : Opens M}
     (δ : Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
