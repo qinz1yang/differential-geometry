@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Setup
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace
 import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 import Mathlib.MeasureTheory.Function.LpSeminorm.Indicator

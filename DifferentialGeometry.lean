@@ -2447,7 +2447,6 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.VectorFieldFamily
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.AxiomCheck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.CurvaturePreservation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Compactness
