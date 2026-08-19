@@ -2843,28 +2843,6 @@ theorem estimate_of_cutoff
   intro m
   exact estimate_cutoff_at (I := I) B cut m (hgrad.upTo m)
 
-omit [NeZero (Module.finrank Real E)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-
-theorem estimate_complete
-    [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    {G : MetricConnectionFamily (I := I) (M := M) Real}
-    (B : BernsteinTower (I := I) G)
-    (Ceq Kric : Real) (hCeq : 1 ≤ Ceq) (hKric : 0 ≤ Kric)
-    (hequiv : ∀ t : Real, t ∈ Set.Icc 0 B.T → ∀ x : M,
-      ∀ v : TangentSpace I x,
-        Ceq⁻¹ * ‖v‖ ^ 2 ≤ (G.metric t).inner x v v ∧
-          (G.metric t).inner x v v ≤ Ceq * ‖v‖ ^ 2)
-    (hric : ∀ t : Real, t ∈ Set.Icc 0 B.T → ∀ x : M,
-      ∀ v : TangentSpace I x,
-        -Kric * (G.metric t).inner x v v ≤
-          ricciTensor (I := I) (G.metric t) x v v) :
-    ∀ m : ℕ, ∀ t : Real, t ∈ Set.Icc 0 B.T → 0 < t → ∀ x : M,
-      t ^ m * B.w m t x ≤ (towerConst B.c B.α m) ^ 2 * B.K ^ 2 := by
-  sorry
-
 end BernsteinTower
 
 end DifferentialGeometry.PDE.RicciFlow

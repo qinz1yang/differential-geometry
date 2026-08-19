@@ -1246,7 +1246,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldJetProdu
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricScalarSmulJet
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.PathIntegralWeightedFibreBound
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Rellich
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffL2JetMoser
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffPerOrderJetEnvelopes
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciArmOrder1KoszulTameEnvelope
@@ -2889,7 +2888,6 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegulari
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.InitialData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.InteriorTimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.MetricTensorIdentities
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.RicciEquation
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRicciRHSSymmetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.DuhamelTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Spectral.GramBounds
@@ -2922,10 +2920,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.WeakP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.WeakParabolic.Terms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.MildSolutionTimeSobolev
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.QuasilinearExistence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.SpectralRepresentation.PointwiseEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.SpectralRepresentation.HighRegularityEvaluation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Regularity.MetricRicciContinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.WeylEigenvalueCount
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.BasepointMotion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.ConjugatingDiffeoFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.EvalFormChainRule

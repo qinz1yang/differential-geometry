@@ -1311,23 +1311,5 @@ structure MetricCompactnessConclusion
 
 end MetricCompactnessCore
 
-section IntrinsicInjectivityEndpoint
-
-variable [InnerProductSpace Real E] [FiniteDimensional Real E]
-variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
-variable {I : ModelWithCorners Real E H}
-variable [I.Boundaryless]
-
-def metricCompactness
-    [I.Boundaryless]
-    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
-    (_hcomplete : SeqMetricComplete (I := I) X)
-    (_hgeom : SeqBoundedGeometry (I := I) X)
-    (_hinj : BaseInjBound (I := I) X) :
-    MetricCompactnessConclusion (I := I) X := by
-  sorry
-
-end IntrinsicInjectivityEndpoint
-
 end HCGCompactness
 end DifferentialGeometry
