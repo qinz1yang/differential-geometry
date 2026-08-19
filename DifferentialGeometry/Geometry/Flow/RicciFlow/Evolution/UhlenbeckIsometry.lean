@@ -28,7 +28,7 @@ variable [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
 
 omit [FiniteDimensional Real E] [CompleteSpace E] in
-theorem eq_of_hasDerivAt_zero_on_Ioo {f : ℝ → ℝ} {t : ℝ} (ht : 0 ≤ t)
+private theorem eq_of_hasDerivAt_zero_on_Ioo {f : ℝ → ℝ} {t : ℝ} (ht : 0 ≤ t)
     (hf_cont : ContinuousOn f (Set.Icc 0 t))
     (hf' : ∀ s : ℝ, s ∈ Set.Ioo 0 t → HasDerivAt f 0 s) :
     f t = f 0 := by
@@ -51,7 +51,7 @@ theorem eq_of_hasDerivAt_zero_on_Ioo {f : ℝ → ℝ} {t : ℝ} (ht : 0 ≤ t)
     exact le_antisymm h10 h01
 
 omit [CompleteSpace E] in
-theorem uhlenbeckFrameODE_solution
+private theorem uhlenbeckFrameODE_solution
     {T : ℝ} (hT : 0 < T)
     {Idx : Type*} [Fintype Idx] [Nonempty Idx]
     (Rup : ℝ → Idx → Idx → ℝ)

@@ -22,7 +22,7 @@ variable [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
 
 omit [SigmaCompactSpace M] in
-theorem ricciAt_continuousOn_perPoint
+theorem ricciAt_continuousOn_time
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
@@ -65,7 +65,7 @@ noncomputable def solutionUhlenbeckIota
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
     (fun x i j => solutionInverseMetricComponents_entry_continuousOn
       (I := I) (M := M) hT S hS basisAt x i j)
-    (fun x v w => ricciAt_continuousOn_perPoint (I := I) (M := M) hT S hS x v w)
+    (fun x v w => ricciAt_continuousOn_time (I := I) (M := M) hT S hS x v w)
     (fun a x => basisAt x a)
     (fun t x i j => solutionInverseMetricComponents_mul_metric
       (I := I) (M := M) S basisAt t x i j)
@@ -95,7 +95,7 @@ theorem solutionUhlenbeckIota_spec
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
     (fun x i j => solutionInverseMetricComponents_entry_continuousOn
       (I := I) (M := M) hT S hS basisAt x i j)
-    (fun x v w => ricciAt_continuousOn_perPoint (I := I) (M := M) hT S hS x v w)
+    (fun x v w => ricciAt_continuousOn_time (I := I) (M := M) hT S hS x v w)
     (fun a x => basisAt x a)
     (fun t x i j => solutionInverseMetricComponents_mul_metric
       (I := I) (M := M) S basisAt t x i j)

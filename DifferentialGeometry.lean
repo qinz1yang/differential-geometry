@@ -532,7 +532,6 @@ import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
 import DifferentialGeometry.Analysis.ODE.IndexForm
 import DifferentialGeometry.Analysis.ODE.IndexFormNegative
 import DifferentialGeometry.Analysis.ODE.IndexFormNegativeSmooth
-import DifferentialGeometry.Analysis.ODE.BarrierInvariance
 import DifferentialGeometry.Analysis.ODE.IndexFormUniqueness
 import DifferentialGeometry.Analysis.ODE.IntegralCurveTransport
 import DifferentialGeometry.Analysis.ODE.IntegralGronwall
@@ -802,7 +801,6 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.BoundaryHopf
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.BundleConvex
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ComponentwiseHeatReaction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Comparison
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ConvexTimeDep
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualProperCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualConeStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ConeStrong
@@ -2358,7 +2356,6 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorR
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyBundleRegion
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegion
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionDistance
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionODE
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
@@ -2481,7 +2478,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Ham3ShortAxio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyCurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyFixedFrameEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyInnerLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicPrinciple
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicTransfer
@@ -2643,13 +2639,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.StarSum2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.TimeRecursion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.TowerHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.StarSum.TowerProducer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TensorInnerLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerNormRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TowerSwapRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Uhlenbeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckBaseProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckFrameAssembly
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckFrameExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckInverseMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
@@ -3123,6 +3120,7 @@ import DifferentialGeometry.Geometry.Operator.NormGradSqTime
 import DifferentialGeometry.Geometry.Operator.Operators
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
 import DifferentialGeometry.Geometry.Operator.Scaling
+import DifferentialGeometry.Geometry.Operator.TensorInnerLaplacian
 import DifferentialGeometry.Geometry.Operator.VossWeyl
 import DifferentialGeometry.Topology.Covering.SimplyConnected
 import DifferentialGeometry.Topology.DirectLimit

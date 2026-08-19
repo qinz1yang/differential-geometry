@@ -25,21 +25,21 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
-lemma bTensorDown_eq_Bt (R : Fin 3 → Fin 3 → ℝ) (a b c d : Fin 3) :
+private lemma bTensorDown_eq_Bt (R : Fin 3 → Fin 3 → ℝ) (a b c d : Fin 3) :
     bTensorDown (fun a' b' c' d' => rm R a' b' c' d') a b c d = Bt R a b c d := by
   unfold bTensorDown Bt
   rfl
 
 omit [TopologicalSpace M] in
-lemma uhlenbeckCurvatureOperatorReaction_eq_reactionState
+private lemma uhlenbeckCurvatureOperatorReaction_eq_reactionState
     (pulledRm : FourComp M (Fin 3)) (t : Real) (x : M)
     (R : Fin 3 → Fin 3 → ℝ) (hR : ∀ i j, R i j = R j i)
     (hrm : ∀ a b c d, pulledRm t x a b c d = rm R a b c d) :
     uhlenbeckCurvatureOperatorReaction
         (fun _ _ a b c d => bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d)
         t x =
-      hamiltonIveyMatrixReactionEuclid (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
-  unfold uhlenbeckCurvatureOperatorReaction hamiltonIveyMatrixReactionEuclid
+      hamiltonIveyMatrixReactionEuclidean (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
+  unfold uhlenbeckCurvatureOperatorReaction hamiltonIveyMatrixReactionEuclidean
     uhlenbeckCurvatureOperatorMatrix
   apply congrArg (WithLp.toLp 2)
   funext ij
@@ -61,20 +61,21 @@ lemma uhlenbeckCurvatureOperatorReaction_eq_reactionState
         bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b d c +
         bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a c b d -
         bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a d b c) =
-    (hamiltonIveyMatrixReaction (euclidToMatrix (uhlenbeckCurvatureOperatorMatrix pulledRm t x))) i j
+    (hamiltonIveyMatrixReaction (euclideanToMatrix (uhlenbeckCurvatureOperatorMatrix pulledRm t x))) i j
   rw [hB a b c d, hB a b d c, hB a c b d, hB a d b c]
   have hmain := curvatureOperatorReactionMatrix_eq_hamiltonIveyMatrixReaction R hR
   have hentry : -2 * Bsharp R a b c d =
-      (hamiltonIveyMatrixReaction (opFromR R)) i j := by
+      (hamiltonIveyMatrixReaction (curvatureOperatorMatrixOfRicci R)) i j := by
     have h := congrFun (congrFun hmain i) j
     simpa [a, b, c, d, bivectorIndex3] using h
-  have hA : euclidToMatrix (uhlenbeckCurvatureOperatorMatrix pulledRm t x) = opFromR R := by
+  have hA : euclideanToMatrix (uhlenbeckCurvatureOperatorMatrix pulledRm t x) =
+      curvatureOperatorMatrixOfRicci R := by
     ext p q
-    dsimp [euclidToMatrix, uhlenbeckCurvatureOperatorMatrix, opFromR]
+    dsimp [euclideanToMatrix, uhlenbeckCurvatureOperatorMatrix, curvatureOperatorMatrixOfRicci]
     rw [hrm (bivectorIndex3 p).1 (bivectorIndex3 p).2 (bivectorIndex3 q).2 (bivectorIndex3 q).1]
   have hrhs : (hamiltonIveyMatrixReaction
-      (euclidToMatrix (uhlenbeckCurvatureOperatorMatrix pulledRm t x))) i j =
-      (hamiltonIveyMatrixReaction (opFromR R)) i j := by
+      (euclideanToMatrix (uhlenbeckCurvatureOperatorMatrix pulledRm t x))) i j =
+      (hamiltonIveyMatrixReaction (curvatureOperatorMatrixOfRicci R)) i j := by
     rw [hA]
   have hlhs : -2 * (Bt R a b c d - Bt R a b d c + Bt R a c b d - Bt R a d b c) =
       -2 * Bsharp R a b c d := by
@@ -82,9 +83,10 @@ lemma uhlenbeckCurvatureOperatorReaction_eq_reactionState
     ring
   rw [hlhs]
   calc
-    -2 * Bsharp R a b c d = (hamiltonIveyMatrixReaction (opFromR R)) i j := hentry
+    -2 * Bsharp R a b c d =
+      (hamiltonIveyMatrixReaction (curvatureOperatorMatrixOfRicci R)) i j := hentry
     _ = (hamiltonIveyMatrixReaction
-        (euclidToMatrix (uhlenbeckCurvatureOperatorMatrix pulledRm t x))) i j := hrhs.symm
+        (euclideanToMatrix (uhlenbeckCurvatureOperatorMatrix pulledRm t x))) i j := hrhs.symm
 
 omit [TopologicalSpace M] in
 lemma uhlenbeckReaction_eq_reactionState_at
@@ -93,7 +95,7 @@ lemma uhlenbeckReaction_eq_reactionState_at
     (hrm : ∀ a b c d, pulledRm t x a b c d = rm R a b c d)
     (hB : ∀ a b c d, B t x a b c d = bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d) :
     uhlenbeckCurvatureOperatorReaction B t x =
-      hamiltonIveyMatrixReactionEuclid (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
+      hamiltonIveyMatrixReactionEuclidean (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
   have h := uhlenbeckCurvatureOperatorReaction_eq_reactionState pulledRm t x R hR hrm
   have hB' : uhlenbeckCurvatureOperatorReaction B t x =
       uhlenbeckCurvatureOperatorReaction
@@ -136,7 +138,7 @@ theorem innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator_quadratic
     (hB : ∀ t x a b c d, B t x a b c d = bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d) :
     IsInnerProductHeatReactionOn (D := D) (G := G)
       (F := EuclideanSpace ℝ (Fin 3 × Fin 3))
-      (fun _t _x A => hamiltonIveyMatrixReactionEuclid A)
+      (fun _t _x A => hamiltonIveyMatrixReactionEuclidean A)
       (uhlenbeckCurvatureOperatorMatrix pulledRm) := by
   have hsolB : IsInnerProductHeatReactionOn (D := D) (G := G)
       (F := EuclideanSpace ℝ (Fin 3 × Fin 3))
@@ -152,14 +154,14 @@ theorem innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator_quadratic
     have hre := uhlenbeckReaction_eq_reactionState_at (pulledRm := pulledRm) (B := B)
       t x (R t x) (hR t x) (hrm t x) (hB t x)
     have hinner : inner ℝ (uhlenbeckCurvatureOperatorReaction B t x) y =
-        inner ℝ (hamiltonIveyMatrixReactionEuclid
+        inner ℝ (hamiltonIveyMatrixReactionEuclidean
           (uhlenbeckCurvatureOperatorMatrix pulledRm t x)) y := by
       rw [hre]
     have hderiv' : HasDerivAt (fun s : Real => innerScalarization
         (uhlenbeckCurvatureOperatorMatrix pulledRm) y s x)
         (laplacianAt (I := I) G t (innerScalarization
           (uhlenbeckCurvatureOperatorMatrix pulledRm) y t) x +
-          inner ℝ (hamiltonIveyMatrixReactionEuclid
+          inner ℝ (hamiltonIveyMatrixReactionEuclidean
             (uhlenbeckCurvatureOperatorMatrix pulledRm t x)) y) t := by
       exact hderiv.congr_deriv (by rw [hinner])
     simpa using hderiv'

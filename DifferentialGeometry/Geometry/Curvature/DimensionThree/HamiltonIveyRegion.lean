@@ -19,6 +19,7 @@ noncomputable section
 
 namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
+open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Analysis.InnerProductSpace
 open scoped BigOperators Matrix.Norms.Frobenius
 
@@ -44,9 +45,9 @@ def hamiltonIveyConvexEpigraph (K τ : Real) : Set (Real × Real) :=
   {p | 0 ≤ p.1 ∧ hamiltonIveyConvexBarrier K τ p.1 ≤ p.2}
 
 def hamiltonIveyConvexMatrixRegion (K τ : Real) : Set (Matrix (Fin 3) (Fin 3) Real) :=
-  {A | ∃ hA : A.IsHermitian,
-    0 ≤ max (-hA.eigenvalues₀ 2) 0 ∧
-      hamiltonIveyConvexBarrier K τ (max (-hA.eigenvalues₀ 2) 0) ≤ A.trace}
+  {A | A.IsHermitian ∧
+    hamiltonIveyConvexBarrier K τ
+      (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0) ≤ A.trace}
 
 theorem nonempty_hamiltonIveyConvexMatrixRegion
     {K τ : Real} (hK : 0 < K) (hτ : 0 ≤ τ) :
@@ -60,85 +61,24 @@ theorem nonempty_hamiltonIveyConvexMatrixRegion
       neg_nonpos.mpr (mul_nonneg (by norm_num : (0 : Real) ≤ 3) (le_of_lt hK))
     have hdiv := div_nonpos_of_nonpos_of_nonneg hnonpos (le_of_lt hden)
     simpa using hdiv
-  let hM : (0 : Matrix (Fin 3) (Fin 3) Real).IsHermitian := by simp
-  refine ⟨hM, ?_, ?_⟩
-  · exact le_max_right _ _
+  refine ⟨by simp, ?_⟩
   · unfold hamiltonIveyConvexBarrier
-    have heig₂ : hM.eigenvalues₀ 2 = 0 := by
-      have heig : hM.eigenvalues = 0 :=
-        (Matrix.IsHermitian.eigenvalues_eq_zero_iff (hA := hM)).mpr rfl
-      let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
-      have h0 : hM.eigenvalues (e 2) = 0 := congrFun heig (e 2)
-      have hdef : hM.eigenvalues (e 2) = hM.eigenvalues₀ (e.symm (e 2)) := rfl
-      rw [hdef, Equiv.symm_apply_apply] at h0
-      exact h0
-    have hbar : hamiltonIveyBarrier K τ (max (-hM.eigenvalues₀ 2) 0) ≤ 0 := by
-      rw [heig₂]
+    have hbar : hamiltonIveyBarrier K τ
+        (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 0) 0) ≤ 0 := by
+      rw [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_zero]
       simp [hamiltonIveyBarrier]
     simpa using (max_le (by simpa using hscalar) hbar)
-
-theorem diagonal_eigenvalues₀_eq_of_antitone
-    (d : Fin 3 → Real) (hd : Antitone d) :
-    (Matrix.isHermitian_diagonal d).eigenvalues₀ = d := by
-  let hA : (Matrix.diagonal d).IsHermitian := Matrix.isHermitian_diagonal d
-  have hchar : (Matrix.diagonal d).charpoly = ∏ i : Fin 3, (Polynomial.X - Polynomial.C (d i)) :=
-    Matrix.charpoly_diagonal d
-  have hsort := hA.sort_roots_charpoly_eq_eigenvalues₀
-  rw [hchar] at hsort
-  have hprod_ne : (∏ i : Fin 3, (Polynomial.X - Polynomial.C (d i))) ≠ 0 := by
-    apply Finset.prod_ne_zero_iff.mpr
-    intro i _
-    exact Polynomial.X_sub_C_ne_zero (d i)
-  have hroots : (∏ i : Fin 3, (Polynomial.X - Polynomial.C (d i))).roots =
-      (Finset.univ.val.bind fun i : Fin 3 => (Polynomial.X - Polynomial.C (d i)).roots) := by
-    simpa using Polynomial.roots_prod (fun i : Fin 3 => (Polynomial.X - Polynomial.C (d i)))
-      Finset.univ hprod_ne
-  rw [hroots] at hsort
-  simp only [Polynomial.roots_X_sub_C, Multiset.bind_singleton] at hsort
-  change ((Finset.univ.val.map d).sort (· ≥ ·)) = List.ofFn hA.eigenvalues₀ at hsort
-  have hd_sorted : (Finset.univ.val.map d).sort (· ≥ ·) = List.ofFn d := by
-    change [d 0, d 1, d 2].mergeSort (fun x1 x2 => decide (x2 ≤ x1)) = [d 0, d 1, d 2]
-    have hpair : List.Pairwise (· ≥ ·) [d 0, d 1, d 2] := by
-      have hs := Antitone.sortedGE_ofFn hd
-      simpa using hs.pairwise
-    change [d 0, d 1, d 2].mergeSort ((· ≥ ·) · ·) = [d 0, d 1, d 2]
-    exact List.mergeSort_eq_self (r := (· ≥ ·)) hpair
-  rw [hd_sorted] at hsort
-  exact List.ofFn_inj.mp hsort.symm
-
-theorem eigenvalues₀_eq_of_charpoly_eq_real
-    {A B : Matrix (Fin 3) (Fin 3) Real} (hA : A.IsHermitian) (hB : B.IsHermitian)
-    (hchar : A.charpoly = B.charpoly) :
-    hA.eigenvalues₀ = hB.eigenvalues₀ := by
-  have hsA := hA.sort_roots_charpoly_eq_eigenvalues₀
-  have hsB := hB.sort_roots_charpoly_eq_eigenvalues₀
-  rw [← hchar] at hsB
-  have hlist : List.ofFn hA.eigenvalues₀ = List.ofFn hB.eigenvalues₀ :=
-    hsA.symm.trans hsB
-  exact List.ofFn_inj.mp hlist
 
 private theorem hamiltonIveyConvexMatrixRegion_conj_mem
     {K τ : Real} {A Q : Matrix (Fin 3) (Fin 3) Real}
     (hQ2 : Q * Q.transpose = 1)
     (hA : A ∈ hamiltonIveyConvexMatrixRegion K τ) :
     Q.transpose * A * Q ∈ hamiltonIveyConvexMatrixRegion K τ := by
-  rcases hA with ⟨hAh, hX, hbar⟩
-  refine ⟨?_, ?_, ?_⟩
+  rcases hA with ⟨hAh, hbar⟩
+  refine ⟨?_, ?_⟩
   · have hconj : (Q.conjTranspose * A * Q).IsHermitian :=
       Matrix.isHermitian_conjTranspose_mul_mul Q hAh
     simpa using hconj
-  · have hchar : (Q.transpose * A * Q).charpoly = A.charpoly := by
-      have hmul := Matrix.charpoly_mul_comm Q.transpose (A * Q)
-      rw [show Q.transpose * (A * Q) = Q.transpose * A * Q by simp [Matrix.mul_assoc]] at hmul
-      rw [hmul]
-      rw [show (A * Q) * Q.transpose = A * (Q * Q.transpose) by simp [Matrix.mul_assoc]]
-      rw [hQ2, Matrix.mul_one]
-    have hB : (Q.transpose * A * Q).IsHermitian := by
-      have hconj : (Q.conjTranspose * A * Q).IsHermitian :=
-        Matrix.isHermitian_conjTranspose_mul_mul Q hAh
-      simpa using hconj
-    have heig := eigenvalues₀_eq_of_charpoly_eq_real hB hAh hchar
-    simp [heig, hX]
   · have htrace : (Q.transpose * A * Q).trace = A.trace := by
       have hcyc := Matrix.trace_mul_cycle Q.transpose A Q
       rw [hQ2] at hcyc
@@ -154,7 +94,9 @@ private theorem hamiltonIveyConvexMatrixRegion_conj_mem
       rw [show (A * Q) * Q.transpose = A * (Q * Q.transpose) by simp [Matrix.mul_assoc]]
       rw [hQ2, Matrix.mul_one]
     have heig := eigenvalues₀_eq_of_charpoly_eq_real hB hAh hchar
-    rw [htrace, heig]
+    rw [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hB,
+      htrace, heig,
+      ← DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hAh]
     exact hbar
 
 theorem hamiltonIveyConvexMatrixRegion_orthogonal_conj
@@ -268,40 +210,15 @@ theorem continuous_hamiltonIveyConvexBarrier
   unfold hamiltonIveyConvexBarrier
   exact (continuous_const.max (continuous_hamiltonIveyBarrier (K := K) (τ := τ) hK))
 
-def hamiltonIveyConvexMatrixRegionViolation (K τ : Real)
-    (A : Matrix (Fin 3) (Fin 3) Real) : Prop :=
-  A.IsHermitian ∧
-    0 ≤ max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0 ∧
-      hamiltonIveyConvexBarrier K τ
-          (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0) ≤ A.trace
-
-theorem hamiltonIveyConvexMatrixRegion_eq_violation (K τ : Real) :
-    hamiltonIveyConvexMatrixRegion K τ =
-      {A : Matrix (Fin 3) (Fin 3) Real | hamiltonIveyConvexMatrixRegionViolation K τ A} := by
-  ext A
-  constructor
-  · rintro ⟨hA, hX, hbar⟩
-    refine ⟨hA, ?_, ?_⟩
-    · rw [DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min hA]
-      exact hX
-    · rw [DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min hA]
-      exact hbar
-  · intro h
-    refine ⟨h.1, ?_, ?_⟩
-    · rw [← DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min h.1]
-      exact h.2.1
-    · rw [← DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min h.1]
-      exact h.2.2
-
 theorem isClosed_hamiltonIveyConvexMatrixRegion
     {K τ : Real} (hK : 0 < K) :
     IsClosed (hamiltonIveyConvexMatrixRegion K τ) := by
-  rw [hamiltonIveyConvexMatrixRegion_eq_violation]
+  rw [hamiltonIveyConvexMatrixRegion]
   let X : Matrix (Fin 3) (Fin 3) Real → Real := fun A =>
-    max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0
+    max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0
   have hXcont : Continuous X := by
     dsimp [X]
-    exact DifferentialGeometry.Analysis.Convex.continuous_sectionalRayleighMin3.neg.max
+    exact DifferentialGeometry.Analysis.Convex.continuous_minimumRayleighQuotient3.neg.max
       continuous_const
   have hbarcont : Continuous (fun A : Matrix (Fin 3) (Fin 3) Real =>
       hamiltonIveyConvexBarrier K τ (X A) - A.trace) := by
@@ -319,15 +236,13 @@ theorem isClosed_hamiltonIveyConvexMatrixRegion
       fun_prop
     exact isClosed_eq htrans continuous_id
   change IsClosed ({A : Matrix (Fin 3) (Fin 3) Real | A.IsHermitian} ∩
-    ({A : Matrix (Fin 3) (Fin 3) Real | 0 ≤ X A} ∩
-      {A : Matrix (Fin 3) (Fin 3) Real | hamiltonIveyConvexBarrier K τ (X A) ≤ A.trace}))
-  have hfirst : IsClosed {A : Matrix (Fin 3) (Fin 3) Real | 0 ≤ X A} :=
-    isClosed_le continuous_const hXcont
+    {A : Matrix (Fin 3) (Fin 3) Real |
+      hamiltonIveyConvexBarrier K τ (X A) ≤ A.trace})
   have hsecond : IsClosed {A : Matrix (Fin 3) (Fin 3) Real |
       hamiltonIveyConvexBarrier K τ (X A) ≤ A.trace} :=
     isClosed_le ((continuous_hamiltonIveyConvexBarrier hK).comp hXcont)
       (by unfold Matrix.trace; fun_prop)
-  exact hHermClosed.inter (hfirst.inter hsecond)
+  exact hHermClosed.inter hsecond
 
 
 
@@ -572,18 +487,21 @@ theorem diagonal_constant_mem_hamiltonIveyConvexMatrixRegion
     diagonal_eigenvalues₀_eq_of_antitone d hd
   have hbar := hamiltonIveyConvexBarrier_initial_le_sectionalSum_of_constant
     (σ := σ) (K := K) hpinch hK
-  refine ⟨Matrix.isHermitian_diagonal d, ?_, ?_⟩
-  · exact le_max_right _ _
+  refine ⟨Matrix.isHermitian_diagonal d, ?_⟩
   · have htrace : (Matrix.diagonal d).trace = sectionalSum3 σ σ σ := by
       rw [Matrix.trace_diagonal]
       simp [d, sectionalSum3]
       ring
     have heig₂ : (Matrix.isHermitian_diagonal d).eigenvalues₀ 2 = σ := by
       rw [heig]
+    have hmin : DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3
+        (Matrix.diagonal d) = σ := by
+      rw [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue
+        (Matrix.isHermitian_diagonal d), heig₂]
     rw [htrace]
-    simpa [d, heig₂, pinchHeight3] using hbar
+    simpa [d, hmin, pinchHeight3] using hbar
 
-theorem diagonal_constant_mem_hamiltonIveyConvexMatrixRegion_K_one
+theorem diagonal_constant_mem_hamiltonIveyConvexMatrixRegion_k_one
     {σ : Real} (hpinch : -1 ≤ σ) :
     Matrix.diagonal (fun _ : Fin 3 => σ) ∈ hamiltonIveyConvexMatrixRegion 1 0 :=
   diagonal_constant_mem_hamiltonIveyConvexMatrixRegion (K := 1) hpinch
@@ -1024,13 +942,13 @@ theorem hamiltonIveyConvexMatrixRegion_subset_tangent_halfspace
     (hK : 0 < K) (hτ : 0 ≤ τ)
     (hA : A ∈ hamiltonIveyConvexMatrixRegion K τ) :
     hamiltonIveyTangentLine K τ a
-        (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0) ≤
+        (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0) ≤
       A.trace := by
-  rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hA
+  rw [hamiltonIveyConvexMatrixRegion] at hA
   exact (hamiltonIveyTangentLine_le_hamiltonIveyConvexBarrier
     (K := K) (τ := τ) (a := a)
-    (X := max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0)
-    hK hτ (le_max_right _ _)).trans hA.2.2
+    (X := max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0)
+    hK hτ (le_max_right _ _)).trans hA.2
 
 
 theorem mem_hamiltonIveyConvexMatrixRegion_of_forall_tangent_halfspace
@@ -1040,12 +958,12 @@ theorem mem_hamiltonIveyConvexMatrixRegion_of_forall_tangent_halfspace
     (hscalar : scalarSectionalLowerBarrier3 K τ ≤ A.trace)
     (hforall : ∀ a : Real,
       hamiltonIveyTangentLine K τ a
-          (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0) ≤
+          (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0) ≤
         A.trace) :
     A ∈ hamiltonIveyConvexMatrixRegion K τ := by
-  rw [hamiltonIveyConvexMatrixRegion_eq_violation]
-  refine ⟨hA, le_max_right _ _, ?_⟩
-  let X : Real := max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0
+  rw [hamiltonIveyConvexMatrixRegion]
+  refine ⟨hA, ?_⟩
+  let X : Real := max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0
   have hX : 0 ≤ X := le_max_right _ _
   have hbar : hamiltonIveyBarrier K τ X ≤ A.trace := by
     by_cases hX0 : X = 0
@@ -1589,63 +1507,62 @@ theorem convex_hamiltonIveyConvexMatrixRegion
     Convex ℝ (hamiltonIveyConvexMatrixRegion K τ) := by
   rw [convex_iff_forall_pos]
   intro A hA B hB a b ha hb hab
-  rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hA hB ⊢
-  rcases hA with ⟨hAh, hA0, hAbar⟩
-  rcases hB with ⟨hBh, hB0, hBbar⟩
+  rw [hamiltonIveyConvexMatrixRegion] at hA hB ⊢
+  rcases hA with ⟨hAh, hAbar⟩
+  rcases hB with ⟨hBh, hBbar⟩
   let C : Matrix (Fin 3) (Fin 3) ℝ := a • A + b • B
   have hCh : C.IsHermitian := by
     have hA' : A.transpose = A := by simpa [Matrix.IsHermitian] using hAh
     have hB' : B.transpose = B := by simpa [Matrix.IsHermitian] using hBh
     change (a • A + b • B).conjTranspose = a • A + b • B
     simp [hA', hB']
-  have hC0 : 0 ≤ max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0 := le_max_right _ _
-  have hx_conv : max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0 ≤
-      a * max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0 + b * max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 B) 0 := by
-    have hconv := (DifferentialGeometry.Analysis.Convex.convex_sectionalRayleighPinchHeight3.2) (x := A) (y := B)
+  have hx_conv : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤
+      a * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0 + b * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0 := by
+    have hconv := (DifferentialGeometry.Analysis.Convex.convex_negPart_minimumRayleighQuotient3.2) (x := A) (y := B)
       (by trivial) (by trivial) (a := a) (b := b) ha.le hb.le hab
     simpa [C, smul_eq_mul] using hconv
   have hbar_conv : hamiltonIveyConvexBarrier K τ
-      (a * max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0 + b * max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 B) 0) ≤ C.trace := by
-    have hbarA : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0) ≤ A.trace := by
-      simpa [DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min hAh] using hAbar
-    have hbarB : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 B) 0) ≤ B.trace := by
-      simpa [DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min hBh] using hBbar
+      (a * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0 + b * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0) ≤ C.trace := by
+    have hbarA : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0) ≤ A.trace := by
+      simpa [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hAh] using hAbar
+    have hbarB : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0) ≤ B.trace := by
+      simpa [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hBh] using hBbar
     have hconv := ((hamiltonIveyConvexBarrier_convexOn (K := K) (τ := τ) hK).2)
-      (x := max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0) (y := max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 B) 0)
-      (by exact (le_max_right (a := -DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) (b := 0)))
-      (by exact (le_max_right (a := -DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 B) (b := 0)))
+      (x := max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0) (y := max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0)
+      (by exact (le_max_right (a := -DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) (b := 0)))
+      (by exact (le_max_right (a := -DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) (b := 0)))
       (a := a) (b := b) ha.le hb.le hab
-    have hmul : a * hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0) +
-          b * hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 B) 0) ≤ C.trace := by
+    have hmul : a * hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0) +
+          b * hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0) ≤ C.trace := by
       dsimp [C]
       have hsum := add_le_add (mul_le_mul_of_nonneg_left hbarA ha.le) (mul_le_mul_of_nonneg_left hbarB hb.le)
       simpa [Matrix.trace_add, Matrix.trace_smul, add_comm, add_left_comm, add_assoc] using hsum
     exact le_trans hconv hmul
-  have hmain : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0) ≤ C.trace := by
+  have hmain : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0) ≤ C.trace := by
     let x0 : ℝ := K / (1 + 2 * K * τ)
     have hden : 0 < 1 + 2 * K * τ := by
       nlinarith [mul_nonneg (mul_pos two_pos hK).le hτ]
-    by_cases hx0_le : x0 ≤ max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0
+    by_cases hx0_le : x0 ≤ max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0
     · have hmono := hamiltonIveyConvexBarrier_monotoneOn_of_ge_subregion hK hτ
       have hle1 := hmono hx0_le (le_trans hx0_le hx_conv) hx_conv
       exact le_trans hle1 hbar_conv
-    · have hlt : max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0 < x0 := lt_of_not_ge hx0_le
-      have hC0x : 0 ≤ max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0 := le_max_right _ _
-      have hsub : max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0 ≤ K / (1 + 2 * K * τ) := le_of_lt hlt
-      have hraw : hamiltonIveyBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0) ≤
-          -3 * max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0 :=
+    · have hlt : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 < x0 := lt_of_not_ge hx0_le
+      have hC0x : 0 ≤ max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 := le_max_right _ _
+      have hsub : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤ K / (1 + 2 * K * τ) := le_of_lt hlt
+      have hraw : hamiltonIveyBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0) ≤
+          -3 * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 :=
         hamiltonIveyBarrier_le_neg_three_pinchHeight_of_subregion hK hden hC0x hsub
-      have htrace_ge : -3 * max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0 ≤ C.trace := by
-        simpa using (DifferentialGeometry.Analysis.Convex.neg_three_mul_sectionalRayleighPinch_le_trace hCh)
+      have htrace_ge : -3 * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤ C.trace := by
+        simpa using (DifferentialGeometry.Analysis.Convex.neg_three_mul_negPart_minimumRayleighQuotient3_le_trace hCh)
       have hA_scalar : scalarSectionalLowerBarrier3 K τ ≤ A.trace := by
         have hbar := (scalarSectionalLowerBarrier3_le_hamiltonIveyConvexBarrier K τ
-          (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0)).trans (by
-            simpa [DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min hAh] using hAbar)
+          (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0)).trans (by
+            simpa [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hAh] using hAbar)
         exact hbar
       have hB_scalar : scalarSectionalLowerBarrier3 K τ ≤ B.trace := by
         have hbar := (scalarSectionalLowerBarrier3_le_hamiltonIveyConvexBarrier K τ
-          (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 B) 0)).trans (by
-            simpa [DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min hBh] using hBbar)
+          (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0)).trans (by
+            simpa [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hBh] using hBbar)
         exact hbar
       have hscalar_le : scalarSectionalLowerBarrier3 K τ ≤ C.trace := by
         dsimp [C]
@@ -1657,117 +1574,53 @@ theorem convex_hamiltonIveyConvexMatrixRegion
         have hsum' : scalarSectionalLowerBarrier3 K τ ≤ a * A.trace + b * B.trace := by
           rwa [hcalc] at hsum
         simpa [Matrix.trace_add, Matrix.trace_smul] using hsum'
-      have hconv_le : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 C) 0) ≤ C.trace := by
+      have hconv_le : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0) ≤ C.trace := by
         unfold hamiltonIveyConvexBarrier
         exact max_le hscalar_le (le_trans hraw htrace_ge)
       exact hconv_le
-  refine ⟨hCh, hC0, ?_⟩
-  simpa [C, DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_eq_eigenvalue_min hCh] using hmain
+  refine ⟨hCh, ?_⟩
+  simpa [C, DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hCh] using hmain
 
-noncomputable def hamiltonIveyConvexMatrixRegionEuclid (K τ : Real) :
+noncomputable def hamiltonIveyConvexMatrixRegionEuclidean (K τ : Real) :
     Set (EuclideanSpace ℝ (Fin 3 × Fin 3)) :=
-  {A | euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ}
+  {A | euclideanToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ}
 
-theorem mem_hamiltonIveyConvexMatrixRegionEuclid_iff (K τ : Real)
+theorem mem_hamiltonIveyConvexMatrixRegionEuclidean_iff (K τ : Real)
     (A : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
-    A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ↔
-      euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ := by
+    A ∈ hamiltonIveyConvexMatrixRegionEuclidean K τ ↔
+      euclideanToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ := by
   rfl
 
-theorem nonempty_hamiltonIveyConvexMatrixRegionEuclid {K τ : Real}
+theorem nonempty_hamiltonIveyConvexMatrixRegionEuclidean {K τ : Real}
     (hK : 0 < K) (hτ : 0 ≤ τ) :
-    (hamiltonIveyConvexMatrixRegionEuclid K τ).Nonempty := by
+    (hamiltonIveyConvexMatrixRegionEuclidean K τ).Nonempty := by
   rcases nonempty_hamiltonIveyConvexMatrixRegion hK hτ with ⟨A, hA⟩
-  refine ⟨matrixToEuclid A, ?_⟩
-  rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+  refine ⟨matrixToEuclidean A, ?_⟩
+  rw [mem_hamiltonIveyConvexMatrixRegionEuclidean_iff]
   simpa using hA
 
-theorem isClosed_hamiltonIveyConvexMatrixRegionEuclid {K τ : Real}
+theorem isClosed_hamiltonIveyConvexMatrixRegionEuclidean {K τ : Real}
     (hK : 0 < K) :
-    IsClosed (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
-  have hf : Continuous (euclidToMatrix :
+    IsClosed (hamiltonIveyConvexMatrixRegionEuclidean K τ) := by
+  have hf : Continuous (euclideanToMatrix :
       EuclideanSpace ℝ (Fin 3 × Fin 3) → Matrix (Fin 3) (Fin 3) ℝ) :=
     (matrixEuclideanLinearIsometryEquiv
       (m := Fin 3) (n := Fin 3)).symm.continuous
-  rw [hamiltonIveyConvexMatrixRegionEuclid]
-  change IsClosed (euclidToMatrix ⁻¹' hamiltonIveyConvexMatrixRegion K τ)
+  rw [hamiltonIveyConvexMatrixRegionEuclidean]
+  change IsClosed (euclideanToMatrix ⁻¹' hamiltonIveyConvexMatrixRegion K τ)
   exact IsClosed.preimage hf (isClosed_hamiltonIveyConvexMatrixRegion hK)
 
-theorem convex_hamiltonIveyConvexMatrixRegionEuclid {K τ : Real}
+theorem convex_hamiltonIveyConvexMatrixRegionEuclidean {K τ : Real}
     (hK : 0 < K) (hτ : 0 ≤ τ) :
-    Convex Real (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
+    Convex Real (hamiltonIveyConvexMatrixRegionEuclidean K τ) := by
   let f : EuclideanSpace ℝ (Fin 3 × Fin 3) →ₗ[ℝ] Matrix (Fin 3) (Fin 3) ℝ :=
-    { toFun := euclidToMatrix
-      map_add' := euclidToMatrix_add
-      map_smul' := euclidToMatrix_smul }
+    { toFun := euclideanToMatrix
+      map_add' := euclideanToMatrix_add
+      map_smul' := euclideanToMatrix_smul }
   have hpre : Convex Real (f ⁻¹' hamiltonIveyConvexMatrixRegion K τ) :=
     Convex.linear_preimage (convex_hamiltonIveyConvexMatrixRegion hK hτ) f
-  simpa [hamiltonIveyConvexMatrixRegionEuclid, f] using hpre
+  simpa [hamiltonIveyConvexMatrixRegionEuclidean, f] using hpre
 
-
-def hamiltonIveyConvexMatrixSlab (K T : ℝ) :
-    Set (WithLp 2 (Matrix (Fin 3) (Fin 3) ℝ × ℝ)) :=
-  {q | (WithLp.ofLp q).2 ∈ Set.Icc 0 T ∧
-    (WithLp.ofLp q).1 ∈ hamiltonIveyConvexMatrixRegion K (WithLp.ofLp q).2}
-
-theorem nonempty_hamiltonIveyConvexMatrixSlab
-    {K T : ℝ} (hK : 0 < K) (hT : 0 ≤ T) :
-    (hamiltonIveyConvexMatrixSlab K T).Nonempty := by
-  refine ⟨WithLp.toLp 2 ((0 : Matrix (Fin 3) (Fin 3) ℝ), (0 : ℝ)), ?_⟩
-  rw [hamiltonIveyConvexMatrixSlab]
-  change (0 : ℝ) ∈ Set.Icc 0 T ∧
-    (0 : Matrix (Fin 3) (Fin 3) ℝ) ∈ hamiltonIveyConvexMatrixRegion K 0
-  constructor
-  · simp [hT]
-  · rw [hamiltonIveyConvexMatrixRegion_eq_violation]
-    constructor
-    · simp
-    constructor
-    · simp [DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3]
-    · have hscalar : scalarSectionalLowerBarrier3 K 0 ≤ 0 := by
-        unfold scalarSectionalLowerBarrier3
-        have hden : 0 < 1 + 4 * K * 0 := by positivity
-        have hnonpos : -(3 * K) ≤ 0 := by nlinarith
-        simpa using div_nonpos_of_nonpos_of_nonneg hnonpos hden.le
-      have hbar : hamiltonIveyBarrier K 0 (0 : ℝ) ≤ 0 := by
-        unfold hamiltonIveyBarrier
-        simp
-      unfold hamiltonIveyConvexBarrier
-      simp only [DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3_zero,
-        Matrix.trace_zero, sup_le_iff]
-      have hbar' : hamiltonIveyBarrier K 0 (max (-(0 : ℝ)) 0) ≤ 0 := by
-        simpa using hbar
-      exact ⟨hscalar, hbar'⟩
-
-
-@[simp]
-theorem mem_hamiltonIveyConvexMatrixSlab {K T : ℝ}
-    {q : WithLp 2 (Matrix (Fin 3) (Fin 3) ℝ × ℝ)} :
-    q ∈ hamiltonIveyConvexMatrixSlab K T ↔
-      (WithLp.ofLp q).2 ∈ Set.Icc 0 T ∧
-        (WithLp.ofLp q).1 ∈ hamiltonIveyConvexMatrixRegion K (WithLp.ofLp q).2 := by
-  rfl
-
-theorem hamiltonIveyConvexMatrixSlab_orthogonal_conj
-    {K T : ℝ} {q : WithLp 2 (Matrix (Fin 3) (Fin 3) ℝ × ℝ)}
-    {Q : Matrix (Fin 3) (Fin 3) ℝ}
-    (hQ1 : Q.transpose * Q = 1)
-    (hQ2 : Q * Q.transpose = 1)
-    (hq : q ∈ hamiltonIveyConvexMatrixSlab K T) :
-    WithLp.toLp 2 (Q.transpose * (WithLp.ofLp q).1 * Q, (WithLp.ofLp q).2) ∈
-      hamiltonIveyConvexMatrixSlab K T := by
-  rw [mem_hamiltonIveyConvexMatrixSlab] at hq ⊢
-  constructor
-  · exact hq.1
-  · exact (hamiltonIveyConvexMatrixRegion_orthogonal_conj (K := K)
-      (τ := (WithLp.ofLp q).2) hQ1 hQ2).1 hq.2
-
-
-theorem hamiltonIveyConvexMatrixSlab_subset_time {K T : ℝ} :
-    hamiltonIveyConvexMatrixSlab K T ⊆
-      {q : WithLp 2 (Matrix (Fin 3) (Fin 3) ℝ × ℝ) | (WithLp.ofLp q).2 ∈ Set.Icc 0 T} := by
-  intro q hq
-  exact hq.1
 
 lemma continuousOn_hamiltonIveyBarrier_nonneg_time
     {K T : ℝ} (hK : 0 < K) :
@@ -1829,137 +1682,5 @@ lemma continuousOn_hamiltonIveyConvexBarrier_time_nonneg
       nlinarith [mul_nonneg (mul_pos (by norm_num : (0:ℝ) < 4) hK).le hτ]
     exact ne_of_gt hpos
   · exact continuousOn_hamiltonIveyBarrier_nonneg_time hK
-
-theorem isClosed_hamiltonIveyConvexMatrixSlab
-    {K T : ℝ} (hK : 0 < K) :
-    IsClosed (hamiltonIveyConvexMatrixSlab K T) := by
-  let Q := WithLp 2 (Matrix (Fin 3) (Fin 3) ℝ × ℝ)
-  let X : Matrix (Fin 3) (Fin 3) ℝ → ℝ := fun A => max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 A) 0
-  have hA_cont : Continuous (fun q : Q => (WithLp.ofLp q).1) :=
-    WithLp.continuous_fst (p := 2) (α := Matrix (Fin 3) (Fin 3) ℝ) (β := ℝ)
-  have hτ_cont : Continuous (fun q : Q => (WithLp.ofLp q).2) :=
-    WithLp.continuous_snd (p := 2) (α := Matrix (Fin 3) (Fin 3) ℝ) (β := ℝ)
-  have hX_cont : Continuous (fun q : Q => X (WithLp.ofLp q).1) := by
-    dsimp [X]
-    exact (DifferentialGeometry.Analysis.Convex.continuous_sectionalRayleighMin3.neg.max continuous_const).comp hA_cont
-  have hT_closed : IsClosed {q : Q | (WithLp.ofLp q).2 ∈ Set.Icc 0 T} :=
-    IsClosed.preimage hτ_cont (isClosed_Icc : IsClosed (Set.Icc (0:ℝ) T))
-  have hH_closed : IsClosed {q : Q | (WithLp.ofLp q).1.IsHermitian} := by
-    have hset : {A : Matrix (Fin 3) (Fin 3) ℝ | A.IsHermitian} = {A | A.transpose = A} := by
-      ext A; simp [Matrix.IsHermitian]
-    have hclosedA : IsClosed ({A : Matrix (Fin 3) (Fin 3) ℝ | A.IsHermitian}) := by
-      rw [hset]
-      have htrans : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => A.transpose) := by fun_prop
-      exact isClosed_eq htrans continuous_id
-    exact IsClosed.preimage hA_cont hclosedA
-  have hD_closed : IsClosed {q : Q | 0 ≤ X (WithLp.ofLp q).1} :=
-    isClosed_le continuous_const hX_cont
-  let S : Set Q := {q | (WithLp.ofLp q).2 ∈ Set.Icc 0 T}
-  let D : Set Q := {q | 0 ≤ X (WithLp.ofLp q).1}
-  have hSD_closed : IsClosed (S ∩ D) := hT_closed.inter hD_closed
-  have hbar_cont : ContinuousOn
-      (fun q : Q => hamiltonIveyConvexBarrier K (WithLp.ofLp q).2 (X (WithLp.ofLp q).1) -
-        (WithLp.ofLp q).1.trace) (S ∩ D) := by
-    have hpair : ContinuousOn (fun q : Q => ((WithLp.ofLp q).2, X (WithLp.ofLp q).1)) (S ∩ D) := by
-      have hτ : ContinuousOn (fun q : Q => (WithLp.ofLp q).2) (S ∩ D) := hτ_cont.continuousOn
-      have hXq : ContinuousOn (fun q : Q => X (WithLp.ofLp q).1) (S ∩ D) := hX_cont.continuousOn
-      exact hτ.prodMk hXq
-    have hmap : Set.MapsTo (fun q : Q => ((WithLp.ofLp q).2, X (WithLp.ofLp q).1))
-        (S ∩ D) (Set.Icc 0 T ×ˢ Set.Ici 0) := by
-      intro q hq
-      exact ⟨hq.1, hq.2⟩
-    have hbar := (continuousOn_hamiltonIveyConvexBarrier_time_nonneg (K := K) (T := T) hK).comp hpair hmap
-    have htr : ContinuousOn (fun q : Q => (WithLp.ofLp q).1.trace) (S ∩ D) := by
-      have htrA : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => A.trace) := by
-        unfold Matrix.trace
-        fun_prop
-      exact htrA.comp_continuousOn hA_cont.continuousOn
-    exact hbar.sub htr
-  have hB_closed : IsClosed (S ∩ D ∩ {q : Q |
-      hamiltonIveyConvexBarrier K (WithLp.ofLp q).2 (X (WithLp.ofLp q).1) ≤
-        (WithLp.ofLp q).1.trace}) := by
-    have h := ContinuousOn.preimage_isClosed_of_isClosed hbar_cont hSD_closed
-      (isClosed_Iic : IsClosed (Set.Iic (0 : ℝ)))
-    simpa [Set.preimage, Set.Iic] using h
-  have hset : hamiltonIveyConvexMatrixSlab K T =
-      {q : Q | (WithLp.ofLp q).1.IsHermitian} ∩
-        (S ∩ D ∩ {q : Q |
-          hamiltonIveyConvexBarrier K (WithLp.ofLp q).2 (X (WithLp.ofLp q).1) ≤
-            (WithLp.ofLp q).1.trace}) := by
-    ext q
-    constructor
-    · intro hq
-      rw [mem_hamiltonIveyConvexMatrixSlab] at hq
-      rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hq
-      rcases hq with ⟨hτ, hmem⟩
-      rcases hmem with ⟨hH, hD, hB⟩
-      exact ⟨hH, ⟨hτ, hD⟩, hB⟩
-    · intro hq
-      rw [mem_hamiltonIveyConvexMatrixSlab]
-      rw [hamiltonIveyConvexMatrixRegion_eq_violation]
-      rcases hq with ⟨hH, hrest⟩
-      rcases hrest with ⟨hSD, hB⟩
-      rcases hSD with ⟨hτ, hD⟩
-      exact ⟨hτ, hH, hD, hB⟩
-  rw [hset]
-  exact hH_closed.inter hB_closed
-
-theorem convex_hamiltonIveyConvexMatrixSlab_slice
-    {K T τ : ℝ} (hK : 0 < K) (hτ : τ ∈ Set.Icc 0 T) :
-    Convex ℝ {A : Matrix (Fin 3) (Fin 3) ℝ | (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T} := by
-  have hset : {A : Matrix (Fin 3) (Fin 3) ℝ | (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T} =
-      hamiltonIveyConvexMatrixRegion K τ := by
-    ext A
-    simp [hamiltonIveyConvexMatrixSlab, hτ.1, hτ.2]
-  rw [hset]
-  exact convex_hamiltonIveyConvexMatrixRegion hK hτ.1
-
-theorem isClosed_hamiltonIveyConvexMatrixSlab_slice
-    {K T τ : ℝ} (hK : 0 < K) :
-    IsClosed {A : Matrix (Fin 3) (Fin 3) ℝ | (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T} := by
-  have hcont : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => WithLp.toLp 2 (A, τ)) := by
-    have hA : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => A) := continuous_id
-    have hτ : Continuous (fun A : Matrix (Fin 3) (Fin 3) ℝ => τ) := continuous_const
-    exact (WithLp.prod_continuous_toLp (p := 2) (α := Matrix (Fin 3) (Fin 3) ℝ) (β := ℝ)).comp (hA.prodMk hτ)
-  exact IsClosed.preimage hcont (isClosed_hamiltonIveyConvexMatrixSlab hK)
-
-theorem nonempty_hamiltonIveyConvexMatrixSlab_slice
-    {K T τ : ℝ} (hK : 0 < K) (hτ : τ ∈ Set.Icc 0 T) :
-    {A : Matrix (Fin 3) (Fin 3) ℝ | (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T}.Nonempty := by
-  rcases nonempty_hamiltonIveyConvexMatrixRegion hK hτ.1 with ⟨A, hA⟩
-  refine ⟨A, ?_⟩
-  change (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T
-  rw [mem_hamiltonIveyConvexMatrixSlab]
-  exact ⟨hτ, hA⟩
-
-theorem hamiltonIveyConvexMatrixSlab_slice_eq
-    {K T τ : ℝ} (hτ : τ ∈ Set.Icc 0 T) :
-    {A : Matrix (Fin 3) (Fin 3) ℝ | (WithLp.toLp 2 (A, τ)) ∈ hamiltonIveyConvexMatrixSlab K T} =
-      hamiltonIveyConvexMatrixRegion K τ := by
-  ext A
-  simp [hamiltonIveyConvexMatrixSlab, hτ.1, hτ.2]
-
-theorem hamiltonIveyConvexMatrixSlab_hermitian
-    {K T : ℝ} {q : WithLp 2 (Matrix (Fin 3) (Fin 3) ℝ × ℝ)}
-    (hq : q ∈ hamiltonIveyConvexMatrixSlab K T) :
-    (WithLp.ofLp q).1.IsHermitian := by
-  rw [mem_hamiltonIveyConvexMatrixSlab] at hq
-  rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hq
-  exact hq.2.1
-
-theorem hamiltonIveyConvexMatrixSlab_pinch_nonneg
-    {K T : ℝ} {q : WithLp 2 (Matrix (Fin 3) (Fin 3) ℝ × ℝ)}
-    (hq : q ∈ hamiltonIveyConvexMatrixSlab K T) :
-    0 ≤ max (-DifferentialGeometry.Analysis.Convex.sectionalRayleighMin3 (WithLp.ofLp q).1) 0 := by
-  rw [mem_hamiltonIveyConvexMatrixSlab] at hq
-  rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hq
-  exact hq.2.2.1
-
-theorem hamiltonIveyConvexMatrixSlab_slice_mem
-    {K T τ : ℝ} {A : Matrix (Fin 3) (Fin 3) ℝ}
-    (hτ : τ ∈ Set.Icc 0 T) (hA : A ∈ hamiltonIveyConvexMatrixRegion K τ) :
-    WithLp.toLp 2 (A, τ) ∈ hamiltonIveyConvexMatrixSlab K T := by
-  rw [mem_hamiltonIveyConvexMatrixSlab]
-  exact ⟨hτ, hA⟩
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

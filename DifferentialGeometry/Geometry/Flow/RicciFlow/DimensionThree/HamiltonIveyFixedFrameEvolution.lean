@@ -33,7 +33,7 @@ variable {x : M}
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] in
-lemma fixedFrame_sum_repr
+private lemma fixedFrame_sum_repr
     (f : Module.Basis (Fin 3) Real (TangentSpace I x))
     (e : Fin 3 → TangentSpace I x)
     (P : Fin 3 → Fin 3 → ℝ)
@@ -46,7 +46,7 @@ lemma fixedFrame_sum_repr
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] in
-lemma fixedFrame_coord_eq
+private lemma fixedFrame_coord_eq
     (f : Module.Basis (Fin 3) Real (TangentSpace I x))
     (e : Fin 3 → TangentSpace I x)
     (P : Fin 3 → Fin 3 → ℝ)
@@ -57,7 +57,7 @@ lemma fixedFrame_coord_eq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [FiniteDimensional ℝ E] [IsManifold I 1 M] in
-lemma fixedFrame_metricComp_eq_sum
+private lemma fixedFrame_metricComp_eq_sum
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (e : Fin 3 → TangentSpace I x)
@@ -95,7 +95,7 @@ lemma fixedFrame_metricComp_eq_sum
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [FiniteDimensional ℝ E] [IsManifold I 1 M] in
-lemma fixedFrame_ginvP_eq_kd
+private lemma fixedFrame_ginvP_eq_kd
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (e : Fin 3 → TangentSpace I x)
@@ -174,7 +174,7 @@ lemma rm04Comp_ortho_eq_rm
   simp only [horth, hsc, kd]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-lemma rm04Comp_expand
+private lemma rm04Comp_expand
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (e : Fin 3 → TangentSpace I x)
@@ -297,7 +297,7 @@ private lemma sum4_fix_two
   exact sum3_kd_collapse (J 3) (fun l : Fin 3 => F (slots4 i (J 1) k l))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-lemma roughLapRm04_fixedFrame_pullback
+private lemma roughLapRm04_fixedFrame_pullback
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (e : Fin 3 → TangentSpace I x)
@@ -899,7 +899,7 @@ lemma uhlenbeckBTensorInFrame_fixedFrame_pullback
           ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-lemma riemann04RicciDriftInFrame_fixedFrame_pullback
+private lemma riemann04RicciDriftInFrame_fixedFrame_pullback
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (hdim : Module.finrank Real (TangentSpace I x) = 3)
@@ -1404,19 +1404,17 @@ theorem solutionRm04FixedFrameEvolution
     (hS : IsSolutionOn (I := I) S)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x)) :
-    ∃ roughLapRm04 B : FourComp M (Fin 3),
-      Riemann04BTensorWithRicciDriftEvolutionInFrameOn
-        (D := RealTimeInterval.closed 0 T hT.le)
-        (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
-        roughLapRm04 B
-        (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
-          (fun a x => basisAt x a)) := by
+    Riemann04BTensorWithRicciDriftEvolutionInFrameOn
+      (D := RealTimeInterval.closed 0 T hT.le)
+      (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a))
+      (fun t x a b c d =>
+        metricTraceFirstTwo0SAt (I := I) (S.base.metric t) (nablaKRm04Field (I := I) S t 2 x)
+          (vec4 (I := I) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d)))
+      (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
+        (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
+      (solutionRicciOneUpInFrame (I := I) S (solutionInverseMetricComponents S basisAt)
+        (fun a x => basisAt x a)) := by
   classical
-  refine ⟨fun t x a b c d =>
-    metricTraceFirstTwo0SAt (I := I) (S.base.metric t) (nablaKRm04Field (I := I) S t 2 x)
-      (vec4 (I := I) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d)), ?_⟩
-  refine ⟨uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
-      (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)), ?_⟩
   intro t x a b c d
   let D : RealTimeInterval := RealTimeInterval.closed 0 T hT.le
   rcases exists_orthonormalBasisAt (I := I) (S.base.metric (t : ℝ)) x (hdim x) with ⟨f, hf⟩

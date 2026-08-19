@@ -194,7 +194,7 @@ theorem curvatureOperatorMatrixAt_initial_mem_hamiltonIveyConvexMatrixRegion
     {t0 K : Real} (hK : 0 < K)
     {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth : OrthonormalBasisAt (I := I) (S.base.metric t0) x basis)
-    (hinit : CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+    (hinit : curvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t0) x⟩ K) :
     curvatureOperatorMatrixAt (I := I) x basis
@@ -221,10 +221,9 @@ theorem curvatureOperatorMatrixAt_initial_mem_hamiltonIveyConvexMatrixRegion
     h21 h32 hmin hK
   have htrace := curvatureOperatorMatrixAt_trace_eq_sum_orderedSectionalCurvaturesAt
     (I := I) x basis A
-  refine ⟨hM, ?_, ?_⟩
-  · dsimp [M, orderedSectionalCurvaturesAt]
-    exact le_max_right _ _
-  · dsimp [M]
+  refine ⟨hM, ?_⟩
+  · rw [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hM]
+    dsimp [M]
     rw [htrace]
     simpa [A, M, orderedSectionalCurvaturesAt, pinchHeight3, sectionalSum3,
       Fin.sum_univ_three] using hbar
@@ -364,7 +363,7 @@ private theorem scalar_initial_lower
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t : Real} {x : M} {K : Real}
     (hdim : Module.finrank Real (TangentSpace I x) = 3)
-    (hA : CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t) x
+    (hA : curvatureOperatorLowerBoundAt (I := I) (S.base.metric t) x
       ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t) x⟩ K) :
     -6 * K ≤ metricTracePair0SAt (I := I) (S.base.metric t) (S.ricci t x) := by
@@ -625,7 +624,7 @@ private theorem scalarBarrierLowerBound_of_engineData
 private theorem initialScalarLowerBound_shifted
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 K : Real} (hdim : Module.finrank Real E = 3)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.family.metric t0) x⟩ K) :
     InitialScalarLowerBound (M := M) (fun t x => S.scalar (t + t0) x) (-6 * K) := by
@@ -644,7 +643,7 @@ private theorem scalarLowerBarrier_le_shifted_scalar
     (hdim : Module.finrank Real E = 3)
     (hslab : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> t ∈ D.carrier)
     (hregular : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> t0 < t -> t ∈ D.regular)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.family.metric t0) x⟩ K) :
     ∀ s : Real, s ∈ Set.Icc 0 T -> ∀ x : M,
@@ -770,7 +769,7 @@ theorem scalarCurvature_lower_bound_of_curvatureOperator_lower_bound
     (hdim : Module.finrank Real E = 3)
     (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
     (hregular : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> t0 < t -> t ∈ D.regular)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.family.metric t0) x⟩ K) :
     ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> ∀ x : M,
@@ -797,7 +796,7 @@ theorem scalarCurvature_lower_bound_of_curvatureOperator_lower_bound
 theorem scalar_curvature_initial_lower_bound
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 K : Real} (hdim : Module.finrank Real E = 3)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.family.metric t0) x⟩ K) :
     ∀ x : M, -6 * K ≤ S.scalar t0 x := by
@@ -814,7 +813,7 @@ theorem scalar_curvature_lower_bound
     (hdim : Module.finrank Real E = 3)
     (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
     (hregular : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> t0 < t -> t ∈ D.regular)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.family.metric t0) x⟩ K) :
     ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> ∀ x : M,
@@ -830,7 +829,7 @@ theorem scalar_curvature_lower_bound_compact_flow
     (hdim : Module.finrank Real E = 3)
     (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
     (hregular : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> t0 < t -> t ∈ D.regular)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.family.metric t0) x⟩ K) :
     ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> ∀ x : M,
@@ -851,7 +850,7 @@ theorem scalar_curvature_lower_bound_compact_flow
     exact scalar_curvature_lower_bound (I := I) (M := M) S hS hK hTpos
       hdim hslab hregular hinit t ht x
 
-theorem scalar_curvature_lower_bound_K_one
+theorem scalar_curvature_lower_bound_k_one
     [CompactSpace M] [I.Boundaryless]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
@@ -859,7 +858,7 @@ theorem scalar_curvature_lower_bound_K_one
     (hdim : Module.finrank Real E = 3)
     (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
     (hregular : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> t0 < t -> t ∈ D.regular)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.family.metric t0) x⟩ 1) :
     ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> ∀ x : M,
@@ -870,7 +869,7 @@ theorem scalar_curvature_lower_bound_K_one
   norm_num at hmain ⊢
   simpa [one_mul] using hmain
 
-theorem scalar_curvature_lower_bound_K_one_compact_flow
+theorem scalar_curvature_lower_bound_k_one_compact_flow
     [CompactSpace M] [I.Boundaryless]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
@@ -878,7 +877,7 @@ theorem scalar_curvature_lower_bound_K_one_compact_flow
     (hdim : Module.finrank Real E = 3)
     (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
     (hregular : ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> t0 < t -> t ∈ D.regular)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.family.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.family.metric t0) x⟩ 1) :
     ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) -> ∀ x : M,
@@ -890,7 +889,7 @@ theorem scalar_curvature_lower_bound_K_one_compact_flow
   norm_num at hmain ⊢
   simpa [one_mul] using hmain
 
-def CurvatureOperatorRegionPropagationOn
+def curvatureOperatorRegionPropagationOn
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (K t0 T : Real) : Prop :=
   ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
@@ -906,10 +905,10 @@ theorem curvatureOperatorRegionPropagationOn_initial
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 K : Real} (hK : 0 < K)
     (hdim : Module.finrank Real E = 3)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t0) x⟩ K) :
-    CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 0 := by
+    curvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 0 := by
   intro t ht x
   have ht_eq : t = t0 := by
     rw [Set.mem_Icc] at ht
@@ -925,7 +924,7 @@ theorem curvatureOperatorRegionPropagationOn_initial
 theorem scalar_curvature_lower_and_negative_barrier_of_regionPropagation
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 T K : Real}
-    (hprop : CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T) :
+    (hprop : curvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T) :
     (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
       -6 * K / (1 + 4 * K * (t - t0)) ≤ S.scalar t x) ∧
     (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
@@ -946,7 +945,8 @@ theorem scalar_curvature_lower_and_negative_barrier_of_regionPropagation
     let A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
       ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t) x⟩
-    rcases hmem with ⟨_hM, _hX, hbar⟩
+    rcases hmem with ⟨hM, hbar⟩
+    rw [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hM] at hbar
     have htrace := curvatureOperatorMatrixAt_trace_eq_sum_orderedSectionalCurvaturesAt
       (I := I) x basis A
     have hscalar := scalar_eq_two_mul_sum_orderedSectionalCurvaturesAt
@@ -980,7 +980,8 @@ theorem scalar_curvature_lower_and_negative_barrier_of_regionPropagation
     let A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
       ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t) x⟩
-    rcases hmem with ⟨_hM, _hX, hbar⟩
+    rcases hmem with ⟨hM, hbar⟩
+    rw [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hM] at hbar
     have htrace := curvatureOperatorMatrixAt_trace_eq_sum_orderedSectionalCurvaturesAt
       (I := I) x basis A
     have hscalar := scalar_eq_two_mul_sum_orderedSectionalCurvaturesAt
@@ -1012,7 +1013,7 @@ theorem scalar_curvature_lower_and_negative_barrier_of_regionPropagation
 theorem hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 T K : Real}
-    (hprop : CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T) :
+    (hprop : curvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T) :
     (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
       -6 * K / (1 + 4 * K * (t - t0)) ≤ S.scalar t x) ∧
     (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
@@ -1033,7 +1034,7 @@ theorem hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
 theorem hamilton_ivey_asymptotic_pinching_of_curvatureOperatorRegionPropagation
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 T K δ : Real} (hK : 0 < K) (hδ : 0 < δ)
-    (hprop : CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T) :
+    (hprop : curvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T) :
     ∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
       pinchHeight3 (leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x
           ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
@@ -1045,7 +1046,8 @@ theorem hamilton_ivey_asymptotic_pinching_of_curvatureOperatorRegionPropagation
   let A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
     ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
       (I := I) (S.base.metric t) x⟩
-  rcases hmem with ⟨_hM, _hX, hbar⟩
+  rcases hmem with ⟨hM, hbar⟩
+  rw [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hM] at hbar
   have htrace := curvatureOperatorMatrixAt_trace_eq_sum_orderedSectionalCurvaturesAt
     (I := I) x basis A
   have hscalar := scalar_eq_two_mul_sum_orderedSectionalCurvaturesAt
@@ -1086,10 +1088,10 @@ theorem hamilton_ivey_asymptotic_pinching_of_curvatureOperatorRegionPropagation
       leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x A)
       hK hδ hτ hbarrier
 
-theorem hamilton_ivey_pinching_K_one_of_curvatureOperatorRegionPropagation
+theorem hamilton_ivey_pinching_k_one_of_curvatureOperatorRegionPropagation
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 T : Real}
-    (hprop : CurvatureOperatorRegionPropagationOn (I := I) (M := M) S 1 t0 T) :
+    (hprop : curvatureOperatorRegionPropagationOn (I := I) (M := M) S 1 t0 T) :
     (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
       -6 / (1 + 4 * (t - t0)) ≤ S.scalar t x) ∧
     (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
@@ -1120,7 +1122,7 @@ theorem hamilton_ivey_pinching_initial
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 K : Real} (hK : 0 < K)
     (hdim : Module.finrank Real E = 3)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t0) x⟩ K) :
     (∀ x : M, -6 * K ≤ S.scalar t0 x) ∧
@@ -1155,11 +1157,11 @@ theorem hamilton_ivey_pinching_initial
     simpa [one_div] using h
 
 
-theorem hamilton_ivey_pinching_initial_K_one
+theorem hamilton_ivey_pinching_initial_k_one
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 : Real}
     (hdim : Module.finrank Real E = 3)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t0) x⟩ 1) :
     (∀ x : M, -6 ≤ S.scalar t0 x) ∧
@@ -1191,7 +1193,7 @@ theorem hamilton_ivey_asymptotic_pinching_initial
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     {t0 K δ : Real} (hK : 0 < K) (hδ : 0 < δ)
     (hdim : Module.finrank Real E = 3)
-    (hinit : ∀ x : M, CurvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
+    (hinit : ∀ x : M, curvatureOperatorLowerBoundAt (I := I) (S.base.metric t0) x
       ⟨S.base.rm04 t0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric t0) x⟩ K) :
     ∀ x : M,

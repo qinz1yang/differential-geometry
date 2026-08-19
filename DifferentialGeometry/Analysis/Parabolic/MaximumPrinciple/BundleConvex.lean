@@ -30,14 +30,6 @@ def bundleInnerScalarization
     (u : Real → (x : M) → V x) (ν : (x : M) → V x) : Real → M → Real :=
   fun t x => inner ℝ (u t x) (ν x)
 
-def IsBundleConvexSupportFamily (F : Type uF) [NormedAddCommGroup F]
-    [InnerProductSpace Real F]
-    [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
-    [TopologicalSpace (TotalSpace F V)] [FiberBundle F V]
-    (C : Real → (x : M) → Set (V x)) (support : Real → (x : M) → V x → Real) : Prop :=
-  ∀ t x p, p ∈ C t x ↔
-    ∀ ν : Cₛ^∞⟮I; F, V⟯, inner ℝ p (ν x) ≤ support t x (ν x)
-
 omit F [NormedAddCommGroup F] [InnerProductSpace Real F] [CompleteSpace F]
   [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V] in
 structure IsBundleHeatReactionOn [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
@@ -46,7 +38,7 @@ structure IsBundleHeatReactionOn [∀ x, NormedAddCommGroup (V x)] [∀ x, Inner
     (D : RealTimeInterval) (G : MetricConnectionFamily (I := I) (M := M) Real)
     (source : Real → (x : M) → V x → V x → Real)
     (u : Real → (x : M) → V x) : Prop where
-  scalarJointCont :
+  scalarTimeContinuousWithinAt :
     ∀ ν : (x : M) → V x, ∀ t : Real, t ∈ D.carrier → ∀ x : M, Flat t x ν →
       ContinuousWithinAt (fun s : Real => bundleInnerScalarization u ν s x) D.carrier t
   scalarSliceSmooth :
@@ -496,7 +488,7 @@ theorem bundleClosedConvex_timeDep_heat_reaction_mem_of_support_tangent
             (𝓝[<] T) (𝓝 (inner ℝ (u T x) (ν₀ x))) := by
           have hcont : ContinuousWithinAt (fun s : Real => bundleInnerScalarization u ν₀ s x)
               (Set.Icc 0 T) T :=
-            hsol.scalarJointCont ν₀ T ⟨le_of_lt hTpos, le_rfl⟩ x hν₀flat
+            hsol.scalarTimeContinuousWithinAt ν₀ T ⟨le_of_lt hTpos, le_rfl⟩ x hν₀flat
           have hcont' : Tendsto (fun s : Real => bundleInnerScalarization u ν₀ s x)
               (𝓝[Set.Icc 0 T] T) (𝓝 (bundleInnerScalarization u ν₀ T x)) :=
             hcont.tendsto

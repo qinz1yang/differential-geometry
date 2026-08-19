@@ -160,7 +160,7 @@ theorem fiberInner_compUhlenbeck_isometry
 
 
 omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-theorem uhlenbeckEndomorphism_zero_eq_id
+private theorem uhlenbeckEndomorphism_zero_eq_id
     {x : M}
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (iota : MatrixComp M (Fin 3))
@@ -215,22 +215,6 @@ theorem uhlenbeckPulledRm04At_zero_eq_rm04
     uhlenbeckEndomorphism_zero_eq_id basisAt iota hiota0]
   simp
 
-
-omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-theorem tensor04_fiberInner_eq
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (A B : Tensor04At (I := I) (M := M) x) :
-    letI : InnerProductSpace.Core Real (Tensor04At (I := I) (M := M) x) :=
-      (tensor0SMetricData (I := I) g x 4).toCore
-    letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
-      InnerProductSpace.Core.toNormedAddCommGroup
-    letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
-      @InnerProductSpace.ofCore Real (Tensor04At (I := I) (M := M) x) _ _ _
-        (tensor0SMetricData (I := I) g x 4).toCore.toCore
-    inner ℝ A B = inner0S (I := I) g x 4 A B := by
-  change MetricFiberData.inner (tensor0SMetricData (I := I) g x 4) A B =
-    inner0S (I := I) g x 4 A B
-  rfl
 
 end DifferentialGeometry.PDE.RicciFlow
 

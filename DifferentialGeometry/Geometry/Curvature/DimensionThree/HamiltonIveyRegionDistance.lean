@@ -15,83 +15,83 @@ open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open scoped Topology RealInnerProductSpace BigOperators
 open scoped Matrix.Norms.Frobenius
 
-abbrev HI3 := EuclideanSpace ℝ (Fin 3 × Fin 3)
-
 theorem hamiltonIveyRegion_seqClosedGraph
     {K T : ℝ} (hK : 0 < K) :
-    ∀ τ₀ : ℝ, τ₀ ∈ Set.Icc 0 T → ∀ q : HI3,
-      ∀ (τn : ℕ → ℝ) (qn : ℕ → HI3),
+    ∀ τ₀ : ℝ, τ₀ ∈ Set.Icc 0 T → ∀ q : EuclideanSpace ℝ (Fin 3 × Fin 3),
+      ∀ (τn : ℕ → ℝ) (qn : ℕ → EuclideanSpace ℝ (Fin 3 × Fin 3)),
         Tendsto τn atTop (𝓝 τ₀) →
         Tendsto qn atTop (𝓝 q) →
           (∀ᶠ n in atTop, τn n ∈ Set.Icc 0 T ∧
-            qn n ∈ hamiltonIveyConvexMatrixRegionEuclid K (τn n)) → q ∈
-            hamiltonIveyConvexMatrixRegionEuclid K τ₀ := by
+            qn n ∈ hamiltonIveyConvexMatrixRegionEuclidean K (τn n)) → q ∈
+            hamiltonIveyConvexMatrixRegionEuclidean K τ₀ := by
   classical
   intro τ₀ hτ₀ q τn qn hτn hqn hmem
-  refine (hamiltonIveyConvexMatrixRegionEuclid_mem_iff_forall_support_le hK hτ₀.1 q).mpr ?_
+  refine (hamiltonIveyConvexMatrixRegionEuclidean_mem_iff_forall_support_le hK hτ₀.1 q).mpr ?_
   intro ν hν
   rcases (mem_finiteSupportDirections_hamiltonIvey_region_iff hK hτ₀.1 ν).mp hν with hneg | hzero
   · have hsupp : ContinuousOn
-        (fun τ : ℝ => hamiltonIveyConvexMatrixRegionSupportEuclid K τ ν) (Set.Icc 0 T) :=
-      hamiltonIveyConvexMatrixRegionSupportEuclid_continuousOn (K := K) (T := T) hK ν hneg
+        (fun τ : ℝ => hamiltonIveyConvexMatrixRegionSupportEuclidean K τ ν) (Set.Icc 0 T) :=
+      hamiltonIveyConvexMatrixRegionSupportEuclidean_continuousOn (K := K) (T := T) hK ν hneg
     have hτwithin : Tendsto τn atTop (𝓝[Set.Icc 0 T] τ₀) :=
       (tendsto_nhdsWithin_iff.mpr ⟨hτn, hmem.mono (fun n hn => hn.1)⟩)
     have hsuppT : Tendsto (fun n : ℕ =>
-        hamiltonIveyConvexMatrixRegionSupportEuclid K (τn n) ν)
-        atTop (𝓝 (hamiltonIveyConvexMatrixRegionSupportEuclid K τ₀ ν)) :=
+        hamiltonIveyConvexMatrixRegionSupportEuclidean K (τn n) ν)
+        atTop (𝓝 (hamiltonIveyConvexMatrixRegionSupportEuclidean K τ₀ ν)) :=
       (hsupp.continuousWithinAt hτ₀).tendsto.comp hτwithin
     have hinnerT : Tendsto (fun n : ℕ => inner ℝ ν (qn n)) atTop (𝓝 (inner ℝ ν q)) := by
-      have hc : ContinuousAt (fun x : HI3 => inner ℝ ν x) q :=
+      have hc : ContinuousAt
+          (fun x : EuclideanSpace ℝ (Fin 3 × Fin 3) => inner ℝ ν x) q :=
         (continuous_const.inner continuous_id).continuousAt
       simpa using hc.tendsto.comp hqn
     have hle : ∀ᶠ n in atTop,
-        inner ℝ ν (qn n) ≤ hamiltonIveyConvexMatrixRegionSupportEuclid K (τn n) ν := by
+        inner ℝ ν (qn n) ≤ hamiltonIveyConvexMatrixRegionSupportEuclidean K (τn n) ν := by
       filter_upwards [hmem] with n hn
-      have hfs : ν ∈ finiteSupportDirections (hamiltonIveyConvexMatrixRegionEuclid K (τn n)) := by
+      have hfs : ν ∈ finiteSupportDirections (hamiltonIveyConvexMatrixRegionEuclidean K (τn n)) := by
         rw [mem_finiteSupportDirections_hamiltonIvey_region_iff hK hn.1.1]
         exact Or.inl hneg
-      exact (hamiltonIveyConvexMatrixRegionEuclid_mem_iff_forall_support_le
+      exact (hamiltonIveyConvexMatrixRegionEuclidean_mem_iff_forall_support_le
         hK hn.1.1 (qn n)).mp hn.2 ν hfs
     have hlim : Tendsto (fun n : ℕ =>
-        hamiltonIveyConvexMatrixRegionSupportEuclid K (τn n) ν - inner ℝ ν (qn n))
-        atTop (𝓝 (hamiltonIveyConvexMatrixRegionSupportEuclid K τ₀ ν - inner ℝ ν q)) :=
+        hamiltonIveyConvexMatrixRegionSupportEuclidean K (τn n) ν - inner ℝ ν (qn n))
+        atTop (𝓝 (hamiltonIveyConvexMatrixRegionSupportEuclidean K τ₀ ν - inner ℝ ν q)) :=
       hsuppT.sub hinnerT
     have hnonneg : ∀ᶠ n in atTop,
-        (0 : ℝ) ≤ hamiltonIveyConvexMatrixRegionSupportEuclid K (τn n) ν - inner ℝ ν (qn n) := by
+        (0 : ℝ) ≤ hamiltonIveyConvexMatrixRegionSupportEuclidean K (τn n) ν - inner ℝ ν (qn n) := by
       filter_upwards [hle] with n hn
       linarith
-    have hge : (0 : ℝ) ≤ hamiltonIveyConvexMatrixRegionSupportEuclid K τ₀ ν - inner ℝ ν q :=
+    have hge : (0 : ℝ) ≤ hamiltonIveyConvexMatrixRegionSupportEuclidean K τ₀ ν - inner ℝ ν q :=
       ge_of_tendsto hlim hnonneg
     linarith
-  · have hsupp0 : ∀ τ : ℝ, hamiltonIveyConvexMatrixRegionSupportEuclid K τ ν = 0 := by
+  · have hsupp0 : ∀ τ : ℝ, hamiltonIveyConvexMatrixRegionSupportEuclidean K τ ν = 0 := by
       intro τ
-      unfold hamiltonIveyConvexMatrixRegionSupportEuclid
-      have hν₁ : (symmEuclid_isHermitian ν).eigenvalues₀ 0 = 0 := by
-        have hze : (symmEuclid_isHermitian ν).eigenvalues = 0 := by
+      unfold hamiltonIveyConvexMatrixRegionSupportEuclidean
+      have hν₁ : (euclideanMatrixSymmetrization_isHermitian ν).eigenvalues₀ 0 = 0 := by
+        have hze : (euclideanMatrixSymmetrization_isHermitian ν).eigenvalues = 0 := by
           exact (Matrix.IsHermitian.eigenvalues_eq_zero_iff
-            (hA := symmEuclid_isHermitian ν)).mpr hzero
+            (hA := euclideanMatrixSymmetrization_isHermitian ν)).mpr hzero
         let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
-        have h0 : (symmEuclid_isHermitian ν).eigenvalues (e 0) = 0 := congrFun hze (e 0)
-        have hrel : (symmEuclid_isHermitian ν).eigenvalues (e 0) =
-            (symmEuclid_isHermitian ν).eigenvalues₀ 0 := by
-          change (symmEuclid_isHermitian ν).eigenvalues₀
+        have h0 : (euclideanMatrixSymmetrization_isHermitian ν).eigenvalues (e 0) = 0 := congrFun hze (e 0)
+        have hrel : (euclideanMatrixSymmetrization_isHermitian ν).eigenvalues (e 0) =
+            (euclideanMatrixSymmetrization_isHermitian ν).eigenvalues₀ 0 := by
+          change (euclideanMatrixSymmetrization_isHermitian ν).eigenvalues₀
               ((Fintype.equivOfCardEq (Fintype.card_fin 3)).symm (e 0)) =
-              (symmEuclid_isHermitian ν).eigenvalues₀ 0
+              (euclideanMatrixSymmetrization_isHermitian ν).eigenvalues₀ 0
           congr
           exact Equiv.symm_apply_apply e 0
         rwa [hrel] at h0
       rw [hν₁]
       simp
     have hinnerT : Tendsto (fun n : ℕ => inner ℝ ν (qn n)) atTop (𝓝 (inner ℝ ν q)) := by
-      have hc : ContinuousAt (fun x : HI3 => inner ℝ ν x) q :=
+      have hc : ContinuousAt
+          (fun x : EuclideanSpace ℝ (Fin 3 × Fin 3) => inner ℝ ν x) q :=
         (continuous_const.inner continuous_id).continuousAt
       simpa using hc.tendsto.comp hqn
     have hle : ∀ᶠ n in atTop, inner ℝ ν (qn n) ≤ 0 := by
       filter_upwards [hmem] with n hn
-      have hfs : ν ∈ finiteSupportDirections (hamiltonIveyConvexMatrixRegionEuclid K (τn n)) := by
+      have hfs : ν ∈ finiteSupportDirections (hamiltonIveyConvexMatrixRegionEuclidean K (τn n)) := by
         rw [mem_finiteSupportDirections_hamiltonIvey_region_iff hK hn.1.1]
         exact Or.inr hzero
-      have hqnle := (hamiltonIveyConvexMatrixRegionEuclid_mem_iff_forall_support_le
+      have hqnle := (hamiltonIveyConvexMatrixRegionEuclidean_mem_iff_forall_support_le
         hK hn.1.1 (qn n)).mp hn.2 ν hfs
       rwa [hsupp0 (τn n)] at hqnle
     have hlim : Tendsto (fun n : ℕ => -inner ℝ ν (qn n)) atTop (𝓝 (-inner ℝ ν q)) :=
@@ -106,17 +106,18 @@ theorem hamiltonIveyRegion_seqClosedGraph
 
 theorem hamiltonIveyRegion_approx
     {K T : ℝ} (hK : 0 < K) :
-    ∀ τ₀ : ℝ, τ₀ ∈ Set.Icc 0 T → ∀ q : HI3,
-      q ∈ hamiltonIveyConvexMatrixRegionEuclid K τ₀ → ∀ ε : ℝ, 0 < ε →
+    ∀ τ₀ : ℝ, τ₀ ∈ Set.Icc 0 T → ∀ q : EuclideanSpace ℝ (Fin 3 × Fin 3),
+      q ∈ hamiltonIveyConvexMatrixRegionEuclidean K τ₀ → ∀ ε : ℝ, 0 < ε →
         ∃ δ : ℝ, 0 < δ ∧ ∀ τ : ℝ, τ ∈ Set.Icc 0 T → |τ - τ₀| < δ →
-          ∃ q' : HI3, q' ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧ dist q' q < ε := by
+          ∃ q' : EuclideanSpace ℝ (Fin 3 × Fin 3),
+            q' ∈ hamiltonIveyConvexMatrixRegionEuclidean K τ ∧ dist q' q < ε := by
   classical
   intro τ₀ hτ₀ q hqC ε hε
-  let A : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix q
+  let A : Matrix (Fin 3) (Fin 3) ℝ := euclideanToMatrix q
   have hA : A.IsHermitian := by
     have hmem : A ∈ hamiltonIveyConvexMatrixRegion K τ₀ := by
-      rwa [mem_hamiltonIveyConvexMatrixRegionEuclid_iff] at hqC
-    rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hmem
+      rwa [mem_hamiltonIveyConvexMatrixRegionEuclidean_iff] at hqC
+    rw [hamiltonIveyConvexMatrixRegion] at hmem
     exact hmem.1
   let X : ℝ := max (-(hA.eigenvalues₀ 2)) 0
   let s : ℝ := A.trace
@@ -125,11 +126,11 @@ theorem hamiltonIveyRegion_approx
     exact le_max_right _ _
   have hbar : hamiltonIveyConvexBarrier K τ₀ X ≤ s := by
     have hmem : A ∈ hamiltonIveyConvexMatrixRegion K τ₀ := by
-      rwa [mem_hamiltonIveyConvexMatrixRegionEuclid_iff] at hqC
-    rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hmem
-    have hX' : max (-sectionalRayleighMin3 A) 0 = X := by
-      rw [sectionalRayleighMin3_eq_eigenvalue_min hA]
-    have hb := hmem.2.2
+      rwa [mem_hamiltonIveyConvexMatrixRegionEuclidean_iff] at hqC
+    rw [hamiltonIveyConvexMatrixRegion] at hmem
+    have hX' : max (-minimumRayleighQuotient3 A) 0 = X := by
+      rw [minimumRayleighQuotient3_eq_min_eigenvalue hA]
+    have hb := hmem.2
     rw [hX'] at hb
     simpa [s] using hb
   have hBslice : ContinuousOn (fun τ : ℝ => hamiltonIveyConvexBarrier K τ X) (Set.Icc 0 T) := by
@@ -156,7 +157,7 @@ theorem hamiltonIveyRegion_approx
   let c : ℝ := max (hamiltonIveyConvexBarrier K τ X - s) 0
   let d : Fin 3 → ℝ := ![lam 0 + c, lam 1 + c, lam 2]
   let A' : Matrix (Fin 3) (Fin 3) ℝ := O * Matrix.diagonal d * O.transpose
-  let q' : HI3 := matrixToEuclid A'
+  let q' : EuclideanSpace ℝ (Fin 3 × Fin 3) := matrixToEuclidean A'
   have hcge : 0 ≤ c := by
     dsimp [c]
     exact le_max_right _ _
@@ -185,13 +186,12 @@ theorem hamiltonIveyRegion_approx
               _ ≤ 2 * c := mul_le_mul_of_nonneg_right (by norm_num) hcge
             exact add_le_add le_rfl hc2
   have hD : Matrix.diagonal d ∈ hamiltonIveyConvexMatrixRegion K τ := by
-    rw [hamiltonIveyConvexMatrixRegion_eq_violation]
-    refine ⟨Matrix.isHermitian_diagonal d, ?_, ?_⟩
-    · exact le_max_right _ _
+    rw [hamiltonIveyConvexMatrixRegion]
+    refine ⟨Matrix.isHermitian_diagonal d, ?_⟩
     · have hd_eig : (Matrix.isHermitian_diagonal d).eigenvalues₀ = d :=
         diagonal_eigenvalues₀_eq_of_antitone d hdanti
-      have hd_min : sectionalRayleighMin3 (Matrix.diagonal d) = d 2 := by
-        rw [sectionalRayleighMin3_eq_eigenvalue_min (Matrix.isHermitian_diagonal d), hd_eig]
+      have hd_min : minimumRayleighQuotient3 (Matrix.diagonal d) = d 2 := by
+        rw [minimumRayleighQuotient3_eq_min_eigenvalue (Matrix.isHermitian_diagonal d), hd_eig]
         rfl
       have hX' : max (-(d 2)) 0 = X := by
         have hd2 : d 2 = lam 2 := by
@@ -243,8 +243,8 @@ theorem hamiltonIveyRegion_approx
   have hA' : A' ∈ hamiltonIveyConvexMatrixRegion K τ := by
     exact (hamiltonIveyConvexMatrixRegion_orthogonal_conj (Q := O) hOtO hO₁).2 (by
       rwa [hQtA'Q])
-  have hq'C : q' ∈ hamiltonIveyConvexMatrixRegionEuclid K τ := by
-    rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
+  have hq'C : q' ∈ hamiltonIveyConvexMatrixRegionEuclidean K τ := by
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclidean_iff]
     simpa [q', A'] using hA'
   have hAeq : A = O * Matrix.diagonal lam * O.transpose := by
     calc
@@ -332,15 +332,15 @@ theorem hamiltonIveyRegion_approx
       _ ≤ 9 * c := by nlinarith
   have hdist : dist q' q ≤ 9 * c := by
     rw [dist_eq_norm]
-    have hqA : q = matrixToEuclid A := by
+    have hqA : q = matrixToEuclidean A := by
       dsimp [A]
-      exact (matrixToEuclid_euclidToMatrix q).symm
-    have hq' : q' - q = matrixToEuclid (A' - A) := by
+      exact (matrixToEuclidean_euclideanToMatrix q).symm
+    have hq' : q' - q = matrixToEuclidean (A' - A) := by
       rw [hqA]
       dsimp [q']
-      rw [matrixToEuclid_sub]
+      rw [matrixToEuclidean_sub]
     rw [hq']
-    rw [matrixToEuclid_norm]
+    rw [matrixToEuclidean_norm]
     exact hnorm
   have hc_le : c ≤ |hamiltonIveyConvexBarrier K τ X - hamiltonIveyConvexBarrier K τ₀ X| := by
     dsimp [c]
@@ -370,29 +370,29 @@ theorem hamiltonIveyRegion_approx
 
 theorem continuousOn_infDist_hamiltonIveyRegion
     {K T : ℝ} (hK : 0 < K) :
-    ContinuousOn (fun q : ℝ × HI3 =>
-      Metric.infDist q.2 (hamiltonIveyConvexMatrixRegionEuclid K q.1))
-      (Set.Icc 0 T ×ˢ (Set.univ : Set HI3)) :=
+    ContinuousOn (fun q : ℝ × EuclideanSpace ℝ (Fin 3 × Fin 3) =>
+      Metric.infDist q.2 (hamiltonIveyConvexMatrixRegionEuclidean K q.1))
+      (Set.Icc 0 T ×ˢ (Set.univ : Set (EuclideanSpace ℝ (Fin 3 × Fin 3)))) :=
   continuousOn_infDist_of_seqClosedGraph_of_approx (a := 0) (b := T)
-    (C := fun τ => hamiltonIveyConvexMatrixRegionEuclid K τ)
-    (hCne := fun _ hτ => nonempty_hamiltonIveyConvexMatrixRegionEuclid hK hτ.1)
+    (C := fun τ => hamiltonIveyConvexMatrixRegionEuclidean K τ)
+    (hCne := fun _ hτ => nonempty_hamiltonIveyConvexMatrixRegionEuclidean hK hτ.1)
     (hgraph := hamiltonIveyRegion_seqClosedGraph hK)
     (happrox := hamiltonIveyRegion_approx hK)
 
 theorem continuousOn_infDist_hamiltonIveyRegion_comp_shift
     {M : Type*} [TopologicalSpace M]
     {t0 T K : ℝ} (hK : 0 < K)
-    (A : ℝ → M → HI3)
+    (A : ℝ → M → EuclideanSpace ℝ (Fin 3 × Fin 3))
     (hjoint : ContinuousOn
       (fun q : Real × M => A q.1 q.2)
       (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M))) :
     ContinuousOn
       (fun q : Real × M => Metric.infDist (A q.1 q.2)
-        (hamiltonIveyConvexMatrixRegionEuclid K (q.1 - t0)))
+        (hamiltonIveyConvexMatrixRegionEuclidean K (q.1 - t0)))
       (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M)) := by
-  have hg : ContinuousOn (fun q : ℝ × HI3 =>
-      Metric.infDist q.2 (hamiltonIveyConvexMatrixRegionEuclid K q.1))
-      (Set.Icc 0 T ×ˢ (Set.univ : Set HI3)) :=
+  have hg : ContinuousOn (fun q : ℝ × EuclideanSpace ℝ (Fin 3 × Fin 3) =>
+      Metric.infDist q.2 (hamiltonIveyConvexMatrixRegionEuclidean K q.1))
+      (Set.Icc 0 T ×ˢ (Set.univ : Set (EuclideanSpace ℝ (Fin 3 × Fin 3)))) :=
     continuousOn_infDist_hamiltonIveyRegion hK
   have hh : ContinuousOn
       (fun q : ℝ × M => (q.1 - t0, A q.1 q.2))
@@ -403,12 +403,119 @@ theorem continuousOn_infDist_hamiltonIveyRegion_comp_shift
   have hmaps : Set.MapsTo
       (fun q : ℝ × M => (q.1 - t0, A q.1 q.2))
       (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M))
-      (Set.Icc 0 T ×ˢ (Set.univ : Set HI3)) := by
+      (Set.Icc 0 T ×ˢ (Set.univ : Set (EuclideanSpace ℝ (Fin 3 × Fin 3)))) := by
     intro q hq
     exact ⟨⟨by linarith [hq.1.1], by linarith [hq.1.2]⟩, trivial⟩
   refine (hg.comp hh hmaps).congr ?_
   intro q hq
   rfl
+
+theorem infDist_matrixToEuclidean_orthogonal_conj
+    {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
+    (A O : Matrix (Fin 3) (Fin 3) ℝ) (hOorth : O * O.transpose = 1) :
+    Metric.infDist (matrixToEuclidean A) (hamiltonIveyConvexMatrixRegionEuclidean K τ) =
+    Metric.infDist (matrixToEuclidean (O.transpose * A * O)) (hamiltonIveyConvexMatrixRegionEuclidean K τ) := by
+  classical
+  let T : EuclideanSpace ℝ (Fin 3 × Fin 3) → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    fun v => matrixToEuclidean (O.transpose * euclideanToMatrix v * O)
+  let U : EuclideanSpace ℝ (Fin 3 × Fin 3) → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    fun v => matrixToEuclidean (O * euclideanToMatrix v * O.transpose)
+  let S : Set (EuclideanSpace ℝ (Fin 3 × Fin 3)) := hamiltonIveyConvexMatrixRegionEuclidean K τ
+  have hOorth2 : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hOorth
+  have hT_inner : ∀ v w, inner ℝ (T v) (T w) = inner ℝ v w := by
+    intro v w
+    have h := inner_matrixToEuclidean_orthogonal_conj (euclideanToMatrix v) (euclideanToMatrix w) O hOorth
+    simpa [T, matrixToEuclidean_euclideanToMatrix] using h.symm
+  have hU_inner : ∀ v w, inner ℝ (U v) (U w) = inner ℝ v w := by
+    intro v w
+    have h := inner_matrixToEuclidean_orthogonal_conj (euclideanToMatrix v) (euclideanToMatrix w) O.transpose hOorth2
+    simpa [U, matrixToEuclidean_euclideanToMatrix] using h.symm
+  have hT_sub : ∀ v, v ∈ S → T v ∈ S := by
+    intro v hv
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclidean_iff]
+    change euclideanToMatrix (matrixToEuclidean (O.transpose * euclideanToMatrix v * O)) ∈
+      hamiltonIveyConvexMatrixRegion K τ
+    rw [euclideanToMatrix_matrixToEuclidean]
+    have hvmat : euclideanToMatrix v ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclidean_iff K τ v).1 hv
+    exact (hamiltonIveyConvexMatrixRegion_orthogonal_conj (K := K) (τ := τ)
+      (A := euclideanToMatrix v) (Q := O) hOorth2 hOorth).1 hvmat
+  have hU_sub : ∀ v, v ∈ S → U v ∈ S := by
+    intro v hv
+    rw [mem_hamiltonIveyConvexMatrixRegionEuclidean_iff]
+    change euclideanToMatrix (matrixToEuclidean (O * euclideanToMatrix v * O.transpose)) ∈
+      hamiltonIveyConvexMatrixRegion K τ
+    rw [euclideanToMatrix_matrixToEuclidean]
+    have hvmat : euclideanToMatrix v ∈ hamiltonIveyConvexMatrixRegion K τ :=
+      (mem_hamiltonIveyConvexMatrixRegionEuclidean_iff K τ v).1 hv
+    exact (hamiltonIveyConvexMatrixRegion_orthogonal_conj (K := K) (τ := τ)
+      (A := euclideanToMatrix v) (Q := O.transpose) hOorth hOorth2).1 hvmat
+  have hTU : ∀ v, T (U v) = v := by
+    intro v
+    dsimp [T, U]
+    rw [euclideanToMatrix_matrixToEuclidean]
+    have hmm : O.transpose * (O * euclideanToMatrix v * O.transpose) * O = euclideanToMatrix v := by
+      rw [show O.transpose * (O * euclideanToMatrix v * O.transpose) * O =
+          (O.transpose * O) * euclideanToMatrix v * (O.transpose * O) by
+        repeat rw [Matrix.mul_assoc]]
+      rw [hOorth2]
+      simp
+    rw [hmm]
+    exact matrixToEuclidean_euclideanToMatrix v
+  have hnormT : ∀ u, ‖T u‖ = ‖u‖ := by
+    intro u
+    have hsq : ‖T u‖ ^ 2 = ‖u‖ ^ 2 := by
+      rw [norm_sq_eq_re_inner (𝕜 := ℝ) (T u), norm_sq_eq_re_inner (𝕜 := ℝ) u]
+      simpa using (hT_inner u u)
+    have h := (sq_eq_sq_iff_abs_eq_abs (‖T u‖) (‖u‖)).mp hsq
+    rw [abs_of_nonneg (norm_nonneg (T u)), abs_of_nonneg (norm_nonneg u)] at h
+    exact h
+  have hdistT : ∀ v w, dist (T v) (T w) = dist v w := by
+    intro v w
+    rw [dist_eq_norm, dist_eq_norm]
+    have hsq : ‖T v - T w‖ ^ 2 = ‖v - w‖ ^ 2 := by
+      rw [norm_sq_eq_re_inner (𝕜 := ℝ) (T v - T w), norm_sq_eq_re_inner (𝕜 := ℝ) (v - w)]
+      calc
+        inner ℝ (T v - T w) (T v - T w)
+            = inner ℝ (T v) (T v) - inner ℝ (T v) (T w) - inner ℝ (T w) (T v) + inner ℝ (T w) (T w) := by
+              rw [inner_sub_left (T v) (T w) (T v - T w)]
+              rw [inner_sub_right (T v) (T v) (T w)]
+              rw [inner_sub_right (T w) (T v) (T w)]
+              ring
+        _ = inner ℝ v v - inner ℝ v w - inner ℝ w v + inner ℝ w w := by
+              rw [hT_inner v v, hT_inner v w, hT_inner w v, hT_inner w w]
+        _ = inner ℝ (v - w) (v - w) := by
+              rw [inner_sub_left v w (v - w)]
+              rw [inner_sub_right v v w]
+              rw [inner_sub_right w v w]
+              ring
+    have h := (sq_eq_sq_iff_abs_eq_abs (‖T v - T w‖) (‖v - w‖)).mp hsq
+    rw [abs_of_nonneg (norm_nonneg (T v - T w)), abs_of_nonneg (norm_nonneg (v - w))] at h
+    exact h
+  have hne : S.Nonempty := nonempty_hamiltonIveyConvexMatrixRegionEuclidean hK hτ
+  have hle1 : Metric.infDist (T (matrixToEuclidean A)) S ≤ Metric.infDist (matrixToEuclidean A) S := by
+    apply (Metric.le_infDist hne).mpr
+    intro y hy
+    have hyT : T y ∈ S := hT_sub y hy
+    have h1 : Metric.infDist (T (matrixToEuclidean A)) S ≤ dist (T (matrixToEuclidean A)) (T y) :=
+      Metric.infDist_le_dist_of_mem hyT
+    calc
+      Metric.infDist (T (matrixToEuclidean A)) S ≤ dist (T (matrixToEuclidean A)) (T y) := h1
+      _ = dist (matrixToEuclidean A) y := hdistT (matrixToEuclidean A) y
+  have hle2 : Metric.infDist (matrixToEuclidean A) S ≤ Metric.infDist (T (matrixToEuclidean A)) S := by
+    apply (Metric.le_infDist hne).mpr
+    intro y hy
+    have hyU : U y ∈ S := hU_sub y hy
+    have h1 : Metric.infDist (matrixToEuclidean A) S ≤ dist (matrixToEuclidean A) (U y) :=
+      Metric.infDist_le_dist_of_mem hyU
+    have h2 : dist (matrixToEuclidean A) (U y) = dist (T (matrixToEuclidean A)) y := by
+      have hd := hdistT (matrixToEuclidean A) (U y)
+      rw [hTU y] at hd
+      exact hd.symm
+    calc
+      Metric.infDist (matrixToEuclidean A) S ≤ dist (matrixToEuclidean A) (U y) := h1
+      _ = dist (T (matrixToEuclidean A)) y := h2
+  simpa [T, S, euclideanToMatrix_matrixToEuclidean] using le_antisymm hle2 hle1
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
 

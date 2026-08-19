@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Matrix.Normed
 import Mathlib.LinearAlgebra.Matrix.Adjugate
+import Mathlib.LinearAlgebra.Matrix.Hermitian
 
 set_option autoImplicit false
 
@@ -11,75 +12,132 @@ open scoped Matrix.Norms.Frobenius
 
 variable {m n ι : Type*}
 
-noncomputable def matrixToEuclid
+noncomputable def matrixToEuclidean
     (A : Matrix m n ℝ) : EuclideanSpace ℝ (m × n) :=
   WithLp.toLp 2 (fun ij : m × n => A ij.1 ij.2)
 
-noncomputable def euclidToMatrix
+noncomputable def euclideanToMatrix
     (A : EuclideanSpace ℝ (m × n)) : Matrix m n ℝ :=
   Matrix.of (fun i j => A (i, j))
 
-@[simp] theorem matrixToEuclid_euclidToMatrix
+noncomputable def euclideanMatrixSymmetrization
+    (v : EuclideanSpace ℝ (ι × ι)) : Matrix ι ι ℝ :=
+  (1 / 2 : ℝ) • (euclideanToMatrix v + (euclideanToMatrix v).transpose)
+
+theorem euclideanMatrixSymmetrization_isHermitian
+    (v : EuclideanSpace ℝ (ι × ι)) : (euclideanMatrixSymmetrization v).IsHermitian := by
+  dsimp [euclideanMatrixSymmetrization]
+  unfold Matrix.IsHermitian
+  ext i j
+  simp [Matrix.transpose_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, add_comm]
+  ring
+
+@[simp] theorem matrixToEuclidean_euclideanToMatrix
     (A : EuclideanSpace ℝ (m × n)) :
-    matrixToEuclid (euclidToMatrix A) = A := by
+    matrixToEuclidean (euclideanToMatrix A) = A := by
   ext ij
-  simp [matrixToEuclid, euclidToMatrix]
+  simp [matrixToEuclidean, euclideanToMatrix]
 
-@[simp] theorem euclidToMatrix_matrixToEuclid (A : Matrix m n ℝ) :
-    euclidToMatrix (matrixToEuclid A) = A := by
+@[simp] theorem euclideanToMatrix_matrixToEuclidean (A : Matrix m n ℝ) :
+    euclideanToMatrix (matrixToEuclidean A) = A := by
   ext i j
-  simp [matrixToEuclid, euclidToMatrix]
+  simp [matrixToEuclidean, euclideanToMatrix]
 
-theorem matrixToEuclid_add (A B : Matrix m n ℝ) :
-    matrixToEuclid (A + B) = matrixToEuclid A + matrixToEuclid B := by
+theorem euclideanMatrixSymmetrization_matrixToEuclidean_symm
+    {M : Matrix ι ι ℝ} (hM : M.IsSymm) :
+    euclideanMatrixSymmetrization (matrixToEuclidean M) = M := by
+  unfold euclideanMatrixSymmetrization
+  rw [euclideanToMatrix_matrixToEuclidean]
+  ext i j
+  have hs : M i j = M j i := by
+    have h := congrFun (congrFun hM i) j
+    simpa [Matrix.transpose_apply] using h.symm
+  simp [hs]
+  ring
+
+theorem euclideanMatrixSymmetrization_matrixToEuclidean_smul
+    (c : ℝ) (M : Matrix ι ι ℝ) :
+    euclideanMatrixSymmetrization (matrixToEuclidean (c • M)) = c • euclideanMatrixSymmetrization (matrixToEuclidean M) := by
+  unfold euclideanMatrixSymmetrization
+  ext i j
+  simp only [euclideanToMatrix_matrixToEuclidean, Matrix.smul_apply, Matrix.add_apply,
+    Matrix.transpose_apply, smul_eq_mul]
+  ring
+
+theorem euclideanMatrixSymmetrization_matrixToEuclidean_conj
+    [Fintype ι] (O M : Matrix ι ι ℝ) :
+    euclideanMatrixSymmetrization (matrixToEuclidean (O.transpose * M * O)) =
+      O.transpose * euclideanMatrixSymmetrization (matrixToEuclidean M) * O := by
+  unfold euclideanMatrixSymmetrization
+  simp only [euclideanToMatrix_matrixToEuclidean]
+  have hT : (O.transpose * M * O).transpose = O.transpose * M.transpose * O := by
+    simp [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
+  calc
+    (1 / 2 : ℝ) • (O.transpose * M * O + (O.transpose * M * O).transpose)
+        = (1 / 2 : ℝ) • (O.transpose * M * O + O.transpose * M.transpose * O) := by rw [hT]
+    _ = (1 / 2 : ℝ) • (O.transpose * (M * O) + O.transpose * (M.transpose * O)) := by
+          rw [Matrix.mul_assoc, Matrix.mul_assoc]
+    _ = (1 / 2 : ℝ) • (O.transpose * (M * O + M.transpose * O)) := by
+          rw [← Matrix.mul_add]
+    _ = (1 / 2 : ℝ) • (O.transpose * ((M + M.transpose) * O)) := by
+          rw [Matrix.add_mul]
+    _ = (1 / 2 : ℝ) • (O.transpose * (M + M.transpose) * O) := by
+          rw [← Matrix.mul_assoc]
+    _ = ((1 / 2 : ℝ) • (O.transpose * (M + M.transpose))) * O := by
+          rw [← Matrix.smul_mul]
+    _ = (O.transpose * ((1 / 2 : ℝ) • (M + M.transpose))) * O := by
+          rw [← Matrix.mul_smul]
+
+theorem matrixToEuclidean_add (A B : Matrix m n ℝ) :
+    matrixToEuclidean (A + B) = matrixToEuclidean A + matrixToEuclidean B := by
   ext ij
   rfl
 
-theorem matrixToEuclid_sub (A B : Matrix m n ℝ) :
-    matrixToEuclid (A - B) = matrixToEuclid A - matrixToEuclid B := by
+theorem matrixToEuclidean_sub (A B : Matrix m n ℝ) :
+    matrixToEuclidean (A - B) = matrixToEuclidean A - matrixToEuclidean B := by
   ext ij
   rfl
 
-theorem matrixToEuclid_smul (c : ℝ) (A : Matrix m n ℝ) :
-    matrixToEuclid (c • A) = c • matrixToEuclid A := by
+theorem matrixToEuclidean_smul (c : ℝ) (A : Matrix m n ℝ) :
+    matrixToEuclidean (c • A) = c • matrixToEuclidean A := by
   ext ij
   rfl
 
-@[simp] theorem euclidToMatrix_add
+@[simp] theorem euclideanToMatrix_add
     (A B : EuclideanSpace ℝ (m × n)) :
-    euclidToMatrix (A + B) = euclidToMatrix A + euclidToMatrix B := by
+    euclideanToMatrix (A + B) = euclideanToMatrix A + euclideanToMatrix B := by
   ext i j
   rfl
 
-@[simp] theorem euclidToMatrix_sub
+@[simp] theorem euclideanToMatrix_sub
     (A B : EuclideanSpace ℝ (m × n)) :
-    euclidToMatrix (A - B) = euclidToMatrix A - euclidToMatrix B := by
+    euclideanToMatrix (A - B) = euclideanToMatrix A - euclideanToMatrix B := by
   ext i j
   rfl
 
-@[simp] theorem euclidToMatrix_smul
+@[simp] theorem euclideanToMatrix_smul
     (c : ℝ) (A : EuclideanSpace ℝ (m × n)) :
-    euclidToMatrix (c • A) = c • euclidToMatrix A := by
+    euclideanToMatrix (c • A) = c • euclideanToMatrix A := by
   ext i j
   rfl
 
 noncomputable def matrixEuclideanLinearEquiv :
     Matrix m n ℝ ≃ₗ[ℝ] EuclideanSpace ℝ (m × n) where
-  toFun := matrixToEuclid
-  invFun := euclidToMatrix
-  left_inv := euclidToMatrix_matrixToEuclid
-  right_inv := matrixToEuclid_euclidToMatrix
-  map_add' := matrixToEuclid_add
-  map_smul' := matrixToEuclid_smul
+  toFun := matrixToEuclidean
+  invFun := euclideanToMatrix
+  left_inv := euclideanToMatrix_matrixToEuclidean
+  right_inv := matrixToEuclidean_euclideanToMatrix
+  map_add' := matrixToEuclidean_add
+  map_smul' := matrixToEuclidean_smul
 
 section Finite
 
 variable [Fintype m] [Fintype n]
 
-theorem matrixToEuclid_norm (A : Matrix m n ℝ) :
-    ‖matrixToEuclid A‖ = ‖A‖ := by
+theorem matrixToEuclidean_norm (A : Matrix m n ℝ) :
+    ‖matrixToEuclidean A‖ = ‖A‖ := by
   rw [Matrix.frobenius_norm_def]
-  unfold matrixToEuclid
+  unfold matrixToEuclidean
   rw [PiLp.norm_eq_of_L2]
   simp only [Real.sqrt_eq_rpow]
   congr 1
@@ -93,22 +151,22 @@ theorem matrixToEuclid_norm (A : Matrix m n ℝ) :
     _ = ∑ i, ∑ j, ‖A i j‖ ^ (2 : ℝ) := by
       simp
 
-@[simp] theorem euclidToMatrix_norm_eq
+@[simp] theorem euclideanToMatrix_norm_eq
     (A : EuclideanSpace ℝ (m × n)) :
-    ‖euclidToMatrix A‖ = ‖A‖ := by
-  rw [← matrixToEuclid_norm (euclidToMatrix A)]
+    ‖euclideanToMatrix A‖ = ‖A‖ := by
+  rw [← matrixToEuclidean_norm (euclideanToMatrix A)]
   simp
 
 noncomputable def matrixEuclideanLinearIsometryEquiv :
     Matrix m n ℝ ≃ₗᵢ[ℝ] EuclideanSpace ℝ (m × n) where
   toLinearEquiv := matrixEuclideanLinearEquiv
-  norm_map' := matrixToEuclid_norm
+  norm_map' := matrixToEuclidean_norm
 
-theorem inner_matrixToEuclid
+theorem inner_matrixToEuclidean
     (A : EuclideanSpace ℝ (m × n)) (B : Matrix m n ℝ) :
-    inner ℝ A (matrixToEuclid B) =
+    inner ℝ A (matrixToEuclidean B) =
       ∑ ij : m × n, A ij * B ij.1 ij.2 := by
-  simp only [matrixToEuclid, PiLp.inner_apply]
+  simp only [matrixToEuclidean, PiLp.inner_apply]
   apply Finset.sum_congr rfl
   intro ij _
   have h := RCLike.inner_apply (𝕜 := ℝ) (x := A.ofLp ij) (y := B ij.1 ij.2)
@@ -119,6 +177,50 @@ theorem inner_matrixToEuclid
       simp [starRingEnd]
       ring
 
+theorem inner_matrixToEuclidean_symm
+    [Fintype ι] (v : EuclideanSpace ℝ (ι × ι)) (A : Matrix ι ι ℝ)
+    (hA : A.IsHermitian) :
+    inner ℝ v (matrixToEuclidean A) =
+      inner ℝ (matrixToEuclidean (euclideanMatrixSymmetrization v)) (matrixToEuclidean A) := by
+  rw [inner_matrixToEuclidean, inner_matrixToEuclidean]
+  dsimp [euclideanMatrixSymmetrization]
+  have hAij : ∀ i j : ι, A i j = A j i := by
+    intro i j
+    have h := congrFun (congrFun hA i) j
+    simpa [Matrix.conjTranspose] using h.symm
+  have hswap :
+      (∑ ij : ι × ι, v (ij.2, ij.1) * A ij.1 ij.2) =
+        (∑ ij : ι × ι, v (ij.1, ij.2) * A ij.1 ij.2) := by
+    calc
+      (∑ ij : ι × ι, v (ij.2, ij.1) * A ij.1 ij.2)
+          = (∑ ij : ι × ι, v (ij.1, ij.2) * A ij.2 ij.1) := by
+            refine Finset.sum_bij (fun ij _ => (ij.2, ij.1)) ?_ ?_ ?_ ?_
+            · intro ij _
+              simp
+            · intro a _ b _ h
+              exact Prod.ext (congrArg Prod.snd h) (congrArg Prod.fst h)
+            · intro b _
+              refine ⟨(b.2, b.1), ⟨by simp, ?_⟩⟩
+              exact Prod.ext rfl rfl
+            · intro _ _
+              rfl
+      _ = (∑ ij : ι × ι, v (ij.1, ij.2) * A ij.1 ij.2) := by
+          apply Finset.sum_congr rfl
+          intro ij _
+          simp [hAij ij.1 ij.2]
+  calc
+    (∑ ij : ι × ι, v (ij.1, ij.2) * A ij.1 ij.2)
+        = (1 / 2 : ℝ) * (∑ ij : ι × ι, v (ij.1, ij.2) * A ij.1 ij.2) +
+            (1 / 2 : ℝ) * (∑ ij : ι × ι, v (ij.2, ij.1) * A ij.1 ij.2) := by
+          rw [hswap]
+          ring
+    _ = (∑ ij : ι × ι,
+            (1 / 2 : ℝ) * (v (ij.1, ij.2) + v (ij.2, ij.1)) * A ij.1 ij.2) := by
+          rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+          apply Finset.sum_congr rfl
+          intro ij _
+          ring
+
 theorem euclid_entry_le_norm
     (A : EuclideanSpace ℝ (m × n)) (ij : m × n) :
     |A ij| ≤ ‖A‖ := by
@@ -128,10 +230,10 @@ end Finite
 
 variable [Fintype ι]
 
-theorem matrixToEuclid_mul_norm_le
+theorem matrixToEuclidean_mul_norm_le
     (A B : Matrix ι ι ℝ) :
-    ‖matrixToEuclid (A * B)‖ ≤ ‖matrixToEuclid A‖ * ‖matrixToEuclid B‖ := by
-  rw [matrixToEuclid_norm, matrixToEuclid_norm, matrixToEuclid_norm]
+    ‖matrixToEuclidean (A * B)‖ ≤ ‖matrixToEuclidean A‖ * ‖matrixToEuclidean B‖ := by
+  rw [matrixToEuclidean_norm, matrixToEuclidean_norm, matrixToEuclidean_norm]
   exact Matrix.frobenius_norm_mul A B
 
 theorem matrixTransposeMul_orthogonal [DecidableEq ι]
@@ -233,6 +335,54 @@ theorem matrixDot_eq_trace_transpose_mul
   simp only [Matrix.diag, Matrix.mul_apply, Matrix.transpose_apply]
   rw [Fintype.sum_prod_type]
   rw [Finset.sum_comm]
+
+theorem inner_matrixToEuclidean_orthogonal_conj [DecidableEq ι]
+    (N A O : Matrix ι ι ℝ) (hO : O * O.transpose = 1) :
+    inner ℝ (matrixToEuclidean N) (matrixToEuclidean A) =
+      inner ℝ (matrixToEuclidean (O.transpose * N * O))
+        (matrixToEuclidean (O.transpose * A * O)) := by
+  have hOt : O.transpose * O = 1 := matrixTransposeMul_orthogonal O hO
+  calc
+    inner ℝ (matrixToEuclidean N) (matrixToEuclidean A)
+        = (∑ ij : ι × ι, N ij.1 ij.2 * A ij.1 ij.2) := by
+          rw [inner_matrixToEuclidean]
+          change (∑ ij : ι × ι, N ij.1 ij.2 * A ij.1 ij.2) =
+            (∑ ij : ι × ι, N ij.1 ij.2 * A ij.1 ij.2)
+          rfl
+    _ = Matrix.trace (N.transpose * A) := matrixDot_eq_trace_transpose_mul N A
+    _ = Matrix.trace (O.transpose * (N.transpose * A) * O) := by
+          have hcyc := Matrix.trace_mul_cycle O.transpose (N.transpose * A) O
+          rw [hO] at hcyc
+          simpa [Matrix.one_mul] using hcyc.symm
+    _ = Matrix.trace ((O.transpose * N * O).transpose * (O.transpose * A * O)) := by
+          congr 1
+          simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
+          rw [show O * (O.transpose * (A * O)) = A * O by
+            rw [← Matrix.mul_assoc, hO]
+            simp]
+    _ = (∑ ij : ι × ι,
+          (O.transpose * N * O) ij.1 ij.2 * (O.transpose * A * O) ij.1 ij.2) :=
+          (matrixDot_eq_trace_transpose_mul (O.transpose * N * O)
+            (O.transpose * A * O)).symm
+    _ = inner ℝ (matrixToEuclidean (O.transpose * N * O))
+          (matrixToEuclidean (O.transpose * A * O)) := by
+          rw [inner_matrixToEuclidean]
+          change (∑ ij : ι × ι,
+              (O.transpose * N * O) ij.1 ij.2 * (O.transpose * A * O) ij.1 ij.2) =
+            (∑ ij : ι × ι,
+              (O.transpose * N * O) ij.1 ij.2 * (O.transpose * A * O) ij.1 ij.2)
+          rfl
+
+theorem sum_sq_column_eq_one [DecidableEq ι]
+    (O : Matrix ι ι ℝ) (hO : O.transpose * O = 1) (i : ι) :
+    (∑ j : ι, (O j i) ^ 2) = 1 := by
+  have hdiag : (O.transpose * O) i i = 1 := by
+    have h := congrFun (congrFun hO i) i
+    simpa [Matrix.one_apply] using h
+  have hsum : (O.transpose * O) i i = ∑ j : ι, (O j i) ^ 2 := by
+    simp [Matrix.mul_apply, Matrix.transpose_apply, sq]
+  rw [hsum] at hdiag
+  exact hdiag
 
 end DifferentialGeometry.Analysis.InnerProductSpace
 

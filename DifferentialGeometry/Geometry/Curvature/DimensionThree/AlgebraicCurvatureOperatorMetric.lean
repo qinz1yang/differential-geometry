@@ -1,6 +1,7 @@
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionReaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
+import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 
 set_option autoImplicit false
 
@@ -9,6 +10,7 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open Bundle Set
+open DifferentialGeometry.Analysis.InnerProductSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Tensor0SBundle
@@ -20,6 +22,52 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M]
+
+noncomputable def tensor04CurvatureOperatorMatrixAt {x : M}
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : Tensor04At (I := I) (M := M) x) : Matrix (Fin 3) (Fin 3) Real :=
+  fun i j =>
+    tensor04StdAt (I := I) (M := M) A
+      (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+      (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1)
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] in
+@[simp] theorem tensor04CurvatureOperatorMatrixAt_apply {x : M}
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : Tensor04At (I := I) (M := M) x) (i j : Fin 3) :
+    tensor04CurvatureOperatorMatrixAt (I := I) basis A i j =
+      tensor04StdAt (I := I) (M := M) A
+        (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1) := by
+  rfl
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] in
+theorem tensor04CurvatureOperatorMatrixAt_eq_curvatureOperatorMatrixAt {x : M}
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    tensor04CurvatureOperatorMatrixAt (I := I) basis
+        (A : Tensor04At (I := I) (M := M) x) =
+      curvatureOperatorMatrixAt (I := I) x basis A := by
+  rfl
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] in
+theorem tensor04CurvatureOperatorMatrixAt_sub {x : M}
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A B : Tensor04At (I := I) (M := M) x) :
+    tensor04CurvatureOperatorMatrixAt (I := I) basis (A - B) =
+      tensor04CurvatureOperatorMatrixAt (I := I) basis A -
+        tensor04CurvatureOperatorMatrixAt (I := I) basis B := by
+  ext i j
+  unfold tensor04CurvatureOperatorMatrixAt
+  change (A - B) (vec4 (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+      (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1)) =
+    A (vec4 (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+      (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1)) -
+    B (vec4 (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+      (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1))
+  exact Tensor0SSpace.sub_apply 4 x A B
+    (vec4 (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+      (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1))
 
 private lemma sum_fin3 {α : Type*} [AddCommMonoid α] (f : Fin 3 → α) :
     (∑ k : Fin 3, f k) = f 0 + f 1 + f 2 := by
@@ -392,6 +440,152 @@ theorem inner0S_algebraic_eq_four_mul_operatorInner
       rw [hA0, hB0]
       ring)
   rw [hmain]
+
+private lemma matrixInner_eq_sum
+    (M N : Matrix (Fin 3) (Fin 3) ℝ) :
+    inner ℝ (matrixToEuclidean M) (matrixToEuclidean N) =
+      ∑ p : Fin 3, ∑ q : Fin 3, M p q * N p q := by
+  rw [inner_matrixToEuclidean (matrixToEuclidean M) N]
+  rw [Fintype.sum_prod_type]
+  simp [matrixToEuclidean]
+
+omit [IsManifold I 1 M] [IsManifold I 2 M]
+    in
+theorem inner0S_algebraic_eq_four_mul_matrixInner
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (A B : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    inner0S (I := I) g x 4 (A : Tensor04At (I := I) (M := M) x)
+        (B : Tensor04At (I := I) (M := M) x) =
+      4 * inner ℝ
+        (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (A : Tensor04At (I := I) (M := M) x)))
+        (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (B : Tensor04At (I := I) (M := M) x))) := by
+  have h1 := inner0S_algebraic_eq_four_mul_operatorInner (I := I) (M := M) g x basis horth A B
+  calc
+    inner0S (I := I) g x 4 (A : Tensor04At (I := I) (M := M) x)
+        (B : Tensor04At (I := I) (M := M) x)
+        = 4 * (∑ p : Fin 3, ∑ q : Fin 3,
+            curvatureOperatorMatrixAt (I := I) x basis A p q *
+              curvatureOperatorMatrixAt (I := I) x basis B p q) := h1
+    _ = 4 * inner ℝ
+        (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (A : Tensor04At (I := I) (M := M) x)))
+        (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (B : Tensor04At (I := I) (M := M) x))) := by
+          congr 1
+          rw [tensor04CurvatureOperatorMatrixAt_eq_curvatureOperatorMatrixAt,
+            tensor04CurvatureOperatorMatrixAt_eq_curvatureOperatorMatrixAt]
+          exact (matrixInner_eq_sum
+            (curvatureOperatorMatrixAt (I := I) x basis A)
+            (curvatureOperatorMatrixAt (I := I) x basis B)).symm
+
+omit [IsManifold I 1 M] [IsManifold I 2 M]
+    in
+theorem dist_algebraicCurvatureTensor_eq_two_mul_matrixDist_of_orthonormal
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (A B : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+      (tensor0SMetricData (I := I) g x 4).toCore
+    letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+      @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
+        inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
+    letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+      @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
+        inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
+    dist (A : Tensor04At (I := I) (M := M) x) (B : Tensor04At (I := I) (M := M) x) =
+      2 * dist
+        (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (A : Tensor04At (I := I) (M := M) x)))
+        (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (B : Tensor04At (I := I) (M := M) x))) := by
+  letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+    (tensor0SMetricData (I := I) g x 4).toCore
+  letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
+  letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+    @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
+  let FA : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (A : Tensor04At (I := I) (M := M) x))
+  let FB : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+    matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis (B : Tensor04At (I := I) (M := M) x))
+  have hAlg : (A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x) ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
+    exact Submodule.sub_mem (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) A.2 B.2
+  have hFA : FA - FB = matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis
+      ((A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x))) := by
+    dsimp [FA, FB]
+    rw [← matrixToEuclidean_sub]
+    rw [← tensor04CurvatureOperatorMatrixAt_sub (I := I) basis
+      (A : Tensor04At (I := I) (M := M) x) (B : Tensor04At (I := I) (M := M) x)]
+    rfl
+  have hnorm : ‖(A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x)‖ ^ 2 =
+      (2 * ‖FA - FB‖) ^ 2 := by
+    calc
+      ‖(A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x)‖ ^ 2
+          = normSq0S (I := I) g x 4
+              ((A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x)) := by
+            exact tensor0S_norm_sq_eq_normSq0S (I := I) g x
+              ((A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x))
+      _ = 4 * inner ℝ
+            (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis
+              ((A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x))))
+            (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) basis
+              ((A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x)))) := by
+            rw [normSq0S]
+            exact inner0S_algebraic_eq_four_mul_matrixInner (I := I) (M := M) g x basis horth
+              ⟨(A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x), hAlg⟩
+              ⟨(A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x), hAlg⟩
+      _ = 4 * inner ℝ (FA - FB) (FA - FB) := by
+            rw [hFA]
+      _ = (2 * ‖FA - FB‖) ^ 2 := by
+            rw [show inner ℝ (FA - FB) (FA - FB) = ‖FA - FB‖ ^ 2 by
+              rw [norm_sq_eq_re_inner (𝕜 := ℝ) (FA - FB)]
+              simp]
+            ring
+  rw [dist_eq_norm, dist_eq_norm]
+  have h := (sq_eq_sq_iff_abs_eq_abs (‖(A : Tensor04At (I := I) (M := M) x) - (B : Tensor04At (I := I) (M := M) x)‖) (2 * ‖FA - FB‖)).mp hnorm
+  rw [abs_of_nonneg (norm_nonneg _), abs_of_nonneg (mul_nonneg (by norm_num) (norm_nonneg (FA - FB)))] at h
+  exact h
+
+omit [IsManifold I 1 M] [IsManifold I 2 M]
+    in
+theorem curvatureOperatorMatrixAt_eq_zero_of_orthonormal
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+    (hA : curvatureOperatorMatrixAt (I := I) x basis A = 0) :
+    A = 0 := by
+  letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
+    (tensor0SMetricData (I := I) g x 4).toCore
+  letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore
+  letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
+    @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
+  have h0 : matrixToEuclidean
+      (tensor04CurvatureOperatorMatrixAt (I := I) basis
+        ((0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) : Tensor04At (I := I) (M := M) x)) = 0 := by
+    ext ij
+    simp [matrixToEuclidean]
+    rfl
+  have hA' : matrixToEuclidean
+      (tensor04CurvatureOperatorMatrixAt (I := I) basis (A : Tensor04At (I := I) (M := M) x)) = 0 := by
+    rw [tensor04CurvatureOperatorMatrixAt_eq_curvatureOperatorMatrixAt]
+    rw [hA]
+    simp [matrixToEuclidean]
+    rfl
+  have h := dist_algebraicCurvatureTensor_eq_two_mul_matrixDist_of_orthonormal
+    (I := I) (M := M) g x basis horth
+    A (0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
+  rw [hA', h0] at h
+  have hdist : dist (A : Tensor04At (I := I) (M := M) x)
+      ((0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) : Tensor04At (I := I) (M := M) x) = 0 := by
+    rw [h]
+    simp
+  exact Subtype.ext (dist_eq_zero.mp hdist)
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
 

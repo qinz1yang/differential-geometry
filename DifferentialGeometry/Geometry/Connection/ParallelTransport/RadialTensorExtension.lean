@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Radial
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
@@ -121,7 +122,8 @@ private theorem inner0S_four_orthonormalBasis_sq
 
 section RadialTransportLinear
 
-omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] in
 theorem radialParallelTransportSection_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
@@ -423,8 +425,9 @@ theorem radialTransportSection_linear_smul [I.Boundaryless]
 
 
 set_option linter.unusedSectionVars false in
-omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-lemma radialParallelTransportSection_chartGram_hasDerivAt_zero [I.Boundaryless]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] in
+private lemma radialParallelTransportSection_chartGram_hasDerivAt_zero [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     (u w : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Ioo (-1 : ℝ) 2) :
@@ -519,7 +522,7 @@ lemma radialParallelTransportSection_chartGram_hasDerivAt_zero [I.Boundaryless]
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M]
   [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
   [T2Space (TangentBundle I M)] in
-lemma chartGramAlongCurve_eq_inner
+private lemma chartGramAlongCurve_eq_inner
     (g : SmoothRiemannianMetric I M) (p : M)
     (γ : ℝ → M) (V W : ℝ → E) (t : ℝ)
     (hsrc : γ t ∈ (chartAt H p).source) :
@@ -887,7 +890,7 @@ theorem radialTransportTensorExtension_apply
     DifferentialGeometry.Integral.L2.separableFormAt_apply]
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-theorem radialTransportSectionTensor_apply_eq_sum
+private theorem radialTransportSectionTensor_apply_eq_sum
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
     (horth : OrthonormalBasisAt (I := I) g p basis)
@@ -1121,6 +1124,115 @@ theorem radialTransportSectionTensor_isometry
         (radialTransportSectionTensor g p η₀ y) =
       inner0S (I := I) g p 4 η₀ η₀ :=
   radialTransportSectionTensor_inner_eq (I := I) g p hdim η₀ η₀ y hy
+
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
+  [I.Boundaryless] in
+theorem algebraicCurvatureTensorProjection_radialTransport_commute
+    (g : SmoothRiemannianMetric I M) (p : M)
+    [hboundaryless : I.Boundaryless]
+    (hdim : Module.finrank Real (TangentSpace I p) = 3)
+    (A : Tensor04At (I := I) (M := M) p) (y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
+    (algebraicCurvatureTensorProjection (I := I) g y (radialTransportSectionTensor g p A y) :
+        Tensor04At (I := I) (M := M) y) =
+      radialTransportSectionTensor g p
+        (algebraicCurvatureTensorProjection (I := I) g p A : Tensor04At (I := I) (M := M) p) y := by
+  classical
+  let Tlin : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
+  have hTbij : Function.Bijective Tlin := by
+    have hTinj : Function.Injective Tlin := by
+      intro a b hab
+      exact radialTransportSection_injective (I := I) g p y hy
+        (by simpa [Tlin, radialTransportLinearMapAt] using hab)
+    have hTsurj : Function.Surjective Tlin :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+        (K := ℝ) (V := E) (V₂ := E) rfl).mp hTinj
+    exact ⟨hTinj, hTsurj⟩
+  let e : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective Tlin hTbij
+  let T : E →L[ℝ] E := e.toContinuousLinearEquiv.toContinuousLinearMap
+  let Tinv : E →L[ℝ] E := radialTransportInverseAt g p y hy
+  have hTinvT : ∀ v : TangentSpace I p, Tinv (T v) = v := by
+    intro v
+    change radialTransportInverseAt g p y hy (radialTransportLinearMapAt g p y v) = v
+    exact radialTransportInverseAt_left_inverse (I := I) g p y hy v
+  have hTTinv : ∀ v : TangentSpace I y, T (Tinv v) = v := by
+    intro v
+    obtain ⟨w, rfl⟩ := hTbij.2 v
+    change T (Tinv (T w)) = T w
+    rw [hTinvT]
+  let pY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y :=
+    algebraicCurvatureTensorProjection (I := I) g y (radialTransportSectionTensor g p A y)
+  let p0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) p :=
+    algebraicCurvatureTensorProjection (I := I) g p A
+  have hp0transport : radialTransportSectionTensor g p
+        (p0 : Tensor04At (I := I) (M := M) p) y ∈
+      algebraicCurvatureTensorSubmodule (I := I) (M := M) y := by
+    rw [radialTransportSectionTensor, dif_pos hy]
+    exact compContinuousLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) Tinv p0
+  let uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y :=
+    ⟨radialTransportSectionTensor g p
+      (p0 : Tensor04At (I := I) (M := M) p) y, hp0transport⟩
+  have hchar : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) y,
+      inner0S (I := I) g y 4 (pY : Tensor04At (I := I) (M := M) y) q =
+        inner0S (I := I) g y 4 (uY : Tensor04At (I := I) (M := M) y) q := by
+    intro q
+    let q0 : algebraicCurvatureTensorSubmodule (I := I) (M := M) p := ⟨
+      (q : Tensor04At (I := I) (M := M) y).compContinuousLinearMap
+        (fun _ : Fin 4 => T),
+      compContinuousLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) T q⟩
+    have hqtransport : radialTransportSectionTensor g p
+        (q0 : Tensor04At (I := I) (M := M) p) y =
+        (q : Tensor04At (I := I) (M := M) y) := by
+      rw [radialTransportSectionTensor, dif_pos hy]
+      apply tensor0SSpace_ext 4 y
+      intro v
+      change (q : Tensor04At (I := I) (M := M) y)
+        (fun i => T (Tinv (v i))) = (q : Tensor04At (I := I) (M := M) y) v
+      congr 1
+      funext i
+      exact hTTinv (v i)
+    calc
+      inner0S (I := I) g y 4 (pY : Tensor04At (I := I) (M := M) y) q
+          = inner0S (I := I) g y 4 (radialTransportSectionTensor g p A y)
+              (q : Tensor04At (I := I) (M := M) y) := by
+                exact algebraicCurvatureTensorProjection_inner (I := I) g y
+                  (radialTransportSectionTensor g p A y) q
+      _ = inner0S (I := I) g y 4 (radialTransportSectionTensor g p A y)
+              (radialTransportSectionTensor g p
+                (q0 : Tensor04At (I := I) (M := M) p) y) := by rw [hqtransport]
+      _ = inner0S (I := I) g p 4 A (q0 : Tensor04At (I := I) (M := M) p) :=
+            radialTransportSectionTensor_inner_eq (I := I) g p hdim A q0 y hy
+      _ = inner0S (I := I) g p 4 (p0 : Tensor04At (I := I) (M := M) p) q0 := by
+            exact (algebraicCurvatureTensorProjection_inner (I := I) g p A q0).symm
+      _ = inner0S (I := I) g y 4
+              (radialTransportSectionTensor g p
+                (p0 : Tensor04At (I := I) (M := M) p) y)
+              (radialTransportSectionTensor g p
+                (q0 : Tensor04At (I := I) (M := M) p) y) :=
+            (radialTransportSectionTensor_inner_eq (I := I) g p hdim p0 q0 y hy).symm
+      _ = inner0S (I := I) g y 4 (uY : Tensor04At (I := I) (M := M) y) q := by
+            rw [hqtransport]
+  have hdiff : ∀ q : algebraicCurvatureTensorSubmodule (I := I) (M := M) y,
+      inner0S (I := I) g y 4
+        ((pY - uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) :
+          Tensor04At (I := I) (M := M) y) q = 0 := by
+    intro q
+    rw [show ((pY - uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) :
+        Tensor04At (I := I) (M := M) y) =
+      (pY : Tensor04At (I := I) (M := M) y) -
+        (uY : Tensor04At (I := I) (M := M) y) by rfl]
+    rw [inner0S_sub_left (I := I) g y 4]
+    exact sub_eq_zero.mpr (hchar q)
+  have hself := hdiff (pY - uY)
+  have hzero : ((pY - uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) :
+      Tensor04At (I := I) (M := M) y) = 0 := by
+    exact ((tensor0SMetricData (I := I) g y 4).inner_self_eq_zero_iff
+      (((pY - uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y) :
+        Tensor04At (I := I) (M := M) y))).mp hself
+  have hpu : pY = uY := by
+    apply Subtype.ext
+    exact sub_eq_zero.mp hzero
+  exact congrArg Subtype.val hpu
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_inner_self_le

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorCone
+import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
 import Mathlib.Analysis.Matrix.Spectrum
@@ -20,25 +20,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [SigmaCompactSpace M] [T2Space M]
-
-def algebraicCurvatureIdentityQuadraticEval
-    (g : SmoothRiemannianMetric I M) {x : M} {n : Nat}
-    (c : Fin n → Real) (v w : Fin n → TangentSpace I x) : Real :=
-  ∑ i, ∑ j, c i * c j *
-    ((g.inner x (v i) (v j)) * (g.inner x (w i) (w j)) -
-      (g.inner x (v i) (w j)) * (g.inner x (w i) (v j)))
-
-def CurvatureOperatorLowerBoundAt
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) (K : Real) : Prop :=
-  ∀ (n : Nat) (c : Fin n → Real) (v w : Fin n → TangentSpace I x),
-    0 ≤ algebraicCurvatureOperatorQuadraticEval (I := I) (M := M) A c v w +
-      K * algebraicCurvatureIdentityQuadraticEval (I := I) g c v w
-
-noncomputable def leastCurvatureOperatorEigenvalueAt
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) : Real :=
-  -sInf {K : Real | CurvatureOperatorLowerBoundAt (I := I) g x A K}
 
 def bivectorIndex3 (i : Fin 3) : Fin 3 × Fin 3 :=
   if i = 0 then (0, 1) else if i = 1 then (0, 2) else (1, 2)
@@ -1150,7 +1131,7 @@ theorem curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth : OrthonormalBasisAt (I := I) g x basis)
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) (K : Real) :
-    CurvatureOperatorLowerBoundAt (I := I) g x A K ↔
+    curvatureOperatorLowerBoundAt (I := I) g x A K ↔
       -orderedSectionalCurvaturesAt (I := I) x basis A 2 ≤ K := by
   constructor
   · intro hK
@@ -1226,7 +1207,7 @@ theorem leastCurvatureOperatorEigenvalueAt_eq_sectionalMin
     leastCurvatureOperatorEigenvalueAt (I := I) g x A =
       orderedSectionalCurvaturesAt (I := I) x basis A 2 := by
   dsimp [leastCurvatureOperatorEigenvalueAt]
-  have hext : {K : Real | CurvatureOperatorLowerBoundAt (I := I) g x A K} =
+  have hext : {K : Real | curvatureOperatorLowerBoundAt (I := I) g x A K} =
       Set.Ici (-orderedSectionalCurvaturesAt (I := I) x basis A 2) := by
     ext K
     rw [Set.mem_setOf, Set.mem_Ici]

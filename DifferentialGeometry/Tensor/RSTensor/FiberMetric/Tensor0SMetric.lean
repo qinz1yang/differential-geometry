@@ -410,8 +410,8 @@ def inner0S
     (A B : Tensor0SSpace s I x) : Real :=
   (tensor0SMetricData (I := I) g x s).inner A B
 
-theorem inner0S_comm
-    (g : SmoothMetric I M) (x : M) (s : Nat)
+theorem inner0S_symm {s : Nat}
+    (g : SmoothMetric I M) (x : M)
     (A B : Tensor0SSpace s I x) :
     inner0S (I := I) g x s A B = inner0S (I := I) g x s B A :=
   (tensor0SMetricData (I := I) g x s).inner_comm A B
@@ -428,8 +428,8 @@ theorem inner0S_add_right
     (A B C : Tensor0SSpace s I x) :
     inner0S (I := I) g x s A (B + C) =
       inner0S (I := I) g x s A B + inner0S (I := I) g x s A C := by
-  rw [inner0S_comm, inner0S_add_left, inner0S_comm g x s B A,
-    inner0S_comm g x s C A]
+  rw [inner0S_symm, inner0S_add_left, inner0S_symm (s := s) g x B A,
+    inner0S_symm (s := s) g x C A]
 
 theorem inner0S_sub_left
     (g : SmoothMetric I M) (x : M) (s : Nat)
@@ -457,6 +457,100 @@ noncomputable def tensor04FiberNorm
     (g : SmoothMetric I M) (x : M)
     (A : Tensor0SSpace 4 I x) : Real :=
   tensor0SFiberNorm (I := I) g x 4 A
+
+theorem tensor0S_inner_eq_inner0S
+    (g : SmoothMetric I M) (x : M) {s : Nat}
+    (A B : Tensor0SSpace s I x) :
+    letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
+      (tensor0SMetricData (I := I) g x s).toCore
+    letI : NormedAddCommGroup (Tensor0SSpace s I x) :=
+      InnerProductSpace.Core.toNormedAddCommGroup
+    letI : InnerProductSpace Real (Tensor0SSpace s I x) :=
+      @InnerProductSpace.ofCore Real (Tensor0SSpace s I x) _ _ _
+        (tensor0SMetricData (I := I) g x s).toCore.toCore
+    inner Real A B = inner0S (I := I) g x s A B := by
+  change MetricFiberData.inner (tensor0SMetricData (I := I) g x s) A B =
+    inner0S (I := I) g x s A B
+  rfl
+
+theorem tensor0S_norm_sq_eq_normSq0S
+    (g : SmoothMetric I M) (x : M) {s : Nat}
+    (A : Tensor0SSpace s I x) :
+    letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
+      (tensor0SMetricData (I := I) g x s).toCore
+    letI : NormedAddCommGroup (Tensor0SSpace s I x) :=
+      InnerProductSpace.Core.toNormedAddCommGroup
+    letI : InnerProductSpace Real (Tensor0SSpace s I x) :=
+      @InnerProductSpace.ofCore Real (Tensor0SSpace s I x) _ _ _
+        (tensor0SMetricData (I := I) g x s).toCore.toCore
+    ‖A‖ ^ 2 = normSq0S (I := I) g x s A := by
+  change Real.sqrt (inner0S (I := I) g x s A A) ^ 2 =
+    inner0S (I := I) g x s A A
+  rw [Real.sq_sqrt]
+  exact (tensor0SMetricData (I := I) g x s).nonneg A
+
+theorem tensor0SFiberNorm_eq_norm
+    (g : SmoothMetric I M) (x : M) {s : Nat}
+    (A : Tensor0SSpace s I x) :
+    letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
+      (tensor0SMetricData (I := I) g x s).toCore
+    letI : NormedAddCommGroup (Tensor0SSpace s I x) :=
+      InnerProductSpace.Core.toNormedAddCommGroup
+    letI : InnerProductSpace Real (Tensor0SSpace s I x) :=
+      @InnerProductSpace.ofCore Real (Tensor0SSpace s I x) _ _ _
+        (tensor0SMetricData (I := I) g x s).toCore.toCore
+    tensor0SFiberNorm (I := I) g x s A = ‖A‖ := by
+  rfl
+
+noncomputable def tensor0SFiberNormHomeomorph
+    (g : SmoothMetric I M) (x : M) (s : Nat) :
+    let metricNorm : NormedAddCommGroup (Tensor0SSpace s I x) :=
+      @InnerProductSpace.Core.toNormedAddCommGroup Real
+        (Tensor0SSpace s I x) _ _ _
+          (tensor0SMetricData (I := I) g x s).toCore
+    let metricTopology : TopologicalSpace (Tensor0SSpace s I x) :=
+      metricNorm.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
+    let standardTopology : TopologicalSpace (Tensor0SSpace s I x) := inferInstance
+    @Homeomorph (Tensor0SSpace s I x) (Tensor0SSpace s I x)
+      metricTopology standardTopology := by
+  classical
+  let metricNorm : NormedAddCommGroup (Tensor0SSpace s I x) :=
+    @InnerProductSpace.Core.toNormedAddCommGroup Real
+      (Tensor0SSpace s I x) _ _ _
+        (tensor0SMetricData (I := I) g x s).toCore
+  let metricTopology : TopologicalSpace (Tensor0SSpace s I x) :=
+    metricNorm.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
+  let standardTopology : TopologicalSpace (Tensor0SSpace s I x) := inferInstance
+  refine @Homeomorph.mk (Tensor0SSpace s I x) (Tensor0SSpace s I x)
+    metricTopology standardTopology (Equiv.refl (Tensor0SSpace s I x)) ?_ ?_
+  · letI : NormedAddCommGroup (Tensor0SSpace s I x) := metricNorm
+    letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
+      (tensor0SMetricData (I := I) g x s).toCore
+    letI : NormedSpace Real (Tensor0SSpace s I x) :=
+      InnerProductSpace.Core.toNormedSpace
+    letI : IsBoundedSMul Real (Tensor0SSpace s I x) := inferInstance
+    letI : ContinuousSMul Real (Tensor0SSpace s I x) := inferInstance
+    exact @LinearMap.continuous_of_finiteDimensional Real inferInstance
+      (Tensor0SSpace s I x)
+      inferInstance inferInstance metricTopology inferInstance inferInstance
+      (Tensor0SSpace s I x)
+      inferInstance inferInstance standardTopology inferInstance inferInstance
+      inferInstance inferInstance inferInstance
+      (LinearMap.id : Tensor0SSpace s I x →ₗ[Real] Tensor0SSpace s I x)
+  · letI : NormedAddCommGroup (Tensor0SSpace s I x) := metricNorm
+    letI : InnerProductSpace.Core Real (Tensor0SSpace s I x) :=
+      (tensor0SMetricData (I := I) g x s).toCore
+    letI : NormedSpace Real (Tensor0SSpace s I x) :=
+      InnerProductSpace.Core.toNormedSpace
+    letI : IsBoundedSMul Real (Tensor0SSpace s I x) := inferInstance
+    letI : ContinuousSMul Real (Tensor0SSpace s I x) := inferInstance
+    exact @LinearMap.continuous_of_finiteDimensional Real inferInstance
+      (Tensor0SSpace s I x)
+      inferInstance inferInstance standardTopology inferInstance inferInstance
+      (Tensor0SSpace s I x)
+      inferInstance inferInstance metricTopology inferInstance inferInstance
+      inferInstance inferInstance inferInstance
+      (LinearMap.id : Tensor0SSpace s I x →ₗ[Real] Tensor0SSpace s I x)
 
 theorem tensor0SFiberNorm_sq_eq_normSq0S
     (g : SmoothMetric I M) (x : M) (s : Nat)

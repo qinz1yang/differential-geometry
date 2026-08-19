@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyBundleRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicTransport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckFrameAssembly
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckFrameExistence
 
 set_option autoImplicit false
 
@@ -90,7 +90,7 @@ theorem pulledCurvature_initial_mem_fiberRegion
     (hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
     {K : ℝ} (hK : 0 < K) (x : M)
-    (hinit : CurvatureOperatorLowerBoundAt (I := I) (S.base.metric 0) x
+    (hinit : curvatureOperatorLowerBoundAt (I := I) (S.base.metric 0) x
       ⟨S.base.rm04 0 x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
         (I := I) (S.base.metric 0) x⟩ K) :
     uhlenbeckPulledRm04At S basisAt iota 0 x ∈
@@ -120,8 +120,8 @@ theorem curvatureOperatorRegionPropagationOn_timeShift
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     {K t0 T : ℝ} :
-    CurvatureOperatorRegionPropagationOn (I := I) (M := M) (S.timeShift t0) K 0 T →
-      CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T := by
+    curvatureOperatorRegionPropagationOn (I := I) (M := M) (S.timeShift t0) K 0 T →
+      curvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T := by
   intro hprop t ht x
   rcases hprop (t - t0) (by
     rw [Set.mem_Icc] at ht ⊢

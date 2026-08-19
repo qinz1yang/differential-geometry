@@ -1,16 +1,13 @@
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SBochnerProduct
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Curvature.Realized.Operators
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Basic.Core
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
-open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
@@ -369,29 +366,29 @@ private theorem metricTraceInput_elim0_eq_vec2 {x : M} (X Y : TangentSpace I x) 
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {s : ℕ} {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     {t : Real} {x : M}
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 4)
+      (n := (∞ : WithTop ℕ∞)) s)
     (nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 5)
+      (n := (∞ : WithTop ℕ∞)) (s + 1))
     (nabla2A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 6)
+      (n := (∞ : WithTop ℕ∞)) (s + 2))
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 4)
+      (n := (∞ : WithTop ℕ∞)) s)
     (nablaB : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 5)
+      (n := (∞ : WithTop ℕ∞)) (s + 1))
     (nabla2B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 6)
+      (n := (∞ : WithTop ℕ∞)) (s + 2))
     (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 (G.connection t) A nablaA)
+      s (G.connection t) A nablaA)
     (h2A : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      5 (G.connection t) nablaA nabla2A)
+      (s + 1) (G.connection t) nablaA nabla2A)
     (hB : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 (G.connection t) B nablaB)
+      s (G.connection t) B nablaB)
     (h2B : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      5 (G.connection t) nablaB nabla2B)
+      (s + 1) (G.connection t) nablaB nabla2B)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally (G.connection t)
       (∞ : WithTop ℕ∞))
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -400,15 +397,15 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
     (hBflat1 : nablaB x = 0)
     (hBflat2 : metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2B x) = 0) :
     laplacianAt (I := I) G t
-        (fun y : M => inner0S (I := I) (G.metric t) y 4 (A y) (B y)) x =
-      inner0S (I := I) (G.metric t) x 4
+        (fun y : M => inner0S (I := I) (G.metric t) y s (A y) (B y)) x =
+      inner0S (I := I) (G.metric t) x s
         (metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2A x)) (B x) := by
   classical
   let g : DifferentialGeometry.SmoothRiemannianMetric I M := G.metric t
   let cov : CovariantDerivative I E (TangentSpace I : M -> Type _) := G.connection t
   have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g := by
     simpa [cov, g] using (G.metricCompatible t)
-  let phi : M -> Real := fun y => inner0S (I := I) g y 4 (A y) (B y)
+  let phi : M -> Real := fun y => inner0S (I := I) g y s (A y) (B y)
   have hphi : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) phi := inner0S_contMDiff g A B
   have hlap : ScalarLaplacianRealizesTraceAt (I := I) cov g phi
       (hessianSec (I := I) cov hcov phi hphi x) :=
@@ -428,58 +425,58 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (basis i)).choose_spec
   have hslot : ∀ i j : Idx,
       (hessianSec (I := I) cov hcov phi hphi x) (vec2 (I := I) (basis i) (basis j)) =
-        inner0S (I := I) g x 4
+        inner0S (I := I) g x s
           (freezeFirstTwoArgs0S (I := I) (nabla2A x) (basis i) (basis j)) (B x) +
-        inner0S (I := I) g x 4
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaA x) (basis j))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaB x) (basis i)) +
-        inner0S (I := I) g x 4
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaA x) (basis i))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaB x) (basis j)) +
-        inner0S (I := I) g x 4 (A x)
+        inner0S (I := I) g x s
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i)) +
+        inner0S (I := I) g x s
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j)) +
+        inner0S (I := I) g x s (A x)
           (freezeFirstTwoArgs0S (I := I) (nabla2B x) (basis i) (basis j)) := by
     intro i j
     have h := hessianSec_inner0S_slots (I := I) cov hcov g hmc A B nablaA nabla2A nablaB nabla2B
       hA h2A hB h2B (Ei i) x (basis j)
     simpa [phi, hEi i] using h
   have hcurryB : ∀ w : TangentSpace I x,
-      tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaB x) w = 0 := by
+      tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) w = 0 := by
     intro w
     rw [hBflat1]
     ext v
     rw [tensor0S_curry_apply_cons]
     rfl
   have hsumA : (∑ i : Idx, ∑ j : Idx,
-        gInv i j * inner0S (I := I) g x 4
+        gInv i j * inner0S (I := I) g x s
           (freezeFirstTwoArgs0S (I := I) (nabla2A x) (basis i) (basis j)) (B x)) =
-      inner0S (I := I) g x 4
+      inner0S (I := I) g x s
         (metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2A x)) (B x) := by
     rw [metricTrace0S2TensorInBasis]
     exact (inner0S_sum_smul_left (I := I) g x gInv
       (fun i j : Idx => freezeFirstTwoArgs0S (I := I) (nabla2A x) (basis i) (basis j))
       (B x)).symm
   have hsumB : (∑ i : Idx, ∑ j : Idx,
-        gInv i j * inner0S (I := I) g x 4 (A x)
+        gInv i j * inner0S (I := I) g x s (A x)
           (freezeFirstTwoArgs0S (I := I) (nabla2B x) (basis i) (basis j))) =
-      inner0S (I := I) g x 4 (A x)
+      inner0S (I := I) g x s (A x)
         (metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2B x)) := by
     rw [metricTrace0S2TensorInBasis]
     exact (inner0S_sum_smul_right (I := I) g x gInv
       (fun i j : Idx => freezeFirstTwoArgs0S (I := I) (nabla2B x) (basis i) (basis j))
       (A x)).symm
-  have hB2zero : inner0S (I := I) g x 4 (A x)
+  have hB2zero : inner0S (I := I) g x s (A x)
       (metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2B x)) = 0 := by
     rw [hBflat2]
     simp [inner0S]
   have hcross1 : (∑ i : Idx, ∑ j : Idx,
-        gInv i j * inner0S (I := I) g x 4
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaA x) (basis j))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaB x) (basis i))) = 0 := by
+        gInv i j * inner0S (I := I) g x s
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i))) = 0 := by
     simp [hcurryB, inner0S]
   have hcross2 : (∑ i : Idx, ∑ j : Idx,
-        gInv i j * inner0S (I := I) g x 4
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaA x) (basis i))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaB x) (basis j))) = 0 := by
+        gInv i j * inner0S (I := I) g x s
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
+          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j))) = 0 := by
     simp [hcurryB, inner0S]
   unfold metricTrace0S2InBasis
   simp_rw [metricTraceInput_elim0_eq_vec2]
@@ -488,74 +485,25 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
         gInv i j * (hessianSec (I := I) cov hcov phi hphi x) (vec2 (I := I) (basis i) (basis j)))
         = ∑ i : Idx, ∑ j : Idx,
         gInv i j *
-          (inner0S (I := I) g x 4
+          (inner0S (I := I) g x s
             (freezeFirstTwoArgs0S (I := I) (nabla2A x) (basis i) (basis j)) (B x) +
-          inner0S (I := I) g x 4
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaA x) (basis j))
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaB x) (basis i)) +
-          inner0S (I := I) g x 4
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaA x) (basis i))
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 4 x (nablaB x) (basis j)) +
-          inner0S (I := I) g x 4 (A x)
+          inner0S (I := I) g x s
+            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
+            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i)) +
+          inner0S (I := I) g x s
+            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
+            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j)) +
+          inner0S (I := I) g x s (A x)
             (freezeFirstTwoArgs0S (I := I) (nabla2B x) (basis i) (basis j))) := by
       refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
       rw [hslot i j]
-    _ = inner0S (I := I) (G.metric t) x 4
+    _ = inner0S (I := I) (G.metric t) x s
         (metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2A x)) (B x) := by
       simp_rw [mul_add]
       simp only [Finset.sum_add_distrib]
       rw [hsumA, hcross1, hcross2, hsumB, hB2zero]
       simp [g]
 
-theorem laplacianAt_inner0S_eq_inner_roughLap_flowG_of_flat
-    {D : RealTimeInterval}
-    (S : SolutionOn (I := I) (M := M) D)
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    {t : Real} {x : M}
-    (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 4)
-    (nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 5)
-    (nabla2A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 6)
-    (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 4)
-    (nablaB : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 5)
-    (nabla2B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 6)
-    (hA : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 (S.base.connection t) A nablaA)
-    (h2A : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      5 (S.base.connection t) nablaA nabla2A)
-    (hB : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 (S.base.connection t) B nablaB)
-    (h2B : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      5 (S.base.connection t) nablaB nabla2B)
-    (basis : Module.Basis Idx Real (TangentSpace I x))
-    (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
-    (hBflat1 : nablaB x = 0)
-    (hBflat2 : metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2B x) = 0) :
-    laplacianAt (I := I) (flowG (I := I) S) t
-        (fun y : M => inner0S (I := I) (S.base.metric t) y 4 (A y) (B y)) x =
-      inner0S (I := I) (S.base.metric t) x 4
-        (metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2A x)) (B x) := by
-  classical
-  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      ((flowG (I := I) S).connection t) (∞ : WithTop ℕ∞) := by
-    simpa [flowG, SolutionFamily.connection] using
-      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
-        (I := I) (S.base.metric t))
-  simpa [flowG] using
-    laplacianAt_inner0S_eq_inner_roughLap_of_flat (I := I)
-      (G := flowG (I := I) S) (t := t) (x := x)
-      A nablaA nabla2A B nablaB nabla2B
-      (by simpa [flowG] using hA) (by simpa [flowG] using h2A)
-      (by simpa [flowG] using hB) (by simpa [flowG] using h2B)
-      hcov basis gInv (by simpa [flowG] using hinv)
-      hBflat1 (by simpa [flowG] using hBflat2)
-
 end
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Geometry.Operator
