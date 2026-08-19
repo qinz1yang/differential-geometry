@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TimeTameFixedPoint
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TensorSobolevLowerState
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorCovGradL2InnerDirichletBridge
 import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
@@ -23,7 +23,6 @@ open DifferentialGeometry.Geometry.Operator
 noncomputable section
 
 set_option backward.isDefEq.respectTransparency false
-set_option maxSynthPendingDepth 8
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped ENNReal Manifold Topology ContDiff

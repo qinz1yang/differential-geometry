@@ -744,7 +744,6 @@ noncomputable def smoothLaplacianBundle
   ⟨Δ_g (I := I) g φ,
     Δ_g_contMDiff (I := I) g φ⟩
 
-set_option linter.unusedSectionVars false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 @[simp] lemma smoothLaplacianBundle_apply
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (x : M) :

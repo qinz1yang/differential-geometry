@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TimeLocalNemytskii
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TameForcingFixedPoint
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
-    DifferentialGeometry.Analysis.Spectral
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TensorSobolevLowerState
+open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -23,22 +23,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
-
-def lowerStateRS (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ) (R : ℝ) :
-    Set (tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) :=
-  lowerBall (tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
-    (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith)) R
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem zero_mem_lowerRS (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ)
-    {R : ℝ} (hR : 0 ≤ R) :
-    (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) ∈
-      lowerStateRS (I := I) (M := M) g₀ r s a R := by
-  change
-    ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
-        (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith)
-        (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2))‖ ≤ R
-  simpa only [map_zero, norm_zero] using hR
 
 theorem field_mem_lowerRS
     (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ) {T ρ R : ℝ}
@@ -195,14 +179,17 @@ private theorem l2_four
     ENNReal.toReal_ofReal hA, ENNReal.toReal_ofReal hB,
     ENNReal.toReal_ofReal hC, ENNReal.toReal_ofReal hD]
 
-theorem time_partial_tame
+private theorem time_partial_tame_at
     (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ)
-    {R τ : ℝ} (hR : 0 < R) (hτ : 0 < τ)
+    {R τ T : ℝ} (hR : 0 < R) (hT : 0 < T) (hT1 : T ≤ 1)
+    (hTτ : T ≤ τ)
     (Nfun : ℝ → lowerStateRS (I := I) (M := M) g₀ r s a R →
       tensorHs (I := I) (M := M) g₀ r s (a : ℝ))
     (hNmeas : TimeNemyMeas
       (zero_mem_lowerRS (I := I) (M := M) g₀ r s a hR.le) Nfun τ)
     (A B C : ℝ≥0) (D : ℝ) (hD : 0 ≤ D)
+    (hTlo : T ≤ 1 / (64 * ((B : ℝ) + 1) ^ 2))
+    (hTstay : T ≤ ((R / 4) / (2 * (D + 1))) ^ 2)
     (hzero : ∀ t ∈ Icc (0 : ℝ) τ,
       ‖Nfun t ⟨0, zero_mem_lowerRS (I := I) (M := M) g₀ r s a hR.le⟩‖ ≤ D)
     (hsmallA : (A : ℝ) * R ≤ 1 / 16)
@@ -220,26 +207,22 @@ theorem time_partial_tame
                 ‖(u' : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2))‖) *
             ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
               (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖) :
-    ∃ T₀ : ℝ,
-      T₀ = min τ (min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
-        ((((R / 4) / (2 * (D + 1))) ^ 2)))) ∧
-      0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (hT1 : T ≤ 1),
-      ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀)
-          (r := r) (s := s) (a : ℝ) T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ r s (a : ℝ)) T),
-        let field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
-          (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) gforce
-        u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT hT1
-            (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) gforce ∧
-          (∀ᵐ t ∂(timeMeasure T),
-            field t ∈ lowerStateRS (I := I) (M := M) g₀ r s a R) ∧
-          gforce =ᵐ[timeMeasure T]
-            (fun t => Nfun t (aeSetLift
-              (zero_mem_lowerRS (I := I) (M := M) g₀ r s a hR.le) field t)) ∧
-          timeH1.trace0 _ T u = 0 ∧
-          timeH1.timeDeriv _ T u =
-            timeScaleLaplacian (I := I) (M := M) (a : ℝ) field + gforce ∧
-          ‖gforce‖ ≤ R / 4 := by
+    ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀)
+        (r := r) (s := s) (a : ℝ) T)
+      (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ r s (a : ℝ)) T),
+      let field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+        (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) gforce
+      u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT hT1
+          (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) gforce ∧
+        (∀ᵐ t ∂(timeMeasure T),
+          field t ∈ lowerStateRS (I := I) (M := M) g₀ r s a R) ∧
+        gforce =ᵐ[timeMeasure T]
+          (fun t => Nfun t (aeSetLift
+            (zero_mem_lowerRS (I := I) (M := M) g₀ r s a hR.le) field t)) ∧
+        timeH1.trace0 _ T u = 0 ∧
+        timeH1.timeDeriv _ T u =
+          timeScaleLaplacian (I := I) (M := M) (a : ℝ) field + gforce ∧
+        ‖gforce‖ ≤ R / 4 := by
   classical
   have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ r s
   have ha12 : (a : ℝ) + 1 ≤ (a : ℝ) + 2 := by linarith
@@ -253,22 +236,6 @@ theorem time_partial_tame
   set ρ : ℝ := R / 4 with hρdef
   have hρ : 0 < ρ := by rw [hρdef]; positivity
   have h2ρR : 2 * ρ ≤ R := by rw [hρdef]; nlinarith [hR]
-  set T₀ : ℝ := min τ (min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
-    ((ρ / (2 * (D + 1))) ^ 2))) with hT₀def
-  have hD1 : 0 < D + 1 := by linarith
-  have hT₀ : 0 < T₀ := by
-    refine lt_min hτ (lt_min one_pos (lt_min (by positivity) ?_))
-    positivity
-  refine ⟨T₀, ?_, hT₀, ?_⟩
-  · rw [hT₀def, hρdef]
-  intro T hT hTT₀ hT1
-  have hTτ : T ≤ τ := le_trans hTT₀ (min_le_left _ _)
-  have hTbase : T ≤ min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
-      ((ρ / (2 * (D + 1))) ^ 2)) := le_trans hTT₀ (min_le_right _ _)
-  have hTlo : T ≤ 1 / (64 * ((B : ℝ) + 1) ^ 2) :=
-    le_trans hTbase (le_trans (min_le_right _ _) (min_le_left _ _))
-  have hTstay : T ≤ (ρ / (2 * (D + 1))) ^ 2 :=
-    le_trans hTbase (le_trans (min_le_right _ _) (min_le_right _ _))
   have htimeT : ∀ᵐ t ∂(timeMeasure T), t ∈ Icc (0 : ℝ) T :=
     ae_restrict_mem measurableSet_Icc
   have htimeτ : ∀ᵐ t ∂(timeMeasure T), t ∈ Icc (0 : ℝ) τ := by
@@ -690,10 +657,8 @@ theorem time_partial_tame
       _ = liftN (field Fstar) (hstate Fstar) := by simp only [hΨdef]
   have hforceAe₀ : ⇑Fstar =ᵐ[timeMeasure T]
       fun t => Nfun t (aeSetLift hz (field Fstar) t) := by
-    have heq : ⇑Fstar =ᵐ[timeMeasure T] ⇑(liftN (field Fstar) (hstate Fstar)) := by
-      exact Filter.Eventually.of_forall (fun t =>
-        congrArg (fun F : timeL2 (tensorHs (I := I) (M := M) g₀ r s (a : ℝ)) T => F t)
-          hforceEq)
+    have heq : ⇑Fstar =ᵐ[timeMeasure T] ⇑(liftN (field Fstar) (hstate Fstar)) :=
+      timeL2_coeFn_ae_eq_of_eq hforceEq
     exact heq.trans (liftN_coe (field Fstar) (hstate Fstar))
   have hforceAe : ⇑Fstar =ᵐ[timeMeasure T]
       fun t => Nfun t (aeSetLift hz trueField t) := by
@@ -709,6 +674,71 @@ theorem time_partial_tame
       (a := (a : ℝ)) (T := T) hT hT1
       (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) Fstar]
   · simpa only [hρdef] using hFstar
+
+theorem time_partial_tame
+    (g₀ : SmoothRiemannianMetric I M) (r s a : ℕ)
+    {R τ : ℝ} (hR : 0 < R) (hτ : 0 < τ)
+    (Nfun : ℝ → lowerStateRS (I := I) (M := M) g₀ r s a R →
+      tensorHs (I := I) (M := M) g₀ r s (a : ℝ))
+    (hNmeas : TimeNemyMeas
+      (zero_mem_lowerRS (I := I) (M := M) g₀ r s a hR.le) Nfun τ)
+    (A B C : ℝ≥0) (D : ℝ) (hD : 0 ≤ D)
+    (hzero : ∀ t ∈ Icc (0 : ℝ) τ,
+      ‖Nfun t ⟨0, zero_mem_lowerRS (I := I) (M := M) g₀ r s a hR.le⟩‖ ≤ D)
+    (hsmallA : (A : ℝ) * R ≤ 1 / 16)
+    (hsmallC : (C : ℝ) * R ≤ 1 / 16)
+    (hsingle : ∀ t ∈ Icc (0 : ℝ) τ,
+      ∀ u u' : lowerStateRS (I := I) (M := M) g₀ r s a R,
+      ‖Nfun t u - Nfun t u'‖ ≤
+        (A : ℝ) * R *
+            ‖(u : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) - (u' : _)‖ +
+          (B : ℝ) *
+            ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
+              (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖ +
+          (C : ℝ) *
+              (‖(u : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2))‖ +
+                ‖(u' : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2))‖) *
+            ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
+              (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) ((u : _) - (u' : _))‖) :
+    ∃ T₀ : ℝ,
+      T₀ = min τ (min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
+        ((((R / 4) / (2 * (D + 1))) ^ 2)))) ∧
+      0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀) (hT1 : T ≤ 1),
+      ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀)
+          (r := r) (s := s) (a : ℝ) T)
+        (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ r s (a : ℝ)) T),
+        let field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT hT1
+          (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) gforce
+        u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT hT1
+            (0 : tensorHs (I := I) (M := M) g₀ r s ((a : ℝ) + 2)) gforce ∧
+          (∀ᵐ t ∂(timeMeasure T),
+            field t ∈ lowerStateRS (I := I) (M := M) g₀ r s a R) ∧
+          gforce =ᵐ[timeMeasure T]
+            (fun t => Nfun t (aeSetLift
+              (zero_mem_lowerRS (I := I) (M := M) g₀ r s a hR.le) field t)) ∧
+          timeH1.trace0 _ T u = 0 ∧
+          timeH1.timeDeriv _ T u =
+            timeScaleLaplacian (I := I) (M := M) (a : ℝ) field + gforce ∧
+          ‖gforce‖ ≤ R / 4 := by
+  set T₀ : ℝ := min τ (min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
+    (((R / 4) / (2 * (D + 1))) ^ 2))) with hT₀def
+  have hD1 : 0 < D + 1 := by linarith
+  have hT₀ : 0 < T₀ := by
+    rw [hT₀def]
+    refine lt_min hτ (lt_min one_pos (lt_min (by positivity) ?_))
+    positivity
+  refine ⟨T₀, hT₀def, hT₀, ?_⟩
+  intro T hT hTT₀ hT1
+  have hTτ : T ≤ τ := le_trans hTT₀ (hT₀def ▸ min_le_left _ _)
+  have hTbase : T ≤ min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
+      (((R / 4) / (2 * (D + 1))) ^ 2)) :=
+    le_trans hTT₀ (hT₀def ▸ min_le_right _ _)
+  have hTlo : T ≤ 1 / (64 * ((B : ℝ) + 1) ^ 2) :=
+    le_trans hTbase (le_trans (min_le_right _ _) (min_le_left _ _))
+  have hTstay : T ≤ ((R / 4) / (2 * (D + 1))) ^ 2 :=
+    le_trans hTbase (le_trans (min_le_right _ _) (min_le_right _ _))
+  exact time_partial_tame_at (I := I) (M := M) g₀ r s a hR hT hT1 hTτ
+    Nfun hNmeas A B C D hD hTlo hTstay hzero hsmallA hsmallC hsingle
 
 end DifferentialGeometry.Analysis.Parabolic
 

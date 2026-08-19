@@ -207,7 +207,6 @@ noncomputable def smoothLaplacianAsScalar
   toFun := Δ_g (I := I) g φ
   smooth := Δ_g_contMDiff (I := I) g φ
 
-set_option linter.unusedSectionVars false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma smoothLaplacianAsScalar_toFun
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) :

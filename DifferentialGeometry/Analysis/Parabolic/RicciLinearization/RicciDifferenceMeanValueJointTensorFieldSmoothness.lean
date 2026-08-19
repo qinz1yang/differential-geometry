@@ -216,9 +216,6 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
   have hL : L.comp Linv = ContinuousLinearMap.id ℝ E := by
     ext y
     exact (trivializationAt E (TangentSpace I) x₀).symmL_continuousLinearMapAt (R := ℝ) hx y
-  have hR : Linv.comp L = ContinuousLinearMap.id ℝ E := by
-    ext y
-    exact (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt_symmL (R := ℝ) hx y
   have h_cLMAt : ∀ (k : ℕ) (U : Tensor0SBundle.Tensor0SSpace k I z) (v : Fin k → E),
       (trivializationAt (Tensor0SBundle.Tensor0SModel k ℝ E)
         (fun y : M => Tensor0SBundle.Tensor0SSpace k I y) x₀).continuousLinearMapAt ℝ z U v =
@@ -315,7 +312,7 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
     rw [hβ2]
   rw [h_input, h_output]
   exact (Tensor0SBundle.model_contract_trace_naturality (𝕜 := ℝ) (E := E)
-    r s L Linv hL hR Tx).symm
+    r s L Linv hL Tx).symm
 
 set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in

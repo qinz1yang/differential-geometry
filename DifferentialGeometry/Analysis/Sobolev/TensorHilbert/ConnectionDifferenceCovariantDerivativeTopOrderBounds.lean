@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
-set_option maxSynthPendingDepth 3
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section

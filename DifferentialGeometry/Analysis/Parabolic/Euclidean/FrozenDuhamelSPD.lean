@@ -111,7 +111,6 @@ def pullJet1 (L : V ≃L[ℝ] V)
     BoundedContinuousFunction V (V →L[ℝ] F) :=
   (precompJet (F := F) L).compLeftContinuousBounded V (linPullBcf L du)
 
-set_option maxSynthPendingDepth 8 in
 def pullJet2 (L : V ≃L[ℝ] V)
     (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F)) :
     BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F) := by

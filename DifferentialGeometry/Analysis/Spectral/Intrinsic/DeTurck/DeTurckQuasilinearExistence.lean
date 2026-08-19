@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinear
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SubcriticalSmallTime
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2InterpolationLimit
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FieldHa1TimeSupTrace
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DuhamelEstimates
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MixedNorm
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -13,6 +15,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -32,89 +35,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem timeL2_norm_le_of_ae_mixed_bound
-    {T : ℝ} {X Y Z : Type*}
-    [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
-    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y]
-    [NormedAddCommGroup Z] [InnerProductSpace ℝ Z] [CompleteSpace Z]
-    (h : timeL2 X T) (p : timeL2 Y T) (q : timeL2 Z T) {A B : ℝ}
-    (hA : 0 ≤ A) (hB : 0 ≤ B)
-    (hbound : ∀ᵐ t ∂(timeMeasure T), ‖h t‖ ≤ A * ‖p t‖ + B * ‖q t‖) :
-    ‖h‖ ≤ A * ‖p‖ + B * ‖q‖ := by
-  set Pf : ℝ → ℝ := fun t => ‖(p : ℝ → Y) t‖ with hPf
-  set Qf : ℝ → ℝ := fun t => ‖(q : ℝ → Z) t‖ with hQf
-  have hPm : AEStronglyMeasurable Pf (timeMeasure T) :=
-    (Lp.aestronglyMeasurable p).norm
-  have hQm : AEStronglyMeasurable Qf (timeMeasure T) :=
-    (Lp.aestronglyMeasurable q).norm
-  have hAPm : AEStronglyMeasurable (A • Pf) (timeMeasure T) := hPm.const_smul A
-  have hBQm : AEStronglyMeasurable (B • Qf) (timeMeasure T) := hQm.const_smul B
-  have hmono : eLpNorm (h : ℝ → X) 2 (timeMeasure T) ≤
-      eLpNorm (A • Pf + B • Qf) 2 (timeMeasure T) := by
-    refine eLpNorm_mono_ae ?_
-    filter_upwards [hbound] with t ht
-    have happ : (A • Pf + B • Qf) t = A * ‖p t‖ + B * ‖q t‖ := by
-      simp [hPf, hQf, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-    have hge : 0 ≤ (A • Pf + B • Qf) t := by
-      rw [happ]; exact add_nonneg (mul_nonneg hA (norm_nonneg _)) (mul_nonneg hB (norm_nonneg _))
-    rw [Real.norm_eq_abs, abs_of_nonneg hge, happ]
-    exact ht
-  have htri : eLpNorm (A • Pf + B • Qf) 2 (timeMeasure T) ≤
-      eLpNorm (A • Pf) 2 (timeMeasure T) + eLpNorm (B • Qf) 2 (timeMeasure T) :=
-    eLpNorm_add_le hAPm hBQm (by norm_num)
-  have hscaleP : eLpNorm (A • Pf) 2 (timeMeasure T) =
-      ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hA]
-  have hscaleQ : eLpNorm (B • Qf) 2 (timeMeasure T) =
-      ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hB]
-  have hfinal : eLpNorm (h : ℝ → X) 2 (timeMeasure T) ≤
-      ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) +
-        ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) := by
-    calc eLpNorm (h : ℝ → X) 2 (timeMeasure T)
-        ≤ eLpNorm (A • Pf) 2 (timeMeasure T) + eLpNorm (B • Qf) 2 (timeMeasure T) :=
-          hmono.trans htri
-      _ = _ := by rw [hscaleP, hscaleQ]
-  have hp_top : eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp p).2.ne
-  have hq_top : eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp q).2.ne
-  have hnormh : ‖h‖ = (eLpNorm (h : ℝ → X) 2 (timeMeasure T)).toReal := rfl
-  have hnormp : ‖p‖ = (eLpNorm (p : ℝ → Y) 2 (timeMeasure T)).toReal := rfl
-  have hnormq : ‖q‖ = (eLpNorm (q : ℝ → Z) 2 (timeMeasure T)).toReal := rfl
-  have hrhs_ne : ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) +
-      ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ := by
-    refine ENNReal.add_ne_top.mpr ⟨ENNReal.mul_ne_top ENNReal.ofReal_ne_top hp_top,
-      ENNReal.mul_ne_top ENNReal.ofReal_ne_top hq_top⟩
-  rw [hnormh, hnormp, hnormq]
-  refine le_trans (ENNReal.toReal_mono hrhs_ne hfinal) ?_
-  rw [ENNReal.toReal_add (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hp_top)
-      (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hq_top),
-    ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal hA,
-    ENNReal.toReal_ofReal hB]
-
 variable {g₀ g_bg : SmoothRiemannianMetric I M}
-
-omit [BoundarylessManifold I M] in
-theorem timeL2Inclusion_maxRegDuhamelSolField {a : ℝ} {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    {r s : ℕ}
-    (u₀ : tensorHs (I := I) (M := M) g₀ r s (a + 2))
-    (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T) :
-    timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
-        (show a + 1 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := r) (s := s)
-          (T := T) a hT hT1 u₀ gforce) =
-      maxRegDuhamelSolFieldHa1 (I := I) (M := M) (g := g₀) (r := r) (s := s)
-        (T := T) a hT hT1 u₀ gforce := by
-  have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ r s
-  refine timeModeCoeff_injective (I := I) (M := M) h_compact (fun i => ?_)
-  rw [timeModeCoeff_timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)]
-  rw [maxRegDuhamelSolField, maxRegDuhamelSolFieldHa1,
-    timeModeCoeff_add (I := I) (M := M), timeModeCoeff_add (I := I) (M := M),
-    maxRegHomogeneousSolField_timeModeCoeff (I := I) (M := M) (a := a) (T := T) hT.le u₀ i,
-    maxRegHomogeneousSolFieldHa1_timeModeCoeff (I := I) (M := M) (a := a) (T := T) hT.le u₀ i,
-    maximalRegularitySolField_timeModeCoeff (I := I) (M := M)
-      (h_compact := h_compact) (a := a) hT.le gforce i,
-    maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
-      (h_compact := h_compact) (a := a) hT hT1 gforce i]
 
 def deTurckLipConst (a : ℕ) (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) : ℝ≥0 :=
   (deTurckSobolevNHa2_lipschitzWith (I := I) (M := M) g₀ g_bg a ha_super).choose
@@ -156,40 +77,6 @@ theorem deTurckSobolevNHa2Symm_mixed_lipschitz_pointwise (a : ℕ)
         (C₂ : ℝ) * ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                       (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (u - u')‖ :=
   deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise (I := I) (M := M) g₀ g_bg a ha_super
-
-omit [BoundarylessManifold I M] in
-theorem norm_maxRegDuhamelSolField_zero_le {a : ℝ} {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    {r s : ℕ} (F : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T) :
-    ‖maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := r) (s := s)
-        (T := T) a hT hT1
-        (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2)) F‖ ≤ (1 + T) * ‖F‖ := by
-  have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ r s
-  rw [maxRegDuhamelSolField]
-  refine le_trans (norm_add_le _ _) ?_
-  have hhom : ‖maxRegHomogeneousSolField (I := I) (M := M) a T
-      (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2))‖ ≤ Real.sqrt T * ‖(0 : tensorHs
-        (I := I) (M := M) g₀ r s (a + 2))‖ :=
-    maxRegHomogeneousSolField_norm_le (I := I) (M := M) (h_compact := h_compact) _ hT.le
-  rw [norm_zero, mul_zero] at hhom
-  have hreg : ‖maximalRegularitySolField (I := I) (M := M) a hT.le F‖ ≤ (1 + T) * ‖F‖ :=
-    maximalRegularitySolField_norm_le (I := I) (M := M) (h_compact := h_compact) hT.le F
-  have hhom0 : ‖maxRegHomogeneousSolField (I := I) (M := M) a T
-      (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2))‖ = 0 :=
-    le_antisymm hhom (norm_nonneg _)
-  rw [hhom0, zero_add]
-  exact hreg
-
-omit [BoundarylessManifold I M] in
-theorem maxRegDuhamelSolField_zero_zero {a : ℝ} {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    {r s : ℕ} :
-    maxRegDuhamelSolField (I := I) (M := M) (g := g₀) (r := r) (s := s)
-        (T := T) a hT hT1
-        (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2))
-        (0 : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T) = 0 := by
-  have h := norm_maxRegDuhamelSolField_zero_le (I := I) (M := M) (g₀ := g₀)
-    hT hT1 (0 : timeL2 (tensorHs (I := I) (M := M) g₀ r s a) T)
-  rw [norm_zero, mul_zero] at h
-  exact norm_le_zero_iff.mp h
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in

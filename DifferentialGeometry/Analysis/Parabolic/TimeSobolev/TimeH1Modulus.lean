@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
-set_option maxSynthPendingDepth 3
 
 noncomputable section
 
