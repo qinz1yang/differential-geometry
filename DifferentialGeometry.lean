@@ -2879,7 +2879,6 @@ import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.WeakForm
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.StateMass
 import DifferentialGeometry.Geometry.Metric.DeTurck.HarmonicMapTension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.InverseFamily
-import DifferentialGeometry.Geometry.Topology.NearIdentity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.ScaledHarmonicMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
@@ -3070,6 +3069,7 @@ import DifferentialGeometry.Topology.DirectLimit
 import DifferentialGeometry.Topology.DirectLimitManifold
 import DifferentialGeometry.Topology.FiberBundleT2
 import DifferentialGeometry.Topology.FiniteAtlasIndexOnCompact
+import DifferentialGeometry.Topology.NearIdentity
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.StandardModel

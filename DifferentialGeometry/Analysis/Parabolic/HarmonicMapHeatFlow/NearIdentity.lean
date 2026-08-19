@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Topology.NearIdentity
+import DifferentialGeometry.Topology.NearIdentity
 
 noncomputable section
 
