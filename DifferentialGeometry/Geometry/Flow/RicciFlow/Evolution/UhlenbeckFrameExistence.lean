@@ -125,22 +125,21 @@ theorem solutionUhlenbeckIota_identity_initial_gram
   simp [movingFrameGramInFrame, hiota0, horth, Finset.sum_ite_eq]
 
 omit [SigmaCompactSpace M] in
-theorem exists_uhlenbeckIota_of_finrank
+theorem exists_uhlenbeckFrame_of_finrank
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3) :
-    ∃ iota : MatrixComp M (Fin 3),
-      (∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0) ∧
-      FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
-        (uhlenbeckRupOfSolution (I := I) S
-          (solutionInverseMetricComponents S
-            (fun x => Classical.choose (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))))
-          (fun a x => (Classical.choose (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))) a)) ∧
-      (∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
-        movingFrameGramInFrame (metricCompInFrame (I := I) S
-          (fun a x => (Classical.choose (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))) a))
-          iota t x a b = if a = b then 1 else 0) := by
+    ∃ basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x),
+      (∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x)) ∧
+      ∃ iota : MatrixComp M (Fin 3),
+        (∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0) ∧
+        FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le) iota
+          (uhlenbeckRupOfSolution (I := I) S
+            (solutionInverseMetricComponents S basisAt) (fun a x => basisAt x a)) ∧
+        (∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+          movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a))
+            iota t x a b = if a = b then 1 else 0) := by
   classical
   let basisAt₀ : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x) :=
     fun x => Classical.choose (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))
@@ -149,15 +148,15 @@ theorem exists_uhlenbeckIota_of_finrank
     exact Classical.choose_spec (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))
   let iota : MatrixComp M (Fin 3) := solutionUhlenbeckIota hT S hS basisAt₀
   have hspec := solutionUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt₀
-  refine ⟨iota, ?_, ?_, ?_⟩
+  refine ⟨basisAt₀, horth0, iota, ?_, ?_, ?_⟩
   · intro x a k
     dsimp [iota]
     exact hspec.1 x a k
   · dsimp [iota]
-    simpa [basisAt₀] using hspec.2.1
+    exact hspec.2.1
   · intro t ht x a b
     dsimp [iota]
-    simpa [basisAt₀] using
-      solutionUhlenbeckIota_identity_initial_gram (I := I) (M := M) hT S hS basisAt₀ horth0 t ht x a b
+    exact solutionUhlenbeckIota_identity_initial_gram
+      (I := I) (M := M) hT S hS basisAt₀ horth0 t ht x a b
 
 end DifferentialGeometry.PDE.RicciFlow
