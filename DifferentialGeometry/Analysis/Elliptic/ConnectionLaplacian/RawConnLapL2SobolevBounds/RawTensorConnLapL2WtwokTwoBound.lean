@@ -219,9 +219,15 @@ private lemma scalar_iteratedFDeriv_two_mul_norm_le
   rw [h_smulRight_norm_fg] at h_combined
   rw [h_smulRight_norm_gf] at h_combined
   rw [← h_norm_iter_g, ← h_norm_iter_f, ← h_norm_iter_fg] at h_combined
-  nlinarith [h_combined,
-    mul_nonneg (norm_nonneg (fderiv ℝ f x)) (norm_nonneg (fderiv ℝ g x)),
-    mul_nonneg (norm_nonneg (fderiv ℝ g x)) (norm_nonneg (fderiv ℝ f x))]
+  calc
+    |f x| * ‖iteratedFDeriv ℝ 2 g x‖ ≤
+        ‖iteratedFDeriv ℝ 2 (fun y : E => f y * g y) x‖ +
+          (‖fderiv ℝ f x‖ * ‖fderiv ℝ g x‖ +
+            (|g x| * ‖iteratedFDeriv ℝ 2 f x‖ +
+              ‖fderiv ℝ g x‖ * ‖fderiv ℝ f x‖)) := h_combined
+    _ = ‖iteratedFDeriv ℝ 2 (fun y : E => f y * g y) x‖ +
+        |g x| * ‖iteratedFDeriv ℝ 2 f x‖ +
+          2 * ‖fderiv ℝ f x‖ * ‖fderiv ℝ g x‖ := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
@@ -641,7 +647,13 @@ lemma pou_sq_iteratedFDeriv_two_repr_sq_pointwise
       have h_sq_le : (ρ * ‖iteratedFDeriv ℝ 2 R e‖) ^ 2 ≤ (a + b + c) ^ 2 :=
         pow_le_pow_left₀ hρR_nn h_lhs_le 2
       have h_expand : (a + b + c) ^ 2 ≤ 3 * (a^2 + b^2 + c^2) := by
-        nlinarith [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (b - c), sq_nonneg (a+b-c)]
+        calc
+          (a + b + c) ^ 2 = 3 * (a ^ 2 + b ^ 2 + c ^ 2) -
+              ((a - b) ^ 2 + (a - c) ^ 2 + (b - c) ^ 2) := by ring
+          _ ≤ 3 * (a ^ 2 + b ^ 2 + c ^ 2) :=
+            sub_le_self _
+              (add_nonneg (add_nonneg (sq_nonneg (a - b)) (sq_nonneg (a - c)))
+                (sq_nonneg (b - c)))
       exact le_trans h_sq_le h_expand
     have hρ_R_sq : ρ ^ 2 * ‖iteratedFDeriv ℝ 2 R e‖ ^ 2 =
         (ρ * ‖iteratedFDeriv ℝ 2 R e‖) ^ 2 := by ring
