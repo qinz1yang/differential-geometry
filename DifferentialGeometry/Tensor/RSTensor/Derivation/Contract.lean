@@ -35,13 +35,14 @@ noncomputable def model_interior_product (s : ℕ) (v : E) :
       (fun _ : Fin (s + 1) => E) 𝕜).toContinuousLinearEquiv.toContinuousLinearMap
 
 noncomputable def model_interior_bilinear (𝕜 : Type*) [NontriviallyNormedField 𝕜]
-    [CompleteSpace 𝕜] (E : Type*) [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    (E : Type*) [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     [FiniteDimensional 𝕜 E] (s : ℕ) :
     E →L[𝕜] (Tensor0SModel (s + 1) 𝕜 E →L[𝕜] Tensor0SModel s 𝕜 E) :=
   ContinuousLinearMap.flip
     (continuousMultilinearCurryLeftEquiv 𝕜
       (fun _ : Fin (s + 1) => E) 𝕜).toContinuousLinearEquiv.toContinuousLinearMap
 
+omit [CompleteSpace 𝕜] in
 theorem model_interior_bilinear_apply (s : ℕ) (v : E) (T : Tensor0SModel (s + 1) 𝕜 E) :
     model_interior_bilinear 𝕜 E s v T = model_interior_product s v T := rfl
 
@@ -122,6 +123,7 @@ noncomputable def model_contract_covariant_bilinear (r s : ℕ) :
       (Tensor0SModel s 𝕜 E)).comp
     (model_interior_bilinear 𝕜 E s)
 
+omit [CompleteSpace 𝕜] in
 theorem model_contract_covariant_bilinear_apply (r s : ℕ) (v : E)
     (T : TensorRSModel r (s + 1) 𝕜 E) :
     model_contract_covariant_bilinear (𝕜 := 𝕜) (E := E) r s v T =
@@ -543,7 +545,6 @@ private theorem model_covariantChange_tensorWithCovector_first (r : ℕ)
 theorem model_contract_trace_naturality
     (r s : ℕ) (L Linv : E →L[𝕜] E)
     (hL : L.comp Linv = ContinuousLinearMap.id 𝕜 E)
-    (_hR : Linv.comp L = ContinuousLinearMap.id 𝕜 E)
     (T : TensorRSModel (1 + r) (s + 1) 𝕜 E) :
     model_contract_trace (𝕜 := 𝕜) (E := E) r s
       ((model_covariantChange (𝕜 := 𝕜) (E := E) (s + 1) L).comp
@@ -630,10 +631,6 @@ theorem contract_trace_trivialization_eq
   have hL : L.comp Linv = ContinuousLinearMap.id 𝕜 E := by
     ext z
     exact (trivializationAt E (TangentSpace I) x₀).symmL_continuousLinearMapAt
-      (R := 𝕜) hx z
-  have hR : Linv.comp L = ContinuousLinearMap.id 𝕜 E := by
-    ext z
-    exact (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt_symmL
       (R := 𝕜) hx z
   have h_cLMAt : ∀ (k : ℕ) (U : Tensor0SSpace k I x) (v : Fin k → E),
       (trivializationAt (Tensor0SModel k 𝕜 E)
@@ -730,7 +727,7 @@ theorem contract_trace_trivialization_eq
     rfl
   rw [h_input, h_output]
   exact (model_contract_trace_naturality (𝕜 := 𝕜) (E := E)
-    r s L Linv hL hR Tx).symm
+    r s L Linv hL Tx).symm
 
 noncomputable def contract_covariantField_fun (r s : ℕ)
     (α : (x : M) → TensorRSSpace r (s + 1) I x)

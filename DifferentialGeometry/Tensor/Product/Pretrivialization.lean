@@ -125,9 +125,7 @@ theorem tensorProduct_apply (p : TotalSpace (F₁ ⊗[𝕜] F₂) (fun x ↦ E�
         (e₂.continuousLinearMapAt 𝕜 p.1).toLinearMap p.2⟩ :=
   rfl
 
-instance tensorProduct.isLinear
-    [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
-    [∀ x, ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)] :
+instance tensorProduct.isLinear :
     (Pretrivialization.tensorProduct 𝕜 e₁ e₂).IsLinear 𝕜 where
   linear x hx :=
   by

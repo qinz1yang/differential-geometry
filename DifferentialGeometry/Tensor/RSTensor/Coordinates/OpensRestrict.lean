@@ -15,7 +15,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem tangentCoordChange_opens {V : Opens M} [Nonempty V] (p q x : V)
+theorem tangentCoordChange_opens {V : Opens M} (p q x : V)
     (hxp : (x : M) ∈ (chartAt H (p : M)).source) :
     (tangentBundleCore I V).coordChange (achart H p) (achart H q) x
       = (tangentBundleCore I M).coordChange (achart H (p : M)) (achart H (q : M)) (x : M) := by
@@ -50,7 +50,7 @@ theorem tangentCoordChange_opens {V : Opens M} [Nonempty V] (p q x : V)
     (hev.eq_of_nhdsWithin ⟨(chartAt H (p : M)) (x : M), rfl⟩)
 
 omit [CompleteSpace E] in
-theorem tensor0SModelAt_opens (s : ℕ) {V : Opens M} [Nonempty V] (p x : V)
+theorem tensor0SModelAt_opens (s : ℕ) {V : Opens M} (p x : V)
     (hxp : (x : M) ∈ (chartAt H (p : M)).source)
     (A : Tensor0SBundle.Tensor0SSpace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := V) s x) :
     TensorLieDeriv.tensor0SModelAt (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := V) s p x A
@@ -79,7 +79,7 @@ open Bundle Set Topology TopologicalSpace
 open scoped Manifold ContDiff
 set_option backward.isDefEq.respectTransparency false in
 noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
+    [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (s : ℕ) [IsManifold I 1 M] {V : Opens M} [Nonempty V]

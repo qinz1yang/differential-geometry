@@ -1,4 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LiftAffine
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DuhamelEstimates
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
 
 noncomputable section
 
@@ -15,10 +20,10 @@ open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Analysis.Parabolic (lowerState zero_mem_lowerState)
+open DifferentialGeometry.Analysis.Parabolic
+  (lowerState norm_maxRegDuhamelSolField_zero_le zero_mem_lowerState)
 open DifferentialGeometry.Analysis.Spectral
-  (ccTensorToHs ccToHsLin norm_maxRegDuhamelSolField_zero_le smoothCcToTensorHs
-    tensorResolventL2_isCompactOperator)
+  (ccTensorToHs ccToHsLin smoothCcToTensorHs tensorResolventL2_isCompactOperator)
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

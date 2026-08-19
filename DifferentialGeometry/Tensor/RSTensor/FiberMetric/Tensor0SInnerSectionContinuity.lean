@@ -31,7 +31,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 lemma continuousAt_clm_of_basis_continuousAt
-    {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     [NormedAddCommGroup G] [NormedSpace ℝ G]
     {N : Type*} [TopologicalSpace N]
     {ι : Type*} [Finite ι] (v : Module.Basis ι ℝ F)

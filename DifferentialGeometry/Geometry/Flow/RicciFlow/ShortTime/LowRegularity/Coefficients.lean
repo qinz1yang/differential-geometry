@@ -23,7 +23,6 @@ variable
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M]
       [T2Space M] [SigmaCompactSpace M]
 
 structure LowRegularityCoefficientBounds where
@@ -132,7 +131,6 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
               D.rhsD1Lip * metricJet3DiffSup (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
 
-set_option linter.unusedSectionVars false in
 theorem exists_low_reg_coeff {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)

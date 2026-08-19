@@ -595,7 +595,6 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
             (fun a : Fin r => V a x₀) := by
       have h := Tensor0SSpace.trivializationAt_apply
         (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x₀) r
-        (FiberBundle.mem_baseSet_trivializationAt' x₀)
         (localCovariantDerivTensor0SAt
           (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀)
         slots

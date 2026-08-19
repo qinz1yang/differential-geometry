@@ -23,7 +23,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-set_option linter.unusedSectionVars false in
+omit [SigmaCompactSpace M] in
 theorem covTailBoundSol
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)

@@ -805,8 +805,7 @@ theorem baseMap_eq (f : ContMDiffVectorBundleHom 𝕜 IB n F₁ E₁ F₂ E₂) 
     f.baseMap x = (f.toFun ⟨x, 0⟩).proj := by
   simp [f.fiber_compat, map_zero]
 
-theorem baseMapContMDiff [ContMDiffVectorBundle n F₁ E₁ IB]
-    (f : ContMDiffVectorBundleHom 𝕜 IB n F₁ E₁ F₂ E₂) :
+theorem baseMapContMDiff (f : ContMDiffVectorBundleHom 𝕜 IB n F₁ E₁ F₂ E₂) :
     ContMDiff IB IB n f.baseMap := by
   have h : f.baseMap = TotalSpace.proj ∘ f.toFun ∘ zeroSection F₁ E₁ := by
     ext x; simp [baseMap_eq, zeroSection]

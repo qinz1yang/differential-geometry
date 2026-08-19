@@ -777,7 +777,7 @@ private theorem rm04_tconst_eval
           (tangentConstAt (I := I) x Z)) x) := by
           rw [hWx, ← hcurv]
 
-omit [SigmaCompactSpace M] [T2Space M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem directionalDeriv_directionalDeriv_sub_commutator
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
@@ -1316,7 +1316,7 @@ theorem rm13MetricSkewAt_of_leviCivita_realizes
     (leviCivitaConnectionOfMetric (I := I) g) Rm13 Rm04 hRm13 hRm04
     (rm04OutputSkewAt_of_leviCivita_realizes (I := I) g Rm04 hRm04)
 
-omit [SigmaCompactSpace M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] in
 private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
     (g : SmoothRiemannianMetric I M)
     (Rm13 : Tensor13Section (I := I) (M := M))
@@ -1612,7 +1612,7 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
     linarith
   linarith
 
-omit [SigmaCompactSpace M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] in
 theorem oneFormThirdCovDerivCommAt_of_leviCivita
     (g : SmoothRiemannianMetric I M)
     (Rm13 : Tensor13Section (I := I) (M := M))

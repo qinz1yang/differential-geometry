@@ -134,7 +134,7 @@ def tangentMetricData_gen (g : SmoothMetric_gen I M) (x : M) :
 
 namespace TangentMetricData_gen
 
-@[simp] theorem inner_eq_gen
+theorem inner_eq_gen
     {g : SmoothMetric_gen I M} {x : M} (D : TangentMetricData_gen (I := I) g x)
     (X Y : TangentSpace I x) :
     D.metric.inner X Y = g.inner x X Y :=

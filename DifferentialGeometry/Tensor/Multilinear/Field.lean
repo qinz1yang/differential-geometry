@@ -25,6 +25,7 @@ variable {E : B → Type*} [∀ x, NormedAddCommGroup (E x)] [∀ x, NormedSpace
 
 local notation "MLF" s => ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜
 
+@[nolint unusedArguments]
 abbrev MultilinearSection
     (𝕜 : Type*) [NontriviallyNormedField 𝕜]
     (F : Type*) [NormedAddCommGroup F] [NormedSpace 𝕜 F]

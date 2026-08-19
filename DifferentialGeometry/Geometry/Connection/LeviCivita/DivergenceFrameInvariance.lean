@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option maxSynthPendingDepth 3
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix

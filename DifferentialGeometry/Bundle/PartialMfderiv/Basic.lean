@@ -81,7 +81,7 @@ theorem vderiv_mlieBracket
     [FiniteDimensional Real E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [IsManifold I 1 M] [IsManifold I 2 M]
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
     (hY : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% Y) x)
@@ -290,7 +290,7 @@ theorem extDerivFun_apply_mlieBracket
     [FiniteDimensional Real E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
+    [IsManifold I 1 M] [IsManifold I 2 M]
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
     (hY : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% Y) x)
@@ -582,7 +582,7 @@ theorem extDerivFun_finset_sum_sum_mul_at
     (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)]
 
 theorem extDerivFun_apply_contMDiff
-    {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -658,7 +658,7 @@ theorem extDerivFun_apply_contMDiff
     rw [hcancel]
 
 theorem extDerivFun_apply_contMDiffAt
-    {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]

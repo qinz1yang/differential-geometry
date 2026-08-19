@@ -123,7 +123,7 @@ theorem tensor0SModelAt_applyInput_eq
   letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   ext v
   rw [Tensor0SSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
-    (x₀ := x₀) (x := x) s hx]
+    (x₀ := x₀) (x := x) s]
   rw [TensorRSSpace.trivializationAt_apply (𝕜 := 𝕜) (I := I)
     (x₀ := x₀) (x := x) r s hx]
   have hθ :

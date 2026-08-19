@@ -18,6 +18,7 @@ variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 set_option backward.isDefEq.respectTransparency false in
+omit [CompleteSpace 𝕜] in
 theorem tensor0SConstInChart_contMDiffAt_of_mem {r : ℕ}
     (x₀ : M) (β : Tensor0SModel r 𝕜 E) {x : M}
     (hx : x ∈ (trivializationAt (Tensor0SModel r 𝕜 E)
@@ -43,6 +44,7 @@ theorem tensor0SConstInChart_contMDiffAt_of_mem {r : ℕ}
     (e.continuousLinearMapAt_symmL (R := 𝕜) hp β)
 
 set_option backward.isDefEq.respectTransparency false in
+omit [CompleteSpace 𝕜] in
 theorem tensor0SConstInChart_contMDiffAt {r : ℕ}
     (x₀ : M) (β : Tensor0SModel r 𝕜 E) :
     ContMDiffAt I (I.prod 𝓘(𝕜, Tensor0SModel r 𝕜 E)) (∞ : WithTop ℕ∞)
@@ -57,6 +59,7 @@ theorem tensor0SConstInChart_contMDiffAt {r : ℕ}
       (Tensor0SModel r 𝕜 E) (fun p : M => Tensor0SSpace r I p) x₀)
 
 set_option backward.isDefEq.respectTransparency false in
+omit [CompleteSpace 𝕜] in
 private theorem tensor0SModelInChart_contDiffWithinAt_center_of_contMDiffAt {r : ℕ}
     (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r x)
@@ -119,6 +122,7 @@ private theorem tensor0SModelInChart_contDiffWithinAt_center_of_contMDiffAt {r :
   exact hmdiff.contDiffWithinAt
 
 set_option backward.isDefEq.respectTransparency false in
+omit [CompleteSpace 𝕜] in
 theorem tensor0SModelInChart_differentiableWithinAt_center_of_contMDiffAt {r : ℕ}
     (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r x)

@@ -1,5 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.AdaptedSolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.GalerkinForcingSequence
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DuhamelEstimates
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.GalerkinParabolicEnergy
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.TimeL2EigenProjection
 
 noncomputable section
 
@@ -17,13 +22,13 @@ open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Analysis.Parabolic (lowerState zero_mem_lowerState)
+open DifferentialGeometry.Analysis.Parabolic
+  (lowerState norm_maxRegDuhamelSolField_zero_le zero_mem_lowerState)
 open DifferentialGeometry.Analysis.Spectral
   (eigenIdxFinset finiteEigenComboHs finiteEigenComboHs_coeff
     finiteEigenCombo_spectral_normSq galerkinEnergy galerkinEnergy_continuousOn
     galerkinEnergy_nonneg mem_eigenIdxFinset
-    norm_maxRegDuhamelSolField_zero_le smoothCcToTensorHs
-    spatialEigenProj spatialEigenProj_apply tensorResolventL2_isCompactOperator
+    smoothCcToTensorHs spatialEigenProj spatialEigenProj_apply tensorResolventL2_isCompactOperator
     timeL2EigenProj)
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

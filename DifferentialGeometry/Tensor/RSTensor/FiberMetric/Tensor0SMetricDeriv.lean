@@ -382,7 +382,7 @@ omit [DecidableEq Idx] in
     bmat A v i = ∑ j : Idx, A i j * v j := by
   rfl
 
-@[simp] private theorem bmat_single
+private theorem bmat_single
     (A : Matrix Idx Idx Real) (i j : Idx) :
     bmat A (Pi.single j (1 : Real)) i = A i j := by
   classical

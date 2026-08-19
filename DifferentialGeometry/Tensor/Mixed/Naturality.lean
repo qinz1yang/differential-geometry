@@ -60,7 +60,7 @@ theorem dualMultilinearEquivMultilinearOfDual_compCCLM_ext (r : ℕ) (L : F →L
 
 theorem homEquivCDualTensor_symm_tmul
     {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] [FiniteDimensional 𝕜 V]
-    {W : Type*} [NormedAddCommGroup W] [NormedSpace 𝕜 W] [FiniteDimensional 𝕜 W]
+    {W : Type*} [NormedAddCommGroup W] [NormedSpace 𝕜 W]
     (η : V →L[𝕜] 𝕜) (w : W) (v : V) :
     (homEquivCDualTensor 𝕜 V W).symm (η ⊗ₜ[𝕜] w) v = η v • w := by
   simp only [homEquivCDualTensor, LinearEquiv.symm_trans_apply,
