@@ -52,8 +52,6 @@ import DifferentialGeometry.Analysis.Calculus.TimeSliceBootstrap
 import DifferentialGeometry.Analysis.Calculus.TimeSliceSwap
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Convex.MovingSetDistance
-import DifferentialGeometry.Analysis.Convex.PositiveSemidefiniteMatrixCone
-import DifferentialGeometry.Analysis.Convex.PositiveSemidefiniteOperatorCone
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
 import DifferentialGeometry.Analysis.Convex.SupportFunction
 import DifferentialGeometry.Analysis.Convex.Tensor02PositiveSemidefiniteCone
@@ -808,7 +806,6 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ConvexTimeDep
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualProperCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.DualConeStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ConeStrong
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.FiniteMinimumUpperSupport
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotential
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotentialBoundaryHopf
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HeatPotentialHopf
@@ -820,8 +817,6 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelDualConeStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelConeStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelTensorNullDistribution
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelTimeDepConvex
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSemidefiniteMatrix
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ProperCone
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ScalarStrong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SemilinearConvex
@@ -2902,7 +2897,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Compactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Final
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.FirstNull
-import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.QuadraticLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.Limit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.MaximumPrinciple.TensorWeak.TensorBackedReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ParabolicRescaling
