@@ -28,6 +28,26 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 - [Perelman's $\mathcal{W}$-entropy invariances](DifferentialGeometry/Geometry/Flow/RicciFlow/Entropy/W/Functional.lean#L92) — scale and diffeomorphism invariance.
 - [Perelman's $\mathcal{F}$-functional first variation](DifferentialGeometry/Geometry/Flow/RicciFlow/Entropy/F/GeometricFirstVariation.lean#L386) — Perelman's formula 5.10.
 
+## Verification
+
+```bash
+git clone https://github.com/qinz1yang/differential-geometry.git
+cd differential-geometry
+lake build DifferentialGeometry
+```
+
+To inspect Hamilton's transitive axioms, temporarily add
+
+```lean
+#print axioms DifferentialGeometry.PDE.RicciFlow.HamiltonPositiveRicci.hamilton_positive_ricci
+```
+
+to [`Hamilton.lean`](DifferentialGeometry/Geometry/Flow/RicciFlow/DimensionThree/PositiveRicci/Hamilton.lean), then run
+
+```bash
+lake build DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Hamilton
+```
+
 ## PDE infrastructure
 
 Underlying these results is a substantial geometric-analysis backbone:
