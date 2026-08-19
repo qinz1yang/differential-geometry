@@ -1,5 +1,6 @@
 /-
 Authors: Yuan Liao, Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Multilinear.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Curry
@@ -28,9 +29,7 @@ variable [IsManifold I 1 M]
 variable {x' : M}
 variable {r s : ℕ}
 
-abbrev TrivialBundle : M → Type _ := fun _ ↦  𝕜
-
-@[reducible]
+@[reducible, nolint unusedArguments]
 def Tensor0SModel (s : ℕ) (𝕜 : Type*) (E : Type*) [NontriviallyNormedField 𝕜]
   [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E] :=
   ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜
@@ -40,6 +39,7 @@ def TensorRSModel (r s : ℕ) (𝕜 : Type*) (E : Type*) [NontriviallyNormedFiel
   [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E] :=
   (Tensor0SModel r 𝕜 E) →L[𝕜] (Tensor0SModel s 𝕜 E)
 
+@[nolint unusedArguments]
 def Tensor0SSpace (s : ℕ) (I : ModelWithCorners 𝕜 E H) [IsManifold I 1 M] (x : M) : Type _ :=
   Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I) x
 
