@@ -208,7 +208,6 @@ noncomputable def fiberOperatorTensor
 
 omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 2 M]
   [SigmaCompactSpace M] [T2Space M] in
-@[simp]
 theorem fiberOperatorTensor_apply
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
@@ -271,7 +270,6 @@ def fiberHamiltonIveyNormalDirections
       symmEuclid (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, h⟩)) = 0}
 
 noncomputable def fiberHamiltonIveySupport
-    (_g : SmoothRiemannianMetric I M)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (K τ : ℝ) (x : M) (ν : Tensor04At (I := I) (M := M) x) : ℝ := by
   classical
@@ -557,11 +555,10 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclid_eq_of_symmEuclid_eq
 omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
   [SigmaCompactSpace M] [T2Space M] in
 private lemma fiberHamiltonIveySupport_eq
-    (g : SmoothRiemannianMetric I M)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (K τ : ℝ) (x : M) {ν : Tensor04At (I := I) (M := M) x}
     (hν : ν ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
-    fiberHamiltonIveySupport g basisAt K τ x ν =
+    fiberHamiltonIveySupport basisAt K τ x ν =
       4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ
         (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν⟩)) := by
   unfold fiberHamiltonIveySupport
@@ -630,7 +627,7 @@ theorem fiberHamiltonIveyRegion_mem_iff_forall_support_le
     A ∈ fiberHamiltonIveyRegion basisAt K τ x ↔
       ∀ ν : Tensor04At (I := I) (M := M) x,
         ν ∈ fiberHamiltonIveyNormalDirections basisAt x →
-          inner0S (I := I) g x 4 A ν ≤ fiberHamiltonIveySupport g basisAt K τ x ν := by
+          inner0S (I := I) g x 4 A ν ≤ fiberHamiltonIveySupport basisAt K τ x ν := by
   constructor
   · intro hAregion ν hν
     rcases hAregion with ⟨hAlg, hmat⟩
@@ -648,14 +645,14 @@ theorem fiberHamiltonIveyRegion_mem_iff_forall_support_le
     have hinner : inner0S (I := I) g x 4 A ν =
         4 * inner ℝ (matrixToEuclid matν) (matrixToEuclid matA) :=
       inner0S_algebraic_eq_four_inner_matrixToEuclid g x (basisAt x) (horth0 x) ⟨A, hAlg⟩ ⟨ν, hν⟩
-    have hsup : fiberHamiltonIveySupport g basisAt K τ x ν =
+    have hsup : fiberHamiltonIveySupport basisAt K τ x ν =
         4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid matν) :=
-      fiberHamiltonIveySupport_eq g basisAt K τ x hν
+      fiberHamiltonIveySupport_eq basisAt K τ x hν
     calc
       inner0S (I := I) g x 4 A ν = 4 * inner ℝ (matrixToEuclid matν) (matrixToEuclid matA) := hinner
       _ ≤ 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ (matrixToEuclid matν) := by
         nlinarith [hmain]
-      _ = fiberHamiltonIveySupport g basisAt K τ x ν := hsup.symm
+      _ = fiberHamiltonIveySupport basisAt K τ x ν := hsup.symm
   · intro hle
     have hmatAherm : (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨A, hA⟩).IsHermitian :=
       curvatureOperatorMatrixAt_isHermitian x (basisAt x) ⟨A, hA⟩
@@ -690,9 +687,9 @@ theorem fiberHamiltonIveyRegion_mem_iff_forall_support_le
           4 * inner ℝ w' (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨A, hA⟩)) := by
         have h4 := inner0S_fiberOperatorTensor_eq g (basisAt x) (horth0 x) hA (symmEuclid_isSymm w)
         rw [h4]
-      have hsup' : fiberHamiltonIveySupport g basisAt K τ x νT =
+      have hsup' : fiberHamiltonIveySupport basisAt K τ x νT =
           4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ w' := by
-        rw [fiberHamiltonIveySupport_eq g basisAt K τ x hνTalg]
+        rw [fiberHamiltonIveySupport_eq basisAt K τ x hνTalg]
         congr 1
         rw [fiberOperatorTensor_curvatureOperatorMatrix g (basisAt x)
           (fun i j => by simpa [OrthonormalBasisAt, delta3] using horth0 x i j) (symmEuclid_isSymm w)]
@@ -723,7 +720,7 @@ theorem fiberHamiltonIveySupport_eq_sSup
     {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (x : M)
     {ν : Tensor04At (I := I) (M := M) x}
     (hν : ν ∈ fiberHamiltonIveyNormalDirections basisAt x) :
-    fiberHamiltonIveySupport g basisAt K τ x ν =
+    fiberHamiltonIveySupport basisAt K τ x ν =
       sSup {r : ℝ | ∃ q : Tensor04At (I := I) (M := M) x,
         q ∈ fiberHamiltonIveyRegion basisAt K τ x ∧ r = inner0S (I := I) g x 4 q ν} := by
   rcases hν with ⟨hνalg, hcond⟩
@@ -732,9 +729,9 @@ theorem fiberHamiltonIveySupport_eq_sSup
   have hν' : ν' ∈ finiteSupportDirections (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
     rw [mem_finiteSupportDirections_hamiltonIvey_region_iff hK hτ]
     exact hcond
-  have hsup : fiberHamiltonIveySupport g basisAt K τ x ν =
+  have hsup : fiberHamiltonIveySupport basisAt K τ x ν =
       4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ ν' := by
-    rw [fiberHamiltonIveySupport_eq g basisAt K τ x hνalg]
+    rw [fiberHamiltonIveySupport_eq basisAt K τ x hνalg]
   have hEq := hamiltonIveyConvexMatrixRegionSupportEuclid_eq_supportFunction_of_finiteSupportDirections
     hK hτ ν' hν'
   unfold supportFunction at hEq
@@ -773,7 +770,7 @@ theorem fiberHamiltonIveySupport_eq_sSup
           (euclidToMatrix_isSymm_of_mem_hamiltonIveyConvexMatrixRegionEuclid hc)]
         rw [matrixToEuclid_euclidToMatrix]
   calc
-    fiberHamiltonIveySupport g basisAt K τ x ν = 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ ν' := hsup
+    fiberHamiltonIveySupport basisAt K τ x ν = 4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ ν' := hsup
     _ = 4 * sSup {x : ℝ | ∃ c : EuclideanSpace ℝ (Fin 3 × Fin 3),
           c ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ∧ x = inner ℝ ν' c} := by
       rw [hEq]
@@ -811,14 +808,6 @@ theorem mem_fiberHamiltonIveyNormalDirections_iff
   · rwa [mem_finiteSupportDirections_hamiltonIvey_region_iff hK hτ]
   · rwa [mem_finiteSupportDirections_hamiltonIvey_region_iff hK hτ] at hc
 
-omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
-  [SigmaCompactSpace M] [T2Space M] in
-theorem fiberHamiltonIveyNormalDirections_independent
-    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
-    (x : M) :
-    fiberHamiltonIveyNormalDirections basisAt x = fiberHamiltonIveyNormalDirections basisAt x :=
-  rfl
-
 omit [CompleteSpace E] [IsManifold I 2 M]
   [SigmaCompactSpace M] [T2Space M] in
 theorem fiberHamiltonIveyRegion_normal
@@ -827,7 +816,6 @@ theorem fiberHamiltonIveyRegion_normal
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) g x (basisAt x))
     {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ) (x : M)
     {p : Tensor04At (I := I) (M := M) x}
-    (_hp : p ∈ fiberHamiltonIveyRegion basisAt K τ x)
     {ν : Tensor04At (I := I) (M := M) x}
     (hν : ν ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (hnormal : ∀ q : Tensor04At (I := I) (M := M) x,

@@ -59,8 +59,7 @@ noncomputable def solutionUhlenbeckIota
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
-    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
-    (_horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x)) :
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x)) :
     MatrixComp M (Fin 3) :=
   Classical.choose (uhlenbeckIota_isometry (I := I) (M := M) hT S hS
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
@@ -79,19 +78,18 @@ theorem solutionUhlenbeckIota_spec
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
-    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
-    (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x)) :
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x)) :
     (∀ x : M, ∀ a k : Fin 3,
-      solutionUhlenbeckIota hT S hS basisAt horth0 0 x a k = if a = k then 1 else 0) ∧
+      solutionUhlenbeckIota hT S hS basisAt 0 x a k = if a = k then 1 else 0) ∧
     FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le)
-      (solutionUhlenbeckIota hT S hS basisAt horth0)
+      (solutionUhlenbeckIota hT S hS basisAt)
       (uhlenbeckRupOfSolution (I := I) S (solutionInverseMetricComponents S basisAt)
         (fun a x => basisAt x a)) ∧
     (∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
       movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a))
-        (solutionUhlenbeckIota hT S hS basisAt horth0) t x a b =
+        (solutionUhlenbeckIota hT S hS basisAt) t x a b =
       movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a))
-        (solutionUhlenbeckIota hT S hS basisAt horth0) 0 x a b) := by
+        (solutionUhlenbeckIota hT S hS basisAt) 0 x a b) := by
   classical
   exact Classical.choose_spec (uhlenbeckIota_isometry (I := I) (M := M) hT S hS
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
@@ -114,9 +112,9 @@ theorem solutionUhlenbeckIota_identity_initial_gram
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
     (t : ℝ) (ht : t ∈ Set.Icc 0 T) (x : M) (a b : Fin 3) :
     movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a))
-      (solutionUhlenbeckIota hT S hS basisAt horth0) t x a b = if a = b then 1 else 0 := by
+      (solutionUhlenbeckIota hT S hS basisAt) t x a b = if a = b then 1 else 0 := by
   classical
-  have hspec := solutionUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt horth0
+  have hspec := solutionUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt
   have hgram := hspec.2.2 t ht x a b
   rw [hgram]
   have hiota0 := hspec.1 x
@@ -149,8 +147,8 @@ theorem exists_uhlenbeckIota_of_finrank
   have horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt₀ x) := by
     intro x
     exact Classical.choose_spec (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))
-  let iota : MatrixComp M (Fin 3) := solutionUhlenbeckIota hT S hS basisAt₀ horth0
-  have hspec := solutionUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt₀ horth0
+  let iota : MatrixComp M (Fin 3) := solutionUhlenbeckIota hT S hS basisAt₀
+  have hspec := solutionUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt₀
   refine ⟨iota, ?_, ?_, ?_⟩
   · intro x a k
     dsimp [iota]

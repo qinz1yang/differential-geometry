@@ -31,9 +31,9 @@ def bundleInnerScalarization
   fun t x => inner ℝ (u t x) (ν x)
 
 def IsBundleConvexSupportFamily (F : Type uF) [NormedAddCommGroup F]
-    [InnerProductSpace Real F] [CompleteSpace F]
+    [InnerProductSpace Real F]
     [∀ x, NormedAddCommGroup (V x)] [∀ x, InnerProductSpace ℝ (V x)]
-    [TopologicalSpace (TotalSpace F V)] [FiberBundle F V] [VectorBundle ℝ F V]
+    [TopologicalSpace (TotalSpace F V)] [FiberBundle F V]
     (C : Real → (x : M) → Set (V x)) (support : Real → (x : M) → V x → Real) : Prop :=
   ∀ t x p, p ∈ C t x ↔
     ∀ ν : Cₛ^∞⟮I; F, V⟯, inner ℝ p (ν x) ≤ support t x (ν x)

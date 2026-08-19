@@ -839,7 +839,7 @@ theorem hamilton_ivey_pinching_of_supportUpper_nonneg
   have hprop := curvatureOperatorRegionPropagationOn_of_supportUpper_nonneg
     (I := I) (M := M) S hK hdim hscalar hnonneg
   exact hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
-    (I := I) (M := M) S hK hslab hprop
+    (I := I) (M := M) S hslab hprop
 
 
 theorem ricciAt_basis_eq_curvatureOperatorMatrix_trace_sub_missing

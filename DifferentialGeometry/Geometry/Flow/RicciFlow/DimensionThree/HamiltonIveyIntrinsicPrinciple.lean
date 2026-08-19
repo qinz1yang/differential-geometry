@@ -418,16 +418,13 @@ theorem regionSupport_eq_of_mem_algebraic
   congr 1
   rw [regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν]
 
-omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
-  [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
   [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem fiberHamiltonIveySupport_eq_of_mem_algebraic
-    (g : SmoothRiemannianMetric I M)
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (K τ : ℝ) (x : M) {ν : Tensor04At (I := I) (M := M) x}
     (hν : ν ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
-    fiberHamiltonIveySupport g basisAt K τ x ν =
+    fiberHamiltonIveySupport basisAt K τ x ν =
       4 * hamiltonIveyConvexMatrixRegionSupportEuclid K τ
         (matrixToEuclid (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν⟩)) := by
   unfold fiberHamiltonIveySupport
@@ -441,9 +438,9 @@ theorem regionSupport_eq_fiberHamiltonIveySupport_of_mem_algebraic
     (K τ : ℝ) (x : M) {ν : Tensor04At (I := I) (M := M) x}
     (hν : ν ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
     regionSupport (I := I) g basisAt K τ x ν =
-      fiberHamiltonIveySupport g basisAt K τ x ν := by
+      fiberHamiltonIveySupport basisAt K τ x ν := by
   rw [regionSupport_eq_of_mem_algebraic (I := I) g basisAt K τ x hν,
-    fiberHamiltonIveySupport_eq_of_mem_algebraic (I := I) g basisAt K τ x hν]
+    fiberHamiltonIveySupport_eq_of_mem_algebraic (I := I) basisAt K τ x hν]
 
 omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
   [SigmaCompactSpace M] [T2Space M] in
@@ -568,7 +565,7 @@ theorem fiberRegion_mem_iff_forall_normalDirections
       exact (mem_regionNormalDirections_iff_mem_fiberNormalDirections (I := I) g basisAt x hνalg).mpr ⟨hνalg, hc⟩
     have hle' := hle ν hνN
     have hsup : regionSupport (I := I) g basisAt K τ x ν =
-        fiberHamiltonIveySupport g basisAt K τ x ν := by
+        fiberHamiltonIveySupport basisAt K τ x ν := by
       exact regionSupport_eq_fiberHamiltonIveySupport_of_mem_algebraic (I := I) g basisAt K τ x hνalg
     rw [inner0S_comm (I := I) g x 4 ν p] at hle'
     rw [← hsup]
@@ -606,7 +603,7 @@ theorem regionSupport_eq_sSup
         simp only [Set.mem_setOf_eq]
         simpa [hreg] using hν)
   have hmain := fiberHamiltonIveySupport_eq_sSup (I := I) g basisAt horth0 hK hτ x hν₀N
-  have hsup : fiberHamiltonIveySupport g basisAt K τ x
+  have hsup : fiberHamiltonIveySupport basisAt K τ x
         (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) =
       regionSupport (I := I) g basisAt K τ x ν := by
     unfold regionSupport fiberHamiltonIveySupport
@@ -615,7 +612,7 @@ theorem regionSupport_eq_sSup
     rw [regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν₀alg]
   calc
     regionSupport (I := I) g basisAt K τ x ν
-        = fiberHamiltonIveySupport g basisAt K τ x
+        = fiberHamiltonIveySupport basisAt K τ x
             (fiberProjW (I := I) g x ν : Tensor04At (I := I) (M := M) x) := hsup.symm
     _ = sSup {r : ℝ | ∃ q : Tensor04At (I := I) (M := M) x,
           q ∈ fiberHamiltonIveyRegion basisAt K τ x ∧
@@ -662,7 +659,7 @@ theorem regionNormalDirections_of_normal
         ⟨(q - p), Submodule.sub_mem (algebraicCurvatureTensorSubmodule (I := I) (M := M) x) hqalg hpalg⟩
     rwa [h2]
   have hν₀N : (pν : Tensor04At (I := I) (M := M) x) ∈ fiberHamiltonIveyNormalDirections basisAt x :=
-    fiberHamiltonIveyRegion_normal (I := I) g basisAt horth0 hK hτ x hp hν₀alg hnormal'
+    fiberHamiltonIveyRegion_normal (I := I) g basisAt horth0 hK hτ x hν₀alg hnormal'
   have hν₀R : (pν : Tensor04At (I := I) (M := M) x) ∈ regionNormalDirections (I := I) g basisAt x :=
     (mem_regionNormalDirections_iff_mem_fiberNormalDirections (I := I) g basisAt x hν₀alg).mpr hν₀N
   rw [regionNormalDirections] at hν₀R ⊢
@@ -1590,8 +1587,7 @@ variable (hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
 noncomputable def intrinsicUhlenbeckIota
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
-    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
-    (_horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x)) :
+    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x)) :
     MatrixComp M (Fin 3) :=
   Classical.choose (uhlenbeckIotaOfSolution (I := I) (M := M) hT S
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
@@ -1604,20 +1600,20 @@ noncomputable def intrinsicUhlenbeckIota
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] in
 theorem intrinsicUhlenbeckIota_spec :
     (∀ x : M, ∀ a k : Fin 3,
-      intrinsicUhlenbeckIota hT S hS basisAt horth0 0 x a k = if a = k then 1 else 0) ∧
-    (∀ x : M, ContinuousOn (fun t : ℝ => intrinsicUhlenbeckIota hT S hS basisAt horth0 t x)
+      intrinsicUhlenbeckIota hT S hS basisAt 0 x a k = if a = k then 1 else 0) ∧
+    (∀ x : M, ContinuousOn (fun t : ℝ => intrinsicUhlenbeckIota hT S hS basisAt t x)
       (Set.Icc 0 T)) ∧
     FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le)
-      (intrinsicUhlenbeckIota hT S hS basisAt horth0)
+      (intrinsicUhlenbeckIota hT S hS basisAt)
       (uhlenbeckRupOfSolution (I := I) S (solutionInverseMetricComponents S basisAt)
         (fun a x => basisAt x a)) ∧
     (∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
       movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a))
-        (intrinsicUhlenbeckIota hT S hS basisAt horth0) t x a b =
+        (intrinsicUhlenbeckIota hT S hS basisAt) t x a b =
       movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a))
-        (intrinsicUhlenbeckIota hT S hS basisAt horth0) 0 x a b) := by
+        (intrinsicUhlenbeckIota hT S hS basisAt) 0 x a b) := by
   classical
-  let iota : MatrixComp M (Fin 3) := intrinsicUhlenbeckIota hT S hS basisAt horth0
+  let iota : MatrixComp M (Fin 3) := intrinsicUhlenbeckIota hT S hS basisAt
   have hraw := Classical.choose_spec (uhlenbeckIotaOfSolution (I := I) (M := M) hT S
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
     (fun x i j => solutionInverseMetricComponents_entry_continuousOn
@@ -1708,7 +1704,7 @@ def fiberRegionSupportDeriv
 def fiberRegionSource
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
-    (_t : ℝ) (x : M) (p ν : Tensor04At (I := I) (M := M) x) : ℝ :=
+    (x : M) (p ν : Tensor04At (I := I) (M := M) x) : ℝ :=
   regionSource (I := I) (S.base.metric 0) basisAt x p ν
 
 @[implicit_reducible]
@@ -1947,7 +1943,7 @@ theorem fiberRegionPropagationOn_of_flatSupport
         (V := fun x : M => Tensor04At (I := I) (M := M) x)
         (fiberRegionFlat (I := I) (M := M) S basisAt iota)
         (RealTimeInterval.closed 0 T hT.le) (flowG (I := I) S)
-        (fiberRegionSource hT (I := I) (M := M) S basisAt)
+        (fun _ => fiberRegionSource hT (I := I) (M := M) S basisAt)
         (uhlenbeckPulledRm04At S basisAt iota))
     (hflat : by
       letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
@@ -2101,7 +2097,7 @@ theorem fiberRegionPropagationOn_of_flatSupport
       ∀ ν : Tensor04At (I := I) (M := M) x,
         ν ∈ regionNormalDirections (I := I) (S.base.metric 0) basisAt x →
         fiberRegionSupport hT (I := I) (M := M) S basisAt K t x ν = inner ℝ ν p →
-        fiberRegionSource hT (I := I) (M := M) S basisAt t x p ν ≤
+        fiberRegionSource hT (I := I) (M := M) S basisAt x p ν ≤
           fiberRegionSupportDeriv hT (I := I) (M := M) S basisAt hK t x ν := by
     intro t ht htpos x p hp ν hν htangent
     have hmax : max t 0 = t := max_eq_left ht.1
@@ -2129,7 +2125,7 @@ theorem fiberRegionPropagationOn_of_flatSupport
       (fiberRegionSupport hT (I := I) (M := M) S basisAt K)
       (fiberRegionSupportDeriv hT (I := I) (M := M) S basisAt hK)
       hCclosed hCconvex hCne hsupp hsupport_sup hNnormal
-      (fiberRegionSource hT (I := I) (M := M) S basisAt)
+      (fun _ => fiberRegionSource hT (I := I) (M := M) S basisAt)
       (uhlenbeckPulledRm04At S basisAt iota)
       hsol R hbound hCzero L (fun t ht x ν => by simpa [fiberRegionSource] using hL x ν)
       hCdist_cont hflat hsupport_cont hsupport_time htangent (fun x => by simpa [fiberRegionSet] using hinit x)
@@ -5867,7 +5863,7 @@ theorem fiberRegion_reaction_eq_reactionState
           (uhlenbeckBTensorInFrame (solutionInverseMetricComponents S basisAt)
             (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
           t' x' a b c d)
-        t x (uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x) =
+        t x =
       uhlenbeckCurvatureOperatorReactionState
         (uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x) := by
   let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
@@ -6122,7 +6118,7 @@ theorem fiberRegionHeatReactionOn
         (V := fun x : M => Tensor04At (I := I) (M := M) x)
         (fiberRegionFlat (I := I) (M := M) S basisAt iota)
         (RealTimeInterval.closed 0 T hT.le) (flowG (I := I) S)
-        (fiberRegionSource hT (I := I) (M := M) S basisAt)
+        (fun _ => fiberRegionSource hT (I := I) (M := M) S basisAt)
         (uhlenbeckPulledRm04At S basisAt iota)) := by
   classical
   letI : ∀ x : M, NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
@@ -6243,7 +6239,7 @@ theorem fiberRegionHeatReactionOn
     have hAderiv_comp : ∀ ij : Fin 3 × Fin 3,
         HasDerivAt (fun s : ℝ => (A s x).ofLp ij)
           ((uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
-            (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij) t := by
+            (uhlenbeckCurvatureOperatorReaction Bpull t x).ofLp ij) t := by
       intro ij
       let a : Fin 3 := (bivectorIndex3 ij.1).1
       let b : Fin 3 := (bivectorIndex3 ij.1).2
@@ -6255,7 +6251,7 @@ theorem fiberRegionHeatReactionOn
         simp [A, uhlenbeckCurvatureOperatorMatrix, a, b, c, d]
       have hrhs : uhlenbeckCurvatureEvolutionRHSInFrame roughLapD Bpull t x a b c d =
           (uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
-            (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij := by
+            (uhlenbeckCurvatureOperatorReaction Bpull t x).ofLp ij := by
         simp [uhlenbeckCurvatureEvolutionRHSInFrame, uhlenbeckCurvatureOperatorMatrix,
           uhlenbeckCurvatureOperatorReaction, a, b, c, d]
         ring
@@ -6263,19 +6259,19 @@ theorem fiberRegionHeatReactionOn
       exact hd.congr_deriv hrhs
     have hscalar_deriv : HasDerivAt (fun s : ℝ => 4 * inner ℝ (A s x) wv)
         (4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
-            uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)) wv) t := by
+            uhlenbeckCurvatureOperatorReaction Bpull t x) wv) t := by
       have hinner : HasDerivAt (fun s : ℝ => inner ℝ (A s x) wv)
           (inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
-            uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)) wv) t := by
+            uhlenbeckCurvatureOperatorReaction Bpull t x) wv) t := by
         have hsum : HasDerivAt (fun s : ℝ => ∑ ij : Fin 3 × Fin 3, (A s x).ofLp ij * wv.ofLp ij)
             (∑ ij : Fin 3 × Fin 3,
               ((uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
-                (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij) * wv.ofLp ij) t := by
+                (uhlenbeckCurvatureOperatorReaction Bpull t x).ofLp ij) * wv.ofLp ij) t := by
           have hraw : HasDerivAt (fun s : ℝ => ∑ ij ∈ (Finset.univ : Finset (Fin 3 × Fin 3)),
                 (A s x).ofLp ij * wv.ofLp ij)
               (∑ ij ∈ (Finset.univ : Finset (Fin 3 × Fin 3)),
                 ((uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
-                  (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij) * wv.ofLp ij) t := by
+                  (uhlenbeckCurvatureOperatorReaction Bpull t x).ofLp ij) * wv.ofLp ij) t := by
             exact HasDerivAt.sum (u := Finset.univ) (fun ij hij => (hAderiv_comp ij).mul_const (wv.ofLp ij))
           simpa using hraw
         have hinner_eq : (fun s : ℝ => inner ℝ (A s x) wv) =
@@ -6285,9 +6281,9 @@ theorem fiberRegionHeatReactionOn
           simp [inner, mul_comm]
         have hderiv_eq : (∑ ij : Fin 3 × Fin 3,
               ((uhlenbeckCurvatureOperatorMatrix roughLapD t x).ofLp ij +
-                (uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)).ofLp ij) * wv.ofLp ij) =
+                (uhlenbeckCurvatureOperatorReaction Bpull t x).ofLp ij) * wv.ofLp ij) =
             inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
-              uhlenbeckCurvatureOperatorReaction Bpull t x (A t x)) wv := by
+              uhlenbeckCurvatureOperatorReaction Bpull t x) wv := by
           rw [PiLp.inner_apply]
           simp [inner, mul_comm]
         simpa [hinner_eq, hderiv_eq] using hsum
@@ -6428,19 +6424,19 @@ theorem fiberRegionHeatReactionOn
               (regionSupportVector (I := I) (S.base.metric 0) basisAt x (ν x)) := hscal
         _ = 4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x) wv := by
               rw [hmat]
-    have hsource : fiberRegionSource hT (I := I) (M := M) S basisAt t x (u t x) (ν x) =
+    have hsource : fiberRegionSource hT (I := I) (M := M) S basisAt x (u t x) (ν x) =
         4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState (A t x)) wv := by
       unfold fiberRegionSource
       have hmain := regionSource_at_pulled_eq (I := I) (S.base.metric 0) S basisAt iota t x
         (hAlg t x) (ν x)
       simpa [A, w, wv, u] using hmain
-    have hreaction : uhlenbeckCurvatureOperatorReaction Bpull t x (A t x) =
+    have hreaction : uhlenbeckCurvatureOperatorReaction Bpull t x =
         uhlenbeckCurvatureOperatorReactionState (A t x) := by
       simpa [A, Bpull, Borig, uhlenbeckPullbackRmInFrame] using
         (fiberRegion_reaction_eq_reactionState (I := I) (M := M) hT S basisAt iota
           hiota0 hgram hdim horth0 (D.regular_subset ht) x)
     have htarget : laplacianAt (I := I) (flowG (I := I) S) t (bundleInnerScalarization u ν t) x +
-          fiberRegionSource hT (I := I) (M := M) S basisAt t x (u t x) (ν x) =
+          fiberRegionSource hT (I := I) (M := M) S basisAt x (u t x) (ν x) =
         4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
           uhlenbeckCurvatureOperatorReactionState (A t x)) wv := by
       rw [hlapAt, hsource]
@@ -7017,7 +7013,7 @@ variable [NeZero (Module.finrank ℝ E)]
 variable [T2Space (TangentBundle I M)]
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem radialParallelTransportSection_add [I.Boundaryless] [T2Space M]
+theorem radialParallelTransportSection_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     (u w : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
@@ -7142,7 +7138,7 @@ theorem radialParallelTransportSection_add [I.Boundaryless] [T2Space M]
   simpa [Puv, Pu, Pw] using hsec
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem radialParallelTransportSection_smul [I.Boundaryless] [T2Space M]
+theorem radialParallelTransportSection_smul [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     (c : ℝ) (u : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
@@ -7275,7 +7271,7 @@ theorem radialParallelTransportSection_smul [I.Boundaryless] [T2Space M]
     simpa [Pcu, Pu] using hsec
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem radialTransportSection_linear_add [I.Boundaryless] [T2Space M]
+theorem radialTransportSection_linear_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     (u w : TangentSpace I p) (y : M) :
     radialTransportSection g p (u + w) y =
@@ -7296,7 +7292,7 @@ theorem radialTransportSection_linear_add [I.Boundaryless] [T2Space M]
     simp
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem radialTransportSection_linear_smul [I.Boundaryless] [T2Space M]
+theorem radialTransportSection_linear_smul [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     (c : ℝ) (u : TangentSpace I p) (y : M) :
     radialTransportSection g p (c • u) y = c • radialTransportSection g p u y := by
@@ -7319,7 +7315,7 @@ theorem radialTransportSection_linear_smul [I.Boundaryless] [T2Space M]
 
 set_option linter.unusedSectionVars false in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-lemma radialParallelTransportSection_chartGram_hasDerivAt_zero [I.Boundaryless] [T2Space M]
+lemma radialParallelTransportSection_chartGram_hasDerivAt_zero [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     (u w : TangentSpace I p) {t : ℝ} (ht : t ∈ Set.Ioo (-1 : ℝ) 2) :
@@ -7412,8 +7408,10 @@ lemma radialParallelTransportSection_chartGram_hasDerivAt_zero [I.Boundaryless] 
   simpa [γ, Pu, Pw, V, W] using hgoal
 
 set_option linter.unusedSectionVars false in
-omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-lemma chartGramAlongCurve_eq_inner [I.Boundaryless] [T2Space M]
+omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M]
+  [T2Space M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+  [T2Space (TangentBundle I M)] in
+lemma chartGramAlongCurve_eq_inner
     (g : SmoothRiemannianMetric I M) (p : M)
     (γ : ℝ → M) (V W : ℝ → E) (t : ℝ)
     (hsrc : γ t ∈ (chartAt H p).source) :
@@ -7434,7 +7432,7 @@ lemma chartGramAlongCurve_eq_inner [I.Boundaryless] [T2Space M]
 
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem radialParallelTransportSection_inner_eq [I.Boundaryless] [T2Space M]
+theorem radialParallelTransportSection_inner_eq [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     (u w : TangentSpace I p) {s : ℝ} (hs : s ∈ Set.Ioo (-1 : ℝ) 2) :
@@ -7515,7 +7513,7 @@ theorem radialParallelTransportSection_inner_eq [I.Boundaryless] [T2Space M]
   exact hconst
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem radialTransportSection_inner_eq [I.Boundaryless] [T2Space M]
+theorem radialTransportSection_inner_eq [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M) (u w : TangentSpace I p) (y : M)
     (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
     g.inner y (radialTransportSection g p u y) (radialTransportSection g p w y) = g.inner p u w := by
@@ -7555,7 +7553,7 @@ theorem radialTransportSection_inner_eq [I.Boundaryless] [T2Space M]
   simpa [x] using hmain
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem radialTransportSection_injective [I.Boundaryless] [T2Space M]
+theorem radialTransportSection_injective [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M) (y : M)
     (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
     Function.Injective (fun v : TangentSpace I p => radialTransportSection g p v y) := by
@@ -7591,7 +7589,7 @@ noncomputable def radialTransportLinearMapAt (g : SmoothRiemannianMetric I M) (p
       intro a b
       exact radialTransportSection_linear_smul (I := I) g p a b y }
 
-noncomputable def radialTransportInverseAt [I.Boundaryless] [T2Space M]
+noncomputable def radialTransportInverseAt [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p y : M)
     (hy : y ∈ radialTransportSectionDomain (I := I) g p) : E →L[ℝ] E :=
   let T : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
@@ -7603,8 +7601,8 @@ noncomputable def radialTransportInverseAt [I.Boundaryless] [T2Space M]
   let e : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective T ⟨hT, hsurj⟩
   (e.symm.toContinuousLinearEquiv).toContinuousLinearMap
 
-set_option linter.unusedSectionVars false in
-@[simp] theorem radialTransportInverseAt_apply [I.Boundaryless] [T2Space M]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+@[simp] theorem radialTransportInverseAt_apply
     (g : SmoothRiemannianMetric I M) (p y : M)
     (hy : y ∈ radialTransportSectionDomain (I := I) g p) (v : E) :
     radialTransportInverseAt g p y hy v =
@@ -7618,8 +7616,8 @@ set_option linter.unusedSectionVars false in
           exact ⟨hT, hsurj⟩)).symm v := by
   rfl
 
-set_option linter.unusedSectionVars false in
-theorem radialTransportInverseAt_left_inverse [I.Boundaryless] [T2Space M]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem radialTransportInverseAt_left_inverse
     (g : SmoothRiemannianMetric I M) (p y : M)
     (hy : y ∈ radialTransportSectionDomain (I := I) g p) (v : E) :
     radialTransportInverseAt g p y hy (radialTransportLinearMapAt g p y v) = v := by
@@ -7632,7 +7630,7 @@ theorem radialTransportInverseAt_left_inverse [I.Boundaryless] [T2Space M]
       (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
     exact ⟨hT, hsurj⟩)).symm_apply_apply v
 
-noncomputable def radialTransportSectionTensor [I.Boundaryless] [T2Space M]
+noncomputable def radialTransportSectionTensor [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : Tensor04At (I := I) (M := M) p) : ∀ y : M, Tensor04At (I := I) (M := M) y := by
   classical
@@ -7643,7 +7641,9 @@ noncomputable def radialTransportSectionTensor [I.Boundaryless] [T2Space M]
 
 
 set_option linter.unusedSectionVars false in
-lemma mem_radialTransportSectionDomain_expMap [I.Boundaryless] [T2Space M]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+@[nolint unusedArguments]
+lemma mem_radialTransportSectionDomain_expMap
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     {s : ℝ} (hs : s ∈ Set.Ioo (-1 : ℝ) 1) :
@@ -7668,8 +7668,8 @@ lemma mem_radialTransportSectionDomain_expMap [I.Boundaryless] [T2Space M]
     rw [hv]
     exact hs_rad
 
-set_option linter.unusedSectionVars false in
-theorem radialTransportInverseAt_transport_eq [I.Boundaryless] [T2Space M]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem radialTransportInverseAt_transport_eq
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     {s : ℝ} (hs : s ∈ Set.Ioo (-1 : ℝ) 1)
@@ -7688,8 +7688,8 @@ theorem radialTransportInverseAt_transport_eq [I.Boundaryless] [T2Space M]
   rw [hval] at h
   exact h
 
-set_option linter.unusedSectionVars false in
-theorem radialTransportSectionTensor_initial [I.Boundaryless] [T2Space M]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem radialTransportSectionTensor_initial
     (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : Tensor04At (I := I) (M := M) p) :
     radialTransportSectionTensor g p η₀ p = η₀ := by
@@ -7779,7 +7779,7 @@ theorem radialTransportTensorExtension_apply
   rw [toModel_metricFormSection,
     DifferentialGeometry.Integral.L2.separableFormAt_apply]
 
-set_option linter.unusedSectionVars false in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportSectionTensor_apply_eq_sum
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -7872,7 +7872,7 @@ private lemma sum_fin_four_fun {α : Type*} [AddCommMonoid α]
     funext a
     fin_cases a <;> simp [fin4SlotsEquiv, slots4]
 
-set_option linter.unusedSectionVars false in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_eq_smul
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -7910,7 +7910,7 @@ theorem radialTransportTensorExtension_eq_smul
     intro l _
     ring
 
-set_option linter.unusedSectionVars false in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_eventually_eq
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -7927,7 +7927,7 @@ theorem radialTransportTensorExtension_eventually_eq
   rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW y]
   simp [hy]
 
-set_option linter.unusedSectionVars false in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_initial
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -7941,9 +7941,8 @@ theorem radialTransportTensorExtension_initial
   rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW p,
     χ.eq_one, one_pow, one_smul, radialTransportSectionTensor_initial]
 
-set_option linter.unusedSectionVars false in
-@[nolint unusedArguments]
-theorem radialTransportSectionTensor_inner_eq [I.Boundaryless] [T2Space M]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem radialTransportSectionTensor_inner_eq
     (g : SmoothRiemannianMetric I M) (p : M)
     (hdim : Module.finrank Real (TangentSpace I p) = 3)
     (A B : Tensor04At (I := I) (M := M) p) (y : M)
@@ -8004,9 +8003,8 @@ theorem radialTransportSectionTensor_inner_eq [I.Boundaryless] [T2Space M]
   intro J _
   rw [hcomponent A J, hcomponent B J]
 
-set_option linter.unusedSectionVars false in
-@[nolint unusedArguments]
-theorem radialTransportSectionTensor_isometry [I.Boundaryless] [T2Space M]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem radialTransportSectionTensor_isometry
     (g : SmoothRiemannianMetric I M) (p : M)
     (hdim : Module.finrank Real (TangentSpace I p) = 3)
     (η₀ : Tensor04At (I := I) (M := M) p) (y : M)
@@ -8016,9 +8014,8 @@ theorem radialTransportSectionTensor_isometry [I.Boundaryless] [T2Space M]
       inner0S (I := I) g p 4 η₀ η₀ :=
   radialTransportSectionTensor_inner_eq (I := I) g p hdim η₀ η₀ y hy
 
-set_option linter.unusedSectionVars false in
-@[nolint unusedArguments]
-theorem fiberProjW_radialTransport_commute [I.Boundaryless] [T2Space M]
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem fiberProjW_radialTransport_commute
     (g : SmoothRiemannianMetric I M) (p : M)
     (hdim : Module.finrank Real (TangentSpace I p) = 3)
     (A : Tensor04At (I := I) (M := M) p) (y : M)
@@ -8123,9 +8120,8 @@ theorem fiberProjW_radialTransport_commute [I.Boundaryless] [T2Space M]
     exact sub_eq_zero.mp hzero
   exact congrArg Subtype.val hpu
 
-omit [I.Boundaryless] in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 private theorem radialTransportTensorExtension_regionProjMatrix_eq_conj
-    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I p))
     (horth : OrthonormalBasisAt (I := I) g p basis)
@@ -8225,7 +8221,7 @@ private theorem radialTransportTensorExtension_regionProjMatrix_eq_conj
   rw [hconj, hmatrixY]
   rfl
 
-set_option linter.unusedSectionVars false in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_inner_self_le
     (g : SmoothRiemannianMetric I M) (p : M)
     (hdim : Module.finrank ℝ (TangentSpace I p) = 3)
@@ -8363,7 +8359,7 @@ private theorem localizedRadialTransportSection_nabla2_center_zero
   rw [heq]
   exact radialTransportSection_nabla2_center_zero (I := I) g p v w hRsm
 
-omit [IsManifold I 2 M] [IsManifold I 3 M] in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 private theorem radialTransportTensorExtension_eval_eventually_eq
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -8393,7 +8389,7 @@ private theorem radialTransportTensorExtension_eval_eventually_eq
       (radialTransportLinearMapAt g p y (basis (J a))) = basis (J a)
   exact radialTransportInverseAt_left_inverse (I := I) g p y hy (basis (J a))
 
-omit [IsManifold I 3 M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] in
 theorem radialTransportTensorExtension_nabla_center_zero
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -8455,7 +8451,7 @@ theorem radialTransportTensorExtension_nabla_center_zero
       (fun b => V b p) a
   rw [hsum, sub_zero]
 
-omit [IsManifold I 3 M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] in
 private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -8625,7 +8621,7 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
   change extDerivFun (I := I) G p (X p) - _ = 0
   rw [hGderiv, hsum2, sub_zero]
 
-omit [IsManifold I 3 M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] in
 theorem radialTransportTensorExtension_metricTrace_center_zero
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -8659,7 +8655,8 @@ theorem radialTransportTensorExtension_metricTrace_center_zero
 
 open DifferentialGeometry.Analysis.Parabolic
 
-omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)] [I.Boundaryless] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] [NeZero (Module.finrank Real E)]
+  [T2Space (TangentBundle I M)] [I.Boundaryless] in
 theorem fiberRegion_hasFlatSupportSectionsOn
     {T : Real} (hT : 0 < T) [I.Boundaryless]
     [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
@@ -8920,7 +8917,7 @@ theorem fiberRegionPropagationOn_of_bundleMaximumPrinciple
         (V := fun x : M ↦ Tensor04At (I := I) (M := M) x)
         (fiberRegionFlat (I := I) (M := M) S basisAt iota)
         (RealTimeInterval.closed 0 T hT.le) (flowG (I := I) S)
-        (fiberRegionSource hT (I := I) (M := M) S basisAt)
+        (fun _ => fiberRegionSource hT (I := I) (M := M) S basisAt)
         (uhlenbeckPulledRm04At S basisAt iota)) :
     ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
       uhlenbeckPulledRm04At S basisAt iota t x ∈ fiberHamiltonIveyRegion basisAt K t x := by
@@ -8961,8 +8958,8 @@ private theorem curvatureOperatorRegionPropagationOn_zero_aux
     intro x
     exact Classical.choose_spec
       (exists_orthonormalBasisAt (I := I) (S.base.metric 0) x (hdim x))
-  let iota : MatrixComp M (Fin 3) := intrinsicUhlenbeckIota hT S hS basisAt horth0
-  have hspec := intrinsicUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt horth0
+  let iota : MatrixComp M (Fin 3) := intrinsicUhlenbeckIota hT S hS basisAt
+  have hspec := intrinsicUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt
   have hiota0 : ∀ x : M, ∀ a k : Fin 3,
       iota 0 x a k = if a = k then 1 else 0 := by
     simpa [iota] using hspec.1
@@ -8992,7 +8989,7 @@ private theorem curvatureOperatorRegionPropagationOn_zero_aux
   have hfiber := fiberRegionPropagationOn_of_bundleMaximumPrinciple
     (I := I) (M := M) hT S hS hdim basisAt horth0 iota hiota0 hgram hK hinitFiber hsol
   have hprop := curvatureOperatorRegionPropagationOn_of_fiberRegion_mem
-    (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 hK hfiber
+    (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 hfiber
   simpa [CurvatureOperatorRegionPropagationOn] using hprop
 
 omit [I.Boundaryless] in
@@ -9079,7 +9076,7 @@ theorem hamilton_ivey_pinching
   have hprop := curvatureOperatorRegionPropagationOn_of_initial_lower_bound
     (I := I) (M := M) S hS hT hK hslab hreg hdim hinit
   exact hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
-    (I := I) (M := M) S hK hslab hprop
+    (I := I) (M := M) S hslab hprop
 
 omit [I.Boundaryless] in
 theorem hamilton_ivey_pinching_one

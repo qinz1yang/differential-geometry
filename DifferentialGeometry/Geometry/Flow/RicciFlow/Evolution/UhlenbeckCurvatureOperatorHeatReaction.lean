@@ -180,8 +180,8 @@ theorem inner_matrixToEuclid
 
 noncomputable def uhlenbeckCurvatureOperatorReaction
     (B : FourComp M (Fin 3)) :
-    Real → M → EuclideanSpace ℝ (Fin 3 × Fin 3) → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
-  fun t x _A => WithLp.toLp 2 (fun ij : Fin 3 × Fin 3 =>
+    Real → M → EuclideanSpace ℝ (Fin 3 × Fin 3) :=
+  fun t x => WithLp.toLp 2 (fun ij : Fin 3 × Fin 3 =>
     let a := (bivectorIndex3 ij.1).1;
     let b := (bivectorIndex3 ij.1).2;
     let c := (bivectorIndex3 ij.2).2;
@@ -191,7 +191,8 @@ noncomputable def uhlenbeckCurvatureOperatorReaction
 omit [CompleteSpace E] [TopologicalSpace M] in
 theorem uhlenbeckCurvatureOperatorReaction_lipschitz
     (B : FourComp M (Fin 3)) (t : Real) (x : M) :
-    LipschitzWith 0 (uhlenbeckCurvatureOperatorReaction B t x) := by
+    LipschitzWith 0 (fun _ : EuclideanSpace ℝ (Fin 3 × Fin 3) =>
+      uhlenbeckCurvatureOperatorReaction B t x) := by
   refine LipschitzWith.of_dist_le_mul ?_
   intro a b
   simp [uhlenbeckCurvatureOperatorReaction, dist_eq_norm]
@@ -215,11 +216,11 @@ theorem innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator
         (fun x : M => uhlenbeckCurvatureOperatorMatrix pulledRm t x ij)) :
     IsInnerProductHeatReactionOn (D := D) (G := G)
       (F := EuclideanSpace ℝ (Fin 3 × Fin 3))
-      (uhlenbeckCurvatureOperatorReaction B)
+      (fun t x _ => uhlenbeckCurvatureOperatorReaction B t x)
       (uhlenbeckCurvatureOperatorMatrix pulledRm) := by
   refine innerProductHeatReactionOn_of_componentwise (D := D) (G := G)
     (u := uhlenbeckCurvatureOperatorMatrix pulledRm)
-    (reaction := uhlenbeckCurvatureOperatorReaction B) hjoint hsmooth ?_
+    (reaction := fun t x _ => uhlenbeckCurvatureOperatorReaction B t x) hjoint hsmooth ?_
   intro ij t ht x
   let a := (bivectorIndex3 ij.1).1
   let b := (bivectorIndex3 ij.1).2
@@ -232,8 +233,7 @@ theorem innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator
   have hrhs : uhlenbeckCurvatureEvolutionRHSInFrame roughLapD B (t : Real) x a b c d =
       laplacianAt (I := I) G (t : Real)
           (fun y : M => uhlenbeckCurvatureOperatorMatrix pulledRm (t : Real) y ij) x +
-        uhlenbeckCurvatureOperatorReaction B (t : Real) x
-          (uhlenbeckCurvatureOperatorMatrix pulledRm (t : Real) x) ij := by
+        uhlenbeckCurvatureOperatorReaction B (t : Real) x ij := by
     unfold uhlenbeckCurvatureEvolutionRHSInFrame uhlenbeckCurvatureOperatorReaction
     rw [hlap (t : Real) (D.regular_subset ht) x ij]
     ring
@@ -292,7 +292,7 @@ theorem uhlenbeckCurvatureOperator_halfspace_mem_of_tangent
     (htangent : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
       ∀ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
         inner ℝ ν A = s t →
-          inner ℝ ν (uhlenbeckCurvatureOperatorReaction B t x A) ≤
+          inner ℝ ν (uhlenbeckCurvatureOperatorReaction B t x) ≤
             derivWithin s (Set.Icc 0 T) t)
     (hinit : ∀ x : M,
       inner ℝ ν (uhlenbeckCurvatureOperatorMatrix pulledRm 0 x) ≤ s 0) :
@@ -308,7 +308,7 @@ theorem uhlenbeckCurvatureOperator_halfspace_mem_of_tangent
   have hsol : IsInnerProductHeatReactionOn
       (D := RealTimeInterval.closed 0 T hT) (G := G)
       (F := EuclideanSpace ℝ (Fin 3 × Fin 3))
-      (uhlenbeckCurvatureOperatorReaction B)
+      (fun t x _ => uhlenbeckCurvatureOperatorReaction B t x)
       (uhlenbeckCurvatureOperatorMatrix pulledRm) := by
     exact innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator
       (I := I) (M := M) G pulledRm roughLapD B hU_closed
@@ -316,14 +316,15 @@ theorem uhlenbeckCurvatureOperator_halfspace_mem_of_tangent
       (hjoint.mono (by intro q hq; exact ⟨hTsub hq.1, hq.2⟩))
       (fun ij t ht => hsmooth ij t (hTsub ht))
   have hL : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
-      LipschitzWith 0 (uhlenbeckCurvatureOperatorReaction B t x) := by
+      LipschitzWith 0 (fun _ : EuclideanSpace ℝ (Fin 3 × Fin 3) =>
+        uhlenbeckCurvatureOperatorReaction B t x) := by
     intro t ht x
     refine LipschitzWith.of_dist_le_mul ?_
     intro a b
     simp [uhlenbeckCurvatureOperatorReaction, dist_eq_norm]
   exact timeDepHalfspace_heat_reaction_mem_of_tangent
     (I := I) (M := M) G hT ν hν s hsdiff
-    (uhlenbeckCurvatureOperatorReaction B)
+    (fun t x _ => uhlenbeckCurvatureOperatorReaction B t x)
     (uhlenbeckCurvatureOperatorMatrix pulledRm) hsol 0 hL htangent hinit
 
 omit [CompleteSpace E] in
@@ -358,16 +359,16 @@ theorem uhlenbeckCurvatureOperator_mem_timeDepConvex_of_tangent
     (L : NNReal)
     (hL : ∀ t : Real, t ∈ Set.Ioo 0 T → ∀ x : M,
       LipschitzWith L (fun q : WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ) =>
-        WithLp.toLp 2 (uhlenbeckCurvatureOperatorReaction B (WithLp.ofLp q).2 x (WithLp.ofLp q).1,
+        WithLp.toLp 2 (uhlenbeckCurvatureOperatorReaction B (WithLp.ofLp q).2 x,
           (1 : Real))))
     (htangent : ∀ τ : Real, τ ∈ Set.Ico 0 T → ∀ x : M, ∀ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
       A ∈ C τ →
-        WithLp.toLp 2 (uhlenbeckCurvatureOperatorReaction B τ x A, (1 : Real)) ∈
+        WithLp.toLp 2 (uhlenbeckCurvatureOperatorReaction B τ x, (1 : Real)) ∈
           posTangentConeAt {q : WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ) |
             (WithLp.ofLp q).2 ∈ Set.Icc 0 T ∧ (WithLp.ofLp q).1 ∈ C (WithLp.ofLp q).2}
             (WithLp.toLp 2 (A, τ)))
     (htangent_fiber : ∀ τ : Real, τ ∈ Set.Icc 0 T → ∀ x : M, ∀ A : EuclideanSpace ℝ (Fin 3 × Fin 3),
-      A ∈ C τ → uhlenbeckCurvatureOperatorReaction B τ x A ∈ posTangentConeAt (C τ) A)
+      A ∈ C τ → uhlenbeckCurvatureOperatorReaction B τ x ∈ posTangentConeAt (C τ) A)
     (hinit : ∀ x : M, uhlenbeckCurvatureOperatorMatrix pulledRm 0 x ∈ C 0) :
     ∀ t : Real, t ∈ Set.Icc 0 T → ∀ x : M,
       uhlenbeckCurvatureOperatorMatrix pulledRm t x ∈ C t := by
@@ -381,7 +382,7 @@ theorem uhlenbeckCurvatureOperator_mem_timeDepConvex_of_tangent
   have hsol : IsInnerProductHeatReactionOn
       (D := RealTimeInterval.closed 0 T hT) (G := G)
       (F := EuclideanSpace ℝ (Fin 3 × Fin 3))
-      (uhlenbeckCurvatureOperatorReaction B)
+      (fun t x _ => uhlenbeckCurvatureOperatorReaction B t x)
       (uhlenbeckCurvatureOperatorMatrix pulledRm) := by
     exact innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator
       (I := I) (M := M) G pulledRm roughLapD B hU_closed
@@ -392,7 +393,7 @@ theorem uhlenbeckCurvatureOperator_mem_timeDepConvex_of_tangent
     {q | (WithLp.ofLp q).2 ∈ Set.Icc 0 T ∧ (WithLp.ofLp q).1 ∈ C (WithLp.ofLp q).2}
   exact closed_convex_heat_reaction_mem_of_timeDep_tangent
     (I := I) (M := M) G hT C K rfl hKne hKclosed hKconvex
-    (uhlenbeckCurvatureOperatorReaction B)
+    (fun t x _ => uhlenbeckCurvatureOperatorReaction B t x)
     (uhlenbeckCurvatureOperatorMatrix pulledRm) hsol L hL htangent htangent_fiber hinit
 
 

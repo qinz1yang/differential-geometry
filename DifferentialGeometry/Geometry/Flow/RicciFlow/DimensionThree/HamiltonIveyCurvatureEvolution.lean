@@ -35,7 +35,7 @@ lemma uhlenbeckCurvatureOperatorReaction_eq_reactionState
     (hrm : ∀ a b c d, pulledRm t x a b c d = rm R a b c d) :
     uhlenbeckCurvatureOperatorReaction
         (fun _ _ a b c d => bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d)
-        t x (uhlenbeckCurvatureOperatorMatrix pulledRm t x) =
+        t x =
       uhlenbeckCurvatureOperatorReactionState (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
   unfold uhlenbeckCurvatureOperatorReaction uhlenbeckCurvatureOperatorReactionState
     uhlenbeckCurvatureOperatorMatrix
@@ -90,13 +90,13 @@ lemma uhlenbeckReaction_eq_reactionState_at
     (R : Fin 3 → Fin 3 → ℝ) (hR : ∀ i j, R i j = R j i)
     (hrm : ∀ a b c d, pulledRm t x a b c d = rm R a b c d)
     (hB : ∀ a b c d, B t x a b c d = bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d) :
-    uhlenbeckCurvatureOperatorReaction B t x (uhlenbeckCurvatureOperatorMatrix pulledRm t x) =
+    uhlenbeckCurvatureOperatorReaction B t x =
       uhlenbeckCurvatureOperatorReactionState (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
   have h := uhlenbeckCurvatureOperatorReaction_eq_reactionState pulledRm t x R hR hrm
-  have hB' : uhlenbeckCurvatureOperatorReaction B t x (uhlenbeckCurvatureOperatorMatrix pulledRm t x) =
+  have hB' : uhlenbeckCurvatureOperatorReaction B t x =
       uhlenbeckCurvatureOperatorReaction
         (fun _ _ a b c d => bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d)
-        t x (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
+        t x := by
     unfold uhlenbeckCurvatureOperatorReaction
     apply congrArg (WithLp.toLp 2)
     funext ij
@@ -138,7 +138,7 @@ theorem innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator_quadratic
       (uhlenbeckCurvatureOperatorMatrix pulledRm) := by
   have hsolB : IsInnerProductHeatReactionOn (D := D) (G := G)
       (F := EuclideanSpace ℝ (Fin 3 × Fin 3))
-      (uhlenbeckCurvatureOperatorReaction B)
+      (fun t x _ => uhlenbeckCurvatureOperatorReaction B t x)
       (uhlenbeckCurvatureOperatorMatrix pulledRm) :=
     innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator (I := I) (M := M)
       G pulledRm roughLapD B hU hlap hjoint hsmooth
@@ -149,8 +149,7 @@ theorem innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator_quadratic
     have hderiv := hsolB.equation y t ht x
     have hre := uhlenbeckReaction_eq_reactionState_at (pulledRm := pulledRm) (B := B)
       t x (R t x) (hR t x) (hrm t x) (hB t x)
-    have hinner : inner ℝ (uhlenbeckCurvatureOperatorReaction B t x
-        (uhlenbeckCurvatureOperatorMatrix pulledRm t x)) y =
+    have hinner : inner ℝ (uhlenbeckCurvatureOperatorReaction B t x) y =
         inner ℝ (uhlenbeckCurvatureOperatorReactionState
           (uhlenbeckCurvatureOperatorMatrix pulledRm t x)) y := by
       rw [hre]

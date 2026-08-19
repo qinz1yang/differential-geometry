@@ -539,7 +539,7 @@ noncomputable def intrinsicFiberOperatorTensor
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M]
     [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem intrinsicFiberOperatorTensor_apply
+theorem intrinsicFiberOperatorTensor_apply
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I x))
     (Rmat : Matrix (Fin 3) (Fin 3) ℝ) (X Y Z W : TangentSpace I x) :
@@ -2606,10 +2606,6 @@ theorem fiberInfDist_continuousOn
     (basisAt : ∀ x : M, Module.Basis (Fin 3) ℝ (TangentSpace I x))
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
     (iota : MatrixComp M (Fin 3))
-    (_hiota0 : ∀ x : M, ∀ a k : Fin 3, iota 0 x a k = if a = k then 1 else 0)
-    (_hgram : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
-      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
-      movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
     (hiota_cont : ContinuousOn (fun q : ℝ × M => iota q.1 q.2)
       (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
     (hbasis_cont : ∀ a : Fin 3, Continuous (fun x : M =>

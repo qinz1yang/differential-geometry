@@ -67,7 +67,7 @@ theorem radialCurve_contMDiffOn_two_Icc (g : SmoothRiemannianMetric I M) (p : M)
   exact lt_of_le_of_lt hs_norm hv
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
-@[simp] theorem radialCurve_zero (g : SmoothRiemannianMetric I M) (p : M)
+theorem radialCurve_zero (g : SmoothRiemannianMetric I M) (p : M)
     (v : TangentSpace I p) :
     expMap (I := I) g p ((0 : ℝ) • v) = p := by
   simpa using expMap_zero (I := I) g p

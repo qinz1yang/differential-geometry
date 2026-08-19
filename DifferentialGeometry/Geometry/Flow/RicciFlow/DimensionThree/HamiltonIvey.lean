@@ -921,7 +921,7 @@ theorem curvatureOperatorRegionPropagationOn_initial
 
 theorem scalar_curvature_lower_and_negative_barrier_of_regionPropagation
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
-    {t0 T K : Real} (_hK : 0 < K)
+    {t0 T K : Real}
     (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
     (hprop : CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T) :
     (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
@@ -1023,7 +1023,7 @@ theorem scalar_curvature_lower_and_negative_barrier_of_regionPropagation
 
 theorem hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
-    {t0 T K : Real} (hK : 0 < K)
+    {t0 T K : Real}
     (hslab : Set.Icc t0 (t0 + T) ⊆ D.carrier)
     (hprop : CurvatureOperatorRegionPropagationOn (I := I) (M := M) S K t0 T) :
     (∀ t : Real, t ∈ Set.Icc t0 (t0 + T) → ∀ x : M,
@@ -1043,7 +1043,7 @@ theorem hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
                   (I := I) (S.base.metric t) x⟩ 2) / K) +
                 Real.log (1 + 2 * K * (t - t0)) - 3)) :=
   scalar_curvature_lower_and_negative_barrier_of_regionPropagation
-    (I := I) (M := M) S hK hslab hprop
+    (I := I) (M := M) S hslab hprop
 
 theorem hamilton_ivey_asymptotic_pinching_of_curvatureOperatorRegionPropagation
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
@@ -1119,7 +1119,7 @@ theorem hamilton_ivey_pinching_K_one_of_curvatureOperatorRegionPropagation
                   (I := I) (S.base.metric t) x⟩ 2) +
                 Real.log (1 + 2 * (t - t0)) - 3)) := by
   have hmain := hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
-    (I := I) (M := M) S (K := 1) (by norm_num : 0 < (1 : Real)) hslab hprop
+    (I := I) (M := M) S (K := 1) hslab hprop
   constructor
   · intro t ht x
     have h := hmain.1 t ht x
@@ -1160,7 +1160,7 @@ theorem hamilton_ivey_pinching_initial
     rw [ht_eq]
     exact ht0
   have hmain := hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
-    (I := I) (M := M) S hK hslab hprop
+    (I := I) (M := M) S hslab hprop
   constructor
   · intro x
     have h := hmain.1 t0 (by rw [Set.mem_Icc]; constructor <;> linarith) x

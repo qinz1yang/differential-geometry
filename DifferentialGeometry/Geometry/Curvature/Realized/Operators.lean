@@ -517,7 +517,6 @@ theorem laplacianAt_smul_at
   exact laplacian_smul_at (I := I) (G.connection t) (G.metric t) a hf hgrad
 
 theorem laplacianAt_nonpos_at_spatial_max_of_isInteriorPoint
-    [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Time)

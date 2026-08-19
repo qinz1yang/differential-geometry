@@ -585,7 +585,7 @@ theorem hamilton_ivey_pinching_of_uhlenbeckData
     (I := I) (M := M) S hK hT pulledRm roughLapD B hU hlap hjoint hsmooth R hR hrm hB
     hslab hreg hbound hCdist_cont hinit hpull
   exact hamilton_ivey_pinching_of_curvatureOperatorRegionPropagation
-    (I := I) (M := M) S hK hslab hprop
+    (I := I) (M := M) S hslab hprop
 
 theorem hamilton_ivey_pinching_of_uhlenbeckData_joint
     [I.Boundaryless] [CompactSpace M] [T2Space M]

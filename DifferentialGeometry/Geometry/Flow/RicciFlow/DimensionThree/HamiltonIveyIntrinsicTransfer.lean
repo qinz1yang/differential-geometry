@@ -26,7 +26,6 @@ variable [SigmaCompactSpace M] [T2Space M]
 omit [SigmaCompactSpace M] in
 theorem curvatureOperatorRegionPropagationOn_of_fiberRegion_mem
     {T : ℝ} (hT : 0 < T)
-    [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (iota : MatrixComp M (Fin 3))
@@ -35,7 +34,7 @@ theorem curvatureOperatorRegionPropagationOn_of_fiberRegion_mem
       movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota t x a b =
         movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a)) iota 0 x a b)
     (horth0 : ∀ x : M, OrthonormalBasisAt (I := I) (S.base.metric 0) x (basisAt x))
-    {K : ℝ} (_hK : 0 < K)
+    {K : ℝ}
     (hC : ∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M,
       uhlenbeckPulledRm04At S basisAt iota t x ∈
         fiberHamiltonIveyRegion basisAt K t x) :
@@ -85,7 +84,6 @@ theorem curvatureOperatorRegionPropagationOn_of_fiberRegion_mem
 omit [SigmaCompactSpace M] in
 theorem pulledCurvature_initial_mem_fiberRegion
     {T : ℝ} (hT : 0 < T)
-    [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (iota : MatrixComp M (Fin 3))

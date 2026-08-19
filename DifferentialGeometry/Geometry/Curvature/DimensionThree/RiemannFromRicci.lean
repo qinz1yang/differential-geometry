@@ -466,7 +466,7 @@ theorem rm04Comp_displayedRiemannFromRicci3D_frame_of_curvature_symmetries
 
 theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
     [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
@@ -494,7 +494,7 @@ theorem algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
 
 theorem rm04Comp_displayedRiemannFromRicci3D_at_of_leviCivita_realizes
     [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : Rm04RealizesConnection (I := I) g
