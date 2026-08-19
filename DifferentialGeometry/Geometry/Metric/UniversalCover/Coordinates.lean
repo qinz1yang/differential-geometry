@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Covering.Manifold
-import DifferentialGeometry.Topology.Covering.LiftedMetricSmoothness
-import DifferentialGeometry.Topology.Covering.Riemannian
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Geometry.Operator.Hessian
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs

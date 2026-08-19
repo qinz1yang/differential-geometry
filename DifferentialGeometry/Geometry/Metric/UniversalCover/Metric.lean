@@ -6,7 +6,7 @@ import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.Normed.Operator.LinearIsometry
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import DifferentialGeometry.Topology.Covering.Manifold
-import DifferentialGeometry.Topology.Covering.LiftedMetricSmoothness
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import Mathlib.Topology.VectorBundle.Riemannian
 
 open Set Function Filter Bundle
@@ -84,7 +84,8 @@ theorem isRiemannianManifold
   exact ⟨fun _ _ => rfl⟩
 
 omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] [ConnectedSpace M] in
-theorem uc_regularSpace (I : ModelWithCorners ℝ E H) [I.Boundaryless] :
+omit [I.Boundaryless] in
+theorem uc_regularSpace (I : ModelWithCorners ℝ E H) :
     RegularSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) := by
   haveI : LocallyCompactSpace M :=

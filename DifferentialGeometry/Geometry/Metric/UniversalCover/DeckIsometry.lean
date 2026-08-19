@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Covering.DeckAction
-import DifferentialGeometry.Topology.Covering.Riemannian
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Covering.Riemannian
-import DifferentialGeometry.Topology.Covering.ChartPullback
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
@@ -145,16 +145,6 @@ theorem riemannOp_lift_one
       (I := I)
       (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
       (liftedMetric (I := I) (scaleMetric (I := I) c hc g)) x' 1 hRm X Y Z
-
-omit [NeZero (Module.finrank ℝ E)] [PseudoEMetricSpace M] in
-omit [I.Boundaryless]
-  [T2Space M]
-  [SigmaCompactSpace M]
-  [ConnectedSpace M]
-  [SecondCountableTopology M] in
-theorem leviCivita_lifted_eq_pullback (g : SmoothRiemannianMetric I M) :
-    LeviCivita (I := I) (liftedMetric (I := I) g) =
-      LeviCivita (I := I) (liftedMetric (I := I) g) := rfl
 
 omit [PseudoEMetricSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

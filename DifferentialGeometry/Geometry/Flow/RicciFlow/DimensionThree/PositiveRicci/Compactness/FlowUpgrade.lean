@@ -15,7 +15,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.SourceCov
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Completeness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Limit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.EarlyTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ScaleTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.BoundedGeometryCompactness
@@ -26,6 +28,8 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.Topology.ThreeManifold
+open DifferentialGeometry.Geometry
 
 set_option autoImplicit false
 
@@ -77,22 +81,22 @@ private noncomputable def hamiltonWinStart
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) : Nat :=
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) : Nat :=
   Classical.choose hwindow
 
 private noncomputable def hamiltonBufStart
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q) : Nat :=
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q) : Nat :=
   Classical.choose (hsel.2.2.2.1 (2 * hamilton_reference_radius ^ 2))
 
 private noncomputable def hamiltonStart
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) : Nat :=
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) : Nat :=
   max (hamiltonWinStart (I := I) P Q hwindow) (hamiltonBufStart (I := I) P Q hsel)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -101,8 +105,8 @@ private theorem hamiltonStart_spec
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
     ∀ i : Nat, hamiltonStart (I := I) P Q hsel hwindow ≤ i →
       ∀ s : Real, -(hamilton_reference_radius ^ 2) ≤ s → s ≤ 0 →
         -(hamiltonBlowupScale (I := I) P Q i * Q.time i) ≤ s ∧ s ≤ 0 :=
@@ -116,8 +120,8 @@ private theorem hamiltonBuf_spec
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
     ∀ i : Nat, hamiltonStart (I := I) P Q hsel hwindow ≤ i →
       2 * hamilton_reference_radius ^ 2 ≤
         hamiltonBlowupScale (I := I) P Q i * Q.time i :=
@@ -135,8 +139,8 @@ private theorem hamilton_car_subset
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     (i : Nat) :
     hamiltonCommonD.carrier ⊆
       (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -184,8 +188,8 @@ private theorem hamilton_reg_subset
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     (i : Nat) :
     hamiltonCommonD.regular ⊆
       (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -233,8 +237,8 @@ noncomputable def hamiltonSourceSequence
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
     PointedFlowSeq.{u, uE, uH} (I := I) where
   D := hamiltonCommonD
   term := fun i =>
@@ -270,8 +274,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
     (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D.carrier =
       Set.Icc (-(hamilton_reference_radius ^ 2)) 0 := by
   rfl
@@ -285,8 +289,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
     (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D.regular =
       Set.Ioo (-(hamilton_reference_radius ^ 2)) 0 := by
   rfl
@@ -301,8 +305,8 @@ private theorem hamilton_shi_car
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     (i : Nat) :
     Set.Icc hamiltonShiLeft 0 ⊆
       (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -351,8 +355,8 @@ private theorem hamilton_shi_reg
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     (i : Nat) :
     Set.Ioc hamiltonShiLeft 0 ⊆
       (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -397,9 +401,9 @@ private theorem hamilton_shi_rm
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
     (i : Nat) :
     ∀ s ∈ Set.Icc hamiltonShiLeft 0, ∀ x : M,
       Tensor0SBundle.normSq0S (I := I)
@@ -461,9 +465,9 @@ private theorem hamilton_ball_rm
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
     {r : Real} (hr : 0 < r) (hrle : r ≤ hamilton_reference_radius)
     (i : Nat) :
     (hamiltonRescaledBall (I := I) P Q hsel
@@ -516,9 +520,9 @@ private theorem hamilton_win_equiv
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hrm : hamiltonRiemannCurvatureBound (I := I) P Q) :
     ∃ A Bmax : Real, 0 ≤ A ∧ 1 ≤ Bmax ∧
       (∀ t : Real, t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
         metricEquivalenceFactor 1 A t 0 ≤ Bmax) ∧
@@ -632,9 +636,9 @@ private theorem hamilton_win_shi
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hrm : hamiltonRiemannCurvatureBound (I := I) P Q) :
     ∀ N : Nat, ∃ KShi : Real, 0 ≤ KShi ∧
       ∀ i : Nat,
         MovingShiBoundOn (I := I) Set.univ
@@ -708,9 +712,9 @@ private theorem hamilton_src_rm
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
     {r : Real} (hr : 0 < r) (hrle : r ≤ hamilton_reference_radius)
     (i : Nat) :
     let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
@@ -795,8 +799,8 @@ theorem hamilton_source_chart_jet_bound
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -949,8 +953,8 @@ theorem hamilton_limit_chart_jets_continuous
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -999,8 +1003,8 @@ theorem hamilton_limit_chart_gram_smooth
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -1041,8 +1045,8 @@ theorem hamilton_limit_is_solution
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -1151,7 +1155,7 @@ private theorem nablaK_restrict
   simp only [
     DifferentialGeometry.PDE.RicciFlow.SolutionOn.timeRestrict_base]
 
-noncomputable def source_deriv
+noncomputable def hamiltonSourceDerivativeInput
     {omega : Real} (h0omega : 0 < omega)
     (hcompact : CompactSpace M)
     {g0 : SmoothRiemannianMetric I M}
@@ -1160,9 +1164,9 @@ noncomputable def source_deriv
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
     FlowDerivativeInput (I := I)
       (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow) := by
   classical
@@ -1270,8 +1274,8 @@ theorem hamilton_source_covariant_lipschitz_bound
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -1385,7 +1389,7 @@ theorem hamilton_source_covariant_lipschitz_bound
     dsimp only [hamiltonShiLeft]
     nlinarith [sq_pos_of_pos hamilton_reference_radius_pos, hs.1]
 
-theorem hamilton_compact_flow_upgrade
+theorem hamilton_flow_upgrade_of_metric_compactness
     {omega : Real} (h0omega : 0 < omega)
     (hcompact : CompactSpace M)
     {g0 : SmoothRiemannianMetric I M}
@@ -1394,9 +1398,9 @@ theorem hamilton_compact_flow_upgrade
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
     (canon : CanonicalMetricCompactness (I := I)
       ((hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).atZero
         (I := I))) :
@@ -1816,637 +1820,19 @@ theorem hamilton_compact_flow_upgrade
       PointedRiemannianManifold (I := I))
   exact hcomplete
 
-theorem hamilton_compact_cgh_limit
-    {omega : Real} (h0omega : 0 < omega)
-    (hcompact : CompactSpace M)
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (hD : P.D =
-      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
-        0 omega h0omega)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (canon : CanonicalMetricCompactness (I := I)
-      ((hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).atZero
-        (I := I))) :
-    ∃ L : PointedFlowData.{u, uE, uH} (I := I)
-        (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D,
-      ∃ subseq : Nat → Nat,
-        StrictMono subseq ∧
-          Nonempty (SmoothCGHConverges (I := I)
-            (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow)
-            L subseq) ∧
-          ∀ t : Real,
-            t ∈ (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D.carrier →
-              MetricComplete (I := I) (L.atTime (I := I) t) := by
-  obtain ⟨d, hcomplete⟩ :=
-    hamilton_compact_flow_upgrade (I := I) h0omega hcompact P hD Q hsel hrm
-      hwindow canon
-  let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
-  let mc := canon.compactness.compSubseq d.φ d.hφ
-  have hconv : Nonempty (SmoothCGHConverges (I := I) X d.data.L mc.subseq) :=
-    ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-      d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc d.data.hσtgt
-      d.data.refMetric
-      (letI : TopologicalSpace d.data.L.M := d.data.L.topology
-       letI : ChartedSpace H d.data.L.M := d.data.L.charted
-       letI : IsManifold I ∞ d.data.L.M := d.data.L.smooth
-       letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.data.L.M := by
-         change IsManifold I ∞ d.data.L.M
-         infer_instance
-       letI : SigmaCompactSpace d.data.L.M := d.data.L.sigmaCompact
-       letI : T2Space d.data.L.M := d.data.L.t2
-       d.data.L.S.family.metric) d.data.conv⟩
-  exact ⟨d.data.L, mc.subseq, mc.strictMono, hconv, hcomplete⟩
-
-def cghToHamilton
-    (X : PointedFlowSeq.{u, uE, uH} (I := I))
-    (origIndex : Nat -> Nat) (horig : StrictMono origIndex)
-    (toOrig : forall i : Nat,
-      letI : TopologicalSpace (X.term i).M := (X.term i).topology
-      letI : ChartedSpace H (X.term i).M := (X.term i).charted
-      (X.term i).M ≃ₘ⟮I, I⟯ M)
-    (L : PointedFlowData.{u, uE, uH} (I := I) X.D)
-    (subseq : Nat -> Nat) (hsubseq : StrictMono subseq)
-    (hconv : SmoothCGHConverges (I := I) X L subseq)
-    (hcomplete : forall t : Real, t ∈ X.D.carrier ->
-      MetricComplete (I := I) (L.atTime (I := I) t)) :
-    HamiltonCGHLimit (I := I) M where
-  N := L.M
-  topology := L.topology
-  charted := L.charted
-  smooth := L.smooth
-  smooth_plus := by
-    letI : TopologicalSpace L.M := L.topology
-    letI : ChartedSpace H L.M := L.charted
-    letI : IsManifold I ∞ L.M := L.smooth
-    change IsManifold I ∞ L.M
-    infer_instance
-  sigmaCompact := L.sigmaCompact
-  t2 := L.t2
-  t2TangentBundle := L.t2TangentBundle
-  basepoint := L.basepoint
-  D := X.D
-  S := L.S
-  isSolution := L.isSolution
-  sourceTerm := X.term
-  origIndex := origIndex
-  origStrict := horig
-  cghSubseq := subseq
-  cghStrict := hsubseq
-  cgh := hconv
-  sourceToOrig := toOrig
-  limitComplete := hcomplete
-
-structure HamiltonSourceLink
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
-  origIndex : Nat -> Nat
-  strictMono : StrictMono origIndex
-  toOrig : forall i : Nat,
-    letI : TopologicalSpace (X.term i).M := (X.term i).topology
-    letI : ChartedSpace H (X.term i).M := (X.term i).charted
-    (X.term i).M ≃ₘ⟮I, I⟯ M
-  time_mem : forall (i : Nat) (t : Real), t ∈ X.D.carrier ->
-    t ∈ (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D (Q.time (origIndex i))
-      (hamiltonBlowupScale (I := I) P Q (origIndex i))
-      (hsel.1 (origIndex i)) (hsel.2.2.1 (origIndex i))).carrier
-  basepoint_map : forall i : Nat,
-    letI : TopologicalSpace (X.term i).M := (X.term i).topology
-    letI : ChartedSpace H (X.term i).M := (X.term i).charted
-    toOrig i (X.term i).basepoint = Q.point (origIndex i)
-  metric_eq : forall i : Nat,
-    letI : TopologicalSpace (X.term i).M := (X.term i).topology
-    letI : ChartedSpace H (X.term i).M := (X.term i).charted
-    letI : IsManifold I ∞ (X.term i).M := (X.term i).smooth
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
-      change IsManifold I ∞ (X.term i).M
-      infer_instance
-    letI : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
-    letI : T2Space (X.term i).M := (X.term i).t2
-    forall t : Real, t ∈ X.D.carrier ->
-      (X.term i).S.base.metric t =
-        Diffeomorph.pullbackMetricCross
-          ((hamiltonRescaledSolution (I := I) P Q hsel (origIndex i)).base.metric t)
-          (toOrig i)
-  baseScalar : forall i : Nat,
-    letI : TopologicalSpace (X.term i).M := (X.term i).topology
-    letI : ChartedSpace H (X.term i).M := (X.term i).charted
-    letI : IsManifold I ∞ (X.term i).M := (X.term i).smooth
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
-      change IsManifold I ∞ (X.term i).M
-      infer_instance
-    letI : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
-    letI : T2Space (X.term i).M := (X.term i).t2
-    (X.term i).S.scalar 0 (X.term i).basepoint =
-      hamiltonRescaledScalar (I := I) P Q (origIndex i) 0 (Q.point (origIndex i))
-
-noncomputable def hamiltonSourceLink
-    {omega : Real} (h0omega : 0 < omega)
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (hD : P.D =
-      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
-        0 omega h0omega)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
-    HamiltonSourceLink (I := I) (M := M) P Q hsel
-      (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow) := by
-  refine
-    { origIndex := fun i => hamiltonStart (I := I) P Q hsel hwindow + i
-      strictMono := ?_
-      toOrig := fun _ => _root_.Diffeomorph.refl I M ∞
-      time_mem := ?_
-      basepoint_map := ?_
-      metric_eq := ?_
-      baseScalar := ?_ }
-  · intro i j hij
-    exact Nat.add_lt_add_left hij (hamiltonStart (I := I) P Q hsel hwindow)
-  · intro i t ht
-    exact hamilton_car_subset (I := I) h0omega P hD Q hsel hwindow i ht
-  · intro i
-    rfl
-  · intro i t _ht
-    change
-      (hamiltonRescaledSolution (I := I) P Q hsel
-          (hamiltonStart (I := I) P Q hsel hwindow + i)).base.metric t =
-        Diffeomorph.pullbackMetricCross
-          ((hamiltonRescaledSolution (I := I) P Q hsel
-            (hamiltonStart (I := I) P Q hsel hwindow + i)).base.metric t)
-          (_root_.Diffeomorph.refl I M ∞)
-    apply srm_eq_of_inner
-    intro x v w
-    rw [Diffeomorph.pullbackMetricCross_inner]
-    have hmfd :
-        mfderiv I I
-            (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) x =
-          ContinuousLinearMap.id ℝ (TangentSpace I x) := by
-      have h1 :
-          mfderiv I I
-              (fun y : M =>
-                (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) y) x =
-            mfderiv I I (id : M → M) x := rfl
-      rw [h1]
-      exact mfderiv_id
-    rw [hmfd]
-    rfl
-  · intro i
-    change
-      (hamiltonRescaledSolution (I := I) P Q hsel
-        (hamiltonStart (I := I) P Q hsel hwindow + i)).scalar 0
-          (Q.point (hamiltonStart (I := I) P Q hsel hwindow + i)) =
-        hamiltonRescaledScalar (I := I) P Q
-          (hamiltonStart (I := I) P Q hsel hwindow + i) 0
-          (Q.point (hamiltonStart (I := I) P Q hsel hwindow + i))
-    simp only [hamiltonRescaledSolution,
-      DifferentialGeometry.PDE.RicciFlow.paraSolution_scalar,
-      DifferentialGeometry.PDE.RicciFlow.paraTime,
-      hamiltonRescaledScalar, hamiltonRescaledTime, hamiltonScalar, hamiltonSolution]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem HamiltonSourceLink.realizes
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    (hsource : HamiltonSourceLink (I := I) (M := M) P Q hsel X)
-    (L : PointedFlowData.{u, uE, uH} (I := I) X.D)
-    (subseq : Nat -> Nat) (hsubseq : StrictMono subseq)
-    (hconv : SmoothCGHConverges (I := I) X L subseq)
-    (hcomplete : forall t : Real, t ∈ X.D.carrier ->
-      MetricComplete (I := I) (L.atTime (I := I) t)) :
-    HamiltonSourceRealization (I := I) (M := M) P Q hsel
-      (cghToHamilton (I := I) (M := M) X hsource.origIndex hsource.strictMono
-        hsource.toOrig L subseq hsubseq hconv hcomplete) := by
-  refine
-    { time_mem := ?_
-      basepoint_map := ?_
-      metric_eq := ?_ }
-  · intro i t ht
-    exact hsource.time_mem i t ht
-  · intro i
-    simpa [cghToHamilton] using hsource.basepoint_map i
-  · intro i t ht
-    simpa [cghToHamilton] using hsource.metric_eq i t ht
-
-def HamCGH
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (X : PointedFlowSeq.{u, uE, uH} (I := I))
-    (hsource : HamiltonSourceLink (I := I) (M := M) P Q hsel X) : Prop :=
-  exists L : PointedFlowData.{u, uE, uH} (I := I) X.D,
-    exists subseq : Nat -> Nat,
-    exists hsubseq : StrictMono subseq,
-    exists hconv : SmoothCGHConverges (I := I) X L subseq,
-    exists hcomplete : forall t : Real, t ∈ X.D.carrier ->
-      MetricComplete (I := I) (L.atTime (I := I) t),
-      (letI : TopologicalSpace L.M := L.topology
-       ConnectedSpace L.M) /\
-      (let Lh := cghToHamilton (I := I) (M := M) X hsource.origIndex
-        hsource.strictMono hsource.toOrig L subseq hsubseq hconv hcomplete
-       HamiltonRicciNonnegativeTransfer (I := I) (M := M) P Q hsel Lh /\
-         LimitScalarPos (I := I) (M := M) Lh /\
-         HamiltonPinchingTransfer (I := I) (M := M) P Q hsel Lh)
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] in
-theorem baseScalarConv_of_smoothCGH
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    {L : PointedFlowData.{u, uE, uH} (I := I) X.D}
-    {subseq : Nat -> Nat}
-    (hsource : HamiltonSourceLink (I := I) (M := M) P Q hsel X)
-    (h0 : (0 : Real) ∈ X.D.carrier)
-    (hsubseq : StrictMono subseq)
-    (hconv : SmoothCGHConverges (I := I) X L subseq)
-    (hcomplete : forall t : Real, t ∈ X.D.carrier ->
-      MetricComplete (I := I) (L.atTime (I := I) t)) :
-    HamiltonLimitBaseScalarConvergence (I := I) (M := M) P Q
-      (cghToHamilton (I := I) (M := M) X hsource.origIndex hsource.strictMono
-        hsource.toOrig L subseq hsubseq hconv hcomplete) := by
-  classical
-  have hscalar := hconv.scalar_converges 0 h0 L.basepoint
-  refine hscalar.congr' ?_
-  filter_upwards with k
-  letI : TopologicalSpace (X.term (subseq k)).M :=
-    (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M :=
-    (X.term (subseq k)).charted
-  letI : IsManifold I ∞ (X.term (subseq k)).M :=
-    (X.term (subseq k)).smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
-      (X.term (subseq k)).M := by
-    change IsManifold I ∞ (X.term (subseq k)).M
-    infer_instance
-  letI : SigmaCompactSpace (X.term (subseq k)).M :=
-    (X.term (subseq k)).sigmaCompact
-  letI : T2Space (X.term (subseq k)).M :=
-    (X.term (subseq k)).t2
-  calc
-    (X.term (subseq k)).S.scalar 0 (hconv.spatial.maps.map k (L.atTime 0).basepoint)
-        = (X.term (subseq k)).S.scalar 0 (X.term (subseq k)).basepoint := by
-          simp [PointedCGHMaps.map, hconv.spatial.maps.basepoint_map k]
-    _ = hamiltonRescaledScalar (I := I) P Q (hsource.origIndex (subseq k)) 0
-        (Q.point (hsource.origIndex (subseq k))) := by
-          simpa using hsource.baseScalar (subseq k)
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem tf_decay0_of_cgh
-    {omega : Real} (h0omega : 0 < omega)
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (hD : P.D =
-      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
-        0 omega h0omega)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hscalar :
-      forall t : Real, t ∈ P.D.carrier ->
-        forall x : M, 0 < P.S.scalar t x)
-    (hpinch : HamiltonPinchingEstimate (I := I) P)
-    (L : HamiltonCGHLimit (I := I) M)
-    (h0 : (0 : Real) ∈ L.D.carrier)
-    (hreal : HamiltonSourceRealization (I := I) (M := M) P Q hsel L) :
-    LimitTracefreeDecayAt (I := I) L 0 := by
-  classical
-  letI : TopologicalSpace L.N := L.topology
-  letI : ChartedSpace H L.N := L.charted
-  letI : IsManifold I ∞ L.N := L.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.N := L.smooth_plus
-  letI : SigmaCompactSpace L.N := L.sigmaCompact
-  letI : T2Space L.N := L.t2
-  rcases hamilton_rescaled_tracefree_ricci_norm_sq_at_zero_bound (I := I) P Q hsel hscalar hpinch with
-    ⟨epsilon, C, hepsilon, _hepsilon1, _hC, hbound⟩
-  have hconv :
-      FunctionPullbackTendsto (I := I) L.cgh.spatial.maps
-        (fun k _t x =>
-          letI : TopologicalSpace (L.sourceTerm (L.cghSubseq k)).M :=
-            (L.sourceTerm (L.cghSubseq k)).topology
-          letI : ChartedSpace H (L.sourceTerm (L.cghSubseq k)).M :=
-            (L.sourceTerm (L.cghSubseq k)).charted
-          letI : IsManifold I ∞ (L.sourceTerm (L.cghSubseq k)).M :=
-            (L.sourceTerm (L.cghSubseq k)).smooth
-          letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
-              (L.sourceTerm (L.cghSubseq k)).M := by
-            change IsManifold I ∞ (L.sourceTerm (L.cghSubseq k)).M
-            infer_instance
-          letI : SigmaCompactSpace (L.sourceTerm (L.cghSubseq k)).M :=
-            (L.sourceTerm (L.cghSubseq k)).sigmaCompact
-          letI : T2Space (L.sourceTerm (L.cghSubseq k)).M :=
-            (L.sourceTerm (L.cghSubseq k)).t2
-          DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
-            (L.sourceTerm (L.cghSubseq k)).S.scalar
-            (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-              (L.sourceTerm (L.cghSubseq k)).S) 0 x)
-        (fun _t x =>
-          DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
-            L.S.scalar
-            (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I) L.S)
-            0 x) := by
-    intro _t _ht x
-    have hsc := L.cgh.scalar_converges 0 h0 x
-    have hric := L.cgh.ricciNorm_converges 0 h0 x
-    simpa only [
-      DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq,
-      DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqOf,
-      DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqAtOf] using
-      hric.sub ((hsc.pow 2).div_const 3)
-  have hdecay :=
-    hamilton_rescaled_pinching_error_tendsto_zero (I := I) h0omega P hD Q hsel L
-      (C := C) hepsilon
-  have hsmall :=
-    FunctionPullbackTendsto.le_of_bound0 (I := I) hconv
-      (fun _t _x k =>
-        C * hamiltonBlowupScale (I := I) P Q (L.subseq k) ^ (-epsilon))
-      (by
-        intro _t x
-        refine ⟨hdecay, Filter.Eventually.of_forall ?_⟩
-        intro k
-        let i : Nat := L.cghSubseq k
-        letI : TopologicalSpace (L.sourceTerm i).M :=
-          (L.sourceTerm i).topology
-        letI : ChartedSpace H (L.sourceTerm i).M :=
-          (L.sourceTerm i).charted
-        letI : IsManifold I ∞ (L.sourceTerm i).M :=
-          (L.sourceTerm i).smooth
-        letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
-            (L.sourceTerm i).M := by
-          change IsManifold I ∞ (L.sourceTerm i).M
-          infer_instance
-        letI : SigmaCompactSpace (L.sourceTerm i).M :=
-          (L.sourceTerm i).sigmaCompact
-        letI : T2Space (L.sourceTerm i).M :=
-          (L.sourceTerm i).t2
-        have hcross :
-            DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
-                (L.sourceTerm i).S.scalar
-                (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-                  (L.sourceTerm i).S)
-                0 (L.cgh.spatial.maps.map k x) =
-              DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
-                (hamiltonRescaledSolution (I := I) P Q hsel (L.origIndex i)).scalar
-                (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-                (hamiltonRescaledSolution (I := I) P Q hsel (L.origIndex i)))
-                0
-                (L.sourceToOrig i (L.cgh.spatial.maps.map k x)) := by
-          simp only [
-            DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq,
-            DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqOf,
-            DifferentialGeometry.PDE.RicciFlow.ricciNorm,
-            DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar,
-            DifferentialGeometry.PDE.RicciFlow.SolutionOn.ricci,
-            DifferentialGeometry.PDE.RicciFlow.SolutionOn.family_metric,
-            DifferentialGeometry.PDE.RicciFlow.SolutionFamily.scalar,
-            DifferentialGeometry.PDE.RicciFlow.SolutionFamily.ricci]
-          rw [hreal.metric_eq i 0 h0]
-          exact
-            trace_free_ricci_norm_sq_cross (I := I) (J := I)
-              ((hamiltonRescaledSolution (I := I) P Q hsel
-                (L.origIndex i)).base.metric 0)
-              (L.sourceToOrig i) (L.cgh.spatial.maps.map k x)
-        rw [hcross]
-        simpa [i, HamiltonCGHLimit.subseq] using
-          hbound (L.origIndex i)
-            (L.sourceToOrig i (L.cgh.spatial.maps.map k x)))
-  exact hsmall 0 h0
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem round0_of_cgh
-    {omega : Real} (h0omega : 0 < omega)
-    (hdim : Module.finrank Real E = 3)
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (hD : P.D =
-      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
-        0 omega h0omega)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hscalar :
-      forall t : Real, t ∈ P.D.carrier ->
-        forall x : M, 0 < P.S.scalar t x)
-    (hpinch : HamiltonPinchingEstimate (I := I) P)
-    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    (hsource : HamiltonSourceLink (I := I) (M := M) P Q hsel X)
-    (h0 : (0 : Real) ∈ X.D.carrier)
-    (L : PointedFlowData.{u, uE, uH} (I := I) X.D)
-    (subseq : Nat -> Nat) (hsubseq : StrictMono subseq)
-    (hconv : SmoothCGHConverges (I := I) X L subseq)
-    (hcomplete : forall t : Real, t ∈ X.D.carrier ->
-      MetricComplete (I := I) (L.atTime (I := I) t))
-    (hconnected :
-      letI : TopologicalSpace L.M := L.topology
-      ConnectedSpace L.M) :
-    let Lh := cghToHamilton (I := I) (M := M) X hsource.origIndex
-      hsource.strictMono hsource.toOrig L subseq hsubseq hconv hcomplete
-    LimitRoundAt (I := I) (M := M) Lh 0 := by
-  classical
-  let Lh := cghToHamilton (I := I) (M := M) X hsource.origIndex
-    hsource.strictMono hsource.toOrig L subseq hsubseq hconv hcomplete
-  have h0h : (0 : Real) ∈ Lh.D.carrier := by
-    simpa [Lh, cghToHamilton] using h0
-  have hreal : HamiltonSourceRealization (I := I) (M := M) P Q hsel Lh := by
-    simpa [Lh] using
-      (HamiltonSourceLink.realizes (I := I) (M := M) P Q hsel hsource
-        L subseq hsubseq hconv hcomplete)
-  have hdecay : LimitTracefreeDecayAt (I := I) (M := M) Lh 0 :=
-    tf_decay0_of_cgh (I := I) (M := M) h0omega P hD Q hsel hscalar
-      hpinch Lh h0h hreal
-  have htf : LimitTracefreeZeroAt (I := I) (M := M) Lh 0 :=
-    tracefree_zero_of_decay (I := I) (M := M) hdim hdecay
-  have heinstein : LimitEinsteinAt (I := I) (M := M) Lh 0 :=
-    limitEinstein_of_tf0 (I := I) (M := M) hdim htf
-  have hbaseConv : HamiltonLimitBaseScalarConvergence (I := I) (M := M) P Q Lh := by
-    simpa [Lh] using
-      (baseScalarConv_of_smoothCGH (I := I) (M := M) P Q hsel hsource
-        h0 hsubseq hconv hcomplete)
-  have hbaseOne : LimitBaseScalarOne (I := I) (M := M) Lh :=
-    limit_base_scalar_one (I := I) (M := M) P Q hsel hbaseConv
-  letI : TopologicalSpace Lh.N := Lh.topology
-  letI : ChartedSpace H Lh.N := Lh.charted
-  letI : IsManifold I ∞ Lh.N := Lh.smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) Lh.N := Lh.smooth_plus
-  letI : SigmaCompactSpace Lh.N := Lh.sigmaCompact
-  letI : T2Space Lh.N := Lh.t2
-  letI : T2Space (TangentBundle I Lh.N) := Lh.t2TangentBundle
-  have hbaseEq : Lh.S.scalar 0 Lh.basepoint = 1 := by
-    simpa [LimitBaseScalarOne] using hbaseOne
-  have hbasePos : 0 < Lh.S.scalar 0 Lh.basepoint := by
-    rw [hbaseEq]
-    exact one_pos
-  have hconn : HamiltonLimitConnected (I := I) (M := M) Lh := by
-    simpa [Lh, cghToHamilton, HamiltonLimitConnected] using hconnected
-  have hbdry : HamiltonLimitBoundaryless (I := I) := by
-    simpa [Lh, cghToHamilton, HamiltonLimitBoundaryless] using
-      (inferInstance : I.Boundaryless)
-  exact limit_round_base (I := I) (M := M) hdim hconn hbdry
-    hbasePos heinstein
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem flowUpgradeData_conn
-    {X : PointedFlowSeq (I := I)}
-    {mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))}
-    (d : FlowUpgrade (I := I) X mc)
-    (hconn : letI : TopologicalSpace mc.limit.M := mc.limit.topology
-      ConnectedSpace mc.limit.M) :
-    letI : TopologicalSpace d.data.L.M := d.data.L.topology
-    ConnectedSpace d.data.L.M := by
-  have hAt0 : letI : TopologicalSpace (d.data.L.atTime (I := I) 0).M :=
-      (d.data.L.atTime (I := I) 0).topology
-      ConnectedSpace (d.data.L.atTime (I := I) 0).M := by
-    rw [d.data.hL0]
-    exact hconn
-  simpa only [PointedFlowData.atTime] using hAt0
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem flowUpgradeData_converges
-    {X : PointedFlowSeq (I := I)}
-    {mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))}
-    (d : FlowUpgrade (I := I) X mc) :
-    Nonempty (SmoothCGHConverges (I := I) X d.data.L
-      (mc.compSubseq d.φ d.hφ).subseq) :=
-  ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc d.data.hσtgt
-    d.data.refMetric
-    (letI : TopologicalSpace d.data.L.M := d.data.L.topology
-     letI : ChartedSpace H d.data.L.M := d.data.L.charted
-     letI : IsManifold I ∞ d.data.L.M := d.data.L.smooth
-     letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.data.L.M := by
-       change IsManifold I ∞ d.data.L.M
-       infer_instance
-     letI : SigmaCompactSpace d.data.L.M := d.data.L.sigmaCompact
-     letI : T2Space d.data.L.M := d.data.L.t2
-     d.data.L.S.family.metric) d.data.conv⟩
-
-theorem const0_of_cgh
-    {omega : Real} (h0omega : 0 < omega)
-    (hM : Closed3Manifold (I := I) (M := M))
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (hD : P.D =
-      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
-        0 omega h0omega)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hscalar :
-      forall t : Real, t ∈ P.D.carrier ->
-        forall x : M, 0 < P.S.scalar t x)
-    (hpinch : HamiltonPinchingEstimate (I := I) P)
-    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    (hsource : HamiltonSourceLink (I := I) (M := M) P Q hsel X)
-    (h0 : (0 : Real) ∈ X.D.carrier)
-    (L : PointedFlowData.{u, uE, uH} (I := I) X.D)
-    (subseq : Nat -> Nat) (hsubseq : StrictMono subseq)
-    (hconv : SmoothCGHConverges (I := I) X L subseq)
-    (hcomplete : forall t : Real, t ∈ X.D.carrier ->
-      MetricComplete (I := I) (L.atTime (I := I) t))
-    (hconnected :
-      letI : TopologicalSpace L.M := L.topology
-      ConnectedSpace L.M) :
-    AdmitsConstPosSec (I := I) (M := M) := by
-  let Lh := cghToHamilton (I := I) (M := M) X hsource.origIndex
-    hsource.strictMono hsource.toOrig L subseq hsubseq hconv hcomplete
-  have hround : LimitRoundAt (I := I) (M := M) Lh 0 := by
-    simpa only [Lh] using
-      (round0_of_cgh (I := I) (M := M) h0omega hM.2.2.2 P hD Q hsel
-        hscalar hpinch hsource h0 L subseq hsubseq hconv hcomplete hconnected)
-  have h0h : (0 : Real) ∈ Lh.D.carrier := by
-    change (0 : Real) ∈ X.D.carrier
-    exact h0
-  have hconn : HamiltonLimitConnected (I := I) (M := M) Lh := by
-    change (letI : TopologicalSpace L.M := L.topology; ConnectedSpace L.M)
-    exact hconnected
-  simpa only [AdmitsConstPosSec] using
-    (limit_to_orig (I := I) (M := M) hM h0h hconn hround)
-
-theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bound
-    {omega : Real} (h0omega : 0 < omega)
-    (hM : Closed3Manifold (I := I) (M := M))
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (hD : P.D =
-      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
-        0 omega h0omega)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (hscalar : forall t : Real, t ∈ P.D.carrier →
-      forall x : M, 0 < P.S.scalar t x)
-    (hpinch : HamiltonPinchingEstimate (I := I) P)
-    (hinj : FlowerScaleInjBound (I := I)
-      (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow)) :
-    AdmitsConstPosSec (I := I) (M := M) := by
-  classical
-  let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
-  change FlowerScaleInjBound (I := I) X at hinj
-  have hcpl : SeqMetricComplete (I := I) (X.atZero (I := I)) := by
-    refine ⟨?_⟩
-    intro k
-    change MetricComplete (I := I) ((X.term k).atTime (I := I) 0)
-    dsimp only [MetricComplete, PointedFlowData.atTime]
-    refine @complete_of_compact (X.term k).M ?_ ?_
-    simpa only [X, hamiltonSourceSequence] using hM.1
-  have hconn : forall k : Nat,
-      letI : TopologicalSpace ((X.atZero (I := I)).obj k).M :=
-        ((X.atZero (I := I)).obj k).topology
-      ConnectedSpace ((X.atZero (I := I)).obj k).M := by
-    intro k
-    change @ConnectedSpace (X.term k).M (X.term k).topology
-    simpa only [X, hamiltonSourceSequence] using hM.2.1
-  let hderiv : FlowDerivativeInput (I := I) X :=
-    source_deriv (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
-  let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
-    metricSeedOfBG (I := I) (X.atZero (I := I))
-      hcpl hderiv.at_zero_geom hinj hconn
-  have hd : Nonempty (BoundedGeometryNormalData (I := I) (X.atZero (I := I)) seed.decay) :=
-    exists_bounded_geometry_normal_data (I := I) (X.atZero (I := I))
-      hcpl hconn hderiv.at_zero_geom seed.decay seed.realizes
-  let canon : CanonicalMetricCompactness (I := I) (X.atZero (I := I)) :=
-    seed.higherRegularityCanonicalMetricCompactness (Classical.choice hd) hcpl hconn
-  have hcanonConn :
-      letI : TopologicalSpace canon.compactness.limit.M := canon.compactness.limit.topology
-      ConnectedSpace canon.compactness.limit.M := by
-    simpa only [canon] using
-      seed.higher_regularity_canonical_metric_compactness_connected (Classical.choice hd) hcpl hconn
-  obtain ⟨d, hlimCpl⟩ :=
-    hamilton_compact_flow_upgrade (I := I) h0omega hM.1 P hD Q hsel hrm
-      hwindow canon
-  have hlimitConn :
-      letI : TopologicalSpace d.data.L.M := d.data.L.topology
-      ConnectedSpace d.data.L.M :=
-    flowUpgradeData_conn (I := I) d hcanonConn
-  have hzero : (0 : Real) ∈ X.D.carrier := by
-    change (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
-    exact ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
-  let mc := canon.compactness.compSubseq d.φ d.hφ
-  exact const0_of_cgh
-    (I := I) (M := M) h0omega hM P hD Q hsel hscalar hpinch
-    (hamiltonSourceLink (I := I) h0omega P hD Q hsel hwindow)
-    hzero d.data.L mc.subseq mc.strictMono
-    (Classical.choice (flowUpgradeData_converges (I := I) d)) hlimCpl hlimitConn
-
-omit [I.Boundaryless] in
 theorem exists_hamilton_vol
     {omega : Real} (h0omega : 0 < omega)
-    (hM : Closed3Manifold (I := I) (M := M))
+    (hM : isClosedThreeManifold (I := I) (M := M))
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D =
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
     ∃ V : FlowerScaleVolData (I := I)
         (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow),
       IsFlowerScaleVolBound (I := I) V := by
@@ -2454,6 +1840,9 @@ theorem exists_hamilton_vol
   letI : CompactSpace M := hM.1
   letI : ConnectedSpace M := hM.2.1
   letI : I.Boundaryless := hM.2.2.1
+  letI : NeZero (Module.finrank Real E) := ⟨by
+    rw [hM.2.2.2]
+    norm_num⟩
   have hsol : PDE.RicciFlow.IsSolutionOn (I := I) P.S :=
     P.isSmooth.isSolution
   have hnlc :
@@ -2545,171 +1934,116 @@ theorem exists_hamilton_vol
       PDE.RicciFlow.Perelman.FlowMetricBall.setAt,
       PDE.RicciFlow.SolutionOn.timeRestrict_metric] using hkB
 
-theorem hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
+
+structure HamiltonSourceLink
+    {g0 : SmoothRiemannianMetric I M}
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
+  origIndex : Nat -> Nat
+  strictMono : StrictMono origIndex
+  toOrig : forall i : Nat,
+    letI : TopologicalSpace (X.term i).M := (X.term i).topology
+    letI : ChartedSpace H (X.term i).M := (X.term i).charted
+    (X.term i).M ≃ₘ⟮I, I⟯ M
+  time_mem : forall (i : Nat) (t : Real), t ∈ X.D.carrier ->
+    t ∈ (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D (Q.time (origIndex i))
+      (hamiltonBlowupScale (I := I) P Q (origIndex i))
+      (hsel.1 (origIndex i)) (hsel.2.2.1 (origIndex i))).carrier
+  basepoint_map : forall i : Nat,
+    letI : TopologicalSpace (X.term i).M := (X.term i).topology
+    letI : ChartedSpace H (X.term i).M := (X.term i).charted
+    toOrig i (X.term i).basepoint = Q.point (origIndex i)
+  metric_eq : forall i : Nat,
+    letI : TopologicalSpace (X.term i).M := (X.term i).topology
+    letI : ChartedSpace H (X.term i).M := (X.term i).charted
+    letI : IsManifold I ∞ (X.term i).M := (X.term i).smooth
+    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
+      change IsManifold I ∞ (X.term i).M
+      infer_instance
+    letI : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
+    letI : T2Space (X.term i).M := (X.term i).t2
+    forall t : Real, t ∈ X.D.carrier ->
+      (X.term i).S.base.metric t =
+        Diffeomorph.pullbackMetricCross
+          ((hamiltonRescaledSolution (I := I) P Q hsel (origIndex i)).base.metric t)
+          (toOrig i)
+  baseScalar : forall i : Nat,
+    letI : TopologicalSpace (X.term i).M := (X.term i).topology
+    letI : ChartedSpace H (X.term i).M := (X.term i).charted
+    letI : IsManifold I ∞ (X.term i).M := (X.term i).smooth
+    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
+      change IsManifold I ∞ (X.term i).M
+      infer_instance
+    letI : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
+    letI : T2Space (X.term i).M := (X.term i).t2
+    (X.term i).S.scalar 0 (X.term i).basepoint =
+      hamiltonRescaledScalar (I := I) P Q (origIndex i) 0 (Q.point (origIndex i))
+
+noncomputable def hamiltonSourceLink
     {omega : Real} (h0omega : 0 < omega)
-    (hM : Closed3Manifold (I := I) (M := M))
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D =
       DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
         0 omega h0omega)
     (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (hscalar : forall t : Real, t ∈ P.D.carrier →
-      forall x : M, 0 < P.S.scalar t x)
-    (hpinch : HamiltonPinchingEstimate (I := I) P)
-    (V : FlowerScaleVolData (I := I)
-      (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow))
-    (hvol : IsFlowerScaleVolBound (I := I) V) :
-    AdmitsConstPosSec (I := I) (M := M) := by
-  classical
-  let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
-  change FlowerScaleVolData (I := I) X at V
-  change IsFlowerScaleVolBound (I := I) V at hvol
-  have hcpl : SeqMetricComplete (I := I) (X.atZero (I := I)) := by
-    refine ⟨?_⟩
-    intro k
-    change MetricComplete (I := I) ((X.term k).atTime (I := I) 0)
-    dsimp only [MetricComplete, PointedFlowData.atTime]
-    refine @complete_of_compact (X.term k).M ?_ ?_
-    simpa only [X, hamiltonSourceSequence] using hM.1
-  have hconn : forall k : Nat,
-      letI : TopologicalSpace ((X.atZero (I := I)).obj k).M :=
-        ((X.atZero (I := I)).obj k).topology
-      ConnectedSpace ((X.atZero (I := I)).obj k).M := by
-    intro k
-    change @ConnectedSpace (X.term k).M (X.term k).topology
-    simpa only [X, hamiltonSourceSequence] using hM.2.1
-  let hderiv : FlowDerivativeInput (I := I) X :=
-    source_deriv (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
-  have hinj : FlowerScaleInjBound (I := I) X :=
-    flowInj_of_vol (I := I) X hcpl hconn hderiv.at_zero_geom V hvol
-  exact hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bound
-    (I := I) (M := M) h0omega hM P hD Q hsel hrm hwindow
-    hscalar hpinch hinj
-
-theorem hamilton_constant_positive_sectional_curvature_of_pinching
-    {omega : Real} (h0omega : 0 < omega)
-    (hM : Closed3Manifold (I := I) (M := M))
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (hD : P.D =
-      DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
-        0 omega h0omega)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius)
-    (hscalar : ∀ t : Real, t ∈ P.D.carrier →
-      ∀ x : M, 0 < P.S.scalar t x)
-    (hpinch : HamiltonPinchingEstimate (I := I) P) :
-    AdmitsConstPosSec (I := I) (M := M) := by
-  obtain ⟨V, hV⟩ :=
-    exists_hamilton_vol (I := I) h0omega hM P hD Q hsel hrm hwindow
-  exact hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
-    (I := I) (M := M) h0omega hM P hD Q hsel hrm hwindow
-    hscalar hpinch V hV
-
-theorem hamilton_admits_constant_positive_sectional_curvature
-    (hM : Closed3Manifold (I := I) (M := M))
-    (hpos : AdmitsPosRicci (I := I) (M := M)) :
-    AdmitsConstPosSec (I := I) (M := M) := by
-  rcases hpos with ⟨g0, hg0⟩
-  rcases hamilton_flow_exists_normalized (I := I) (M := M) hM g0 hg0 with
-    ⟨omega, h0omega, P, hD⟩
-  have hfinite_core :
-      ∃ c0 : Real, 0 < c0 ∧ omega ≤ 3 / (2 * c0) :=
-    hamilton_extinction_time_bound (I := I) (M := M) h0omega hM g0 hg0 P hD
-  have hfinite :
-      ∃ omega c0 : Real, ∃ h0omega : 0 < omega,
-        P.D =
-            DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
-              0 omega h0omega ∧
-          0 < c0 ∧ omega ≤ 3 / (2 * c0) := by
-    rcases hfinite_core with ⟨c0, hc0, hbound⟩
-    exact ⟨omega, c0, h0omega, hD, hc0, hbound⟩
-  have hnonneg9 : HamiltonRicciNonnegative (I := I) P omega :=
-    hamilton_ricci_nonnegative (I := I) (M := M) h0omega hM hg0 P hD
-  have hscalarBlow : HamiltonScalarBlowup (I := I) P :=
-    hamilton_scalar_blowup (I := I) (M := M) h0omega hM P hD hnonneg9
-  rcases hamilton_exists_blowup_point_sequence (I := I) (M := M) hM g0 P hfinite
-      hscalarBlow with
-    ⟨Q, hsel⟩
-  have hric : HamiltonRescaledRicciNonnegative (I := I) P Q :=
-    hamilton_rescaled_ricci_nonnegative
-      (I := I) (M := M) h0omega hM g0 hg0 P hD Q hsel
-  have hsec9 : HamiltonPinching (I := I) P omega :=
-    hamilton_pinching (I := I) (M := M) h0omega hM hg0 P hD
-  have hpinch : HamiltonPinchingEstimate (I := I) P :=
-    hamilton_pinching_implies_pinch_estimate
-      (I := I) (M := M) h0omega hM g0 hg0 P hD
-  have hrm : HamiltonRiemannCurvatureBound (I := I) P Q :=
-    hamilton_rescaled_curvature_bound (I := I) (M := M) hM g0 P Q hsel hric
-  have hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius :=
-    hamilton_reference_radius_window (I := I) P Q hsel
-  have hscalar :
-      ∀ t : Real, t ∈ P.D.carrier → ∀ x : M, 0 < P.S.scalar t x :=
-    hamilton_scalar_positive (I := I) (M := M) h0omega hM g0 hg0 P hD
-  exact hamilton_constant_positive_sectional_curvature_of_pinching
-    (I := I) (M := M) h0omega hM P hD Q hsel hrm hwindow
-    hscalar hpinch
-
-theorem hamilton_positive_ricci_classification
-    (hM : Closed3Manifold (I := I) (M := M))
-    (hpos : AdmitsPosRicci (I := I) (M := M)) :
-    AdmitsConstPosSec (I := I) (M := M) ∧
-      SphericalSpaceForm (I := I) (M := M) := by
-  have hconst : AdmitsConstPosSec (I := I) (M := M) :=
-    hamilton_admits_constant_positive_sectional_curvature (I := I) (M := M) hM hpos
-  exact ⟨hconst, (constant_positive_sectional_curvature_iff_spherical_space_form (I := I) (M := M) hM).1 hconst⟩
-
-omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem toHamiltonExists
-    {g0 : SmoothRiemannianMetric I M}
-    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
-    (Q : HamiltonBlowup M)
-    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
-    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    (hwindow : Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ⊆ X.D.carrier)
-    (hreg : Set.Ioo (-(hamilton_reference_radius ^ 2)) 0 ⊆ X.D.regular)
-    (hsource : HamiltonSourceLink (I := I) (M := M) P Q hsel X)
-    (hcompact : HamCGH (I := I) (M := M) P Q hsel X hsource) :
-    HamiltonCGHLimitExistence (I := I) P Q hsel := by
-  rcases hcompact with
-    ⟨L, subseq, hsubseq, hconv, hcomplete, hconnected, htransfers⟩
-  let Lh : HamiltonCGHLimit (I := I) M :=
-    cghToHamilton (I := I) (M := M) X hsource.origIndex hsource.strictMono
-      hsource.toOrig L subseq hsubseq hconv hcomplete
-  change HamiltonRicciNonnegativeTransfer (I := I) (M := M) P Q hsel Lh /\
-    LimitScalarPos (I := I) (M := M) Lh /\
-    HamiltonPinchingTransfer (I := I) (M := M) P Q hsel Lh at htransfers
-  rcases htransfers with ⟨hricTransfer, hscalarPos, hpinchTransfer⟩
-  have hreal : HamiltonSourceRealization (I := I) (M := M) P Q hsel Lh :=
-    HamiltonSourceLink.realizes (I := I) (M := M) P Q hsel hsource L subseq
-      hsubseq hconv hcomplete
-  have hconnHam :
-      HamiltonLimitConnected (I := I) (M := M) Lh := by
-    simpa [Lh, DifferentialGeometry.PDE.RicciFlow.HamiltonPositiveRicci.HamiltonLimitConnected,
-      cghToHamilton] using
-      hconnected
-  have hbdHam :
-      HamiltonLimitBoundaryless (I := I) := by
-    simpa [Lh, DifferentialGeometry.PDE.RicciFlow.HamiltonPositiveRicci.HamiltonLimitBoundaryless,
-      cghToHamilton] using (inferInstance : I.Boundaryless)
+    (hsel : hamiltonBlowupPointSelection (I := I) P Q)
+    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    HamiltonSourceLink (I := I) (M := M) P Q hsel
+      (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow) := by
   refine
-    ⟨Lh, hreal, Lh.subseq_strict,
-      hwindow, hreg, hconnHam, hbdHam, ?_,
-      hricTransfer,
-      baseScalarConv_of_smoothCGH (I := I) (M := M) P Q hsel hsource
-        (hwindow (Set.mem_Icc.mpr ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_refl 0⟩))
-        hsubseq hconv hcomplete,
-      ⟨hscalarPos, hpinchTransfer⟩⟩
-  simpa [Lh, DifferentialGeometry.PDE.RicciFlow.HamiltonPositiveRicci.HamiltonLimitFlow,
-    cghToHamilton] using
-    L.isSolution
+    { origIndex := fun i => hamiltonStart (I := I) P Q hsel hwindow + i
+      strictMono := ?_
+      toOrig := fun _ => _root_.Diffeomorph.refl I M ∞
+      time_mem := ?_
+      basepoint_map := ?_
+      metric_eq := ?_
+      baseScalar := ?_ }
+  · intro i j hij
+    exact Nat.add_lt_add_left hij (hamiltonStart (I := I) P Q hsel hwindow)
+  · intro i t ht
+    exact hamilton_car_subset (I := I) h0omega P hD Q hsel hwindow i ht
+  · intro i
+    rfl
+  · intro i t _ht
+    change
+      (hamiltonRescaledSolution (I := I) P Q hsel
+          (hamiltonStart (I := I) P Q hsel hwindow + i)).base.metric t =
+        Diffeomorph.pullbackMetricCross
+          ((hamiltonRescaledSolution (I := I) P Q hsel
+            (hamiltonStart (I := I) P Q hsel hwindow + i)).base.metric t)
+          (_root_.Diffeomorph.refl I M ∞)
+    apply srm_eq_of_inner
+    intro x v w
+    rw [Diffeomorph.pullbackMetricCross_inner]
+    have hmfd :
+        mfderiv I I
+            (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) x =
+          ContinuousLinearMap.id ℝ (TangentSpace I x) := by
+      have h1 :
+          mfderiv I I
+              (fun y : M =>
+                (_root_.Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) y) x =
+            mfderiv I I (id : M → M) x := rfl
+      rw [h1]
+      exact mfderiv_id
+    rw [hmfd]
+    rfl
+  · intro i
+    change
+      (hamiltonRescaledSolution (I := I) P Q hsel
+        (hamiltonStart (I := I) P Q hsel hwindow + i)).scalar 0
+          (Q.point (hamiltonStart (I := I) P Q hsel hwindow + i)) =
+        hamiltonRescaledScalar (I := I) P Q
+          (hamiltonStart (I := I) P Q hsel hwindow + i) 0
+          (Q.point (hamiltonStart (I := I) P Q hsel hwindow + i))
+    simp only [hamiltonRescaledSolution,
+      DifferentialGeometry.PDE.RicciFlow.paraSolution_scalar,
+      DifferentialGeometry.PDE.RicciFlow.paraTime,
+      hamiltonRescaledScalar, hamiltonRescaledTime, hamiltonScalar, hamiltonSolution]
+
+
 
 end HamiltonPositiveRicci
 end RicciFlow

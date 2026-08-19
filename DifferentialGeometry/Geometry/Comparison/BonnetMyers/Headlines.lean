@@ -5,8 +5,8 @@ import DifferentialGeometry.Geometry.Comparison.HopfRinow
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve
-import DifferentialGeometry.Topology.Covering.CurvaturePullback
-import DifferentialGeometry.Topology.Covering.CompletenessPullback
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
 import DifferentialGeometry.Topology.Covering.FibreEquiv
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisBracket
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected

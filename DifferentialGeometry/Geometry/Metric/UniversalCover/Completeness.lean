@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Covering.Riemannian
-import DifferentialGeometry.Topology.Covering.ChartPullback
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
@@ -209,12 +209,11 @@ open Manifold MeasureTheory in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [InnerProductSpace ℝ E] [I.Boundaryless] in
-theorem tail_in_single_sheet [Nonempty M] [CompleteSpace M]
+omit [InnerProductSpace ℝ E] [I.Boundaryless] [PseudoEMetricSpace M] in
+theorem tail_in_single_sheet
     [RegularSpace (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)]
     (g : SmoothRiemannianMetric I M)
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [IsRiemannianManifold I M]
     (hEnormBase : ∀ (x : M) (v : TangentSpace I x),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (hEnormCover :
@@ -450,7 +449,7 @@ theorem tail_in_single_sheet [Nonempty M] [CompleteSpace M]
       rw [hsnd]; exact Set.mem_singleton _
 
 omit [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M] [SecondCountableTopology M] in
-theorem sheet_homeomorph [Nonempty M] (y : M) :
+theorem sheet_homeomorph (y : M) :
     ∃ (U : Set M) (_hU : IsOpen U) (_hyU : y ∈ U)
       (y' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
       (U' : Set (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M))
@@ -479,12 +478,11 @@ theorem sheet_homeomorph [Nonempty M] (y : M) :
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [InnerProductSpace ℝ E] [I.Boundaryless] in
-theorem lift_the_limit [Nonempty M] [CompleteSpace M]
+omit [InnerProductSpace ℝ E] [I.Boundaryless] [PseudoEMetricSpace M] in
+theorem lift_the_limit
     [RegularSpace (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)]
     (g : SmoothRiemannianMetric I M)
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [IsRiemannianManifold I M]
     (hEnormBase : ∀ (x : M) (v : TangentSpace I x),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (hEnormCover :
@@ -531,7 +529,7 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] in
-theorem completeSpace_of_complete [Nonempty M] [CompleteSpace M]
+theorem completeSpace_of_complete [CompleteSpace M]
     [RegularSpace (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)]
     (g : SmoothRiemannianMetric I M)
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
