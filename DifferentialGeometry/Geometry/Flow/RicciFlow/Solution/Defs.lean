@@ -54,31 +54,13 @@ theorem metric_deriv_eq_neg_two_ricci_of_metricVariationEquationDerivAt
       (-2 : Real) * Ric t x X Y :=
   (hEq x X Y).deriv
 
-structure RealizedRicciFlowData where
-  family : MetricConnectionFamily (I := I) (M := M) Time
-
-def IsRealizedRicciFlow
-    (td : TimeDerivativeData Real A Time)
-    (S : RealizedRicciFlowData (I := I) (M := M) (Time := Time))
-    (Ric : RicciTensorField (I := I) (M := M) Time) : Prop :=
-  MetricVariationEquation td S.family Ric
-
-theorem metric_dt_eq_neg_two_ricci_of_isRealizedRicciFlow
-    (td : TimeDerivativeData Real A Time)
-    (S : RealizedRicciFlowData (I := I) (M := M) (Time := Time))
-    (Ric : RicciTensorField (I := I) (M := M) Time)
-    (hS : IsRealizedRicciFlow td S Ric)
-    (t : Time) (x : M) (X Y : TangentSpace I x) :
-    metricTimeDerivative td S.family t x X Y = (-2 : Real) * Ric t x X Y :=
-  metric_dt_eq_neg_two_ricci_of_metricVariationEquation td S.family Ric hS t x X Y
-
 section Interval
 
 variable [FiniteDimensional Real E] [CompleteSpace E]
 variable [SigmaCompactSpace M] [T2Space M]
 variable [IsManifold I 1 M]
 
-def MetricVariationEquationOnRaw
+def MetricConnectionFamilyVariationEquationOn
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (Ric : RicciTensorField (I := I) (M := M) Real) : Prop :=
@@ -89,18 +71,18 @@ def MetricVariationEquationOnRaw
       D.carrier
       (t : Real)
 
-structure RealizedRicciFlowCandidateOn (D : RealTimeInterval) where
+structure RicciFlowCandidateOn (D : RealTimeInterval) where
   family : MetricConnectionFamilyOn (I := I) (M := M) D
   ricci : RicciTensorField (I := I) (M := M) Real
 
-structure IsRealizedRicciFlowSolutionOn
+structure IsRicciFlowCandidateOn
     {D : RealTimeInterval}
-    (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D) : Prop where
+    (S : RicciFlowCandidateOn (I := I) (M := M) D) : Prop where
   smoothMetric : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric
   smoothConnection : DifferentialGeometry.Geometry.Connection.ConnectionFamilySmoothOn (I := I)
     (M := M) S.family
   leviCivita : DifferentialGeometry.Geometry.Connection.IsLeviCivitaFamilyOn (I := I) S.family
-  equation : MetricVariationEquationOnRaw (I := I) S.family S.ricci
+  equation : MetricConnectionFamilyVariationEquationOn (I := I) S.family S.ricci
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [IsManifold I 1 M] in
@@ -108,7 +90,7 @@ theorem metric_derivWithin_eq_neg_two_ricci_of_metricVariationEquationOn
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (Ric : RicciTensorField (I := I) (M := M) Real)
-    (hEq : MetricVariationEquationOnRaw (I := I) G Ric)
+    (hEq : MetricConnectionFamilyVariationEquationOn (I := I) G Ric)
     (t : RealTimeInterval.RegularTime D) (x : M) (X Y : TangentSpace I x) :
     HasDerivWithinAt
       (fun s : Real => (G.metric s).inner x X Y)
@@ -118,10 +100,10 @@ theorem metric_derivWithin_eq_neg_two_ricci_of_metricVariationEquationOn
   hEq t x X Y
 
 omit [SigmaCompactSpace M] [T2Space M] [IsManifold I 1 M] in
-theorem metric_derivWithin_eq_neg_two_ricci_of_isRealizedRicciFlowSolutionOn
+theorem metric_derivWithin_eq_neg_two_ricci_of_isRicciFlowCandidateOn
     {D : RealTimeInterval}
-    (S : RealizedRicciFlowCandidateOn (I := I) (M := M) D)
-    (hS : IsRealizedRicciFlowSolutionOn (I := I) S)
+    (S : RicciFlowCandidateOn (I := I) (M := M) D)
+    (hS : IsRicciFlowCandidateOn (I := I) S)
     (t : RealTimeInterval.RegularTime D) (x : M) (X Y : TangentSpace I x) :
     HasDerivWithinAt
       (fun s : Real => (S.family.metric s).inner x X Y)

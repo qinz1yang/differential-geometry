@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Pairing
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.TimeDependent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LowerScaleActionSobolevExtensions
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.TimeDependentLowOrderOperators
 
 noncomputable section
 
@@ -32,11 +32,11 @@ variable
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
   tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
-private abbrev metricH3 (g : SmoothRiemannianMetric I M) :=
+private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
   tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private noncomputable abbrev incl32 (g : SmoothRiemannianMetric I M) :
-    metricH3 (I := I) (M := M) g →L[ℝ]
+    metricThirdOrderSobolev (I := I) (M := M) g →L[ℝ]
       metricH2 (I := I) (M := M) g :=
   tensorHsInclusion (I := I) (M := M) (g := g)
     (r := 0) (s := 2) (by norm_num)
@@ -45,16 +45,16 @@ private theorem radial_j2
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ) :
     ∃ C : ℝ, 0 ≤ C ∧
       (∀ T : SmoothCcTensor g 0 2,
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
             (lowRadial (I := I) (M := M) g ρ T) ≤
           (C * ρ) ^ 2) ∧
       (∀ T U : SmoothCcTensor g 0 2,
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
             (lowRadial (I := I) (M := M) g ρ T -
               lowRadial (I := I) (M := M) g ρ U) ≤
           (C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T -
             ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖) ^ 2) := by
-  obtain ⟨C, hC, hjet⟩ := jet2_le_hs (I := I) (M := M) g
+  obtain ⟨C, hC, hjet⟩ := exists_covariantJetNormSq_le_spectralSobolevNorm_sq (I := I) (M := M) g 2 2
   refine ⟨C, hC, ?_, ?_⟩
   · intro T
     refine (hjet (lowRadial (I := I) (M := M) g ρ T)).trans ?_
@@ -94,12 +94,12 @@ private theorem radial_j3
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 < ρ) :
     ∃ C : ℝ, 0 ≤ C ∧
       (∀ T : SmoothCcTensor g 0 2,
-        lowJetSq (I := I) (M := M) g 3
+        covariantJetNormSq (I := I) (M := M) g 3
             (lowRadial (I := I) (M := M) g ρ T) ≤
           (C * ‖ccTensorToHs (I := I) (M := M)
             g 2 (3 : ℝ) T‖) ^ 2) ∧
       (∀ T U : SmoothCcTensor g 0 2,
-        lowJetSq (I := I) (M := M) g 3
+        covariantJetNormSq (I := I) (M := M) g 3
             (lowRadial (I := I) (M := M) g ρ T -
               lowRadial (I := I) (M := M) g ρ U) ≤
           (C *
@@ -111,7 +111,7 @@ private theorem radial_j3
                   ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U‖ *
                 ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T -
                   ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖)) ^ 2) := by
-  obtain ⟨C, hC, hjet⟩ := jet3_le_hs (I := I) (M := M) g
+  obtain ⟨C, hC, hjet⟩ := exists_covariantJetNormSq_le_spectralSobolevNorm_sq (I := I) (M := M) g 2 3
   refine ⟨C, hC, ?_, ?_⟩
   · intro T
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
@@ -160,7 +160,7 @@ private theorem radial_j3
       (mul_nonneg hC (norm_nonneg _))
       (mul_le_mul_of_nonneg_left hnorm hC) 2
 
-theorem radialA1_pair
+theorem radialFirstOrderAction_pairing_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 < ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
@@ -170,30 +170,30 @@ theorem radialA1_pair
           (ccTensorBilinSymm (I := I) g S) δ) :
     ∃ C K : ℝ, 0 ≤ C ∧ 0 ≤ K ∧
       ∀ T : SmoothCcTensor g 0 2,
-      let A := lowCoreData (I := I) (M := M)
+      let A := lowCoreActionCoefficients (I := I) (M := M)
         g hρ.le hδ0 hδ_le hreal T
-      ‖A.a1Hi (I := I) (M := M)‖ ≤
+      ‖A.firstOrderActionThirdToSecondOrder (I := I) (M := M)‖ ≤
           C * Real.sqrt
-            (K * (1 + lowJetSq (I := I) (M := M) g 3
+            (K * (1 + covariantJetNormSq (I := I) (M := M) g 3
               (lowRadial (I := I) (M := M) g ρ T)) ^ 6) ∧
-        ‖A.a1Lo (I := I) (M := M)‖ ≤
+        ‖A.firstOrderActionSecondToFirstOrder (I := I) (M := M)‖ ≤
           C * Real.sqrt
-            (K * (1 + lowJetSq (I := I) (M := M) g 3
+            (K * (1 + covariantJetNormSq (I := I) (M := M) g 3
               (lowRadial (I := I) (M := M) g ρ T)) ^ 6) ∧
         (tensorHsInclusion (I := I) (M := M) (g := g)
             (r := 0) (s := 2) (show (1 : ℝ) ≤ 2 by norm_num)).comp
-              (A.a1Hi (I := I) (M := M)) =
-          (A.a1Lo (I := I) (M := M)).comp
+              (A.firstOrderActionThirdToSecondOrder (I := I) (M := M)) =
+          (A.firstOrderActionSecondToFirstOrder (I := I) (M := M)).comp
             (tensorHsInclusion (I := I) (M := M) (g := g)
               (r := 0) (s := 2) (show (2 : ℝ) ≤ 3 by norm_num)) := by
   obtain ⟨K₀, hK₀, hcoeff⟩ :=
-    lowData_a1_coeff (I := I) (M := M) hDim g
+    exists_lowerScaleAction_coefficient_bound (I := I) (M := M) hDim g
   obtain ⟨C₃, hC₃, hact₃⟩ :=
-    a1_h3_h2 (I := I) (M := M) hDim g
+    exists_lowerScaleFirstOrderAction_thirdToSecondOrder_bound (I := I) (M := M) hDim g
   obtain ⟨C₂, hC₂, hact₂⟩ :=
-    a1_h2_h1 (I := I) (M := M) hDim g
+    exists_lowerScaleFirstOrderAction_secondToFirstOrder_bound (I := I) (M := M) hDim g
   obtain ⟨C, hC, hpair⟩ :=
-    a1_pair (I := I) (M := M) g
+    exists_firstOrderAction_spectralSobolev_extensions (I := I) (M := M) g
   let K : ℝ := (C₃ ^ 2 + C₂ ^ 2) * K₀
   have hK : 0 ≤ K :=
     mul_nonneg (add_nonneg (sq_nonneg C₃) (sq_nonneg C₂)) hK₀
@@ -221,35 +221,35 @@ theorem radialA1_pair
         (ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2)) δ :=
     hreal _ hzeroHs
-  let A : LowBaseActionData g :=
-    lowCoreData (I := I) (M := M)
+  let A : LowerScaleActionCoefficients g :=
+    lowCoreActionCoefficients (I := I) (M := M)
       g hρ.le hδ0 hδ_le hreal T
-  let X : ℝ := 1 + lowJetSq (I := I) (M := M) g 3 S
+  let X : ℝ := 1 + covariantJetNormSq (I := I) (M := M) g 3 S
   have hX0 : 0 ≤ X := by
     simp only [X]
-    unfold lowJetSq
+    unfold covariantJetNormSq
     positivity
   have hcoeffA :
-      lowJetSq (I := I) (M := M) g 2 A.C0 +
-          lowJetSq (I := I) (M := M) g 2 A.C1 ≤ K₀ * X ^ 6 := by
-    simpa only [A, lowCoreData, S, X] using
+      covariantJetNormSq (I := I) (M := M) g 2 A.zeroOrderCoefficient +
+          covariantJetNormSq (I := I) (M := M) g 2 A.firstOrderCoefficient ≤ K₀ * X ^ 6 := by
+    simpa only [A, lowCoreActionCoefficients, S, X] using
       hcoeff S
         (lowRadial_symm (I := I) (M := M) g ρ T)
         hδ_le hδ0 hSδ hZδ
   have hHiAct :
       ∀ W : SmoothCcTensor g 0 2,
-        lowJetSq (I := I) (M := M) g 2
-            (A.a1 (I := I) (M := M) W) ≤
-          K * X ^ 6 * lowJetSq (I := I) (M := M) g 3 W := by
+        covariantJetNormSq (I := I) (M := M) g 2
+            (A.firstOrderAction (I := I) (M := M) W) ≤
+          K * X ^ 6 * covariantJetNormSq (I := I) (M := M) g 3 W := by
     intro W
-    let JW : ℝ := lowJetSq (I := I) (M := M) g 3 W
+    let JW : ℝ := covariantJetNormSq (I := I) (M := M) g 3 W
     let B : ℝ := Real.sqrt (K₀ * X ^ 6)
     let D : ℝ := Real.sqrt JW
     have hBX : 0 ≤ K₀ * X ^ 6 :=
       mul_nonneg hK₀ (pow_nonneg hX0 6)
     have hJW : 0 ≤ JW := by
       simp only [JW]
-      unfold lowJetSq
+      unfold covariantJetNormSq
       positivity
     have hB : 0 ≤ B := Real.sqrt_nonneg _
     have hD : 0 ≤ D := Real.sqrt_nonneg _
@@ -267,8 +267,8 @@ theorem radialA1_pair
     have htail : 0 ≤ X ^ 6 * JW :=
       mul_nonneg (pow_nonneg hX0 6) hJW
     calc
-      lowJetSq (I := I) (M := M) g 2
-          (A.a1 (I := I) (M := M) W) ≤ (C₃ * B * D) ^ 2 := hraw
+      covariantJetNormSq (I := I) (M := M) g 2
+          (A.firstOrderAction (I := I) (M := M) W) ≤ (C₃ * B * D) ^ 2 := hraw
       _ = (C₃ ^ 2 * K₀) * (X ^ 6 * JW) := by
         rw [show (C₃ * B * D) ^ 2 = C₃ ^ 2 * B ^ 2 * D ^ 2 by ring,
           hBsq, hDsq]
@@ -277,21 +277,21 @@ theorem radialA1_pair
         mul_le_mul_of_nonneg_right hC htail
       _ = K * X ^ 6 * JW := by simp only [K]; ring
       _ = K * X ^ 6 *
-          lowJetSq (I := I) (M := M) g 3 W := by simp only [JW]
+          covariantJetNormSq (I := I) (M := M) g 3 W := by simp only [JW]
   have hLoAct :
       ∀ W : SmoothCcTensor g 0 2,
-        lowJetSq (I := I) (M := M) g 1
-            (A.a1 (I := I) (M := M) W) ≤
-          K * X ^ 6 * lowJetSq (I := I) (M := M) g 2 W := by
+        covariantJetNormSq (I := I) (M := M) g 1
+            (A.firstOrderAction (I := I) (M := M) W) ≤
+          K * X ^ 6 * covariantJetNormSq (I := I) (M := M) g 2 W := by
     intro W
-    let JW : ℝ := lowJetSq (I := I) (M := M) g 2 W
+    let JW : ℝ := covariantJetNormSq (I := I) (M := M) g 2 W
     let B : ℝ := Real.sqrt (K₀ * X ^ 6)
     let D : ℝ := Real.sqrt JW
     have hBX : 0 ≤ K₀ * X ^ 6 :=
       mul_nonneg hK₀ (pow_nonneg hX0 6)
     have hJW : 0 ≤ JW := by
       simp only [JW]
-      unfold lowJetSq
+      unfold covariantJetNormSq
       positivity
     have hB : 0 ≤ B := Real.sqrt_nonneg _
     have hD : 0 ≤ D := Real.sqrt_nonneg _
@@ -309,8 +309,8 @@ theorem radialA1_pair
     have htail : 0 ≤ X ^ 6 * JW :=
       mul_nonneg (pow_nonneg hX0 6) hJW
     calc
-      lowJetSq (I := I) (M := M) g 1
-          (A.a1 (I := I) (M := M) W) ≤ (C₂ * B * D) ^ 2 := hraw
+      covariantJetNormSq (I := I) (M := M) g 1
+          (A.firstOrderAction (I := I) (M := M) W) ≤ (C₂ * B * D) ^ 2 := hraw
       _ = (C₂ ^ 2 * K₀) * (X ^ 6 * JW) := by
         rw [show (C₂ * B * D) ^ 2 = C₂ ^ 2 * B ^ 2 * D ^ 2 by ring,
           hBsq, hDsq]
@@ -319,7 +319,7 @@ theorem radialA1_pair
         mul_le_mul_of_nonneg_right hC htail
       _ = K * X ^ 6 * JW := by simp only [K]; ring
       _ = K * X ^ 6 *
-          lowJetSq (I := I) (M := M) g 2 W := by simp only [JW]
+          covariantJetNormSq (I := I) (M := M) g 2 W := by simp only [JW]
   let Q : ℝ := K * X ^ 6
   have hQ : 0 ≤ Q :=
     mul_nonneg hK (pow_nonneg hX0 6)

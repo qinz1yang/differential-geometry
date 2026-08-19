@@ -117,7 +117,7 @@ theorem metricEquiv_open
     intro x _ v
     simp only [Sseq, inv_one, one_mul]
     exact ⟨le_rfl, le_rfl⟩
-  have hequiv := metricUniformEquivalentOnWindow_of_solutions' (I := I)
+  have hequiv := metric_uniform_equivalent_on_window_of_solutions (I := I)
     Sseq hSseq Set.univ beta psi 0 1 A ((X.term k).S.family.metric 0)
     hregular hzeroWindow le_rfl hA hequiv0 hquad.2
   simpa only [Sseq] using hequiv

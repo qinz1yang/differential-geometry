@@ -61,7 +61,7 @@ lemma morreyRSC_nonneg (gBase : SmoothRiemannianMetric I M) {Λ : ℝ}
     (kjetConst_nonneg hΛ0 hL₁ hL₂ (Module.finrank ℝ E) (r + s))
     (Module.finrank ℝ E) (r + s)
 
-theorem morreyRS_unif
+theorem morreyRS_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
     {Λ : ℝ} (hΛ : 1 ≤ Λ) (r s : ℕ) :
@@ -83,7 +83,7 @@ theorem morreyRS_unif
   obtain ⟨hL₁, hL₂, hfwd1, hrev1, hrev2⟩ :=
     reverseJetPack (I := I) gBase g hEq hjet1 hjet2
   have hwin : Module.finrank ℝ E / 2 + 2 = 3 := by omega
-  have hcov := fibreMorrey_unif_class (I := I) gBase g
+  have hcov := fibreMorrey_uniform_class (I := I) gBase g
     (Λ' := L₁) (Λ'' := L₂) hEq hfwd1 hrev1 hrev2 hL₁ hL₂ hwin
     (r + s) (lowerCc (I := I) (M := M) g r s S) x
   have hcov3 :
@@ -98,7 +98,7 @@ theorem morreyRS_unif
     riemannianFiberNormSq (I := I) (M := M) g r s x (S.toSection x) =
         riemannianFiberNormSq (I := I) (M := M) g 0 (r + s) x
           ((lowerCc (I := I) (M := M) g r s S).toSection x) :=
-      (lowerCc_rfns (I := I) (M := M) g r s S x).symm
+      (lowerCc_riemannianFiberNormSq (I := I) (M := M) g r s S x).symm
     _ ≤ morreyRSC (I := I) (M := M) gBase Λ r s ^ 2 *
         ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 (r + s) j

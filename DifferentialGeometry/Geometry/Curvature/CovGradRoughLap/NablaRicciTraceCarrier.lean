@@ -309,7 +309,7 @@ def nablaRicTraceSection (g : SmoothRiemannianMetric I M)
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (covGrad (I := I) (M := M) g 0 s S).toSection x) := by
   rw [nablaRicTraceSection,
-    appCc_toSection (I := I) (M := M) g (s + 1) (s + 1)
+    operatorFieldApplication_toSection (I := I) (M := M) g (s + 1) (s + 1)
       (nablaRicSlotOpField (I := I) (M := M) g X s) (covGrad (I := I) (M := M) g 0 s S) x]
 
 set_option backward.isDefEq.respectTransparency false in
@@ -574,7 +574,7 @@ theorem tensorCovDerivAt_ricTraceSection_eq_nablaRicTrace_add
   rw [show ricTraceSection (I := I) (M := M) g s S =
       operatorFieldApply (I := I) (M := M) g (s + 1) (s + 1) (ricSlotOpField (I := I) (M := M) g s)
         (covGrad (I := I) (M := M) g 0 s S) from rfl]
-  rw [tensorCovDerivAt_appCc_eq (I := I) (M := M) g (s + 1) (s + 1)
+  rw [tensorCovDerivAt_operatorFieldApplication_eq (I := I) (M := M) g (s + 1) (s + 1)
     (ricSlotOpField (I := I) (M := M) g s) (covGrad (I := I) (M := M) g 0 s S) x (X x)]
   congr 1
   rw [nablaRicTraceSection_toSection (I := I) (M := M) g X s S x,

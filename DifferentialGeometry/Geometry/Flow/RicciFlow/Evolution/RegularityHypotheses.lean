@@ -34,7 +34,7 @@ section Components
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 variable {u : Set M}
 
-structure InverseMetricTimeRegularityBlackBoxInFrameOn
+structure InverseMetricTimeRegularityDataInFrameOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx) where
   gInvDt : Real -> M -> Idx -> Idx -> Real
@@ -45,21 +45,21 @@ structure InverseMetricTimeRegularityBlackBoxInFrameOn
       UniqueDiffWithinAt Real D.carrier (t : Real)
 
 omit [SigmaCompactSpace M] in
-theorem inverseMetricEvolution_of_timeRegularityBlackBox
+theorem inverse_metric_evolution_of_time_regularity_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hinv : InvMetricLocal (I := I) S gInv frame Set.univ)
-    (hbb : InverseMetricTimeRegularityBlackBoxInFrameOn (M := M) (Idx := Idx)
+    (hdata : InverseMetricTimeRegularityDataInFrameOn (M := M) (Idx := Idx)
       (D := D) gInv) :
     InverseMetricEvolutionEquationInFrame (I := I) S gInv frame Set.univ :=
   inverseMetricEvolutionEquationInFrame_of_inverse_components
-    (I := I) (u := Set.univ) S hS gInv hbb.gInvDt frame
-    (hbb.inverseMetricDerivative.toLocal Set.univ) hinv hbb.uniqueTimeDerivatives
+    (I := I) (u := Set.univ) S hS gInv hdata.gInvDt frame
+    (hdata.inverseMetricDerivative.toLocal Set.univ) hinv hdata.uniqueTimeDerivatives
 
-structure ConnectionVariationBlackBoxInFrameOn
+structure ConnectionVariationDataInFrameOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -74,22 +74,22 @@ structure ConnectionVariationBlackBoxInFrameOn
 
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem variableMetricConnectionDiffDerivative_of_blackBox
+theorem variable_metric_connection_difference_derivative_of_variation_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u)
     (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real)
-    (hbb : ConnectionVariationBlackBoxInFrameOn (I := I) S frame u nablaRic) :
+    (hdata : ConnectionVariationDataInFrameOn (I := I) S frame u nablaRic) :
     VariableMetricConnectionDiffDerivativeInFrameOnLocal
       (I := I) S frame u (christoffelVariationLoweredRHSInFrame nablaRic) :=
   variableMetricConnectionDiffDerivative_of_metricCovDeriv
-    (I := I) S frame hframe hu hbb.metricCovDerivDt nablaRic
-    hbb.metricCovDerivDerivative hbb.metricCovDerivRicciFlow
+    (I := I) S frame hframe hu hdata.metricCovDerivDt nablaRic
+    hdata.metricCovDerivDerivative hdata.metricCovDerivRicciFlow
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem christoffelEvolution_of_blackBox
+theorem christoffel_evolution_of_connection_variation_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -101,15 +101,15 @@ theorem christoffelEvolution_of_blackBox
     (hmetricFrame :
       MetricFrameTimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt frame u)
-    (hbb : ConnectionVariationBlackBoxInFrameOn (I := I) S frame u nablaRic) :
+    (hdata : ConnectionVariationDataInFrameOn (I := I) S frame u nablaRic) :
     ChristoffelEvolutionEquationInFrameOn
       (I := I) S gInv frame hframe nablaRic :=
   christoffelEvolution_of_metricFrameTimeRegularity
     (I := I) S gInv gInvDt frame hframe hu
-    hbb.metricCovDerivDt nablaRic hmetricFrame
-    hbb.metricCovDerivDerivative hbb.metricCovDerivRicciFlow
+    hdata.metricCovDerivDt nablaRic hmetricFrame
+    hdata.metricCovDerivDerivative hdata.metricCovDerivRicciFlow
 
-structure RicciEvolutionTimeRegularityBlackBoxInFrameOn
+structure RicciEvolutionDataInFrameOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -125,37 +125,19 @@ structure RicciEvolutionTimeRegularityBlackBoxInFrameOn
 
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem ricciEvolution_of_timeRegularityBlackBox
+theorem ricci_evolution_of_variation_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hbb : RicciEvolutionTimeRegularityBlackBoxInFrameOn
+    (hdata : RicciEvolutionDataInFrameOn
       (I := I) S Rm04 gInv frame) :
     RicciEvolutionEquationInFrame (I := I) S Rm04 gInv frame
-      (roughLapRicInFrame (M := M) gInv hbb.nabla2Ric) :=
+      (roughLapRicInFrame (M := M) gInv hdata.nabla2Ric) :=
   ricciEvolution_of_variation_commutators
-    (I := I) S Rm04 gInv frame hbb.nabla2Ric
-    hbb.ricciVariation hbb.contractedCommutators
-
-structure Section62TimeRegularityBlackBoxInFrameOn
-    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (S : SolutionOn (I := I) (M := M) D)
-    (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
-    (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
-    (gInvDt : Real -> M -> Idx -> Idx -> Real)
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (u : Set M)
-    (nablaRic : Real -> M -> Idx -> Idx -> Idx -> Real) where
-  metricFrame :
-    MetricFrameTimeRegularityInFrameOnLocal
-      (I := I) S gInv gInvDt frame u
-  connection :
-    ConnectionVariationBlackBoxInFrameOn (I := I) S frame u nablaRic
-  ricci :
-    RicciEvolutionTimeRegularityBlackBoxInFrameOn
-      (I := I) S Rm04 gInv frame
+    (I := I) S Rm04 gInv frame hdata.nabla2Ric
+    hdata.ricciVariation hdata.contractedCommutators
 
 end Components
 

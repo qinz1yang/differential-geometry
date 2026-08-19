@@ -456,7 +456,7 @@ theorem iterL_pair_jet_le (g : SmoothRiemannianMetric I M) (s n : ℕ)
           (∑ j ∈ Finset.range (n + 2),
             ‖iteratedCovGrad (I := I) g 0 s j S‖)) := by
   obtain ⟨CG, hCG_nn, hCG⟩ :=
-    exists_appCc_iteratedCovGrad_l2_window_bound
+    exists_operatorFieldApplication_iteratedCovGrad_l2_window_bound
       (I := I) (M := M) g (s + 1) s Φ
   obtain ⟨C, hC_nn, hC⟩ :=
     iterL_pair_jet_of (I := I) (M := M) g s n

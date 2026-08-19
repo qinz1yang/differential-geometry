@@ -32,7 +32,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma rfns_eq_sum_fiberNormSqSummand_of_orthoFrame
+lemma riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (S : TensorRSSpace 0 s I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (hn : n = Module.finrank ℝ (TangentSpace I x))
@@ -370,12 +370,12 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_symm_reading_le
       riemannianFiberNormSq (I := I) (M := M) g 0 s x S =
         ∑ K : Fin 0 → Fin (Module.finrank ℝ E), ∑ J : Fin s → Fin (Module.finrank ℝ E),
           fiberNormSqSummand (I := I) (M := M) g x 0 s S (Module.finrank ℝ E) eC K J :=
-    fun S => rfns_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g s x S eC hnC horthC
+    fun S => riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g s x S eC hnC horthC
   have hreprSucc : ∀ S : TensorRSSpace 0 (s + 1) I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x S =
         ∑ K : Fin 0 → Fin (Module.finrank ℝ E), ∑ J : Fin (s + 1) → Fin (Module.finrank ℝ E),
           fiberNormSqSummand (I := I) (M := M) g x 0 (s + 1) S (Module.finrank ℝ E) eC K J :=
-    fun S => rfns_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x S eC hnC
+    fun S => riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x S eC hnC
       horthC
   rw [riemannianFiberNormSq_covGradBundleEquiv_symm_reading_eq_slot0Curry (I := I) (M := M) g s x T
     eC K₀ hreprS i]
@@ -403,12 +403,12 @@ lemma riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry_of_orthoFrame
       riemannianFiberNormSq (I := I) (M := M) g 0 s x S =
         ∑ K : Fin 0 → Fin n, ∑ J : Fin s → Fin n,
           fiberNormSqSummand (I := I) (M := M) g x 0 s S n e K J :=
-    fun S => rfns_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g s x S e hn horth
+    fun S => riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g s x S e hn horth
   have hreprSucc : ∀ S : TensorRSSpace 0 (s + 1) I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x S =
         ∑ K : Fin 0 → Fin n, ∑ J : Fin (s + 1) → Fin n,
           fiberNormSqSummand (I := I) (M := M) g x 0 (s + 1) S n e K J :=
-    fun S => rfns_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x S e hn horth
+    fun S => riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x S e hn horth
   rw [riemannianFiberNormSq_succ_eq_sum_slot0Curry_of_frame (I := I) (M := M) g s x e K₀
     hreprS hreprSucc T]
   refine Finset.sum_congr rfl (fun a _ => ?_)

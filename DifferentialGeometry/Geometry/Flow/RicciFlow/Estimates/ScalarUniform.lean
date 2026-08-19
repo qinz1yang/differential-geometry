@@ -61,7 +61,7 @@ private theorem time_patch
   exact hVW hty
 
 omit [SigmaCompactSpace M] in
-theorem scalar_unif
+theorem scalar_uniform
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime)

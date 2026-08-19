@@ -157,13 +157,9 @@ def ccInputSlotSymm (g : SmoothRiemannianMetric I M) (C : SmoothCcTensor g 2 2) 
   (1 / 2 : ℝ) • (C + ccOperatorFieldComp (I := I) (M := M) g 2 2 2 C
     (ccInputSlotSwapField (I := I) (M := M) g))
 
-abbrev ccInputSymm (g : SmoothRiemannianMetric I M) (C : SmoothCcTensor g 2 2) :
-    SmoothCcTensor g 2 2 :=
-  ccInputSlotSymm (I := I) (M := M) g C
-
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M]
     [CompleteSpace E] in
-lemma ccInputSymm_toSection (g : SmoothRiemannianMetric I M) (C : SmoothCcTensor g 2 2)
+lemma ccInputSlotSymm_toSection (g : SmoothRiemannianMetric I M) (C : SmoothCcTensor g 2 2)
     (x : M) :
     (ccInputSlotSymm (I := I) (M := M) g C).toSection x =
       (1 / 2 : ℝ) • (C.toSection x +
@@ -172,11 +168,11 @@ lemma ccInputSymm_toSection (g : SmoothRiemannianMetric I M) (C : SmoothCcTensor
             (inputSlotSwapFib (I := I) (M := M) x))) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
-theorem ccInputSymm_add (g : SmoothRiemannianMetric I M) (C D : SmoothCcTensor g 2 2) :
+theorem ccInputSlotSymm_add (g : SmoothRiemannianMetric I M) (C D : SmoothCcTensor g 2 2) :
     ccInputSlotSymm (I := I) (M := M) g (C + D) =
       ccInputSlotSymm (I := I) (M := M) g C + ccInputSlotSymm (I := I) (M := M) g D := by
   simp only [ccInputSlotSymm]
-  rw [appCcRS_add_left]
+  rw [operatorFieldComposition_add_left]
   rw [show C + D + (ccOperatorFieldComp (I := I) (M := M) g 2 2 2 C
     (ccInputSlotSwapField (I := I) (M := M) g)
       + ccOperatorFieldComp (I := I) (M := M) g 2 2 2 D (ccInputSlotSwapField (I := I) (M := M) g))
@@ -188,8 +184,28 @@ theorem ccInputSymm_add (g : SmoothRiemannianMetric I M) (C D : SmoothCcTensor g
     abel]
   rw [smul_add]
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [CompleteSpace E] in
+theorem ccInputSlotSymm_sub (g : SmoothRiemannianMetric I M)
+    (C D : SmoothCcTensor g 2 2) :
+    ccInputSlotSymm (I := I) (M := M) g C -
+        ccInputSlotSymm (I := I) (M := M) g D =
+      ccInputSlotSymm (I := I) (M := M) g (C - D) := by
+  have hC : ccInputSlotSymm (I := I) (M := M) g C =
+      (1 / 2 : ℝ) • (C + ccOperatorFieldComp (I := I) (M := M) g 2 2 2 C
+        (ccInputSlotSwapField (I := I) (M := M) g)) := rfl
+  have hD : ccInputSlotSymm (I := I) (M := M) g D =
+      (1 / 2 : ℝ) • (D + ccOperatorFieldComp (I := I) (M := M) g 2 2 2 D
+        (ccInputSlotSwapField (I := I) (M := M) g)) := rfl
+  have hCD : ccInputSlotSymm (I := I) (M := M) g (C - D) =
+      (1 / 2 : ℝ) • (C - D + ccOperatorFieldComp (I := I) (M := M) g 2 2 2 (C - D)
+        (ccInputSlotSwapField (I := I) (M := M) g)) := rfl
+  rw [hC, hD, hCD]
+  rw [operatorFieldComposition_sub_left]
+  module
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [CompleteSpace E] in
-lemma sub_ccInputSymm_eq_half_smul_sub_appCcRS (g : SmoothRiemannianMetric I M)
+lemma sub_ccInputSlotSymm_eq_half_smul_sub_ccOperatorFieldComp (g : SmoothRiemannianMetric I M)
     (C : SmoothCcTensor g 2 2) :
     C - ccInputSlotSymm (I := I) (M := M) g C =
       (1 / 2 : ℝ) • (C - ccOperatorFieldComp (I := I) (M := M) g 2 2 2 C

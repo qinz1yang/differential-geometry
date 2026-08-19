@@ -28,9 +28,9 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem H6NormalData.inj_tail
+theorem BoundedGeometryNormalData.inj_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)

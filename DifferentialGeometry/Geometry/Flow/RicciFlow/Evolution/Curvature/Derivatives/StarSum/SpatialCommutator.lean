@@ -54,7 +54,7 @@ private theorem cotangentSharp_ortho_expand
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-private theorem tensor05_vec5_sum_last_idx
+private theorem tensor_zero_five_vec_five_sum_last_idx
     {Idx : Type*} [Fintype Idx] {x : M}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
     (A B C D : TangentSpace I x)
@@ -195,7 +195,7 @@ private theorem slotdiffBasisEq
               (vec5 (I := I) (basis a) (basis b) (basis c) (basis (m q)) (basis e)) *
             nablaKRm04Field (I := I) S (t : Real) k x
               (Function.update (fun i : Fin (4 + k) => basis (m i)) q (basis e)) := by
-      rw [hsharpA, tensor05_vec5_sum_last_idx]
+      rw [hsharpA, tensor_zero_five_vec_five_sum_last_idx]
       refine Finset.sum_congr rfl fun e _ => ?_
       rw [nablaKRmFrozenSlotField_apply_vec (I := I) S (t : Real) k q Vm x (basis e)]
       rw [hXa, hVb, hVc, hVm q]

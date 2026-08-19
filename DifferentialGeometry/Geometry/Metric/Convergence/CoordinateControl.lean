@@ -578,7 +578,7 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem claim1_geom
+theorem exists_connection_difference_component_bound_in_trivialization
     (e₀ : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
     [MemTrivializationAtlas e₀]
     (gK gRef : SmoothRiemannianMetric I M) (basisE : Module.Basis Idx Real E)
@@ -604,7 +604,7 @@ theorem claim1_geom
             (e₀.isLocalFrameOn_localFrame_baseSet I 1 basisE) y')
           (frameComp0S (I := I) (metricTensorField (I := I) gK)
             (fun a y' => e₀.localFrame basisE a y')) (m + 1) y)) := by
-  obtain ⟨C, hC0, hCb⟩ := claim1 e₀.open_baseSet
+  obtain ⟨C, hC0, hCb⟩ := exists_iterated_covariant_tensor_bound_of_koszul_contraction e₀.open_baseSet
     (fun a y' => e₀.localFrame basisE a y')
     (fun y' => christoffelSymbolInFrame (leviCivitaConnectionOfMetric (I := I) gRef)
       (fun a y'' => e₀.localFrame basisE a y'')

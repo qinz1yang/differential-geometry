@@ -481,14 +481,14 @@ theorem contDiff_perturbedSource'
   intro i _
   refine ContDiff.sum ?_
   intro j _
-  have h_dla : ContDiff ℝ (⊤ : ℕ∞)
+  have h_deTurckLieConnectionDifferenceDerivative : ContDiff ℝ (⊤ : ℕ∞)
       (fun y : EE =>
         (fderiv ℝ (fun z : EE => B.a z i j) y) (EuclideanSpace.single l 1)) :=
     contDiff_partial_eta (d := d) (B.contDiff_a i j) l
   have h_diu : ContDiff ℝ (⊤ : ℕ∞)
       (fun y : EE => (fderiv ℝ u y) (EuclideanSpace.single i 1)) :=
     contDiff_partial_eta (d := d) hu i
-  exact contDiff_partial_eta (d := d) (h_dla.mul h_diu) j
+  exact contDiff_partial_eta (d := d) (h_deTurckLieConnectionDifferenceDerivative.mul h_diu) j
 
 theorem iterated_partial_isSmoothWeakSolution
     (B : SmoothEllipticBilinearForm d (Set.univ : Set EE))

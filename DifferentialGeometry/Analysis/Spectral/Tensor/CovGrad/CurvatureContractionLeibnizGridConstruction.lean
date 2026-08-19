@@ -65,7 +65,7 @@ private theorem iteratedCovGrad_covGrad_comm_heq_lg (g : SmoothRiemannianMetric 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
-private theorem rfns_toSection_heq_congr_lg (g : SmoothRiemannianMetric I M)
+private theorem riemannianFiberNormSq_toSection_heq_congr_lg (g : SmoothRiemannianMetric I M)
     (r : ℕ) {a b : ℕ} (h : a = b) {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b}
     (hYZ : HEq Y Z) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r a x (Y.toSection x) =
@@ -75,13 +75,13 @@ private theorem rfns_toSection_heq_congr_lg (g : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem rfns_iteratedCovGrad_covGrad_comm_lg (g : SmoothRiemannianMetric I M)
+private theorem riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_lg (g : SmoothRiemannianMetric I M)
     (r s m : ℕ) (W : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r ((s + 1) + m) x
         ((iteratedCovGrad g r (s + 1) m (covGrad g r s W)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g r (s + (m + 1)) x
         ((iteratedCovGrad g r s (m + 1) W).toSection x) :=
-  rfns_toSection_heq_congr_lg g r (by omega : (s + 1) + m = s + (m + 1))
+  riemannianFiberNormSq_toSection_heq_congr_lg g r (by omega : (s + 1) + m = s + (m + 1))
     (iteratedCovGrad_covGrad_comm_heq_lg g r s m W) x
 
 private def castRankCc_lg (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ} (h : a = b)
@@ -91,7 +91,7 @@ private def castRankCc_lg (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem rfns_iteratedCovGrad_castRankCc_lg (g : SmoothRiemannianMetric I M) (r : ℕ)
+private theorem riemannianFiberNormSq_iteratedCovGrad_castRankCc_lg (g : SmoothRiemannianMetric I M) (r : ℕ)
     {a b : ℕ} (h : a = b) (W : SmoothCcTensor g r a) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r (b + j) x
         ((iteratedCovGrad g r b j (castRankCc_lg g r h W)).toSection x) =
@@ -221,7 +221,7 @@ noncomputable def diffCurvPhi0 (g : SmoothRiemannianMetric I M)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem diffCurvOp_zero_eq_appCc (g : SmoothRiemannianMetric I M)
+theorem diffCurvOp_zero_eq_operatorFieldApply (g : SmoothRiemannianMetric I M)
     {X Y : Π b : M, TangentSpace I b}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) (r : ℕ) (W : SmoothCcTensor g 0 r) :
@@ -321,7 +321,7 @@ theorem exists_proportional_diffCurvOp_highOrder :
     fun p => normalForm_of_base (I := I) (M := M) g
       (diffCurvOp (I := I) (M := M) g hX hY) hcovGrad_op
       (fun r => diffCurvPhi0 (I := I) (M := M) g hX hY r)
-      (fun r W => diffCurvOp_zero_eq_appCc (I := I) (M := M) g hX hY r W) p
+      (fun r W => diffCurvOp_zero_eq_operatorFieldApply (I := I) (M := M) g hX hY r W) p
   choose kap hkap_nn hkap using fun p r =>
     exists_jet_bound_of_normalForm (I := I) (M := M) g
       (diffCurvOp (I := I) (M := M) g hX hY) p r (hNF p r)
@@ -468,7 +468,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_diffCurvOp_grid (j : ℕ) :
             ((iteratedCovGrad g 0 ((r + p) + 1) j
               (covGrad (I := I) (M := M) g 0 (r + p)
                 (diffCurvOp (I := I) (M := M) g hX hY p r W))).toSection x) from
-        (rfns_iteratedCovGrad_covGrad_comm_lg g 0 (r + p) j
+        (riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_lg g 0 (r + p) j
           (diffCurvOp (I := I) (M := M) g hX hY p r W) x).symm]
       rw [covGrad_diffCurvOp_eq g hX hY p r W, iteratedCovGrad_add]
       refine (riemannianFiberNormSq_add_le (I := I) (M := M) g 0 (((r + p) + 1) + j) x
@@ -500,7 +500,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_diffCurvOp_grid (j : ℕ) :
           kB * sB := by
         rw [hkB_def, hsB_def]
         congr 1
-        exact Finset.sum_congr rfl fun q _ => rfns_iteratedCovGrad_covGrad_comm_lg g 0 r q W x
+        exact Finset.sum_congr rfl fun q _ => riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_lg g 0 r q W x
       have hB : riemannianFiberNormSq (I := I) (M := M) g 0 (((r + 1) + p) + j) x
             ((iteratedCovGrad g 0 ((r + 1) + p) j
               (diffCurvOp (I := I) (M := M) g hX hY p (r + 1)
@@ -562,7 +562,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_diffCurvOp_grid (j : ℕ) :
             ((iteratedCovGrad g 0 ((r + 1) + p) j
               (diffCurvOp (I := I) (M := M) g hX hY p (r + 1)
                 (covGrad (I := I) (M := M) g 0 r W))).toSection x) :=
-        rfns_iteratedCovGrad_castRankCc_lg g 0 (by omega : (r + 1) + p = r + (p + 1))
+        riemannianFiberNormSq_iteratedCovGrad_castRankCc_lg g 0 (by omega : (r + 1) + p = r + (p + 1))
           (diffCurvOp (I := I) (M := M) g hX hY p (r + 1)
             (covGrad (I := I) (M := M) g 0 r W)) j x
       rw [hb_eq]

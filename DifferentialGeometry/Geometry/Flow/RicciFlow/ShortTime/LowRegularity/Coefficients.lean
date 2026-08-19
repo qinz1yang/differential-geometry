@@ -26,7 +26,7 @@ variable
       [T2Space M]
       [T2Space M] [SigmaCompactSpace M]
 
-structure LowRegCoeff where
+structure LowRegularityCoefficientBounds where
   ellMin : ℝ
   ellMax : ℝ
   gram0 : ℝ
@@ -38,9 +38,9 @@ structure LowRegCoeff where
   rhsLip : ℝ
   rhsD1Lip : ℝ
 
-structure IsLowRegCoeff {ι : Type*}
+structure HasLowRegularityCoefficientBounds {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
-    (gSeq : ι → SmoothRiemannianMetric I M) (D : LowRegCoeff) : Prop where
+    (gSeq : ι → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds) : Prop where
   ellMin_pos : 0 < D.ellMin
   ellMax_pos : 0 < D.ellMax
   gram0_nonneg : 0 ≤ D.gram0
@@ -143,7 +143,7 @@ theorem exists_low_reg_coeff {ι : Type*}
     (B : ℝ)
     (hbdd : ∀ k : ι, ∀ q : ℕ, q ≤ 3 →
       MetricCovDerivOrderBoundOn (I := I) Set.univ q (gSeq k) gBase B) :
-    ∃ D : LowRegCoeff, IsLowRegCoeff (I := I) gBase gSeq D := by
+    ∃ D : LowRegularityCoefficientBounds, HasLowRegularityCoefficientBounds (I := I) gBase gSeq D := by
   classical
   obtain ⟨B₀, hB₀⟩ :=
     metricCovDerivNorm_bddOn (I := I) isCompact_univ 0 gBase gBase
@@ -275,7 +275,7 @@ theorem exists_low_reg_coeff {ι : Type*}
     chartRHSD_pou_lip (I := I) (M := M) gBase gSeq Λ hΛ hequiv
       Q₀ hQ₀_nn hQ₀Seq Q₁ hQ₁_nn hQ₁Seq hQ₁Base
       Q₂ hQ₂_nn hQ₂Seq hQ₂Base Q₃ hQ₃_nn hQ₃Seq hQ₃Base
-  let D : LowRegCoeff :=
+  let D : LowRegularityCoefficientBounds :=
     { ellMin := ellMin
       ellMax := ellMax
       gram0 := Q₀

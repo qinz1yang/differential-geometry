@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2AppCcRS
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
 
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricLoweringTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetTowerComparison
@@ -90,7 +90,7 @@ private theorem fiber0_cont
     (I := I) (M := M) g 0 s x (T.toSection x),
     ← SmoothCcTensor.toFun_apply (I := I) (M := M) T x]
 
-theorem h1Lp6RS_unif
+theorem h1Lp6RS_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
     {Λ : ℝ} (hΛ : 1 ≤ Λ) (r s : ℕ) :
@@ -134,7 +134,7 @@ theorem h1Lp6RS_unif
       Nat.add_zero] using
       (jetCross_l2_one (I := I) gBase g hEq hjet hΛ0 (r + s) L
         (j := 1) (by norm_num))
-  have hSBsq := h1_jet_sq (I := I) (M := M) gBase 0 (r + s) LB
+  have hSBsq := smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) gBase 0 (r + s) LB
   have hSBsum : ‖SB‖ ≤ ‖LB‖ +
       ‖covGrad (I := I) (M := M) gBase 0 (r + s) LB‖ := by
     have hsq : ‖SB‖ ^ 2 ≤
@@ -167,7 +167,7 @@ theorem h1Lp6RS_unif
     rw [hL0', hL1']
   have hS0 : ‖S.toCcTensor‖ ≤ ‖S‖ :=
     SmoothCcTensorH1.l2Norm_le_h1Norm (I := I) (M := M) S
-  have hSsq := h1_jet_sq (I := I) (M := M) g r s S.toCcTensor
+  have hSsq := smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) g r s S.toCcTensor
   have hS1 : ‖covGrad (I := I) (M := M) g r s S.toCcTensor‖ ≤ ‖S‖ := by
     have hsq : ‖covGrad (I := I) (M := M) g r s S.toCcTensor‖ ^ 2 ≤ ‖S‖ ^ 2 := by
       rw [hSsq]
@@ -195,7 +195,7 @@ theorem h1Lp6RS_unif
       (fun y v => hEq.2 y (Set.mem_univ y) v) (r + s) x L
     have hsqrt := Real.sqrt_le_sqrt hsquare
     rw [Real.sqrt_mul (pow_nonneg hΛ0 _)] at hsqrt
-    rw [lowerCc_rfns (I := I) (M := M) g r s S.toCcTensor x] at hsqrt
+    rw [lowerCc_riemannianFiberNormSq (I := I) (M := M) g r s S.toCcTensor x] at hsqrt
     simpa only [fg, fb, q, LB] using hsqrt
   have hupper : MemLp (fun x => q * fb x) 6
       (riemannianVolumeMeasure (I := I) (M := M) g) :=

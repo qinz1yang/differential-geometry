@@ -24,24 +24,24 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
 
 theorem trans_bounds_on
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (x y : ∀ k : Nat, (X.obj k).M) (U V : Set E)
     (hU : IsOpen U) (hV : IsOpen V)
     (hVnorm : ∃ Z : Real, ∀ z ∈ V, ‖z‖ ≤ Z)
     (hVrad : ∀ k,
       V ⊆ Metric.ball (0 : E)
         (d.ratio * hd.mu (hd.dist k (y k) (X.obj k).basepoint)))
-    (hovl : ∀ k, d.ChartOverlapOn k (x k) (y k) U)
+    (hovl : ∀ k, d.chartOverlapOn k (x k) (y k) U)
     (hmap : ∀ k, Set.MapsTo (d.chartTransition k (x k) (y k)) U V) :
     IsometryDerivBoundsOn U
       (fun k => d.chartTransition k (x k) (y k)) := by
-  apply H6Isometry.isom_bounds_on
+  apply MetricIsometry.isom_bounds_on
     (CB := d.metricC) (CC := d.metricC)
     (fun k => d.chartMetric k (x k))
     (fun k => d.chartMetric k (y k))
@@ -55,11 +55,11 @@ theorem trans_bounds_on
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovl k
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovl k
     have hUrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (x k)).radius :=
       fun z hz => (hovl' z hz).1
-    simpa only [H6NormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       (d.chart k (x k)).metric_contDiffOn (X.obj k).metric hU
         ((d.chart k (x k)).smooth_to.mono hUrad)
   · intro k
@@ -71,7 +71,7 @@ theorem trans_bounds_on
     have hVrad' :
         V ⊆ Metric.ball (0 : E) (d.chart k (y k)).radius := by
       simpa only [d.radius_eq k (y k)] using hVrad k
-    simpa only [H6NormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       (d.chart k (y k)).metric_contDiffOn (X.obj k).metric hV
         ((d.chart k (y k)).smooth_to.mono hVrad')
   · intro k
@@ -82,8 +82,8 @@ theorem trans_bounds_on
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovl k
-    simpa only [H6NormalData.chartTransition] using
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovl k
+    simpa only [BoundedGeometryNormalData.chartTransition] using
       (d.chart k (x k)).transition_smooth (d.chart k (y k)) hovl'
   · exact hmap
   · intro k z hz u v
@@ -94,8 +94,8 @@ theorem trans_bounds_on
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovl k
-    simpa only [H6NormalData.chartMetric, H6NormalData.chartTransition] using
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovl k
+    simpa only [BoundedGeometryNormalData.chartMetric, BoundedGeometryNormalData.chartTransition] using
       ((d.chart k (x k)).transition_isom (X.obj k).metric
         (d.chart k (y k)) hovl' hz u v).symm
   · intro k z _ a b
@@ -117,8 +117,8 @@ theorem trans_bounds_on
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovl k
-    simpa only [H6NormalData.chartMetric] using
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovl k
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_equiv k (x k) z (hovl' z hz).1 q
   · intro k z hz q
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -129,7 +129,7 @@ theorem trans_bounds_on
     have hVrad' :
         V ⊆ Metric.ball (0 : E) (d.chart k (y k)).radius := by
       simpa only [d.radius_eq k (y k)] using hVrad k
-    simpa only [H6NormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_equiv k (y k) z (hVrad' hz) q
   · exact d.metricC_nonneg
   · exact d.metricC_nonneg
@@ -141,8 +141,8 @@ theorem trans_bounds_on
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovl k
-    simpa only [H6NormalData.chartMetric] using
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovl k
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_deriv k p (x k) z (hovl' z hz).1
   · intro k p z hz
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -153,14 +153,14 @@ theorem trans_bounds_on
     have hVrad' :
         V ⊆ Metric.ball (0 : E) (d.chart k (y k)).radius := by
       simpa only [d.radius_eq k (y k)] using hVrad k
-    simpa only [H6NormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_deriv k p (y k) z (hVrad' hz)
 
 
 theorem exists_trans_lim
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (x y : ∀ k : Nat, (X.obj k).M)
     {U V Ua Va : Set E}
     (hU : IsOpen U) (hV : IsOpen V)
@@ -173,8 +173,8 @@ theorem exists_trans_lim
     (hVarad : ∀ k,
       Va ⊆ Metric.ball (0 : E)
         (d.ratio * hd.mu (hd.dist k (y k) (X.obj k).basepoint)))
-    (hovlJ : ∀ k, d.ChartOverlapOn k (x k) (y k) U)
-    (hovlJbar : ∀ k, d.ChartOverlapOn k (y k) (x k) V)
+    (hovlJ : ∀ k, d.chartOverlapOn k (x k) (y k) U)
+    (hovlJbar : ∀ k, d.chartOverlapOn k (y k) (x k) V)
     (hmapJ : ∀ k, Set.MapsTo
       (d.chartTransition k (x k) (y k)) U Va)
     (hmapJbar : ∀ k, Set.MapsTo
@@ -201,8 +201,8 @@ theorem exists_trans_lim
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovlJ k
-    simpa only [H6NormalData.chartTransition] using
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovlJ k
+    simpa only [BoundedGeometryNormalData.chartTransition] using
       (d.chart k (x k)).transition_smooth (d.chart k (y k)) hovl'
   have hJbar : ∀ k, ContDiffOn Real (⊤ : ℕ∞)
       (d.chartTransition k (y k) (x k)) V := by
@@ -214,10 +214,10 @@ theorem exists_trans_lim
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (y k)).OverlapOn (d.chart k (x k)) V := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovlJbar k
-    simpa only [H6NormalData.chartTransition] using
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovlJbar k
+    simpa only [BoundedGeometryNormalData.chartTransition] using
       (d.chart k (y k)).transition_smooth (d.chart k (x k)) hovl'
-  apply exists_transitionLimit_on hU hV
+  apply exists_transition_limit_on hU hV
     (fun k => d.chartTransition k (x k) (y k))
     (fun k => d.chartTransition k (y k) (x k))
     hJ hJbar
@@ -231,8 +231,8 @@ theorem exists_trans_lim
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovlJ k
-    simpa only [H6NormalData.chartTransition] using
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovlJ k
+    simpa only [BoundedGeometryNormalData.chartTransition] using
       (d.chart k (x k)).transition_cancel
         (d.chart k (y k)) hovl' hz
   · intro k z hz
@@ -243,11 +243,11 @@ theorem exists_trans_lim
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (y k)).OverlapOn (d.chart k (x k)) V := by
-      simpa only [H6NormalData.ChartOverlapOn] using hovlJbar k
-    simpa only [H6NormalData.chartTransition] using
+      simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovlJbar k
+    simpa only [BoundedGeometryNormalData.chartTransition] using
       (d.chart k (y k)).transition_cancel
         (d.chart k (x k)) hovl' hz
 
-end H6NormalData
+end BoundedGeometryNormalData
 end HCGCompactness
 end DifferentialGeometry

@@ -27,17 +27,17 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedFlowSeq.{u, uE, uH} (I := I)}
 
-theorem open_upgrade_canon
-    (canon : StepDCanon (I := I) (X.atZero (I := I)))
+theorem open_upgrade_of_canonical_metric_compactness
+    (canon : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
     {a b : Real} (hzero : (0 : Real) ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b 0 hzero)
     (hcomplete : CompleteInput (I := I) X)
     (hcurv : CurvBoundInput (I := I) X) :
-    ∃ d : FlowUpgrade (I := I) X canon.mc,
+    ∃ d : FlowUpgrade (I := I) X canon.compactness,
       ∀ t : Real, t ∈ X.D.carrier →
         MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
   classical
-  let mc := canon.mc
+  let mc := canon.compactness
   let Phi := pointedCGHMaps_of_manifold (I := I) X
     mc.limit mc.subseq mc.maps
   letI : TopologicalSpace mc.limit.M := mc.limit.topology
@@ -80,7 +80,7 @@ theorem open_upgrade_canon
       letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
         (X.term (mc.subseq k)).sigmaCompact
       (X.term (mc.subseq k)).S.family.metric 0
-  have hcanonRel := StepDCanon.canon_rel (I := I) canon hsrc htgt
+  have hcanonRel := CanonicalMetricCompactness.metric_uniformly_equivalent (I := I) canon hsrc htgt
   dsimp only at hcanonRel
   obtain ⟨Crel, hCrel, hrelZero⟩ := hcanonRel
   have hsrcZero (k : Nat) :
@@ -113,9 +113,9 @@ theorem open_upgrade_canon
     intro k
     rw [hsrcZero k]
     exact hrelZero k
-  have hinit := StepDCanon.canon_init (I := I) canon hsrc htgt
+  have hinit := CanonicalMetricCompactness.metric_covariant_derivatives_bounded (I := I) canon hsrc htgt
   dsimp only at hinit
-  have hcp := StepDCanon.canon_cp (I := I) canon hsrc htgt
+  have hcp := CanonicalMetricCompactness.metric_converges_on_compact_sets (I := I) canon hsrc htgt
   dsimp only at hcp
   let beta : Nat → Real := fun n => RealTimeInterval.openWindowLeft a 0 n
   let psi : Nat → Real := fun n => RealTimeInterval.openWindowRight b 0 n

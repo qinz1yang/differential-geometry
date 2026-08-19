@@ -152,7 +152,7 @@ theorem fuB_low (gN g : Real → SmoothRiemannianMetric I M)
         (fun i j k l =>
           fuBRm (I := I) g t x i j k l - fuBRm (I := I) g t x i j l k +
             fuBRm (I := I) g t x i k j l - fuBRm (I := I) g t x i l j k) =
-      bComb (I := I) (g t) (fuTf (I := I) g t) x := by
+      curvatureQuadraticCombination (I := I) (g t) (fuTf (I := I) g t) x := by
   let basis := coordBasisAt (I := I) x
   let gInv := fun i j =>
     coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j
@@ -183,7 +183,7 @@ theorem fuB_low (gN g : Real → SmoothRiemannianMetric I M)
     ring
   apply lowOfComp_ext (I := I)
   intro i j k l
-  have hcomp := bComb_comp (I := I) (g t) basis gInv hinv
+  have hcomp := curvatureQuadraticCombination_component (I := I) (g t) basis gInv hinv
     (fuTf (I := I) g t) ![i, j, k, l]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
     Matrix.cons_val_three, hRm] at hcomp
@@ -272,8 +272,8 @@ private theorem fuB_diff_low (g₁ g₂ : Real → SmoothRiemannianMetric I M)
               (fuBRm (I := I) g₁ t x i j l k - fuBRm (I := I) g₂ t x i j l k) +
             (fuBRm (I := I) g₁ t x i k j l - fuBRm (I := I) g₂ t x i k j l) -
               (fuBRm (I := I) g₁ t x i l j k - fuBRm (I := I) g₂ t x i l j k)) =
-      bComb (I := I) (g₁ t) (fuTf (I := I) g₁ t) x -
-        bComb (I := I) (g₂ t) (fuTf (I := I) g₂ t) x := by
+      curvatureQuadraticCombination (I := I) (g₁ t) (fuTf (I := I) g₁ t) x -
+        curvatureQuadraticCombination (I := I) (g₂ t) (fuTf (I := I) g₂ t) x := by
   rw [← fuB_low (I := I) g₁ g₁ t x, ← fuB_low (I := I) g₁ g₂ t x]
   apply lowOfComp_ext (I := I)
   intro i j k l
@@ -768,20 +768,20 @@ private theorem fuConnSqD (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b
       HasDerivWithinAt (fun s : Real => (g₂ s).inner x v w)
         ((-2 : Real) * ricciTensor (I := I) (g₂ t) x v w) (Ici a) t)
     {t : Real} (ht : t ∈ Ioo a b) (x : M) :
-    deriv (fun r : Real => connDiffSq (I := I) (g₁ r) (g₂ r) x) t =
+    deriv (fun r : Real => connectionDifferenceSq (I := I) (g₁ r) (g₂ r) x) t =
       movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
         2 * inner0S (I := I) (g₁ t) x 3
           (connSpeed (I := I) g₁ g₂ (fuAvec (I := I) g₁ g₂) t x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) := by
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) := by
   have hbase := normSq0S_moving_deriv (I := I) g₁ (metricRicciAt (I := I) (g₁ t) x)
-    (fun r => connDiffLowAt (I := I) (g₁ r) (g₂ r) x)
+    (fun r => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x)
     (connSpeed (I := I) g₁ g₂ (fuAvec (I := I) g₁ g₂) t x)
     (pde_hasDerivAt (I := I) g₁ hpde₁ ht x)
     (connSpeed_hasDerivAt (I := I) g₁ g₂ (fuAvec (I := I) g₁ g₂)
       (pde_hasDerivAt (I := I) g₁ hpde₁ ht x)
       (fuGamma (I := I) g₁ g₂ hab hjoint₁ hjoint₂ hpde₁ hpde₂ t ht x))
-  simpa only [connDiffSq_def] using hbase.deriv
+  simpa only [connectionDifferenceSq_def] using hbase.deriv
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1059,7 +1059,7 @@ theorem fuRestInt (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
   have hfun : (fun x : M => rateRest (I := I) g₁ g₂
         (connSpeed (I := I) g₁ g₂ (fuAvec (I := I) g₁ g₂)) t x) =
       fun x : M => deriv (fun r : Real => metricDiffSq (I := I) (g₁ r) (g₂ r) x) t +
-          deriv (fun r : Real => connDiffSq (I := I) (g₁ r) (g₂ r) x) t +
+          deriv (fun r : Real => connectionDifferenceSq (I := I) (g₁ r) (g₂ r) x) t +
           movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
             (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
         (1 / 2 : Real) * traceTimeDerivMetric (I := I) g₁ t x *
@@ -1073,8 +1073,8 @@ theorem fuRestInt (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
       (fun r x => metricDiffSq (I := I) (g₁ r) (g₂ r) x)
       (metricDiffSq_jointContMDiffOn (I := I) g₁ g₂ hgram₁ hgram₂)).add
     (tderivCont (I := I) (J := Ioo a b) isOpen_Ioo ht
-      (fun r x => connDiffSq (I := I) (g₁ r) (g₂ r) x)
-      (connDiffSq_jointContMDiffOn (I := I) g₁ g₂ hgram₁ hgram₂))).add
+      (fun r x => connectionDifferenceSq (I := I) (g₁ r) (g₂ r) x)
+      (connectionDifferenceSq_jointContMDiffOn (I := I) g₁ g₂ hgram₁ hgram₂))).add
     (fuReactCont (I := I) g₁ g₂ hgram₁ hpde₁ ht)).add ?_
   exact (continuous_const.mul (fuTraceCont (I := I) g₁ hpde₁ ht)).mul
     (dens_continuous (I := I) g₁ g₂ t)
@@ -1185,17 +1185,17 @@ theorem fuFluxSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
     fun x₀ i j => (h2smooth x₀ i j).mono (Set.prod_mono hsub (Set.Subset.refl _))
   obtain ⟨B₂, hB₂0, hB₂⟩ := rm04SlabSup (I := I) g₁ g₂ g₂ hres₁ hres₂ hres₂
   obtain ⟨BP, hBP0, hBP⟩ := rm04SlabSup (I := I) g₁ g₁ g₂ hres₁ hres₁ hres₂
-  obtain ⟨Bg, hBg0, hBg⟩ := metricSlabSup (I := I) g₁ g₂ hres₁ hres₂
+  obtain ⟨Background, hBackground0, hBackground⟩ := metricSlabSup (I := I) g₁ g₂ hres₁ hres₂
   refine ⟨32 * (Module.finrank Real E : Real) ^ 5 * B₂ +
-    8 * (Module.finrank Real E : Real) ^ 10 * (BP * Bg), fun t ht x => ?_⟩
+    8 * (Module.finrank Real E : Real) ^ 10 * (BP * Background), fun t ht x => ?_⟩
   have hIcc : t ∈ Icc a c := Ioo_subset_Icc_self ht
   have hBPx : normSq0S (I := I) (g₁ t) x 4
       ((fuTf (I := I) g₁ t - fuSfield (I := I) g₁ g₂ t) x) ≤ BP := by
     rw [fuP_eq (I := I) g₁ g₂ t x]
     exact hBP t hIcc x
   exact fluxSlabLe (I := I) g₁ g₂ (fuTf (I := I) g₂)
-    (fun r => fuTf (I := I) g₁ r - fuSfield (I := I) g₁ g₂ r) t x hB₂0 hBP0 hBg0
-    (hB₂ t hIcc x) hBPx (hBg t hIcc x)
+    (fun r => fuTf (I := I) g₁ r - fuSfield (I := I) g₁ g₂ r) t x hB₂0 hBP0 hBackground0
+    (hB₂ t hIcc x) hBPx (hBackground t hIcc x)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem fuVolSlab (g₁ : Real → SmoothRiemannianMetric I M) {a b : Real}
@@ -1234,7 +1234,7 @@ theorem fuReactSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Rea
       movingReact0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x)
           (metricDiffAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
           (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
       C_R * forwardUniqueDensity (I := I) g₁ g₂ t x := by
@@ -1290,14 +1290,14 @@ private lemma fu_rem_kl_factor (n BP d : Real) :
     n ^ 6 * ((n ^ 6 * BP) * d) = n ^ 12 * BP * d := by
   ring
 
-private lemma fu_rem_pair_factor (n BP Bg d : Real) :
-    n ^ 8 * (BP * (4 * n ^ 3 * Bg * d)) =
-      4 * n ^ 11 * BP * Bg * d := by
+private lemma fu_rem_pair_factor (n BP Background d : Real) :
+    n ^ 8 * (BP * (4 * n ^ 3 * Background * d)) =
+      4 * n ^ 11 * BP * Background * d := by
   ring
 
-private lemma fu_rem_trace_factor (n BP Bg d : Real) :
-    n ^ 6 * (4 * n ^ 11 * BP * Bg * d) =
-      4 * n ^ 17 * BP * Bg * d := by
+private lemma fu_rem_trace_factor (n BP Background d : Real) :
+    n ^ 6 * (4 * n ^ 11 * BP * Background * d) =
+      4 * n ^ 17 * BP * Background * d := by
   ring
 
 private lemma fu_rem_four_term_bound
@@ -1367,7 +1367,7 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
     ricciSlabSup (I := I) g₂ g₂ hres₂ hres₂
   obtain ⟨B6g2, hB6g20, hB6g2⟩ :=
     crossRm2SlabSup (I := I) g₂ g₂ g₂ g₂ hres₂ hres₂ hres₂ hres₂
-  obtain ⟨Bg, _, hBg⟩ := metricSlabSup (I := I) g₁ g₂ hres₁ hres₂
+  obtain ⟨Background, _, hBackground⟩ := metricSlabSup (I := I) g₁ g₂ hres₁ hres₂
   let n : Real := Module.finrank Real E
   let KQ : Real :=
     16 * (4 * n ^ 14 * (2 + 2 * n ^ 6 * BP) * (BR1 + BR2) +
@@ -1380,7 +1380,7 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
       72 * n ^ 6 * (BRic2g2 * BR2g2)
   let KG : Real := 8 * n ^ 10 * BP + 2 * Ce ^ 6 * n ^ 6 * BSpeed
   let KL : Real := n ^ 12 * BP2
-  let KT : Real := 4 * n ^ 17 * BP1 * Bg
+  let KT : Real := 4 * n ^ 17 * BP1 * Background
   let C_rem : Real := 8 * KR0 + 8 * KG + 4 * KL + 2 * KT
   refine ⟨C_rem, fun t ht x => ?_⟩
   have hIcc : t ∈ Icc a c := Ioo_subset_Icc_self ht
@@ -1422,8 +1422,8 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
         metricDiffSq (I := I) (g₁ t) (g₂ t) x ≤ d := by
       simpa only [d] using metricDiffSq_le_dens (I := I) g₁ g₂ t x
     have hconn :
-        connDiffSq (I := I) (g₁ t) (g₂ t) x ≤ d := by
-      simpa only [d] using connDiffSq_le_dens (I := I) g₁ g₂ t x
+        connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x ≤ d := by
+      simpa only [d] using connectionDifferenceSq_le_dens (I := I) g₁ g₂ t x
     have hrm :
         rmDiffSq (I := I) (g₁ t) (g₂ t) x ≤ d := by
       simpa only [d] using rmDiffSq_le_dens (I := I) g₁ g₂ t x
@@ -1464,7 +1464,7 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
     have hTf2sq :
         normSq0S (I := I) (g₁ t) x 4 (fuTf (I := I) g₂ t x) ^ 2 ≤ BR2 ^ 2 := by
       exact sq_le_sq_of_nonneg hTf20 hTf2
-    have hQ0 := bCombDiffSq_le (I := I) (g₁ t) (g₂ t)
+    have hQ0 := curvatureQuadraticCombination_difference_norm_sq_le (I := I) (g₁ t) (g₂ t)
       (fuTf (I := I) g₁ t) (fuTf (I := I) g₂ t) x hΛ0
       (hΛ t hIcc x) (hBH t hIcc x)
     have hQ :
@@ -1487,8 +1487,8 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
       let HM := metricDiffSq (I := I) (g₁ t) (g₂ t) x
       have hQ0' :
           normSq0S (I := I) (g₁ t) x 4
-              (bComb (I := I) (g₁ t) (fuTf (I := I) g₁ t) x -
-                bComb (I := I) (g₂ t) (fuTf (I := I) g₂ t) x) ≤
+              (curvatureQuadraticCombination (I := I) (g₁ t) (fuTf (I := I) g₁ t) x -
+                curvatureQuadraticCombination (I := I) (g₂ t) (fuTf (I := I) g₂ t) x) ≤
             16 * (4 * n ^ 14 * ND * (N1 + N2) +
               2 * (6 * n ^ 18 * Λ ^ 2 + 4 * n ^ 22 * Λ ^ 4 * BH) *
                 HM * N2 ^ 2) := by
@@ -1589,7 +1589,7 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
     dsimp only [R0]
     refine hR0raw.trans ?_
     have hspace1 :
-        50 * n ^ 12 * connDiffSq (I := I) (g₁ t) (g₂ t) x * B5 ≤
+        50 * n ^ 12 * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x * B5 ≤
           50 * n ^ 12 * d * B5 := by
       have h := mul_le_mul_of_nonneg_right hconn hB50
       simpa only [mul_assoc] using
@@ -1602,7 +1602,7 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
         mul_le_mul_of_nonneg_left h
           (mul_nonneg (mul_nonneg (by norm_num) (pow_nonneg hn 10)) (sq_nonneg Λ))
     have hspace :
-        4 * (50 * n ^ 12 * connDiffSq (I := I) (g₁ t) (g₂ t) x * B5 +
+        4 * (50 * n ^ 12 * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x * B5 +
             2 * n ^ 10 * Λ ^ 2 * metricDiffSq (I := I) (g₁ t) (g₂ t) x * B6) ≤
           4 * (50 * n ^ 12 * d * B5 + 2 * n ^ 10 * Λ ^ 2 * d * B6) :=
       mul_le_mul_of_nonneg_left (add_le_add hspace1 hspace2) (by norm_num)
@@ -1841,8 +1841,8 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
     have hd : 0 ≤ d := by
       simpa only [d] using density_nonneg (I := I) g₁ g₂ t x
     have hconn :
-        connDiffSq (I := I) (g₁ t) (g₂ t) x ≤ d := by
-      simpa only [d] using connDiffSq_le_dens (I := I) g₁ g₂ t x
+        connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x ≤ d := by
+      simpa only [d] using connectionDifferenceSq_le_dens (I := I) g₁ g₂ t x
     have hMetricField0 :
         0 ≤ normSq0S (I := I) (g₁ t) x 2
           (metricTensorField (I := I) (g₂ t) x) :=
@@ -1853,33 +1853,33 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
       rw [hPfield]
       exact hBP1 t hIcc x
     have hFluxProd :
-        connDiffSq (I := I) (g₁ t) (g₂ t) x *
+        connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x *
             normSq0S (I := I) (g₁ t) x 2
               (metricTensorField (I := I) (g₂ t) x) ≤
-          d * Bg :=
-      mul_le_mul hconn (hBg t hIcc x) hMetricField0 hd
+          d * Background :=
+      mul_le_mul hconn (hBackground t hIcc x) hMetricField0 hd
     have hFlux0 := fluxNormSq_le (I := I) (s := 2) (g₁ t) (g₂ t)
       (metricTensorField (I := I) (g₂ t)) x
     have hFlux : normSq0S (I := I) (g₁ t) x 3 (K x) ≤
-        4 * n ^ 3 * Bg * d := by
+        4 * n ^ 3 * Background * d := by
       dsimp only [K]
       refine hFlux0.trans ?_
       calc
         _ = (2 : Real) ^ 2 * n ^ 3 *
-            (connDiffSq (I := I) (g₁ t) (g₂ t) x *
+            (connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x *
               normSq0S (I := I) (g₁ t) x 2
                 (metricTensorField (I := I) (g₂ t) x)) := by ring
-        _ ≤ (2 : Real) ^ 2 * n ^ 3 * (d * Bg) :=
+        _ ≤ (2 : Real) ^ 2 * n ^ 3 * (d * Background) :=
           mul_le_mul_of_nonneg_left hFluxProd
             (mul_nonneg (sq_nonneg (2 : Real)) (pow_nonneg hn 3))
-        _ = 4 * n ^ 3 * Bg * d := by ring
+        _ = 4 * n ^ 3 * Background * d := by ring
     have hFluxNorm0 : 0 ≤ normSq0S (I := I) (g₁ t) x 3 (K x) :=
       normSq0S_nonneg (I := I) (g₁ t) x 3 _
     have hPairProd :
         normSq0S (I := I) (g₁ t) x 5
               (metricNabla0S (I := I) (g₁ t) P x) *
             normSq0S (I := I) (g₁ t) x 3 (K x) ≤
-          BP1 * (4 * n ^ 3 * Bg * d) :=
+          BP1 * (4 * n ^ 3 * Background * d) :=
       mul_le_mul hGradP hFlux hFluxNorm0 hBP10
     have hPair0 := reLowerPairSq_le (I := I) (s := 4) (g₁ t)
       (metricNabla0S (I := I) (g₁ t) P) K x
@@ -1887,12 +1887,12 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
         normSq0S (I := I) (g₁ t) x 6
             (reLowerPair (I := I) (g₁ t)
               (metricNabla0S (I := I) (g₁ t) P) K x) ≤
-          4 * n ^ 11 * BP1 * Bg * d := by
+          4 * n ^ 11 * BP1 * Background * d := by
       refine hPair0.trans ?_
       calc
-        _ ≤ n ^ 8 * (BP1 * (4 * n ^ 3 * Bg * d)) :=
+        _ ≤ n ^ 8 * (BP1 * (4 * n ^ 3 * Background * d)) :=
           mul_le_mul_of_nonneg_left hPairProd (pow_nonneg hn 8)
-        _ = 4 * n ^ 11 * BP1 * Bg * d := fu_rem_pair_factor n BP1 Bg d
+        _ = 4 * n ^ 11 * BP1 * Background * d := fu_rem_pair_factor n BP1 Background d
     have hTrace0 := traceNormSq_le (I := I) (s := 4) (g₁ t) x
       (reLowerPair (I := I) (g₁ t) (metricNabla0S (I := I) (g₁ t) P) K x)
     have hTrace :
@@ -1905,9 +1905,9 @@ theorem fuRemSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real}
     refine hTrace.trans ?_
     dsimp only [KT]
     calc
-      _ ≤ n ^ 6 * (4 * n ^ 11 * BP1 * Bg * d) :=
+      _ ≤ n ^ 6 * (4 * n ^ 11 * BP1 * Background * d) :=
         mul_le_mul_of_nonneg_left hPair (pow_nonneg hn 6)
-      _ = 4 * n ^ 17 * BP1 * Bg * d := fu_rem_trace_factor n BP1 Bg d
+      _ = 4 * n ^ 17 * BP1 * Background * d := fu_rem_trace_factor n BP1 Background d
   have hAB := normSq0S_add_le (I := I) (g₁ t) x 4 R0 G
   have hABC := normSq0S_sub_le (I := I) (g₁ t) x 4 (R0 + G) L
   have hABCD := normSq0S_sub_le (I := I) (g₁ t) x 4 ((R0 + G) - L) T
@@ -2082,9 +2082,9 @@ theorem fuAdotSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
           CovariantDerivative.difference (metricCov (I := I) (g₁ r))
             (metricCov (I := I) (g₂ r)) x Y X)
         ((fuAvec (I := I) g₁ g₂ t x Y) X) t :=
-    fun X Y => connDiffVec_hasDerivAt (I := I) g₁ g₂ frame hframe hu hx
+    fun X Y => connectionDifferenceVec_hasDerivAt (I := I) g₁ g₂ frame hframe hu hx
       (fuAvec (I := I) g₁ g₂ t) hΓcoeff X Y
-  have hmain := connDiffDot_normSq_le (I := I) g₁ g₂ (fuAvec (I := I) g₁ g₂ t)
+  have hmain := connectionDifferenceDot_normSq_le (I := I) g₁ g₂ (fuAvec (I := I) g₁ g₂ t)
     frame hframe hu hx (fuSfield (I := I) g₁ g₂ t) hS Ric₁ Ric₂ hRic₁ hRic₂
     (chartFrameInv (I := I) g₁ x) (chartFrameInv (I := I) g₂ x) hgInv₁ hgInv₂
     (chartNablaRic (I := I) g₁ x) (chartNablaRic (I := I) g₂ x) hNR₁ hNR₂ hΓ hA
@@ -2099,13 +2099,13 @@ theorem fuAdotSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
       (metricNabla0S (I := I) (g₁ t) (fuSfield (I := I) g₁ g₂ t) x) :=
     normSq0S_nonneg (I := I) (g₁ t) x 5 _
   have hpair : metricDiffSq (I := I) (g₁ t) (g₂ t) x +
-      connDiffSq (I := I) (g₁ t) (g₂ t) x ≤
+      connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x ≤
         forwardUniqueDensity (I := I) g₁ g₂ t x := by
     rw [forwardUniqueDensity]
     exact le_add_of_nonneg_right (by
       rw [rmDiffSq_def]
       exact normSq0S_nonneg (I := I) (g₁ t) x 4 _)
-  have hconn : connDiffSq (I := I) (g₁ t) (g₂ t) x ≤
+  have hconn : connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x ≤
       forwardUniqueDensity (I := I) g₁ g₂ t x :=
     (le_add_of_nonneg_left hmetric0).trans hpair
   have hK0 : 0 ≤ K := by
@@ -2115,13 +2115,13 @@ theorem fuAdotSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
     dsimp [L]
     exact mul_nonneg (sq_nonneg _) (add_nonneg hB₁0 hB₃0)
   have hfirst :
-      8 * Λric * connDiffSq (I := I) (g₁ t) (g₂ t) x ≤
+      8 * Λric * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x ≤
         8 * Λric * forwardUniqueDensity (I := I) g₁ g₂ t x :=
     mul_le_mul_of_nonneg_left hconn (mul_nonneg (by positivity) hΛric0)
   have hsecond :
       K * (nablaRmDiffSq (I := I) (g₁ t) (fuSfield (I := I) g₁ g₂ t) x +
           L * (metricDiffSq (I := I) (g₁ t) (g₂ t) x +
-            connDiffSq (I := I) (g₁ t) (g₂ t) x)) ≤
+            connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x)) ≤
         K * (normSq0S (I := I) (g₁ t) x 5
             (metricNabla0S (I := I) (g₁ t) (fuSfield (I := I) g₁ g₂ t) x) +
           L * forwardUniqueDensity (I := I) g₁ g₂ t x) := by
@@ -2131,10 +2131,10 @@ theorem fuAdotSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
   calc
     normSq0S (I := I) (g₁ t) x 3
         (connSpeed (I := I) g₁ g₂ (fuAvec (I := I) g₁ g₂) t x) ≤
-        8 * Λric * connDiffSq (I := I) (g₁ t) (g₂ t) x +
+        8 * Λric * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x +
           K * (nablaRmDiffSq (I := I) (g₁ t) (fuSfield (I := I) g₁ g₂ t) x +
             L * (metricDiffSq (I := I) (g₁ t) (g₂ t) x +
-              connDiffSq (I := I) (g₁ t) (g₂ t) x)) := by
+              connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x)) := by
       simpa [connSpeed, K, L, mul_assoc] using hmain
     _ ≤ 8 * Λric * forwardUniqueDensity (I := I) g₁ g₂ t x +
           K * (normSq0S (I := I) (g₁ t) x 5

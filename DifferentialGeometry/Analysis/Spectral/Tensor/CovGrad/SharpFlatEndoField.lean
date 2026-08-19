@@ -53,21 +53,21 @@ theorem sharpFlatEndo_eval (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     cotangentToDual (I := I)
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (sharpFlatEndoCc (I := I) g₀ g₁).toSection x) om) w =
-      cotangentToDual (I := I) om (metricComparisonEndo (I := I) g₀ g₁ x w) := by
+      cotangentToDual (I := I) om (metricComparisonEndomorphism (I := I) g₀ g₁ x w) := by
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (sharpFlatEndoCc (I := I) g₀ g₁).toSection x) om =
       g0FlatCLM (I := I) g₀ x (inverseMetricSharpFib (I := I) g₁ x om) from rfl]
   rw [cotangentToDual_g0FlatCLM]
   have h₁ : ∀ v : TangentSpace I x,
-      g₁.inner x (metricComparisonEndo (I := I) g₀ g₁ x w) v =
+      g₁.inner x (metricComparisonEndomorphism (I := I) g₀ g₁ x w) v =
         g₀.inner x w v := by
     intro v
-    rw [gInvRaisedEndo_apply, inverseMetricSharpFib_inner,
+    rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_inner,
       cotangentToDualLinear_apply, cotangentToDual_g0FlatCLM]
   rw [show cotangentToDual (I := I) (x := x) om
-        (metricComparisonEndo (I := I) g₀ g₁ x w) =
+        (metricComparisonEndomorphism (I := I) g₀ g₁ x w) =
       g₁.inner x (inverseMetricSharpFib (I := I) g₁ x om)
-        (metricComparisonEndo (I := I) g₀ g₁ x w) by
+        (metricComparisonEndomorphism (I := I) g₀ g₁ x w) by
       rw [inverseMetricSharpFib_inner]
       rfl]
   rw [g₁.symm, h₁]

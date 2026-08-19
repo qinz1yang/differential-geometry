@@ -180,10 +180,10 @@ private def precompBundleCLMRS (r s : ℕ) (b : M) :
 def tensorRSRiemannianInnerCLM
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M) :
     TensorRSSpace r s I b →L[ℝ] TensorRSSpace r s I b →L[ℝ] ℝ :=
-  let stepA : TensorRSModel r s ℝ E →L[ℝ] (TensorRSSpace r s I b →L[ℝ] ℝ) :=
+  let modelPairing : TensorRSModel r s ℝ E →L[ℝ] (TensorRSSpace r s I b →L[ℝ] ℝ) :=
     (precompBundleCLMRS (I := I) (M := M) (E := E) r s b).comp
       (innerModelCLMRS (I := I) (M := M) g r s b)
-  stepA.comp (bundleToModelCLMRS (I := I) (M := M) (E := E) r s b)
+  modelPairing.comp (bundleToModelCLMRS (I := I) (M := M) (E := E) r s b)
 
 @[simp] lemma tensorRSRiemannianInnerCLM_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)

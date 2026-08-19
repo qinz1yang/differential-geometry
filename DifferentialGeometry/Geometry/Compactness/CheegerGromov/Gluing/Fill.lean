@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.BumpClamp
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationConstruction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMapConstruction
 open DifferentialGeometry.Geometry.Curvature
 
@@ -544,7 +544,7 @@ theorem HasSuppConvDataOn.weightSub_ev
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
-    (_hgp : Item3GpScaleTail (I := I) inp.decay inp.D P L inp.pack r)
+    (_hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
     (chart : NormalChartFamily (I := I) X)
     (U C0 C1 : LiveSlot L inp.pack r → Set E)
@@ -565,7 +565,7 @@ theorem HasSuppConvData.weightSub_ev
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) inp.decay inp.D P L inp.pack r)
+    (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (phi : Nat → Nat) (hphi : StrictMono phi)
     (U C0 C1 : LiveSlot L inp.pack r → Set E)
     (aInf : (alpha : LiveSlot L inp.pack r) →
@@ -580,7 +580,7 @@ theorem HasSuppConvData.weightSub_ev
         (stageWeightSub inp P L hr phi hphi alpha k) := by
   classical
   let Lphi := L.subseq hphi
-  have hgpPhi : Item3GpScaleTail (I := I) inp.decay inp.D P
+  have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       Lphi inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r hphi
   dsimp only [HasSuppConvData] at hdata
@@ -620,7 +620,7 @@ theorem stageWeight_small
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (alpha : LiveSlot L inp.pack r) (k : Nat)
-    (hgp : Item3GpScaleAt (I := I) inp.decay inp.D P L inp.pack r k)
+    (hgp : ExponentialRadiusScaleAt (I := I) inp.decay inp.D P L inp.pack r k)
     (gamma : Fin (inp.pack.A r))
     (hC2 :
       letI : TopologicalSpace (X.obj (L.φ k)).M :=
@@ -876,7 +876,7 @@ theorem stagePts_eq_weight
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (alpha : LiveSlot L inp.pack r)
     (target : InterSlot L inp.pack r alpha) (k l : Nat)
-    (hgp : Item3GpScaleAt (I := I) inp.decay inp.D P L inp.pack r k)
+    (hgp : ExponentialRadiusScaleAt (I := I) inp.decay inp.D P L inp.pack r k)
     (hC2 :
       letI : TopologicalSpace (X.obj (L.φ k)).M :=
         (X.obj (L.φ k)).topology
@@ -992,7 +992,7 @@ theorem stagePtsSub_eq_ne
     (phi : Nat → Nat) (hphi : StrictMono phi)
     (alpha : LiveSlot L inp.pack r)
     (target : InterSlot L inp.pack r alpha) (k l : Nat)
-    (hgp : Item3GpScaleAt (I := I) inp.decay inp.D P
+    (hgp : ExponentialRadiusScaleAt (I := I) inp.decay inp.D P
       (L.subseq hphi) inp.pack r k)
     (hC2 :
       let Y := X.obj ((L.subseq hphi).φ k)
@@ -1773,8 +1773,8 @@ theorem HasSuppConvData.ptsSub_conv
 theorem HasSuppConvData.pts_eq_ne
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P)
@@ -1815,14 +1815,14 @@ theorem HasSuppConvData.pts_eq_ne
   rcases hdata with
     ⟨_hUopen, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, hgeom, _hlim, _hweightData, _htrans, _hstage⟩
-  obtain ⟨hgp, hrad⟩ := inp.item3ScaleTails h8 hradD hradRatio P L r
-  have hgpPhi : Item3GpScaleTail (I := I) inp.decay inp.D P
+  obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
+  have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       Lphi inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r hphi
-  have hradPhi : Item3RadiusTail (I := I) inp.decay inp.D P
-      Lphi inp.pack r (item3RadiusFactor inp.decay inp.D) :=
+  have hradPhi : ExponentialBallRadiusTail (I := I) inp.decay inp.D P
+      Lphi inp.pack r (exponentialBallRadiusFactor inp.decay inp.D) :=
     hrad.subseq inp.decay inp.D P L inp.pack r
-      (item3RadiusFactor inp.decay inp.D) hphi
+      (exponentialBallRadiusFactor inp.decay inp.D) hphi
   have hcenters : ∀ᶠ k in atTop, ∀ beta : LiveSlot L inp.pack r,
       seqCenter inp.decay inp.D P (Lphi.φ k) (beta.1 : Nat) =
         some (seqCenterD inp.decay P Lphi k (beta.1 : Nat)) :=
@@ -1853,14 +1853,14 @@ theorem HasSuppConvData.pts_eq_ne
             simpa only [Lphi, NetLimitData.subseq,
               NetLimitData.subseq_lamInf, Function.comp_apply] using
                 hcurrent)).elim
-  have hfactor : (8 : Real) ≤ item3RadiusFactor inp.decay inp.D := by
+  have hfactor : (8 : Real) ≤ exponentialBallRadiusFactor inp.decay inp.D := by
     have hExp : (1 : Real) ≤
         Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)) := by
       rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]
       exact Real.exp_le_exp.mpr
         (mul_nonneg inp.decay.C_nonneg
           (by nlinarith [(inp.decay.lambda_pos inp.hD 0).le]))
-    rw [item3RadiusFactor]
+    rw [exponentialBallRadiusFactor]
     nlinarith
   filter_upwards [hgpPhi, hradPhi, hcenters, hslots]
     with k hgpK hradK hcentersK hslotsK
@@ -1893,7 +1893,7 @@ theorem HasSuppConvData.pts_eq_ne
       expMapC2Radius (I := I) Y.metric
         (seqCenterD inp.decay P Lphi k (gamma : Nat)) := by
     have hscale : 8 * Lphi.lamInf (gamma : Nat) ≤
-        item3RadiusFactor inp.decay inp.D * Lphi.lamInf (gamma : Nat) :=
+        exponentialBallRadiusFactor inp.decay inp.D * Lphi.lamInf (gamma : Nat) :=
       mul_le_mul_of_nonneg_right hfactor
         (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))).le
     have hcenter := hcentersK target.1
@@ -1910,8 +1910,8 @@ theorem HasSuppConvData.pts_eq_ne
 
 theorem pairFill_smooth
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}

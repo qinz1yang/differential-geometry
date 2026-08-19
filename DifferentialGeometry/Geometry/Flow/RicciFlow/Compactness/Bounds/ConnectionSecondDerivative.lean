@@ -148,47 +148,47 @@ theorem nabla2_eq_mcd1
       = metricCovDeriv (I := I) g₁ g₂ 1 x (Fin.cons (W x) slots) :=
   (metricCovDeriv_one_apply_section (I := I) g₁ g₂ W x slots).symm
 
-def covDerivConnDiff2 (g₂ g₁ : SmoothRiemannianMetric I M)
+def covDerivConnectionDifference2 (g₂ g₁ : SmoothRiemannianMetric I M)
     (V W X Y : Π b : M, TangentSpace I b) (x : M) : TangentSpace I x :=
   DifferentialGeometry.Geometry.Curvature.covApply
       (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V
-      (fun p => DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁ W X Y p) x
-    - DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁
+      (fun p => DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W X Y p) x
+    - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁
         (DifferentialGeometry.Geometry.Curvature.covApply
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V W) X Y x
-    - DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁ W
+    - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W
         (DifferentialGeometry.Geometry.Curvature.covApply
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V X) Y x
-    - DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁ W X
+    - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W X
         (DifferentialGeometry.Geometry.Curvature.covApply
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V Y) x
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-theorem covDerivConnDiff2_eq (g₂ g₁ : SmoothRiemannianMetric I M)
+theorem covDerivConnectionDifference2_eq (g₂ g₁ : SmoothRiemannianMetric I M)
     (V W X Y : Π b : M, TangentSpace I b) (x : M) :
-    covDerivConnDiff2 (I := I) g₂ g₁ V W X Y x =
+    covDerivConnectionDifference2 (I := I) g₂ g₁ V W X Y x =
       DifferentialGeometry.Geometry.Curvature.covApply
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V
-          (fun p => DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁ W X Y p)
+          (fun p => DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W X Y p)
           x
-        - DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁
+        - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁
             (DifferentialGeometry.Geometry.Curvature.covApply
               (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V W) X Y x
-        - DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁ W
+        - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W
             (DifferentialGeometry.Geometry.Curvature.covApply
               (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V X) Y x
-        - DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁ W X
+        - DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁ W X
             (DifferentialGeometry.Geometry.Curvature.covApply
               (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂) V Y) x :=
   rfl
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-theorem covDerivConnDiff_contMDiff
+theorem covDerivConnectionDifference_contMDiff
     (g₂ g₁ : SmoothRiemannianMetric I M)
     (W X Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (fun p => covDerivConnDiff (I := I) g₂ g₁
+      (T% (fun p => covDerivConnectionDifference (I := I) g₂ g₁
         (fun b => W b) (fun b => X b) (fun b => Y b) p)) := by
   haveI : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) g₂) (∞ : WithTop ℕ∞) :=
@@ -247,7 +247,7 @@ theorem koszul2_clean
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (V W X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) :
-    2 * g₁.inner x (covDerivConnDiff2 (I := I) g₂ g₁
+    2 * g₁.inner x (covDerivConnectionDifference2 (I := I) g₂ g₁
         (fun b => V b) (fun b => W b) (fun b => X b) (fun b => Y b) x) (Z x)
       = metricCovDeriv (I := I) g₁ g₂ 3 x ![V x, W x, X x, Y x, Z x]
         + metricCovDeriv (I := I) g₁ g₂ 3 x ![V x, W x, Y x, X x, Z x]
@@ -260,12 +260,12 @@ theorem koszul2_clean
               Z x]
         - 2 * metricCovDeriv (I := I) g₁ g₂ 1 x
             ![W x,
-              DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁
+              DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁
                 (fun b => V b) (fun b => X b) (fun b => Y b) x,
               Z x]
         - 2 * metricCovDeriv (I := I) g₁ g₂ 1 x
             ![V x,
-              DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁
+              DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁
                 (fun b => W b) (fun b => X b) (fun b => Y b) x,
               Z x] := by
   classical
@@ -306,22 +306,22 @@ theorem koszul2_clean
     with hDVZdef
   set Qsec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     ContMDiffSection.mk
-      (fun p => covDerivConnDiff (I := I) g₂ g₁ (fun b => W b) (fun b => X b) (fun b => Y b) p)
-      (covDerivConnDiff_contMDiff (I := I) g₂ g₁ W X Y) with hQdef
+      (fun p => covDerivConnectionDifference (I := I) g₂ g₁ (fun b => W b) (fun b => X b) (fun b => Y b) p)
+      (covDerivConnectionDifference_contMDiff (I := I) g₂ g₁ W X Y) with hQdef
   have hDVWval : DVW x = ((LeviCivita (I := I) g₂) (fun p => W p) x) (V x) := rfl
   have hDVXval : DVX x = ((LeviCivita (I := I) g₂) (fun p => X p) x) (V x) := rfl
   have hDVYval : DVY x = ((LeviCivita (I := I) g₂) (fun p => Y p) x) (V x) := rfl
   have hDVZval : DVZ x = ((LeviCivita (I := I) g₂) (fun p => Z p) x) (V x) := rfl
-  have hQxval : Qsec x = covDerivConnDiff (I := I) g₂ g₁ W X Y x := rfl
+  have hQxval : Qsec x = covDerivConnectionDifference (I := I) g₂ g₁ W X Y x := rfl
   have hAvec : ((LeviCivita (I := I) g₂)
         (fun p => CovariantDerivative.difference (LeviCivita (I := I) g₁)
           (LeviCivita (I := I) g₂) p (Y p) (X p)) x) (V x)
-      = covDerivConnDiff (I := I) g₂ g₁ V X Y x
+      = covDerivConnectionDifference (I := I) g₂ g₁ V X Y x
         + CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x (Y x)
             (((LeviCivita (I := I) g₂) (fun p => X p) x) (V x))
         + CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x
             (((LeviCivita (I := I) g₂) (fun p => Y p) x) (V x)) (X x) := by
-    have hcd : covDerivConnDiff (I := I) g₂ g₁ V X Y x
+    have hcd : covDerivConnectionDifference (I := I) g₂ g₁ V X Y x
         = ((LeviCivita (I := I) g₂)
             (fun p => CovariantDerivative.difference (LeviCivita (I := I) g₁)
               (LeviCivita (I := I) g₂) p (Y p) (X p)) x) (V x)
@@ -384,11 +384,11 @@ theorem koszul2_clean
       (fun i : Fin 2 => ((![a, b] : Fin 2 → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _)) i) x) = ![a x, b x] := by
     intro a b; funext i; fin_cases i <;> rfl
-  have hmaster := connDiff_koszul_deriv2 (I := I) g₁ g₂ V W X Y Z x
-  have hkW := connDiff_koszul_deriv (I := I) g₁ g₂ DVW X Y Z x
-  have hkX := connDiff_koszul_deriv (I := I) g₁ g₂ W DVX Y Z x
-  have hkY := connDiff_koszul_deriv (I := I) g₁ g₂ W X DVY Z x
-  have hkZ := connDiff_koszul_deriv (I := I) g₁ g₂ W X Y DVZ x
+  have hmaster := connectionDifference_koszul_deriv2 (I := I) g₁ g₂ V W X Y Z x
+  have hkW := connectionDifference_koszul_deriv (I := I) g₁ g₂ DVW X Y Z x
+  have hkX := connectionDifference_koszul_deriv (I := I) g₁ g₂ W DVX Y Z x
+  have hkY := connectionDifference_koszul_deriv (I := I) g₁ g₂ W X DVY Z x
+  have hkZ := connectionDifference_koszul_deriv (I := I) g₁ g₂ W X Y DVZ x
   have hLHSfun : (fun p => g₁.inner p (Qsec p) (Z p))
       = (fun p => Tensor0SBundle.metricTensorField (I := I) g₁ p
           (fun c : Fin 2 => (![Qsec, Z] c) p)) := by
@@ -403,7 +403,7 @@ theorem koszul2_clean
   have hLeib := metric_leibniz_extDeriv (I := I) g₁ g₂ ![Qsec, Z] V x
   rw [← hLHSfun] at hLeib
   rw [show (fun p : M => 2 * g₁.inner p
-        (covDerivConnDiff (I := I) g₂ g₁ (fun b => W b) (fun b => X b) (fun b => Y b) p) (Z p))
+        (covDerivConnectionDifference (I := I) g₂ g₁ (fun b => W b) (fun b => X b) (fun b => Y b) p) (Z p))
       = (fun p : M => 2 * g₁.inner p (Qsec p) (Z p)) from rfl,
     extDerivFun_const_mul I (2 : ℝ) hQZdiff] at hmaster
   simp only [ContinuousLinearMap.smul_apply, smul_eq_mul] at hmaster
@@ -416,18 +416,18 @@ theorem koszul2_clean
     hup4_2, hup4_3, hup2_0, hup2_1, hcons3, hcons4, hcons5, Tensor0SBundle.metricTensorField_apply,
     hDVWval, hDVXval, hDVYval, hDVZval, hQxval] at hmaster hkW hkX hkY hkZ
   rw [hAvec, hmcd1_add3] at hmaster
-  have hcdc2 : covDerivConnDiff2 (I := I) g₂ g₁
+  have hcdc2 : covDerivConnectionDifference2 (I := I) g₂ g₁
         (fun b => V b) (fun b => W b) (fun b => X b) (fun b => Y b) x
       = ((LeviCivita (I := I) g₂) (fun p => Qsec p) x) (V x)
-        - covDerivConnDiff (I := I) g₂ g₁ DVW X Y x
-        - covDerivConnDiff (I := I) g₂ g₁ W DVX Y x
-        - covDerivConnDiff (I := I) g₂ g₁ W X DVY x := by
-    rw [covDerivConnDiff2_eq]; rfl
+        - covDerivConnectionDifference (I := I) g₂ g₁ DVW X Y x
+        - covDerivConnectionDifference (I := I) g₂ g₁ W DVX Y x
+        - covDerivConnectionDifference (I := I) g₂ g₁ W X DVY x := by
+    rw [covDerivConnectionDifference2_eq]; rfl
   rw [hcdc2, g_sub, g_sub, g_sub,
-    show covDerivConnDiff (I := I) g₂ g₁ (fun b => V b) (fun b => X b) (fun b => Y b) x
-      = covDerivConnDiff (I := I) g₂ g₁ V X Y x from rfl,
-    show covDerivConnDiff (I := I) g₂ g₁ (fun b => W b) (fun b => X b) (fun b => Y b) x
-      = covDerivConnDiff (I := I) g₂ g₁ W X Y x from rfl]
+    show covDerivConnectionDifference (I := I) g₂ g₁ (fun b => V b) (fun b => X b) (fun b => Y b) x
+      = covDerivConnectionDifference (I := I) g₂ g₁ V X Y x from rfl,
+    show covDerivConnectionDifference (I := I) g₂ g₁ (fun b => W b) (fun b => X b) (fun b => Y b) x
+      = covDerivConnectionDifference (I := I) g₂ g₁ W X Y x from rfl]
   linarith [hmaster, hkW, hkX, hkY, hkZ]
 
 open DifferentialGeometry.Geometry.Curvature
@@ -437,15 +437,15 @@ open DifferentialGeometry.Geometry.Connection (leviCivitaConnectionOfMetric) in
 open DifferentialGeometry.Analysis.Laplacian (metric_inner_self_nonneg) in
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem covDConnDiff2_g1_le
+theorem covDConnectionDifference2_g1_le
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₂ g₁ : SmoothRiemannianMetric I M) (x : M) (v' v w u : TangentSpace I x) :
     Real.sqrt (g₁.inner x
-        (covDerivConnDiff2 (I := I) g₂ g₁
+        (covDerivConnectionDifference2 (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x)
-        (covDerivConnDiff2 (I := I) g₂ g₁
+        (covDerivConnectionDifference2 (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x)) ≤
       (3 / 2 * Real.sqrt (Tensor0SBundle.normSq0S (I := I) g₁ x 5
@@ -482,7 +482,7 @@ theorem covDConnDiff2_g1_le
   set M3 : ℝ := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g₁ x 5
     (metricCovDeriv (I := I) g₁ g₂ 3 x)) with hM3def
   set B2 : TangentSpace I x :=
-    covDerivConnDiff2 (I := I) g₂ g₁
+    covDerivConnectionDifference2 (I := I) g₂ g₁
       (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x with hB2def
   set Vsec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
@@ -505,16 +505,16 @@ theorem covDConnDiff2_g1_le
   have hXx : Xsec x = w := smoothExtensionTangent_eq (I := I) x w
   have hYx : Ysec x = u := smoothExtensionTangent_eq (I := I) x u
   have hZx : Zsec x = B2 := smoothExtensionTangent_eq (I := I) x B2
-  have hAbr2 : covDerivConnDiff2 (I := I) g₂ g₁
+  have hAbr2 : covDerivConnectionDifference2 (I := I) g₂ g₁
       (fun b => Vsec b) (fun b => Wsec b) (fun b => Xsec b) (fun b => Ysec b) x = B2 := by
     rw [hB2def]; rfl
   have hkos := koszul2_clean (I := I) g₁ g₂ Vsec Wsec Xsec Ysec Zsec x
   rw [hAbr2, hVx, hWx, hXx, hYx, hZx] at hkos
   set D5 : TangentSpace I x :=
-    DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁
+    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁
       (fun b => Vsec b) (fun b => Xsec b) (fun b => Ysec b) x with hD5def
   set D6 : TangentSpace I x :=
-    DifferentialGeometry.Geometry.Curvature.covDerivConnDiff (I := I) g₂ g₁
+    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference (I := I) g₂ g₁
       (fun b => Wsec b) (fun b => Xsec b) (fun b => Ysec b) x with hD6def
   set Avec : TangentSpace I x :=
     CovariantDerivative.difference
@@ -560,19 +560,19 @@ theorem covDConnDiff2_g1_le
   have hSA : Real.sqrt (g₁.inner x Avec Avec) ≤
       NA * Real.sqrt (g₁.inner x w w) * Real.sqrt (g₁.inner x u u) := by
     rw [hAvec, hNAdef]
-    exact Tensor0SBundle.connDiffVec_norm_le (I := I) g₁
+    exact Tensor0SBundle.connectionDifferenceVec_norm_le (I := I) g₁
       (leviCivitaConnectionOfMetric (I := I) g₁)
       (leviCivitaConnectionOfMetric (I := I) g₂) w u
   have hSD5 : Real.sqrt (g₁.inner x D5 D5) ≤
       (3 / 2 * M2 + M1 * NA) *
         Real.sqrt (g₁.inner x v' v') * Real.sqrt (g₁.inner x w w) * Real.sqrt (g₁.inner x u u) := by
     rw [hD5def, hM2def, hM1def, hNAdef]
-    exact DifferentialGeometry.Geometry.Curvature.covDerivConnDiff_g1_le (I := I) g₂ g₁ x v' w u
+    exact DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference_g1_le (I := I) g₂ g₁ x v' w u
   have hSD6 : Real.sqrt (g₁.inner x D6 D6) ≤
       (3 / 2 * M2 + M1 * NA) *
         Real.sqrt (g₁.inner x v v) * Real.sqrt (g₁.inner x w w) * Real.sqrt (g₁.inner x u u) := by
     rw [hD6def, hM2def, hM1def, hNAdef]
-    exact DifferentialGeometry.Geometry.Curvature.covDerivConnDiff_g1_le (I := I) g₂ g₁ x v w u
+    exact DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference_g1_le (I := I) g₂ g₁ x v w u
   have hBB_nn : 0 ≤ g₁.inner x B2 B2 := metric_inner_self_nonneg (I := I) (M := M) g₁ x B2
   have hBBsq : g₁.inner x B2 B2 = Real.sqrt (g₁.inner x B2 B2) ^ 2 := (Real.sq_sqrt hBB_nn).symm
   rw [hBBsq] at hkos
@@ -655,7 +655,7 @@ noncomputable def mixedCommC (s : ℕ) (Λ Λ' Λ'' Λ''' : ℝ) : ℝ :=
 
 open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem covDConnDiff2_gJet_le
+theorem covDConnectionDifference2_gJet_le
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     {K : Set M} {g₂ g₁ : SmoothRiemannianMetric I M} {Λ Λ' Λ'' Λ''' : ℝ}
@@ -665,10 +665,10 @@ theorem covDConnDiff2_gJet_le
     (hJet3 : MetricCovDerivOrderBoundOn (I := I) K 3 g₁ g₂ Λ''')
     {x : M} (hx : x ∈ K) (v' v w u : TangentSpace I x) :
     Real.sqrt (g₂.inner x
-        (covDerivConnDiff2 (I := I) g₂ g₁
+        (covDerivConnectionDifference2 (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x)
-        (covDerivConnDiff2 (I := I) g₂ g₁
+        (covDerivConnectionDifference2 (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x)) ≤
       (3 / 2 * Λ ^ 5 * Λ''' + 9 / 2 * Λ ^ 6 * Λ' * Λ'' + 3 * Λ ^ 7 * Λ' ^ 3) *
@@ -692,7 +692,7 @@ theorem covDConnDiff2_gJet_le
   have hs5 : Real.sqrt (Λ ^ 5) = Λ ^ 2 * Real.sqrt Λ := by
     rw [show Λ ^ 5 = (Λ ^ 2) ^ 2 * Λ by ring, Real.sqrt_mul (by positivity),
       Real.sqrt_sq (by positivity)]
-  have hcore := covDConnDiff2_g1_le (I := I) g₂ g₁ x v' v w u
+  have hcore := covDConnectionDifference2_g1_le (I := I) g₂ g₁ x v' v w u
   have hM3 : Real.sqrt (Tensor0SBundle.normSq0S (I := I) g₁ x 5
       (metricCovDeriv (I := I) g₁ g₂ 3 x)) ≤ Λ ^ 2 * Real.sqrt Λ * Λ''' := by
     have hcomp := DifferentialGeometry.Geometry.Curvature.sqrt_normSq0S_comp (I := I) hEq hx 5
@@ -774,7 +774,7 @@ theorem covDConnDiff2_gJet_le
     add_nonneg (add_nonneg (by linarith) (mul_nonneg hM2nn hNAnn))
       (mul_nonneg (by linarith) (add_nonneg (by linarith) (mul_nonneg hM1nn hNAnn)))
   set B2 : TangentSpace I x :=
-    covDerivConnDiff2 (I := I) g₂ g₁
+    covDerivConnectionDifference2 (I := I) g₂ g₁
       (smoothExtensionTangent (I := I) x v') (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x w) (smoothExtensionTangent (I := I) x u) x with hB2def
   clear_value B2
@@ -855,7 +855,7 @@ theorem covStep2_diffStep_peel
       = extDerivFun (I := I)
             (fun y : M =>
               (-∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-                  (covDerivConnDiff (I := I) g₂ g₁
+                  (covDerivConnectionDifference (I := I) g₂ g₁
                     (fun z => W z) (fun z => V z) (fun z => Vslots a z) y)))
               - ∑ a : Fin s, covStep (I := I) g₂ s S y
                   (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
@@ -906,7 +906,7 @@ theorem covStep2_diffStep_peel
           (fun q : Fin (s + 2) => RR q y))
         = (fun y : M =>
             (-∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-                (covDerivConnDiff (I := I) g₂ g₁
+                (covDerivConnectionDifference (I := I) g₂ g₁
                   (fun z => W z) (fun z => V z) (fun z => Vslots a z) y)))
             - ∑ a : Fin s, covStep (I := I) g₂ s S y
                 (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
@@ -931,26 +931,26 @@ theorem covStep2_diffStep_branch1
     (a : Fin s) (x : M) :
     extDerivFun (I := I)
         (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x)
       = covStep (I := I) g₂ s S x
           (Fin.cons (U x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff (I := I) g₂ g₁
+            (covDerivConnectionDifference (I := I) g₂ g₁
               (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         + (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff2 (I := I) g₂ g₁
+            (covDerivConnectionDifference2 (I := I) g₂ g₁
                 (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x
-              + covDerivConnDiff (I := I) g₂ g₁
+              + covDerivConnectionDifference (I := I) g₂ g₁
                   (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => W z))
                   (fun z => V z) (fun z => Vslots a z) x
-              + covDerivConnDiff (I := I) g₂ g₁ (fun z => W z)
+              + covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z)
                   (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => V z))
                   (fun z => Vslots a z) x
-              + covDerivConnDiff (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
+              + covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
                   (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => Vslots a z)) x))
         + ∑ b ∈ Finset.univ.erase a, (S x) (Function.update
             (Function.update (fun c : Fin s => Vslots c x) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)) b
             ((leviCivitaConnectionOfMetric (I := I) g₂
                 (fun y : M => Vslots b y) x) (U x))) := by
@@ -975,20 +975,20 @@ theorem covStep2_diffStep_branch1
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   set CDCsec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     ContMDiffSection.mk
-      (fun p => covDerivConnDiff (I := I) g₂ g₁
+      (fun p => covDerivConnectionDifference (I := I) g₂ g₁
         (fun z => W z) (fun z => V z) (fun z => Vslots a z) p)
-      (covDerivConnDiff_contMDiff (I := I) g₂ g₁ W V (Vslots a)) with hCDCdef
+      (covDerivConnectionDifference_contMDiff (I := I) g₂ g₁ W V (Vslots a)) with hCDCdef
   set σ : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     Function.update Vslots a CDCsec with hσdef
   have hCDCcoe : ∀ p : M, (CDCsec) p
-      = covDerivConnDiff (I := I) g₂ g₁
+      = covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) p := by
     intro p
     rw [hCDCdef]
     rfl
   have hσeval : ∀ y : M, (fun b : Fin s => (σ b) y)
       = Function.update (fun b : Fin s => Vslots b y) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) y) := by
     intro y
     funext b
@@ -998,7 +998,7 @@ theorem covStep2_diffStep_branch1
       exact hCDCcoe y
     · simp only [hσdef, Function.update_of_ne hb]
   have hInnerFun : (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
-        (covDerivConnDiff (I := I) g₂ g₁
+        (covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) y)))
       = (fun y : M => (S y) (fun b : Fin s => (σ b) y)) := by
     funext y
@@ -1012,33 +1012,33 @@ theorem covStep2_diffStep_branch1
     rw [hpeel]
     ring
   have hσa : (fun y : M => (σ a) y)
-      = (fun p : M => covDerivConnDiff (I := I) g₂ g₁
+      = (fun p : M => covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) p) := by
     funext y
     simp only [hσdef, Function.update_self]
     exact hCDCcoe y
   have hdiag : (leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => (σ a) y) x) (U x)
-      = covDerivConnDiff2 (I := I) g₂ g₁
+      = covDerivConnectionDifference2 (I := I) g₂ g₁
           (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x
-        + covDerivConnDiff (I := I) g₂ g₁
+        + covDerivConnectionDifference (I := I) g₂ g₁
             (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => W z))
             (fun z => V z) (fun z => Vslots a z) x
-        + covDerivConnDiff (I := I) g₂ g₁ (fun z => W z)
+        + covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z)
             (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => V z))
             (fun z => Vslots a z) x
-        + covDerivConnDiff (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
+        + covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
             (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => Vslots a z)) x := by
-    rw [hσa, covDerivConnDiff2_eq]
+    rw [hσa, covDerivConnectionDifference2_eq]
     simp only [covApply, LeviCivita_eq_leviCivitaConnectionOfMetric]
     abel
   have hoff : (∑ b ∈ Finset.univ.erase a, (S x) (Function.update
         (Function.update (fun c : Fin s => Vslots c x) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)) b
         ((leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => (σ b) y) x) (U x))))
       = ∑ b ∈ Finset.univ.erase a, (S x) (Function.update
           (Function.update (fun c : Fin s => Vslots c x) a
-            (covDerivConnDiff (I := I) g₂ g₁
+            (covDerivConnectionDifference (I := I) g₂ g₁
               (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)) b
           ((leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => Vslots b y) x) (U x))) := by
     refine Finset.sum_congr rfl (fun b hb => ?_)
@@ -1082,7 +1082,7 @@ theorem covStep2_diffStep_branch2
                     (Vslots a x)) (V x))))
         + covStep (I := I) g₂ s S x
             (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                   (fun z => U z) (fun z => V z) (fun z => Vslots a z) x
                 + (CovariantDerivative.difference
                     (leviCivitaConnectionOfMetric (I := I) g₁)
@@ -1171,7 +1171,7 @@ theorem covStep2_diffStep_branch2
     rw [hpeel]
     ring
   have hfact : (leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => (Asec) y) x) (U x)
-      = covDerivConnDiff (I := I) g₂ g₁
+      = covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => U z) (fun z => V z) (fun z => Vslots a z) x
         + (CovariantDerivative.difference
             (leviCivitaConnectionOfMetric (I := I) g₁)
@@ -1182,7 +1182,7 @@ theorem covStep2_diffStep_branch2
             (leviCivitaConnectionOfMetric (I := I) g₂) x
             ((leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => Vslots a y) x) (U x)))
             (V x) := by
-    rw [covDerivConnDiff_eq]
+    rw [covDerivConnectionDifference_eq]
     simp only [covDerivDiff, covApply, hAsecdef, ContMDiffSection.coeFn_mk,
       LeviCivita_eq_leviCivitaConnectionOfMetric]
     abel
@@ -1228,7 +1228,7 @@ theorem covStep2_branch1_mdiff
     (a : Fin s) (x : M) :
     MDifferentiableAt I 𝓘(ℝ, ℝ)
       (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
-        (covDerivConnDiff (I := I) g₂ g₁
+        (covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x := by
   classical
   haveI : IsManifold I 1 M :=
@@ -1251,20 +1251,20 @@ theorem covStep2_branch1_mdiff
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) g₂
   set CDCsec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     ContMDiffSection.mk
-      (fun p => covDerivConnDiff (I := I) g₂ g₁
+      (fun p => covDerivConnectionDifference (I := I) g₂ g₁
         (fun z => W z) (fun z => V z) (fun z => Vslots a z) p)
-      (covDerivConnDiff_contMDiff (I := I) g₂ g₁ W V (Vslots a)) with hCDCdef
+      (covDerivConnectionDifference_contMDiff (I := I) g₂ g₁ W V (Vslots a)) with hCDCdef
   set σ : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     Function.update Vslots a CDCsec with hσdef
   have hCDCcoe : ∀ p : M, (CDCsec) p
-      = covDerivConnDiff (I := I) g₂ g₁
+      = covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) p := by
     intro p
     rw [hCDCdef]
     rfl
   have hσeval : ∀ y : M, (fun b : Fin s => (σ b) y)
       = Function.update (fun b : Fin s => Vslots b y) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) y) := by
     intro y
     funext b
@@ -1274,7 +1274,7 @@ theorem covStep2_branch1_mdiff
       exact hCDCcoe y
     · simp only [hσdef, Function.update_of_ne hb]
   have hEq : (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
-        (covDerivConnDiff (I := I) g₂ g₁
+        (covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) y)))
       = (fun y : M => (S y) (fun b : Fin s => (σ b) y)) := by
     funext y
@@ -1390,7 +1390,7 @@ theorem covStep2_diffStep_split
     extDerivFun (I := I)
         (fun y : M =>
           (-∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y)))
           - ∑ a : Fin s, covStep (I := I) g₂ s S y
               (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
@@ -1400,7 +1400,7 @@ theorem covStep2_diffStep_split
                     (Vslots a y)) (V y))))) x (U x)
       = (-∑ a : Fin s, extDerivFun (I := I)
             (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x))
         - ∑ a : Fin s, extDerivFun (I := I)
             (fun y : M => covStep (I := I) g₂ s S y
@@ -1412,7 +1412,7 @@ theorem covStep2_diffStep_split
   classical
   have hT1 : ∀ a : Fin s, MDifferentiableAt I 𝓘(ℝ, ℝ)
       (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
-        (covDerivConnDiff (I := I) g₂ g₁
+        (covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x :=
     fun a => covStep2_branch1_mdiff (I := I) g₁ g₂ s S U W V Vslots a x
   have hT2 : ∀ a : Fin s, MDifferentiableAt I 𝓘(ℝ, ℝ)
@@ -1439,14 +1439,14 @@ theorem covStep2_diffStep_split
     simp only [Finset.sum_apply]
   have hf1 : MDifferentiableAt I 𝓘(ℝ, ℝ)
       (fun y : M => ∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-        (covDerivConnDiff (I := I) g₂ g₁
+        (covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x := by
     rw [show (fun y : M => ∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) y)))
         = Finset.univ.sum (fun a : Fin s => fun y : M => (S y)
             (Function.update (fun b : Fin s => Vslots b y) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) from by
         funext y; simp only [Finset.sum_apply]]
     exact mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hT1 a)
@@ -1461,18 +1461,18 @@ theorem covStep2_diffStep_split
     exact mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hT2 a)
   have e1 : extDerivFun (I := I)
         (fun y : M => -∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x)
       = -∑ a : Fin s, extDerivFun (I := I)
           (fun y : M => (S y) (Function.update (fun b : Fin s => Vslots b y) a
-            (covDerivConnDiff (I := I) g₂ g₁
+            (covDerivConnectionDifference (I := I) g₂ g₁
               (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x) := by
     have hneg : (fun y : M => -∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => W z) (fun z => V z) (fun z => Vslots a z) y)))
         = (fun y : M => -(Finset.univ.sum (fun a : Fin s => fun y' : M => (S y')
             (Function.update (fun b : Fin s => Vslots b y') a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y'))) y)) := by
       funext y
       simp only [Finset.sum_apply]
@@ -1498,7 +1498,7 @@ theorem covStep2_diffStep_split
   have hsub : extDerivFun (I := I)
         (fun y : M =>
           (-∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y)))
           - ∑ a : Fin s, covStep (I := I) g₂ s S y
               (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
@@ -1508,7 +1508,7 @@ theorem covStep2_diffStep_split
                     (Vslots a y)) (V y))))) x (U x)
       = extDerivFun (I := I)
             (fun y : M => -∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) x (U x)
         - extDerivFun (I := I)
             (fun y : M => ∑ a : Fin s, covStep (I := I) g₂ s S y
@@ -1589,7 +1589,7 @@ theorem covStep2_OC_q0
         (Fin.cons ((leviCivitaConnectionOfMetric (I := I) g₂ (fun z => W z) x) (U x))
           (Fin.cons (V x) (fun a : Fin s => Vslots a x)))
       = (-∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff (I := I) g₂ g₁
+            (covDerivConnectionDifference (I := I) g₂ g₁
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => W z))
               (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ s S x
@@ -1651,7 +1651,7 @@ theorem covStep2_OC_q1
           (Fin.cons ((leviCivitaConnectionOfMetric (I := I) g₂ (fun z => V z) x) (U x))
             (fun a : Fin s => Vslots a x)))
       = (-∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff (I := I) g₂ g₁ (fun z => W z)
+            (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z)
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => V z))
               (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ s S x
@@ -1715,12 +1715,12 @@ theorem covStep2_OC_int
             (Function.update (fun b : Fin s => Vslots b x) a₀
               ((leviCivitaConnectionOfMetric (I := I) g₂ (fun z => Vslots a₀ z) x) (U x)))))
       = (-((S x) (Function.update (fun b : Fin s => Vslots b x) a₀
-              (covDerivConnDiff (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
+              (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
                 (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => Vslots a₀ z)) x))
             + ∑ a ∈ Finset.univ.erase a₀, (S x) (Function.update
                 (Function.update (fun c : Fin s => Vslots c x) a₀
                   ((leviCivitaConnectionOfMetric (I := I) g₂ (fun z => Vslots a₀ z) x) (U x))) a
-                (covDerivConnDiff (I := I) g₂ g₁
+                (covDerivConnectionDifference (I := I) g₂ g₁
                   (fun z => W z) (fun z => V z) (fun z => Vslots a z) x))))
         - (covStep (I := I) g₂ s S x
               (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a₀
@@ -1795,15 +1795,15 @@ theorem covStep2_OC_int
   have hs1 : (∑ a : Fin s, (S x) (Function.update
         (Function.update (fun b : Fin s => Vslots b x) a₀
           ((leviCivitaConnectionOfMetric (I := I) g₂ (fun z => Vslots a₀ z) x) (U x))) a
-        (covDerivConnDiff (I := I) g₂ g₁
+        (covDerivConnectionDifference (I := I) g₂ g₁
           (fun y => W y) (fun y => V y) (fun y => σ a y) x)))
       = (S x) (Function.update (fun b : Fin s => Vslots b x) a₀
-            (covDerivConnDiff (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
+            (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => Vslots a₀ z)) x))
         + ∑ a ∈ Finset.univ.erase a₀, (S x) (Function.update
             (Function.update (fun c : Fin s => Vslots c x) a₀
               ((leviCivitaConnectionOfMetric (I := I) g₂ (fun z => Vslots a₀ z) x) (U x))) a
-            (covDerivConnDiff (I := I) g₂ g₁
+            (covDerivConnectionDifference (I := I) g₂ g₁
               (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)) := by
     rw [← Finset.add_sum_erase Finset.univ _ (Finset.mem_univ a₀), hσa₀,
       Function.update_idem]
@@ -1856,7 +1856,7 @@ theorem covStep2_pieceB_eval
         (Fin.cons (U x) (Fin.cons (W x) (Fin.cons (V x) (fun a : Fin s => Vslots a x))))
       = (-∑ j : Fin (s + 1), (covStep (I := I) g₂ s S x)
             (Function.update (Fin.cons (V x) (fun b : Fin s => Vslots b x)) j
-              (covDerivConnDiff (I := I) g₂ g₁ (fun z => U z) (fun z => W z)
+              (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => U z) (fun z => W z)
                 (fun z => (Fin.cons V Vslots :
                   Fin (s + 1) → ContMDiffSection I E (∞ : WithTop ℕ∞)
                     (TangentSpace I : M -> Type _)) j z) x)))
@@ -1897,15 +1897,15 @@ theorem covStep2_diffStep_eval
         (covStep (I := I) g₂ (s + 1) (diffStep (I := I) g₁ g₂ s S)) x
         (Fin.cons (U x) (Fin.cons (W x) (Fin.cons (V x) (fun a : Fin s => Vslots a x))))
       = (-∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff2 (I := I) g₂ g₁
+            (covDerivConnectionDifference2 (I := I) g₂ g₁
               (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ s S x
             (Fin.cons (U x) (Function.update (fun b : Fin s => Vslots b x) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ s S x
             (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => U z) (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ (s + 1) (covStep (I := I) g₂ s S) x
             (Fin.cons (U x) (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a
@@ -1915,29 +1915,29 @@ theorem covStep2_diffStep_eval
                   (Vslots a x)) (V x))))) := by
   classical
   have hsplitS : (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-        (covDerivConnDiff2 (I := I) g₂ g₁
+        (covDerivConnectionDifference2 (I := I) g₂ g₁
             (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x
-          + covDerivConnDiff (I := I) g₂ g₁
+          + covDerivConnectionDifference (I := I) g₂ g₁
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => W z))
               (fun z => V z) (fun z => Vslots a z) x
-          + covDerivConnDiff (I := I) g₂ g₁ (fun z => W z)
+          + covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z)
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => V z))
               (fun z => Vslots a z) x
-          + covDerivConnDiff (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
+          + covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => Vslots a z)) x)))
       = (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff2 (I := I) g₂ g₁
+            (covDerivConnectionDifference2 (I := I) g₂ g₁
               (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         + (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff (I := I) g₂ g₁
+            (covDerivConnectionDifference (I := I) g₂ g₁
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => W z))
               (fun z => V z) (fun z => Vslots a z) x)))
         + (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff (I := I) g₂ g₁ (fun z => W z)
+            (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z)
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => V z))
               (fun z => Vslots a z) x)))
         + (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
+            (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => W z) (fun z => V z)
               (covApply (LeviCivita (I := I) g₂) (fun z => U z) (fun z => Vslots a z)) x))) := by
     rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun a _ => ?_)
@@ -1946,7 +1946,7 @@ theorem covStep2_diffStep_eval
       Tensor0SBundle.Tensor0SSpace.map_update_add]
   have hsplitD : (∑ a : Fin s, covStep (I := I) g₂ s S x
         (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
               (fun z => U z) (fun z => V z) (fun z => Vslots a z) x
             + (CovariantDerivative.difference
                 (leviCivitaConnectionOfMetric (I := I) g₁)
@@ -1959,7 +1959,7 @@ theorem covStep2_diffStep_eval
                 (V x)))))
       = (∑ a : Fin s, covStep (I := I) g₂ s S x
             (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => U z) (fun z => V z) (fun z => Vslots a z) x))))
         + (∑ a : Fin s, covStep (I := I) g₂ s S x
             (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a
@@ -1982,11 +1982,11 @@ theorem covStep2_diffStep_eval
   have hFub1 : (∑ a₀ : Fin s, ∑ a ∈ Finset.univ.erase a₀, (S x) (Function.update
         (Function.update (fun c : Fin s => Vslots c x) a₀
           ((leviCivitaConnectionOfMetric (I := I) g₂ (fun z => Vslots a₀ z) x) (U x))) a
-        (covDerivConnDiff (I := I) g₂ g₁
+        (covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
       = ∑ a : Fin s, ∑ b ∈ Finset.univ.erase a, (S x) (Function.update
           (Function.update (fun c : Fin s => Vslots c x) a
-            (covDerivConnDiff (I := I) g₂ g₁
+            (covDerivConnectionDifference (I := I) g₂ g₁
               (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)) b
           ((leviCivitaConnectionOfMetric (I := I) g₂ (fun y : M => Vslots b y) x) (U x))) := by
     rw [Finset.sum_comm' (s := Finset.univ) (t := fun a₀ : Fin s => Finset.univ.erase a₀)
@@ -2101,15 +2101,15 @@ theorem covStep2_mixedComm_eval
           - covStep (I := I) g₁ (s + 1) (covStep (I := I) g₂ s S)) x
         (Fin.cons (U x) (Fin.cons (W x) (Fin.cons (V x) (fun a : Fin s => Vslots a x))))
       = (-∑ a : Fin s, (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff2 (I := I) g₂ g₁
+            (covDerivConnectionDifference2 (I := I) g₂ g₁
               (fun z => U z) (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ s S x
             (Fin.cons (U x) (Function.update (fun b : Fin s => Vslots b x) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ s S x
             (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a
-              (covDerivConnDiff (I := I) g₂ g₁
+              (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => U z) (fun z => V z) (fun z => Vslots a z) x)))
         - ∑ a : Fin s, covStep (I := I) g₂ (s + 1) (covStep (I := I) g₂ s S) x
             (Fin.cons (U x) (Fin.cons (W x) (Function.update (fun b : Fin s => Vslots b x) a
@@ -2119,7 +2119,7 @@ theorem covStep2_mixedComm_eval
                   (Vslots a x)) (V x)))))
         + ∑ j : Fin (s + 1), (covStep (I := I) g₂ s S x)
             (Function.update (Fin.cons (V x) (fun b : Fin s => Vslots b x)) j
-              (covDerivConnDiff (I := I) g₂ g₁ (fun z => U z) (fun z => W z)
+              (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => U z) (fun z => W z)
                 (fun z => (Fin.cons V Vslots :
                   Fin (s + 1) → ContMDiffSection I E (∞ : WithTop ℕ∞)
                     (TangentSpace I : M -> Type _)) j z) x))
@@ -2208,9 +2208,9 @@ private theorem mixedComm_le
   have hN1nn : (0 : ℝ) ≤ N1 := Real.sqrt_nonneg _
   have hN2nn : (0 : ℝ) ≤ N2 := Real.sqrt_nonneg _
   have hA2 := fun (v' v w u : TangentSpace I x) =>
-    covDConnDiff2_gJet_le (I := I) hEq hJet1 hJet2 hJet3 hx v' v w u
+    covDConnectionDifference2_gJet_le (I := I) hEq hJet1 hJet2 hJet3 hx v' v w u
   have hA1 := fun (v w u : TangentSpace I x) =>
-    DifferentialGeometry.Geometry.Curvature.covDerivConnDiff_gJet_le (I := I)
+    DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference_gJet_le (I := I)
       hEq hJet1 hJet2 hx v w u
   have hvec : ∀ z : TangentSpace I x,
       Real.sqrt (g₁.inner x z z) ≤ Real.sqrt Λ * Real.sqrt (g₂.inner x z z) := by
@@ -2254,7 +2254,7 @@ private theorem mixedComm_le
               (leviCivitaConnectionOfMetric (I := I) g₂) x Yv) Xv)) ≤
         NAb * Real.sqrt (g₂.inner x Xv Xv) * Real.sqrt (g₂.inner x Yv Yv) := by
     intro Yv Xv
-    have hg1 := connDiffVec_norm_le (I := I) g₁
+    have hg1 := connectionDifferenceVec_norm_le (I := I) g₁
       (leviCivitaConnectionOfMetric (I := I) g₁)
       (leviCivitaConnectionOfMetric (I := I) g₂) Xv Yv
     have hstep1 : Real.sqrt (g₁.inner x
@@ -2369,13 +2369,13 @@ private theorem mixedComm_le
           · exact (hZval a).symm
     rw [htuple, covStep2_mixedComm_eval (I := I) g₁ g₂ s S Usec Wsec Vsec Zsec x]
     have hI : ∀ a : Fin s, |(S x) (Function.update (fun b : Fin s => Zsec b x) a
-        (covDerivConnDiff2 (I := I) g₂ g₁
+        (covDerivConnectionDifference2 (I := I) g₂ g₁
           (fun z => Usec z) (fun z => Wsec z) (fun z => Vsec z) (fun z => Zsec a z) x))| ≤
         NS * CA2 := by
       intro a
       have hb := habs s (S x)
         (Function.update (fun b : Fin s => Zsec b x) a
-          (covDerivConnDiff2 (I := I) g₂ g₁
+          (covDerivConnectionDifference2 (I := I) g₂ g₁
             (fun z => Usec z) (fun z => Wsec z) (fun z => Vsec z) (fun z => Zsec a z) x)) a
         (fun b hbne => by rw [Function.update_of_ne hbne]; exact hnZ b)
       rw [Function.update_self, ← hNSdef] at hb
@@ -2388,12 +2388,12 @@ private theorem mixedComm_le
       exact h
     have hII : ∀ a : Fin s, |covStep (I := I) g₂ s S x
         (Fin.cons (Usec x) (Function.update (fun b : Fin s => Zsec b x) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => Wsec z) (fun z => Vsec z) (fun z => Zsec a z) x)))| ≤ N1 * CA1 := by
       intro a
       set tup : Fin (s + 1) → TangentSpace I x :=
         Fin.cons (Usec x) (Function.update (fun b : Fin s => Zsec b x) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => Wsec z) (fun z => Vsec z) (fun z => Zsec a z) x)) with htup
       have hbase : ∀ b : Fin (s + 1), b ≠ Fin.succ a →
           Real.sqrt (g₂.inner x (tup b) (tup b)) = 1 := by
@@ -2407,7 +2407,7 @@ private theorem mixedComm_le
           rw [htup, Fin.cons_succ, Function.update_of_ne hca]
           exact hnZ c
       have hb := habs (s + 1) (covStep (I := I) g₂ s S x) tup (Fin.succ a) hbase
-      have htupj : tup (Fin.succ a) = covDerivConnDiff (I := I) g₂ g₁
+      have htupj : tup (Fin.succ a) = covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => Wsec z) (fun z => Vsec z) (fun z => Zsec a z) x := by
         rw [htup, Fin.cons_succ, Function.update_self]
       rw [htupj, ← hN1def] at hb
@@ -2420,12 +2420,12 @@ private theorem mixedComm_le
       exact h
     have hIII : ∀ a : Fin s, |covStep (I := I) g₂ s S x
         (Fin.cons (Wsec x) (Function.update (fun b : Fin s => Zsec b x) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => Usec z) (fun z => Vsec z) (fun z => Zsec a z) x)))| ≤ N1 * CA1 := by
       intro a
       set tup : Fin (s + 1) → TangentSpace I x :=
         Fin.cons (Wsec x) (Function.update (fun b : Fin s => Zsec b x) a
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (fun z => Usec z) (fun z => Vsec z) (fun z => Zsec a z) x)) with htup
       have hbase : ∀ b : Fin (s + 1), b ≠ Fin.succ a →
           Real.sqrt (g₂.inner x (tup b) (tup b)) = 1 := by
@@ -2439,7 +2439,7 @@ private theorem mixedComm_le
           rw [htup, Fin.cons_succ, Function.update_of_ne hca]
           exact hnZ c
       have hb := habs (s + 1) (covStep (I := I) g₂ s S x) tup (Fin.succ a) hbase
-      have htupj : tup (Fin.succ a) = covDerivConnDiff (I := I) g₂ g₁
+      have htupj : tup (Fin.succ a) = covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => Usec z) (fun z => Vsec z) (fun z => Zsec a z) x := by
         rw [htup, Fin.cons_succ, Function.update_self]
       rw [htupj, ← hN1def] at hb
@@ -2493,14 +2493,14 @@ private theorem mixedComm_le
       exact h
     have hIV : ∀ j : Fin (s + 1), |(covStep (I := I) g₂ s S x)
         (Function.update (Fin.cons (Vsec x) (fun b : Fin s => Zsec b x)) j
-          (covDerivConnDiff (I := I) g₂ g₁ (fun z => Usec z) (fun z => Wsec z)
+          (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => Usec z) (fun z => Wsec z)
             (fun z => (Fin.cons Vsec Zsec :
               Fin (s + 1) → ContMDiffSection I E (∞ : WithTop ℕ∞)
                 (TangentSpace I : M -> Type _)) j z) x))| ≤ N1 * CA1 := by
       intro j
       set tup : Fin (s + 1) → TangentSpace I x :=
         Function.update (Fin.cons (Vsec x) (fun b : Fin s => Zsec b x)) j
-          (covDerivConnDiff (I := I) g₂ g₁ (fun z => Usec z) (fun z => Wsec z)
+          (covDerivConnectionDifference (I := I) g₂ g₁ (fun z => Usec z) (fun z => Wsec z)
             (fun z => (Fin.cons Vsec Zsec :
               Fin (s + 1) → ContMDiffSection I E (∞ : WithTop ℕ∞)
                 (TangentSpace I : M -> Type _)) j z) x) with htup
@@ -2514,7 +2514,7 @@ private theorem mixedComm_le
         · rw [Fin.cons_succ]
           exact hnZ c
       have hb := habs (s + 1) (covStep (I := I) g₂ s S x) tup j hbase
-      have htupj : tup j = covDerivConnDiff (I := I) g₂ g₁
+      have htupj : tup j = covDerivConnectionDifference (I := I) g₂ g₁
           (fun z => Usec z) (fun z => Wsec z)
           (fun z => (Fin.cons Vsec Zsec :
             Fin (s + 1) → ContMDiffSection I E (∞ : WithTop ℕ∞)

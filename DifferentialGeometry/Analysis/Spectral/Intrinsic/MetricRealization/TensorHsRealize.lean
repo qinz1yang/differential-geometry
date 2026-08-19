@@ -102,7 +102,7 @@ theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
   letI instTens : Bundle.RiemannianBundle
       (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
-  obtain ⟨n, e, _hn, horth, hpars, hexpand, hrfns⟩ :=
+  obtain ⟨n, e, _hn, horth, hpars, hexpand, hriemannianFiberNormSq⟩ :=
     tangent_frame_expansion (I := I) (M := M) g₀ x
   set B : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=
     smoothCcTensorBilinForm (I := I) g₀ T x with hB_def
@@ -199,7 +199,7 @@ theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
       ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 := by
     rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 2 x
       (T.toSection x)]
-    rw [hrfns (T.toSection x)]
+    rw [hriemannianFiberNormSq (T.toSection x)]
     rw [Fintype.sum_unique (fun K : Fin 0 → Fin n =>
       ∑ J : Fin 2 → Fin n,
         fiberNormSqSummand (I := I) (M := M) g₀ x 0 2 (T.toSection x) n e K J)]

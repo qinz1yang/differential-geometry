@@ -25,10 +25,10 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 
 omit [CompleteSpace E] in
-theorem exists_h6_metric_lim
+theorem exists_chart_metric_limit_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (c : ∀ k : Nat, (X.obj k).M)
     {U : Set E} (hU : IsOpen U)
     (hsub : ∀ k,
@@ -53,7 +53,7 @@ theorem exists_h6_metric_lim
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
       simpa only [d.radius_eq k (c k)] using hsub k
-    simpa only [H6NormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       (d.chart k (c k)).metric_contDiffOn (X.obj k).metric hU
         ((d.chart k (c k)).smooth_to.mono hrad)
   · intro p K hK hKU
@@ -67,7 +67,7 @@ theorem exists_h6_metric_lim
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
       simpa only [d.radius_eq k (c k)] using hsub k
-    simpa only [H6NormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_deriv k p (c k) z (hrad (hKU hz))
   · intro k z hz v
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -78,16 +78,16 @@ theorem exists_h6_metric_lim
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
       simpa only [d.radius_eq k (c k)] using hsub k
-    simpa only [H6NormalData.chartMetric] using
+    simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_equiv k (c k) z (hrad hz) v
 
 
 omit [CompleteSpace E] in
-theorem exists_h6_metric_pi
+theorem exists_finite_chart_metric_limit_subsequence
     {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (c : ι → ∀ k : Nat, (X.obj k).M)
     {U : Set E} (hU : IsOpen U)
     (hsub : ∀ k i,
@@ -116,7 +116,7 @@ theorem exists_h6_metric_pi
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
       simpa only [d.radius_eq k (c i k)] using hsub k i
-    simpa only [gLoc, H6NormalData.chartMetric] using
+    simpa only [gLoc, BoundedGeometryNormalData.chartMetric] using
       (d.chart k (c i k)).metric_contDiffOn (X.obj k).metric hU
         ((d.chart k (c i k)).smooth_to.mono hrad)
   have hsmooth : ∀ k, ContDiffOn Real (⊤ : ℕ∞) (gLoc k) U :=
@@ -134,7 +134,7 @@ theorem exists_h6_metric_pi
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
       simpa only [d.radius_eq k (c i k)] using hsub k i
-    simpa only [gLoc, H6NormalData.chartMetric] using
+    simpa only [gLoc, BoundedGeometryNormalData.chartMetric] using
       d.metric_deriv k p (c i k) z (hrad (hKU hz))
   have hbdd : IsometryDerivBoundsOn U gLoc :=
     IsometryDerivBoundsOn.pi hU hsmoothComp hbddComp
@@ -170,7 +170,7 @@ theorem exists_h6_metric_pi
         U ⊆ Metric.ball (0 : E)
           (d.chart (phi n) (c i (phi n))).radius := by
       simpa only [d.radius_eq (phi n) (c i (phi n))] using hsub (phi n) i
-    simpa only [gLoc, H6NormalData.chartMetric] using
+    simpa only [gLoc, BoundedGeometryNormalData.chartMetric] using
       d.metric_equiv (phi n) (c i (phi n)) z (hrad hz) v
   exact ⟨
     ge_of_tendsto htendv

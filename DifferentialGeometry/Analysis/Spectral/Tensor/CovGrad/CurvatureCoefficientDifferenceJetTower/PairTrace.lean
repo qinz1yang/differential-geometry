@@ -47,7 +47,7 @@ namespace CurvatureCoefficientDifferenceJetTower
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma appCcRS_zero_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
+lemma operatorFieldComposition_zero_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (W : SmoothCcTensor g₀ a b) :
     ccOperatorFieldComp (I := I) (M := M) g₀ a b c (0 : SmoothCcTensor g₀ b c) W = 0 := by
   apply SmoothCcTensor.ext
@@ -55,11 +55,11 @@ lemma appCcRS_zero_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c (0 : SmoothCcTensor g₀ b c) W).toSection x) D =
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c (0 : SmoothCcTensor g₀ b c) W).toSection x) D =
       ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from
         (0 : SmoothCcTensor g₀ b c).toSection x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace b I x from W.toSection x) D)) from by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
   rw [show ((0 : SmoothCcTensor g₀ b c).toSection x) = (0 : TensorRSSpace b c I x) from by
     rw [SmoothCcTensor.toSection_zero]; rfl]
@@ -69,7 +69,7 @@ lemma appCcRS_zero_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma appCcRS_right_zero_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
+lemma operatorFieldComposition_right_zero_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g₀ b c) :
     ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ (0 : SmoothCcTensor g₀ a b) = 0 := by
   apply SmoothCcTensor.ext
@@ -77,11 +77,11 @@ lemma appCcRS_right_zero_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c Φ (0 : SmoothCcTensor g₀ a b)).toSection x) D =
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ (0 : SmoothCcTensor g₀ a b)).toSection x) D =
       ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace b I x from
           (0 : SmoothCcTensor g₀ a b).toSection x) D)) from by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
   rw [show ((0 : SmoothCcTensor g₀ a b).toSection x) = (0 : TensorRSSpace a b I x) from by
     rw [SmoothCcTensor.toSection_zero]; rfl]
@@ -253,11 +253,11 @@ lemma slotExtendIter_parallel (g₀ : SmoothRiemannianMetric I M) (b c : ℕ)
         (slotExtendIter_parallel g₀ b c Φ hΦ j)
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma iteratedCovGrad_appCcRS_parallel (g₀ : SmoothRiemannianMetric I M)
+lemma iteratedCovGrad_operatorFieldComposition_parallel (g₀ : SmoothRiemannianMetric I M)
     (a b c : ℕ) (Φ : SmoothCcTensor g₀ b c)
     (hΦ : covGrad (I := I) (M := M) g₀ b c Φ = 0) (W : SmoothCcTensor g₀ a b) :
-    ∀ j : ℕ, iteratedCovGrad (I := I) g₀ a c j (appCcRS (I := I) (M := M) g₀ a b c Φ W) =
-      appCcRS (I := I) (M := M) g₀ a (b + j) (c + j)
+    ∀ j : ℕ, iteratedCovGrad (I := I) g₀ a c j (ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W) =
+      ccOperatorFieldComp (I := I) (M := M) g₀ a (b + j) (c + j)
         (slotExtendIter (I := I) (M := M) g₀ b c j Φ)
         (iteratedCovGrad (I := I) g₀ a b j W)
   | 0 => by
@@ -265,12 +265,12 @@ lemma iteratedCovGrad_appCcRS_parallel (g₀ : SmoothRiemannianMetric I M)
       rfl
   | (j + 1) => by
       rw [iteratedCovGrad_succ]
-      rw [iteratedCovGrad_appCcRS_parallel g₀ a b c Φ hΦ W j]
-      rw [covGrad_appCcRS_eq (I := I) (M := M) g₀ a (b + j) (c + j)
+      rw [iteratedCovGrad_operatorFieldComposition_parallel g₀ a b c Φ hΦ W j]
+      rw [covGrad_operatorFieldComposition_eq (I := I) (M := M) g₀ a (b + j) (c + j)
         (slotExtendIter (I := I) (M := M) g₀ b c j Φ)
         (iteratedCovGrad (I := I) g₀ a b j W)]
       rw [slotExtendIter_parallel (I := I) (M := M) g₀ b c Φ hΦ j]
-      rw [appCcRS_zero_left_cc (I := I) (M := M) g₀ a (b + j) ((c + j) + 1)
+      rw [operatorFieldComposition_zero_left_cc (I := I) (M := M) g₀ a (b + j) ((c + j) + 1)
         (iteratedCovGrad (I := I) g₀ a b j W)]
       rw [zero_add]
       rw [show covGrad (I := I) (M := M) g₀ a (b + j) (iteratedCovGrad (I := I) g₀ a b j W) =
@@ -279,19 +279,19 @@ lemma iteratedCovGrad_appCcRS_parallel (g₀ : SmoothRiemannianMetric I M)
       rfl
 
 def phiDtPair (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 6 2 :=
-  appCcRS (I := I) (M := M) g₀ 6 4 2
+  ccOperatorFieldComp (I := I) (M := M) g₀ 6 4 2
     (cometricDoubleTraceField (I := I) g₀ 2) (cometricDoubleTraceField (I := I) g₀ 4)
 
 lemma phiDtPair_covGrad_zero (g₀ : SmoothRiemannianMetric I M) :
     covGrad (I := I) (M := M) g₀ 6 2 (phiDtPair (I := I) (M := M) g₀) = 0 := by
   rw [phiDtPair]
-  rw [covGrad_appCcRS_eq (I := I) (M := M) g₀ 6 4 2
+  rw [covGrad_operatorFieldComposition_eq (I := I) (M := M) g₀ 6 4 2
     (cometricDoubleTraceField (I := I) g₀ 2) (cometricDoubleTraceField (I := I) g₀ 4)]
   rw [cometricDoubleTraceField_covGrad_eq_zero (I := I) g₀ 2]
   rw [cometricDoubleTraceField_covGrad_eq_zero (I := I) g₀ 4]
-  rw [appCcRS_zero_left_cc (I := I) (M := M) g₀ 6 4 3
+  rw [operatorFieldComposition_zero_left_cc (I := I) (M := M) g₀ 6 4 3
     (cometricDoubleTraceField (I := I) g₀ 4)]
-  rw [appCcRS_right_zero_cc (I := I) (M := M) g₀ 6 5 3
+  rw [operatorFieldComposition_right_zero_cc (I := I) (M := M) g₀ 6 5 3
     (slotExtend (I := I) (M := M) g₀ 4 2 (cometricDoubleTraceField (I := I) g₀ 2))]
   rw [add_zero]
 
@@ -404,7 +404,7 @@ theorem mixedCoeff_backgroundDifference_eq_pairTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ -
         ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ =
-      (2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+      (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁))) := by
@@ -497,7 +497,7 @@ theorem mixedCoeff_backgroundDifference_eq_pairTrace
     rfl
   have hRHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        ((2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+        ((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) v =
       2 * ∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
@@ -507,23 +507,23 @@ theorem mixedCoeff_backgroundDifference_eq_pairTrace
           unitModel (I := I) (M := M) g₀ 4 X x
             ![v 0, v 1, (smoothOrthoFrame (I := I) g₀ x a x : E),
               (smoothOrthoFrame (I := I) g₀ x b x : E)] := by
-    rw [show (((2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+    rw [show (((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) =
-        (2 : ℝ) • ((appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+        (2 : ℝ) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]; rfl]
-    rw [show ((2 : ℝ) • ((appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+    rw [show ((2 : ℝ) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) :
         TensorRSSpace 2 2 I x) D =
-        (2 : ℝ) • (((appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+        (2 : ℝ) • (((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) from rfl]
     rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
     congr 1
-    rw [show (((appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+    rw [show (((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) =
         (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -531,7 +531,7 @@ theorem mixedCoeff_backgroundDifference_eq_pairTrace
           ((show Tensor0SSpace 6 I x →L[ℝ] Tensor0SSpace 4 I x from
             cometricDoubleTraceFib (I := I) g₀ 4 x) Y) from by
       rw [hY_def]
-      rw [appCcRS_toSection]
+      rw [operatorFieldComposition_toSection]
       rfl]
     rw [cometricDoubleTraceFib_toModel (I := I) g₀ 2 x]
     rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g₀ x)]
@@ -570,7 +570,7 @@ lemma iteratedCovGrad_smul_b (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih, covGrad_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma rfns_smul_b (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+lemma riemannianFiberNormSq_smul_b (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
       c ^ 2 * riemannianFiberNormSq (I := I) (M := M) g r s x v := by
@@ -582,7 +582,7 @@ lemma rfns_smul_b (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
 
 end CurvatureCoefficientDifferenceJetTower
 
-theorem rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDifference
+theorem riemannianFiberNormSq_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDifference
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
@@ -612,19 +612,19 @@ theorem rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDi
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)) with hWB_def
   have hsmul : (iteratedCovGrad (I := I) g₀ 2 2 i
-      ((2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+      ((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
         WB)).toSection x =
       (2 : ℝ) • ((iteratedCovGrad (I := I) g₀ 2 2 i
-        (appCcRS (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (phiDtPair (I := I) (M := M) g₀)
           WB)).toSection x) := by
     rw [iteratedCovGrad_smul_b]
     rw [SmoothCcTensor.toSection_smul]
     rfl
-  rw [hsmul, rfns_smul_b]
-  rw [iteratedCovGrad_appCcRS_parallel (I := I) (M := M) g₀ 2 6 2
+  rw [hsmul, riemannianFiberNormSq_smul_b]
+  rw [iteratedCovGrad_operatorFieldComposition_parallel (I := I) (M := M) g₀ 2 6 2
     (phiDtPair (I := I) (M := M) g₀) (phiDtPair_covGrad_zero (I := I) (M := M) g₀) WB i]
   have hcomp : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
-      ((appCcRS (I := I) (M := M) g₀ 2 (6 + i) (2 + i)
+      ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 (6 + i) (2 + i)
         (slotExtendIter (I := I) (M := M) g₀ 6 2 i (phiDtPair (I := I) (M := M) g₀))
         (iteratedCovGrad (I := I) g₀ 2 6 i WB)).toSection x) ≤
       riemannianFiberNormSq (I := I) (M := M) g₀ (6 + i) (2 + i) x
@@ -632,7 +632,7 @@ theorem rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDi
             (phiDtPair (I := I) (M := M) g₀)).toSection x) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + i) x
           ((iteratedCovGrad (I := I) g₀ 2 6 i WB).toSection x) := by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     exact riemannianFiberNormSq_compRS_le_mul (I := I) (M := M) g₀ 2 (6 + i) (2 + i) x
       ((slotExtendIter (I := I) (M := M) g₀ 6 2 i
         (phiDtPair (I := I) (M := M) g₀)).toSection x)
@@ -650,7 +650,7 @@ theorem rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDi
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁))).toSection x) := by
       rw [hWB_def]
-      exact rfns_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g₀ 2 6 sigmaE0
+      exact riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g₀ 2 6 sigmaE0
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
           (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁))
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
@@ -668,7 +668,7 @@ theorem rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDi
             ((iteratedCovGrad (I := I) g₀ 1 5 i
               (slotExtend (I := I) (M := M) g₀ 0 4
                 (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁))).toSection x) :=
-      rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 5
+      riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 5
         (slotExtend (I := I) (M := M) g₀ 0 4
           (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)) i x
     have hstep2 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (5 + i) x
@@ -679,7 +679,7 @@ theorem rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDi
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 4 i
               (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)).toSection x) :=
-      rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 0 4
+      riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 0 4
         (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) i x
     have hfr : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + i) x
@@ -702,13 +702,13 @@ theorem rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDi
             ((iteratedCovGrad (I := I) g₀ 0 4 i
               (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)).toSection x) := by
           ring
-  have hrfns_nn := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (6 + i) x
+  have hriemannianFiberNormSq_nn := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (6 + i) x
     ((iteratedCovGrad (I := I) g₀ 2 6 i WB).toSection x)
   have hCD_nn := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + i) x
     ((iteratedCovGrad (I := I) g₀ 0 4 i
       (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)).toSection x)
   calc (2 : ℝ) ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
-        ((appCcRS (I := I) (M := M) g₀ 2 (6 + i) (2 + i)
+        ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 (6 + i) (2 + i)
           (slotExtendIter (I := I) (M := M) g₀ 6 2 i (phiDtPair (I := I) (M := M) g₀))
           (iteratedCovGrad (I := I) g₀ 2 6 i WB)).toSection x)
       ≤ (2 : ℝ) ^ 2 * (riemannianFiberNormSq (I := I) (M := M) g₀ (6 + i) (2 + i) x
@@ -735,7 +735,7 @@ theorem rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_le_loweredDi
               (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)).toSection x) := by
         ring
 
-theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
+theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -756,9 +756,9 @@ theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   classical
   obtain ⟨CAd, hCAd_nn, hCAd⟩ :=
-    rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_rfns_bound (I := I) (M := M) g₀ 0 4
+  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 0 4
     (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)
   set BB : ℕ → ℕ → ℝ := fun i i' => ((Module.finrank ℝ E : ℝ) ^ 2 * δ₀ ^ 2 + 1) *
     ∑ l ∈ Finset.range (i + 1 - i'),
@@ -782,9 +782,9 @@ theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
     intro i i'
     rw [hBB_def]
   clear_value BB
-  refine ⟨fun i => appCcGdiag (E := E) i *
+  refine ⟨fun i => operatorFieldApplicationGdiag (E := E) i *
       ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) ^ 3 * BB i i',
-    fun i => mul_nonneg (appCcGdiag_nonneg (E := E) i)
+    fun i => mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) i)
       (Finset.sum_nonneg fun i' _ =>
         mul_nonneg (pow_nonneg (Nat.cast_nonneg _) _) (hBB_nn i i')), ?_⟩
   intro g₁ T htie δ hδ_le hδ0 hbound i x
@@ -823,12 +823,12 @@ theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
   rw [riemannG1LoweringDifference_slotInsert_repr (I := I) (M := M) g₀ g₁ T htie]
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
     (Equiv.swap (0 : Fin 4) 1)
-    (appCcRS (I := I) (M := M) g₀ 0 4 4
+    (ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 4
       (slotInsertEndoCc (I := I) (M := M) g₀ 3
         (perturbationSharpEndoField (I := I) (M := M) g₀ T))
       (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁))) i x]
-  refine le_trans (rfns_iteratedCovGrad_appCcRS_diagonalProductGrid_rankLeft_le
+  refine le_trans (riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le
     (I := I) (M := M) g₀ i 0 4 4
     (slotInsertEndoCc (I := I) (M := M) g₀ 3
       (perturbationSharpEndoField (I := I) (M := M) g₀ T))
@@ -951,7 +951,7 @@ theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + i') x
             ((iteratedCovGrad (I := I) g₀ 0 2 i'
               (symmS (I := I) (M := M) g₀ T)).toSection x) :=
-      rfns_iteratedCovGrad_slotInsert3_perturbationSharp_le (I := I) (M := M) g₀ T i' x
+      riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le (I := I) (M := M) g₀ T i' x
     match i' with
     | 0 =>
         have hsym0 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
@@ -959,7 +959,7 @@ theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
               (symmS (I := I) (M := M) g₀ T)).toSection x) ≤
             (Module.finrank ℝ E : ℝ) ^ 2 * δ₀ ^ 2 := by
           rw [iteratedCovGrad_zero]
-          refine le_trans (rfns_symmS_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x) ?_
+          refine le_trans (riemannianFiberNormSq_symmS_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x) ?_
           have hδsq : δ ^ 2 ≤ δ₀ ^ 2 :=
             (sq_le_sq₀ hδ0 (le_trans hδ0 hδ_le)).2 hδ_le
           exact mul_le_mul_of_nonneg_left hδsq (sq_nonneg _)
@@ -1067,7 +1067,7 @@ theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
             ((iteratedCovGrad (I := I) g₀ 0 2 (i'' + 1)
               (symmS (I := I) (M := M) g₀ T)).toSection x) ≤
             ∑ k ∈ Finset.range ((i'' + 1) + 1), Combinatorics.antidiagonalTupleGrid b k :=
-          le_trans (rfns_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ T (i'' + 1) x)
+          le_trans (riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ T (i'' + 1) x)
             (le_trans hb_le_grid hgrid_le_gsum)
         have hm3 : ∀ l ∈ Finset.range (i + 1 - (i'' + 1)),
             (∑ k ∈ Finset.range ((i'' + 1) + 1), Combinatorics.antidiagonalTupleGrid b k) *
@@ -1152,7 +1152,7 @@ theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
                       WW := by
                     refine mul_le_mul_of_nonneg_right ?_ hWW_nn
                     exact mul_le_mul_of_nonneg_left hstep hfr3
-  calc appCcGdiag (E := E) i *
+  calc operatorFieldApplicationGdiag (E := E) i *
         ∑ i' ∈ Finset.range (i + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + i') x
               ((iteratedCovGrad (I := I) g₀ 4 4 i'
@@ -1163,10 +1163,10 @@ theorem rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
                 ((iteratedCovGrad (I := I) g₀ 0 4 l
                   (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
                     (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁))).toSection x)
-      ≤ appCcGdiag (E := E) i *
+      ≤ operatorFieldApplicationGdiag (E := E) i *
           ∑ i' ∈ Finset.range (i + 1), ((Module.finrank ℝ E : ℝ) ^ 3 * BB i i') * WW :=
-        mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell) (appCcGdiag_nonneg (E := E) i)
-    _ = (appCcGdiag (E := E) i *
+        mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell) (operatorFieldApplicationGdiag_nonneg (E := E) i)
+    _ = (operatorFieldApplicationGdiag (E := E) i *
           ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) ^ 3 * BB i i') * WW := by
         rw [← Finset.sum_mul]
         ac_rfl
@@ -1197,32 +1197,32 @@ lemma slotInsertEndoCc_add_endo_c (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma fullRaisedEndoField_diff_split_c (g₀ g₁ : SmoothRiemannianMetric I M) :
-    fullRaisedEndoField (I := I) (M := M) g₀ g₁ =
-      gInvDiffRaisedEndoField (I := I) g₀ g₁ +
-        fullRaisedEndoField (I := I) (M := M) g₀ g₀ := by
+lemma metricComparisonEndomorphismField_diff_split_c (g₀ g₁ : SmoothRiemannianMetric I M) :
+    metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
+      metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
+        metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ := by
   apply ContMDiffSection.ext
   intro x
-  rw [show ((gInvDiffRaisedEndoField (I := I) g₀ g₁ +
-        fullRaisedEndoField (I := I) (M := M) g₀ g₀) x) =
-      gInvDiffRaisedEndoField (I := I) g₀ g₁ x +
-        fullRaisedEndoField (I := I) (M := M) g₀ g₀ x from by
+  rw [show ((metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
+        metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) x) =
+      metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ x +
+        metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x from by
     rw [ContMDiffSection.coe_add]; rfl]
   apply ContinuousLinearMap.ext
   intro v
-  rw [fullRaisedEndoField_apply, ContinuousLinearMap.add_apply]
-  rw [show (gInvDiffRaisedEndoField (I := I) g₀ g₁ x) = gInvDiffRaisedEndo (I := I) g₀ g₁ x
+  rw [metricComparisonEndomorphismField_apply, ContinuousLinearMap.add_apply]
+  rw [show (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ x) = metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
     from rfl]
-  rw [fullRaisedEndoField_apply]
-  rw [gInvRaisedEndo_eq_diff_add_id (I := I) g₀ g₁ x v]
-  rw [show gInvRaisedEndo (I := I) g₀ g₀ x v = v from by
-    rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]]
+  rw [metricComparisonEndomorphismField_apply]
+  rw [metricComparisonEndomorphism_eq_diff_add_id (I := I) g₀ g₁ x v]
+  rw [show metricComparisonEndomorphism (I := I) g₀ g₀ x v = v from by
+    rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma g1_inner_gInvRaisedEndo_left_c (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+lemma g1_inner_metricComparisonEndomorphism_left_c (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
-    g₁.inner x (gInvRaisedEndo (I := I) g₀ g₁ x v) w = g₀.inner x v w := by
-  rw [gInvRaisedEndo_apply]
+    g₁.inner x (metricComparisonEndomorphism (I := I) g₀ g₁ x v) w = g₀.inner x v w := by
+  rw [metricComparisonEndomorphism_apply]
   rw [inverseMetricSharpFib_inner (I := I) g₁ x (g0FlatCLM (I := I) g₀ x v) w]
   rw [show cotangentToDualLinear (I := I) (x := x) (g0FlatCLM (I := I) g₀ x v) w =
       cotangentToDual (I := I) (x := x) (g0FlatCLM (I := I) g₀ x v) w from rfl]
@@ -1230,35 +1230,35 @@ lemma g1_inner_gInvRaisedEndo_left_c (g₀ g₁ : SmoothRiemannianMetric I M) (x
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma appCcRS_sub_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
+lemma operatorFieldComposition_sub_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g₀ b c) (W : SmoothCcTensor g₀ a b) :
-    appCcRS (I := I) (M := M) g₀ a b c (Φ₁ - Φ₂) W =
-      appCcRS (I := I) (M := M) g₀ a b c Φ₁ W - appCcRS (I := I) (M := M) g₀ a b c Φ₂ W := by
+    ccOperatorFieldComp (I := I) (M := M) g₀ a b c (Φ₁ - Φ₂) W =
+      ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₁ W - ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₂ W := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c Φ₁ W -
-        appCcRS (I := I) (M := M) g₀ a b c Φ₂ W).toSection x) =
-      (appCcRS (I := I) (M := M) g₀ a b c Φ₁ W).toSection x -
-        (appCcRS (I := I) (M := M) g₀ a b c Φ₂ W).toSection x from by
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₁ W -
+        ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₂ W).toSection x) =
+      (ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₁ W).toSection x -
+        (ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₂ W).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
   rw [ContinuousLinearMap.sub_apply]
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c (Φ₁ - Φ₂) W).toSection x) D =
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c (Φ₁ - Φ₂) W).toSection x) D =
       ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from (Φ₁ - Φ₂).toSection x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace b I x from W.toSection x) D)) from by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c Φ₁ W).toSection x) D =
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₁ W).toSection x) D =
       ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ₁.toSection x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace b I x from W.toSection x) D)) from by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c Φ₂ W).toSection x) D =
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₂ W).toSection x) D =
       ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ₂.toSection x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace b I x from W.toSection x) D)) from by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
   rw [show ((Φ₁ - Φ₂).toSection x) = Φ₁.toSection x - Φ₂.toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
@@ -1266,36 +1266,36 @@ lemma appCcRS_sub_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma appCcRS_sub_right_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
+lemma operatorFieldComposition_sub_right_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g₀ b c) (W₁ W₂ : SmoothCcTensor g₀ a b) :
-    appCcRS (I := I) (M := M) g₀ a b c Φ (W₁ - W₂) =
-      appCcRS (I := I) (M := M) g₀ a b c Φ W₁ - appCcRS (I := I) (M := M) g₀ a b c Φ W₂ := by
+    ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ (W₁ - W₂) =
+      ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₁ - ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₂ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c Φ W₁ -
-        appCcRS (I := I) (M := M) g₀ a b c Φ W₂).toSection x) =
-      (appCcRS (I := I) (M := M) g₀ a b c Φ W₁).toSection x -
-        (appCcRS (I := I) (M := M) g₀ a b c Φ W₂).toSection x from by
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₁ -
+        ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₂).toSection x) =
+      (ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₁).toSection x -
+        (ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₂).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
   rw [ContinuousLinearMap.sub_apply]
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c Φ (W₁ - W₂)).toSection x) D =
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ (W₁ - W₂)).toSection x) D =
       ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace b I x from (W₁ - W₂).toSection x) D))
       from by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c Φ W₁).toSection x) D =
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₁).toSection x) D =
       ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace b I x from W₁.toSection x) D)) from by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
-  rw [show ((appCcRS (I := I) (M := M) g₀ a b c Φ W₂).toSection x) D =
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₂).toSection x) D =
       ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace b I x from W₂.toSection x) D)) from by
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
   rw [show ((W₁ - W₂).toSection x) = W₁.toSection x - W₂.toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
@@ -1320,30 +1320,30 @@ def pureDoubleTraceField (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma appCcRS_slotInsert_id_eq (g₀ : SmoothRiemannianMetric I M) (s c : ℕ)
+lemma operatorFieldComposition_slotInsert_id_eq (g₀ : SmoothRiemannianMetric I M) (s c : ℕ)
     (Φ : SmoothCcTensor g₀ (s + 1) c) :
-    appCcRS (I := I) (M := M) g₀ (s + 1) (s + 1) c Φ
+    ccOperatorFieldComp (I := I) (M := M) g₀ (s + 1) (s + 1) c Φ
       (slotInsertEndoCc (I := I) (M := M) g₀ s
-        (fullRaisedEndoField (I := I) (M := M) g₀ g₀)) = Φ := by
+        (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀)) = Φ := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
   apply ContinuousLinearMap.ext
   intro D
-  rw [show ((appCcRS (I := I) (M := M) g₀ (s + 1) (s + 1) c Φ
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ (s + 1) (s + 1) c Φ
       (slotInsertEndoCc (I := I) (M := M) g₀ s
-        (fullRaisedEndoField (I := I) (M := M) g₀ g₀))).toSection x) D =
+        (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀))).toSection x) D =
       ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x)
         (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
-          (fullRaisedEndoField (I := I) (M := M) g₀ g₀ x) D)) from by
-    rw [appCcRS_toSection]
+          (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) D)) from by
+    rw [operatorFieldComposition_toSection]
     rfl]
   refine congrArg _ ?_
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   rw [slotInsertEndoFib_apply_eval]
-  rw [show (fullRaisedEndoField (I := I) (M := M) g₀ g₀ x (m 0)) = m 0 from by
-    rw [fullRaisedEndoField_apply, gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]]
+  rw [show (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x (m 0)) = m 0 from by
+    rw [metricComparisonEndomorphismField_apply, metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
   rw [Function.update_eq_self]
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -1473,10 +1473,10 @@ omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     pureDoubleTraceField (I := I) (M := M) g₀ g₁ s =
-      appCcRS (I := I) (M := M) g₀ (s + 2) (s + 2) s
+      ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
         (cometricDoubleTraceField (I := I) g₀ s)
         (slotInsertEndoCc (I := I) (M := M) g₀ (s + 1)
-          (fullRaisedEndoField (I := I) (M := M) g₀ g₁)) := by
+          (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -1503,24 +1503,24 @@ lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetr
   rw [hLHS]
   have hRHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace s I x from
-        (appCcRS (I := I) (M := M) g₀ (s + 2) (s + 2) s
+        (ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
           (cometricDoubleTraceField (I := I) g₀ s)
           (slotInsertEndoCc (I := I) (M := M) g₀ (s + 1)
-            (fullRaisedEndoField (I := I) (M := M) g₀ g₁))).toSection x) Z) mm =
+            (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁))).toSection x) Z) mm =
       ∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel Z
-          (Fin.cons (show E from gInvRaisedEndo (I := I) g₀ g₁ x
+          (Fin.cons (show E from metricComparisonEndomorphism (I := I) g₀ g₁ x
               (smoothOrthoFrame (I := I) g₀ x a x))
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)) := by
     rw [show ((show Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace s I x from
-        (appCcRS (I := I) (M := M) g₀ (s + 2) (s + 2) s
+        (ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
           (cometricDoubleTraceField (I := I) g₀ s)
           (slotInsertEndoCc (I := I) (M := M) g₀ (s + 1)
-            (fullRaisedEndoField (I := I) (M := M) g₀ g₁))).toSection x) Z) =
+            (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁))).toSection x) Z) =
         cometricDoubleTraceFib (I := I) g₀ s x
           (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
-            (fullRaisedEndoField (I := I) (M := M) g₀ g₁ x) Z) from by
-      rw [appCcRS_toSection]
+            (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z) from by
+      rw [operatorFieldComposition_toSection]
       rfl]
     rw [cometricDoubleTraceFib_toModel (I := I) g₀ s x]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g₀ x)]
@@ -1528,34 +1528,34 @@ lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetr
       (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
         (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
-          (fullRaisedEndoField (I := I) (M := M) g₀ g₁ x) Z)) mm]
+          (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z)) mm]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [slotInsertEndoFib_apply_eval]
     rw [Fin.update_cons_zero]
     rfl
   rw [hRHS]
   have hGrep : ∀ a : Fin (Module.finrank ℝ E),
-      (show E from gInvRaisedEndo (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x)) =
+      (show E from metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x)) =
         ∑ c : Fin (Module.finrank ℝ E),
           (g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x) (smoothOrthoFrame (I := I) g₁ x c x)) •
             (smoothOrthoFrame (I := I) g₁ x c x : E) := by
     intro a
     have h1 := orthoFrame_center_repr (I := I) (M := M) g₁ x
-      (gInvRaisedEndo (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x))
-    rw [show (show E from gInvRaisedEndo (I := I) g₀ g₁ x
+      (metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x))
+    rw [show (show E from metricComparisonEndomorphism (I := I) g₀ g₁ x
         (smoothOrthoFrame (I := I) g₀ x a x)) =
-        gInvRaisedEndo (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x) from rfl]
+        metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x) from rfl]
     conv_lhs => rw [h1]
     refine Finset.sum_congr rfl fun c _ => ?_
     congr 1
     rw [g₁.symm x (smoothOrthoFrame (I := I) g₁ x c x)
-      (gInvRaisedEndo (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x))]
-    rw [g1_inner_gInvRaisedEndo_left_c (I := I) (M := M) g₀ g₁ x
+      (metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x))]
+    rw [g1_inner_metricComparisonEndomorphism_left_c (I := I) (M := M) g₀ g₁ x
       (smoothOrthoFrame (I := I) g₀ x a x) (smoothOrthoFrame (I := I) g₁ x c x)]
   symm
   calc (∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel Z
-          (Fin.cons (show E from gInvRaisedEndo (I := I) g₀ g₁ x
+          (Fin.cons (show E from metricComparisonEndomorphism (I := I) g₀ g₁ x
               (smoothOrthoFrame (I := I) g₀ x a x))
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x a x : TangentSpace I x) : E) mm)))
       = ∑ a : Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
@@ -1606,21 +1606,21 @@ lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetr
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma appCcRS_add_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
+lemma operatorFieldComposition_add_left_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ₁ Φ₂ : SmoothCcTensor g₀ b c) (W : SmoothCcTensor g₀ a b) :
     ccOperatorFieldComp (I := I) (M := M) g₀ a b c (Φ₁ + Φ₂) W =
       ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₁ W +
         ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ₂ W := by
-  exact appCcRS_add_left (I := I) (M := M) g₀ a b c Φ₁ Φ₂ W
+  exact operatorFieldComposition_add_left (I := I) (M := M) g₀ a b c Φ₁ Φ₂ W
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma appCcRS_add_right_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
+lemma operatorFieldComposition_add_right_cc (g₀ : SmoothRiemannianMetric I M) (a b c : ℕ)
     (Φ : SmoothCcTensor g₀ b c) (W₁ W₂ : SmoothCcTensor g₀ a b) :
-    appCcRS (I := I) (M := M) g₀ a b c Φ (W₁ + W₂) =
-      appCcRS (I := I) (M := M) g₀ a b c Φ W₁ +
-        appCcRS (I := I) (M := M) g₀ a b c Φ W₂ := by
-  exact appCcRS_add_right (I := I) (M := M) g₀ a b c Φ W₁ W₂
+    ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ (W₁ + W₂) =
+      ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₁ +
+        ccOperatorFieldComp (I := I) (M := M) g₀ a b c Φ W₂ := by
+  exact operatorFieldComposition_add_right (I := I) (M := M) g₀ a b c Φ W₁ W₂
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -1716,7 +1716,7 @@ lemma rsDomDomCongrSection_sub_cc (g₀ : SmoothRiemannianMetric I M) (r s : ℕ
   rfl
 
 def pairTraceOp (g₀ gm : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 6 2 :=
-  appCcRS (I := I) (M := M) g₀ 6 4 2
+  ccOperatorFieldComp (I := I) (M := M) g₀ 6 4 2
     (pureDoubleTraceField (I := I) (M := M) g₀ gm 2)
     (pureDoubleTraceField (I := I) (M := M) g₀ gm 4)
 
@@ -1726,7 +1726,7 @@ lemma pairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ gm)
+          (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ gm)
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) v =
       ∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
@@ -1767,13 +1767,13 @@ lemma pairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
       funext k
       fin_cases k <;> rfl
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ gm)
+      (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ gm)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X))).toSection x) D) =
       cometricDoubleTraceFib (I := I) gm 2 x
         (cometricDoubleTraceFib (I := I) gm 4 x Y) from by
     rw [hY_def]
-    rw [appCcRS_toSection]
+    rw [operatorFieldComposition_toSection]
     rfl]
   rw [cometricDoubleTraceFib_toModel (I := I) gm 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) gm x)]
@@ -1797,7 +1797,7 @@ lemma pairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
 set_option backward.isDefEq.respectTransparency false in
 theorem riemannCoeff_eq_pairTrace_L11 (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ =
-      (2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
+      (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁))) := by
@@ -1811,21 +1811,21 @@ theorem riemannCoeff_eq_pairTrace_L11 (g₀ g₁ : SmoothRiemannianMetric I M) :
   apply ContinuousMultilinearMap.ext
   intro v
   have hsmul : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      ((2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
+      ((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁)))).toSection x) D) =
       (2 : ℝ) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁)))).toSection x) D) := by
-    rw [show (((2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2
+    rw [show (((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (pairTraceOp (I := I) (M := M) g₀ g₁)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁)))).toSection x) =
-        (2 : ℝ) • ((appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
+        (2 : ℝ) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁)))).toSection x) from by
@@ -1864,7 +1864,7 @@ theorem riemannCoeff_eq_pairTrace_L11 (g₀ g₁ : SmoothRiemannianMetric I M) :
 set_option backward.isDefEq.respectTransparency false in
 theorem riemannMixedCoeff_eq_pairTrace_L01 (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0RiemannMixedCoeff (I := I) (M := M) g₀ g₁ =
-      (2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
+      (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁))) := by
@@ -1878,21 +1878,21 @@ theorem riemannMixedCoeff_eq_pairTrace_L01 (g₀ g₁ : SmoothRiemannianMetric I
   apply ContinuousMultilinearMap.ext
   intro v
   have hsmul : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      ((2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
+      ((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁)))).toSection x) D) =
       (2 : ℝ) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁)))).toSection x) D) := by
-    rw [show (((2 : ℝ) • appCcRS (I := I) (M := M) g₀ 2 6 2
+    rw [show (((2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (pairTraceOp (I := I) (M := M) g₀ g₀)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁)))).toSection x) =
-        (2 : ℝ) • ((appCcRS (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
+        (2 : ℝ) • ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (pairTraceOp (I := I) (M := M) g₀ g₀)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 sigmaE0
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁)))).toSection x) from by
@@ -1961,17 +1961,17 @@ lemma pairTraceOp_self_eq (g₀ : SmoothRiemannianMetric I M) :
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 lemma pureDoubleTraceField_cross_split (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     pureDoubleTraceField (I := I) (M := M) g₀ g₁ s =
-      appCcRS (I := I) (M := M) g₀ (s + 2) (s + 2) s
+      ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
         (cometricDoubleTraceField (I := I) g₀ s)
         (slotInsertEndoCc (I := I) (M := M) g₀ (s + 1)
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁)) +
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)) +
       cometricDoubleTraceField (I := I) g₀ s := by
   rw [pureDoubleTraceField_eq_trace_fullRaised (I := I) (M := M) g₀ g₁ s]
-  rw [fullRaisedEndoField_diff_split_c (I := I) (M := M) g₀ g₁]
+  rw [metricComparisonEndomorphismField_diff_split_c (I := I) (M := M) g₀ g₁]
   rw [slotInsertEndoCc_add_endo_c (I := I) (M := M) g₀ (s + 1)]
-  rw [appCcRS_add_right_cc (I := I) (M := M) g₀ (s + 2) (s + 2) s
+  rw [operatorFieldComposition_add_right_cc (I := I) (M := M) g₀ (s + 2) (s + 2) s
     (cometricDoubleTraceField (I := I) g₀ s)]
-  rw [appCcRS_slotInsert_id_eq (I := I) (M := M) g₀ (s + 1) s
+  rw [operatorFieldComposition_slotInsert_id_eq (I := I) (M := M) g₀ (s + 1) s
     (cometricDoubleTraceField (I := I) g₀ s)]
 
 end CurvatureCoefficientDifferenceJetTower
@@ -1990,10 +1990,10 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpa
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem pureTrace_split (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     pureTrace (I := I) (M := M) g₀ g₁ s =
-      appCcRS (I := I) (M := M) g₀ (s + 2) (s + 2) s
+      ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
         (cometricDoubleTraceField (I := I) g₀ s)
         (slotInsertEndoCc (I := I) (M := M) g₀ (s + 1)
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁)) +
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)) +
       cometricDoubleTraceField (I := I) g₀ s := by
   exact pureDoubleTraceField_cross_split (I := I) (M := M) g₀ g₁ s
 

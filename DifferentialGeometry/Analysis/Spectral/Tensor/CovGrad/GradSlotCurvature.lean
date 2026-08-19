@@ -121,7 +121,7 @@ theorem gradSlotCurv_spec
     iteratedCovGrad (I := I) g₀ 0 2 2 S -
         domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
           (iteratedCovGrad (I := I) g₀ 0 2 2 S) =
-      appCcRS (I := I) (M := M) g₀ 0 2 4
+      ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 4
         (gradSlotCurvCoeff (I := I) (M := M) g₀) S := by
   classical
   apply smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀
@@ -251,7 +251,7 @@ theorem gradSlot_sub_eq_curv
         iteratedCovGrad (I := I) g₀ 0 2 2 S -
             domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
               (iteratedCovGrad (I := I) g₀ 0 2 2 S) =
-          appCcRS (I := I) (M := M) g₀ 0 2 4 C S :=
+          ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 4 C S :=
   ⟨gradSlotCurvCoeff (I := I) (M := M) g₀,
     gradSlotCurv_spec (I := I) (M := M) g₀⟩
 

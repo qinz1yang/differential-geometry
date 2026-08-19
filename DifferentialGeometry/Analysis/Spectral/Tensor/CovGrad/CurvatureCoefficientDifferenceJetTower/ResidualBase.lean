@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TsRungs
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TopOrderSeparatedCurvatureBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.ResidualFree
 
 open DifferentialGeometry.Tensor.Multilinear
@@ -45,13 +45,13 @@ end CurvatureCoefficientDifferenceJetTower
 
 open CurvatureCoefficientDifferenceJetTower
 
-section TopSeparatedResidualIntegrator
+section TopOrderSeparatedResidualIntegrator
 
 
 set_option backward.isDefEq.respectTransparency false
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem rfns_symmS_zero_le_fibreSmall
+theorem riemannianFiberNormSq_symmS_zero_le_fibreSmall
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_le : δ ≤ δ₀) (hδ0 : 0 ≤ δ)
     (hbound : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -59,13 +59,13 @@ theorem rfns_symmS_zero_le_fibreSmall
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
         ((symmS (I := I) (M := M) g₀ T).toSection x) ≤
       ((Module.finrank ℝ E : ℝ) * δ₀) ^ 2 := by
-  have h := rfns_symmS_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x
+  have h := riemannianFiberNormSq_symmS_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x
   rw [mul_pow]
   refine le_trans h ?_
   have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith [hδ0, hδ_le, hδ₀0]
   exact mul_le_mul_of_nonneg_left hδsq (by positivity)
 
-theorem ricciArmOrder0BaseCoeff_perOrder_l2_topSeparated_generic
+theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -92,12 +92,12 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topSeparated_generic
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨KtCr, hKtCr_nn, KcCr, hKcCr_nn, hCr⟩ :=
-    rfns_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_topSeparated_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_topOrderSeparated_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨KtCu, hKtCu_nn, KcCu, hKcCu_nn, hCu⟩ :=
-    rfns_iteratedCovGrad_ricciArmOrder0CurvCoeff_backgroundDifference_topSeparated_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0CurvCoeff_backgroundDifference_topOrderSeparated_le
       (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_rfns_bound (I := I) (M := M) g₀ 2 2
+  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 2 2
     (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
       ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)
   obtain ⟨KI, hKI_nn, hKI⟩ := boundedFactorGridWindow_integral_ballUniform_tameWindow
@@ -135,7 +135,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topSeparated_generic
     · intro x
       rw [show ((HdCr - HdCu).toSection x) = HdCr.toSection x - HdCu.toSection x from by
         rw [SmoothCcTensor.toSection_sub]; rfl]
-      refine le_trans (tsRfns_sub_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
+      refine le_trans (riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
       have h1 := hCr_head x
       have h2 := hCu_head x
       calc 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x (HdCr.toSection x) +
@@ -158,7 +158,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topSeparated_generic
         intro x
         rw [show ((HdCr - HdCu).toSection x) = HdCr.toSection x - HdCu.toSection x from by
           rw [SmoothCcTensor.toSection_sub]; rfl]
-        refine le_trans (tsRfns_sub_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
+        refine le_trans (riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
         have h1 := hCr_head x
         have h2 := hCu_head x
         calc 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
@@ -310,7 +310,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topSeparated_generic
                 (ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
                   ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀) - HdCu).toSection x
               from by rw [SmoothCcTensor.toSection_sub]; rfl]
-          refine le_trans (tsRfns_sub_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
+          refine le_trans (riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
           exact add_le_add (mul_le_mul_of_nonneg_left (hCr_res x) (by norm_num))
             (mul_le_mul_of_nonneg_left (hCu_res x) (by norm_num))
         calc 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
@@ -388,7 +388,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topSeparated_generic
           (hKI_nn i)
       nlinarith
 
-end TopSeparatedResidualIntegrator
+end TopOrderSeparatedResidualIntegrator
 
 end Spectral
 end Analysis

@@ -53,8 +53,8 @@ private theorem covD_congr
     (W X Y W' X' Y' : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
     {x : M} (hW : W x = W' x) (hX : X x = X' x) (hY : Y x = Y' x) :
-    covDerivConnDiff (I := I) g₂ g₁ W X Y x =
-      covDerivConnDiff (I := I) g₂ g₁ W' X' Y' x := by
+    covDerivConnectionDifference (I := I) g₂ g₁ W X Y x =
+      covDerivConnectionDifference (I := I) g₂ g₁ W' X' Y' x := by
   classical
   haveI : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
@@ -67,17 +67,17 @@ private theorem covD_congr
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
   have hpair : ∀ Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _),
-      g₁.inner x (covDerivConnDiff (I := I) g₂ g₁ W X Y x) (Z x) =
-        g₁.inner x (covDerivConnDiff (I := I) g₂ g₁ W' X' Y' x) (Z x) := by
+      g₁.inner x (covDerivConnectionDifference (I := I) g₂ g₁ W X Y x) (Z x) =
+        g₁.inner x (covDerivConnectionDifference (I := I) g₂ g₁ W' X' Y' x) (Z x) := by
     intro Z
-    have h1 := connDiff_koszul_deriv (I := I) g₁ g₂ W X Y Z x
-    have h2 := connDiff_koszul_deriv (I := I) g₁ g₂ W' X' Y' Z x
+    have h1 := connectionDifference_koszul_deriv (I := I) g₁ g₂ W X Y Z x
+    have h2 := connectionDifference_koszul_deriv (I := I) g₁ g₂ W' X' Y' Z x
     simp only [← Tensor0SBundle.totalNabla0SFun_apply_section] at h1 h2
     rw [hW, hX, hY] at h1
     have h3 := h1.trans h2.symm
     linarith [h3]
-  set a : TangentSpace I x := covDerivConnDiff (I := I) g₂ g₁ W X Y x with ha
-  set b : TangentSpace I x := covDerivConnDiff (I := I) g₂ g₁ W' X' Y' x with hb
+  set a : TangentSpace I x := covDerivConnectionDifference (I := I) g₂ g₁ W X Y x with ha
+  set b : TangentSpace I x := covDerivConnectionDifference (I := I) g₂ g₁ W' X' Y' x with hb
   have hZ := hpair (extSec (I := I) x (a - b))
   rw [extSec_apply] at hZ
   have hsym1 : g₁.inner x a (a - b) = g₁.inner x (a - b) a :=
@@ -96,8 +96,8 @@ private theorem covD_eq_ext
     (g₂ g₁ : SmoothRiemannianMetric I M)
     (W X Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) (x : M) :
-    covDerivConnDiff (I := I) g₂ g₁ W X Y x =
-      covDerivConnDiff (I := I) g₂ g₁
+    covDerivConnectionDifference (I := I) g₂ g₁ W X Y x =
+      covDerivConnectionDifference (I := I) g₂ g₁
         (extSec (I := I) x (W x))
         (extSec (I := I) x (X x))
         (extSec (I := I) x (Y x)) x := by
@@ -111,8 +111,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private theorem covD2_eq_hcg
     (gB g₀ : SmoothRiemannianMetric I M)
     (D X Y Z : Π b : M, TangentSpace I b) (x : M) :
-    Integral.Connection.covDerivConnDiff2 (I := I) gB g₀ D X Y Z x =
-      HCGCompactness.covDerivConnDiff2 (I := I) gB g₀ D X Y Z x :=
+    Integral.Connection.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x =
+      HCGCompactness.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x :=
   rfl
 
 noncomputable def palatiniJet1At
@@ -195,10 +195,10 @@ private lemma palatini_P1
     (Ds Xs AYZs : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (P : TangentSpace I x) (C₁ : ℝ)
     (hL : ∀ v, L v = Real.sqrt (gBase.inner x v v))
-    (hP : P = covDerivConnDiff (I := I) gBase g₀ Ds Xs AYZs x)
+    (hP : P = covDerivConnectionDifference (I := I) gBase g₀ Ds Xs AYZs x)
     (hD : Ds x = D) (hX : Xs x = X)
-    (h : Real.sqrt (gBase.inner x (covDerivConnDiff (I := I) gBase g₀ Ds Xs AYZs x)
-          (covDerivConnDiff (I := I) gBase g₀ Ds Xs AYZs x)) ≤
+    (h : Real.sqrt (gBase.inner x (covDerivConnectionDifference (I := I) gBase g₀ Ds Xs AYZs x)
+          (covDerivConnectionDifference (I := I) gBase g₀ Ds Xs AYZs x)) ≤
         C₁ * Real.sqrt (gBase.inner x (Ds x) (Ds x)) *
           Real.sqrt (gBase.inner x (Xs x) (Xs x)) *
           Real.sqrt (gBase.inner x (AYZs x) (AYZs x))) :
@@ -214,10 +214,10 @@ private lemma palatini_R1
     (Ds Ys AXZs : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (R : TangentSpace I x) (C₁ : ℝ)
     (hL : ∀ v, L v = Real.sqrt (gBase.inner x v v))
-    (hR : R = covDerivConnDiff (I := I) gBase g₀ Ds Ys AXZs x)
+    (hR : R = covDerivConnectionDifference (I := I) gBase g₀ Ds Ys AXZs x)
     (hD : Ds x = D) (hY : Ys x = Y)
-    (h : Real.sqrt (gBase.inner x (covDerivConnDiff (I := I) gBase g₀ Ds Ys AXZs x)
-          (covDerivConnDiff (I := I) gBase g₀ Ds Ys AXZs x)) ≤
+    (h : Real.sqrt (gBase.inner x (covDerivConnectionDifference (I := I) gBase g₀ Ds Ys AXZs x)
+          (covDerivConnectionDifference (I := I) gBase g₀ Ds Ys AXZs x)) ≤
         C₁ * Real.sqrt (gBase.inner x (Ds x) (Ds x)) *
           Real.sqrt (gBase.inner x (Ys x) (Ys x)) *
           Real.sqrt (gBase.inner x (AXZs x) (AXZs x))) :
@@ -276,7 +276,7 @@ private lemma palatini_conn_tail
     _ = (2 * C₂ + 4 * C₀ * C₁) * prod := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem unifPalatini1_le
+theorem uniformPalatini1_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -302,13 +302,13 @@ theorem unifPalatini1_le
     positivity
   have hC₀ : ∀ (x : M) (v w : TangentSpace I x),
       Real.sqrt (gBase.inner x
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x v w)
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x v w)) ≤
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x v w)
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x v w)) ≤
         C₀ * Real.sqrt (gBase.inner x v v) *
           Real.sqrt (gBase.inner x w w) := by
     intro x v w
-    have h := connDiff_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
-    simpa [C₀, DifferentialGeometry.PDE.DeTurck.connDiff,
+    have h := connectionDifference_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
+    simpa [C₀, DifferentialGeometry.PDE.DeTurck.connectionDifference,
       mul_assoc, mul_left_comm, mul_comm] using h
   let C₁ : ℝ := 3 / 2 * Λ ^ 4 * (Λ + Λ * Λ ^ 2)
   have hC₁0 : 0 ≤ C₁ := by
@@ -316,11 +316,11 @@ theorem unifPalatini1_le
     positivity
   have hC₁ : ∀ (x : M) (v w u : TangentSpace I x),
       Real.sqrt (gBase.inner x
-          (covDerivConnDiff (I := I) gBase g₀
+          (covDerivConnectionDifference (I := I) gBase g₀
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w)
             (smoothExtensionTangent (I := I) x u) x)
-          (covDerivConnDiff (I := I) gBase g₀
+          (covDerivConnectionDifference (I := I) gBase g₀
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w)
             (smoothExtensionTangent (I := I) x u) x)) ≤
@@ -329,7 +329,7 @@ theorem unifPalatini1_le
           Real.sqrt (gBase.inner x u u) := by
     intro x v w u
     simpa [C₁] using
-      covDerivConnDiff_gJet_le (I := I) hEq hjet1 hjet2
+      covDerivConnectionDifference_gJet_le (I := I) hEq hjet1 hjet2
         (Set.mem_univ x) v w u
   let C₂ : ℝ :=
     3 / 2 * Λ ^ 5 * Λ + 9 / 2 * Λ ^ 6 * Λ * Λ + 3 * Λ ^ 7 * Λ ^ 3
@@ -342,9 +342,9 @@ theorem unifPalatini1_le
   let Ys := extSec (I := I) x Y
   let Zs := extSec (I := I) x Z
   let A₂xy : TangentSpace I x :=
-    Integral.Connection.covDerivConnDiff2 (I := I) gBase g₀ Ds Xs Ys Zs x
+    Integral.Connection.covDerivConnectionDifference2 (I := I) gBase g₀ Ds Xs Ys Zs x
   let A₂yx : TangentSpace I x :=
-    Integral.Connection.covDerivConnDiff2 (I := I) gBase g₀ Ds Ys Xs Zs x
+    Integral.Connection.covDerivConnectionDifference2 (I := I) gBase g₀ Ds Ys Xs Zs x
   let AYZs : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     ContMDiffSection.mk
@@ -364,23 +364,23 @@ theorem unifPalatini1_le
   let Cdyzs : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     ContMDiffSection.mk
-      (fun p => covDerivConnDiff (I := I) gBase g₀ Ds Ys Zs p)
+      (fun p => covDerivConnectionDifference (I := I) gBase g₀ Ds Ys Zs p)
       (by
         simpa [Ds, Ys, Zs] using
-          covDerivConnDiff_contMDiff (I := I) gBase g₀ Ds Ys Zs)
+          covDerivConnectionDifference_contMDiff (I := I) gBase g₀ Ds Ys Zs)
   let Cdxzs : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     ContMDiffSection.mk
-      (fun p => covDerivConnDiff (I := I) gBase g₀ Ds Xs Zs p)
+      (fun p => covDerivConnectionDifference (I := I) gBase g₀ Ds Xs Zs p)
       (by
         simpa [Ds, Xs, Zs] using
-          covDerivConnDiff_contMDiff (I := I) gBase g₀ Ds Xs Zs)
+          covDerivConnectionDifference_contMDiff (I := I) gBase g₀ Ds Xs Zs)
   let P : TangentSpace I x :=
-    covDerivConnDiff (I := I) gBase g₀ Ds Xs AYZs x
+    covDerivConnectionDifference (I := I) gBase g₀ Ds Xs AYZs x
   let Q : TangentSpace I x :=
     diffSec (LeviCivita (I := I) gBase) (LeviCivita (I := I) g₀) Xs Cdyzs x
   let R : TangentSpace I x :=
-    covDerivConnDiff (I := I) gBase g₀ Ds Ys AXZs x
+    covDerivConnectionDifference (I := I) gBase g₀ Ds Ys AXZs x
   let S : TangentSpace I x :=
     diffSec (LeviCivita (I := I) gBase) (LeviCivita (I := I) g₀) Ys Cdxzs x
   let L : TangentSpace I x → ℝ := fun v => Real.sqrt (gBase.inner x v v)
@@ -397,20 +397,20 @@ theorem unifPalatini1_le
   have hA₂xy : L A₂xy ≤ C₂ * prod4 := by
     simpa [A₂xy, Ds, Xs, Ys, Zs, extSec, L, prod4, C₂, covD2_eq_hcg,
       mul_assoc] using
-      HCGCompactness.covDConnDiff2_gJet_le (I := I) hEq hjet1 hjet2 hjet3
+      HCGCompactness.covDConnectionDifference2_gJet_le (I := I) hEq hjet1 hjet2 hjet3
         (Set.mem_univ x) D X Y Z
   have hA₂yx : L A₂yx ≤ C₂ * prod4 := by
-    have h := HCGCompactness.covDConnDiff2_gJet_le (I := I)
+    have h := HCGCompactness.covDConnectionDifference2_gJet_le (I := I)
       hEq hjet1 hjet2 hjet3 (Set.mem_univ x) D Y X Z
     simpa [A₂yx, Ds, Xs, Ys, Zs, extSec, L, prod4, C₂, covD2_eq_hcg, mul_assoc,
       mul_left_comm, mul_comm] using h
   have hAYZ : L (AYZs x) ≤ C₀ * L Y * L Z := by
     have h := hC₀ x Z Y
-    simpa [AYZs, Ys, Zs, L, DifferentialGeometry.PDE.DeTurck.connDiff,
+    simpa [AYZs, Ys, Zs, L, DifferentialGeometry.PDE.DeTurck.connectionDifference,
       diffSec, mul_assoc, mul_left_comm, mul_comm] using h
   have hAXZ : L (AXZs x) ≤ C₀ * L X * L Z := by
     have h := hC₀ x Z X
-    simpa [AXZs, Xs, Zs, L, DifferentialGeometry.PDE.DeTurck.connDiff,
+    simpa [AXZs, Xs, Zs, L, DifferentialGeometry.PDE.DeTurck.connectionDifference,
       diffSec, mul_assoc, mul_left_comm, mul_comm] using h
   have hCdyz : L (Cdyzs x) ≤ C₁ * L D * L Y * L Z := by
     have h := hC₁ x D Y Z
@@ -420,8 +420,8 @@ theorem unifPalatini1_le
     simpa [Cdxzs, Ds, Xs, Zs, L] using h
   have hR : L R ≤ C₀ * C₁ * prod4 := by
     have heq :
-        covDerivConnDiff (I := I) gBase g₀ Ds Ys AXZs x =
-          covDerivConnDiff (I := I) gBase g₀
+        covDerivConnectionDifference (I := I) gBase g₀ Ds Ys AXZs x =
+          covDerivConnectionDifference (I := I) gBase g₀
             (smoothExtensionTangent (I := I) x (Ds x))
             (smoothExtensionTangent (I := I) x (Ys x))
             (smoothExtensionTangent (I := I) x (AXZs x)) x := by
@@ -435,8 +435,8 @@ theorem unifPalatini1_le
       hC₁0 (Real.sqrt_nonneg _) (Real.sqrt_nonneg _) hR1 hAXZ
   have hP : L P ≤ C₀ * C₁ * prod4 := by
     have heq :
-        covDerivConnDiff (I := I) gBase g₀ Ds Xs AYZs x =
-          covDerivConnDiff (I := I) gBase g₀
+        covDerivConnectionDifference (I := I) gBase g₀ Ds Xs AYZs x =
+          covDerivConnectionDifference (I := I) gBase g₀
             (smoothExtensionTangent (I := I) x (Ds x))
             (smoothExtensionTangent (I := I) x (Xs x))
             (smoothExtensionTangent (I := I) x (AYZs x)) x := by
@@ -452,14 +452,14 @@ theorem unifPalatini1_le
     have h := hC₀ x (Cdyzs x) (Xs x)
     exact palatini_aux_q C₀ C₁ (L Q) (L (Cdyzs x)) (L D) (L X) (L Y) (L Z)
       hC₀0 (Real.sqrt_nonneg _)
-      (by simpa [Q, Cdyzs, Xs, L, DifferentialGeometry.PDE.DeTurck.connDiff,
+      (by simpa [Q, Cdyzs, Xs, L, DifferentialGeometry.PDE.DeTurck.connectionDifference,
         diffSec] using h)
       hCdyz
   have hS : L S ≤ C₀ * C₁ * prod4 := by
     have h := hC₀ x (Cdxzs x) (Ys x)
     exact palatini_aux_s C₀ C₁ (L S) (L (Cdxzs x)) (L D) (L X) (L Y) (L Z)
       hC₀0 (Real.sqrt_nonneg _)
-      (by simpa [S, Cdxzs, Ys, L, DifferentialGeometry.PDE.DeTurck.connDiff,
+      (by simpa [S, Cdxzs, Ys, L, DifferentialGeometry.PDE.DeTurck.connectionDifference,
         diffSec] using h)
       hCdxz
   have hcore :
@@ -494,7 +494,7 @@ theorem unifPalatini1_le
       dsimp [palatiniOneC, C₀, C₁, C₂]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem unifPalatini1
+theorem uniformPalatini1
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -515,7 +515,7 @@ theorem unifPalatini1
   refine ⟨palatiniOneC Λ, ?_, ?_⟩
   · unfold palatiniOneC
     positivity
-  · exact unifPalatini1_le (I := I) (M := M) gBase g₀
+  · exact uniformPalatini1_le (I := I) (M := M) gBase g₀
       hΛ hcomp hjet1 hjet2 hjet3
 
 end RicciFlow

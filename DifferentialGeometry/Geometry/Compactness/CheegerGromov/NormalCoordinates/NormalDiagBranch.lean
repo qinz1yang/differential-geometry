@@ -1944,12 +1944,12 @@ theorem exists_pair_readout
 
 end HasNormalBranchDom
 
-namespace H6ChartData
+namespace NormalChartData
 
 theorem exists_pair_readout
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6ChartData (I := I) X hd) (k : Nat)
+    (d : NormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -2077,7 +2077,7 @@ theorem exists_pair_readout
   refine ⟨hdomPair, ?_⟩
   simpa only [NormalCoordinates.NormalBallChart.restrictBall] using haControl.1
 
-end H6ChartData
+end NormalChartData
 
 namespace NormalRadiusProfile
 
@@ -2164,12 +2164,12 @@ theorem exists_common_dom
 
 end NormalRadiusProfile
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
 theorem exists_common_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -2274,7 +2274,7 @@ theorem exists_common_inv
 theorem exists_common_dom
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -2355,7 +2355,7 @@ theorem exists_common_dom
               (hconn k) x hq' he).dom
   exact ⟨hq', e, he, hclosed⟩
 
-end H6NormalData
+end BoundedGeometryNormalData
 
 end HCGCompactness
 end DifferentialGeometry

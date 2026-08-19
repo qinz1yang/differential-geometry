@@ -17,7 +17,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Laplacian
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Tensor0SBundle
@@ -352,18 +352,18 @@ theorem hs2_op_smoothCc_unif
   exact hs2_op_bound_unif (I := I) (M := M) hDim g Fc hFc hcurv hCpt hmorrey T
 
 def unifRealizeRad (Cpt : ℝ) (Fc : ℕ → ℝ) (d : ℕ) : ℝ :=
-  deTurckArmContractionThresholdSharp d / hs2OpC Cpt Fc d
+  deTurckRemainderContractionThreshold d / hs2OpC Cpt Fc d
 
 theorem unifRealizeRad_pos {Cpt : ℝ} (hCpt : 0 ≤ Cpt) {Fc : ℕ → ℝ}
     (hFc : ∀ p, 0 ≤ Fc p) (d : ℕ) : 0 < unifRealizeRad Cpt Fc d :=
-  div_pos (deTurckArmContractionThreshold''_pos d) (hs2OpC_pos hCpt hFc d)
+  div_pos (de_turck_remainder_contraction_threshold_pos d) (hs2OpC_pos hCpt hFc d)
 
 def actionRealizeRad (Cpt K : ℝ) (d : ℕ) : ℝ :=
-  deTurckArmContractionThresholdSharp d / hs2OpActionC Cpt K
+  deTurckRemainderContractionThreshold d / hs2OpActionC Cpt K
 
 theorem actionRealizeRad_pos {Cpt : ℝ} (hCpt : 0 ≤ Cpt) (K : ℝ) (d : ℕ) :
     0 < actionRealizeRad Cpt K d :=
-  div_pos (deTurckArmContractionThreshold''_pos d) (hs2OpActionC_pos hCpt K)
+  div_pos (de_turck_remainder_contraction_threshold_pos d) (hs2OpActionC_pos hCpt K)
 
 theorem realize_at_action
     (hDim : Module.finrank ℝ E = 3)
@@ -378,7 +378,7 @@ theorem realize_at_action
       ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1) T‖ ≤
           actionRealizeRad Cpt K (Module.finrank ℝ E) →
         gFibreOpBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g T)
-          (deTurckArmContractionThresholdSharp (Module.finrank ℝ E)) := by
+          (deTurckRemainderContractionThreshold (Module.finrank ℝ E)) := by
   intro T hT
   have hOp : 0 < hs2OpActionC Cpt K := hs2OpActionC_pos hCpt K
   have hTtwo : ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T‖ ≤
@@ -392,14 +392,14 @@ theorem realize_at_action
     exact hTtwo
   have hdelta : hs2OpActionC Cpt K *
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤
-        deTurckArmContractionThresholdSharp (Module.finrank ℝ E) := by
+        deTurckRemainderContractionThreshold (Module.finrank ℝ E) := by
     calc
       hs2OpActionC Cpt K *
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖
           ≤ hs2OpActionC Cpt K *
               actionRealizeRad Cpt K (Module.finrank ℝ E) :=
         mul_le_mul_of_nonneg_left hT' hOp.le
-      _ = deTurckArmContractionThresholdSharp (Module.finrank ℝ E) := by
+      _ = deTurckRemainderContractionThreshold (Module.finrank ℝ E) := by
         unfold actionRealizeRad
         field_simp
   have hsmall := hs2_op_bound_action (I := I) (M := M) hDim g hact hCpt hmorrey T
@@ -427,7 +427,7 @@ theorem realize_at_unif
       ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1) T‖ ≤
           unifRealizeRad Cpt Fc (Module.finrank ℝ E) →
         gFibreOpBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g T)
-          (deTurckArmContractionThresholdSharp (Module.finrank ℝ E)) := by
+          (deTurckRemainderContractionThreshold (Module.finrank ℝ E)) := by
   intro T hT
   have hOp : 0 < hs2OpC Cpt Fc (Module.finrank ℝ E) := hs2OpC_pos hCpt hFc _
   have hTtwo : ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T‖ ≤
@@ -441,14 +441,14 @@ theorem realize_at_unif
     exact hTtwo
   have hdelta : hs2OpC Cpt Fc (Module.finrank ℝ E) *
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤
-        deTurckArmContractionThresholdSharp (Module.finrank ℝ E) := by
+        deTurckRemainderContractionThreshold (Module.finrank ℝ E) := by
     calc
       hs2OpC Cpt Fc (Module.finrank ℝ E) *
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖
           ≤ hs2OpC Cpt Fc (Module.finrank ℝ E) *
               unifRealizeRad Cpt Fc (Module.finrank ℝ E) :=
         mul_le_mul_of_nonneg_left hT' hOp.le
-      _ = deTurckArmContractionThresholdSharp (Module.finrank ℝ E) := by
+      _ = deTurckRemainderContractionThreshold (Module.finrank ℝ E) := by
         unfold unifRealizeRad
         field_simp
   have hsmall := hs2_op_bound_unif (I := I) (M := M) hDim g Fc hFc hcurv hCpt hmorrey T
@@ -458,6 +458,6 @@ theorem realize_at_unif
     (mul_le_mul_of_nonneg_right hdelta (Real.sqrt_nonneg _))
     (Real.sqrt_nonneg _)
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

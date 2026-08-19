@@ -18,7 +18,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M]
 
 omit [Module.Finite ℝ E] in
-theorem pinchEvol_book
+theorem pinch_quotient_evolution_of_solution
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -39,23 +39,23 @@ theorem pinchEvol_book
       HasDerivWithinAt
         (fun s : Real =>
           quotField (M := M)
-            (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+            (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
             S.scalar (1 : Real) (2 - epsilon) s x)
         (quotLap (I := I) (flowG (I := I) S)
-            (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+            (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
             S.scalar (1 : Real) (2 - epsilon) (t : Real) x +
-          pinchBookRHS (I := I) (flowG (I := I) S)
-            S.scalar (ricciNorm (I := I) S) (scalGradSq (I := I) S)
-            (pinchCoupleSol (I := I) S)
+          pinchEvolutionRHS (I := I) (flowG (I := I) S)
+            S.scalar (ricciNorm (I := I) S) (scalarGradientNormSq (I := I) S)
+            (ricciGradientCouplingNormSq (I := I) S)
             (cubicQ S.scalar (ricciNorm (I := I) S)
               (ricciCube (I := I) S))
             epsilon (t : Real) x)
         D.carrier
         (t : Real) := by
-  exact pinchEvol_sol (I := I) S hS hdim epsilon hscalar
+  exact pinch_quotient_evolution_of_solution_data (I := I) S hS hdim epsilon hscalar
 
 omit [Module.Finite ℝ E] in
-theorem tfHeat_frame
+theorem trace_free_ricci_norm_sq_heat_equation_of_diagonal_frame_components
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -92,10 +92,10 @@ theorem tfHeat_frame
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
         DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-(l1 t x)) (-(l2 t x)) (-(l3 t x))
           i k j l) :
-    tfRicHeatOn
+    TraceFreeRicciNormSqHeatEquationOn
       (D := D)
-      (tfRicNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
-      (tfLap scalar scalarLap gradScalarNormSq ricciNormLap)
+      (traceFreeRicciNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
+      (traceFreeRicciNormSqLaplacian scalar scalarLap gradScalarNormSq ricciNormLap)
       (nablaRicciNormSqInFrame (M := M) nablaRic gInv)
       gradScalarNormSq scalar
       (ricciNormSqInFrame (I := I) S gInv frame)
@@ -112,17 +112,17 @@ theorem tfHeat_frame
     intro t x i j
     rw [hRic t x i j, hRic t x j i]
     fin_cases i <;> fin_cases j <;> simp [DifferentialGeometry.Geometry.Curvature.ricciDiag3]
-  exact tfHeat_sec6
+  exact trace_free_ricci_norm_sq_heat_equation_of_frame_evolution
     (I := I) S Rm04 gInv frame roughLapRic ricciNormLap nablaRic
     scalar scalarLap gradScalarNormSq
     (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
       ricciTraceCube)
     hscalarHeat h_inv h_ricci hInvSym hRicSym h_lap
-    (tfRel_frame (I := I) S Rm04 gInv frame scalar ricciTraceCube
+    (trace_free_ricci_reaction_relation_of_diagonal_frame_data (I := I) S Rm04 gInv frame scalar ricciTraceCube
       l1 l2 l3 hscalar hcube hInv hRic hRm)
 
 omit [Module.Finite ℝ E] in
-theorem tfHeat_data
+theorem trace_free_ricci_norm_sq_heat_equation_of_curvature_trace_data
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -163,19 +163,19 @@ theorem tfHeat_data
     (hRic : ∀ (t : Real) (x : M) (i j : Fin 3),
       ricciCompInFrame (I := I) S frame t x i j =
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) i j) :
-    tfRicHeatOn
+    TraceFreeRicciNormSqHeatEquationOn
       (D := D)
-      (tfRicNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
-      (tfLap scalar scalarLap gradScalarNormSq ricciNormLap)
+      (traceFreeRicciNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
+      (traceFreeRicciNormSqLaplacian scalar scalarLap gradScalarNormSq ricciNormLap)
       (nablaRicciNormSqInFrame (M := M) nablaRic gInv)
       gradScalarNormSq scalar
       (ricciNormSqInFrame (I := I) S gInv frame)
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube) := by
   have hRel :=
-    tfRel_data (I := I) S Rm04 gInv frame basis scalar ricciTraceCube
+    trace_free_ricci_reaction_relation_of_curvature_trace_data (I := I) S Rm04 gInv frame basis scalar ricciTraceCube
       l1 l2 l3 hbasis htrace hscalar hcube hInv hRic
-  exact tfHeat_sec6
+  exact trace_free_ricci_norm_sq_heat_equation_of_frame_evolution
     (I := I) S Rm04 gInv frame roughLapRic ricciNormLap nablaRic
     scalar scalarLap gradScalarNormSq
     (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
@@ -192,7 +192,7 @@ theorem tfHeat_data
     h_lap hRel
 
 omit [Module.Finite ℝ E] in
-theorem tfHeat_first
+theorem trace_free_ricci_norm_sq_heat_equation_of_first_trace_frame_data
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -243,19 +243,19 @@ theorem tfHeat_first
     (hRic : ∀ (t : Real) (x : M) (i j : Fin 3),
       ricciCompInFrame (I := I) S frame t x i j =
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) i j) :
-    tfRicHeatOn
+    TraceFreeRicciNormSqHeatEquationOn
       (D := D)
-      (tfRicNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
-      (tfLap scalar scalarLap gradScalarNormSq ricciNormLap)
+      (traceFreeRicciNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
+      (traceFreeRicciNormSqLaplacian scalar scalarLap gradScalarNormSq ricciNormLap)
       (nablaRicciNormSqInFrame (M := M) nablaRic gInv)
       gradScalarNormSq scalar
       (ricciNormSqInFrame (I := I) S gInv frame)
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube) := by
   have hRel :=
-    tfRel_first (I := I) S Rm04 gInv frame basis scalar ricciTraceCube
+    trace_free_ricci_reaction_relation_of_first_trace_frame_data (I := I) S Rm04 gInv frame basis scalar ricciTraceCube
       l1 l2 l3 hbasis horth hcurv hRicTrace hScalarTrace hscalar hcube hInv hRic
-  exact tfHeat_sec6
+  exact trace_free_ricci_norm_sq_heat_equation_of_frame_evolution
     (I := I) S Rm04 gInv frame roughLapRic ricciNormLap nablaRic
     scalar scalarLap gradScalarNormSq
     (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)

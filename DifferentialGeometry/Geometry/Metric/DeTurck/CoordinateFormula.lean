@@ -148,11 +148,11 @@ lemma LeviCivita_chartBasisVecFiber_eq
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma connDiff_chartBasis_pair_eq
+lemma connectionDifference_chartBasis_pair_eq
     (g g' : SmoothRiemannianMetric I M) (α : M)
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (j k : Fin (Module.finrank ℝ E)) :
-    connDiff (I := I) g g' x
+    connectionDifference (I := I) g g' x
         (chartBasisVecFiber (I := I) α j x)
         (chartBasisVecFiber (I := I) α k x) =
       trivFromE (I := I) α x
@@ -166,7 +166,7 @@ lemma connDiff_chartBasis_pair_eq
       (T% (fun b' : M => chartBasisVecFiber (I := I) α j b')) x :=
     chartBasisVecFiber_mdifferentiableAt (I := I) α j
       (chartLeviCivitaGoodSet_mem_baseSet (I := I) hx)
-  rw [connDiff_apply (I := I) g g' hsection_diff
+  rw [connectionDifference_apply (I := I) g g' hsection_diff
         (chartBasisVecFiber (I := I) α k x)]
   rw [LeviCivita_chartBasisVecFiber_eq (I := I) g α hx j
         (chartBasisVecFiber (I := I) α k x)]
@@ -277,11 +277,11 @@ private lemma trivFromE_eq_chartBasisVecFiber_sum
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma connDiff_chartBasis_pair_eq_sum
+lemma connectionDifference_chartBasis_pair_eq_sum
     (g g' : SmoothRiemannianMetric I M) (α : M)
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (j k : Fin (Module.finrank ℝ E)) :
-    connDiff (I := I) g g' x
+    connectionDifference (I := I) g g' x
         (chartBasisVecFiber (I := I) α j x)
         (chartBasisVecFiber (I := I) α k x) =
       ∑ p : Fin (Module.finrank ℝ E),
@@ -289,7 +289,7 @@ lemma connDiff_chartBasis_pair_eq_sum
           chartChristoffel (I := I) g' α k j p (extChartAt I α x)) •
           chartBasisVecFiber (I := I) α p x := by
   classical
-  rw [connDiff_chartBasis_pair_eq (I := I) g g' α hx j k]
+  rw [connectionDifference_chartBasis_pair_eq (I := I) g g' α hx j k]
   set Cg : E := christoffelCorrection (I := I) g α x ((chartModelBasis E) j)
     (chartBasisVecFiber (I := I) α k x) with hCg_def
   set Cg' : E := christoffelCorrection (I := I) g' α x ((chartModelBasis E) j)
@@ -327,7 +327,7 @@ theorem deTurckChartLocal_eq_chartDeTurckVFComp_sum
   have hreplace :
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x j k •
-          connDiff (I := I) g g' x
+          connectionDifference (I := I) g g' x
             (chartBasisVecFiber (I := I) α j x)
             (chartBasisVecFiber (I := I) α k x) =
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
@@ -337,7 +337,7 @@ theorem deTurckChartLocal_eq_chartDeTurckVFComp_sum
               chartChristoffel (I := I) g' α k j p (extChartAt I α x)) •
               chartBasisVecFiber (I := I) α p x := by
     refine Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun k _ => ?_))
-    rw [connDiff_chartBasis_pair_eq_sum (I := I) g g' α hx j k]
+    rw [connectionDifference_chartBasis_pair_eq_sum (I := I) g g' α hx j k]
   rw [hreplace]
   have hpush :
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),

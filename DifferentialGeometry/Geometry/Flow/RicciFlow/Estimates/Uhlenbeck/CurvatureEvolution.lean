@@ -59,7 +59,7 @@ theorem metricCompInFrame_timeDeriv
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
-theorem realizedRmBase_eq_curvCoeff_lower
+theorem solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
@@ -68,7 +68,7 @@ theorem realizedRmBase_eq_curvCoeff_lower
     (hcurv : DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
       (S.family.connection t) x₀)
     (m : Fin 4 -> CoordinateIdx (𝕜 := Real) E) :
-    realizedRmBase (I := I) S x₀ t x₀ m
+    solutionCurvatureComponents (I := I) S x₀ t x₀ m
       = ∑ p : CoordinateIdx (𝕜 := Real) E,
           DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt (I := I)
             (S.family.connection t) x₀ (m 0) (m 1) (m 2) p
@@ -86,7 +86,7 @@ theorem realizedRmBase_eq_curvCoeff_lower
     simpa [SolutionFamily.connection, metricCov] using
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
         (I := I) (M := M) (S.base.metric t)
-  rw [realizedRmBase_apply, hvec,
+  rw [solutionCurvatureComponents_apply, hvec,
     solution_rm04LowersRm13At S t x₀
       (coordinateFrameAt (I := I) x₀ (m 0) x₀)
       (coordinateFrameAt (I := I) x₀ (m 1) x₀)
@@ -102,7 +102,7 @@ theorem realizedRmBase_eq_curvCoeff_lower
   congr 1
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem realizedRmBase_timeDeriv
+theorem solutionCurvatureComponents_hasDerivWithinAt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -140,7 +140,7 @@ theorem realizedRmBase_timeDeriv
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (m : Fin 4 -> CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
-      (fun s : Real => realizedRmBase (I := I) S x₀ s x₀ m)
+      (fun s : Real => solutionCurvatureComponents (I := I) S x₀ s x₀ m)
       (∑ p : CoordinateIdx (𝕜 := Real) E,
         ((christoffelVariationCovDerivCoordAt (I := I) (S.family.connection (t : Real))
               (christoffelEvolutionRHSInFrame (M := M) (coordInv (I := I) S x₀)
@@ -160,12 +160,12 @@ theorem realizedRmBase_timeDeriv
       D.carrier
       (t : Real) := by
   have hbase : ∀ s, s ∈ D.carrier ->
-      realizedRmBase (I := I) S x₀ s x₀ m =
+      solutionCurvatureComponents (I := I) S x₀ s x₀ m =
         ∑ p : CoordinateIdx (𝕜 := Real) E,
           DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt (I := I)
             (S.family.connection s) x₀ (m 0) (m 1) (m 2) p
             * metricCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) s x₀ (m 3) p :=
-    fun s hs => realizedRmBase_eq_curvCoeff_lower S x₀ s (hRm s hs) (hcurv s hs) m
+    fun s hs => solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients S x₀ s (hRm s hs) (hcurv s hs) m
   have hterm : ∀ p ∈ (Finset.univ : Finset (CoordinateIdx (𝕜 := Real) E)),
       HasDerivWithinAt
         (fun s : Real =>
@@ -221,7 +221,7 @@ theorem solution_rm04_kn_firstTrace_gform_at
               - (S.base.metric t).inner x Y Z * (S.base.metric t).inner x X W) := by
   have h :=
     DifferentialGeometry.Geometry.Curvature.rm04_kn_gform (I := I)
-      (traceData_can (I := I) S horth) X Y Z W
+      (riemann_from_ricci_trace_data (I := I) S horth) X Y Z W
   simp only [Tensor0SSpace.neg_apply] at h
   rw [h]
   ring
@@ -596,7 +596,7 @@ theorem rm04BaseEvolution_at
   have hsym : forall i j : Fin 3, R (t : Real) i j = R (t : Real) j i := by
     intro i j
     rw [hR, hR]
-    exact ricciSym_can (I := I) S (t : Real) x (e i) (e j)
+    exact ricci_is_symmetric (I := I) S (t : Real) x (e i) (e j)
   have horthk : forall i j : Fin 3,
       (S.base.metric (t : Real)).inner x (e i) (e j) = kd i j := horth
   have hXZ := (hRicDot a c).congr (fun s _ => (hR s a c).symm) ((hR (t : Real) a c).symm)
@@ -618,12 +618,12 @@ theorem rm04BaseEvolution_at
   linear_combination hmatch
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem ricciSymFrame_can
+theorem ricci_symmetric_in_frame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     {Idx : Type*} (frame : Idx -> (x : M) -> TangentSpace I x) :
     RicciSymmetricInFrameOn (I := I) S frame :=
-  fun t x i j => ricciSym_can (I := I) S t x (frame i x) (frame j x)
+  fun t x i j => ricci_is_symmetric (I := I) S t x (frame i x) (frame j x)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem solution_rm04_kn_all
@@ -664,14 +664,14 @@ theorem rmBaseDeriv_basis
       (V a b c d) D.carrier (t : Real))
     (m : Fin 4 -> DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
-      (fun s : Real => realizedRmBase (I := I) S x₀ s x₀ m)
+      (fun s : Real => solutionCurvatureComponents (I := I) S x₀ s x₀ m)
       (∑ slots : Fin 4 -> Fin 3,
         V (slots 0) (slots 1) (slots 2) (slots 3) *
           ∏ a : Fin 4, basis.coord (slots a)
             (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x₀ (m a) x₀))
       D.carrier (t : Real) := by
   classical
-  have hexp : (fun s : Real => realizedRmBase (I := I) S x₀ s x₀ m)
+  have hexp : (fun s : Real => solutionCurvatureComponents (I := I) S x₀ s x₀ m)
       = fun s : Real =>
         ∑ slots : Fin 4 -> Fin 3,
           S.base.rm04 s x₀
@@ -680,7 +680,7 @@ theorem rmBaseDeriv_basis
             ∏ a : Fin 4, basis.coord (slots a)
               (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x₀ (m a) x₀) := by
     funext s
-    rw [realizedRmBase_apply,
+    rw [solutionCurvatureComponents_apply,
       tensor0S_apply_eq_sum (I := I) basis (S.base.rm04 s x₀)
         (fun q => DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x₀ (m q) x₀)]
     refine Finset.sum_congr rfl fun slots _ => ?_
@@ -1721,7 +1721,7 @@ end KnField
 
 open DifferentialGeometry.Dim3Reaction in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rm04Base_of_sol
+theorem riemann_component_evolution_in_orthonormal_frame_of_solution
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (t : RealTimeInterval.RegularTime D)
@@ -1832,7 +1832,7 @@ theorem rm04HrmProducer
       R s i j = ricciCompInFrame (I := I) S frame s x₀ i j)
     (m : Fin 4 -> DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
-      (fun s : Real => realizedRmBase (I := I) S x₀ s x₀ m)
+      (fun s : Real => solutionCurvatureComponents (I := I) S x₀ s x₀ m)
       (∑ slots : Fin 4 -> Fin 3,
         (-(roughLapRic (t : Real) x₀ (slots 0) (slots 2)) * kd (slots 1) (slots 3)
             + roughLapRic (t : Real) x₀ (slots 1) (slots 2) * kd (slots 0) (slots 3)
@@ -1859,7 +1859,7 @@ theorem rm04HrmProducer
   have hsym : forall i j : Fin 3, R (t : Real) i j = R (t : Real) j i := by
     intro i j
     rw [hRdef, hRdef]
-    exact ricciSym_can (I := I) S (t : Real) x₀ (frame i x₀) (frame j x₀)
+    exact ricci_is_symmetric (I := I) S (t : Real) x₀ (frame i x₀) (frame j x₀)
   have hRdefB : forall i j : Fin 3,
       R (t : Real) i j = S.ricciAt (t : Real) x₀
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis i) (basis j)) := by

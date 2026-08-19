@@ -97,7 +97,7 @@ theorem deTurckRealizabilityRadius_pos
   (Classical.choose_spec
     (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)).1
 
-theorem perModeConv_sq_le_time_mul_integral' (lam : ℝ) (hlam : 0 ≤ lam)
+theorem per_mode_convolution_sq_le_time_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
     {c : ℝ → ℝ} (hc : Continuous c) {t : ℝ} (ht : 0 ≤ t) :
     (perModeConv lam c t) ^ 2 ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 := by
   set k : ℝ → ℝ := fun s => Real.exp (-(lam * (t - s))) * c s with hk_def
@@ -473,7 +473,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
       rw [h0, smoothCcToTensorHs_smul, zero_smul]
     refine ⟨(Classical.choose (deTurckSobolevNHa2_exists_of_super
       (I := I) (M := M) g₀ a ha_super)).2,
-      lt_of_le_of_lt hp_lt (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)), fun t
+      lt_of_le_of_lt hp_lt (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)), fun t
         => ?_⟩
     by_cases ht : t ∈ Set.Icc (0 : ℝ) d₂
     · exact hp_ball (F t) (hball_pt t ht)

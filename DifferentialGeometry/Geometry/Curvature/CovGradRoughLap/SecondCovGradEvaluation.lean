@@ -110,7 +110,7 @@ private lemma curried_covGrad_apply_eq_tensorCovDerivAt_apply (r t : ℕ)
       ((show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace (t + 1) I y from
         (covGrad (I := I) (M := M) g r t W).toSection y) (w y)) from rfl]
   unfold TangentSpace at v
-  exact tensor0S_curry_covGrad_appCcRS_eq (I := I) (M := M) g r t W y (w y) v
+  exact tensor0S_curry_covGrad_operatorFieldComposition_eq (I := I) (M := M) g r t W y (w y) v
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in

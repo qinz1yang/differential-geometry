@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderPrincipalArmFibreSmallness
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderPrincipalArm.FibreSmallness
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -134,7 +134,7 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_Hs_inner_le
 theorem deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
-    {δ : ℝ} (hδ_le : δ ≤ deTurckArmContractionThreshold (Module.finrank ℝ E))
+    {δ : ℝ} (hδ_le : δ ≤ deTurckContractionThreshold (Module.finrank ℝ E))
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T₀) δ) :
@@ -145,21 +145,21 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
             (deTurckPrincipalCometricArm (I := I) (M := M) g₀
               (tensorSectionRealizeMetric (I := I) g₀ T₀
                 (lt_of_le_of_lt hδ_le
-                  (deTurckArmContractionThreshold_lt_one' (Module.finrank ℝ E)))
+                  (de_turck_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
                 (hδ_fibre T₀ hball)) T₀)‖ ≤
           (1 / 2 : ℝ) * ‖smoothCcToTensorHs (I := I) (M := M) g₀
               ((a : ℝ) + (k : ℝ) + 1) T₀‖ +
             Clower k * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) T₀‖ := by
   classical
   have hδ_le13 : δ ≤ 1 / 3 :=
-    le_trans hδ_le (deTurckArmContractionThreshold_le_third' (Module.finrank ℝ E))
+    le_trans hδ_le (de_turck_contraction_threshold_le_third_of_ne_zero (Module.finrank ℝ E))
   obtain ⟨Clower, hCl_nn, hnorm⟩ :=
     deTurckPrincipalCometricArm_realize_ballUniform_Hs_norm_le (I := I) (M := M)
       g₀ a ha_super hR₀ hδ_le13 hδ_fibre
   refine ⟨Clower, hCl_nn, fun k T₀ hball => ?_⟩
   have hb := hnorm k T₀ hball
   have hhalf : deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) ≤ 1 / 2 :=
-    deTurckArmFibreConst_mul_div_le_half
+    de_turck_arm_fibre_const_mul_div_le_half
       (Nat.one_le_iff_ne_zero.mpr (NeZero.ne (Module.finrank ℝ E))) hδ_le
   have hR_nn : 0 ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
       (rawTensorConnLapSmooth (I := I) g₀ 0 2 T₀)‖ := norm_nonneg _
@@ -181,7 +181,7 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
         (deTurckPrincipalCometricArm (I := I) (M := M) g₀
           (tensorSectionRealizeMetric (I := I) g₀ T₀
             (lt_of_le_of_lt hδ_le
-              (deTurckArmContractionThreshold_lt_one' (Module.finrank ℝ E)))
+              (de_turck_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
             (hδ_fibre T₀ hball)) T₀)‖
       = ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
           (deTurckPrincipalCometricArm (I := I) (M := M) g₀
@@ -204,7 +204,7 @@ theorem deTurckPrincipalCometricArm_realize_ballUniform_spectralShift_le
 theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
-    {δ : ℝ} (hδ_le : δ ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E))
+    {δ : ℝ} (hδ_le : δ ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E))
     (hδ_fibre : ∀ (T₀ : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀ →
       metricCauchySchwarzBound
@@ -220,12 +220,12 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
             (deTurckSmoothRemainder (I := I) g₀ g_bg T₀
                 (lt_of_le_of_lt hδ_le
-                  (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+                  (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
                 (hδ_fibre T₀ hball) -
               deTurckSmoothRemainder (I := I) g₀ g_bg
                 (0 : SmoothCcTensor g₀ 0 2)
                 (lt_of_le_of_lt hδ_le
-                  (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+                  (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
                 (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
                   (by
                     rw [show (0 : SmoothCcTensor g₀ 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g₀ 0 2)
@@ -237,10 +237,10 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
   have hn1 : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr (NeZero.ne n)
-  have hδ_le_thr : δ ≤ deTurckArmContractionThreshold n :=
-    le_trans hδ_le (deTurckArmContractionThreshold''_le hn1)
+  have hδ_le_thr : δ ≤ deTurckContractionThreshold n :=
+    le_trans hδ_le (de_turck_remainder_contraction_threshold_le_contraction_threshold hn1)
   have hδ_le13 : δ ≤ 1 / 3 :=
-    le_trans hδ_le (deTurckArmContractionThreshold''_le_third hn1)
+    le_trans hδ_le (de_turck_remainder_contraction_threshold_le_third hn1)
   set Cbudget : ℝ :=
     32 * deTurckArmFibreConst n ^ 2 / (2 * (1 + 32 * deTurckArmFibreConst n ^ 2))
     with hCbudget_def
@@ -255,7 +255,7 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
     by linarith, ?_, fun k => by have := hCth_nn k; have := hCt_nn k; have := hCl_nn k; linarith,
     fun k T₀ hTsymm hball => ?_⟩
   · rw [hCbudget_def]
-    exact deTurckBudget_half_add_thirtyTwo_lt_one n
+    exact de_turck_budget_half_add_thirty_two_lt_one n
   rcases isEmpty_or_nonempty M with hM | hM
   · have hzero : ∀ (τ : ℝ) (X : SmoothCcTensor g₀ 0 2),
         smoothCcToTensorHs (I := I) (M := M) g₀ τ X = 0 := by
@@ -277,7 +277,7 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
     have hεw_le : εwrap ≤ Cbudget := by
       refine le_trans (hεw_cap hδ_nn) ?_
       rw [hCbudget_def]
-      exact deTurckArmFibreConst_cube_mul_div_le_thirtyTwo hn1 hδ_le
+      exact de_turck_arm_fibre_const_cube_mul_div_le_thirty_two hn1 hδ_le
     obtain ⟨third, tame, hid, hthird, htame⟩ := hmain T₀ hTsymm hball
     have hb3 := hthird k
     have hbt := htame k
@@ -287,12 +287,12 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
     calc ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ) - 1)
           (deTurckSmoothRemainder (I := I) g₀ g_bg T₀
               (lt_of_le_of_lt hδ_le
-                (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+                (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
               (hδ_fibre T₀ hball) -
             deTurckSmoothRemainder (I := I) g₀ g_bg
               (0 : SmoothCcTensor g₀ 0 2)
               (lt_of_le_of_lt hδ_le
-                (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+                (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
               (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
                 (by
                   rw [show (0 : SmoothCcTensor g₀ 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g₀ 0 2)
@@ -307,12 +307,12 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
               + third + tame)‖ := by rw [show
             (deTurckSmoothRemainder (I := I) g₀ g_bg T₀
                 (lt_of_le_of_lt hδ_le
-                  (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+                  (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
                 (hδ_fibre T₀ hball) -
               deTurckSmoothRemainder (I := I) g₀ g_bg
                 (0 : SmoothCcTensor g₀ 0 2)
                 (lt_of_le_of_lt hδ_le
-                  (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)))
+                  (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)))
                 (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
                   (by
                     rw [show (0 : SmoothCcTensor g₀ 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g₀ 0 2)

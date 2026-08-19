@@ -36,12 +36,36 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 def ipTracePerm : Equiv.Perm (Fin 3) := Equiv.swap 1 2
 
+noncomputable def ipLowCoeff (g : SmoothRiemannianMetric I M) :
+    SmoothCcTensor g 3 1 :=
+  reindexCoeffGen (I := I) (M := M) g 3 1
+    (cometricDoubleTraceField (I := I) g 1) ipTracePerm
+
 noncomputable def ipLowCc (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g 0 1) :
     SmoothCcTensor g 2 1 :=
-  appCcRS (I := I) (M := M) g 2 3 1
-    (reindexCoeffGen (I := I) (M := M) g 3 1
-      (cometricDoubleTraceField (I := I) g 1) ipTracePerm)
+  ccOperatorFieldComp (I := I) (M := M) g 2 3 1
+    (ipLowCoeff (I := I) (M := M) g)
     (slotExtend (I := I) (M := M) g 1 2 (slotExtend (I := I) (M := M) g 0 1 om))
+
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
+theorem ipLowCc_eq_ccOperatorFieldComp
+    (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g 0 1) :
+    ipLowCc (I := I) (M := M) g om =
+      ccOperatorFieldComp (I := I) (M := M) g 2 3 1 (ipLowCoeff (I := I) (M := M) g)
+        (slotExtend (I := I) (M := M) g 1 2
+          (slotExtend (I := I) (M := M) g 0 1 om)) := rfl
+
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+theorem ipLowCc_sub
+    (g : SmoothRiemannianMetric I M) (a b : SmoothCcTensor g 0 1) :
+    ipLowCc (I := I) (M := M) g (a - b) =
+      ipLowCc (I := I) (M := M) g a - ipLowCc (I := I) (M := M) g b := by
+  rw [ipLowCc_eq_ccOperatorFieldComp, ipLowCc_eq_ccOperatorFieldComp, ipLowCc_eq_ccOperatorFieldComp,
+    slotExtend_sub, slotExtend_sub,
+    show ccOperatorFieldComp (I := I) (M := M) g 2 3 1 =
+      ccOperatorFieldComp (I := I) (M := M) g 2 3 1 from rfl,
+    operatorFieldComposition_sub_right]
 
 section Eval
 
@@ -337,7 +361,7 @@ theorem ipLowCc_toSec_ip (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g
     (fun k => m k)).symm
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private lemma ipjb_icg_zero (g : SmoothRiemannianMetric I M) (r s j : ℕ) :
+private lemma ipjb_iteratedCovGrad_zero (g : SmoothRiemannianMetric I M) (r s j : ℕ) :
     iteratedCovGrad (I := I) g r s j (0 : SmoothCcTensor g r s) = 0 := by
   induction j with
   | zero => rfl
@@ -345,21 +369,21 @@ private lemma ipjb_icg_zero (g : SmoothRiemannianMetric I M) (r s j : ℕ) :
       rw [iteratedCovGrad_succ, ih]
       exact covGrad_zero (I := I) (M := M) (g := g) (r := r) (s := s + j)
 
-private lemma ipjb_rfns_trace_succ (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
+private lemma ipjb_riemannianFiberNormSq_trace_succ (g : SmoothRiemannianMetric I M) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 3 (1 + (i + 1)) x
         ((iteratedCovGrad (I := I) g 3 1 (i + 1)
           (cometricDoubleTraceField (I := I) g 1)).toSection x) = 0 := by
-  rw [← rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g 3 1 i
+  rw [← riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g 3 1 i
     (cometricDoubleTraceField (I := I) g 1) x]
   rw [show covGrad (I := I) (M := M) g 3 1 (cometricDoubleTraceField (I := I) g 1) =
       (0 : SmoothCcTensor g 3 2) from
     cometricDoubleTraceField_covGrad_eq_zero (I := I) g 1]
-  rw [ipjb_icg_zero (I := I) (M := M) g 3 2 i]
+  rw [ipjb_iteratedCovGrad_zero (I := I) (M := M) g 3 2 i]
   rw [show ((0 : SmoothCcTensor g 3 (2 + i)).toSection x) =
       (0 : TensorRSSpace 3 (2 + i) I x) from rfl]
   exact riemannianFiberNormSq_zero (I := I) (M := M) g 3 (1 + 1 + i) x
 
-theorem rfns_icg_ipLow_le (g : SmoothRiemannianMetric I M) :
+theorem riemannianFiberNormSq_iteratedCovGrad_ipLow_le (g : SmoothRiemannianMetric I M) :
     ∃ c : ℕ → ℝ, (∀ l, 0 ≤ c l) ∧
       ∀ (om : SmoothCcTensor g 0 1) (l : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g 2 (1 + l) x
@@ -373,8 +397,8 @@ theorem rfns_icg_ipLow_le (g : SmoothRiemannianMetric I M) :
     (I := I) (M := M) g 3 1 (cometricDoubleTraceField (I := I) g 1)
   set n : ℝ := (Module.finrank ℝ E : ℝ) with hn_def
   have hn_nn : 0 ≤ n := by rw [hn_def]; positivity
-  refine ⟨fun l => appCcGdiag (E := E) l * NC * (n * n), fun l =>
-    mul_nonneg (mul_nonneg (appCcGdiag_nonneg (E := E) l) hNC_nn)
+  refine ⟨fun l => operatorFieldApplicationGdiag (E := E) l * NC * (n * n), fun l =>
+    mul_nonneg (mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) l) hNC_nn)
       (mul_nonneg hn_nn hn_nn), ?_⟩
   intro om l x
   set Carm : SmoothCcTensor g 3 1 :=
@@ -382,7 +406,7 @@ theorem rfns_icg_ipLow_le (g : SmoothRiemannianMetric I M) :
       (cometricDoubleTraceField (I := I) g 1) ipTracePerm with hCarm_def
   set P : SmoothCcTensor g 2 3 :=
     slotExtend (I := I) (M := M) g 1 2 (slotExtend (I := I) (M := M) g 0 1 om) with hP_def
-  have hgrid := rfns_iteratedCovGrad_appCcRS_diagonalProductGrid_rankLeft_le
+  have hgrid := riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le
     (I := I) (M := M) g l 2 3 1 Carm P x
   have hCarm_jets : ∀ i : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g 3 (1 + i) x
@@ -392,7 +416,7 @@ theorem rfns_icg_ipLow_le (g : SmoothRiemannianMetric I M) :
             (cometricDoubleTraceField (I := I) g 1)).toSection x) := by
     intro i
     rw [hCarm_def]
-    exact rfns_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g 3 1
+    exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g 3 1
       (cometricDoubleTraceField (I := I) g 1) ipTracePerm i x
   have hP_jets : ∀ m : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g 2 (3 + m) x
@@ -401,10 +425,10 @@ theorem rfns_icg_ipLow_le (g : SmoothRiemannianMetric I M) :
           ((iteratedCovGrad (I := I) g 0 1 m om).toSection x)) := by
     intro m
     rw [hP_def]
-    refine le_trans (rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g 1 2
+    refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g 1 2
       (slotExtend (I := I) (M := M) g 0 1 om) m x) ?_
     refine mul_le_mul_of_nonneg_left ?_ hn_nn
-    exact rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g 0 1 om m x
+    exact riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g 0 1 om m x
   set Pj : ℕ → ℝ := fun m => riemannianFiberNormSq (I := I) (M := M) g 2 (3 + m) x
     ((iteratedCovGrad (I := I) g 2 3 m P).toSection x) with hPj_def
   set Wj : ℕ → ℝ := fun m => riemannianFiberNormSq (I := I) (M := M) g 0 (1 + m) x
@@ -429,7 +453,7 @@ theorem rfns_icg_ipLow_le (g : SmoothRiemannianMetric I M) :
       exact mul_le_mul_of_nonneg_left (le_refl _) hNC_nn
     · intro i hi hi0
       obtain ⟨i', rfl⟩ : ∃ i', i = i' + 1 := ⟨i - 1, by omega⟩
-      rw [hCarm_jets (i' + 1), ipjb_rfns_trace_succ (I := I) (M := M) g i' x, zero_mul]
+      rw [hCarm_jets (i' + 1), ipjb_riemannianFiberNormSq_trace_succ (I := I) (M := M) g i' x, zero_mul]
     · intro h0
       exact absurd (Finset.mem_range.mpr (by omega)) h0
   have hPsum : ∑ m ∈ Finset.range (l + 1), Pj m ≤
@@ -441,26 +465,26 @@ theorem rfns_icg_ipLow_le (g : SmoothRiemannianMetric I M) :
   calc riemannianFiberNormSq (I := I) (M := M) g 2 (1 + l) x
         ((iteratedCovGrad (I := I) g 2 1 l
           (ipLowCc (I := I) (M := M) g om)).toSection x)
-      ≤ appCcGdiag (E := E) l * ∑ i ∈ Finset.range (l + 1),
+      ≤ operatorFieldApplicationGdiag (E := E) l * ∑ i ∈ Finset.range (l + 1),
           riemannianFiberNormSq (I := I) (M := M) g 3 (1 + i) x
               ((iteratedCovGrad (I := I) g 3 1 i Carm).toSection x) *
             ∑ m ∈ Finset.range (l + 1 - i), Pj m := hgrid
-    _ ≤ appCcGdiag (E := E) l * (NC * ∑ m ∈ Finset.range (l + 1), Pj m) :=
-        mul_le_mul_of_nonneg_left hsingle (appCcGdiag_nonneg (E := E) l)
-    _ ≤ appCcGdiag (E := E) l * (NC * ((n * n) * ∑ m ∈ Finset.range (l + 1), Wj m)) := by
-        refine mul_le_mul_of_nonneg_left ?_ (appCcGdiag_nonneg (E := E) l)
+    _ ≤ operatorFieldApplicationGdiag (E := E) l * (NC * ∑ m ∈ Finset.range (l + 1), Pj m) :=
+        mul_le_mul_of_nonneg_left hsingle (operatorFieldApplicationGdiag_nonneg (E := E) l)
+    _ ≤ operatorFieldApplicationGdiag (E := E) l * (NC * ((n * n) * ∑ m ∈ Finset.range (l + 1), Wj m)) := by
+        refine mul_le_mul_of_nonneg_left ?_ (operatorFieldApplicationGdiag_nonneg (E := E) l)
         exact mul_le_mul_of_nonneg_left hPsum hNC_nn
-    _ = appCcGdiag (E := E) l * NC * (n * n) * ∑ m ∈ Finset.range (l + 1), Wj m := by
+    _ = operatorFieldApplicationGdiag (E := E) l * NC * (n * n) * ∑ m ∈ Finset.range (l + 1), Wj m := by
         ring
 
-theorem norm_icg_ipLow_le (g : SmoothRiemannianMetric I M) :
+theorem norm_iteratedCovGrad_ipLow_le (g : SmoothRiemannianMetric I M) :
     ∃ c : ℕ → ℝ, (∀ l, 0 ≤ c l) ∧
       ∀ (om : SmoothCcTensor g 0 1) (l : ℕ),
         ‖iteratedCovGrad (I := I) g 2 1 l (ipLowCc (I := I) (M := M) g om)‖ ^ 2 ≤
           c l * ∑ m ∈ Finset.range (l + 1),
             ‖iteratedCovGrad (I := I) g 0 1 m om‖ ^ 2 := by
   classical
-  obtain ⟨c, hc_nn, hc⟩ := rfns_icg_ipLow_le (I := I) (M := M) g
+  obtain ⟨c, hc_nn, hc⟩ := riemannianFiberNormSq_iteratedCovGrad_ipLow_le (I := I) (M := M) g
   refine ⟨c, hc_nn, ?_⟩
   intro om l
   have hint : MeasureTheory.Integrable

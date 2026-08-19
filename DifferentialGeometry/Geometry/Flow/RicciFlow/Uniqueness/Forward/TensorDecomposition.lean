@@ -487,7 +487,7 @@ theorem uhlRm2_deriv
 
 end Rm2Speed
 
-section Assembly
+section
 
 variable {Idx : Type*} [Fintype Idx]
 
@@ -720,7 +720,7 @@ def sdecRemFam (g₁ g₂ : Real -> SmoothRiemannianMetric I M)
       ricciOneUp₁ ricciOneUp₂ (fun m z => basisAt z m) t x)
     (uhlRm2Vec (I := I) g₂ basisAt Rm04₂ roughLapRm04₂ B₂ ricciOneUp₂ t x)
 
-end Assembly
+end
 
 end NormedBase
 

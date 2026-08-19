@@ -38,7 +38,7 @@ theorem appHs_h2_norm
   obtain ⟨Csp, hCsp, hsp⟩ := hs_le_jet (I := I) (M := M) g c 2
   obtain ⟨Cin, hCin, hin⟩ := hsJet_le (I := I) (M := M) g b 2
   obtain ⟨Capp, hCapp, happ⟩ :=
-    appCc_h2_h2_h2 (I := I) (M := M) hDim g b c
+    operatorFieldApplication_h2_h2_h2 (I := I) (M := M) hDim g b c
   let C : ℝ := Csp * 3 * Capp * Cin
   refine ⟨C, by
     dsimp only [C]
@@ -53,7 +53,7 @@ theorem appHs_h2_norm
   let N : ℝ := ‖ccTensorToHs (I := I) (M := M) g b (2 : ℝ) W‖
   let B : ℝ := Cin * N
   let Y : SmoothCcTensor g 0 c :=
-    appCc (I := I) (M := M) g b c Φ W
+    operatorFieldApply (I := I) (M := M) g b c Φ W
   let Q : ℝ := Capp * A * B
   have hN : 0 ≤ N := norm_nonneg _
   have hB : 0 ≤ B := mul_nonneg hCin hN

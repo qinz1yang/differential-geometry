@@ -27,7 +27,7 @@ variable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
 
 section Perm
 
-def reLowerPerm (s : ℕ) : Equiv.Perm (Fin (s + 1 + 2)) :=
+def reLowerPermutationWithTwoInputs (s : ℕ) : Equiv.Perm (Fin (s + 1 + 2)) :=
   Equiv.ofLeftInverseOfCardLE (le_refl _)
     (fun k : Fin (s + 1 + 2) =>
       if h : (k : ℕ) < s then ⟨(k : ℕ) + 2, by omega⟩
@@ -46,8 +46,8 @@ def reLowerPerm (s : ℕ) : Equiv.Perm (Fin (s + 1 + 2)) :=
       dsimp only
       split_ifs <;> simp_all <;> omega)
 
-theorem reLowerPerm_val (s : ℕ) (k : Fin (s + 1 + 2)) :
-    ((reLowerPerm s k : Fin (s + 1 + 2)) : ℕ) =
+theorem reLowerPermutationWithTwoInputs_value (s : ℕ) (k : Fin (s + 1 + 2)) :
+    ((reLowerPermutationWithTwoInputs s k : Fin (s + 1 + 2)) : ℕ) =
       if (k : ℕ) < s then (k : ℕ) + 2
       else if (k : ℕ) = s then 0 else if (k : ℕ) = s + 1 then 1 else (k : ℕ) := by
   change ((if h : (k : ℕ) < s then (⟨(k : ℕ) + 2, by omega⟩ : Fin (s + 1 + 2))
@@ -56,17 +56,17 @@ theorem reLowerPerm_val (s : ℕ) (k : Fin (s + 1 + 2)) :
   split_ifs <;> rfl
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem reLowerPerm_first {s : ℕ} {x : M} (a b : TangentSpace I x)
+theorem reLowerPermutationWithTwoInputs_first_block {s : ℕ} {x : M} (a b : TangentSpace I x)
     (tail : Fin (s + 1) -> TangentSpace I x) (k : Fin (s + 1)) :
-    metricTraceInput (I := I) a b tail (reLowerPerm s (Fin.castAdd 2 k)) =
+    metricTraceInput (I := I) a b tail (reLowerPermutationWithTwoInputs s (Fin.castAdd 2 k)) =
       Function.update tail (Fin.last s) a k := by
   classical
   have hk : (k : ℕ) < s + 1 := k.isLt
   have hcast : ((Fin.castAdd 2 k : Fin (s + 1 + 2)) : ℕ) = (k : ℕ) := rfl
   rw [metricTraceInput_apply]
   by_cases h1 : (k : ℕ) < s
-  · have hv : ((reLowerPerm s (Fin.castAdd 2 k) : Fin (s + 1 + 2)) : ℕ) = (k : ℕ) + 2 := by
-      rw [reLowerPerm_val, hcast, if_pos h1]
+  · have hv : ((reLowerPermutationWithTwoInputs s (Fin.castAdd 2 k) : Fin (s + 1 + 2)) : ℕ) = (k : ℕ) + 2 := by
+      rw [reLowerPermutationWithTwoInputs_value, hcast, if_pos h1]
     have hne : k ≠ Fin.last s := by
       intro hcon
       rw [hcon] at h1
@@ -75,33 +75,33 @@ theorem reLowerPerm_first {s : ℕ} {x : M} (a b : TangentSpace I x)
     rw [dif_neg (by omega : ¬((k : ℕ) + 2 = 0)), dif_neg (by omega : ¬((k : ℕ) + 2 = 1))]
     exact congrArg tail (Fin.ext (by simp))
   · have hks : (k : ℕ) = s := by omega
-    have hv : ((reLowerPerm s (Fin.castAdd 2 k) : Fin (s + 1 + 2)) : ℕ) = 0 := by
-      rw [reLowerPerm_val, hcast, if_neg h1, if_pos hks]
+    have hv : ((reLowerPermutationWithTwoInputs s (Fin.castAdd 2 k) : Fin (s + 1 + 2)) : ℕ) = 0 := by
+      rw [reLowerPermutationWithTwoInputs_value, hcast, if_neg h1, if_pos hks]
     have hlast : k = Fin.last s := Fin.ext (by simp [hks])
     simp only [hv]
     rw [dif_pos (trivial : True), hlast, Function.update_self]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem reLowerPerm_snd0 {s : ℕ} {x : M} (a b : TangentSpace I x)
+theorem reLowerPermutationWithTwoInputs_tail_zero {s : ℕ} {x : M} (a b : TangentSpace I x)
     (tail : Fin (s + 1) -> TangentSpace I x) :
-    metricTraceInput (I := I) a b tail (reLowerPerm s (Fin.natAdd (s + 1) (0 : Fin 2))) = b := by
+    metricTraceInput (I := I) a b tail (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (0 : Fin 2))) = b := by
   have hcast : ((Fin.natAdd (s + 1) (0 : Fin 2) : Fin (s + 1 + 2)) : ℕ) = s + 1 := by
     simp [Fin.natAdd]
-  have hv : ((reLowerPerm s (Fin.natAdd (s + 1) (0 : Fin 2)) : Fin (s + 1 + 2)) : ℕ) = 1 := by
-    rw [reLowerPerm_val, hcast, if_neg (by omega), if_neg (by omega), if_pos rfl]
+  have hv : ((reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (0 : Fin 2)) : Fin (s + 1 + 2)) : ℕ) = 1 := by
+    rw [reLowerPermutationWithTwoInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_pos rfl]
   rw [metricTraceInput_apply]
   simp only [hv]
   rw [dif_neg (by omega : ¬((1 : ℕ) = 0)), dif_pos (trivial : True)]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem reLowerPerm_snd1 {s : ℕ} {x : M} (a b : TangentSpace I x)
+theorem reLowerPermutationWithTwoInputs_tail_one {s : ℕ} {x : M} (a b : TangentSpace I x)
     (tail : Fin (s + 1) -> TangentSpace I x) :
-    metricTraceInput (I := I) a b tail (reLowerPerm s (Fin.natAdd (s + 1) (1 : Fin 2))) =
+    metricTraceInput (I := I) a b tail (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (1 : Fin 2))) =
       tail (Fin.last s) := by
   have hcast : ((Fin.natAdd (s + 1) (1 : Fin 2) : Fin (s + 1 + 2)) : ℕ) = s + 2 := by
     simp [Fin.natAdd]
-  have hv : ((reLowerPerm s (Fin.natAdd (s + 1) (1 : Fin 2)) : Fin (s + 1 + 2)) : ℕ) = s + 2 := by
-    rw [reLowerPerm_val, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+  have hv : ((reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (1 : Fin 2)) : Fin (s + 1 + 2)) : ℕ) = s + 2 := by
+    rw [reLowerPermutationWithTwoInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega)]
   rw [metricTraceInput_apply]
   simp only [hv]
   rw [dif_neg (by omega : ¬(s + 2 = 0)), dif_neg (by omega : ¬(s + 2 = 1))]
@@ -161,7 +161,7 @@ def reLower (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) (s + 1) :=
   metricTraceFirstTwoField (I := I) (M := M) (s := s + 1) g₂
     (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPerm s)
+      (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPermutationWithTwoInputs s)
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 2)
         T (metricTensorField (I := I) g₁)))
@@ -182,7 +182,7 @@ theorem reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   rw [reLower, traceField_eq_sum (I := I) g₂ _ basis gInv hinv tail]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   congr 1
-  change (ContinuousMultilinearMap.domDomCongr (reLowerPerm s)
+  change (ContinuousMultilinearMap.domDomCongr (reLowerPermutationWithTwoInputs s)
       ((MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 2)
         T (metricTensorField (I := I) g₁)) x)) _ = _
@@ -190,17 +190,17 @@ theorem reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   change (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
       (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 2)
       T (metricTensorField (I := I) g₁)) x
-      (fun p => metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPerm s p)) = _
+      (fun p => metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPermutationWithTwoInputs s p)) = _
   rw [tensor0SField_product_apply, metricTensorField_apply]
   congr 1
-  · exact congrArg (T x) (funext fun k => reLowerPerm_first (I := I) (basis i) (basis j) tail k)
+  · exact congrArg (T x) (funext fun k => reLowerPermutationWithTwoInputs_first_block (I := I) (basis i) (basis j) tail k)
   · change g₁.inner x
         (metricTraceInput (I := I) (basis i) (basis j) tail
-          (reLowerPerm s (Fin.natAdd (s + 1) (0 : Fin 2))))
+          (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (0 : Fin 2))))
         (metricTraceInput (I := I) (basis i) (basis j) tail
-          (reLowerPerm s (Fin.natAdd (s + 1) (1 : Fin 2)))) = _
-    rw [reLowerPerm_snd0 (I := I) (basis i) (basis j) tail,
-      reLowerPerm_snd1 (I := I) (basis i) (basis j) tail]
+          (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (1 : Fin 2)))) = _
+    rw [reLowerPermutationWithTwoInputs_tail_zero (I := I) (basis i) (basis j) tail,
+      reLowerPermutationWithTwoInputs_tail_one (I := I) (basis i) (basis j) tail]
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem sharpFlat_eq_raise (g₁ g₂ : SmoothRiemannianMetric I M)
@@ -271,7 +271,7 @@ end ReLower
 
 section Pair
 
-def reLowerPerm2 (s : ℕ) : Equiv.Perm (Fin (s + 1 + 3)) :=
+def reLowerPermutationWithThreeInputs (s : ℕ) : Equiv.Perm (Fin (s + 1 + 3)) :=
   Equiv.ofLeftInverseOfCardLE (le_refl _)
     (fun k : Fin (s + 1 + 3) =>
       if h : (k : ℕ) < s then ⟨(k : ℕ) + 3, by omega⟩
@@ -292,8 +292,8 @@ def reLowerPerm2 (s : ℕ) : Equiv.Perm (Fin (s + 1 + 3)) :=
       dsimp only
       split_ifs <;> simp_all <;> omega)
 
-theorem reLowerPerm2_val (s : ℕ) (k : Fin (s + 1 + 3)) :
-    ((reLowerPerm2 s k : Fin (s + 1 + 3)) : ℕ) =
+theorem reLowerPermutationWithThreeInputs_value (s : ℕ) (k : Fin (s + 1 + 3)) :
+    ((reLowerPermutationWithThreeInputs s k : Fin (s + 1 + 3)) : ℕ) =
       if (k : ℕ) < s then (k : ℕ) + 3
       else if (k : ℕ) = s then 0
       else if (k : ℕ) = s + 1 then 2
@@ -305,17 +305,17 @@ theorem reLowerPerm2_val (s : ℕ) (k : Fin (s + 1 + 3)) :
   split_ifs <;> rfl
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem reLowerPerm2_first {s : ℕ} {x : M} (a b : TangentSpace I x)
+theorem reLowerPermutationWithThreeInputs_first_block {s : ℕ} {x : M} (a b : TangentSpace I x)
     (u : Fin (s + 2) -> TangentSpace I x) (k : Fin (s + 1)) :
-    metricTraceInput (I := I) a b u (reLowerPerm2 s (Fin.castAdd 3 k)) =
+    metricTraceInput (I := I) a b u (reLowerPermutationWithThreeInputs s (Fin.castAdd 3 k)) =
       Function.update (Fin.tail u) (Fin.last s) a k := by
   classical
   have hk : (k : ℕ) < s + 1 := k.isLt
   have hcast : ((Fin.castAdd 3 k : Fin (s + 1 + 3)) : ℕ) = (k : ℕ) := rfl
   rw [metricTraceInput_apply]
   by_cases h1 : (k : ℕ) < s
-  · have hv : ((reLowerPerm2 s (Fin.castAdd 3 k) : Fin (s + 1 + 3)) : ℕ) = (k : ℕ) + 3 := by
-      rw [reLowerPerm2_val, hcast, if_pos h1]
+  · have hv : ((reLowerPermutationWithThreeInputs s (Fin.castAdd 3 k) : Fin (s + 1 + 3)) : ℕ) = (k : ℕ) + 3 := by
+      rw [reLowerPermutationWithThreeInputs_value, hcast, if_pos h1]
     have hne : k ≠ Fin.last s := by
       intro hcon
       rw [hcon] at h1
@@ -324,47 +324,47 @@ theorem reLowerPerm2_first {s : ℕ} {x : M} (a b : TangentSpace I x)
     rw [dif_neg (by omega : ¬((k : ℕ) + 3 = 0)), dif_neg (by omega : ¬((k : ℕ) + 3 = 1))]
     exact congrArg u (Fin.ext (by simp))
   · have hks : (k : ℕ) = s := by omega
-    have hv : ((reLowerPerm2 s (Fin.castAdd 3 k) : Fin (s + 1 + 3)) : ℕ) = 0 := by
-      rw [reLowerPerm2_val, hcast, if_neg h1, if_pos hks]
+    have hv : ((reLowerPermutationWithThreeInputs s (Fin.castAdd 3 k) : Fin (s + 1 + 3)) : ℕ) = 0 := by
+      rw [reLowerPermutationWithThreeInputs_value, hcast, if_neg h1, if_pos hks]
     have hlast : k = Fin.last s := Fin.ext (by simp [hks])
     simp only [hv]
     rw [dif_pos (trivial : True), hlast, Function.update_self]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem reLowerPerm2_snd0 {s : ℕ} {x : M} (a b : TangentSpace I x)
+theorem reLowerPermutationWithThreeInputs_tail_zero {s : ℕ} {x : M} (a b : TangentSpace I x)
     (u : Fin (s + 2) -> TangentSpace I x) :
-    metricTraceInput (I := I) a b u (reLowerPerm2 s (Fin.natAdd (s + 1) (0 : Fin 3))) = u 0 := by
+    metricTraceInput (I := I) a b u (reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (0 : Fin 3))) = u 0 := by
   have hcast : ((Fin.natAdd (s + 1) (0 : Fin 3) : Fin (s + 1 + 3)) : ℕ) = s + 1 := by
     simp [Fin.natAdd]
-  have hv : ((reLowerPerm2 s (Fin.natAdd (s + 1) (0 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = 2 := by
-    rw [reLowerPerm2_val, hcast, if_neg (by omega), if_neg (by omega), if_pos rfl]
+  have hv : ((reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (0 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = 2 := by
+    rw [reLowerPermutationWithThreeInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_pos rfl]
   rw [metricTraceInput_apply]
   simp only [hv]
   rw [dif_neg (by omega : ¬((2 : ℕ) = 0)), dif_neg (by omega : ¬((2 : ℕ) = 1))]
   exact congrArg u (Fin.ext (by simp))
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem reLowerPerm2_snd1 {s : ℕ} {x : M} (a b : TangentSpace I x)
+theorem reLowerPermutationWithThreeInputs_tail_one {s : ℕ} {x : M} (a b : TangentSpace I x)
     (u : Fin (s + 2) -> TangentSpace I x) :
-    metricTraceInput (I := I) a b u (reLowerPerm2 s (Fin.natAdd (s + 1) (1 : Fin 3))) = b := by
+    metricTraceInput (I := I) a b u (reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (1 : Fin 3))) = b := by
   have hcast : ((Fin.natAdd (s + 1) (1 : Fin 3) : Fin (s + 1 + 3)) : ℕ) = s + 2 := by
     simp [Fin.natAdd]
-  have hv : ((reLowerPerm2 s (Fin.natAdd (s + 1) (1 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = 1 := by
-    rw [reLowerPerm2_val, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega),
+  have hv : ((reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (1 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = 1 := by
+    rw [reLowerPermutationWithThreeInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega),
       if_pos rfl]
   rw [metricTraceInput_apply]
   simp only [hv]
   rw [dif_neg (by omega : ¬((1 : ℕ) = 0)), dif_pos (trivial : True)]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem reLowerPerm2_snd2 {s : ℕ} {x : M} (a b : TangentSpace I x)
+theorem reLowerPermutationWithThreeInputs_tail_two {s : ℕ} {x : M} (a b : TangentSpace I x)
     (u : Fin (s + 2) -> TangentSpace I x) :
-    metricTraceInput (I := I) a b u (reLowerPerm2 s (Fin.natAdd (s + 1) (2 : Fin 3))) =
+    metricTraceInput (I := I) a b u (reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (2 : Fin 3))) =
       u (Fin.last (s + 1)) := by
   have hcast : ((Fin.natAdd (s + 1) (2 : Fin 3) : Fin (s + 1 + 3)) : ℕ) = s + 3 := by
     simp [Fin.natAdd]
-  have hv : ((reLowerPerm2 s (Fin.natAdd (s + 1) (2 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = s + 3 := by
-    rw [reLowerPerm2_val, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega),
+  have hv : ((reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (2 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = s + 3 := by
+    rw [reLowerPermutationWithThreeInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega),
       if_neg (by omega)]
   rw [metricTraceInput_apply]
   simp only [hv]
@@ -380,7 +380,7 @@ def reLowerPair (g₂ : SmoothRiemannianMetric I M) {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) (s + 2) :=
   metricTraceFirstTwoField (I := I) (M := M) (s := s + 2) g₂
     (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPerm2 s)
+      (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPermutationWithThreeInputs s)
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 3) T K))
 
@@ -402,34 +402,34 @@ theorem reLowerPair_eval (g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   rw [reLowerPair, traceField_eq_sum (I := I) g₂ _ basis gInv hinv u]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   congr 1
-  change (ContinuousMultilinearMap.domDomCongr (reLowerPerm2 s)
+  change (ContinuousMultilinearMap.domDomCongr (reLowerPermutationWithThreeInputs s)
       ((MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 3) T K) x)) _ = _
   rw [Tensor0SSpace.domDomCongr_apply]
   change (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
       (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 3) T K) x
-      (fun p => metricTraceInput (I := I) (basis i) (basis j) u (reLowerPerm2 s p)) = _
+      (fun p => metricTraceInput (I := I) (basis i) (basis j) u (reLowerPermutationWithThreeInputs s p)) = _
   rw [tensor0SField_product_apply]
   congr 1
-  · exact congrArg (T x) (funext fun k => reLowerPerm2_first (I := I) (basis i) (basis j) u k)
+  · exact congrArg (T x) (funext fun k => reLowerPermutationWithThreeInputs_first_block (I := I) (basis i) (basis j) u k)
   · refine congrArg (K x) (funext fun p => ?_)
     change metricTraceInput (I := I) (basis i) (basis j) u
-        (reLowerPerm2 s (Fin.natAdd (s + 1) p)) = _
+        (reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) p)) = _
     fin_cases p
     · change metricTraceInput (I := I) (basis i) (basis j) u
-          (reLowerPerm2 s (Fin.natAdd (s + 1) (0 : Fin 3))) =
+          (reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (0 : Fin 3))) =
         vec3 (I := I) (u 0) (basis j) (u (Fin.last (s + 1))) (0 : Fin 3)
-      rw [reLowerPerm2_snd0 (I := I) (basis i) (basis j) u]
+      rw [reLowerPermutationWithThreeInputs_tail_zero (I := I) (basis i) (basis j) u]
       simp [vec3]
     · change metricTraceInput (I := I) (basis i) (basis j) u
-          (reLowerPerm2 s (Fin.natAdd (s + 1) (1 : Fin 3))) =
+          (reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (1 : Fin 3))) =
         vec3 (I := I) (u 0) (basis j) (u (Fin.last (s + 1))) (1 : Fin 3)
-      rw [reLowerPerm2_snd1 (I := I) (basis i) (basis j) u]
+      rw [reLowerPermutationWithThreeInputs_tail_one (I := I) (basis i) (basis j) u]
       simp [vec3]
     · change metricTraceInput (I := I) (basis i) (basis j) u
-          (reLowerPerm2 s (Fin.natAdd (s + 1) (2 : Fin 3))) =
+          (reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (2 : Fin 3))) =
         vec3 (I := I) (u 0) (basis j) (u (Fin.last (s + 1))) (2 : Fin 3)
-      rw [reLowerPerm2_snd2 (I := I) (basis i) (basis j) u]
+      rw [reLowerPermutationWithThreeInputs_tail_two (I := I) (basis i) (basis j) u]
       simp [vec3]
 
 end Pair
@@ -443,7 +443,7 @@ theorem reLower_eq_trace (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     reLower (I := I) g₁ g₂ T =
       metricTraceFirstTwoField (I := I) (M := M) (s := s + 1) g₂
         (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPerm s)
+          (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPermutationWithTwoInputs s)
           (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
             (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 2)
             T (metricTensorField (I := I) g₁))) := rfl
@@ -579,7 +579,7 @@ theorem nabla_reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     nabla_metricTraceFirstTwo0S (I := I) (M := M) (metricCov (I := I) g₂)
       (metricCov_one (I := I) g₂) g₂ hmc
       (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPerm s)
+        (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPermutationWithTwoInputs s)
         (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
           (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 2)
           T (metricTensorField (I := I) g₁)))
@@ -594,7 +594,7 @@ theorem nabla_reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [← mul_add]
   congr 1
-  rw [totalNabla0SFun_domDomCongr (I := I) (metricCov (I := I) g₂) (reLowerPerm s)
+  rw [totalNabla0SFun_domDomCongr (I := I) (metricCov (I := I) g₂) (reLowerPermutationWithTwoInputs s)
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 2)
         T (metricTensorField (I := I) g₁)) x,
@@ -602,9 +602,9 @@ theorem nabla_reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   have harg : (fun p : Fin (s + 1 + 2 + 1) =>
         (Fin.cons X (metricTraceInput (I := I) (basis i) (basis j) tail) :
           Fin (s + 1 + 2 + 1) -> TangentSpace I x)
-          (frontExtendEquiv (reLowerPerm s) p)) =
+          (frontExtendEquiv (reLowerPermutationWithTwoInputs s) p)) =
       (Fin.cons X (fun p : Fin (s + 1 + 2) =>
-        metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPerm s p)) :
+        metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPermutationWithTwoInputs s p)) :
           Fin (s + 1 + 2 + 1) -> TangentSpace I x) := by
     funext p
     rw [cons_apply_frontExtendEquiv]
@@ -613,22 +613,22 @@ theorem nabla_reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     (metricNabla0S (I := I) g₂ T)
     (metricNabla0S (I := I) g₂ (metricTensorField (I := I) g₁)) hrT hrG X
     (fun p : Fin (s + 1 + 2) =>
-      metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPerm s p))]
+      metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPermutationWithTwoInputs s p))]
   have hfirst : (fun a : Fin (s + 1) =>
         metricTraceInput (I := I) (basis i) (basis j) tail
-          (reLowerPerm s (Fin.castAdd 2 a))) =
+          (reLowerPermutationWithTwoInputs s (Fin.castAdd 2 a))) =
       Function.update tail (Fin.last s) (basis i) :=
-    funext fun a => reLowerPerm_first (I := I) (basis i) (basis j) tail a
+    funext fun a => reLowerPermutationWithTwoInputs_first_block (I := I) (basis i) (basis j) tail a
   have hg0 : metricTraceInput (I := I) (basis i) (basis j) tail
-      (reLowerPerm s (Fin.natAdd (s + 1) (0 : Fin 2))) = basis j :=
-    reLowerPerm_snd0 (I := I) (basis i) (basis j) tail
+      (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (0 : Fin 2))) = basis j :=
+    reLowerPermutationWithTwoInputs_tail_zero (I := I) (basis i) (basis j) tail
   have hg1 : metricTraceInput (I := I) (basis i) (basis j) tail
-      (reLowerPerm s (Fin.natAdd (s + 1) (1 : Fin 2))) = tail (Fin.last s) :=
-    reLowerPerm_snd1 (I := I) (basis i) (basis j) tail
+      (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (1 : Fin 2))) = tail (Fin.last s) :=
+    reLowerPermutationWithTwoInputs_tail_one (I := I) (basis i) (basis j) tail
   rw [hfirst, metricTensorField_apply, hg0, hg1,
     cons2_vec3 (I := I) X (basis j) (tail (Fin.last s))
       (fun a : Fin 2 => metricTraceInput (I := I) (basis i) (basis j) tail
-        (reLowerPerm s (Fin.natAdd (s + 1) a))) hg0 hg1,
+        (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) a))) hg0 hg1,
     update_cons_last (I := I) X tail (basis i), cons_last (I := I) X tail,
     Fin.tail_cons, Fin.cons_zero]
 

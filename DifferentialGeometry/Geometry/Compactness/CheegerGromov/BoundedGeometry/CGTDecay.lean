@@ -386,7 +386,7 @@ def injDecay_of_bg
         (Metric.ball (0 : E) s) := by
     exact (base.bound k).injOn_ball hcomplete' hsRho
   obtain ⟨baseChart⟩ :=
-    exists_intrBallChart (I := I) Y.metric hEnorm
+    exists_intrinsic_ball_chart (I := I) Y.metric hEnorm
       Y.basepoint hlocalS hinjS
   have hmetricS :
       ∀ z ∈ Metric.ball (0 : E) s, ∀ v : E,

@@ -1074,7 +1074,7 @@ theorem ricci_nonneg_wmp
     tensor_wmp (I := I) (M := M) data
   simpa [hRic] using hsec
 
-theorem ricci_nonneg_sol
+theorem ricci_nonnegative_of_solution_wmp_data
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1248,7 +1248,7 @@ theorem pinch_sol_closed_nonneg
     (pinchParabolic (I := I) (M := M) S hS hdelta13 hdim hTsub hTreg)).preserve
       (I := I) (M := M) hT hdelta0 (le_of_lt hdelta13) hinit
 
-theorem ricci_nonneg_sol_closed
+theorem ricci_nonnegative_of_closed_solution_wmp_data
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1587,9 +1587,10 @@ theorem strict_pinch_sol_lt
       (G := fun t : Real => S.base.metric t)
       (Ric := twoTensorSecToFamily (I := I) (M := M) S.ricci)
       (scalar := S.scalar)
-      (metricData_sol0 (I := I) (M := M) S)
-      (metricData_sol0_pos (I := I) (M := M) S hpos)
-      (scalar0_cont_sol (I := I) (M := M) S hS.isSolution
+      (initialMetricRicciDataOfSolution (I := I) (M := M) S)
+      (initial_metric_ricci_data_positive (I := I) (M := M) S hpos)
+      (initial_scalar_curvature_continuous_of_solution
+        (I := I) (M := M) S hS.isSolution
         (hTsub (show (0 : Real) ∈ Set.Icc 0 T from ⟨le_rfl, hT⟩))))
 
 end DifferentialGeometry.PDE.RicciFlow

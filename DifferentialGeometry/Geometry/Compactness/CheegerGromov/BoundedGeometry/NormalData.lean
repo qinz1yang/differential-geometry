@@ -28,84 +28,84 @@ variable [I.Boundaryless]
 
 namespace InjRadiusDecayInput
 
-def h6Ratio {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+def normalChartRatio {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) (r₀ : Real) : Real :=
   min (1 / 2) (r₀ / (2 * hd.mu 0))
 
-def h6Radius {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+def normalChartRadius {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) (r₀ : Real)
     (k : Nat) (x : (X.obj k).M) : Real :=
-  hd.h6Ratio r₀ * hd.mu (hd.dist k x (X.obj k).basepoint)
+  hd.normalChartRatio r₀ * hd.mu (hd.dist k x (X.obj k).basepoint)
 
 omit [CompleteSpace E] in
-theorem h6Ratio_pos {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+theorem normal_chart_ratio_pos {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) {r₀ : Real} (hr₀ : 0 < r₀) :
-    0 < hd.h6Ratio r₀ := by
-  rw [h6Ratio]
+    0 < hd.normalChartRatio r₀ := by
+  rw [normalChartRatio]
   exact lt_min (by norm_num)
     (div_pos hr₀ (mul_pos (by norm_num) (hd.mu_pos 0)))
 
 omit [CompleteSpace E] in
-theorem h6Ratio_lt_one {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+theorem normal_chart_ratio_lt_one {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) (r₀ : Real) :
-    hd.h6Ratio r₀ < 1 :=
+    hd.normalChartRatio r₀ < 1 :=
   lt_of_le_of_lt (min_le_left _ _) (by norm_num)
 
 omit [CompleteSpace E] in
-theorem h6Ratio_mu0_le_half
+theorem normal_chart_ratio_mul_mu_zero_le_half
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) {r₀ : Real} (hr₀ : r₀ ≤ 1) :
-    hd.h6Ratio r₀ * hd.mu 0 ≤ 1 / 2 := by
+    hd.normalChartRatio r₀ * hd.mu 0 ≤ 1 / 2 := by
   have hmu₀ : 0 < hd.mu 0 := hd.mu_pos 0
   calc
-    hd.h6Ratio r₀ * hd.mu 0
+    hd.normalChartRatio r₀ * hd.mu 0
         ≤ (r₀ / (2 * hd.mu 0)) * hd.mu 0 :=
       mul_le_mul_of_nonneg_right (min_le_right _ _) hmu₀.le
     _ = r₀ / 2 := by field_simp [ne_of_gt hmu₀]
     _ ≤ 1 / 2 := by linarith
 
 omit [CompleteSpace E] in
-theorem h6Radius_pos {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+theorem normal_chart_radius_pos {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) {r₀ : Real} (hr₀ : 0 < r₀)
     (k : Nat) (x : (X.obj k).M) :
-    0 < hd.h6Radius r₀ k x :=
-  mul_pos (hd.h6Ratio_pos hr₀)
+    0 < hd.normalChartRadius r₀ k x :=
+  mul_pos (hd.normal_chart_ratio_pos hr₀)
     (hd.mu_pos (hd.dist k x (X.obj k).basepoint))
 
 omit [CompleteSpace E] in
-theorem h6Radius_lt_r0 {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+theorem normal_chart_radius_lt {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) (hreal : hd.RealizesEdist)
     {r₀ : Real} (hr₀ : 0 < r₀) (k : Nat) (x : (X.obj k).M) :
-    hd.h6Radius r₀ k x < r₀ := by
+    hd.normalChartRadius r₀ k x < r₀ := by
   have hmu₀ : 0 < hd.mu 0 := hd.mu_pos 0
   have hmu :
       hd.mu (hd.dist k x (X.obj k).basepoint) ≤ hd.mu 0 :=
     hd.mu_antitone (hreal.dist_nonneg k x (X.obj k).basepoint)
   calc
-    hd.h6Radius r₀ k x
-        ≤ hd.h6Ratio r₀ * hd.mu 0 :=
-      mul_le_mul_of_nonneg_left hmu (hd.h6Ratio_pos hr₀).le
+    hd.normalChartRadius r₀ k x
+        ≤ hd.normalChartRatio r₀ * hd.mu 0 :=
+      mul_le_mul_of_nonneg_left hmu (hd.normal_chart_ratio_pos hr₀).le
     _ ≤ (r₀ / (2 * hd.mu 0)) * hd.mu 0 :=
       mul_le_mul_of_nonneg_right (min_le_right _ _) hmu₀.le
     _ = r₀ / 2 := by field_simp [ne_of_gt hmu₀]
     _ < r₀ := by linarith
 
 omit [CompleteSpace E] in
-theorem h6Radius_lt_mu {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+theorem normal_chart_radius_lt_decay_scale {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) (r₀ : Real)
     (k : Nat) (x : (X.obj k).M) :
-    hd.h6Radius r₀ k x <
+    hd.normalChartRadius r₀ k x <
       hd.mu (hd.dist k x (X.obj k).basepoint) := by
-  rw [h6Radius]
+  rw [normalChartRadius]
   simpa only [one_mul] using
-    mul_lt_mul_of_pos_right (hd.h6Ratio_lt_one r₀)
+    mul_lt_mul_of_pos_right (hd.normal_chart_ratio_lt_one r₀)
       (hd.mu_pos (hd.dist k x (X.obj k).basepoint))
 
 end InjRadiusDecayInput
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-structure H6BallData
+structure IntrinsicBallChartData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hd : InjRadiusDecayInput (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -194,14 +194,14 @@ structure H6BallData
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-noncomputable def H6BallData.normalChart
+noncomputable def IntrinsicBallChartData.normalChart
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M}
-    (d : H6BallData (I := I) X hd hcomplete hconn)
+    (d : IntrinsicBallChartData (I := I) X hd hcomplete hconn)
     (k : Nat) (x : (X.obj k).M) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -271,14 +271,14 @@ noncomputable def H6BallData.normalChart
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [CompleteSpace E] in
-@[simp] theorem H6BallData.normalChart_radius
+@[simp] theorem IntrinsicBallChartData.normal_chart_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M}
-    (d : H6BallData (I := I) X hd hcomplete hconn)
+    (d : IntrinsicBallChartData (I := I) X hd hcomplete hconn)
     (k : Nat) (x : (X.obj k).M) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -312,7 +312,7 @@ omit [CompleteSpace E] in
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-structure H6ChartData
+structure NormalChartData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hd : InjRadiusDecayInput (I := I) X) where
   ratio : Real
@@ -369,7 +369,7 @@ structure H6ChartData
       (intrinsicFramedExp (I := I) (X.obj k).metric hEnorm x)
       (Metric.ball (0 : E) (chart k x).radius)
 
-namespace H6ChartData
+namespace NormalChartData
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -377,7 +377,7 @@ omit [CompleteSpace E] in
 theorem radius_le_global
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6ChartData (I := I) X hd) (hreal : hd.RealizesEdist)
+    (d : NormalChartData (I := I) X hd) (hreal : hd.RealizesEdist)
     (k : Nat) (x : (X.obj k).M) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -401,7 +401,7 @@ omit [CompleteSpace E] in
 theorem metric_eq_intr
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6ChartData (I := I) X hd) (k : Nat)
+    (d : NormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (x : (X.obj k).M) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -492,7 +492,7 @@ omit [CompleteSpace E] in
 theorem readout_mem
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6ChartData (I := I) X hd) (k : Nat)
+    (d : NormalChartData (I := I) X hd) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
     (hconn : letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M)
@@ -596,13 +596,13 @@ theorem readout_mem
       ((d.chart k x).ball_subset hzBall)
   rw [hinv, hzNorm, hvLen]
 
-end H6ChartData
+end NormalChartData
 
 
-structure H6NormalData
+structure BoundedGeometryNormalData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hd : InjRadiusDecayInput (I := I) X)
-    extends H6ChartData (I := I) X hd where
+    extends NormalChartData (I := I) X hd where
   metricC : Nat → Real
   metricC_nonneg : ∀ p : Nat, 0 ≤ metricC p
   metric_equiv : ∀ (k : Nat) (x : (X.obj k).M),
@@ -622,13 +622,13 @@ structure H6NormalData
     (chart k x).MetricDerivBound (X.obj k).metric
       (Metric.ball (0 : E) (chart k x).radius) p (metricC p)
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
 def subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (f : Nat → Nat) :
-    H6NormalData (I := I) (X.subseq f) (hd.subseq f) where
+    (d : BoundedGeometryNormalData (I := I) X hd) (f : Nat → Nat) :
+    BoundedGeometryNormalData (I := I) (X.subseq f) (hd.subseq f) where
   ratio := d.ratio
   ratio_pos := d.ratio_pos
   ratio_mu0_le := by
@@ -655,7 +655,7 @@ def subseq
 def chartMetric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (k : Nat) (x : (X.obj k).M) :
+    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat) (x : (X.obj k).M) :
     E → E →L[Real] E →L[Real] Real :=
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
   letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -667,7 +667,7 @@ def chartMetric
 def metricBounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (k : Nat) (x : (X.obj k).M) :
+    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat) (x : (X.obj k).M) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
     letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -690,7 +690,7 @@ def metricBounds
 def chartMap
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
     (x : (X.obj k).M) : E → (X.obj k).M :=
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
   letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -702,7 +702,7 @@ def chartMap
 def chartTransition
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
     (x y : (X.obj k).M) : E → E :=
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
   letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -711,10 +711,10 @@ def chartTransition
     (X.obj k).t2TangentBundle
   (d.chart k x).transition (d.chart k y)
 
-def ChartOverlapOn
+def chartOverlapOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (k : Nat)
+    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat)
     (x y : (X.obj k).M) (U : Set E) : Prop :=
   letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
   letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -723,24 +723,24 @@ def ChartOverlapOn
     (X.obj k).t2TangentBundle
   (d.chart k x).OverlapOn (d.chart k y) U
 
-end H6NormalData
+end BoundedGeometryNormalData
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-noncomputable def H6BallData.toChartData
+noncomputable def IntrinsicBallChartData.toChartData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M}
-    (d : H6BallData (I := I) X hd hcomplete hconn) :
-    H6ChartData (I := I) X hd where
+    (d : IntrinsicBallChartData (I := I) X hd hcomplete hconn) :
+    NormalChartData (I := I) X hd where
   ratio := d.ratio
   ratio_pos := d.ratio_pos
   ratio_mu0_le := d.ratio_mu0_le
   chart := fun k x => d.normalChart k x
-  radius_eq := fun k x => d.normalChart_radius k x
+  radius_eq := fun k x => d.normal_chart_radius k x
   hom_eq := fun k x hcomplete' => by
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -781,14 +781,14 @@ noncomputable def H6BallData.toChartData
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [CompleteSpace E] in
-theorem H6BallData.normal_equiv
+theorem IntrinsicBallChartData.normal_equiv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M}
-    (d : H6BallData (I := I) X hd hcomplete hconn)
+    (d : IntrinsicBallChartData (I := I) X hd hcomplete hconn)
     (k : Nat) (x : (X.obj k).M) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -849,13 +849,13 @@ theorem H6BallData.normal_equiv
   intro z hz v
   rw [(d.toChartData.metric_eq_intr k (hcomplete.complete k) x) hz]
   change z ∈ Metric.ball (0 : E) (d.normalChart k x).radius at hz
-  rw [d.normalChart_radius k x] at hz
+  rw [d.normal_chart_radius k x] at hz
   exact d.intr_equiv k x z hz v
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [CompleteSpace E] in
-theorem exists_h6BallData
+theorem exists_intrinsic_ball_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -864,7 +864,7 @@ theorem exists_h6BallData
     (hgeom : SeqBoundedGeometry (I := I) X)
     (hd : InjRadiusDecayInput (I := I) X)
     (hreal : hd.RealizesEdist) :
-    Nonempty (H6BallData (I := I) X hd hcomplete hconn) := by
+    Nonempty (IntrinsicBallChartData (I := I) X hd hcomplete hconn) := by
   obtain ⟨r₀, hr₀, hcontrol⟩ :=
     exists_intr_control (I := I) X hcomplete hconn hgeom
   let r₁ : Real := min r₀ 1
@@ -872,9 +872,9 @@ theorem exists_h6BallData
   have hr₁_le_r₀ : r₁ ≤ r₀ := min_le_left _ _
   have hr₁_le_one : r₁ ≤ 1 := min_le_right _ _
   refine ⟨{
-    ratio := hd.h6Ratio r₁
-    ratio_pos := hd.h6Ratio_pos hr₁
-    ratio_mu0_le := hd.h6Ratio_mu0_le_half hr₁_le_one
+    ratio := hd.normalChartRatio r₁
+    ratio_pos := hd.normal_chart_ratio_pos hr₁
+    ratio_mu0_le := hd.normal_chart_ratio_mul_mu_zero_le_half hr₁_le_one
     chart := ?_
     intr_equiv := ?_ }⟩
   · intro k x
@@ -911,9 +911,9 @@ theorem exists_h6BallData
       simpa using
         (tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) (X.obj k).metric y w)
-    let r : Real := hd.h6Radius r₁ k x
-    have hr : 0 < r := hd.h6Radius_pos hr₁ k x
-    have hr₁' : r < r₁ := hd.h6Radius_lt_r0 hreal hr₁ k x
+    let r : Real := hd.normalChartRadius r₁ k x
+    have hr : 0 < r := hd.normal_chart_radius_pos hr₁ k x
+    have hr₁' : r < r₁ := hd.normal_chart_radius_lt hreal hr₁ k x
     have hsub : Metric.ball (0 : E) r ⊆ Metric.ball (0 : E) r₀ :=
       Metric.ball_subset_ball (hr₁'.le.trans hr₁_le_r₀)
     have hloc :
@@ -930,10 +930,10 @@ theorem exists_h6BallData
         InjOn (intrinsicFramedExp (I := I) (X.obj k).metric hEnorm x)
           (Metric.ball (0 : E) r) := by
       exact hdecay.injOn_ball (hcomplete.complete k)
-        (hd.h6Radius_lt_mu r₁ k x)
+        (hd.normal_chart_radius_lt_decay_scale r₁ k x)
     exact Classical.choice <| by
-      simpa only [r, InjRadiusDecayInput.h6Radius] using
-        exists_intrBallChart (I := I) (X.obj k).metric hEnorm x hloc hinj
+      simpa only [r, InjRadiusDecayInput.normalChartRadius] using
+        exists_intrinsic_ball_chart (I := I) (X.obj k).metric hEnorm x hloc hinj
   · intro k x
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -968,22 +968,22 @@ theorem exists_h6BallData
       simpa using
         (tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) (X.obj k).metric y w)
-    change ∀ z ∈ Metric.ball (0 : E) (hd.h6Radius r₁ k x), ∀ v : E,
+    change ∀ z ∈ Metric.ball (0 : E) (hd.normalChartRadius r₁ k x), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤
           intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
         intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
           2 * ‖v‖ ^ 2
     intro z hz v
     have hr₁' :
-        hd.h6Radius r₁ k x < r₁ :=
-      hd.h6Radius_lt_r0 hreal hr₁ k x
+        hd.normalChartRadius r₁ k x < r₁ :=
+      hd.normal_chart_radius_lt hreal hr₁ k x
     exact (hcontrol k x).1 z
       (Metric.ball_subset_ball (hr₁'.le.trans hr₁_le_r₀) hz) v
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [CompleteSpace E] in
-theorem exists_h6ChartData
+theorem exists_normal_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -992,14 +992,14 @@ theorem exists_h6ChartData
     (hgeom : SeqBoundedGeometry (I := I) X)
     (hd : InjRadiusDecayInput (I := I) X)
     (hreal : hd.RealizesEdist) :
-    Nonempty (H6ChartData (I := I) X hd) := by
+    Nonempty (NormalChartData (I := I) X hd) := by
   obtain ⟨d⟩ :=
-    exists_h6BallData (I := I) X hcomplete hconn hgeom hd hreal
+    exists_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
   exact ⟨d.toChartData⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem exists_h6NormalData
+theorem exists_bounded_geometry_normal_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -1008,15 +1008,15 @@ theorem exists_h6NormalData
     (hgeom : SeqBoundedGeometry (I := I) X)
     (hd : InjRadiusDecayInput (I := I) X)
     (hreal : hd.RealizesEdist) :
-    Nonempty (H6NormalData (I := I) X hd) := by
+    Nonempty (BoundedGeometryNormalData (I := I) X hd) := by
   obtain ⟨d⟩ :=
-    exists_h6BallData (I := I) X hcomplete hconn hgeom hd hreal
+    exists_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
   let U : Real := d.ratio * hd.mu 0
   let metricC : Nat → Real := fun n =>
     ContinuousMultilinearMap.polarConst n *
       (2 * (2 ^ n * jetCap hgeom.C U 1 n ^ 2))
   refine ⟨{
-    toH6ChartData := d.toChartData
+    toNormalChartData := d.toChartData
     metricC := metricC
     metricC_nonneg := ?_
     metric_equiv := ?_

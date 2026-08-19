@@ -19,14 +19,14 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M]
 
-def tfHeatTerm
+def traceFreeRicciNormSqHeatTerm
     (scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q :
       Real -> M -> Real) : Real -> M -> Real :=
   fun t x =>
     -2 * nablaRicNormSq t x +
       ((2 : Real) / 3) * gradScalarNormSq t x +
       (4 * ricciNormSq t x *
-          tfRicNormSq scalar ricciNormSq t x - 2 * Q t x) /
+          traceFreeRicciNormSq scalar ricciNormSq t x - 2 * Q t x) /
         scalar t x
 
 def scalarHeatTerm
@@ -40,12 +40,12 @@ abbrev PinchEvolOn
       Real -> M -> Real)
     (epsilon : Real) : Prop :=
   QuotientEvolutionOn (I := I) (D := D) G
-    (tfRicNormSq scalar ricciNormSq) scalar
-    (tfHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
+    (traceFreeRicciNormSq scalar ricciNormSq) scalar
+    (traceFreeRicciNormSqHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
     (scalarHeatTerm ricciNormSq) (1 : Real) (2 - epsilon)
 
 omit [Module.Finite ℝ E] in
-theorem pinchEvol_setup
+theorem pinch_quotient_evolution_of_heat_equations
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -53,8 +53,8 @@ theorem pinchEvol_setup
     (scalar scalarLap ricciNormSq tfNormLap
       nablaRicNormSq gradScalarNormSq Q : Real -> M -> Real)
     (epsilon : Real)
-    (htf : tfRicHeatOn (D := D)
-      (tfRicNormSq scalar ricciNormSq) tfNormLap
+    (htf : TraceFreeRicciNormSqHeatEquationOn (D := D)
+      (traceFreeRicciNormSq scalar ricciNormSq) tfNormLap
       nablaRicNormSq gradScalarNormSq scalar ricciNormSq Q)
     (hscalar : ScalarEvolutionEquationOn
       (D := D) scalar scalarLap ricciNormSq)
@@ -62,7 +62,7 @@ theorem pinchEvol_setup
       x,
       tfNormLap (t : Real) x =
         DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) G (t : Real)
-          (tfRicNormSq scalar ricciNormSq (t : Real)) x)
+          (traceFreeRicciNormSq scalar ricciNormSq (t : Real)) x)
     (hscalarLap : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) x,
       scalarLap (t : Real) x =
@@ -71,13 +71,13 @@ theorem pinchEvol_setup
     (htfDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       y,
       MDifferentiableAt I 𝓘(Real, Real)
-        (tfRicNormSq scalar ricciNormSq (t : Real)) y)
+        (traceFreeRicciNormSq scalar ricciNormSq (t : Real)) y)
     (hscalarDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) y,
       MDifferentiableAt I 𝓘(Real, Real) (scalar (t : Real)) y)
     (htfNonneg : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) y,
-      0 <= tfRicNormSq scalar ricciNormSq (t : Real) y)
+      0 <= traceFreeRicciNormSq scalar ricciNormSq (t : Real) y)
     (hscalarPos : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) y,
       0 < scalar (t : Real) y)
@@ -85,7 +85,7 @@ theorem pinchEvol_setup
       x,
       MDiffAt (T% fun y : M =>
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric (t : Real))
-          (tfRicNormSq scalar ricciNormSq (t : Real)) y) x)
+          (traceFreeRicciNormSq scalar ricciNormSq (t : Real)) y) x)
     (hgradScalar : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) x,
       MDiffAt (T% fun y : M =>
@@ -98,10 +98,10 @@ theorem pinchEvol_setup
           (fun w : M => scalar (t : Real) w ^ (-(2 - epsilon))) z) y) :
     PinchEvolOn (I := I) (D := D) G
       scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q epsilon := by
-  refine quotHeat1_book (I := I) (D := D) G
-    (tfRicNormSq scalar ricciNormSq) scalar
+  refine quotient_evolution_of_nonnegative_numerator_and_laplacian_identities (I := I) (D := D) G
+    (traceFreeRicciNormSq scalar ricciNormSq) scalar
     tfNormLap scalarLap
-    (tfHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
+    (traceFreeRicciNormSqHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
     (scalarHeatTerm ricciNormSq) (2 - epsilon) ?_ ?_
     htfLap hscalarLap htfDiff hscalarDiff htfNonneg hscalarPos
     hgradTf hgradScalar hgradScalarPow
@@ -365,7 +365,7 @@ theorem ricciMixed_eq_tfGrad
       scalar t x *
         ((G.metric t).inner x
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-            (tfRicNormSq scalar ricciNormSq t) x)
+            (traceFreeRicciNormSq scalar ricciNormSq t) x)
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x) +
             ((2 : Real) / 3) * scalar t x * gradScalarNormSq t x) := by
   let R : M -> Real := scalar t
@@ -377,10 +377,10 @@ theorem ricciMixed_eq_tfGrad
     ricciMixed_eq_gradNorm (I := I) G scalar RicSec nablaRicSec duRicNorm
       t x basis gInv hinv hmc hRicNabla hdu
   have htfFun :
-      tfRicNormSq scalar ricciNormSq t =
+      traceFreeRicciNormSq scalar ricciNormSq t =
         fun y : M => normFun y - ((1 / 3 : Real) • sqFun) y := by
     funext y
-    simp [tfRicNormSq, tracefreeRicciNormSqOf, tracefreeRicciNormSqAtOf,
+    simp [traceFreeRicciNormSq, traceFreeRicciNormSqOf, traceFreeRicciNormSqAtOf,
       normFun, sqFun, R, hricNorm y]
     ring
   have hsqDiff : MDifferentiableAt I 𝓘(Real, Real) sqFun x := by
@@ -401,7 +401,7 @@ theorem ricciMixed_eq_tfGrad
     simpa [DifferentialGeometry.Geometry.Curvature.gradientAt] using hgradSq
   have hgradTf :
       DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-          (tfRicNormSq scalar ricciNormSq t) x =
+          (traceFreeRicciNormSq scalar ricciNormSq t) x =
         DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t normFun x -
           (((2 : Real) / 3) * R x) •
             DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t R x := by
@@ -424,7 +424,7 @@ theorem ricciMixed_eq_tfGrad
   have hgradNorm :
       DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t normFun x =
         DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-            (tfRicNormSq scalar ricciNormSq t) x +
+            (traceFreeRicciNormSq scalar ricciNormSq t) x +
           (((2 : Real) / 3) * R x) •
             DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t R x := by
     rw [hgradTf]
@@ -453,7 +453,7 @@ theorem ricciMixed_eq_tfGrad
     _ = scalar t x *
         ((G.metric t).inner x
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-            (tfRicNormSq scalar ricciNormSq t) x)
+            (traceFreeRicciNormSq scalar ricciNormSq t) x)
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x) +
             ((2 : Real) / 3) * scalar t x * gradScalarNormSq t x) := by
           rw [hgradNorm]
@@ -496,7 +496,7 @@ theorem ricciGradCoupleSq_exp_mixed
         scalar t x *
           ((G.metric t).inner x
             (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-              (tfRicNormSq scalar ricciNormSq t) x)
+              (traceFreeRicciNormSq scalar ricciNormSq t) x)
             (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x) +
               ((2 : Real) / 3) * scalar t x * gradScalarNormSq t x)) :
     ricciGradCoupleSq (I := I) (fun s : Real => G.metric s)
@@ -505,7 +505,7 @@ theorem ricciGradCoupleSq_exp_mixed
         scalar t x *
           ((G.metric t).inner x
             (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-              (tfRicNormSq scalar ricciNormSq t) x)
+              (traceFreeRicciNormSq scalar ricciNormSq t) x)
             (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x) +
               ((2 : Real) / 3) * scalar t x * gradScalarNormSq t x) +
         gradScalarNormSq t x * ricciNormSq t x := by
@@ -523,7 +523,7 @@ def pinchDriftTerm
       (G.metric t).inner x
         (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x)
         (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-          (quotField (M := M) (tfRicNormSq scalar ricciNormSq)
+          (quotField (M := M) (traceFreeRicciNormSq scalar ricciNormSq)
             scalar (1 : Real) (2 - epsilon) t) x)
 
 def pinchSquareTerm
@@ -536,7 +536,7 @@ def pinchGradTerm
     (epsilon : Real) : Real -> M -> Real :=
   fun t x =>
     -epsilon * (1 - epsilon) / scalar t x ^ (4 - epsilon) *
-      tfRicNormSq scalar ricciNormSq t x * gradScalarNormSq t x
+      traceFreeRicciNormSq scalar ricciNormSq t x * gradScalarNormSq t x
 
 def pinchReactTerm
     (scalar ricciNormSq Q : Real -> M -> Real)
@@ -544,9 +544,9 @@ def pinchReactTerm
   fun t x =>
     -2 / scalar t x ^ (3 - epsilon) *
       (Q t x -
-        epsilon * ricciNormSq t x * tfRicNormSq scalar ricciNormSq t x)
+        epsilon * ricciNormSq t x * traceFreeRicciNormSq scalar ricciNormSq t x)
 
-def pinchBookRHS
+def pinchEvolutionRHS
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (scalar ricciNormSq gradScalarNormSq coupleSq Q : Real -> M -> Real)
     (epsilon : Real) : Real -> M -> Real :=
@@ -565,7 +565,7 @@ theorem pinchDrift_exp
     (epsilon t : Real) (x : M)
     (hscalar : 0 < scalar t x)
     (htfDiff : MDifferentiableAt I 𝓘(Real, Real)
-      (tfRicNormSq scalar ricciNormSq t) x)
+      (traceFreeRicciNormSq scalar ricciNormSq t) x)
     (hscalarDiff : MDifferentiableAt I 𝓘(Real, Real) (scalar t) x)
     (hgradScalarSq :
       gradScalarNormSq t x =
@@ -576,13 +576,13 @@ theorem pinchDrift_exp
       2 * (1 - epsilon) *
         (((G.metric t).inner x
             (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-              (tfRicNormSq scalar ricciNormSq t) x)
+              (traceFreeRicciNormSq scalar ricciNormSq t) x)
             (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x)) /
             scalar t x ^ (3 - epsilon) -
           (2 - epsilon) *
-            tfRicNormSq scalar ricciNormSq t x *
+            traceFreeRicciNormSq scalar ricciNormSq t x *
             gradScalarNormSq t x / scalar t x ^ (4 - epsilon)) := by
-  let phi : M -> Real := tfRicNormSq scalar ricciNormSq t
+  let phi : M -> Real := traceFreeRicciNormSq scalar ricciNormSq t
   let R : M -> Real := scalar t
   let Rpow : M -> Real := fun y => R y ^ (-(2 - epsilon))
   have hRpowDiff : MDifferentiableAt I 𝓘(Real, Real) Rpow x := by
@@ -602,7 +602,7 @@ theorem pinchDrift_exp
     exact DifferentialGeometry.Geometry.Curvature.gradientAt_rpow (I := I) G t
       (f := R) (x := x) (-(2 - epsilon)) hscalarDiff hscalar
   have hfield :
-      quotField (M := M) (tfRicNormSq scalar ricciNormSq)
+      quotField (M := M) (traceFreeRicciNormSq scalar ricciNormSq)
           scalar (1 : Real) (2 - epsilon) t =
         fun y : M => phi y * Rpow y := by
     funext y
@@ -631,10 +631,10 @@ theorem pinchDrift_exp
       (G.metric t).inner x
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x)
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-            (tfRicNormSq scalar ricciNormSq t) x) =
+            (traceFreeRicciNormSq scalar ricciNormSq t) x) =
         (G.metric t).inner x
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-            (tfRicNormSq scalar ricciNormSq t) x)
+            (traceFreeRicciNormSq scalar ricciNormSq t) x)
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x) :=
     (G.metric t).symm x _ _
   unfold pinchDriftTerm
@@ -658,7 +658,7 @@ theorem pinchDrift_exp
 
 omit [Module.Finite ℝ E] in
 omit [IsManifold I 1 M] in
-theorem pinchRHS_eq_book_of_parts
+theorem quotient_heat_rhs_eq_pinch_evolution_rhs_of_parts
     [FiniteDimensional Real E]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (scalar ricciNormSq nablaRicNormSq gradScalarNormSq
@@ -675,11 +675,11 @@ theorem pinchRHS_eq_book_of_parts
         2 * (1 - epsilon) *
           (((G.metric t).inner x
               (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-                (tfRicNormSq scalar ricciNormSq t) x)
+                (traceFreeRicciNormSq scalar ricciNormSq t) x)
               (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x)) /
               scalar t x ^ (3 - epsilon) -
             (2 - epsilon) *
-              tfRicNormSq scalar ricciNormSq t x *
+              traceFreeRicciNormSq scalar ricciNormSq t x *
               gradScalarNormSq t x / scalar t x ^ (4 - epsilon)))
     (hcouple :
       coupleSq t x =
@@ -687,20 +687,20 @@ theorem pinchRHS_eq_book_of_parts
           scalar t x *
             ((G.metric t).inner x
               (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-                (tfRicNormSq scalar ricciNormSq t) x)
+                (traceFreeRicciNormSq scalar ricciNormSq t) x)
               (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x) +
                 ((2 : Real) / 3) * scalar t x * gradScalarNormSq t x) +
           gradScalarNormSq t x * ricciNormSq t x) :
     quotHeatRHS (I := I) G
-        (tfRicNormSq scalar ricciNormSq) scalar
-        (tfHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
+        (traceFreeRicciNormSq scalar ricciNormSq) scalar
+        (traceFreeRicciNormSqHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
         (scalarHeatTerm ricciNormSq) (1 : Real) (2 - epsilon) t x =
-      pinchBookRHS (I := I) G scalar ricciNormSq gradScalarNormSq
+      pinchEvolutionRHS (I := I) G scalar ricciNormSq gradScalarNormSq
         coupleSq Q epsilon t x := by
   have hdiv :=
     quotHeatRHSDiv_eq (I := I) G
-      (tfRicNormSq scalar ricciNormSq) scalar
-      (tfHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
+      (traceFreeRicciNormSq scalar ricciNormSq) scalar
+      (traceFreeRicciNormSqHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
       (scalarHeatTerm ricciNormSq) (1 : Real) (2 - epsilon)
       (t := t) (x := x) hscalar
   rw [← hdiv]
@@ -732,11 +732,11 @@ theorem pinchRHS_eq_book_of_parts
         (scalar t x)⁻¹ * (scalar t x ^ (3 - epsilon))⁻¹ := by
     rw [hpow43]
     simp [mul_inv_rev, mul_comm]
-  unfold quotHeatRHSDiv pinchBookRHS pinchSquareTerm pinchGradTerm
-    pinchReactTerm tfHeatTerm scalarHeatTerm
+  unfold quotHeatRHSDiv pinchEvolutionRHS pinchSquareTerm pinchGradTerm
+    pinchReactTerm traceFreeRicciNormSqHeatTerm scalarHeatTerm
   rw [hdrift, hcouple]
   rw [hgradScalarSq]
-  unfold tfRicNormSq tracefreeRicciNormSqOf tracefreeRicciNormSqAtOf
+  unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
   ring_nf
   rw [hpow32, hpow43]
   simp [hpow32_inv]
@@ -744,7 +744,7 @@ theorem pinchRHS_eq_book_of_parts
   ring_nf
 
 omit [Module.Finite ℝ E] in
-theorem pinchRHS_eq_book
+theorem quotient_heat_rhs_eq_pinch_evolution_rhs
     [FiniteDimensional Real E]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
@@ -758,7 +758,7 @@ theorem pinchRHS_eq_book
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x)
           (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x))
     (htfDiff : MDifferentiableAt I 𝓘(Real, Real)
-      (tfRicNormSq scalar ricciNormSq t) x)
+      (traceFreeRicciNormSq scalar ricciNormSq t) x)
     (hscalarDiff : MDifferentiableAt I 𝓘(Real, Real) (scalar t) x)
     (hcouple :
       coupleSq t x =
@@ -766,24 +766,24 @@ theorem pinchRHS_eq_book
           scalar t x *
             ((G.metric t).inner x
               (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-                (tfRicNormSq scalar ricciNormSq t) x)
+                (traceFreeRicciNormSq scalar ricciNormSq t) x)
               (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t (scalar t) x) +
                 ((2 : Real) / 3) * scalar t x * gradScalarNormSq t x) +
           gradScalarNormSq t x * ricciNormSq t x) :
     quotHeatRHS (I := I) G
-        (tfRicNormSq scalar ricciNormSq) scalar
-        (tfHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
+        (traceFreeRicciNormSq scalar ricciNormSq) scalar
+        (traceFreeRicciNormSqHeatTerm scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q)
         (scalarHeatTerm ricciNormSq) (1 : Real) (2 - epsilon) t x =
-      pinchBookRHS (I := I) G scalar ricciNormSq gradScalarNormSq
+      pinchEvolutionRHS (I := I) G scalar ricciNormSq gradScalarNormSq
         coupleSq Q epsilon t x := by
-  refine pinchRHS_eq_book_of_parts (I := I) G scalar ricciNormSq
+  refine quotient_heat_rhs_eq_pinch_evolution_rhs_of_parts (I := I) G scalar ricciNormSq
     nablaRicNormSq gradScalarNormSq coupleSq Q epsilon t x
     hscalar hgradScalarSq ?_ hcouple
   exact pinchDrift_exp (I := I) G scalar ricciNormSq gradScalarNormSq
     epsilon t x hscalar htfDiff hscalarDiff hgradScalarSq
 
 omit [Module.Finite ℝ E] in
-theorem pinchEvol_book_of_couple
+theorem pinch_quotient_evolution_of_coupling_identity
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -807,7 +807,7 @@ theorem pinchEvol_book_of_couple
     (htfDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       MDifferentiableAt I 𝓘(Real, Real)
-        (tfRicNormSq scalar ricciNormSq (t : Real)) x)
+        (traceFreeRicciNormSq scalar ricciNormSq (t : Real)) x)
     (hscalarDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) x,
       MDifferentiableAt I 𝓘(Real, Real) (scalar (t : Real)) x)
@@ -818,7 +818,7 @@ theorem pinchEvol_book_of_couple
           scalar (t : Real) x *
             ((G.metric (t : Real)).inner x
               (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G (t : Real)
-                (tfRicNormSq scalar ricciNormSq (t : Real)) x)
+                (traceFreeRicciNormSq scalar ricciNormSq (t : Real)) x)
               (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G (t : Real)
                 (scalar (t : Real)) x) +
                 ((2 : Real) / 3) * scalar (t : Real) x *
@@ -827,18 +827,18 @@ theorem pinchEvol_book_of_couple
     forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
       HasDerivWithinAt
         (fun s : Real =>
-          quotField (M := M) (tfRicNormSq scalar ricciNormSq)
+          quotField (M := M) (traceFreeRicciNormSq scalar ricciNormSq)
             scalar (1 : Real) (2 - epsilon) s x)
-        (quotLap (I := I) G (tfRicNormSq scalar ricciNormSq)
+        (quotLap (I := I) G (traceFreeRicciNormSq scalar ricciNormSq)
             scalar (1 : Real) (2 - epsilon) (t : Real) x +
-          pinchBookRHS (I := I) G scalar ricciNormSq gradScalarNormSq
+          pinchEvolutionRHS (I := I) G scalar ricciNormSq gradScalarNormSq
             coupleSq Q epsilon (t : Real) x)
         D.carrier
         (t : Real) := by
   intro t x
   have h := hsetup t x
   have hrhs :=
-    pinchRHS_eq_book (I := I) G scalar ricciNormSq nablaRicNormSq
+    quotient_heat_rhs_eq_pinch_evolution_rhs (I := I) G scalar ricciNormSq nablaRicNormSq
       gradScalarNormSq coupleSq Q epsilon (t : Real) x
       (hscalar t x) (hgradScalarSq t x) (htfDiff t x)
       (hscalarDiff t x) (hcouple t x)
@@ -846,7 +846,7 @@ theorem pinchEvol_book_of_couple
   exact h
 
 omit [Module.Finite ℝ E] in
-theorem pinchEvol_book_of_mixed
+theorem pinch_quotient_evolution_of_mixed_term_identity
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -874,7 +874,7 @@ theorem pinchEvol_book_of_mixed
     (htfDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       MDifferentiableAt I 𝓘(Real, Real)
-        (tfRicNormSq scalar ricciNormSq (t : Real)) x)
+        (traceFreeRicciNormSq scalar ricciNormSq (t : Real)) x)
     (hscalarDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) x,
       MDifferentiableAt I 𝓘(Real, Real) (scalar (t : Real)) x)
@@ -912,7 +912,7 @@ theorem pinchEvol_book_of_mixed
         scalar (t : Real) x *
           ((G.metric (t : Real)).inner x
             (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G (t : Real)
-              (tfRicNormSq scalar ricciNormSq (t : Real)) x)
+              (traceFreeRicciNormSq scalar ricciNormSq (t : Real)) x)
             (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G (t : Real)
               (scalar (t : Real)) x) +
               ((2 : Real) / 3) * scalar (t : Real) x *
@@ -920,17 +920,17 @@ theorem pinchEvol_book_of_mixed
     forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
       HasDerivWithinAt
         (fun s : Real =>
-          quotField (M := M) (tfRicNormSq scalar ricciNormSq)
+          quotField (M := M) (traceFreeRicciNormSq scalar ricciNormSq)
             scalar (1 : Real) (2 - epsilon) s x)
-        (quotLap (I := I) G (tfRicNormSq scalar ricciNormSq)
+        (quotLap (I := I) G (traceFreeRicciNormSq scalar ricciNormSq)
             scalar (1 : Real) (2 - epsilon) (t : Real) x +
-          pinchBookRHS (I := I) G scalar ricciNormSq gradScalarNormSq
+          pinchEvolutionRHS (I := I) G scalar ricciNormSq gradScalarNormSq
             (ricciGradCoupleSq (I := I)
               (fun s : Real => G.metric s) scalar Ric nablaRic)
             Q epsilon (t : Real) x)
         D.carrier
         (t : Real) := by
-  refine pinchEvol_book_of_couple (I := I) G scalar ricciNormSq
+  refine pinch_quotient_evolution_of_coupling_identity (I := I) G scalar ricciNormSq
     nablaRicNormSq gradScalarNormSq
     (ricciGradCoupleSq (I := I)
       (fun s : Real => G.metric s) scalar Ric nablaRic)
@@ -942,7 +942,7 @@ theorem pinchEvol_book_of_mixed
     (hgradScalarSq t x) (hmixed t x)
 
 omit [Module.Finite ℝ E] in
-theorem pinchEvol_sec
+theorem pinch_quotient_evolution_of_tensor_sections
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -976,7 +976,7 @@ theorem pinchEvol_sec
     (htfDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       MDifferentiableAt I 𝓘(Real, Real)
-        (tfRicNormSq scalar ricciNormSq (t : Real)) x)
+        (traceFreeRicciNormSq scalar ricciNormSq (t : Real)) x)
     (hscalarDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) x,
       MDifferentiableAt I 𝓘(Real, Real) (scalar (t : Real)) x)
@@ -1028,18 +1028,18 @@ theorem pinchEvol_sec
     forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
       HasDerivWithinAt
         (fun s : Real =>
-          quotField (M := M) (tfRicNormSq scalar ricciNormSq)
+          quotField (M := M) (traceFreeRicciNormSq scalar ricciNormSq)
             scalar (1 : Real) (2 - epsilon) s x)
-        (quotLap (I := I) G (tfRicNormSq scalar ricciNormSq)
+        (quotLap (I := I) G (traceFreeRicciNormSq scalar ricciNormSq)
             scalar (1 : Real) (2 - epsilon) (t : Real) x +
-          pinchBookRHS (I := I) G scalar ricciNormSq gradScalarNormSq
+          pinchEvolutionRHS (I := I) G scalar ricciNormSq gradScalarNormSq
             (ricciGradCoupleSq (I := I)
               (fun s : Real => G.metric s) scalar
               (fun s y => RicSec s y) (fun s y => nablaRicSec s y))
             Q epsilon (t : Real) x)
         D.carrier
         (t : Real) := by
-  refine pinchEvol_book_of_mixed (I := I) G scalar ricciNormSq
+  refine pinch_quotient_evolution_of_mixed_term_identity (I := I) G scalar ricciNormSq
     nablaRicNormSq gradScalarNormSq Q
     (fun s y => RicSec s y) (fun s y => nablaRicSec s y)
     epsilon hsetup hscalar hgradScalarSq htfDiff hscalarDiff

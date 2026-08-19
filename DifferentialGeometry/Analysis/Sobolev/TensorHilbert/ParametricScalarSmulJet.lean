@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantLeibniz
 import DifferentialGeometry.Analysis.Integration.Measure.Properties
 import DifferentialGeometry.Tensor.RSTensor.RankZero
@@ -132,7 +132,7 @@ theorem app_scalarCc (g : SmoothRiemannianMetric I M)
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  rw [appCc_toSection, scalarSmul_toSection_apply]
+  rw [operatorFieldApplication_toSection, scalarSmul_toSection_apply]
   apply ContinuousLinearMap.ext
   intro c
   rw [ContinuousLinearMap.comp_apply]

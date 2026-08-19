@@ -143,7 +143,7 @@ theorem abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt
   letI instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
-  obtain ⟨n, e, hpars, hexpand, hrfns⟩ := frame03_data (I := I) (M := M) g₀ x
+  obtain ⟨n, e, hpars, hexpand, hriemannianFiberNormSq⟩ := frame03_data (I := I) (M := M) g₀ x
   set vec : Fin 3 → TangentSpace I x := ![a, b, c] with hvec_def
   set Bcmm : ContinuousMultilinearMap ℝ (fun _ : Fin 3 => E) ℝ :=
     Tensor0SSpace.toModel
@@ -202,7 +202,7 @@ theorem abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt
   have hcompsq : (∑ J : Fin 3 → Fin n, comp J ^ 2) =
       ‖(W : Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ^ 2 := by
     rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 3 x W]
-    rw [hrfns W]
+    rw [hriemannianFiberNormSq W]
     rw [Fintype.sum_unique (fun K : Fin 0 → Fin n =>
       ∑ J : Fin 3 → Fin n,
         fiberNormSqSummand (I := I) (M := M) g₀ x 0 3 W n e K J)]
@@ -332,7 +332,7 @@ theorem abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt
   letI instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
-  obtain ⟨n, e, hpars, hexpand, hrfns⟩ := frame04_data (I := I) (M := M) g₀ x
+  obtain ⟨n, e, hpars, hexpand, hriemannianFiberNormSq⟩ := frame04_data (I := I) (M := M) g₀ x
   set vec : Fin 4 → TangentSpace I x := ![a, b, c, d] with hvec_def
   set Bcmm : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ :=
     Tensor0SSpace.toModel
@@ -392,7 +392,7 @@ theorem abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt
   have hcompsq : (∑ J : Fin 4 → Fin n, comp J ^ 2) =
       ‖(W : Tensor0SBundle.TensorRSSpace 0 4 I x)‖ ^ 2 := by
     rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 4 x W]
-    rw [hrfns W]
+    rw [hriemannianFiberNormSq W]
     rw [Fintype.sum_unique (fun K : Fin 0 → Fin n =>
       ∑ J : Fin 4 → Fin n,
         fiberNormSqSummand (I := I) (M := M) g₀ x 0 4 W n e K J)]
@@ -459,19 +459,19 @@ private lemma covGrad3Eval_eq_metricDiff
   rw [hzero, sub_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma connDiff_inner_eq_half_covGrad3Eval
+private lemma connectionDifference_inner_eq_half_covGrad3Eval
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (hg₁ : ∀ (b : M) (u w : TangentSpace I b),
       g₁.inner b u w = g₀.inner b u w + ccTensorBilinSymm (I := I) g₀ T b u w)
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    2 * g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y x) (X x)) (Z x) =
+    2 * g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Y x) (X x)) (Z x) =
       covGrad3Eval (I := I) (M := M) g₀ T X Y Z x
         + covGrad3Eval (I := I) (M := M) g₀ T Y X Z x
         - covGrad3Eval (I := I) (M := M) g₀ T Z X Y x := by
   rw [covGrad3Eval_eq_metricDiff (I := I) (M := M) g₀ g₁ T hg₁ X Y Z x,
     covGrad3Eval_eq_metricDiff (I := I) (M := M) g₀ g₁ T hg₁ Y X Z x,
     covGrad3Eval_eq_metricDiff (I := I) (M := M) g₀ g₁ T hg₁ Z X Y x]
-  exact connDiff_koszul_metricDiff (I := I) g₁ g₀
+  exact connectionDifference_koszul_metricDiff (I := I) g₁ g₀
     X.mdifferentiableAt Y.mdifferentiableAt Z.mdifferentiableAt
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
@@ -562,7 +562,7 @@ private lemma norm_covGrad_symmS_le
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connDiff_gFibreNorm_le_iteratedCovGrad
+theorem connectionDifference_gFibreNorm_le_iteratedCovGrad
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (T : SmoothCcTensor g₀ 0 2)
@@ -574,8 +574,8 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
         Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x v w)
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x v w)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)) ≤
         C * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ *
           Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by
@@ -599,14 +599,14 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad
       (F := E) (V := (TangentSpace I : M → Type _)) x w).choose_spec
   have hYx : Y x = v := (ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
       (F := E) (V := (TangentSpace I : M → Type _)) x v).choose_spec
-  set u : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g₀ x v w with hu_def
-  have hu_eq : PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y x) (X x) = u := by
+  set u : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w with hu_def
+  have hu_eq : PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Y x) (X x) = u := by
     rw [hXx, hYx]
   set θ : Tensor0SSpace 1 I x := koszulCovGradCovec (I := I) (M := M) g₀ g₁ X Y x
     with hθ_def
   have hu_sharp : u = inverseMetricSharpFib (I := I) g₁ x θ := by
     rw [← hu_eq, hθ_def]
-    exact connDiff_eq_appCc_invGram_covGrad (I := I) (M := M) g₀ g₁ X Y x
+    exact connectionDifference_eq_operatorFieldApplication_invGram_covGrad (I := I) (M := M) g₀ g₁ X Y x
   set p : TangentSpace I x := inverseMetricSharpFib (I := I) g₀ x θ with hp_def
   have hθ_flat : θ = g0FlatCLM (I := I) g₀ x p := by
     rw [hp_def, g0FlatCLM_inverseMetricSharpFib (I := I) g₀ x θ]
@@ -638,7 +638,7 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad
       covGrad3Eval (I := I) (M := M) g₀ T X Y Z x
         + covGrad3Eval (I := I) (M := M) g₀ T Y X Z x
         - covGrad3Eval (I := I) (M := M) g₀ T Z X Y x := by
-    have h := connDiff_inner_eq_half_covGrad3Eval (I := I) (M := M) g₀ g₁ T hg₁ X Y Z x
+    have h := connectionDifference_inner_eq_half_covGrad3Eval (I := I) (M := M) g₀ g₁ T hg₁ X Y Z x
     rw [hu_eq] at h
     exact h
   have hbd1 := abs_covGrad3Eval_le (I := I) (M := M) g₀ T X Y Z x
@@ -726,7 +726,7 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one
+theorem connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (_hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (T : SmoothCcTensor g₀ 0 2)
@@ -738,8 +738,8 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
         Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x v w)
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x v w)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)) ≤
         C * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ *
           Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by
@@ -764,14 +764,14 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one
       (F := E) (V := (TangentSpace I : M → Type _)) x w).choose_spec
   have hYx : Y x = v := (ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
       (F := E) (V := (TangentSpace I : M → Type _)) x v).choose_spec
-  set u : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g₀ x v w with hu_def
-  have hu_eq : PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y x) (X x) = u := by
+  set u : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w with hu_def
+  have hu_eq : PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Y x) (X x) = u := by
     rw [hXx, hYx]
   set θ : Tensor0SSpace 1 I x := koszulCovGradCovec (I := I) (M := M) g₀ g₁ X Y x
     with hθ_def
   have hu_sharp : u = inverseMetricSharpFib (I := I) g₁ x θ := by
     rw [← hu_eq, hθ_def]
-    exact connDiff_eq_appCc_invGram_covGrad (I := I) (M := M) g₀ g₁ X Y x
+    exact connectionDifference_eq_operatorFieldApplication_invGram_covGrad (I := I) (M := M) g₀ g₁ X Y x
   set p : TangentSpace I x := inverseMetricSharpFib (I := I) g₀ x θ with hp_def
   have hθ_flat : θ = g0FlatCLM (I := I) g₀ x p := by
     rw [hp_def, g0FlatCLM_inverseMetricSharpFib (I := I) g₀ x θ]
@@ -803,7 +803,7 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one
       covGrad3Eval (I := I) (M := M) g₀ T X Y Z x
         + covGrad3Eval (I := I) (M := M) g₀ T Y X Z x
         - covGrad3Eval (I := I) (M := M) g₀ T Z X Y x := by
-    have h := connDiff_inner_eq_half_covGrad3Eval (I := I) (M := M) g₀ g₁ T hg₁ X Y Z x
+    have h := connectionDifference_inner_eq_half_covGrad3Eval (I := I) (M := M) g₀ g₁ T hg₁ X Y Z x
     rw [hu_eq] at h
     exact h
   have hbd1 := abs_covGrad3Eval_le (I := I) (M := M) g₀ T X Y Z x
@@ -897,34 +897,34 @@ theorem connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
-private lemma fiberNormSqComponent_connDiffFib
+private lemma fiberNormSqComponent_connectionDifferenceFib
     (g₁ g₀ : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (e : Fin n → TangentSpace I x)
     (K : Fin 1 → Fin n) (J : Fin 2 → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-        (connDiffFib (I := I) g₁ g₀ x) n e K J =
+        (connectionDifferenceFib (I := I) g₁ g₀ x) n e K J =
       g₀.inner x (e (K 0))
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (e (J 0)) (e (J 1))) := by
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (e (J 0)) (e (J 1))) := by
   rw [show fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-        (connDiffFib (I := I) g₁ g₀ x) n e K J =
+        (connectionDifferenceFib (I := I) g₁ g₀ x) n e K J =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-          connDiffFib (I := I) g₁ g₀ x)
+          connectionDifferenceFib (I := I) g₁ g₀ x)
         ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 1) ℝ).compContinuousLinearMap
           (fun k => g₀.inner x (e (K k)))))
         (fun k => e (J k)) from rfl]
-  rw [connDiffFib_apply_eval]
+  rw [connectionDifferenceFib_apply_eval]
   rw [show ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 1) ℝ).compContinuousLinearMap
         (fun k => g₀.inner x (e (K k))))
-      (fun _ : Fin 1 => PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+      (fun _ : Fin 1 => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
         ((fun k => e (J k)) 0) ((fun k => e (J k)) 1)) =
       ∏ k : Fin 1, g₀.inner x (e (K k))
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (e (J 0)) (e (J 1))) from rfl]
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (e (J 0)) (e (J 1))) from rfl]
   rw [Fin.prod_univ_one]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad
+theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (T : SmoothCcTensor g₀ 0 2)
@@ -937,14 +937,14 @@ theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
         Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
-          ((connDiffSection (I := I) g₁ g₀).toSection x) ≤
+          ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) ≤
         C ^ 2 * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ^ 2 := by
   classical
   letI instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
-  obtain ⟨C₀, hC₀0, hpw⟩ := connDiff_gFibreNorm_le_iteratedCovGrad (I := I) (M := M) g₀
+  obtain ⟨C₀, hC₀0, hpw⟩ := connectionDifference_gFibreNorm_le_iteratedCovGrad (I := I) (M := M) g₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * C₀, by positivity, ?_⟩
   intro g₁ T δ hδ hδ0 h hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
@@ -953,19 +953,19 @@ theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def
   have hG_nn : 0 ≤ G := norm_nonneg _
-  have hconnDiffSec : (connDiffSection (I := I) g₁ g₀).toSection x =
-      connDiffFib (I := I) g₁ g₀ x :=
-    connDiffSection_toSection (I := I) g₁ g₀ x
-  rw [hconnDiffSec]
+  have hconnectionDifferenceSec : (connectionDifferenceSection (I := I) g₁ g₀).toSection x =
+      connectionDifferenceFib (I := I) g₁ g₀ x :=
+    connectionDifferenceSection_toSection (I := I) g₁ g₀ x
+  rw [hconnectionDifferenceSec]
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 1 2 x
-    (connDiffFib (I := I) g₁ g₀ x) e bse hnE hbse horth]
+    (connectionDifferenceFib (I := I) g₁ g₀ x) e bse hnE hbse horth]
   have heach : ∀ (K : Fin 1 → Fin n) (J : Fin 2 → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-        (connDiffFib (I := I) g₁ g₀ x) n e K J) ^ 2 ≤ C₀ ^ 2 * G ^ 2 := by
+        (connectionDifferenceFib (I := I) g₁ g₀ x) n e K J) ^ 2 ≤ C₀ ^ 2 * G ^ 2 := by
     intro K J
-    rw [fiberNormSqComponent_connDiffFib]
+    rw [fiberNormSqComponent_connectionDifferenceFib]
     set u : TangentSpace I x :=
-      PDE.DeTurck.connDiff (I := I) g₁ g₀ x (e (J 0)) (e (J 1)) with hu_def
+      PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (e (J 0)) (e (J 1)) with hu_def
     have hcs := metric_inner_cauchy_schwarz_sq (I := I) (M := M) g₀ x (e (K 0)) u
     have hkk : g₀.inner x (e (K 0)) (e (K 0)) = 1 := by
       rw [horth (K 0) (K 0)]; simp
@@ -988,7 +988,7 @@ theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad
       _ = C₀ ^ 2 * G ^ 2 := by ring
   calc ∑ K : Fin 1 → Fin n, ∑ J : Fin 2 → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-          (connDiffFib (I := I) g₁ g₀ x) n e K J) ^ 2
+          (connectionDifferenceFib (I := I) g₁ g₀ x) n e K J) ^ 2
       ≤ ∑ K : Fin 1 → Fin n, ∑ J : Fin 2 → Fin n, C₀ ^ 2 * G ^ 2 :=
         Finset.sum_le_sum (fun K _ => Finset.sum_le_sum (fun J _ => heach K J))
     _ = (Fintype.card (Fin 1 → Fin n) : ℝ) * (Fintype.card (Fin 2 → Fin n) : ℝ) *
@@ -1008,7 +1008,7 @@ theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
+theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
       (T : SmoothCcTensor g₀ 0 2)
@@ -1021,7 +1021,7 @@ theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
         Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
-          ((connDiffSection (I := I) g₁ g₀).toSection x) ≤
+          ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) ≤
         C ^ 2 * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ^ 2 := by
   classical
@@ -1029,7 +1029,7 @@ theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ :=
-    connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀
+    connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * C₀, by positivity, ?_⟩
   intro g₁ T δ hδ hδ0 h hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
@@ -1038,19 +1038,19 @@ theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def
   have hG_nn : 0 ≤ G := norm_nonneg _
-  have hconnDiffSec : (connDiffSection (I := I) g₁ g₀).toSection x =
-      connDiffFib (I := I) g₁ g₀ x :=
-    connDiffSection_toSection (I := I) g₁ g₀ x
-  rw [hconnDiffSec]
+  have hconnectionDifferenceSec : (connectionDifferenceSection (I := I) g₁ g₀).toSection x =
+      connectionDifferenceFib (I := I) g₁ g₀ x :=
+    connectionDifferenceSection_toSection (I := I) g₁ g₀ x
+  rw [hconnectionDifferenceSec]
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 1 2 x
-    (connDiffFib (I := I) g₁ g₀ x) e bse hnE hbse horth]
+    (connectionDifferenceFib (I := I) g₁ g₀ x) e bse hnE hbse horth]
   have heach : ∀ (K : Fin 1 → Fin n) (J : Fin 2 → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-        (connDiffFib (I := I) g₁ g₀ x) n e K J) ^ 2 ≤ C₀ ^ 2 * G ^ 2 := by
+        (connectionDifferenceFib (I := I) g₁ g₀ x) n e K J) ^ 2 ≤ C₀ ^ 2 * G ^ 2 := by
     intro K J
-    rw [fiberNormSqComponent_connDiffFib]
+    rw [fiberNormSqComponent_connectionDifferenceFib]
     set u : TangentSpace I x :=
-      PDE.DeTurck.connDiff (I := I) g₁ g₀ x (e (J 0)) (e (J 1)) with hu_def
+      PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (e (J 0)) (e (J 1)) with hu_def
     have hcs := metric_inner_cauchy_schwarz_sq (I := I) (M := M) g₀ x (e (K 0)) u
     have hkk : g₀.inner x (e (K 0)) (e (K 0)) = 1 := by
       rw [horth (K 0) (K 0)]; simp
@@ -1073,7 +1073,7 @@ theorem connDiffSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
       _ = C₀ ^ 2 * G ^ 2 := by ring
   calc ∑ K : Fin 1 → Fin n, ∑ J : Fin 2 → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x 1 2
-          (connDiffFib (I := I) g₁ g₀ x) n e K J) ^ 2
+          (connectionDifferenceFib (I := I) g₁ g₀ x) n e K J) ^ 2
       ≤ ∑ K : Fin 1 → Fin n, ∑ J : Fin 2 → Fin n, C₀ ^ 2 * G ^ 2 :=
         Finset.sum_le_sum (fun K _ => Finset.sum_le_sum (fun J _ => heach K J))
     _ = (Fintype.card (Fin 1 → Fin n) : ℝ) * (Fintype.card (Fin 2 → Fin n) : ℝ) *

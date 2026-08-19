@@ -365,8 +365,8 @@ theorem MetricCompactBase.exists_supp_cm_fin
           ¬ BInter inp.decay inp.D P L.lamInf a b (L.φ k))) ∧
       8 * Real.exp inp.decay.C < aMin * inp.D ∧
       (8 : Real) < inp.normalRadius.gpRatio * inp.D ∧
-      2 * item3RadiusFactor inp.decay inp.D < inp.D ∧
-      2 * item3RadiusFactor inp.decay inp.D <
+      2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D ∧
+      2 * exponentialBallRadiusFactor inp.decay inp.D <
         inp.normalRadius.ratio * inp.D ∧
       (∀ gamma : LiveSlot L inp.pack r,
         let Rgamma := L.rInf (gamma.1 : Nat) + 1
@@ -463,14 +463,14 @@ theorem MetricCompactBase.exists_supp_cm_fin
   let c0 :=
     (8 * Real.exp b.decay.C / aMin) * b.normalRadius.gpRatio
   obtain ⟨D, hD_one, _hmuD, hc0, h8, _h16, hradD, hradRatio, hcap⟩ :=
-    b.exists_item3D c0
+    b.exists_large_divisor_for_exponential_scales c0
   have hD : 0 < D := zero_lt_one.trans hD_one
   let inp := MetricCompactnessInputs.ofBase b D hD hcap
   have h8' : (8 : Real) < inp.normalRadius.gpRatio * inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using h8
-  have hradD' : 2 * item3RadiusFactor inp.decay inp.D < inp.D := by
+  have hradD' : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using hradD
-  have hradRatio' : 2 * item3RadiusFactor inp.decay inp.D <
+  have hradRatio' : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using hradRatio
   have hc0' :
@@ -637,8 +637,8 @@ theorem MetricCompactBase.exists_supp_diag_fin
           ¬ BInter inp.decay inp.D P L.lamInf a b (L.φ k))) ∧
       8 * Real.exp inp.decay.C < aMin * inp.D ∧
       (8 : Real) < inp.normalRadius.gpRatio * inp.D ∧
-      2 * item3RadiusFactor inp.decay inp.D < inp.D ∧
-      2 * item3RadiusFactor inp.decay inp.D <
+      2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D ∧
+      2 * exponentialBallRadiusFactor inp.decay inp.D <
         inp.normalRadius.ratio * inp.D ∧
       (∀ gamma : LiveSlot L inp.pack r,
         let Rgamma := L.rInf (gamma.1 : Nat) + 1

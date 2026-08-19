@@ -9,7 +9,7 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorr0Core
+open LieCorrectionZeroCore
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -26,32 +26,32 @@ private local instance instCompleteSpaceE_tame : CompleteSpace E :=
 set_option backward.isDefEq.respectTransparency false
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma lc0AMixOuterField_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+lemma lieCorrectionZeroMixedConnectionOuterField_toSection (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) :
-    (lc0AMixOuterField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
+    (lieCorrectionZeroMixedConnectionOuterField (I := I) (M := M) g₀ g₁ g_bg).toSection x =
       (show Tensor0SSpace 6 I x →L[ℝ] Tensor0SSpace 4 I x from
-        (lc0Tr (I := I) (M := M) g₀ g₁ 4 lieCorr0AMixPerm1).toSection x).comp
+        (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).toSection x).comp
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          (lc0AMixLiftedField (I := I) (M := M) g₀ g₁ g_bg).toSection x) :=
-  appCcRS_toSection (I := I) (M := M) g₀ 2 6 4
-    (lc0Tr (I := I) (M := M) g₀ g₁ 4 lieCorr0AMixPerm1)
-    (lc0AMixLiftedField (I := I) (M := M) g₀ g₁ g_bg) x
+          (lieCorrectionZeroMixedConnectionLiftedField (I := I) (M := M) g₀ g₁ g_bg).toSection x) :=
+  operatorFieldComposition_toSection (I := I) (M := M) g₀ 2 6 4
+    (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne)
+    (lieCorrectionZeroMixedConnectionLiftedField (I := I) (M := M) g₀ g₁ g_bg) x
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-lemma lc0b_amix_outer_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+lemma lieCorrectionZerob_amix_outer_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
-      (lc0AMixOuterField (I := I) (M := M) g₀ g₁ g_bg).toSection x) D =
-    lieCorr0TraceStep (I := I) g₁ 4 lieCorr0AMixPerm1 x
+      (lieCorrectionZeroMixedConnectionOuterField (I := I) (M := M) g₀ g₁ g_bg).toSection x) D =
+    lieCorrectionZeroTraceStep (I := I) g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne x
       ((tensor0SProdKappaFib (I := I) (p := 3) (q := 3) x
-        (metricConnDiffLoweredFib (I := I) g₁ g₁ g_bg x))
-        (lieCorr0TraceStep (I := I) g₁ 3 lieCorr0AMixPermQ x
+        (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
+        (lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
           ((tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
-            (metricConnDiffLoweredFib (I := I) g₁ g₁ g₀ x)) D))) := by
-  rw [lc0AMixOuterField_toSection (I := I) (M := M) g₀ g₁ g_bg x,
+            (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)) D))) := by
+  rw [lieCorrectionZeroMixedConnectionOuterField_toSection (I := I) (M := M) g₀ g₁ g_bg x,
     ContinuousLinearMap.comp_apply]
-  rw [lc0b_amix_middle_fiber (I := I) (M := M) g₀ g₁ g_bg x D]
-  exact lc0Tr_fiber_apply (I := I) (M := M) g₀ g₁ 4 lieCorr0AMixPerm1 x _
+  rw [lieCorrectionZerob_amix_middle_fiber (I := I) (M := M) g₀ g₁ g_bg x D]
+  exact lieCorrectionZeroTr_fiber_apply (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne x _
 
 end DifferentialGeometry.Analysis.Spectral
 

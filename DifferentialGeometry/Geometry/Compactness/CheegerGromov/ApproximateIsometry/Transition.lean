@@ -15,7 +15,7 @@ open Filter Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
-theorem exists_transitionLimit_on
+theorem exists_transition_limit_on
     {U V : Set E} (hU : IsOpen U) (hV : IsOpen V)
     (J : ℕ → E → E) (Jbar : ℕ → E → E)
     (hJ : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (J k) U)
@@ -59,7 +59,7 @@ def NormalOverlapOn
       expMapDiffeo (I := I) Y.metric x z ∈
         (normalChartAt (I := I) Y.metric y).source
 
-theorem contDiffOn_normalTransition
+theorem cont_diff_on_normal_transition
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) {U : Set E}
     (hUx :
       letI : TopologicalSpace Y.M := Y.topology
@@ -94,7 +94,7 @@ theorem contDiffOn_normalTransition
 
 end Raw
 
-section H6
+section NormalTransitionCompactness
 
 variable {E : Type uE} [NormedAddCommGroup E]
 variable [NormedSpace Real E] [FiniteDimensional Real E]
@@ -102,7 +102,7 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-theorem exists_trans_h6
+theorem exists_normal_transition_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
     (x y : ∀ k : ℕ, (X.obj k).M)
@@ -173,18 +173,18 @@ theorem exists_trans_h6
             (y (φ k)) (x (φ k))) Jbarinf ∧
         (∀ z ∈ U, Jinf z ∈ V → Jbarinf (Jinf z) = z) ∧
         (∀ w ∈ V, Jbarinf w ∈ U → Jinf (Jbarinf w) = w) := by
-  apply exists_transitionLimit_on hU hV
+  apply exists_transition_limit_on hU hV
     (fun k => normalTransition (I := I) (X.obj k) (x k) (y k))
     (fun k => normalTransition (I := I) (X.obj k) (y k) (x k))
     hJ hJbar
-  · exact H6Isometry.normal_bounds_on (I := I) X metricInput x y U Va hU hVa
+  · exact MetricIsometry.normal_bounds_on (I := I) X metricInput x y U Va hU hVa
       hVanorm hUmetric hVametric hUexp hVaexp hJ hovlJ hmapJ
-  · exact H6Isometry.normal_bounds_on (I := I) X metricInput y x V Ua hV hUa
+  · exact MetricIsometry.normal_bounds_on (I := I) X metricInput y x V Ua hV hUa
       hUanorm hVmetric hUametric hVexp hUaexp hJbar hovlJbar hmapJbar
   · exact hLeft
   · exact hRight
 
-end H6
+end NormalTransitionCompactness
 
 end HCGNormalTransition
 

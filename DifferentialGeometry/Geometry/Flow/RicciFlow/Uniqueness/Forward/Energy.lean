@@ -181,7 +181,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 def forwardUniqueDensity (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) :
     Real :=
-  metricDiffSq (I := I) (g₁ t) (g₂ t) x + connDiffSq (I := I) (g₁ t) (g₂ t) x +
+  metricDiffSq (I := I) (g₁ t) (g₂ t) x + connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x +
     rmDiffSq (I := I) (g₁ t) (g₂ t) x
 
 def forwardUniqueEnergy (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Real) : Real :=
@@ -198,9 +198,9 @@ def forwardUniqueDensityDot
     2 * inner0S (I := I) (g₁ t) x 2 (metricDiffDot (I := I) g₁ g₂ t x)
       (metricDiffAt (I := I) (g₁ t) (g₂ t) x)) +
   (movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-      (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+      (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
     2 * inner0S (I := I) (g₁ t) x 3 (Adot t x)
-      (connDiffLowAt (I := I) (g₁ t) (g₂ t) x)) +
+      (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x)) +
   (movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
       (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
     2 * inner0S (I := I) (g₁ t) x 4 (Sdot t x)
@@ -231,7 +231,7 @@ theorem density_hasDerivAt
         ((-2 : Real) * metricRicciAt (I := I) (g₂ t) x
           (fun a : Fin 2 => if a = 0 then X else Y)) t)
     (hA : ∀ v : Fin 3 → TangentSpace I x,
-      HasDerivAt (fun r : Real => connDiffLowAt (I := I) (g₁ r) (g₂ r) x v)
+      HasDerivAt (fun r : Real => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v)
         (Adot t x v) t)
     (hS : ∀ v : Fin 4 → TangentSpace I x,
       HasDerivAt (fun r : Real => rmDiffLowAt (I := I) (g₁ r) (g₂ r) x v)
@@ -249,13 +249,13 @@ theorem density_hasDerivAt
       (metricDiffDot (I := I) g₁ g₂ t x) hPDE₁
       (metricDiff_hasDerivAt (I := I) g₁ g₂ hPDE₁ hPDE₂)
   have hA' :
-      HasDerivAt (fun r : Real => connDiffSq (I := I) (g₁ r) (g₂ r) x)
+      HasDerivAt (fun r : Real => connectionDifferenceSq (I := I) (g₁ r) (g₂ r) x)
         (movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-            (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+            (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
           2 * inner0S (I := I) (g₁ t) x 3 (Adot t x)
-            (connDiffLowAt (I := I) (g₁ t) (g₂ t) x)) t :=
+            (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x)) t :=
     normSq0S_moving_deriv (I := I) g₁ (metricRicciAt (I := I) (g₁ t) x)
-      (fun r => connDiffLowAt (I := I) (g₁ r) (g₂ r) x) (Adot t x) hPDE₁ hA
+      (fun r => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x) (Adot t x) hPDE₁ hA
   have hS' :
       HasDerivAt (fun r : Real => rmDiffSq (I := I) (g₁ r) (g₂ r) x)
         (movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
@@ -287,7 +287,7 @@ theorem forwardUniqueEnergy_hasDerivAt
         ((-2 : Real) * metricRicciAt (I := I) (g₂ t) x
           (fun a : Fin 2 => if a = 0 then X else Y)) t)
     (hA : ∀ (x : M) (v : Fin 3 → TangentSpace I x),
-      HasDerivAt (fun r : Real => connDiffLowAt (I := I) (g₁ r) (g₂ r) x v)
+      HasDerivAt (fun r : Real => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v)
         (Adot t x v) t)
     (hS : ∀ (x : M) (v : Fin 4 → TangentSpace I x),
       HasDerivAt (fun r : Real => rmDiffLowAt (I := I) (g₁ r) (g₂ r) x v)

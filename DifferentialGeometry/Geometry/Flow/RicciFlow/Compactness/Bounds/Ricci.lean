@@ -108,7 +108,7 @@ private noncomputable def ricShiC (N : Nat) (Bmax KShi : Real) : Real :=
 
 private noncomputable def ricCL
     (d N : Nat) (Bmax : Real) (Cg : Nat → Real) (c : Nat) : Real :=
-  claim1Const (ricInvC d Bmax) (3 / 2) (ricKg N Cg) c
+  inverseContractionAffineRecurrenceConstant (ricInvC d Bmax) (3 / 2) (ricKg N Cg) c
 
 private noncomputable def ricDBound
     (d N : Nat) (Bmax : Real) (Cg : Nat → Real) (c : Nat) : Real :=
@@ -147,7 +147,7 @@ private theorem ricShiC_nonneg
 private theorem ricCL_nonneg
     (d N : Nat) (Bmax : Real) (Cg : Nat → Real) (c : Nat) :
     0 ≤ ricCL d N Bmax Cg c :=
-  claim1Const_nonneg _ _ _ _
+  inverse_contraction_affine_recurrence_constant_nonneg _ _ _ _
 
 private theorem ricDBound_nonneg
     (d N : Nat) (Bmax : Real) (Cg : Nat → Real) (c : Nat) :
@@ -253,7 +253,7 @@ private theorem perDomain_bound
   have hKg0 : 0 ≤ ricKg N Cg := ricKg_nonneg N Cg
   have hKShiC0 : 0 ≤ ricShiC N Bmax KShi :=
     ricShiC_nonneg hBmax1 hKShi0
-  have hCLb := fun c : ℕ => claim1_LC_bound (I := I) hwopen gRef
+  have hCLb := fun c : ℕ => connection_difference_component_bound_in_frame (I := I) hwopen gRef
     (fun a y' => e₀.localFrame basisE a y')
     ((e₀.isLocalFrameOn_localFrame_baseSet I 1 basisE).mono hwsub)
     (fun d => (frame_e_mdiffOn e₀ basisE d).mono hwsub)

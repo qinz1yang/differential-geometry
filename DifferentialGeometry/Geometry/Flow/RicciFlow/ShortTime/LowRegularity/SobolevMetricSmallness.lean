@@ -46,18 +46,18 @@ theorem realize_at_delta
   exact mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_right hdelta (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
 
-theorem lowreg_realize_h2
+theorem exists_h2_metric_perturbation_radius
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ p : ℝ × ℝ, 0 < p.1 ∧
-      p.2 ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E) ∧
+      p.2 ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E) ∧
       ∀ (T : SmoothCcTensor g 0 2),
         ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T‖ ≤ p.1 →
         metricCauchySchwarzBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g T) p.2 := by
   obtain ⟨C, hC, hOp⟩ := hs2_op_bound (I := I) (M := M) hDim g
-  let θ : ℝ := deTurckArmContractionThresholdSharp (Module.finrank ℝ E)
-  have hθ : 0 < θ := deTurckArmContractionThreshold''_pos (Module.finrank ℝ E)
+  let θ : ℝ := deTurckRemainderContractionThreshold (Module.finrank ℝ E)
+  have hθ : 0 < θ := de_turck_remainder_contraction_threshold_pos (Module.finrank ℝ E)
   refine ⟨(θ / C, θ), div_pos hθ hC, le_rfl, ?_⟩
   intro T hT
   have htwo : ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T =
@@ -76,18 +76,18 @@ theorem lowreg_realize_h2
   exact mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_right hdelta (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
 
-theorem lowreg_realize
+theorem exists_h3_metric_perturbation_radius
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ p : ℝ × ℝ, 0 < p.1 ∧
-      p.2 ≤ deTurckArmContractionThresholdSharp (Module.finrank ℝ E) ∧
+      p.2 ≤ deTurckRemainderContractionThreshold (Module.finrank ℝ E) ∧
       ∀ (T : SmoothCcTensor g 0 2),
         ‖smoothCcToTensorHs (I := I) (M := M) g (3 : ℝ) T‖ ≤ p.1 →
         metricCauchySchwarzBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g T) p.2 := by
   obtain ⟨C, hC, hOp⟩ := hs2_op_bound (I := I) (M := M) hDim g
-  let θ : ℝ := deTurckArmContractionThresholdSharp (Module.finrank ℝ E)
-  have hθ : 0 < θ := deTurckArmContractionThreshold''_pos (Module.finrank ℝ E)
+  let θ : ℝ := deTurckRemainderContractionThreshold (Module.finrank ℝ E)
+  have hθ : 0 < θ := de_turck_remainder_contraction_threshold_pos (Module.finrank ℝ E)
   refine ⟨(θ / C, θ), div_pos hθ hC, le_rfl, ?_⟩
   intro T hT
   have htwo : ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T =

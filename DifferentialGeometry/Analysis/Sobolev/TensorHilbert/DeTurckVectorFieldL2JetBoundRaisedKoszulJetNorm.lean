@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffL2JetMoser
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.FlatArmCoeffConnectionDifferenceBridge
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricLoweredConnectionDifferenceCoefficient
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import Mathlib.Analysis.MeanInequalities
@@ -26,7 +26,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedFam)
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -131,7 +131,7 @@ private lemma raisedKoszul_norm_iteratedCovGrad_koszul_le
         (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (n + 1)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (n + 1) (ccTensor02Symm (I := I) g₀ P)).toSection x)) :=
       funext fun x =>
-        rfns_iteratedCovGrad_covGrad_comm_rs (I := I) g₀ 0 2 n (ccTensor02Symm (I := I) g₀ P) x
+        riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) g₀ 0 2 n (ccTensor02Symm (I := I) g₀ P) x
     rw [hpt]
   have hDAeq : ‖iteratedCovGrad (I := I) g₀ 0 3 n DA‖ =
       ‖iteratedCovGrad (I := I) g₀ 0 3 n W‖ := by
@@ -205,7 +205,7 @@ theorem raisedKoszul_order0sup_jetL2_succ_generic
         have h1 : δ * Real.sqrt (g₀.inner x v v) < 0 := mul_neg_of_neg_of_pos hδc' hsqrt_pos
         exact mul_neg_of_neg_of_pos h1 hsqrt_pos
       linarith [le_trans habs_nn hbound]
-    have hrfns := hC g₁ P htie (le_trans hδ_le (le_max_left δ₀ 0)) hδ0 hδ x
+    have hriemannianFiberNormSq := hC g₁ P htie (le_trans hδ_le (le_max_left δ₀ 0)) hδ0 hδ x
     have henv := hCsob P P hR hPball hPball 0 (Set.mem_Icc.mpr ⟨le_refl 0, zero_le_one⟩) x
     simp only [DifferentialGeometry.PDE.DeTurck.RicciLinearization.convexPerturbation_zero] at henv
     letI instTens12 : Bundle.RiemannianBundle
@@ -227,7 +227,7 @@ theorem raisedKoszul_order0sup_jetL2_succ_generic
             norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x))
           (by simp : (1 : ℕ) ∈ Finset.range 3)
     have hsq : N ^ 2 ≤ (Csob * R) ^ 2 := by nlinarith [hnorm_le, hN_nn]
-    refine le_trans hrfns ?_
+    refine le_trans hriemannianFiberNormSq ?_
     rw [show (C * (Csob * R)) ^ 2 = C ^ 2 * (Csob * R) ^ 2 from by rw [mul_pow]]
     exact mul_le_mul_of_nonneg_left hsq (sq_nonneg C)
   · intro i hi

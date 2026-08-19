@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckMetricArmCoeffField
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricDifferenceSlotCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceFibreBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingReverseHebeyToHs
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCmOrderDropping
@@ -344,7 +344,7 @@ theorem riemannianFiberNormSq_bilinearSlotInsertCLM_le
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma rfns_armSlotFib_eq_sum_normSq_frame
+private lemma riemannianFiberNormSq_armSlotFib_eq_sum_normSq_frame
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ)
     (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     {n : ℕ} (e : Fin n → TangentSpace I x)
@@ -419,8 +419,8 @@ theorem riemannianFiberNormSq_armSlotFib_spectator_eq
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [rfns_armSlotFib_eq_sum_normSq_frame (I := I) g₀ x s Arm e bse hnE hbse horth hpars]
-  rw [rfns_armSlotFib_eq_sum_normSq_frame (I := I) g₀ x 0 Arm e bse hnE hbse horth hpars]
+  rw [riemannianFiberNormSq_armSlotFib_eq_sum_normSq_frame (I := I) g₀ x s Arm e bse hnE hbse horth hpars]
+  rw [riemannianFiberNormSq_armSlotFib_eq_sum_normSq_frame (I := I) g₀ x 0 Arm e bse hnE hbse horth hpars]
   rw [pow_zero, one_mul]
   rw [show ((Module.finrank ℝ E : ℝ)) ^ s = (n : ℝ) ^ s from by rw [hnE]]
 

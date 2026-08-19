@@ -194,7 +194,7 @@ private theorem sum_eps_E_mul
   intro k _hk
   ring
 
-theorem main_step_algebra
+theorem recurrence_coefficient_bound
     {eps C A : Real} {E N G : Nat -> Real} {p : Nat}
     (heps0 : 0 <= eps)
     (heps1 : eps <= 1)
@@ -268,26 +268,26 @@ theorem main_step_algebra
     ring
   simpa [S, ESum, hfinal_rewrite] using hmain1
 
-theorem main_step_coeff_le_lemma45Const
+theorem recurrence_coefficient_le_iterated_recurrence_constant
     {B : Nat -> Real} (hB : forall i : Nat, 0 <= B i)
     (p s : Nat) :
     oneStepConst B p s
-      + lemma45Const B p (s + 1)
+      + iteratedRecurrenceConstant B p (s + 1)
         * (1 + Finset.sum (Finset.range p) (fun k => oneStepConst B k s))
-      <= lemma45Const B (p + 1) s := by
-  have hbase : 0 <= lemma45Const B p s :=
-    lemma45Const_nonneg hB p s
-  simp [lemma45Const]
+      <= iteratedRecurrenceConstant B (p + 1) s := by
+  have hbase : 0 <= iteratedRecurrenceConstant B p s :=
+    iterated_recurrence_constant_nonneg hB p s
+  simp [iteratedRecurrenceConstant]
   linarith
 
-theorem main_step_to_lemma45Const
+theorem recurrence_bound_by_iterated_recurrence_constant
     {eps A : Real} {B N G : Nat -> Real} {p s : Nat}
     (heps0 : 0 <= eps)
     (heps1 : eps <= 1)
     (hB : forall i : Nat, 0 <= B i)
     (hN : forall i : Nat, 0 <= N i)
     (hA :
-      A <= G p + eps * lemma45Const B p (s + 1) *
+      A <= G p + eps * iteratedRecurrenceConstant B p (s + 1) *
         Finset.sum (Finset.range p) (fun k => G k))
     (hGp :
       G p <= N (p + 1)
@@ -300,44 +300,44 @@ theorem main_step_to_lemma45Const
             Finset.sum (Finset.range (p + 1)) (fun i => N i)) :
     A <=
       N (p + 1)
-        + eps * lemma45Const B (p + 1) s *
+        + eps * iteratedRecurrenceConstant B (p + 1) s *
           Finset.sum (Finset.range (p + 1)) (fun i => N i) := by
   let S : Real := Finset.sum (Finset.range (p + 1)) (fun i => N i)
   let coeff : Real :=
     oneStepConst B p s
-      + lemma45Const B p (s + 1)
+      + iteratedRecurrenceConstant B p (s + 1)
         * (1 + Finset.sum (Finset.range p) (fun k => oneStepConst B k s))
   have hmain :
       A <= N (p + 1) + eps * coeff * S := by
     simpa [S, coeff, add_comm, add_left_comm, add_assoc] using
-      main_step_algebra
-        (eps := eps) (C := lemma45Const B p (s + 1))
+      recurrence_coefficient_bound
+        (eps := eps) (C := iteratedRecurrenceConstant B p (s + 1))
         (A := A) (E := fun k => oneStepConst B k s)
         (N := N) (G := G) (p := p)
-        heps0 heps1 (lemma45Const_nonneg hB p (s + 1))
+        heps0 heps1 (iterated_recurrence_constant_nonneg hB p (s + 1))
         (fun k => oneStepConst_nonneg hB k s) hN hA hGp hGk
-  have hcoef : coeff <= lemma45Const B (p + 1) s := by
-    simpa [coeff] using main_step_coeff_le_lemma45Const hB p s
+  have hcoef : coeff <= iteratedRecurrenceConstant B (p + 1) s := by
+    simpa [coeff] using recurrence_coefficient_le_iterated_recurrence_constant hB p s
   have hS_nonneg : 0 <= S := by
     exact Finset.sum_nonneg fun i _hi => hN i
   have hepsS_nonneg : 0 <= eps * S := mul_nonneg heps0 hS_nonneg
   have hmul :
-      eps * coeff * S <= eps * lemma45Const B (p + 1) s * S := by
+      eps * coeff * S <= eps * iteratedRecurrenceConstant B (p + 1) s * S := by
     calc
       eps * coeff * S = (eps * S) * coeff := by ring
-      _ <= (eps * S) * lemma45Const B (p + 1) s :=
+      _ <= (eps * S) * iteratedRecurrenceConstant B (p + 1) s :=
           mul_le_mul_of_nonneg_left hcoef hepsS_nonneg
-      _ = eps * lemma45Const B (p + 1) s * S := by ring
+      _ = eps * iteratedRecurrenceConstant B (p + 1) s * S := by ring
   linarith
 
-theorem main_step_to_lemma45Const_of_partials
+theorem recurrence_step_bound_of_partials
     {eps A : Real} {B N G : Nat -> Real} {p s : Nat}
     (heps0 : 0 <= eps)
     (heps1 : eps <= 1)
     (hB : forall i : Nat, 0 <= B i)
     (hN : forall i : Nat, 0 <= N i)
     (hA :
-      A <= G p + eps * lemma45Const B p (s + 1) *
+      A <= G p + eps * iteratedRecurrenceConstant B p (s + 1) *
         Finset.sum (Finset.range p) (fun k => G k))
     (hGp :
       G p <= N (p + 1)
@@ -350,9 +350,9 @@ theorem main_step_to_lemma45Const_of_partials
             Finset.sum (Finset.range (k + 1)) (fun i => N i)) :
     A <=
       N (p + 1)
-        + eps * lemma45Const B (p + 1) s *
+        + eps * iteratedRecurrenceConstant B (p + 1) s *
           Finset.sum (Finset.range (p + 1)) (fun i => N i) := by
-  refine main_step_to_lemma45Const
+  refine recurrence_bound_by_iterated_recurrence_constant
     (eps := eps) (A := A) (B := B) (N := N) (G := G)
     (p := p) (s := s) heps0 heps1 hB hN hA hGp ?_
   intro k hk

@@ -538,7 +538,7 @@ private theorem deTurckSobolevNHa2Symm_embed_eq_raw_embed_symmS
     (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha_super)
   have hδ_lt : (Classical.choose (deTurckSobolevNHa2_exists_of_super
       (I := I) (M := M) g₀ a ha_super)).2 < 1 :=
-    lt_of_le_of_lt hp_lt (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+    lt_of_le_of_lt hp_lt (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   rw [deTurckSobolevNHa2Symm_eq_smoothN (I := I) (M := M) g₀ g_bg a ha_super X hδ_lt
     (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ X (hp_ball X hball))
       hball]

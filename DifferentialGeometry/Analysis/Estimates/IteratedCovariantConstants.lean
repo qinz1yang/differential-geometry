@@ -20,13 +20,13 @@ noncomputable def oneStepConst (B : Nat -> Real) (k m : Nat) : Real :=
     Finset.sum (Finset.range (k + 1))
       (fun a => (k.choose a : Real) * B a)
 
-noncomputable def lemma45Const (B : Nat -> Real) : Nat -> Nat -> Real
+noncomputable def iteratedRecurrenceConstant (B : Nat -> Real) : Nat -> Nat -> Real
   | 0, _m => 1
   | p + 1, m =>
-      lemma45Const B p m
+      iteratedRecurrenceConstant B p m
         + 1
         + oneStepConst B p m
-        + lemma45Const B p (m + 1) *
+        + iteratedRecurrenceConstant B p (m + 1) *
           (1 + Finset.sum (Finset.range p) (fun k => oneStepConst B k m))
 
 theorem oneStepConst_nonneg
@@ -39,18 +39,18 @@ theorem oneStepConst_nonneg
   intro a _ha
   exact mul_nonneg (by exact_mod_cast Nat.zero_le (k.choose a)) (hB a)
 
-theorem lemma45Const_pos
+theorem iterated_recurrence_constant_pos
     {B : Nat -> Real} (hB : forall i : Nat, 0 <= B i)
     (p m : Nat) :
-    0 < lemma45Const B p m := by
+    0 < iteratedRecurrenceConstant B p m := by
   induction p generalizing m with
   | zero =>
-      simp [lemma45Const]
+      simp [iteratedRecurrenceConstant]
   | succ p ih =>
-      have hprev_nonneg : 0 <= lemma45Const B p m := le_of_lt (ih m)
+      have hprev_nonneg : 0 <= iteratedRecurrenceConstant B p m := le_of_lt (ih m)
       have hstep_nonneg : 0 <= oneStepConst B p m :=
         oneStepConst_nonneg hB p m
-      have hprev_succ_nonneg : 0 <= lemma45Const B p (m + 1) :=
+      have hprev_succ_nonneg : 0 <= iteratedRecurrenceConstant B p (m + 1) :=
         le_of_lt (ih (m + 1))
       have hsum_nonneg :
           0 <= Finset.sum (Finset.range p) (fun k => oneStepConst B k m) := by
@@ -59,26 +59,26 @@ theorem lemma45Const_pos
           0 <= 1 + Finset.sum (Finset.range p) (fun k => oneStepConst B k m) := by
         linarith
       have hprod_nonneg :
-          0 <= lemma45Const B p (m + 1) *
+          0 <= iteratedRecurrenceConstant B p (m + 1) *
             (1 + Finset.sum (Finset.range p) (fun k => oneStepConst B k m)) :=
         mul_nonneg hprev_succ_nonneg hfactor_nonneg
-      simp [lemma45Const]
+      simp [iteratedRecurrenceConstant]
       linarith
 
-theorem lemma45Const_nonneg
+theorem iterated_recurrence_constant_nonneg
     {B : Nat -> Real} (hB : forall i : Nat, 0 <= B i)
     (p m : Nat) :
-    0 <= lemma45Const B p m :=
-  le_of_lt (lemma45Const_pos hB p m)
+    0 <= iteratedRecurrenceConstant B p m :=
+  le_of_lt (iterated_recurrence_constant_pos hB p m)
 
-theorem lemma45Const_le_succ
+theorem iterated_recurrence_constant_le_succ
     {B : Nat -> Real} (hB : forall i : Nat, 0 <= B i)
     (p m : Nat) :
-    lemma45Const B p m <= lemma45Const B (p + 1) m := by
+    iteratedRecurrenceConstant B p m <= iteratedRecurrenceConstant B (p + 1) m := by
   have hstep_nonneg : 0 <= oneStepConst B p m :=
     oneStepConst_nonneg hB p m
-  have hprev_succ_nonneg : 0 <= lemma45Const B p (m + 1) :=
-    lemma45Const_nonneg hB p (m + 1)
+  have hprev_succ_nonneg : 0 <= iteratedRecurrenceConstant B p (m + 1) :=
+    iterated_recurrence_constant_nonneg hB p (m + 1)
   have hsum_nonneg :
       0 <= Finset.sum (Finset.range p) (fun k => oneStepConst B k m) := by
     exact Finset.sum_nonneg fun k _hk => oneStepConst_nonneg hB k m
@@ -86,10 +86,10 @@ theorem lemma45Const_le_succ
       0 <= 1 + Finset.sum (Finset.range p) (fun k => oneStepConst B k m) := by
     linarith
   have hprod_nonneg :
-      0 <= lemma45Const B p (m + 1) *
+      0 <= iteratedRecurrenceConstant B p (m + 1) *
         (1 + Finset.sum (Finset.range p) (fun k => oneStepConst B k m)) :=
     mul_nonneg hprev_succ_nonneg hfactor_nonneg
-  simp [lemma45Const]
+  simp [iteratedRecurrenceConstant]
   linarith
 
 noncomputable def compApproxConst (C : Nat -> Real) (p : Nat) : Real :=

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.JacobianBounds
 import DifferentialGeometry.Geometry.Comparison.GeodesicConvexity
-import DifferentialGeometry.Geometry.Exponential.IntrinsicBallDiffeo
+import DifferentialGeometry.Geometry.Exponential.IntrinsicBallChart
 
 set_option autoImplicit false
 

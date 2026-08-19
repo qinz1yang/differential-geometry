@@ -179,7 +179,7 @@ private theorem sharpRawPullCenter_le_jetSum
     refine mem_chartImagePOUTsupport_of_pou_pos (I := I) (M := M) α
       (hball_open hy) ?_
     exact lt_of_lt_of_le hc_pos (hρ_lb y hy)
-  have h_refold : ∀ j : ℕ, ∃ Cj : ℝ, 0 ≤ Cj ∧ (j ≤ m →
+  have h_decomposition : ∀ j : ℕ, ∃ Cj : ℝ, 0 ≤ Cj ∧ (j ≤ m →
       ∀ (T : SmoothCcTensor g r s), ∀ y ∈ Metric.ball y₀ R,
         ‖iteratedFDeriv ℝ j
             (tensorComponentEuclideanChart (I := I) (M := M) g r s T α IJ.1 IJ.2) y‖ ≤
@@ -203,7 +203,7 @@ private theorem sharpRawPullCenter_le_jetSum
       rw [hsum] at h
       exact h
     · exact ⟨0, le_refl 0, fun h => absurd h hjm⟩
-  choose Cjfun hCjfun_nn hCjfun using h_refold
+  choose Cjfun hCjfun_nn hCjfun using h_decomposition
   have h_l2 : ∀ i : ℕ, ∃ B : ℝ, 0 ≤ B ∧ ∀ (S : SmoothCcTensor g r (s + i))
       (Idx : Fin r → Fin (Module.finrank ℝ E))
       (Jdx : Fin (s + i) → Fin (Module.finrank ℝ E)),

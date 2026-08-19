@@ -76,7 +76,7 @@ theorem frameTowerSmooth
           ∑ slots : Fin (4 + k) -> CoordinateIdx (𝕜 := Real) E,
             (∏ q : Fin (4 + k), coeff (idx q) (slots q) p.2) *
               iteratedRmComp (I := I) (coordinateFrameAt (I := I) x0)
-                (realizedChr (I := I) S x0) (realizedRmBase (I := I) S x0)
+                (solutionChristoffelComponents (I := I) S x0) (solutionCurvatureComponents (I := I) S x0)
                 k p.1 p.2 slots)
         ((t : Real), x) := by
     refine ContMDiffAt.sum fun slots _ => ?_
@@ -118,7 +118,7 @@ theorem frameTowerSmooth
     _ = ∑ slots : Fin (4 + k) -> CoordinateIdx (𝕜 := Real) E,
           (∏ q : Fin (4 + k), coeff (idx q) (slots q) p.2) *
             iteratedRmComp (I := I) (coordinateFrameAt (I := I) x0)
-              (realizedChr (I := I) S x0) (realizedRmBase (I := I) S x0)
+              (solutionChristoffelComponents (I := I) S x0) (solutionCurvatureComponents (I := I) S x0)
               k p.1 p.2 slots := by
       refine Finset.sum_congr rfl fun slots _ => ?_
       rw [iteratedRmComp_eq_nablaKRm04Field (I := I) S x0 p.1 k hp.2 slots]

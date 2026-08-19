@@ -51,44 +51,44 @@ set_option backward.isDefEq.respectTransparency false
 
 namespace CurvatureCoefficientDifferenceJetTower
 
-def quadraticConnDiffCc (g₀ g₁ : SmoothRiemannianMetric I M) :
+def quadraticConnectionDifferenceCc (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 1 3 :=
-  appCcRS (I := I) (M := M) g₀ 1 2 3
-    (armSlotEndoPassZeroCc (I := I) (M := M) g₀ (connDiffArmFieldPt (I := I) (M := M) g₀ g₁))
-    (connDiffSection (I := I) g₁ g₀)
+  ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
+    (armSlotEndoPassZeroCc (I := I) (M := M) g₀ (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+    (connectionDifferenceSection (I := I) g₁ g₀)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-lemma quadraticConnDiffCc_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+lemma quadraticConnectionDifferenceCc_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) (w : Fin 3 → TangentSpace I x) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (quadraticConnDiffCc (I := I) (M := M) g₀ g₁).toSection x) om) w =
+          (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x) om) w =
       cotangentToDual (I := I) (x := x) om
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 2)) (w 0)) := by
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 2)) (w 0)) := by
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (quadraticConnDiffCc (I := I) (M := M) g₀ g₁).toSection x) om) =
+        (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x) om) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (appCcRS (I := I) (M := M) g₀ 1 2 3
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
           (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (connDiffArmFieldPt (I := I) (M := M) g₀ g₁))
-          (connDiffSection (I := I) g₁ g₀)).toSection x) om) from rfl]
-  rw [toModel_appCcRS_armSlotEndoPassZeroCc_eval (I := I) (M := M) g₀
-    (connDiffArmFieldPt (I := I) (M := M) g₀ g₁) (connDiffSection (I := I) g₁ g₀) x om w]
+            (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+          (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) om) from rfl]
+  rw [toModel_operatorFieldComposition_armSlotEndoPassZeroCc_eval (I := I) (M := M) g₀
+    (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁) (connectionDifferenceSection (I := I) g₁ g₀) x om w]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (connDiffSection (I := I) g₁ g₀).toSection x) om) =
-      connDiffPairing (I := I) g₁ g₀ x om from rfl]
-  have hchg : Tensor0SSpace.toModel (connDiffPairing (I := I) g₁ g₀ x om)
+        (connectionDifferenceSection (I := I) g₁ g₀).toSection x) om) =
+      connectionDifferencePairing (I := I) g₁ g₀ x om from rfl]
+  have hchg : Tensor0SSpace.toModel (connectionDifferencePairing (I := I) g₁ g₀ x om)
       (fun j : Fin 2 => if j = 0 then
-        connDiffArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) =
-      connDiffPairing (I := I) g₁ g₀ x om
+        connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) =
+      connectionDifferencePairing (I := I) g₁ g₀ x om
         (fun j : Fin 2 => if j = 0 then
-          connDiffArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) := rfl
+          connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) := rfl
   rw [hchg]
   rw [show (fun j : Fin 2 => if j = 0 then
-        connDiffArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) =
-      (Fin.cons (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w 1) (w 2))
+        connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁ x (w 1) (w 2) else w 0) =
+      (Fin.cons (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) (w 2))
         (fun _ : Fin 1 => w 0) : Fin 2 → TangentSpace I x) from by
     funext j
     refine Fin.cases ?_ ?_ j
@@ -97,7 +97,7 @@ lemma quadraticConnDiffCc_toModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : 
     · intro i
       rw [if_neg (Fin.succ_ne_zero i)]
       rfl]
-  rw [connDiffPairing_apply]
+  rw [connectionDifferencePairing_apply]
   rw [cotangentToDual_apply]
   rfl
 
@@ -132,11 +132,11 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
           (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)) =
       rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (Equiv.swap (1 : Fin 3) 2)
-          (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-            quadraticConnDiffCc (I := I) (M := M) g₀ g₁) -
+          (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+            quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁) -
         rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (finRotate 3)
-          (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-            quadraticConnDiffCc (I := I) (M := M) g₀ g₁) := by
+          (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+            quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -165,41 +165,41 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
     rw [hu_def]
     rw [g₀.symm x ww (inverseMetricSharpFib (I := I) g₀ x om)]
     rw [g0_inner_inverseMetricSharp_mixed (I := I) (M := M) g₀ g₀ x om ww]
-    rw [show gInvRaisedEndo (I := I) g₀ g₀ x ww = ww from by
-      rw [gInvRaisedEndo_apply, inverseMetricSharpFib_g0FlatCLM]]
+    rw [show metricComparisonEndomorphism (I := I) g₀ g₀ x ww = ww from by
+      rw [metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
   have hDQ : ∀ (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-          ((covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-            quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om)
+          ((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+            quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om)
         (Fin.cons (X x) (Fin.cons (Y x) ![Z x])) =
       cotangentToDual (I := I) (x := x) om
-          (covDerivConnDiff (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) +
+          (covDerivConnectionDifference (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) +
         cotangentToDual (I := I) (x := x) om
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y x) (Z x)) (X x)) := by
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Y x) (Z x)) (X x)) := by
     intro X Y Z
     have hsplit : ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-        ((covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-          quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) =
+        ((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+          quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) =
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀)).toSection x) om) +
+          (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) om) +
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (quadraticConnDiffCc (I := I) (M := M) g₀ g₁).toSection x) om) := by
+          (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x) om) := by
       rw [SmoothCcTensor.toSection_add]
       rfl
     rw [hsplit, Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
     have hbridge : Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀)).toSection x) om)
+          (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) om)
         (Fin.cons (X x) (Fin.cons (Y x) ![Z x])) =
         cotangentToDual (I := I) (x := x) om
-          (covDerivConnDiff (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) := by
+          (covDerivConnectionDifference (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) := by
       rw [← homx]
-      rw [connDiffSection_covGrad_eq_covDerivConnDiff (I := I) (M := M) g₁ g₀ omSec X Y Z x]
+      rw [connectionDifferenceSection_covGrad_eq_covDerivConnectionDifference (I := I) (M := M) g₁ g₀ omSec X Y Z x]
       rw [cotangentToDual_apply]
     rw [hbridge]
-    rw [quadraticConnDiffCc_toModel (I := I) (M := M) g₀ g₁ x om
+    rw [quadraticConnectionDifferenceCc_toModel (I := I) (M := M) g₀ g₁ x om
       (Fin.cons (X x) (Fin.cons (Y x) ![Z x]))]
     rfl
   have htor : (LeviCivita (I := I) g₀).torsion = 0 := LeviCivita_torsion_eq_zero (I := I) g₀
@@ -264,36 +264,36 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
   have hRHSsub : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (Equiv.swap (1 : Fin 3) 2)
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁) -
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁) -
           rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (finRotate 3)
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) v =
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) v =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (Equiv.swap (1 : Fin 3) 2)
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) v -
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) v -
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (finRotate 3)
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) v := by
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) v := by
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (Equiv.swap (1 : Fin 3) 2)
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁) -
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁) -
           rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (finRotate 3)
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) =
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) =
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (Equiv.swap (1 : Fin 3) 2)
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) -
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) -
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (finRotate 3)
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) from by
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) from by
       rw [SmoothCcTensor.toSection_sub]
       rfl]
     rw [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
@@ -303,26 +303,26 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 σ
-            (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) v =
+            (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) v =
       cotangentToDual (I := I) (x := x) om
-          (covDerivConnDiff (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) +
+          (covDerivConnectionDifference (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) +
         cotangentToDual (I := I) (x := x) om
-          (PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y x) (Z x)) (X x)) := by
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Y x) (Z x)) (X x)) := by
     intro σ X Y Z htup
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 σ
-          (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-            quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) om) =
+          (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+            quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) om) =
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
           rsDomDomCongr σ
-            ((covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-              quadraticConnDiffCc (I := I) (M := M) g₀ g₁).toSection x)) om) from by
+            ((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+              quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x)) om) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) σ
-      ((covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-        quadraticConnDiffCc (I := I) (M := M) g₀ g₁).toSection x) om]
+      ((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+        quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁).toSection x) om]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     rw [htup]
     exact hDQ X Y Z
@@ -373,21 +373,21 @@ theorem riemannLoweredBackgroundDifference_palatini_repr
   rw [map_sub (g₀.inner x), ContinuousLinearMap.sub_apply]
   rw [map_sub (g₀.inner x), ContinuousLinearMap.sub_apply]
   simp only [hpair]
-  have hc1 : covDerivConnDiff (I := I) g₀ g₁
+  have hc1 : covDerivConnectionDifference (I := I) g₀ g₁
       (fun b => X0 b) (fun b => X1 b) (fun b => X2 b) x =
       covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
         (fun b => X0 b) (fun b => X1 b) (fun b => X2 b) x := rfl
-  have hc2 : covDerivConnDiff (I := I) g₀ g₁
+  have hc2 : covDerivConnectionDifference (I := I) g₀ g₁
       (fun b => X1 b) (fun b => X0 b) (fun b => X2 b) x =
       covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
         (fun b => X1 b) (fun b => X0 b) (fun b => X2 b) x := rfl
-  have hq1 : PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-      (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (X2 x) (X1 x)) (X0 x) =
+  have hq1 : PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (X2 x) (X1 x)) (X0 x) =
       CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₀) x
         (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
           (fun b => X1 b) (fun b => X2 b) x) ((fun b => X0 b) x) := rfl
-  have hq2 : PDE.DeTurck.connDiff (I := I) g₁ g₀ x
-      (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (X2 x) (X0 x)) (X1 x) =
+  have hq2 : PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+      (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (X2 x) (X0 x)) (X1 x) =
       CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₀) x
         (diffSec (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁)
           (fun b => X0 b) (fun b => X2 b) x) ((fun b => X1 b) x) := rfl
@@ -632,7 +632,7 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w) :
     riemannLoweredCc (I := I) (M := M) g₀ g₁ g₁ - riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁ =
       domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
-        (appCcRS (I := I) (M := M) g₀ 0 4 4
+        (ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 4
           (slotInsertEndoCc (I := I) (M := M) g₀ 3
             (perturbationSharpEndoField (I := I) (M := M) g₀ T))
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
@@ -669,14 +669,14 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
     ring
   rw [hLHS]
   rw [domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
-    (appCcRS (I := I) (M := M) g₀ 0 4 4
+    (ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 4
       (slotInsertEndoCc (I := I) (M := M) g₀ 3
         (perturbationSharpEndoField (I := I) (M := M) g₀ T))
       (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁))) x]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   have happ : unitModel (I := I) (M := M) g₀ 4
-      (appCcRS (I := I) (M := M) g₀ 0 4 4
+      (ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 4
         (slotInsertEndoCc (I := I) (M := M) g₀ 3
           (perturbationSharpEndoField (I := I) (M := M) g₀ T))
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
@@ -689,7 +689,7 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
           (perturbationSharpEndoField (I := I) (M := M) g₀ T x
             ((fun i => m ((Equiv.swap (0 : Fin 4) 1) i)) 0))) := by
     rw [unitModel, unitModel]
-    rw [show ((appCcRS (I := I) (M := M) g₀ 0 4 4
+    rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 4
         (slotInsertEndoCc (I := I) (M := M) g₀ 3
           (perturbationSharpEndoField (I := I) (M := M) g₀ T))
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
@@ -701,7 +701,7 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁)).toSection x)
           (unitTensor (I := I) (M := M) x)) from by
-      rw [appCcRS_toSection]
+      rw [operatorFieldComposition_toSection]
       rfl]
     rw [slotInsertEndoFib_apply_eval]
   rw [happ]
@@ -766,7 +766,7 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
     (riemannOp (LeviCivita (I := I) g₁) x (m 0) (m 2) (m 3))]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma rfns_eq_sum_componentSq_of_horth_pt
+lemma riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (S : TensorRSSpace r s I x)
     {n : ℕ} (e : Fin n → TangentSpace I x) (hn : n = Module.finrank ℝ E)
     (horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0) :
@@ -816,7 +816,7 @@ lemma fiberNormSqComponent_zero_toModel_pt
   rfl
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma rfns_symmS_zero_le_of_ball (g₀ : SmoothRiemannianMetric I M)
+lemma riemannianFiberNormSq_symmS_zero_le_of_ball (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (x : M) :
@@ -827,7 +827,7 @@ lemma rfns_symmS_zero_le_of_ball (g₀ : SmoothRiemannianMetric I M)
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hrepr, _hsum⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [rfns_eq_sum_componentSq_of_horth_pt (I := I) (M := M) g₀ 0 2 x
+  rw [riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt (I := I) (M := M) g₀ 0 2 x
     ((symmS (I := I) (M := M) g₀ T).toSection x) e hnE horth]
   have hcomp : ∀ (K : Fin 0 → Fin n) (J : Fin 2 → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 0 2
@@ -878,7 +878,7 @@ lemma rfns_symmS_zero_le_of_ball (g₀ : SmoothRiemannianMetric I M)
           ring
         rw [hc0, hc2, one_mul, hnE]
 
-lemma rfns_iteratedCovGrad_slotInsert3_perturbationSharp_le
+lemma riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + j) x
         ((iteratedCovGrad (I := I) g₀ 4 4 j
@@ -887,11 +887,11 @@ lemma rfns_iteratedCovGrad_slotInsert3_perturbationSharp_le
       (Module.finrank ℝ E : ℝ) ^ 3 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)).toSection x) := by
-  refine le_trans (rfns_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 3
+  refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 3
     (perturbationSharpEndoField (I := I) (M := M) g₀ T) j x) ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
   rw [slotInsert_perturbationSharp_eq_raise_symmS (I := I) (M := M) g₀ T]
-  rw [rfns_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
+  rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
       (symmS (I := I) (M := M) g₀ T)) j x]
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
@@ -899,7 +899,7 @@ lemma rfns_iteratedCovGrad_slotInsert3_perturbationSharp_le
 
 end CurvatureCoefficientDifferenceJetTower
 
-theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
+theorem riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -918,7 +918,7 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
                   riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   classical
-  obtain ⟨CA, hCA_nn, hCA⟩ := exists_rfns_iteratedCovGrad_connDiffSection_tgrid
+  obtain ⟨CA, hCA_nn, hCA⟩ := exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid
     (I := I) (M := M) g₀ hδ₀
   set AA : ℕ → ℕ → ℝ := fun i i' => ∑ l ∈ Finset.range (i + 1 - i'),
     CA i' * CA l * gridSumPairCount (i' + 2) (l + 2) with hAA_def
@@ -928,12 +928,12 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
     exact Finset.sum_nonneg fun l _ =>
       mul_nonneg (mul_nonneg (hCA_nn i') (hCA_nn l)) (gridSumPairCount_nonneg _ _)
   clear_value AA
-  refine ⟨fun i => 8 * CA (i + 1) + 8 * (appCcGdiag (E := E) i *
+  refine ⟨fun i => 8 * CA (i + 1) + 8 * (operatorFieldApplicationGdiag (E := E) i *
       ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i'),
     fun i => by
       have h1 : 0 ≤ ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i' :=
         Finset.sum_nonneg fun i' _ => mul_nonneg (Nat.cast_nonneg _) (hAA_nn i i')
-      have h2 := appCcGdiag_nonneg (E := E) i
+      have h2 := operatorFieldApplicationGdiag_nonneg (E := E) i
       have h4 := hCA_nn (i + 1)
       positivity, ?_⟩
   intro g₁ T htie δ hδ_le hδ0 hbound i x
@@ -968,7 +968,7 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
           (cometricRaiseSlot0Field (I := I) (M := M) g₀ 2
             (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
               (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)))).toSection x) := by
-    rw [rfns_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 2
+    rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 2
       (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
         (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)) i x]
     rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
@@ -977,8 +977,8 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
   rw [hstep1]
   rw [riemannLoweredBackgroundDifference_palatini_repr (I := I) (M := M) g₀ g₁]
   set DQ : SmoothCcTensor g₀ 1 3 :=
-    covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) +
-      quadraticConnDiffCc (I := I) (M := M) g₀ g₁ with hDQ_def
+    covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) +
+      quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁ with hDQ_def
   have hrs_eq : ∀ σ : Equiv.Perm (Fin 3),
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 3 i
@@ -986,7 +986,7 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 3 i DQ).toSection x) := by
     intro σ
-    exact rfns_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g₀ 1 3 σ DQ
+    exact riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g₀ 1 3 σ DQ
       (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 σ DQ)
       (fun y d => by
         rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) i x
@@ -1011,32 +1011,32 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
     rfl
   rw [hsubsec]
   refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 1 (3 + i) x _ _) ?_
-  rw [rfns_neg_pt (I := I) (M := M) g₀ 1 (3 + i) x]
+  rw [riemannianFiberNormSq_neg_pt (I := I) (M := M) g₀ 1 (3 + i) x]
   rw [hrs_eq (Equiv.swap (1 : Fin 3) 2), hrs_eq (finRotate 3)]
   have hDQsec : (iteratedCovGrad (I := I) g₀ 1 3 i DQ).toSection x =
       (iteratedCovGrad (I := I) g₀ 1 3 i
-        (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀))).toSection x +
+        (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))).toSection x +
       (iteratedCovGrad (I := I) g₀ 1 3 i
-        (quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x := by
+        (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x := by
     rw [hDQ_def, iteratedCovGrad_add, SmoothCcTensor.toSection_add]
     rfl
   have hD_le : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
-        (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀))).toSection x) ≤
+        (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))).toSection x) ≤
       CA (i + 1) * WW := by
-    rw [rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 1 2 i
-      (connDiffSection (I := I) g₁ g₀) x]
+    rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 1 2 i
+      (connectionDifferenceSection (I := I) g₁ g₀) x]
     refine le_trans (hCA g₁ T htie hδ_le hδ0 hbound (i + 1) x) ?_
     exact mul_le_mul_of_nonneg_left (hgsum_le_WW (i + 3) (le_refl _)) (hCA_nn (i + 1))
   have hcell : ∀ i' ∈ Finset.range (i + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i') x
           ((iteratedCovGrad (I := I) g₀ 2 3 i'
             (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-              (connDiffArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+              (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
         ∑ l ∈ Finset.range (i + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 1 2 l
-              (connDiffSection (I := I) g₁ g₀)).toSection x) ≤
+              (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) ≤
       ((Module.finrank ℝ E : ℝ) * AA i i') * WW := by
     intro i' hi'
     have hi'le : i' ≤ i := by
@@ -1044,24 +1044,24 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
     have hA1 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i') x
         ((iteratedCovGrad (I := I) g₀ 2 3 i'
           (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (connDiffArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) ≤
+            (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) ≤
         (Module.finrank ℝ E : ℝ) *
           (CA i' * ∑ k ∈ Finset.range (i' + 2), Combinatorics.antidiagonalTupleGrid b k) := by
-      refine le_trans (rfns_iteratedCovGrad_armSlotPass_connDiffArm_le
+      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connectionDifferenceArm_le
         (I := I) (M := M) g₀ g₁ i' x) ?_
       refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
       exact hCA g₁ T htie hδ_le hδ0 hbound i' x
     have hA2 : (∑ l ∈ Finset.range (i + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
           ((iteratedCovGrad (I := I) g₀ 1 2 l
-            (connDiffSection (I := I) g₁ g₀)).toSection x)) ≤
+            (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)) ≤
         ∑ l ∈ Finset.range (i + 1 - i'),
           CA l * ∑ k ∈ Finset.range (l + 2), Combinatorics.antidiagonalTupleGrid b k :=
       Finset.sum_le_sum fun l _ => hCA g₁ T htie hδ_le hδ0 hbound l x
     have hprod_nn1 : 0 ≤ ∑ l ∈ Finset.range (i + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
           ((iteratedCovGrad (I := I) g₀ 1 2 l
-            (connDiffSection (I := I) g₁ g₀)).toSection x) :=
+            (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) :=
       Finset.sum_nonneg fun l _ =>
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 1 (2 + l) x _
     have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
@@ -1095,11 +1095,11 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i') x
           ((iteratedCovGrad (I := I) g₀ 2 3 i'
             (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-              (connDiffArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+              (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
         ∑ l ∈ Finset.range (i + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 1 2 l
-              (connDiffSection (I := I) g₁ g₀)).toSection x)
+              (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)
         ≤ ((Module.finrank ℝ E : ℝ) *
             (CA i' * ∑ k ∈ Finset.range (i' + 2), Combinatorics.antidiagonalTupleGrid b k)) *
           ∑ l ∈ Finset.range (i + 1 - i'),
@@ -1121,70 +1121,70 @@ theorem rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductG
           ring
   have hQ_le : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
-        (quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) ≤
-      (appCcGdiag (E := E) i *
+        (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) ≤
+      (operatorFieldApplicationGdiag (E := E) i *
         ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i') * WW := by
-    rw [show quadraticConnDiffCc (I := I) (M := M) g₀ g₁ =
-        appCcRS (I := I) (M := M) g₀ 1 2 3
+    rw [show quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁ =
+        ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 3
           (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (connDiffArmFieldPt (I := I) (M := M) g₀ g₁))
-          (connDiffSection (I := I) g₁ g₀) from rfl]
-    refine le_trans (rfns_iteratedCovGrad_appCcRS_diagonalProductGrid_rankLeft_le
+            (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+          (connectionDifferenceSection (I := I) g₁ g₀) from rfl]
+    refine le_trans (riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le
       (I := I) (M := M) g₀ i 1 2 3
       (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-        (connDiffArmFieldPt (I := I) (M := M) g₀ g₁))
-      (connDiffSection (I := I) g₁ g₀) x) ?_
-    calc appCcGdiag (E := E) i *
+        (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))
+      (connectionDifferenceSection (I := I) g₁ g₀) x) ?_
+    calc operatorFieldApplicationGdiag (E := E) i *
           ∑ i' ∈ Finset.range (i + 1),
             riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i') x
                 ((iteratedCovGrad (I := I) g₀ 2 3 i'
                   (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-                    (connDiffArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
+                    (connectionDifferenceArmFieldPt (I := I) (M := M) g₀ g₁))).toSection x) *
               ∑ l ∈ Finset.range (i + 1 - i'),
                 riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
                   ((iteratedCovGrad (I := I) g₀ 1 2 l
-                    (connDiffSection (I := I) g₁ g₀)).toSection x)
-        ≤ appCcGdiag (E := E) i *
+                    (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)
+        ≤ operatorFieldApplicationGdiag (E := E) i *
             ∑ i' ∈ Finset.range (i + 1), ((Module.finrank ℝ E : ℝ) * AA i i') * WW :=
-          mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell) (appCcGdiag_nonneg (E := E) i)
-      _ = (appCcGdiag (E := E) i *
+          mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell) (operatorFieldApplicationGdiag_nonneg (E := E) i)
+      _ = (operatorFieldApplicationGdiag (E := E) i *
             ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i') * WW := by
           rw [← Finset.sum_mul]
           ring
   rw [hDQsec]
   have hsum_le := riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 1 (3 + i) x
     ((iteratedCovGrad (I := I) g₀ 1 3 i
-      (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀))).toSection x)
+      (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))).toSection x)
     ((iteratedCovGrad (I := I) g₀ 1 3 i
-      (quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x)
+      (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x)
   have hDQfull : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
-        (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀))).toSection x +
+        (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))).toSection x +
       (iteratedCovGrad (I := I) g₀ 1 3 i
-        (quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) ≤
+        (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) ≤
       2 * (CA (i + 1) * WW) +
-        2 * ((appCcGdiag (E := E) i *
+        2 * ((operatorFieldApplicationGdiag (E := E) i *
           ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i') * WW) := by
     refine le_trans hsum_le ?_
     linarith [hD_le, hQ_le]
   calc 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 3 i
-          (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀))).toSection x +
+          (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))).toSection x +
         (iteratedCovGrad (I := I) g₀ 1 3 i
-          (quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x) +
+          (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x) +
       2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 3 i
-          (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀))).toSection x +
+          (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))).toSection x +
         (iteratedCovGrad (I := I) g₀ 1 3 i
-          (quadraticConnDiffCc (I := I) (M := M) g₀ g₁)).toSection x)
+          (quadraticConnectionDifferenceCc (I := I) (M := M) g₀ g₁)).toSection x)
       ≤ 2 * (2 * (CA (i + 1) * WW) +
-          2 * ((appCcGdiag (E := E) i *
+          2 * ((operatorFieldApplicationGdiag (E := E) i *
             ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i') * WW)) +
         2 * (2 * (CA (i + 1) * WW) +
-          2 * ((appCcGdiag (E := E) i *
+          2 * ((operatorFieldApplicationGdiag (E := E) i *
             ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i') * WW)) := by
         linarith [hDQfull]
-    _ = (8 * CA (i + 1) + 8 * (appCcGdiag (E := E) i *
+    _ = (8 * CA (i + 1) + 8 * (operatorFieldApplicationGdiag (E := E) i *
           ∑ i' ∈ Finset.range (i + 1), (Module.finrank ℝ E : ℝ) * AA i i')) * WW := by
         ring
 
@@ -1279,12 +1279,12 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
         slotInsertEndoCc (I := I) (M := M) g₀ 0 (ricEndoRaisedField (I := I) (M := M) g₀) =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-          (appCcRS (I := I) (M := M) g₀ 0 4 2
+          (ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 2
             (cometricDoubleTraceField (I := I) g₀ 2)
             (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁))) := by
   classical
   set W2 : SmoothCcTensor g₀ 0 2 :=
-    appCcRS (I := I) (M := M) g₀ 0 4 2
+    ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 2
       (cometricDoubleTraceField (I := I) g₀ 2)
       (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) with hW2_def
   have hW2unitModel : ∀ (x : M) (mm : Fin 2 → TangentSpace I x),
@@ -1296,7 +1296,7 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
             cometricDoubleTraceFib (I := I) g₀ 2 x).comp
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
             (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁).toSection x) := by
-      rw [hW2_def, appCcRS_toSection, cometricDoubleTraceField_toSection]
+      rw [hW2_def, operatorFieldComposition_toSection, cometricDoubleTraceField_toSection]
     rw [unitModel]
     rw [show (W2.toSection x) (unitTensor (I := I) (M := M) x) =
         cometricDoubleTraceFib (I := I) g₀ 2 x
@@ -1447,7 +1447,7 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
 end RiemannLoweredDifference
 
 open DifferentialGeometry.Analysis.Spectral.DeTurck in
-theorem rfns_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProductGrid_le
+theorem riemannianFiberNormSq_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProductGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1470,29 +1470,29 @@ theorem rfns_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProduct
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   classical
   obtain ⟨CA, hCA_nn, hCA⟩ :=
-    rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨cPhi, hcPhi_nn, hcPhi⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 4 2 (cometricDoubleTraceField (I := I) g₀ 2)
-  refine ⟨fun i => appCcGdiag (E := E) i * cPhi * (∑ l ∈ Finset.range (i + 1), CA l),
-    fun i => mul_nonneg (mul_nonneg (appCcGdiag_nonneg (E := E) i) hcPhi_nn)
+  refine ⟨fun i => operatorFieldApplicationGdiag (E := E) i * cPhi * (∑ l ∈ Finset.range (i + 1), CA l),
+    fun i => mul_nonneg (mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) i) hcPhi_nn)
       (Finset.sum_nonneg fun l _ => hCA_nn l), ?_⟩
   intro g₁ T htie δ hδ_le hδ0 hbound i x
   have hb : ∀ j : ℕ, 0 ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
       ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x) :=
     fun j => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + j) x _
   rw [slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace (I := I) (M := M) g₀ g₁]
-  rw [rfns_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
+  rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-      (appCcRS (I := I) (M := M) g₀ 0 4 2
+      (ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 2
         (cometricDoubleTraceField (I := I) g₀ 2)
         (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁))) i x]
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
     (Equiv.swap (0 : Fin 2) 1)
-    (appCcRS (I := I) (M := M) g₀ 0 4 2
+    (ccOperatorFieldComp (I := I) (M := M) g₀ 0 4 2
       (cometricDoubleTraceField (I := I) g₀ 2)
       (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)) i x]
-  refine le_trans (rfns_iteratedCovGrad_appCcRS_diagonalProductGrid_rankLeft_le
+  refine le_trans (riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le
     (I := I) (M := M) g₀ i 0 4 2 (cometricDoubleTraceField (I := I) g₀ 2)
     (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) x) ?_
   have hAzero : ∀ m : ℕ,
@@ -1500,7 +1500,7 @@ theorem rfns_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProduct
         ((iteratedCovGrad (I := I) g₀ 4 2 (m + 1)
           (cometricDoubleTraceField (I := I) g₀ 2)).toSection x) = 0 := by
     intro m
-    rw [← rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 4 2 m
+    rw [← riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 4 2 m
       (cometricDoubleTraceField (I := I) g₀ 2) x]
     rw [show covGrad (I := I) (M := M) g₀ 4 2 (cometricDoubleTraceField (I := I) g₀ 2) =
         (0 : SmoothCcTensor g₀ 4 3) from
@@ -1557,10 +1557,10 @@ theorem rfns_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProduct
         rw [if_neg (by omega)]
         rw [hAzero m, zero_mul]
   refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hterm)
-    (appCcGdiag_nonneg (E := E) i)) ?_
+    (operatorFieldApplicationGdiag_nonneg (E := E) i)) ?_
   rw [Finset.sum_ite_eq' (Finset.range (i + 1)) 0]
   rw [if_pos (Finset.mem_range.mpr (by omega))]
-  have hBgrid : (∑ l ∈ Finset.range (i + 1),
+  have hBackgroundrid : (∑ l ∈ Finset.range (i + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + l) x
         ((iteratedCovGrad (I := I) g₀ 0 4 l
           (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)).toSection x)) ≤
@@ -1591,17 +1591,17 @@ theorem rfns_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProduct
               ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) i := by
           rw [Finset.sum_mul]
   rw [← tWindow_eq_tripleSum (I := I) (M := M) g₀ T x i]
-  calc appCcGdiag (E := E) i *
+  calc operatorFieldApplicationGdiag (E := E) i *
         (cPhi * ∑ l ∈ Finset.range (i + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 4 l
               (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)).toSection x))
-      ≤ appCcGdiag (E := E) i * (cPhi * ((∑ l ∈ Finset.range (i + 1), CA l) *
+      ≤ operatorFieldApplicationGdiag (E := E) i * (cPhi * ((∑ l ∈ Finset.range (i + 1), CA l) *
           tWindow (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
             ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) i)) := by
-        refine mul_le_mul_of_nonneg_left ?_ (appCcGdiag_nonneg (E := E) i)
-        exact mul_le_mul_of_nonneg_left hBgrid hcPhi_nn
-    _ = appCcGdiag (E := E) i * cPhi * (∑ l ∈ Finset.range (i + 1), CA l) *
+        refine mul_le_mul_of_nonneg_left ?_ (operatorFieldApplicationGdiag_nonneg (E := E) i)
+        exact mul_le_mul_of_nonneg_left hBackgroundrid hcPhi_nn
+    _ = operatorFieldApplicationGdiag (E := E) i * cPhi * (∑ l ∈ Finset.range (i + 1), CA l) *
           tWindow (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
             ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) i := by
         ring
@@ -1685,7 +1685,7 @@ lemma diagonalGrid_assembly_arith (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
 
 end CurvatureCoefficientDifferenceJetTower
 
-theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
+theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1706,18 +1706,18 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceFi
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   classical
   obtain ⟨CL, hCL_nn, hCL⟩ :=
-    rfns_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    rfns_iteratedCovGrad_slotInsertEndoCc_zero_gInvDiffRaisedEndoField_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_rfns_bound (I := I) (M := M) g₀ 1 1
+  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 1 1
     (slotInsertEndoCc (I := I) (M := M) g₀ 0 (ricEndoRaisedField (I := I) (M := M) g₀))
-  refine ⟨fun i => 2 * CL i + 2 * (appCcGdiag (E := E) i *
+  refine ⟨fun i => 2 * CL i + 2 * (operatorFieldApplicationGdiag (E := E) i *
       ∑ j ∈ Finset.range (i + 1), (2 * CL j + 2 * cbg j) *
         ∑ l ∈ Finset.range (i + 1 - j), CD l * tWindowMulConst j l),
     fun i => ?_, ?_⟩
-  · have h1 : 0 ≤ appCcGdiag (E := E) i := appCcGdiag_nonneg (E := E) i
+  · have h1 : 0 ≤ operatorFieldApplicationGdiag (E := E) i := operatorFieldApplicationGdiag_nonneg (E := E) i
     have h2 : 0 ≤ ∑ j ∈ Finset.range (i + 1), (2 * CL j + 2 * cbg j) *
         ∑ l ∈ Finset.range (i + 1 - j), CD l * tWindowMulConst j l :=
       Finset.sum_nonneg (fun j _ => mul_nonneg
@@ -1740,11 +1740,11 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceFi
             slotInsertEndoCc (I := I) (M := M) g₀ 0
               (ricEndoRaisedField (I := I) (M := M) g₀))).toSection x +
           (iteratedCovGrad (I := I) g₀ 1 1 i
-            (appCcRS (I := I) (M := M) g₀ 1 1 1
+            (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 1
               (slotInsertEndoCc (I := I) (M := M) g₀ 0
                 (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
               (slotInsertEndoCc (I := I) (M := M) g₀ 0
-                (gInvDiffRaisedEndoField (I := I) g₀ g₁)))).toSection x := by
+                (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)))).toSection x := by
       rw [slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope (I := I) (M := M) g₀ g₁,
         iteratedCovGrad_add (I := I) g₀ 1 1 i _ _, SmoothCcTensor.toSection_add]
       rfl
@@ -1760,11 +1760,11 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceFi
                   (ricEndoRaisedField (I := I) (M := M) g₀))).toSection x) +
           2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
             ((iteratedCovGrad (I := I) g₀ 1 1 i
-              (appCcRS (I := I) (M := M) g₀ 1 1 1
+              (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 1
                 (slotInsertEndoCc (I := I) (M := M) g₀ 0
                   (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
                 (slotInsertEndoCc (I := I) (M := M) g₀ 0
-                  (gInvDiffRaisedEndoField (I := I) g₀ g₁)))).toSection x) := by
+                  (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)))).toSection x) := by
       rw [hsec]
       exact riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 1 (1 + i) x _ _
     have hu : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
@@ -1777,10 +1777,10 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceFi
           ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) i := by
       rw [tWindow_eq_tripleSum (I := I) (M := M) g₀ T x i]
       exact hCL g₁ T htie hδ_le hδ0 hbound i x
-    have hap := rfns_iteratedCovGrad_appCcRS_diagonalProductGrid_rankLeft_le
+    have hap := riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le
       (I := I) (M := M) g₀ i 1 1 1
       (slotInsertEndoCc (I := I) (M := M) g₀ 0 (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
-      (slotInsertEndoCc (I := I) (M := M) g₀ 0 (gInvDiffRaisedEndoField (I := I) g₀ g₁)) x
+      (slotInsertEndoCc (I := I) (M := M) g₀ 0 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)) x
     have hwj : ∀ j, j ≤ i → riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + j) x
         ((iteratedCovGrad (I := I) g₀ 1 1 j
           (slotInsertEndoCc (I := I) (M := M) g₀ 0
@@ -1838,7 +1838,7 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceFi
     have hvl : ∀ l, l ≤ i → riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + l) x
         ((iteratedCovGrad (I := I) g₀ 1 1 l
           (slotInsertEndoCc (I := I) (M := M) g₀ 0
-            (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection x) ≤
+            (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x) ≤
         CD l * Combinatorics.antidiagonalTupleGrid
           (fun j' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j') x
             ((iteratedCovGrad (I := I) g₀ 0 2 j' T).toSection x)) l := by
@@ -1848,7 +1848,7 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceFi
     exact diagonalGrid_assembly_arith
       (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
         ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) hb i
-      (appCcGdiag (E := E) i) (appCcGdiag_nonneg (E := E) i)
+      (operatorFieldApplicationGdiag (E := E) i) (operatorFieldApplicationGdiag_nonneg (E := E) i)
       CL CD cbg hCL_nn hCD_nn hcbg_nn
       (riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 1 i
@@ -1862,11 +1862,11 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceFi
               (ricEndoRaisedField (I := I) (M := M) g₀))).toSection x))
       (riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 1 i
-          (appCcRS (I := I) (M := M) g₀ 1 1 1
+          (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 1
             (slotInsertEndoCc (I := I) (M := M) g₀ 0
               (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
             (slotInsertEndoCc (I := I) (M := M) g₀ 0
-              (gInvDiffRaisedEndoField (I := I) g₀ g₁)))).toSection x))
+              (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)))).toSection x))
       (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + j) x
         ((iteratedCovGrad (I := I) g₀ 1 1 j
           (slotInsertEndoCc (I := I) (M := M) g₀ 0
@@ -1874,7 +1874,7 @@ theorem rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceFi
       (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + l) x
         ((iteratedCovGrad (I := I) g₀ 1 1 l
           (slotInsertEndoCc (I := I) (M := M) g₀ 0
-            (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection x))
+            (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x))
       hLHS hu hap hwj
       (fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 1 (1 + l) x _)
       hvl

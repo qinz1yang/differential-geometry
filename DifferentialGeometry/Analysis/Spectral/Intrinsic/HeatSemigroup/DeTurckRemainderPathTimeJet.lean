@@ -1242,7 +1242,7 @@ private theorem deTurckRHSReconCoeff_pathCoeff_timeJet_evenMass_uniformConst
     unfold tensorSobolevWeight
     rw [Real.rpow_natCast, mul_comm 2 k, pow_mul, sq]
   rw [hweq]
-  have hsummable := tensorL2Coeff_ofCompact_summable_sq' (I := I) (M := M) hc
+  have hsummable := tensorL2Coeff_summable_sq (I := I) (M := M) hc
     (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
       (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 k (Rjt t)))
   have hle_tsum : (tensorL2Coeff (I := I) (M := M) hc

@@ -99,8 +99,8 @@ theorem density_nonneg (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Re
     0 ≤ forwardUniqueDensity (I := I) g₁ g₂ t x := by
   have h₁ : (0 : Real) ≤ metricDiffSq (I := I) (g₁ t) (g₂ t) x := by
     rw [metricDiffSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 2 _
-  have h₂ : (0 : Real) ≤ connDiffSq (I := I) (g₁ t) (g₂ t) x := by
-    rw [connDiffSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 3 _
+  have h₂ : (0 : Real) ≤ connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x := by
+    rw [connectionDifferenceSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 3 _
   have h₃ : (0 : Real) ≤ rmDiffSq (I := I) (g₁ t) (g₂ t) x := by
     rw [rmDiffSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 4 _
   rw [forwardUniqueDensity]
@@ -109,16 +109,16 @@ theorem density_nonneg (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Re
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
 theorem metricDiffSq_le_dens (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) :
     metricDiffSq (I := I) (g₁ t) (g₂ t) x ≤ forwardUniqueDensity (I := I) g₁ g₂ t x := by
-  have h₂ : (0 : Real) ≤ connDiffSq (I := I) (g₁ t) (g₂ t) x := by
-    rw [connDiffSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 3 _
+  have h₂ : (0 : Real) ≤ connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x := by
+    rw [connectionDifferenceSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 3 _
   have h₃ : (0 : Real) ≤ rmDiffSq (I := I) (g₁ t) (g₂ t) x := by
     rw [rmDiffSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 4 _
   rw [forwardUniqueDensity]
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-theorem connDiffSq_le_dens (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) :
-    connDiffSq (I := I) (g₁ t) (g₂ t) x ≤ forwardUniqueDensity (I := I) g₁ g₂ t x := by
+theorem connectionDifferenceSq_le_dens (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) :
+    connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x ≤ forwardUniqueDensity (I := I) g₁ g₂ t x := by
   have h₁ : (0 : Real) ≤ metricDiffSq (I := I) (g₁ t) (g₂ t) x := by
     rw [metricDiffSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 2 _
   have h₃ : (0 : Real) ≤ rmDiffSq (I := I) (g₁ t) (g₂ t) x := by
@@ -131,8 +131,8 @@ theorem rmDiffSq_le_dens (g₁ g₂ : Real → SmoothRiemannianMetric I M) (t : 
     rmDiffSq (I := I) (g₁ t) (g₂ t) x ≤ forwardUniqueDensity (I := I) g₁ g₂ t x := by
   have h₁ : (0 : Real) ≤ metricDiffSq (I := I) (g₁ t) (g₂ t) x := by
     rw [metricDiffSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 2 _
-  have h₂ : (0 : Real) ≤ connDiffSq (I := I) (g₁ t) (g₂ t) x := by
-    rw [connDiffSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 3 _
+  have h₂ : (0 : Real) ≤ connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x := by
+    rw [connectionDifferenceSq_def]; exact normSq0S_nonneg (I := I) (g₁ t) x 3 _
   rw [forwardUniqueDensity]
   linarith
 
@@ -283,9 +283,9 @@ def rateRest (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     2 * inner0S (I := I) (g₁ t) x 2 (metricDiffDot (I := I) g₁ g₂ t x)
       (metricDiffAt (I := I) (g₁ t) (g₂ t) x)) +
   (movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-      (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+      (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
     2 * inner0S (I := I) (g₁ t) x 3 (Adot t x)
-      (connDiffLowAt (I := I) (g₁ t) (g₂ t) x)) +
+      (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x)) +
   movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
       (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
   (1 / 2 : Real) * traceTimeDerivMetric (I := I) g₁ t x *
@@ -554,7 +554,7 @@ theorem rateRest_le (g₁ g₂ : Real → SmoothRiemannianMetric I M)
       movingReact0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x)
           (metricDiffAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
           (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
       C_R * forwardUniqueDensity (I := I) g₁ g₂ t x)
@@ -591,14 +591,14 @@ theorem rateRest_le (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     rw [hhdot, hm]
     linarith
   have hA : 2 * inner0S (I := I) (g₁ t) x 3 (Adot t x)
-        (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
+        (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) ≤
       (δ * C_A + δ⁻¹) * forwardUniqueDensity (I := I) g₁ g₂ t x +
         δ * C_A * normSq0S (I := I) (g₁ t) x 5
           (metricNabla0S (I := I) (g₁ t) Sfield x) := by
     refine le_trans (two_inner0S_le_eps (I := I) (g₁ t) x 3 _ _ hδ) ?_
-    have hc : normSq0S (I := I) (g₁ t) x 3 (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) =
-        connDiffSq (I := I) (g₁ t) (g₂ t) x := (connDiffSq_def (I := I) _ _ x).symm
-    have hcle := connDiffSq_le_dens (I := I) g₁ g₂ t x
+    have hc : normSq0S (I := I) (g₁ t) x 3 (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) =
+        connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x := (connectionDifferenceSq_def (I := I) _ _ x).symm
+    have hcle := connectionDifferenceSq_le_dens (I := I) g₁ g₂ t x
     have hAd : δ * normSq0S (I := I) (g₁ t) x 3 (Adot t x) ≤
         δ * (C_A * (forwardUniqueDensity (I := I) g₁ g₂ t x +
           normSq0S (I := I) (g₁ t) x 5
@@ -610,7 +610,7 @@ theorem rateRest_le (g₁ g₂ : Real → SmoothRiemannianMetric I M)
         δ * C_A * forwardUniqueDensity (I := I) g₁ g₂ t x +
           δ * C_A * normSq0S (I := I) (g₁ t) x 5
             (metricNabla0S (I := I) (g₁ t) Sfield x) := by ring
-    have hcmul : δ⁻¹ * connDiffSq (I := I) (g₁ t) (g₂ t) x ≤
+    have hcmul : δ⁻¹ * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x ≤
         δ⁻¹ * forwardUniqueDensity (I := I) g₁ g₂ t x :=
       mul_le_mul_of_nonneg_left hcle (by positivity)
     have hexp2 : (δ * C_A + δ⁻¹) * forwardUniqueDensity (I := I) g₁ g₂ t x =
@@ -642,7 +642,7 @@ theorem intRateRest_le (g₁ g₂ : Real → SmoothRiemannianMetric I M)
       movingReact0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x)
           (metricDiffAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
           (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
       C_R * forwardUniqueDensity (I := I) g₁ g₂ t x)
@@ -706,7 +706,7 @@ theorem forwardUniqueRate_le
       movingReact0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x)
           (metricDiffAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
           (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
       C_R * forwardUniqueDensity (I := I) g₁ g₂ t x)

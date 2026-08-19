@@ -169,7 +169,7 @@ theorem metricInner_tendsto
 omit [CompleteSpace E] [SigmaCompactSpace M] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-theorem metricLimit_pde'
+theorem metric_limit_pde_of_metric_sequence
     [NeZero (Module.finrank Real E)]
     (gSeq : Nat → Real → SmoothRiemannianMetric I M)
     (β ψ : Real)
@@ -208,7 +208,7 @@ theorem metricLimit_pde'
 omit [Module.Finite ℝ E] [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
-theorem metricLimit_pde
+theorem metric_limit_pde
     [Module.Finite ℝ E]
     [NeZero (Module.finrank Real E)]
     {D : Nat → RealTimeInterval}
@@ -243,7 +243,7 @@ theorem metricLimit_pde
       metricRicciAt_apply_eq_ricciTensor (I := I) ((S k).family.metric u) x v w
     rw [hval] at h0'
     exact h0'.mono (fun r hr => (D k).regular_subset (hreg k hr))
-  refine metricLimit_pde' (fun k s => (S k).family.metric s) β ψ gInf x v w
+  refine metric_limit_pde_of_metric_sequence (fun k s => (S k).family.metric s) β ψ gInf x v w
     ?_ hinner hRicConv ht
   exact ⟨0, fun k _ => hkder k⟩
 
@@ -251,7 +251,7 @@ omit [Module.Finite ℝ E] in
 omit [IsManifold I 2 M] [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
-theorem metricLimit_pdeOn
+theorem metric_limit_pde_on
     [Module.Finite ℝ E]
     [NeZero (Module.finrank Real E)]
     {D : Nat → RealTimeInterval}
@@ -272,7 +272,7 @@ theorem metricLimit_pdeOn
     {t : Real} (ht : t ∈ Set.Icc β ψ) :
     HasDerivWithinAt (fun s : Real => (gInf s).inner x v w)
       (-2 * ricciTensor (I := I) (gInf t) x v w) (Set.Icc β ψ) t := by
-  refine metricLimit_pde S hS β ψ hreg gInf x v w ?_ hRicConv ht
+  refine metric_limit_pde S hS β ψ hreg gInf x v w ?_ hRicConv ht
   intro u hu
   refine metricInner_tendsto (fun k => (S k).family.metric u) (gInf u) gRef x
     ?_ v w

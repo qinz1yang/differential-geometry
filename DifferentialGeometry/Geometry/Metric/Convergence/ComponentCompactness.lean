@@ -689,7 +689,7 @@ theorem hbase_of_framePairs
 
 omit [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
-private theorem engine_input_family
+private theorem chart_component_precompactness_family
     (gRef : SmoothRiemannianMetric I M)
     (gSeq : ℕ → SmoothRiemannianMetric I M)
     (x₀ : M)
@@ -820,7 +820,7 @@ private theorem engine_input_family
   exact norm_iteratedFDeriv_bumpMul_le (χ := χ) (gg := ggk) r hχcd hggcd
     hBχ0 (Finset.sum_nonneg (fun j _ => hMr0 j)) hBχ hgbd x
 
-theorem exists_chart_engineInput_family
+theorem exists_chart_component_precompactness_family_of_indexed_sections
     (gRef : SmoothRiemannianMetric I M)
     (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
@@ -844,11 +844,11 @@ theorem exists_chart_engineInput_family
             (fun w : M => (covDerivOfField (I := I) gRef
               (Tensor0SBundle.metricTensorField (I := I) (gSeq k)) 0) w
                 (fun a => Vfam p a w)) x) x‖ ≤ Mr) := by
-  apply engine_input_family gRef gSeq x₀ Vfam ?_ hK₀ hK₀chart
+  apply chart_component_precompactness_family gRef gSeq x₀ Vfam ?_ hK₀ hK₀chart
   intro p r Kc hKc hKchart
   exact metricComp_iteratedFDeriv_le (I := I) gRef gSeq hbdd x₀ hKc hKchart (Vfam p) r
 
-theorem engine_input_refs
+theorem exists_chart_component_precompactness_family_of_reference_sequence
     (gBase : SmoothRiemannianMetric I M)
     (gRef : ℕ → SmoothRiemannianMetric I M)
     (gSeq : ℕ → SmoothRiemannianMetric I M)
@@ -873,7 +873,7 @@ theorem engine_input_refs
             (fun w : M => (covDerivOfField (I := I) gBase
               (Tensor0SBundle.metricTensorField (I := I) (gSeq k)) 0) w
                 (fun a => Vfam p a w)) x) x‖ ≤ Mr) := by
-  apply engine_input_family gBase gSeq x₀ Vfam ?_ hK₀ hK₀chart
+  apply chart_component_precompactness_family gBase gSeq x₀ Vfam ?_ hK₀ hK₀chart
   intro p r Kc hKc hKchart
   obtain ⟨Mr, hMr0, hMr⟩ :=
     metricComp_iter_refs (I := I) gRef gSeq hbdd x₀ hKc hKchart (Vfam p) r
@@ -901,7 +901,7 @@ theorem exists_chart_refs
   let Vfam : Unit → Fin 2 →
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) := fun _ => V
   obtain ⟨χ, _hχcd, _hχsupp, hχ1, hfamily⟩ :=
-    engine_input_refs (I := I) gBase gRef gSeq hbdd x₀ Vfam hK₀ hK₀chart
+    exists_chart_component_precompactness_family_of_reference_sequence (I := I) gBase gRef gSeq hbdd x₀ Vfam hK₀ hK₀chart
   obtain ⟨hΦcd, hΦbd⟩ := hfamily ()
   let Φ : ℕ → E → Real := fun k x => χ x * writtenInExtChartAt I 𝓘(Real, Real) x₀
     (fun w : M => (covDerivOfField (I := I) gBase

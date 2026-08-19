@@ -52,7 +52,7 @@ private theorem grad_shift_norm
         (iteratedCovGrad (I := I) g 0 s (j + 1) T)]
     refine MeasureTheory.integral_congr_ae
       (Filter.Eventually.of_forall (fun x => ?_))
-    exact rfns_iteratedCovGrad_covGrad_comm_rs
+    exact riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs
       (I := I) (M := M) g 0 s j T x
   nlinarith [norm_nonneg
     (iteratedCovGrad (I := I) g 0 (s + 1) j
@@ -339,7 +339,7 @@ private theorem h3_bfg_four_int
     intro m x
     dsimp [V, b]
     simpa only [Nat.add_assoc, Nat.reduceAdd] using
-      rfns_iteratedCovGrad_covGrad_comm_rs
+      riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs
         (I := I) (M := M) g 0 2 m P x
   have hpair_eq : forall x,
       pair x =

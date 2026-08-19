@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2AppCcRS
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
@@ -21,7 +21,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [T2Space M] [SigmaCompactSpace M]
 
-theorem appCc_h2_h2_h2
+theorem operatorFieldApplication_h2_h2_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (r c : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -33,16 +33,16 @@ theorem appCc_h2_h2_h2
           ‖iteratedCovGrad (I := I) g 0 r j W‖ ^ 2) ≤ B ^ 2 →
         (∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 c j
-            (appCc (I := I) (M := M) g r c Φ W)‖ ^ 2) ≤
+            (operatorFieldApply (I := I) (M := M) g r c Φ W)‖ ^ 2) ≤
           (C * A * B) ^ 2 := by
   obtain ⟨C, hC, happ⟩ :=
-    appRS_h2_h2_h2 (I := I) (M := M) hDim g 0 r c
+    operator_field_composition_h2_h2_to_h2_bound (I := I) (M := M) hDim g 0 r c
   refine ⟨C, hC, ?_⟩
   intro Φ W A B hA hB hΦ hW
-  simpa only [appCcRS_zero_eq_appCc] using
+  simpa only [operatorFieldComposition_zero_eq_operatorFieldApply] using
     happ Φ W A B hA hB hΦ hW
 
-theorem appCc_h2_h4_h2
+theorem operatorFieldApplication_h2_h4_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (s c : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -51,14 +51,14 @@ theorem appCc_h2_h4_h2
         (∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g (s + 2) c j Φ‖ ^ 2) ≤ A ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g c (2 : ℝ)
-            (appCc (I := I) (M := M) g (s + 2) c Φ
+            (operatorFieldApply (I := I) (M := M) g (s + 2) c Φ
               (iteratedCovGrad (I := I) g 0 s 2 U))‖ ≤
           C * A * ‖ccTensorToHs (I := I) (M := M) g s (4 : ℝ) U‖ := by
   classical
   obtain ⟨Csp, hCsp, hsp⟩ := hs_le_jet (I := I) (M := M) g c 2
   obtain ⟨Cin, hCin, hin⟩ := hsJet_le (I := I) (M := M) g s 4
   obtain ⟨Capp, hCapp, happ⟩ :=
-    appCc_h2_h2_h2 (I := I) (M := M) hDim g (s + 2) c
+    operatorFieldApplication_h2_h2_h2 (I := I) (M := M) hDim g (s + 2) c
   let C : ℝ := Csp * 3 * Capp * Cin
   refine ⟨C, by
     dsimp only [C]
@@ -69,7 +69,7 @@ theorem appCc_h2_h4_h2
   let W : SmoothCcTensor g 0 (s + 2) :=
     iteratedCovGrad (I := I) g 0 s 2 U
   let Y : SmoothCcTensor g 0 c :=
-    appCc (I := I) (M := M) g (s + 2) c Φ W
+    operatorFieldApply (I := I) (M := M) g (s + 2) c Φ W
   let Q : ℝ := Capp * A * B
   have hN : 0 ≤ N := norm_nonneg _
   have hB : 0 ≤ B := mul_nonneg hCin hN
@@ -88,7 +88,7 @@ theorem appCc_h2_h4_h2
             ‖iteratedCovGrad (I := I) g 0 s (2 + j) U‖ := by
               refine Finset.sum_congr rfl (fun j _ => ?_)
               simpa only [W] using
-                icg_comp_norm (I := I) (M := M) g s 2 j U
+                iteratedCovGrad_comp_norm (I := I) (M := M) g s 2 j U
       _ ≤ ∑ j ∈ Finset.range 5,
           ‖iteratedCovGrad (I := I) g 0 s j U‖ := by
             simp only [Finset.sum_range_succ, Finset.sum_range_zero,

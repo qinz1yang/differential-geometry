@@ -47,7 +47,7 @@ private local instance (r s : ℕ) :
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem appCc_fixed_jointContMDiffOn
+theorem operatorFieldApplication_fixed_jointContMDiffOn
     (g : SmoothRiemannianMetric I M) {b c : ℕ}
     (A : ℝ → SmoothCcTensor g b c) (W : SmoothCcTensor g 0 b)
     (S : Set ℝ)
@@ -61,7 +61,7 @@ theorem appCc_fixed_jointContMDiffOn
       (I.prod 𝓘(ℝ, TensorRSModel 0 c ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel 0 c ℝ E)
         (E := fun x : M => TensorRSSpace 0 c I x) p.1
-        ((appCcRS (I := I) (M := M) g 0 b c (A p.2) W).toSection p.1))
+        ((ccOperatorFieldComp (I := I) (M := M) g 0 b c (A p.2) W).toSection p.1))
       ((Set.univ : Set M) ×ˢ S) := by
   have hW : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, TensorRSModel 0 b ℝ E)) ∞
@@ -86,12 +86,12 @@ theorem appCc_fixed_jointContMDiffOn
   refine hAWY.congr (fun p _ => ?_)
   refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel c ℝ E)
     (E := fun x : M => Tensor0SSpace c I x) p.1 z) ?_
-  rw [appCcRS_toSection]
+  rw [operatorFieldComposition_toSection]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem appCc_pathIntegralCoeffField
+theorem operatorFieldApplication_pathIntegralCoeffField
     (g : SmoothRiemannianMetric I M) {b c : ℕ}
     (A : ℝ → SmoothCcTensor g b c) (W : SmoothCcTensor g 0 b)
     (S : Set ℝ) (hS : IsOpen S) (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
@@ -101,12 +101,12 @@ theorem appCc_pathIntegralCoeffField
         (E := fun x : M => TensorRSSpace b c I x) p.1
         ((A p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ S)) :
-    appCc (I := I) (M := M) g b c
+    operatorFieldApply (I := I) (M := M) g b c
         (pathIntegralCoeffField (I := I) (M := M) g b c
           A S hS hSI hA) W =
       pathIntegralCoeffField (I := I) (M := M) g 0 c
-        (fun t => appCcRS (I := I) (M := M) g 0 b c (A t) W)
-        S hS hSI (appCc_fixed_jointContMDiffOn
+        (fun t => ccOperatorFieldComp (I := I) (M := M) g 0 b c (A t) W)
+        S hS hSI (operatorFieldApplication_fixed_jointContMDiffOn
           (I := I) (M := M) g A W S hA) := by
   classical
   apply smoothCcTensor_ext_of_unitModel (I := I) (M := M) g
@@ -117,13 +117,13 @@ theorem appCc_pathIntegralCoeffField
       (fun t : ℝ => TensorRSSpace.toModel ((A t).toSection y)) S :=
     fun y => jointContMDiff_toModel_continuous_slice
       (I := I) g b c A S hA y
-  rw [pathIntegralCoeffField_appCc_eq
+  rw [pathIntegralCoeffField_operatorFieldApplication_eq
     (I := I) (M := M) g b c A W S hS hSI hA hcontA x v]
   let Ψ : ℝ → SmoothCcTensor g 0 c :=
-    fun t => appCcRS (I := I) (M := M) g 0 b c (A t) W
+    fun t => ccOperatorFieldComp (I := I) (M := M) g 0 b c (A t) W
   let u : Tensor0SModel 0 ℝ E :=
     Tensor0SSpace.toModel (unitTensor (I := I) (M := M) x)
-  have hΨ := appCc_fixed_jointContMDiffOn
+  have hΨ := operatorFieldApplication_fixed_jointContMDiffOn
     (I := I) (M := M) g A W S hA
   have hcontΨ : ContinuousOn
       (fun t : ℝ => TensorRSSpace.toModel ((Ψ t).toSection x)) S :=
@@ -151,9 +151,9 @@ theorem appCc_pathIntegralCoeffField
   rw [← ContinuousLinearMap.intervalIntegral_comp_comm L hΨAppInt]
   refine intervalIntegral.integral_congr (fun t _ => ?_)
   change unitModel (I := I) (M := M) g c
-      (appCc (I := I) (M := M) g b c (A t) W) x v =
+      (operatorFieldApply (I := I) (M := M) g b c (A t) W) x v =
     unitModel (I := I) (M := M) g c (Ψ t) x v
-  simp only [Ψ, appCcRS_zero_eq_appCc]
+  simp only [Ψ, operatorFieldComposition_zero_eq_operatorFieldApply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in

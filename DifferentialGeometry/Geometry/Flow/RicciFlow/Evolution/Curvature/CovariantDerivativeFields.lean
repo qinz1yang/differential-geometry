@@ -108,7 +108,7 @@ theorem nabla3Rm04Field_realizes
       6 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nabla2Rm04Field (I := I) S t))
 
-def realizedChr
+def solutionChristoffelComponents
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M) :
     Real → M → CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E →
@@ -118,7 +118,7 @@ def realizedChr
       (coordinateFrameAt (I := I) x₀)
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀) x
 
-def realizedRmBase
+def solutionCurvatureComponents
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M) :
     Real → M → (Fin 4 → CoordinateIdx (𝕜 := Real) E) → Real :=
@@ -126,11 +126,11 @@ def realizedRmBase
 
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
-@[simp] theorem realizedRmBase_apply
+@[simp] theorem solutionCurvatureComponents_apply
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M)
     (t : Real) (x : M) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
-    realizedRmBase (I := I) S x₀ t x m =
+    solutionCurvatureComponents (I := I) S x₀ t x m =
       S.base.rm04 t x (fun q => coordinateFrameAt (I := I) x₀ (m q) x) := rfl
 
 omit [I.Boundaryless] in
@@ -142,7 +142,7 @@ theorem iteratedRmComp_one_eq_nablaRm04Field
     {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (n : Fin 5 → CoordinateIdx (𝕜 := Real) E) :
     iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
-        (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) 1 t x n =
+        (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 t x n =
       nablaRm04Field (I := I) S t x
         (frameTuple (I := I) (coordinateFrameAt (I := I) x₀) x n) := by
   rw [iteratedRmComp_succ]
@@ -162,7 +162,7 @@ theorem iteratedRmComp_two_eq_nabla2Rm04Field
     (x₀ : M) (t : Real)
     (n : Fin 6 → CoordinateIdx (𝕜 := Real) E) :
     iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
-        (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) 2 t x₀ n =
+        (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 2 t x₀ n =
       nabla2Rm04Field (I := I) S t x₀
         (frameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ n) := by
   classical
@@ -170,7 +170,7 @@ theorem iteratedRmComp_two_eq_nabla2Rm04Field
   have hlevel1 :
       (fun y : M =>
           iteratedRmComp (I := I) frame
-            (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) 1 t y) =ᶠ[nhds x₀]
+            (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 t y) =ᶠ[nhds x₀]
         fun y : M =>
           frameComp0S (I := I) (nablaRm04Field (I := I) S t) frame y := by
     refine Filter.eventually_of_mem
@@ -185,7 +185,7 @@ theorem iteratedRmComp_two_eq_nabla2Rm04Field
       frameExtData (I := I) frame
           (fun y : M =>
             iteratedRmComp (I := I) frame
-              (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) 1 t y) x₀ =
+              (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 t y) x₀ =
         frameExtData (I := I) frame
           (frameComp0S (I := I) (nablaRm04Field (I := I) S t) frame) x₀ := by
     funext m d
@@ -194,7 +194,7 @@ theorem iteratedRmComp_two_eq_nabla2Rm04Field
     exact hlevel1.mono fun y hy => congrFun hy m
   have hbase :
       iteratedRmComp (I := I) frame
-          (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) 1 t x₀ =
+          (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 t x₀ =
         frameComp0S (I := I) (nablaRm04Field (I := I) S t) frame x₀ :=
     hlevel1.self_of_nhds
   rw [hext, hbase]

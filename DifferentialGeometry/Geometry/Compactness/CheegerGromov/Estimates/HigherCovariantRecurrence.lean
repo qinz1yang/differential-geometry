@@ -27,29 +27,29 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
-noncomputable def claim1MulConst (C0 KR L : Real) (m : ℕ) : Real :=
+noncomputable def inverseContractionRecurrenceConstant (C0 KR L : Real) (m : ℕ) : Real :=
   Nat.strongRecOn' m fun n C =>
     max C0 0 * (max KR 0 * L +
       ∑ c : Fin n, (n.choose c : Real) * C c c.isLt * L)
 
-theorem claim1MulConst_eq (C0 KR L : Real) (m : ℕ) :
-    claim1MulConst C0 KR L m =
+theorem inverse_contraction_recurrence_constant_eq (C0 KR L : Real) (m : ℕ) :
+    inverseContractionRecurrenceConstant C0 KR L m =
       max C0 0 * (max KR 0 * L +
-        ∑ c ∈ Finset.range m, (m.choose c : Real) * claim1MulConst C0 KR L c * L) := by
-  rw [claim1MulConst, Nat.strongRecOn'_beta, ← Fin.sum_univ_eq_sum_range]
+        ∑ c ∈ Finset.range m, (m.choose c : Real) * inverseContractionRecurrenceConstant C0 KR L c * L) := by
+  rw [inverseContractionRecurrenceConstant, Nat.strongRecOn'_beta, ← Fin.sum_univ_eq_sum_range]
   rfl
 
-theorem claim1MulConst_nonneg {C0 KR L : Real} (hL : 0 ≤ L) (m : ℕ) :
-    0 ≤ claim1MulConst C0 KR L m := by
+theorem inverse_contraction_recurrence_constant_nonneg {C0 KR L : Real} (hL : 0 ≤ L) (m : ℕ) :
+    0 ≤ inverseContractionRecurrenceConstant C0 KR L m := by
   induction m using Nat.strong_induction_on with
   | _ m ih =>
-      rw [claim1MulConst_eq]
+      rw [inverse_contraction_recurrence_constant_eq]
       refine mul_nonneg (le_max_right C0 0) (add_nonneg (mul_nonneg (le_max_right KR 0) hL) ?_)
       exact Finset.sum_nonneg fun c hc =>
         mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (ih c (Finset.mem_range.mp hc))) hL
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_eps_mul_bound {u : Set M} (hu : IsOpen u)
+theorem iterated_covariant_contraction_bound {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -73,7 +73,7 @@ theorem claim1_eps_mul_bound {u : Set M} (hu : IsOpen u)
       compL2 (iterCovComp (I := I) frame chr (fun z => contrTail (A z) (g z)) m' x) ≤
         KR * compL2 (iterCovComp (I := I) frame chr g (m' + 1) x)) →
     ∀ x ∈ u, compL2 (iterCovCompU (I := I) frame chr A m x) ≤
-      claim1MulConst C0 KR L m * eps := by
+      inverseContractionRecurrenceConstant C0 KR L m * eps := by
   induction m using Nat.strong_induction_on with
   | _ m ih =>
     intro hK hrelB x hx
@@ -81,15 +81,15 @@ theorem claim1_eps_mul_bound {u : Set M} (hu : IsOpen u)
     have hKR0 : (0 : Real) ≤ max KR 0 := le_max_right KR 0
     have hCcB : ∀ c, c < m → ∀ x ∈ u,
         compL2 (iterCovCompU (I := I) frame chr A c x) ≤
-          claim1MulConst C0 KR L c * eps := fun c hc =>
+          inverseContractionRecurrenceConstant C0 KR L c * eps := fun c hc =>
       ih c hc (fun x hx j h1 h2 => hK x hx j h1 (by omega))
         (fun x hx m' h' => hrelB x hx m' (le_trans h' (le_of_lt hc)))
     set S := ∑ c ∈ Finset.range m,
-      (m.choose c : Real) * claim1MulConst C0 KR L c * L with hSdef
+      (m.choose c : Real) * inverseContractionRecurrenceConstant C0 KR L c * L with hSdef
     have hS0 : 0 ≤ S := Finset.sum_nonneg fun c hc =>
       mul_nonneg
         (mul_nonneg (Nat.cast_nonneg _)
-          (claim1MulConst_nonneg hL c)) hL
+          (inverse_contraction_recurrence_constant_nonneg hL c)) hL
     have hgm1eps : compL2 (iterCovComp (I := I) frame chr g (m + 1) x) ≤ L * eps :=
       hK x hx (m + 1) (by omega) le_rfl
     have hgm1 : (0 : Real) ≤ compL2 (iterCovComp (I := I) frame chr g (m + 1) x) :=
@@ -135,20 +135,20 @@ theorem claim1_eps_mul_bound {u : Set M} (hu : IsOpen u)
       have hAc := hCcB c hc' x hx
       have hgmc : compL2 (iterCovComp (I := I) frame chr g (m - c) x) ≤ L * eps :=
         hK x hx (m - c) (by omega) (by omega)
-      have hCc0 : 0 ≤ claim1MulConst C0 KR L c :=
-        claim1MulConst_nonneg (C0 := C0) (KR := KR) hL c
-      have hb0 : (0 : Real) ≤ (m.choose c : Real) * claim1MulConst C0 KR L c * L :=
+      have hCc0 : 0 ≤ inverseContractionRecurrenceConstant C0 KR L c :=
+        inverse_contraction_recurrence_constant_nonneg (C0 := C0) (KR := KR) hL c
+      have hb0 : (0 : Real) ≤ (m.choose c : Real) * inverseContractionRecurrenceConstant C0 KR L c * L :=
         mul_nonneg (mul_nonneg (Nat.cast_nonneg _) hCc0) hL
       calc (m.choose c : Real) * compL2 (iterCovCompU (I := I) frame chr A c x) *
             compL2 (iterCovComp (I := I) frame chr g (m - c) x)
-          ≤ (m.choose c : Real) * (claim1MulConst C0 KR L c * eps) *
+          ≤ (m.choose c : Real) * (inverseContractionRecurrenceConstant C0 KR L c * eps) *
               compL2 (iterCovComp (I := I) frame chr g (m - c) x) :=
             mul_le_mul_of_nonneg_right
               (mul_le_mul_of_nonneg_left hAc (Nat.cast_nonneg _)) (compL2_nonneg _)
-        _ ≤ (m.choose c : Real) * (claim1MulConst C0 KR L c * eps) * (L * eps) :=
+        _ ≤ (m.choose c : Real) * (inverseContractionRecurrenceConstant C0 KR L c * eps) * (L * eps) :=
             mul_le_mul_of_nonneg_left hgmc
               (mul_nonneg (Nat.cast_nonneg _) (mul_nonneg hCc0 heps0))
-        _ ≤ ((m.choose c : Real) * claim1MulConst C0 KR L c * L) * eps := by
+        _ ≤ ((m.choose c : Real) * inverseContractionRecurrenceConstant C0 KR L c * L) * eps := by
             nlinarith [mul_nonneg hb0 heps0]
     have htop : max KR 0 * compL2 (iterCovComp (I := I) frame chr g (m + 1) x) ≤
         max KR 0 * L * eps := by
@@ -180,12 +180,12 @@ theorem claim1_eps_mul_bound {u : Set M} (hu : IsOpen u)
               compL2 (iterCovComp (I := I) frame chr g (m - c) x)) := hcore
       _ ≤ max C0 0 * ((max KR 0 * L + S) * eps) :=
         mul_le_mul hGx hbr hbr0 (le_max_right C0 0)
-      _ = claim1MulConst C0 KR L m * eps := by
-        rw [claim1MulConst_eq, hSdef]
+      _ = inverseContractionRecurrenceConstant C0 KR L m * eps := by
+        rw [inverse_contraction_recurrence_constant_eq, hSdef]
         ring
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_eps_mul {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_contraction_bound {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -211,12 +211,12 @@ theorem claim1_eps_mul {u : Set M} (hu : IsOpen u)
     ∃ C, 0 ≤ C ∧ ∀ x ∈ u,
       compL2 (iterCovCompU (I := I) frame chr A m x) ≤ C * eps := by
   intro hK hrelB
-  exact ⟨claim1MulConst C0 KR L m, claim1MulConst_nonneg hL m,
-    claim1_eps_mul_bound hu frame chr hframe hchr g hg Ginv A hA hinv C0 KR L eps
+  exact ⟨inverseContractionRecurrenceConstant C0 KR L m, inverse_contraction_recurrence_constant_nonneg hL m,
+    iterated_covariant_contraction_bound hu frame chr hframe hchr g hg Ginv A hA hinv C0 KR L eps
       hL heps0 heps1 hGinv m hK hrelB⟩
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_eps {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_contraction_bound_of_unit_metric_derivative {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -242,7 +242,7 @@ theorem claim1_eps {u : Set M} (hu : IsOpen u)
     ∃ C, 0 ≤ C ∧ ∀ x ∈ u,
       compL2 (iterCovCompU (I := I) frame chr A m x) ≤ C * eps := by
   intro hK
-  refine claim1_eps_mul hu frame chr hframe hchr g hg Ginv A hA hinv C0 KR 1 eps
+  refine exists_iterated_covariant_contraction_bound hu frame chr hframe hchr g hg Ginv A hA hinv C0 KR 1 eps
     zero_le_one heps0 heps1 hGinv m ?_
   simpa only [one_mul] using hK
 
@@ -698,7 +698,7 @@ theorem mixed_oneStep_le {r : ℕ} {u : Set M} (hu : IsOpen u)
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem lemma45_component {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem connection_comparison_component_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrG chrH : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -716,7 +716,7 @@ theorem lemma45_component {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       compL2 (iterCovComp (I := I) frame chrG T (i + ρ) x) ≤
         compL2 (iterCovComp (I := I) frame chrH
           (iterCovComp (I := I) frame chrG T i) ρ x) +
-        eps * lemma45Const B p (r₀ + i) *
+        eps * iteratedRecurrenceConstant B p (r₀ + i) *
           ∑ j ∈ Finset.range ρ,
             compL2 (iterCovComp (I := I) frame chrH
               (iterCovComp (I := I) frame chrG T i) j x) := by
@@ -736,14 +736,14 @@ theorem lemma45_component {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     exact mixed_oneStep_le hu frame chrG chrH hframe hchrG hchrH
       (iterCovComp (I := I) frame chrG T i') (hX_sm i') B hB eps heps0 k
       (fun c _ z hz => hDbound c z hz) hx
-  exact lemma45Double (eps := eps) (B := B) (s := r₀) heps0 heps1 hB
+  exact two_parameter_iterated_recurrence_bound (eps := eps) (B := B) (s := r₀) heps0 heps1 hB
     (fun i' k => compL2 (iterCovComp (I := I) frame chrH
       (iterCovComp (I := I) frame chrG T i') k x))
     (fun i' k => compL2_nonneg _) hOne
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem lemma45_component₀ {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem connection_comparison_component_bound_at_zero {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrG chrH : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -759,10 +759,10 @@ theorem lemma45_component₀ {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     {x : M} (hx : x ∈ u) (p ρ : ℕ) (hρ0 : 0 < ρ) (hρp : ρ ≤ p) :
     compL2 (iterCovComp (I := I) frame chrG T ρ x) ≤
       compL2 (iterCovComp (I := I) frame chrH T ρ x) +
-      eps * lemma45Const B p r₀ *
+      eps * iteratedRecurrenceConstant B p r₀ *
         ∑ j ∈ Finset.range ρ,
           compL2 (iterCovComp (I := I) frame chrH T j x) := by
-  have h := lemma45_component hu frame chrG chrH hframe hchrG hchrH T hT B hB eps heps0 heps1
+  have h := connection_comparison_component_bound hu frame chrG chrH hframe hchrG hchrH T hT B hB eps heps0 heps1
     hDbound hx p 0 ρ hρ0 hρp
   rw [zero_add] at h
   exact h
@@ -959,7 +959,7 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
   linarith [hK, hsymmg]
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_koszul_bound {u : Set M} (hu : IsOpen u)
+theorem iterated_covariant_contraction_bound_of_koszul {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -985,8 +985,8 @@ theorem claim1_koszul_bound {u : Set M} (hu : IsOpen u)
     (hK : ∀ x ∈ u, ∀ j, 1 ≤ j → j ≤ m + 1 →
       compL2 (iterCovComp (I := I) frame chr g j x) ≤ L * eps) :
     ∀ x ∈ u, compL2 (iterCovCompU (I := I) frame chr A m x) ≤
-      claim1MulConst C0 (|c₁| + |c₂| + |c₃|) L m * eps := by
-  refine claim1_eps_mul_bound hu frame chr hframe hchr g hg Ginv A hA hinv C0
+      inverseContractionRecurrenceConstant C0 (|c₁| + |c₂| + |c₃|) L m * eps := by
+  refine iterated_covariant_contraction_bound hu frame chr hframe hchr g hg Ginv A hA hinv C0
     (|c₁| + |c₂| + |c₃|) L eps hL heps0 heps1 hGinv m hK ?_
   intro x hx m' _
   have hterm : ∀ (ci : Real) (Pi : Fin 3 ≃ Fin 3),
@@ -1054,7 +1054,7 @@ theorem claim1_koszul_bound {u : Set M} (hu : IsOpen u)
   nlinarith [abs_nonneg c₁, abs_nonneg c₂, abs_nonneg c₃, hG0, h23]
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_koszul_mul {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_contraction_bound_of_koszul {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -1081,13 +1081,13 @@ theorem claim1_koszul_mul {u : Set M} (hu : IsOpen u)
       compL2 (iterCovComp (I := I) frame chr g j x) ≤ L * eps) :
     ∃ C, 0 ≤ C ∧ ∀ x ∈ u,
       compL2 (iterCovCompU (I := I) frame chr A m x) ≤ C * eps := by
-  refine ⟨claim1MulConst C0 (|c₁| + |c₂| + |c₃|) L m,
-    claim1MulConst_nonneg hL m, ?_⟩
-  exact claim1_koszul_bound hu frame chr hframe hchr g hg Ginv A hA hinv
+  refine ⟨inverseContractionRecurrenceConstant C0 (|c₁| + |c₂| + |c₃|) L m,
+    inverse_contraction_recurrence_constant_nonneg hL m, ?_⟩
+  exact iterated_covariant_contraction_bound_of_koszul hu frame chr hframe hchr g hg Ginv A hA hinv
     c₁ c₂ c₃ P₁ P₂ P₃ hkoszul C0 L eps hL heps0 heps1 hGinv m hK
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_eps_koszul {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_contraction_bound_of_unit_koszul {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -1114,13 +1114,13 @@ theorem claim1_eps_koszul {u : Set M} (hu : IsOpen u)
       compL2 (iterCovComp (I := I) frame chr g j x) ≤ eps) :
     ∃ C, 0 ≤ C ∧ ∀ x ∈ u,
       compL2 (iterCovCompU (I := I) frame chr A m x) ≤ C * eps := by
-  refine claim1_koszul_mul hu frame chr hframe hchr g hg Ginv A hA hinv
+  refine exists_iterated_covariant_contraction_bound_of_koszul hu frame chr hframe hchr g hg Ginv A hA hinv
     c₁ c₂ c₃ P₁ P₂ P₃ hkoszul C0 1 eps zero_le_one heps0 heps1 hGinv m ?_
   simpa only [one_mul] using hK
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem lemma45_component_bdd {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem connection_comparison_component_bound_of_finite_horizon {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrG chrH : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -1139,7 +1139,7 @@ theorem lemma45_component_bdd {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       compL2 (iterCovComp (I := I) frame chrG T (i + ρ) x) ≤
         compL2 (iterCovComp (I := I) frame chrH
           (iterCovComp (I := I) frame chrG T i) ρ x) +
-        eps * lemma45Const B p (r₀ + i) *
+        eps * iteratedRecurrenceConstant B p (r₀ + i) *
           ∑ j ∈ Finset.range ρ,
             compL2 (iterCovComp (I := I) frame chrH
               (iterCovComp (I := I) frame chrG T i) j x) := by
@@ -1159,14 +1159,14 @@ theorem lemma45_component_bdd {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     exact mixed_oneStep_le hu frame chrG chrH hframe hchrG hchrH
       (iterCovComp (I := I) frame chrG T i') (hX_sm i') B hB eps heps0 k
       (fun c hck z hz => hDbound c (by omega) z hz) hx
-  exact lemma45DoubleBdd (eps := eps) (B := B) (s := r₀) heps0 heps1 hB P
+  exact two_parameter_iterated_recurrence_bound_of_finite_horizon (eps := eps) (B := B) (s := r₀) heps0 heps1 hB P
     (fun i' k => compL2 (iterCovComp (I := I) frame chrH
       (iterCovComp (I := I) frame chrG T i') k x))
     (fun i' k => compL2_nonneg _) hOne
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem lemma45_F3_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem iterated_covariant_derivative_comparison_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (g gRef : SmoothRiemannianMetric I M)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u)
@@ -1207,8 +1207,8 @@ theorem lemma45_F3_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
           (fun z => christoffelSymbolInFrame
             (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z) T ρ x) +
-        eps * lemma45Const
-          (fun c => claim1MulConst C0 (|(1 / 2 : Real)| + |(1 / 2 : Real)| + |-(1 / 2 : Real)|) L c)
+        eps * iteratedRecurrenceConstant
+          (fun c => inverseContractionRecurrenceConstant C0 (|(1 / 2 : Real)| + |(1 / 2 : Real)| + |-(1 / 2 : Real)|) L c)
           p r₀ *
           ∑ j ∈ Finset.range ρ,
             compL2 (iterCovComp (I := I) frame
@@ -1227,12 +1227,12 @@ theorem lemma45_F3_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       (fun y => chrDiffField chrG chrH y k) u :=
     fun k => (hchrG _ _ _).sub (hchrH _ _ _)
   let B : ℕ → Real := fun c =>
-    claim1MulConst C0 (|(1 / 2 : Real)| + |(1 / 2 : Real)| + |-(1 / 2 : Real)|) L c
-  have hB0 : ∀ c, 0 ≤ B c := fun c => claim1MulConst_nonneg hL c
+    inverseContractionRecurrenceConstant C0 (|(1 / 2 : Real)| + |(1 / 2 : Real)| + |-(1 / 2 : Real)|) L c
+  have hB0 : ∀ c, 0 ≤ B c := fun c => inverse_contraction_recurrence_constant_nonneg hL c
   have hBb : ∀ c, c < p → ∀ z ∈ u,
       compL2 (iterCovCompU (I := I) frame chrH (chrDiffField chrG chrH) c z) ≤ B c * eps := by
     intro c hc
-    exact claim1_koszul_bound hu frame chrH hframeS hchrH
+    exact iterated_covariant_contraction_bound_of_koszul hu frame chrH hframeS hchrH
       (frameComp0S (I := I) (metricTensorField (I := I) g) frame) hgsm Ginv
       (chrDiffField chrG chrH) hDsm hinv
       (1 / 2) (1 / 2) (-(1 / 2))
@@ -1241,14 +1241,14 @@ theorem lemma45_F3_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       C0 L eps hL heps0 heps1 hGinv c
       (fun z hz j h1 h2 => hgK z hz j h1 (by omega))
   intro x hx ρ hρ0 hρp
-  have h := lemma45_component_bdd hu frame chrG chrH hframeS hchrG hchrH T hT B hB0
+  have h := connection_comparison_component_bound_of_finite_horizon hu frame chrG chrH hframeS hchrG hchrH T hT B hB0
     eps heps0 heps1 p (fun c hc z hz => hBb c hc z hz) hx p 0 ρ hρ0 hρp (by omega)
   rw [zero_add] at h
   simpa only [B] using h
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem lemma45_F3_mul {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_derivative_comparison_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (g gRef : SmoothRiemannianMetric I M)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u)
@@ -1297,15 +1297,15 @@ theorem lemma45_F3_mul {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
                   gRef)
                 frame hframe z) T j x) := by
   let B : ℕ → Real := fun c =>
-    claim1MulConst C0 (|(1 / 2 : Real)| + |(1 / 2 : Real)| + |-(1 / 2 : Real)|) L c
-  refine ⟨lemma45Const B p r₀,
-    lemma45Const_nonneg (fun c => claim1MulConst_nonneg hL c) p r₀, ?_⟩
-  simpa only [B] using lemma45_F3_bound hu g gRef frame hframe hframeS hchrG hchrH
+    inverseContractionRecurrenceConstant C0 (|(1 / 2 : Real)| + |(1 / 2 : Real)| + |-(1 / 2 : Real)|) L c
+  refine ⟨iteratedRecurrenceConstant B p r₀,
+    iterated_recurrence_constant_nonneg (fun c => inverse_contraction_recurrence_constant_nonneg hL c) p r₀, ?_⟩
+  simpa only [B] using iterated_covariant_derivative_comparison_bound hu g gRef frame hframe hframeS hchrG hchrH
     hgsm T hT Ginv hinv C0 L eps hL heps0 heps1 hGinv p hgK
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem lemma45_F3 {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_derivative_comparison_bound_of_unit_metric_derivative {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (g gRef : SmoothRiemannianMetric I M)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u)
@@ -1353,7 +1353,7 @@ theorem lemma45_F3 {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
                 (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
                   gRef)
                 frame hframe z) T j x) := by
-  refine lemma45_F3_mul hu g gRef frame hframe hframeS hchrG hchrH hgsm T hT Ginv hinv
+  refine exists_iterated_covariant_derivative_comparison_bound hu g gRef frame hframe hframeS hchrG hchrH hgsm T hT Ginv hinv
     C0 1 eps zero_le_one heps0 heps1 hGinv p ?_
   simpa only [one_mul] using hgK
 

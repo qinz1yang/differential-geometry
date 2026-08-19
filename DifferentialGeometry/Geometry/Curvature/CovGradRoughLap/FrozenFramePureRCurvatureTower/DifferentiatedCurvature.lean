@@ -44,9 +44,9 @@ theorem curvOpField_apply_eq_pureRGenuineDiffOp
   (Classical.choose_spec (exists_baseOperatorField_apply_eq_pureRGenuineDiffOp (I := I) (M := M) g)
     s S).symm
 
-theorem appCc_curvOpField_eq_pureRGenuineDiffOp
+theorem operatorFieldApplication_curvOpField_eq_pureRGenuineDiffOp
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
-    appCc (I := I) (M := M) g (s + 0) (s + 0) (curvOpField (I := I) (M := M) g s) S =
+    operatorFieldApply (I := I) (M := M) g (s + 0) (s + 0) (curvOpField (I := I) (M := M) g s) S =
       pureRGenuineDiffOp (I := I) (M := M) g 0 s S :=
   curvOpField_apply_eq_pureRGenuineDiffOp (I := I) (M := M) g s S
 
@@ -64,7 +64,7 @@ noncomputable def genuineDiffCurvSection
           (curvOpField (I := I) (M := M) g s)).toSection x).comp
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 0) I x from S.toSection x) := by
   rw [genuineDiffCurvSection,
-    appCc_toSection (I := I) (M := M) g (s + 0) (s + 0 + 1)
+    operatorFieldApplication_toSection (I := I) (M := M) g (s + 0) (s + 0 + 1)
       (covGrad (I := I) (M := M) g (s + 0) (s + 0) (curvOpField (I := I) (M := M) g s)) S x]
   rfl
 
@@ -92,7 +92,7 @@ theorem genuineDiffCurvSection_eq_covGrad_sub_slotExtend
   have hB' := eq_sub_of_add_eq (hB.symm)
   rw [hB', hbase]
 
-theorem appCc_slotExtend_curvOpField_covGrad_unit_eval
+theorem operatorFieldApplication_slotExtend_curvOpField_covGrad_unit_eval
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (d : Tensor0SSpace 0 I x) (v0 : E) (vs : Fin (s + 0) → E) :
     Tensor0SSpace.toModel
@@ -109,7 +109,7 @@ theorem appCc_slotExtend_curvOpField_covGrad_unit_eval
             tensorCovDerivAt (I := I) (M := M) g 0 (s + 0) S x v0) d))
         vs := by
   classical
-  rw [appCc_toSection (I := I) (M := M) g (s + 0 + 1) (s + 0 + 1)
+  rw [operatorFieldApplication_toSection (I := I) (M := M) g (s + 0 + 1) (s + 0 + 1)
       (slotExtend (I := I) (M := M) g (s + 0) (s + 0) (curvOpField (I := I) (M := M) g s))
       (covGrad (I := I) (M := M) g 0 (s + 0) S) x,
     ContinuousLinearMap.comp_apply,
@@ -119,7 +119,7 @@ theorem appCc_slotExtend_curvOpField_covGrad_unit_eval
       (curvOpField (I := I) (M := M) g s).toSection x)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 0 + 1) I x from
       (covGrad (I := I) (M := M) g 0 (s + 0) S).toSection x) d) v0 vs]
-  rw [tensor0S_curry_covGrad_appCc_eq (I := I) (M := M) g (s + 0) S x d v0]
+  rw [tensor0S_curry_covGrad_operatorFieldApplication_eq (I := I) (M := M) g (s + 0) S x d v0]
 
 set_option backward.isDefEq.respectTransparency false in
 theorem covGrad_pureRGenuineDiffOp_unit_eval_eq_genuineDiffCurv_add_spectator
@@ -191,10 +191,10 @@ theorem covGrad_pureRGenuineDiffOp_unit_eval_eq_genuineDiffCurv_add_spectator
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 0) I x from
               tensorCovDerivAt (I := I) (M := M) g 0 (s + 0) S x v0) d))
           vs :=
-    appCc_slotExtend_curvOpField_covGrad_unit_eval (I := I) (M := M) g s S x d v0 vs
+    operatorFieldApplication_slotExtend_curvOpField_covGrad_unit_eval (I := I) (M := M) g s S x d v0 vs
   rw [hlhs, happ, Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, hterm2]
 
-theorem appCc_covGrad_covGrad_curvOpField_eq_covGrad_genuineDiffCurv_sub_slotExtend
+theorem operatorFieldApplication_covGrad_covGrad_curvOpField_eq_covGrad_genuineDiffCurv_sub_slotExtend
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     operatorFieldApply (I := I) (M := M) g (s + 0) (s + 0 + 1 + 1)
         (covGrad (I := I) (M := M) g (s + 0) (s + 0 + 1)
@@ -214,7 +214,7 @@ theorem appCc_covGrad_covGrad_curvOpField_eq_covGrad_genuineDiffCurv_sub_slotExt
   rw [hgds] at hB
   exact (eq_sub_of_add_eq hB.symm)
 
-theorem appCc_slotExtend_covGrad_curvOpField_covGrad_unit_eval
+theorem operatorFieldApplication_slotExtend_covGrad_curvOpField_covGrad_unit_eval
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (d : Tensor0SSpace 0 I x) (v0 : E) (vs : Fin (s + 0 + 1) → E) :
     Tensor0SSpace.toModel
@@ -232,7 +232,7 @@ theorem appCc_slotExtend_covGrad_curvOpField_covGrad_unit_eval
             tensorCovDerivAt (I := I) (M := M) g 0 (s + 0) S x v0) d))
         vs := by
   classical
-  rw [appCc_toSection (I := I) (M := M) g (s + 0 + 1) (s + 0 + 1 + 1)
+  rw [operatorFieldApplication_toSection (I := I) (M := M) g (s + 0 + 1) (s + 0 + 1 + 1)
       (slotExtend (I := I) (M := M) g (s + 0) (s + 0 + 1)
         (covGrad (I := I) (M := M) g (s + 0) (s + 0) (curvOpField (I := I) (M := M) g s)))
       (covGrad (I := I) (M := M) g 0 (s + 0) S) x,
@@ -244,9 +244,9 @@ theorem appCc_slotExtend_covGrad_curvOpField_covGrad_unit_eval
       (covGrad (I := I) (M := M) g (s + 0) (s + 0) (curvOpField (I := I) (M := M) g s)).toSection x)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 0 + 1) I x from
       (covGrad (I := I) (M := M) g 0 (s + 0) S).toSection x) d) v0 vs]
-  rw [tensor0S_curry_covGrad_appCc_eq (I := I) (M := M) g (s + 0) S x d v0]
+  rw [tensor0S_curry_covGrad_operatorFieldApplication_eq (I := I) (M := M) g (s + 0) S x d v0]
 
-theorem appCc_covGrad_covGrad_curvOpField_unit_eval
+theorem operatorFieldApplication_covGrad_covGrad_curvOpField_unit_eval
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (d : Tensor0SSpace 0 I x) (v0 : E) (vs : Fin (s + 0 + 1) → E) :
     Tensor0SSpace.toModel
@@ -269,7 +269,7 @@ theorem appCc_covGrad_covGrad_curvOpField_unit_eval
               tensorCovDerivAt (I := I) (M := M) g 0 (s + 0) S x v0) d))
           vs := by
   classical
-  have hsec := appCc_covGrad_covGrad_curvOpField_eq_covGrad_genuineDiffCurv_sub_slotExtend
+  have hsec := operatorFieldApplication_covGrad_covGrad_curvOpField_eq_covGrad_genuineDiffCurv_sub_slotExtend
     (I := I) (M := M) g s S
   have happ :
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 0 + 1 + 1) I x from
@@ -306,7 +306,7 @@ theorem appCc_covGrad_covGrad_curvOpField_unit_eval
         (vs : Fin (s + 0 + 1) → E) := by
       funext j; simp [Matrix.vecTail, Fin.cons_succ]
     rw [hhead, htail]
-  have hT2 := appCc_slotExtend_covGrad_curvOpField_covGrad_unit_eval
+  have hT2 := operatorFieldApplication_slotExtend_covGrad_curvOpField_covGrad_unit_eval
     (I := I) (M := M) g s S x d v0 vs
   rw [hT1, hT2]
 

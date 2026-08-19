@@ -127,7 +127,7 @@ theorem pinchEigen3Unordered_of_pinchTensor_nonneg
       using hpinch v
 
 omit [Module.Finite ℝ E] in
-theorem cubicQ_sub_nonneg_of_section9_point
+theorem cubic_reaction_sub_pinching_term_nonneg_at
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -151,10 +151,10 @@ theorem cubicQ_sub_nonneg_of_section9_point
     0 <=
       cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S) t x
         - epsilon * ricciNorm (I := I) S t x *
-          tfRicNormSq S.scalar (ricciNorm (I := I) S) t x := by
+          traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) t x := by
   classical
   rcases DifferentialGeometry.Geometry.Curvature.ricciEigen3 (I := I) (S.base.metric t)
-      (S.ricciAt t x) hdim (ricciSym_can (I := I) S t x) with
+      (S.ricciAt t x) hdim (ricci_is_symmetric (I := I) S t x) with
     ⟨basis, l1, l2, l3, horth, hdiag0⟩
   have hScalarTrace :
       DifferentialGeometry.Geometry.Curvature.ScalarRealizesRicciTraceAt (I := I)
@@ -212,12 +212,12 @@ theorem cubicQ_sub_nonneg_of_section9_point
             (DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3)
             (DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 l1 l2 l3) -
           epsilon * DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3 *
-            tfRicNormSqAt
+            traceFreeRicciNormSqAt
               (DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3)
               (DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3) := by
-    simpa [cubicQ_eigen, tfRic_eigen] using hq
-  simpa [cubicQ, tfRicNormSq, tracefreeRicciNormSqOf,
-    tracefreeRicciNormSqAtOf, SolutionOn.scalar_eq_metricTrace,
+    simpa [cubicQ_eigen, trace_free_ricci_norm_sq_eigenvalues] using hq
+  simpa [cubicQ, traceFreeRicciNormSq, traceFreeRicciNormSqOf,
+    traceFreeRicciNormSqAtOf, SolutionOn.scalar_eq_metricTrace,
     hscalarMetric, hnorm, hcube] using hq_fields
 
 end DifferentialGeometry.PDE.RicciFlow

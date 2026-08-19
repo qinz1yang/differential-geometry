@@ -29,29 +29,29 @@ variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-noncomputable def stepCBump (lam : Real) (hlam : 0 < lam) : ContDiffBump (0 : Real) where
+noncomputable def gluingBump (lam : Real) (hlam : 0 < lam) : ContDiffBump (0 : Real) where
   rIn := (3 * lam) ^ 2
   rOut := (7 * lam / 2) ^ 2
   rIn_pos := sq_pos_of_pos (by positivity)
   rIn_lt_rOut := by nlinarith
 
-@[simp] theorem stepCBump_rIn (lam : Real) (hlam : 0 < lam) :
-    (stepCBump lam hlam).rIn = (3 * lam) ^ 2 := rfl
+@[simp] theorem gluing_bump_inner_radius (lam : Real) (hlam : 0 < lam) :
+    (gluingBump lam hlam).rIn = (3 * lam) ^ 2 := rfl
 
-@[simp] theorem stepCBump_rOut (lam : Real) (hlam : 0 < lam) :
-    (stepCBump lam hlam).rOut = (7 * lam / 2) ^ 2 := rfl
+@[simp] theorem gluing_bump_outer_radius (lam : Real) (hlam : 0 < lam) :
+    (gluingBump lam hlam).rOut = (7 * lam / 2) ^ 2 := rfl
 
-@[simp] theorem stepCBump_sqrt (lam : Real) (hlam : 0 < lam) :
-    Real.sqrt (stepCBump lam hlam).rOut = 7 * lam / 2 := by
-  rw [stepCBump_rOut, Real.sqrt_sq_eq_abs, abs_of_pos]
+@[simp] theorem gluing_bump_sqrt_outer_radius (lam : Real) (hlam : 0 < lam) :
+    Real.sqrt (gluingBump lam hlam).rOut = 7 * lam / 2 := by
+  rw [gluing_bump_outer_radius, Real.sqrt_sq_eq_abs, abs_of_pos]
   positivity
 
-theorem stepCBump_out_lt (lam : Real) (hlam : 0 < lam) :
-    Real.sqrt (stepCBump lam hlam).rOut < 4 * lam := by
-  rw [stepCBump_sqrt lam hlam]
+theorem gluing_bump_outer_radius_lt (lam : Real) (hlam : 0 < lam) :
+    Real.sqrt (gluingBump lam hlam).rOut < 4 * lam := by
+  rw [gluing_bump_sqrt_outer_radius lam hlam]
   linarith
 
-noncomputable def stepCAtom
+noncomputable def gluingAtom
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (p : Y.M)
     (lam : Real) (hlam : 0 < lam) : Y.M → Real :=
   letI : TopologicalSpace Y.M := Y.topology
@@ -59,28 +59,28 @@ noncomputable def stepCAtom
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space Y.M := Y.t2
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  quadNormal Y.metric p (stepCBump lam hlam)
+  quadNormal Y.metric p (gluingBump lam hlam)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem stepCAtom_Icc
+theorem gluing_atom_mem_Icc
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (p : Y.M)
     (lam : Real) (hlam : 0 < lam) (q : Y.M) :
-    stepCAtom Y p lam hlam q ∈ Set.Icc (0 : Real) 1 := by
+    gluingAtom Y p lam hlam q ∈ Set.Icc (0 : Real) 1 := by
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space Y.M := Y.t2
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  exact quadNormal_mem_Icc Y.metric p (stepCBump lam hlam) q
+  exact quadNormal_mem_Icc Y.metric p (gluingBump lam hlam) q
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem stepCAtom_nonneg
+theorem gluing_atom_nonneg
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (p : Y.M)
     (lam : Real) (hlam : 0 < lam) (q : Y.M) :
-    0 ≤ stepCAtom Y p lam hlam q :=
-  (stepCAtom_Icc Y p lam hlam q).1
+    0 ≤ gluingAtom Y p lam hlam q :=
+  (gluing_atom_mem_Icc Y p lam hlam q).1
 
-theorem stepCAtom_mem_ball
+theorem gluing_atom_mem_ball
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (P : ProperMetricOn (I := I) Y) {p q : Y.M}
     (lam : Real) (hlam : 0 < lam)
@@ -91,7 +91,7 @@ theorem stepCAtom_mem_ball
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
       4 * lam < expRadiusGp (I := I) Y.metric p)
-    (hq : stepCAtom Y p lam hlam q ≠ 0) :
+    (hq : gluingAtom Y p lam hlam q ≠ 0) :
     letI : MetricSpace Y.M := P.ms
     q ∈ Metric.ball p (4 * lam) := by
   letI : TopologicalSpace Y.M := Y.topology
@@ -101,14 +101,14 @@ theorem stepCAtom_mem_ball
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   letI : MetricSpace Y.M := P.ms
   have hsupp : q ∈ Function.support
-      (quadNormal Y.metric p (stepCBump lam hlam)) := by
+      (quadNormal Y.metric p (gluingBump lam hlam)) := by
     rw [Function.mem_support]
-    simpa only [stepCAtom] using hq
+    simpa only [gluingAtom] using hq
   obtain ⟨v, hv, hqv⟩ := quadNormal_tsupport Y.metric p
-    (stepCBump lam hlam) ((stepCBump_out_lt lam hlam).trans hR)
+    (gluingBump lam hlam) ((gluing_bump_outer_radius_lt lam hlam).trans hR)
     (subset_tsupport _ hsupp)
   have hsqrt_lt : Real.sqrt (Y.metric.inner p v v) < 4 * lam :=
-    (Real.sqrt_le_sqrt hv).trans_lt (stepCBump_out_lt lam hlam)
+    (Real.sqrt_le_sqrt hv).trans_lt (gluing_bump_outer_radius_lt lam hlam)
   have hsmall : Real.sqrt (Y.metric.inner p v v) <
       expRadiusGp (I := I) Y.metric p := hsqrt_lt.trans hR
   have hvnorm : ‖v‖ < expMapC2Radius (I := I) Y.metric p :=
@@ -127,7 +127,7 @@ theorem stepCAtom_mem_ball
   rw [Metric.mem_ball, dist_comm, hdist_eq]
   exact hsqrt_lt
 
-theorem stepCAtom_eq_dist
+theorem gluing_atom_eq_dist
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (P : ProperMetricOn (I := I) Y) {p q : Y.M}
     (lam : Real) (hlam : 0 < lam)
@@ -139,8 +139,8 @@ theorem stepCAtom_eq_dist
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
       4 * lam < expRadiusGp (I := I) Y.metric p) :
     letI : MetricSpace Y.M := P.ms
-    stepCAtom Y p lam hlam q =
-      stepCBump lam hlam ((dist p q) ^ 2) := by
+    gluingAtom Y p lam hlam q =
+      gluingBump lam hlam ((dist p q) ^ 2) := by
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
@@ -148,8 +148,8 @@ theorem stepCAtom_eq_dist
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   letI : MetricSpace Y.M := P.ms
   have hlocal (hdist : dist p q < 4 * lam) :
-      stepCAtom Y p lam hlam q =
-        stepCBump lam hlam ((dist p q) ^ 2) := by
+      gluingAtom Y p lam hlam q =
+        gluingBump lam hlam ((dist p q) ^ 2) := by
     obtain ⟨v, hvtgt, _hvdom, hvlen, hqexp⟩ :=
       properBallNormal (I := I) Y P hR (by
         rw [Metric.mem_ball, dist_comm]
@@ -171,8 +171,8 @@ theorem stepCAtom_eq_dist
         (gpCoerciveConst_pos (I := I) Y.metric p).le
         (sq_nonneg ‖v‖)).trans
           (gpCoerciveConst_le (I := I) Y.metric p v)
-    rw [stepCAtom, quadNormal_of_mem Y.metric p
-      (stepCBump lam hlam) (by simpa only [ψ] using hqsrc)]
+    rw [gluingAtom, quadNormal_of_mem Y.metric p
+      (gluingBump lam hlam) (by simpa only [ψ] using hqsrc)]
     rw [show normalChartAt (I := I) Y.metric p q = v by
       simpa only [ψ] using hchart]
     congr 1
@@ -181,20 +181,20 @@ theorem stepCAtom_eq_dist
           (Real.sqrt (Y.metric.inner p v v)) ^ 2 :=
         (Real.sq_sqrt hquad_nonneg).symm
       _ = (dist p q) ^ 2 := by rw [hvlen]
-  by_cases hq : stepCAtom Y p lam hlam q = 0
-  · by_cases hb : stepCBump lam hlam ((dist p q) ^ 2) = 0
+  by_cases hq : gluingAtom Y p lam hlam q = 0
+  · by_cases hb : gluingBump lam hlam ((dist p q) ^ 2) = 0
     · exact hq.trans hb.symm
     · have hsupp : (dist p q) ^ 2 ∈
-          Function.support (stepCBump lam hlam) := by
+          Function.support (gluingBump lam hlam) := by
         simpa only [Function.mem_support] using hb
-      rw [(stepCBump lam hlam).support_eq, Metric.mem_ball,
+      rw [(gluingBump lam hlam).support_eq, Metric.mem_ball,
         dist_zero_right, Real.norm_eq_abs,
-        abs_of_nonneg (sq_nonneg (dist p q)), stepCBump_rOut] at hsupp
+        abs_of_nonneg (sq_nonneg (dist p q)), gluing_bump_outer_radius] at hsupp
       have hdist : dist p q < 4 * lam := by
         have hdist0 : 0 ≤ dist p q := dist_nonneg
         nlinarith
       exact False.elim (hb ((hlocal hdist).symm.trans hq))
-  · have hmem := stepCAtom_mem_ball (I := I) Y P lam hlam hR hq
+  · have hmem := gluing_atom_mem_ball (I := I) Y P lam hlam hR hq
     have hdist : dist p q < 4 * lam := by
       simpa only [Metric.mem_ball, dist_comm] using hmem
     exact hlocal hdist
@@ -210,7 +210,7 @@ noncomputable def seqAtom (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   | some c => by
       letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       exact fun q =>
-        stepCBump (L.lamInf (gamma : Nat))
+        gluingBump (L.lamInf (gamma : Nat))
           (hd.lambda_pos hD (L.rInf (gamma : Nat))) ((dist c q) ^ 2)
 
 
@@ -245,7 +245,7 @@ theorem seqAtom_some (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hc : seqCenter hd D P (L.φ k) (gamma : Nat) = some c) :
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     seqAtom hd hD P L pb r k gamma = fun q =>
-      stepCBump (L.lamInf (gamma : Nat))
+      gluingBump (L.lamInf (gamma : Nat))
         (hd.lambda_pos hD (L.rInf (gamma : Nat))) ((dist c q) ^ 2) := by
   letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   simp [seqAtom, hc]
@@ -253,7 +253,7 @@ theorem seqAtom_some (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqAtom_contMDiff (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (hgp : Item3GpScaleAt (I := I) hd D P L pb r k) (gamma : Fin (pb.A r)) :
+    (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k) (gamma : Fin (pb.A r)) :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
     letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
     letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
@@ -280,16 +280,16 @@ theorem seqAtom_contMDiff (hd : InjRadiusDecayInput (I := I) X) {D : Real}
           expRadiusGp (I := I) (X.obj (L.φ k)).metric c := by
         simpa only [lam] using hgp gamma c hc
       have heq :
-          (fun q => stepCBump lam hlam ((dist c q) ^ 2)) =
-            stepCAtom (X.obj (L.φ k)) c lam hlam := by
+          (fun q => gluingBump lam hlam ((dist c q) ^ 2)) =
+            gluingAtom (X.obj (L.φ k)) c lam hlam := by
         funext q
-        exact (stepCAtom_eq_dist (I := I)
+        exact (gluing_atom_eq_dist (I := I)
           (X.obj (L.φ k)) (P (L.φ k)) lam hlam hR).symm
       rw [seqAtom_some hd hD P L pb r k gamma hc]
       rw [heq]
-      simpa only [stepCAtom] using
+      simpa only [gluingAtom] using
         quadNormal_contMDiff (X.obj (L.φ k)).metric c
-          (stepCBump lam hlam) ((stepCBump_out_lt lam hlam).trans hR)
+          (gluingBump lam hlam) ((gluing_bump_outer_radius_lt lam hlam).trans hR)
 
 
 theorem seqAtom_Icc (hd : InjRadiusDecayInput (I := I) X) {D : Real}
@@ -302,7 +302,7 @@ theorem seqAtom_Icc (hd : InjRadiusDecayInput (I := I) X) {D : Real}
   | some c =>
       letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       rw [seqAtom_some hd hD P L pb r k gamma hc]
-      exact ⟨(stepCBump _ _).nonneg, (stepCBump _ _).le_one⟩
+      exact ⟨(gluingBump _ _).nonneg, (gluingBump _ _).le_one⟩
 
 theorem seqAtom_nonneg (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -328,15 +328,15 @@ theorem seqAtom_one_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       have hdist_lt : dist c q < 3 * lam := by
         simpa only [NetLimitData.innerBall, hc, Metric.mem_ball, dist_comm] using hq
       rw [seqAtom_some hd hD P L pb r k gamma hc]
-      apply (stepCBump lam hlam).one_of_mem_closedBall
+      apply (gluingBump lam hlam).one_of_mem_closedBall
       rw [Metric.mem_closedBall, dist_zero_right, Real.norm_eq_abs,
-        abs_of_nonneg (sq_nonneg (dist c q)), stepCBump_rIn]
+        abs_of_nonneg (sq_nonneg (dist c q)), gluing_bump_inner_radius]
       exact (sq_le_sq₀ dist_nonneg (by positivity)).2 hdist_lt.le
 
 theorem seqAtom_one (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (_hgp : Item3GpScaleAt (I := I) hd D P L pb r k)
+    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (gamma : Fin (pb.A r)) {q : (X.obj (L.φ k)).M}
     (hq : q ∈ L.innerBall hd D P pb r k gamma) :
     seqAtom hd hD P L pb r k gamma q = 1 :=
@@ -357,12 +357,12 @@ theorem seqAtom_mem_hat_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       have hlam : 0 < lam := hd.lambda_pos hD (L.rInf (gamma : Nat))
       letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
       have hsupp : (dist c q) ^ 2 ∈
-          Function.support (stepCBump lam hlam) := by
+          Function.support (gluingBump lam hlam) := by
         rw [Function.mem_support]
         simpa [seqAtom, hc, lam] using hq
-      rw [(stepCBump lam hlam).support_eq, Metric.mem_ball,
+      rw [(gluingBump lam hlam).support_eq, Metric.mem_ball,
         dist_zero_right, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg (dist c q)),
-        stepCBump_rOut] at hsupp
+        gluing_bump_outer_radius] at hsupp
       simp only [NetLimitData.hatBall, hc, Metric.mem_ball]
       rw [dist_comm]
       have hdist0 : 0 ≤ dist c q := dist_nonneg
@@ -371,7 +371,7 @@ theorem seqAtom_mem_hat_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqAtom_mem_hat (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (_hgp : Item3GpScaleAt (I := I) hd D P L pb r k)
+    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (gamma : Fin (pb.A r)) {q : (X.obj (L.φ k)).M}
     (hq : seqAtom hd hD P L pb r k gamma q ≠ 0) :
     q ∈ L.hatBall hd D P pb r k gamma :=
@@ -406,7 +406,7 @@ theorem seqWeights_data_raw (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqWeights_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (_hgp : Item3GpScaleAt (I := I) hd D P L pb r k) (i0 : Fin (pb.A r))
+    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k) (i0 : Fin (pb.A r))
     {s : Set (X.obj (L.φ k)).M}
     (hcover : s ⊆ ⋃ gamma : Fin (pb.A r), L.innerBall hd D P pb r k gamma) :
     centerAverage.WeightDataOn s
@@ -419,7 +419,7 @@ theorem seqWeights_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqWeights_ev (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
-    (r : Real) (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (r : Real) (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (i0 : Fin (pb.A r)) :
     ∀ᶠ k in Filter.atTop,
       centerAverage.WeightDataOn (L.hatSourceBall hd P r k)
@@ -477,7 +477,7 @@ theorem seqAtom_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) (k : Nat)
-    (_hgp : Item3GpScaleAt (I := I) hd D P L pb r k) :
+    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k) :
     seqAtom hd hD P L pb r k (baseIndex hd hre pb hr)
         (X.obj (L.φ k)).basepoint = 1 :=
   seqAtom_base_raw hd hD P L hre pb hr k
@@ -505,7 +505,7 @@ theorem seqWeights_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
     {r : Real} (hr : 0 ≤ r) (k : Nat)
-    (_hgp : Item3GpScaleAt (I := I) hd D P L pb r k) :
+    (_hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k) :
     let i0 := baseIndex hd hre pb hr
     let num := cutRaw (seqAtom hd hD P L pb r k i0)
       (seqAtom hd hD P L pb r k) i0
@@ -516,7 +516,7 @@ theorem seqWeights_base (hd : InjRadiusDecayInput (I := I) X) {D : Real}
 theorem seqWeights_zero_ev (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hD : 0 < D) (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist) (pb : hd.PackingBound D)
-    {r : Real} (hr : 0 ≤ r) (hgp : Item3GpScaleTail (I := I) hd D P L pb r) :
+    {r : Real} (hr : 0 ≤ r) (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r) :
     ∀ᶠ k in Filter.atTop,
       centerAverage.WeightDataOn (L.hatSourceBall hd P r k)
         (fun gamma : Fin (pb.A r) => L.hatBall hd D P pb r k gamma)

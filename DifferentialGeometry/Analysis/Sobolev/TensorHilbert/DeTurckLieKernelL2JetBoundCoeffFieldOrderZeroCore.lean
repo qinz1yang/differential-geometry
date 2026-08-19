@@ -20,9 +20,9 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Laplacian (metric_inner_self_nonneg)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (connDiffCovDerivBiContrFib dLaBiContrFib_contMDiff deTurckLieDLbFib deTurckLieDLbFib_contMDiff
+  (connectionDifferenceCovDerivBiContrFib deTurckLieConnectionDifferenceDerivativeBiContrFib_contMDiff deTurckLieCovariantDerivativeInsertionFib deTurckLieCovariantDerivativeInsertionFib_contMDiff
     deTurckLieFib deTurckLieCoeffField deTurckLieCoeffField_toSection
-    deTurckConnDiffCovDeriv connDiff_pairing_mdiffAt connDiffCovDerivOp dLaCovKernel_apply_extend
+    deTurckConnectionDifferenceCovDeriv connectionDifference_pairing_mdiffAt connectionDifferenceCovDerivOp deTurckLieConnectionDifferenceDerivativeCovKernel_apply_extend
     covGrad)
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
   (g0FlatCLM cotangentToDual_g0FlatCLM g0FlatCLM_apply)
@@ -278,32 +278,32 @@ private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
     ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_fixed_connDiff_sqrt_bound (g₀ g_bg : SmoothRiemannianMetric I M) :
+theorem exists_fixed_connectionDifference_sqrt_bound (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (x : M) (v w : TangentSpace I x),
-      Real.sqrt (g₀.inner x (PDE.DeTurck.connDiff (I := I) g_bg g₀ x v w)
-          (PDE.DeTurck.connDiff (I := I) g_bg g₀ x v w)) ≤
+      Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x v w)
+          (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x v w)) ≤
         C * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by
   classical
   obtain ⟨K, hK0, hK⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M)
-    g₀ 1 2 (connDiffSection (I := I) g_bg g₀)
+    g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀)
   refine ⟨Real.sqrt K, Real.sqrt_nonneg _, ?_⟩
   intro x v w
-  set cd : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g_bg g₀ x v w with hcd_def
-  set W : TensorRSSpace 1 2 I x := connDiffFib (I := I) g_bg g₀ x with hW_def
+  set cd : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x v w with hcd_def
+  set W : TensorRSSpace 1 2 I x := connectionDifferenceFib (I := I) g_bg g₀ x with hW_def
   have hval : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
         (g0FlatCLM (I := I) g₀ x cd)) (Fin.cons (v : E) ![(w : E)]) = g₀.inner x cd cd := by
     rw [show Tensor0SSpace.toModel ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W)
           (g0FlatCLM (I := I) g₀ x cd)) (Fin.cons (v : E) ![(w : E)]) =
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-            connDiffFib (I := I) g_bg g₀ x)
+            connectionDifferenceFib (I := I) g_bg g₀ x)
           (g0FlatCLM (I := I) g₀ x cd)) ![v, w] from rfl]
-    rw [connDiffFib_apply_eval (I := I) g_bg g₀ x (g0FlatCLM (I := I) g₀ x cd) ![v, w]]
+    rw [connectionDifferenceFib_apply_eval (I := I) g_bg g₀ x (g0FlatCLM (I := I) g₀ x cd) ![v, w]]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
     rw [show (g0FlatCLM (I := I) g₀ x cd)
-          (fun _ : Fin 1 => PDE.DeTurck.connDiff (I := I) g_bg g₀ x v w) =
+          (fun _ : Fin 1 => PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x v w) =
         cotangentToDual (I := I) (x := x) (g0FlatCLM (I := I) g₀ x cd)
-          (PDE.DeTurck.connDiff (I := I) g_bg g₀ x v w) from
+          (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x v w) from
       (cotangentToDual_apply (I := I) (x := x) _ _).symm]
     rw [cotangentToDual_g0FlatCLM (I := I) g₀ x cd]
   have habs := abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local (I := I) (M := M)
@@ -315,7 +315,7 @@ theorem exists_fixed_connDiff_sqrt_bound (g₀ g_bg : SmoothRiemannianMetric I M
       Real.sqrt K := by
     have h2 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x W ≤ K := by
       have h := hK x
-      rw [connDiffSection_toSection] at h
+      rw [connectionDifferenceSection_toSection] at h
       rw [hW_def]
       exact h
     exact Real.sqrt_le_sqrt h2
@@ -346,29 +346,29 @@ theorem exists_fixed_connDiff_sqrt_bound (g₀ g_bg : SmoothRiemannianMetric I M
         nlinarith [hWnorm, hprod_nn, hSv_nn, hSw_nn, hNW_nn]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem covGrad_connDiffSection_flat_eval_eq_inner_local
+private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner_local
     (g₀ g_c : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g_c g₀)).toSection x)
+          (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_c g₀)).toSection x)
           (g0FlatCLM (I := I) g₀ x
-            (covDerivConnDiff (I := I) g₀ g_c
+            (covDerivConnectionDifference (I := I) g₀ g_c
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w)
               (smoothExtensionTangent (I := I) x u) x)))
         (Fin.cons v (Fin.cons u ![w])) =
       g₀.inner x
-        (covDerivConnDiff (I := I) g₀ g_c
+        (covDerivConnectionDifference (I := I) g₀ g_c
           (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w)
           (smoothExtensionTangent (I := I) x u) x)
-        (covDerivConnDiff (I := I) g₀ g_c
+        (covDerivConnectionDifference (I := I) g₀ g_c
           (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w)
           (smoothExtensionTangent (I := I) x u) x) := by
   classical
   set A : TangentSpace I x :=
-    covDerivConnDiff (I := I) g₀ g_c
+    covDerivConnectionDifference (I := I) g₀ g_c
       (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x w)
       (smoothExtensionTangent (I := I) x u) x with hA_def
@@ -384,12 +384,12 @@ private theorem covGrad_connDiffSection_flat_eval_eq_inner_local
   have hXx : Xsec x = v := smoothExtensionTangent_eq (I := I) x v
   have hYx : Ysec x = u := smoothExtensionTangent_eq (I := I) x u
   have hZx : Zsec x = w := smoothExtensionTangent_eq (I := I) x w
-  have hA_bridge : covDerivConnDiff (I := I) g₀ g_c Xsec Zsec Ysec x = A := by
+  have hA_bridge : covDerivConnectionDifference (I := I) g₀ g_c Xsec Zsec Ysec x = A := by
     rw [hA_def]; rfl
   obtain ⟨om, hom⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
     (F := Tensor0SModel 1 ℝ E) (V := fun y : M => Tensor0SSpace 1 I y) x
     (g0FlatCLM (I := I) g₀ x A)
-  have hbridge := connDiffSection_covGrad_eq_covDerivConnDiff (I := I) g_c g₀ om Xsec Ysec Zsec x
+  have hbridge := connectionDifferenceSection_covGrad_eq_covDerivConnectionDifference (I := I) g_c g₀ om Xsec Ysec Zsec x
   rw [hom, hXx, hYx, hZx, hA_bridge] at hbridge
   have hflatA : (g0FlatCLM (I := I) g₀ x A) (fun _ : Fin 1 => A) = g₀.inner x A A := by
     rw [show (g0FlatCLM (I := I) g₀ x A) (fun _ : Fin 1 => A) =
@@ -403,15 +403,15 @@ private theorem covGrad_connDiffSection_flat_eval_eq_inner_local
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_fixed_covDerivConnDiff_sqrt_bound
+theorem exists_fixed_covDerivConnectionDifference_sqrt_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (x : M) (v w u : TangentSpace I x),
       Real.sqrt (g₀.inner x
-          (covDerivConnDiff (I := I) g₀ g_bg
+          (covDerivConnectionDifference (I := I) g₀ g_bg
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w)
             (smoothExtensionTangent (I := I) x u) x)
-          (covDerivConnDiff (I := I) g₀ g_bg
+          (covDerivConnectionDifference (I := I) g₀ g_bg
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w)
             (smoothExtensionTangent (I := I) x u) x)) ≤
@@ -419,23 +419,23 @@ theorem exists_fixed_covDerivConnDiff_sqrt_bound
           Real.sqrt (g₀.inner x u u) := by
   classical
   obtain ⟨K, hK0, hK⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M)
-    g₀ 1 3 (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g_bg g₀))
+    g₀ 1 3 (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀))
   refine ⟨Real.sqrt K, Real.sqrt_nonneg _, ?_⟩
   intro x v w u
   letI instW : Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace 1 3 I y) :=
     Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
   set W : Tensor0SBundle.TensorRSSpace 1 3 I x :=
-    (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g_bg g₀)).toSection x
+    (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀)).toSection x
     with hW_def
   set A : TangentSpace I x :=
-    covDerivConnDiff (I := I) g₀ g_bg
+    covDerivConnectionDifference (I := I) g₀ g_bg
       (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x w)
       (smoothExtensionTangent (I := I) x u) x with hA_def
   have hAA_nn : 0 ≤ g₀.inner x A A := metric_inner_self_nonneg (I := I) (M := M) g₀ x A
   set NA : ℝ := Real.sqrt (g₀.inner x A A) with hNA_def
   have hNA_nn : 0 ≤ NA := Real.sqrt_nonneg _
-  have hbridge := covGrad_connDiffSection_flat_eval_eq_inner_local (I := I) (M := M)
+  have hbridge := covGrad_connectionDifferenceSection_flat_eval_eq_inner_local (I := I) (M := M)
     g₀ g_bg x v w u
   rw [← hA_def, ← hW_def] at hbridge
   have hprim := abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt (I := I) (M := M) g₀ x W A v u

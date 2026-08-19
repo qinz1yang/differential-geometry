@@ -303,17 +303,17 @@ theorem timeShift_self_initial_metric
   simp
 
 
-def toRealizedCandidate {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+def toRicciFlowCandidate {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) :
-    DifferentialGeometry.PDE.RicciFlow.RealizedRicciFlowCandidateOn (I := I) (M := M) D where
+    DifferentialGeometry.PDE.RicciFlow.RicciFlowCandidateOn (I := I) (M := M) D where
   family := S.family
   ricci := RicciAtFamily.toTensorField (I := I) S.ricciAt
 
 omit [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem toRealizedCandidate_family
+@[simp] theorem toRicciFlowCandidate_family
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) :
-    S.toRealizedCandidate.family = S.family := by
+    S.toRicciFlowCandidate.family = S.family := by
   rfl
 
 end SolutionOn
@@ -321,7 +321,7 @@ end SolutionOn
 def MetricVariationEquationOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) : Prop :=
-  DifferentialGeometry.PDE.RicciFlow.MetricVariationEquationOnRaw (I := I) S.family
+  DifferentialGeometry.PDE.RicciFlow.MetricConnectionFamilyVariationEquationOn (I := I) S.family
     (RicciAtFamily.toTensorField (I := I) S.ricciAt)
 
 
@@ -742,12 +742,12 @@ theorem isSolutionOn_timeShift
       SolutionFamily.timeShift] using h
 
 omit [SigmaCompactSpace M] in
-theorem isRealizedRicciFlowSolutionOn_of_isSolutionOn
+theorem isRicciFlowCandidateOn_of_isSolutionOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSolutionOn (I := I) S) :
-    DifferentialGeometry.PDE.RicciFlow.IsRealizedRicciFlowSolutionOn (I := I)
-      S.toRealizedCandidate := by
+    DifferentialGeometry.PDE.RicciFlow.IsRicciFlowCandidateOn (I := I)
+      S.toRicciFlowCandidate := by
   exact
     { smoothMetric := hS.smoothMetric
       smoothConnection := hS.smoothConnection

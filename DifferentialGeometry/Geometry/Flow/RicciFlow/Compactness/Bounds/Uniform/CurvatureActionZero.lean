@@ -18,7 +18,6 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -28,17 +27,17 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
-noncomputable def unifPtCurvZeroC (d : ℕ) (Λ Kb₀ Kb₁ : ℝ) : ℝ :=
+noncomputable def uniformPtCurvZeroC (d : ℕ) (Λ Kb₀ Kb₁ : ℝ) : ℝ :=
   ptCurvZeroC d
     (Λ ^ 2 * (riemannDiffC Λ Λ Λ + Real.sqrt Kb₀))
     (rmOneOpC Λ Kb₀ Kb₁)
 
-noncomputable def unifPtCurvThreeC (d : ℕ) (Λ Kb₀ Kb₁ : ℝ) : ℝ :=
+noncomputable def uniformPtCurvThreeC (d : ℕ) (Λ Kb₀ Kb₁ : ℝ) : ℝ :=
   ptCurvRankC d 3
     (Λ ^ 2 * (riemannDiffC Λ Λ Λ + Real.sqrt Kb₀))
     (rmOneOpC Λ Kb₀ Kb₁)
 
-theorem unifCurvAction0_of
+theorem uniformCurvAction0_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Kb₀ Kb₁ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hKb₀_nonneg : 0 ≤ Kb₀)
@@ -58,12 +57,12 @@ theorem unifCurvAction0_of
     (hjet2 : MetricCovDerivOrderBoundOn (I := I) Set.univ 2 g₀ gBase Λ)
     (hjet3 : MetricCovDerivOrderBoundOn (I := I) Set.univ 3 g₀ gBase Λ) :
     IsCurvAction0 (I := I) (M := M) g₀ 2
-      (unifPtCurvZeroC (Module.finrank ℝ E) Λ Kb₀ Kb₁) := by
-  have hR0 := unifCurvSup_of (I := I) (M := M) gBase g₀ hΛ
+      (uniformPtCurvZeroC (Module.finrank ℝ E) Λ Kb₀ Kb₁) := by
+  have hR0 := uniformCurvSup_of (I := I) (M := M) gBase g₀ hΛ
     hKb₀_nonneg hKb₀ hcomp hjet1 hjet2
   have hC1 : 0 ≤ rmOneOpC Λ Kb₀ Kb₁ :=
     rmOneOpC_nonneg (le_trans zero_le_one hΛ) hKb₁_nonneg
-  have hR1 := unifRmOpOne_of (I := I) (M := M) gBase g₀ hΛ
+  have hR1 := uniformRmOpOne_of (I := I) (M := M) gBase g₀ hΛ
     hKb₀_nonneg hKb₀ hKb₁_nonneg hKb₁ hcomp hjet1 hjet2 hjet3
   refine IsCurvAction0.mk
     (ptCurvZeroC_nonneg (Module.finrank ℝ E)
@@ -71,10 +70,10 @@ theorem unifCurvAction0_of
       (rmOneOpC Λ Kb₀ Kb₁)) ?_
   intro S
   have h := ptCurv_zero_of (I := I) (M := M) g₀ hR0 hC1 hR1 S
-  simpa only [unifPtCurvZeroC, Finset.sum_range_succ, Finset.sum_range_zero,
+  simpa only [uniformPtCurvZeroC, Finset.sum_range_succ, Finset.sum_range_zero,
     iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.add_zero, zero_add] using h
 
-theorem unifCurvAction3_of
+theorem uniformCurvAction3_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Kb₀ Kb₁ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hKb₀_nonneg : 0 ≤ Kb₀)
@@ -94,12 +93,12 @@ theorem unifCurvAction3_of
     (hjet2 : MetricCovDerivOrderBoundOn (I := I) Set.univ 2 g₀ gBase Λ)
     (hjet3 : MetricCovDerivOrderBoundOn (I := I) Set.univ 3 g₀ gBase Λ) :
     IsCurvAction0 (I := I) (M := M) g₀ 3
-      (unifPtCurvThreeC (Module.finrank ℝ E) Λ Kb₀ Kb₁) := by
-  have hR0 := unifCurvSup_of (I := I) (M := M) gBase g₀ hΛ
+      (uniformPtCurvThreeC (Module.finrank ℝ E) Λ Kb₀ Kb₁) := by
+  have hR0 := uniformCurvSup_of (I := I) (M := M) gBase g₀ hΛ
     hKb₀_nonneg hKb₀ hcomp hjet1 hjet2
   have hC1 : 0 ≤ rmOneOpC Λ Kb₀ Kb₁ :=
     rmOneOpC_nonneg (le_trans zero_le_one hΛ) hKb₁_nonneg
-  have hR1 := unifRmOpOne_of (I := I) (M := M) gBase g₀ hΛ
+  have hR1 := uniformRmOpOne_of (I := I) (M := M) gBase g₀ hΛ
     hKb₀_nonneg hKb₀ hKb₁_nonneg hKb₁ hcomp hjet1 hjet2 hjet3
   refine IsCurvAction0.mk
     (ptCurvRankC_nonneg (Module.finrank ℝ E) 3
@@ -107,7 +106,7 @@ theorem unifCurvAction3_of
       (rmOneOpC Λ Kb₀ Kb₁)) ?_
   intro S
   have h := ptCurv_zero_rank_of (I := I) (M := M) g₀ 3 hR0 hC1 hR1 S
-  simpa only [unifPtCurvThreeC, Finset.sum_range_succ, Finset.sum_range_zero,
+  simpa only [uniformPtCurvThreeC, Finset.sum_range_succ, Finset.sum_range_zero,
     iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.add_zero, zero_add] using h
 
 end RicciFlow

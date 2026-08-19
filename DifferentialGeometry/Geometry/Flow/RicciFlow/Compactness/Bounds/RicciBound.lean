@@ -130,7 +130,7 @@ theorem aN_intrinsic_point
             (leviCivitaConnectionOfMetric (I := I) gRef) frame hframe y')) c z) ≤ Bc) := by
     intro c
     by_cases hc : c < N - 1
-    · obtain ⟨C, hC0, hCb⟩ := claim1_LC hu gRef frame hframe hframeS hchrH
+    · obtain ⟨C, hC0, hCb⟩ := exists_connection_difference_component_bound_in_frame hu gRef frame hframe hframeS hchrH
         C0 Kg c
       have hCb' := hCb g hchrG hgsm Ginv hinv hGinv
         (fun x hx j h1 h2 => hgB x hx j h1 (by omega))
@@ -144,7 +144,7 @@ theorem aN_intrinsic_point
       nlinarith [hC0, hg, hcb, hgnn]
     · exact ⟨0, le_rfl, fun h => absurd h hc⟩
   choose B hB0 hBb using hBd
-  obtain ⟨Ctop, hCtop0, htopGen⟩ := claim1_LC hu gRef frame hframe hframeS hchrH
+  obtain ⟨Ctop, hCtop0, htopGen⟩ := exists_connection_difference_component_bound_in_frame hu gRef frame hframe hframeS hchrH
     C0 Kg (N - 1)
   have htop := htopGen g hchrG hgsm Ginv hinv hGinv
     (fun x hx j h1 h2 => hgB x hx j h1 h2)

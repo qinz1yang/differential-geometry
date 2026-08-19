@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.ForceArms
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.GalerkinForcingArms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderPerIndex
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.FirstOrderPerIndex
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
@@ -33,7 +33,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem permJetNorm
+private theorem iteratedCovGrad_domDomCongrSection_norm_eq
     (g : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 2))
     (T : SmoothCcTensor g 0 2) (j : ℕ) :
     ‖iteratedCovGrad (I := I) g 0 2 j
@@ -61,7 +61,7 @@ private theorem permJetNorm
   exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem symmS_jet_le
+theorem iteratedCovGrad_symmS_norm_le
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2) (j : ℕ) :
     ‖iteratedCovGrad (I := I) g 0 2 j (symmS (I := I) (M := M) g T)‖ ≤
       ‖iteratedCovGrad (I := I) g 0 2 j T‖ := by
@@ -76,10 +76,10 @@ theorem symmS_jet_le
   refine (norm_add_le _ _).trans ?_
   rw [norm_smul, norm_smul, show ‖(1 / 2 : ℝ)‖ = 1 / 2 by
     rw [Real.norm_eq_abs]; norm_num]
-  rw [permJetNorm (I := I) (M := M) g (Equiv.swap (0 : Fin 2) 1) T j]
+  rw [iteratedCovGrad_domDomCongrSection_norm_eq (I := I) (M := M) g (Equiv.swap (0 : Fin 2) 1) T j]
   linarith [norm_nonneg (iteratedCovGrad (I := I) g 0 2 j T)]
 
-theorem galRepJet_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
+theorem galerkinRepresentation_iteratedCovGrad_sum_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {R : ℝ}, 0 ≤ R →
         ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
@@ -120,7 +120,7 @@ theorem galRepJet_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     intro j
     rw [hrep, iteratedCovGrad_smul, norm_smul, Real.norm_eq_abs,
       abs_of_nonneg hθ0]
-    have hsymm := symmS_jet_le (I := I) (M := M) g₀
+    have hsymm := iteratedCovGrad_symmS_norm_le (I := I) (M := M) g₀
       (finiteEigenCombo (I := I) (M := M) g₀ F c) j
     nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j
       (symmS (I := I) (M := M) g₀
@@ -136,7 +136,7 @@ theorem galRepJet_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     rw [hsq]; rfl
   rw [hmass, Real.sqrt_sq (norm_nonneg _)]
 
-theorem galRepJet_rad (g₀ : SmoothRiemannianMetric I M) :
+theorem galerkinRepresentation_lowOrder_iteratedCovGrad_sum_le (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ {R : ℝ}, 0 ≤ R →
         ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
@@ -161,7 +161,7 @@ theorem galRepJet_rad (g₀ : SmoothRiemannianMetric I M) :
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem jetSqrtLe (g : SmoothRiemannianMetric I M) (m : ℕ)
+theorem iteratedCovGrad_l2_window_le_l1_window (g : SmoothRiemannianMetric I M) (m : ℕ)
     (T : SmoothCcTensor g 0 2) :
     Real.sqrt (∑ j ∈ Finset.range m,
         ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) ≤
@@ -173,7 +173,7 @@ theorem jetSqrtLe (g : SmoothRiemannianMetric I M) (m : ℕ)
 
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem jetWinMono (g : SmoothRiemannianMetric I M) {m n : ℕ} (hmn : m ≤ n)
+theorem iteratedCovGrad_l2_window_mono (g : SmoothRiemannianMetric I M) {m n : ℕ} (hmn : m ≤ n)
     (T : SmoothCcTensor g 0 2) :
     Real.sqrt (∑ j ∈ Finset.range m,
         ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) ≤
@@ -183,15 +183,15 @@ theorem jetWinMono (g : SmoothRiemannianMetric I M) {m n : ℕ} (hmn : m ≤ n)
     (Finset.range_mono hmn) (fun _ _ _ => sq_nonneg _))
 
 
-private noncomputable def armLadder3A2Inputs
+private noncomputable def secondOrderAction_covariantJetNorm_two_inputs
     (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  a2PerIdxLin (I := I) (M := M) hDim g g
+  secondOrderAction_perIndex_linear_bound (I := I) (M := M) hDim g g
 
-private noncomputable def armLadder3A1Inputs
+private noncomputable def firstOrderAction_covariantJetNorm_two_inputs
     (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  a1PerIdxLin (I := I) (M := M) hDim g
+  firstOrderAction_perIndex_linear_bound (I := I) (M := M) hDim g
 
-theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
+theorem lowerScaleActions_covariantJetNorm_two_tame_bound (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ Ctop Kr2 Kr1 Kmid : ℝ, 0 ≤ Ctop ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Kmid ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -206,8 +206,8 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
         {Cδ : ℝ} (hCδ : 0 ≤ Cδ)
         (hfib : ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g (2 + 2) 2 x
-            ((lowBaseData (I := I) (M := M) g g T
-              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2.toSection x) ≤
+            ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient.toSection x) ≤
             Cδ ^ 2)
         {X Y Z : ℝ} (hY : 0 ≤ Y) (hZ : 0 ≤ Z)
         (h5 : Real.sqrt (∑ j ∈ Finset.range 5,
@@ -218,19 +218,19 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) ≤ Z),
         ∑ q ∈ Finset.range 3,
             (‖iteratedCovGrad (I := I) g 0 2 q
-                ((lowBaseData (I := I) (M := M) g g T
-                  (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2
+                ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+                  (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction
                     (I := I) (M := M) T)‖ +
               ‖iteratedCovGrad (I := I) g 0 2 q
-                ((lowBaseData (I := I) (M := M) g g T
-                  (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a1
+                ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+                  (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderAction
                     (I := I) (M := M) T)‖) ≤
           (Ctop * Cδ + Kr2 * Z + Kr1 * Z) * X +
             Kmid * (1 + Cδ) * ((1 + Y) ^ 2 * (1 + Z) ^ 2) := by
   classical
-  obtain ⟨Cqa, Ka, hCqa, hKa, ha2⟩ := armLadder3A2Inputs (I := I) (M := M) hDim g
+  obtain ⟨Cqa, Ka, hCqa, hKa, ha2⟩ := secondOrderAction_covariantJetNorm_two_inputs (I := I) (M := M) hDim g
   obtain ⟨Cqb, Kb0, Kb1, hCqb, hKb0, hKb1, ha1⟩ :=
-    armLadder3A1Inputs (I := I) (M := M) hDim g
+    firstOrderAction_covariantJetNorm_two_inputs (I := I) (M := M) hDim g
   have hRest : (0 : ℝ) ≤ Cqa 1 * Ka 1 + Cqa 2 * Ka 1 + Cqa 2 * Ka 2 +
       Cqb 0 * (2 * Kb0 0 + Kb1 0) +
       Cqb 1 * (Kb0 0 + Kb0 1 + Kb1 0 + Kb1 1) +
@@ -290,9 +290,9 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
   have hJ4nn : (0 : ℝ) ≤ J4 := by rw [hJ4def]; positivity
   have hJ5nn : (0 : ℝ) ≤ J5 := by rw [hJ5def]; positivity
   have hJ23 : J2 ≤ J3 := by
-    rw [hJ2def, hJ3def]; exact jetWinMono (I := I) (M := M) g (by norm_num) T
+    rw [hJ2def, hJ3def]; exact iteratedCovGrad_l2_window_mono (I := I) (M := M) g (by norm_num) T
   have hJ34 : J3 ≤ J4 := by
-    rw [hJ3def, hJ4def]; exact jetWinMono (I := I) (M := M) g (by norm_num) T
+    rw [hJ3def, hJ4def]; exact iteratedCovGrad_l2_window_mono (I := I) (M := M) g (by norm_num) T
   have hJ2Z : J2 ≤ Z := le_trans hJ23 h3
   have hJ3Y : J3 ≤ Y := le_trans hJ34 h4
   have hXnn : (0 : ℝ) ≤ X := le_trans hJ5nn h5
@@ -332,16 +332,16 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
       mul_le_mul (by linarith) h3 hJ3nn (by linarith)
     linarith [hstep, p1]
   have b20 : ‖iteratedCovGrad (I := I) g 0 2 0
-      ((lowBaseData (I := I) (M := M) g g T
-        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2 (I := I) (M := M) T)‖ ≤
+      ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction (I := I) (M := M) T)‖ ≤
       Cqa 0 * Cδ * P := by
     refine le_trans H20 ?_
     calc Cqa 0 * (Cδ * J3) ≤ Cqa 0 * (Cδ * P) :=
           mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left eZ hCδ) (hCqa 0)
       _ = Cqa 0 * Cδ * P := by ring
   have b21 : ‖iteratedCovGrad (I := I) g 0 2 1
-      ((lowBaseData (I := I) (M := M) g g T
-        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2 (I := I) (M := M) T)‖ ≤
+      ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction (I := I) (M := M) T)‖ ≤
       (Cqa 1 * Cδ + Cqa 1 * Ka 1) * P := by
     refine le_trans H21 ?_
     have hin : Cδ * J4 + Ka 1 * (1 + J4) * J3 ≤ Cδ * P + Ka 1 * P := by
@@ -353,8 +353,8 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
         ≤ Cqa 1 * (Cδ * P + Ka 1 * P) := mul_le_mul_of_nonneg_left hin (hCqa 1)
       _ = (Cqa 1 * Cδ + Cqa 1 * Ka 1) * P := by ring
   have b22 : ‖iteratedCovGrad (I := I) g 0 2 2
-      ((lowBaseData (I := I) (M := M) g g T
-        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2 (I := I) (M := M) T)‖ ≤
+      ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction (I := I) (M := M) T)‖ ≤
       Cqa 2 * Cδ * X + Cqa 2 * Ka 2 * Z * X +
         (Cqa 2 * Ka 1 + Cqa 2 * Ka 2) * P := by
     refine le_trans H22 ?_
@@ -372,8 +372,8 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
       _ = Cqa 2 * Cδ * X + Cqa 2 * Ka 2 * Z * X +
             (Cqa 2 * Ka 1 + Cqa 2 * Ka 2) * P := by ring
   have b10 : ‖iteratedCovGrad (I := I) g 0 2 0
-      ((lowBaseData (I := I) (M := M) g g T
-        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a1 (I := I) (M := M) T)‖ ≤
+      ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderAction (I := I) (M := M) T)‖ ≤
       Cqb 0 * (2 * Kb0 0 + Kb1 0) * P := by
     refine le_trans H10 ?_
     have hin : Kb0 0 * (1 + J4) * (1 + J2) * J4 +
@@ -392,8 +392,8 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
           mul_le_mul_of_nonneg_left hin (hCqb 0)
       _ = Cqb 0 * (2 * Kb0 0 + Kb1 0) * P := by ring
   have b11 : ‖iteratedCovGrad (I := I) g 0 2 1
-      ((lowBaseData (I := I) (M := M) g g T
-        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a1 (I := I) (M := M) T)‖ ≤
+      ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderAction (I := I) (M := M) T)‖ ≤
       Cqb 1 * (Kb0 0 + Kb0 1 + Kb1 0 + Kb1 1) * P := by
     refine le_trans H11 ?_
     have hin : Kb0 0 * (1 + J4) * (1 + J2) * J4 +
@@ -416,8 +416,8 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
           mul_le_mul_of_nonneg_left hin (hCqb 1)
       _ = Cqb 1 * (Kb0 0 + Kb0 1 + Kb1 0 + Kb1 1) * P := by ring
   have b12 : ‖iteratedCovGrad (I := I) g 0 2 2
-      ((lowBaseData (I := I) (M := M) g g T
-        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a1 (I := I) (M := M) T)‖ ≤
+      ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderAction (I := I) (M := M) T)‖ ≤
       Cqb 2 * Kb1 1 * Z * X +
         Cqb 2 * (Kb0 0 + Kb0 1 + Kb0 2 + Kb1 0 + Kb1 1 + Kb1 2) * P := by
     refine le_trans H12 ?_
@@ -457,7 +457,7 @@ theorem armLadder3 (hDim : Module.finrank ℝ E = 3)
     mul_nonneg (add_nonneg (hCqa 0) (hCqa 1)) hPnn,
     mul_nonneg hRest hPnn, mul_nonneg (mul_nonneg hRest hCδ) hPnn]
 
-def galArmVec (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ} (hR : 0 ≤ R)
+def galerkinActionVector (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ} (hR : 0 ≤ R)
     (hδ : δ < 1)
     (hreal : ∀ T : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀
@@ -468,22 +468,22 @@ def galArmVec (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ} (hR : 0 ≤ R)
     (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) :
     tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
   smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
-    ((lowBaseData (I := I) (M := M) g₀ g₀
+    ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
           (symmS (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
           (galRepFib (I := I) (M := M) g₀ hR hreal F c)
-          (lowregFibZero (I := I) (M := M) g₀ hR hreal)).a2
+          (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderAction
         (I := I) (M := M)
         (symmS (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)) +
-      (lowBaseData (I := I) (M := M) g₀ g₀
+      (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
           (symmS (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
           (galRepFib (I := I) (M := M) g₀ hR hreal F c)
-          (lowregFibZero (I := I) (M := M) g₀ hR hreal)).a1
+          (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).firstOrderAction
         (I := I) (M := M)
         (symmS (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)))
 
-theorem galArmMassOrd (hDim : Module.finrank ℝ E = 3)
+theorem exists_galerkin_action_h2_tame_bound_constants (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ Ctop Kr2 Kr1 Kcap : ℝ,
       0 ≤ Ctop ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Kcap ∧
@@ -499,7 +499,7 @@ theorem galArmMassOrd (hDim : Module.finrank ℝ E = 3)
             (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ),
             Real.sqrt (∑ i ∈ F,
                 tensorSobolevWeight (I := I) (M := M) i (2 : ℝ) *
-                  ((galArmVec (I := I) (M := M) g₀ hR hδ hreal F c).coeff i) ^ 2) ≤
+                  ((galerkinActionVector (I := I) (M := M) g₀ hR hδ hreal F c).coeff i) ^ 2) ≤
               (Ctop * (Kcap * (δ / (1 - δ) ^ 2)) + Kr2 * R + Kr1 * R) *
                   Real.sqrt (∑ i ∈ F,
                     tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) * (c i) ^ 2) +
@@ -507,12 +507,12 @@ theorem galArmMassOrd (hDim : Module.finrank ℝ E = 3)
                   tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2)) ^ 2 := by
   classical
   obtain ⟨Ctop, Kr2, Kr1, Kmid, hCtop, hKr2, hKr1, hKmid, hlad⟩ :=
-    armLadder3 (I := I) (M := M) hDim g₀
+    lowerScaleActions_covariantJetNorm_two_tame_bound (I := I) (M := M) hDim g₀
   obtain ⟨Kcap, hKcap, hsplit⟩ := lowData_split (I := I) (M := M) g₀ g₀
   obtain ⟨Chs, hChs, hhs⟩ := hs_le_jet (I := I) (M := M) g₀ 2 2
-  obtain ⟨C4, hC4, hjet4⟩ := galRepJet_le (I := I) (M := M) g₀ 4
-  obtain ⟨C3, hC3, hjet3⟩ := galRepJet_le (I := I) (M := M) g₀ 3
-  obtain ⟨CR, hCR, hjetR⟩ := galRepJet_rad (I := I) (M := M) g₀
+  obtain ⟨C4, hC4, hjet4⟩ := galerkinRepresentation_iteratedCovGrad_sum_le (I := I) (M := M) g₀ 4
+  obtain ⟨C3, hC3, hjet3⟩ := galerkinRepresentation_iteratedCovGrad_sum_le (I := I) (M := M) g₀ 3
+  obtain ⟨CR, hCR, hjetR⟩ := galerkinRepresentation_lowOrder_iteratedCovGrad_sum_le (I := I) (M := M) g₀
   simp only [Nat.cast_ofNat] at hjet4 hjet3 hhs
   refine ⟨Chs * C4 * Ctop, Chs * C4 * Kr2 * CR, Chs * C4 * Kr1 * CR,
     Kcap,
@@ -526,18 +526,18 @@ theorem galArmMassOrd (hDim : Module.finrank ℝ E = 3)
   have hcap : ∀ (S : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
       (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) 2 x
-          ((lowBaseData (I := I) (M := M) g₀ g₀
+          ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
             (symmS (I := I) (M := M) g₀
               (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
             (galRepFib (I := I) (M := M) g₀ hR hreal S c)
-            (lowregFibZero (I := I) (M := M) g₀ hR hreal)).C2.toSection x) ≤
+            (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderCoefficient.toSection x) ≤
         Cδ ^ 2 := by
     intro S c x
     exact (hsplit _
       (ccTensorBilin_symmS_symm (I := I) (M := M)
         g₀ (galCoreRep (I := I) (M := M) g₀ R S c))
       hδ3 hδ0 (galRepFib (I := I) (M := M) g₀ hR hreal S c)
-      (lowregFibZero (I := I) (M := M) g₀ hR hreal)).2 x
+      (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).2 x
   refine ⟨Chs * Kmid * (1 + Cδ) * (1 + C3) ^ 2 * (1 + CR * R) ^ 2,
     mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg hChs hKmid) (by linarith))
       (sq_nonneg _)) (sq_nonneg _), ?_⟩
@@ -555,35 +555,35 @@ theorem galArmMassOrd (hDim : Module.finrank ℝ E = 3)
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (symmS (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C4 * s4 :=
-    le_trans (jetSqrtLe (I := I) (M := M) g₀ 5 _) (hjet4 hR F c)
+    le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 5 _) (hjet4 hR F c)
   have h4 : Real.sqrt (∑ j ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (symmS (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C3 * s3 :=
-    le_trans (jetSqrtLe (I := I) (M := M) g₀ 4 _) (hjet3 hR F c)
+    le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 4 _) (hjet3 hR F c)
   have h3 : Real.sqrt (∑ j ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (symmS (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ CR * R :=
-    le_trans (jetSqrtLe (I := I) (M := M) g₀ 3 _) (hjetR hR F c)
+    le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 3 _) (hjetR hR F c)
   have hladb := hlad (symmS (I := I) (M := M) g₀
       (galCoreRep (I := I) (M := M) g₀ R F c)) hsym hδ0 hδ3
     (galRepFib (I := I) (M := M) g₀ hR hreal F c)
-    (lowregFibZero (I := I) (M := M) g₀ hR hreal) hCδ (hcap F c)
+    (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal) hCδ (hcap F c)
     (mul_nonneg hC3 hs3nn) (mul_nonneg hCR hR) h5 h4 h3
   have hmass := cc_partial_le_norm (I := I) (M := M) g₀ 2 (2 : ℝ)
-    ((lowBaseData (I := I) (M := M) g₀ g₀
+    ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
           (symmS (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
           (galRepFib (I := I) (M := M) g₀ hR hreal F c)
-          (lowregFibZero (I := I) (M := M) g₀ hR hreal)).a2
+          (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderAction
         (I := I) (M := M)
         (symmS (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)) +
-      (lowBaseData (I := I) (M := M) g₀ g₀
+      (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
           (symmS (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
           (galRepFib (I := I) (M := M) g₀ hR hreal F c)
-          (lowregFibZero (I := I) (M := M) g₀ hR hreal)).a1
+          (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).firstOrderAction
         (I := I) (M := M)
         (symmS (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c))) F
   refine le_trans (le_trans (Real.sqrt_le_sqrt hmass)
@@ -612,7 +612,7 @@ theorem galArmMassOrd (hDim : Module.finrank ℝ E = 3)
             (1 + s3) ^ 2 := by ring
   nlinarith [hB]
 
-theorem galArmMass (hDim : Module.finrank ℝ E = 3)
+theorem exists_galerkin_action_h2_tame_bound (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ} (hR : 0 ≤ R)
     (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g₀ 0 2,
@@ -625,21 +625,21 @@ theorem galArmMass (hDim : Module.finrank ℝ E = 3)
       ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
         (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ),
         Real.sqrt (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (2 : ℝ) *
-            ((galArmVec (I := I) (M := M) g₀ hR hδ hreal F c).coeff i) ^ 2) ≤
+            ((galerkinActionVector (I := I) (M := M) g₀ hR hδ hreal F c).coeff i) ^ 2) ≤
           (Ctop * Cδ + Kr2 * R + Kr1 * R) *
               Real.sqrt (∑ i ∈ F,
                 tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) * (c i) ^ 2) +
             Kmid * (1 + Real.sqrt (∑ i ∈ F,
               tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2)) ^ 2 := by
   obtain ⟨Ctop, Kr2, Kr1, Kcap, hCtop, hKr2, hKr1, hKcap, hord⟩ :=
-    galArmMassOrd (I := I) (M := M) hDim g₀
+    exists_galerkin_action_h2_tame_bound_constants (I := I) (M := M) hDim g₀
   obtain ⟨Kmid, hKmid, hmass⟩ := hord hR hδ hδ0 hδ3 hreal
   let Cδ : ℝ := Kcap * (δ / (1 - δ) ^ 2)
   refine ⟨Ctop, Kr2, Kr1, Kmid, Cδ, hCtop, hKr2, hKr1, hKmid,
     mul_nonneg hKcap (div_nonneg hδ0 (sq_nonneg _)), ?_⟩
   simpa only [Cδ] using hmass
 
-theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
+private theorem exists_galerkin_energy_three_bound_parameters_raw (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ Ctop₂ Kr2 Kr1 Kcap : ℝ,
       0 ≤ Ctop₂ ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Kcap ∧
@@ -650,8 +650,8 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) S‖ ≤ P →
         gFibreOpBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ S) δ)
-    (_hcore : Continuous (coreN (I := I) (M := M) g₀ g₀ hδ
-      (lowregRealRad (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
+    (_hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g₀ hδ
+      (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
         hP.le hreal)))
     {U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ}
     (_hUcont : ∀ N, ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
@@ -661,8 +661,8 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
       HasDerivWithinAt (fun u => U N u i)
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) * U N t i +
           galTameForce (I := I) (M := M) g₀ 1
-            (lowregStateRad_pos hCtop hB1 hρ hP).le
-            (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
+            (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
+            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i)
         (Set.Ici t) t)
     (_hUinit : ∀ N i, U N 0 i = 0)
@@ -677,36 +677,36 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
     (_hPrbd : ∀ N, ∀ t ∈ Set.Icc (0 : ℝ) T, Pr N t ≤ B)
     {ε : ℝ}, 0 < ε →
         Ctop₂ * (Kcap * (δ / (1 - δ) ^ 2)) +
-            Kr2 * lowregStateRad Ctop B1 ρ P +
-            Kr1 * lowregStateRad Ctop B1 ρ P + ε < 1 →
+            Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
+            Kr1 * lowRegularityStateRadius Ctop B1 ρ P + ε < 1 →
         ∃ Φ : ℝ, ∀ N : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) T,
           galerkinEnergy (I := I) (M := M)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 t ≤ Φ := by
   classical
   obtain ⟨Ctop₂, Kr2, Kr1, Kcap, hCtop₂, hKr2, hKr1, hKcap, hord⟩ :=
-    galArmMassOrd (I := I) (M := M) hDim g₀
+    exists_galerkin_action_h2_tame_bound_constants (I := I) (M := M) hDim g₀
   refine ⟨Ctop₂, Kr2, Kr1, Kcap, hCtop₂, hKr2, hKr1, hKcap, ?_⟩
   intro δ Ctop B1 ρ P T B hδ hδ0 hδ3 hCtop hB1 hρ hP hreal hcore U
     hUcont hUderiv hUinit Pr hPr0 hPrnn hPrcont hPrderiv hPrbd ε hε hH
-  have hRpos : 0 < lowregStateRad Ctop B1 ρ P :=
-    lowregStateRad_pos hCtop hB1 hρ hP
+  have hRpos : 0 < lowRegularityStateRadius Ctop B1 ρ P :=
+    lowRegularityStateRadius_pos hCtop hB1 hρ hP
   obtain ⟨Kmid, hKmid, hmass⟩ := hord hRpos.le hδ hδ0 hδ3
-      (lowregRealRad (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
+      (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
         hP.le hreal)
   let Cδ : ℝ := Kcap * (δ / (1 - δ) ^ 2)
-  obtain ⟨Cseed, hCseed, hseed⟩ := lowRegSeedMass (I := I) (M := M) g₀ g₀
-    hRpos hδ (lowregRealRad (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
+  obtain ⟨Cseed, hCseed, hseed⟩ := exists_zero_state_deTurck_remainder_spectral_bound (I := I) (M := M) g₀ g₀
+    hRpos hδ (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
       (ρ := ρ) hP.le hreal) hcore
-  change Ctop₂ * Cδ + Kr2 * lowregStateRad Ctop B1 ρ P +
-      Kr1 * lowregStateRad Ctop B1 ρ P + ε < 1 at hH
+  change Ctop₂ * Cδ + Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
+      Kr1 * lowRegularityStateRadius Ctop B1 ρ P + ε < 1 at hH
   have hclosure : ∀ N : ℕ, ∀ t ∈ Set.Ico (0 : ℝ) T,
       2 * ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
           tensorSobolevWeight (I := I) (M := M) i 3 *
             (U N t i * galTameForce (I := I) (M := M) g₀ 1 hRpos.le
-              (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
+              (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
               (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i) ≤
-        (2 * (Ctop₂ * Cδ + Kr2 * lowregStateRad Ctop B1 ρ P +
-              Kr1 * lowregStateRad Ctop B1 ρ P) + 2 * ε) *
+        (2 * (Ctop₂ * Cδ + Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
+              Kr1 * lowRegularityStateRadius Ctop B1 ρ P) + 2 * ε) *
             galerkinEnergy (I := I) (M := M)
               (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) (3 + 1) t +
           (0 + 6 * Kmid ^ 2 / ε * (1 + galerkinEnergy (I := I) (M := M)
@@ -719,13 +719,13 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
     intro N t _
     have hsplit : ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
         galTameForce (I := I) (M := M) g₀ 1 hRpos.le
-            (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
+            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i =
-          (galArmVec (I := I) (M := M) g₀ hRpos.le hδ
-            (lowregRealRad (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
+          (galerkinActionVector (I := I) (M := M) g₀ hRpos.le hδ
+            (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
               (ρ := ρ) hP.le hreal)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t)).coeff i +
-          (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
+          (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
             ⟨0, DifferentialGeometry.Analysis.Parabolic.zero_mem_lowerState
               (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
@@ -734,7 +734,7 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
       exact add_comm _ _
     have hstat : ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
         tensorSobolevWeight (I := I) (M := M) i 3 *
-          ((lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
+          ((boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
             ⟨0, DifferentialGeometry.Analysis.Parabolic.zero_mem_lowerState
               (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i) ^ 2
           ≤ Cseed 3 ^ 2 := by
@@ -743,13 +743,13 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
     have hladder :
         Real.sqrt (∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
             tensorSobolevWeight (I := I) (M := M) i (3 - 1) *
-              ((galArmVec (I := I) (M := M) g₀ hRpos.le hδ
-                (lowregRealRad (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
+              ((galerkinActionVector (I := I) (M := M) g₀ hRpos.le hδ
+                (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
                   (ρ := ρ) hP.le hreal)
                 (eigenIdxFinset (I := I) (M := M) g₀ N)
                 (U N t)).coeff i) ^ 2) ≤
-          (Ctop₂ * Cδ + Kr2 * lowregStateRad Ctop B1 ρ P +
-              Kr1 * lowregStateRad Ctop B1 ρ P) *
+          (Ctop₂ * Cδ + Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
+              Kr1 * lowRegularityStateRadius Ctop B1 ρ P) *
               Real.sqrt (∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
                 tensorSobolevWeight (I := I) (M := M) i (3 + 1) *
                   (U N t i) ^ 2) +
@@ -763,14 +763,14 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
       nlinarith [hm]
     have hres := two_sum_ladder_add_le (I := I) (M := M)
       (eigenIdxFinset (I := I) (M := M) g₀ N) (3 : ℝ) (U N t)
-      (fun i => (galArmVec (I := I) (M := M) g₀ hRpos.le hδ
-        (lowregRealRad (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
+      (fun i => (galerkinActionVector (I := I) (M := M) g₀ hRpos.le hδ
+        (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
           hP.le hreal) (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t)).coeff i)
-      (fun i => (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
+      (fun i => (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         ⟨0, DifferentialGeometry.Analysis.Parabolic.zero_mem_lowerState
           (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i)
       (galTameForce (I := I) (M := M) g₀ 1 hRpos.le
-        (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
+        (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
         (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t))
       (hCseed 3) hε hsplit hladder hstat
     unfold galerkinEnergy
@@ -798,11 +798,11 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
   refine galRiderBound (I := I) (M := M) (g := g₀) (r := 0) (s₀ := 2)
     (U := U) (T := T) (σ := 3)
     (Fseq := fun N t => galTameForce (I := I) (M := M) g₀ 1 hRpos.le
-      (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
+      (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
       (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t))
     (sseq := fun N => eigenIdxFinset (I := I) (M := M) g₀ N)
-    (Cδ := 2 * (Ctop₂ * Cδ + Kr2 * lowregStateRad Ctop B1 ρ P +
-      Kr1 * lowregStateRad Ctop B1 ρ P) + 2 * ε)
+    (Cδ := 2 * (Ctop₂ * Cδ + Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
+      Kr1 * lowRegularityStateRadius Ctop B1 ρ P) + 2 * ε)
     (Cmid := 0) (seed := 2 * Cseed 3) (B0 := 0)
     (c₀ := Kmid ^ 2 / ε) (Crid := 6 * Kmid ^ 2 / ε) (B := B) (P := Pr)
     (by linarith) le_rfl (by linarith [hCseed 3])
@@ -817,7 +817,7 @@ theorem lowregRung3Ord (hDim : Module.finrank ℝ E = 3)
     rw [hUinit N i]; ring
   rw [hz]
 
-def IsRung3Ord (g₀ : SmoothRiemannianMetric I M)
+def HasGalerkinEnergyThreeBound (g₀ : SmoothRiemannianMetric I M)
     (Ctop₂ Kr2 Kr1 Kcap : ℝ) : Prop :=
   0 ≤ Ctop₂ ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Kcap ∧
     ∀ {δ Ctop B1 ρ P T B : ℝ}
@@ -827,8 +827,8 @@ def IsRung3Ord (g₀ : SmoothRiemannianMetric I M)
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) S‖ ≤ P →
           gFibreOpBound (I := I) (M := M) g₀
             (ccTensorBilinSymm (I := I) g₀ S) δ)
-      (_hcore : Continuous (coreN (I := I) (M := M) g₀ g₀ hδ
-        (lowregRealRad (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
+      (_hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g₀ hδ
+        (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
           hP.le hreal)))
       {U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ}
       (_hUcont : ∀ N, ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
@@ -838,8 +838,8 @@ def IsRung3Ord (g₀ : SmoothRiemannianMetric I M)
         HasDerivWithinAt (fun u => U N u i)
           (-(TensorEigenIdx.lambda (I := I) (M := M) i) * U N t i +
             galTameForce (I := I) (M := M) g₀ 1
-              (lowregStateRad_pos hCtop hB1 hρ hP).le
-              (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
+              (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
+              (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
               (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i)
           (Set.Ici t) t)
       (_hUinit : ∀ N i, U N 0 i = 0)
@@ -854,20 +854,20 @@ def IsRung3Ord (g₀ : SmoothRiemannianMetric I M)
       (_hPrbd : ∀ N, ∀ t ∈ Set.Icc (0 : ℝ) T, Pr N t ≤ B)
       {ε : ℝ}, 0 < ε →
         Ctop₂ * (Kcap * (δ / (1 - δ) ^ 2)) +
-            Kr2 * lowregStateRad Ctop B1 ρ P +
-            Kr1 * lowregStateRad Ctop B1 ρ P + ε < 1 →
+            Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
+            Kr1 * lowRegularityStateRadius Ctop B1 ρ P + ε < 1 →
         ∃ Φ : ℝ, ∀ N : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) T,
           galerkinEnergy (I := I) (M := M)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 t ≤ Φ
 
-theorem lowregRung3Pack (hDim : Module.finrank ℝ E = 3)
+theorem exists_galerkin_energy_three_bound_parameters (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) :
-    ∃ Ctop₂ Kr2 Kr1 Kcap : ℝ, IsRung3Ord (I := I) (M := M) g₀ Ctop₂ Kr2 Kr1 Kcap := by
+    ∃ Ctop₂ Kr2 Kr1 Kcap : ℝ, HasGalerkinEnergyThreeBound (I := I) (M := M) g₀ Ctop₂ Kr2 Kr1 Kcap := by
   obtain ⟨Ctop₂, Kr2, Kr1, Kcap, hCtop₂, hKr2, hKr1, hKcap, hord⟩ :=
-    lowregRung3Ord (I := I) (M := M) hDim g₀
+    exists_galerkin_energy_three_bound_parameters_raw (I := I) (M := M) hDim g₀
   exact ⟨Ctop₂, Kr2, Kr1, Kcap, hCtop₂, hKr2, hKr1, hKcap, hord⟩
 
-theorem lowregRung3 (hDim : Module.finrank ℝ E = 3)
+theorem exists_uniform_galerkin_energy_three_bound (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) {δ Ctop B1 ρ P T B : ℝ}
     (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hCtop : 0 ≤ Ctop) (hB1 : 0 ≤ B1) (hρ : 0 < ρ) (hP : 0 < P)
@@ -875,8 +875,8 @@ theorem lowregRung3 (hDim : Module.finrank ℝ E = 3)
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) S‖ ≤ P →
         gFibreOpBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ S) δ)
-    (hcore : Continuous (coreN (I := I) (M := M) g₀ g₀ hδ
-      (lowregRealRad (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
+    (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g₀ hδ
+      (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1) (ρ := ρ)
         hP.le hreal)))
     {U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ}
     (hUcont : ∀ N, ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
@@ -886,8 +886,8 @@ theorem lowregRung3 (hDim : Module.finrank ℝ E = 3)
       HasDerivWithinAt (fun u => U N u i)
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) * U N t i +
           galTameForce (I := I) (M := M) g₀ 1
-            (lowregStateRad_pos hCtop hB1 hρ hP).le
-            (lowregNfun (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
+            (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
+            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i)
         (Set.Ici t) t)
     (hUinit : ∀ N i, U N 0 i = 0)
@@ -902,13 +902,13 @@ theorem lowregRung3 (hDim : Module.finrank ℝ E = 3)
     (hPrbd : ∀ N, ∀ t ∈ Set.Icc (0 : ℝ) T, Pr N t ≤ B) :
     ∃ Ctop₂ Kr2 Kr1 Cδ : ℝ, 0 ≤ Ctop₂ ∧ 0 ≤ Kr2 ∧ 0 ≤ Kr1 ∧ 0 ≤ Cδ ∧
       ∀ {ε : ℝ}, 0 < ε →
-        Ctop₂ * Cδ + Kr2 * lowregStateRad Ctop B1 ρ P +
-            Kr1 * lowregStateRad Ctop B1 ρ P + ε < 1 →
+        Ctop₂ * Cδ + Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
+            Kr1 * lowRegularityStateRadius Ctop B1 ρ P + ε < 1 →
         ∃ Φ : ℝ, ∀ N : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) T,
           galerkinEnergy (I := I) (M := M)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N) 3 t ≤ Φ := by
   obtain ⟨Ctop₂, Kr2, Kr1, Kcap, hCtop₂, hKr2, hKr1, hKcap, hord⟩ :=
-    lowregRung3Ord (I := I) (M := M) hDim g₀
+    exists_galerkin_energy_three_bound_parameters_raw (I := I) (M := M) hDim g₀
   let Cδ : ℝ := Kcap * (δ / (1 - δ) ^ 2)
   refine ⟨Ctop₂, Kr2, Kr1, Cδ, hCtop₂, hKr2, hKr1,
     mul_nonneg hKcap (div_nonneg hδ0 (sq_nonneg _)), ?_⟩

@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.ApproxIsoDataMono
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationMonotonicity
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.ApproxIso
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximateIsometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricIntrinsic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -52,12 +52,12 @@ theorem preapprox_pair
           (mfderiv I I (Function.invFunOn F U) y w)) →
       ∀ a ≤ p, ∀ y ∈ F '' K,
         metricDerivNorm (I := I) a G h h y ≤ eps) :
-    Nonempty (PreApproxIsoDataOn (I := I) K eps p F g h) ∧
-      Nonempty (PreApproxIsoDataOn (I := I) (F '' K) eps p
+    Nonempty (MapMetricApproximationOn (I := I) K eps p F g h) ∧
+      Nonempty (MapMetricApproximationOn (I := I) (F '' K) eps p
         (Function.invFunOn F U) h g) := by
   classical
   obtain ⟨Φ, hsrc, htgt, hEq⟩ :=
-    Geometry.Riemannian.exists_diffeo_of_injOn hloc hU hinj
+    Geometry.Riemannian.exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on hloc hU hinj
   have hK'src : K' ⊆ Φ.source := by
     rw [hsrc]
     exact hK'U
@@ -82,11 +82,11 @@ theorem preapprox_pair
     intro x hx v
     rw [← hPf]
     exact hTfΦ x (hKK' hx) v
-  have hfwdΦ : PreApproxIsoDataOn (I := I) K eps p
+  have hfwdΦ : MapMetricApproximationOn (I := I) K eps p
       (Φ : M → N) g h :=
-    PreApproxIsoDataOn.of_metric (I := I) Gf g h heps heps1
+    MapMetricApproximationOn.of_metric (I := I) Gf g h heps heps1
       (Φ.contMDiffOn_toFun.mono hKsrc) hTf (hfwd Gf hGfF)
-  have hfwdF : PreApproxIsoDataOn (I := I) K eps p F g h :=
+  have hfwdF : MapMetricApproximationOn (I := I) K eps p F g h :=
     hfwdΦ.congr (fun x hx ↦ (hevF x (hKK' hx)).symm)
   have himage : (Φ : M → N) '' K' = F '' K' :=
     Set.EqOn.image_eq (fun x hx ↦ hEq (hK'U hx))
@@ -138,11 +138,11 @@ theorem preapprox_pair
     intro y hy v
     rw [← hPr]
     exact hTrΦ y (Set.image_mono hKK' hy) v
-  have hrevΦ : PreApproxIsoDataOn (I := I) (F '' K) eps p
+  have hrevΦ : MapMetricApproximationOn (I := I) (F '' K) eps p
       (Φ.symm : N → M) h g :=
-    PreApproxIsoDataOn.of_metric (I := I) Gr h g heps heps1
+    MapMetricApproximationOn.of_metric (I := I) Gr h g heps heps1
       (Φ.symm.contMDiffOn_toFun.mono hFKsrc) hTr (hrev Gr hGrInv)
-  have hrevF : PreApproxIsoDataOn (I := I) (F '' K) eps p
+  have hrevF : MapMetricApproximationOn (I := I) (F '' K) eps p
       (Function.invFunOn F U) h g :=
     hrevΦ.congr (fun y hy ↦
       (hevR y (Set.image_mono hKK' hy)).symm)
@@ -195,9 +195,9 @@ theorem HasStageJetData.preapprox_tail
       letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
       letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
       let F := stageComparisonMap inp P Lphi s hs hconn k l
-      Nonempty (PreApproxIsoDataOn (I := I)
+      Nonempty (MapMetricApproximationOn (I := I)
           (Metric.closedBall Yk.basepoint R) eps p F Yk.metric Yl.metric) ∧
-        Nonempty (PreApproxIsoDataOn (I := I)
+        Nonempty (MapMetricApproximationOn (I := I)
           (F '' Metric.closedBall Yk.basepoint R) eps p
           (Function.invFunOn F (Metric.ball Yk.basepoint T))
           Yl.metric Yk.metric) := by

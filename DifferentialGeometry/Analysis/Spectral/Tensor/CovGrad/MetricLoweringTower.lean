@@ -82,7 +82,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [Sig
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem lowerCc_rfns (g : SmoothRiemannianMetric I M) (r s : ℕ)
+theorem lowerCc_riemannianFiberNormSq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (r + s) x
         ((lowerCc (I := I) (M := M) g r s T).toSection x) =
@@ -216,7 +216,7 @@ private lemma lowerCc_grad_rel (g : SmoothRiemannianMetric I M) (r s : ℕ)
   exact hlower.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lowerCc_grad_rfns (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private lemma lowerCc_grad_riemannianFiberNormSq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 ((r + s) + 1) x
         ((covGrad (I := I) (M := M) g 0 (r + s)
@@ -231,12 +231,12 @@ private lemma lowerCc_grad_rfns (g : SmoothRiemannianMetric I M) (r s : ℕ)
       (covGrad (I := I) (M := M) g 0 (r + s)
         (lowerCc (I := I) (M := M) g r s T))
       (lowerCc_grad_rel (I := I) (M := M) g r s T) 0 x
-  have hlower := lowerCc_rfns (I := I) (M := M) g r (s + 1)
+  have hlower := lowerCc_riemannianFiberNormSq (I := I) (M := M) g r (s + 1)
     (covGrad (I := I) (M := M) g r s T) x
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using hperm.trans hlower
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lowerCc_jet_rfns (g : SmoothRiemannianMetric I M) (r s j : ℕ)
+theorem lowerCc_jet_riemannianFiberNormSq (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (T : SmoothCcTensor g r s) (hj : j ≤ 2) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 ((r + s) + j) x
         ((Analysis.Sobolev.iteratedCovGrad
@@ -248,9 +248,9 @@ theorem lowerCc_jet_rfns (g : SmoothRiemannianMetric I M) (r s j : ℕ)
   have hj' : j = 0 ∨ j = 1 ∨ j = 2 := by omega
   rcases hj' with rfl | rfl | rfl
   · simpa only [iteratedCovGrad_zero, Nat.add_zero] using
-      lowerCc_rfns (I := I) (M := M) g r s T x
+      lowerCc_riemannianFiberNormSq (I := I) (M := M) g r s T x
   · simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero] using
-      lowerCc_grad_rfns (I := I) (M := M) g r s T x
+      lowerCc_grad_riemannianFiberNormSq (I := I) (M := M) g r s T x
   · have hperm :=
       riemannianFiberNormSq_iteratedCovGrad_eq_of_section_domDomCongr
         (I := I) (M := M) g ((r + s) + 1) (lowerGradPerm r s)
@@ -259,7 +259,7 @@ theorem lowerCc_jet_rfns (g : SmoothRiemannianMetric I M) (r s j : ℕ)
         (covGrad (I := I) (M := M) g 0 (r + s)
           (lowerCc (I := I) (M := M) g r s T))
         (lowerCc_grad_rel (I := I) (M := M) g r s T) 1 x
-    have hnext := lowerCc_grad_rfns (I := I) (M := M) g r (s + 1)
+    have hnext := lowerCc_grad_riemannianFiberNormSq (I := I) (M := M) g r (s + 1)
       (covGrad (I := I) (M := M) g r s T) x
     simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero] using
       hperm.trans hnext
@@ -321,7 +321,7 @@ theorem lowerCc_jet_norm (g : SmoothRiemannianMetric I M) (r s j : ℕ)
       exact hbridge
     rw [hleftSq, hrightSq]
     exact integral_congr_ae (Filter.Eventually.of_forall
-      (lowerCc_jet_rfns (I := I) (M := M) g r s j T hj))
+      (lowerCc_jet_riemannianFiberNormSq (I := I) (M := M) g r s j T hj))
   have hleft : 0 ≤ ‖Analysis.Sobolev.iteratedCovGrad
       (E := E) (H := H) (I := I) (M := M) g 0 (r + s) j
       (lowerCc (I := I) (M := M) g r s T)‖ := norm_nonneg _

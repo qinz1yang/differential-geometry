@@ -30,12 +30,12 @@ private theorem pull_symm_cancel
   rw [Diffeomorph.pullbackMetric_trans, Φ.self_trans_symm,
     Diffeomorph.pullbackMetric_refl]
 omit [NeZero (Module.finrank ℝ E)] in
-theorem connDiff_push
+theorem connectionDifference_push
     (g h : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (x : M) (u v : TangentSpace I x) :
     mfderiv I I (Φ : M → M) x
-        (connDiff (I := I) g (Diffeomorph.pullbackMetric h Φ) x u v) =
-      connDiff (I := I) (Diffeomorph.pullbackMetric g Φ.symm) h (Φ x)
+        (connectionDifference (I := I) g (Diffeomorph.pullbackMetric h Φ) x u v) =
+      connectionDifference (I := I) (Diffeomorph.pullbackMetric g Φ.symm) h (Φ x)
         (mfderiv I I (Φ : M → M) x u)
         (mfderiv I I (Φ : M → M) x v) := by
   classical
@@ -60,7 +60,7 @@ theorem connDiff_push
   have hnatH :=
     LeviCivita_covariantDerivative_pullback_pointwise
       (I := I) h Φ v hσ
-  have htgt := connDiff_apply (I := I)
+  have htgt := connectionDifference_apply (I := I)
     (Diffeomorph.pullbackMetric g Φ.symm) h hpush
     (mfderiv I I (Φ : M → M) x v)
   have hpushImage := Diffeomorph.pushforward_image (E := E) (H := H) (M := M)
@@ -68,15 +68,15 @@ theorem connDiff_push
   rw [hpushImage, hσx] at htgt
   calc
     mfderiv I I (Φ : M → M) x
-        (connDiff (I := I) g (Diffeomorph.pullbackMetric h Φ) x u v) =
+        (connectionDifference (I := I) g (Diffeomorph.pullbackMetric h Φ) x u v) =
       mfderiv I I (Φ : M → M) x
-        (connDiff (I := I) g (Diffeomorph.pullbackMetric h Φ) x (σ x) v) := by
+        (connectionDifference (I := I) g (Diffeomorph.pullbackMetric h Φ) x (σ x) v) := by
           rw [hσx]
     _ = mfderiv I I (Φ : M → M) x
         ((LeviCivita (I := I) g).toFun (fun z => σ z) x v -
           (LeviCivita (I := I) (Diffeomorph.pullbackMetric h Φ)).toFun
             (fun z => σ z) x v) := by
-          rw [connDiff_apply (I := I) g
+          rw [connectionDifference_apply (I := I) g
             (Diffeomorph.pullbackMetric h Φ) hσ v]
     _ = mfderiv I I (Φ : M → M) x
           ((LeviCivita (I := I) g).toFun (fun z => σ z) x v) -
@@ -90,7 +90,7 @@ theorem connDiff_push
           (Diffeomorph.pushforward Φ (fun z => σ z)) (Φ x)
           (mfderiv I I (Φ : M → M) x v) := by
           rw [hnatG, hnatH]
-    _ = connDiff (I := I) (Diffeomorph.pullbackMetric g Φ.symm) h (Φ x)
+    _ = connectionDifference (I := I) (Diffeomorph.pullbackMetric g Φ.symm) h (Φ x)
         (mfderiv I I (Φ : M → M) x u)
         (mfderiv I I (Φ : M → M) x v) := htgt.symm
 
@@ -132,7 +132,7 @@ theorem deTurckVF_push
     h (Φ x) F hF]
   apply Finset.sum_congr rfl
   intro i _hi
-  simpa only [F] using connDiff_push (I := I) g h Φ x
+  simpa only [F] using connectionDifference_push (I := I) g h Φ x
     (smoothOrthoFrame (I := I) g x i x)
     (smoothOrthoFrame (I := I) g x i x)
 

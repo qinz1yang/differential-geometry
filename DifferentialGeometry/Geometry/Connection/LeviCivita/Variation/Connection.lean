@@ -43,7 +43,7 @@ variable {u : Set M}
 variable {u : Set M}
 
 
-def connDiffVec
+def connectionDifferenceVec
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base var : Real) (x : M) (i j : Idx) : TangentSpace I x :=
@@ -51,28 +51,28 @@ def connDiffVec
     (G.connection base (frame j) x) (frame i x)
 
 
-def connDiffLow
+def connectionDifferenceLow
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (metricTime base var : Real) (x : M) (i j l : Idx) : Real :=
   (G.metric metricTime).inner x
-    (connDiffVec (I := I) G frame base var x i j) (frame l x)
+    (connectionDifferenceVec (I := I) G frame base var x i j) (frame l x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
-@[simp] theorem connDiffVec_self
+@[simp] theorem connectionDifferenceVec_self
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (base : Real) (x : M) (i j : Idx) :
-    connDiffVec (I := I) G frame base base x i j = 0 := by
-  simp [connDiffVec]
+    connectionDifferenceVec (I := I) G frame base base x i j = 0 := by
+  simp [connectionDifferenceVec]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
-@[simp] theorem connDiffLow_self
+@[simp] theorem connectionDifferenceLow_self
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (metricTime base : Real) (x : M) (i j l : Idx) :
-    connDiffLow (I := I) G frame metricTime base base x i j l = 0 := by
-  simp [connDiffLow]
+    connectionDifferenceLow (I := I) G frame metricTime base base x i j l = 0 := by
+  simp [connectionDifferenceLow]
 
 def metricCovAtBase
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
@@ -514,7 +514,7 @@ theorem metricCovVar_ext
 
 omit [Fintype Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
-private theorem connDiffVec_symm
+private theorem connectionDifferenceVec_symm
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
@@ -522,8 +522,8 @@ private theorem connDiffVec_symm
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (base var : Real) (i j : Idx) :
-    connDiffVec (I := I) G frame base var x i j =
-      connDiffVec (I := I) G frame base var x j i := by
+    connectionDifferenceVec (I := I) G frame base var x i j =
+      connectionDifferenceVec (I := I) G frame base var x j i := by
   have hfi : MDiffAt (T% (frame i)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx i
   have hfj : MDiffAt (T% (frame j)) x :=
@@ -540,7 +540,7 @@ private theorem connDiffVec_symm
         (G.connection base (frame j) x) (frame i x) -
           (G.connection base (frame i) x) (frame j x) := by
     exact hvar_torsion.trans hbase_torsion.symm
-  unfold connDiffVec
+  unfold connectionDifferenceVec
   apply sub_eq_zero.mp
   calc
     ((G.connection var (frame j) x) (frame i x) -
@@ -558,7 +558,7 @@ private theorem connDiffVec_symm
 
 omit [Fintype Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
-private theorem connDiffLow_symm
+private theorem connectionDifferenceLow_symm
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
@@ -566,13 +566,13 @@ private theorem connDiffLow_symm
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (metricTime base var : Real) (i j l : Idx) :
-    connDiffLow (I := I) G frame metricTime base var x i j l =
-      connDiffLow (I := I) G frame metricTime base var x j i l := by
-  unfold connDiffLow
-  rw [connDiffVec_symm (I := I) G hLC frame hframe hu hx base var i j]
+    connectionDifferenceLow (I := I) G frame metricTime base var x i j l =
+      connectionDifferenceLow (I := I) G frame metricTime base var x j i l := by
+  unfold connectionDifferenceLow
+  rw [connectionDifferenceVec_symm (I := I) G hLC frame hframe hu hx base var i j]
 
 omit [SigmaCompactSpace M] [T2Space M] [Fintype Idx] in
-theorem metricCovAtBase_eq_connDiff
+theorem metricCovAtBase_eq_connectionDifference
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (hLC : ∀ s : Real,
       IsLeviCivita (I := I) (G.connection s) (G.metric s))
@@ -581,9 +581,9 @@ theorem metricCovAtBase_eq_connDiff
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (base var : Real) (d a b : Idx) :
     metricCovAtBase (I := I) G frame base var x d a b =
-      connDiffLow (I := I) G frame var base var x d a b +
+      connectionDifferenceLow (I := I) G frame var base var x d a b +
         (G.metric var).inner x (frame a x)
-          (connDiffVec (I := I) G frame base var x d b) := by
+          (connectionDifferenceVec (I := I) G frame base var x d b) := by
   have hfd : MDiffAt (T% (frame d)) x :=
     localFrame_mdiffAt (I := I) frame hframe hu hx d
   have hfa : MDiffAt (T% (frame a)) x :=
@@ -593,7 +593,7 @@ theorem metricCovAtBase_eq_connDiff
   have hmc :=
     DifferentialGeometry.Geometry.Connection.metric_compatible_apply
       (I := I) (hLC var).1 (frame d) (frame a) (frame b) hfd hfa hfb
-  unfold metricCovAtBase connDiffLow connDiffVec
+  unfold metricCovAtBase connectionDifferenceLow connectionDifferenceVec
   have hmc' :
       extDerivFun (I := I)
           (fun y : M => (G.metric var).inner y (frame a y) (frame b y))
@@ -617,40 +617,40 @@ theorem finiteDiffKoszul
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (base var : Real) (i j l : Idx) :
-    2 * connDiffLow (I := I) G frame var base var x i j l =
+    2 * connectionDifferenceLow (I := I) G frame var base var x i j l =
       metricCovAtBase (I := I) G frame base var x i j l +
         metricCovAtBase (I := I) G frame base var x j i l -
           metricCovAtBase (I := I) G frame base var x l i j := by
-  rw [metricCovAtBase_eq_connDiff
+  rw [metricCovAtBase_eq_connectionDifference
     (I := I) G hLC frame hframe hu hx base var i j l]
-  rw [metricCovAtBase_eq_connDiff
+  rw [metricCovAtBase_eq_connectionDifference
     (I := I) G hLC frame hframe hu hx base var j i l]
-  rw [metricCovAtBase_eq_connDiff
+  rw [metricCovAtBase_eq_connectionDifference
     (I := I) G hLC frame hframe hu hx base var l i j]
-  have hji := connDiffLow_symm
+  have hji := connectionDifferenceLow_symm
     (I := I) G hLC frame hframe hu hx var base var j i l
-  have hli := connDiffLow_symm
+  have hli := connectionDifferenceLow_symm
     (I := I) G hLC frame hframe hu hx var base var l i j
-  have hlj := connDiffVec_symm
+  have hlj := connectionDifferenceVec_symm
     (I := I) G hLC frame hframe hu hx base var l j
   have hsym1 :
       (G.metric var).inner x (frame j x)
-          (connDiffVec (I := I) G frame base var x i l) =
-        connDiffLow (I := I) G frame var base var x i l j := by
-    unfold connDiffLow
+          (connectionDifferenceVec (I := I) G frame base var x i l) =
+        connectionDifferenceLow (I := I) G frame var base var x i l j := by
+    unfold connectionDifferenceLow
     exact (G.metric var).symm x (frame j x)
-      (connDiffVec (I := I) G frame base var x i l)
+      (connectionDifferenceVec (I := I) G frame base var x i l)
   rw [hji, hli, hlj, hsym1]
   ring
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffLow_eq_sum_gammaSub
+theorem connectionDifferenceLow_eq_sum_gammaSub
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     {x : M} (hx : x ∈ u)
     (metricTime base var : Real) (i j l : Idx) :
-    connDiffLow (I := I) G frame metricTime base var x i j l =
+    connectionDifferenceLow (I := I) G frame metricTime base var x i j l =
       ∑ k : Idx,
         (DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame
             (G.connection var) frame hframe x i j k -
@@ -707,7 +707,7 @@ theorem connDiffLow_eq_sum_gammaSub
             refine Finset.sum_congr rfl fun k _ => ?_
             rw [sub_smul]
   calc
-    connDiffLow (I := I) G frame metricTime base var x i j l =
+    connectionDifferenceLow (I := I) G frame metricTime base var x i j l =
         (G.metric metricTime).inner x (Vvar - Vbase) (frame l x) := by
           rfl
     _ = (G.metric metricTime).inner x
@@ -766,19 +766,19 @@ theorem metricCov_gammaSub
             DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame
               (G.connection base) frame hframe x d b k) *
             (G.metric var).inner x (frame k x) (frame a x)) := by
-  rw [metricCovAtBase_eq_connDiff
+  rw [metricCovAtBase_eq_connectionDifference
     (I := I) G hLC frame hframe hu hx base var d a b]
-  rw [connDiffLow_eq_sum_gammaSub
+  rw [connectionDifferenceLow_eq_sum_gammaSub
     (I := I) G frame hframe hx var base var d a b]
   have hsecond :
       (G.metric var).inner x (frame a x)
-          (connDiffVec (I := I) G frame base var x d b) =
-        connDiffLow (I := I) G frame var base var x d b a := by
-    unfold connDiffLow
+          (connectionDifferenceVec (I := I) G frame base var x d b) =
+        connectionDifferenceLow (I := I) G frame var base var x d b a := by
+    unfold connectionDifferenceLow
     rw [(G.metric var).symm x (frame a x)
-      (connDiffVec (I := I) G frame base var x d b)]
+      (connectionDifferenceVec (I := I) G frame base var x d b)]
   rw [hsecond]
-  rw [connDiffLow_eq_sum_gammaSub
+  rw [connectionDifferenceLow_eq_sum_gammaSub
     (I := I) G frame hframe hx var base var d b a]
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -816,15 +816,15 @@ theorem covCombo_gammaSub [DecidableEq Idx]
       metricCovAtBase (I := I) G frame base var x a b l +
         metricCovAtBase (I := I) G frame base var x b a l -
           metricCovAtBase (I := I) G frame base var x l a b =
-        2 * connDiffLow (I := I) G frame var base var x a b l := by
+        2 * connectionDifferenceLow (I := I) G frame var base var x a b l := by
     intro l
     exact (finiteDiffKoszul (I := I) G hLC frame hframe hu hx base var a b l).symm
   have hconn : ∀ l : Idx,
-      connDiffLow (I := I) G frame var base var x a b l =
+      connectionDifferenceLow (I := I) G frame var base var x a b l =
         ∑ k : Idx, D k * H k l := by
     intro l
     simpa [D, H] using
-      connDiffLow_eq_sum_gammaSub
+      connectionDifferenceLow_eq_sum_gammaSub
         (I := I) G frame hframe hx var base var a b l
   have hcontract : ∀ k : Idx,
       (∑ l : Idx, gInv x e l * H k l) =
@@ -880,7 +880,7 @@ theorem covCombo_gammaSub [DecidableEq Idx]
           metricCovAtBase (I := I) G frame base var x l a b))
         =
       ∑ l : Idx, gInv x e l *
-        (2 * connDiffLow (I := I) G frame var base var x a b l) := by
+        (2 * connectionDifferenceLow (I := I) G frame var base var x a b l) := by
           refine Finset.sum_congr rfl fun l _ => ?_
           rw [hcombo l]
     _ = ∑ l : Idx, gInv x e l *
@@ -1325,7 +1325,7 @@ theorem metricCovGeom_l2_le [DecidableEq Idx]
     metricCov_gammaSub (I := I) G hLC frame hframe hu hx base var a b c
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem normSqRS_connDiff_eq_componentL2Sq3 [DecidableEq Idx]
+theorem normSqRS_connectionDifference_eq_componentL2Sq3 [DecidableEq Idx]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -1448,7 +1448,7 @@ theorem varLowDeriv
     (hgamma : gammaDerivOn (I := I) G frame hframe base u gammaDot)
     {x : M} (hx : x ∈ u) (i j l : Idx) :
     HasDerivAt
-      (fun s : Real => connDiffLow (I := I) G frame s base s x i j l)
+      (fun s : Real => connectionDifferenceLow (I := I) G frame s base s x i j l)
       (∑ k : Idx,
         gammaDot x k i j * (G.metric base).inner x (frame k x) (frame l x))
       base := by
@@ -1488,11 +1488,11 @@ theorem varLowDeriv
           have hmul := hγ.mul hm
           simpa [gammaSub, metricComp] using hmul))
   have hEq :
-      (fun s : Real => connDiffLow (I := I) G frame s base s x i j l) =ᶠ[nhds base]
+      (fun s : Real => connectionDifferenceLow (I := I) G frame s base s x i j l) =ᶠ[nhds base]
         (fun s : Real => ∑ k : Idx, gammaSub k s * metricComp k s) := by
     exact Filter.Eventually.of_forall fun s => by
       simpa [gammaSub, metricComp] using
-        connDiffLow_eq_sum_gammaSub (I := I) G frame hframe hx s base s i j l
+        connectionDifferenceLow_eq_sum_gammaSub (I := I) G frame hframe hx s base s i j l
   exact hsum.congr_of_eventuallyEq hEq
 
 
@@ -1738,7 +1738,7 @@ theorem lcGammaVar [DecidableEq Idx]
     have hL :
         HasDerivAt
           (fun s : Real =>
-            2 * connDiffLow (I := I) G frame s base s x i j l)
+            2 * connectionDifferenceLow (I := I) G frame s base s x i j l)
           (2 * ∑ a : Idx,
             gammaDot x a i j * (G.metric base).inner x (frame a x) (frame l x))
           base := by
@@ -1762,7 +1762,7 @@ theorem lcGammaVar [DecidableEq Idx]
               metricCovAtBase (I := I) G frame base s x j i l -
                 metricCovAtBase (I := I) G frame base s x l i j) =ᶠ[nhds base]
           (fun s : Real =>
-            2 * connDiffLow (I := I) G frame s base s x i j l) := by
+            2 * connectionDifferenceLow (I := I) G frame s base s x i j l) := by
       exact Filter.Eventually.of_forall fun s => by
         exact (finiteDiffKoszul (I := I) G hLC frame hframe _hu hx base s i j l).symm
     have hL_as_R :

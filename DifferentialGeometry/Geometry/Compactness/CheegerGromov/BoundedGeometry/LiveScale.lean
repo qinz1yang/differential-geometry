@@ -28,13 +28,13 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
 omit [CompleteSpace E] in
 theorem exists_live_scale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (hre : hd.RealizesEdist)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -177,7 +177,7 @@ theorem exists_live_scale
   exact hbranch (L.φ n) (seqCenterD hd P L n (gamma.1 : Nat))
     (hn gamma).le
 
-end H6NormalData
+end BoundedGeometryNormalData
 
 end HCGCompactness
 end DifferentialGeometry

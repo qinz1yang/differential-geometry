@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Connection
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
@@ -48,6 +48,6 @@ theorem cc_h1_jet_sq
   rw [horder] at h
   exact h
 
-end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
+end DifferentialGeometry.Analysis.Spectral
 
 end

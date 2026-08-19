@@ -12,7 +12,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindex
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.DirichletSpectralBochnerGap
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedAppCcLeibniz
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedOperatorFieldApplicationLeibniz
 import DifferentialGeometry.Geometry.Connection.TensorNabla.EndoCovariantDerivativeSelfAdjoint
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SlotInsertSelfAdjointPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HomFieldActionL2JetBound
@@ -212,19 +212,19 @@ private lemma armResidual_slot01_transpose (g₀ g₁ : SmoothRiemannianMetric I
     (T : Tensor0SBundle.Tensor0SModel (2 + 1 + 1) ℝ E) (m : Fin 2 → E) :
     (∑ i : Fin (Module.finrank ℝ E),
         T (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
-            (Fin.cons ((metricComparisonDiffEndo (I := I) g₀ g₁ b
+            (Fin.cons ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
                 (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E) m))) =
       ∑ i : Fin (Module.finrank ℝ E),
-        T (Fin.cons ((metricComparisonDiffEndo (I := I) g₀ g₁ b
+        T (Fin.cons ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
               (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m)) := by
   classical
   set e : Fin (Module.finrank ℝ E) → TangentSpace I b :=
     fun i => smoothOrthoFrame (I := I) g₀ b i b with he
   set Λ : TangentSpace I b →L[ℝ] TangentSpace I b :=
-    metricComparisonDiffEndo (I := I) g₀ g₁ b with hΛ
+    metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b with hΛ
   have hadj : ∀ a c : TangentSpace I b, g₀.inner b (Λ a) c = g₀.inner b a (Λ c) :=
-    fun a c => gInvDiffRaisedEndo_g0_self_adjoint (I := I) g₀ g₁ b a c
+    fun a c => metricComparisonDifferenceEndomorphism_g0_self_adjoint (I := I) g₀ g₁ b a c
   have hexp : ∀ v : TangentSpace I b,
       v = ∑ j : Fin (Module.finrank ℝ E), g₀.inner b v (e j) • e j :=
     fun v => armResidual_orthoFrame_expansion (I := I) (M := M) g₀ b v
@@ -286,7 +286,7 @@ private lemma armResidual_contract_term_eq (g₀ g₁ : SmoothRiemannianMetric I
             (tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1)
               (operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-                  (gInvDiffRaisedEndoField (I := I) g₀ g₁))
+                  (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
                 (covGrad (I := I) (M := M) g₀ 0 2 u₀)) b
               (smoothOrthoFrame (I := I) g₀ b i b))) D) m =
       Tensor0SSpace.toModel
@@ -294,7 +294,7 @@ private lemma armResidual_contract_term_eq (g₀ g₁ : SmoothRiemannianMetric I
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)
           (Fin.cons
             ((((endoCovariantDerivative (I := I) (M := M) g₀)
-                  (gInvDiffRaisedEndoField (I := I) g₀ g₁) b
+                  (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
                   (smoothOrthoFrame (I := I) g₀ b i b))
                 (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E) m) +
         Tensor0SSpace.toModel
@@ -302,14 +302,14 @@ private lemma armResidual_contract_term_eq (g₀ g₁ : SmoothRiemannianMetric I
             (covGrad (I := I) (M := M) g₀ 0 (2 + 1)
               (covGrad (I := I) (M := M) g₀ 0 2 u₀)).toSection b) D)
           (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
-            (Fin.cons ((metricComparisonDiffEndo (I := I) g₀ g₁ b
+            (Fin.cons ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
                 (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E) m)) := by
   classical
   set ei : TangentSpace I b := smoothOrthoFrame (I := I) g₀ b i b with hei
   set Du : SmoothCcTensor g₀ 0 (2 + 1) := covGrad (I := I) (M := M) g₀ 0 2 u₀ with hDu
-  set Λf := gInvDiffRaisedEndoField (I := I) g₀ g₁ with hΛf
+  set Λf := metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ with hΛf
   rw [armResidual_toModel_contract_covariant (I := I) (M := M) 2 b ei _ D m]
-  have hderiv := tensorCovDerivAt_appCc_eq (I := I) (M := M) g₀ (2 + 1) (2 + 1)
+  have hderiv := tensorCovDerivAt_operatorFieldApplication_eq (I := I) (M := M) g₀ (2 + 1) (2 + 1)
     (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 Λf) Du b ((ei : TangentSpace I b) : E)
   rw [hderiv]
   rw [show ((((show Tensor0SSpace (2 + 1) I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
@@ -361,34 +361,34 @@ private lemma armResidual_arm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace ((2 + 1) + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 (2 + 1)
               (covGrad (I := I) (M := M) g₀ 0 2 u₀)).toSection b) D)
-          (Fin.cons ((metricComparisonDiffEndo (I := I) g₀ g₁ b
+          (Fin.cons ((metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ b
               (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m)) := by
   classical
   rw [deTurckPrincipalCometricArm,
-    deTurckPrincipalCometricCoeff_eq_appCcRS_doubleTrace_slotInsertEndo (I := I) (M := M) g₀ g₁]
+    deTurckPrincipalCometricCoeff_eq_operatorFieldComposition_doubleTrace_slotInsertEndo (I := I) (M := M) g₀ g₁]
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (DifferentialGeometry.Analysis.Spectral.ccOperatorFieldComp (I := I) (M := M) g₀ 4 4 2
             (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
             (DifferentialGeometry.Geometry.Connection.endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-              (gInvDiffRaisedEndoField (I := I) g₀ g₁)))
+              (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)))
           (iteratedCovGrad (I := I) g₀ 0 2 2 u₀)).toSection b) D) m =
     Tensor0SSpace.toModel
       (DeTurck.cometricDoubleTraceFib (I := I) g₀ 2 b
         (slotInsertEndoFib (I := I) (M := M) (3 + 1) 0 b
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁ b)
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ b)
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 4 I b from
             (iteratedCovGrad (I := I) g₀ 0 2 2 u₀).toSection b) D))) m from rfl]
   rw [armResidual_toModel_doubleTraceFib (I := I) (M := M) g₀ b
     (slotInsertEndoFib (I := I) (M := M) (3 + 1) 0 b
-      (gInvDiffRaisedEndoField (I := I) g₀ g₁ b)
+      (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ b)
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 4 I b from
         (iteratedCovGrad (I := I) g₀ 0 2 2 u₀).toSection b) D)) m]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (3 + 1) 0 b
-    (gInvDiffRaisedEndoField (I := I) g₀ g₁ b)
+    (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ b)
     ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 4 I b from
       (iteratedCovGrad (I := I) g₀ 0 2 2 u₀).toSection b) D)
     (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
@@ -405,7 +405,7 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
               (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
               (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-                  (gInvDiffRaisedEndoField (I := I) g₀ g₁))))
+                  (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))))
             (covGrad (I := I) (M := M) g₀ 0 2 u₀)).toSection b) D) m =
       ∑ i : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel
@@ -413,7 +413,7 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)
           (Fin.cons
             ((((endoCovariantDerivative (I := I) (M := M) g₀)
-                  (gInvDiffRaisedEndoField (I := I) g₀ g₁) b
+                  (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
                   (smoothOrthoFrame (I := I) g₀ b i b))
                 (smoothOrthoFrame (I := I) g₀ b i b) : TangentSpace I b) : E) m) := by
   classical
@@ -424,21 +424,21 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
             (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
             (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-                (gInvDiffRaisedEndoField (I := I) g₀ g₁))))
+                (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))))
           (covGrad (I := I) (M := M) g₀ 0 2 u₀)).toSection b) D) m =
     Tensor0SSpace.toModel
       (DeTurck.cometricDoubleTraceFib (I := I) g₀ 2 b
         ((show Tensor0SSpace (2 + 1) I b →L[ℝ] Tensor0SSpace ((2 + 1) + 1) I b from
           (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-              (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection b)
+              (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection b)
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D))) m from rfl]
   rw [armResidual_toModel_doubleTraceFib (I := I) (M := M) g₀ b
     ((show Tensor0SSpace (2 + 1) I b →L[ℝ] Tensor0SSpace ((2 + 1) + 1) I b from
       (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection b)
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection b)
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
         (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)) m]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -446,7 +446,7 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
       ((show Tensor0SSpace (2 + 1) I b →L[ℝ] Tensor0SSpace ((2 + 1) + 1) I b from
         (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-            (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection b)
+            (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection b)
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
           (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D))
       (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E)
@@ -454,13 +454,13 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
       Tensor0SSpace.toModel
         (slotInsertEndoFib (I := I) (M := M) (2 + 1) 0 b
           ((endoCovariantDerivative (I := I) (M := M) g₀)
-            (gInvDiffRaisedEndoField (I := I) g₀ g₁) b
+            (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
             (smoothOrthoFrame (I := I) g₀ b i b))
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D))
         (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m) := by
     have h := covGrad_slotInsertEndoCc_toSection_eq (I := I) (M := M) g₀ 2
-      (gInvDiffRaisedEndoField (I := I) g₀ g₁) b
+      (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
         (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)
       (Fin.cons (smoothOrthoFrame (I := I) g₀ b i b)
@@ -478,7 +478,7 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
       Tensor0SSpace.toModel
         (slotInsertEndoFib (I := I) (M := M) (2 + 1) 0 b
           ((endoCovariantDerivative (I := I) (M := M) g₀)
-            (gInvDiffRaisedEndoField (I := I) g₀ g₁) b
+            (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
             (smoothOrthoFrame (I := I) g₀ b i b))
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)) w) ht)
@@ -486,7 +486,7 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
   have happ : Tensor0SSpace.toModel
       (slotInsertEndoFib (I := I) (M := M) (2 + 1) 0 b
         ((endoCovariantDerivative (I := I) (M := M) g₀)
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁) b
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
           (smoothOrthoFrame (I := I) g₀ b i b))
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
           (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D))
@@ -497,7 +497,7 @@ private lemma armResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
         (Function.update
           (Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m) 0
           (((endoCovariantDerivative (I := I) (M := M) g₀)
-              (gInvDiffRaisedEndoField (I := I) g₀ g₁) b
+              (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
               (smoothOrthoFrame (I := I) g₀ b i b))
             ((Fin.cons ((smoothOrthoFrame (I := I) g₀ b i b : TangentSpace I b) : E) m :
               Fin (2 + 1) → E) 0))) :=
@@ -513,7 +513,7 @@ theorem armResidual_covDivergence_split (g₀ g₁ : SmoothRiemannianMetric I M)
     (u₀ : SmoothCcTensor g₀ 0 2) :
     covDivergence (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 1)
-          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 (gInvDiffRaisedEndoField (I := I) g₀ g₁))
+          (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
           (covGrad (I := I) (M := M) g₀ 0 2 u₀)) =
       deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ u₀ +
         operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 0)
@@ -521,7 +521,7 @@ theorem armResidual_covDivergence_split (g₀ g₁ : SmoothRiemannianMetric I M)
             (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
             (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-                (gInvDiffRaisedEndoField (I := I) g₀ g₁))))
+                (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))))
           (covGrad (I := I) (M := M) g₀ 0 2 u₀) := by
   classical
   haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
@@ -535,7 +535,7 @@ theorem armResidual_covDivergence_split (g₀ g₁ : SmoothRiemannianMetric I M)
   beta_reduce
   set P : SmoothCcTensor g₀ 0 (2 + 1) :=
     operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 1)
-      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 (gInvDiffRaisedEndoField (I := I) g₀ g₁))
+      (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
       (covGrad (I := I) (M := M) g₀ 0 2 u₀) with hP
   set Garm : SmoothCcTensor g₀ 0 (2 + 0) :=
     operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 0)
@@ -543,7 +543,7 @@ theorem armResidual_covDivergence_split (g₀ g₁ : SmoothRiemannianMetric I M)
         (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
         (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-            (gInvDiffRaisedEndoField (I := I) g₀ g₁))))
+            (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))))
       (covGrad (I := I) (M := M) g₀ 0 2 u₀) with hGarm
   rw [show ((deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ u₀ + Garm).toSection b :
       TensorRSSpace 0 2 I b) =

@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricDiffCovGradKoszul
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnDiffCovGradBridge
+import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnectionDifferenceCovGradBridge
 import DifferentialGeometry.Geometry.Metric.InverseMetricField
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradSlotPermutationNaturality
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
 import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.RicciTraceCarrier
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifferenceKoszulSecondCovGrad
@@ -230,17 +230,17 @@ private def alignedPrincipalCorrectionVec (g₀ g₁ : SmoothRiemannianMetric I 
       (-(LinearMap.toContinuousLinearMap
         { toFun := fun w => cotangentToCLM (I := I)
             (koszulCovGradCovec (I := I) (M := M) g₀ g₁ Z Y x)
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v)
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w v)
           map_add' := by
             intro w w'
-            rw [show PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w + w') v =
-              PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v +
-                PDE.DeTurck.connDiff (I := I) g₁ g₀ x w' v from by rw [map_add]; rfl]
+            rw [show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w + w') v =
+              PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w v +
+                PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w' v from by rw [map_add]; rfl]
             rw [map_add]
           map_smul' := by
             intro c w
-            rw [show PDE.DeTurck.connDiff (I := I) g₁ g₀ x (c • w) v =
-              c • PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v from by rw [map_smul]; rfl]
+            rw [show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (c • w) v =
+              c • PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w v from by rw [map_smul]; rfl]
             rw [map_smul]; rfl } : TangentSpace I x →L[ℝ] ℝ)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
@@ -280,28 +280,28 @@ private lemma g1Principal_splitC
   set Xf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ⟨smoothExtensionTangent (I := I) x v, smoothExtensionTangent_contMDiff (I := I) x v⟩ with hXfdef
   have hXfx : Xf x = v := smoothExtensionTangent_eq (I := I) x v
-  have halign := covDerivConnDiff_principal_align (I := I) (M := M) g₀ g₁ Xf Y Z x w
+  have halign := covDerivConnectionDifference_principal_align (I := I) (M := M) g₀ g₁ Xf Y Z x w
   rw [hXfx] at halign
   rw [ContinuousLinearMap.coe_coe, ContinuousLinearMap.coe_coe, halign]
   rw [show ((-(LinearMap.toContinuousLinearMap
         { toFun := fun w => cotangentToCLM (I := I)
             (koszulCovGradCovec (I := I) (M := M) g₀ g₁ Z Y x)
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v)
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w v)
           map_add' := by
             intro w w'
-            rw [show PDE.DeTurck.connDiff (I := I) g₁ g₀ x (w + w') v =
-              PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v +
-                PDE.DeTurck.connDiff (I := I) g₁ g₀ x w' v from by rw [map_add]; rfl]
+            rw [show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w + w') v =
+              PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w v +
+                PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w' v from by rw [map_add]; rfl]
             rw [map_add]
           map_smul' := by
             intro c w
-            rw [show PDE.DeTurck.connDiff (I := I) g₁ g₀ x (c • w) v =
-              c • PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v from by rw [map_smul]; rfl]
+            rw [show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (c • w) v =
+              c • PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w v from by rw [map_smul]; rfl]
             rw [map_smul]; rfl } : TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x)) w)
               =
       -(cotangentToCLM (I := I)
         (koszulCovGradCovec (I := I) (M := M) g₀ g₁ Z Y x)
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x w v)) from rfl]
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w v)) from rfl]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -389,13 +389,13 @@ private lemma alignedPrincipalEndoC_trace_eq
     LinearMap.trace ℝ E (alignedPrincipalEndo (I := I) (M := M) g₀ g₁ Z Y x) =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁)
+            (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁)
             (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x ![Z x, Y x]
         + secondKoszulFrameRemainder (I := I) (M := M) g₀ g₁ S Z Y x := by
   classical
   rw [← trace_eq_cometricLmodel_pairing_sum (I := I) (M := M) g₁ x
     (alignedPrincipalEndo (I := I) (M := M) g₀ g₁ Z Y x)]
-  rw [covDerivConnDiff_tracedPrincipal_eq_appCc (I := I) (M := M) g₀ g₁ S x ![Z x, Y x]]
+  rw [covDerivConnectionDifference_tracedPrincipal_eq_operatorFieldApply (I := I) (M := M) g₀ g₁ S x ![Z x, Y x]]
   rw [secondKoszulFrameRemainder]
   rw [show (∑ k : Fin (Module.finrank ℝ E),
         g₁.inner x
@@ -486,7 +486,7 @@ theorem palatini_tracedPrincipal_eq_combinedTrace
               TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x)))) i) =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g₁)
+            (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁)
             (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x ![Z x, Y x]
         + palatiniTracedPrincipalRemainder (I := I) (M := M) g₀ g₁ S Z Y x := by
   classical
@@ -625,7 +625,7 @@ theorem combinedTrace42ModelZ_apply
           simp only [koszulZSlotPerm3, Fin.isValue, Equiv.swap_apply_def] <;> rfl)]
   rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
 
-noncomputable def ricciArmPrincipalCoeffZSlotFib (g₁ : SmoothRiemannianMetric I M) (x : M) :
+noncomputable def ricciDeTurckPrincipalCoefficientZSlotFib (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
   (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 2 x).symm.toContinuousLinearMap.comp
     ((combinedTrace42ModelZSlot (E := E) (cometricLmodel (I := I) g₁ x)).comp
@@ -634,27 +634,27 @@ noncomputable def ricciArmPrincipalCoeffZSlotFib (g₁ : SmoothRiemannianMetric 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] theorem ricciArmPrincipalCoeffZFib_toModel (g₁ : SmoothRiemannianMetric I M) (x : M)
+@[simp] theorem ricciDeTurckPrincipalCoefficientZFib_toModel (g₁ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SBundle.Tensor0SSpace 4 I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (ricciArmPrincipalCoeffZSlotFib (I := I) g₁ x D) =
+    Tensor0SBundle.Tensor0SSpace.toModel (ricciDeTurckPrincipalCoefficientZSlotFib (I := I) g₁ x D) =
       combinedTrace42ModelZSlot (E := E) (cometricLmodel (I := I) g₁ x)
         (Tensor0SBundle.Tensor0SSpace.toModel D) := rfl
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem ricciArmPrincipalCoeffZFib_contMDiff (g₁ : SmoothRiemannianMetric I M) :
+theorem ricciDeTurckPrincipalCoefficientZFib_contMDiff (g₁ : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel 4 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) x
-        (ricciArmPrincipalCoeffZSlotFib (I := I) g₁ x)) := by
+        (ricciDeTurckPrincipalCoefficientZSlotFib (I := I) g₁ x)) := by
   classical
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 4 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 4 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
-    (φ := fun x => ricciArmPrincipalCoeffZSlotFib (I := I) g₁ x)
+    (φ := fun x => ricciDeTurckPrincipalCoefficientZSlotFib (I := I) g₁ x)
   intro Y
   have hreindex : ∀ (ρ : Equiv.Perm (Fin 4))
       (Z : ∀ x : M, Tensor0SBundle.Tensor0SSpace 4 I x)
@@ -702,7 +702,7 @@ theorem ricciArmPrincipalCoeffZFib_contMDiff (g₁ : SmoothRiemannianMetric I M)
   have hcomb := (((hcdt koszulZSlotPerm1).add_section (hcdt koszulZSlotPerm2)).sub_section
     (hcdt koszulZSlotPerm3)).const_smul_section (a := (1 / 2 : ℝ))
   refine hcomb.congr (fun x => ?_)
-  have hfib : ricciArmPrincipalCoeffZSlotFib (I := I) g₁ x (Y x) =
+  have hfib : ricciDeTurckPrincipalCoefficientZSlotFib (I := I) g₁ x (Y x) =
       (1 / 2 : ℝ) •
         (((show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
                 cometricDoubleTraceFib (I := I) g₁ 2 x)
@@ -721,7 +721,7 @@ theorem ricciArmPrincipalCoeffZFib_contMDiff (g₁ : SmoothRiemannianMetric I M)
                   (Tensor0SBundle.Tensor0SSpace.toModel (Y x))))) := by
     apply Tensor0SBundle.Tensor0SSpace.toModel_injective
     beta_reduce
-    rw [ricciArmPrincipalCoeffZFib_toModel]
+    rw [ricciDeTurckPrincipalCoefficientZFib_toModel]
     simp only [Tensor0SBundle.Tensor0SSpace.toModel_smul, Tensor0SBundle.Tensor0SSpace.toModel_sub,
       Tensor0SBundle.Tensor0SSpace.toModel_add, cometricDoubleTraceFib_toModel,
       Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
@@ -737,32 +737,32 @@ theorem ricciArmPrincipalCoeffZFib_contMDiff (g₁ : SmoothRiemannianMetric I M)
   exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) hfib.symm
 
-noncomputable def ricciArmPrincipalCoeffZSlot (g₀ g₁ : SmoothRiemannianMetric I M) :
+noncomputable def ricciDeTurckPrincipalCoefficientZSlot (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 where
   toSection :=
     { toFun := fun x : M =>
-        (show Tensor0SBundle.TensorRSSpace 4 2 I x from ricciArmPrincipalCoeffZSlotFib (I := I) g₁
+        (show Tensor0SBundle.TensorRSSpace 4 2 I x from ricciDeTurckPrincipalCoefficientZSlotFib (I := I) g₁
           x)
-      contMDiff_toFun := ricciArmPrincipalCoeffZFib_contMDiff (I := I) g₁ }
+      contMDiff_toFun := ricciDeTurckPrincipalCoefficientZFib_contMDiff (I := I) g₁ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-@[simp] theorem ricciArmPrincipalCoeffZ_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
-    (ricciArmPrincipalCoeffZSlot (I := I) (M := M) g₀ g₁).toSection x =
-      (show Tensor0SBundle.TensorRSSpace 4 2 I x from ricciArmPrincipalCoeffZSlotFib (I := I) g₁ x)
+@[simp] theorem ricciDeTurckPrincipalCoefficientZ_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
+    (ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁).toSection x =
+      (show Tensor0SBundle.TensorRSSpace 4 2 I x from ricciDeTurckPrincipalCoefficientZSlotFib (I := I) g₁ x)
         := rfl
 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem ricciArmPrincipalCoeffZ_appCc_eq_combinedTrace
+theorem ricciDeTurckPrincipalCoefficientZ_operatorFieldApplication_eq_combinedTrace
     (g₀ g₁ : SmoothRiemannianMetric I M) (W : SmoothCcTensor g₀ 0 4)
     (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (ricciArmPrincipalCoeffZSlot (I := I) (M := M) g₀ g₁) W) x v =
+          (ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁) W) x v =
       (1 / 2 : ℝ) *
         ∑ k : Fin (Module.finrank ℝ E),
           (unitModel (I := I) (M := M) g₀ 4 W x
@@ -777,16 +777,16 @@ theorem ricciArmPrincipalCoeffZ_appCc_eq_combinedTrace
                 ![v 0, (Module.finBasis ℝ E) k, cometricLmodel (I := I) g₁ x
                     (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)), v 1]) := by
-  rw [unitModel, appCc_toSection]
+  rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-        (ricciArmPrincipalCoeffZSlot (I := I) (M := M) g₀ g₁).toSection x).comp
+        (ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁).toSection x).comp
         (show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 4 I x from
           W.toSection x)) (unitTensor (I := I) (M := M) x) =
       (show Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
-        (ricciArmPrincipalCoeffZSlot (I := I) (M := M) g₀ g₁).toSection x)
+        (ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁).toSection x)
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 4 I x from
           W.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [ricciArmPrincipalCoeffZ_toSection, ricciArmPrincipalCoeffZFib_toModel,
+  rw [ricciDeTurckPrincipalCoefficientZ_toSection, ricciDeTurckPrincipalCoefficientZFib_toModel,
     combinedTrace42ModelZ_apply (E := E) (cometricLmodel (I := I) g₁ x)]
   rfl
 
@@ -1062,12 +1062,12 @@ lemma alignedPrincipalEndoCZ_trace_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     LinearMap.trace ℝ E (alignedPrincipalEndoZSlot (I := I) (M := M) g₀ g₁ S V W x) =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (ricciArmPrincipalCoeffZSlot (I := I) (M := M) g₀ g₁)
+            (ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁)
             (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x ![V x, W x] := by
   classical
   rw [← trace_eq_cometricLmodel_pairing_sum (I := I) (M := M) g₁ x
     (alignedPrincipalEndoZSlot (I := I) (M := M) g₀ g₁ S V W x)]
-  rw [ricciArmPrincipalCoeffZ_appCc_eq_combinedTrace (I := I) (M := M) g₀ g₁
+  rw [ricciDeTurckPrincipalCoefficientZ_operatorFieldApplication_eq_combinedTrace (I := I) (M := M) g₀ g₁
     (iteratedCovGrad (I := I) g₀ 0 2 2 S) x ![V x, W x]]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
@@ -1155,7 +1155,7 @@ theorem palatini_tracedPrincipal_Zslot_eq_combinedTrace
               TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x)))) i) =
       unitModel (I := I) (M := M) g₀ 2
           (operatorFieldApply (I := I) (M := M) g₀ 4 2
-            (ricciArmPrincipalCoeffZSlot (I := I) (M := M) g₀ g₁)
+            (ricciDeTurckPrincipalCoefficientZSlot (I := I) (M := M) g₀ g₁)
             (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x ![V x, W x]
         + palatiniTracedPrincipalZRemainder (I := I) (M := M) g₀ g₁ S V W x := by
   classical

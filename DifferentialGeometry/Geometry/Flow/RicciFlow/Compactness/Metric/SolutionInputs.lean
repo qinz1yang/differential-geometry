@@ -27,7 +27,7 @@ theorem solutionComp_cond
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (inp : MetricCompactnessInputs (I := I) (X.atZero (I := I)))
     (hcomplete0 : SeqMetricComplete (I := I) (X.atZero (I := I)))
-    (hinj : FlowBaseInjBound (I := I) X)
+    (hinj : FlowerScaleInjBound (I := I) X)
     (hconn : forall k : Nat,
       letI : TopologicalSpace ((X.atZero (I := I)).obj k).M :=
         ((X.atZero (I := I)).obj k).topology

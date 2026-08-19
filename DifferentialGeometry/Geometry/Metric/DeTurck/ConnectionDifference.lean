@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -26,24 +26,24 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_cocycle (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
+theorem connectionDifference_cocycle (g₀ g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (w v : TangentSpace I x) :
-    connDiff (I := I) g₁ g₂ x w v =
-      connDiff (I := I) g₁ g₀ x w v + connDiff (I := I) g₀ g₂ x w v := by
+    connectionDifference (I := I) g₁ g₂ x w v =
+      connectionDifference (I := I) g₁ g₀ x w v + connectionDifference (I := I) g₀ g₂ x w v := by
   classical
   obtain ⟨σ, hσx⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
     (F := E) (V := (TangentSpace I : M → Type _)) x w
   have hσ : MDiffAt (T% fun y => σ y) x := σ.mdifferentiableAt
-  have h12 := connDiff_apply (I := I) g₁ g₂ hσ v
-  have h10 := connDiff_apply (I := I) g₁ g₀ hσ v
-  have h02 := connDiff_apply (I := I) g₀ g₂ hσ v
+  have h12 := connectionDifference_apply (I := I) g₁ g₂ hσ v
+  have h10 := connectionDifference_apply (I := I) g₁ g₀ hσ v
+  have h02 := connectionDifference_apply (I := I) g₀ g₂ hσ v
   rw [hσx] at h12 h10 h02
   rw [h12, h10, h02]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem deTurckVF_sub_eq_connDiff_trace
+theorem deTurckVF_sub_eq_connectionDifference_trace
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     (deTurckVF (I := I) g₁ g_bg :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x -
@@ -51,13 +51,13 @@ theorem deTurckVF_sub_eq_connDiff_trace
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       (∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g₁ x x j k •
-            connDiff (I := I) g₁ g₀ x
+            connectionDifference (I := I) g₁ g₀ x
               (chartBasisVecFiber (I := I) x j x)
               (chartBasisVecFiber (I := I) x k x)) +
         ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
           (chartInvGramMatrix (I := I) g₁ x x j k -
               chartInvGramMatrix (I := I) g₀ x x j k) •
-            connDiff (I := I) g₀ g_bg x
+            connectionDifference (I := I) g₀ g_bg x
               (chartBasisVecFiber (I := I) x j x)
               (chartBasisVecFiber (I := I) x k x) := by
   classical
@@ -68,7 +68,7 @@ theorem deTurckVF_sub_eq_connDiff_trace
   rw [← Finset.sum_sub_distrib]
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [connDiff_cocycle (I := I) g₀ g₁ g_bg x
+  rw [connectionDifference_cocycle (I := I) g₀ g₁ g_bg x
       (chartBasisVecFiber (I := I) x j x) (chartBasisVecFiber (I := I) x k x)]
   rw [smul_add]
   rw [sub_smul]
@@ -183,14 +183,14 @@ theorem deTurckVF_eq_orthonormal_trace
     (hF : ∀ i j, g.inner x (F i) (F j) = if i = j then 1 else 0) :
     (deTurckVF (I := I) g g_bg :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
-      ∑ i : Fin (Module.finrank ℝ E), connDiff (I := I) g g_bg x (F i) (F i) := by
+      ∑ i : Fin (Module.finrank ℝ E), connectionDifference (I := I) g g_bg x (F i) (F i) := by
   classical
   have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
   have hxsrc : x ∈ (extChartAt I x).source := mem_extChartAt_source x
   rw [deTurckVF_apply_eq (I := I) g g_bg x]
   rw [bilin_ortho_family_diag_eq_chartGram_trace (I := I) g hx hxsrc F hF
-    (connDiff (I := I) g g_bg x)]
+    (connectionDifference (I := I) g g_bg x)]
 
 omit [SigmaCompactSpace M] in
 theorem deTurckVF_eq_orthoFrame_trace
@@ -198,7 +198,7 @@ theorem deTurckVF_eq_orthoFrame_trace
     (deTurckVF (I := I) g g_bg :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       ∑ i : Fin (Module.finrank ℝ E),
-        connDiff (I := I) g g_bg x
+        connectionDifference (I := I) g g_bg x
           (smoothOrthoFrame (I := I) g x i x)
           (smoothOrthoFrame (I := I) g x i x) := by
   exact deTurckVF_eq_orthonormal_trace (I := I) g g_bg x
@@ -207,8 +207,8 @@ theorem deTurckVF_eq_orthoFrame_trace
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_symm (g g' : SmoothRiemannianMetric I M) (x : M) (w v : TangentSpace I x) :
-    connDiff (I := I) g g' x w v = connDiff (I := I) g g' x v w := by
+theorem connectionDifference_symm (g g' : SmoothRiemannianMetric I M) (x : M) (w v : TangentSpace I x) :
+    connectionDifference (I := I) g g' x w v = connectionDifference (I := I) g g' x v w := by
   classical
   obtain ⟨σ, hσx⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
     (F := E) (V := (TangentSpace I : M → Type _)) x w
@@ -216,8 +216,8 @@ theorem connDiff_symm (g g' : SmoothRiemannianMetric I M) (x : M) (w v : Tangent
     (F := E) (V := (TangentSpace I : M → Type _)) x v
   have hσ : MDiffAt (T% fun y => σ y) x := σ.mdifferentiableAt
   have hτ : MDiffAt (T% fun y => τ y) x := τ.mdifferentiableAt
-  have hστ := connDiff_apply (I := I) g g' (σ := fun y => σ y) hσ (τ x)
-  have hτσ := connDiff_apply (I := I) g g' (σ := fun y => τ y) hτ (σ x)
+  have hστ := connectionDifference_apply (I := I) g g' (σ := fun y => σ y) hσ (τ x)
+  have hτσ := connectionDifference_apply (I := I) g g' (σ := fun y => τ y) hτ (σ x)
   have htor1 := (CovariantDerivative.torsion_eq_zero_iff (cov := LeviCivita (I := I) g)).mp
     (LeviCivita_torsion_eq_zero (I := I) g) (X := fun y => τ y) (Y := fun y => σ y) hτ hσ
   have htor0 := (CovariantDerivative.torsion_eq_zero_iff (cov := LeviCivita (I := I) g')).mp
@@ -235,46 +235,46 @@ theorem connDiff_symm (g g' : SmoothRiemannianMetric I M) (x : M) (w v : Tangent
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_outerCovDeriv_eq (g g_bg : SmoothRiemannianMetric I M)
+theorem connectionDifference_outerCovDeriv_eq (g g_bg : SmoothRiemannianMetric I M)
     {X Y Z : Π b : M, TangentSpace I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Z)) (x : M) :
     (LeviCivita (I := I) g).toFun
           (diffSec (LeviCivita (I := I) g_bg) (LeviCivita (I := I) g) Y Z) x (X x)
-        - connDiff (I := I) g g_bg x (Z x) (covApply (LeviCivita (I := I) g) X Y x)
-        - connDiff (I := I) g g_bg x (covApply (LeviCivita (I := I) g) X Z x) (Y x) =
-      covDerivConnDiff (I := I) g_bg g X Y Z x
-        + (connDiff (I := I) g g_bg x (connDiff (I := I) g g_bg x (Z x) (Y x)) (X x)
-            - connDiff (I := I) g g_bg x (Z x) (connDiff (I := I) g g_bg x (Y x) (X x))
-            - connDiff (I := I) g g_bg x (connDiff (I := I) g g_bg x (Z x) (X x)) (Y x)) := by
+        - connectionDifference (I := I) g g_bg x (Z x) (covApply (LeviCivita (I := I) g) X Y x)
+        - connectionDifference (I := I) g g_bg x (covApply (LeviCivita (I := I) g) X Z x) (Y x) =
+      covDerivConnectionDifference (I := I) g_bg g X Y Z x
+        + (connectionDifference (I := I) g g_bg x (connectionDifference (I := I) g g_bg x (Z x) (Y x)) (X x)
+            - connectionDifference (I := I) g g_bg x (Z x) (connectionDifference (I := I) g g_bg x (Y x) (X x))
+            - connectionDifference (I := I) g g_bg x (connectionDifference (I := I) g g_bg x (Z x) (X x)) (Y x)) := by
   classical
   haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
   set cov₀ := LeviCivita (I := I) g_bg with hcov₀
   set cov₁ := LeviCivita (I := I) g with hcov₁
-  have hAeq : connDiff (I := I) g g_bg =
-      CovariantDerivative.difference cov₁ cov₀ := connDiff_eq_difference (I := I) g_bg g
+  have hAeq : connectionDifference (I := I) g g_bg =
+      CovariantDerivative.difference cov₁ cov₀ := connectionDifference_eq_difference (I := I) g_bg g
   have hYx : MDiffAt (T% Y) x := (hY x).mdifferentiableAt (by simp)
   have hZx : MDiffAt (T% Z) x := (hZ x).mdifferentiableAt (by simp)
   have hZ1 : ContMDiff I (I.prod 𝓘(ℝ, E)) ((∞ : WithTop ℕ∞) + 1) (T% Z) := by simpa using hZ
   have hdiffYZ_at : MDiffAt (T% (diffSec cov₀ cov₁ Y Z)) x :=
     ((diffSec_contMDiff cov₀ cov₁ hY hZ1) x).mdifferentiableAt (by simp)
-  rw [covDerivConnDiff_eq (I := I) g_bg g X Y Z x]
+  rw [covDerivConnectionDifference_eq (I := I) g_bg g X Y Z x]
   unfold covDerivDiff
   rw [← hcov₀, ← hcov₁]
   have hT1 : cov₁.toFun (diffSec cov₀ cov₁ Y Z) x (X x)
         - cov₀.toFun (diffSec cov₀ cov₁ Y Z) x (X x) =
-      connDiff (I := I) g g_bg x (connDiff (I := I) g g_bg x (Z x) (Y x)) (X x) := by
+      connectionDifference (I := I) g g_bg x (connectionDifference (I := I) g g_bg x (Z x) (Y x)) (X x) := by
     rw [← diff_eval cov₀ cov₁ hdiffYZ_at (X x), hAeq]
     rfl
-  have hcA1 : covApply cov₁ X Y x = covApply cov₀ X Y x + connDiff (I := I) g g_bg x (Y x)
+  have hcA1 : covApply cov₁ X Y x = covApply cov₀ X Y x + connectionDifference (I := I) g g_bg x (Y x)
     (X x) := by
     rw [covApply_cov1_eq cov₀ cov₁ hYx, hAeq]; rfl
-  have hcA2 : covApply cov₁ X Z x = covApply cov₀ X Z x + connDiff (I := I) g g_bg x (Z x)
+  have hcA2 : covApply cov₁ X Z x = covApply cov₀ X Z x + connectionDifference (I := I) g g_bg x (Z x)
     (X x) := by
     rw [covApply_cov1_eq cov₀ cov₁ hZx, hAeq]; rfl
   have hT1' : cov₁.toFun (diffSec cov₀ cov₁ Y Z) x (X x) =
       cov₀.toFun (diffSec cov₀ cov₁ Y Z) x (X x)
-        + connDiff (I := I) g g_bg x (connDiff (I := I) g g_bg x (Z x) (Y x)) (X x) := by
+        + connectionDifference (I := I) g g_bg x (connectionDifference (I := I) g g_bg x (Z x) (Y x)) (X x) := by
     rw [← hT1]; abel
   rw [hcA1, hcA2, hT1', ← hAeq, map_add, map_add, ContinuousLinearMap.add_apply]
   abel

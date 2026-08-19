@@ -36,19 +36,19 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-noncomputable local instance stepCProducersModelDualNormedAddCommGroup :
+noncomputable local instance centerMapModelModelDualNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance stepCProducersModelDualNormedSpace :
+noncomputable local instance centerMapModelModelDualNormedSpace :
     NormedSpace ℝ (E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance stepCProducersModelBilinearNormedAddCommGroup :
+noncomputable local instance centerMapModelModelBilinearNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance stepCProducersModelBilinearNormedSpace :
+noncomputable local instance centerMapModelModelBilinearNormedSpace :
     NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
@@ -506,12 +506,12 @@ theorem binfMemClosed {U V' : Set E} {B : Nat -> E -> E} {Binf : E -> E}
 
 theorem HasAtomWeightLim.binf_of_live
     (inp : MetricCompactnessInputs (I := I) X)
-    (_hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (_hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) inp.decay inp.D P L inp.pack r)
+    (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (alpha : LiveSlot L inp.pack r) (U : Set E)
     (aInf : Fin (inp.pack.A r) → E → Real)
     (hlim : HasAtomWeightLim (I := I) inp.decay inp.hD P L inp.realizes
@@ -532,10 +532,10 @@ theorem HasAtomWeightLim.binf_of_live
     Binf z ∈ Metric.closedBall 0 (6 * L.lamInf (gamma.1 : Nat)) := by
   have hweightTail := hphi.tendsto_atTop.eventually
     (hlim.weight_ne_tail hz hweight)
-  have hrad : Item3RadiusTail (I := I) inp.decay inp.D P L inp.pack r
-      (item3RadiusFactor inp.decay inp.D) :=
+  have hrad : ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
+      (exponentialBallRadiusFactor inp.decay inp.D) :=
     inp.normalRadius.radiusScaleTail inp.hD
-      (item3Factor_pos inp.decay inp.D) hradRatio
+      (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r
   have hradTail := hphi.tendsto_atTop.eventually hrad
   have hgpTail := hphi.tendsto_atTop.eventually hgp
@@ -562,8 +562,8 @@ theorem HasAtomWeightLim.binf_of_live
       exact Real.exp_le_exp.mpr
         (mul_nonneg inp.decay.C_nonneg
           (by nlinarith [(inp.decay.lambda_pos inp.hD 0).le]))
-    have hfactor : (8 : Real) ≤ item3RadiusFactor inp.decay inp.D := by
-      rw [item3RadiusFactor]
+    have hfactor : (8 : Real) ≤ exponentialBallRadiusFactor inp.decay inp.D := by
+      rw [exponentialBallRadiusFactor]
       nlinarith
     have hC2 : 8 * L.lamInf (gamma.1 : Nat) ≤
         expMapC2Radius (I := I) (X.obj (L.φ (phi k))).metric
@@ -580,12 +580,12 @@ theorem HasAtomWeightLim.binf_of_live
 
 theorem HasAtomWeightLim.binf_of_slot
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) inp.decay inp.D P L inp.pack r)
+    (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (alpha : LiveSlot L inp.pack r) (U : Set E)
     (aInf : Fin (inp.pack.A r) → E → Real)
     (hlim : HasAtomWeightLim (I := I) inp.decay inp.hD P L inp.realizes
@@ -610,12 +610,12 @@ theorem HasAtomWeightLim.binf_of_slot
 
 theorem HasAtomWeightLim.binf_of_weight
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) inp.decay inp.D P L inp.pack r)
+    (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (alpha : LiveSlot L inp.pack r) (U : Set E)
     (aInf : Fin (inp.pack.A r) → E → Real)
     (hlim : HasAtomWeightLim (I := I) inp.decay inp.hD P L inp.realizes
@@ -670,12 +670,12 @@ theorem HasAtomWeightLim.binf_of_weight
 
 theorem MetricCompactnessInputs.exists_supp_trans
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) inp.decay inp.D P L inp.pack r)
+    (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (alpha : LiveSlot L inp.pack r) (U : Set E)
     (hUsub : U ⊆ Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
     (aInf : Fin (inp.pack.A r) → E → Real)
@@ -753,12 +753,12 @@ theorem MetricCompactnessInputs.exists_supp_trans
 
 theorem MetricCompactnessInputs.exists_supp_fin
     (inp : MetricCompactnessInputs (I := I) X)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) inp.decay inp.D P L inp.pack r)
+    (hgp : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r)
     (U : LiveSlot L inp.pack r → Set E)
     (hUsub : ∀ alpha, U alpha ⊆
       Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
@@ -936,8 +936,8 @@ theorem activeFill_totalPts_of_ne
 theorem MetricCompactnessInputs.exists_atom_supp_fin
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -1156,8 +1156,8 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
       (inp.pair_overlap_tail hradD hradRatio P L0 r
         (live0 pair.1) (live0 pair.2.1) (hinter0 pair)).mono fun _ hk =>
           ⟨hk.2.2.2.2.1, hk.2.2.2.2.2.1⟩
-  obtain ⟨hgp, _hrad⟩ := inp.item3ScaleTails h8 hradD hradRatio P L r
-  have hgp0 : Item3GpScaleTail (I := I)
+  obtain ⟨hgp, _hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
+  have hgp0 : ExponentialRadiusScaleTail (I := I)
       inp.decay inp.D P L0 inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r hpsi
   have hall : ∀ᶠ k in Filter.atTop,
@@ -1186,7 +1186,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
           ⋃ alpha : LiveSlot L inp.pack r,
             (fun z => expMapDiffeo (I := I) Y.metric
               (seqCenterD inp.decay P L (psi (tau k)) (alpha.1 : Nat)) z) '' U alpha) ∧
-      Item3GpScaleAt (I := I) inp.decay inp.D P L0 inp.pack r (tau k) ∧
+      ExponentialRadiusScaleAt (I := I) inp.decay inp.D P L0 inp.pack r (tau k) ∧
       (∀ pair : PairSlot,
         let x := seqCenterD inp.decay P L0 (tau k) ((live0 pair.1).1 : Nat)
         let y := seqCenterD inp.decay P L0 (tau k) ((live0 pair.2.1).1 : Nat)
@@ -1243,7 +1243,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
     if htarget : ∃ target : InterSlot L inp.pack r alpha,
         target.1.1 = gamma then
       let target := Classical.choose htarget
-      fun z => stepCBump (L.lamInf (gamma : Nat))
+      fun z => gluingBump (L.lamInf (gamma : Nat))
         (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
         (gInf z target.1 (Jinf alpha target z) (Jinf alpha target z))
     else fun _ => 0
@@ -1255,10 +1255,10 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
     intro alpha
     let beta : ∀ k : Nat, (X.obj (Lphi.φ k)).M := fun k =>
       seqCenterD inp.decay P Lphi k (alpha.1 : Nat)
-    have hgpPhi (k : Nat) : Item3GpScaleAt (I := I)
+    have hgpPhi (k : Nat) : ExponentialRadiusScaleAt (I := I)
         inp.decay inp.D P Lphi inp.pack r k := by
       have hk := hN (shift k) (by simpa only [shift] using Nat.le_add_left N k)
-      simpa only [Item3GpScaleAt, Lphi, phi, L0, Function.comp_apply,
+      simpa only [ExponentialRadiusScaleAt, Lphi, phi, L0, Function.comp_apply,
         NetLimitData.subseq, NetLimitData.subseq_lamInf] using hk.2.1
     have hUexpPhi (k : Nat) :
         letI : TopologicalSpace (X.obj (Lphi.φ k)).M := (X.obj (Lphi.φ k)).topology
@@ -1358,19 +1358,19 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
           simpa only [Lphi, NetLimitData.subseq, hslot] using target.1.2
         have hraw := quadPiBump_conv (hUopen alpha) hgU (hJConv target)
           (fun _ => contDiffOn_const) hginfU (hJStage target) (hJInf target)
-          target.1 (stepCBump (L.lamInf (gamma : Nat))
+          target.1 (gluingBump (L.lamInf (gamma : Nat))
             (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))))
-          (stepCBump (L.lamInf (gamma : Nat))
+          (gluingBump (L.lamInf (gamma : Nat))
             (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))).contDiff
         have hstep : MapCInfConvOnCompacts (U alpha)
-            (fun k => stepCAtomChart (I := I) (X.obj (Lphi.φ k)) (beta k)
+            (fun k => gluingAtomChart (I := I) (X.obj (Lphi.φ k)) (beta k)
               (seqCenterD inp.decay P Lphi k (gamma : Nat))
               (L.lamInf (gamma : Nat))
               (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))))
             (aInf alpha gamma) := by
           refine hraw.congr (hUopen alpha) (fun k z hz => ?_) (fun z _hz => ?_)
-          · simpa only [stepCAtomChart, hslot] using
-              (stepCAtom_readout (I := I) (X.obj (Lphi.φ k)) (beta k)
+          · simpa only [gluingAtomChart, hslot] using
+              (gluing_atom_readout (I := I) (X.obj (Lphi.φ k)) (beta k)
                 (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
                 (L.lamInf (gamma : Nat))
                 (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
@@ -1396,7 +1396,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
                 simpa only [Lphi, NetLimitData.subseq, Function.comp_apply,
                   NetLimitData.subseq_lamInf] using
                     hphi.tendsto_atTop.eventually hdisjoint
-              have hgpTail : Item3GpScaleTail (I := I)
+              have hgpTail : ExponentialRadiusScaleTail (I := I)
                   inp.decay inp.D P Lphi inp.pack r :=
                 Filter.Eventually.of_forall hgpPhi
               have hsourceTail : ∀ᶠ k in Filter.atTop,
@@ -1447,7 +1447,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
           ((contDiffOn_pi.mp hginfU target.1).clm_apply (hJInf target)).clm_apply
             (hJInf target)
         simpa only [aInf, dif_pos htarget, target] using
-          (stepCBump (L.lamInf (gamma : Nat))
+          (gluingBump (L.lamInf (gamma : Nat))
             (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))).contDiff.comp_contDiffOn
               hquad
       · simpa only [aInf, dif_neg htarget] using
@@ -1513,11 +1513,11 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
       ⟨alpha.1, by simpa only [Lphi, NetLimitData.subseq] using alpha.2⟩
     let gammaPhi : LiveSlot Lphi inp.pack r :=
       ⟨target.1.1, by simpa only [Lphi, NetLimitData.subseq] using target.1.2⟩
-    have hgpPhi : Item3GpScaleTail (I := I)
+    have hgpPhi : ExponentialRadiusScaleTail (I := I)
         inp.decay inp.D P Lphi inp.pack r :=
       Filter.Eventually.of_forall fun k => by
         have hk := hN (shift k) (by simpa only [shift] using Nat.le_add_left N k)
-        simpa only [Item3GpScaleAt, Lphi, phi, L0, Function.comp_apply,
+        simpa only [ExponentialRadiusScaleAt, Lphi, phi, L0, Function.comp_apply,
           NetLimitData.subseq, NetLimitData.subseq_lamInf] using hk.2.1
     have hlimPhi : HasAtomWeightLim (I := I) inp.decay inp.hD P Lphi
         inp.realizes inp.pack r hr
@@ -1948,8 +1948,8 @@ theorem HasSuppConvData.subseq
 theorem MetricCompactnessInputs.exists_supp_pts_fin
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -2040,8 +2040,8 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
       hbuffer, hcore, hgeom, hlim, htrans, hstage,
       hsupp⟩ :=
     inp.exists_atom_supp_fin h8 hradD hradRatio P L hstable r hr
-  obtain ⟨hgp0, _hrad⟩ := inp.item3ScaleTails h8 hradD hradRatio P L r
-  have hgpPhi : Item3GpScaleTail (I := I) inp.decay inp.D P
+  obtain ⟨hgp0, _hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
+  have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       (L.subseq hphi) inp.pack r :=
     hgp0.subseq inp.decay inp.D P L inp.pack r hphi
   have hweightData : ∀ alpha : LiveSlot L inp.pack r,

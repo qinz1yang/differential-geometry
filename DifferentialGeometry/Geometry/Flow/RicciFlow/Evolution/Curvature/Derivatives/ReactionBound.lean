@@ -492,7 +492,7 @@ variable {n : ℕ}
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
-theorem cotangentSharp_orthoBasis_expand'
+theorem cotangent_sharp_orthonormal_basis_expand
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin n) Real (TangentSpace I x))
     (horth : ∀ i j : Fin n,
@@ -526,7 +526,7 @@ theorem cotangentSharp_orthoBasis_expand'
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem tensor05_vec5_sum_last
+theorem tensor_zero_five_vec_five_sum_last
     {x : M}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
     (A B C D : TangentSpace I x)
@@ -555,7 +555,7 @@ theorem tensor05_vec5_sum_last
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem tensor04_vec4_sum_last'
+theorem tensor_zero_four_vec_four_sum_last
     {x : M}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     (A B C : TangentSpace I x)
@@ -604,8 +604,8 @@ theorem abs_tensor05_sharp_last_le
   set Nβ : Real := Real.sqrt (∑ e : Fin n, (β (fun _ : Fin 1 => basis e)) ^ 2) with hNβ
   have hNTnn : 0 ≤ NT := Real.sqrt_nonneg _
   have hNβnn : 0 ≤ Nβ := Real.sqrt_nonneg _
-  rw [cotangentSharp_orthoBasis_expand' (I := I) g basis horth β]
-  rw [tensor05_vec5_sum_last (I := I) T A B C D]
+  rw [cotangent_sharp_orthonormal_basis_expand (I := I) g basis horth β]
+  rw [tensor_zero_five_vec_five_sum_last (I := I) T A B C D]
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   refine le_trans (Finset.sum_le_sum (g := fun _ : Fin n => NT * Nβ) ?_) ?_
   · intro e _
@@ -647,8 +647,8 @@ theorem abs_tensor04_sharp_last_le
   set Nβ : Real := Real.sqrt (∑ e : Fin n, (β (fun _ : Fin 1 => basis e)) ^ 2) with hNβ
   have hNTnn : 0 ≤ NT := Real.sqrt_nonneg _
   have hNβnn : 0 ≤ Nβ := Real.sqrt_nonneg _
-  rw [cotangentSharp_orthoBasis_expand' (I := I) g basis horth β]
-  rw [tensor04_vec4_sum_last' (I := I) T A B C]
+  rw [cotangent_sharp_orthonormal_basis_expand (I := I) g basis horth β]
+  rw [tensor_zero_four_vec_four_sum_last (I := I) T A B C]
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   refine le_trans (Finset.sum_le_sum (g := fun _ : Fin n => NT * Nβ) ?_) ?_
   · intro e _

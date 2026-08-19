@@ -1,7 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.ChartFrameNormGlobalSmooth
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.RawTensorConnLapChartFrameTrace
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapPointwiseFiberBounds.RawTensorConnLapPointwiseBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.CovApplyAndSlotCorrectionBounds.RawTensorConnLap2ndApplicationOpNorm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.CovApplyAndSlotCorrectionBounds.ChartPulledCovApplyReprFderivBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.CovApplyAndSlotCorrectionBounds.ChartPulledCovApplyReprValueBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartReprDerivativeBounds.ChartPulledCovDerivChartCompBound
@@ -197,28 +196,28 @@ private lemma chartFrameNormGlobalSmooth_fderiv_repr_bound
     pouTsupport_isCompact (I := I) (M := M) α
   have hK_sub : K_set ⊆ (chartAt H α).source :=
     (chartAtlasPOU_isSubordinate I M) α
-  set Bg : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    chartFrameNormGlobalSmooth (I := I) (M := M) g α i with hBg_def
+  set Background : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
+    chartFrameNormGlobalSmooth (I := I) (M := M) g α i with hBackground_def
   have hU_open : IsOpen
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     chartLeviCivitaGoodSet_image_isOpen (I := I) α
-  have hBg_total : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
+  have hBackground_total : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E
-        (E := fun y : M => TangentSpace I y) x (Bg.toFun x)) := Bg.contMDiff
-  have hBg_on : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (Bg.toFun : Π x : M, TangentSpace I x))
-      (chartLeviCivitaGoodSet (I := I) α) := hBg_total.contMDiffOn
+        (E := fun y : M => TangentSpace I y) x (Background.toFun x)) := Background.contMDiff
+  have hBackground_on : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
+      (T% (Background.toFun : Π x : M, TangentSpace I x))
+      (chartLeviCivitaGoodSet (I := I) α) := hBackground_total.contMDiffOn
   have hu_cd : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α Bg.toFun ∘ (extChartAt I α).symm)
+      (chartE_section_repr (I := I) α Background.toFun ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
-    chartE_pullback_contDiffOn_goodSet (I := I) α hBg_on
+    chartE_pullback_contDiffOn_goodSet (I := I) α hBackground_on
   have h_le : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by rw [ENat.coe_top_add_one]
   have hfd_cd : ContDiffOn ℝ ∞
-      (fderiv ℝ (chartE_section_repr (I := I) α Bg.toFun ∘ (extChartAt I α).symm))
+      (fderiv ℝ (chartE_section_repr (I := I) α Background.toFun ∘ (extChartAt I α).symm))
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     hu_cd.fderiv_of_isOpen hU_open h_le
   have hcont_fd : ContinuousOn (fun y : E =>
-      ‖fderiv ℝ (chartE_section_repr (I := I) α Bg.toFun ∘ (extChartAt I α).symm) y‖)
+      ‖fderiv ℝ (chartE_section_repr (I := I) α Background.toFun ∘ (extChartAt I α).symm) y‖)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     continuous_norm.comp_continuousOn hfd_cd.continuousOn
   have hφ_cm : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α) (chartAt H α).source :=
@@ -237,7 +236,7 @@ private lemma chartFrameNormGlobalSmooth_fderiv_repr_bound
     (hφ_cm.continuousOn).mono hK_sub
   have hcont_fd_M : ContinuousOn (fun b : M =>
       ‖fderiv ℝ
-        (chartE_section_repr (I := I) α Bg.toFun ∘ (extChartAt I α).symm)
+        (chartE_section_repr (I := I) α Background.toFun ∘ (extChartAt I α).symm)
         (extChartAt I α b)‖) K_set :=
     hcont_fd.comp hφ_cont hmaps
   obtain ⟨Cfd, hCfd_mem⟩ := hK_compact.bddAbove_image hcont_fd_M

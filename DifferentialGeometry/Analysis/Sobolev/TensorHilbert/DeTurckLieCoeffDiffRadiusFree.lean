@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieCoeffL2JetBound
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVFJetRadiusFree
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldJetRadiusFree
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 
 noncomputable section
@@ -24,6 +24,7 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Combinatorics
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -34,7 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem dLaField_perOrder_rf
+theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_normSq_perOrder_radiusFree_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Ktop : ℕ → ℝ, (∀ i, 0 ≤ Ktop i) ∧ ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
@@ -45,18 +46,18 @@ theorem dLaField_perOrder_rf
         (_hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P) δ)
         (_hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x (P.toSection x) ≤ Λ₀ ^ 2)
         (i : ℕ),
-        ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 ≤
+        ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 ≤
           Ktop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 +
           Flow i * (1 + ∑ j ∈ Finset.range (i + 3),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Ktop_a, hKtop_a_nn, Kc_a, hKc_a_nn, hfield⟩ :=
-    rfns_iCG_dLaField_topsep (I := I) (M := M) g₀ g_bg hδ₀
+    exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_fiberNormSq_topOrderSeparated_bound (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
-  refine ⟨fun i => Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i,
-    fun i => mul_nonneg (mul_nonneg hKtop_a_nn (appCcGdiag_nonneg (E := E) i))
-      (appCcGdiag_nonneg (E := E) i),
+  refine ⟨fun i => Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i,
+    fun i => mul_nonneg (mul_nonneg hKtop_a_nn (operatorFieldApplicationGdiag_nonneg (E := E) i))
+      (operatorFieldApplicationGdiag_nonneg (E := E) i),
     fun i => Kc_a i * ∑ k ∈ Finset.range (i + 3), K_rf k,
     fun i => mul_nonneg (hKc_a_nn i) (Finset.sum_nonneg fun k _ => hK_rf_nn k), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup i
@@ -68,11 +69,11 @@ theorem dLaField_perOrder_rf
   have hpt : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
           ((iteratedCovGrad (I := I) g₀ 2 2 i
-            (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)).toSection x) ≤
-        (Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i) *
+            (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)).toSection x) ≤
+        (Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i) *
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
               ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x) +
-          Kc_a i * dLaGridWin
+          Kc_a i * antidiagonalTupleGridPartialSum
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3) :=
     fun x => hfield g₁ P htie hδ_le hδ0 hδ i x
@@ -97,11 +98,11 @@ theorem dLaField_perOrder_rf
       funext x; rw [Combinatorics.antidiagonalTupleGrid]
     rw [hExpand]; exact hK_rf P hsup k
   have hwin_int : MeasureTheory.Integrable
-      (fun x => dLaGridWin
+      (fun x => antidiagonalTupleGridPartialSum
         (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
           ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
-    rw [show (fun x => dLaGridWin
+    rw [show (fun x => antidiagonalTupleGridPartialSum
         (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
           ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3)) =
       (fun x => ∑ k ∈ Finset.range (i + 3),
@@ -116,17 +117,17 @@ theorem dLaField_perOrder_rf
     integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (2 + (i + 2))
       (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P)
   have hbridge := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
-    (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg))
-    (fun x => (Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i) *
+    (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg))
+    (fun x => (Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x)
-      + Kc_a i * dLaGridWin
+      + Kc_a i * antidiagonalTupleGridPartialSum
           (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3))
-    ((htop_int.const_mul (Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i)).add
+    ((htop_int.const_mul (Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i)).add
       (hwin_int.const_mul (Kc_a i))) hpt
   rw [MeasureTheory.integral_add
-      (htop_int.const_mul (Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i))
+      (htop_int.const_mul (Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i))
       (hwin_int.const_mul (Kc_a i)),
     MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul] at hbridge
   have hnormsq : ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 =
@@ -134,12 +135,12 @@ theorem dLaField_perOrder_rf
         ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g₀) := by
     rw [SmoothCcTensor.norm_def, tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs]
-  have hwin_bd : (∫ x, dLaGridWin
+  have hwin_bd : (∫ x, antidiagonalTupleGridPartialSum
       (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
         ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
       (∑ k ∈ Finset.range (i + 3), K_rf k) * (1 + S') := by
-    rw [show (fun x => dLaGridWin
+    rw [show (fun x => antidiagonalTupleGridPartialSum
         (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
           ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3)) =
       (fun x => ∑ k ∈ Finset.range (i + 3),
@@ -154,31 +155,31 @@ theorem dLaField_perOrder_rf
         (fun j _ => sq_nonneg _) (Finset.mem_range.mpr (by rw [Finset.mem_range] at hk; omega))
     refine mul_le_mul_of_nonneg_left ?_ (hK_rf_nn k)
     linarith
-  calc ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2
-      ≤ (Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i) *
+  calc ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2
+      ≤ (Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i) *
           (∫ x, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x)
             ∂(riemannianVolumeMeasure (I := I) (M := M) g₀))
-        + Kc_a i * (∫ x, dLaGridWin
+        + Kc_a i * (∫ x, antidiagonalTupleGridPartialSum
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3)
             ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) := hbridge
-    _ = (Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i) *
+    _ = (Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i) *
           ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2
-        + Kc_a i * (∫ x, dLaGridWin
+        + Kc_a i * (∫ x, antidiagonalTupleGridPartialSum
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 3)
             ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) := by rw [hnormsq]
-    _ ≤ (Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i) *
+    _ ≤ (Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i) *
           ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2
         + Kc_a i * ((∑ k ∈ Finset.range (i + 3), K_rf k) * (1 + S')) := by
         have hmul := mul_le_mul_of_nonneg_left hwin_bd (hKc_a_nn i)
         linarith [hmul]
-    _ = Ktop_a * appCcGdiag (E := E) i * appCcGdiag (E := E) i *
+    _ = Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i *
           ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2
         + (Kc_a i * ∑ k ∈ Finset.range (i + 3), K_rf k) * (1 + S') := by ring
 
-theorem dLbField_perOrder_rf
+theorem exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_perOrder_radiusFree_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
@@ -190,24 +191,24 @@ theorem dLbField_perOrder_rf
         (_hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P) δ)
         (_hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x (P.toSection x) ≤ Λ₀ ^ 2)
         (i : ℕ), i ≤ a →
-        ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 ≤
+        ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖ ^ 2 ≤
           Ktop * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 +
           Flow i * (1 + ∑ j ∈ Finset.range (i + 3),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Kb_top, hKb_top_nn, Kb_flow, hKb_flow_nn, hwalpha⟩ :=
-    wAlpha_L2_topsep_rf (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_topOrderSeparated (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
   have h4fr_nn : (0 : ℝ) ≤ 4 * (Module.finrank ℝ E : ℝ) := by positivity
   refine ⟨4 * (Module.finrank ℝ E : ℝ) * Kb_top, mul_nonneg h4fr_nn hKb_top_nn,
     fun i => 4 * (Module.finrank ℝ E : ℝ) * Kb_flow i,
     fun i => mul_nonneg h4fr_nn (hKb_flow_nn i), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup i hi
-  have hdlb := normSq_iCG_dlbField_le (I := I) (M := M) g₀ g₁ g_bg i
-  rw [norm_iCG_wEndoInsert_eq_wAlpha (I := I) (M := M) g₀ g₁ g_bg i] at hdlb
+  have hdlb := normSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionField_le (I := I) (M := M) g₀ g₁ g_bg i
+  rw [norm_iteratedCovGrad_deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg i] at hdlb
   have hwa := hwalpha g₁ P htie hδ_le hδ0 hδ hsup i hi
-  calc ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2
+  calc ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖ ^ 2
       ≤ 4 * (Module.finrank ℝ E : ℝ) *
-          ‖iteratedCovGrad (I := I) g₀ 0 2 i (wAlpha (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 := hdlb
+          ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 := hdlb
     _ ≤ 4 * (Module.finrank ℝ E : ℝ) *
           (Kb_top * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 +
             Kb_flow i * (1 + ∑ j ∈ Finset.range (i + 3),
@@ -239,9 +240,9 @@ theorem deTurckLieCoeffField_perOrder_l2_radiusFree
             ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Ka_top, hKa_top_nn, Ka_low, hKa_low_nn, hDLa⟩ :=
-    dLaField_perOrder_rf (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
+    exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
   obtain ⟨Kb_top, hKb_top_nn, Kb_low, hKb_low_nn, hDLb⟩ :=
-    dLbField_perOrder_rf (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
+    exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g₀ g_bg a ha_super hδ₀ hΛ₀0
   refine ⟨fun i => 2 * Ka_top i + 2 * Kb_top + (2 * Ka_low i + 2 * Kb_low i),
     fun i => by
       have := hKa_top_nn i; have := hKb_top_nn; have := hKa_low_nn i; have := hKb_low_nn i
@@ -265,32 +266,32 @@ theorem deTurckLieCoeffField_perOrder_l2_radiusFree
   have hb := hDLb g₁ P htie' hδ_le hδ0 hδ' hsup i hi
   have hcomb : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
-      2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 +
-        2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 := by
+      2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 +
+        2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖ ^ 2 := by
     have hgrad : iteratedCovGrad (I := I) g₀ 2 2 i
           (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)
-        = iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)
-          + iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg) := by
-      rw [← deTurckLieDLaCoeffField_add_deTurckLieDLbCoeffField (I := I) (M := M) g₀ g₁ g_bg,
+        = iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)
+          + iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg) := by
+      rw [← deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg,
         iteratedCovGrad_add]
     rw [hgrad]
     nlinarith [norm_add_le
-        (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg))
-        (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg)),
-      norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)),
-      norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg)),
-      norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)
-          + iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg)),
-      sq_nonneg (‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)‖ -
-        ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg)‖)]
+        (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg))
+        (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)),
+      norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)),
+      norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)),
+      norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)
+          + iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)),
+      sq_nonneg (‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)‖ -
+        ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖)]
   have hsplit : (∑ j ∈ Finset.range (i + 3), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) =
       (∑ j ∈ Finset.range (i + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) +
         ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 := by
     rw [show i + 3 = (i + 2) + 1 from rfl, Finset.sum_range_succ]
   rw [hsplit] at ha hb
   calc ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2
-      ≤ 2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLaCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 +
-          2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieDLbCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 :=
+      ≤ 2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)‖ ^ 2 +
+          2 * ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖ ^ 2 :=
         hcomb
     _ ≤ 2 * (Ka_top i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 +
             Ka_low i * (1 +
@@ -362,7 +363,7 @@ theorem deTurckLieCoeffField_summed_l2_radiusFree
         (max 0 ((Module.finrank ℝ E : ℝ) * δ₀)) ^ 2 := by
       intro x
       rw [hmaxeq]
-      exact rfns_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
+      exact riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
     have hper' : ∀ i, i ≤ a →
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤

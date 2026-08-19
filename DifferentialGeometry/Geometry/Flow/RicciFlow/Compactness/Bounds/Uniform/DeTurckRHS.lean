@@ -42,11 +42,11 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem covDerivConnDiff_tens (g₂ g₁ : SmoothRiemannianMetric I M) (x : M)
+theorem covDerivConnectionDifference_tens (g₂ g₁ : SmoothRiemannianMetric I M) (x : M)
     (X Y Z X' Y' Z' : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX : X x = X' x) (hY : Y x = Y' x) (hZ : Z x = Z' x) :
-    covDerivConnDiff (I := I) g₂ g₁ X Y Z x =
-      covDerivConnDiff (I := I) g₂ g₁ X' Y' Z' x := by
+    covDerivConnectionDifference (I := I) g₂ g₁ X Y Z x =
+      covDerivConnectionDifference (I := I) g₂ g₁ X' Y' Z' x := by
   classical
   have hflat : ∀ p q : TangentSpace I x,
       (g0FlatCLM (I := I) g₂ x p) (fun _ : Fin 1 => q) = g₂.inner x p q := by
@@ -58,18 +58,18 @@ theorem covDerivConnDiff_tens (g₂ g₁ : SmoothRiemannianMetric I M) (x : M)
   obtain ⟨om, hom⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
     (F := Tensor0SModel 1 ℝ E) (V := fun y : M => Tensor0SSpace 1 I y) x
     (g0FlatCLM (I := I) g₂ x
-      (covDerivConnDiff (I := I) g₂ g₁ X Y Z x - covDerivConnDiff (I := I) g₂ g₁ X' Y' Z' x))
-  have h1 := connDiffSection_covGrad_eq_covDerivConnDiff (I := I) g₁ g₂ om X Z Y x
-  have h2 := connDiffSection_covGrad_eq_covDerivConnDiff (I := I) g₁ g₂ om X' Z' Y' x
+      (covDerivConnectionDifference (I := I) g₂ g₁ X Y Z x - covDerivConnectionDifference (I := I) g₂ g₁ X' Y' Z' x))
+  have h1 := connectionDifferenceSection_covGrad_eq_covDerivConnectionDifference (I := I) g₁ g₂ om X Z Y x
+  have h2 := connectionDifferenceSection_covGrad_eq_covDerivConnectionDifference (I := I) g₁ g₂ om X' Z' Y' x
   rw [hX, hY, hZ] at h1
-  have h3 : om x (fun _ : Fin 1 => covDerivConnDiff (I := I) g₂ g₁ X Y Z x) =
-      om x (fun _ : Fin 1 => covDerivConnDiff (I := I) g₂ g₁ X' Y' Z' x) := by
+  have h3 : om x (fun _ : Fin 1 => covDerivConnectionDifference (I := I) g₂ g₁ X Y Z x) =
+      om x (fun _ : Fin 1 => covDerivConnectionDifference (I := I) g₂ g₁ X' Y' Z' x) := by
     rw [← h1, h2]
   rw [hom, hflat, hflat] at h3
   have hz : g₂.inner x
-      (covDerivConnDiff (I := I) g₂ g₁ X Y Z x - covDerivConnDiff (I := I) g₂ g₁ X' Y' Z' x)
-      (covDerivConnDiff (I := I) g₂ g₁ X Y Z x -
-        covDerivConnDiff (I := I) g₂ g₁ X' Y' Z' x) = 0 := by
+      (covDerivConnectionDifference (I := I) g₂ g₁ X Y Z x - covDerivConnectionDifference (I := I) g₂ g₁ X' Y' Z' x)
+      (covDerivConnectionDifference (I := I) g₂ g₁ X Y Z x -
+        covDerivConnectionDifference (I := I) g₂ g₁ X' Y' Z' x) = 0 := by
     rw [map_sub, h3, sub_self]
   by_contra hne
   exact absurd hz (ne_of_gt (g₂.pos x _ (sub_ne_zero.mpr hne)))
@@ -83,16 +83,16 @@ private theorem rhsTermBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ C₀ 
         g₀.inner y u u ≤ Λ * gBase.inner y u u)
     (hC₀ : ∀ (y : M) (p q : TangentSpace I y),
       Real.sqrt (gBase.inner y
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase y p q)
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase y p q)) ≤
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase y p q)
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase y p q)) ≤
         C₀ * Real.sqrt (gBase.inner y p p) * Real.sqrt (gBase.inner y q q))
     (hC₁ : ∀ (y : M) (p q r : TangentSpace I y),
       Real.sqrt (gBase.inner y
-          (covDerivConnDiff (I := I) gBase g₀
+          (covDerivConnectionDifference (I := I) gBase g₀
             (smoothExtensionTangent (I := I) y p)
             (smoothExtensionTangent (I := I) y q)
             (smoothExtensionTangent (I := I) y r) y)
-          (covDerivConnDiff (I := I) gBase g₀
+          (covDerivConnectionDifference (I := I) gBase g₀
             (smoothExtensionTangent (I := I) y p)
             (smoothExtensionTangent (I := I) y q)
             (smoothExtensionTangent (I := I) y r) y)) ≤
@@ -100,14 +100,14 @@ private theorem rhsTermBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ C₀ 
           Real.sqrt (gBase.inner y r r))
     (x : M) (v w b : TangentSpace I x) (hb : g₀.inner x b b = 1) :
     |g₀.inner x
-        (covDerivConnDiff (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
+        (covDerivConnectionDifference (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x b) (smoothExtensionTangent (I := I) x b) x
-          + (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
-                (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b b) v
-              - DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b
-                  (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b v)
-              - DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
-                  (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b v) b)) w|
+          + (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
+                (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b b) v
+              - DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b
+                  (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b v)
+              - DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
+                  (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b v) b)) w|
       ≤ (C₁ + 3 * C₀ ^ 2) * Λ ^ 4 * Real.sqrt (g₀.inner x v v) *
           Real.sqrt (g₀.inner x w w) := by
   classical
@@ -152,8 +152,8 @@ private theorem rhsTermBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ C₀ 
   have hAle : ∀ (p q : TangentSpace I x) (cp cq : ℝ), 0 ≤ cp →
       Real.sqrt (gBase.inner x p p) ≤ cp → Real.sqrt (gBase.inner x q q) ≤ cq →
       Real.sqrt (gBase.inner x
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x p q)
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x p q)) ≤
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x p q)
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x p q)) ≤
         C₀ * cp * cq := by
     intro p q cp cq hcp hp hq
     refine le_trans (hC₀ x p q) ?_
@@ -162,9 +162,9 @@ private theorem rhsTermBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ C₀ 
           mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hp hC₀0) (Real.sqrt_nonneg _)
       _ ≤ C₀ * cp * cq := mul_le_mul_of_nonneg_left hq (mul_nonneg hC₀0 hcp)
   have hCbound : Real.sqrt (gBase.inner x
-      (covDerivConnDiff (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
+      (covDerivConnectionDifference (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x b) (smoothExtensionTangent (I := I) x b) x)
-      (covDerivConnDiff (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
+      (covDerivConnectionDifference (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x b) (smoothExtensionTangent (I := I) x b) x)) ≤
       C₁ * Λ ^ 3 * Real.sqrt (g₀.inner x v v) := by
     refine le_trans (hC₁ x v b b) ?_
@@ -185,39 +185,39 @@ private theorem rhsTermBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ C₀ 
           mul_le_mul_of_nonneg_left hbB (mul_nonneg hbase0 hΛ0.le)
       _ = C₁ * Λ ^ 3 * Real.sqrt (g₀.inner x v v) := by ring
   have hPbound : Real.sqrt (gBase.inner x
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b b)
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b b)) ≤
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b b)
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b b)) ≤
       C₀ * Λ * Λ :=
     hAle b b Λ Λ hΛ0.le hbB hbB
   have hRbound : Real.sqrt (gBase.inner x
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b v)
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b v)) ≤
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b v)
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b v)) ≤
       C₀ * Λ * (Λ * Real.sqrt (g₀.inner x v v)) :=
     hAle b v Λ (Λ * Real.sqrt (g₀.inner x v v)) hΛ0.le hbB hvB
   have hQ1 : Real.sqrt (gBase.inner x
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
-        (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b b) v)
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
-        (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b b) v)) ≤
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
+        (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b b) v)
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
+        (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b b) v)) ≤
       C₀ ^ 2 * Λ ^ 3 * Real.sqrt (g₀.inner x v v) := by
     have h := hAle _ v (C₀ * Λ * Λ) (Λ * Real.sqrt (g₀.inner x v v))
       (by positivity) hPbound hvB
     calc _ ≤ C₀ * (C₀ * Λ * Λ) * (Λ * Real.sqrt (g₀.inner x v v)) := h
       _ = C₀ ^ 2 * Λ ^ 3 * Real.sqrt (g₀.inner x v v) := by ring
   have hQ2 : Real.sqrt (gBase.inner x
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b
-        (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b v))
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b
-        (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b v))) ≤
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b
+        (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b v))
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b
+        (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b v))) ≤
       C₀ ^ 2 * Λ ^ 3 * Real.sqrt (g₀.inner x v v) := by
     have h := hAle b _ Λ (C₀ * Λ * (Λ * Real.sqrt (g₀.inner x v v))) hΛ0.le hbB hRbound
     calc _ ≤ C₀ * Λ * (C₀ * Λ * (Λ * Real.sqrt (g₀.inner x v v))) := h
       _ = C₀ ^ 2 * Λ ^ 3 * Real.sqrt (g₀.inner x v v) := by ring
   have hQ3 : Real.sqrt (gBase.inner x
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
-        (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b v) b)
-      (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
-        (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x b v) b)) ≤
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
+        (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b v) b)
+      (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
+        (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x b v) b)) ≤
       C₀ ^ 2 * Λ ^ 3 * Real.sqrt (g₀.inner x v v) := by
     have h := hAle _ b (C₀ * Λ * (Λ * Real.sqrt (g₀.inner x v v))) Λ
       (by positivity) hRbound hbB
@@ -239,11 +239,11 @@ private theorem rhsTermBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ C₀ 
 
 noncomputable def vfZeroC (Λ : ℝ) : ℝ :=
   (Module.finrank ℝ E : ℝ) *
-    ((connDiffOneC Λ + 3 * connDiffZeroC Λ ^ 2) * Λ ^ 4)
+    ((connectionDifferenceOneC Λ + 3 * connectionDifferenceZeroC Λ ^ 2) * Λ ^ 4)
 
 
 omit [SigmaCompactSpace M] in
-theorem unifCovDerivVF_of
+theorem uniformCovDerivVF_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -257,17 +257,17 @@ theorem unifCovDerivVF_of
         vfZeroC (E := E) Λ * Real.sqrt (g₀.inner x v v) *
           Real.sqrt (g₀.inner x w w) := by
   classical
-  let C₀ : ℝ := connDiffZeroC Λ
-  let C₁ : ℝ := connDiffOneC Λ
+  let C₀ : ℝ := connectionDifferenceZeroC Λ
+  let C₁ : ℝ := connectionDifferenceOneC Λ
   have hC₀0 : 0 ≤ C₀ := by
-    dsimp [C₀, connDiffZeroC]
+    dsimp [C₀, connectionDifferenceZeroC]
     positivity
   have hC₁0 : 0 ≤ C₁ := by
-    dsimp [C₁, connDiffOneC]
+    dsimp [C₁, connectionDifferenceOneC]
     positivity
-  have hC₀ := connDiffSup_le (I := I) (M := M)
+  have hC₀ := connectionDifferenceSup_le (I := I) (M := M)
     gBase g₀ hΛ hcomp hjet1
-  have hC₁ := covConnDiff_le (I := I) (M := M)
+  have hC₁ := covConnectionDifference_le (I := I) (M := M)
     gBase g₀ hΛ hcomp hjet1 hjet2
   have hΛ0 : (0 : ℝ) < Λ := lt_of_lt_of_le one_pos hΛ
   have hκ0 : (0 : ℝ) ≤ (C₁ + 3 * C₀ ^ 2) * Λ ^ 4 := by
@@ -280,18 +280,18 @@ theorem unifCovDerivVF_of
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   have hterm : ∀ i ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
       |g₀.inner x
-        (covDerivConnDiff (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
+        (covDerivConnectionDifference (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
             (smoothOrthoFrame (I := I) g₀ x i) (smoothOrthoFrame (I := I) g₀ x i) x
-          + (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
-                (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
+          + (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
+                (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
                   (smoothOrthoFrame (I := I) g₀ x i x)
                   (smoothOrthoFrame (I := I) g₀ x i x)) v
-              - DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
+              - DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
                   (smoothOrthoFrame (I := I) g₀ x i x)
-                  (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
+                  (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
                     (smoothOrthoFrame (I := I) g₀ x i x) v)
-              - DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
-                  (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x
+              - DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
+                  (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x
                     (smoothOrthoFrame (I := I) g₀ x i x) v)
                   (smoothOrthoFrame (I := I) g₀ x i x))) w| ≤
         (C₁ + 3 * C₀ ^ 2) * Λ ^ 4 * Real.sqrt (g₀.inner x v v) *
@@ -300,12 +300,12 @@ theorem unifCovDerivVF_of
     have hb : g₀.inner x (smoothOrthoFrame (I := I) g₀ x i x)
         (smoothOrthoFrame (I := I) g₀ x i x) = 1 := by
       rw [smoothOrthoFrame_orthonormal_at_center (I := I) g₀ x i i]; simp
-    have htens : covDerivConnDiff (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
+    have htens : covDerivConnectionDifference (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
           (smoothOrthoFrame (I := I) g₀ x i) (smoothOrthoFrame (I := I) g₀ x i) x =
-        covDerivConnDiff (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
+        covDerivConnectionDifference (I := I) gBase g₀ (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₀ x i x))
           (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₀ x i x)) x := by
-      refine covDerivConnDiff_tens (I := I) gBase g₀ x
+      refine covDerivConnectionDifference_tens (I := I) gBase g₀ x
         (ContMDiffSection.mk (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent_contMDiff (I := I) x v))
         (ContMDiffSection.mk (smoothOrthoFrame (I := I) g₀ x i)
@@ -335,7 +335,7 @@ theorem unifCovDerivVF_of
 
 
 omit [SigmaCompactSpace M] in
-theorem unifCovDerivVF
+theorem uniformCovDerivVF
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -349,8 +349,8 @@ theorem unifCovDerivVF
               Π b : M, TangentSpace I b) b) x v) w| ≤
           K * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by
   refine ⟨vfZeroC (E := E) Λ, ?_,
-    unifCovDerivVF_of (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2⟩
-  dsimp [vfZeroC, connDiffZeroC, connDiffOneC]
+    uniformCovDerivVF_of (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2⟩
+  dsimp [vfZeroC, connectionDifferenceZeroC, connectionDifferenceOneC]
   positivity
 
 
@@ -359,7 +359,7 @@ noncomputable def rhsZeroC (Λ Kb : ℝ) : ℝ :=
 
 
 omit [SigmaCompactSpace M] in
-theorem unifRHSBilin_of
+theorem uniformRHSBilin_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     {Kb : ℝ} (hKb0 : 0 ≤ Kb)
     (hKb : ∀ (x : M) (v w u : TangentSpace I x),
@@ -380,7 +380,7 @@ theorem unifRHSBilin_of
   let Kl : ℝ := vfZeroC (E := E) Λ
   have hKr := ricciBilin_of (I := I) (M := M) gBase g₀ hΛ
     hKb0 hKb hcomp hjet1 hjet2
-  have hKl := unifCovDerivVF_of (I := I) (M := M)
+  have hKl := uniformCovDerivVF_of (I := I) (M := M)
     gBase g₀ hΛ hcomp hjet1 hjet2
   intro x v w
   dsimp [rhsZeroC, Kr, Kl]
@@ -404,7 +404,7 @@ theorem unifRHSBilin_of
   refine abs_le.mpr ⟨by nlinarith, by nlinarith⟩
 
 
-theorem unifRHSBilin
+theorem uniformRHSBilin
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -425,10 +425,10 @@ theorem unifRHSBilin
     exact mul_nonneg (Nat.cast_nonneg _) <|
       mul_nonneg (sq_nonneg _) (add_nonneg hCd0 (Real.sqrt_nonneg _))
   have hKl0 : 0 ≤ vfZeroC (E := E) Λ := by
-    dsimp [vfZeroC, connDiffZeroC, connDiffOneC]
+    dsimp [vfZeroC, connectionDifferenceZeroC, connectionDifferenceOneC]
     positivity
   refine ⟨rhsZeroC (E := E) Λ Kb, ?_,
-    unifRHSBilin_of (I := I) (M := M) gBase g₀ hΛ
+    uniformRHSBilin_of (I := I) (M := M) gBase g₀ hΛ
       hKb0 hKb hcomp hjet1 hjet2⟩
   dsimp [rhsZeroC]
   linarith
@@ -445,7 +445,7 @@ theorem rhsZeroC_nonneg {Kb Λ : ℝ} (hΛ : 1 ≤ Λ) :
     exact mul_nonneg (Nat.cast_nonneg _) <|
       mul_nonneg (sq_nonneg _) (add_nonneg hCd0 (Real.sqrt_nonneg _))
   have hVF0 : 0 ≤ vfZeroC (E := E) Λ := by
-    dsimp [vfZeroC, connDiffZeroC, connDiffOneC]
+    dsimp [vfZeroC, connectionDifferenceZeroC, connectionDifferenceOneC]
     positivity
   dsimp [rhsZeroC]
   linarith
@@ -460,7 +460,7 @@ theorem ksupZeroC_nonneg {Kb Λ : ℝ} (hΛ : 1 ≤ Λ) :
 
 
 omit [SigmaCompactSpace M] in
-theorem unifRHSFib_of
+theorem uniformRHSFib_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     {Kb : ℝ} (hKb0 : 0 ≤ Kb)
     (hKb : ∀ (x : M) (v w u : TangentSpace I x),
@@ -479,11 +479,11 @@ theorem unifRHSFib_of
   classical
   let K₀ : ℝ := rhsZeroC (E := E) Λ Kb
   have hK₀0 : 0 ≤ K₀ := rhsZeroC_nonneg (E := E) hΛ
-  have hK₀ := unifRHSBilin_of (I := I) (M := M) gBase g₀ hΛ
+  have hK₀ := uniformRHSBilin_of (I := I) (M := M) gBase g₀ hΛ
     hKb0 hKb hcomp hjet1 hjet2
   intro x
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
-  rw [rfns0_unit_eq (I := I) g₀ 2 x (deTurckRHSSection (I := I) gBase g₀)]
+  rw [riemannianFiberNormSq0_unit_eq (I := I) g₀ 2 x (deTurckRHSSection (I := I) gBase g₀)]
   have hcompbound : ∀ slots : Fin 2 → Fin (Module.finrank ℝ (TangentSpace I x)),
       |Tensor0SBundle.component0S (I := I) basis
           (ccUnitField (I := I) g₀ 2 (deTurckRHSSection (I := I) gBase g₀) x) slots| ≤ K₀ := by
@@ -520,7 +520,7 @@ theorem unifRHSFib_of
       ring
 
 
-theorem unifRHSFib
+theorem uniformRHSFib
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -534,11 +534,11 @@ theorem unifRHSFib
   obtain ⟨Kb, hKb0, hKb⟩ :=
     exists_uniform_riemannOp_LeviCivita_gNorm_bound (I := I) (M := M) gBase
   exact ⟨ksupZeroC (E := E) Λ Kb, ksupZeroC_nonneg (E := E) hΛ,
-    unifRHSFib_of (I := I) (M := M) gBase g₀ hΛ
+    uniformRHSFib_of (I := I) (M := M) gBase g₀ hΛ
       hKb0 hKb hcomp hjet1 hjet2⟩
 
 
-theorem unifKsupZero_of
+theorem uniformKsupZero_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Kb : ℝ} (hΛ : 1 ≤ Λ)
     (hKb0 : 0 ≤ Kb)
     (hKb : ∀ (x : M) (v w u : TangentSpace I x),
@@ -555,11 +555,11 @@ theorem unifKsupZero_of
         ((iteratedCovGrad (I := I) g₀ 0 2 0
           (deTurckRHSSection (I := I) gBase g₀)).toSection x) ≤
         ksupZeroC (E := E) Λ Kb ^ 2 := by
-  exact unifRHSFib_of (I := I) (M := M) gBase g₀ hΛ
+  exact uniformRHSFib_of (I := I) (M := M) gBase g₀ hΛ
     hKb0 hKb hcomp hjet1 hjet2
 
 
-theorem unifKsupZero
+theorem uniformKsupZero
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -574,7 +574,7 @@ theorem unifKsupZero
   obtain ⟨Kb, hKb0, hKb⟩ :=
     exists_uniform_riemannOp_LeviCivita_gNorm_bound (I := I) (M := M) gBase
   exact ⟨ksupZeroC (E := E) Λ Kb, ksupZeroC_nonneg (E := E) hΛ,
-    unifKsupZero_of (I := I) (M := M) gBase g₀ hΛ
+    uniformKsupZero_of (I := I) (M := M) gBase g₀ hΛ
       hKb0 hKb hcomp hjet1 hjet2⟩
 
 end RicciFlow

@@ -120,8 +120,8 @@ theorem deTurckRicci_solution_with_jointReg
         rawTensorConnLapSmooth (I := I) g₀ 0 2 (ccTensor02Symm (I := I) (M := M) g₀ S) = R := by
       rw [deTurckSmoothRemainder, sub_add_cancel]
     rw [hsum_eq,
-      ccTensorBilinSymm_toSection_congr R (deTurckRHSSectionBg (I := I) g_bg gDT)
-        (by rw [hR_def, deTurckRHSSectionBg_toSection]) x v w]
+      ccTensorBilinSymm_toSection_congr R (deTurckRHSSectionBackground (I := I) g_bg gDT)
+        (by rw [hR_def, deTurckRHSSectionBackground_toSection]) x v w]
     have hreal : gDT = tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ :=
       tensorSectionRealizeMetric_symmS_eq (I := I) g₀ S hδ_lt hδ hδ_lt
         (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ S hδ)

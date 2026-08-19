@@ -34,7 +34,7 @@ theorem NetLimitData.sigmaBall_nesting
     (hy : seqCenter hd D P (L.φ k) β = some y) :
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     Metric.ball x (16 * L.lamInf α) ⊆
-      Metric.ball y ((item3RadiusFactor hd D / 2) * L.lamInf β) := by
+      Metric.ball y ((exponentialBallRadiusFactor hd D / 2) * L.lamInf β) := by
   letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   obtain ⟨x', y', hx', hy', hmeet⟩ := hk
@@ -97,8 +97,8 @@ theorem NetLimitData.sigmaBall_nesting
       apply mul_lt_mul_of_pos_right
       · norm_num
       · exact hscalePos
-    _ = (item3RadiusFactor hd D / 2) * L.lamInf β := by
-      rw [item3RadiusFactor, ← hE2]
+    _ = (exponentialBallRadiusFactor hd D / 2) * L.lamInf β := by
+      rw [exponentialBallRadiusFactor, ← hE2]
       ring
 
 theorem NetLimitData.pair_exp_maps
@@ -111,8 +111,8 @@ theorem NetLimitData.pair_exp_maps
     {x y : (X.obj (L.φ k)).M}
     (hx : seqCenter hd D P (L.φ k) (α : Nat) = some x)
     (hy : seqCenter hd D P (L.φ k) (β : Nat) = some y)
-    (hrad : Item3RadiusAt (I := I) hd D P L pb r
-      (item3RadiusFactor hd D) k)
+    (hrad : ExponentialBallRadiusAt (I := I) hd D P L pb r
+      (exponentialBallRadiusFactor hd D) k)
     (hmetric :
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -135,7 +135,7 @@ theorem NetLimitData.pair_exp_maps
       letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
       letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
-      (item3RadiusFactor hd D / 2) * L.lamInf (β : Nat) <
+      (exponentialBallRadiusFactor hd D / 2) * L.lamInf (β : Nat) <
         Geometry.Riemannian.expRadiusGp
           (I := I) (X.obj (L.φ k)).metric y) :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -151,7 +151,7 @@ theorem NetLimitData.pair_exp_maps
       (Metric.ball 0 (8 * L.lamInf (α : Nat)))
       ((fun v : E => Geometry.Riemannian.Exponential.expMap
         (I := I) (X.obj (L.φ k)).metric y (show TangentSpace I y from v)) ''
-          Metric.ball 0 (item3RadiusFactor hd D * L.lamInf (β : Nat))) := by
+          Metric.ball 0 (exponentialBallRadiusFactor hd D * L.lamInf (β : Nat))) := by
   letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
   letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
   letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
@@ -165,8 +165,8 @@ theorem NetLimitData.pair_exp_maps
     rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]
     exact Real.exp_le_exp.mpr
       (mul_nonneg hd.C_nonneg (by nlinarith [(hd.lambda_pos hD 0).le]))
-  have hfactor : (8 : Real) ≤ item3RadiusFactor hd D := by
-    rw [item3RadiusFactor]
+  have hfactor : (8 : Real) ≤ exponentialBallRadiusFactor hd D := by
+    rw [exponentialBallRadiusFactor]
     nlinarith
   have hsourceC2 :
       8 * L.lamInf (α : Nat) ≤
@@ -174,7 +174,7 @@ theorem NetLimitData.pair_exp_maps
           (I := I) (X.obj (L.φ k)).metric x := by
     calc
       8 * L.lamInf (α : Nat) ≤
-          item3RadiusFactor hd D * L.lamInf (α : Nat) :=
+          exponentialBallRadiusFactor hd D * L.lamInf (α : Nat) :=
         mul_le_mul_of_nonneg_right hfactor
           (hd.lambda_pos hD (L.rInf (α : Nat))).le
       _ ≤ Geometry.Riemannian.expMapC2Radius
@@ -182,8 +182,8 @@ theorem NetLimitData.pair_exp_maps
   have hsource := exp_sigma_maps (I := I) (X.obj (L.φ k))
     (P (L.φ k)).ms (P (L.φ k)).realizes x hmetric hsourceC2
   have hnest := L.sigmaBall_nesting hd hD P hfreq k hk hx hy
-  have hApos : 0 < item3RadiusFactor hd D * L.lamInf (β : Nat) :=
-    mul_pos (item3Factor_pos hd D) (hd.lambda_pos hD (L.rInf (β : Nat)))
+  have hApos : 0 < exponentialBallRadiusFactor hd D * L.lamInf (β : Nat) :=
+    mul_pos (exponential_ball_radius_factor_pos hd D) (hd.lambda_pos hD (L.rInf (β : Nat)))
   have hcoercPos :
       0 < Geometry.Riemannian.gpCoerciveConst
         (I := I) (X.obj (L.φ k)).metric y :=
@@ -205,22 +205,22 @@ theorem NetLimitData.pair_exp_maps
         (Geometry.Riemannian.gpCoerciveConst
           (I := I) (X.obj (L.φ k)).metric y) := hhalfLt.trans_le hsqrtHalf
   have hcoord :
-      ((item3RadiusFactor hd D / 2) * L.lamInf (β : Nat)) /
+      ((exponentialBallRadiusFactor hd D / 2) * L.lamInf (β : Nat)) /
           Real.sqrt (Geometry.Riemannian.gpCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y) <
-        item3RadiusFactor hd D * L.lamInf (β : Nat) := by
+        exponentialBallRadiusFactor hd D * L.lamInf (β : Nat) := by
     rw [div_lt_iff₀ hsqrtPos]
     calc
-      (item3RadiusFactor hd D / 2) * L.lamInf (β : Nat) =
-          (item3RadiusFactor hd D * L.lamInf (β : Nat)) * (1 / 2 : Real) := by ring
-      _ < (item3RadiusFactor hd D * L.lamInf (β : Nat)) *
+      (exponentialBallRadiusFactor hd D / 2) * L.lamInf (β : Nat) =
+          (exponentialBallRadiusFactor hd D * L.lamInf (β : Nat)) * (1 / 2 : Real) := by ring
+      _ < (exponentialBallRadiusFactor hd D * L.lamInf (β : Nat)) *
           Real.sqrt (Geometry.Riemannian.gpCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y) :=
         mul_lt_mul_of_pos_left hhalfSqrt hApos
   have htarget := properBall_to_exp (I := I) (X.obj (L.φ k))
     (P (L.φ k)).ms (P (L.φ k)).realizes
-    (c := y) (R := (item3RadiusFactor hd D / 2) * L.lamInf (β : Nat))
-    (σ := item3RadiusFactor hd D * L.lamInf (β : Nat)) hgp hcoord
+    (c := y) (R := (exponentialBallRadiusFactor hd D / 2) * L.lamInf (β : Nat))
+    (σ := exponentialBallRadiusFactor hd D * L.lamInf (β : Nat)) hgp hcoord
   intro z hz
   have hzC2 : ‖z‖ < Geometry.Riemannian.expMapC2Radius
       (I := I) (X.obj (L.φ k)).metric x := by

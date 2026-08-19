@@ -1371,7 +1371,7 @@ theorem metricGammaEquiv
                 ((lcMetricFamily (I := I) (M := M) g).connection base)
                 frame hframe1 x a b e) := by
     exact
-      DifferentialGeometry.Geometry.Connection.normSqRS_connDiff_eq_componentL2Sq3
+      DifferentialGeometry.Geometry.Connection.normSqRS_connectionDifference_eq_componentL2Sq3
         (I := I) (G := lcMetricFamily (I := I) (M := M) g) gInv
         frame hframe1 hu hx base var hinv hinv_id
   have hcomp :=
@@ -1623,7 +1623,7 @@ theorem sqrt_normSq0S_three_le_of_metricUniformEquivalentOn_symm
     (metricUniformEquivalentOn_symm (I := I) hEq) hx A
 
 omit [SigmaCompactSpace M] in
-theorem covOne_le_connDiff
+theorem covOne_le_connectionDifference
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u K : Set M}
     (g : Real -> SmoothRiemannianMetric I M)
     (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -1668,7 +1668,7 @@ theorem covOne_le_connDiff
     (mul_le_mul_of_nonneg_left hgamma (Real.sqrt_nonneg _))
 
 omit [SigmaCompactSpace M] in
-theorem connDiff_le_covOne
+theorem connectionDifference_le_covOne
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u K : Set M}
     (g : Real -> SmoothRiemannianMetric I M)
     (gInv : DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -1753,7 +1753,7 @@ theorem covOne_le_diff
         if i = j then 1 else 0 := by
     simpa [pair] using hmetric_id
   have hmain :=
-    covOne_le_connDiff
+    covOne_le_connectionDifference
       (I := I) (K := K) (u := u) pair gInv frame hframe hu hx hxK
       (base := 0) (var := 1) (C := C)
       hEq' hinv' hinv_id hmetric_id'
@@ -1801,7 +1801,7 @@ theorem diff_le_covOne
         if i = j then 1 else 0 := by
     simpa [pair] using hmetric_id
   have hmain :=
-    connDiff_le_covOne
+    connectionDifference_le_covOne
       (I := I) (K := K) (u := u) pair gInv frame hframe hu hx hxK
       (base := 0) (var := 1) (C := C)
       hEq' hinv' hinv_id hmetric_id'
@@ -1841,7 +1841,7 @@ theorem diffNormSq_eq_l2
         gInv frame := by
     simpa [pair, lcMetricFamily] using hinv
   have hmain :=
-    DifferentialGeometry.Geometry.Connection.normSqRS_connDiff_eq_componentL2Sq3
+    DifferentialGeometry.Geometry.Connection.normSqRS_connectionDifference_eq_componentL2Sq3
       (I := I) (G := lcMetricFamily (I := I) (M := M) pair)
       gInv frame hframe hu hx
       (base := 0) (var := 1) hinv' hinv_id
@@ -2105,7 +2105,7 @@ theorem covOneCompDiff
         simp [covH, covG, add_comm]
 
 omit [SigmaCompactSpace M] in
-theorem connDiffBasisSymm
+theorem connectionDifferenceBasisSymm
     {Idx : Type*} [Finite Idx]
     (h gRef : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -2207,7 +2207,7 @@ theorem connDiffBasisSymm
           simp [covH, covG, hX, hY]
 
 omit [SigmaCompactSpace M] in
-theorem connDiffCompSymm
+theorem connectionDifferenceCompSymm
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (h gRef : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -2229,7 +2229,7 @@ theorem connDiffCompSymm
   rw [componentRS_eq_gen, Tensor0SBundle.componentRS_connectionDifferenceTensorAt]
   rw [componentRS_eq_gen, Tensor0SBundle.componentRS_connectionDifferenceTensorAt]
   exact congrArg (basis.coord e)
-    (connDiffBasisSymm (I := I) h gRef basis a b)
+    (connectionDifferenceBasisSymm (I := I) h gRef basis a b)
 
 omit [SigmaCompactSpace M] in
 theorem covOne_le_diff_basis
@@ -2405,7 +2405,7 @@ theorem diff_le_covOne_basis
   exact hmain
 
 omit [SigmaCompactSpace M] in
-theorem connDiffCompEq
+theorem connectionDifferenceCompEq
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (h gRef : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -2455,13 +2455,13 @@ theorem connDiffCompEq
       covOneCompDiff (I := I) h gRef basis hinv e a b
   have hsym_ba : D b a e = D a b e := by
     simpa [D, D0] using
-      connDiffCompSymm (I := I) h gRef basis b a e
+      connectionDifferenceCompSymm (I := I) h gRef basis b a e
   have hsym_ae : D a e b = D e a b := by
     simpa [D, D0] using
-      connDiffCompSymm (I := I) h gRef basis a e b
+      connectionDifferenceCompSymm (I := I) h gRef basis a e b
   have hsym_be : D b e a = D e b a := by
     simpa [D, D0] using
-      connDiffCompSymm (I := I) h gRef basis b e a
+      connectionDifferenceCompSymm (I := I) h gRef basis b e a
   change 2 * D a b e = A a b e + A b a e - A e a b
   calc
     2 * D a b e = D a b e + D a b e := by ring
@@ -2492,7 +2492,7 @@ theorem diff_le_covOne_basis_lc
           (Tensor0SBundle.normSq0S (I := I) h x 3
             (metricCovDeriv (I := I) h gRef 1 x)) := by
   exact diff_le_covOne_basis (I := I) h gRef basis hinv
-    (fun a b e => connDiffCompEq (I := I) h gRef basis hinv a b e)
+    (fun a b e => connectionDifferenceCompEq (I := I) h gRef basis hinv a b e)
 
 omit [SigmaCompactSpace M] in
 theorem covOne_le_diff_basis_ref
@@ -2653,7 +2653,7 @@ theorem diff_le_covOne_basis_ref_lc
         (Real.sqrt (C ^ 3) *
           metricCovDerivNorm (I := I) 1 h gRef x) := by
   exact diff_le_covOne_basis_ref (I := I) h gRef hxK C hEq basis hinv
-    (fun a b e => connDiffCompEq (I := I) h gRef basis hinv a b e)
+    (fun a b e => connectionDifferenceCompEq (I := I) h gRef basis hinv a b e)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem metricInvBasisId

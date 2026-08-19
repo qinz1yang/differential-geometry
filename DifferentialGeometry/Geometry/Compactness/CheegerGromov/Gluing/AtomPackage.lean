@@ -181,7 +181,7 @@ theorem atomWeightOn_of_atoms
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (_hgp : ∀ k, Item3GpScaleAt (I := I) hd D P L pb r k)
+    (_hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hcoverU : ∀ k,
@@ -231,7 +231,7 @@ theorem atomWeight_of_atoms
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : ∀ k, Item3GpScaleAt (I := I) hd D P L pb r k)
+    (hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hcoverU : ∀ k,
@@ -381,7 +381,7 @@ private theorem existsAtomWeightCore
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hUx : ∀ᶠ k in Filter.atTop,
@@ -472,7 +472,7 @@ private theorem existsAtomWeightCore
             (beta (psi0 k)) z)
           U (⋃ gamma : Fin (pb.A r),
             L.innerBall hd D P pb r (psi0 k) gamma)) ∧
-      Item3GpScaleAt (I := I) hd D P L pb r (psi0 k) := by
+      ExponentialRadiusScaleAt (I := I) hd D P L pb r (psi0 k) := by
     filter_upwards
       [hpsi0.tendsto_atTop.eventually hUx,
         hpsi0.tendsto_atTop.eventually hcoverU,
@@ -548,13 +548,13 @@ private theorem existsAtomWeightCore
     simpa only [psi, Function.comp_apply] using
       (((hJ gamma).2.2.2.1 (tau k)) z hz).2
   have hliveAtom (gamma : LiveSlot L pb r) :=
-    stepCAtom_conv (I := I) (X := Xpsi) center betapsi
+    gluing_atom_converges (I := I) (X := Xpsi) center betapsi
       (fun gamma => Lpsi.lamInf (gamma.1 : Nat))
       (fun gamma => hd.lambda_pos hD (Lpsi.rInf (gamma.1 : Nat)))
       hU hgpsi hginfU hJpsi hJcpsi (fun gamma => (hJ gamma).1) hsrcpsi gamma
   let aInf : Fin (pb.A r) -> E -> Real := fun gamma =>
     if hgamma : Lpsi.alive (gamma : Nat) = true then
-      fun z => stepCBump (Lpsi.lamInf (gamma : Nat))
+      fun z => gluingBump (Lpsi.lamInf (gamma : Nat))
         (hd.lambda_pos hD (Lpsi.rInf (gamma : Nat)))
         (gInf z (⟨gamma, hgamma⟩ : LiveSlot L pb r)
           (Jinf ⟨gamma, hgamma⟩ z) (Jinf ⟨gamma, hgamma⟩ z))
@@ -562,7 +562,7 @@ private theorem existsAtomWeightCore
   have hliveForSeq : ∀ gamma : Fin (pb.A r),
       Lpsi.alive (gamma : Nat) = true ->
       MapCInfConvOnCompacts U
-        (fun k => stepCAtomChart (I := I) (X.obj (Lpsi.φ k))
+        (fun k => gluingAtomChart (I := I) (X.obj (Lpsi.φ k))
           (betapsi k) (seqCenterD hd P Lpsi k (gamma : Nat))
           (Lpsi.lamInf (gamma : Nat))
           (hd.lambda_pos hD (Lpsi.rInf (gamma : Nat))))
@@ -571,7 +571,7 @@ private theorem existsAtomWeightCore
     have h := hliveAtom (⟨gamma, hgamma⟩ : LiveSlot L pb r)
     simpa only [Xpsi, center, PointedRiemannianSeq.subseq, aInf,
       dif_pos hgamma] using h
-  have hgpPsi (k : Nat) : Item3GpScaleAt (I := I) hd D P Lpsi pb r k := by
+  have hgpPsi (k : Nat) : ExponentialRadiusScaleAt (I := I) hd D P Lpsi pb r k := by
     exact (htailAt k).2.2
   have hatom0 :=
     seqAtoms_conv (I := I) hd hD P Lpsi pb r hgpPsi betapsi hU aInf hliveForSeq
@@ -622,7 +622,7 @@ private theorem existsAtomWeightCore
         ((contDiffOn_pi.mp hginfU live).clm_apply (hJ live).1).clm_apply
           (hJ live).1
       simpa only [aInf, dif_pos hgamma, live] using
-        (stepCBump (Lpsi.lamInf (gamma : Nat))
+        (gluingBump (Lpsi.lamInf (gamma : Nat))
           (hd.lambda_pos hD (Lpsi.rInf (gamma : Nat)))).contDiff.comp_contDiffOn hquad
     · simpa [aInf, hgamma] using
         (contDiffOn_const :
@@ -656,14 +656,14 @@ private theorem existsAtomWeightCore
   exact atomWeight_of_atoms (I := I) hD P Lpsi hre pb r hr hgpPsi betapsi U hU
     hcoverPsi aInf hdead hatom hatomSmooth hatomInfSmooth
 
-theorem existsAtomWeightH6_of_innerCover
+theorem exists_smooth_atom_weight_limit_of_inner_cover
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (rho : Real) (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hovlJ : ∀ gamma : LiveSlot L pb r, ∀ᶠ k in Filter.atTop,
@@ -735,17 +735,17 @@ theorem existsAtomWeightH6_of_innerCover
       MapCInfConvOnCompacts U weight weightInf := by
   exact existsAtomWeightCore (I := I) hD P L hre pb r hr hgp beta U hU
     hUexp hcoverU
-    (existsLiveJointH6 (I := I) metricInput P L pb r rho beta U hU
+    (exists_joint_normal_metric_transition_limit (I := I) metricInput P L pb r rho beta U hU
       hovlJ hUmetric hUexp hmapsJ hVmetric hVexp)
 
-theorem existsAtomWeightH6
+theorem exists_smooth_atom_weight_limit
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (rho : Real) (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hovlJ : ∀ gamma : LiveSlot L pb r, ∀ᶠ k in Filter.atTop,
@@ -836,7 +836,7 @@ theorem existsAtomWeightH6
     intro z hz
     apply hinner
     simpa only [NetLimitData.hatSourceBall] using hmap hz
-  exact existsAtomWeightH6_of_innerCover (I := I) metricInput hD P L hre pb r hr
+  exact exists_smooth_atom_weight_limit_of_inner_cover (I := I) metricInput hD P L hre pb r hr
     hgp rho beta U hU hovlJ hUmetric hUexp hmapsJ hVmetric hVexp hcoverU
 
 end HCGCompactness

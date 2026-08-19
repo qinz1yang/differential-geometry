@@ -23,11 +23,11 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
 theorem exists_stage_metric
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :
     ∃ (psi : Nat → Nat)
@@ -76,7 +76,7 @@ theorem exists_stage_metric
     intro alpha τ hτ
     let index : Nat → Nat := fun n => L.φ (shift (τ n))
     let X' : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
-    let d' : H6NormalData (I := I) X' (inp.decay.subseq index) :=
+    let d' : BoundedGeometryNormalData (I := I) X' (inp.decay.subseq index) :=
       d.subseq index
     let c : ∀ n : Nat, (X'.obj n).M := fun n =>
       seqCenterD inp.decay P L (shift (τ n)) (alpha.1 : Nat)
@@ -94,14 +94,14 @@ theorem exists_stage_metric
               (X'.obj n).basepoint)) := by
       intro n
       have hphase := d.phaseRadius_metric (hcenter n).le
-      simpa only [V, d', H6NormalData.subseq, H6NormalData.metricBounds,
-        H6NormalData.phaseRadius, H6ChartData.radius_eq,
+      simpa only [V, d', BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.metricBounds,
+        BoundedGeometryNormalData.phaseRadius, NormalChartData.radius_eq,
         InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
         index, X', c, PointedRiemannianSeq.subseq] using hphase
     obtain ⟨σ, g, hσ, hg, hconv, hequiv⟩ :=
-      exists_h6_metric_lim (I := I) d' c Metric.isOpen_ball hsub
+      exists_chart_metric_limit_subsequence (I := I) d' c Metric.isOpen_ball hsub
     refine ⟨σ, g, hσ, ?_, ?_⟩
-    · simpa only [Φ, d', H6NormalData.subseq, H6NormalData.chartMetric,
+    · simpa only [Φ, d', BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.chartMetric,
         index, X', c, PointedRiemannianSeq.subseq] using hconv
     · simpa only [Q] using ⟨hg, hequiv⟩
   obtain ⟨psi0, hpsi0, hall⟩ :=
@@ -124,7 +124,7 @@ theorem exists_stage_metric
 
 theorem exists_stage_pair
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -163,7 +163,7 @@ theorem exists_stage_pair
     let index : Nat → Nat := fun n => Lphi.φ n
     let Xphi : PointedRiemannianSeq.{u, uE, uH} (I := I) :=
       X.subseq index
-    let dphi : H6NormalData (I := I) Xphi
+    let dphi : BoundedGeometryNormalData (I := I) Xphi
         (inp.decay.subseq index) := d.subseq index
     let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xphi.obj n).M :=
       fun alpha n =>
@@ -197,7 +197,7 @@ theorem exists_stage_pair
   let index : Nat → Nat := fun n => Lphi.φ n
   let Xphi : PointedRiemannianSeq.{u, uE, uH} (I := I) :=
     X.subseq index
-  let dphi : H6NormalData (I := I) Xphi
+  let dphi : BoundedGeometryNormalData (I := I) Xphi
       (inp.decay.subseq index) := d.subseq index
   let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xphi.obj n).M :=
     fun alpha n =>
@@ -237,13 +237,13 @@ theorem exists_stage_pair
     rw [hV alpha] at hgInf hconv hequiv
     have hgInf' : ContDiffOn Real ∞ (gInf alpha)
         (Metric.ball 0 (dphi.phaseRadius Ralpha)) := by
-      simpa only [dphi, H6NormalData.subseq, H6NormalData.phaseRadius,
+      simpa only [dphi, BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.phaseRadius,
         InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu] using hgInf
     have hconv' : MapCInfConvOnCompacts
         (Metric.ball 0 (dphi.phaseRadius Ralpha))
         (fun n ↦ dphi.chartMetric n (c alpha n)) (gInf alpha) := by
-      simpa only [dphi, H6NormalData.subseq, H6NormalData.phaseRadius,
-        H6NormalData.chartMetric, InjRadiusDecayInput.subseq,
+      simpa only [dphi, BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.phaseRadius,
+        BoundedGeometryNormalData.chartMetric, InjRadiusDecayInput.subseq,
         InjRadiusDecayInput.mu, index, Xphi, c, Lphi,
         PointedRiemannianSeq.subseq] using hconv
     have hequiv' : ∀ z ∈ Metric.ball 0 (dphi.phaseRadius Ralpha),
@@ -251,7 +251,7 @@ theorem exists_stage_pair
           (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf alpha z v v := by
       intro z hz v
       have hz' : z ∈ Metric.ball 0 (d.phaseRadius Ralpha) := by
-        simpa only [dphi, H6NormalData.subseq, H6NormalData.phaseRadius,
+        simpa only [dphi, BoundedGeometryNormalData.subseq, BoundedGeometryNormalData.phaseRadius,
           InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu] using hz
       exact (hequiv z hz' v).1
     rcases hqdata alpha with
@@ -259,17 +259,17 @@ theorem exists_stage_pair
     exact dphi.exists_diagPair_at (hcomplete.subseq index)
       (PointedRiemannianSeq.connected_subseq hconn index)
       Ralpha (c alpha) hc (q alpha) hq
-      (by simpa only [dphi, H6NormalData.subseq,
-          H6NormalData.phaseRadius, InjRadiusDecayInput.subseq,
+      (by simpa only [dphi, BoundedGeometryNormalData.subseq,
+          BoundedGeometryNormalData.phaseRadius, InjRadiusDecayInput.subseq,
           InjRadiusDecayInput.mu] using hqWide)
-      (by simpa only [dphi, H6NormalData.subseq] using hqAcc)
-      (by simpa only [dphi, H6NormalData.subseq] using herr)
-      (by simpa only [dphi, H6NormalData.subseq] using hinvErr)
+      (by simpa only [dphi, BoundedGeometryNormalData.subseq] using hqAcc)
+      (by simpa only [dphi, BoundedGeometryNormalData.subseq] using herr)
+      (by simpa only [dphi, BoundedGeometryNormalData.subseq] using hinvErr)
       hgInf' hequiv' hconv'
   choose deltaStage deltaInf e eInf hpair hfence using hslot
   exact ⟨deltaStage, deltaInf, e, eInf, hpair, hfence⟩
 
-end H6NormalData
+end BoundedGeometryNormalData
 
 end HCGCompactness
 end DifferentialGeometry

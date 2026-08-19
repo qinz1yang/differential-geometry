@@ -195,7 +195,7 @@ theorem exists_orthoFrameAt
 
 end OrthonormalFrame
 
-section Adapter
+section
 
 def deltaInvMetric {Idx : Type*} [DecidableEq Idx] :
     Real → DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx :=
@@ -241,6 +241,6 @@ theorem nablaLapComm_orthoFrame
     (deltaInvMetric (M := M) (Idx := Fin n) (t : Real) x₀)
     (fun i j => rfl) c m
 
-end Adapter
+end
 
 end DifferentialGeometry.PDE.RicciFlow

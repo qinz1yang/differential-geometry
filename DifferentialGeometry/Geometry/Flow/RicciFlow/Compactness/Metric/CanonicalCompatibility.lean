@@ -25,19 +25,19 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable [NeZero (Module.finrank Real E)]
 
-namespace StepDCanon
+namespace CanonicalMetricCompactness
 
 variable {X : PointedFlowSeq.{u, uE, uH} (I := I)}
 
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
-theorem canon_cp
-    (D : StepDCanon (I := I) (X.atZero (I := I)))
+theorem metric_converges_on_compact_sets
+    (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
     (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X
-      D.mc.limit D.mc.subseq D.mc.maps))
+      D.compactness.limit D.compactness.subseq D.compactness.maps))
     (htgt : TgtSigma (pointedCGHMaps_of_manifold (I := I) X
-      D.mc.limit D.mc.subseq D.mc.maps)) :
-    let mc := D.mc
+      D.compactness.limit D.compactness.subseq D.compactness.maps)) :
+    let mc := D.compactness
     let Phi := pointedCGHMaps_of_manifold (I := I) X
       mc.limit mc.subseq mc.maps
     letI : TopologicalSpace mc.limit.M := mc.limit.topology
@@ -62,22 +62,22 @@ theorem canon_cp
            (refRes (I := I) Phi mc.limit.metric hsrc k) < eps) := by
   dsimp only
   intro K hK eps heps
-  obtain ⟨k0, hk0⟩ := D.mc.convergence.metrics.converges K hK 0 eps heps
+  obtain ⟨k0, hk0⟩ := D.compactness.convergence.metrics.converges K hK 0 eps heps
   refine ⟨k0, fun k hk => ?_⟩
   have hk' := hk0 k hk
-  rw [D.domain_eq k] at hk'
-  simpa only [MetricSourceData.derivNormSupOn, StepDCanon.canonDomain,
-    StepDCanon.canonRef] using hk'
+  rw [D.domain_eq_canonical k] at hk'
+  simpa only [MetricSourceData.derivNormSupOn, CanonicalMetricCompactness.canonicalSourceData,
+    CanonicalMetricCompactness.canonicalReferenceMetric] using hk'
 
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
-theorem canon_rel
-    (D : StepDCanon (I := I) (X.atZero (I := I)))
+theorem metric_uniformly_equivalent
+    (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
     (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X
-      D.mc.limit D.mc.subseq D.mc.maps))
+      D.compactness.limit D.compactness.subseq D.compactness.maps))
     (htgt : TgtSigma (pointedCGHMaps_of_manifold (I := I) X
-      D.mc.limit D.mc.subseq D.mc.maps)) :
-    let mc := D.mc
+      D.compactness.limit D.compactness.subseq D.compactness.maps)) :
+    let mc := D.compactness
     let Phi := pointedCGHMaps_of_manifold (I := I) X
       mc.limit mc.subseq mc.maps
     letI : TopologicalSpace mc.limit.M := mc.limit.topology
@@ -97,21 +97,21 @@ theorem canon_rel
         (refRes (I := I) Phi mc.limit.metric hsrc k)
         (srcMetric (I := I) Phi hsrc htgt k 0) Crel := by
   dsimp only
-  obtain ⟨Crel, hCrel, hrel⟩ := D.rel
+  obtain ⟨Crel, hCrel, hrel⟩ := D.uniformly_equivalent
   refine ⟨Crel, hCrel, fun k => ?_⟩
   have hk := hrel k
-  rw [D.domain_eq k] at hk
-  simpa only [StepDCanon.canonDomain, StepDCanon.canonRef] using hk
+  rw [D.domain_eq_canonical k] at hk
+  simpa only [CanonicalMetricCompactness.canonicalSourceData, CanonicalMetricCompactness.canonicalReferenceMetric] using hk
 
 omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
-theorem canon_init
-    (D : StepDCanon (I := I) (X.atZero (I := I)))
+theorem metric_covariant_derivatives_bounded
+    (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
     (hsrc : SrcSigma (pointedCGHMaps_of_manifold (I := I) X
-      D.mc.limit D.mc.subseq D.mc.maps))
+      D.compactness.limit D.compactness.subseq D.compactness.maps))
     (htgt : TgtSigma (pointedCGHMaps_of_manifold (I := I) X
-      D.mc.limit D.mc.subseq D.mc.maps)) :
-    let mc := D.mc
+      D.compactness.limit D.compactness.subseq D.compactness.maps)) :
+    let mc := D.compactness
     let Phi := pointedCGHMaps_of_manifold (I := I) X
       mc.limit mc.subseq mc.maps
     letI : TopologicalSpace mc.limit.M := mc.limit.topology
@@ -135,13 +135,13 @@ theorem canon_init
           (refRes (I := I) Phi mc.limit.metric hsrc k) y <= Cq := by
   dsimp only
   intro q
-  obtain ⟨Cq, hCq, hcov⟩ := D.init_cov q
+  obtain ⟨Cq, hCq, hcov⟩ := D.covariant_derivatives_bounded q
   refine ⟨Cq, hCq, fun k y => ?_⟩
   have hk := hcov k y
-  rw [D.domain_eq k] at hk
-  simpa only [StepDCanon.canonDomain, StepDCanon.canonRef] using hk
+  rw [D.domain_eq_canonical k] at hk
+  simpa only [CanonicalMetricCompactness.canonicalSourceData, CanonicalMetricCompactness.canonicalReferenceMetric] using hk
 
-end StepDCanon
+end CanonicalMetricCompactness
 
 end HCGCompactness
 end DifferentialGeometry

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.ResidualCells
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.ResidualFlatSup
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.ResidualFlatGN
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.ResidualFlatSupremum
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.ResidualFlatGagliardoNirenberg
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorGridIntegral
 
 noncomputable section
@@ -44,7 +44,7 @@ end CurvatureCoefficientDifferenceJetTower
 
 open CurvatureCoefficientDifferenceJetTower
 
-section TopSeparatedResidualIntegrator
+section TopOrderSeparatedResidualIntegrator
 
 
 theorem boundedFactorGrid_cappedTopLayer_integral_flat
@@ -135,7 +135,7 @@ theorem boundedFactorGrid_cappedTopLayer_integral_flat
   set b : M → ℕ → ℝ := fun x l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
     ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x) with hb_def
   have hcont : ∀ l : ℕ, Continuous (fun x => b x l) :=
-    fun l => rfnsIterCont (I := I) (M := M) g₀ P l
+    fun l => riemannianFiberNormSqIterCont (I := I) (M := M) g₀ P l
   have hcell_int : ∀ (n : ℕ) (e : Fin n → ℕ),
       MeasureTheory.Integrable (fun x => ∏ m : Fin n, b x (e m))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
@@ -196,7 +196,7 @@ theorem boundedFactorGrid_cappedTopLayer_integral_flat
           (1 + ∑ j ∈ Finset.range (i + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) :=
         (mul_assoc _ _ _).symm
 
-end TopSeparatedResidualIntegrator
+end TopOrderSeparatedResidualIntegrator
 
 end Spectral
 end Analysis

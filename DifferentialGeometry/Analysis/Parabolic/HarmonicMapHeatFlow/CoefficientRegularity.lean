@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.MapRegularity
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInner
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricRaisedEndomorphismJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow
@@ -147,11 +147,11 @@ private theorem hmfRaisedFrame_cd
     (x₀ : M) (i : Fin (Module.finrank ℝ E)) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M ↦ (TotalSpace.mk' E x
-        (metricComparisonEndo (I := I) q h x
+        (metricComparisonEndomorphism (I := I) q h x
           (smoothOrthoFrame (I := I) q x₀ i x)) : TangentBundle I M)) := by
-  simpa only [fullRaisedEndoField_apply] using ContMDiff.clm_bundle_apply
+  simpa only [metricComparisonEndomorphismField_apply] using ContMDiff.clm_bundle_apply
     (b := id)
-    (fullRaisedEndoField (I := I) (M := M) q h).contMDiff_toFun
+    (metricComparisonEndomorphismField (I := I) (M := M) q h).contMDiff_toFun
     (smoothOrthoFrame_smooth (I := I) q x₀ i)
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
@@ -177,7 +177,7 @@ private theorem hmfSpecFrozen_cd
               (mfderiv I I
                 (hmfAdd (I := I) (M := M) q
                   (hmfSpecIncl (I := I) (M := M) q S p.1)) p.2
-                (metricComparisonEndo (I := I) q h p.2
+                (metricComparisonEndomorphism (I := I) q h p.2
                   (smoothOrthoFrame (I := I) q x₀ i p.2)))
               (mfderiv I I
                 (hmfAdd (I := I) (M := M) q
@@ -211,7 +211,7 @@ private theorem hmfSpecFrozen_cd
             (mfderiv I I
               (hmfAdd (I := I) (M := M) q
                 (hmfSpecIncl (I := I) (M := M) q S p.1)) p.2
-              (metricComparisonEndo (I := I) q h p.2
+              (metricComparisonEndomorphism (I := I) q h p.2
                 (smoothOrthoFrame (I := I) q x₀ i p.2)))
             (mfderiv I I
               (hmfAdd (I := I) (M := M) q
@@ -226,7 +226,7 @@ private theorem hmfSpecFrozen_cd
     have hpush := hmfSpecPush_cd (I := I) (M := M) q S R hmap
       (fun x : M ↦ smoothOrthoFrame (I := I) q x₀ i x) hframe
     have hpushRaised := hmfSpecPush_cd (I := I) (M := M) q S R hmap
-      (fun x : M ↦ metricComparisonEndo (I := I) q h x
+      (fun x : M ↦ metricComparisonEndomorphism (I := I) q h x
         (smoothOrthoFrame (I := I) q x₀ i x))
       hraised
     have happ := ContMDiffOn.clm_bundle_apply₂
@@ -257,14 +257,14 @@ private theorem hmfDens_eq_frozen
         ∑ i : Fin (Module.finrank ℝ E),
           q.inner (Φ y)
             (mfderiv I I Φ y
-              (metricComparisonEndo (I := I) q h y
+              (metricComparisonEndomorphism (I := I) q h y
                 (smoothOrthoFrame (I := I) q x₀ i y)))
             (mfderiv I I Φ y
               (smoothOrthoFrame (I := I) q x₀ i y)) := by
   classical
   let dΦ : TangentSpace I y →L[ℝ] TangentSpace I (Φ y) := mfderiv I I Φ y
   let A : TangentSpace I y →L[ℝ] TangentSpace I y :=
-    metricComparisonEndo (I := I) q h y
+    metricComparisonEndomorphism (I := I) q h y
   let step₁ : TangentSpace I y →L[ℝ] TangentSpace I (Φ y) →L[ℝ] ℝ :=
     (q.inner (Φ y)).comp (dΦ.comp A)
   let precomp : (TangentSpace I (Φ y) →L[ℝ] ℝ) →L[ℝ]

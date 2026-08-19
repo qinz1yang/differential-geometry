@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GradCapAtgw
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVFEndoInsertProducers
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureRefoldMonomialFibreNormBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantDerivativePointwiseBounds
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldEndomorphismInsertionBounds
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureDecompositionMonomialFibreNormBound
 
 noncomputable section
 
@@ -29,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem contRfns (g₀ : SmoothRiemannianMetric I M) {r s : ℕ}
+private theorem contRiemannianFiberNormSq (g₀ : SmoothRiemannianMetric I M) {r s : ℕ}
     (S : SmoothCcTensor g₀ r s) :
     Continuous (fun x : M => riemannianFiberNormSq (I := I) (M := M) g₀ r s x
       (S.toSection x)) := by
@@ -63,8 +63,8 @@ private theorem intCapMul (g₀ : SmoothRiemannianMetric I M) {r s t : ℕ}
   have hprod : MeasureTheory.Integrable
       (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ r s x (A.toSection x) *
         riemannianFiberNormSq (I := I) (M := M) g₀ r t x (B.toSection x)) μ :=
-    ((contRfns (I := I) (M := M) g₀ A).mul
-      (contRfns (I := I) (M := M) g₀ B)).integrable_of_hasCompactSupport
+    ((contRiemannianFiberNormSq (I := I) (M := M) g₀ A).mul
+      (contRiemannianFiberNormSq (I := I) (M := M) g₀ B)).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
   have hmono : (∫ x, riemannianFiberNormSq (I := I) (M := M) g₀ r s x (A.toSection x) *
         riemannianFiberNormSq (I := I) (M := M) g₀ r t x (B.toSection x) ∂μ) ≤
@@ -99,7 +99,7 @@ private theorem normSqSmul (g₀ : SmoothRiemannianMetric I M) {r s : ℕ} (c : 
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   dsimp only
   rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    riemannianFiberNormSq_smul (I := I) (M := M) g₀ r s x c _]
+    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ r s x c _]
 
 theorem gridIntUnit (g₀ : SmoothRiemannianMetric I M) (rb sb : ℕ) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
@@ -284,7 +284,7 @@ theorem gridIntGrad (g₀ : SmoothRiemannianMetric I M) :
           (Λ⁻¹) ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
             (u.toSection x) := by
         rw [hv, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-          riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + 1) x (Λ⁻¹) _]
+          DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + 1) x (Λ⁻¹) _]
       rw [hsm]
       have hcapx : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x (u.toSection x) ≤
           Λ ^ 2 := by
@@ -306,14 +306,14 @@ theorem gridIntGrad (g₀ : SmoothRiemannianMetric I M) :
       rw [hv, DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real
         (I := I) (M := M) g₀ 0 (2 + 1) d (Λ⁻¹) u,
         SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-        riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 ((2 + 1) + d) x (Λ⁻¹) _, hu,
-        rfns_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 1 d P x]
+        DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 ((2 + 1) + d) x (Λ⁻¹) _, hu,
+        riemannianFiberNormSq_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 1 d P x]
       field_simp
     have htop : Λ ^ 2 * ‖iteratedCovGrad (I := I) g₀ 0 (2 + 1) m v‖ ^ 2 = Rtop ^ 2 := by
       rw [hv, DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real
         (I := I) (M := M) g₀ 0 (2 + 1) m (Λ⁻¹) u,
         normSqSmul (I := I) (M := M) g₀ (Λ⁻¹) _, hu,
-        icgNormComp (I := I) (M := M) g₀ 0 2 1 m P, ← hRtop]
+        iteratedCovGrad_norm_comp (I := I) (M := M) g₀ 0 2 1 m P, ← hRtop]
       field_simp
     obtain ⟨d₁, rfl⟩ : ∃ d, c₁ = 1 + d := ⟨c₁ - 1, by omega⟩
     obtain ⟨d₂, rfl⟩ : ∃ d, c₂ = 1 + d := ⟨c₂ - 1, by omega⟩
@@ -372,7 +372,7 @@ theorem gridIntPull (g₀ : SmoothRiemannianMetric I M) :
   have hGcont : Continuous (fun x : M => ∏ m : Fin n,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) :=
-    continuous_finset_prod _ (fun m _ => contRfns (I := I) (M := M) g₀ _)
+    continuous_finset_prod _ (fun m _ => contRiemannianFiberNormSq (I := I) (M := M) g₀ _)
   have hGint : MeasureTheory.Integrable (fun x : M => ∏ m : Fin n,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
@@ -384,7 +384,7 @@ theorem gridIntPull (g₀ : SmoothRiemannianMetric I M) :
         ∏ m : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    ((contRfns (I := I) (M := M) g₀ _).mul hGcont).integrable_of_hasCompactSupport
+    ((contRiemannianFiberNormSq (I := I) (M := M) g₀ _).mul hGcont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
   have hmono := MeasureTheory.integral_mono hPint (hGint.const_mul (Λ₁ ^ 2)) (fun x => by
     exact mul_le_mul_of_nonneg_right (hcap x)
@@ -413,7 +413,7 @@ theorem gradCapLin (hDim : Module.finrank ℝ E = 3)
   rw [hw]
   refine mul_le_mul_of_nonneg_left (le_of_eq ?_) (sq_nonneg C)
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [icgNormComp (I := I) (M := M) g₀ 0 2 1 j T]
+  rw [iteratedCovGrad_norm_comp (I := I) (M := M) g₀ 0 2 1 j T]
 
 end DifferentialGeometry.Integral.Connection
 

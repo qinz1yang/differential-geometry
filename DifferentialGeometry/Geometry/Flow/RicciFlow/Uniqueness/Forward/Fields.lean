@@ -63,7 +63,7 @@ private theorem covDiff_self
   rw [← hσx]
   simpa [CovariantDerivative.difference] using h
 
-private def connDiffOutAt (g : SmoothRiemannianMetric I M)
+private def connectionDifferenceOutAt (g : SmoothRiemannianMetric I M)
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _)) (x : M) :
     Tensor0SSpace 3 I x :=
   Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -71,17 +71,17 @@ private def connDiffOutAt (g : SmoothRiemannianMetric I M)
       (TensorRSSpace.toModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (connectionDifferenceTensorAt (I := I) cov cov' x)))
 
-private def connDiffStdPerm : Equiv.Perm (Fin 3) where
+private def connectionDifferenceStdPerm : Equiv.Perm (Fin 3) where
   toFun i := if i = 0 then 2 else if i = 1 then 0 else 1
   invFun i := if i = 0 then 1 else if i = 1 then 2 else 0
   left_inv i := by fin_cases i <;> simp
   right_inv i := by fin_cases i <;> simp
 
 omit [SigmaCompactSpace M] [T2Space M] in
-private theorem connDiffOutAt_apply (g : SmoothRiemannianMetric I M)
+private theorem connectionDifferenceOutAt_apply (g : SmoothRiemannianMetric I M)
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _)) (x : M)
     (w : Fin 3 -> TangentSpace I x) :
-    connDiffOutAt (I := I) g cov cov' x w =
+    connectionDifferenceOutAt (I := I) g cov cov' x w =
       g.inner x (w 0) (CovariantDerivative.difference cov cov' x (w 2) (w 1)) := by
   change
     DifferentialGeometry.Integral.L2.lowerAllUpperIndices (I := I) (M := M) g 1 2 x
@@ -104,25 +104,25 @@ private theorem connDiffOutAt_apply (g : SmoothRiemannianMetric I M)
   rw [DifferentialGeometry.Integral.L2.separableFormAt_apply]
   simp
 
-def connDiffLowAt (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
+def connectionDifferenceLowAt (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 3 I x :=
-  ContinuousMultilinearMap.domDomCongr connDiffStdPerm
-    (connDiffOutAt (I := I) g₁ (metricCov (I := I) g₁) (metricCov (I := I) g₂) x)
+  ContinuousMultilinearMap.domDomCongr connectionDifferenceStdPerm
+    (connectionDifferenceOutAt (I := I) g₁ (metricCov (I := I) g₁) (metricCov (I := I) g₂) x)
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffLowAt_apply (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
+theorem connectionDifferenceLowAt_apply (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (v : Fin 3 -> TangentSpace I x) :
-    connDiffLowAt (I := I) g₁ g₂ x v =
+    connectionDifferenceLowAt (I := I) g₁ g₂ x v =
       g₁.inner x
         (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
           (v 1) (v 0))
         (v 2) := by
-  have h : connDiffLowAt (I := I) g₁ g₂ x v =
+  have h : connectionDifferenceLowAt (I := I) g₁ g₂ x v =
       g₁.inner x (v 2)
         (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
           (v 1) (v 0)) :=
-    connDiffOutAt_apply (I := I) g₁ (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
-      (fun i : Fin 3 => v (connDiffStdPerm i))
+    connectionDifferenceOutAt_apply (I := I) g₁ (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
+      (fun i : Fin 3 => v (connectionDifferenceStdPerm i))
   rw [h]
   exact g₁.symm x (v 2)
     (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
@@ -130,10 +130,10 @@ theorem connDiffLowAt_apply (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
 
 omit [SigmaCompactSpace M] in
 @[simp]
-theorem connDiffLowAt_self (g : SmoothRiemannianMetric I M) (x : M) :
-    connDiffLowAt (I := I) g g x = 0 := by
+theorem connectionDifferenceLowAt_self (g : SmoothRiemannianMetric I M) (x : M) :
+    connectionDifferenceLowAt (I := I) g g x = 0 := by
   refine ContinuousMultilinearMap.ext fun v => ?_
-  have h := connDiffLowAt_apply (I := I) g g x v
+  have h := connectionDifferenceLowAt_apply (I := I) g g x v
   rw [covDiff_self] at h
   simpa using h
 
@@ -193,8 +193,8 @@ section Norms
 def metricDiffSq (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) : Real :=
   normSq0S (I := I) g₁ x 2 (metricDiffAt (I := I) g₁ g₂ x)
 
-def connDiffSq (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) : Real :=
-  normSq0S (I := I) g₁ x 3 (connDiffLowAt (I := I) g₁ g₂ x)
+def connectionDifferenceSq (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) : Real :=
+  normSq0S (I := I) g₁ x 3 (connectionDifferenceLowAt (I := I) g₁ g₂ x)
 
 def rmDiffSq (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) : Real :=
   normSq0S (I := I) g₁ x 4 (rmDiffLowAt (I := I) g₁ g₂ x)
@@ -205,9 +205,9 @@ theorem metricDiffSq_def (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
       normSq0S (I := I) g₁ x 2 (metricDiffAt (I := I) g₁ g₂ x) := rfl
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffSq_def (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
-    connDiffSq (I := I) g₁ g₂ x =
-      normSq0S (I := I) g₁ x 3 (connDiffLowAt (I := I) g₁ g₂ x) := rfl
+theorem connectionDifferenceSq_def (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
+    connectionDifferenceSq (I := I) g₁ g₂ x =
+      normSq0S (I := I) g₁ x 3 (connectionDifferenceLowAt (I := I) g₁ g₂ x) := rfl
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem rmDiffSq_def (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :

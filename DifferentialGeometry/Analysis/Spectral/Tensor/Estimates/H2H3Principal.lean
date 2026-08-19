@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.AppCcJetWindowTame
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RemainderCoeffPerOrderJetEnvelopes
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -21,7 +21,7 @@ variable
       [T2Space M] [SigmaCompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem grad_icg2_norm
+private theorem grad_iteratedCovGrad2_norm
     (g : SmoothRiemannianMetric I M) (s : ℕ) (U : SmoothCcTensor g 0 s) :
     ‖iteratedCovGrad (I := I) g 0 (s + 2) 1
         (iteratedCovGrad (I := I) g 0 s 2 U)‖ =
@@ -53,7 +53,7 @@ private theorem grad_icg2_norm
     norm_nonneg (iteratedCovGrad (I := I) g 0 s 3 U)]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem appCc_grad_of_grid
+theorem operatorFieldApplication_grad_of_grid
     (g : SmoothRiemannianMetric I M) (s c : ℕ) (Cg : ℝ) (hCg : 0 ≤ Cg)
     (Φ : SmoothCcTensor g (s + 2) c) (V : SmoothCcTensor g 0 (s + 1))
     (A B : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B)
@@ -149,7 +149,7 @@ theorem appCc_grad_of_grid
   rw [mul_pow, mul_pow, Real.sq_sqrt hCg]
   simpa [mul_assoc] using hsq'
 
-theorem appCc_grad_l2
+theorem operatorFieldApplication_grad_l2
     (g : SmoothRiemannianMetric I M) (s c : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (Φ : SmoothCcTensor g (s + 2) c)
@@ -271,7 +271,7 @@ theorem appCc_grad_l2
   rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity : 0 ≤ 2 * Cg)]
   simpa [mul_assoc] using hsq'
 
-theorem appCc_h2_h3_h1
+theorem operatorFieldApplication_h2_h3_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (s c : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -291,7 +291,7 @@ theorem appCc_h2_h3_h1
   obtain ⟨Csp, hCsp, hsp⟩ := hs_le_jet (I := I) (M := M) g c 1
   obtain ⟨Cin, hCin, hin⟩ := hsJet_le (I := I) (M := M) g s 3
   obtain ⟨Cgr, hCgr, hgr⟩ := hs3_grad_low2 (I := I) (M := M) hDim g s
-  obtain ⟨Ccr, hCcr, hcr⟩ := appCc_grad_l2 (I := I) (M := M) g s c
+  obtain ⟨Ccr, hCcr, hcr⟩ := operatorFieldApplication_grad_l2 (I := I) (M := M) g s c
   let d : ℝ := Module.finrank ℝ E
   let sd : ℝ := Real.sqrt d
   let K : ℝ := Cin + Ccr * Cgr + sd * Cin
@@ -324,7 +324,7 @@ theorem appCc_h2_h3_h1
         (fun j _ => norm_nonneg _) (by norm_num)).trans hJ
     rw [show ‖covGrad (I := I) (M := M) g 0 (s + 2) W‖ =
         ‖iteratedCovGrad (I := I) g 0 s 3 U‖ by
-      exact grad_icg2_norm (I := I) (M := M) g s U]
+      exact grad_iteratedCovGrad2_norm (I := I) (M := M) g s U]
     exact hpick
   have hVsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
@@ -348,7 +348,7 @@ theorem appCc_h2_h3_h1
           ((slotExtend (I := I) (M := M) g (s + 2) c Φ).toSection x) ≤
         (sd * A) ^ 2 := by
     intro x
-    rw [rfns_slotExtend_eq (I := I) (M := M) g (s + 2) c Φ x]
+    rw [riemannianFiberNormSq_slotExtend_eq (I := I) (M := M) g (s + 2) c Φ x]
     calc
       (Module.finrank ℝ E : ℝ) *
           riemannianFiberNormSq (I := I) (M := M) g (s + 2) c x
@@ -426,7 +426,7 @@ theorem appCc_h2_h3_h1
           _ = (Cin + (Ccr * Cgr + sd * Cin)) * A * N := by ring) hCsp
     _ = (Csp * K) * A * N := by dsimp [K]; ring
 
-theorem appCc_c1_h2_h1
+theorem operatorFieldApplication_c1_h2_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (r c : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -503,7 +503,7 @@ theorem appCc_c1_h2_h1
           ((slotExtend (I := I) (M := M) g r c Φ).toSection x) ≤
         (sd * B) ^ 2 := by
     intro x
-    rw [rfns_slotExtend_eq (I := I) (M := M) g r c Φ x]
+    rw [riemannianFiberNormSq_slotExtend_eq (I := I) (M := M) g r c Φ x]
     calc
       (Module.finrank ℝ E : ℝ) *
           riemannianFiberNormSq (I := I) (M := M) g r c x (Φ.toSection x)
@@ -569,7 +569,7 @@ theorem appCc_c1_h2_h1
           _ = (Cin + (Cpt + sd * Cin)) * B * N := by ring) hCsp
     _ = (Csp * K) * (B0 + B1) * N := by dsimp [B, K]; ring
 
-theorem appCc_h2_h2_h1
+theorem operatorFieldApplication_h2_h2_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (r c : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -583,7 +583,7 @@ theorem appCc_h2_h2_h1
         ‖ccTensorToHs (I := I) (M := M) g c (1 : ℝ)
             (operatorFieldApply (I := I) (M := M) g r c Φ U)‖ ≤
           C * A * ‖ccTensorToHs (I := I) (M := M) g r (2 : ℝ) U‖ := by
-  obtain ⟨C, hC, hbound⟩ := appCc_c1_h2_h1 (I := I) (M := M) hDim g r c
+  obtain ⟨C, hC, hbound⟩ := operatorFieldApplication_c1_h2_h1 (I := I) (M := M) hDim g r c
   refine ⟨2 * C, mul_nonneg (by norm_num) hC, ?_⟩
   intro Φ U A hA hΦsup hΦjet
   have hΦ1sq :
@@ -604,7 +604,7 @@ theorem appCc_h2_h2_h1
     _ = (2 * C) * A *
           ‖ccTensorToHs (I := I) (M := M) g r (2 : ℝ) U‖ := by ring
 
-theorem appCc_h2_cov_h1
+theorem operatorFieldApplication_h2_cov_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (s c : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -625,7 +625,7 @@ theorem appCc_h2_cov_h1
   obtain ⟨Cin, hCin, hin⟩ := hsJet_le (I := I) (M := M) g (s + 1) 2
   obtain ⟨Cpt, hCpt, hpt⟩ := hs2_fiber_sq (I := I) (M := M) hDim g (s + 1)
   obtain ⟨Cjet, hCjet, hjet⟩ := hs2_low2 (I := I) (M := M) g (s + 1)
-  obtain ⟨Ccr, hCcr, hcr⟩ := appCc_grad_l2 (I := I) (M := M) g s c
+  obtain ⟨Ccr, hCcr, hcr⟩ := operatorFieldApplication_grad_l2 (I := I) (M := M) g s c
   let Cu : ℝ := Cpt + Cjet
   let d : ℝ := Module.finrank ℝ E
   let sd : ℝ := Real.sqrt d
@@ -665,7 +665,7 @@ theorem appCc_h2_cov_h1
             (iteratedCovGrad (I := I) g 0 (s + 1) 1 U)‖ := by
               simp only [W, iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero]
       _ = ‖iteratedCovGrad (I := I) g 0 (s + 1) (1 + 1) U‖ :=
-        icg_comp_norm (I := I) (M := M) g (s + 1) 1 1 U
+        iteratedCovGrad_comp_norm (I := I) (M := M) g (s + 1) 1 1 U
       _ ≤ Cin * N := by norm_num at hpick ⊢; exact hpick
   have hUsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
@@ -699,7 +699,7 @@ theorem appCc_h2_cov_h1
           ((slotExtend (I := I) (M := M) g (s + 2) c Φ).toSection x) ≤
         (sd * A) ^ 2 := by
     intro x
-    rw [rfns_slotExtend_eq (I := I) (M := M) g (s + 2) c Φ x]
+    rw [riemannianFiberNormSq_slotExtend_eq (I := I) (M := M) g (s + 2) c Φ x]
     calc
       (Module.finrank ℝ E : ℝ) *
           riemannianFiberNormSq (I := I) (M := M) g (s + 2) c x
@@ -770,7 +770,7 @@ theorem appCc_h2_cov_h1
           _ = (Cin + (Ccr * Cu + sd * Cin)) * A * N := by ring) hCsp
     _ = (Csp * K) * A * N := by dsimp [K]; ring
 
-theorem appCc_h3_h1
+theorem operatorFieldApplication_h3_h1
     (g : SmoothRiemannianMetric I M) (s c : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (Φ : SmoothCcTensor g (s + 2) c) (U : SmoothCcTensor g 0 s)
@@ -824,7 +824,7 @@ theorem appCc_h3_h1
       ‖iteratedCovGrad (I := I) g 0 (s + 2) 1 W‖ ≤ J := by
     rw [show ‖iteratedCovGrad (I := I) g 0 (s + 2) 1 W‖ =
         ‖iteratedCovGrad (I := I) g 0 s 3 U‖ by
-      exact grad_icg2_norm (I := I) (M := M) g s U]
+      exact grad_iteratedCovGrad2_norm (I := I) (M := M) g s U]
     dsimp [J]
     refine Finset.single_le_sum
       (f := fun j => ‖iteratedCovGrad (I := I) g 0 s j U‖)
@@ -842,10 +842,10 @@ theorem appCc_h3_h1
     interval_cases i
     · simpa [K] using (hΦ0 x).trans hB0sq
     · simpa [K, iteratedCovGrad_succ] using (hΦ1 x).trans hB1sq
-  have hsq0raw := appCc_jet_l2Sq_le (I := I) (M := M) g (s + 2) c 0
+  have hsq0raw := operatorFieldApplication_jet_l2Sq_le (I := I) (M := M) g (s + 2) c 0
     Φ W K (fun i hi => hK i (by omega))
     (fun i hi => hΦK i (by omega))
-  have hsq1raw := appCc_jet_l2Sq_le (I := I) (M := M) g (s + 2) c 1
+  have hsq1raw := operatorFieldApplication_jet_l2Sq_le (I := I) (M := M) g (s + 2) c 1
     Φ W K hK hΦK
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd,
     Nat.add_zero, Nat.zero_add, Nat.reduceSub, iteratedCovGrad_zero,
@@ -872,7 +872,7 @@ theorem appCc_h3_h1
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
             (pow_le_pow_left₀ (norm_nonneg W) hW0 2) (sq_nonneg B))
-          (appCcGdiag_nonneg (E := E) 0)
+          (operatorFieldApplicationGdiag_nonneg (E := E) 0)
       _ = G0 * B ^ 2 * J ^ 2 := by dsimp [G0]; ring
   have hsq1 :
       ‖iteratedCovGrad (I := I) g 0 c 1 A‖ ^ 2 ≤
@@ -896,17 +896,17 @@ theorem appCc_h3_h1
                 ‖covGrad (I := I) (M := M) g 0 (s + 2) W‖ ^ 2) +
                 B ^ 2 * ‖W‖ ^ 2 ≤ 3 * B ^ 2 * J ^ 2 by
               nlinarith [sq_nonneg B, sq_nonneg J])
-          (appCcGdiag_nonneg (E := E) 1)
+          (operatorFieldApplicationGdiag_nonneg (E := E) 1)
       _ = (3 * G1) * B ^ 2 * J ^ 2 := by dsimp [G1]; ring
   have hA0 : ‖A‖ ≤ C0 * B * J := by
     refine le_of_sq_le_sq ?_ (by positivity)
-    rw [mul_pow, mul_pow, Real.sq_sqrt (appCcGdiag_nonneg (E := E) 0)]
+    rw [mul_pow, mul_pow, Real.sq_sqrt (operatorFieldApplicationGdiag_nonneg (E := E) 0)]
     simpa [C0, G0, mul_assoc] using hsq0
   have hA1 : ‖iteratedCovGrad (I := I) g 0 c 1 A‖ ≤ C1 * B * J := by
     refine le_of_sq_le_sq ?_ (by positivity)
     rw [mul_pow, mul_pow,
       Real.sq_sqrt (mul_nonneg (by norm_num : (0 : ℝ) ≤ 3)
-        (appCcGdiag_nonneg (E := E) 1))]
+        (operatorFieldApplicationGdiag_nonneg (E := E) 1))]
     simpa [C1, G1, mul_assoc] using hsq1
   have hspA :
       ‖ccTensorToHs (I := I) (M := M) g c (1 : ℝ) A‖ ≤

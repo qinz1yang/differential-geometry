@@ -157,7 +157,7 @@ omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [SigmaCompactSpace M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-theorem covZeroBdd
+theorem exists_uniform_zero_order_metric_covariant_derivative_bound
     [Module.Finite ℝ E]
     {K : Set M} {β ψ : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
@@ -207,7 +207,7 @@ theorem covZeroBdd
 
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
-theorem covBddAllSol
+theorem exists_uniform_metric_covariant_derivative_bound_for_solution_subsequence
     [Module.Finite ℝ E]
     {β ψ t0 : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
@@ -227,7 +227,7 @@ theorem covBddAllSol
   · obtain ⟨U, hU, hK'U, B, Bmax, KShi, initC, timeRadius, hequiv,
       hBmax1, hBmax, _hKShi0, _hShi, _ht0, _hDreg, _hinitC0, _hinit, _htime⟩ :=
       H.pack K' hK' 1 (by norm_num)
-    obtain ⟨C, hC⟩ := covZeroBdd (I := I) B
+    obtain ⟨C, hC⟩ := exists_uniform_zero_order_metric_covariant_derivative_bound (I := I) B
       (metricUniformEquivalentOnWindow_mono (I := I) hK'U hequiv) Bmax hBmax1 hBmax
     exact ⟨C, fun k z hz => hC (rho k) t ht z hz⟩
   · have hq : 1 <= q.succ := Nat.succ_pos q
@@ -427,7 +427,7 @@ theorem winGInfOfSol
     simpa [SolLowData] using hlow
   exact windowGInfOut (E := E) (H := H) (I := I) (M := M)
     hne K hK beta psiT p gSeq gRef e he hdense
-    L hL hgLip (covBddAllSol (I := I) hS hmet hreg Hcov) hlow'
+    L hL hgLip (exists_uniform_metric_covariant_derivative_bound_for_solution_subsequence (I := I) hS hmet hreg Hcov) hlow'
 
 noncomputable def winGInfOfData (hne : Nonempty M)
     (W : SolWindowData (I := I) (M := M)) :

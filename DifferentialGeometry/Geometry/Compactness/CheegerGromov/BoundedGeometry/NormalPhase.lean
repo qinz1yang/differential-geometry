@@ -28,19 +28,19 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
 def phaseRadius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (R : Real) : Real :=
+    (d : BoundedGeometryNormalData (I := I) X hd) (R : Real) : Real :=
   d.ratio * hd.mu R / 4
 
 
 theorem phaseRadius_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (R : Real) :
+    (d : BoundedGeometryNormalData (I := I) X hd) (R : Real) :
     0 < d.phaseRadius R := by
   exact div_pos (mul_pos d.ratio_pos (hd.mu_pos R)) (by norm_num)
 
@@ -48,7 +48,7 @@ theorem phaseRadius_pos
 theorem phaseRadius_metric
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) {k : Nat} {x : (X.obj k).M}
+    (d : BoundedGeometryNormalData (I := I) X hd) {k : Nat} {x : (X.obj k).M}
     {R : Real} (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -73,7 +73,7 @@ theorem phaseRadius_metric
 theorem phaseRadius_chart
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) {k : Nat} {x : (X.obj k).M}
+    (d : BoundedGeometryNormalData (I := I) X hd) {k : Nat} {x : (X.obj k).M}
     {R : Real} (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -96,7 +96,7 @@ theorem phaseRadius_chart
 def phaseK
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (R : NNReal) : NNReal where
+    (d : BoundedGeometryNormalData (I := I) X hd) (R : NNReal) : NNReal where
   val := (6 * (d.metricC 1) ^ 2 + 3 * d.metricC 2) * (R : Real) ^ 2 +
     6 * d.metricC 1 * (R : Real)
   property := by
@@ -113,7 +113,7 @@ def phaseK
 theorem chartPhaseK_eq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) (k : Nat) (x : (X.obj k).M)
+    (d : BoundedGeometryNormalData (I := I) X hd) (k : Nat) (x : (X.obj k).M)
     (R : NNReal) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -133,7 +133,7 @@ theorem chartPhaseK_eq
 theorem phaseErr_lt_ev
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     {eps : NNReal} (heps : 0 < eps) :
     ∀ᶠ R in nhds 0, PhaseFlow.phaseErr (d.phaseK R) < eps := by
   let Y := X.obj 0
@@ -152,7 +152,7 @@ theorem phaseErr_lt_ev
 theorem exists_phase_scale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) :
+    (d : BoundedGeometryNormalData (I := I) X hd) :
     let N : NNReal :=
       ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
         (E × E) →L[Real] (E × E))‖₊
@@ -345,7 +345,7 @@ theorem exists_phase_scale
 theorem exists_min_scale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -475,7 +475,7 @@ theorem exists_min_scale
 theorem exists_diag_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -592,7 +592,7 @@ theorem exists_diag_inv
 theorem exists_uniform_diag
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -626,7 +626,7 @@ theorem exists_uniform_diag
     obtain ⟨e, he, hfence, _hinvApprox⟩ := hall k x hx
     exact ⟨e, he, hfence⟩⟩
 
-end H6NormalData
+end BoundedGeometryNormalData
 
 end HCGCompactness
 end DifferentialGeometry

@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-theorem ricci_flow_unif_existence (hDim : Module.finrank ℝ E = 3)
+theorem ricci_flow_uniform_existence (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) :
     ∀ Λ : ℝ, 1 ≤ Λ → ∃ τ₀ : ℝ, 0 < τ₀ ∧
       ∀ g₀ : SmoothRiemannianMetric I M,
@@ -48,7 +48,7 @@ theorem ricci_flow_unif_existence (hDim : Module.finrank ℝ E = 3)
               ((-2 : ℝ) * ricciTensor (I := I) (rr t) x v w) (Set.Ici 0) t) := by
   intro Λ hΛ
   obtain ⟨T, hT, hDTclass⟩ :=
-    IntrinsicSpectral.lowreg_dt_unif (I := I) (M := M) hDim gBase hΛ
+    IntrinsicSpectral.exists_uniform_jointly_smooth_ricciDeTurck_metric_solution (I := I) (M := M) hDim gBase hΛ
   refine ⟨T, hT, ?_⟩
   intro g₀ hcomp hcov
   have hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ := by
@@ -80,7 +80,7 @@ theorem ricci_flow_interior_restart
         (∀ t ∈ Set.Ico (0 : ℝ) TT, ∀ x : M, ∀ v w : TangentSpace I x,
           HasDerivWithinAt (fun u : ℝ => (rr u).inner x v w)
             ((-2 : ℝ) * ricciTensor (I := I) (rr t) x v w) (Set.Ici 0) t) := by
-  have hbox := ricci_flow_unif_existence (I := I) hDim (g_fam α)
+  have hbox := ricci_flow_uniform_existence (I := I) hDim (g_fam α)
   obtain ⟨Λ₁, hΛ₁, t₁, ht₁, hell'⟩ := hell
   obtain ⟨Λ₂, hΛ₂, t₂, ht₂, hcov'⟩ := hcov
   set Λ : ℝ := max Λ₁ Λ₂ with hΛdef

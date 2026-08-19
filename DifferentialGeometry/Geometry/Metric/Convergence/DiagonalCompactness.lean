@@ -227,7 +227,7 @@ lemma covDerivOfField_zero (gRef : SmoothRiemannianMetric I M)
 
 include I in
 omit [IsManifold I 2 M] in
-lemma exists_engine_frameConv
+lemma exists_frame_component_limit_subsequence
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
       metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
@@ -323,7 +323,7 @@ lemma exists_frame_refs
 
 include I in
 omit [IsManifold I 2 M] in
-lemma exists_engine_frameCInfConv
+lemma exists_smooth_frame_component_limit_subsequence
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
       metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
@@ -363,7 +363,7 @@ lemma exists_engine_frameCInfConv
 
 include I in
 omit [IsManifold I 2 M] in
-lemma exists_engine_frameCInfConv_eq_gm
+lemma exists_smooth_frame_component_limit_subsequence_eq_metric_limit
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
       metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
@@ -384,7 +384,7 @@ lemma exists_engine_frameCInfConv_eq_gm
         (fun k => fun x : E => χ x * writtenInExtChartAt I 𝓘(Real, Real) x₀
           (fun w : M => (gSeq (φ (ψ k))).inner w (σi w) (σj w)) x) Φinf := by
   obtain ⟨ψ, Φinf, χ, σi, σj, hψ, hΦinf, hxi, hxj, hχ1, hconv⟩ :=
-    exists_engine_frameCInfConv (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart i j φ
+    exists_smooth_frame_component_limit_subsequence (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart i j φ
   refine ⟨ψ, Φinf, χ, σi, σj, hψ, hΦinf, hxi, hxj, hχ1, fun x hx => ?_, hconv⟩
   have hxsrc : x ∈ (extChartAt I x₀).source := by rw [extChartAt_source]; exact hK₀chart hx
   have hA : Filter.Tendsto (fun k => (gSeq (φ (ψ k))).inner x
@@ -420,7 +420,7 @@ lemma exists_refine_componentConv
         (Geometry.frameVec (I := I) x₀ i x) (Geometry.frameVec (I := I) x₀ j x))
         Filter.atTop (nhds L) := by
   obtain ⟨ψ, Φinf, hψ, _, hconv⟩ :=
-    exists_engine_frameConv (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart i j φ
+    exists_frame_component_limit_subsequence (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart i j φ
   exact ⟨ψ, hψ, fun x hx => ⟨Φinf (extChartAt I x₀ x), hconv x hx⟩⟩
 
 include I in
@@ -639,7 +639,7 @@ lemma frameComp_contMDiffOn
     have hz' := hz; rwa [TangentBundle.trivializationAt_baseSet] at hz'
   obtain ⟨K₀, hK₀c, hzint, hK₀sub⟩ := exists_compact_subset (chartAt H x₀).open_source hzsrc
   obtain ⟨ψ, Φinf, hψ, hΦcd, heng⟩ :=
-    exists_engine_frameConv (I := I) gRef gSeq hbdd x₀ hK₀c hK₀sub i j φ
+    exists_frame_component_limit_subsequence (I := I) gRef gSeq hbdd x₀ hK₀c hK₀sub i j φ
   have hid : ∀ x ∈ K₀, gm x (Geometry.frameVec (I := I) x₀ i x) (Geometry.frameVec (I := I) x₀ j x)
       = Φinf (extChartAt I x₀ x) := by
     intro x hx

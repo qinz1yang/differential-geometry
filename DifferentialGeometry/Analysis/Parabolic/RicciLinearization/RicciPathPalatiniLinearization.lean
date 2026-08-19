@@ -190,8 +190,8 @@ def realizedVelocityCc
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
-    (s₀ : ℝ) : SmoothCcTensor (realizedFam (I := I) g₀ T T' hδ hδ' s₀) 0 2 :=
-  ccTensorRetagMetric (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+    (s₀ : ℝ) : SmoothCcTensor (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) 0 2 :=
+  ccTensorRetagMetric (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
     (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))
 
 end NormedRealizedVelocity
@@ -205,11 +205,11 @@ lemma realizedVelocityCc_bilin
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     (s₀ : ℝ) (b : M) (u w : TangentSpace I b) :
-    smoothCcTensorBilinForm (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+    smoothCcTensorBilinForm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b u w =
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ).inner b u w
         - (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ').inner b u w := by
-  have htrans : smoothCcTensorBilinForm (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+  have htrans : smoothCcTensorBilinForm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
       (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b u w =
       smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) b u w :=
         rfl
@@ -236,56 +236,56 @@ lemma realizedVelocityCc_bilin
   rw [hsub u w, hsub w u]
   ring
 
-lemma one_mem_realizedSmallSet {δ δ' : ℝ} (hδ_lt : δ < 1) :
-    (1 : ℝ) ∈ realizedSmallSet (δ := δ) (δ' := δ') := by
+lemma one_mem_metricPerturbationPathDomain {δ δ' : ℝ} (hδ_lt : δ < 1) :
+    (1 : ℝ) ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') := by
   change |1 - (1 : ℝ)| * δ' + |(1 : ℝ)| * δ < 1
   rw [sub_self, abs_zero, abs_one, zero_mul, one_mul, zero_add]
   exact hδ_lt
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-lemma realizedFam_inner_affine
+lemma metricPerturbationPath_inner_affine
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
-    {s₀ s : ℝ} (hs₀ : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ'))
-    (hs : s ∈ realizedSmallSet (δ := δ) (δ' := δ'))
+    {s₀ s : ℝ} (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (hs : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (b : M) (u w : TangentSpace I b) :
-    (realizedFam (I := I) g₀ T T' hδ hδ' s).inner b u w =
-      (realizedFam (I := I) g₀ T T' hδ hδ' s₀).inner b u w
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner b u w =
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀).inner b u w
         + (s - s₀) *
           ((tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ).inner b u w
             - (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ').inner b u w) := by
-  rw [realizedFam_inner_of_mem (I := I) g₀ T T' hδ hδ' hs,
-    realizedFam_inner_of_mem (I := I) g₀ T T' hδ hδ' hs₀,
+  rw [metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hs,
+    metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hs₀,
     ccTensorBilinSymm_convexPerturbation, ccTensorBilinSymm_convexPerturbation,
     tensorSectionRealizeMetric_inner, tensorSectionRealizeMetric_inner]
   ring
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-private lemma metricDiffCovDeriv_realizedFam_affine
+private lemma metricDiffCovDeriv_metricPerturbationPath_affine
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
-    {s₀ s : ℝ} (hs₀ : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ'))
-    (hs : s ∈ realizedSmallSet (δ := δ) (δ' := δ'))
+    {s₀ s : ℝ} (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (hs : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    metricDiffCovDeriv (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+    metricDiffCovDeriv (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (fun b => X b) (fun b => Y b) (fun b => Z b) x =
       (s - s₀) *
         (metricDiffCovDeriv (I := I) (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (fun b => X b) (fun b => Y b) (fun b => Z b) x
           - metricDiffCovDeriv (I := I) (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ')
-              (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (fun b => X b) (fun b => Y b) (fun b => Z b) x) := by
   classical
-  set gsf := realizedFam (I := I) g₀ T T' hδ hδ' s with hgsf
-  set gs0 := realizedFam (I := I) g₀ T T' hδ hδ' s₀ with hgs0
+  set gsf := metricPerturbationPath (I := I) g₀ T T' hδ hδ' s with hgsf
+  set gs0 := metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀ with hgs0
   set gT := tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ with hgT
   set gT' := tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ' with hgT'
   set F0 : M → ℝ := fun b : M => gs0.inner b (Y b) (Z b) with hF0
@@ -304,12 +304,12 @@ private lemma metricDiffCovDeriv_realizedFam_affine
   have hdSmul := hdSub.const_smul (s - s₀)
   have hfun : (fun b : M => gsf.inner b (Y b) (Z b)) = F0 + (s - s₀) • (FT - FT') := by
     funext b
-    have h := realizedFam_inner_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs b (Y b) (Z b)
+    have h := metricPerturbationPath_inner_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs b (Y b) (Z b)
     simp only [Pi.add_apply, Pi.smul_apply, Pi.sub_apply, smul_eq_mul, hF0, hFT, hFT']
     exact h
   have hval : ∀ (p q : TangentSpace I x),
       gsf.inner x p q = gs0.inner x p q + (s - s₀) * (gT.inner x p q - gT'.inner x p q) :=
-    fun p q => realizedFam_inner_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs x p q
+    fun p q => metricPerturbationPath_inner_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs x p q
   have hmfapp : directionalDeriv (I := I) (fun b : M => gsf.inner b (Y b) (Z b)) x (X x) =
       directionalDeriv (I := I) F0 x (X x)
         + (s - s₀) *
@@ -326,73 +326,73 @@ private lemma metricDiffCovDeriv_realizedFam_affine
     hval (Y x) ((LeviCivita (I := I) gs0).toFun (fun b => Z b) x (X x))]
   ring
 
-private lemma connDiff_realizedFam_inner_koszul
+private lemma connectionDifference_metricPerturbationPath_inner_koszul
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
-    {s₀ s : ℝ} (hs₀ : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ'))
-    (hs : s ∈ realizedSmallSet (δ := δ) (δ' := δ'))
+    {s₀ s : ℝ} (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (hs : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    2 * (realizedFam (I := I) g₀ T T' hδ hδ' s).inner x
-        (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x (Y x) (X x)) (Z x) =
+    2 * (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner x
+        (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x (Y x) (X x)) (Z x) =
       (s - s₀) *
-        (2 * linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+        (2 * linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x (Y x) (X x) (Z x)) := by
   classical
   have hbil : ∀ (b : M) (u' w' : TangentSpace I b),
-      smoothCcTensorBilinForm (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+      smoothCcTensorBilinForm (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b u' w' =
         (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ).inner b u' w'
           - (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ').inner b u' w' :=
     fun b u' w' => realizedVelocityCc_bilin (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' s₀ b u' w'
   have hUM : ∀ (A B C : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
-      unitModel (I := I) (M := M) (realizedFam (I := I) g₀ T T' hδ hδ' s₀) 3
-          (covGrad (I := I) (M := M) (realizedFam (I := I) g₀ T T' hδ hδ' s₀) 0 2
+      unitModel (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) 3
+          (covGrad (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) 0 2
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)) x ![A x, B x, C x] =
         metricDiffCovDeriv (I := I) (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (fun b => A b) (fun b => B b) (fun b => C b) x
           - metricDiffCovDeriv (I := I) (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ')
-              (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (fun b => A b) (fun b => B b) (fun b => C b) x := by
     intro A B C
     have h := covGrad02_unitModel_eval_eq_metricDiffCovDeriv' (I := I) (M := M)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)
       (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ')
       (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) hbil A B C x
     exact h
-  have hkos := connDiff_koszul_metricDiff (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ' s) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+  have hkos := connectionDifference_koszul_metricDiff (I := I)
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
     (X := fun b => X b) (Y := fun b => Y b) (Z := fun b => Z b) (x := x)
     X.mdifferentiableAt Y.mdifferentiableAt Z.mdifferentiableAt
   rw [hkos]
-  rw [metricDiffCovDeriv_realizedFam_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs X Y Z x,
-    metricDiffCovDeriv_realizedFam_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs Y X Z x,
-    metricDiffCovDeriv_realizedFam_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs Z X Y x]
+  rw [metricDiffCovDeriv_metricPerturbationPath_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs X Y Z x,
+    metricDiffCovDeriv_metricPerturbationPath_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs Y X Z x,
+    metricDiffCovDeriv_metricPerturbationPath_affine (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ hs Z X Y x]
   rw [linearizedKoszulCovec_apply]
   rw [← hUM X Y Z, ← hUM Y X Z, ← hUM Z X Y]
   ring
 
-theorem connDiff_realizedFam_eq_smul_sharp
+theorem connectionDifference_metricPerturbationPath_eq_smul_sharp
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
-    {s₀ s : ℝ} (hs₀ : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ'))
-    (hs : s ∈ realizedSmallSet (δ := δ) (δ' := δ'))
+    {s₀ s : ℝ} (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (hs : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (b : M) (u ζ : TangentSpace I b) :
-    PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s₀) b u ζ =
+    PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) b u ζ =
       (s - s₀) •
         DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) b
-          (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) b
+          (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b u ζ) := by
   classical
-  refine SmoothRiemannianMetric.eq_of_inner_eq (realizedFam (I := I) g₀ T T' hδ hδ' s)
+  refine SmoothRiemannianMetric.eq_of_inner_eq (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
     (fun z => ?_)
   set Xf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ⟨smoothExtensionTangent (I := I) b ζ, smoothExtensionTangent_contMDiff (I := I) b ζ⟩
@@ -406,17 +406,17 @@ theorem connDiff_realizedFam_eq_smul_sharp
   have hXfb : (Xf b : TangentSpace I b) = ζ := smoothExtensionTangent_eq (I := I) b ζ
   have hYfb : (Yf b : TangentSpace I b) = u := smoothExtensionTangent_eq (I := I) b u
   have hZfb : (Zf b : TangentSpace I b) = z := smoothExtensionTangent_eq (I := I) b z
-  have hkos := connDiff_realizedFam_inner_koszul (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+  have hkos := connectionDifference_metricPerturbationPath_inner_koszul (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
     hs₀ hs Xf Yf Zf b
   rw [hXfb, hYfb, hZfb] at hkos
-  have hR : (realizedFam (I := I) g₀ T T' hδ hδ' s).inner b
+  have hR : (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner b
       ((s - s₀) •
         DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) b
-          (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) b
+          (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b u ζ)) z =
       (s - s₀) *
-        linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+        linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b u ζ z := by
     rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
     rw [DifferentialGeometry.Geometry.Operator.inner_metricSharp]
@@ -430,36 +430,36 @@ private lemma linearizedKoszulCovec_eq_endpoint_flat
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     {s₀ : ℝ} (hs₀ : s₀ ∈ Set.Ioo (0 : ℝ) 1)
     (b : M) (u ζ : TangentSpace I b) :
-    linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+    linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b u ζ =
       (1 - s₀)⁻¹ •
-        ((realizedFam (I := I) g₀ T T' hδ hδ' 1).inner b
-          (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s₀) b u ζ)).toLinearMap := by
+        ((metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1).inner b
+          (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) b u ζ)).toLinearMap := by
   classical
-  have h1mem : (1 : ℝ) ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    one_mem_realizedSmallSet hδ_lt
-  have hs₀mem : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    Icc_subset_realizedSmallSet hδ_lt hδ'_lt (Set.mem_Icc_of_Ioo hs₀)
+  have h1mem : (1 : ℝ) ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    one_mem_metricPerturbationPathDomain hδ_lt
+  have hs₀mem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt (Set.mem_Icc_of_Ioo hs₀)
   have hne : (1 : ℝ) - s₀ ≠ 0 := sub_ne_zero.mpr (ne_of_gt hs₀.2)
   ext z
-  have hkey := connDiff_realizedFam_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+  have hkey := connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
     hs₀mem h1mem b u ζ
-  have hinner : (realizedFam (I := I) g₀ T T' hδ hδ' 1).inner b
-      (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s₀) b u ζ) z =
+  have hinner : (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1).inner b
+      (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) b u ζ) z =
       (1 - s₀) *
-        linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+        linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b u ζ z := by
     rw [hkey, map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul,
       DifferentialGeometry.Geometry.Operator.inner_metricSharp]
   rw [LinearMap.smul_apply]
-  rw [show (((realizedFam (I := I) g₀ T T' hδ hδ' 1).inner b
-      (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s₀) b u ζ)).toLinearMap) z =
-      (realizedFam (I := I) g₀ T T' hδ hδ' 1).inner b
-        (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s₀) b u ζ) z from rfl]
+  rw [show (((metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1).inner b
+      (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) b u ζ)).toLinearMap) z =
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1).inner b
+        (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) b u ζ) z from rfl]
   rw [hinner, smul_eq_mul]
   field_simp
 
@@ -473,33 +473,33 @@ private lemma linearizedKoszulCovec_basis_contMDiffOn
     (α : M) (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
-        linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+        linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b)
           (chartBasisVecFiber (I := I) α j b))
       (chartAt H α).source := by
   classical
   have hΛ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
-        (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b))) :=
-    PDE.DeTurck.connDiff_contMDiff (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' 1) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+        (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b))) :=
+    PDE.DeTurck.connectionDifference_contMDiff (I := I)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
       Z.contMDiff Y.contMDiff
   have hflat : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 1 ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (Tensor0SModel 1 ℝ E)
         (E := fun z : M => Tensor0SSpace 1 I z) b
-        (g0FlatCLM (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1) b
-          (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b)))) :=
+        (g0FlatCLM (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1) b
+          (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b)))) :=
     ContMDiff.clm_bundle_apply (b := id)
-      (g0FlatField_contMDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)) hΛ
+      (g0FlatField_contMDiff (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1)) hΛ
   set Kf : Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, (fun z : M => Tensor0SSpace 1 I z)⟯ :=
-    ⟨fun b : M => g0FlatCLM (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1) b
-      (PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' 1)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b)), hflat⟩ with hKf
+    ⟨fun b : M => g0FlatCLM (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1) b
+      (PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' 1)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b)), hflat⟩ with hKf
   have hbase := cotangentSection_chartComponent_contMDiffOn (I := I) Kf α j
   have heq : ∀ b ∈ (chartAt H α).source,
-      linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+      linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b)
           (chartBasisVecFiber (I := I) α j b) =
         (1 - s₀)⁻¹ *
@@ -525,8 +525,8 @@ private def linearizedKoszulSharpField
     (s₀ s : ℝ) (Y Z : Π b : M, TangentSpace I b) : Π b : M, TangentSpace I b :=
   fun b =>
     DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s) b
-      (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) b
+      (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b))
 
 private lemma sharpPsiField_contMDiff
@@ -540,9 +540,9 @@ private lemma sharpPsiField_contMDiff
       (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
         (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s (fun b' => Y b') (fun b' => Z b')
           b)) := by
-  apply metricSharp_contMDiff_total (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
+  apply metricSharp_contMDiff_total (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
     (cv := fun b : M =>
-      linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+      linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b))
   intro α j
   exact linearizedKoszulCovec_basis_contMDiffOn (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
@@ -559,30 +559,30 @@ private lemma sharpPsiField_jointContMDiffOn
       (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
         (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ p.2 (fun b' => Y b') (fun b' => Z b')
           p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hinv : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => chartInvGramMatrix (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α p.1 i j)
-        ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
-    fun α i j => realizedFam_chartInvGramMatrix_jointContMDiffOn_free
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 i j)
+        ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
+    fun α i j => metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free
       (I := I) g₀ T T' hδ hδ' α i j
   have hcv : ∀ (α : M) (j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ =>
-          linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+          linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) p.1 (Z p.1) (Y p.1)
             (chartBasisVecFiber (I := I) α j p.1))
-        ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+        ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro α j
     exact (linearizedKoszulCovec_basis_contMDiffOn (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       hs₀ Y Z α j).comp contMDiffOn_fst (fun p hp => hp.1)
   exact metricSharp_jointContMDiffOn (I := I)
-    (gfam := fun s : ℝ => realizedFam (I := I) g₀ T T' hδ hδ' s)
+    (gfam := fun s : ℝ => metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
     (cv := fun _ : ℝ => fun b : M =>
-      linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+      linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) b (Z b) (Y b))
-    realizedSmallSet_isOpen hinv hcv
+    metricPerturbationPathDomain_isOpen hinv hcv
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -722,15 +722,15 @@ private lemma continuousAt_leviCivita_toFun_slice
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-private lemma continuousOn_realizedFam_invGram_slice
+private lemma continuousOn_metricPerturbationPath_invGram_slice
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (x : M) (i j : Fin (Module.finrank ℝ E)) :
     ContinuousOn
-      (fun s : ℝ => chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x i j)
-      (realizedSmallSet (δ := δ) (δ' := δ')) := by
-  have hjoint := realizedFam_chartInvGramMatrix_jointContMDiffOn_free
+      (fun s : ℝ => chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j)
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
+  have hjoint := metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free
     (I := I) g₀ T T' hδ hδ' x i j
   have hmap : ContMDiff 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) ∞ (fun s : ℝ => (x, s)) :=
     contMDiff_const.prodMk contMDiff_id
@@ -740,97 +740,97 @@ private lemma continuousOn_realizedFam_invGram_slice
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-private lemma metricSharp_realizedFam_eq_invGram_sum
+private lemma metricSharp_metricPerturbationPath_eq_invGram_sum
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (s : ℝ) (x : M) (α₀ : TangentSpace I x →ₗ[ℝ] ℝ) :
     DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s) x α₀ =
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x α₀ =
       ∑ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x i j *
+            chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j *
               α₀ (chartBasisVecFiber (I := I) x j x)) •
           chartBasisVecFiber (I := I) x i x := by
   have hxbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I) x
   have h := metricSharpChartLocal_eq_metricSharp (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ' s) x (fun _ : M => α₀) hxbase
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x (fun _ : M => α₀) hxbase
   rw [← h, metricSharpChartLocal]
   rfl
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-private lemma tendsto_metricSharp_realizedFam_fixed
+private lemma tendsto_metricSharp_metricPerturbationPath_fixed
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
-    {s₀ : ℝ} (hs₀ : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ'))
+    {s₀ : ℝ} (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (x : M) (α₀ : TangentSpace I x →ₗ[ℝ] ℝ) :
     Filter.Tendsto
       (fun s : ℝ => DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) x α₀)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x α₀)
       (𝓝 s₀)
       (𝓝 (DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x α₀)) := by
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x α₀)) := by
   have heq : ∀ s : ℝ, DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ' s) x α₀ =
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x α₀ =
       ∑ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x i j *
+            chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j *
               α₀ (chartBasisVecFiber (I := I) x j x)) •
           chartBasisVecFiber (I := I) x i x :=
-    fun s => metricSharp_realizedFam_eq_invGram_sum (I := I) g₀ T T' hδ hδ' s x α₀
+    fun s => metricSharp_metricPerturbationPath_eq_invGram_sum (I := I) g₀ T T' hδ hδ' s x α₀
   rw [heq s₀]
   refine Filter.Tendsto.congr (fun s => (heq s).symm) ?_
   refine tendsto_finset_sum _ (fun i _ => ?_)
   refine Filter.Tendsto.smul ?_ tendsto_const_nhds
   refine tendsto_finset_sum _ (fun j _ => ?_)
   have hinv : Filter.Tendsto
-      (fun s : ℝ => chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x i j)
+      (fun s : ℝ => chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j)
       (𝓝 s₀)
-      (𝓝 (chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x x i j)) := by
-    have hcont := (continuousOn_realizedFam_invGram_slice (I := I) g₀ T T' hδ hδ' x i j)
-    exact (hcont.continuousAt (realizedSmallSet_isOpen.mem_nhds hs₀)).tendsto
+      (𝓝 (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x x i j)) := by
+    have hcont := (continuousOn_metricPerturbationPath_invGram_slice (I := I) g₀ T T' hδ hδ' x i j)
+    exact (hcont.continuousAt (metricPerturbationPathDomain_isOpen.mem_nhds hs₀)).tendsto
   exact hinv.mul tendsto_const_nhds
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-private lemma tendsto_metricSharp_realizedFam_varying
+private lemma tendsto_metricSharp_metricPerturbationPath_varying
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
-    {s₀ : ℝ} (hs₀ : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ'))
+    {s₀ : ℝ} (hs₀ : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (x : M) {κ : ℝ → TangentSpace I x →ₗ[ℝ] ℝ}
     (hκ : ∀ j : Fin (Module.finrank ℝ E),
       Filter.Tendsto (fun s : ℝ => κ s (chartBasisVecFiber (I := I) x j x)) (𝓝 s₀)
         (𝓝 (κ s₀ (chartBasisVecFiber (I := I) x j x)))) :
     Filter.Tendsto
       (fun s : ℝ => DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) x (κ s))
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x (κ s))
       (𝓝 s₀)
       (𝓝 (DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x (κ s₀))) := by
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x (κ s₀))) := by
   have heq : ∀ s : ℝ,
       DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) x (κ s) =
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x (κ s) =
       ∑ i : Fin (Module.finrank ℝ E),
         (∑ j : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x i j *
+            chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j *
               κ s (chartBasisVecFiber (I := I) x j x)) •
           chartBasisVecFiber (I := I) x i x :=
-    fun s => metricSharp_realizedFam_eq_invGram_sum (I := I) g₀ T T' hδ hδ' s x (κ s)
+    fun s => metricSharp_metricPerturbationPath_eq_invGram_sum (I := I) g₀ T T' hδ hδ' s x (κ s)
   rw [heq s₀]
   refine Filter.Tendsto.congr (fun s => (heq s).symm) ?_
   refine tendsto_finset_sum _ (fun i _ => ?_)
   refine Filter.Tendsto.smul ?_ tendsto_const_nhds
   refine tendsto_finset_sum _ (fun j _ => ?_)
   have hinv : Filter.Tendsto
-      (fun s : ℝ => chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x x i j)
+      (fun s : ℝ => chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x x i j)
       (𝓝 s₀)
-      (𝓝 (chartInvGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x x i j)) := by
-    have hcont := (continuousOn_realizedFam_invGram_slice (I := I) g₀ T T' hδ hδ' x i j)
-    exact (hcont.continuousAt (realizedSmallSet_isOpen.mem_nhds hs₀)).tendsto
+      (𝓝 (chartInvGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x x i j)) := by
+    have hcont := (continuousOn_metricPerturbationPath_invGram_slice (I := I) g₀ T T' hδ hδ' x i j)
+    exact (hcont.continuousAt (metricPerturbationPathDomain_isOpen.mem_nhds hs₀)).tendsto
   exact hinv.mul (hκ j)
 
 variable (x : M) (v w : TangentSpace I x)
@@ -840,18 +840,18 @@ private def covDerivSharp
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (s₀ s : ℝ) (X Y Z : Π b : M, TangentSpace I b) : TangentSpace I x :=
-  (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)).toFun
+  (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)).toFun
       (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s Y Z) x (X x)
     - DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-        (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+        (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x (Z x)
-          (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)) X Y x))
+          (covApply (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)) X Y x))
     - DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-        (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+        (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
-          (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)) X Z x) (Y x))
+          (covApply (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)) X Z x) (Y x))
 
 private def slopeCore
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -870,8 +870,8 @@ private def slopeCore
             (smoothExtensionTangent (I := I) x w)
         + (s - s₀) •
             DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-              (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+              (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
                 (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
                   (smoothExtensionTangent (I := I) x v)
@@ -879,8 +879,8 @@ private def slopeCore
                 (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x))
         - (s - s₀) •
             DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-              (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-              (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+              (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+              (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
                 (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
                   (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
@@ -888,16 +888,16 @@ private def slopeCore
                 (smoothExtensionTangent (I := I) x v x))) i
 
 omit [CompactSpace M] in
-private lemma realizedRicciPathValue_eq_ricciTensor_realizedFam
+private lemma realizedRicciPathValue_eq_ricciTensor_metricPerturbationPath
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) :
     realizedRicciPathValue (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s =
-      ricciTensor (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s) x v w := by
+      ricciTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x v w := by
   obtain ⟨h0, h1⟩ := hs
-  have hmem : s ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
+  have hmem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
     abs_convex_smallConstant_lt_one hδ_lt hδ'_lt ⟨h0, h1⟩
   have hclamp : max 0 (min s 1) = s := by rw [min_eq_left h1, max_eq_right h0]
   rw [realizedRicciPathValue]
@@ -905,53 +905,53 @@ private lemma realizedRicciPathValue_eq_ricciTensor_realizedFam
       realizedMetricPath (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
           (le_max_left 0 (min s 1))
           (max_le (zero_le_one) (le_trans (min_le_right s 1) (le_refl 1))) =
-        realizedFam (I := I) g₀ T T' hδ hδ' s := by
+        metricPerturbationPath (I := I) g₀ T T' hδ hδ' s := by
     refine riemannianMetric_eq_of_inner _ _ (fun b' u' z' => ?_)
-    rw [realizedMetricPath_inner, realizedFam_inner_of_mem (I := I) g₀ T T' hδ hδ' hmem,
+    rw [realizedMetricPath_inner, metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hmem,
       hclamp]
   rw [hmetric]
 
-private lemma covDerivConnDiff_realizedFam_eq_smul_covDerivSharp
+private lemma covDerivConnectionDifference_metricPerturbationPath_eq_smul_covDerivSharp
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ'_lt : δ' < 1)
     (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T') δ')
     {s₀ : ℝ} (hs₀ : s₀ ∈ Set.Ioo (0 : ℝ) 1)
-    {s : ℝ} (hs : s ∈ realizedSmallSet (δ := δ) (δ' := δ'))
+    {s : ℝ} (hs : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    covDerivConnDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s)
+    covDerivConnectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
         (fun b => X b) (fun b => Y b) (fun b => Z b) x =
       (s - s₀) •
         covDerivSharp (I := I) g₀ T T' x hδ hδ' s₀ s
           (fun b => X b) (fun b => Y b) (fun b => Z b) := by
   classical
-  have hs₀mem : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    Icc_subset_realizedSmallSet hδ_lt hδ'_lt (Set.mem_Icc_of_Ioo hs₀)
-  have hexpand : covDerivConnDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s)
+  have hs₀mem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt (Set.mem_Icc_of_Ioo hs₀)
+  have hexpand : covDerivConnectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
       (fun b => X b) (fun b => Y b) (fun b => Z b) x =
-      (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)).toFun
-          (diffSec (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
-            (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
+      (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)).toFun
+          (diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
+            (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
             (fun b => Y b) (fun b => Z b)) x (X x)
-        - PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x (Z x)
-            (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
+        - PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x (Z x)
+            (covApply (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
               (fun b => X b) (fun b => Y b) x)
-        - PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x
-            (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
+        - PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x
+            (covApply (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
               (fun b => X b) (fun b => Z b) x) (Y x) := rfl
   rw [hexpand]
-  have hdiffSec : diffSec (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
-      (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
+  have hdiffSec : diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
+      (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
       (fun b => Y b) (fun b => Z b) =
       (s - s₀) • linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
         (fun b => Y b) (fun b => Z b) := by
     funext b
     rw [Pi.smul_apply]
-    exact connDiff_realizedFam_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+    exact connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       hs₀mem hs b (Z b) (Y b)
   rw [hdiffSec]
   have hσ : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
@@ -961,17 +961,17 @@ private lemma covDerivConnDiff_realizedFam_eq_smul_covDerivSharp
     ((sharpPsiField_contMDiff (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ s Y Z)
       x).mdifferentiableAt (by simp)
   have hsmul := (LeviCivita (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ' s₀)).isCovariantDerivativeOnUniv.smul_const
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)).isCovariantDerivativeOnUniv.smul_const
     (σ := linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s (fun b => Y b) (fun b => Z b))
     (x := x) (s - s₀) hσ (Set.mem_univ x)
   rw [hsmul, ContinuousLinearMap.smul_apply]
-  rw [connDiff_realizedFam_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+  rw [connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       hs₀mem hs x (Z x)
-      (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
+      (covApply (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
         (fun b => X b) (fun b => Y b) x),
-    connDiff_realizedFam_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+    connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       hs₀mem hs x
-      (covApply (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
+      (covApply (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
         (fun b => X b) (fun b => Z b) x) (Y x)]
   rw [covDerivSharp]
   module
@@ -988,14 +988,14 @@ private lemma pathValue_sub_eq_mul_slopeCore
       (s - s₀) * slopeCore (I := I) g₀ T T' x v w hδ hδ' s₀ s := by
   classical
   have hs₀Icc : s₀ ∈ Set.Icc (0 : ℝ) 1 := Set.mem_Icc_of_Ioo hs₀
-  have hsmem : s ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    Icc_subset_realizedSmallSet hδ_lt hδ'_lt hs
-  rw [realizedRicciPathValue_eq_ricciTensor_realizedFam (I := I) g₀ T T' x v w
+  have hsmem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt hs
+  rw [realizedRicciPathValue_eq_ricciTensor_metricPerturbationPath (I := I) g₀ T T' x v w
       hδ_lt hδ hδ'_lt hδ' hs,
-    realizedRicciPathValue_eq_ricciTensor_realizedFam (I := I) g₀ T T' x v w
+    realizedRicciPathValue_eq_ricciTensor_metricPerturbationPath (I := I) g₀ T T' x v w
       hδ_lt hδ hδ'_lt hδ' hs₀Icc]
-  rw [ricciTensor_sub_eq_connDiff_palatini (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ' s₀) (realizedFam (I := I) g₀ T T' hδ hδ' s) x v w]
+  rw [ricciTensor_sub_eq_connectionDifference_palatini (I := I)
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x v w]
   rw [slopeCore, Finset.mul_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   set Bi : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
@@ -1007,10 +1007,10 @@ private lemma pathValue_sub_eq_mul_slopeCore
   set Wf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ⟨smoothExtensionTangent (I := I) x w,
       smoothExtensionTangent_contMDiff (I := I) x w⟩ with hWf
-  have hs₀mem : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    Icc_subset_realizedSmallSet hδ_lt hδ'_lt hs₀Icc
-  have hA : covDerivConnDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s)
+  have hs₀mem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt hs₀Icc
+  have hA : covDerivConnectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
       (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
       (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x w) x =
@@ -1018,10 +1018,10 @@ private lemma pathValue_sub_eq_mul_slopeCore
         (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x w) :=
-    covDerivConnDiff_realizedFam_eq_smul_covDerivSharp (I := I) g₀ T T' x
+    covDerivConnectionDifference_metricPerturbationPath_eq_smul_covDerivSharp (I := I) g₀ T T' x
       hδ_lt hδ hδ'_lt hδ' hs₀ hsmem Bi Vf Wf
-  have hB : covDerivConnDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s)
+  have hB : covDerivConnectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
       (smoothExtensionTangent (I := I) x v)
       (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
       (smoothExtensionTangent (I := I) x w) x =
@@ -1029,71 +1029,71 @@ private lemma pathValue_sub_eq_mul_slopeCore
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
         (smoothExtensionTangent (I := I) x w) :=
-    covDerivConnDiff_realizedFam_eq_smul_covDerivSharp (I := I) g₀ T T' x
+    covDerivConnectionDifference_metricPerturbationPath_eq_smul_covDerivSharp (I := I) g₀ T T' x
       hδ_lt hδ hδ'_lt hδ' hs₀ hsmem Vf Bi Wf
-  have hQ1 : PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x
-      (diffSec (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
-        (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
+  have hQ1 : PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x
+      (diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
+        (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x w) x)
       (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x) =
       (s - s₀) • ((s - s₀) •
         DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-          (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+          (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
             (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w) x)
             (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x))) := by
-    have h1 : diffSec (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
-        (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
+    have h1 : diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
+        (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x w) x =
         (s - s₀) • linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
           (smoothExtensionTangent (I := I) x v)
           (smoothExtensionTangent (I := I) x w) x :=
-      connDiff_realizedFam_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+      connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
         hs₀mem hsmem x (smoothExtensionTangent (I := I) x w x)
         (smoothExtensionTangent (I := I) x v x)
     rw [h1, map_smul, ContinuousLinearMap.smul_apply]
     congr 1
-    exact connDiff_realizedFam_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+    exact connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       hs₀mem hsmem x
       (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
         (smoothExtensionTangent (I := I) x v)
         (smoothExtensionTangent (I := I) x w) x)
       (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x)
-  have hQ2 : PDE.DeTurck.connDiff (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x
-      (diffSec (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
-        (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
+  have hQ2 : PDE.DeTurck.connectionDifference (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x
+      (diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
+        (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
         (smoothExtensionTangent (I := I) x w) x)
       (smoothExtensionTangent (I := I) x v x) =
       (s - s₀) • ((s - s₀) •
         DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-          (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+          (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
             (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
               (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
               (smoothExtensionTangent (I := I) x w) x)
             (smoothExtensionTangent (I := I) x v x))) := by
-    have h1 : diffSec (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀))
-        (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s))
+    have h1 : diffSec (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀))
+        (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))
         (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
         (smoothExtensionTangent (I := I) x w) x =
         (s - s₀) • linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
           (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
           (smoothExtensionTangent (I := I) x w) x :=
-      connDiff_realizedFam_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+      connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
         hs₀mem hsmem x (smoothExtensionTangent (I := I) x w x)
         (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x)
     rw [h1, map_smul, ContinuousLinearMap.smul_apply]
     congr 1
-    exact connDiff_realizedFam_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
+    exact connectionDifference_metricPerturbationPath_eq_smul_sharp (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ'
       hs₀mem hsmem x
       (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
         (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
@@ -1115,8 +1115,8 @@ private lemma slopeCore_tendsto
     Filter.Tendsto (slopeCore (I := I) g₀ T T' x v w hδ hδ' s₀) (𝓝 s₀)
       (𝓝 (slopeCore (I := I) g₀ T T' x v w hδ hδ' s₀ s₀)) := by
   classical
-  have hs₀mem : s₀ ∈ realizedSmallSet (δ := δ) (δ' := δ') :=
-    Icc_subset_realizedSmallSet hδ_lt hδ'_lt (Set.mem_Icc_of_Ioo hs₀)
+  have hs₀mem : s₀ ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ') :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt (Set.mem_Icc_of_Ioo hs₀)
   set Vf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ⟨smoothExtensionTangent (I := I) x v,
       smoothExtensionTangent_contMDiff (I := I) x v⟩ with hVf
@@ -1125,16 +1125,16 @@ private lemma slopeCore_tendsto
       smoothExtensionTangent_contMDiff (I := I) x w⟩ with hWf
   have hterm1 : ∀ (Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (e : TangentSpace I x),
       Filter.Tendsto (fun s : ℝ =>
-        (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)).toFun
+        (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)).toFun
           (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s (fun b => Y b) (fun b => Z b)) x
             e)
         (𝓝 s₀)
-        (𝓝 ((LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)).toFun
+        (𝓝 ((LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)).toFun
           (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s₀ (fun b => Y b) (fun b => Z b)) x
             e)) := by
     intro Y Z e
     have hC := continuousAt_leviCivita_toFun_slice (I := I)
-      (realizedFam (I := I) g₀ T T' hδ hδ' s₀) realizedSmallSet_isOpen hs₀mem
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) metricPerturbationPathDomain_isOpen hs₀mem
       (fun p : M × ℝ => linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ p.2
         (fun b => Y b) (fun b => Z b) p.1)
       (sharpPsiField_jointContMDiffOn (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' hs₀ Y Z)
@@ -1143,10 +1143,10 @@ private lemma slopeCore_tendsto
   have hfixed : ∀ (α₀ : TangentSpace I x →ₗ[ℝ] ℝ),
       Filter.Tendsto (fun s : ℝ =>
         DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) x α₀) (𝓝 s₀)
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x α₀) (𝓝 s₀)
         (𝓝 (DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x α₀)) :=
-    fun α₀ => tendsto_metricSharp_realizedFam_fixed (I := I) g₀ T T' hδ hδ' hs₀mem x α₀
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x α₀)) :=
+    fun α₀ => tendsto_metricSharp_metricPerturbationPath_fixed (I := I) g₀ T T' hδ hδ' hs₀mem x α₀
   have hcovSharp : ∀ (Xf Yf Zf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯),
       Filter.Tendsto (fun s : ℝ =>
         covDerivSharp (I := I) g₀ T T' x hδ hδ' s₀ s
@@ -1162,30 +1162,30 @@ private lemma slopeCore_tendsto
       Filter.Tendsto (fun s : ℝ =>
         (s - s₀) •
           DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s) x
-            (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
+            (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
               (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
                 (fun b => Yf b) (fun b => Zf b) x) e)) (𝓝 s₀)
         (𝓝 ((s₀ - s₀) •
           DifferentialGeometry.Geometry.Operator.metricSharp (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' s₀) x
-            (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x
+            (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
               (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s₀
                 (fun b => Yf b) (fun b => Zf b) x) e))) := by
     intro Yf Zf e
     refine Filter.Tendsto.smul ?_ ?_
     · exact ((continuous_id.sub continuous_const).tendsto s₀)
-    · refine tendsto_metricSharp_realizedFam_varying (I := I) g₀ T T' hδ hδ' hs₀mem x
+    · refine tendsto_metricSharp_metricPerturbationPath_varying (I := I) g₀ T T' hδ hδ' hs₀mem x
         (κ := fun s : ℝ =>
-          linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+          linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
             (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x
             (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s
               (fun b => Yf b) (fun b => Zf b) x) e) ?_
       intro j
       have hucont := continuous_linearizedKoszulCovec_fst (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
         (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x e
         (chartBasisVecFiber (I := I) x j x)
       have hΨ : Filter.Tendsto (fun s : ℝ =>
@@ -1193,7 +1193,7 @@ private lemma slopeCore_tendsto
           (𝓝 s₀)
           (𝓝 (linearizedKoszulSharpField (I := I) g₀ T T' hδ hδ' s₀ s₀
             (fun b => Yf b) (fun b => Zf b) x)) :=
-        hfixed (linearizedKoszulCovec (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+        hfixed (linearizedKoszulCovec (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
           (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀) x (Zf x) (Yf x))
       exact (hucont.tendsto _).comp hΨ
   simp only [slopeCore]
@@ -1219,12 +1219,12 @@ private lemma slopeCore_at_base
     slopeCore (I := I) g₀ T T' x v w hδ hδ' s₀ s₀ =
       ∑ i : Fin (Module.finrank ℝ E),
         (chartModelBasis E).repr
-          (covDerivLinearizedConn (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+          (covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)
               (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w) x
-            - covDerivLinearizedConn (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+            - covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
@@ -1241,12 +1241,12 @@ theorem linearizedRicciAt_eq_palatini_covDeriv
     linearizedRicciAt (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x v w s₀ =
       ∑ i : Fin (Module.finrank ℝ E),
         (chartModelBasis E).repr
-          (covDerivLinearizedConn (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+          (covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)
               (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w) x
-            - covDerivLinearizedConn (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' s₀)
+            - covDerivLinearizedConn (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
                 (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s₀)
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))

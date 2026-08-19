@@ -31,7 +31,7 @@ variable [T2Space M] [CompactSpace M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [IsManifold I 2 M]
   [CompactSpace M] [BoundarylessManifold I M] in
-theorem rm04_bound_can
+theorem canonical_curvature_norm_sq_bounded_of_realization
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}

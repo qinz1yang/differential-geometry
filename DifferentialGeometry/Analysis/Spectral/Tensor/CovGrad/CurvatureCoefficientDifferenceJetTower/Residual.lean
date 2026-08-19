@@ -44,7 +44,7 @@ end CurvatureCoefficientDifferenceJetTower
 
 open CurvatureCoefficientDifferenceJetTower
 
-section TopSeparatedResidualIntegrator
+section TopOrderSeparatedResidualIntegrator
 
 
 set_option backward.isDefEq.respectTransparency false
@@ -176,7 +176,7 @@ theorem boundedFactorGridWindow_integral_ballUniform_tameWindow
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.sum_mul, ← Finset.sum_mul]
 
-end TopSeparatedResidualIntegrator
+end TopOrderSeparatedResidualIntegrator
 
 end Spectral
 end Analysis

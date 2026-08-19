@@ -24,9 +24,9 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable [NeZero (Module.finrank Real E)]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem H6NormalData.preapprox_tail
+theorem BoundedGeometryNormalData.preapprox_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -70,9 +70,9 @@ theorem H6NormalData.preapprox_tail
       letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
       let F := stageComparisonMap inp P Lphi s hs hconn k l
         (chart := d.chart)
-      Nonempty (PreApproxIsoDataOn (I := I)
+      Nonempty (MapMetricApproximationOn (I := I)
           (Metric.closedBall Yk.basepoint R) eps p F Yk.metric Yl.metric) ∧
-        Nonempty (PreApproxIsoDataOn (I := I)
+        Nonempty (MapMetricApproximationOn (I := I)
           (F '' Metric.closedBall Yk.basepoint R) eps p
           (Function.invFunOn F (Metric.ball Yk.basepoint T))
           Yl.metric Yk.metric) := by

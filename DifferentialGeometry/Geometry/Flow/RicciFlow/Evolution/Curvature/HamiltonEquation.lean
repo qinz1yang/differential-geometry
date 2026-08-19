@@ -646,18 +646,18 @@ private theorem rm04Var_of_solution
           (fun q ↦ coordinateFrameAt (I := I) x₀ (m q) x₀))
         D.carrier (t : Real) := by
     have hbase : ∀ s, s ∈ D.carrier →
-        realizedRmBase (I := I) S x₀ s x₀ m =
+        solutionCurvatureComponents (I := I) S x₀ s x₀ m =
           ∑ p : CoordinateIdx (𝕜 := Real) E,
             DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt
                 (I := I) (S.family.connection s) x₀ (m 0) (m 1) (m 2) p *
               metricCompInFrame (I := I) S frame s x₀ (m 3) p := by
       intro s hs
-      simpa [frame] using realizedRmBase_eq_curvCoeff_lower
+      simpa [frame] using solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
         (I := I) S x₀ s (rm13OfSol (I := I) S s hs)
         (connCurvOfSol (I := I) S hS x₀ s hs) m
     have hraw :
         HasDerivWithinAt
-          (fun s : Real ↦ realizedRmBase (I := I) S x₀ s x₀ m)
+          (fun s : Real ↦ solutionCurvatureComponents (I := I) S x₀ s x₀ m)
           (∑ p : CoordinateIdx (𝕜 := Real) E,
             ((christoffelVariationCovDerivCoordAt
                   (I := I) (S.family.connection (t : Real)) rhs
@@ -726,7 +726,7 @@ private theorem rm04Var_of_solution
     have h := hraw.congr_deriv
       (hderiv.trans (rm04Var_eq_tensor
         (I := I) S hS x₀ (t : Real) (D.regular_subset t.2) m))
-    simpa only [realizedRmBase_apply] using h
+    simpa only [solutionCurvatureComponents_apply] using h
   have htransport := rm04Deriv_of_coord (I := I) S x₀ t
     (fun m ↦ varTensor (I := I) (S.base.metric (t : Real))
       (solNabla2Ric (I := I) S (t : Real) x₀)

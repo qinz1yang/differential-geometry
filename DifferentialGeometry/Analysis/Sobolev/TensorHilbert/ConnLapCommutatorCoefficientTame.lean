@@ -8,11 +8,11 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreN
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.KoszulSectionParallelRaise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.AppCcJetWindowTame
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingSharpC0JetSum
 import DifferentialGeometry.Analysis.Sobolev.Embedding.RawConnLapToHsOrderDropping
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianAppCcCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianOperatorFieldApplicationCommutation
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.AllOrderGardingConstant
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculus
@@ -382,7 +382,7 @@ private lemma iteratedCovGrad_slotExtend_norm_le (g₀ : SmoothRiemannianMetric 
   have hpt : ∀ x, riemannianFiberNormSq (I := I) (M := M) g₀ (r + 1) ((s + 1) + i) x
       ((iteratedCovGrad (I := I) g₀ (r + 1) (s + 1) i
         (slotExtend (I := I) (M := M) g₀ r s Φ)).toSection x) ≤ F x :=
-    fun x => rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ r s Φ i x
+    fun x => riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ r s Φ i x
   have hsq := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ (r + 1)
     ((s + 1) + i) (iteratedCovGrad (I := I) g₀ (r + 1) (s + 1) i
       (slotExtend (I := I) (M := M) g₀ r s Φ)) F hFint hpt
@@ -398,7 +398,7 @@ private lemma iteratedCovGrad_slotExtend_norm_le (g₀ : SmoothRiemannianMetric 
   exact hsq
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-private lemma appCc_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
+private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (W₁ W₂ : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s Φ (W₁ - W₂) =
       operatorFieldApply (I := I) (M := M) g r s Φ W₁ - operatorFieldApply (I := I) (M := M) g r s Φ
@@ -406,7 +406,7 @@ private lemma appCc_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
   have h : operatorFieldApply (I := I) (M := M) g r s Φ (W₁ - W₂) +
       operatorFieldApply (I := I) (M := M) g r s Φ W₂ = operatorFieldApply (I := I) (M := M) g r s Φ
         W₁ := by
-    rw [← appCc_add_right]
+    rw [← operatorFieldApplication_add_right]
     congr 1
     abel
   exact eq_sub_of_add_eq h
@@ -420,7 +420,7 @@ private lemma coeffContraction_secondCovGrad_sub (g₀ : SmoothRiemannianMetric 
       operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C (iteratedCovGrad (I := I) g₀ 0 2 2 u) -
         operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C
           (iteratedCovGrad (I := I) g₀ 0 2 2 v) := by
-  rw [iteratedCovGrad_sub, appCc_sub_right]
+  rw [iteratedCovGrad_sub, operatorFieldApplication_sub_right]
 
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma rawConnLap_oneMinusConnLap_comm (g₀ : SmoothRiemannianMetric I M)
@@ -493,7 +493,7 @@ private lemma jet_fibreNormSq_sup_le_sharp (g₀ : SmoothRiemannianMetric I M) (
   choose Cemb hCemb_nn hCemb using hstep
   exact ⟨Cemb, hCemb_nn, fun Ψ l x => hCemb l Ψ x⟩
 
-private lemma master_appCc_jet_le_sharp
+private lemma master_operatorFieldApplication_jet_le_sharp
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (b₀ s₀ dc dd t : ℕ) (hdc : dc ≤ 3) (hdd : dd ≤ 3)
     (ht1 : t + Module.finrank ℝ E / 2 + 1 + dc ≤ a + 2)
@@ -639,7 +639,7 @@ private lemma master_appCc_jet_le_sharp
   rw [hfam (q + 3)]
   set μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀ with
     hμ
-  have hG_nn : 0 ≤ diagonalGridGrowthFactor (E := E) q := appCcGdiag_nonneg (E := E) q
+  have hG_nn : 0 ≤ diagonalGridGrowthFactor (E := E) q := operatorFieldApplicationGdiag_nonneg (E := E) q
   set flt1 := (Finset.range (q + 1)).filter (· ≤ t) with hflt1
   set flt2 := (Finset.range (q + 1)).filter (fun i => ¬ i ≤ t) with hflt2
   set FW : M → ℝ := fun x => diagonalGridGrowthFactor (E := E) q *
@@ -840,7 +840,7 @@ private lemma coeffContraction_Hs_bound_sharp
             (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p T₀)‖ := by
   classical
   obtain ⟨Cm, hCm_nn, hCm⟩ :=
-    master_appCc_jet_le_sharp (I := I) (M := M) g₀ a b₀ 2 dc dd t hdc hdd ht1 ht2
+    master_operatorFieldApplication_jet_le_sharp (I := I) (M := M) g₀ a b₀ 2 dc dd t hdc hdd ht1 ht2
       Kc hKc_nn Kw hKw_nn
   have hstep : ∀ j, ∃ c, 0 ≤ c ∧ ∀ {R₀ : ℝ}
       (p : ℕ) (T₀ : SmoothCcTensor g₀ 0 2)
@@ -907,7 +907,7 @@ private lemma fixed_coeffContraction_Hs_of_jet_le
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j + 3 : ℕ) : ℝ) S‖ := by
   classical
   obtain ⟨Capp, hCapp_nn, hCapp⟩ :=
-    exists_appCc_iteratedCovGrad_l2_window_bound (I := I) (M := M) g₀ b₀ 2 Φ
+    exists_operatorFieldApplication_iteratedCovGrad_l2_window_bound (I := I) (M := M) g₀ b₀ 2 Φ
   choose Chs hChs_nn hChs using fun j : ℕ =>
     exists_smoothCcToTensorHs_le_iteratedCovGrad_sum_general
       (I := I) (M := M) g₀ j
@@ -1038,14 +1038,14 @@ theorem exists_coeffContraction_covGrad_secondCovGrad_affine_l2_le
   obtain ⟨CbrA, hCbrA_nn, hCbrA⟩ :=
     exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
   obtain ⟨Cj0, hCj0_nn, hCj0⟩ := iteratedCovGrad_le_connLap_add (I := I) (M := M) g₀ 0
-  set BgradSq : ℝ := Cemb 1 *
-    ∑ m ∈ Finset.range w, Kc (1 + m) * (1 + CbrA ^ 2) with hBgradSq_def
-  have hBgradSq_nn : 0 ≤ BgradSq := mul_nonneg (hCemb_nn 1)
+  set BackgroundradSq : ℝ := Cemb 1 *
+    ∑ m ∈ Finset.range w, Kc (1 + m) * (1 + CbrA ^ 2) with hBackgroundradSq_def
+  have hBackgroundradSq_nn : 0 ≤ BackgroundradSq := mul_nonneg (hCemb_nn 1)
     (Finset.sum_nonneg (fun m _ => mul_nonneg (hKc_nn _)
       (by nlinarith [sq_nonneg CbrA])))
-  set Bgrad : ℝ := Real.sqrt BgradSq with hBgrad_def
-  have hBgrad_nn : 0 ≤ Bgrad := Real.sqrt_nonneg _
-  refine ⟨Bgrad * (1 + Cj0), mul_nonneg hBgrad_nn (by linarith [hCj0_nn]), ?_⟩
+  set Backgroundrad : ℝ := Real.sqrt BackgroundradSq with hBackgroundrad_def
+  have hBackgroundrad_nn : 0 ≤ Backgroundrad := Real.sqrt_nonneg _
+  refine ⟨Backgroundrad * (1 + Cj0), mul_nonneg hBackgroundrad_nn (by linarith [hCj0_nn]), ?_⟩
   intro R₀ hR₀ C₂ T₀ hball hjets S
   set Bsq : ℝ := (CbrA * R₀) ^ 2 with hBsq_def
   have hBsq_nn : 0 ≤ Bsq := sq_nonneg _
@@ -1077,7 +1077,7 @@ theorem exists_coeffContraction_covGrad_secondCovGrad_affine_l2_le
       iteratedCovGrad_zero (I := I) (M := M) g₀ (2 + 2) 2 C₂]
   have hΦ : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) (2 + 1) x
       ((covGrad (I := I) (M := M) g₀ (2 + 2) 2 C₂).toSection x) ≤
-        (Bgrad * (1 + R₀)) ^ 2 := by
+        (Backgroundrad * (1 + R₀)) ^ 2 := by
     intro x
     rw [← hcovGrad_eq]
     refine le_trans (hCemb C₂ 1 x) ?_
@@ -1114,18 +1114,18 @@ theorem exists_coeffContraction_covGrad_secondCovGrad_affine_l2_le
           ‖iteratedCovGrad (I := I) g₀ (2 + 2) 2 (1 + m) C₂‖ ^ 2
           ≤ Cemb 1 * ((∑ m ∈ Finset.range w, Kc (1 + m) * (1 + CbrA ^ 2)) *
             (1 + R₀) ^ 2) := mul_le_mul_of_nonneg_left hsum (hCemb_nn 1)
-      _ = (Bgrad * (1 + R₀)) ^ 2 := by
-        rw [mul_pow, hBgrad_def, Real.sq_sqrt hBgradSq_nn, hBgradSq_def]
+      _ = (Backgroundrad * (1 + R₀)) ^ 2 := by
+        rw [mul_pow, hBackgroundrad_def, Real.sq_sqrt hBackgroundradSq_nn, hBackgroundradSq_def]
         ring
   have hL2 : ‖operatorFieldApply (I := I) (M := M) g₀ (2 + 2) (2 + 1)
       (covGrad (I := I) (M := M) g₀ (2 + 2) 2 C₂)
       (iteratedCovGrad (I := I) g₀ 0 2 2 S)‖ ≤
-      (Bgrad * (1 + R₀)) * ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ :=
+      (Backgroundrad * (1 + R₀)) * ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ :=
     operatorFieldApply_l2_le_of_pointwise_fiberNormSq_bound_left (I := I) (M := M) g₀ (2 + 2)
       (2 + 1)
       (covGrad (I := I) (M := M) g₀ (2 + 2) 2 C₂)
-      (iteratedCovGrad (I := I) g₀ 0 2 2 S) (Bgrad * (1 + R₀))
-      (mul_nonneg hBgrad_nn (by linarith)) hΦ
+      (iteratedCovGrad (I := I) g₀ 0 2 2 S) (Backgroundrad * (1 + R₀))
+      (mul_nonneg hBackgroundrad_nn (by linarith)) hΦ
   have hjet := hCj0 S
   have hdrop := hs_rawConnLap_order_le (I := I) (M := M) g₀ 0 S
   have hdrop_congr : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((0 + 2 : ℕ) : ℝ) S‖ =
@@ -1146,11 +1146,11 @@ theorem exists_coeffContraction_covGrad_secondCovGrad_affine_l2_le
   calc ‖operatorFieldApply (I := I) (M := M) g₀ (2 + 2) (2 + 1)
         (covGrad (I := I) (M := M) g₀ (2 + 2) 2 C₂)
         (iteratedCovGrad (I := I) g₀ 0 2 2 S)‖
-      ≤ (Bgrad * (1 + R₀)) * ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ := hL2
-    _ ≤ (Bgrad * (1 + R₀)) *
+      ≤ (Backgroundrad * (1 + R₀)) * ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ := hL2
+    _ ≤ (Backgroundrad * (1 + R₀)) *
           ((1 + Cj0) * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 : ℕ) : ℝ) S‖) :=
-        mul_le_mul_of_nonneg_left h2jet (mul_nonneg hBgrad_nn (by linarith))
-    _ = (Bgrad * (1 + Cj0)) * (1 + R₀) *
+        mul_le_mul_of_nonneg_left h2jet (mul_nonneg hBackgroundrad_nn (by linarith))
+    _ = (Backgroundrad * (1 + Cj0)) * (1 + R₀) *
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 : ℕ) : ℝ) S‖ := by
         ring
 
@@ -1218,11 +1218,11 @@ theorem exists_rawConnLap_coeffContraction_secondCovGrad_commutator_Hs_family_af
   obtain ⟨Kptc3, hKptc3_nn, hKptc3⟩ :=
     exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le (I := I) (M := M) g₀ (2 + 1)
   obtain ⟨Cm4in, hCm4in_nn, hCm4in⟩ :=
-    master_appCc_jet_le_sharp (I := I) (M := M) g₀ a (2 + 2) (2 + 2) 3 2
+    master_operatorFieldApplication_jet_le_sharp (I := I) (M := M) g₀ a (2 + 2) (2 + 2) 3 2
       (Module.finrank ℝ E / 2 - 1) (by omega) (by omega) (by omega) (by omega)
       (fun i => KcLin (i + 2)) (fun i => hKcLin_nn _) (fun l => Cbr (l + 2)) (fun l => hCbr_nn _)
   obtain ⟨Cm56in, hCm56in_nn, hCm56in⟩ :=
-    master_appCc_jet_le_sharp (I := I) (M := M) g₀ a (2 + 2 + 1) (2 + 2) 2 3
+    master_operatorFieldApplication_jet_le_sharp (I := I) (M := M) g₀ a (2 + 2 + 1) (2 + 2) 2 3
       (Module.finrank ℝ E / 2) (by omega) (by omega) (by omega) (by omega)
       (fun i => Real.sqrt (Module.finrank ℝ E) * KcLin (i + 1))
       (fun i => mul_nonneg (Real.sqrt_nonneg _) (hKcLin_nn _)) (fun l => Cbr (l + 3))
@@ -1413,7 +1413,7 @@ theorem exists_rawConnLap_coeffContraction_secondCovGrad_commutator_Hs_family_af
   have hbt4 := hCE4 hR₀ _ S hINNER4 j
   have hbt5 := hCE56 hR₀ _ S hINNER5 j
   have hbt6 := hCE56 hR₀ _ S hINNER6 j
-  have hcomm := rawConnLap_appCc_iteratedCovGrad_two_comm (I := I) g₀ 2 2 C₂ S
+  have hcomm := rawConnLap_operatorFieldApplication_iteratedCovGrad_two_comm (I := I) g₀ 2 2 C₂ S
   have hdecomp : rawTensorConnLapSmooth (I := I) g₀ 0 2
       (operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂ (iteratedCovGrad (I := I) g₀ 0 2 2 S)) -
       operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂

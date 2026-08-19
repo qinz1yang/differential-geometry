@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarFluxJetBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ParametricPairing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.ScalarGalerkinPairing
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Tensor.RSTensor
@@ -56,13 +56,13 @@ private theorem appRS_jet_bdd
   let D : ℕ → ℝ := fun j => diagonalGridGrowthFactor (E := E) j *
     ∑ i ∈ Finset.range (j + 1), BPhi i *
       ∑ l ∈ Finset.range (j + 1 - i), BW l
-  refine ⟨D, fun j => mul_nonneg (appCcGdiag_nonneg (E := E) j)
+  refine ⟨D, fun j => mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) j)
     (Finset.sum_nonneg fun i _ => mul_nonneg (hBPhi i)
       (Finset.sum_nonneg fun l _ => hBW l)), ?_⟩
   intro j t ht x
   refine (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) q j p a b (Phi t) (W t) x).trans ?_
-  refine mul_le_mul_of_nonneg_left ?_ (appCcGdiag_nonneg (E := E) j)
+  refine mul_le_mul_of_nonneg_left ?_ (operatorFieldApplicationGdiag_nonneg (E := E) j)
   refine Finset.sum_le_sum (fun i _ => ?_)
   have hleft := hPhi i t ht x
   have hright :
@@ -176,7 +176,7 @@ theorem fluxDiv_jet_bdd
         ((iteratedCovGrad (I := I) q 1 2 i (W t)).toSection x) ≤ B (i + 1) := by
     intro i t ht x
     simp only [W]
-    rw [rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M)]
+    rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M)]
     exact hB (i + 1) t ht x
   obtain ⟨D, hD_nn, hD⟩ := appRS_jet_bdd (I := I) (M := M) q Q W A F
     (fun i => B (i + 1)) hF_nn (fun i => hB_nn (i + 1)) hQ hW
@@ -221,7 +221,7 @@ private theorem traceCast_jet_bdd
         ((iteratedCovGrad (I := I) q 2 2 i (S t)).toSection x) ≤ BS i := by
     intro i t ht x
     simpa only [S, BS] using
-      (rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) q 1 1
+      (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) q 1 1
         (scalarFluxCoeff (I := I) q (h t)) i x).trans
           (mul_le_mul_of_nonneg_left (hB i t ht x) (Nat.cast_nonneg _))
   obtain ⟨R, hR_nn, hR⟩ := appRS_jet_bdd (I := I) (M := M) q Q S A F BS
@@ -418,7 +418,7 @@ theorem lapCoeff_slab
   obtain ⟨B₂, BT, hB₂_nn, hBT_nn, hB₂, hBT⟩ :=
     traceCast_jet_bdd (I := I) (M := M) q gm A BF hBF_nn hBF
   obtain ⟨CA, hCA_nn, hCA⟩ :=
-    exists_rfns_iteratedCovGrad_connDiffSection_tgrid
+    exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid
       (I := I) (M := M) q (by norm_num : (1 / 2 : ℝ) < 1)
   let BC : ℕ → ℝ := fun j => CA j *
     ∑ k ∈ Finset.range (j + 2),
@@ -429,7 +429,7 @@ theorem lapCoeff_slab
   have hconn : ∀ j s, s ∈ A → ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) q 1 (2 + j) x
         ((iteratedCovGrad (I := I) q 1 2 j
-          (connDiffSection (I := I) (gm s) q)).toSection x) ≤ BC j := by
+          (connectionDifferenceSection (I := I) (gm s) q)).toSection x) ≤ BC j := by
     intro j s hs x
     have hraw := hCA (gm s) (P s) (htie s hs)
       (by norm_num : (1 / 4 : ℝ) ≤ 1 / 2)
@@ -441,7 +441,7 @@ theorem lapCoeff_slab
       (fun i => riemannianFiberNormSq_nonneg (I := I) (M := M) q 0 (2 + i) x _)
       (fun i => hP i s hs x) k
   let Tr : ℝ → SmoothCcTensor q 2 0 := fun s => traceCast (I := I) q (gm s)
-  let Cd : ℝ → SmoothCcTensor q 1 2 := fun s => connDiffSection (I := I) (gm s) q
+  let Cd : ℝ → SmoothCcTensor q 1 2 := fun s => connectionDifferenceSection (I := I) (gm s) q
   have hTr : ∀ i s, s ∈ A → ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) q 2 (0 + i) x
         ((iteratedCovGrad (I := I) q 2 0 i (Tr s)).toSection x) ≤ BT i := by
@@ -607,7 +607,7 @@ theorem cc_lap_unif
     apply eq_of_heq
     exact HEq.trans
       (iteratedCovGrad_covGrad_comm_heq' (I := I) (M := M) q 0 0 n U)
-      (castRankCc_db_heq (I := I) (M := M) q 0
+      (castCcTensorRank_heq (I := I) (M := M) q 0
         (by omega : 0 + (n + 1) = 1 + n)
         (iteratedCovGrad (I := I) q 0 0 (n + 1) U)).symm
   have hcomm : |P + Htop| ≤ Cp * J := by

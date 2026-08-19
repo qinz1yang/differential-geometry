@@ -31,7 +31,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank Real E)] in
-theorem H6Isometry.normalTrans_dist_le
+theorem MetricIsometry.normal_transition_dist_le
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M)
     {U V : Set E}
     (hx : NormalCoordMetricEquivOn (I := I) Y x U)
@@ -74,7 +74,7 @@ theorem H6Isometry.normalTrans_dist_le
       (by simpa only [T, normalTransition] using hcy.comp z hdx)
   have hbound : ∀ z ∈ segment Real u v, ‖fderiv Real T z‖ ≤ 2 := by
     intro z hz
-    exact H6Isometry.normal_fderiv_le_two (I := I) Y x y hx hy
+    exact MetricIsometry.normal_fderiv_le_two (I := I) Y x y hx hy
       (hsrc z hz) (htgt z hz) (hU hz) (hV hz)
   have hmean := (convex_segment u v).norm_image_sub_le_of_norm_fderiv_le
     hdiff hbound (left_mem_segment Real u v) (right_mem_segment Real u v)

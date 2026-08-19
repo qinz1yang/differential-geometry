@@ -3,14 +3,14 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNormEquiv
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.DirichletSpectralBochnerGap
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralNormLIterateLadder
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.AppCcJetWindowTame
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricDifferenceSlotPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldFibreNormJet
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.OperatorFieldPairingIBP
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorDirichletCurrentGreenIdentityRS
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianAppCcCommutation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.RoughLaplacianOperatorFieldApplicationCommutation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearityExistence
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -251,7 +251,7 @@ theorem arm_realize_Hs_norm_zero_le [Nonempty M]
   have hδ_nn : 0 ≤ δ := delta_nonneg_of_ball_gFibreOpBound (I := I) (M := M) g₀ a hR₀ hδ_fibre
   have hκ_nn : 0 ≤ δ / (1 - δ) := div_nonneg hδ_nn h1δ.le
   have hCE_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) :=
-    deTurckArmFibreConst_nonneg _
+    de_turck_arm_fibre_const_nonneg _
   obtain ⟨Cgap, hCgap_nn, hgap⟩ :=
     exists_iteratedCovGrad_l2NormSq_le_smoothCcToTensorHs_succ_add_lower
       (I := I) (M := M) g₀ 1
@@ -297,7 +297,7 @@ theorem arm_realize_Hs_norm_zero_le [Nonempty M]
         ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖) ^ 2 =
         deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) ^ 2 *
           ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ ^ 2 := by ring
-    rw [hexp, sq_deTurckArmFibreConst]
+    rw [hexp, sq_de_turck_arm_fibre_const]
     exact hsq1
   have hgap1 := hgap T₀
   rw [SmoothCcTensor.norm_toL2] at hgap1
@@ -561,13 +561,13 @@ lemma arm_l2_le (g₀ g₁ : SmoothRiemannianMetric I M)
     exact h1
   have hrhs_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
       ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ :=
-    mul_nonneg (mul_nonneg (deTurckArmFibreConst_nonneg _) hκ_nn) (norm_nonneg _)
+    mul_nonneg (mul_nonneg (de_turck_arm_fibre_const_nonneg _) hκ_nn) (norm_nonneg _)
   refine le_of_sq_le_sq ?_ hrhs_nn
   have hexp : (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
       ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖) ^ 2 =
       deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * (δ / (1 - δ)) ^ 2 *
         ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ ^ 2 := by ring
-  rw [hexp, sq_deTurckArmFibreConst]
+  rw [hexp, sq_de_turck_arm_fibre_const]
   exact hsq1
 
 omit [BoundarylessManifold I M] in
@@ -614,11 +614,11 @@ lemma arm_covGrad_slotExtend_l2_le (g₀ g₁ : SmoothRiemannianMetric I M)
     rw [← hbridge, ← SmoothCcTensor.norm_def (I := I) (M := M)] at h1
     exact h1
   have hrhs_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) * κ * ‖W‖ :=
-    mul_nonneg (mul_nonneg (deTurckArmFibreConst_nonneg _) hκ_nn) (norm_nonneg _)
+    mul_nonneg (mul_nonneg (de_turck_arm_fibre_const_nonneg _) hκ_nn) (norm_nonneg _)
   refine le_of_sq_le_sq ?_ hrhs_nn
   have hexp : (deTurckArmFibreConst (Module.finrank ℝ E) * κ * ‖W‖) ^ 2 =
       deTurckArmFibreConst (Module.finrank ℝ E) ^ 2 * κ ^ 2 * ‖W‖ ^ 2 := by ring
-  rw [hexp, sq_deTurckArmFibreConst]
+  rw [hexp, sq_de_turck_arm_fibre_const]
   exact hsq
 
 lemma hs_norm_family_shift (g₀ : SmoothRiemannianMetric I M)

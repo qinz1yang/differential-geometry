@@ -11,7 +11,7 @@ set_option autoImplicit false
 
 namespace DifferentialGeometry
 namespace HCGCompactness
-namespace H6Isometry
+namespace MetricIsometry
 
 open scoped Manifold ContDiff Topology Bundle
 
@@ -46,7 +46,7 @@ theorem norm_apply_le_two
     nlinarith
   exact le_of_sq_le_sq hsq (mul_nonneg (by norm_num) (norm_nonneg v))
 
-theorem opNorm_le_two
+theorem op_norm_le_two
     (g : E →L[Real] E →L[Real] Real)
     (h : F →L[Real] F →L[Real] Real)
     (L : E →L[Real] F)
@@ -66,7 +66,7 @@ theorem isom_first_bound
       C (fderiv Real Phi x v) (fderiv Real Phi x v) = B v v) :
     ‖iteratedFDeriv Real 1 Phi x‖ <= 2 := by
   rw [norm_iteratedFDeriv_one]
-  exact opNorm_le_two B C (fderiv Real Phi x) hB hC hiso
+  exact op_norm_le_two B C (fderiv Real Phi x) hB hC hiso
 
 theorem isom_injective
     (g : E →L[Real] E →L[Real] Real)
@@ -85,7 +85,7 @@ theorem isom_injective
     nlinarith [sq_nonneg ‖a - b‖]
   exact sub_eq_zero.mp (norm_eq_zero.mp hnorm)
 
-theorem opNorm₂_le
+theorem op_norm₂_le
     (T : E →L[Real] E →L[Real] F) {C : Real} (hC : 0 <= C)
     (hT : forall u v : E, ‖T u v‖ <= C * ‖u‖ * ‖v‖) :
     ‖T‖ <= C := by
@@ -1587,7 +1587,7 @@ theorem second_norm_le
     (u v : E0) :
     ‖DA u v‖ <= (6 * CB + 12 * CC) * ‖u‖ * ‖v‖ := by
   have he : ‖(e : E0 →L[Real] F0)‖ <= 2 :=
-    opNorm_le_two B C (e : E0 →L[Real] F0) hBupper hClower hisom
+    op_norm_le_two B C (e : E0 →L[Real] F0) hBupper hClower hisom
   have heu : ‖e u‖ <= 2 * ‖u‖ := by
     exact (ContinuousLinearMap.le_opNorm (e : E0 →L[Real] F0) u).trans <| by
       gcongr
@@ -2008,7 +2008,7 @@ theorem isom_second_bound
       hCsymm hAsymm hBco hCco u v
   have hsecond : ‖fderiv Real (fderiv Real Phi) x‖ <=
       6 * CB + 12 * CC := by
-    apply opNorm₂_le (fderiv Real (fderiv Real Phi) x)
+    apply op_norm₂_le (fderiv Real (fderiv Real Phi) x)
       (add_nonneg (mul_nonneg (by norm_num) hCB) (mul_nonneg (by norm_num) hCC))
     intro u v
     exact second_norm_le (B x) (C (Phi x)) e
@@ -2036,7 +2036,7 @@ variable {I : ModelWithCorners Real E' H} [I.Boundaryless]
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [NeZero (Module.finrank Real E')] in
-theorem normalTrans_isom
+theorem normal_transition_isometry
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -2168,7 +2168,7 @@ theorem normal_fderiv_bij
         (normalTransition (I := I) Y x y z))
       (fderiv Real (normalTransition (I := I) Y x y) z)
       (fun v => (hx z hzU v).1)
-      (fun v => normalTrans_isom Y x y hzx hzy v v)
+      (fun v => normal_transition_isometry Y x y hzx hzy v v)
   exact ⟨hinj, LinearMap.surjective_of_injective hinj⟩
 
 omit [NeZero (Module.finrank Real E')] in
@@ -2193,14 +2193,14 @@ theorem normal_fderiv_le_two
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro z hzx hzy hzU hzV
-  exact opNorm_le_two
+  exact op_norm_le_two
     (normalCoordMetric (I := I) Y x z)
     (normalCoordMetric (I := I) Y y
       (normalTransition (I := I) Y x y z))
     (fderiv Real (normalTransition (I := I) Y x y) z)
     (fun v => (hx z hzU v).2)
     (fun w => (hy (normalTransition (I := I) Y x y z) hzV w).1)
-    (fun v => normalTrans_isom Y x y hzx hzy v v)
+    (fun v => normal_transition_isometry Y x y hzx hzy v v)
 
 section NormalBounds
 
@@ -2279,7 +2279,7 @@ theorem normal_bounds_on
     letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
     letI : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    exact (normalTrans_isom (X.obj k) (x k) (y k)
+    exact (normal_transition_isometry (X.obj k) (x k) (y k)
       (hovl k z hz).1 (hovl k z hz).2 u v).symm
   · intro k z _ a b
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -2304,6 +2304,6 @@ end NormalBounds
 
 end
 
-end H6Isometry
+end MetricIsometry
 end HCGCompactness
 end DifferentialGeometry

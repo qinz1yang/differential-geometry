@@ -45,7 +45,7 @@ private structure FlowCover
 omit [SigmaCompactSpace M] in
 theorem flow_to_seed (g0 : SmoothRiemannianMetric I M) :
     ∃ T : Real, Nonempty (FlowTo (I := I) (M := M) g0 T) := by
-  rcases short_time_joint (I := I) (M := M) g0 with
+  rcases ricci_flow_short_time_existence (I := I) (M := M) g0 with
     ⟨T, hT, g, hstart, hjoint, hpde⟩
   let S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 T hT) :=
     { base := { metric := g } }

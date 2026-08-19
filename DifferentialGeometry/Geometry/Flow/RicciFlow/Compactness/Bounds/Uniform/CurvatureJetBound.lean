@@ -83,7 +83,7 @@ private lemma gAddNorm_le
   rw [hsq]
   linarith [hcs]
 
-theorem unifCurvatureSup_singleLink_of_diff
+theorem uniformCurvatureSup_singleLink_of_diff
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -374,7 +374,7 @@ private lemma lowerAllUpper_zero_eq_unit'
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] in
-private lemma rfns_eq_normSq0S_unit'
+private lemma riemannianFiberNormSq_eq_normSq0S_unit'
     (gBase : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (W : SmoothCcTensor gBase 0 s) :
     riemannianFiberNormSq (I := I) (M := M) gBase 0 s x (W.toSection x) =
       Tensor0SBundle.normSq0S (I := I) gBase x s
@@ -453,7 +453,7 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
   have hΛ1 : (0 : ℝ) ≤ Λ - 1 := by linarith
   rw [norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) gBase 0 2 x
     (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)]
-  rw [rfns_eq_normSq0S_unit' (I := I) gBase 2 x
+  rw [riemannianFiberNormSq_eq_normSq0S_unit' (I := I) gBase 2 x
     (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)]
   have hcompbound : ∀ slots : Fin 2 → Fin (Module.finrank ℝ (TangentSpace I x)),
       |Tensor0SBundle.component0S (I := I) basis
@@ -563,7 +563,7 @@ theorem metricDiff_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : �
       if_neg (by norm_num : ¬(1 : ℕ) = 0), if_neg (by norm_num : ¬(2 : ℕ) = 0)]
     ring
 
-theorem unifCurvatureSup_singleLink
+theorem uniformCurvatureSup_singleLink
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) (hΛ2 : Λ < 2)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -597,7 +597,7 @@ theorem unifCurvatureSup_singleLink
       (metricDiff_gFibreOpBound (I := I) (M := M) gBase g₀ hΛ hcomp)
       (fun x v w => metricDiff_tie (I := I) (M := M) gBase g₀ x v w) x
       (metricDiff_jetEnvelope (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2 x) v w u
-  exact unifCurvatureSup_singleLink_of_diff (I := I) (M := M) gBase g₀ hΛ hcomp hCd0 hdiff
+  exact uniformCurvatureSup_singleLink_of_diff (I := I) (M := M) gBase g₀ hΛ hcomp hCd0 hdiff
 
 noncomputable def convexCombPath (g₀ gBase : SmoothRiemannianMetric I M) (t : ℝ)
     (ht : t ∈ Set.Icc (0 : ℝ) 1) : SmoothRiemannianMetric I M :=

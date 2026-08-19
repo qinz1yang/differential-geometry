@@ -128,7 +128,7 @@ theorem metricCovDerivDeriv_of_solution
       D.carrier (t : Real)
   exact hval ▸ hcomb
 
-def connectionVariationBlackBox_of_solution
+def connectionVariationDataOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -142,7 +142,7 @@ def connectionVariationBlackBox_of_solution
     (hFtdiff : ∀ a b : Idx, ∀ t, t ∈ D.regular -> ∀ x : M, x ∈ u ->
       MDifferentiableAt I 𝓘(Real, Real)
         (fun y : M => ricciCompInFrame (I := I) S frame t y a b) x) :
-    ConnectionVariationBlackBoxInFrameOn (I := I) S frame u
+    ConnectionVariationDataInFrameOn (I := I) S frame u
       (fun t x d a b => ricciCovDerivCompInFrame (I := I) S frame t x d a b) where
   metricCovDerivDt := fun t x d a b => (-2 : Real) * ricciCovDerivCompInFrame (I := I) S frame t x d
                                          a b
@@ -174,9 +174,10 @@ theorem christoffelEvolution_of_solution
         (fun y : M => ricciCompInFrame (I := I) S frame t y a b) x) :
     ChristoffelEvolutionEquationInFrameOn (I := I) S gInv frame hframe
       (fun t x d a b => ricciCovDerivCompInFrame (I := I) S frame t x d a b) :=
-  christoffelEvolution_of_blackBox (I := I) S gInv gInvDt frame hframe hu
+  christoffel_evolution_of_connection_variation_data
+    (I := I) S gInv gInvDt frame hframe hu
     (fun t x d a b => ricciCovDerivCompInFrame (I := I) S frame t x d a b)
     hmetricFrame
-    (connectionVariationBlackBox_of_solution (I := I) S hS frame hSmooth hFdiff hFtdiff)
+    (connectionVariationDataOfSolution (I := I) S hS frame hSmooth hFdiff hFtdiff)
 
 end DifferentialGeometry.PDE.RicciFlow

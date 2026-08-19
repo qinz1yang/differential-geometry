@@ -210,7 +210,7 @@ theorem gnClassC_spec
   have hmul := mul_le_mul hLogPow hMaxPow (sq_nonneg _) (pow_nonneg hClassLog0 _)
   simpa only [n, V, B, gnRsConst, gnClassC] using hmul
 
-theorem gn_rs_unif
+theorem gn_rs_uniform
     (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (k : ℕ) (hk : 1 ≤ k) :
     0 ≤ gnClassC (E := E) (I := I) (M := M) gBase Λ k ∧
       ∀ (g : SmoothRiemannianMetric I M),
@@ -257,7 +257,7 @@ theorem rank_two_grid_nonneg
       (pow_nonneg (le_trans zero_le_one
         (le_trans (le_max_right _ 1) (le_max_right _ _))) _))
 
-theorem rank_two_grid_unif
+theorem rank_two_grid_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 0 ≤ Λ)
     (k : ℕ) (hk : 1 ≤ k) :
@@ -321,7 +321,7 @@ theorem rank_two_grid_unif
           Lam ^ (2 * (1 - (j : ℝ) / (k : ℝ))) *
           A ^ (2 * (j : ℝ) / (k : ℝ)) := by
     intro j hj0 hjk
-    have hb := (gn_rs_unif (E := E) (I := I) (M := M) gBase Λ k hk).2
+    have hb := (gn_rs_uniform (E := E) (I := I) (M := M) gBase Λ k hk).2
       g hEq 0 2 P Lam hLam hLamSup j hj0 hjk
     have hnorm : Integral.L2.tensorL2Norm (I := I) g 0 (2 + k)
         (iteratedCovGrad (I := I) g 0 2 k P).toFun =
@@ -429,7 +429,7 @@ theorem h2_grid_nonneg
       (rank_two_grid_nonneg (E := E) (I := I) (M := M) gBase Λ k R)
       (sq_nonneg R)
 
-theorem h2_grid_unif
+theorem h2_grid_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 0 ≤ Λ) :
     ∀ (g : SmoothRiemannianMetric I M),
@@ -485,7 +485,7 @@ theorem h2_grid_unif
         (fun j _ => sq_nonneg _) hmem).trans hP2
     have htop : ‖iteratedCovGrad (I := I) g 0 2 k P‖ ≤ R := by
       nlinarith [norm_nonneg (iteratedCovGrad (I := I) g 0 2 k P)]
-    have hgrid := rank_two_grid_unif (E := E) (I := I) (M := M)
+    have hgrid := rank_two_grid_uniform (E := E) (I := I) (M := M)
       hDim gBase hΛ k hk1 g hEq hjet1 hjet2 P R R hR hR hP2 htop
     simpa only [h2GridC, if_neg hk0] using hgrid
 
@@ -493,7 +493,7 @@ noncomputable def h3TopGridC
     (gBase : SmoothRiemannianMetric I M) (Λ R : ℝ) : ℝ :=
   rankTwoGridC (E := E) (I := I) (M := M) gBase Λ 3 R
 
-theorem h3_top_grid_unif
+theorem h3_top_grid_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 0 ≤ Λ) :
     ∀ (g : SmoothRiemannianMetric I M),
@@ -522,7 +522,7 @@ theorem h3_top_grid_unif
             h3TopGridC (E := E) (I := I) (M := M) gBase Λ R * A ^ 2 := by
   intro g hEq hjet1 hjet2 P R A hR hA hP2 htop
   simpa only [h3TopGridC, Nat.reduceAdd] using
-    (rank_two_grid_unif (E := E) (I := I) (M := M)
+    (rank_two_grid_uniform (E := E) (I := I) (M := M)
       hDim gBase hΛ 3 (by omega) g hEq hjet1 hjet2 P R A hR hA hP2 htop)
 
 end RicciFlow

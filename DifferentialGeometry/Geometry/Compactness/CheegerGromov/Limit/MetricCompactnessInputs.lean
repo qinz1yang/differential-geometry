@@ -246,7 +246,7 @@ theorem gpScaleTail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (hre : hd.RealizesEdist) (L : NetLimitData (I := I) hd D P)
     (pb : hd.PackingBound D) (r : Real) :
-    Item3GpScaleTail (I := I) hd D P L pb r := by
+    ExponentialRadiusScaleTail (I := I) hd D P L pb r := by
   have hwin : ∀ᶠ n in atTop, ∀ γ ∈ Finset.range (pb.A r),
       L.lamInf γ / 2 ≤ hd.lambda D (seqRadius hd D P (L.φ n) γ) :=
     (Filter.eventually_all_finset _).mpr fun γ _ =>
@@ -395,7 +395,7 @@ theorem radiusScaleTail
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (hre : hd.RealizesEdist) (L : NetLimitData (I := I) hd D P)
     (pb : hd.PackingBound D) (r : Real) :
-    Item3RadiusTail (I := I) hd D P L pb r a := by
+    ExponentialBallRadiusTail (I := I) hd D P L pb r a := by
   have hwin : ∀ᶠ n in atTop, ∀ γ ∈ Finset.range (pb.A r),
       L.lamInf γ / 2 ≤ hd.lambda D (seqRadius hd D P (L.φ n) γ) :=
     (Filter.eventually_all_finset _).mpr fun γ _ =>
@@ -452,7 +452,7 @@ structure MetricCompactCore
 
   dist_eq : volume.dist = decay.dist
 
-  stepA_cap_le :
+  covering_scale_le_volume_radius :
     max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
       decay.lambda D 0 ≤ volume.r0
 
@@ -482,7 +482,7 @@ def withDivisor
   pack := s.packAll D hD
   volume := s.volume
   dist_eq := s.dist_eq
-  stepA_cap_le := hcap
+  covering_scale_le_volume_radius := hcap
   realizes := s.realizes
 
 
@@ -678,7 +678,7 @@ theorem exists_largeD
   refine ⟨D, hD_one, hmuD, hc, ?_⟩
   exact (mul_le_mul_of_nonneg_right hfac hlam_nonneg).trans hKlam.le
 
-theorem exists_item3D
+theorem exists_large_divisor_for_exponential_scales
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X) (c₀ : Real) :
     ∃ D : Real, 1 < D ∧
@@ -686,8 +686,8 @@ theorem exists_item3D
       c₀ < b.normalRadius.gpRatio * D ∧
       (8 : Real) < b.normalRadius.gpRatio * D ∧
       (16 : Real) < b.normalRadius.ratio * D ∧
-      2 * item3RadiusFactor b.decay D < D ∧
-      2 * item3RadiusFactor b.decay D < b.normalRadius.ratio * D ∧
+      2 * exponentialBallRadiusFactor b.decay D < D ∧
+      2 * exponentialBallRadiusFactor b.decay D < b.normalRadius.ratio * D ∧
       max 4 (50 * Real.exp (b.decay.C * (20 * b.decay.lambda D 0))) *
         b.decay.lambda D 0 ≤ b.volume.r0 := by
   let Q : Real := 410 * Real.exp (b.decay.C * 20)
@@ -742,8 +742,8 @@ theorem exists_item3D
       simpa only [mul_one] using
         mul_le_mul_of_nonneg_left hlam_le (by norm_num : (0 : Real) ≤ 20)
     exact mul_le_mul_of_nonneg_left h20 b.decay.C_nonneg
-  have hfac : 2 * item3RadiusFactor b.decay D ≤ Q := by
-    dsimp only [item3RadiusFactor, Q]
+  have hfac : 2 * exponentialBallRadiusFactor b.decay D ≤ Q := by
+    dsimp only [exponentialBallRadiusFactor, Q]
     calc
       2 * (205 * Real.exp (b.decay.C * (20 * b.decay.lambda D 0))) =
           410 * Real.exp (b.decay.C * (20 * b.decay.lambda D 0)) := by ring
@@ -766,7 +766,7 @@ structure MetricCompactnessInputs
   volume : VolumeComparisonInput (I := I) X
   dist_eq : volume.dist = decay.dist
 
-  stepA_cap_le :
+  covering_scale_le_volume_radius :
     max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
       decay.lambda D 0 <= volume.r0
   realizes : decay.RealizesEdist
@@ -787,7 +787,7 @@ def toCore
   pack := inp.pack
   volume := inp.volume
   dist_eq := inp.dist_eq
-  stepA_cap_le := inp.stepA_cap_le
+  covering_scale_le_volume_radius := inp.covering_scale_le_volume_radius
   realizes := inp.realizes
 
 instance
@@ -822,7 +822,7 @@ def ofBase
   pack := b.pack D hD
   volume := b.volume
   dist_eq := b.dist_eq
-  stepA_cap_le := hcap
+  covering_scale_le_volume_radius := hcap
   realizes := b.realizes
   normalBounds := b.normalBounds
   normalRadius := b.normalRadius
@@ -840,7 +840,7 @@ theorem exists_ofBase
   · exact hmuD
   · exact hc
 
-theorem exists_item3OfBase
+theorem exists_of_base_with_exponential_scale_bounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X) (c₀ : Real) :
     ∃ inp : MetricCompactnessInputs (I := I) X,
@@ -848,11 +848,11 @@ theorem exists_item3OfBase
       c₀ < inp.normalRadius.gpRatio * inp.D ∧
       (8 : Real) < inp.normalRadius.gpRatio * inp.D ∧
       (16 : Real) < inp.normalRadius.ratio * inp.D ∧
-      2 * item3RadiusFactor inp.decay inp.D < inp.D ∧
-      2 * item3RadiusFactor inp.decay inp.D <
+      2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D ∧
+      2 * exponentialBallRadiusFactor inp.decay inp.D <
         inp.normalRadius.ratio * inp.D := by
   obtain ⟨D, hD_one, hmuD, hc₀, h8, h16, hradD, hradRatio, hcap⟩ :=
-    b.exists_item3D c₀
+    b.exists_large_divisor_for_exponential_scales c₀
   have hD : 0 < D := zero_lt_one.trans hD_one
   refine ⟨ofBase b D hD hcap, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact hD_one
@@ -876,21 +876,21 @@ theorem physScale_of_extra
       (by simpa only [mul_comm] using hextra) inp.normalRadius.gpRatio_pos.le
   simpa only [mul_comm] using (div_lt_iff₀ haMin).1 hD
 
-theorem item3ScaleTails
+theorem exponential_scale_tails
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (_hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (_hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) inp.decay inp.D P) (r : Real) :
-    Item3GpScaleTail (I := I) inp.decay inp.D P L inp.pack r ∧
-      Item3RadiusTail (I := I) inp.decay inp.D P L inp.pack r
-        (item3RadiusFactor inp.decay inp.D) := by
+    ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r ∧
+      ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
+        (exponentialBallRadiusFactor inp.decay inp.D) := by
   exact ⟨inp.normalRadius.gpScaleTail inp.hD h8 P inp.realizes L inp.pack r,
     inp.normalRadius.radiusScaleTail inp.hD
-      (item3Factor_pos inp.decay inp.D) hradRatio
+      (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r⟩
 
 def ofUniformVolume
@@ -900,7 +900,7 @@ def ofUniformVolume
     (D : Real) (hD : 0 < D)
     (vol : UniformBallPack (I := I) X)
     (dist_eq : vol.dist = decay.dist)
-    (stepA_cap_le :
+    (covering_scale_le_volume_radius :
       max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
         decay.lambda D 0 ≤ vol.r0)
     (realizes : decay.RealizesEdist)
@@ -916,10 +916,10 @@ def ofUniformVolume
   dist_eq := by
     change vol.dist = decay.dist
     exact dist_eq
-  stepA_cap_le := by
+  covering_scale_le_volume_radius := by
     change max 4 (50 * Real.exp (decay.C * (20 * decay.lambda D 0))) *
       decay.lambda D 0 ≤ vol.r0
-    exact stepA_cap_le
+    exact covering_scale_le_volume_radius
   realizes := realizes
   normalBounds := normalBounds
   normalRadius := normalRadius
@@ -938,9 +938,9 @@ def subseq
     funext k x y
     change inp.volume.dist (f k) x y = inp.decay.dist (f k) x y
     rw [inp.dist_eq]
-  stepA_cap_le := by
+  covering_scale_le_volume_radius := by
     simpa [InjRadiusDecayInput.subseq, InjRadiusDecayInput.lambda, InjRadiusDecayInput.mu]
-      using inp.stepA_cap_le
+      using inp.covering_scale_le_volume_radius
   realizes := inp.realizes.subseq f
   normalBounds := inp.normalBounds.subseq f
   normalRadius := inp.normalRadius.subseq f
@@ -955,7 +955,7 @@ theorem cap_four
       (4 : Real) <=
         max 4 (50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0))) :=
     le_max_left _ _
-  exact (mul_le_mul_of_nonneg_right hle hlam).trans inp.stepA_cap_le
+  exact (mul_le_mul_of_nonneg_right hle hlam).trans inp.covering_scale_le_volume_radius
 
 theorem cap_four_of_nonneg
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -980,7 +980,7 @@ theorem cap_inter
       50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)) <=
         max 4 (50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0))) :=
     le_max_right _ _
-  exact (mul_le_mul_of_nonneg_right hle hlam).trans inp.stepA_cap_le
+  exact (mul_le_mul_of_nonneg_right hle hlam).trans inp.covering_scale_le_volume_radius
 
 theorem net_mult
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -1028,7 +1028,7 @@ theorem exists_stable_net
         (∀ᶠ k in atTop, ¬ BInter inp.decay inp.D P L.lamInf α β (L.φ k)) :=
   exists_stableNetData inp.decay inp.hD P
 
-theorem exists_stepA_net
+theorem exists_stable_net_with_intersection_bound
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) :
@@ -1058,7 +1058,7 @@ noncomputable def properMetrics
     ∀ k : Nat, ProperMetricOn (I := I) (X.obj k) :=
   fun k => properMetricOn (I := I) (X.obj k) (hcomplete.complete k) (hconn k)
 
-theorem stepA_net
+theorem exists_stable_net_with_intersection_bound_of_complete_connected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -1085,9 +1085,9 @@ theorem stepA_net
             J.card <=
               inp.volume.Imult
                 (50 * Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)))) :=
-  inp.exists_stepA_net (inp.properMetrics hcomplete hconn)
+  inp.exists_stable_net_with_intersection_bound (inp.properMetrics hcomplete hconn)
 
-theorem stepA_net_subseq
+theorem exists_stable_net_with_intersection_bound_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -1132,7 +1132,7 @@ theorem stepA_net_subseq
                 (50 * Real.exp
                   ((inp.subseq f).decay.C *
                     (20 * (inp.subseq f).decay.lambda (inp.subseq f).D 0)))) := by
-  exact (inp.subseq f).stepA_net (hcomplete.subseq f)
+  exact (inp.subseq f).exists_stable_net_with_intersection_bound_of_complete_connected (hcomplete.subseq f)
     (fun k => by
       simpa [PointedRiemannianSeq.subseq] using hconn (f k))
 

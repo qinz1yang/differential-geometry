@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBoundLoweredRepresentation
 open DifferentialGeometry.Tensor.Auxiliary
+open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -19,9 +20,9 @@ namespace DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (connDiffCovDerivBiContrFib dLaBiContrFib_contMDiff deTurckLieDLbFib deTurckLieDLbFib_contMDiff
+  (connectionDifferenceCovDerivBiContrFib deTurckLieConnectionDifferenceDerivativeBiContrFib_contMDiff deTurckLieCovariantDerivativeInsertionFib deTurckLieCovariantDerivativeInsertionFib_contMDiff
     deTurckLieFib deTurckLieCoeffField deTurckLieCoeffField_toSection
-    deTurckConnDiffCovDeriv connDiff_pairing_mdiffAt connDiffCovDerivOp dLaCovKernel_apply_extend)
+    deTurckConnectionDifferenceCovDeriv connectionDifference_pairing_mdiffAt connectionDifferenceCovDerivOp deTurckLieConnectionDifferenceDerivativeCovKernel_apply_extend)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -33,21 +34,21 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (realizedFam convexPerturbation realizedFam_inner_of_mem convexPerturbation_gFibreOpBound_abs
-    abs_convex_smallConstant_lt_one realizedSmallSet)
+  (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
+    abs_convex_smallConstant_lt_one metricPerturbationPathDomain)
 open DifferentialGeometry.Analysis.Laplacian
   (metric_inner_self_nonneg metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (covGrad connDiff_gFibreNorm_le_iteratedCovGrad_of_lt_one dLaBiContrFibFixedFrame_toModel)
+  (covGrad connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel)
 open DifferentialGeometry.Geometry.Curvature
-  (exists_covDerivConnDiff_gQuadratic_le_of_jetEnvelope
+  (exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
     abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt)
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
   (g0FlatCLM cotangentToDual_g0FlatCLM g0FlatCLM_apply)
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
-section DLaGridBrick
+section DeTurckLieConnectionDifferenceDerivativeGridBrick
 
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.DivergenceTheorem
@@ -58,9 +59,9 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma connDiffSection_eq_armSlotEndoCc_zero_dla (g₀ gc : SmoothRiemannianMetric I M) :
-    connDiffSection (I := I) gc g₀ =
-      armSlotEndoCc (I := I) (M := M) g₀ 0 (dLaConnArmPt (I := I) (M := M) g₀ gc) := by
+private lemma connectionDifferenceSection_eq_armSlotEndoCc_zero_deTurckLieConnectionDifferenceDerivative (g₀ gc : SmoothRiemannianMetric I M) :
+    connectionDifferenceSection (I := I) gc g₀ =
+      bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc) := by
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
@@ -70,39 +71,39 @@ private lemma connDiffSection_eq_armSlotEndoCc_zero_dla (g₀ gc : SmoothRiemann
   apply ContinuousMultilinearMap.ext
   intro v
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (armSlotEndoCc (I := I) (M := M) g₀ 0
-          (dLaConnArmPt (I := I) (M := M) g₀ gc)).toSection x) om) =
-      bilinearSlotInsertCLM (I := I) (M := M) 0 x (dLaConnArmPt (I := I) (M := M) g₀ gc x) om
+        (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0
+          (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc)).toSection x) om) =
+      bilinearSlotInsertCLM (I := I) (M := M) 0 x (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc x) om
       from rfl]
   rw [armSlotFib_apply_eval (I := I) (M := M) 0 x
-    (dLaConnArmPt (I := I) (M := M) g₀ gc x) om v]
+    (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc x) om v]
   rw [slotInsertEndoFib_apply_eval]
   rw [show (Function.update (Matrix.vecTail (fun k : Fin 2 => (v k : E))) 0
-        (dLaConnArmPt (I := I) (M := M) g₀ gc x (v 0)
+        (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc x (v 0)
           (Matrix.vecTail (fun k : Fin 2 => (v k : E)) 0))) =
       (fun _ : Fin 1 => (show E from
-        PDE.DeTurck.connDiff (I := I) gc g₀ x (v 0) (v 1))) from by
+        PDE.DeTurck.connectionDifference (I := I) gc g₀ x (v 0) (v 1))) from by
     funext k
     rw [show k = (0 : Fin 1) from Subsingleton.elim k 0]
     rw [Function.update_self]
     rfl]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (connDiffSection (I := I) gc g₀).toSection x) om) =
-      connDiffPairing (I := I) gc g₀ x om from rfl]
-  change connDiffPairing (I := I) gc g₀ x om v = _
-  rw [connDiffPairing_apply]
+        (connectionDifferenceSection (I := I) gc g₀).toSection x) om) =
+      connectionDifferencePairing (I := I) gc g₀ x om from rfl]
+  change connectionDifferencePairing (I := I) gc g₀ x om v = _
+  rw [connectionDifferencePairing_apply]
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma armSlotEndoCc_one_eq_reindex_slotExtend_dla (g₀ : SmoothRiemannianMetric I M)
+private lemma armSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
-    armSlotEndoCc (I := I) (M := M) g₀ 1 Arm =
+    bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm =
       reindexCoeffGen (I := I) (M := M) g₀ 2 3
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
-          (slotExtend (I := I) (M := M) g₀ 1 2 (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)))
+          (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)))
         (Equiv.swap (0 : Fin 2) 1) := by
   classical
   apply SmoothCcTensor.ext
@@ -121,11 +122,11 @@ private lemma armSlotEndoCc_one_eq_reindex_slotExtend_dla (g₀ : SmoothRiemanni
       (Tensor0SSpace.toModel D)) with hD'_def
   have hLHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (armSlotEndoCc (I := I) (M := M) g₀ 1 Arm).toSection x) D) w =
+        (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm).toSection x) D) w =
       Tensor0SSpace.toModel D
         (Function.update (Matrix.vecTail w) 0 (Arm x (w 0) (Matrix.vecTail w 0))) := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (armSlotEndoCc (I := I) (M := M) g₀ 1 Arm).toSection x) D) =
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm).toSection x) D) =
         bilinearSlotInsertCLM (I := I) (M := M) 1 x (Arm x) D from rfl]
     rw [armSlotFib_apply_eval (I := I) (M := M) 1 x (Arm x) D w]
     rw [slotInsertEndoFib_apply_eval]
@@ -133,28 +134,28 @@ private lemma armSlotEndoCc_one_eq_reindex_slotExtend_dla (g₀ : SmoothRiemanni
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (reindexCoeffGen (I := I) (M := M) g₀ 2 3
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
-            (slotExtend (I := I) (M := M) g₀ 1 2 (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)))
+            (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)))
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) w =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           tensorRS_domDomCongr (finRotate 3).symm
             ((slotExtend (I := I) (M := M) g₀ 1 2
-              (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') w := by
+              (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') w := by
     have h1 : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (reindexCoeffGen (I := I) (M := M) g₀ 2 3
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
-            (slotExtend (I := I) (M := M) g₀ 1 2 (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)))
+            (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)))
           (Equiv.swap (0 : Fin 2) 1)).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           tensorRS_domDomCongr (finRotate 3).symm
             ((slotExtend (I := I) (M := M) g₀ 1 2
-              (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') := by
+              (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') := by
       rw [reindexCoeffGen_toSection]
       rw [reindexCoeffFibGen_apply (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
             (slotExtend (I := I) (M := M) g₀ 1 2
-              (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm))).toSection x) D]
+              (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm))).toSection x) D]
       rw [← hD'_def]
       rw [rsDomDomCongrSection_toSection]
     exact congrArg (fun t : Tensor0SSpace 3 I x => Tensor0SSpace.toModel t w) h1
@@ -162,20 +163,20 @@ private lemma armSlotEndoCc_one_eq_reindex_slotExtend_dla (g₀ : SmoothRiemanni
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         tensorRS_domDomCongr (finRotate 3).symm
           ((slotExtend (I := I) (M := M) g₀ 1 2
-            (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') w =
+            (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') w =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           (slotExtend (I := I) (M := M) g₀ 1 2
-            (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)).toSection x) D')
+            (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D')
         (fun i => w ((finRotate 3).symm i)) := by
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) (finRotate 3).symm
       ((slotExtend (I := I) (M := M) g₀ 1 2
-        (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)).toSection x) D']
+        (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D']
     rw [ContinuousMultilinearMap.domDomCongr_apply]
   have e3 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (slotExtend (I := I) (M := M) g₀ 1 2
-          (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)).toSection x) D')
+          (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D')
       (fun i => w ((finRotate 3).symm i)) =
       Tensor0SSpace.toModel
         (bilinearSlotInsertCLM (I := I) (M := M) 0 x (Arm x)
@@ -183,10 +184,10 @@ private lemma armSlotEndoCc_one_eq_reindex_slotExtend_dla (g₀ : SmoothRiemanni
         (Matrix.vecTail (fun i => w ((finRotate 3).symm i))) := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           (slotExtend (I := I) (M := M) g₀ 1 2
-            (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm)).toSection x) D') =
+            (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D') =
         (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x).symm
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-              (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm).toSection x).comp
+              (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm).toSection x).comp
             (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D')) from rfl]
     rw [show (fun i => w ((finRotate 3).symm i)) =
         Fin.cons (w ((finRotate 3).symm 0))
@@ -196,7 +197,7 @@ private lemma armSlotEndoCc_one_eq_reindex_slotExtend_dla (g₀ : SmoothRiemanni
     have hkey := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 2)
       (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x).symm
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (armSlotEndoCc (I := I) (M := M) g₀ 0 Arm).toSection x).comp
+            (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm).toSection x).comp
           (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D')))
       (v0 := w ((finRotate 3).symm 0))
       (vs := Matrix.vecTail (fun i => w ((finRotate 3).symm i)))
@@ -254,61 +255,61 @@ private lemma armSlotEndoCc_one_eq_reindex_slotExtend_dla (g₀ : SmoothRiemanni
       rfl
   rw [hLHS, e1, e2, e3, e4, e5, e6]
 
-private lemma rfns_iteratedCovGrad_armSlotPass_connArm_le_dla
+private lemma riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connArm_le_deTurckLieConnectionDifferenceDerivative
     (g₀ gc : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + j) x
         ((iteratedCovGrad (I := I) g₀ 2 3 j
           (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (dLaConnArmPt (I := I) (M := M) g₀ gc))).toSection x) ≤
+            (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc))).toSection x) ≤
       (Module.finrank ℝ E : ℝ) *
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + j) x
-          ((iteratedCovGrad (I := I) g₀ 1 2 j (connDiffSection (I := I) gc g₀)).toSection x) := by
+          ((iteratedCovGrad (I := I) g₀ 1 2 j (connectionDifferenceSection (I := I) gc g₀)).toSection x) := by
   rw [riemannianFiberNormSq_iteratedCovGrad_armSlotEndoPassZeroCc_eq (I := I) (M := M) g₀
-    (dLaConnArmPt (I := I) (M := M) g₀ gc) j x]
-  rw [armSlotEndoCc_one_eq_reindex_slotExtend_dla (I := I) (M := M) g₀
-    (dLaConnArmPt (I := I) (M := M) g₀ gc)]
-  rw [rfns_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 3
+    (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc) j x]
+  rw [armSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀
+    (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc)]
+  rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 3
     (Equiv.swap (0 : Fin 2) 1) (finRotate 3).symm
     (slotExtend (I := I) (M := M) g₀ 1 2
-      (armSlotEndoCc (I := I) (M := M) g₀ 0 (dLaConnArmPt (I := I) (M := M) g₀ gc))) j x]
-  refine le_trans (rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 2
-    (armSlotEndoCc (I := I) (M := M) g₀ 0 (dLaConnArmPt (I := I) (M := M) g₀ gc)) j x) ?_
-  rw [← connDiffSection_eq_armSlotEndoCc_zero_dla (I := I) (M := M) g₀ gc]
+      (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc))) j x]
+  refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 2
+    (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc)) j x) ?_
+  rw [← connectionDifferenceSection_eq_armSlotEndoCc_zero_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ gc]
 
-lemma dLaQuad_tower_of_factors (g₀ ga gb : SmoothRiemannianMetric I M)
+lemma deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (g₀ ga gb : SmoothRiemannianMetric I M)
     (j : ℕ) (x : M) (b : ℕ → ℝ) (hb : ∀ l, 0 ≤ b l)
     (Ba Bb : ℕ → ℝ) (hBa_nn : ∀ i, 0 ≤ Ba i) (hBb_nn : ∀ l, 0 ≤ Bb l)
     (harm : ∀ i, i ≤ j →
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i) x
-        ((iteratedCovGrad (I := I) g₀ 1 2 i (connDiffSection (I := I) ga g₀)).toSection x) ≤
+        ((iteratedCovGrad (I := I) g₀ 1 2 i (connectionDifferenceSection (I := I) ga g₀)).toSection x) ≤
       Ba i * antidiagonalTupleGridPartialSum b (i + 2))
     (hin : ∀ l, l ≤ j →
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
-        ((iteratedCovGrad (I := I) g₀ 1 2 l (connDiffSection (I := I) gb g₀)).toSection x) ≤
+        ((iteratedCovGrad (I := I) g₀ 1 2 l (connectionDifferenceSection (I := I) gb g₀)).toSection x) ≤
       Bb l * antidiagonalTupleGridPartialSum b (l + 2)) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + j) x
         ((iteratedCovGrad (I := I) g₀ 1 3 j
-          (dLaQuadCc (I := I) (M := M) g₀ ga gb)).toSection x) ≤
+          (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ ga gb)).toSection x) ≤
       (diagonalGridGrowthFactor (E := E) j * ∑ i ∈ Finset.range (j + 1),
         (Module.finrank ℝ E : ℝ) * Ba i *
           ∑ l ∈ Finset.range (j + 1 - i), Bb l * antidiagonalTuplePairCount (i + 2) (l + 2)) *
         antidiagonalTupleGridPartialSum b (j + 3) := by
-  have hWnn : 0 ≤ antidiagonalTupleGridPartialSum b (j + 3) := dLaGridWin_nonneg b hb (j + 3)
+  have hWnn : 0 ≤ antidiagonalTupleGridPartialSum b (j + 3) := antidiagonalTupleGridPartialSum_nonneg b hb (j + 3)
   have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀ j 1 2 3
-    (armSlotEndoPassZeroCc (I := I) (M := M) g₀ (dLaConnArmPt (I := I) (M := M) g₀ ga))
-    (connDiffSection (I := I) gb g₀) x) ?_
+    (armSlotEndoPassZeroCc (I := I) (M := M) g₀ (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ ga))
+    (connectionDifferenceSection (I := I) gb g₀) x) ?_
   have hcell : ∀ i ∈ Finset.range (j + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i) x
           ((iteratedCovGrad (I := I) g₀ 2 3 i
             (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-              (dLaConnArmPt (I := I) (M := M) g₀ ga))).toSection x) *
+              (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ ga))).toSection x) *
         ∑ l ∈ Finset.range (j + 1 - i),
           riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 1 2 l
-              (connDiffSection (I := I) gb g₀)).toSection x) ≤
+              (connectionDifferenceSection (I := I) gb g₀)).toSection x) ≤
       ((Module.finrank ℝ E : ℝ) * Ba i *
         ∑ l ∈ Finset.range (j + 1 - i), Bb l * antidiagonalTuplePairCount (i + 2) (l + 2)) *
         antidiagonalTupleGridPartialSum b (j + 3) := by
@@ -318,15 +319,15 @@ lemma dLaQuad_tower_of_factors (g₀ ga gb : SmoothRiemannianMetric I M)
     have hA1 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i) x
         ((iteratedCovGrad (I := I) g₀ 2 3 i
           (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-            (dLaConnArmPt (I := I) (M := M) g₀ ga))).toSection x) ≤
+            (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ ga))).toSection x) ≤
         (Module.finrank ℝ E : ℝ) * (Ba i * antidiagonalTupleGridPartialSum b (i + 2)) := by
-      refine le_trans (rfns_iteratedCovGrad_armSlotPass_connArm_le_dla
+      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connArm_le_deTurckLieConnectionDifferenceDerivative
         (I := I) (M := M) g₀ ga i x) ?_
       exact mul_le_mul_of_nonneg_left (harm i hi_le) hfr_nn
     have hA2 : (∑ l ∈ Finset.range (j + 1 - i),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
           ((iteratedCovGrad (I := I) g₀ 1 2 l
-            (connDiffSection (I := I) gb g₀)).toSection x)) ≤
+            (connectionDifferenceSection (I := I) gb g₀)).toSection x)) ≤
         ∑ l ∈ Finset.range (j + 1 - i), Bb l * antidiagonalTupleGridPartialSum b (l + 2) := by
       refine Finset.sum_le_sum fun l hl => ?_
       rw [Finset.mem_range] at hl
@@ -334,12 +335,12 @@ lemma dLaQuad_tower_of_factors (g₀ ga gb : SmoothRiemannianMetric I M)
     have hsum_nn : 0 ≤ ∑ l ∈ Finset.range (j + 1 - i),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
           ((iteratedCovGrad (I := I) g₀ 1 2 l
-            (connDiffSection (I := I) gb g₀)).toSection x) :=
+            (connectionDifferenceSection (I := I) gb g₀)).toSection x) :=
       Finset.sum_nonneg fun l _ =>
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 1 (2 + l) x _
     have hA1_rhs_nn : 0 ≤ (Module.finrank ℝ E : ℝ) *
       (Ba i * antidiagonalTupleGridPartialSum b (i + 2)) :=
-      mul_nonneg hfr_nn (mul_nonneg (hBa_nn i) (dLaGridWin_nonneg b hb (i + 2)))
+      mul_nonneg hfr_nn (mul_nonneg (hBa_nn i) (antidiagonalTupleGridPartialSum_nonneg b hb (i + 2)))
     refine le_trans (mul_le_mul hA1 hA2 hsum_nn hA1_rhs_nn) ?_
     rw [Finset.mul_sum]
     rw [show ((Module.finrank ℝ E : ℝ) * Ba i *
@@ -354,7 +355,7 @@ lemma dLaQuad_tower_of_factors (g₀ ga gb : SmoothRiemannianMetric I M)
     have hpair : antidiagonalTupleGridPartialSum b (i + 2) * antidiagonalTupleGridPartialSum b
       (l + 2) ≤
         antidiagonalTuplePairCount (i + 2) (l + 2) * antidiagonalTupleGridPartialSum b (j + 3) :=
-      dLaGridWin_mul_le b hb (i + 2) (l + 2) (j + 3) (by omega)
+      antidiagonalTupleGridPartialSum_mul_le b hb (i + 2) (l + 2) (j + 3) (by omega)
     calc (Module.finrank ℝ E : ℝ) * (Ba i * antidiagonalTupleGridPartialSum b (i + 2)) *
           (Bb l * antidiagonalTupleGridPartialSum b (l + 2))
         = ((Module.finrank ℝ E : ℝ) * Ba i * Bb l) *
@@ -372,24 +373,24 @@ lemma dLaQuad_tower_of_factors (g₀ ga gb : SmoothRiemannianMetric I M)
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + i) x
               ((iteratedCovGrad (I := I) g₀ 2 3 i
                 (armSlotEndoPassZeroCc (I := I) (M := M) g₀
-                  (dLaConnArmPt (I := I) (M := M) g₀ ga))).toSection x) *
+                  (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ ga))).toSection x) *
             ∑ l ∈ Finset.range (j + 1 - i),
               riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
                 ((iteratedCovGrad (I := I) g₀ 1 2 l
-                  (connDiffSection (I := I) gb g₀)).toSection x)
+                  (connectionDifferenceSection (I := I) gb g₀)).toSection x)
       ≤ diagonalGridGrowthFactor (E := E) j *
           ∑ i ∈ Finset.range (j + 1),
             ((Module.finrank ℝ E : ℝ) * Ba i *
               ∑ l ∈ Finset.range (j + 1 - i), Bb l * antidiagonalTuplePairCount (i + 2) (l + 2)) *
               antidiagonalTupleGridPartialSum b (j + 3) :=
-        mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell) (appCcGdiag_nonneg (E := E) j)
+        mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell) (operatorFieldApplicationGdiag_nonneg (E := E) j)
     _ = (diagonalGridGrowthFactor (E := E) j * ∑ i ∈ Finset.range (j + 1),
           (Module.finrank ℝ E : ℝ) * Ba i *
             ∑ l ∈ Finset.range (j + 1 - i), Bb l * antidiagonalTuplePairCount (i + 2) (l + 2)) *
           antidiagonalTupleGridPartialSum b (j + 3) := by
         rw [← Finset.sum_mul, ← mul_assoc]
 
-private theorem exists_rfns_dLaKernelRaised_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeKernelRaised_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -401,17 +402,17 @@ private theorem exists_rfns_dLaKernelRaised_tgrid (g₀ g_bg : SmoothRiemannianM
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
             ((iteratedCovGrad (I := I) g₀ 1 3 i
-              (dLaKernelRaisedCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (deTurckLieConnectionDifferenceDerivativeKernelRaisedCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           C i * antidiagonalTupleGridPartialSum
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 3) := by
   classical
-  obtain ⟨CA, hCA_nn, hCA⟩ := exists_rfns_iteratedCovGrad_connDiffSection_tgrid_dla
+  obtain ⟨CA, hCA_nn, hCA⟩ := exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid_deTurckLieConnectionDifferenceDerivative
     (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_fixedField_rfns_jet_dla (I := I) (M := M) g₀ 1 3
-    (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g_bg g₀))
-  obtain ⟨cc, hcc_nn, hcc⟩ := exists_fixedField_rfns_jet_dla (I := I) (M := M) g₀ 1 2
-    (connDiffSection (I := I) g_bg g₀)
+  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_fixedField_riemannianFiberNormSq_jet_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3
+    (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀))
+  obtain ⟨cc, hcc_nn, hcc⟩ := exists_fixedField_riemannianFiberNormSq_jet_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 2
+    (connectionDifferenceSection (I := I) g_bg g₀)
   set CQ1 : ℕ → ℝ := fun j => diagonalGridGrowthFactor (E := E) j * ∑ i' ∈ Finset.range (j + 1),
     (Module.finrank ℝ E : ℝ) * CA i' *
       ∑ l ∈ Finset.range (j + 1 - i'), CA l * antidiagonalTuplePairCount (i' + 2) (l + 2) with
@@ -426,19 +427,19 @@ private theorem exists_rfns_dLaKernelRaised_tgrid (g₀ g_bg : SmoothRiemannianM
         hCQ3_def
   have hCQ1_nn : ∀ j, 0 ≤ CQ1 j := by
     intro j
-    refine mul_nonneg (appCcGdiag_nonneg (E := E) j) (Finset.sum_nonneg fun i' _ => ?_)
+    refine mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) j) (Finset.sum_nonneg fun i' _ => ?_)
     refine mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (hCA_nn i'))
-      (Finset.sum_nonneg fun l _ => mul_nonneg (hCA_nn l) (dLaPairCount_nonneg _ _))
+      (Finset.sum_nonneg fun l _ => mul_nonneg (hCA_nn l) (antidiagonalTuplePairCount_nonneg _ _))
   have hCQ2_nn : ∀ j, 0 ≤ CQ2 j := by
     intro j
-    refine mul_nonneg (appCcGdiag_nonneg (E := E) j) (Finset.sum_nonneg fun i' _ => ?_)
+    refine mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) j) (Finset.sum_nonneg fun i' _ => ?_)
     refine mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (hcc_nn i'))
-      (Finset.sum_nonneg fun l _ => mul_nonneg (hCA_nn l) (dLaPairCount_nonneg _ _))
+      (Finset.sum_nonneg fun l _ => mul_nonneg (hCA_nn l) (antidiagonalTuplePairCount_nonneg _ _))
   have hCQ3_nn : ∀ j, 0 ≤ CQ3 j := by
     intro j
-    refine mul_nonneg (appCcGdiag_nonneg (E := E) j) (Finset.sum_nonneg fun i' _ => ?_)
+    refine mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) j) (Finset.sum_nonneg fun i' _ => ?_)
     refine mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (hCA_nn i'))
-      (Finset.sum_nonneg fun l _ => mul_nonneg (hcc_nn l) (dLaPairCount_nonneg _ _))
+      (Finset.sum_nonneg fun l _ => mul_nonneg (hcc_nn l) (antidiagonalTuplePairCount_nonneg _ _))
   refine ⟨fun i => 2 * (2 * (2 * (2 * (2 * (2 * (2 * CA (i + 1) + 2 * cbg i) + 2 * CQ1 i)
       + 2 * CQ2 i) + 2 * CQ1 i) + 2 * CQ3 i) + 2 * CQ1 i) + 2 * CQ3 i,
     fun i => by
@@ -454,34 +455,34 @@ private theorem exists_rfns_dLaKernelRaised_tgrid (g₀ g_bg : SmoothRiemannianM
   have hb : ∀ l, 0 ≤ b l :=
     fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
   set W : ℝ := antidiagonalTupleGridPartialSum b (i + 3) with hW_def
-  have hW_nn : 0 ≤ W := dLaGridWin_nonneg b hb (i + 3)
-  have hW_ge1 : 1 ≤ W := one_le_dLaGridWin b hb (by omega)
+  have hW_nn : 0 ≤ W := antidiagonalTupleGridPartialSum_nonneg b hb (i + 3)
+  have hW_ge1 : 1 ≤ W := one_le_antidiagonalTupleGridPartialSum b hb (by omega)
   have harm : ∀ i', i' ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i') x
-        ((iteratedCovGrad (I := I) g₀ 1 2 i' (connDiffSection (I := I) g₁ g₀)).toSection x) ≤
+        ((iteratedCovGrad (I := I) g₀ 1 2 i' (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) ≤
       CA i' * antidiagonalTupleGridPartialSum b (i' + 2) :=
     fun i' _ => hCA g₁ T htie hδ_le hδ0 hbound i' x
   have hfix : ∀ i', i' ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i') x
-        ((iteratedCovGrad (I := I) g₀ 1 2 i' (connDiffSection (I := I) g_bg g₀)).toSection x) ≤
+        ((iteratedCovGrad (I := I) g₀ 1 2 i' (connectionDifferenceSection (I := I) g_bg g₀)).toSection x) ≤
       cc i' * antidiagonalTupleGridPartialSum b (i' + 2) := by
     intro i' _
     refine le_trans (hcc i' x) ?_
-    have h1 : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (i' + 2) := one_le_dLaGridWin b hb
+    have h1 : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (i' + 2) := one_le_antidiagonalTupleGridPartialSum b hb
       (by omega)
     nlinarith [hcc_nn i']
   have hQ1 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
-        (dLaQuadCc (I := I) (M := M) g₀ g₁ g₁)).toSection x) ≤ CQ1 i * W :=
-    dLaQuad_tower_of_factors (I := I) (M := M) g₀ g₁ g₁ i x b hb CA CA hCA_nn hCA_nn harm harm
+        (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g₁ g₁)).toSection x) ≤ CQ1 i * W :=
+    deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (I := I) (M := M) g₀ g₁ g₁ i x b hb CA CA hCA_nn hCA_nn harm harm
   have hQ2 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
-        (dLaQuadCc (I := I) (M := M) g₀ g_bg g₁)).toSection x) ≤ CQ2 i * W :=
-    dLaQuad_tower_of_factors (I := I) (M := M) g₀ g_bg g₁ i x b hb cc CA hcc_nn hCA_nn hfix harm
+        (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g_bg g₁)).toSection x) ≤ CQ2 i * W :=
+    deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (I := I) (M := M) g₀ g_bg g₁ i x b hb cc CA hcc_nn hCA_nn hfix harm
   have hQ3 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
-        (dLaQuadCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤ CQ3 i * W :=
-    dLaQuad_tower_of_factors (I := I) (M := M) g₀ g₁ g_bg i x b hb CA cc hCA_nn hcc_nn harm hfix
+        (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤ CQ3 i * W :=
+    deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (I := I) (M := M) g₀ g₁ g_bg i x b hb CA cc hCA_nn hcc_nn harm hfix
   have hrs_eq : ∀ (σ : Equiv.Perm (Fin 3)) (F : SmoothCcTensor g₀ 1 3),
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 3 i
@@ -496,22 +497,22 @@ private theorem exists_rfns_dLaKernelRaised_tgrid (g₀ g_bg : SmoothRiemannianM
         rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) i x
   have hA1 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
-        (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀))).toSection x) ≤
+        (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))).toSection x) ≤
       CA (i + 1) * W := by
-    rw [rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 1 2 i
-      (connDiffSection (I := I) g₁ g₀) x]
+    rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 1 2 i
+      (connectionDifferenceSection (I := I) g₁ g₀) x]
     exact hCA g₁ T htie hδ_le hδ0 hbound (i + 1) x
   have hA2 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
-        (covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g_bg g₀))).toSection x) ≤
+        (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀))).toSection x) ≤
       cbg i * W := by
     refine le_trans (hcbg i x) ?_
     nlinarith [hcbg_nn i]
-  set A1 := covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g₁ g₀) with hA1_def
-  set A2 := covGrad (I := I) (M := M) g₀ 1 2 (connDiffSection (I := I) g_bg g₀) with hA2_def
-  set Q11 := dLaQuadCc (I := I) (M := M) g₀ g₁ g₁ with hQ11_def
-  set Qbg1 := dLaQuadCc (I := I) (M := M) g₀ g_bg g₁ with hQbg1_def
-  set Q1bg := dLaQuadCc (I := I) (M := M) g₀ g₁ g_bg with hQ1bg_def
+  set A1 := covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀) with hA1_def
+  set A2 := covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀) with hA2_def
+  set Q11 := deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g₁ g₁ with hQ11_def
+  set Qbg1 := deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g_bg g₁ with hQbg1_def
+  set Q1bg := deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ g₁ g_bg with hQ1bg_def
   set P1 := rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (Equiv.swap (0 : Fin 3) 2) Q11
     with hP1_def
   set P2 := rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 (Equiv.swap (0 : Fin 3) 2) Q1bg
@@ -530,22 +531,22 @@ private theorem exists_rfns_dLaKernelRaised_tgrid (g₀ g_bg : SmoothRiemannianM
   have hP4_le : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i P4).toSection x) ≤ CQ3 i * W :=
     le_of_eq_of_le (hrs_eq (finRotate 3) Q1bg) hQ3
-  have t1 := rfns_iCG_sub_le_dla (I := I) (M := M) g₀ 1 3 i A1 A2 x
-  have t2 := rfns_iCG_add_le_dla (I := I) (M := M) g₀ 1 3 i (A1 - A2) Q11 x
-  have t3 := rfns_iCG_sub_le_dla (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11) Qbg1 x
-  have t4 := rfns_iCG_sub_le_dla (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11 - Qbg1) P1 x
-  have t5 := rfns_iCG_add_le_dla (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11 - Qbg1 - P1) P2 x
-  have t6 := rfns_iCG_sub_le_dla (I := I) (M := M) g₀ 1 3 i
+  have t1 := riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3 i A1 A2 x
+  have t2 := riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3 i (A1 - A2) Q11 x
+  have t3 := riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11) Qbg1 x
+  have t4 := riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11 - Qbg1) P1 x
+  have t5 := riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11 - Qbg1 - P1) P2 x
+  have t6 := riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3 i
     (A1 - A2 + Q11 - Qbg1 - P1 + P2) P3 x
-  have t7 := rfns_iCG_add_le_dla (I := I) (M := M) g₀ 1 3 i
+  have t7 := riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3 i
     (A1 - A2 + Q11 - Qbg1 - P1 + P2 - P3) P4 x
-  have hKK : dLaKernelRaisedCc (I := I) (M := M) g₀ g₁ g_bg =
+  have hKK : deTurckLieConnectionDifferenceDerivativeKernelRaisedCc (I := I) (M := M) g₀ g₁ g_bg =
       A1 - A2 + Q11 - Qbg1 - P1 + P2 - P3 + P4 := rfl
   rw [hKK]
   linarith [t1, t2, t3, t4, t5, t6, t7, hA1, hA2, hQ1, hQ2, hQ3,
     hP1_le, hP2_le, hP3_le, hP4_le]
 
-theorem exists_rfns_dLaLowered_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeLowered_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -557,29 +558,29 @@ theorem exists_rfns_dLaLowered_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 4 i
-              (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           C i * antidiagonalTupleGridPartialSum
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 3) := by
-  obtain ⟨C, hC_nn, hC⟩ := exists_rfns_dLaKernelRaised_tgrid (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨C, hC_nn, hC⟩ := exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeKernelRaised_tgrid (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨C, hC_nn, ?_⟩
   intro g₁ T htie δ hδ_le hδ0 hbound i x
   have hbridge : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 0 4 i
-        (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) =
+        (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
         ((iteratedCovGrad (I := I) g₀ 1 3 i
-          (dLaKernelRaisedCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) := by
+          (deTurckLieConnectionDifferenceDerivativeKernelRaisedCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) := by
     have h := riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀
       2
-      (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg) i x
-    rw [dLaLoweredCc_raise_repr (I := I) (M := M) g₀ g₁ g_bg] at h
+      (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg) i x
+    rw [deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (I := I) (M := M) g₀ g₁ g_bg] at h
     exact h.symm
   rw [hbridge]
   exact hC g₁ T htie hδ_le hδ0 hbound i x
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma rfns_iCG_symmS_le_dla (g₀ : SmoothRiemannianMetric I M)
+lemma riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
         ((iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
@@ -601,7 +602,7 @@ lemma rfns_iCG_symmS_le_dla (g₀ : SmoothRiemannianMetric I M)
     rfl
   rw [hsec]
   refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (2 + j) x _ _) ?_
-  rw [rfns_smul_dla (I := I) (M := M) g₀ 0 (2 + j) x, rfns_smul_dla (I := I) (M := M) g₀ 0 (2 + j)
+  rw [riemannianFiberNormSq_smul_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 0 (2 + j) x, riemannianFiberNormSq_smul_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 0 (2 + j)
     x]
   have hperm := riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
     (Equiv.swap (0 : Fin 2) 1) T j x
@@ -612,7 +613,7 @@ lemma rfns_iCG_symmS_le_dla (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma rfns_symmS_zero_le_dla (g₀ : SmoothRiemannianMetric I M)
+lemma riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (x : M) :
@@ -665,7 +666,7 @@ lemma rfns_symmS_zero_le_dla (g₀ : SmoothRiemannianMetric I M)
         refine congrArg _ ?_
         funext k
         fin_cases k <;> rfl]
-      rw [unitModel_eq_ccTensorBilin_dla (I := I) (M := M) g₀
+      rw [unitModel_eq_ccTensorBilin_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀
         (ccTensor02Symm (I := I) (M := M) g₀ T) x (e (J 0)) (e (J 1))]
       rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
     rw [hval]
@@ -694,27 +695,27 @@ lemma rfns_symmS_zero_le_dla (g₀ : SmoothRiemannianMetric I M)
           ring
         rw [hc0, hc2, one_mul, hnE]
 
-lemma rfns_iCG_slotInsert3_dLaPerturb_le (g₀ : SmoothRiemannianMetric I M)
+lemma riemannianFiberNormSq_iteratedCovGrad_slotInsert3_deTurckLieConnectionDifferenceDerivativePerturb_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + j) x
         ((iteratedCovGrad (I := I) g₀ 4 4 j
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-            (dLaPerturbSharpEndoField (I := I) (M := M) g₀ T))).toSection x) ≤
+            (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T))).toSection x) ≤
       (Module.finrank ℝ E : ℝ) ^ 3 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection
             x) := by
-  refine le_trans (rfns_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 3
-    (dLaPerturbSharpEndoField (I := I) (M := M) g₀ T) j x) ?_
+  refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 3
+    (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T) j x) ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-  rw [dLaSlotInsert_perturbSharp_eq_raise_symmS (I := I) (M := M) g₀ T]
+  rw [deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_symmS (I := I) (M := M) g₀ T]
   rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
       (ccTensor02Symm (I := I) (M := M) g₀ T)) j x]
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
     (Equiv.swap (0 : Fin 2) 1) (ccTensor02Symm (I := I) (M := M) g₀ T) j x]
 
-theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -727,13 +728,13 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 4 i
               (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
-                  (dLaLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) +
-                dLaLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) ≤
+                  (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) +
+                deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) ≤
           C i * antidiagonalTupleGridPartialSum
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 3) := by
   classical
-  obtain ⟨CL, hCL_nn, hCL⟩ := exists_rfns_dLaLowered_tgrid (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CL, hCL_nn, hCL⟩ := exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeLowered_tgrid (I := I) (M := M) g₀ g_bg hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
   set CP : ℕ → ℝ := fun i' => fr ^ 3 * (fr ^ 2 * δ₀ ^ 2 + 1) with hCP_def
@@ -743,9 +744,9 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
       hCLT_def
   have hCLT_nn : ∀ i, 0 ≤ CLT i := by
     intro i
-    refine mul_nonneg (appCcGdiag_nonneg (E := E) i) (Finset.sum_nonneg fun i' _ => ?_)
+    refine mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) i) (Finset.sum_nonneg fun i' _ => ?_)
     exact mul_nonneg (hCP_nn i') (Finset.sum_nonneg fun l _ =>
-      mul_nonneg (hCL_nn l) (dLaPairCount_nonneg _ _))
+      mul_nonneg (hCL_nn l) (antidiagonalTuplePairCount_nonneg _ _))
   refine ⟨fun i => 4 * (2 * CL i + 2 * CLT i),
     fun i => by have := hCL_nn i; have := hCLT_nn i; positivity, ?_⟩
   intro g₁ T htie δ hδ_le hδ0 hbound i x
@@ -754,16 +755,16 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
   have hb : ∀ l, 0 ≤ b l :=
     fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
   set W : ℝ := antidiagonalTupleGridPartialSum b (i + 3) with hW_def
-  have hW_nn : 0 ≤ W := dLaGridWin_nonneg b hb (i + 3)
+  have hW_nn : 0 ≤ W := antidiagonalTupleGridPartialSum_nonneg b hb (i + 3)
   have hδ₀_nn : 0 ≤ δ₀ := le_trans hδ0 hδ_le
   have hPfac : ∀ i', i' ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + i') x
         ((iteratedCovGrad (I := I) g₀ 4 4 i'
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-            (dLaPerturbSharpEndoField (I := I) (M := M) g₀ T))).toSection x) ≤
+            (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T))).toSection x) ≤
       CP i' * antidiagonalTupleGridPartialSum b (i' + 1) := by
     intro i' _
-    refine le_trans (rfns_iCG_slotInsert3_dLaPerturb_le (I := I) (M := M) g₀ T i' x) ?_
+    refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotInsert3_deTurckLieConnectionDifferenceDerivativePerturb_le (I := I) (M := M) g₀ T i' x) ?_
     have hfr3_nn : (0 : ℝ) ≤ fr ^ 3 := by positivity
     match i' with
     | 0 =>
@@ -771,9 +772,9 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
             ((iteratedCovGrad (I := I) g₀ 0 2 0
               (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ fr ^ 2 * δ ^ 2 := by
           rw [iteratedCovGrad_zero]
-          exact rfns_symmS_zero_le_dla (I := I) (M := M) g₀ T hδ0 hbound x
+          exact riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
         have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith [hδ0, hδ_le]
-        have hwin1 : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (0 + 1) := one_le_dLaGridWin b hb
+        have hwin1 : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (0 + 1) := one_le_antidiagonalTupleGridPartialSum b hb
           (by omega)
         have hle1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
             ((iteratedCovGrad (I := I) g₀ 0 2 0
@@ -794,14 +795,14 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
         have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (m + 1)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (m + 1)
               (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ b (m + 1) :=
-          rfns_iCG_symmS_le_dla (I := I) (M := M) g₀ T (m + 1) x
+          riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T (m + 1) x
         have h2 : b (m + 1) ≤ Combinatorics.antidiagonalTupleGrid b (m + 1) :=
-          single_le_grid_dla b hb (m + 1) (by omega)
+          single_le_antidiagonalTupleGridPartialSum b hb (m + 1) (by omega)
         have h3 : Combinatorics.antidiagonalTupleGrid b (m + 1) ≤
-            antidiagonalTupleGridPartialSum b ((m + 1) + 1) := grid_le_dLaGridWin b hb (by omega)
+            antidiagonalTupleGridPartialSum b ((m + 1) + 1) := antidiagonalTupleGrid_le_partialSum b hb (by omega)
         have hfac1 : (1 : ℝ) ≤ fr ^ 2 * δ₀ ^ 2 + 1 :=
           le_add_of_nonneg_left (by positivity)
-        have hwin_nn : 0 ≤ antidiagonalTupleGridPartialSum b ((m + 1) + 1) := dLaGridWin_nonneg b hb
+        have hwin_nn : 0 ≤ antidiagonalTupleGridPartialSum b ((m + 1) + 1) := antidiagonalTupleGridPartialSum_nonneg b hb
           _
         calc fr ^ 3 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (m + 1)) x
               ((iteratedCovGrad (I := I) g₀ 0 2 (m + 1)
@@ -817,23 +818,23 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
                     mul_le_mul_of_nonneg_left hfac1 hfr3_nn
   have hLT : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 0 4 i
-        (dLaLoweredPerturbCc (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) ≤
+        (deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) ≤
       CLT i * W := by
     refine le_trans
       (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
       (I := I) (M := M) g₀ i 0 4 4
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-        (dLaPerturbSharpEndoField (I := I) (M := M) g₀ T))
-      (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x) ?_
+        (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T))
+      (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x) ?_
     have hcell : ∀ i' ∈ Finset.range (i + 1),
         riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + i') x
             ((iteratedCovGrad (I := I) g₀ 4 4 i'
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-                (dLaPerturbSharpEndoField (I := I) (M := M) g₀ T))).toSection x) *
+                (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T))).toSection x) *
           ∑ l ∈ Finset.range (i + 1 - i'),
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 4 l
-                (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+                (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
         (CP i' * ∑ l ∈ Finset.range (i + 1 - i'), CL l * antidiagonalTuplePairCount (i' + 1)
           (l + 3)) * W := by
       intro i' hi'
@@ -843,17 +844,17 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
       have hA2 : (∑ l ∈ Finset.range (i + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 4 l
-              (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x)) ≤
+              (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x)) ≤
           ∑ l ∈ Finset.range (i + 1 - i'), CL l * antidiagonalTupleGridPartialSum b (l + 3) :=
         Finset.sum_le_sum fun l _ => hCL g₁ T htie hδ_le hδ0 hbound l x
       have hsum_nn : 0 ≤ ∑ l ∈ Finset.range (i + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 4 l
-              (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) :=
+              (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) :=
         Finset.sum_nonneg fun l _ =>
           riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + l) x _
       have hA1_rhs_nn : 0 ≤ CP i' * antidiagonalTupleGridPartialSum b (i' + 1) :=
-        mul_nonneg (hCP_nn i') (dLaGridWin_nonneg b hb (i' + 1))
+        mul_nonneg (hCP_nn i') (antidiagonalTupleGridPartialSum_nonneg b hb (i' + 1))
       refine le_trans (mul_le_mul hA1 hA2 hsum_nn hA1_rhs_nn) ?_
       rw [Finset.mul_sum]
       rw [show (CP i' * ∑ l ∈ Finset.range (i + 1 - i'),
@@ -866,7 +867,7 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
       have hpair : antidiagonalTupleGridPartialSum b (i' + 1) * antidiagonalTupleGridPartialSum b
         (l + 3) ≤
           antidiagonalTuplePairCount (i' + 1) (l + 3) * antidiagonalTupleGridPartialSum b (i + 3) :=
-        dLaGridWin_mul_le b hb (i' + 1) (l + 3) (i + 3) (by omega)
+        antidiagonalTupleGridPartialSum_mul_le b hb (i' + 1) (l + 3) (i + 3) (by omega)
       calc CP i' * antidiagonalTupleGridPartialSum b (i' + 1) *
              (CL l * antidiagonalTupleGridPartialSum b (l + 3))
           = (CP i' * CL l) * (antidiagonalTupleGridPartialSum b (i' + 1) *
@@ -883,47 +884,47 @@ theorem exists_rfns_dLaSym_tgrid (g₀ g_bg : SmoothRiemannianMetric I M)
             riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + i') x
                 ((iteratedCovGrad (I := I) g₀ 4 4 i'
                   (endoSlotZeroCcTensor (I := I) (M := M) g₀ 3
-                    (dLaPerturbSharpEndoField (I := I) (M := M) g₀ T))).toSection x) *
+                    (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T))).toSection x) *
               ∑ l ∈ Finset.range (i + 1 - i'),
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + l) x
                   ((iteratedCovGrad (I := I) g₀ 0 4 l
-                    (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x)
+                    (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x)
         ≤ diagonalGridGrowthFactor (E := E) i *
             ∑ i' ∈ Finset.range (i + 1),
               (CP i' * ∑ l ∈ Finset.range (i + 1 - i'),
                 CL l * antidiagonalTuplePairCount (i' + 1) (l + 3)) * W :=
-          mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell) (appCcGdiag_nonneg (E := E) i)
+          mul_le_mul_of_nonneg_left (Finset.sum_le_sum hcell) (operatorFieldApplicationGdiag_nonneg (E := E) i)
       _ = CLT i * W := by
           rw [hCLT_def, ← Finset.sum_mul, ← mul_assoc]
   have hL0 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 0 4 i
-        (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤ CL i * W :=
+        (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤ CL i * W :=
     hCL g₁ T htie hδ_le hδ0 hbound i x
   have hLG1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 0 4 i
-        (dLaLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) ≤
+        (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) ≤
       2 * (CL i * W) + 2 * (CLT i * W) := by
-    refine le_trans (rfns_iCG_add_le_dla (I := I) (M := M) g₀ 0 4 i
-      (dLaLoweredCc (I := I) (M := M) g₀ g₁ g_bg)
-      (dLaLoweredPerturbCc (I := I) (M := M) g₀ T g₁ g_bg) x) ?_
+    refine le_trans (riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 0 4 i
+      (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg)
+      (deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc (I := I) (M := M) g₀ T g₁ g_bg) x) ?_
     linarith [hL0, hLT]
   have hperm : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
       ((iteratedCovGrad (I := I) g₀ 0 4 i
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
-          (dLaLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg))).toSection x) =
+          (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg))).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
         ((iteratedCovGrad (I := I) g₀ 0 4 i
-          (dLaLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) :=
+          (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) :=
     riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
-      (Equiv.swap (0 : Fin 4) 1) (dLaLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) i x
-  refine le_trans (rfns_iCG_add_le_dla (I := I) (M := M) g₀ 0 4 i
+      (Equiv.swap (0 : Fin 4) 1) (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) i x
+  refine le_trans (riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 0 4 i
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
-      (dLaLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg))
-    (dLaLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) x) ?_
+      (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg))
+    (deTurckLieConnectionDifferenceDerivativeLoweredG1Cc (I := I) (M := M) g₀ T g₁ g_bg) x) ?_
   rw [hperm]
   linarith [hLG1]
 
-end DLaGridBrick
+end DeTurckLieConnectionDifferenceDerivativeGridBrick
 
 end DifferentialGeometry.Analysis.Sobolev
 

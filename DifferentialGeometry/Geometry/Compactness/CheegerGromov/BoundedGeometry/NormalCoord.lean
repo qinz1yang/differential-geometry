@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.RadialRadius
 import DifferentialGeometry.Geometry.Comparison.Volume.BallVolume
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
-import DifferentialGeometry.Geometry.Exponential.IntrinsicBallDiffeo
+import DifferentialGeometry.Geometry.Exponential.IntrinsicBallChart
 import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicGronwall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric

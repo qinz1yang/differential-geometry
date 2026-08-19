@@ -969,9 +969,9 @@ theorem HasSuppConvData.pts_dist_tail
       _ ≤ 2 * (eps / 4) := mul_le_mul_of_nonneg_left hdeltaEps (by norm_num)
       _ < eps := by linarith
   exact hman.trans_lt hscaled
-theorem H6NormalData.pts_dist_tail
+theorem BoundedGeometryNormalData.pts_dist_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (phi : Nat → Nat) (hphi : StrictMono phi)

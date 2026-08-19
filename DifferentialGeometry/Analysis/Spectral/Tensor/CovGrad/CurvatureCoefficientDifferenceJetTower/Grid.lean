@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricRaisedEndomorphismJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RecoveryEndomorphismJetBound
@@ -14,9 +14,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulCovariantJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulParallelRaiseJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRfnsBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRiemannianFiberNormSqBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
@@ -948,7 +948,7 @@ lemma antidiagonalTupleGrid_eq_doubleSum (g₀ : SmoothRiemannianMetric I M)
               ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem exists_backgroundJet_rfns_bound (g₀ : SmoothRiemannianMetric I M)
+theorem exists_backgroundJet_riemannianFiberNormSq_bound (g₀ : SmoothRiemannianMetric I M)
     (r s : ℕ) (S : SmoothCcTensor g₀ r s) :
     ∃ c : ℕ → ℝ, (∀ i, 0 ≤ c i) ∧ ∀ (i : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ r (s + i) x
@@ -964,7 +964,7 @@ theorem exists_backgroundJet_rfns_bound (g₀ : SmoothRiemannianMetric I M)
 end CurvatureCoefficientDifferenceJetTower
 
 alias exists_iteratedCovGrad_fiberNormSq_bound :=
-  CurvatureCoefficientDifferenceJetTower.exists_backgroundJet_rfns_bound
+  CurvatureCoefficientDifferenceJetTower.exists_backgroundJet_riemannianFiberNormSq_bound
 
 section MixedSharpRicci
 
@@ -1073,9 +1073,9 @@ lemma ricEndoRaisedFib_eq_mixed_add_gInvDiffRaised
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) (v : TangentSpace I x) :
     ricEndoRaisedFib (I := I) g₁ x v =
       ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x v +
-        gInvDiffRaisedEndo (I := I) g₀ g₁ x
+        metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
           (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x v) := by
-  rw [gInvDiffRaisedEndo_apply]
+  rw [metricComparisonDifferenceEndomorphism_apply]
   have hcollapse : ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x v +
       (inverseMetricSharpFib (I := I) g₁ x
           (g0FlatCLM (I := I) g₀ x (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x v)) -
@@ -1107,11 +1107,11 @@ theorem slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope
           (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁) -
         slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricEndoRaisedField (I := I) (M := M) g₀)) +
-      appCcRS (I := I) (M := M) g₀ 1 1 1
+      ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 1
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁)) := by
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -1120,20 +1120,20 @@ theorem slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope
           (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁) -
         slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricEndoRaisedField (I := I) (M := M) g₀)) +
-      appCcRS (I := I) (M := M) g₀ 1 1 1
+      ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 1
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection) x) =
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection) x) =
       ((slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁)).toSection x -
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricEndoRaisedField (I := I) (M := M) g₀)).toSection x) +
-      (appCcRS (I := I) (M := M) g₀ 1 1 1
+      (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 1
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection x from by
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x from by
     rw [SmoothCcTensor.toSection_add, SmoothCcTensor.toSection_sub]
     rfl]
   apply ContinuousLinearMap.ext
@@ -1156,15 +1156,15 @@ theorem slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope
         (ricEndoRaisedField (I := I) (M := M) g₀)).toSection x) A =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (ricEndoRaisedFib (I := I) g₀ x) A from rfl]
-  rw [show ((appCcRS (I := I) (M := M) g₀ 1 1 1
+  rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 1
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁))).toSection x) A =
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x) A =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x)
         (slotInsertEndoFib (I := I) (M := M) 1 0 x
-          (gInvDiffRaisedEndo (I := I) g₀ g₁ x) A) from rfl]
+          (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) A) from rfl]
   rw [slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval,
     slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval,
     slotInsertEndoFib_apply_eval]

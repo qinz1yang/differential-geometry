@@ -31,9 +31,8 @@ theorem hamilton_positive_ricci
   haveI : I.Boundaryless := hM.2.2.1
   haveI : NeZero (Module.finrank Real E) := ⟨by
     rw [hM.2.2.2]; norm_num⟩
-  exact HCGCompactness.ham3_main_hcg (I := I) (M := M) hM hpos
+  exact hamilton_positive_ricci_classification (I := I) (M := M) hM hpos
 
--- #print axioms DifferentialGeometry.PDE.RicciFlow.HamiltonPositiveRicci.hamilton_positive_ricci
 
 end HamiltonPositiveRicci
 end RicciFlow

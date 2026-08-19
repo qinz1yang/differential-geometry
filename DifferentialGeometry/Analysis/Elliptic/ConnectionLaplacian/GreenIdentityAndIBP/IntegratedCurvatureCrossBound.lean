@@ -97,7 +97,7 @@ theorem exists_genuineDiffCurvSection_l2Norm_le_self
     ∃ Cd : ℝ, 0 ≤ Cd ∧ ∀ S : SmoothCcTensor g 0 s,
       ‖genuineDiffCurvSection (I := I) (M := M) g s S‖ ≤ Cd * ‖S‖ := by
   classical
-  obtain ⟨C, hC_nn, hC⟩ := exists_uniform_riemannianFiberNormSq_appCc_le (I := I) (M := M) g
+  obtain ⟨C, hC_nn, hC⟩ := exists_uniform_riemannianFiberNormSq_operatorFieldApplication_le (I := I) (M := M) g
     (s + 0) (s + 0 + 1)
     (covGrad (I := I) (M := M) g (s + 0) (s + 0) (curvOpField (I := I) (M := M) g s))
   refine ⟨Real.sqrt C, Real.sqrt_nonneg _, fun S => ?_⟩

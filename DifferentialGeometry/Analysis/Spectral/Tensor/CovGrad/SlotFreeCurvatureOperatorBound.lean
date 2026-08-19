@@ -222,7 +222,7 @@ private lemma sfOne_comp1_le
     Real.sqrt_one, mul_one] using hb
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem sfOne_rfns_zero
+theorem sfOne_riemannianFiberNormSq_zero
     (g : SmoothRiemannianMetric I M) {C : ℝ} (hC : 0 ≤ C)
     (hR : ∀ (x : M) (v w u : TangentSpace I x),
       g.inner x (riemannOp (LeviCivita (I := I) g) x v w u)
@@ -237,7 +237,7 @@ theorem sfOne_rfns_zero
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [rfns_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 1 3 x
+  rw [riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 1 3 x
     (show TensorRSSpace 1 3 I x from
       (slotFreeOpCc (I := I) (M := M) g 1).toSection x)
     e bse hnE hbse horth]
@@ -261,7 +261,7 @@ theorem sfOne_rfns_zero
       ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem sfOne_rfns_one
+theorem sfOne_riemannianFiberNormSq_one
     (g : SmoothRiemannianMetric I M) {C : ℝ} (hC : 0 ≤ C)
     (hR : ∀ (x : M) (D X Y Z : TangentSpace I x),
       Real.sqrt (g.inner x
@@ -281,7 +281,7 @@ theorem sfOne_rfns_one
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [rfns_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 1 4 x
+  rw [riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 1 4 x
     (show TensorRSSpace 1 4 I x from
       (covGrad (I := I) (M := M) g 1 3
         (slotFreeOpCc (I := I) (M := M) g 1)).toSection x)

@@ -20,7 +20,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M] [IsManifold I 1 M]
 
-def scalGradSq
+def scalarGradientNormSq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
@@ -32,16 +32,16 @@ def scalGradSq
       (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) (flowG (I := I) S) t
         (S.scalar t) x)
 
-def tfLapBook
+def traceFreeRicciNormLaplacian
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     Real -> M -> Real :=
   fun t x =>
     DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (flowG (I := I) S) t
-      (fun y : M => tfRicNormSq S.scalar (ricciNorm (I := I) S) t y) x
+      (fun y : M => traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) t y) x
 
-noncomputable def ricciNablaSec
+noncomputable def ricciCovariantDerivativeSection
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
@@ -55,7 +55,7 @@ noncomputable def ricciNablaSec
         metricCov_smooth (I := I) (M := M) (S.base.metric t))
     (S.ricci t)).nablaA
 
-noncomputable def ricciNormDuSec
+noncomputable def ricciNormDifferentialSection
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
@@ -68,7 +68,7 @@ noncomputable def ricciNormDuSec
       exact DifferentialGeometry.Geometry.Curvature.norm02_smooth (I := I) (M := M)
         (S.base.metric t) (S.ricci t))
 
-def pinchCoupleSol
+def ricciGradientCouplingNormSq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
@@ -76,10 +76,10 @@ def pinchCoupleSol
   ricciGradCoupleSq (I := I)
     (fun t : Real => S.family.metric t) S.scalar
     (fun t y => S.ricci t y)
-    (fun t y => ricciNablaSec (I := I) S t y)
+    (fun t y => ricciCovariantDerivativeSection (I := I) S t y)
 
 omit [Module.Finite ℝ E] in
-theorem pinchEvol_solSec
+theorem pinch_quotient_evolution_of_solution_sections
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -88,7 +88,7 @@ theorem pinchEvol_solSec
     (epsilon : Real)
     (hsetup : PinchEvolOn (I := I) (D := D) (flowG (I := I) S)
       S.scalar (ricciNorm (I := I) S) (ricciGradSq (I := I) S)
-      (scalGradSq (I := I) S)
+      (scalarGradientNormSq (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
       epsilon)
     (hscalar : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
@@ -97,7 +97,7 @@ theorem pinchEvol_solSec
     (htfDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
       MDifferentiableAt I 𝓘(Real, Real)
-        (tfRicNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) x)
+        (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) x)
     (hscalarDiff : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D) x,
       MDifferentiableAt I 𝓘(Real, Real) (S.scalar (t : Real)) x) :
@@ -105,14 +105,14 @@ theorem pinchEvol_solSec
       HasDerivWithinAt
         (fun s : Real =>
           quotField (M := M)
-            (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+            (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
             S.scalar (1 : Real) (2 - epsilon) s x)
         (quotLap (I := I) (flowG (I := I) S)
-            (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+            (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
             S.scalar (1 : Real) (2 - epsilon) (t : Real) x +
-          pinchBookRHS (I := I) (flowG (I := I) S)
-            S.scalar (ricciNorm (I := I) S) (scalGradSq (I := I) S)
-            (pinchCoupleSol (I := I) S)
+          pinchEvolutionRHS (I := I) (flowG (I := I) S)
+            S.scalar (ricciNorm (I := I) S) (scalarGradientNormSq (I := I) S)
+            (ricciGradientCouplingNormSq (I := I) S)
             (cubicQ S.scalar (ricciNorm (I := I) S)
               (ricciCube (I := I) S))
             epsilon (t : Real) x)
@@ -129,27 +129,27 @@ theorem pinchEvol_solSec
         (_x : M),
         Idx -> Idx -> Real :=
     fun t x i j => coordInv (I := I) S x (t : Real) x i j
-  refine pinchEvol_sec (I := I) (Idx := Idx) (G := flowG (I := I) S)
+  refine pinch_quotient_evolution_of_tensor_sections (I := I) (Idx := Idx) (G := flowG (I := I) S)
     S.scalar (ricciNorm (I := I) S) (ricciGradSq (I := I) S)
-    (scalGradSq (I := I) S)
+    (scalarGradientNormSq (I := I) S)
     (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
-    (fun t => S.ricci t) (fun t => ricciNablaSec (I := I) S t)
-    (fun t => ricciNormDuSec (I := I) S t)
+    (fun t => S.ricci t) (fun t => ricciCovariantDerivativeSection (I := I) S t)
+    (fun t => ricciNormDifferentialSection (I := I) S t)
     epsilon hsetup hscalar ?_ htfDiff hscalarDiff
     basis gInv ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
   · intro t x
-    simp [scalGradSq, flowG]
+    simp [scalarGradientNormSq, flowG]
   · intro t x
     simpa [basis, gInv, flowG] using coordInvReal (I := I) S x (t : Real)
   · intro t x
-    simp [ricciGradSq, ricciNablaSec, flowG,
+    simp [ricciGradSq, ricciCovariantDerivativeSection, flowG,
       CanonicalSpatialDerivs0S.of_smooth_connection]
   · intro t x
     simp [ricciNorm, flowG]
   · intro t
     exact (flowG (I := I) S).metricCompatible (t : Real)
   · intro t
-    simpa [ricciNablaSec, flowG] using
+    simpa [ricciCovariantDerivativeSection, flowG] using
       (CanonicalSpatialDerivs0S.of_smooth_connection
         (E := E) (H := H) (I := I) (M := M)
         (S.base.connection (t : Real))
@@ -159,7 +159,7 @@ theorem pinchEvol_solSec
               (S.base.metric (t : Real)))
         (S.ricci (t : Real))).first
   · intro t
-    simpa [ricciNormDuSec, flowG] using
+    simpa [ricciNormDifferentialSection, flowG] using
       DifferentialGeometry.Geometry.Operator.duSec_realizes (I := I)
         (fun y : M =>
           DifferentialGeometry.Geometry.Curvature.normSq02 (I := I)
@@ -185,7 +185,7 @@ theorem pinchEvol_solSec
     exact hf.contMDiffAt.mdifferentiableAt (by simp)
 
 omit [Module.Finite ℝ E] in
-theorem ricciSym_can
+theorem ricci_is_symmetric
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
@@ -263,7 +263,7 @@ theorem ricciSym_can
     hInvSym
 
 omit [Module.Finite ℝ E] in
-theorem traceData_can
+theorem riemann_from_ricci_trace_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
@@ -333,7 +333,7 @@ theorem traceData_can
     hcurv hRicFirst hScalarTrace
 
 omit [Module.Finite ℝ E] in
-theorem tfReactSmooth
+theorem trace_free_ricci_reaction_relation_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -341,15 +341,15 @@ theorem tfReactSmooth
     (S : SolutionOn (I := I) (M := M) D)
     (hdim : ∀ (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
-    tfRicReactRel
+    TraceFreeRicciReactionRelation
       S.scalar (ricciNorm (I := I) S)
-      (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+      (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
       (ricciReact (I := I) S) := by
   classical
   intro t x hR
   rcases DifferentialGeometry.Geometry.Curvature.ricciEigen3 (I := I) (S.base.metric t)
-      (S.ricciAt t x) (hdim t x) (ricciSym_can (I := I) S t x) with
+      (S.ricciAt t x) (hdim t x) (ricci_is_symmetric (I := I) S t x) with
     ⟨basis, l1, l2, l3, horth, hdiag0⟩
   have hScalarTrace :
       DifferentialGeometry.Geometry.Curvature.ScalarRealizesRicciTraceAt (I := I) (S.scalar t x)
@@ -369,9 +369,9 @@ theorem tfReactSmooth
       ricciCube (I := I) S t x =
         DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 l1 l2 l3 :=
     ricciCubeInv_diag (I := I) (S.base.metric t) horth hdiag0
-  have hrel := tfRel_trace (I := I) (g := S.base.metric t)
+  have hrel := trace_free_ricci_reaction_relation_of_trace_data (I := I) (g := S.base.metric t)
     (Ric := S.ricciAt t x) (Rm04 := S.base.rm04 t x)
-    (basis := basis) (traceData_can (I := I) S horth) hdiag hcube hR
+    (basis := basis) (riemann_from_ricci_trace_data (I := I) S horth) hdiag hcube hR
   have hinv :
       MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
@@ -388,11 +388,11 @@ theorem tfReactSmooth
         ricciReact (I := I) S t x := by
     simpa [SolutionOn.ricciAt] using
       (reactAt_eq_react (I := I) S horth)
-  simpa [tfRicNormSq, cubicQ, SolutionOn.scalar_eq_metricTrace,
+  simpa [traceFreeRicciNormSq, cubicQ, SolutionOn.scalar_eq_metricTrace,
     hnorm, hreact] using hrel
 
 omit [Module.Finite ℝ E] in
-theorem ricciDataSmooth
+theorem ricci_norm_heat_equation_data_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -405,20 +405,20 @@ theorem ricciDataSmooth
       (D := D) (ricciNorm (I := I) S) (ricciNormLap (I := I) S)
       (ricciGradSq (I := I) S) (ricciReact (I := I) S) ∧
     (∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
-      tfLapBook (I := I) S (t : Real) x =
-        tfLap S.scalar
+      traceFreeRicciNormLaplacian (I := I) S (t : Real) x =
+        traceFreeRicciNormSqLaplacian S.scalar
           (fun t x =>
             DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (flowG (I := I) S) t
               (S.scalar t) x)
-      (scalGradSq (I := I) S) (ricciNormLap (I := I) S) (t : Real) x) := by
+      (scalarGradientNormSq (I := I) S) (ricciNormLap (I := I) S) (t : Real) x) := by
   refine ⟨ricciHeatSmooth (I := I) S _hS, ?_⟩
   intro t x
-  have h := tfLapCore (I := I) S _hS (t : Real) (D.regular_subset t.2) x
-  simpa [tfLapBook, tfLap, scalarSqLap, scalGradSq, tfRicNormSq,
-    tfRicNormSqAt, ricciNormLap, flowG] using h
+  have h := trace_free_ricci_norm_sq_laplacian_identity (I := I) S _hS (t : Real) (D.regular_subset t.2) x
+  simpa [traceFreeRicciNormLaplacian, traceFreeRicciNormSqLaplacian, scalarCurvatureSqLaplacian, scalarGradientNormSq, traceFreeRicciNormSq,
+    traceFreeRicciNormSqAt, ricciNormLap, flowG] using h
 
 omit [Module.Finite ℝ E] in
-theorem tfLapBook_eq
+theorem trace_free_ricci_norm_laplacian_eq
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -428,16 +428,16 @@ theorem tfLapBook_eq
     (hdim : ∀ (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
     ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
-      tfLapBook (I := I) S (t : Real) x =
-        tfLap S.scalar
+      traceFreeRicciNormLaplacian (I := I) S (t : Real) x =
+        traceFreeRicciNormSqLaplacian S.scalar
           (fun t x =>
             DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (flowG (I := I) S) t
               (S.scalar t) x)
-          (scalGradSq (I := I) S) (ricciNormLap (I := I) S) (t : Real) x :=
-  (ricciDataSmooth (I := I) S hS hdim).2
+          (scalarGradientNormSq (I := I) S) (ricciNormLap (I := I) S) (t : Real) x :=
+  (ricci_norm_heat_equation_data_of_smooth_solution (I := I) S hS hdim).2
 
 omit [Module.Finite ℝ E] in
-theorem tfDataSmooth
+theorem exists_trace_free_ricci_reaction_data_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -451,22 +451,22 @@ theorem tfDataSmooth
         (D := D) (ricciNorm (I := I) S) (ricciNormLap (I := I) S)
         (ricciGradSq (I := I) S) reaction ∧
       (∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
-        tfLapBook (I := I) S (t : Real) x =
-          tfLap S.scalar
+        traceFreeRicciNormLaplacian (I := I) S (t : Real) x =
+          traceFreeRicciNormSqLaplacian S.scalar
             (fun t x =>
               DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (flowG (I := I) S) t
                 (S.scalar t) x)
-            (scalGradSq (I := I) S) (ricciNormLap (I := I) S) (t : Real) x) ∧
-      tfRicReactRel
+            (scalarGradientNormSq (I := I) S) (ricciNormLap (I := I) S) (t : Real) x) ∧
+      TraceFreeRicciReactionRelation
         S.scalar (ricciNorm (I := I) S)
-        (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+        (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
         (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
         reaction := by
-  rcases ricciDataSmooth (I := I) S _hS _hdim with ⟨hRic, hLap⟩
-  exact ⟨ricciReact (I := I) S, hRic, hLap, tfReactSmooth (I := I) S _hdim⟩
+  rcases ricci_norm_heat_equation_data_of_smooth_solution (I := I) S _hS _hdim with ⟨hRic, hLap⟩
+  exact ⟨ricciReact (I := I) S, hRic, hLap, trace_free_ricci_reaction_relation_of_smooth_solution (I := I) S _hdim⟩
 
 omit [Module.Finite ℝ E] in
-theorem tfBookData
+theorem exists_trace_free_ricci_norm_sq_heat_equation_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -480,22 +480,22 @@ theorem tfBookData
         (D := D) (ricciNorm (I := I) S) ricciNormLap
         (ricciGradSq (I := I) S) reaction ∧
       (∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
-        tfLapBook (I := I) S (t : Real) x =
-          tfLap S.scalar
+        traceFreeRicciNormLaplacian (I := I) S (t : Real) x =
+          traceFreeRicciNormSqLaplacian S.scalar
             (fun t x =>
               DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (flowG (I := I) S) t
                 (S.scalar t) x)
-            (scalGradSq (I := I) S) ricciNormLap (t : Real) x) ∧
-      tfRicReactRel
+            (scalarGradientNormSq (I := I) S) ricciNormLap (t : Real) x) ∧
+      TraceFreeRicciReactionRelation
         S.scalar (ricciNorm (I := I) S)
-        (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+        (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
         (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
         reaction := by
-  rcases tfDataSmooth (I := I) S _hS _hdim with ⟨reaction, hRic, hLap, hRel⟩
+  rcases exists_trace_free_ricci_reaction_data_of_smooth_solution (I := I) S _hS _hdim with ⟨reaction, hRic, hLap, hRel⟩
   exact ⟨ricciNormLap (I := I) S, reaction, hRic, hLap, hRel⟩
 
 omit [Module.Finite ℝ E] in
-theorem tfHeat_book
+theorem trace_free_ricci_norm_sq_heat_equation_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -504,12 +504,12 @@ theorem tfHeat_book
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (hdim : ∀ (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
-    tfRicHeatOn
+    TraceFreeRicciNormSqHeatEquationOn
       (D := D)
-      (tfRicNormSq S.scalar (ricciNorm (I := I) S))
-      (tfLapBook (I := I) S)
+      (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
+      (traceFreeRicciNormLaplacian (I := I) S)
       (ricciGradSq (I := I) S)
-      (scalGradSq (I := I) S)
+      (scalarGradientNormSq (I := I) S)
       S.scalar
       (ricciNorm (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S)) := by
@@ -536,33 +536,33 @@ theorem tfHeat_book
           (D := D) (ricciNorm (I := I) S) ricciNormLap
           (ricciGradSq (I := I) S) reaction ∧
         (∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
-          tfLapBook (I := I) S (t : Real) x =
-            tfLap S.scalar scalarLap (scalGradSq (I := I) S) ricciNormLap
+          traceFreeRicciNormLaplacian (I := I) S (t : Real) x =
+            traceFreeRicciNormSqLaplacian S.scalar scalarLap (scalarGradientNormSq (I := I) S) ricciNormLap
               (t : Real) x) ∧
-        tfRicReactRel
+        TraceFreeRicciReactionRelation
           S.scalar (ricciNorm (I := I) S)
-          (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+          (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
           (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
           reaction := by
-    simpa [scalarLap, G] using tfBookData (I := I) S hS hdim
+    simpa [scalarLap, G] using exists_trace_free_ricci_norm_sq_heat_equation_data (I := I) S hS hdim
   rcases hbridge with ⟨ricciNormLap, reaction, hRic, hLap, hRel⟩
   have hcore :
-      tfRicHeatOn
+      TraceFreeRicciNormSqHeatEquationOn
         (D := D)
-        (tfRicNormSq S.scalar (ricciNorm (I := I) S))
-        (tfLap S.scalar scalarLap (scalGradSq (I := I) S) ricciNormLap)
+        (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
+        (traceFreeRicciNormSqLaplacian S.scalar scalarLap (scalarGradientNormSq (I := I) S) ricciNormLap)
         (ricciGradSq (I := I) S)
-        (scalGradSq (I := I) S)
+        (scalarGradientNormSq (I := I) S)
         S.scalar
         (ricciNorm (I := I) S)
         (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S)) :=
-    tfHeat_base
+    trace_free_ricci_norm_sq_heat_equation
       (D := D)
       S.scalar scalarLap
       (ricciNorm (I := I) S)
       ricciNormLap
       (ricciGradSq (I := I) S)
-      (scalGradSq (I := I) S)
+      (scalarGradientNormSq (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
       reaction
       hscalar hRic hRel
@@ -571,7 +571,7 @@ theorem tfHeat_book
   simpa [hLap t x] using hcore'
 
 omit [Module.Finite ℝ E] in
-theorem tfHeat_sol
+theorem trace_free_ricci_norm_sq_heat_equation_of_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -581,19 +581,19 @@ theorem tfHeat_sol
     (hS : IsSolutionOn (I := I) S)
     (hdim : forall (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
-    tfRicHeatOn
+    TraceFreeRicciNormSqHeatEquationOn
       (D := D)
-      (tfRicNormSq S.scalar (ricciNorm (I := I) S))
-      (tfLapBook (I := I) S)
+      (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
+      (traceFreeRicciNormLaplacian (I := I) S)
       (ricciGradSq (I := I) S)
-      (scalGradSq (I := I) S)
+      (scalarGradientNormSq (I := I) S)
       S.scalar
       (ricciNorm (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S)) := by
-  exact tfHeat_book (I := I) S (smoothOfSol (I := I) S hS) hdim
+  exact trace_free_ricci_norm_sq_heat_equation_of_smooth_solution (I := I) S (smoothOfSol (I := I) S hS) hdim
 
 omit [Module.Finite ℝ E] in
-theorem tfNonneg_sol
+theorem trace_free_ricci_norm_sq_nonneg
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -602,11 +602,11 @@ theorem tfNonneg_sol
     (hdim : forall (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
     forall t x,
-      0 <= tfRicNormSq S.scalar (ricciNorm (I := I) S) t x := by
+      0 <= traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) t x := by
   classical
   intro t x
   rcases DifferentialGeometry.Geometry.Curvature.ricciEigen3 (I := I) (S.base.metric t)
-      (S.ricciAt t x) (hdim t x) (ricciSym_can (I := I) S t x) with
+      (S.ricciAt t x) (hdim t x) (ricci_is_symmetric (I := I) S t x) with
     ⟨basis, l1, l2, l3, horth, hdiag⟩
   have hscalarTrace :=
     scalarTrace_delta (I := I) (S.base.metric t) (S.ricciAt t x) horth
@@ -637,9 +637,9 @@ theorem tfNonneg_sol
             exact (ricciNorm_inner (I := I) (S.base.metric t)
               (S.ricciAt t x) basis hinv).symm
   have htf :
-      tfRicNormSq S.scalar (ricciNorm (I := I) S) t x =
+      traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) t x =
         DifferentialGeometry.Geometry.Curvature.tracefreeRicciEigenNormSq3 l1 l2 l3 := by
-    rw [tfRicNormSq, tracefreeRicciNormSqOf, tracefreeRicciNormSqAtOf,
+    rw [traceFreeRicciNormSq, traceFreeRicciNormSqOf, traceFreeRicciNormSqAtOf,
       hscalar, hnorm, ricciNormAt_diag (I := I) hdiag]
     unfold DifferentialGeometry.Geometry.Curvature.tracefreeRicciEigenNormSq3
       DifferentialGeometry.Geometry.Curvature.ricciEigenPairwiseGapSq3
@@ -650,7 +650,7 @@ theorem tfNonneg_sol
   exact DifferentialGeometry.Geometry.Curvature.tracefreeRicciEigenNormSq3_nonneg l1 l2 l3
 
 omit [Module.Finite ℝ E] in
-theorem tfDiff_sol
+theorem trace_free_ricci_norm_sq_mdifferentiable
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -660,16 +660,16 @@ theorem tfDiff_sol
     (hS : IsSolutionOn (I := I) S) :
     forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
       MDifferentiableAt I 𝓘(Real, Real)
-        (tfRicNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) x := by
+        (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) x := by
   intro t x
   let hSmooth := smoothOfSol (I := I) S hS
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
-  simpa [tfRicNormSq, tracefreeRicciNormSqOf, tracefreeRicciNormSqAtOf] using
+  simpa [traceFreeRicciNormSq, traceFreeRicciNormSqOf, traceFreeRicciNormSqAtOf] using
     (hSmooth.ricciRegular.ricci_norm_space (t : Real) ht x).sub
       (hSmooth.scalarRegular.scalar_sq_div_space (t : Real) ht x)
 
 omit [Module.Finite ℝ E] in
-theorem tfGrad_sol
+theorem gradient_trace_free_ricci_norm_sq
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -681,7 +681,7 @@ theorem tfGrad_sol
       MDiffAt (T% fun y : M =>
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
           ((flowG (I := I) S).metric (t : Real))
-          (tfRicNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) y) x := by
+          (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) y) x := by
   intro t x
   let hSmooth := smoothOfSol (I := I) S hS
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
@@ -691,15 +691,15 @@ theorem tfGrad_sol
       (fun y : M =>
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
           ((flowG (I := I) S).metric (t : Real))
-          (tfRicNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) y) =
+          (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) y) =
         fun y : M =>
           DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
             ((flowG (I := I) S).metric (t : Real)) f y -
           DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
             ((flowG (I := I) S).metric (t : Real)) h y := by
     funext y
-    simpa [f, h, flowG, tfRicNormSq, tracefreeRicciNormSqOf,
-      tracefreeRicciNormSqAtOf] using
+    simpa [f, h, flowG, traceFreeRicciNormSq, traceFreeRicciNormSqOf,
+      traceFreeRicciNormSqAtOf] using
       DifferentialGeometry.Geometry.Operator.gradientFun_sub (I := I)
         ((flowG (I := I) S).metric (t : Real))
         (hSmooth.ricciRegular.ricci_norm_space (t : Real) ht y)
@@ -724,7 +724,7 @@ theorem tfGrad_sol
       (T% fun y : M =>
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
           ((flowG (I := I) S).metric (t : Real))
-          (tfRicNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) y) =
+          (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) y) =
         (T% fun y : M =>
           DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
             ((flowG (I := I) S).metric (t : Real)) f y -
@@ -736,7 +736,7 @@ theorem tfGrad_sol
   exact hcombined
 
 omit [Module.Finite ℝ E] in
-theorem scalarPowGrad_sol
+theorem gradient_scalar_rpow
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -805,7 +805,7 @@ theorem scalarPowGrad_sol
   exact hsmul
 
 omit [Module.Finite ℝ E] in
-theorem pinchEvol_sol
+theorem pinch_quotient_evolution_of_solution_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -824,14 +824,14 @@ theorem pinchEvol_sol
       HasDerivWithinAt
         (fun s : Real =>
           quotField (M := M)
-            (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+            (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
             S.scalar (1 : Real) (2 - epsilon) s x)
         (quotLap (I := I) (flowG (I := I) S)
-            (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+            (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
             S.scalar (1 : Real) (2 - epsilon) (t : Real) x +
-          pinchBookRHS (I := I) (flowG (I := I) S)
-            S.scalar (ricciNorm (I := I) S) (scalGradSq (I := I) S)
-            (pinchCoupleSol (I := I) S)
+          pinchEvolutionRHS (I := I) (flowG (I := I) S)
+            S.scalar (ricciNorm (I := I) S) (scalarGradientNormSq (I := I) S)
+            (ricciGradientCouplingNormSq (I := I) S)
             (cubicQ S.scalar (ricciNorm (I := I) S)
               (ricciCube (I := I) S))
             epsilon (t : Real) x)
@@ -850,7 +850,7 @@ theorem pinchEvol_sol
       (by intro t; rfl) (by intro t; rfl) t x
     simpa [scalarLap, ricciNorm, flowG] using h
   have hSmooth := smoothOfSol (I := I) S hS
-  have htfDiff := tfDiff_sol (I := I) S hS
+  have htfDiff := trace_free_ricci_norm_sq_mdifferentiable (I := I) S hS
   have hscalarDiff :
       forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
         MDifferentiableAt I 𝓘(Real, Real) (S.scalar (t : Real)) x := by
@@ -859,10 +859,10 @@ theorem pinchEvol_sol
       (D.regular_subset t.2) x
   have htfNonneg :
       forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) y,
-        0 <= tfRicNormSq S.scalar (ricciNorm (I := I) S) (t : Real) y := by
+        0 <= traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real) y := by
     intro t y
-    exact tfNonneg_sol (I := I) S hdim (t : Real) y
-  have hgradTf := tfGrad_sol (I := I) S hS
+    exact trace_free_ricci_norm_sq_nonneg (I := I) S hdim (t : Real) y
+  have hgradTf := gradient_trace_free_ricci_norm_sq (I := I) S hS
   have hgradScalar :
       forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
         MDiffAt (T% fun y : M =>
@@ -872,24 +872,24 @@ theorem pinchEvol_sol
     intro t x
     exact hSmooth.scalarRegular.scalar_grad (t : Real)
       (D.regular_subset t.2) x
-  have hgradScalarPow := scalarPowGrad_sol (I := I) S hS epsilon hscalar
+  have hgradScalarPow := gradient_scalar_rpow (I := I) S hS epsilon hscalar
   have hsetup : PinchEvolOn (I := I) (D := D) (flowG (I := I) S)
       S.scalar (ricciNorm (I := I) S) (ricciGradSq (I := I) S)
-      (scalGradSq (I := I) S)
+      (scalarGradientNormSq (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
       epsilon := by
-    refine pinchEvol_setup (I := I) (G := flowG (I := I) S)
-      S.scalar scalarLap (ricciNorm (I := I) S) (tfLapBook (I := I) S)
-      (ricciGradSq (I := I) S) (scalGradSq (I := I) S)
+    refine pinch_quotient_evolution_of_heat_equations (I := I) (G := flowG (I := I) S)
+      S.scalar scalarLap (ricciNorm (I := I) S) (traceFreeRicciNormLaplacian (I := I) S)
+      (ricciGradSq (I := I) S) (scalarGradientNormSq (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
-      epsilon (tfHeat_sol (I := I) S hS hdim) hscalarHeat ?_ ?_
+      epsilon (trace_free_ricci_norm_sq_heat_equation_of_solution (I := I) S hS hdim) hscalarHeat ?_ ?_
       htfDiff hscalarDiff htfNonneg hscalar hgradTf hgradScalar
       hgradScalarPow
     · intro t x
       rfl
     · intro t x
       rfl
-  exact pinchEvol_solSec (I := I) S epsilon hsetup hscalar htfDiff
+  exact pinch_quotient_evolution_of_solution_sections (I := I) S epsilon hsetup hscalar htfDiff
     hscalarDiff
 
 end DifferentialGeometry.PDE.RicciFlow

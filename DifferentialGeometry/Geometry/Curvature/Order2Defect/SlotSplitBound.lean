@@ -86,7 +86,7 @@ private noncomputable def secondCovGradEnergyBudget
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma rfnsBudget_nonneg
+private lemma riemannianFiberNormSqBudget_nonneg
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) (x : M) :
     0 ≤ secondCovGradEnergyBudget (I := I) (M := M) g T₀ x := by
   unfold secondCovGradEnergyBudget

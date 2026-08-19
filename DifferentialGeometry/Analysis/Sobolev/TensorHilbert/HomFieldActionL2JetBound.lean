@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomFieldActionIteratedCovGradWindow
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Bound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedAppCcLeibniz
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedOperatorFieldApplicationLeibniz
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -111,7 +111,7 @@ theorem exists_appFullSec_iteratedCovGrad_l2_window_bound
   exact sqrt_finset_sum_sq_le_sum (Finset.range (k + 1))
     (fun i => ‖iteratedCovGrad g r m i W‖) (fun i _ => norm_nonneg _)
 
-section NormedAppCc
+section NormedOperatorFieldApplication
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -121,13 +121,13 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem exists_appCcRS_l2_norm_le (g : SmoothRiemannianMetric I M) (b c : ℕ)
+theorem exists_operatorFieldComposition_l2_norm_le (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g b c) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ V : SmoothCcTensor g 0 b,
       ‖ccOperatorFieldComp (I := I) (M := M) g 0 b c Φ V‖ ≤ C * ‖V‖ := by
   classical
   obtain ⟨Cop, hCop_nn, hCop⟩ :=
-    exists_uniform_riemannianFiberNormSq_appCcRS_le (I := I) (M := M) g 0 b c Φ
+    exists_uniform_riemannianFiberNormSq_operatorFieldComposition_le (I := I) (M := M) g 0 b c Φ
   refine ⟨Real.sqrt Cop, Real.sqrt_nonneg _, fun V => ?_⟩
   set Z : SmoothCcTensor g 0 c := ccOperatorFieldComp (I := I) (M := M) g 0 b c Φ V with hZ_def
   have hZL2 : ‖Z‖ ^ 2 =
@@ -160,7 +160,7 @@ theorem exists_appCcRS_l2_norm_le (g : SmoothRiemannianMetric I M) (b c : ℕ)
     _ = Real.sqrt Cop * ‖V‖ := by rw [Real.sqrt_mul hCop_nn, Real.sqrt_sq hVnn]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_appCc_iteratedCovGrad_l2_window_bound (g : SmoothRiemannianMetric I M)
+theorem exists_operatorFieldApplication_iteratedCovGrad_l2_window_bound (g : SmoothRiemannianMetric I M)
     (b c : ℕ) (Φ : SmoothCcTensor g b c) :
     ∃ cc : ℕ → ℝ, (∀ k, 0 ≤ cc k) ∧
       ∀ (W : SmoothCcTensor g 0 b) (k : ℕ),
@@ -168,15 +168,15 @@ theorem exists_appCc_iteratedCovGrad_l2_window_bound (g : SmoothRiemannianMetric
           cc k * ∑ i ∈ Finset.range (k + 1), ‖iteratedCovGrad g 0 b i W‖ := by
   classical
   choose CC hCC_nn hCC using fun (k i : ℕ) =>
-    exists_appCcRS_l2_norm_le (I := I) (M := M) g (b + i) (c + k)
-      (appCcLeibnizPsi (I := I) (M := M) g b c Φ k i)
+    exists_operatorFieldComposition_l2_norm_le (I := I) (M := M) g (b + i) (c + k)
+      (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ k i)
   refine ⟨fun k => ∑ i ∈ Finset.range (k + 1), CC k i,
     fun k => Finset.sum_nonneg (fun i _ => hCC_nn k i), fun W k => ?_⟩
   rw [iteratedCovGrad_operatorFieldApply_eq (I := I) (M := M) g b c Φ W k]
   refine le_trans (norm_sum_le _ _) ?_
   have hterm : ∀ i ∈ Finset.range (k + 1),
       ‖ccOperatorFieldComp (I := I) (M := M) g 0 (b + i) (c + k)
-          (appCcLeibnizPsi (I := I) (M := M) g b c Φ k i)
+          (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ k i)
           (iteratedCovGrad (I := I) g 0 b i W)‖ ≤
         CC k i * ∑ j ∈ Finset.range (k + 1), ‖iteratedCovGrad g 0 b j W‖ := by
     intro i hi
@@ -188,7 +188,7 @@ theorem exists_appCc_iteratedCovGrad_l2_window_bound (g : SmoothRiemannianMetric
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.sum_mul]
 
-end NormedAppCc
+end NormedOperatorFieldApplication
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_appFullSec_norm_le (g : SmoothRiemannianMetric I M) (r m c : ℕ)

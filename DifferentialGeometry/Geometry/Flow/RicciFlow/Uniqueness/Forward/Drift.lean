@@ -62,32 +62,32 @@ private theorem drift_onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 
-private def driftPerm1 : Equiv.Perm (Fin 4) :=
+private def driftPermutationCycleZeroTwoOneThree : Equiv.Perm (Fin 4) :=
   Equiv.ofBijective ![2, 3, 1, 0] (by decide)
 
-private def driftPerm2 : Equiv.Perm (Fin 4) :=
+private def driftPermutationSwapZeroTwoOneThree : Equiv.Perm (Fin 4) :=
   Equiv.ofBijective ![2, 3, 0, 1] (by decide)
 
-private def driftPerm3 : Equiv.Perm (Fin 4) :=
+private def driftPermutationSwapTwoThree : Equiv.Perm (Fin 4) :=
   Equiv.ofBijective ![0, 1, 3, 2] (by decide)
 
-private def driftPerm (e : Equiv.Perm (Fin 4))
+private def reindexDriftTensor (e : Equiv.Perm (Fin 4))
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
   T.domDomCongr e
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-@[simp] private theorem driftPerm_apply (e : Equiv.Perm (Fin 4))
+@[simp] private theorem reindexDriftTensor_apply (e : Equiv.Perm (Fin 4))
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     (v : Fin 4 → TangentSpace I x) :
-    driftPerm (I := I) e T v = T (fun a : Fin 4 => v (e a)) :=
+    reindexDriftTensor (I := I) e T v = T (fun a : Fin 4 => v (e a)) :=
   Tensor0SSpace.domDomCongr_apply (I := I) e T v
 
 def driftSlots
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
-  (T - driftPerm (I := I) driftPerm1 T) +
-    (driftPerm (I := I) driftPerm2 T - driftPerm (I := I) driftPerm3 T)
+  (T - reindexDriftTensor (I := I) driftPermutationCycleZeroTwoOneThree T) +
+    (reindexDriftTensor (I := I) driftPermutationSwapZeroTwoOneThree T - reindexDriftTensor (I := I) driftPermutationSwapTwoThree T)
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem driftSlots_apply
@@ -99,11 +99,11 @@ theorem driftSlots_apply
   rw [driftSlots, Tensor0SSpace.add_apply (I := I) 4 x,
     Tensor0SSpace.sub_apply (I := I) 4 x,
     Tensor0SSpace.sub_apply (I := I) 4 x]
-  simp only [driftPerm_apply]
+  simp only [reindexDriftTensor_apply]
   congr 2 <;>
     · congr 1
       funext a
-      fin_cases a <;> simp [driftPerm1, driftPerm2, driftPerm3, vec4]
+      fin_cases a <;> simp [driftPermutationCycleZeroTwoOneThree, driftPermutationSwapZeroTwoOneThree, driftPermutationSwapTwoThree, vec4]
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem driftSlots_add
@@ -112,7 +112,7 @@ theorem driftSlots_add
       driftSlots (I := I) A + driftSlots (I := I) B := by
   refine ContinuousMultilinearMap.ext fun v => ?_
   simp only [driftSlots, Tensor0SSpace.add_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x, driftPerm_apply]
+    Tensor0SSpace.sub_apply (I := I) 4 x, reindexDriftTensor_apply]
   ring
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
@@ -122,7 +122,7 @@ theorem driftSlots_sub
       driftSlots (I := I) (A - B) := by
   refine ContinuousMultilinearMap.ext fun v => ?_
   simp only [driftSlots, Tensor0SSpace.add_apply (I := I) 4 x,
-    Tensor0SSpace.sub_apply (I := I) 4 x, driftPerm_apply]
+    Tensor0SSpace.sub_apply (I := I) 4 x, reindexDriftTensor_apply]
   ring
 
 variable [NeZero (Module.finrank Real E)]
@@ -136,22 +136,22 @@ theorem driftSlotsSq_le (g : SmoothRiemannianMetric I M)
   classical
   obtain ⟨basis, hON⟩ := drift_onFrame (I := I) g x
   have hinv := drift_onFrame_inv (I := I) g basis hON
-  have hp1 : normSq0S (I := I) g x 4 (driftPerm (I := I) driftPerm1 T) =
+  have hp1 : normSq0S (I := I) g x 4 (reindexDriftTensor (I := I) driftPermutationCycleZeroTwoOneThree T) =
       normSq0S (I := I) g x 4 T :=
-    normSq0S_domDomCongr (I := I) g x basis hinv driftPerm1 T
-  have hp2 : normSq0S (I := I) g x 4 (driftPerm (I := I) driftPerm2 T) =
+    normSq0S_domDomCongr (I := I) g x basis hinv driftPermutationCycleZeroTwoOneThree T
+  have hp2 : normSq0S (I := I) g x 4 (reindexDriftTensor (I := I) driftPermutationSwapZeroTwoOneThree T) =
       normSq0S (I := I) g x 4 T :=
-    normSq0S_domDomCongr (I := I) g x basis hinv driftPerm2 T
-  have hp3 : normSq0S (I := I) g x 4 (driftPerm (I := I) driftPerm3 T) =
+    normSq0S_domDomCongr (I := I) g x basis hinv driftPermutationSwapZeroTwoOneThree T
+  have hp3 : normSq0S (I := I) g x 4 (reindexDriftTensor (I := I) driftPermutationSwapTwoThree T) =
       normSq0S (I := I) g x 4 T :=
-    normSq0S_domDomCongr (I := I) g x basis hinv driftPerm3 T
+    normSq0S_domDomCongr (I := I) g x basis hinv driftPermutationSwapTwoThree T
   have hleft := normSq0S_sub_le (I := I) g x 4 T
-    (driftPerm (I := I) driftPerm1 T)
+    (reindexDriftTensor (I := I) driftPermutationCycleZeroTwoOneThree T)
   have hright := normSq0S_sub_le (I := I) g x 4
-    (driftPerm (I := I) driftPerm2 T) (driftPerm (I := I) driftPerm3 T)
+    (reindexDriftTensor (I := I) driftPermutationSwapZeroTwoOneThree T) (reindexDriftTensor (I := I) driftPermutationSwapTwoThree T)
   have houter := normSq0S_add_le (I := I) g x 4
-    (T - driftPerm (I := I) driftPerm1 T)
-    (driftPerm (I := I) driftPerm2 T - driftPerm (I := I) driftPerm3 T)
+    (T - reindexDriftTensor (I := I) driftPermutationCycleZeroTwoOneThree T)
+    (reindexDriftTensor (I := I) driftPermutationSwapZeroTwoOneThree T - reindexDriftTensor (I := I) driftPermutationSwapTwoThree T)
   rw [hp1] at hleft
   rw [hp2, hp3] at hright
   rw [driftSlots]

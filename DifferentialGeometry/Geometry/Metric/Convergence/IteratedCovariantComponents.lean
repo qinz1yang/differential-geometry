@@ -1221,25 +1221,25 @@ theorem compL2_le_contrTail_inv {P : ℕ}
         rw [contrTail_contrTail_inv T G Ginv hinv]
     _ ≤ compL2 (contrTail T G) * compL2 Ginv := compL2_contrTail_le _ _
 
-noncomputable def claim1Const (C0 KR K : Real) (m : ℕ) : Real :=
+noncomputable def inverseContractionAffineRecurrenceConstant (C0 KR K : Real) (m : ℕ) : Real :=
   Nat.strongRecOn' m fun n C =>
     max C0 0 * (max KR 0 +
       ∑ c : Fin n, (n.choose c : Real) *
         (C c c.isLt * (1 + max K 0)) * max K 0)
 
-theorem claim1Const_eq (C0 KR K : Real) (m : ℕ) :
-    claim1Const C0 KR K m =
+theorem inverse_contraction_affine_recurrence_constant_eq (C0 KR K : Real) (m : ℕ) :
+    inverseContractionAffineRecurrenceConstant C0 KR K m =
       max C0 0 * (max KR 0 +
         ∑ c ∈ Finset.range m, (m.choose c : Real) *
-          (claim1Const C0 KR K c * (1 + max K 0)) * max K 0) := by
-  rw [claim1Const, Nat.strongRecOn'_beta, ← Fin.sum_univ_eq_sum_range]
+          (inverseContractionAffineRecurrenceConstant C0 KR K c * (1 + max K 0)) * max K 0) := by
+  rw [inverseContractionAffineRecurrenceConstant, Nat.strongRecOn'_beta, ← Fin.sum_univ_eq_sum_range]
   rfl
 
-theorem claim1Const_nonneg (C0 KR K : Real) (m : ℕ) :
-    0 ≤ claim1Const C0 KR K m := by
+theorem inverse_contraction_affine_recurrence_constant_nonneg (C0 KR K : Real) (m : ℕ) :
+    0 ≤ inverseContractionAffineRecurrenceConstant C0 KR K m := by
   induction m using Nat.strong_induction_on with
   | _ m ih =>
-      rw [claim1Const_eq]
+      rw [inverse_contraction_affine_recurrence_constant_eq]
       refine mul_nonneg (le_max_right C0 0) (add_nonneg (le_max_right KR 0) ?_)
       exact Finset.sum_nonneg fun c hc =>
         mul_nonneg
@@ -1248,7 +1248,7 @@ theorem claim1Const_nonneg (C0 KR K : Real) (m : ℕ) :
           (le_max_right K 0)
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_abstract_bound {u : Set M} (hu : IsOpen u)
+theorem iterated_covariant_tensor_bound_of_contraction_control {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -1271,7 +1271,7 @@ theorem claim1_abstract_bound {u : Set M} (hu : IsOpen u)
           KR * compL2 (iterCovComp (I := I) frame chr g (m' + 1) x)) →
       ∀ x ∈ u,
         compL2 (iterCovCompU (I := I) frame chr A m x) ≤
-          claim1Const C0 KR K m *
+          inverseContractionAffineRecurrenceConstant C0 KR K m *
             (1 + compL2 (iterCovComp (I := I) frame chr g (m + 1) x)) := by
   induction m using Nat.strong_induction_on with
   | _ m ih =>
@@ -1280,11 +1280,11 @@ theorem claim1_abstract_bound {u : Set M} (hu : IsOpen u)
     have hKR0 : (0 : Real) ≤ max KR 0 := le_max_right KR 0
     intro g hg Ginv A hA hinv hGinv hK hrelB x hx
     set S := ∑ c ∈ Finset.range m,
-      (m.choose c : Real) * (claim1Const C0 KR K c * (1 + max K 0)) *
+      (m.choose c : Real) * (inverseContractionAffineRecurrenceConstant C0 KR K c * (1 + max K 0)) *
         max K 0 with hSdef
     have hS0 : 0 ≤ S := Finset.sum_nonneg fun c hc =>
       mul_nonneg (mul_nonneg (Nat.cast_nonneg _)
-        (mul_nonneg (claim1Const_nonneg C0 KR K c) (by linarith))) hK'0
+        (mul_nonneg (inverse_contraction_affine_recurrence_constant_nonneg C0 KR K c) (by linarith))) hK'0
     have hgm1 : (0 : Real) ≤ compL2 (iterCovComp (I := I) frame chr g (m + 1) x) :=
       compL2_nonneg _
     have hrel3 : compL2 (iterCovComp (I := I) frame chr
@@ -1327,24 +1327,24 @@ theorem claim1_abstract_bound {u : Set M} (hu : IsOpen u)
       have hgc1 : compL2 (iterCovComp (I := I) frame chr g (c + 1) x) ≤ max K 0 :=
         le_trans (hK x hx (c + 1) (by omega) (by omega)) (le_max_left K 0)
       have hAc : compL2 (iterCovCompU (I := I) frame chr A c x) ≤
-          claim1Const C0 KR K c * (1 + max K 0) := by
+          inverseContractionAffineRecurrenceConstant C0 KR K c * (1 + max K 0) := by
         refine le_trans (ih c hc' g hg Ginv A hA hinv hGinv
           (fun x' hx' j h1 h2 => hK x' hx' j h1 (by omega))
           (fun x' hx' m' h' => hrelB x' hx' m' (by omega)) x hx) ?_
-        exact mul_le_mul_of_nonneg_left (by linarith) (claim1Const_nonneg C0 KR K c)
+        exact mul_le_mul_of_nonneg_left (by linarith) (inverse_contraction_affine_recurrence_constant_nonneg C0 KR K c)
       have hgmc : compL2 (iterCovComp (I := I) frame chr g (m - c) x) ≤ max K 0 :=
         le_trans (hK x hx (m - c) (by omega) (by omega)) (le_max_left K 0)
       calc (m.choose c : Real) * compL2 (iterCovCompU (I := I) frame chr A c x) *
             compL2 (iterCovComp (I := I) frame chr g (m - c) x)
-          ≤ (m.choose c : Real) * (claim1Const C0 KR K c * (1 + max K 0)) *
+          ≤ (m.choose c : Real) * (inverseContractionAffineRecurrenceConstant C0 KR K c * (1 + max K 0)) *
               compL2 (iterCovComp (I := I) frame chr g (m - c) x) :=
             mul_le_mul_of_nonneg_right
               (mul_le_mul_of_nonneg_left hAc (Nat.cast_nonneg _)) (compL2_nonneg _)
-        _ ≤ (m.choose c : Real) * (claim1Const C0 KR K c * (1 + max K 0)) *
+        _ ≤ (m.choose c : Real) * (inverseContractionAffineRecurrenceConstant C0 KR K c * (1 + max K 0)) *
               max K 0 :=
             mul_le_mul_of_nonneg_left hgmc
               (mul_nonneg (Nat.cast_nonneg _)
-                (mul_nonneg (claim1Const_nonneg C0 KR K c) (by linarith)))
+                (mul_nonneg (inverse_contraction_affine_recurrence_constant_nonneg C0 KR K c) (by linarith)))
     have hbr : max KR 0 * compL2 (iterCovComp (I := I) frame chr g (m + 1) x) +
           (∑ c ∈ Finset.range m, (m.choose c : Real) *
             compL2 (iterCovCompU (I := I) frame chr A c x) *
@@ -1368,13 +1368,13 @@ theorem claim1_abstract_bound {u : Set M} (hu : IsOpen u)
       _ ≤ max C0 0 * ((max KR 0 + S) *
             (1 + compL2 (iterCovComp (I := I) frame chr g (m + 1) x))) :=
           mul_le_mul hGx hbr hbr0 (le_max_right C0 0)
-      _ = claim1Const C0 KR K m *
+      _ = inverseContractionAffineRecurrenceConstant C0 KR K m *
             (1 + compL2 (iterCovComp (I := I) frame chr g (m + 1) x)) := by
-          rw [claim1Const_eq, hSdef]
+          rw [inverse_contraction_affine_recurrence_constant_eq, hSdef]
           ring
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_abstract {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_tensor_bound_of_contraction_control {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -1399,11 +1399,11 @@ theorem claim1_abstract {u : Set M} (hu : IsOpen u)
         ∀ x ∈ u,
           compL2 (iterCovCompU (I := I) frame chr A m x) ≤
             C * (1 + compL2 (iterCovComp (I := I) frame chr g (m + 1) x)) := by
-  exact ⟨claim1Const C0 KR K m, claim1Const_nonneg C0 KR K m,
-    claim1_abstract_bound hu frame chr hframe hchr C0 KR K m⟩
+  exact ⟨inverseContractionAffineRecurrenceConstant C0 KR K m, inverse_contraction_affine_recurrence_constant_nonneg C0 KR K m,
+    iterated_covariant_tensor_bound_of_contraction_control hu frame chr hframe hchr C0 KR K m⟩
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1_bound {u : Set M} (hu : IsOpen u)
+theorem iterated_covariant_tensor_bound_of_koszul_contraction {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -1429,10 +1429,10 @@ theorem claim1_bound {u : Set M} (hu : IsOpen u)
         compL2 (iterCovComp (I := I) frame chr g j x) ≤ K) →
       ∀ x ∈ u,
         compL2 (iterCovCompU (I := I) frame chr A m x) ≤
-          claim1Const C0 (|c₁| + |c₂| + |c₃|) K m *
+          inverseContractionAffineRecurrenceConstant C0 (|c₁| + |c₂| + |c₃|) K m *
             (1 + compL2 (iterCovComp (I := I) frame chr g (m + 1) x)) := by
   intro g hg Ginv A hA hinv hkoszul hGinv hK
-  refine claim1_abstract_bound (p := 2) hu frame chr hframe hchr C0
+  refine iterated_covariant_tensor_bound_of_contraction_control (p := 2) hu frame chr hframe hchr C0
     (|c₁| + |c₂| + |c₃|) K m g hg Ginv A hA hinv hGinv hK ?_
   intro x hx m' _
   have hterm : ∀ (ci : Real) (Pi : Fin 3 ≃ Fin 3),
@@ -1500,7 +1500,7 @@ theorem claim1_bound {u : Set M} (hu : IsOpen u)
   nlinarith [abs_nonneg c₁, abs_nonneg c₂, abs_nonneg c₃, hG0, h23]
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] in
-theorem claim1 {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_tensor_bound_of_koszul_contraction {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chr : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -1528,8 +1528,8 @@ theorem claim1 {u : Set M} (hu : IsOpen u)
         ∀ x ∈ u,
           compL2 (iterCovCompU (I := I) frame chr A m x) ≤
             C * (1 + compL2 (iterCovComp (I := I) frame chr g (m + 1) x)) := by
-  exact ⟨claim1Const C0 (|c₁| + |c₂| + |c₃|) K m,
-    claim1Const_nonneg C0 (|c₁| + |c₂| + |c₃|) K m,
-    claim1_bound hu frame chr hframe hchr c₁ c₂ c₃ P₁ P₂ P₃ C0 K m⟩
+  exact ⟨inverseContractionAffineRecurrenceConstant C0 (|c₁| + |c₂| + |c₃|) K m,
+    inverse_contraction_affine_recurrence_constant_nonneg C0 (|c₁| + |c₂| + |c₃|) K m,
+    iterated_covariant_tensor_bound_of_koszul_contraction hu frame chr hframe hchr c₁ c₂ c₃ P₁ P₂ P₃ C0 K m⟩
 
 end DifferentialGeometry.PDE.RicciFlow

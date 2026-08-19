@@ -54,7 +54,7 @@ private theorem grad_jet_norm
         (iteratedCovGrad (I := I) g 0 s (j + 1) T)]
     refine MeasureTheory.integral_congr_ae
       (Filter.Eventually.of_forall (fun x => ?_))
-    exact rfns_iteratedCovGrad_covGrad_comm_rs
+    exact riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs
       (I := I) (M := M) g 0 s j T x
   nlinarith [norm_nonneg
     (iteratedCovGrad (I := I) g 0 (s + 1) j

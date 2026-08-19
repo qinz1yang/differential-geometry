@@ -69,7 +69,7 @@ def baseFlowBall
 
 end PointedFlowData
 
-structure FlowBaseVolData
+structure FlowerScaleVolData
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
   zero_mem : 0 ∈ X.D.carrier
   kappa : Real
@@ -77,9 +77,9 @@ structure FlowBaseVolData
   radius : Real
   radius_pos : 0 < radius
 
-structure IsFlowBaseVolBound
+structure IsFlowerScaleVolBound
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    (V : FlowBaseVolData (I := I) X) : Prop where
+    (V : FlowerScaleVolData (I := I) X) : Prop where
   curvature : ∀ i : Nat,
     letI : TopologicalSpace (X.term i).M := (X.term i).topology
     letI : ChartedSpace H (X.term i).M := (X.term i).charted
@@ -135,9 +135,9 @@ noncomputable def flowInj_of_vol
         ((X.atZero (I := I)).obj i).topology
       ConnectedSpace ((X.atZero (I := I)).obj i).M)
     (hgeom : SeqBoundedGeometry (I := I) (X.atZero (I := I)))
-    (V : FlowBaseVolData (I := I) X)
-    (hvol : IsFlowBaseVolBound (I := I) V) :
-    FlowBaseInjBound (I := I) X := by
+    (V : FlowerScaleVolData (I := I) X)
+    (hvol : IsFlowerScaleVolBound (I := I) V) :
+    FlowerScaleInjBound (I := I) X := by
   classical
   letI : MeasurableSpace E := borel E
   letI : BorelSpace E := ⟨rfl⟩

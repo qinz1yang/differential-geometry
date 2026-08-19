@@ -117,7 +117,7 @@ private theorem realizedSolField_continuousOn_smoothCcToTensorHs
     (fun t => smoothCcToTensorHs (I := I) (M := M) g₀ σ (F t)) φ hcoeff'
     (fun i => (hφ_smooth i).continuous.continuousOn) hCmaj_sum hmass
 
-private theorem realizedFamily_flowDeriv_of_repr
+private theorem metricPerturbationPathily_flowDeriv_of_repr
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (F_RHS : SmoothRiemannianMetric I M →
       (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
@@ -441,7 +441,7 @@ private theorem realizedFamily_flowDeriv_of_repr
   rw [← hval]
   exact hIci
 
-private theorem realizedFamily_jointChartGramSmooth
+private theorem metricPerturbationPathily_jointChartGramSmooth
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
     (T_rep : ℝ → SmoothCcTensor g 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : ∀ t : ℝ, metricCauchySchwarzBound (I := I) (M := M) g
@@ -1200,7 +1200,7 @@ theorem maxreg_solution_jointly_smooth_representative_of_nemytskii
           (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
             (Nsec (F t) hδ_lt (hF_small t))) i :=
     hForceRepr_fam hT₁_pos hT₁_le hT₁_le_d2F F hδ_lt hF_small hF_pin hball
-  have hF_flow := realizedFamily_flowDeriv_of_repr (I := I) (M := M) g₀ a
+  have hF_flow := metricPerturbationPathily_flowDeriv_of_repr (I := I) (M := M) g₀ a
     F_RHS Nsec hRepr hT hT1 hT₁_pos hT₁_le hd₂F_pos hd₂F_le hT₁_le_d2F u F hδ_lt hF_small
     hF_pin f hf_smooth hf_mass hf_id hForceRepr
   have hcoeff : ∀ t ∈ Set.Icc (0 : ℝ) T₁,
@@ -1227,7 +1227,7 @@ theorem maxreg_solution_jointly_smooth_representative_of_nemytskii
     exact hCmaj_le i t ht_icc
   have hF_joint : JointChartGramSmooth (I := I) T₁
       (fun t : ℝ => tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hF_small t)) :=
-    realizedFamily_jointChartGramSmooth (I := I) (M := M) g₀ hT₁_pos F hδ_lt hF_small
+    metricPerturbationPathily_jointChartGramSmooth (I := I) (M := M) g₀ hT₁_pos F hδ_lt hF_small
       φ hφ_smooth hcoeff hmodemass
   exact ⟨T₁, hT₁_pos, hT₁_le, F, 1 / 2, hδ_lt, hF_small, hF_zero, hF_pin, hF_flow,
     hF_joint⟩
@@ -1459,7 +1459,7 @@ theorem maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
           (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
             (Nsec (F t) hδ_lt (hF_small t))) i :=
     hForce F hδ_lt hF_small hF_pin hball
-  have hF_flow := realizedFamily_flowDeriv_of_repr (I := I) (M := M) g₀ a
+  have hF_flow := metricPerturbationPathily_flowDeriv_of_repr (I := I) (M := M) g₀ a
     F_RHS Nsec hRepr hT hT1 hT (le_refl T) hT (le_refl T) (le_refl T) u F hδ_lt hF_small
     hF_pin f hf_smooth hf_mass hf_id hForceRepr
   have hcoeff : ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -1483,7 +1483,7 @@ theorem maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
     exact ⟨Cmaj, hCmaj_sum, fun i t ht => hCmaj_le i t ht⟩
   have hF_joint : JointChartGramSmooth (I := I) T
       (fun t : ℝ => tensorSectionRealizeMetric (I := I) g₀ (F t) hδ_lt (hF_small t)) :=
-    realizedFamily_jointChartGramSmooth (I := I) (M := M) g₀ hT F hδ_lt hF_small
+    metricPerturbationPathily_jointChartGramSmooth (I := I) (M := M) g₀ hT F hδ_lt hF_small
       φ hφ_smooth hcoeff hmodemass
   exact ⟨F, 1 / 2, hδ_lt, hF_small, hF_zero, hF_pin, hF_flow, hF_joint⟩
 

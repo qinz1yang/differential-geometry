@@ -45,7 +45,7 @@ end CurvatureCoefficientDifferenceJetTower
 
 open CurvatureCoefficientDifferenceJetTower
 
-section TopSeparatedResidualIntegrator
+section TopOrderSeparatedResidualIntegrator
 
 
 set_option backward.isDefEq.respectTransparency false
@@ -391,7 +391,7 @@ theorem bfGridWinIntRs
     ring
   linarith [hlow, hexp]
 
-theorem boundedFactorGridWindow_integral_radiusFree_topSeparated
+theorem boundedFactorGridWindow_integral_radiusFree_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Klow : ℕ → ℝ, (∀ i, 0 ≤ Klow i) ∧ ∃ Ktop : ℕ → ℝ, (∀ i, 0 ≤ Ktop i) ∧
       ∀ (P : SmoothCcTensor g₀ 0 2)
@@ -411,7 +411,7 @@ theorem boundedFactorGridWindow_integral_radiusFree_topSeparated
                 Ktop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 :=
   bfGridWinIntRs (I := I) (M := M) g₀ 0 2 hΛ₀0
 
-end TopSeparatedResidualIntegrator
+end TopOrderSeparatedResidualIntegrator
 
 end Spectral
 end Analysis

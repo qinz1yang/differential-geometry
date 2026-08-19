@@ -30,10 +30,10 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-def HasH6HatSol
+def HasLiveChartCenterSolution
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) {D : Real}
+    (d : BoundedGeometryNormalData (I := I) X hd) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -84,12 +84,12 @@ def HasH6HatSol
     (d.chart (L.φ n) (seqCenterD hd P L n (alpha.1 : Nat)))
     (q := q alpha) (delta := δ alpha) mu pts join x rad hcm
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
 theorem hat_sol_of_cage
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) {D aMin : Real}
+    (d : BoundedGeometryNormalData (I := I) X hd) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (hre : hd.RealizesEdist) (L : NetLimitData hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat)
@@ -193,7 +193,7 @@ theorem hat_sol_of_cage
             (4 * L.lamInf (alpha.1 : Nat) + 2 * rad) <
           ENNReal.ofReal
             ((aMin * hd.mu (L.rInf (alpha.1 : Nat) + 1)) / 2) →
-        HasH6HatSol (I := I) d P L pb r k hcomplete hconn q δ alpha
+        HasLiveChartCenterSolution (I := I) d P L pb r k hcomplete hconn q δ alpha
           mu pts join x rad h := by
   classical
   letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -287,7 +287,8 @@ theorem hat_sol_of_cage
   have hρChart : rho0 ≤ (d.chart (L.φ k) x0).radius := by
     have hradius := (d.chart (L.φ k) x0).radius_pos
     exact hρInner.trans (by nlinarith)
-  have hsol := d.center_sol (L.φ k) (hcomplete.complete (L.φ k))
+  have hsol := d.center_of_mass_satisfies_normal_coordinate_equation
+    (L.φ k) (hcomplete.complete (L.φ k))
     (hconn (L.φ k)) x0 hq he hf happrox
     (by
       exact hinvErr.trans (by norm_num)) mu pts join x rad hsum h hρ hρq
@@ -297,7 +298,7 @@ theorem hat_sol_of_cage
 theorem exists_hat_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (hre : hd.RealizesEdist)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ j,
@@ -410,7 +411,7 @@ theorem exists_hat_min
                         ∃ hcm : CenterInput (I := I)
                             (X.obj (L.φ n)).metric (mu x) pts join x
                             (radSeq a b x),
-                          HasH6HatSol (I := I) d P L pb r n hcomplete hconn
+                          HasLiveChartCenterSolution (I := I) d P L pb r n hcomplete hconn
                             q δ alpha (mu x) pts join x (radSeq a b x) hcm := by
   classical
   let N : NNReal :=
@@ -546,7 +547,7 @@ theorem exists_hat_min
       (hmu.sum_one x hx) (hs hx) hradCage
     simpa only [pts, join] using hout
 
-end H6NormalData
+end BoundedGeometryNormalData
 
 end HCGCompactness
 end DifferentialGeometry

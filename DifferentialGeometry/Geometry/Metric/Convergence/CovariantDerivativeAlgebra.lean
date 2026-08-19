@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Convergence.Metri
 
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.TotalNabla0SLinear
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -451,7 +451,7 @@ theorem diffStep_leibniz_eval
         (Fin.cons (W x) (Fin.cons (V x) (fun a : Fin s => Vslots a x)))
       = (-∑ a : Fin s,
           (S x) (Function.update (fun b : Fin s => Vslots b x) a
-            (covDerivConnDiff (I := I) g₂ g₁
+            (covDerivConnectionDifference (I := I) g₂ g₁
               (fun y : M => W y) (fun y : M => V y) (fun y : M => Vslots a y) x)))
         - ∑ a : Fin s,
             covStep (I := I) g₂ s S x
@@ -573,11 +573,11 @@ theorem diffStep_leibniz_eval
             (Function.update (fun b : Fin (s + 1) => (VV b) x) q
               ((cov₂ (fun y : M => (VV q) y) x) (W x))))
         = ∑ a : Fin s, (S x) (Function.update (fun b : Fin s => (Vslots b) x) a
-            (covDerivConnDiff (I := I) g₂ g₁ (fun y : M => W y) (fun y : M => V y)
+            (covDerivConnectionDifference (I := I) g₂ g₁ (fun y : M => W y) (fun y : M => V y)
               (fun y : M => (Vslots a) y) x)) := by
     have hFact1 : ∀ a : Fin s,
         (cov₂ (fun y : M => (τ a a) y) x) (W x)
-        = covDerivConnDiff (I := I) g₂ g₁ (fun y => W y) (fun y => V y) (fun y => (Vslots a) y) x
+        = covDerivConnectionDifference (I := I) g₂ g₁ (fun y => W y) (fun y => V y) (fun y => (Vslots a) y) x
           + (CovariantDerivative.difference cov₁ cov₂ x (Vslots a x)) ((cov₂
             (fun y : M => V y) x) (W x))
           + (CovariantDerivative.difference cov₁ cov₂ x
@@ -585,7 +585,7 @@ theorem diffStep_leibniz_eval
       intro a
       have hτaa : (fun y : M => (τ a a) y) = (fun y : M => (Dsec a) y) := by
         simp only [hτdef, Function.update_self]
-      rw [hτaa, covDerivConnDiff_eq,
+      rw [hτaa, covDerivConnectionDifference_eq,
         show LeviCivita (I := I) g₂ = cov₂ from
           (LeviCivita_eq_leviCivitaConnectionOfMetric g₂).trans hcdef₂.symm,
         show LeviCivita (I := I) g₁ = cov₁ from
@@ -596,7 +596,7 @@ theorem diffStep_leibniz_eval
         (∑ a : Fin s, ∑ b : Fin s, (S x) (Function.update (fun b' : Fin s => (τ a b') x) b
             ((cov₂ (fun y : M => (τ a b) y) x) (W x))))
         = (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => (Vslots b) x) a
-              (covDerivConnDiff (I := I) g₂ g₁ (fun y => W y) (fun y => V y) (fun y =>
+              (covDerivConnectionDifference (I := I) g₂ g₁ (fun y => W y) (fun y => V y) (fun y =>
                 (Vslots a) y) x)))
           + (∑ a : Fin s, (S x) (Function.update (fun b : Fin s => (Vslots b) x) a
               ((CovariantDerivative.difference cov₁ cov₂ x ((Vslots a) x)) ((cov₂

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.RawConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.BoundedGeometryPairwiseApproximation
 
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalConstruction
@@ -21,7 +21,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace MetricCompactnessInputs
 
-def metricCanon
+def canonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -30,20 +30,20 @@ def metricCanon
     (hconn : forall k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    StepDCanon (I := I) X := by
+    CanonicalMetricCompactness (I := I) X := by
   let P : forall j : Nat, ProperMetricOn (I := I) (X.obj j) :=
     fun j => properMetricOn (I := I) (X.obj j)
       (hcomplete.complete j) (hconn j)
-  let hraw := inp.toBase.exists_b1_raw hcomplete hconn
+  let hraw := inp.toBase.exists_pairwise_approximate_isometry_subsequence hcomplete hconn
   let psi : Nat → Nat := Classical.choose hraw
   have hraw_spec := Classical.choose_spec hraw
   have hpsi : StrictMono psi := hraw_spec.1
   have B := hraw_spec.2
   let Ppsi : forall k : Nat, ProperMetricOn (I := I) ((X.subseq psi).obj k) :=
     fun k => P (psi k)
-  let canon : StepDCanon (I := I) (X.subseq psi) :=
-    compactness_canon Ppsi B
-  exact canon.ofSeqSubseq psi hpsi
+  let canon : CanonicalMetricCompactness (I := I) (X.subseq psi) :=
+    HCGCompactness.canonicalMetricCompactness Ppsi B
+  exact canon.ofSubsequence psi hpsi
 
 def metricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -55,7 +55,7 @@ def metricCompactness
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
     MetricCompactnessConclusion (I := I) X :=
-  (metricCanon inp hcomplete hgeom hinj hconn).mc
+  (canonicalMetricCompactness inp hcomplete hgeom hinj hconn).compactness
 
 end MetricCompactnessInputs
 end HCGCompactness

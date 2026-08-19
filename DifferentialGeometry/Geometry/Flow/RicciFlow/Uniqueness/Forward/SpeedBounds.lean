@@ -65,7 +65,7 @@ def uhlSpeed04 (g : SmoothRiemannianMetric I M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
-  (roughLap0SField (I := I) g R x - (2 : Real) • bComb (I := I) g R x) -
+  (roughLap0SField (I := I) g R x - (2 : Real) • curvatureQuadraticCombination (I := I) g R x) -
       ricciDrift04 (I := I) g x +
     (2 : Real) • lowerTri (I := I) (metricRicciAt (I := I) g x)
       (riemannOp (metricCov (I := I) g) x)
@@ -81,7 +81,7 @@ theorem uhlSpeed04_low {Idx : Type*} [Fintype Idx]
         (fun i j k l =>
           (roughLap0SField (I := I) g R x)
               (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) -
-            2 * (bComb (I := I) g R x)
+            2 * (curvatureQuadraticCombination (I := I) g R x)
               (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) -
             ricciDrift04 (I := I) g x
               (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) +
@@ -118,7 +118,7 @@ theorem uhlSpeedSq_le (g : SmoothRiemannianMetric I M)
           (normSq0S (I := I) g x 2 (metricRicciAt (I := I) g x) *
             normSq0S (I := I) g x 4 (metricRm04At (I := I) g x)) := by
   let L := roughLap0SField (I := I) g R x
-  let Q := bComb (I := I) g R x
+  let Q := curvatureQuadraticCombination (I := I) g R x
   let D := ricciDrift04 (I := I) g x
   let C :=
     lowerTri (I := I) (metricRicciAt (I := I) g x)
@@ -133,7 +133,7 @@ theorem uhlSpeedSq_le (g : SmoothRiemannianMetric I M)
       normSq0S (I := I) g x 4 Q ≤
         16 * (Module.finrank Real E : Real) ^ 14 *
           normSq0S (I := I) g x 4 (R x) ^ 2 := by
-    simpa only [Q] using bCombSq_le (I := I) g R x
+    simpa only [Q] using curvatureQuadraticCombination_norm_sq_le (I := I) g R x
   have hD :
       normSq0S (I := I) g x 4 D ≤
         16 * (Module.finrank Real E : Real) ^ 6 *

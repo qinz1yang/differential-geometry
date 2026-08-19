@@ -12,7 +12,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindex
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.IteratedCovGradHsJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.DirichletSpectralBochnerGap
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedAppCcLeibniz
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedOperatorFieldApplicationLeibniz
 import DifferentialGeometry.Geometry.Connection.TensorNabla.EndoCovariantDerivativeSelfAdjoint
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.SlotInsertSelfAdjointPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HomFieldActionL2JetBound
@@ -63,7 +63,7 @@ theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n
               (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
               (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-                  (gInvDiffRaisedEndoField (I := I) g₀ g₁))))
+                  (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))))
             (covGrad (I := I) (M := M) g₀ 0 2 u₀)).toFun| ≤
       C * ((∑ j ∈ Finset.range (n + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖) *
         (∑ j ∈ Finset.range (n + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖)) := by
@@ -75,11 +75,11 @@ theorem arm_g0Term_abs_le_jetProduct (g₀ g₁ : SmoothRiemannianMetric I M) (n
       (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
       (covGrad (I := I) (M := M) g₀ (2 + 1) (2 + 1)
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
-          (gInvDiffRaisedEndoField (I := I) g₀ g₁))) with hGf_def
+          (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))) with hGf_def
   obtain ⟨CfL, hCfL_nn, hCfL⟩ := armJet_iteratedCovGrad_iterL_le (I := I) (M := M) g₀ 2 b
   obtain ⟨CfR, hCfR_nn, hCfR⟩ := armJet_iteratedCovGrad_iterL_le (I := I) (M := M) g₀ 2 a
   obtain ⟨CfG, hCfG_nn, hCfG⟩ :=
-    armJet_iteratedCovGrad_appCc_le (I := I) (M := M) g₀ (2 + 1) (2 + 0) Gf
+    armJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + 1) (2 + 0) Gf
   refine ⟨CfL 0 * (CfR 0 * ∑ q ∈ Finset.range (2 * a + 1), CfG q), ?_, fun u₀ => ?_⟩
   · exact mul_nonneg (hCfL_nn 0)
       (mul_nonneg (hCfR_nn 0) (Finset.sum_nonneg (fun q _ => hCfG_nn q)))
@@ -386,14 +386,14 @@ private theorem armAsm_shifted_jetSum_le (g₀ : SmoothRiemannianMetric I M) (ba
   omega
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem armAsm_appCc_jet_window (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
+theorem armAsm_operatorFieldApplication_jet_window (g₀ : SmoothRiemannianMetric I M) (base c : ℕ)
     (Φ : SmoothCcTensor g₀ (2 + base) c) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
       ‖iteratedCovGrad (I := I) g₀ 0 c p
           (operatorFieldApply (I := I) (M := M) g₀ (2 + base) c Φ
             (iteratedCovGrad (I := I) g₀ 0 2 base u₀))‖ ≤
         cc p * ∑ j ∈ Finset.range (p + base + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
-  obtain ⟨Cf, hCf_nn, hCf⟩ := armJet_iteratedCovGrad_appCc_le (I := I) (M := M) g₀ (2 + base) c Φ
+  obtain ⟨Cf, hCf_nn, hCf⟩ := armJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + base) c Φ
   refine ⟨Cf, hCf_nn, fun u₀ p => ?_⟩
   refine le_trans (hCf p (iteratedCovGrad (I := I) g₀ 0 2 base u₀)) ?_
   refine mul_le_mul_of_nonneg_left ?_ (hCf_nn p)
@@ -420,7 +420,7 @@ theorem exists_appFullSec_iteratedCovGrad_shiftedJetWindow_bound (g₀ : SmoothR
   exact hsh
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_appCc_appFullSec_iteratedCovGrad_jetWindow_bound (g₀ : SmoothRiemannianMetric I M)
+theorem exists_operatorFieldApplication_appFullSec_iteratedCovGrad_jetWindow_bound (g₀ : SmoothRiemannianMetric I M)
     (base b2 c2 : ℕ) (Q : HomTensorRSField (E := E) (M := M) 0 (2 + base) b2 I)
     (Φ : SmoothCcTensor g₀ b2 c2) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
@@ -429,7 +429,7 @@ theorem exists_appCc_appFullSec_iteratedCovGrad_jetWindow_bound (g₀ : SmoothRi
             (homTensorRSFieldApply (I := I) (M := M) g₀ 0 (2 + base) b2 Q
               (iteratedCovGrad (I := I) g₀ 0 2 base u₀)))‖ ≤
         cc p * ∑ j ∈ Finset.range (p + base + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
-  obtain ⟨Cf, hCf_nn, hCf⟩ := armJet_iteratedCovGrad_appCc_le (I := I) (M := M) g₀ b2 c2 Φ
+  obtain ⟨Cf, hCf_nn, hCf⟩ := armJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ b2 c2 Φ
   obtain ⟨cq, hcq_nn, hcq⟩ :=
     exists_appFullSec_iteratedCovGrad_shiftedJetWindow_bound (I := I) (M := M) g₀ base b2 Q
   refine ⟨fun p => Cf p * ∑ e ∈ Finset.range (p + 1), cq e,
@@ -449,7 +449,7 @@ theorem exists_appCc_appFullSec_iteratedCovGrad_jetWindow_bound (g₀ : SmoothRi
   exact hwin
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem armAsm_covGrad_appCc_jet_window (g₀ : SmoothRiemannianMetric I M) (base : ℕ)
+theorem armAsm_covGrad_operatorFieldApplication_jet_window (g₀ : SmoothRiemannianMetric I M) (base : ℕ)
     (Φ : SmoothCcTensor g₀ (2 + base) (2 + base)) :
     ∃ cc : ℕ → ℝ, (∀ p, 0 ≤ cc p) ∧ ∀ (u₀ : SmoothCcTensor g₀ 0 2) (p : ℕ),
       ‖iteratedCovGrad (I := I) g₀ 0 ((2 + base) + 1) p
@@ -458,7 +458,7 @@ theorem armAsm_covGrad_appCc_jet_window (g₀ : SmoothRiemannianMetric I M) (bas
               (iteratedCovGrad (I := I) g₀ 0 2 base u₀)))‖ ≤
         cc p * ∑ j ∈ Finset.range (p + base + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j u₀‖ := by
   obtain ⟨Cf, hCf_nn, hCf⟩ :=
-    armJet_iteratedCovGrad_appCc_le (I := I) (M := M) g₀ (2 + base) (2 + base) Φ
+    armJet_iteratedCovGrad_operatorFieldApplication_le (I := I) (M := M) g₀ (2 + base) (2 + base) Φ
   refine ⟨fun p => Cf (1 + p), fun p => hCf_nn (1 + p), fun u₀ p => ?_⟩
   have hnc : ‖iteratedCovGrad (I := I) g₀ 0 ((2 + base) + 1) p
       (covGrad (I := I) (M := M) g₀ 0 (2 + base)

@@ -29,19 +29,19 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-noncomputable local instance stepCSourceCoverModelDualNormedAddCommGroup :
+noncomputable local instance sourceCoverModelModelDualNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance stepCSourceCoverModelDualNormedSpace :
+noncomputable local instance sourceCoverModelModelDualNormedSpace :
     NormedSpace ℝ (E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance stepCSourceCoverModelBilinearNormedAddCommGroup :
+noncomputable local instance sourceCoverModelModelBilinearNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance stepCSourceCoverModelBilinearNormedSpace :
+noncomputable local instance sourceCoverModelModelBilinearNormedSpace :
     NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
@@ -157,8 +157,8 @@ theorem liveMetric0_symm
 theorem MetricCompactnessInputs.exists_live_cores
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :
@@ -237,11 +237,11 @@ theorem MetricCompactnessInputs.exists_live_cores
       (seqCenter inp.decay inp.D P (L.φ (psi k)) gamma).isSome = L.alive gamma :=
     hpsi.tendsto_atTop.eventually <|
       (Filter.eventually_all_finset _).mpr fun gamma _ => L.alive_eventually gamma
-  obtain ⟨hgp, hrad⟩ := inp.item3ScaleTails h8 hradD hradRatio P L r
+  obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
   have hgpPsi := hpsi.tendsto_atTop.eventually hgp
   have hradPsi := hpsi.tendsto_atTop.eventually hrad
   have hmetric := inp.normalRadius.metricScaleTail inp.hD
-    (item3Factor_pos inp.decay inp.D) hradRatio
+    (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
     P inp.realizes L inp.pack r
   have hmetricPsi := hpsi.tendsto_atTop.eventually hmetric
   have hcenters : ∀ᶠ k in atTop, ∀ alpha : LiveSlot L inp.pack r,
@@ -250,14 +250,14 @@ theorem MetricCompactnessInputs.exists_live_cores
     Filter.eventually_all.mpr fun alpha =>
       hpsi.tendsto_atTop.eventually
         (seqCenterD_live inp.decay P L (alpha.1 : Nat) alpha.2)
-  have hfactor : (8 : Real) ≤ item3RadiusFactor inp.decay inp.D := by
+  have hfactor : (8 : Real) ≤ exponentialBallRadiusFactor inp.decay inp.D := by
     have hExp : (1 : Real) ≤
         Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)) := by
       rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]
       exact Real.exp_le_exp.mpr
         (mul_nonneg inp.decay.C_nonneg
           (by nlinarith [(inp.decay.lambda_pos inp.hD 0).le]))
-    rw [item3RadiusFactor]
+    rw [exponentialBallRadiusFactor]
     nlinarith
   have hopen : ∀ alpha, IsOpen (U alpha) := by
     intro alpha
@@ -424,7 +424,7 @@ theorem MetricCompactnessInputs.exists_live_cores
       hcentersk alpha
     have hUfac : U alpha ⊆
         Metric.ball 0
-          (item3RadiusFactor inp.decay inp.D * L.lamInf (alpha.1 : Nat)) :=
+          (exponentialBallRadiusFactor inp.decay inp.D * L.lamInf (alpha.1 : Nat)) :=
       (hU8 alpha).trans <| Metric.ball_subset_ball <|
         mul_le_mul_of_nonneg_right hfactor
           (inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))).le
@@ -582,8 +582,8 @@ theorem MetricCompactnessInputs.exists_live_cores
 theorem MetricCompactnessInputs.exists_live_source_cover
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :

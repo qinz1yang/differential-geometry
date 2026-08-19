@@ -276,7 +276,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (covGrad (I := I) (M := M) g 0 s S).toSection x) := by
   rw [ricTraceSection,
-    appCc_toSection (I := I) (M := M) g (s + 1) (s + 1)
+    operatorFieldApplication_toSection (I := I) (M := M) g (s + 1) (s + 1)
       (ricSlotOpField (I := I) (M := M) g s) (covGrad (I := I) (M := M) g 0 s S) x]
 
 theorem exists_ricTraceSection_fiberNormSq_bound
@@ -297,7 +297,7 @@ theorem exists_ricTraceSection_fiberNormSq_bound
           ((covGrad (I := I) (M := M) g 0 s S).toSection x) := by
     intro s
     obtain ⟨C, hC_nn, hC⟩ :=
-      exists_uniform_riemannianFiberNormSq_appCc_le (I := I) (M := M) g (s + 1) (s + 1)
+      exists_uniform_riemannianFiberNormSq_operatorFieldApplication_le (I := I) (M := M) g (s + 1) (s + 1)
         (ricSlotOpField (I := I) (M := M) g s)
     refine ⟨C, hC_nn, fun S x => ?_⟩
     have h := hC (covGrad (I := I) (M := M) g 0 s S) x

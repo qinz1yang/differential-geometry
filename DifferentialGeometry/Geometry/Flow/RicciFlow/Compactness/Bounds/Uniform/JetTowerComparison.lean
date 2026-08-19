@@ -131,7 +131,7 @@ private lemma lowerAllUpper0_unit (g : SmoothRiemannianMetric I M) (s : ℕ) (x 
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem rfns0_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
+theorem riemannianFiberNormSq0_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (W : SmoothCcTensor g 0 s) :
     riemannianFiberNormSq (I := I) (M := M) g 0 s x (W.toSection x) =
       normSq0S (I := I) g x s (ccUnitField (I := I) g s W x) := by
@@ -168,7 +168,7 @@ theorem rfns0_unit_eq (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
      simp)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rfns_iterCovGrad_eq (g : SmoothRiemannianMetric I M) (s j : ℕ)
+theorem riemannianFiberNormSq_iterCovGrad_eq (g : SmoothRiemannianMetric I M) (s j : ℕ)
     (W : SmoothCcTensor g 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (s + j) x
         ((iteratedCovGrad (I := I) g 0 s j W).toSection x) =
@@ -177,7 +177,7 @@ theorem rfns_iterCovGrad_eq (g : SmoothRiemannianMetric I M) (s j : ℕ)
   have h : ccUnitField (I := I) g (s + j) (iteratedCovGrad (I := I) g 0 s j W) x =
       iterCov (I := I) g s (ccUnitField (I := I) g s W) j x :=
     congrFun (iterCovGrad_unit_eq (I := I) g s W j) x
-  rw [rfns0_unit_eq (I := I) g (s + j) x (iteratedCovGrad (I := I) g 0 s j W)]
+  rw [riemannianFiberNormSq0_unit_eq (I := I) g (s + j) x (iteratedCovGrad (I := I) g 0 s j W)]
   exact congrArg (normSq0S (I := I) g x (s + j)) h
 
 private theorem dtowerNonneg (n : ℕ) {q : ℝ} (hq : 0 ≤ q) (r : ℕ) {Racc : ℕ → ℝ}
@@ -327,7 +327,7 @@ private theorem towerCrossOne_le
     nlinarith
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem sqrtRfns_one_le
+theorem sqrtRiemannianFiberNormSq_one_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Λ' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)
     (hjet : MetricCovDerivOrderBoundOn (I := I) Set.univ 1 g₀ gBase Λ')
@@ -343,13 +343,13 @@ theorem sqrtRfns_one_le
         ((iteratedCovGrad (I := I) gBase 0 s j (T.recast (g' := gBase))).toSection x) =
       normSq0S (I := I) gBase x (s + j)
         (iterCov (I := I) gBase s (ccUnitField (I := I) g₀ s T) j x) := by
-    rw [rfns_iterCovGrad_eq (I := I) gBase s j (T.recast (g' := gBase)) x,
+    rw [riemannianFiberNormSq_iterCovGrad_eq (I := I) gBase s j (T.recast (g' := gBase)) x,
       ccUnitField_recast (I := I) g₀ gBase s T]
   have hR : ∀ k : ℕ, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + k) x
         ((iteratedCovGrad (I := I) g₀ 0 s k T).toSection x) =
       normSq0S (I := I) g₀ x (s + k)
         (iterCov (I := I) g₀ s (ccUnitField (I := I) g₀ s T) k x) :=
-    fun k => rfns_iterCovGrad_eq (I := I) g₀ s k T x
+    fun k => riemannianFiberNormSq_iterCovGrad_eq (I := I) g₀ s k T x
   rw [hL]
   rw [show (∑ k ∈ Finset.range 2,
       Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + k) x
@@ -470,7 +470,7 @@ private theorem towerCross_le
     nlinarith
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem sqrtRfns_cross_le
+theorem sqrtRiemannianFiberNormSq_cross_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Λ' Λ'' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)
     (hjet : MetricCovDerivOrderBoundOn (I := I) Set.univ 1 g₀ gBase Λ')
@@ -489,13 +489,13 @@ theorem sqrtRfns_cross_le
         ((iteratedCovGrad (I := I) gBase 0 s j (T.recast (g' := gBase))).toSection x) =
       normSq0S (I := I) gBase x (s + j)
         (iterCov (I := I) gBase s (ccUnitField (I := I) g₀ s T) j x) := by
-    rw [rfns_iterCovGrad_eq (I := I) gBase s j (T.recast (g' := gBase)) x,
+    rw [riemannianFiberNormSq_iterCovGrad_eq (I := I) gBase s j (T.recast (g' := gBase)) x,
       ccUnitField_recast (I := I) g₀ gBase s T]
   have hR : ∀ k : ℕ, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + k) x
         ((iteratedCovGrad (I := I) g₀ 0 s k T).toSection x) =
       normSq0S (I := I) g₀ x (s + k)
         (iterCov (I := I) g₀ s (ccUnitField (I := I) g₀ s T) k x) :=
-    fun k => rfns_iterCovGrad_eq (I := I) g₀ s k T x
+    fun k => riemannianFiberNormSq_iterCovGrad_eq (I := I) g₀ s k T x
   rw [hL]
   rw [show (∑ k ∈ Finset.range 3,
       Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + k) x
@@ -595,7 +595,7 @@ theorem jetCross_l2_one
       riemannianFiberNormSq (I := I) (M := M) gBase 0 (s + j) x
         (A.toSection x) ≤ F x := by
     intro x
-    have h := sqrtRfns_one_le (I := I) gBase g₀ hEq hjet s T hj x
+    have h := sqrtRiemannianFiberNormSq_one_le (I := I) gBase g₀ hEq hjet s T hj x
     have hLnn : (0 : ℝ) ≤
         riemannianFiberNormSq (I := I) (M := M) gBase 0 (s + j) x
           (A.toSection x) :=
@@ -746,7 +746,7 @@ theorem jetCross_l2
   have hpt : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) gBase 0 (s + j) x (A.toSection x) ≤ F x := by
     intro x
-    have h := sqrtRfns_cross_le (I := I) gBase g₀ hEq hjet hJet1 hJet2 s T hj x
+    have h := sqrtRiemannianFiberNormSq_cross_le (I := I) gBase g₀ hEq hjet hJet1 hJet2 s T hj x
     have hLnn : (0 : ℝ) ≤ riemannianFiberNormSq (I := I) (M := M) gBase 0 (s + j) x
         (A.toSection x) := riemannianFiberNormSq_nonneg (I := I) (M := M) gBase 0 (s + j) x _
     have hcs : (∑ k ∈ Finset.range 3, Real.sqrt (R k x)) ^ 2 ≤
@@ -853,7 +853,7 @@ theorem kjet_of_class
     omega
   exact jetCross_l2 (I := I) gBase g₀ hEq hjet hJet1 hJet2 hΛ' hΛ'' s S hj2
 
-theorem fibreMorrey_unif_class
+theorem fibreMorrey_uniform_class
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Λ' Λ'' : ℝ}
     (hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ)
     (hjet : MetricCovDerivOrderBoundOn (I := I) Set.univ 1 g₀ gBase Λ')

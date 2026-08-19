@@ -147,32 +147,32 @@ private lemma slotExtendTwo_toModel
   rw [Tensor0SSpace.toModel_smul,
     ContinuousMultilinearMap.smul_apply, smul_eq_mul]
 
-def sigmaE : Equiv.Perm (Fin 6) :=
+def movingMetricPairTracePermutation : Equiv.Perm (Fin 6) :=
   ⟨fun i => (![1, 3, 4, 5, 0, 2] : Fin 6 → Fin 6) i,
    fun i => (![4, 0, 5, 1, 2, 3] : Fin 6 → Fin 6) i,
    by decide, by decide⟩
 
-def mvDoubleTraceField (g gm : SmoothRiemannianMetric I M) (s : ℕ) :
+def movingMetricDoubleTraceField (g gm : SmoothRiemannianMetric I M) (s : ℕ) :
     SmoothCcTensor g (s + 2) s :=
   SmoothCcTensor.retagEquiv gm g (s + 2) s
     (cometricDoubleTraceField (I := I) gm s)
 
-def mvPairTraceOp (g gm : SmoothRiemannianMetric I M) :
+def movingMetricPairTraceOperator (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 6 2 :=
-  appCcRS (I := I) (M := M) g 6 4 2
-    (mvDoubleTraceField (I := I) (M := M) g gm 2)
-    (mvDoubleTraceField (I := I) (M := M) g gm 4)
+  ccOperatorFieldComp (I := I) (M := M) g 6 4 2
+    (movingMetricDoubleTraceField (I := I) (M := M) g gm 2)
+    (movingMetricDoubleTraceField (I := I) (M := M) g gm 4)
 
 set_option backward.isDefEq.respectTransparency false in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem mvPairTrace_apply
+theorem movingMetricPairTraceOperator_apply
     (g gm : SmoothRiemannianMetric I M) (X : SmoothCcTensor g 0 4)
     (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (appCcRS (I := I) (M := M) g 2 6 2
-            (mvPairTraceOp (I := I) (M := M) g gm)
-            (rsDomDomCongrSection (I := I) (M := M) g 2 6 sigmaE
+          (ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+            (movingMetricPairTraceOperator (I := I) (M := M) g gm)
+            (rsDomDomCongrSection (I := I) (M := M) g 2 6 movingMetricPairTracePermutation
               (slotExtendTwo (I := I) (M := M) g X))).toSection x) D) v =
       ∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel D
@@ -186,7 +186,7 @@ theorem mvPairTrace_apply
   classical
   set Y : Tensor0SSpace 6 I x :=
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-      (rsDomDomCongrSection (I := I) (M := M) g 2 6 sigmaE
+      (rsDomDomCongrSection (I := I) (M := M) g 2 6 movingMetricPairTracePermutation
         (slotExtendTwo (I := I) (M := M) g X)).toSection x) D
     with hY_def
   have hYval : ∀ w : Fin 6 → TangentSpace I x,
@@ -199,17 +199,17 @@ theorem mvPairTrace_apply
     intro w
     rw [hY_def]
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-        (rsDomDomCongrSection (I := I) (M := M) g 2 6 sigmaE
+        (rsDomDomCongrSection (I := I) (M := M) g 2 6 movingMetricPairTracePermutation
           (slotExtendTwo (I := I) (M := M) g X)).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          rsDomDomCongr sigmaE
+          rsDomDomCongr movingMetricPairTracePermutation
             ((slotExtendTwo (I := I) (M := M) g X).toSection x)) D)
         from by rw [rsDomDomCongrSection_toSection]]
-    rw [toModel_rsDomDomCongr_apply (I := I) (M := M) sigmaE
+    rw [toModel_rsDomDomCongr_apply (I := I) (M := M) movingMetricPairTracePermutation
       ((slotExtendTwo (I := I) (M := M) g X).toSection x) D]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     rw [slotExtendTwo_toModel (I := I) (M := M) g X x D
-      (fun i => w (sigmaE i))]
+      (fun i => w (movingMetricPairTracePermutation i))]
     refine congrArg₂ (· * ·) ?_ ?_
     · refine congrArg _ ?_
       funext k
@@ -218,13 +218,13 @@ theorem mvPairTrace_apply
       funext k
       fin_cases k <;> rfl
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      (appCcRS (I := I) (M := M) g 2 6 2
-        (mvPairTraceOp (I := I) (M := M) g gm)
-        (rsDomDomCongrSection (I := I) (M := M) g 2 6 sigmaE
+      (ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+        (movingMetricPairTraceOperator (I := I) (M := M) g gm)
+        (rsDomDomCongrSection (I := I) (M := M) g 2 6 movingMetricPairTracePermutation
           (slotExtendTwo (I := I) (M := M) g X))).toSection x) D) =
       cometricDoubleTraceFib (I := I) gm 2 x
         (cometricDoubleTraceFib (I := I) gm 4 x Y) from by
-    rw [hY_def, appCcRS_toSection]
+    rw [hY_def, operatorFieldComposition_toSection]
     rfl]
   rw [cometricDoubleTraceFib_toModel (I := I) gm 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) gm x)]

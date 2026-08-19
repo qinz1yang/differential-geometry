@@ -303,7 +303,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem connChartComp (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     (K : Fin 3 → Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
-    connDiffLowAt (I := I) g₁ g₂ x
+    connectionDifferenceLowAt (I := I) g₁ g₂ x
         (fun a : Fin 3 => chartBasisVecFiber (I := I) α (K a) x) =
       ∑ m : Fin (Module.finrank ℝ E),
         (chartChristoffel (I := I) g₁ α (K 0) (K 1) m (extChartAt I α x) -
@@ -329,7 +329,7 @@ theorem connChartComp (g₁ g₂ : SmoothRiemannianMetric I M) (α : M)
     simpa using h
   have hLC₁ : metricCov (I := I) g₁ = LeviCivita (I := I) g₁ := rfl
   have hLC₂ : metricCov (I := I) g₂ = LeviCivita (I := I) g₂ := rfl
-  simp only [connDiffLowAt_apply]
+  simp only [connectionDifferenceLowAt_apply]
   rw [hd', hLC₁, hLC₂,
     LeviCivita_chartBasisVec_alpha_basis_apply (I := I) g₁ α (K 0) (K 1) hx,
     LeviCivita_chartBasisVec_alpha_basis_apply (I := I) g₂ α (K 0) (K 1) hx,
@@ -442,7 +442,7 @@ theorem connChartJoint (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {J : Set
         (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (K : Fin 3 → Fin (Module.finrank ℝ E)) {t : ℝ} (ht : t ∈ J) :
     ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => connDiffLowAt (I := I) (g₁ p.1) (g₂ p.1) p.2
+      (fun p : ℝ × M => connectionDifferenceLowAt (I := I) (g₁ p.1) (g₂ p.1) p.2
         (fun a : Fin 3 => chartBasisVecFiber (I := I) x₀ (K a) p.2))
       (J ×ˢ (Set.univ : Set M)) (t, x₀) := by
   classical
@@ -469,7 +469,7 @@ theorem connChartJoint (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {J : Set
           hnhdS)).mul
       ((hgram₁ m (K 2) ((t, x₀) : ℝ × M)
         ⟨ht, FiberBundle.mem_baseSet_trivializationAt' x₀⟩).mono_of_mem_nhdsWithin hnhdB)
-  have heq : (fun p : ℝ × M => connDiffLowAt (I := I) (g₁ p.1) (g₂ p.1) p.2
+  have heq : (fun p : ℝ × M => connectionDifferenceLowAt (I := I) (g₁ p.1) (g₂ p.1) p.2
         (fun a : Fin 3 => chartBasisVecFiber (I := I) x₀ (K a) p.2))
       =ᶠ[𝓝[J ×ˢ (Set.univ : Set M)] ((t, x₀) : ℝ × M)]
       fun p : ℝ × M => ∑ m : Fin (Module.finrank ℝ E),
@@ -694,7 +694,7 @@ section Density
 variable (g₁ g₂ : ℝ → SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem connDiffSq_jointContMDiffOn {J : Set ℝ}
+theorem connectionDifferenceSq_jointContMDiffOn {J : Set ℝ}
     (hgram₁ : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => chartGramMatrix (I := I) (g₁ p.1) x₀ p.2 i j)
@@ -704,11 +704,11 @@ theorem connDiffSq_jointContMDiffOn {J : Set ℝ}
         (fun p : ℝ × M => chartGramMatrix (I := I) (g₂ p.1) x₀ p.2 i j)
         (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × M => connDiffSq (I := I) (g₁ p.1) (g₂ p.1) p.2)
+      (fun p : ℝ × M => connectionDifferenceSq (I := I) (g₁ p.1) (g₂ p.1) p.2)
       (J ×ˢ (Set.univ : Set M)) := by
-  simp only [connDiffSq_def]
+  simp only [connectionDifferenceSq_def]
   refine normSq0S_jointContMDiffOn (I := I) g₁
-    (fun t x => connDiffLowAt (I := I) (g₁ t) (g₂ t) x) hgram₁ ?_
+    (fun t x => connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) hgram₁ ?_
   intro x₀ K t ht
   exact connChartJoint (I := I) g₁ g₂ x₀ (hgram₁ x₀) (hgram₂ x₀) K ht
 
@@ -745,7 +745,7 @@ theorem dens_jointContMDiffOn {J : Set ℝ}
       (fun p : ℝ × M => forwardUniqueDensity (I := I) g₁ g₂ p.1 p.2)
       (J ×ˢ (Set.univ : Set M)) := by
   have h := ((metricDiffSq_jointContMDiffOn (I := I) g₁ g₂ hgram₁ hgram₂).add
-    (connDiffSq_jointContMDiffOn (I := I) g₁ g₂ hgram₁ hgram₂)).add
+    (connectionDifferenceSq_jointContMDiffOn (I := I) g₁ g₂ hgram₁ hgram₂)).add
     (rmDiffSq_jointContMDiffOn (I := I) g₁ g₂ hgram₁ hgram₂)
   exact h.congr fun p _ => rfl
 

@@ -101,8 +101,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem density_eq_zero_of_eq (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {t : ℝ}
     (h : g₁ t = g₂ t) (x : M) :
     forwardUniqueDensity (I := I) g₁ g₂ t x = 0 := by
-  rw [forwardUniqueDensity, metricDiffSq_def, connDiffSq_def, rmDiffSq_def, h]
-  rw [metricDiffAt_self, connDiffLowAt_self, rmDiffLowAt_self,
+  rw [forwardUniqueDensity, metricDiffSq_def, connectionDifferenceSq_def, rmDiffSq_def, h]
+  rw [metricDiffAt_self, connectionDifferenceLowAt_self, rmDiffLowAt_self,
     normSq0S_zero, normSq0S_zero, normSq0S_zero]
   ring
 
@@ -143,7 +143,7 @@ theorem energy_zero_on
         ((-2 : ℝ) * metricRicciAt (I := I) (g₂ t) x
           (fun i : Fin 2 => if i = 0 then X else Y)) t)
     (hA : ∀ t ∈ Ioo a c, ∀ (x : M) (v : Fin 3 → TangentSpace I x),
-      HasDerivAt (fun r : ℝ => connDiffLowAt (I := I) (g₁ r) (g₂ r) x v) (Adot t x v) t)
+      HasDerivAt (fun r : ℝ => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v) (Adot t x v) t)
     (hS : ∀ t ∈ Ioo a c, ∀ (x : M) (v : Fin 4 → TangentSpace I x),
       HasDerivAt (fun r : ℝ => rmDiffLowAt (I := I) (g₁ r) (g₂ r) x v) (Sdot t x v) t)
     (hε : 0 < ε) (hδ : 0 < δ) (habs : δ * C_A + ε ≤ 1)
@@ -159,7 +159,7 @@ theorem energy_zero_on
       movingReact0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x)
           (metricDiffAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
           (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
       C_R * forwardUniqueDensity (I := I) g₁ g₂ t x)
@@ -290,7 +290,7 @@ theorem metrics_eq_on
         ((-2 : ℝ) * metricRicciAt (I := I) (g₂ t) x
           (fun i : Fin 2 => if i = 0 then X else Y)) t)
     (hA : ∀ t ∈ Ioo a c, ∀ (x : M) (v : Fin 3 → TangentSpace I x),
-      HasDerivAt (fun r : ℝ => connDiffLowAt (I := I) (g₁ r) (g₂ r) x v) (Adot t x v) t)
+      HasDerivAt (fun r : ℝ => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v) (Adot t x v) t)
     (hS : ∀ t ∈ Ioo a c, ∀ (x : M) (v : Fin 4 → TangentSpace I x),
       HasDerivAt (fun r : ℝ => rmDiffLowAt (I := I) (g₁ r) (g₂ r) x v) (Sdot t x v) t)
     (hε : 0 < ε) (hδ : 0 < δ) (habs : δ * C_A + ε ≤ 1)
@@ -306,7 +306,7 @@ theorem metrics_eq_on
       movingReact0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x)
           (metricDiffAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
           (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
       C_R * forwardUniqueDensity (I := I) g₁ g₂ t x)

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RemainderAction
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3Principal
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.AppD2Hs
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SecondCovariantDerivativeApplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
 
@@ -36,65 +36,65 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-private noncomputable def lowA2Core
-    (g : SmoothRiemannianMetric I M) (A : LowBaseActionData g)
+private noncomputable def secondOrderActionCore
+    (g : SmoothRiemannianMetric I M) (A : LowerScaleActionCoefficients g)
     (σ : ℝ) :
     SmoothCcTensor g 0 2 →ₗ[ℝ]
       tensorHs (I := I) (M := M) g 0 2 σ where
   toFun := fun W =>
     ccTensorToHs (I := I) (M := M) g 2 σ
-      (A.a2 (I := I) (M := M) W)
+      (A.secondOrderAction (I := I) (M := M) W)
   map_add' := fun W V => by
-    simp only [LowBaseActionData.a2, iteratedCovGrad_add,
-      appCc_add_right, ccTensorToHs_add]
+    simp only [LowerScaleActionCoefficients.secondOrderAction, iteratedCovGrad_add,
+      operatorFieldApplication_add_right, ccTensorToHs_add]
   map_smul' := fun c W => by
-    simp only [RingHom.id_apply, LowBaseActionData.a2,
-      iteratedCovGrad_smul, appCc_smul_right, ccTensorToHs_smul]
+    simp only [RingHom.id_apply, LowerScaleActionCoefficients.secondOrderAction,
+      iteratedCovGrad_smul, operatorFieldApplication_smul_right, ccTensorToHs_smul]
 
-noncomputable def LowBaseActionData.a2Hi
-    {g : SmoothRiemannianMetric I M} (A : LowBaseActionData g) :
+noncomputable def LowerScaleActionCoefficients.secondOrderActionFourthToSecondOrder
+    {g : SmoothRiemannianMetric I M} (A : LowerScaleActionCoefficients g) :
     tensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
-  appD2Hs (I := I) (M := M) g 2 2 A.C2
+  secondCovariantDerivativeApplication (I := I) (M := M) g 2 2 A.secondOrderCoefficient
 
-noncomputable def LowBaseActionData.a2Lo
-    {g : SmoothRiemannianMetric I M} (A : LowBaseActionData g) :
+noncomputable def LowerScaleActionCoefficients.secondOrderActionThirdToFirstOrder
+    {g : SmoothRiemannianMetric I M} (A : LowerScaleActionCoefficients g) :
     tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 (1 : ℝ) :=
-  (lowA2Core (I := I) (M := M) g A (1 : ℝ)).extendOfNorm
+  (secondOrderActionCore (I := I) (M := M) g A (1 : ℝ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ))
 
-theorem a2_pair
+theorem secondOrderAction_sobolev_extension_bounds
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ∀ (A : LowBaseActionData g) (B : ℝ), 0 ≤ B →
+      ∀ (A : LowerScaleActionCoefficients g) (B : ℝ), 0 ≤ B →
         (∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-              (A.C2.toSection x) ≤ B ^ 2) →
-        lowJetSq (I := I) (M := M) g 2 A.C2 ≤ B ^ 2 →
-        ‖A.a2Hi (I := I) (M := M)‖ ≤ C * B ∧
-        ‖A.a2Lo (I := I) (M := M)‖ ≤ C * B ∧
+              (A.secondOrderCoefficient.toSection x) ≤ B ^ 2) →
+        covariantJetNormSq (I := I) (M := M) g 2 A.secondOrderCoefficient ≤ B ^ 2 →
+        ‖A.secondOrderActionFourthToSecondOrder (I := I) (M := M)‖ ≤ C * B ∧
+        ‖A.secondOrderActionThirdToFirstOrder (I := I) (M := M)‖ ≤ C * B ∧
         (∀ W : SmoothCcTensor g 0 2,
-          A.a2Hi (I := I) (M := M)
+          A.secondOrderActionFourthToSecondOrder (I := I) (M := M)
               (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) W) =
             ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-              (A.a2 (I := I) (M := M) W)) ∧
+              (A.secondOrderAction (I := I) (M := M) W)) ∧
         (∀ W : SmoothCcTensor g 0 2,
-          A.a2Lo (I := I) (M := M)
+          A.secondOrderActionThirdToFirstOrder (I := I) (M := M)
               (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W) =
             ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
-              (A.a2 (I := I) (M := M) W)) ∧
+              (A.secondOrderAction (I := I) (M := M) W)) ∧
         (tensorHsInclusion (I := I) (M := M) (g := g)
             (r := 0) (s := 2) (show (1 : ℝ) ≤ 2 by norm_num)).comp
-              (A.a2Hi (I := I) (M := M)) =
-          (A.a2Lo (I := I) (M := M)).comp
+              (A.secondOrderActionFourthToSecondOrder (I := I) (M := M)) =
+          (A.secondOrderActionThirdToFirstOrder (I := I) (M := M)).comp
             (tensorHsInclusion (I := I) (M := M) (g := g)
               (r := 0) (s := 2) (show (3 : ℝ) ≤ 4 by norm_num)) := by
   obtain ⟨Ch, hCh, hhigh⟩ :=
-    appD2Hs_norm (I := I) (M := M) hDim g 2 2
+    secondCovariantDerivativeApplication_norm (I := I) (M := M) hDim g 2 2
   obtain ⟨Cl, hCl, hlow⟩ :=
-    appCc_h2_h3_h1 (I := I) (M := M) hDim g 2 2
+    operatorFieldApplication_h2_h3_h1 (I := I) (M := M) hDim g 2 2
   let C : ℝ := Ch + Cl
   refine ⟨C, add_nonneg hCh hCl, ?_⟩
   intro A B hB hsup hjet
@@ -106,47 +106,47 @@ theorem a2_pair
     ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)
   have hlowMap :
       ∀ W : SmoothCcTensor g 0 2,
-        ‖lowA2Core (I := I) (M := M) g A (1 : ℝ) W‖ ≤
+        ‖secondOrderActionCore (I := I) (M := M) g A (1 : ℝ) W‖ ≤
           (Cl * B) *
             ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W‖ := by
     intro W
-    simpa only [lowA2Core, LowBaseActionData.a2, lowJetSq,
-      Nat.reduceAdd] using hlow A.C2 W B hB hsup hjet
+    simpa only [secondOrderActionCore, LowerScaleActionCoefficients.secondOrderAction, covariantJetNormSq,
+      Nat.reduceAdd] using hlow A.secondOrderCoefficient W B hB hsup hjet
   have hHiNorm :
-      ‖A.a2Hi (I := I) (M := M)‖ ≤ Ch * B := by
-    simpa only [LowBaseActionData.a2Hi, lowJetSq] using
-      hhigh A.C2 B hB hjet
+      ‖A.secondOrderActionFourthToSecondOrder (I := I) (M := M)‖ ≤ Ch * B := by
+    simpa only [LowerScaleActionCoefficients.secondOrderActionFourthToSecondOrder, covariantJetNormSq] using
+      hhigh A.secondOrderCoefficient B hB hjet
   have hLoNorm :
-      ‖A.a2Lo (I := I) (M := M)‖ ≤ Cl * B := by
-    unfold LowBaseActionData.a2Lo
+      ‖A.secondOrderActionThirdToFirstOrder (I := I) (M := M)‖ ≤ Cl * B := by
+    unfold LowerScaleActionCoefficients.secondOrderActionThirdToFirstOrder
     exact LinearMap.opNorm_extendOfNorm_le
       hdense3 (mul_nonneg hCl hB) hlowMap
   have hHiCore (W : SmoothCcTensor g 0 2) :
-      A.a2Hi (I := I) (M := M)
+      A.secondOrderActionFourthToSecondOrder (I := I) (M := M)
           (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) W) =
         ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-          (A.a2 (I := I) (M := M) W) := by
-    simpa only [LowBaseActionData.a2Hi, LowBaseActionData.a2] using
-      appD2Hs_core (I := I) (M := M) hDim g 2 2 A.C2 W
+          (A.secondOrderAction (I := I) (M := M) W) := by
+    simpa only [LowerScaleActionCoefficients.secondOrderActionFourthToSecondOrder, LowerScaleActionCoefficients.secondOrderAction] using
+      secondCovariantDerivativeApplication_ccTensorToHs (I := I) (M := M) hDim g 2 2 A.secondOrderCoefficient W
   have hLoCore (W : SmoothCcTensor g 0 2) :
-      A.a2Lo (I := I) (M := M)
+      A.secondOrderActionThirdToFirstOrder (I := I) (M := M)
           (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W) =
         ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
-          (A.a2 (I := I) (M := M) W) := by
+          (A.secondOrderAction (I := I) (M := M) W) := by
     change
-      ((lowA2Core (I := I) (M := M) g A (1 : ℝ)).extendOfNorm
+      ((secondOrderActionCore (I := I) (M := M) g A (1 : ℝ)).extendOfNorm
           (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ)))
           ((ccToHsLin (I := I) (M := M) g 2 (3 : ℝ)) W) =
-        (lowA2Core (I := I) (M := M) g A (1 : ℝ)) W
+        (secondOrderActionCore (I := I) (M := M) g A (1 : ℝ)) W
     apply LinearMap.extendOfNorm_eq hdense3
     exact ⟨Cl * B, hlowMap⟩
   have hHiNorm' :
-      ‖A.a2Hi (I := I) (M := M)‖ ≤ C * B :=
+      ‖A.secondOrderActionFourthToSecondOrder (I := I) (M := M)‖ ≤ C * B :=
     hHiNorm.trans
       (mul_le_mul_of_nonneg_right
         (le_add_of_nonneg_right hCl) hB)
   have hLoNorm' :
-      ‖A.a2Lo (I := I) (M := M)‖ ≤ C * B :=
+      ‖A.secondOrderActionThirdToFirstOrder (I := I) (M := M)‖ ≤ C * B :=
     hLoNorm.trans
       (mul_le_mul_of_nonneg_right
         (le_add_of_nonneg_left hCh) hB)
@@ -154,9 +154,9 @@ theorem a2_pair
   let L :=
     (tensorHsInclusion (I := I) (M := M) (g := g)
       (r := 0) (s := 2) (show (1 : ℝ) ≤ 2 by norm_num)).comp
-        (A.a2Hi (I := I) (M := M))
+        (A.secondOrderActionFourthToSecondOrder (I := I) (M := M))
   let R :=
-    (A.a2Lo (I := I) (M := M)).comp
+    (A.secondOrderActionThirdToFirstOrder (I := I) (M := M)).comp
       (tensorHsInclusion (I := I) (M := M) (g := g)
         (r := 0) (s := 2) (show (3 : ℝ) ≤ 4 by norm_num))
   have hfun : (L : _ → _) = R :=
@@ -181,37 +181,37 @@ theorem a2_pair
   intro W
   exact congrFun hfun W
 
-private noncomputable def a2Delta
+private noncomputable def secondOrderCoefficientDifference
     {g : SmoothRiemannianMetric I M}
-    (A B : LowBaseActionData g) : LowBaseActionData g where
-  C0 := 0
-  C1 := 0
-  C2 := A.C2 - B.C2
+    (A B : LowerScaleActionCoefficients g) : LowerScaleActionCoefficients g where
+  zeroOrderCoefficient := 0
+  firstOrderCoefficient := 0
+  secondOrderCoefficient := A.secondOrderCoefficient - B.secondOrderCoefficient
 
-theorem a2Hi_core
+theorem secondOrderActionFourthToSecondOrder_ccTensorToHs
     (hDim : Module.finrank ℝ E = 3)
-    (g : SmoothRiemannianMetric I M) (A : LowBaseActionData g)
+    (g : SmoothRiemannianMetric I M) (A : LowerScaleActionCoefficients g)
     (W : SmoothCcTensor g 0 2) :
-    A.a2Hi (I := I) (M := M)
+    A.secondOrderActionFourthToSecondOrder (I := I) (M := M)
         (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) W) =
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-        (A.a2 (I := I) (M := M) W) := by
-  simpa only [LowBaseActionData.a2Hi, LowBaseActionData.a2] using
-    appD2Hs_core (I := I) (M := M) hDim g 2 2 A.C2 W
+        (A.secondOrderAction (I := I) (M := M) W) := by
+  simpa only [LowerScaleActionCoefficients.secondOrderActionFourthToSecondOrder, LowerScaleActionCoefficients.secondOrderAction] using
+    secondCovariantDerivativeApplication_ccTensorToHs (I := I) (M := M) hDim g 2 2 A.secondOrderCoefficient W
 
-theorem a2Lo_core
+theorem secondOrderActionThirdToFirstOrder_ccTensorToHs
     (hDim : Module.finrank ℝ E = 3)
-    (g : SmoothRiemannianMetric I M) (A : LowBaseActionData g)
+    (g : SmoothRiemannianMetric I M) (A : LowerScaleActionCoefficients g)
     (W : SmoothCcTensor g 0 2) :
-    A.a2Lo (I := I) (M := M)
+    A.secondOrderActionThirdToFirstOrder (I := I) (M := M)
         (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W) =
       ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
-        (A.a2 (I := I) (M := M) W) := by
-  obtain ⟨C, hC, hpair⟩ := a2_pair (I := I) (M := M) hDim g
+        (A.secondOrderAction (I := I) (M := M) W) := by
+  obtain ⟨C, hC, hpair⟩ := secondOrderAction_sobolev_extension_bounds (I := I) (M := M) hDim g
   obtain ⟨K, hK, hpoint⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor
-      (I := I) (M := M) g 4 2 A.C2
-  let J : ℝ := lowJetSq (I := I) (M := M) g 2 A.C2
+      (I := I) (M := M) g 4 2 A.secondOrderCoefficient
+  let J : ℝ := covariantJetNormSq (I := I) (M := M) g 2 A.secondOrderCoefficient
   let B : ℝ := Real.sqrt (K + J)
   have hJ : 0 ≤ J := by
     exact Finset.sum_nonneg fun _ _ => sq_nonneg _
@@ -221,31 +221,31 @@ theorem a2Lo_core
     simpa only [B] using Real.sq_sqrt hsum
   have hpointB : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-          (A.C2.toSection x) ≤ B ^ 2 := by
+          (A.secondOrderCoefficient.toSection x) ≤ B ^ 2 := by
     intro x
     rw [hBsq]
     exact (hpoint x).trans (le_add_of_nonneg_right hJ)
   have hjetB :
-      lowJetSq (I := I) (M := M) g 2 A.C2 ≤ B ^ 2 := by
+      covariantJetNormSq (I := I) (M := M) g 2 A.secondOrderCoefficient ≤ B ^ 2 := by
     rw [hBsq]
     exact le_add_of_nonneg_left hK
   exact (hpair A B hB hpointB hjetB).2.2.2.1 W
 
-theorem a2_comm
+theorem secondOrderAction_sobolev_extensions_commute
     (hDim : Module.finrank ℝ E = 3)
-    (g : SmoothRiemannianMetric I M) (A : LowBaseActionData g) :
+    (g : SmoothRiemannianMetric I M) (A : LowerScaleActionCoefficients g) :
     (tensorHsInclusion (I := I) (M := M) (g := g)
         (r := 0) (s := 2) (show (1 : ℝ) ≤ 2 by norm_num)).comp
-          (A.a2Hi (I := I) (M := M)) =
-      (A.a2Lo (I := I) (M := M)).comp
+          (A.secondOrderActionFourthToSecondOrder (I := I) (M := M)) =
+      (A.secondOrderActionThirdToFirstOrder (I := I) (M := M)).comp
         (tensorHsInclusion (I := I) (M := M) (g := g)
           (r := 0) (s := 2) (show (3 : ℝ) ≤ 4 by norm_num)) := by
   let L :=
     (tensorHsInclusion (I := I) (M := M) (g := g)
       (r := 0) (s := 2) (show (1 : ℝ) ≤ 2 by norm_num)).comp
-        (A.a2Hi (I := I) (M := M))
+        (A.secondOrderActionFourthToSecondOrder (I := I) (M := M))
   let R :=
-    (A.a2Lo (I := I) (M := M)).comp
+    (A.secondOrderActionThirdToFirstOrder (I := I) (M := M)).comp
       (tensorHsInclusion (I := I) (M := M) (g := g)
         (r := 0) (s := 2) (show (3 : ℝ) ≤ 4 by norm_num))
   have hdense4 : DenseRange
@@ -256,7 +256,7 @@ theorem a2_comm
       funext W
       simp only [Function.comp_apply, L, R, ccToHsLin_apply,
         ContinuousLinearMap.comp_apply]
-      rw [a2Hi_core (I := I) (M := M) hDim g A]
+      rw [secondOrderActionFourthToSecondOrder_ccTensorToHs (I := I) (M := M) hDim g A]
       have hin :
           tensorHsInclusion (I := I) (M := M) (g := g)
               (r := 0) (s := 2) (show (3 : ℝ) ≤ 4 by norm_num)
@@ -265,7 +265,7 @@ theorem a2_comm
         apply tensorHs.ext
         funext i
         simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
-      rw [hin, a2Lo_core (I := I) (M := M) hDim g A]
+      rw [hin, secondOrderActionThirdToFirstOrder_ccTensorToHs (I := I) (M := M) hDim g A]
       apply tensorHs.ext
       funext i
       simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff])
@@ -273,30 +273,30 @@ theorem a2_comm
   intro W
   exact congrFun hfun W
 
-theorem a2_diff
+theorem secondOrderAction_sobolev_extension_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ∀ (A B : LowBaseActionData g) (R : ℝ), 0 ≤ R →
+      ∀ (A B : LowerScaleActionCoefficients g) (R : ℝ), 0 ≤ R →
         (∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-              ((A.C2 - B.C2).toSection x) ≤ R ^ 2) →
-        lowJetSq (I := I) (M := M) g 2 (A.C2 - B.C2) ≤ R ^ 2 →
-        ‖A.a2Hi (I := I) (M := M) -
-            B.a2Hi (I := I) (M := M)‖ ≤ C * R ∧
-        ‖A.a2Lo (I := I) (M := M) -
-            B.a2Lo (I := I) (M := M)‖ ≤ C * R := by
-  obtain ⟨C, hC, hpair⟩ := a2_pair (I := I) (M := M) hDim g
+              ((A.secondOrderCoefficient - B.secondOrderCoefficient).toSection x) ≤ R ^ 2) →
+        covariantJetNormSq (I := I) (M := M) g 2 (A.secondOrderCoefficient - B.secondOrderCoefficient) ≤ R ^ 2 →
+        ‖A.secondOrderActionFourthToSecondOrder (I := I) (M := M) -
+            B.secondOrderActionFourthToSecondOrder (I := I) (M := M)‖ ≤ C * R ∧
+        ‖A.secondOrderActionThirdToFirstOrder (I := I) (M := M) -
+            B.secondOrderActionThirdToFirstOrder (I := I) (M := M)‖ ≤ C * R := by
+  obtain ⟨C, hC, hpair⟩ := secondOrderAction_sobolev_extension_bounds (I := I) (M := M) hDim g
   refine ⟨C, hC, ?_⟩
   intro A B R hR hpoint hjet
-  let D : LowBaseActionData g := a2Delta A B
+  let D : LowerScaleActionCoefficients g := secondOrderCoefficientDifference A B
   have hDpoint : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-          (D.C2.toSection x) ≤ R ^ 2 := by
-    simpa only [D, a2Delta] using hpoint
+          (D.secondOrderCoefficient.toSection x) ≤ R ^ 2 := by
+    simpa only [D, secondOrderCoefficientDifference] using hpoint
   have hDjet :
-      lowJetSq (I := I) (M := M) g 2 D.C2 ≤ R ^ 2 := by
-    simpa only [D, a2Delta] using hjet
+      covariantJetNormSq (I := I) (M := M) g 2 D.secondOrderCoefficient ≤ R ^ 2 := by
+    simpa only [D, secondOrderCoefficientDifference] using hjet
   obtain ⟨hDhi, hDlo, hDhiCore, hDloCore, _⟩ :=
     hpair D R hR hDpoint hDjet
   have hdense4 : DenseRange
@@ -306,51 +306,51 @@ theorem a2_diff
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ)) :=
     ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)
   have hHi :
-      D.a2Hi (I := I) (M := M) =
-        A.a2Hi (I := I) (M := M) -
-          B.a2Hi (I := I) (M := M) := by
-    let L := D.a2Hi (I := I) (M := M)
-    let Q := A.a2Hi (I := I) (M := M) -
-      B.a2Hi (I := I) (M := M)
+      D.secondOrderActionFourthToSecondOrder (I := I) (M := M) =
+        A.secondOrderActionFourthToSecondOrder (I := I) (M := M) -
+          B.secondOrderActionFourthToSecondOrder (I := I) (M := M) := by
+    let L := D.secondOrderActionFourthToSecondOrder (I := I) (M := M)
+    let Q := A.secondOrderActionFourthToSecondOrder (I := I) (M := M) -
+      B.secondOrderActionFourthToSecondOrder (I := I) (M := M)
     have hfun : (L : _ → _) = Q :=
       hdense4.equalizer L.continuous Q.continuous (by
         funext W
         simp only [Function.comp_apply, L, Q, ccToHsLin_apply,
           ContinuousLinearMap.sub_apply]
         rw [hDhiCore,
-          a2Hi_core (I := I) (M := M) hDim g A W,
-          a2Hi_core (I := I) (M := M) hDim g B W]
-        simp only [D, a2Delta, LowBaseActionData.a2, appCc_sub_left]
+          secondOrderActionFourthToSecondOrder_ccTensorToHs (I := I) (M := M) hDim g A W,
+          secondOrderActionFourthToSecondOrder_ccTensorToHs (I := I) (M := M) hDim g B W]
+        simp only [D, secondOrderCoefficientDifference, LowerScaleActionCoefficients.secondOrderAction, operatorFieldApplication_sub_left]
         simpa only [ccToHsLin_apply] using
           map_sub (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ))
-            (appCc (I := I) (M := M) g 4 2 A.C2
+            (operatorFieldApply (I := I) (M := M) g 4 2 A.secondOrderCoefficient
               (iteratedCovGrad (I := I) g 0 2 2 W))
-            (appCc (I := I) (M := M) g 4 2 B.C2
+            (operatorFieldApply (I := I) (M := M) g 4 2 B.secondOrderCoefficient
               (iteratedCovGrad (I := I) g 0 2 2 W)))
     apply ContinuousLinearMap.ext
     intro W
     exact congrFun hfun W
   have hLo :
-      D.a2Lo (I := I) (M := M) =
-        A.a2Lo (I := I) (M := M) -
-          B.a2Lo (I := I) (M := M) := by
-    let L := D.a2Lo (I := I) (M := M)
-    let Q := A.a2Lo (I := I) (M := M) -
-      B.a2Lo (I := I) (M := M)
+      D.secondOrderActionThirdToFirstOrder (I := I) (M := M) =
+        A.secondOrderActionThirdToFirstOrder (I := I) (M := M) -
+          B.secondOrderActionThirdToFirstOrder (I := I) (M := M) := by
+    let L := D.secondOrderActionThirdToFirstOrder (I := I) (M := M)
+    let Q := A.secondOrderActionThirdToFirstOrder (I := I) (M := M) -
+      B.secondOrderActionThirdToFirstOrder (I := I) (M := M)
     have hfun : (L : _ → _) = Q :=
       hdense3.equalizer L.continuous Q.continuous (by
         funext W
         simp only [Function.comp_apply, L, Q, ccToHsLin_apply,
           ContinuousLinearMap.sub_apply]
         rw [hDloCore,
-          a2Lo_core (I := I) (M := M) hDim g A W,
-          a2Lo_core (I := I) (M := M) hDim g B W]
-        simp only [D, a2Delta, LowBaseActionData.a2, appCc_sub_left]
+          secondOrderActionThirdToFirstOrder_ccTensorToHs (I := I) (M := M) hDim g A W,
+          secondOrderActionThirdToFirstOrder_ccTensorToHs (I := I) (M := M) hDim g B W]
+        simp only [D, secondOrderCoefficientDifference, LowerScaleActionCoefficients.secondOrderAction, operatorFieldApplication_sub_left]
         simpa only [ccToHsLin_apply] using
           map_sub (ccToHsLin (I := I) (M := M) g 2 (1 : ℝ))
-            (appCc (I := I) (M := M) g 4 2 A.C2
+            (operatorFieldApply (I := I) (M := M) g 4 2 A.secondOrderCoefficient
               (iteratedCovGrad (I := I) g 0 2 2 W))
-            (appCc (I := I) (M := M) g 4 2 B.C2
+            (operatorFieldApply (I := I) (M := M) g 4 2 B.secondOrderCoefficient
               (iteratedCovGrad (I := I) g 0 2 2 W)))
     apply ContinuousLinearMap.ext
     intro W

@@ -250,7 +250,8 @@ theorem resStarSol [CompactSpace M]
     simpa [S', D'] using isSoln_tailRestrict (I := I) hS hAlphaT0 hT0Omega
   obtain ⟨hframe1, baseDt, chrDt, hrm, hchr, hchrId, hswap⟩ :=
     tailTowerData (I := I) hS hAlphaT0 hT0Omega frame hframe hu
-  have hbase := rm04Base_of_sol (I := I) S' hS' t hdim
+  have hbase := riemann_component_evolution_in_orthonormal_frame_of_solution
+    (I := I) S' hS' t hdim
   have hrm' : ∀ (y : M), y ∈ u -> ∀ m : Fin 4 -> Fin 3,
       HasDerivWithinAt (fun s : Real => lfBase (I := I) S' frame s y m)
         (baseDt (t : Real) y m) D'.carrier (t : Real) := by

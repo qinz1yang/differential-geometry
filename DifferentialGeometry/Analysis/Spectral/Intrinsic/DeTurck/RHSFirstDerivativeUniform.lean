@@ -291,7 +291,7 @@ theorem chartRHSD_pou_lip
           (chartChristoffel (I := I) gBase α a c l)) (extChartAt I α b)| ≤ Cd2Γ := by
     intro e r a c l
     simpa [gAll] using hΓD2All α hα none b hb e r a c l
-  have hΓBg₁ : ∀ a c l : Fin (Module.finrank ℝ E),
+  have hΓBackground₁ : ∀ a c l : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) (gSeq k₁) α a c l (extChartAt I α b) -
         chartChristoffel (I := I) gBase α a c l (extChartAt I α b)| ≤ P := by
     intro a c l
@@ -299,7 +299,7 @@ theorem chartRHSD_pou_lip
       |_ - _| ≤ |_| + |_| := abs_sub _ _
       _ ≤ CΓ + CΓ := add_le_add (hΓ₁ a c l) (hΓBase a c l)
       _ = P := by dsimp [P]; ring
-  have hΓBg₂ : ∀ a c l : Fin (Module.finrank ℝ E),
+  have hΓBackground₂ : ∀ a c l : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) (gSeq k₂) α a c l (extChartAt I α b) -
         chartChristoffel (I := I) gBase α a c l (extChartAt I α b)| ≤ P := by
     intro a c l
@@ -307,7 +307,7 @@ theorem chartRHSD_pou_lip
       |_ - _| ≤ |_| + |_| := abs_sub _ _
       _ ≤ CΓ + CΓ := add_le_add (hΓ₂ a c l) (hΓBase a c l)
       _ = P := by dsimp [P]; ring
-  have hΓDBg₁ : ∀ e a c l : Fin (Module.finrank ℝ E),
+  have hΓDBackground₁ : ∀ e a c l : Fin (Module.finrank ℝ E),
       |partialDeriv (E := E) e
           (chartChristoffel (I := I) (gSeq k₁) α a c l) (extChartAt I α b) -
         partialDeriv (E := E) e
@@ -317,7 +317,7 @@ theorem chartRHSD_pou_lip
       |_ - _| ≤ |_| + |_| := abs_sub _ _
       _ ≤ CdΓ + CdΓ := add_le_add (hΓD₁ e a c l) (hΓDBase e a c l)
       _ = R := by dsimp [R]; ring
-  have hΓDBg₂ : ∀ e a c l : Fin (Module.finrank ℝ E),
+  have hΓDBackground₂ : ∀ e a c l : Fin (Module.finrank ℝ E),
       |partialDeriv (E := E) e
           (chartChristoffel (I := I) (gSeq k₂) α a c l) (extChartAt I α b) -
         partialDeriv (E := E) e
@@ -327,7 +327,7 @@ theorem chartRHSD_pou_lip
       |_ - _| ≤ |_| + |_| := abs_sub _ _
       _ ≤ CdΓ + CdΓ := add_le_add (hΓD₂ e a c l) (hΓDBase e a c l)
       _ = R := by dsimp [R]; ring
-  have hΓD2Bg₁ : ∀ e r a c l : Fin (Module.finrank ℝ E),
+  have hΓD2Background₁ : ∀ e r a c l : Fin (Module.finrank ℝ E),
       |partialDeriv (E := E) e
           (partialDeriv (E := E) r
             (chartChristoffel (I := I) (gSeq k₁) α a c l)) (extChartAt I α b) -
@@ -339,7 +339,7 @@ theorem chartRHSD_pou_lip
       |_ - _| ≤ |_| + |_| := abs_sub _ _
       _ ≤ Cd2Γ + Cd2Γ := add_le_add (hΓD2₁ e r a c l) (hΓD2Base e r a c l)
       _ = S := by dsimp [S]; ring
-  have hΓD2Bg₂ : ∀ e r a c l : Fin (Module.finrank ℝ E),
+  have hΓD2Background₂ : ∀ e r a c l : Fin (Module.finrank ℝ E),
       |partialDeriv (E := E) e
           (partialDeriv (E := E) r
             (chartChristoffel (I := I) (gSeq k₂) α a c l)) (extChartAt I α b) -
@@ -473,14 +473,14 @@ theorem chartRHSD_pou_lip
     intro l
     simpa [V, n] using DeTurckCoefficients.deTurckVF_abs_le
       (I := I) (M := M) (gSeq k₂) gBase α (extChartAt I α b) l
-      hMb.le hMb₂ (fun a c => hΓBg₂ a c l)
+      hMb.le hMb₂ (fun a c => hΓBackground₂ a c l)
   have hVFD₂ : ∀ e l : Fin (Module.finrank ℝ E),
       |partialDeriv (E := E) e
         (chartDeTurckVFComp (I := I) (gSeq k₂) gBase α l) (extChartAt I α b)| ≤ DV := by
     intro e l
     simpa [DV, n] using DeTurckCoefficients.deTurckVFD_abs_le
       (I := I) (M := M) (gSeq k₂) gBase α hy e l hD hMb.le
-      (hD₂ e) (fun a c => hΓBg₂ a c l) hMb₂ (fun a c => hΓDBg₂ e a c l)
+      (hD₂ e) (fun a c => hΓBackground₂ a c l) hMb₂ (fun a c => hΓDBackground₂ e a c l)
   have hVFD2₂ : ∀ e r l : Fin (Module.finrank ℝ E),
       |partialDeriv (E := E) e
         (partialDeriv (E := E) r
@@ -489,9 +489,9 @@ theorem chartRHSD_pou_lip
     simpa [D2V, n] using DeTurckCoefficients.deTurckVFD2_le
       (I := I) (M := M) (gSeq k₂) gBase α hy e r l
       hMb.le hD hT hMb₂ hD₂ hT₂
-      (fun a c => hΓBg₂ a c l)
-      (fun q a c => hΓDBg₂ q a c l)
-      (fun q s a c => hΓD2Bg₂ q s a c l)
+      (fun a c => hΓBackground₂ a c l)
+      (fun q a c => hΓDBackground₂ q a c l)
+      (fun q s a c => hΓD2Background₂ q s a c l)
   have hVFsub : ∀ l : Fin (Module.finrank ℝ E),
       |chartDeTurckVFComp (I := I) (gSeq k₁) gBase α l (extChartAt I α b) -
         chartDeTurckVFComp (I := I) (gSeq k₂) gBase α l (extChartAt I α b)| ≤
@@ -500,7 +500,7 @@ theorem chartRHSD_pou_lip
     intro l
     have h := DeTurckCoefficients.chartDeTurckVFComp_sub_abs_le
       (I := I) (M := M) (gSeq k₁) (gSeq k₂) gBase α
-      hCinv.le hMb.le hP hΓBg₁ hMb₂ hInv hΓ l
+      hCinv.le hMb.le hP hΓBackground₁ hMb₂ hInv hΓ l
     have h' : |chartDeTurckVFComp (I := I) (gSeq k₁) gBase α l (extChartAt I α b) -
         chartDeTurckVFComp (I := I) (gSeq k₂) gBase α l (extChartAt I α b)| ≤
           W₀ * chartMetricJet1DiffSup (I := I) (M := M)
@@ -518,8 +518,8 @@ theorem chartRHSD_pou_lip
     have h := DeTurckCoefficients.partialDeriv_chartDeTurckVFComp_sub_abs_le
       (I := I) (M := M) (gSeq k₁) (gSeq k₂) gBase α hy
       hCD.le hCinv.le hG₀.le hMb.le hP hD hR e l
-      (hInvD e) hInv hΓ (hΓD e) hΓBg₁ hMb₂ (hD₂ e)
-      (fun a c q => hΓDBg₁ e a c q)
+      (hInvD e) hInv hΓ (hΓD e) hΓBackground₁ hMb₂ (hD₂ e)
+      (fun a c q => hΓDBackground₁ e a c q)
     have h' : |partialDeriv (E := E) e
           (chartDeTurckVFComp (I := I) (gSeq k₁) gBase α l) (extChartAt I α b) -
         partialDeriv (E := E) e
@@ -541,9 +541,9 @@ theorem chartRHSD_pou_lip
     simpa [W₂, n] using DeTurckCoefficients.deTurckVFD2_sub
       (I := I) (M := M) (gSeq k₁) (gSeq k₂) gBase α hy e r l
       hMb.le hD hT hCinv.le hCD.le hCT.le hMb₂ hD₂ hT₂
-      (fun a c => hΓBg₁ a c l)
-      (fun q a c => hΓDBg₁ q a c l)
-      (fun q s a c => hΓD2Bg₁ q s a c l)
+      (fun a c => hΓBackground₁ a c l)
+      (fun q a c => hΓDBackground₁ q a c l)
+      (fun q s a c => hΓD2Background₁ q s a c l)
       hInv3 hInvD3 hInvD23 hΓ3 hΓD3 hΓD2
   have hRic : |partialDeriv (E := E) d
         (chartRicciTensor (I := I) (gSeq k₁) α i j) (extChartAt I α b) -

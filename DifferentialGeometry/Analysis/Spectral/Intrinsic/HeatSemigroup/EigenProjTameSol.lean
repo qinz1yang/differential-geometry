@@ -73,7 +73,7 @@ theorem projN_tame (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (N : 
     _ ≤ _ := hsingle u u'
 
 omit [BoundarylessManifold I M] in
-theorem proj_partial_sol_tame
+theorem exists_tame_projected_partial_solution
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 < R) (N : ℕ)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
       tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))

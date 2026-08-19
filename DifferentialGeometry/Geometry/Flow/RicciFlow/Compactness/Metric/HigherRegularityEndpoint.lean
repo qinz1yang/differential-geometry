@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.RawConstruction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.BoundedGeometryPairwiseApproximation
 
 
 
@@ -21,95 +21,95 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace MetricCompactSeed
 
-def metricCanonH6
+def higherRegularityCanonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactSeed (I := I) X)
-    (d : H6NormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    StepDCanon (I := I) X := by
+    CanonicalMetricCompactness (I := I) X := by
   let P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j) :=
     fun j => properMetricOn (I := I) (X.obj j)
       (hcomplete.complete j) (hconn j)
-  let hraw := b.exists_b1_raw_h6 d hcomplete hconn
+  let hraw := b.exists_pairwise_approximate_isometry_subsequence_of_bounded_geometry d hcomplete hconn
   let psi : Nat → Nat := Classical.choose hraw
   have hraw_spec := Classical.choose_spec hraw
   have hpsi : StrictMono psi := hraw_spec.1
   have B := hraw_spec.2
   let Ppsi : ∀ k : Nat, ProperMetricOn (I := I) ((X.subseq psi).obj k) :=
     fun k => P (psi k)
-  let canon : StepDCanon (I := I) (X.subseq psi) :=
-    compactness_canon Ppsi B
-  exact canon.ofSeqSubseq psi hpsi
+  let canon : CanonicalMetricCompactness (I := I) (X.subseq psi) :=
+    canonicalMetricCompactness Ppsi B
+  exact canon.ofSubsequence psi hpsi
 
-def metricCompactH6
+def higherRegularityMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactSeed (I := I) X)
-    (d : H6NormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
     MetricCompactnessConclusion (I := I) X :=
-  (b.metricCanonH6 d hcomplete hconn).mc
+  (b.higherRegularityCanonicalMetricCompactness d hcomplete hconn).compactness
 
-theorem metricCanonH6_conn
+theorem higher_regularity_canonical_metric_compactness_connected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactSeed (I := I) X)
-    (d : H6NormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    let C := b.metricCanonH6 d hcomplete hconn
-    letI : TopologicalSpace C.mc.limit.M := C.mc.limit.topology
-    ConnectedSpace C.mc.limit.M := by
+    let C := b.higherRegularityCanonicalMetricCompactness d hcomplete hconn
+    letI : TopologicalSpace C.compactness.limit.M := C.compactness.limit.topology
+    ConnectedSpace C.compactness.limit.M := by
   classical
-  dsimp only [metricCanonH6, StepDCanon.ofSeqSubseq,
+  dsimp only [higherRegularityCanonicalMetricCompactness, CanonicalMetricCompactness.ofSubsequence,
     MetricCompactnessConclusion.ofSeqSubseq]
-  exact compactness_conn (I := I) _ _
+  exact canonical_metric_compactness_connected (I := I) _ _
 
 end MetricCompactSeed
 
 namespace MetricCompactBase
 
-def metricCanonH6
+def higherRegularityCanonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
-    (d : H6NormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    StepDCanon (I := I) X :=
-  b.toSeed.metricCanonH6 d hcomplete hconn
+    CanonicalMetricCompactness (I := I) X :=
+  b.toSeed.higherRegularityCanonicalMetricCompactness d hcomplete hconn
 
-def metricCompactH6
+def higherRegularityMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
-    (d : H6NormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
     MetricCompactnessConclusion (I := I) X :=
-  b.toSeed.metricCompactH6 d hcomplete hconn
+  b.toSeed.higherRegularityMetricCompactness d hcomplete hconn
 
-theorem metricCanonH6_conn
+theorem higher_regularity_canonical_metric_compactness_connected
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
-    (d : H6NormalData (I := I) X b.decay)
+    (d : BoundedGeometryNormalData (I := I) X b.decay)
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
-    let C := b.metricCanonH6 d hcomplete hconn
-    letI : TopologicalSpace C.mc.limit.M := C.mc.limit.topology
-    ConnectedSpace C.mc.limit.M := by
-  simpa only [metricCanonH6] using
-    b.toSeed.metricCanonH6_conn d hcomplete hconn
+    let C := b.higherRegularityCanonicalMetricCompactness d hcomplete hconn
+    letI : TopologicalSpace C.compactness.limit.M := C.compactness.limit.topology
+    ConnectedSpace C.compactness.limit.M := by
+  simpa only [higherRegularityCanonicalMetricCompactness] using
+    b.toSeed.higher_regularity_canonical_metric_compactness_connected d hcomplete hconn
 
 end MetricCompactBase
 end HCGCompactness

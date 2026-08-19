@@ -258,7 +258,7 @@ theorem HasRadiusTailOn.local_tail
 
 theorem HasRadiusTailOn.geom_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L0 : NetLimitData inp.decay inp.D P)
     (hcomplete : ∀ j, MetricComplete (I := I) (X.obj j))

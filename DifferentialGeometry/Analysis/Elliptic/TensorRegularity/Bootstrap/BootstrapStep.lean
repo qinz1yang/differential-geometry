@@ -90,7 +90,7 @@ theorem tensorComponent_perturbedSource_contDiff
   intro i _
   refine ContDiff.sum ?_
   intro j _
-  have h_dla : ContDiff ℝ (⊤ : ℕ∞) (fun y : EuclN =>
+  have h_deTurckLieConnectionDifferenceDerivative : ContDiff ℝ (⊤ : ℕ∞) (fun y : EuclN =>
       (fderiv ℝ (fun z : EuclN => B.a z i j) y) (EuclideanSpace.single l 1)) := by
     have h_fderiv_smooth : ContDiff ℝ (⊤ : ℕ∞)
         (fderiv ℝ (fun z : EuclN => B.a z i j)) :=
@@ -106,7 +106,7 @@ theorem tensorComponent_perturbedSource_contDiff
   have h_prod : ContDiff ℝ (⊤ : ℕ∞) (fun y : EuclN =>
       (fderiv ℝ (fun z : EuclN => B.a z i j) y) (EuclideanSpace.single l 1) *
         (fderiv ℝ u y) (EuclideanSpace.single i 1)) :=
-    h_dla.mul h_diu
+    h_deTurckLieConnectionDifferenceDerivative.mul h_diu
   have h_fderiv_prod : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ (fun y : EuclN =>
       (fderiv ℝ (fun z : EuclN => B.a z i j) y) (EuclideanSpace.single l 1) *
         (fderiv ℝ u y) (EuclideanSpace.single i 1))) :=

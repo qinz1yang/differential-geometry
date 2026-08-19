@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.ApproxIsoDataMono
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationMonotonicity
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Directed
@@ -647,7 +647,7 @@ theorem ballPullback_covNorm {j l : ℕ}
     (hUK : (U : Set (M j)) ⊆ K)
     (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
     {ε : ℝ} {p : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p (Φ : M j → M l) gRef g)
+    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
     (q : ℕ) (x : U) :
     letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
@@ -683,7 +683,7 @@ theorem ballPullback_cov_le {j l : ℕ}
     (hUK : (U : Set (M j)) ⊆ K)
     (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
     {ε : ℝ} {p q : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p (Φ : M j → M l) gRef g)
+    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
     (hq1 : 1 ≤ q) (hqp : q ≤ p) (x : U) :
     letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
@@ -705,7 +705,7 @@ theorem prefixTail_cov_le {j l m : ℕ}
     (hUK : (Φ : M j → M l) '' (U : Set (M j)) ⊆ K)
     (gMid : SmoothRiemannianMetric I (M l)) (g : SmoothRiemannianMetric I (M m))
     {ε : ℝ} {p q : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p (Θ : M l → M m) gMid g)
+    (D : MapMetricApproximationOn (I := I) K ε p (Θ : M l → M m) gMid g)
     (hq1 : 1 ≤ q) (hqp : q ≤ p) (x : U) :
     letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
@@ -743,7 +743,7 @@ theorem chainPrefix_cov_le
     (gMid : SmoothRiemannianMetric I (M (j + a)))
     (g : SmoothRiemannianMetric I (M ((j + a) + b)))
     {ε : ℝ} {p q : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p
+    (D : MapMetricApproximationOn (I := I) K ε p
       (chainComp (I := I) (Mf := M) Ψ (j + a) b : M (j + a) → M ((j + a) + b))
       gMid g)
     (hq1 : 1 ≤ q) (hqp : q ≤ p) (x : U) :
@@ -772,7 +772,7 @@ theorem ballPullback_lower {j l : ℕ}
     (hUK : (U : Set (M j)) ⊆ K)
     (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
     {ε : ℝ} {p : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p (Φ : M j → M l) gRef g)
+    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
     (x : U) (v : TangentSpace I x) :
     letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
@@ -797,7 +797,7 @@ theorem ballPullback_upper {j l : ℕ}
     (hUK : (U : Set (M j)) ⊆ K)
     (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
     {ε : ℝ} {p : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p (Φ : M j → M l) gRef g)
+    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
     (x : U) (v : TangentSpace I x) :
     letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
@@ -822,7 +822,7 @@ theorem ballPullback_zero_le {j l : ℕ}
     (hUK : (U : Set (M j)) ⊆ K)
     (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
     {ε : ℝ} {p : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p (Φ : M j → M l) gRef g)
+    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
     (hε : ε ≤ 1 / 2) (x : U) :
     letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
@@ -860,7 +860,7 @@ theorem pullbackDiff_le {j l : ℕ}
     (hUK : (U : Set (M j)) ⊆ K)
     (gRef : SmoothRiemannianMetric I (M j)) (g : SmoothRiemannianMetric I (M l))
     {ε : ℝ} {p q : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p (Φ : M j → M l) gRef g)
+    (D : MapMetricApproximationOn (I := I) K ε p (Φ : M j → M l) gRef g)
     (hqp : q ≤ p) (x : U) :
     letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
@@ -946,7 +946,7 @@ theorem chainLimit_base_le
     (hUball : (U : Set (M j)) = Metric.ball (b j) ((2 : ℝ) ^ j))
     (hU : ∀ l, (U : Set (M j)) ⊆ (chainComp (I := I) (Mf := M) Ψ j l).source)
     {δ : ℝ} {p : ℕ}
-    (D : ∀ l, BookApproxIsoPartialData (I := I)
+    (D : ∀ l, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b j) ((2 : ℝ) ^ j)) δ p
       (chainComp (I := I) (Mf := M) Ψ j l) (g j) (g (j + l)))
     (ρ : ℕ → ℕ)
@@ -996,7 +996,7 @@ theorem diffNorm_change_le
     metricDerivNorm (I := I) r A B gInf x ≤
       Real.sqrt ((1 + eps) ^ (2 + r)) *
         (metricDerivNorm (I := I) r A B gBase x +
-          eps * lemma45CorConst (E := E) 2 p * ∑ k ∈ Finset.range r,
+          eps * metricCovariantDerivativeComparisonConstant (E := E) 2 p * ∑ k ∈ Finset.range r,
             metricDerivNorm (I := I) k A B gBase x) := by
   classical
   obtain ⟨bBase, hBaseON⟩ :=
@@ -1046,7 +1046,7 @@ theorem diffNorm_change_le
       (I := I) (M := N) (n := (∞ : WithTop ℕ∞)) 2 :=
     Tensor0SBundle.metricTensorField (I := I) A -
       Tensor0SBundle.metricTensorField (I := I) B
-  have hcor := lemma45_corII_bound (I := I) hu gInf gBase T
+  have hcor := iterated_covariant_derivative_norm_comparison_bound (I := I) hu gInf gBase T
     p eps heps0 heps1 hequiv hInfIter x hx r hr0 hrp
   dsimp only [T] at hcor
   have hleft := metricDerivNorm_eq_iterCov (I := I) A B gInf r bInf hInfInv
@@ -1063,20 +1063,20 @@ theorem diffNorm_change_le
 noncomputable def limitRefFactor (p : ℕ) : ℝ :=
   4 + ∑ r ∈ Finset.range (p + 1),
     Real.sqrt ((2 : ℝ) ^ (2 + r)) *
-      (2 + 2 * lemma45CorConst (E := E) 2 p * (r : ℝ))
+      (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ))
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem limitRefFactor_pos (p : ℕ) : 0 < limitRefFactor (E := E) p := by
   have hterm : ∀ r : ℕ, 0 ≤ Real.sqrt ((2 : ℝ) ^ (2 + r)) *
-      (2 + 2 * lemma45CorConst (E := E) 2 p * (r : ℝ)) := by
+      (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ)) := by
     intro r
     apply mul_nonneg (Real.sqrt_nonneg _)
-    have hC := corConst_nonneg (E := E) 2 p
+    have hC := metric_covariant_derivative_comparison_constant_nonneg (E := E) 2 p
     positivity
   have hsum : 0 ≤ ∑ r ∈ Finset.range (p + 1),
       Real.sqrt ((2 : ℝ) ^ (2 + r)) *
-        (2 + 2 * lemma45CorConst (E := E) 2 p * (r : ℝ)) := by
+        (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ)) := by
     exact Finset.sum_nonneg fun r _ => hterm r
   unfold limitRefFactor
   linarith
@@ -1085,14 +1085,14 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem four_le_refFactor (p : ℕ) : 4 ≤ limitRefFactor (E := E) p := by
   have hterm : ∀ r : ℕ, 0 ≤ Real.sqrt ((2 : ℝ) ^ (2 + r)) *
-      (2 + 2 * lemma45CorConst (E := E) 2 p * (r : ℝ)) := by
+      (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ)) := by
     intro r
     apply mul_nonneg (Real.sqrt_nonneg _)
-    have hC := corConst_nonneg (E := E) 2 p
+    have hC := metric_covariant_derivative_comparison_constant_nonneg (E := E) 2 p
     positivity
   have hsum : 0 ≤ ∑ r ∈ Finset.range (p + 1),
       Real.sqrt ((2 : ℝ) ^ (2 + r)) *
-        (2 + 2 * lemma45CorConst (E := E) 2 p * (r : ℝ)) := by
+        (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ)) := by
     exact Finset.sum_nonneg fun r _ => hterm r
   unfold limitRefFactor
   linarith
@@ -1101,19 +1101,19 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem refTerm_le_factor (p r : ℕ) (hrp : r ≤ p) :
     Real.sqrt ((2 : ℝ) ^ (2 + r)) *
-        (2 + 2 * lemma45CorConst (E := E) 2 p * (r : ℝ)) ≤
+        (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ)) ≤
       limitRefFactor (E := E) p := by
   have hterm : ∀ q : ℕ, 0 ≤ Real.sqrt ((2 : ℝ) ^ (2 + q)) *
-      (2 + 2 * lemma45CorConst (E := E) 2 p * (q : ℝ)) := by
+      (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (q : ℝ)) := by
     intro q
     apply mul_nonneg (Real.sqrt_nonneg _)
-    have hC := corConst_nonneg (E := E) 2 p
+    have hC := metric_covariant_derivative_comparison_constant_nonneg (E := E) 2 p
     positivity
   have hmem : r ∈ Finset.range (p + 1) := by simp only [Finset.mem_range]; omega
   have hsum : Real.sqrt ((2 : ℝ) ^ (2 + r)) *
-        (2 + 2 * lemma45CorConst (E := E) 2 p * (r : ℝ)) ≤
+        (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (r : ℝ)) ≤
       ∑ q ∈ Finset.range (p + 1), Real.sqrt ((2 : ℝ) ^ (2 + q)) *
-        (2 + 2 * lemma45CorConst (E := E) 2 p * (q : ℝ)) := by
+        (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (q : ℝ)) := by
     exact Finset.single_le_sum (fun q _ => hterm q) hmem
   unfold limitRefFactor
   linarith
@@ -1244,27 +1244,27 @@ theorem diffNorm_limit_le
           intro k hk
           exact hbase k (Nat.le_trans (Nat.le_of_lt (Finset.mem_range.mp hk)) hqp)
         _ = (q : ℝ) * (2 * δ) := by simp
-    have hC : 0 ≤ lemma45CorConst (E := E) 2 p := corConst_nonneg (E := E) 2 p
+    have hC : 0 ≤ metricCovariantDerivativeComparisonConstant (E := E) 2 p := metric_covariant_derivative_comparison_constant_nonneg (E := E) 2 p
     have hinside : metricDerivNorm (I := I) q A gInf gBase x +
-          lemma45CorConst (E := E) 2 p *
+          metricCovariantDerivativeComparisonConstant (E := E) 2 p *
             (∑ k ∈ Finset.range q, metricDerivNorm (I := I) k A gInf gBase x) ≤
-        (2 + 2 * lemma45CorConst (E := E) 2 p * (q : ℝ)) * δ := by
+        (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (q : ℝ)) * δ := by
       calc
-        _ ≤ 2 * δ + lemma45CorConst (E := E) 2 p * ((q : ℝ) * (2 * δ)) :=
+        _ ≤ 2 * δ + metricCovariantDerivativeComparisonConstant (E := E) 2 p * ((q : ℝ) * (2 * δ)) :=
           add_le_add (hbase q hqp) (mul_le_mul_of_nonneg_left hsum hC)
         _ = _ := by ring
     calc
       metricDerivNorm (I := I) q A gInf gInf x ≤
           Real.sqrt ((2 : ℝ) ^ (2 + q)) *
             (metricDerivNorm (I := I) q A gInf gBase x +
-              lemma45CorConst (E := E) 2 p *
+              metricCovariantDerivativeComparisonConstant (E := E) 2 p *
                 (∑ k ∈ Finset.range q,
                   metricDerivNorm (I := I) k A gInf gBase x)) := hchange
       _ ≤ Real.sqrt ((2 : ℝ) ^ (2 + q)) *
-          ((2 + 2 * lemma45CorConst (E := E) 2 p * (q : ℝ)) * δ) :=
+          ((2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (q : ℝ)) * δ) :=
         mul_le_mul_of_nonneg_left hinside (Real.sqrt_nonneg _)
       _ = (Real.sqrt ((2 : ℝ) ^ (2 + q)) *
-          (2 + 2 * lemma45CorConst (E := E) 2 p * (q : ℝ))) * δ := by ring
+          (2 + 2 * metricCovariantDerivativeComparisonConstant (E := E) 2 p * (q : ℝ))) * δ := by ring
       _ ≤ limitRefFactor (E := E) p * δ :=
         mul_le_mul_of_nonneg_right (refTerm_le_factor (E := E) p q hqp) hδ0
       _ ≤ ε := hδbudget
@@ -1280,7 +1280,7 @@ theorem prefixTail_zero_le {j l m : ℕ}
     (hUK : (Φ : M j → M l) '' (U : Set (M j)) ⊆ K)
     (gMid : SmoothRiemannianMetric I (M l)) (g : SmoothRiemannianMetric I (M m))
     {ε : ℝ} {p : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p (Θ : M l → M m) gMid g)
+    (D : MapMetricApproximationOn (I := I) K ε p (Θ : M l → M m) gMid g)
     (hε : ε ≤ 1 / 2) (x : U) :
     letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
@@ -1319,7 +1319,7 @@ theorem chainPrefix_zero_le
     (gMid : SmoothRiemannianMetric I (M (j + a)))
     (g : SmoothRiemannianMetric I (M ((j + a) + b)))
     {ε : ℝ} {p : ℕ}
-    (D : PreApproxIsoDataOn (I := I) K ε p
+    (D : MapMetricApproximationOn (I := I) K ε p
       (chainComp (I := I) (Mf := M) Ψ (j + a) b : M (j + a) → M ((j + a) + b))
       gMid g)
     (hε : ε ≤ 1 / 2) (x : U) :
@@ -1351,7 +1351,7 @@ theorem chain_image_open
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     {j a : ℕ} (ha : 1 ≤ a)
-    (D : BookApproxIsoPartialData (I := I)
+    (D : PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b j) ((2 : ℝ) ^ j)) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ j a) (g j) (g (j + a))) :
     (chainComp (I := I) (Mf := M) Ψ j a : M j → M (j + a)) ''
@@ -1370,7 +1370,7 @@ theorem chain_image_open
       _ ≤ (2 : ℝ) ^ j * (2 : ℝ) ^ a := by
         rw [mul_comm 2]
         exact mul_le_mul_of_nonneg_left hpow hr.le
-  have hdata : PreApproxIsoDataOn (I := I)
+  have hdata : MapMetricApproximationOn (I := I)
       (Metric.closedEBall (b j) (ENNReal.ofReal ((2 : ℝ) ^ j))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ j a : M j → M (j + a)) (g j) (g (j + a)) := by
     rw [Metric.closedEBall_ofReal hr.le]
@@ -1398,7 +1398,7 @@ theorem chain_image_ball
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     {j a : ℕ} (ha : 1 ≤ a)
-    (D : BookApproxIsoPartialData (I := I)
+    (D : PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b j) ((2 : ℝ) ^ j)) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ j a) (g j) (g (j + a))) :
     (chainComp (I := I) (Mf := M) Ψ j a : M j → M (j + a)) ''
@@ -1415,7 +1415,7 @@ theorem tailBall_source
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
     (j₀ n : ℕ)
-    (D0 : ∀ k, BookApproxIsoPartialData (I := I)
+    (D0 : ∀ k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k))) :
@@ -1438,7 +1438,7 @@ theorem tailBall_image
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ n : ℕ)
-    (D : BookApproxIsoPartialData (I := I)
+    (D : PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1)
       (g (j₀ + n)) (g ((j₀ + n) + 1))) :
@@ -1483,7 +1483,7 @@ theorem tailClosed_image
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ n : ℕ) (hj₀ : 1 ≤ j₀)
-    (D : BookApproxIsoPartialData (I := I)
+    (D : PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) 1)
       (g (j₀ + n)) (g ((j₀ + n) + 1))) :
@@ -1545,7 +1545,7 @@ noncomputable def tailBallSystem
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k))) :
@@ -1573,7 +1573,7 @@ theorem tailSystem_center
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k)))
@@ -1615,7 +1615,7 @@ theorem tailCenter_map
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k)))
@@ -1653,7 +1653,7 @@ theorem tailCenter_incl
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k)))
@@ -1688,7 +1688,7 @@ theorem tailSystem_compact
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ) (hj₀ : 1 ≤ j₀)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k))) :
@@ -1763,7 +1763,7 @@ theorem tailMetricCocycle
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k)))
@@ -1851,7 +1851,7 @@ theorem chainBall_source
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
     {j : ℕ}
-    (D0 : ∀ k, BookApproxIsoPartialData (I := I)
+    (D0 : ∀ k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b j) ((2 : ℝ) ^ j)) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ j k) (g j) (g (j + k))) :
     ∀ k, (ballOpen b (fun n => (2 : ℝ) ^ n) j : Set (M j)) ⊆
@@ -1871,11 +1871,11 @@ theorem chainPullback_bdd
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     {j : ℕ}
-    (D0 : ∀ k, BookApproxIsoPartialData (I := I)
+    (D0 : ∀ k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b j) ((2 : ℝ) ^ j)) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ j k) (g j) (g (j + k)))
     (Dhi : ∀ p : ℕ, ∃ a : ℕ, 1 ≤ a ∧ ∀ c : ℕ,
-      Nonempty (BookApproxIsoPartialData (I := I)
+      Nonempty (PartialDiffeomorphMetricApproximation (I := I)
         (Metric.closedBall (b (j + a)) ((2 : ℝ) ^ (j + a))) (1 / 2) p
         (chainComp (I := I) (Mf := M) Ψ (j + a) c)
         (g (j + a)) (g ((j + a) + c)))) :
@@ -1898,7 +1898,7 @@ theorem chainPullback_bdd
   let gSeq := chainPullbackSeq (I := I) Ψ g U hU
   let a : ℕ → ℕ := fun r => (Dhi r).choose
   have ha : ∀ r, 1 ≤ a r := fun r => (Dhi r).choose_spec.1
-  have htail : ∀ r c, BookApproxIsoPartialData (I := I)
+  have htail : ∀ r c, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j + a r)) ((2 : ℝ) ^ (j + a r))) (1 / 2) r
       (chainComp (I := I) (Mf := M) Ψ (j + a r) c)
       (g (j + a r)) (g ((j + a r) + c)) :=
@@ -1967,11 +1967,11 @@ theorem exists_chain_limit
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     {j : ℕ}
-    (D0 : ∀ k, BookApproxIsoPartialData (I := I)
+    (D0 : ∀ k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b j) ((2 : ℝ) ^ j)) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ j k) (g j) (g (j + k)))
     (Dhi : ∀ p : ℕ, ∃ a : ℕ, 1 ≤ a ∧ ∀ c : ℕ,
-      Nonempty (BookApproxIsoPartialData (I := I)
+      Nonempty (PartialDiffeomorphMetricApproximation (I := I)
         (Metric.closedBall (b (j + a)) ((2 : ℝ) ^ (j + a))) (1 / 2) p
         (chainComp (I := I) (Mf := M) Ψ (j + a) c)
         (g (j + a)) (g ((j + a) + c)))) :
@@ -2003,15 +2003,15 @@ theorem exists_chain_data
     (g : ∀ j, SmoothRiemannianMetric I (M j))
     (hdata : ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ p : ℕ, ∃ j₀ : ℕ,
       ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
-        Nonempty (BookApproxIsoPartialData (I := I)
+        Nonempty (PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall (b j) ((2 : ℝ) ^ j)) δ p
           (chainComp (I := I) (Mf := M) Ψ j l) (g j) (g (j + l)))) :
     ∃ j₀ : ℕ, 1 ≤ j₀ ∧ ∀ j : ℕ, j₀ ≤ j →
-      ∃ _D0 : ∀ k, BookApproxIsoPartialData (I := I)
+      ∃ _D0 : ∀ k, PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall (b j) ((2 : ℝ) ^ j)) (1 / 2) 0
           (chainComp (I := I) (Mf := M) Ψ j k) (g j) (g (j + k)),
         ∀ p : ℕ, ∃ a : ℕ, 1 ≤ a ∧ ∀ c : ℕ,
-          Nonempty (BookApproxIsoPartialData (I := I)
+          Nonempty (PartialDiffeomorphMetricApproximation (I := I)
             (Metric.closedBall (b (j + a)) ((2 : ℝ) ^ (j + a))) (1 / 2) p
             (chainComp (I := I) (Mf := M) Ψ (j + a) c)
             (g (j + a)) (g ((j + a) + c))) := by
@@ -2021,7 +2021,7 @@ theorem exists_chain_data
   have hjbase := Classical.choose_spec hzero
   let j₀ := max 1 jbase
   refine ⟨j₀, le_max_left _ _, fun j hj => ?_⟩
-  let D0 : ∀ k, BookApproxIsoPartialData (I := I)
+  let D0 : ∀ k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b j) ((2 : ℝ) ^ j)) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ j k) (g j) (g (j + k)) :=
     fun k => Classical.choice (hjbase j (le_trans (le_max_right 1 jbase) hj) k)
@@ -2047,13 +2047,13 @@ theorem exists_limits_diag
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (hdata : ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ p : ℕ, ∃ j₀ : ℕ,
       ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
-        Nonempty (BookApproxIsoPartialData (I := I)
+        Nonempty (PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall (b j) ((2 : ℝ) ^ j)) δ p
           (chainComp (I := I) (Mf := M) Ψ j l) (g j) (g (j + l)))) :
     ∃ j₀ : ℕ, 1 ≤ j₀ ∧
       let U : ∀ n, Opens (M (j₀ + n)) :=
         fun n => ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)
-      ∃ _D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+      ∃ _D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
           (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
           (g (j₀ + n)) (g ((j₀ + n) + k)),
@@ -2077,12 +2077,12 @@ theorem exists_limits_diag
   let U : ∀ n, Opens (M (j₀ + n)) :=
     fun n => ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)
   have hpacks' : ∀ n,
-      ∃ D0 : ∀ k, BookApproxIsoPartialData (I := I)
+      ∃ D0 : ∀ k, PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
           (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
           (g (j₀ + n)) (g ((j₀ + n) + k)),
         ∀ p : ℕ, ∃ a : ℕ, 1 ≤ a ∧ ∀ c : ℕ,
-          Nonempty (BookApproxIsoPartialData (I := I)
+          Nonempty (PartialDiffeomorphMetricApproximation (I := I)
             (Metric.closedBall (b ((j₀ + n) + a)) ((2 : ℝ) ^ ((j₀ + n) + a))) (1 / 2) p
             (chainComp (I := I) (Mf := M) Ψ ((j₀ + n) + a) c)
             (g ((j₀ + n) + a)) (g (((j₀ + n) + a) + c))) :=
@@ -2180,13 +2180,13 @@ theorem exists_limits_close
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (hdata : ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ p : ℕ, ∃ j₀ : ℕ,
       ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
-        Nonempty (BookApproxIsoPartialData (I := I)
+        Nonempty (PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall (b j) ((2 : ℝ) ^ j)) δ p
           (chainComp (I := I) (Mf := M) Ψ j l) (g j) (g (j + l)))) :
     ∃ j₀ : ℕ, 1 ≤ j₀ ∧
       let U : ∀ n, Opens (M (j₀ + n)) :=
         fun n => ballOpen b (fun s => (2 : ℝ) ^ s) (j₀ + n)
-      ∃ _D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+      ∃ _D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
           (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
           (g (j₀ + n)) (g ((j₀ + n) + k)),
@@ -2236,7 +2236,7 @@ theorem exists_limits_close
       (Geometry.isSigmaCompact_of_isOpen I (U n).isOpen)
     intro l q hqp x
     have hstage : jδ ≤ j₀ + n := by omega
-    let D : ∀ m, BookApproxIsoPartialData (I := I)
+    let D : ∀ m, PartialDiffeomorphMetricApproximation (I := I)
         (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) δ p
         (chainComp (I := I) (Mf := M) Ψ (j₀ + n) m)
         (g (j₀ + n)) (g ((j₀ + n) + m)) :=
@@ -2735,7 +2735,7 @@ theorem tailRangeExhausts
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k)))
@@ -2836,7 +2836,7 @@ theorem tailLimitComplete
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ) (hj₀ : 1 ≤ j₀)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k)))
@@ -3325,7 +3325,7 @@ def tailAmbientConv
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (j₀ : ℕ)
-    (D₀ : ∀ n k, BookApproxIsoPartialData (I := I)
+    (D₀ : ∀ n k, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b (j₀ + n)) ((2 : ℝ) ^ (j₀ + n))) (1 / 2) 0
       (chainComp (I := I) (Mf := M) Ψ (j₀ + n) k)
       (g (j₀ + n)) (g ((j₀ + n) + k)))
@@ -3396,7 +3396,7 @@ def ballSystemOfData
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
     (hbase : ∀ j, (Ψ j : M j → M (j + 1)) (b j) = b (j + 1))
     (g : ∀ j, SmoothRiemannianMetric I (M j))
-    (D : ∀ j, BookApproxIsoPartialData (I := I)
+    (D : ∀ j, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b j) (r j)) (ε j) (p j) (Ψ j) (g j) (g (j + 1)))
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
@@ -3411,7 +3411,7 @@ def ballSystemOfData
   have hmap : ∀ j, (Ψ j : M j → M (j + 1)) '' (ballOpen b r j : Set (M j)) ⊆
       (ballOpen b r (j + 1) : Set (M (j + 1))) := by
     intro j
-    have hdata : PreApproxIsoDataOn (I := I)
+    have hdata : MapMetricApproximationOn (I := I)
         (Metric.closedEBall (b j) (ENNReal.ofReal (r j))) (ε j) (p j)
         (Ψ j : M j → M (j + 1)) (g j) (g (j + 1)) := by
       rw [Metric.closedEBall_ofReal (hr j).le]
@@ -3434,7 +3434,7 @@ noncomputable def directedBallSystem
     (hnorm : ∀ j (x : M j) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((g j).inner x v v)))
     (hdata : ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ p : ℕ, ∃ j₀ : ℕ, ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
-      Nonempty (BookApproxIsoPartialData (I := I)
+      Nonempty (PartialDiffeomorphMetricApproximation (I := I)
         (Metric.closedBall (b j) ((2 : ℝ) ^ j)) δ p
         (chainComp (I := I) (Mf := M) Ψ j l) (g j) (g (j + l)))) :
     Σ j₀ : ℕ,
@@ -3456,12 +3456,12 @@ noncomputable def directedBallSystem
   let g' : ∀ n, SmoothRiemannianMetric I (M (j₀ + n)) := fun n => g (j₀ + n)
   letI : ∀ n, Nonempty (ballOpen b' r' n) :=
     fun n => ballOpen_nonempty b' r' n (by dsimp [r']; positivity)
-  have hD : ∀ n, Nonempty (BookApproxIsoPartialData (I := I)
+  have hD : ∀ n, Nonempty (PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b' n) (r' n)) (1 / 2) 0 (Ψ' n) (g' n) (g' (n + 1))) := by
     intro n
     simpa only [b', r', Ψ', g', Nat.add_assoc] using
       hj₀ (j₀ + n) (Nat.le_add_right j₀ n) 1
-  let D : ∀ n, BookApproxIsoPartialData (I := I)
+  let D : ∀ n, PartialDiffeomorphMetricApproximation (I := I)
       (Metric.closedBall (b' n) (r' n)) (1 / 2) 0 (Ψ' n) (g' n) (g' (n + 1)) :=
     fun n => Classical.choice (hD n)
   have hbase' : ∀ n, (Ψ' n : M (j₀ + n) → M (j₀ + (n + 1))) (b' n) = b' (n + 1) := by

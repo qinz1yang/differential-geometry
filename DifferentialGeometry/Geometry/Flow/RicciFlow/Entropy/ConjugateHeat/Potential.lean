@@ -125,7 +125,7 @@ theorem conjA1_cont
   have hcoef0 :
       ∀ᶠ t in 𝓝 (K : Real), ∀ x : M,
         |S.scalar t x - S.scalar (K : Real) x| < eta / 2 :=
-    scalar_unif (I := I) S hS K heta2
+    scalar_uniform (I := I) S hS K heta2
   have hcoef :
       ∀ᶠ s in 𝓝 s0, ∀ x : M,
         |S.scalar ((T : Real) - s) x -
@@ -179,7 +179,7 @@ theorem conjA1_short
   have hcoef :
       ∀ᶠ s in 𝓝 (0 : Real), ∀ x : M,
         |S.scalar ((T : Real) - s) x - S.scalar (T : Real) x| < 1 :=
-    hshift.eventually (scalar_unif (I := I) S hS T zero_lt_one)
+    hshift.eventually (scalar_uniform (I := I) S hS T zero_lt_one)
   let U : Set Real := {s |
     (T : Real) - s ∈ D.regular ∧
       ∀ x : M,
@@ -287,7 +287,7 @@ theorem conjCoeff_bound
   have hcoef :
       ∀ᶠ s in 𝓝 (0 : Real), ∀ x : M,
         |S.scalar ((T : Real) - s) x - S.scalar (T : Real) x| < 1 :=
-    hshift.eventually (scalar_unif (I := I) S hS T zero_lt_one)
+    hshift.eventually (scalar_uniform (I := I) S hS T zero_lt_one)
   let U : Set Real := {s |
     ∀ x : M,
       |S.scalar ((T : Real) - s) x - S.scalar (T : Real) x| ≤ 1}

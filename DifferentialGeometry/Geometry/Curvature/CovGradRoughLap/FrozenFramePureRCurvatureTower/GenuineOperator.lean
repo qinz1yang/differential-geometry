@@ -467,7 +467,7 @@ theorem exists_baseOperatorField_apply_eq_pureRGenuineDiffOp (g : SmoothRiemanni
             (pureRGenuineEndo0 (I := I) (M := M) g 0 W).toSection x from rfl,
         show pureRGenuineEndo0 (I := I) (M := M) g 0 W = 0 from rfl,
         SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero]
-      rw [appCc_toSection (I := I) (M := M) g 0 0 0 W]
+      rw [operatorFieldApplication_toSection (I := I) (M := M) g 0 0 0 W]
       rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 0 I x from
             (0 : SmoothCcTensor g 0 0).toSection x) = 0 from by
         rw [SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero]; rfl]
@@ -479,15 +479,15 @@ theorem exists_baseOperatorField_apply_eq_pureRGenuineDiffOp (g : SmoothRiemanni
       intro x
       rw [show (pureRGenuineDiffOp (I := I) (M := M) g 0 (m + 1) W).toSection x =
             pureRGenuineEndoFib (I := I) (M := M) g m W x from rfl]
-      rw [appCc_toSection (I := I) (M := M) g (m + 1) (m + 1) _ W]
+      rw [operatorFieldApplication_toSection (I := I) (M := M) g (m + 1) (m + 1) _ W]
       rw [pureRGenuineEndoFib_eq_comp (I := I) (M := M) g m W x]
       rfl
 
-theorem exists_pureRGenuineDiffOp_base_appCc (g : SmoothRiemannianMetric I M) :
+theorem exists_pureRGenuineDiffOp_base_operatorFieldApply (g : SmoothRiemannianMetric I M) :
     ∃ Φ₀ : ∀ r : ℕ, SmoothCcTensor g (r + 0) (r + 0),
       ∀ (r : ℕ) (W : SmoothCcTensor g 0 r),
         pureRGenuineDiffOp (I := I) (M := M) g 0 r W =
-          appCc (I := I) (M := M) g (r + 0) (r + 0) (Φ₀ r) W :=
+          operatorFieldApply (I := I) (M := M) g (r + 0) (r + 0) (Φ₀ r) W :=
   exists_baseOperatorField_apply_eq_pureRGenuineDiffOp (I := I) (M := M) g
 
 theorem exists_proportional_pureRGenuineDiffOp_highOrder (g : SmoothRiemannianMetric I M) :

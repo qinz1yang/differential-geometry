@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderTameLipschitzLieCorrectionTensorTransferBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -14,7 +14,7 @@ open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorr0Core
+open LieCorrectionZeroCore
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -125,32 +125,32 @@ private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
   rw [ContinuousLinearMap.sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
     reindexCoeffFibGen_apply, ContinuousLinearMap.sub_apply]
 
-theorem lc0NEndoSec_sub_insert_eq_lc0CdVField_sub
+theorem lieCorrectionZeroNEndoSec_sub_insert_eq_lieCorrectionZeroCdVField_sub
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
-        (lc0NEndoSec (I := I) (M := M) g₀ g₁ gB -
-          lc0NEndoSec (I := I) (M := M) g₀ g₁ g₀) =
-      lc0CdVField (I := I) (M := M) g₀ g₁ g₀ -
-        lc0CdVField (I := I) (M := M) g₀ g₁ gB := by
+        (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ gB -
+          lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀) =
+      lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g₀ -
+        lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ gB := by
   rw [endoSlotZeroCcTensor_sub (I := I) (M := M) g₀ 0,
-    lc0b_NEndoIns_decomp (I := I) (M := M) g₀ g₁ gB,
-    lc0b_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g₀]
+    lieCorrectionZerob_NEndoIns_decomp (I := I) (M := M) g₀ g₁ gB,
+    lieCorrectionZerob_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g₀]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem lc0InsertField_sub_eq_nEndoInsert
+theorem lieCorrectionZeroInsertionField_sub_eq_nEndoInsert
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
-    lc0InsertField (I := I) (M := M) g₀ g₁ gB -
-        lc0InsertField (I := I) (M := M) g₀ g₁ g₀ =
+    lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ gB -
+        lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g₀ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-          (lc0NEndoSec (I := I) (M := M) g₀ g₁ gB -
-            lc0NEndoSec (I := I) (M := M) g₀ g₁ g₀)
+          (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ gB -
+            lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)
         + reindexCoeffGen (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2
               (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-                (lc0NEndoSec (I := I) (M := M) g₀ g₁ gB -
-                  lc0NEndoSec (I := I) (M := M) g₀ g₁ g₀)))
+                (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ gB -
+                  lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g₀)))
             (Equiv.swap (0 : Fin 2) 1) := by
   rw [endoSlotZeroCcTensor_sub (I := I) (M := M) g₀ 1,
     rsDomDomCongrSection_sub (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 2) 1),
@@ -159,40 +159,40 @@ theorem lc0InsertField_sub_eq_nEndoInsert
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lc0VFlat_sub_eq_trace_comp_kappa_sub
+theorem lieCorrectionZeroVFlat_sub_eq_trace_comp_kappa_sub
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
-    lc0VFlat (I := I) (M := M) g₀ g₁ g₀ -
-        lc0VFlat (I := I) (M := M) g₀ g₁ gB =
+    lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ g₀ -
+        lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB =
       ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 1
-        (lc0PureDT (I := I) (M := M) g₀ g₁ 1)
-        (lc0Kappa (I := I) (M := M) g₀ g₁ g₀ -
-          lc0Kappa (I := I) (M := M) g₀ g₁ gB) := by
+        (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1)
+        (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀ -
+          lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gB) := by
   rw [ccOperatorFieldComp_sub_right]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lc0IVField_sub_eq_trace_comp_slotExtend_vflat_sub
+theorem lieCorrectionZeroIVField_sub_eq_trace_comp_slotExtend_vflat_sub
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
-    lc0IVField (I := I) (M := M) g₀ g₁ g₀ -
-        lc0IVField (I := I) (M := M) g₀ g₁ gB =
+    lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀ -
+        lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ gB =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 3 1
-        (lc0Tr (I := I) (M := M) g₀ g₁ 1 lc0IVPerm)
+        (lieCorrectionZeroTr (I := I) (M := M) g₀ g₁ 1 lieCorrectionZeroIVPerm)
         (slotExtendIter (I := I) (M := M) g₀ 0 1 2
-          (lc0VFlat (I := I) (M := M) g₀ g₁ g₀ -
-            lc0VFlat (I := I) (M := M) g₀ g₁ gB)) := by
+          (lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ g₀ -
+            lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ gB)) := by
   rw [slotExtendIter_sub, ccOperatorFieldComp_sub_right]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lc0CdVField_sub_eq_comp_connDiff
+theorem lieCorrectionZeroCdVField_sub_eq_comp_connectionDifference
     (g₀ g₁ gB : SmoothRiemannianMetric I M) :
-    lc0CdVField (I := I) (M := M) g₀ g₁ g₀ -
-        lc0CdVField (I := I) (M := M) g₀ g₁ gB =
+    lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ g₀ -
+        lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ gB =
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 2 1
-        (lc0IVField (I := I) (M := M) g₀ g₁ g₀ -
-          lc0IVField (I := I) (M := M) g₀ g₁ gB)
-        (connDiffSection (I := I) g₁ g₀) := by
-  rw [appCcRS_sub_left]
+        (lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀ -
+          lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ gB)
+        (connectionDifferenceSection (I := I) g₁ g₀) := by
+  rw [operatorFieldComposition_sub_left]
   rfl
 
 end DifferentialGeometry.Analysis.Spectral

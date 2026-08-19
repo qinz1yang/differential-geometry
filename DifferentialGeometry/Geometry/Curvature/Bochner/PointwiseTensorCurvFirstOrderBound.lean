@@ -68,13 +68,13 @@ private lemma riemannianFiberNormSq_succ_eq_sum_slot0Curry_smoothOrthoFrame
       riemannianFiberNormSq (I := I) (M := M) g 0 s x S =
         ∑ K : Fin 0 → Fin (Module.finrank ℝ E), ∑ J : Fin s → Fin (Module.finrank ℝ E),
           fiberNormSqSummand (I := I) (M := M) g x 0 s S (Module.finrank ℝ E) e K J := fun S =>
-    rfns_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g s x S e hn horth
+    riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g s x S e hn horth
   have hreprSucc : ∀ S : TensorRSSpace 0 (s + 1) I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x S =
         ∑ K : Fin 0 → Fin (Module.finrank ℝ E), ∑ J : Fin (s + 1) → Fin (Module.finrank ℝ E),
           fiberNormSqSummand (I := I) (M := M) g x 0 (s + 1) S (Module.finrank ℝ E) e K J := fun
             S =>
-    rfns_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x S e hn horth
+    riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x S e hn horth
   exact riemannianFiberNormSq_succ_eq_sum_slot0Curry_of_frame (I := I) (M := M) g s x e
     (fun k : Fin 0 => k.elim0) hreprS hreprSucc T
 
@@ -1057,7 +1057,7 @@ private lemma riemannianFiberNormSq_tensorCovDerivAt_direction_le
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x U =
         ∑ K : Fin 0 → Fin n, ∑ J : Fin (s + 1) → Fin n,
           fiberNormSqSummand (I := I) (M := M) g x 0 (s + 1) U n e K J := fun U =>
-    rfns_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x U e hn horth
+    riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x U e hn horth
   set K₀ : Fin 0 → Fin n := fun k => k.elim0 with hK₀
   set grad : ℝ := riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
     ((covGrad (I := I) (M := M) g 0 s S).toSection x) with hgrad
@@ -1797,126 +1797,6 @@ private theorem frameNablaCap_of
     rw [nablaBaseSlotCurvFrameSumCLM_apply]
   rw [hsum_eq]
   exact frameSum_sq_le (I := I) (M := M) g x C1 hC1 u F hF_len
-
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma rfns_tensorCovDerivAt_frame_le
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
-    {n : ℕ} (e : Fin n → TangentSpace I x) (K₀ : Fin 0 → Fin n)
-    (hreprS : ∀ U : TensorRSSpace 0 s I x,
-      riemannianFiberNormSq (I := I) (M := M) g 0 s x U =
-        ∑ K : Fin 0 → Fin n, ∑ J : Fin s → Fin n,
-          fiberNormSqSummand (I := I) (M := M) g x 0 s U n e K J)
-    (hreprSucc : ∀ U : TensorRSSpace 0 (s + 1) I x,
-      riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x U =
-        ∑ K : Fin 0 → Fin n, ∑ J : Fin (s + 1) → Fin n,
-          fiberNormSqSummand (I := I) (M := M) g x 0 (s + 1) U n e K J)
-    (j : Fin n) :
-    riemannianFiberNormSq (I := I) (M := M) g 0 s x
-        ((tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x (e j)) ≤
-      riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
-        ((covGrad (I := I) (M := M) g 0 s S).toSection x) := by
-  classical
-  have hslice : slot0Curry (I := I) (M := M) g x s e K₀
-        ((covGrad (I := I) (M := M) g 0 s S).toSection x) j =
-      (tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x (e j) := by
-    rw [slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec (I := I) (M := M) g x s e K₀
-      ((covGrad (I := I) (M := M) g 0 s S).toSection x) j]
-    rw [curry_covGrad_unit_eval_general (I := I) (M := M) g s S x (e j)]
-    rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          tensorCovDerivAt (I := I) (M := M) g 0 s S x (e j))
-          (unitZeroSec (I := I) (M := M) x) =
-        (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          (tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x (e j))
-          (unitZeroSec (I := I) (M := M) x) from rfl]
-    exact tensor0SAsRS_unit_recover (I := I) (M := M) s x
-      ((tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x (e j))
-  rw [← hslice]
-  exact riemannianFiberNormSq_slot0Curry_le_of_frame (I := I) (M := M) g s x e K₀
-    hreprS hreprSucc ((covGrad (I := I) (M := M) g 0 s S).toSection x) j
-
-private lemma rfns_tensorCovDerivAt_direction_le
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
-    (w : TangentSpace I x) :
-    riemannianFiberNormSq (I := I) (M := M) g 0 s x
-        ((tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x w) ≤
-      (Module.finrank ℝ E : ℝ) * g.inner x w w *
-        riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
-          ((covGrad (I := I) (M := M) g 0 s S).toSection x) := by
-  classical
-  obtain ⟨n, e, _bse, hn, _hbse, horth, hpars, hexpand, hreprS⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
-  obtain ⟨n', e', _bse', hn', _hbse', _horth', _hpars', _hexpand', hreprSucc'⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g (s + 1) x
-  have hreprSucc : ∀ U : TensorRSSpace 0 (s + 1) I x,
-      riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x U =
-        ∑ K : Fin 0 → Fin n, ∑ J : Fin (s + 1) → Fin n,
-          fiberNormSqSummand (I := I) (M := M) g x 0 (s + 1) U n e K J := fun U =>
-    rfns_eq_sum_fiberNormSqSummand_of_orthoFrame (I := I) (M := M) g (s + 1) x U e hn horth
-  set K₀ : Fin 0 → Fin n := fun k => k.elim0 with hK₀
-  set grad : ℝ := riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
-    ((covGrad (I := I) (M := M) g 0 s S).toSection x) with hgrad
-  have hgrad_nn : 0 ≤ grad := riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 (s + 1) x _
-  set Tj : Fin n → TensorRSSpace 0 s I x := fun j =>
-    (tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x (e j) with hTj
-  have hTw : (tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x w =
-      ∑ j : Fin n, g.inner x (e j) w • Tj j := by
-    conv_lhs => rw [hexpand w]
-    rw [map_sum]
-    refine Finset.sum_congr rfl (fun j _ => ?_)
-    rw [ContinuousLinearMap.map_smul, hTj]
-  rw [riemannianFiberNormSq_eq_sum_componentS_sq (I := I) (M := M) g x s e hreprS _ K₀]
-  rw [hTw]
-  have hcomp : ∀ J : Fin s → Fin n,
-      fiberNormSqComponent (I := I) (M := M) g x 0 s
-          (∑ j : Fin n, g.inner x (e j) w • Tj j) n e K₀ J =
-        ∑ j : Fin n, g.inner x (e j) w *
-          fiberNormSqComponent (I := I) (M := M) g x 0 s (Tj j) n e K₀ J := by
-    intro J
-    rw [fiberNormSqComponent_sum (I := I) (M := M) g x 0 s Finset.univ
-      (fun j => g.inner x (e j) w • Tj j) n e K₀ J]
-    refine Finset.sum_congr rfl (fun j _ => ?_)
-    rw [fiberNormSqComponent_smul (I := I) (M := M) g x 0 s (g.inner x (e j) w) (Tj j) n e K₀ J]
-  have hCS : ∀ J : Fin s → Fin n,
-      (fiberNormSqComponent (I := I) (M := M) g x 0 s
-          (∑ j : Fin n, g.inner x (e j) w • Tj j) n e K₀ J) ^ 2 ≤
-        g.inner x w w *
-          ∑ j : Fin n, (fiberNormSqComponent (I := I) (M := M) g x 0 s (Tj j) n e K₀ J) ^ 2 := by
-    intro J
-    rw [hcomp J]
-    have hcs := Finset.sum_mul_sq_le_sq_mul_sq (R := ℝ) (Finset.univ : Finset (Fin n))
-      (fun j => g.inner x (e j) w)
-      (fun j => fiberNormSqComponent (I := I) (M := M) g x 0 s (Tj j) n e K₀ J)
-    calc (∑ j : Fin n, g.inner x (e j) w *
-            fiberNormSqComponent (I := I) (M := M) g x 0 s (Tj j) n e K₀ J) ^ 2
-        ≤ (∑ j : Fin n, g.inner x (e j) w ^ 2) *
-            ∑ j : Fin n, fiberNormSqComponent (I := I) (M := M) g x 0 s (Tj j) n e K₀ J ^ 2 := hcs
-      _ = g.inner x w w *
-            ∑ j : Fin n, (fiberNormSqComponent (I := I) (M := M) g x 0 s (Tj j) n e K₀ J) ^ 2 := by
-            rw [hpars w]
-  calc (∑ J : Fin s → Fin n,
-          (fiberNormSqComponent (I := I) (M := M) g x 0 s
-            (∑ j : Fin n, g.inner x (e j) w • Tj j) n e K₀ J) ^ 2)
-      ≤ ∑ J : Fin s → Fin n, g.inner x w w *
-          ∑ j : Fin n, (fiberNormSqComponent (I := I) (M := M) g x 0 s (Tj j) n e K₀ J) ^ 2 :=
-        Finset.sum_le_sum (fun J _ => hCS J)
-    _ = g.inner x w w *
-          ∑ j : Fin n, riemannianFiberNormSq (I := I) (M := M) g 0 s x (Tj j) := by
-        rw [← Finset.mul_sum]
-        congr 1
-        rw [Finset.sum_comm]
-        refine Finset.sum_congr rfl (fun j _ => ?_)
-        rw [riemannianFiberNormSq_eq_sum_componentS_sq (I := I) (M := M) g x s e hreprS (Tj j) K₀]
-    _ ≤ g.inner x w w * ∑ _j : Fin n, grad := by
-        refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum (fun j _ => ?_))
-          (metric_inner_self_nonneg' (I := I) (M := M) g x w)
-        rw [hTj]
-        exact rfns_tensorCovDerivAt_frame_le (I := I) (M := M) g s S x e K₀ hreprS hreprSucc j
-    _ = (Module.finrank ℝ E : ℝ) * g.inner x w w * grad := by
-        have hnE : (n : ℝ) = (Module.finrank ℝ E : ℝ) := by
-          rw [hn]; rfl
-        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, hnE]
-        ring
-
 private lemma covDeriv_dir_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (w : TangentSpace I x) {Kbase : ℝ} (hw : g.inner x w w ≤ Kbase) :
@@ -1931,7 +1811,7 @@ private lemma covDeriv_dir_le
         (Module.finrank ℝ E : ℝ) * g.inner x w w *
           riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
             ((covGrad (I := I) (M := M) g 0 s S).toSection x) :=
-      rfns_tensorCovDerivAt_direction_le (I := I) (M := M) g s S x w
+      riemannianFiberNormSq_tensorCovDerivAt_direction_le (I := I) (M := M) g s S x w
     _ ≤ (Module.finrank ℝ E : ℝ) * Kbase *
           riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
             ((covGrad (I := I) (M := M) g 0 s S).toSection x) := by
@@ -1940,7 +1820,7 @@ private lemma covDeriv_dir_le
       exact riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 (s + 1) x _
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
-private lemma rfns_finSum_le
+private lemma riemannianFiberNormSq_finSum_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) {n : ℕ}
     (F : Fin n → TensorRSSpace 0 s I x) {K : ℝ}
     (hF : ∀ i : Fin n,
@@ -1973,7 +1853,7 @@ private lemma covDeriv_sum_le
         ((Module.finrank ℝ E : ℝ) * Kbase *
           riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
             ((covGrad (I := I) (M := M) g 0 s S).toSection x)) := by
-  exact rfns_finSum_le (I := I) (M := M) g s x
+  exact riemannianFiberNormSq_finSum_le (I := I) (M := M) g s x
     (fun i => (tensorCov (I := I) g 0 s).toFun (fun y : M => S.toSection y) x (w i))
     (fun i => covDeriv_dir_le (I := I) (M := M) g s S x (w i) (hw i))
 

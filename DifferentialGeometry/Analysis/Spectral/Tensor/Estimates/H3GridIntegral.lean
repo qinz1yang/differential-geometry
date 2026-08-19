@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingSharpC0JetSum
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -15,6 +15,7 @@ namespace DifferentialGeometry.Analysis.Spectral
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.Connection
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
@@ -28,6 +29,7 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem low_grid_int
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (a : ℕ) (ha : 2 ≤ a) :
@@ -51,6 +53,7 @@ theorem low_grid_int
                         ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x)
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ K A k := by
   classical
+  letI : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   obtain ⟨Cpt, hCpt, hpt⟩ :=
@@ -239,6 +242,7 @@ theorem low_grid_int
       _ = K A k := by
           simp only [K, if_neg hk0, G, Lam]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem h2_grid_int
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -264,6 +268,7 @@ theorem h2_grid_int
   simpa only [Nat.reduceAdd] using
     low_grid_int (I := I) (M := M) hDim g 2 (by omega)
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem h3_top_grid_int
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -287,6 +292,7 @@ theorem h3_top_grid_int
                       ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x)
               ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ K R * A ^ 2 := by
   classical
+  letI : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   obtain ⟨Cpt, hCpt, hpt⟩ :=
@@ -417,6 +423,7 @@ theorem h3_top_grid_int
         simp only [count, G, K, Lam]
         ring
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem h3_grid_int
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :

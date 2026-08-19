@@ -59,7 +59,7 @@ private theorem riemannianFiberNormSq_toSection_heq_congr (g : SmoothRiemannianM
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem rfns_iteratedCovGrad_covGrad_comm_db (g : SmoothRiemannianMetric I M)
+private theorem riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db (g : SmoothRiemannianMetric I M)
     (r s m : ℕ) (W : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r ((s + 1) + m) x
         ((iteratedCovGrad g r (s + 1) m (covGrad g r s W)).toSection x) =
@@ -71,10 +71,6 @@ private theorem rfns_iteratedCovGrad_covGrad_comm_db (g : SmoothRiemannianMetric
 def castCcTensorRank (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ} (h : a = b)
     (W : SmoothCcTensor g r a) : SmoothCcTensor g r b :=
   h ▸ W
-
-abbrev castRankCc_db (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ} (h : a = b)
-    (W : SmoothCcTensor g r a) : SmoothCcTensor g r b :=
-  castCcTensorRank g r h W
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -144,7 +140,7 @@ structure DiffBilinOp (g : SmoothRiemannianMetric I M) where
         castCcTensorRank g 0 (by omega : (r + 1) + p = r + (p + 1)) (op p (r + 1) (covGrad g 0 r W))
   kappa : ℕ → ℕ → ℝ
   kappa_nonneg : ∀ p r, 0 ≤ kappa p r
-  rfns_op_le : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r) (x : M),
+  riemannianFiberNormSq_op_le : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r) (x : M),
     riemannianFiberNormSq (I := I) (M := M) g 0 (r + p) x ((op p r W).toSection x) ≤
       kappa p r * ∑ q ∈ Finset.range (p + 1),
         riemannianFiberNormSq (I := I) (M := M) g 0 (r + q) x
@@ -156,7 +152,7 @@ variable {g : SmoothRiemannianMetric I M}
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rfns_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ) :
+theorem riemannianFiberNormSq_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ) :
     ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g 0 ((r + p) + j) x
           ((iteratedCovGrad g 0 (r + p) j (Φ.op p r W)).toSection x) ≤
@@ -176,7 +172,7 @@ theorem rfns_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ) :
                 ((iteratedCovGrad g 0 r q W).toSection x) := by
         rw [pow_zero, one_mul, gridWindowSum_zero, Nat.add_zero]
       rw [iteratedCovGrad_zero, hrhs]
-      exact Φ.rfns_op_le p r W x
+      exact Φ.riemannianFiberNormSq_op_le p r W x
   | succ j ih =>
       intro p r W x
       set K : ℝ := gridWindowSum Φ.kappa p r (j + 1) with hK_def
@@ -192,7 +188,7 @@ theorem rfns_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ) :
           riemannianFiberNormSq (I := I) (M := M) g 0 (((r + p) + 1) + j) x
             ((iteratedCovGrad g 0 ((r + p) + 1) j
               (covGrad g 0 (r + p) (Φ.op p r W))).toSection x) from
-        (rfns_iteratedCovGrad_covGrad_comm_db g 0 (r + p) j (Φ.op p r W) x).symm]
+        (riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db g 0 (r + p) j (Φ.op p r W) x).symm]
       rw [Φ.covGrad_op p r W, iteratedCovGrad_add]
       refine (riemannianFiberNormSq_add_le (I := I) (M := M) g 0 (((r + p) + 1) + j) x
           ((iteratedCovGrad g 0 ((r + p) + 1) j (Φ.op (p + 1) r W)).toSection x)
@@ -220,7 +216,7 @@ theorem rfns_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ) :
           kB * sB := by
         rw [hkB_def, hsB_def]
         congr 1
-        exact Finset.sum_congr rfl fun q _ => rfns_iteratedCovGrad_covGrad_comm_db g 0 r q W x
+        exact Finset.sum_congr rfl fun q _ => riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db g 0 r q W x
       have hB : riemannianFiberNormSq (I := I) (M := M) g 0 (((r + 1) + p) + j) x
             ((iteratedCovGrad g 0 ((r + 1) + p) j
               (Φ.op p (r + 1) (covGrad g 0 r W))).toSection x) ≤
@@ -288,7 +284,7 @@ theorem rfns_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ) :
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_rfns_iteratedCovGrad_singleSum_le (Φ : DiffBilinOp g) :
+theorem exists_riemannianFiberNormSq_iteratedCovGrad_singleSum_le (Φ : DiffBilinOp g) :
     ∃ C : ℕ → ℕ → ℝ, (∀ r j, 0 ≤ C r j) ∧
       ∀ (r : ℕ) (W : SmoothCcTensor g 0 r) (j : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g 0 (r + j) x
@@ -299,12 +295,12 @@ theorem exists_rfns_iteratedCovGrad_singleSum_le (Φ : DiffBilinOp g) :
   refine ⟨fun r j => (4 : ℝ) ^ j * gridWindowSum Φ.kappa 0 r j,
     fun r j => mul_nonneg (by positivity) (gridWindowSum_nonneg Φ.kappa_nonneg 0 r j),
     fun r W j x => ?_⟩
-  have hgrid := Φ.rfns_iteratedCovGrad_grid j 0 r W x
+  have hgrid := Φ.riemannianFiberNormSq_iteratedCovGrad_grid j 0 r W x
   simpa only [Nat.add_zero, Nat.zero_add] using hgrid
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rfns_iteratedCovGrad_grid_at
+theorem riemannianFiberNormSq_iteratedCovGrad_grid_at
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
     (hcovGrad_op : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),
       covGrad g 0 (r + p) (op p r W) =
@@ -312,7 +308,7 @@ theorem rfns_iteratedCovGrad_grid_at
           castCcTensorRank g 0 (by omega : (r + 1) + p = r + (p + 1))
             (op p (r + 1) (covGrad g 0 r W)))
     (kappa : ℕ → ℕ → ℝ) (kappa_nonneg : ∀ p r, 0 ≤ kappa p r) (x₀ : M)
-    (hrfns_at : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),
+    (hriemannianFiberNormSq_at : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),
       riemannianFiberNormSq (I := I) (M := M) g 0 (r + p) x₀ ((op p r W).toSection x₀) ≤
         kappa p r * ∑ q ∈ Finset.range (p + 1),
           riemannianFiberNormSq (I := I) (M := M) g 0 (r + q) x₀
@@ -336,7 +332,7 @@ theorem rfns_iteratedCovGrad_grid_at
                 ((iteratedCovGrad g 0 r q W).toSection x₀) := by
         rw [pow_zero, one_mul, gridWindowSum_zero, Nat.add_zero]
       rw [iteratedCovGrad_zero, hrhs]
-      exact hrfns_at p r W
+      exact hriemannianFiberNormSq_at p r W
   | succ j ih =>
       intro p r W
       set K : ℝ := gridWindowSum kappa p r (j + 1) with hK_def
@@ -352,7 +348,7 @@ theorem rfns_iteratedCovGrad_grid_at
           riemannianFiberNormSq (I := I) (M := M) g 0 (((r + p) + 1) + j) x₀
             ((iteratedCovGrad g 0 ((r + p) + 1) j
               (covGrad g 0 (r + p) (op p r W))).toSection x₀) from
-        (rfns_iteratedCovGrad_covGrad_comm_db g 0 (r + p) j (op p r W) x₀).symm]
+        (riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db g 0 (r + p) j (op p r W) x₀).symm]
       rw [hcovGrad_op p r W, iteratedCovGrad_add]
       refine (riemannianFiberNormSq_add_le (I := I) (M := M) g 0 (((r + p) + 1) + j) x₀
           ((iteratedCovGrad g 0 ((r + p) + 1) j (op (p + 1) r W)).toSection x₀)
@@ -380,7 +376,7 @@ theorem rfns_iteratedCovGrad_grid_at
           kB * sB := by
         rw [hkB_def, hsB_def]
         congr 1
-        exact Finset.sum_congr rfl fun q _ => rfns_iteratedCovGrad_covGrad_comm_db g 0 r q W x₀
+        exact Finset.sum_congr rfl fun q _ => riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db g 0 r q W x₀
       have hB : riemannianFiberNormSq (I := I) (M := M) g 0 (((r + 1) + p) + j) x₀
             ((iteratedCovGrad g 0 ((r + 1) + p) j
               (op p (r + 1) (covGrad g 0 r W))).toSection x₀) ≤
@@ -448,7 +444,7 @@ theorem rfns_iteratedCovGrad_grid_at
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_rfns_iteratedCovGrad_singleSum_le_at
+theorem exists_riemannianFiberNormSq_iteratedCovGrad_singleSum_le_at
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
     (hcovGrad_op : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),
       covGrad g 0 (r + p) (op p r W) =
@@ -456,7 +452,7 @@ theorem exists_rfns_iteratedCovGrad_singleSum_le_at
           castCcTensorRank g 0 (by omega : (r + 1) + p = r + (p + 1))
             (op p (r + 1) (covGrad g 0 r W)))
     (kappa : ℕ → ℕ → ℝ) (kappa_nonneg : ∀ p r, 0 ≤ kappa p r) (x₀ : M)
-    (hrfns_at : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),
+    (hriemannianFiberNormSq_at : ∀ (p r : ℕ) (W : SmoothCcTensor g 0 r),
       riemannianFiberNormSq (I := I) (M := M) g 0 (r + p) x₀ ((op p r W).toSection x₀) ≤
         kappa p r * ∑ q ∈ Finset.range (p + 1),
           riemannianFiberNormSq (I := I) (M := M) g 0 (r + q) x₀
@@ -469,7 +465,7 @@ theorem exists_rfns_iteratedCovGrad_singleSum_le_at
             riemannianFiberNormSq (I := I) (M := M) g 0 (r + q) x₀
               ((iteratedCovGrad g 0 r q W).toSection x₀) := by
   intro r W j
-  have hgrid := rfns_iteratedCovGrad_grid_at op hcovGrad_op kappa kappa_nonneg x₀ hrfns_at j 0 r W
+  have hgrid := riemannianFiberNormSq_iteratedCovGrad_grid_at op hcovGrad_op kappa kappa_nonneg x₀ hriemannianFiberNormSq_at j 0 r W
   simpa only [Nat.add_zero, Nat.zero_add] using hgrid
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [CompleteSpace E] in

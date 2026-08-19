@@ -330,7 +330,7 @@ theorem metricGainControl_of_metricVariationOn
     (A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     {T : Real}
-    (hEq : MetricVariationEquationOnRaw (I := I) G Ric)
+    (hEq : MetricConnectionFamilyVariationEquationOn (I := I) G Ric)
     (hlocal :
       ∀ t0 : Real,
         t0 ∈ Set.Icc 0 T ->
@@ -402,7 +402,7 @@ theorem metricGainControl_of_metricVariationOn_closedOpen
     (Ric : RicciTensorField (I := I) (M := M) Real)
     (A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
-    (hEq : MetricVariationEquationOnRaw (I := I) G Ric)
+    (hEq : MetricConnectionFamilyVariationEquationOn (I := I) G Ric)
     (hSmooth : MetricFamilySmoothOn (I := I) (M := M)
       (RealTimeInterval.closedOpen 0 omega h0ω) G.metric)
     (hA :

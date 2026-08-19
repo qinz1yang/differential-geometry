@@ -8,9 +8,9 @@ run_cmd do
   let expected := #[``propext, ``Classical.choice, ``Quot.sound]
   let declarations := #[
     ``ricci_flow_short_time_existence,
-    ``HamiltonPositiveRicci.ham3_short_isSolution,
-    ``HamiltonPositiveRicci.ham3_short_smooth_solution,
-    ``HCGCompactness.ham3_main_hcg,
+    ``HamiltonPositiveRicci.hamilton_short_time_is_solution,
+    ``HamiltonPositiveRicci.hamilton_short_time_smooth_solution,
+    ``HamiltonPositiveRicci.hamilton_positive_ricci_classification,
     ``HamiltonPositiveRicci.hamilton_positive_ricci
   ]
   for declaration in declarations do

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValue
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamChartRicciDeriv
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamLinearizedChristoffel
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathChartRicciDerivative
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPathLinearizedChristoffel
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSecondOrderPart
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovGrad.SecondCovGradChartHessian
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SmoothParametricCoeffIntegral
@@ -10,7 +10,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RiemannianFibe
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwiseC2
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.InverseMetricPerturbationFibreBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RealizedFamCurvatureJetBound
+import DifferentialGeometry.Geometry.Curvature.MetricPerturbationPathCurvatureJetBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RealizeMetricChartGramDifference
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Curvature
@@ -53,7 +53,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-theorem corrField_realizedFam_chartRiemannTensor_jointContMDiffOn
+theorem corrField_metricPerturbationPath_chartRiemannTensor_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -61,12 +61,12 @@ theorem corrField_realizedFam_chartRiemannTensor_jointContMDiffOn
     (α : M) (i j k l : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => chartRiemannTensor (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α i j k l (extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
-  have hG := realizedFam_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α i j k l (extChartAt I α p.1))
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
+  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine ContMDiffOn.prodMk contMDiffOn_snd ?_
     exact (contMDiffOn_extChartAt (I := I) (x := α)).comp contMDiffOn_fst (fun p hp => hp.1)
   intro p hp
@@ -76,14 +76,14 @@ theorem corrField_realizedFam_chartRiemannTensor_jointContMDiffOn
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
   have hentry := gen_joint_riemann (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ') α hG i j k l hs hy
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α hG i j k l hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartRiemannTensor (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' r.1) α i j k l r.2) (p.2, extChartAt I α p.1) :=
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) α i j k l r.2) (p.2, extChartAt I α p.1) :=
     hentry.contMDiffAt
   have hmoveAt : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ × E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) p := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p := by
     have hm := hmove p ⟨hx, hs⟩
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hm
     exact hm
@@ -92,7 +92,7 @@ theorem corrField_realizedFam_chartRiemannTensor_jointContMDiffOn
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-theorem corrField_realizedFam_chartChristoffel_jointContMDiffOn
+theorem corrField_metricPerturbationPath_chartChristoffel_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -100,12 +100,12 @@ theorem corrField_realizedFam_chartChristoffel_jointContMDiffOn
     (α : M) (i j k : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => chartChristoffel (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α i j k (extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
-  have hG := realizedFam_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α i j k (extChartAt I α p.1))
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
+  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine ContMDiffOn.prodMk contMDiffOn_snd ?_
     exact (contMDiffOn_extChartAt (I := I) (x := α)).comp contMDiffOn_fst (fun p hp => hp.1)
   intro p hp
@@ -115,14 +115,14 @@ theorem corrField_realizedFam_chartChristoffel_jointContMDiffOn
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
   have hentry := gen_joint_christoffel (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ') α hG i j k hs hy
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α hG i j k hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartChristoffel (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' r.1) α i j k r.2) (p.2, extChartAt I α p.1) :=
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) α i j k r.2) (p.2, extChartAt I α p.1) :=
     hentry.contMDiffAt
   have hmoveAt : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ × E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) p := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p := by
     have hm := hmove p ⟨hx, hs⟩
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hm
     exact hm
@@ -131,7 +131,7 @@ theorem corrField_realizedFam_chartChristoffel_jointContMDiffOn
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-private lemma corrField_realizedFam_chartGramMatrix_jointContMDiffOn
+private lemma corrField_metricPerturbationPath_chartGramMatrix_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -139,12 +139,12 @@ private lemma corrField_realizedFam_chartGramMatrix_jointContMDiffOn
     (α : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => chartGramMatrix (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α p.1 i j)
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
-  have hG := realizedFam_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 i j)
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
+  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine ContMDiffOn.prodMk contMDiffOn_snd ?_
     exact (contMDiffOn_extChartAt (I := I) (x := α)).comp contMDiffOn_fst (fun p hp => hp.1)
   intro p hp
@@ -156,11 +156,11 @@ private lemma corrField_realizedFam_chartGramMatrix_jointContMDiffOn
   have hentry := hG.1 i j hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartGramOnE (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' r.1) α i j r.2) (p.2, extChartAt I α p.1) :=
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) α i j r.2) (p.2, extChartAt I α p.1) :=
     hentry.contMDiffAt
   have hmoveAt : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ × E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) p := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p := by
     have hm := hmove p ⟨hx, hs⟩
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hm
     exact hm
@@ -420,31 +420,31 @@ private lemma corrField_riemannBiContrFib_toModel_chartα
   rfl
 
 omit [CompactSpace M] in
-private lemma corrField_riemannChartLoweredScalar_realizedFam_jointContMDiffOn
+private lemma corrField_riemannChartLoweredScalar_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ')
     (α : M) (i j k l : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
-      (fun p : M × ℝ => (realizedFam (I := I) g₀ T T' hδ hδ' p.2).inner p.1
-        (riemannOp (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2)) p.1
+      (fun p : M × ℝ => (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2).inner p.1
+        (riemannOp (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)) p.1
           (chartBasisVecFiber (I := I) α i p.1)
           (chartBasisVecFiber (I := I) α j p.1)
           (chartBasisVecFiber (I := I) α k p.1))
         (chartBasisVecFiber (I := I) α l p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hRm : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => ∑ m : Fin (Module.finrank ℝ E),
-        chartRiemannTensor (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α k i j m
+        chartRiemannTensor (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α k i j m
             (extChartAt I α p.1) *
-          chartGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α p.1 m l)
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+          chartGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 m l)
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine contMDiffOn_finset_sum (fun m _ => ?_)
-    have hriem := corrField_realizedFam_chartRiemannTensor_jointContMDiffOn
+    have hriem := corrField_metricPerturbationPath_chartRiemannTensor_jointContMDiffOn
       (I := I) g₀ T T' hδ hδ' α k i j m
-    have hgram := corrField_realizedFam_chartGramMatrix_jointContMDiffOn
+    have hgram := corrField_metricPerturbationPath_chartGramMatrix_jointContMDiffOn
       (I := I) g₀ T T' hδ hδ' α m l
     exact hriem.mul hgram
   refine hRm.congr (fun p hp => ?_)
@@ -452,7 +452,7 @@ private lemma corrField_riemannChartLoweredScalar_realizedFam_jointContMDiffOn
   have hxgood : p.1 ∈ chartLeviCivitaGoodSet (I := I) α := by
     rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α, extChartAt_source (I := I)]
     exact hx
-  set gs := realizedFam (I := I) g₀ T T' hδ hδ' p.2 with hgs
+  set gs := metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2 with hgs
   rw [riemannOp_chartBasisVec_alpha_eq (I := I) gs α k i j hxgood]
   rw [map_sum]
   rw [ContinuousLinearMap.sum_apply]
@@ -471,29 +471,29 @@ private lemma corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
     (α : M) (σ : Fin 2 → Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => Tensor0SSpace.toModel
-        (riemannBiContrFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1))
+        (riemannBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1))
         ![(chartBasisVecFiber (I := I) α (σ 0) p.1 : E),
           (chartBasisVecFiber (I := I) α (σ 1) p.1 : E)])
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hYbasis : ∀ n l : Fin (Module.finrank ℝ E),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Tensor0SSpace.toModel (Y p.1)
           ![(chartBasisVecFiber (I := I) α n p.1 : E), (chartBasisVecFiber (I := I) α l p.1 : E)])
-        ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+        ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     intro n l p₀ hp₀
     have hYon : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
         (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
         (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
           (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 (Y p.1))
-        ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+        ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
       (Y.contMDiff.comp_contMDiffOn contMDiffOn_fst).mono (Set.subset_univ _)
     have hYmdiff := hYon p₀ hp₀
     have hvbasis : ∀ i : Fin 2, ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
         (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1
           (![fun b : M => chartBasisVecFiber (I := I) α n b,
               fun b : M => chartBasisVecFiber (I := I) α l b] i p.1))
-        ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) p₀ := by
+        ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p₀ := by
       intro i
       fin_cases i
       · exact (chartBasisVec_jointContMDiffOn (I := I) α n p₀
@@ -503,7 +503,7 @@ private lemma corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
           ⟨hp₀.1, Set.mem_univ _⟩).mono
           (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
     have happly := TensorMultilinear.contMDiffWithinAt_section_apply_prod (I := I) 2
-      (s := (chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) (p₀ := p₀)
+      (s := (chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) (p₀ := p₀)
       (fun b : M => Y b) hYmdiff
       (![fun b : M => chartBasisVecFiber (I := I) α n b,
           fun b : M => chartBasisVecFiber (I := I) α l b]) hvbasis
@@ -514,11 +514,11 @@ private lemma corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
     · congr 1; funext i; fin_cases i <;> rfl
   have hcomb : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => 2 * ∑ m, ∑ n, chartInvGramMatrix (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α p.1 m n *
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I)
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α p.1 k l *
-          ((realizedFam (I := I) g₀ T T' hδ hδ' p.2).inner p.1
-              (riemannOp (LeviCivita (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2)) p.1
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 k l *
+          ((metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2).inner p.1
+              (riemannOp (LeviCivita (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)) p.1
                 ((![(chartBasisVecFiber (I := I) α (σ 0) p.1 : E),
                     (chartBasisVecFiber (I := I) α (σ 1) p.1 : E)] : Fin 2 → E) 0)
                 (chartBasisVecFiber (I := I) α m p.1) (chartBasisVecFiber (I := I) α k p.1))
@@ -527,15 +527,15 @@ private lemma corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
             Tensor0SSpace.toModel (Y p.1)
               ![(chartBasisVecFiber (I := I) α n p.1 : E),
                 (chartBasisVecFiber (I := I) α l p.1 : E)])))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine (contMDiffOn_const (c := (2 : ℝ))).mul ?_
     refine contMDiffOn_finset_sum (fun m _ => contMDiffOn_finset_sum (fun n _ => ?_))
-    refine (realizedFam_chartInvGramMatrix_jointContMDiffOn_free (I := I) g₀ T T' hδ hδ' α m n).mul
+    refine (metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free (I := I) g₀ T T' hδ hδ' α m n).mul
       ?_
     refine contMDiffOn_finset_sum (fun k _ => contMDiffOn_finset_sum (fun l _ => ?_))
-    refine (realizedFam_chartInvGramMatrix_jointContMDiffOn_free (I := I) g₀ T T' hδ hδ' α k l).mul
+    refine (metricPerturbationPath_chartInvGramMatrix_jointContMDiffOn_free (I := I) g₀ T T' hδ hδ' α k l).mul
       ?_
-    refine (corrField_riemannChartLoweredScalar_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+    refine (corrField_riemannChartLoweredScalar_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
       α (σ 0) m k (σ 1)).mul ?_
     exact hYbasis n l
   refine hcomb.congr (fun p hp => ?_)
@@ -543,10 +543,10 @@ private lemma corrField_riemannBiContrFibAppY_chartCoord_jointContMDiffOn
   have hxbase : p.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]; exact hx
   rw [corrField_riemannBiContrFib_toModel_chartα (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α hxbase]
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α hxbase]
 
 omit [CompactSpace M] in
-private lemma corrField_riemannBiContrFibAppY_realizedFam_jointContMDiffOn
+private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -556,13 +556,13 @@ private lemma corrField_riemannBiContrFibAppY_realizedFam_jointContMDiffOn
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
-        (riemannBiContrFib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+        (riemannBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1)))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
-  set gfam : ℝ → SmoothRiemannianMetric I M := fun s => realizedFam (I := I) g₀ T T' hδ hδ' s
+  set gfam : ℝ → SmoothRiemannianMetric I M := fun s => metricPerturbationPath (I := I) g₀ T T' hδ hδ' s
     with hgfam
-  set S := realizedSmallSet (δ := δ) (δ' := δ') with hS
+  set S := metricPerturbationPathDomain (δ := δ) (δ' := δ') with hS
   intro p₀ hp₀
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -577,7 +577,7 @@ private lemma corrField_riemannBiContrFibAppY_realizedFam_jointContMDiffOn
     rw [he]; exact mem_baseSet_trivializationAt _ _ α
   have hnhd : (chartAt H α).source ×ˢ S ∈ nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S) := by
     refine mem_nhdsWithin.mpr ⟨(chartAt H α).source ×ˢ S,
-      (chartAt H α).open_source.prod realizedSmallSet_isOpen, ⟨hαsrc, hp₀.2⟩, fun q hq => hq.1⟩
+      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsrc, hp₀.2⟩, fun q hq => hq.1⟩
   have hcoordEach : ∀ σ : Fin 2 → Fin (Module.finrank ℝ E),
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Bcmm.repr
@@ -641,7 +641,7 @@ omit [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma corrField_raisedKoszulVec_realizedFam_chartα
+private lemma corrField_raisedKoszulVec_metricPerturbationPath_chartα
     (g₀ : SmoothRiemannianMetric I M) (g₁ : SmoothRiemannianMetric I M) (α : M)
     {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (j k : Fin (Module.finrank ℝ E)) :
@@ -659,7 +659,7 @@ private lemma corrField_raisedKoszulVec_realizedFam_chartα
   classical
   have hxbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
-  set W : TangentSpace I x := PDE.DeTurck.connDiff (I := I) g₁ g₀ x
+  set W : TangentSpace I x := PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
     (chartBasisVecFiber (I := I) α j x) (chartBasisVecFiber (I := I) α k x) with hW
   set cvx : TangentSpace I x →ₗ[ℝ] ℝ := (g₁.inner x W).toLinearMap with hcvx
   have hraisedeq : raisedKoszulVec (I := I) g₀ g₁ x
@@ -684,7 +684,7 @@ private lemma corrField_raisedKoszulVec_realizedFam_chartα
   show cvx (chartBasisVecFiber (I := I) α l x) = _
   rw [hcvx]
   change g₁.inner x W (chartBasisVecFiber (I := I) α l x) = _
-  rw [hW, DifferentialGeometry.PDE.DeTurck.connDiff_chartBasis_pair_eq_sum (I := I) g₁ g₀ α hx j k]
+  rw [hW, DifferentialGeometry.PDE.DeTurck.connectionDifference_chartBasis_pair_eq_sum (I := I) g₁ g₀ α hx j k]
   rw [map_sum, ContinuousLinearMap.sum_apply]
   refine Finset.sum_congr rfl (fun q _ => ?_)
   rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
@@ -702,31 +702,31 @@ private lemma corrField_raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
     (α : M) (σ : Fin 2 → Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => (om p.1) (fun _ : Fin 1 =>
-        raisedKoszulVec (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1
+        raisedKoszulVec (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1
           (chartBasisVecFiber (I := I) α (σ 0) p.1)
           (chartBasisVecFiber (I := I) α (σ 1) p.1)))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   have hcomb : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => ∑ r : Fin (Module.finrank ℝ E),
         (∑ l : Fin (Module.finrank ℝ E),
           chartInvGramMatrix (I := I) g₀ α p.1 r l *
             (∑ q : Fin (Module.finrank ℝ E),
-              (chartChristoffel (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α (σ 1) (σ 0) q
+              (chartChristoffel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α (σ 1) (σ 0) q
                   (extChartAt I α p.1) -
                 chartChristoffel (I := I) g₀ α (σ 1) (σ 0) q (extChartAt I α p.1)) *
-                chartGramMatrix (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α p.1 q l)) *
+                chartGramMatrix (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α p.1 q l)) *
           (om p.1) (fun _ : Fin 1 => chartBasisVecFiber (I := I) α r p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine contMDiffOn_finset_sum (fun r _ => ?_)
     refine ContMDiffOn.mul ?_ (omAppChartBasisVec_jointContMDiffOn (I := I) om α r)
     refine contMDiffOn_finset_sum (fun l _ => ?_)
     refine (corrField_chartInvGramMatrix_g0_jointContMDiffOn (I := I) g₀ α r l).mul ?_
     refine contMDiffOn_finset_sum (fun q _ => ?_)
     refine ContMDiffOn.mul ?_
-      (corrField_realizedFam_chartGramMatrix_jointContMDiffOn (I := I) g₀ T T' hδ hδ' α q l)
+      (corrField_metricPerturbationPath_chartGramMatrix_jointContMDiffOn (I := I) g₀ T T' hδ hδ' α q l)
     refine ContMDiffOn.sub ?_ ?_
-    · have hΓs := corrField_realizedFam_chartChristoffel_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+    · have hΓs := corrField_metricPerturbationPath_chartChristoffel_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
         α (σ 1) (σ 0) q
       exact hΓs.mono (fun z hz => ⟨hz.1, hz.2⟩)
     · exact corrField_chartChristoffel_g0_jointContMDiffOn (I := I) g₀ α (σ 1) (σ 0) q
@@ -735,8 +735,8 @@ private lemma corrField_raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
   have hxgood : p.1 ∈ chartLeviCivitaGoodSet (I := I) α := by
     rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α, extChartAt_source (I := I)]
     exact hx
-  rw [corrField_raisedKoszulVec_realizedFam_chartα (I := I) g₀
-    (realizedFam (I := I) g₀ T T' hδ hδ' p.2) α hxgood (σ 0) (σ 1)]
+  rw [corrField_raisedKoszulVec_metricPerturbationPath_chartα (I := I) g₀
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α hxgood (σ 0) (σ 1)]
   set φ : TangentSpace I p.1 →L[ℝ] ℝ :=
     continuousMultilinearCurryFin1 ℝ (TangentSpace I p.1) ℝ (om p.1) with hφ
   have hφapply : ∀ v : TangentSpace I p.1, (om p.1) (fun _ : Fin 1 => v) = φ v := by
@@ -748,7 +748,7 @@ private lemma corrField_raisedKoszulFibAppOm_chartCoord_jointContMDiffOn
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-private lemma corrField_raisedKoszulFibAppOm_realizedFam_jointContMDiffOn
+private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -759,13 +759,13 @@ private lemma corrField_raisedKoszulFibAppOm_realizedFam_jointContMDiffOn
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
         ((show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I p.1 from
-            raisedKoszulFib (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1) (om p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+            raisedKoszulFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1) (om p.1)))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
-  set gfam : ℝ → SmoothRiemannianMetric I M := fun s => realizedFam (I := I) g₀ T T' hδ hδ' s
+  set gfam : ℝ → SmoothRiemannianMetric I M := fun s => metricPerturbationPath (I := I) g₀ T T' hδ hδ' s
     with hgfam
-  set S := realizedSmallSet (δ := δ) (δ' := δ') with hS
+  set S := metricPerturbationPathDomain (δ := δ) (δ' := δ') with hS
   intro p₀ hp₀
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
@@ -780,7 +780,7 @@ private lemma corrField_raisedKoszulFibAppOm_realizedFam_jointContMDiffOn
     rw [he]; exact mem_baseSet_trivializationAt _ _ α
   have hnhd : (chartAt H α).source ×ˢ S ∈ nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S) := by
     refine mem_nhdsWithin.mpr ⟨(chartAt H α).source ×ˢ S,
-      (chartAt H α).open_source.prod realizedSmallSet_isOpen, ⟨hαsrc, hp₀.2⟩, fun q hq => hq.1⟩
+      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsrc, hp₀.2⟩, fun q hq => hq.1⟩
   have hcoordEach : ∀ σ : Fin 2 → Fin (Module.finrank ℝ E),
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Bcmm.repr
@@ -881,7 +881,7 @@ omit [I.Boundaryless] in
         Tensor0SBundle.TensorRSSpace.ofCLM (corrFieldChristoffelCoeff0Fib (I := I) g₁ x)) :=
   rfl
 
-theorem corrFieldChristoffelCoeff0_realizedFam_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem corrFieldChristoffelCoeff0_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -890,17 +890,17 @@ theorem corrFieldChristoffelCoeff0_realizedFam_jointSmooth (g₀ : SmoothRiemann
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 2 2 I z) p.1
         ((corrFieldChristoffelCoeff0 (I := I) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (F₂ := Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
-      corrFieldChristoffelCoeff0Fib (I := I) (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
-    (fun Y => corrField_riemannBiContrFibAppY_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+      corrFieldChristoffelCoeff0Fib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1)
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+    (fun Y => corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
       Y)
   refine hCLM.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 2 2 ℝ E)
@@ -910,7 +910,7 @@ theorem corrFieldChristoffelCoeff0_realizedFam_jointSmooth (g₀ : SmoothRiemann
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-theorem corrField_raisedKoszulFib_realizedFam_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
+theorem corrField_raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -919,8 +919,8 @@ theorem corrField_raisedKoszulFib_realizedFam_jointContMDiffOn (g₀ : SmoothRie
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 1 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 1 2 I z) p.1
         ((show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I p.1 from
-          raisedKoszulFib (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+          raisedKoszulFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1)))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 1 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 1 I x)
@@ -928,10 +928,10 @@ theorem corrField_raisedKoszulFib_realizedFam_jointContMDiffOn (g₀ : SmoothRie
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
       (show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I p.1 from
-        raisedKoszulFib (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1))
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+        raisedKoszulFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
   intro om
-  exact corrField_raisedKoszulFibAppOm_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ' om
+  exact corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ' om
 
 noncomputable def corrFieldChristoffelCoeff1Fib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
@@ -1001,7 +1001,7 @@ omit [SigmaCompactSpace M] in
         corrFieldChristoffelCoeff1Fib (I := I) g₀ g₁ x) :=
   rfl
 
-theorem corrFieldChristoffelCoeff1_realizedFam_jointSmooth (g₀ : SmoothRiemannianMetric I M)
+theorem corrFieldChristoffelCoeff1_metricPerturbationPath_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1010,8 +1010,8 @@ theorem corrFieldChristoffelCoeff1_realizedFam_jointSmooth (g₀ : SmoothRiemann
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 3 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z) p.1
         ((corrFieldChristoffelCoeff1 (I := I) g₀
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hCLM := contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
     (F₁ := Tensor0SBundle.Tensor0SModel 3 ℝ E)
       (V₁ := fun x : M => Tensor0SBundle.Tensor0SSpace 3 I x)
@@ -1019,14 +1019,14 @@ theorem corrFieldChristoffelCoeff1_realizedFam_jointSmooth (g₀ : SmoothRiemann
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
       (show Tensor0SBundle.Tensor0SSpace 3 I p.1 →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I p.1 from
-        corrFieldChristoffelCoeff1Fib (I := I) g₀ (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1))
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+        corrFieldChristoffelCoeff1Fib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun Y => by
-      have hZ := cometricDoubleTraceFib_realizedFam_jointContMDiffOn (I := I) (p := 1) g₀ T T' hδ
+      have hZ := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 1) g₀ T T' hδ
         hδ'
         (fun q : M × ℝ => Y q.1) (Y.contMDiff.comp_contMDiffOn contMDiffOn_fst)
       have hkos := ContMDiffOn.clm_bundle_apply (b := Prod.fst)
-        (corrField_raisedKoszulFib_realizedFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hZ
+        (corrField_raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hZ
       refine hkos.congr (fun q _ => ?_)
       refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) q.1 t) ?_

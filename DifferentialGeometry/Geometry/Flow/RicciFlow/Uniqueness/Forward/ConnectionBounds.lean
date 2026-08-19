@@ -135,13 +135,13 @@ end SlotSums
 section Contraction
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffLow_eq_lower (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
-    connDiffLowAt (I := I) g₁ g₂ x =
+theorem connectionDifferenceLow_eq_lower (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
+    connectionDifferenceLowAt (I := I) g₁ g₂ x =
       lowerBilin (I := I) (metricTensorField (I := I) g₁ x)
         (CovariantDerivative.difference (metricCov (I := I) g₁)
           (metricCov (I := I) g₂) x) := by
   refine ContinuousMultilinearMap.ext fun v => ?_
-  rw [connDiffLowAt_apply, lowerBilin_apply, metricTensorField_apply]
+  rw [connectionDifferenceLowAt_apply, lowerBilin_apply, metricTensorField_apply]
   simp
 
 
@@ -296,7 +296,7 @@ theorem nablaRicDiff_le (g₁ g₂ : SmoothRiemannianMetric I M)
     normSq0S (I := I) g₁ x 3
         ((metricNabla0S (I := I) g₁ Ric₁ - metricNabla0S (I := I) g₂ Ric₂) x) ≤
       2 * normSq0S (I := I) g₁ x 3 (metricNabla0S (I := I) g₁ (Ric₁ - Ric₂) x) +
-        8 * (Module.finrank Real E : Real) ^ 3 * connDiffSq (I := I) g₁ g₂ x *
+        8 * (Module.finrank Real E : Real) ^ 3 * connectionDifferenceSq (I := I) g₁ g₂ x *
           normSq0S (I := I) g₁ x 2 (Ric₂ x) := by
   have hpt : (metricNabla0S (I := I) g₁ Ric₁ - metricNabla0S (I := I) g₂ Ric₂) x =
       metricNabla0S (I := I) g₁ (Ric₁ - Ric₂) x + lapDiffFlux (I := I) g₁ g₂ Ric₂ x := by
@@ -304,7 +304,7 @@ theorem nablaRicDiff_le (g₁ g₂ : SmoothRiemannianMetric I M)
   rw [hpt]
   refine le_trans (normSq0S_add_le (I := I) g₁ x 3 _ _) ?_
   have hflux : normSq0S (I := I) g₁ x 3 (lapDiffFlux (I := I) g₁ g₂ Ric₂ x) ≤
-      4 * (Module.finrank Real E : Real) ^ 3 * connDiffSq (I := I) g₁ g₂ x *
+      4 * (Module.finrank Real E : Real) ^ 3 * connectionDifferenceSq (I := I) g₁ g₂ x *
         normSq0S (I := I) g₁ x 2 (Ric₂ x) := by
     refine (fluxNormSq_le (I := I) (s := 2) g₁ g₂ Ric₂ x).trans_eq ?_
     norm_num
@@ -674,37 +674,37 @@ theorem lowerHamRHS_comp [DecidableEq Idx]
   rw [Finset.sum_congr rfl fun m _ => hterm m]
   exact lower_raise_cancel (I := I) g b gInv hinv (fun l => L i j l) k
 
-private def hamPerm : Equiv.Perm (Fin 3) where
+private def hamiltonConnectionDifferencePermutation : Equiv.Perm (Fin 3) where
   toFun := ![2, 0, 1]
   invFun := ![1, 2, 0]
   left_inv := by decide
   right_inv := by decide
 
-def perm3 (e : Equiv.Perm (Fin 3))
+def reindexCovariantThreeTensor (e : Equiv.Perm (Fin 3))
     (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x :=
   N.domDomCongr e
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem perm3_apply (e : Equiv.Perm (Fin 3))
+@[simp] theorem reindexCovariantThreeTensor_apply (e : Equiv.Perm (Fin 3))
     (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (v : Fin 3 -> TangentSpace I x) :
-    perm3 (I := I) e N v = N (fun a : Fin 3 => v (e a)) :=
+    reindexCovariantThreeTensor (I := I) e N v = N (fun a : Fin 3 => v (e a)) :=
   Tensor0SSpace.domDomCongr_apply (I := I) e N v
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem normSq0S_perm3 (g : SmoothRiemannianMetric I M) (e : Equiv.Perm (Fin 3))
+theorem normSq0S_reindexCovariantThreeTensor (g : SmoothRiemannianMetric I M) (e : Equiv.Perm (Fin 3))
     (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
-    normSq0S (I := I) g x 3 (perm3 (I := I) e N) = normSq0S (I := I) g x 3 N :=
+    normSq0S (I := I) g x 3 (reindexCovariantThreeTensor (I := I) e N) = normSq0S (I := I) g x 3 N :=
   normSq0S_reindex (I := I) g e N
 
-def hamSum (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
+def hamiltonConnectionDifferenceCombination (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x :=
-  (-1 : Real) • N + (-1 : Real) • perm3 (I := I) (Equiv.swap (0 : Fin 3) 1) N +
-    perm3 (I := I) hamPerm N
+  (-1 : Real) • N + (-1 : Real) • reindexCovariantThreeTensor (I := I) (Equiv.swap (0 : Fin 3) 1) N +
+    reindexCovariantThreeTensor (I := I) hamiltonConnectionDifferencePermutation N
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem lowerHam_eq_perm [DecidableEq Idx]
+theorem lower_connection_difference_eq_hamilton_combination [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (b : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
@@ -717,7 +717,7 @@ theorem lowerHam_eq_perm [DecidableEq Idx]
     lowerBilin (I := I) (metricTensorField (I := I) g x)
         (bilinOfComp (I := I) b (fun i j m =>
           ∑ l : Idx, gInv m l * (-nr i j l - nr j i l + nr l i j))) =
-      hamSum (I := I) N := by
+      hamiltonConnectionDifferenceCombination (I := I) N := by
   classical
   refine tensor0SSpace_ext (𝕜 := Real) 3 x fun w => ?_
   set LHS : ContinuousMultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real :=
@@ -725,7 +725,7 @@ theorem lowerHam_eq_perm [DecidableEq Idx]
       (bilinOfComp (I := I) b (fun i j m =>
         ∑ l : Idx, gInv m l * (-nr i j l - nr j i l + nr l i j))) with hLdef
   set RHS : ContinuousMultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real :=
-    hamSum (I := I) N with hRdef
+    hamiltonConnectionDifferenceCombination (I := I) N with hRdef
   suffices h : LHS.toMultilinearMap = RHS.toMultilinearMap by
     exact congrArg
       (fun T : MultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real => T w) h
@@ -747,13 +747,13 @@ theorem lowerHam_eq_perm [DecidableEq Idx]
   have hRval : RHS (fun a : Fin 3 => b (v a)) =
       -(N (fun a : Fin 3 => b (v a))) -
         N (fun a : Fin 3 => b (v (Equiv.swap (0 : Fin 3) 1 a))) +
-        N (fun a : Fin 3 => b (v (hamPerm a))) := by
-    rw [hRdef, hamSum,
+        N (fun a : Fin 3 => b (v (hamiltonConnectionDifferencePermutation a))) := by
+    rw [hRdef, hamiltonConnectionDifferenceCombination,
       Tensor0SSpace.add_apply (I := I) 3 x _ _ (fun a : Fin 3 => b (v a)),
       Tensor0SSpace.add_apply (I := I) 3 x _ _ (fun a : Fin 3 => b (v a)),
       Tensor0SSpace.smul_apply (I := I) 3 x (-1 : Real) N (fun a : Fin 3 => b (v a)),
       Tensor0SSpace.smul_apply (I := I) 3 x (-1 : Real) _ (fun a : Fin 3 => b (v a))]
-    simp only [perm3_apply, smul_eq_mul]
+    simp only [reindexCovariantThreeTensor_apply, smul_eq_mul]
     ring
   rw [hLval, hRval]
   have hcomp : ∀ d a c : Idx, nr d a c =
@@ -770,44 +770,44 @@ theorem lowerHam_eq_perm [DecidableEq Idx]
     rw [hcomp (v 1) (v 0) (v 2)]
     congr 1
     funext a; fin_cases a <;> simp [Equiv.swap_apply_def]
-  have h2 : N (fun a : Fin 3 => b (v (hamPerm a))) = nr (v 2) (v 0) (v 1) := by
+  have h2 : N (fun a : Fin 3 => b (v (hamiltonConnectionDifferencePermutation a))) = nr (v 2) (v 0) (v 1) := by
     rw [hcomp (v 2) (v 0) (v 1)]
     congr 1
-    funext a; fin_cases a <;> simp [hamPerm]
+    funext a; fin_cases a <;> simp [hamiltonConnectionDifferencePermutation]
   rw [h0, h1, h2]
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
-theorem perm3_sub (e : Equiv.Perm (Fin 3))
+theorem reindexCovariantThreeTensor_sub (e : Equiv.Perm (Fin 3))
     (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
-    perm3 (I := I) e (A - B) = perm3 (I := I) e A - perm3 (I := I) e B :=
+    reindexCovariantThreeTensor (I := I) e (A - B) = reindexCovariantThreeTensor (I := I) e A - reindexCovariantThreeTensor (I := I) e B :=
   domDomCongr_sub (I := I) e A B
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
-theorem hamSum_sub (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
-    hamSum (I := I) A - hamSum (I := I) B = hamSum (I := I) (A - B) := by
-  rw [hamSum, hamSum, hamSum, perm3_sub, perm3_sub]
+theorem hamiltonConnectionDifferenceCombination_sub (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
+    hamiltonConnectionDifferenceCombination (I := I) A - hamiltonConnectionDifferenceCombination (I := I) B = hamiltonConnectionDifferenceCombination (I := I) (A - B) := by
+  rw [hamiltonConnectionDifferenceCombination, hamiltonConnectionDifferenceCombination, hamiltonConnectionDifferenceCombination, reindexCovariantThreeTensor_sub, reindexCovariantThreeTensor_sub]
   module
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem hamSum_normSq_le (g : SmoothRiemannianMetric I M)
+theorem hamiltonConnectionDifferenceCombination_norm_sq_le (g : SmoothRiemannianMetric I M)
     (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x) :
-    normSq0S (I := I) g x 3 (hamSum (I := I) N) ≤ 10 * normSq0S (I := I) g x 3 N := by
-  have hp1 : normSq0S (I := I) g x 3 (perm3 (I := I) (Equiv.swap (0 : Fin 3) 1) N) =
-      normSq0S (I := I) g x 3 N := normSq0S_perm3 (I := I) g _ N
-  have hp2 : normSq0S (I := I) g x 3 (perm3 (I := I) hamPerm N) =
-      normSq0S (I := I) g x 3 N := normSq0S_perm3 (I := I) g _ N
+    normSq0S (I := I) g x 3 (hamiltonConnectionDifferenceCombination (I := I) N) ≤ 10 * normSq0S (I := I) g x 3 N := by
+  have hp1 : normSq0S (I := I) g x 3 (reindexCovariantThreeTensor (I := I) (Equiv.swap (0 : Fin 3) 1) N) =
+      normSq0S (I := I) g x 3 N := normSq0S_reindexCovariantThreeTensor (I := I) g _ N
+  have hp2 : normSq0S (I := I) g x 3 (reindexCovariantThreeTensor (I := I) hamiltonConnectionDifferencePermutation N) =
+      normSq0S (I := I) g x 3 N := normSq0S_reindexCovariantThreeTensor (I := I) g _ N
   have hs1 : normSq0S (I := I) g x 3 ((-1 : Real) • N) = normSq0S (I := I) g x 3 N := by
     rw [normSq0S_smul]; norm_num
   have hs2 : normSq0S (I := I) g x 3
-      ((-1 : Real) • perm3 (I := I) (Equiv.swap (0 : Fin 3) 1) N) =
+      ((-1 : Real) • reindexCovariantThreeTensor (I := I) (Equiv.swap (0 : Fin 3) 1) N) =
       normSq0S (I := I) g x 3 N := by
     rw [normSq0S_smul, hp1]; norm_num
   have hinner := normSq0S_add_le (I := I) g x 3 ((-1 : Real) • N)
-    ((-1 : Real) • perm3 (I := I) (Equiv.swap (0 : Fin 3) 1) N)
+    ((-1 : Real) • reindexCovariantThreeTensor (I := I) (Equiv.swap (0 : Fin 3) 1) N)
   have houter := normSq0S_add_le (I := I) g x 3
-    ((-1 : Real) • N + (-1 : Real) • perm3 (I := I) (Equiv.swap (0 : Fin 3) 1) N)
-    (perm3 (I := I) hamPerm N)
-  rw [hamSum]
+    ((-1 : Real) • N + (-1 : Real) • reindexCovariantThreeTensor (I := I) (Equiv.swap (0 : Fin 3) 1) N)
+    (reindexCovariantThreeTensor (I := I) hamiltonConnectionDifferencePermutation N)
+  rw [hamiltonConnectionDifferenceCombination]
   rw [hs1, hs2] at hinner
   linarith [houter, hinner, hp2]
 
@@ -987,17 +987,17 @@ private theorem normSq0S_sub_le (g : SmoothRiemannianMetric I M) (x : M) (s : Na
   norm_num
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffDot_le_speed
+theorem connectionDifferenceDot_le_speed
     (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Adot : (y : M) →
       TangentSpace I y →L[Real] TangentSpace I y →L[Real] TangentSpace I y)
     (t : Real) (x : M) {Λric : Real}
     (hΛric : normSq0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x) ≤ Λric) :
-    normSq0S (I := I) (g₁ t) x 3 (connDiffDot (I := I) g₁ g₂ Adot t x) ≤
-      8 * Λric * connDiffSq (I := I) (g₁ t) (g₂ t) x +
+    normSq0S (I := I) (g₁ t) x 3 (connectionDifferenceDot (I := I) g₁ g₂ Adot t x) ≤
+      8 * Λric * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x +
         2 * normSq0S (I := I) (g₁ t) x 3
           (lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x) (Adot x)) := by
-  have hdef : connDiffDot (I := I) g₁ g₂ Adot t x =
+  have hdef : connectionDifferenceDot (I := I) g₁ g₂ Adot t x =
       (-2 : Real) • lowerBilin (I := I) (metricRicciAt (I := I) (g₁ t) x)
           (CovariantDerivative.difference (metricCov (I := I) (g₁ t))
             (metricCov (I := I) (g₂ t)) x) +
@@ -1018,9 +1018,9 @@ theorem connDiffDot_le_speed
       (lowerBilin (I := I) (metricRicciAt (I := I) (g₁ t) x)
         (CovariantDerivative.difference (metricCov (I := I) (g₁ t))
           (metricCov (I := I) (g₂ t)) x)) ≤
-      Λric * connDiffSq (I := I) (g₁ t) (g₂ t) x := by
+      Λric * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x := by
     refine le_trans (lowerBilin_normSq_le (I := I) (g₁ t) x _ _) ?_
-    rw [connDiffSq_def, connDiffLow_eq_lower]
+    rw [connectionDifferenceSq_def, connectionDifferenceLow_eq_lower]
     exact mul_le_mul_of_nonneg_right hΛric (normSq0S_nonneg (I := I) (g₁ t) x 3 _)
   linarith
 
@@ -1034,14 +1034,14 @@ theorem connSpeedRHS_self (g₁ g₂ : Real → SmoothRiemannianMetric I M) {t :
         (nablaRmDiffSq (I := I) (g₁ t) S x +
           (1 + Λ) ^ 2 * (B₁ + B₃) *
             (metricDiffSq (I := I) (g₁ t) (g₂ t) x +
-              connDiffSq (I := I) (g₁ t) (g₂ t) x)) = 0 := by
+              connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x)) = 0 := by
   have hzero : ∀ s : Nat,
       normSq0S (I := I) (g₂ t) x s
           (0 : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x) = 0 :=
     fun s => ((tensor0SMetricData (I := I) (g₂ t) x s).inner_self_eq_zero_iff 0).2 rfl
   rw [hg] at hS ⊢
-  rw [nablaRmDiffSq_self (I := I) (g₂ t) S hS x, metricDiffSq_def, connDiffSq_def,
-    metricDiffAt_self, connDiffLowAt_self, hzero, hzero]
+  rw [nablaRmDiffSq_self (I := I) (g₂ t) S hS x, metricDiffSq_def, connectionDifferenceSq_def,
+    metricDiffAt_self, connectionDifferenceLowAt_self, hzero, hzero]
   ring
 
 omit [SigmaCompactSpace M] in
@@ -1100,7 +1100,7 @@ theorem connSpeedLow_normSq_le [I.Boundaryless]
         (nablaRmDiffSq (I := I) (g₁ t) S x +
           (1 + Λ) ^ 2 * (B₁ + B₃) *
             (metricDiffSq (I := I) (g₁ t) (g₂ t) x +
-              connDiffSq (I := I) (g₁ t) (g₂ t) x)) := by
+              connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x)) := by
   classical
   rw [connSpeedLow_eq (I := I) g₁ g₂ frame hframe hu hx Adot hA
     (fun i j k => christoffelEvolutionRHSInFrame (M := M) gInv₁ nablaRic₁ t x i j k)
@@ -1109,17 +1109,17 @@ theorem connSpeedLow_normSq_le [I.Boundaryless]
   have hT₁ : lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x)
       (bilinOfComp (I := I) (hframe.toBasisAt hx)
         (fun i j k => christoffelEvolutionRHSInFrame (M := M) gInv₁ nablaRic₁ t x i j k)) =
-      hamSum (I := I) (metricNabla0S (I := I) (g₁ t) Ric₁ x) :=
-    lowerHam_eq_perm (I := I) (g₁ t) (hframe.toBasisAt hx) (fun i j => gInv₁ t x i j) hgInv₁
+      hamiltonConnectionDifferenceCombination (I := I) (metricNabla0S (I := I) (g₁ t) Ric₁ x) :=
+    lower_connection_difference_eq_hamilton_combination (I := I) (g₁ t) (hframe.toBasisAt hx) (fun i j => gInv₁ t x i j) hgInv₁
       (metricNabla0S (I := I) (g₁ t) Ric₁ x) (fun d a c => nablaRic₁ t x d a c) hNR₁
   have hT₂ : lowerBilin (I := I) (metricTensorField (I := I) (g₂ t) x)
       (bilinOfComp (I := I) (hframe.toBasisAt hx)
         (fun i j k => christoffelEvolutionRHSInFrame (M := M) gInv₂ nablaRic₂ t x i j k)) =
-      hamSum (I := I) (metricNabla0S (I := I) (g₂ t) Ric₂ x) :=
-    lowerHam_eq_perm (I := I) (g₂ t) (hframe.toBasisAt hx) (fun i j => gInv₂ t x i j) hgInv₂
+      hamiltonConnectionDifferenceCombination (I := I) (metricNabla0S (I := I) (g₂ t) Ric₂ x) :=
+    lower_connection_difference_eq_hamilton_combination (I := I) (g₂ t) (hframe.toBasisAt hx) (fun i j => gInv₂ t x i j) hgInv₂
       (metricNabla0S (I := I) (g₂ t) Ric₂ x) (fun d a c => nablaRic₂ t x d a c) hNR₂
-  rw [hT₁, hT₂, hamSum_sub]
-  have hham := hamSum_normSq_le (I := I) (g₁ t)
+  rw [hT₁, hT₂, hamiltonConnectionDifferenceCombination_sub]
+  have hham := hamiltonConnectionDifferenceCombination_norm_sq_le (I := I) (g₁ t)
     (metricNabla0S (I := I) (g₁ t) Ric₁ x - metricNabla0S (I := I) (g₂ t) Ric₂ x)
   have hpt : metricNabla0S (I := I) (g₁ t) Ric₁ x - metricNabla0S (I := I) (g₂ t) Ric₂ x =
       (metricNabla0S (I := I) (g₁ t) Ric₁ - metricNabla0S (I := I) (g₂ t) Ric₂) x := rfl
@@ -1138,7 +1138,7 @@ theorem connSpeedLow_normSq_le [I.Boundaryless]
           (fun i j k => christoffelEvolutionRHSInFrame (M := M) gInv₂ nablaRic₂ t x i j k)))
       ≤ 10 * B₁ := by
     rw [hT₂]
-    exact le_trans (hamSum_normSq_le (I := I) (g₁ t) _) (by linarith)
+    exact le_trans (hamiltonConnectionDifferenceCombination_norm_sq_le (I := I) (g₁ t) _) (by linarith)
   rw [← metricDiffSq_def (I := I) (g₁ t) (g₂ t) x] at hd1
   have htrace := nablaRicDiff_trace_le (I := I) (g₁ t) (g₂ t) S hS Ric₁ Ric₂ hRic₁ hRic₂ x
   have hnnn : (0 : Real) ≤ (Module.finrank Real E : Real) := by positivity
@@ -1161,7 +1161,7 @@ theorem connSpeedLow_normSq_le [I.Boundaryless]
     hham hsplit htrace hB₃ hd1 hd2 hd3 (hpow 5 (by norm_num)) (hpow 3 (by norm_num))
 
 omit [SigmaCompactSpace M] in
-theorem connDiffDot_normSq_le [I.Boundaryless]
+theorem connectionDifferenceDot_normSq_le [I.Boundaryless]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
     (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Adot : (y : M) →
@@ -1212,14 +1212,14 @@ theorem connDiffDot_normSq_le [I.Boundaryless]
     (hΛ : ∀ v : TangentSpace I x, (g₁ t).inner x v v ≤ Λ * (g₂ t).inner x v v)
     (hB₁ : normSq0S (I := I) (g₁ t) x 3 (metricNabla0S (I := I) (g₂ t) Ric₂ x) ≤ B₁)
     (hB₃ : normSq0S (I := I) (g₁ t) x 2 (Ric₂ x) ≤ B₃) :
-    normSq0S (I := I) (g₁ t) x 3 (connDiffDot (I := I) g₁ g₂ Adot t x) ≤
-      8 * Λric * connDiffSq (I := I) (g₁ t) (g₂ t) x +
+    normSq0S (I := I) (g₁ t) x 3 (connectionDifferenceDot (I := I) g₁ g₂ Adot t x) ≤
+      8 * Λric * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x +
         2 * (200 * ((Module.finrank Real E : Real) ^ 6 + 1) *
           (nablaRmDiffSq (I := I) (g₁ t) S x +
             (1 + Λ) ^ 2 * (B₁ + B₃) *
               (metricDiffSq (I := I) (g₁ t) (g₂ t) x +
-                connDiffSq (I := I) (g₁ t) (g₂ t) x))) := by
-  refine le_trans (connDiffDot_le_speed (I := I) g₁ g₂ Adot t x hΛric) ?_
+                connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x))) := by
+  refine le_trans (connectionDifferenceDot_le_speed (I := I) g₁ g₂ Adot t x hΛric) ?_
   have h := connSpeedLow_normSq_le (I := I) g₁ g₂ Adot frame hframe hu hx S hS
     Ric₁ Ric₂ hRic₁ hRic₂ gInv₁ gInv₂ hgInv₁ hgInv₂ nablaRic₁ nablaRic₂
     hNR₁ hNR₂ hΓ hA hΛ0 hΛ hB₁ hB₃

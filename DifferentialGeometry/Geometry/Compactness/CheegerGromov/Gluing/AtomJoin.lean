@@ -26,7 +26,7 @@ variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompleteSp
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-theorem existsLiveJointH6
+theorem exists_joint_normal_metric_transition_limit
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
@@ -182,7 +182,7 @@ theorem existsLiveJointH6
   have hsmooth : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (J k) U := by
     intro k
     refine contDiffOn_pi.mpr fun gamma => ?_
-    exact contDiffOn_normalTransition (I := I) (X.obj (L.φ (psi1 (tau k))))
+    exact cont_diff_on_normal_transition (I := I) (X.obj (L.φ (psi1 (tau k))))
       (beta (psi1 (tau k)))
       (seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat))
       (hUExp k gamma)
@@ -201,7 +201,7 @@ theorem existsLiveJointH6
         (beta (psi1 (tau k)))
         (seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat)) z) := by
     let f : Nat → Nat := fun k => L.φ (psi1 (tau k))
-    have hbound := H6Isometry.normal_bounds_on (I := I)
+    have hbound := MetricIsometry.normal_bounds_on (I := I)
       (X.subseq f) (NormalCoordMetricBoundInput.subseq (I := I) metricInput f)
       (fun k => beta (psi1 (tau k)))
       (fun k => seqCenterD hd P L (psi1 (tau k)) (gamma.1 : Nat))

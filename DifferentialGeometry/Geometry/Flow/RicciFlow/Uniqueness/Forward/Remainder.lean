@@ -136,7 +136,7 @@ theorem rmDotRemSq_le
         (rmDotRem (I := I) g₁ g₂ T₂ Rm₁ Rm₂ B₁ B₂ Ric₁ Ric₂
           (fun m z => basisAt z m) t x)) ≤
       4 * (50 * (Module.finrank Real E : Real) ^ 12 *
-          connDiffSq (I := I) g₁ g₂ x * B₅ +
+          connectionDifferenceSq (I := I) g₁ g₂ x * B₅ +
         2 * (Module.finrank Real E : Real) ^ 10 * Λ ^ 2 *
           metricDiffSq (I := I) g₁ g₂ x * B₆) +
       16 * BQ + 2 * BD := by
@@ -179,7 +179,7 @@ theorem rmDotRemSq_le
           16 * normSq0S (I := I) g₁ x 4 Q +
           2 * normSq0S (I := I) g₁ x 4 D := by rw [hscale]; ring
     _ ≤ 4 * (50 * (Module.finrank Real E : Real) ^ 12 *
-            connDiffSq (I := I) g₁ g₂ x * B₅ +
+            connectionDifferenceSq (I := I) g₁ g₂ x * B₅ +
           2 * (Module.finrank Real E : Real) ^ 10 * Λ ^ 2 *
             metricDiffSq (I := I) g₁ g₂ x * B₆) +
         16 * BQ + 2 * BD := by
@@ -261,7 +261,7 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     metricTensorField (I := I) g₂ - metricTensorField (I := I) g₁
   let V : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 1 + 2) x :=
-    ContinuousMultilinearMap.domDomCongr (reLowerPerm s)
+    ContinuousMultilinearMap.domDomCongr (reLowerPermutationWithTwoInputs s)
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
         (s := s + 1) (q := 2) T Hdiff x)
@@ -300,7 +300,7 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
           (T x (Function.update tail (Fin.last s) (basis i)) *
             g₁.inner x (basis j) (tail (Fin.last s))) =
       identityInvMetric i j *
-        (ContinuousMultilinearMap.domDomCongr (reLowerPerm s)
+        (ContinuousMultilinearMap.domDomCongr (reLowerPermutationWithTwoInputs s)
           (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
             (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
             (s := s + 1) (q := 2) T Hdiff x))
@@ -308,11 +308,11 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply]
     have hfirst :
         ((fun k =>
-          metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPerm s k)) ∘
+          metricTraceInput (I := I) (basis i) (basis j) tail (reLowerPermutationWithTwoInputs s k)) ∘
             Fin.castAdd 2) =
             Function.update tail (Fin.last s) (basis i) := by
       funext k
-      exact reLowerPerm_first (I := I) (basis i) (basis j) tail k
+      exact reLowerPermutationWithTwoInputs_first_block (I := I) (basis i) (basis j) tail k
     rw [hfirst]
     change
       _ = identityInvMetric i j *
@@ -320,16 +320,16 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
           ((metricTensorField (I := I) g₂ - metricTensorField (I := I) g₁) x)
             (fun p : Fin 2 =>
               metricTraceInput (I := I) (basis i) (basis j) tail
-                (reLowerPerm s (Fin.natAdd (s + 1) p))))
+                (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) p))))
     have hsnd :
         (fun p : Fin 2 =>
           metricTraceInput (I := I) (basis i) (basis j) tail
-            (reLowerPerm s (Fin.natAdd (s + 1) p))) =
+            (reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) p))) =
           fun p : Fin 2 => if p = 0 then basis j else tail (Fin.last s) := by
       funext p
       fin_cases p
-      · simpa using reLowerPerm_snd0 (I := I) (basis i) (basis j) tail
-      · simpa using reLowerPerm_snd1 (I := I) (basis i) (basis j) tail
+      · simpa using reLowerPermutationWithTwoInputs_tail_zero (I := I) (basis i) (basis j) tail
+      · simpa using reLowerPermutationWithTwoInputs_tail_one (I := I) (basis i) (basis j) tail
     have hHdiff :
         (metricTensorField (I := I) g₂ - metricTensorField (I := I) g₁) x =
           metricTensorField (I := I) g₂ x - metricTensorField (I := I) g₁ x := rfl
@@ -352,7 +352,7 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
           (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
             (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
             (s := s + 1) (q := 2) T Hdiff x) :=
-    normSq0S_domDomCongr (I := I) g₁ x basis hinv (reLowerPerm s) _
+    normSq0S_domDomCongr (I := I) g₁ x basis hinv (reLowerPermutationWithTwoInputs s) _
   have hH :
       normSq0S (I := I) g₁ x 2 (Hdiff x) = metricDiffSq (I := I) g₁ g₂ x := by
     rw [metricDiffSq_def]

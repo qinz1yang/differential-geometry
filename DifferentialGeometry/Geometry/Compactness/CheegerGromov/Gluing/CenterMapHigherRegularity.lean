@@ -27,30 +27,30 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
-def h6Patch
+def transitionPatch
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r) : Set E :=
   Metric.ball 0 ((21 / 10 : Real) * L.lamInf (alpha.1 : Nat))
 
-def h6Core0
+def innerTransitionCore
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r) : Set E :=
   Metric.closedBall 0 ((83 / 40 : Real) * L.lamInf (alpha.1 : Nat))
 
-def h6Core1
+def outerTransitionCore
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r) : Set E :=
   Metric.closedBall 0 ((167 / 80 : Real) * L.lamInf (alpha.1 : Nat))
 
-def h6Buffer
+def transitionCoreBuffer
     {hd : InjRadiusDecayInput (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     (L : NetLimitData hd D P) {pb : hd.PackingBound D} {r : Real}
@@ -58,23 +58,23 @@ def h6Buffer
   L.lamInf (alpha.1 : Nat) / 80
 
 omit [CompleteSpace E] in
-theorem h6_core_geom
+theorem transition_patch_geometry
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (r : Real) :
-    (∀ alpha : LiveSlot L inp.pack r, IsOpen (h6Patch L alpha)) ∧
+    (∀ alpha : LiveSlot L inp.pack r, IsOpen (transitionPatch L alpha)) ∧
     (∀ alpha : LiveSlot L inp.pack r,
-      h6Patch L alpha ⊆
+      transitionPatch L alpha ⊆
         Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
-    (∀ alpha : LiveSlot L inp.pack r, IsCompact (h6Core0 L alpha)) ∧
-    (∀ alpha : LiveSlot L inp.pack r, IsCompact (h6Core1 L alpha)) ∧
+    (∀ alpha : LiveSlot L inp.pack r, IsCompact (innerTransitionCore L alpha)) ∧
+    (∀ alpha : LiveSlot L inp.pack r, IsCompact (outerTransitionCore L alpha)) ∧
     (∀ alpha : LiveSlot L inp.pack r,
-      h6Core0 L alpha ⊆ interior (h6Core1 L alpha)) ∧
+      innerTransitionCore L alpha ⊆ interior (outerTransitionCore L alpha)) ∧
     (∀ alpha : LiveSlot L inp.pack r,
-      h6Core1 L alpha ⊆ h6Patch L alpha) ∧
-    (∀ alpha : LiveSlot L inp.pack r, Convex Real (h6Core0 L alpha)) ∧
-    (∀ alpha : LiveSlot L inp.pack r, (0 : E) ∈ h6Core0 L alpha) ∧
-    ∀ alpha : LiveSlot L inp.pack r, 0 < h6Buffer L alpha := by
+      outerTransitionCore L alpha ⊆ transitionPatch L alpha) ∧
+    (∀ alpha : LiveSlot L inp.pack r, Convex Real (innerTransitionCore L alpha)) ∧
+    (∀ alpha : LiveSlot L inp.pack r, (0 : E) ∈ innerTransitionCore L alpha) ∧
+    ∀ alpha : LiveSlot L inp.pack r, 0 < transitionCoreBuffer L alpha := by
   have hlam (alpha : LiveSlot L inp.pack r) :
       0 < L.lamInf (alpha.1 : Nat) :=
     inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
@@ -130,14 +130,14 @@ theorem h6_core_geom
     nlinarith [hlam alpha]
 
 omit [CompleteSpace E] in
-theorem h6_buffer_mem
+theorem closed_ball_subset_inner_transition_core
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
     (alpha : LiveSlot L inp.pack r) {z : E}
     (hz : ‖z‖ < (41 / 20 : Real) * L.lamInf (alpha.1 : Nat)) :
-    Metric.closedBall z (h6Buffer L alpha) ⊆
-      interior (h6Core0 L alpha) := by
+    Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
+      interior (innerTransitionCore L alpha) := by
   have hlam : 0 < L.lamInf (alpha.1 : Nat) :=
     inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
   intro w hw
@@ -158,7 +158,7 @@ theorem h6_buffer_mem
 omit [CompleteSpace E] in
 theorem pair_overlap_at
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -186,7 +186,7 @@ theorem pair_overlap_at
     let j := L.φ k
     let cAlpha := seqCenterD inp.decay P L k alpha
     let cGamma := seqCenterD inp.decay P L k gamma
-    d.ChartOverlapOn j cAlpha cGamma
+    d.chartOverlapOn j cAlpha cGamma
         (Metric.ball 0 (8 * L.lamInf alpha)) ∧
       Set.MapsTo (d.chartTransition j cAlpha cGamma)
         (Metric.ball 0 (8 * L.lamInf alpha))
@@ -333,7 +333,7 @@ theorem pair_overlap_at
         ENNReal.ofReal chiGamma.radius := by
       rw [hed]
       exact (ENNReal.ofReal_lt_ofReal_iff chiGamma.radius_pos).2 hdist
-    have hread := d.toH6ChartData.readout_mem
+    have hread := d.toNormalChartData.readout_mem
       j (hcomplete.complete j) (hconn j) cGamma y hedRad
     have hcoord :
         chiAlpha.transition chiGamma z =
@@ -351,7 +351,7 @@ theorem pair_overlap_at
       rw [hcoord, hread.2, hed,
         ENNReal.toReal_ofReal (inp.realizes.dist_nonneg j cGamma y)]
     exact ⟨hzBall, hread.1, hcoordBall, hcoordNorm⟩
-  change d.ChartOverlapOn j cAlpha cGamma
+  change d.chartOverlapOn j cAlpha cGamma
       (Metric.ball 0 (8 * L.lamInf alpha)) ∧
     Set.MapsTo (d.chartTransition j cAlpha cGamma)
       (Metric.ball 0 (8 * L.lamInf alpha))
@@ -363,15 +363,15 @@ theorem pair_overlap_at
   · intro z hz
     exact ⟨(hpoint z hz).1, (hpoint z hz).2.1⟩
   · intro z hz
-    simpa only [H6NormalData.chartTransition] using (hpoint z hz).2.2.1
+    simpa only [BoundedGeometryNormalData.chartTransition] using (hpoint z hz).2.2.1
   · intro z hz
-    simpa only [H6NormalData.chartTransition, H6NormalData.chartMap] using
+    simpa only [BoundedGeometryNormalData.chartTransition, BoundedGeometryNormalData.chartMap] using
       (hpoint z hz).2.2.2
 
 omit [CompleteSpace E] in
-theorem h6_pair_tail
+theorem chart_transition_pair_eventually
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -390,7 +390,7 @@ theorem h6_pair_tail
       let j := L.φ k
       let cAlpha := seqCenterD inp.decay P L k (alpha.1 : Nat)
       let cGamma := seqCenterD inp.decay P L k (gamma.1 : Nat)
-      d.ChartOverlapOn j cAlpha cGamma
+      d.chartOverlapOn j cAlpha cGamma
           (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
         Set.MapsTo (d.chartTransition j cAlpha cGamma)
           (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
@@ -406,9 +406,9 @@ theorem h6_pair_tail
     (hcentersK alpha) (hcentersK gamma) hinter hinterK
 
 omit [CompleteSpace E] in
-theorem h6_patch_tail
+theorem transition_patch_eventually
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -429,13 +429,13 @@ theorem h6_patch_tail
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
       letI : MetricSpace Y.M := (P j).ms
       (∀ alpha : LiveSlot L inp.pack r,
-        h6Patch L alpha ⊆ Metric.ball 0
+        transitionPatch L alpha ⊆ Metric.ball 0
             (d.chart j
               (seqCenterD inp.decay P L k (alpha.1 : Nat))).radius ∧
         Set.MapsTo
           (d.chart j
             (seqCenterD inp.decay P L k (alpha.1 : Nat))).hom
-          (h6Patch L alpha)
+          (transitionPatch L alpha)
           (L.hatBall inp.decay inp.D P inp.pack r k alpha.1 ∩
             ⋃ gamma : Fin (inp.pack.A r),
               L.innerBall inp.decay inp.D P inp.pack r k gamma)) ∧
@@ -443,13 +443,13 @@ theorem h6_patch_tail
         ⋃ alpha : LiveSlot L inp.pack r,
           (d.chart j
             (seqCenterD inp.decay P L k (alpha.1 : Nat))).hom ''
-              interior (h6Core0 L alpha) ∧
+              interior (innerTransitionCore L alpha) ∧
       ∀ y ∈ L.hatSourceBall inp.decay P r k,
         ∃ (alpha : LiveSlot L inp.pack r) (z : E),
           (d.chart j
               (seqCenterD inp.decay P L k (alpha.1 : Nat))).hom z = y ∧
-            Metric.closedBall z (h6Buffer L alpha) ⊆
-              interior (h6Core0 L alpha) := by
+            Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
+              interior (innerTransitionCore L alpha) := by
   have hscaled :=
     L.scaled_cover inp.decay inp.hD P inp.realizes inp.pack r
       (41 / 20 : Real) (by norm_num)
@@ -491,13 +491,13 @@ theorem h6_patch_tail
     nlinarith
   have hpatch :
       ∀ alpha : LiveSlot L inp.pack r,
-        h6Patch L alpha ⊆ Metric.ball 0
+        transitionPatch L alpha ⊆ Metric.ball 0
             (d.chart j
               (seqCenterD inp.decay P L k (alpha.1 : Nat))).radius ∧
         Set.MapsTo
           (d.chart j
             (seqCenterD inp.decay P L k (alpha.1 : Nat))).hom
-          (h6Patch L alpha)
+          (transitionPatch L alpha)
           (L.hatBall inp.decay inp.D P inp.pack r k alpha.1 ∩
             ⋃ gamma : Fin (inp.pack.A r),
               L.innerBall inp.decay inp.D P inp.pack r k gamma) := by
@@ -509,7 +509,7 @@ theorem h6_patch_tail
     have hrad : 384 * L.lamInf (alpha.1 : Nat) < chi.radius := by
       simpa only [chi, c, Y, j] using
         d.stage_radius_gt inp aMin hphys P L hratio (hcentersK alpha)
-    have hUrad : h6Patch L alpha ⊆ Metric.ball 0 chi.radius := by
+    have hUrad : transitionPatch L alpha ⊆ Metric.ball 0 chi.radius := by
       intro z hz
       change dist z 0 <
         (21 / 10 : Real) * L.lamInf (alpha.1 : Nat) at hz
@@ -531,7 +531,7 @@ theorem h6_patch_tail
           chi.ball_subset hseg
     have hzNorm : ‖z‖ <
         (21 / 10 : Real) * L.lamInf (alpha.1 : Nat) := by
-      simpa only [h6Patch, Metric.mem_ball, dist_zero_right] using hz
+      simpa only [transitionPatch, Metric.mem_ball, dist_zero_right] using hz
     have himage :
         (letI : MetricSpace Y.M := (P j).ms
          dist c (chi.hom z)) < 3 * L.lamInf (alpha.1 : Nat) := by
@@ -573,8 +573,8 @@ theorem h6_patch_tail
         ∃ (alpha : LiveSlot L inp.pack r) (z : E),
           (d.chart j
               (seqCenterD inp.decay P L k (alpha.1 : Nat))).hom z = y ∧
-            Metric.closedBall z (h6Buffer L alpha) ⊆
-              interior (h6Core0 L alpha) := by
+            Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
+              interior (innerTransitionCore L alpha) := by
     intro y hy
     have hyr :
         (letI : MetricSpace Y.M := (P j).ms
@@ -624,7 +624,7 @@ theorem h6_patch_tail
         ENNReal.ofReal chi.radius := by
       rw [hed]
       exact (ENNReal.ofReal_lt_ofReal_iff chi.radius_pos).2 hdist
-    have hread := d.toH6ChartData.readout_mem
+    have hread := d.toNormalChartData.readout_mem
       j (hcomplete.complete j) (hconn j) c y hedRad
     have htarget : y ∈ chi.hom.target := by
       obtain ⟨w, hw, hwy⟩ := hread.1
@@ -640,9 +640,9 @@ theorem h6_patch_tail
         ENNReal.toReal_ofReal (inp.realizes.dist_nonneg j c y)]
       exact hproper
     have hbuffer :
-        Metric.closedBall z (h6Buffer L alpha) ⊆
-          interior (h6Core0 L alpha) := by
-      apply h6_buffer_mem inp P L alpha
+        Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
+          interior (innerTransitionCore L alpha) := by
+      apply closed_ball_subset_inner_transition_core inp P L alpha
       simpa only [alpha, gammaFin] using hzNorm
     refine ⟨alpha, z, ?_, hbuffer⟩
     change (d.chart j (seqCenterD inp.decay P L k gamma)).hom z = y
@@ -651,16 +651,16 @@ theorem h6_patch_tail
   refine ⟨hpatch, ?_, hwitness⟩
   intro y hy
   obtain ⟨alpha, z, hzy, hbuffer⟩ := hwitness y hy
-  have heta : 0 ≤ h6Buffer L alpha :=
-    (h6_core_geom inp P L r).2.2.2.2.2.2.2.2 alpha |>.le
-  have hzCore : z ∈ interior (h6Core0 L alpha) :=
+  have heta : 0 ≤ transitionCoreBuffer L alpha :=
+    (transition_patch_geometry inp P L r).2.2.2.2.2.2.2.2 alpha |>.le
+  have hzCore : z ∈ interior (innerTransitionCore L alpha) :=
     hbuffer (Metric.mem_closedBall_self heta)
   exact mem_iUnion.mpr ⟨alpha, ⟨z, hzCore, hzy⟩⟩
 
 omit [CompleteSpace E] in
-theorem h6_rad72_tail
+theorem transition_target_ball_eventually
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -702,7 +702,7 @@ theorem h6_rad72_tail
 private theorem trans_fin
     {ι : Type*} (s : Finset ι)
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd)
+    (d : BoundedGeometryNormalData (I := I) X hd)
     (x y : ι → ∀ k : Nat, (X.obj k).M)
     (U V Ua Va : ι → Set E)
     (hU : ∀ i, i ∈ s → IsOpen (U i))
@@ -717,8 +717,8 @@ private theorem trans_fin
     (hVarad : ∀ i, i ∈ s → ∀ k,
       Va i ⊆ Metric.ball (0 : E)
         (d.ratio * hd.mu (hd.dist k (y i k) (X.obj k).basepoint)))
-    (hovlJ : ∀ i, i ∈ s → ∀ k, d.ChartOverlapOn k (x i k) (y i k) (U i))
-    (hovlJbar : ∀ i, i ∈ s → ∀ k, d.ChartOverlapOn k (y i k) (x i k) (V i))
+    (hovlJ : ∀ i, i ∈ s → ∀ k, d.chartOverlapOn k (x i k) (y i k) (U i))
+    (hovlJbar : ∀ i, i ∈ s → ∀ k, d.chartOverlapOn k (y i k) (x i k) (V i))
     (hmapJ : ∀ i, i ∈ s → ∀ k, Set.MapsTo
       (d.chartTransition k (x i k) (y i k)) (U i) (Va i))
     (hmapJbar : ∀ i, i ∈ s → ∀ k, Set.MapsTo
@@ -772,42 +772,42 @@ private theorem trans_fin
           (hUanorm a (Finset.mem_insert_self a s))
           (hVanorm a (Finset.mem_insert_self a s))
           (fun k => by
-            simpa only [d0, H6NormalData.subseq,
+            simpa only [d0, BoundedGeometryNormalData.subseq,
               InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
               PointedRiemannianSeq.subseq] using
               hUarad a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, H6NormalData.subseq,
+            simpa only [d0, BoundedGeometryNormalData.subseq,
               InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
               PointedRiemannianSeq.subseq] using
               hVarad a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, H6NormalData.subseq,
-              H6NormalData.ChartOverlapOn,
+            simpa only [d0, BoundedGeometryNormalData.subseq,
+              BoundedGeometryNormalData.chartOverlapOn,
               PointedRiemannianSeq.subseq] using
               hovlJ a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, H6NormalData.subseq,
-              H6NormalData.ChartOverlapOn,
+            simpa only [d0, BoundedGeometryNormalData.subseq,
+              BoundedGeometryNormalData.chartOverlapOn,
               PointedRiemannianSeq.subseq] using
               hovlJbar a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, H6NormalData.subseq,
-              H6NormalData.chartTransition,
+            simpa only [d0, BoundedGeometryNormalData.subseq,
+              BoundedGeometryNormalData.chartTransition,
               PointedRiemannianSeq.subseq] using
               hmapJ a (Finset.mem_insert_self a s) (phi0 k))
           (fun k => by
-            simpa only [d0, H6NormalData.subseq,
-              H6NormalData.chartTransition,
+            simpa only [d0, BoundedGeometryNormalData.subseq,
+              BoundedGeometryNormalData.chartTransition,
               PointedRiemannianSeq.subseq] using
               hmapJbar a (Finset.mem_insert_self a s) (phi0 k))
       refine ⟨phi0 ∘ phi1, hphi0.comp hphi1, fun i hi => ?_⟩
       rcases Finset.mem_insert.mp hi with rfl | his
       · refine ⟨Jinf, Jbarinf, hJinf, hJbarinf, ?_, ?_, hleft, hright⟩
-        · simpa only [Function.comp_apply, d0, H6NormalData.subseq,
-            H6NormalData.chartTransition, PointedRiemannianSeq.subseq] using hJ
-        · simpa only [Function.comp_apply, d0, H6NormalData.subseq,
-            H6NormalData.chartTransition, PointedRiemannianSeq.subseq] using hJbar
+        · simpa only [Function.comp_apply, d0, BoundedGeometryNormalData.subseq,
+            BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq] using hJ
+        · simpa only [Function.comp_apply, d0, BoundedGeometryNormalData.subseq,
+            BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq] using hJbar
       · obtain ⟨Jprev, Jbarprev, hJprev, hJbarprev, hconv, hconvbar,
             hleftprev, hrightprev⟩ := hprev i his
         refine ⟨Jprev, Jbarprev, hJprev, hJbarprev, ?_, ?_,
@@ -818,7 +818,7 @@ private theorem trans_fin
 omit [CompleteSpace E] in
 theorem atomOn_readout
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (r : Real) (k : Nat)
     (alpha gamma : Fin (inp.pack.A r))
@@ -835,7 +835,7 @@ theorem atomOn_readout
           (seqCenterD inp.decay P L k (alpha : Nat)) z)) :
     seqAtomOn (I := I) d.chart inp.decay inp.hD P L inp.pack r
         (fun n => seqCenterD inp.decay P L n (alpha : Nat)) gamma k z =
-      stepCBump (L.lamInf (gamma : Nat))
+      gluingBump (L.lamInf (gamma : Nat))
           (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
         (‖d.chartTransition (L.φ k)
           (seqCenterD inp.decay P L k (alpha : Nat))
@@ -859,9 +859,9 @@ theorem atomOn_readout
       j cGamma (d.chartMap j cAlpha z)).trans hnorm.symm
   unfold seqAtomOn
   rw [seqAtom_some inp.decay inp.hD P L inp.pack r k gamma hc]
-  change stepCBump lam hlam
+  change gluingBump lam hlam
       (dist cGamma (d.chartMap j cAlpha z) ^ 2) =
-    stepCBump lam hlam
+    gluingBump lam hlam
       (‖d.chartTransition j cAlpha cGamma z‖ ^ 2)
   rw [hdist]
 
@@ -874,15 +874,15 @@ private theorem normBump_conv
     (hJinf : ContDiffOn Real (∞ : WithTop ℕ∞) Jinf U)
     (lam : Real) (hlam : 0 < lam) :
     MapCInfConvOnCompacts U
-      (fun k z => stepCBump lam hlam (‖J k z‖ ^ 2))
-      (fun z => stepCBump lam hlam (‖Jinf z‖ ^ 2)) := by
+      (fun k z => gluingBump lam hlam (‖J k z‖ ^ 2))
+      (fun z => gluingBump lam hlam (‖Jinf z‖ ^ 2)) := by
   let B : E →L[Real] E →L[Real] Real := innerSL Real
   have hB : MapCInfConvOnCompacts U
       (fun _ : Nat => fun _ : E => B) (fun _ : E => B) :=
     mapCInfConv_const (fun _ : E => B)
   have hconv := quadBump_conv hU hB hJ
     (fun _ => contDiffOn_const) contDiffOn_const hJc hJinf
-    (stepCBump lam hlam) (stepCBump lam hlam).contDiff
+    (gluingBump lam hlam) (gluingBump lam hlam).contDiff
   have hquad (v : E) : B v v = ‖v‖ ^ 2 := by
     dsimp only [B]
     change Inner.inner Real v v = ‖v‖ ^ 2
@@ -896,7 +896,7 @@ private theorem normBump_smooth
     (hJ : ContDiffOn Real (∞ : WithTop ℕ∞) J U)
     (lam : Real) (hlam : 0 < lam) :
     ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z => stepCBump lam hlam (‖J z‖ ^ 2)) U := by
+      (fun z => gluingBump lam hlam (‖J z‖ ^ 2)) U := by
   let B : E →L[Real] E →L[Real] Real := innerSL Real
   have hquad : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun z => B (J z) (J z)) U :=
@@ -907,12 +907,12 @@ private theorem normBump_smooth
     refine ContDiffOn.congr hquad fun z _ => ?_
     change ‖J z‖ ^ 2 = Inner.inner Real (J z) (J z)
     exact (real_inner_self_eq_norm_sq _).symm
-  exact (stepCBump lam hlam).contDiff.comp_contDiffOn hnorm
+  exact (gluingBump lam hlam).contDiff.comp_contDiffOn hnorm
 
 omit [CompleteSpace E] in
 theorem atomOn_live_conv
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     (alpha gamma : LiveSlot L inp.pack r)
@@ -941,7 +941,7 @@ theorem atomOn_live_conv
         inp.pack r
         (fun n => seqCenterD inp.decay P L n (alpha.1 : Nat))
         gamma.1 k)
-      (fun z => stepCBump (L.lamInf (gamma.1 : Nat))
+      (fun z => gluingBump (L.lamInf (gamma.1 : Nat))
         (inp.decay.lambda_pos inp.hD (L.rInf (gamma.1 : Nat)))
         (‖Jinf z‖ ^ 2)) := by
   have hbump := normBump_conv hU hJ hJc hJinf
@@ -1009,7 +1009,7 @@ theorem atomOn_disjoint_conv
 
 theorem exists_supp_data
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -1051,7 +1051,7 @@ theorem exists_supp_data
   letI : Fintype PairSlot := Fintype.ofFinite PairSlot
   have hpair (pair : PairSlot) :
       ∀ᶠ k : Nat in Filter.atTop,
-        (d.ChartOverlapOn (L.φ k)
+        (d.chartOverlapOn (L.φ k)
             (seqCenterD inp.decay P L k (pair.1.1 : Nat))
             (seqCenterD inp.decay P L k (pair.2.1.1 : Nat))
             (Metric.ball 0 (8 * L.lamInf (pair.1.1 : Nat))) ∧
@@ -1069,7 +1069,7 @@ theorem exists_supp_data
                   (seqCenterD inp.decay P L k (pair.2.1.1 : Nat))
                   (d.chartMap (L.φ k)
                     (seqCenterD inp.decay P L k (pair.1.1 : Nat)) z)) ∧
-        (d.ChartOverlapOn (L.φ k)
+        (d.chartOverlapOn (L.φ k)
             (seqCenterD inp.decay P L k (pair.2.1.1 : Nat))
             (seqCenterD inp.decay P L k (pair.1.1 : Nat))
             (Metric.ball 0 (8 * L.lamInf (pair.2.1.1 : Nat))) ∧
@@ -1099,17 +1099,17 @@ theorem exists_supp_data
               (inp.decay.dist (L.φ k)
                 (seqCenterD inp.decay P L k (pair.2.1.1 : Nat))
                 (X.obj (L.φ k)).basepoint)) := by
-    have hf := d.h6_pair_tail inp aMin hphys P L hcomplete hconn
+    have hf := d.chart_transition_pair_eventually inp aMin hphys P L hcomplete hconn
       hratio pair.1 pair.2.1 pair.2.2
     have hinterRev : ∀ᶠ k : Nat in Filter.atTop,
         BInter inp.decay inp.D P L.lamInf
           (pair.2.1.1 : Nat) (pair.1.1 : Nat) (L.φ k) :=
       pair.2.2.mono fun _ hk =>
         BInter.symm inp.decay inp.D P L.lamInf hk
-    have hb := d.h6_pair_tail inp aMin hphys P L hcomplete hconn
+    have hb := d.chart_transition_pair_eventually inp aMin hphys P L hcomplete hconn
       hratio pair.2.1 pair.1 hinterRev
-    have hra := d.h6_rad72_tail inp aMin hphys P L hratio pair.1
-    have hrb := d.h6_rad72_tail inp aMin hphys P L hratio pair.2.1
+    have hra := d.transition_target_ball_eventually inp aMin hphys P L hratio pair.1
+    have hrb := d.transition_target_ball_eventually inp aMin hphys P L hratio pair.2.1
     filter_upwards [hf, hb, hra, hrb] with k hfK hbK hraK hrbK
     exact ⟨hfK, hbK, hraK, hrbK⟩
   have hcenter (gamma : Fin (inp.pack.A r)) :
@@ -1159,13 +1159,13 @@ theorem exists_supp_data
        letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
        letI : MetricSpace Y.M := (P j).ms
        (∀ alpha : LiveSlot L inp.pack r,
-          h6Patch L alpha ⊆ Metric.ball 0
+          transitionPatch L alpha ⊆ Metric.ball 0
               (d.chart j
                 (seqCenterD inp.decay P L k (alpha.1 : Nat))).radius ∧
           Set.MapsTo
             (d.chart j
               (seqCenterD inp.decay P L k (alpha.1 : Nat))).hom
-            (h6Patch L alpha)
+            (transitionPatch L alpha)
             (L.hatBall inp.decay inp.D P inp.pack r k alpha.1 ∩
               ⋃ gamma : Fin (inp.pack.A r),
                 L.innerBall inp.decay inp.D P inp.pack r k gamma)) ∧
@@ -1173,13 +1173,13 @@ theorem exists_supp_data
           ⋃ alpha : LiveSlot L inp.pack r,
             (d.chart j
               (seqCenterD inp.decay P L k (alpha.1 : Nat))).hom ''
-                interior (h6Core0 L alpha) ∧
+                interior (innerTransitionCore L alpha) ∧
         ∀ y ∈ L.hatSourceBall inp.decay P r k,
           ∃ (alpha : LiveSlot L inp.pack r) (z : E),
             (d.chart j
                 (seqCenterD inp.decay P L k (alpha.1 : Nat))).hom z = y ∧
-              Metric.closedBall z (h6Buffer L alpha) ⊆
-                interior (h6Core0 L alpha)) ∧
+              Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
+                interior (innerTransitionCore L alpha)) ∧
       ((∀ gamma : Fin (inp.pack.A r),
           (L.alive (gamma : Nat) = false →
             seqCenter inp.decay inp.D P (L.φ k) (gamma : Nat) = none) ∧
@@ -1193,7 +1193,7 @@ theorem exists_supp_data
             ¬ BInter inp.decay inp.D P L.lamInf
               (alpha.1 : Nat) (gamma : Nat) (L.φ k)) ∧
       ∀ pair : PairSlot,
-        (d.ChartOverlapOn (L.φ k)
+        (d.chartOverlapOn (L.φ k)
             (seqCenterD inp.decay P L k (pair.1.1 : Nat))
             (seqCenterD inp.decay P L k (pair.2.1.1 : Nat))
             (Metric.ball 0 (8 * L.lamInf (pair.1.1 : Nat))) ∧
@@ -1211,7 +1211,7 @@ theorem exists_supp_data
                   (seqCenterD inp.decay P L k (pair.2.1.1 : Nat))
                   (d.chartMap (L.φ k)
                     (seqCenterD inp.decay P L k (pair.1.1 : Nat)) z)) ∧
-        (d.ChartOverlapOn (L.φ k)
+        (d.chartOverlapOn (L.φ k)
             (seqCenterD inp.decay P L k (pair.2.1.1 : Nat))
             (seqCenterD inp.decay P L k (pair.1.1 : Nat))
             (Metric.ball 0 (8 * L.lamInf (pair.2.1.1 : Nat))) ∧
@@ -1241,7 +1241,7 @@ theorem exists_supp_data
               (inp.decay.dist (L.φ k)
                 (seqCenterD inp.decay P L k (pair.2.1.1 : Nat))
                 (X.obj (L.φ k)).basepoint)) := by
-    filter_upwards [d.h6_patch_tail inp aMin hphys P L hcomplete hconn r hratio,
+    filter_upwards [d.transition_patch_eventually inp aMin hphys P L hcomplete hconn r hratio,
       Filter.eventually_all.mpr hcenter,
       Filter.eventually_all.mpr fun alpha => Filter.eventually_all.mpr (hsep alpha),
       Filter.eventually_all.mpr hpair] with k hpatchK hcenterK hsepK hpairK
@@ -1285,38 +1285,38 @@ theorem exists_supp_data
           simpa only [Va, Metric.mem_ball, dist_zero_right] using hz))
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [Ua, d0, H6NormalData.subseq,
+        simpa only [Ua, d0, BoundedGeometryNormalData.subseq,
           InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
           PointedRiemannianSeq.subseq, x0, L0, NetLimitData.subseq,
           Function.comp_apply, seqCenterD_subseq] using hk.2.2.1)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [Va, d0, H6NormalData.subseq,
+        simpa only [Va, d0, BoundedGeometryNormalData.subseq,
           InjRadiusDecayInput.subseq, InjRadiusDecayInput.mu,
           PointedRiemannianSeq.subseq, y0, L0, NetLimitData.subseq,
           Function.comp_apply, seqCenterD_subseq] using hk.2.2.2)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [U8, d0, H6NormalData.subseq,
-          H6NormalData.ChartOverlapOn, PointedRiemannianSeq.subseq,
+        simpa only [U8, d0, BoundedGeometryNormalData.subseq,
+          BoundedGeometryNormalData.chartOverlapOn, PointedRiemannianSeq.subseq,
           x0, y0, L0, NetLimitData.subseq, Function.comp_apply,
           seqCenterD_subseq] using hk.1.1)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [V8, d0, H6NormalData.subseq,
-          H6NormalData.ChartOverlapOn, PointedRiemannianSeq.subseq,
+        simpa only [V8, d0, BoundedGeometryNormalData.subseq,
+          BoundedGeometryNormalData.chartOverlapOn, PointedRiemannianSeq.subseq,
           x0, y0, L0, NetLimitData.subseq, Function.comp_apply,
           seqCenterD_subseq] using hk.2.1.1)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [U8, Va, d0, H6NormalData.subseq,
-          H6NormalData.chartTransition, PointedRiemannianSeq.subseq,
+        simpa only [U8, Va, d0, BoundedGeometryNormalData.subseq,
+          BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
           x0, y0, L0, NetLimitData.subseq, Function.comp_apply,
           seqCenterD_subseq] using hk.1.2.1)
       (fun pair _ k => by
         have hk := (hstage k).2.2 pair
-        simpa only [V8, Ua, d0, H6NormalData.subseq,
-          H6NormalData.chartTransition, PointedRiemannianSeq.subseq,
+        simpa only [V8, Ua, d0, BoundedGeometryNormalData.subseq,
+          BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
           x0, y0, L0, NetLimitData.subseq, Function.comp_apply,
           seqCenterD_subseq] using hk.2.1.2.1)
   have hlim0 (pair : PairSlot) :=
@@ -1343,9 +1343,9 @@ theorem exists_supp_data
   let phi : Nat → Nat := shift ∘ tau
   have hphi : StrictMono phi := hshift.comp htau
   let Lphi := L.subseq hphi
-  let U : LiveSlot L inp.pack r → Set E := fun alpha => h6Patch L alpha
-  let C0 : LiveSlot L inp.pack r → Set E := fun alpha => h6Core0 L alpha
-  let C1 : LiveSlot L inp.pack r → Set E := fun alpha => h6Core1 L alpha
+  let U : LiveSlot L inp.pack r → Set E := fun alpha => transitionPatch L alpha
+  let C0 : LiveSlot L inp.pack r → Set E := fun alpha => innerTransitionCore L alpha
+  let C1 : LiveSlot L inp.pack r → Set E := fun alpha => outerTransitionCore L alpha
   let Jinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E :=
     fun alpha target => J ⟨alpha, target⟩
@@ -1357,7 +1357,7 @@ theorem exists_supp_data
     if htarget : ∃ target : InterSlot L inp.pack r alpha,
         target.1.1 = gamma then
       let target := Classical.choose htarget
-      fun z => stepCBump (L.lamInf (gamma : Nat))
+      fun z => gluingBump (L.lamInf (gamma : Nat))
         (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
         (‖Jinf alpha target z‖ ^ 2)
     else fun _ => 0
@@ -1390,14 +1390,14 @@ theorem exists_supp_data
         ∃ (alpha : LiveSlot L inp.pack r) (z : E),
           (d.chart j
               (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).hom z = y ∧
-            Metric.closedBall z (h6Buffer L alpha) ⊆
+            Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
               interior (C0 alpha) := by
     have hk := (hstage (tau k)).1
     simpa only [U, C0, Lphi, phi, L0, Function.comp_apply,
       seqCenterD_subseq, NetLimitData.hatBall_subseq,
       NetLimitData.innerBall_subseq,
       NetLimitData.hatSourceBall_subseq] using hk
-  have hgeom := h6_core_geom inp P L r
+  have hgeom := transition_patch_geometry inp P L r
   have hlimAll : ∀ alpha,
       HasAtomWeightLimOn (I := I) d.chart
         inp.decay inp.hD P Lphi inp.realizes inp.pack r hr
@@ -1449,8 +1449,8 @@ theorem exists_supp_data
       intro K hK hKU p
       have hc := (hspec (⟨alpha, target⟩ : PairSlot)).2.2.1
         K hK (hKU.trans hU8alpha) p
-      simpa only [Jinf, J, U8, d0, H6NormalData.subseq,
-        H6NormalData.chartTransition, PointedRiemannianSeq.subseq,
+      simpa only [Jinf, J, U8, d0, BoundedGeometryNormalData.subseq,
+        BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
         x0, y0, beta, Lphi, phi, L0, Function.comp_apply,
         seqCenterD_subseq] using hc
     have hJStage (target : InterSlot L inp.pack r alpha) (k : Nat) :
@@ -1461,7 +1461,7 @@ theorem exists_supp_data
           (U alpha) := by
       have hp := (hstage (tau k)).2.2 (⟨alpha, target⟩ : PairSlot)
       have hov :
-          d.ChartOverlapOn (Lphi.φ k)
+          d.chartOverlapOn (Lphi.φ k)
             (beta k)
             (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
             (Metric.ball (0 : E)
@@ -1479,8 +1479,8 @@ theorem exists_supp_data
       have hs := (d.chart (Lphi.φ k) (beta k)).transition_smooth
         (d.chart (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)))
-        (by simpa only [H6NormalData.ChartOverlapOn] using hov)
-      simpa only [H6NormalData.chartTransition] using hs.mono hU8alpha
+        (by simpa only [BoundedGeometryNormalData.chartOverlapOn] using hov)
+      simpa only [BoundedGeometryNormalData.chartTransition] using hs.mono hU8alpha
     have hread (target : InterSlot L inp.pack r alpha) :
         ∀ᶠ k : Nat in Filter.atTop,
           ∀ z ∈ U alpha,
@@ -1593,7 +1593,7 @@ theorem exists_supp_data
           (Lphi.lamInf (gamma : Nat))
           (inp.decay.lambda_pos inp.hD (Lphi.rInf (gamma : Nat)))
         have hsmooth' : ContDiffOn Real (∞ : WithTop ℕ∞)
-            (fun z => stepCBump (Lphi.lamInf (gamma : Nat))
+            (fun z => gluingBump (Lphi.lamInf (gamma : Nat))
               (inp.decay.lambda_pos inp.hD (Lphi.rInf (gamma : Nat)))
               (‖d.chartTransition (Lphi.φ k)
                 (beta k)
@@ -1704,12 +1704,12 @@ theorem exists_supp_data
       simpa only [Jbarinf, Jbar, V8] using hs.2.1
     refine ⟨hsmoothF, hsmoothR, hsmoothF.continuousOn,
       hsmoothR.continuousOn, ?_, ?_, ?_, ?_⟩
-    · simpa only [Jinf, J, U8, d0, H6NormalData.subseq,
-        H6NormalData.chartTransition, PointedRiemannianSeq.subseq,
+    · simpa only [Jinf, J, U8, d0, BoundedGeometryNormalData.subseq,
+        BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
         x0, y0, Lphi, phi, L0, Function.comp_apply,
         seqCenterD_subseq] using hs.2.2.1
-    · simpa only [Jbarinf, Jbar, V8, d0, H6NormalData.subseq,
-        H6NormalData.chartTransition, PointedRiemannianSeq.subseq,
+    · simpa only [Jbarinf, Jbar, V8, d0, BoundedGeometryNormalData.subseq,
+        BoundedGeometryNormalData.chartTransition, PointedRiemannianSeq.subseq,
         x0, y0, Lphi, phi, L0, Function.comp_apply,
         seqCenterD_subseq] using hs.2.2.2.1
     · simpa only [Jinf, Jbarinf, J, Jbar, U8, V8] using
@@ -1743,7 +1743,7 @@ theorem exists_supp_data
       (X.obj (Lphi.φ k)).t2TangentBundle
     have hp := (hstage (tau k)).2.2 (⟨alpha, target⟩ : PairSlot)
     have hovF :
-        d.ChartOverlapOn (Lphi.φ k)
+        d.chartOverlapOn (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
           (Metric.ball (0 : E)
@@ -1751,7 +1751,7 @@ theorem exists_supp_data
       simpa only [Lphi, phi, L0, Function.comp_apply,
         seqCenterD_subseq] using hp.1.1
     have hovR :
-        d.ChartOverlapOn (Lphi.φ k)
+        d.chartOverlapOn (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
           (Metric.ball (0 : E)
@@ -1763,15 +1763,15 @@ theorem exists_supp_data
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))).transition_smooth
         (d.chart (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)))
-        (by simpa only [H6NormalData.ChartOverlapOn] using hovF)
+        (by simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovF)
     have hsR :=
       (d.chart (Lphi.φ k)
         (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))).transition_smooth
         (d.chart (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)))
-        (by simpa only [H6NormalData.ChartOverlapOn] using hovR)
-    exact ⟨by simpa only [H6NormalData.chartTransition] using hsF,
-      by simpa only [H6NormalData.chartTransition] using hsR⟩
+        (by simpa only [BoundedGeometryNormalData.chartOverlapOn] using hovR)
+    exact ⟨by simpa only [BoundedGeometryNormalData.chartTransition] using hsF,
+      by simpa only [BoundedGeometryNormalData.chartTransition] using hsR⟩
   have hchartAll (k : Nat) :
       let Y := X.obj (Lphi.φ k)
       letI : TopologicalSpace Y.M := Y.topology
@@ -1827,7 +1827,7 @@ theorem exists_supp_data
   · simpa only [C1, U] using hgeom.2.2.2.2.2.1
   · simpa only [C0] using hgeom.2.2.2.2.2.2.1
   · simpa only [C0] using hgeom.2.2.2.2.2.2.2.1
-  · refine ⟨fun alpha => h6Buffer L alpha, hgeom.2.2.2.2.2.2.2.2, ?_⟩
+  · refine ⟨fun alpha => transitionCoreBuffer L alpha, hgeom.2.2.2.2.2.2.2.2, ?_⟩
     intro k
     simpa only [C0, Lphi] using (hpatchPhi k).2.2
   · intro k
@@ -1837,13 +1837,13 @@ theorem exists_supp_data
   · simpa only [Lphi] using hlimAll
   · exact hweightAll
   · intro alpha target
-    simpa only [Lphi, H6NormalData.chartTransition] using
+    simpa only [Lphi, BoundedGeometryNormalData.chartTransition] using
       htransAll alpha target
   · intro alpha target k
-    simpa only [Lphi, H6NormalData.chartTransition] using
+    simpa only [Lphi, BoundedGeometryNormalData.chartTransition] using
       hsmoothAll alpha target k
 
-end H6NormalData
+end BoundedGeometryNormalData
 
 end HCGCompactness
 end DifferentialGeometry

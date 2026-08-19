@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.CurvatureSupremum
 
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PerturbedCurvatureOperatorBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnDiffQuadraticBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovDerivConnectionDifferenceQuadraticBound
 
 set_option autoImplicit false
 
@@ -45,7 +45,7 @@ private lemma gBase_le_scaled (gBase g₀ : SmoothRiemannianMetric I M) {Λ : �
   have hz := mul_le_mul_of_nonneg_left (hcomp x v).1 hΛ0.le
   rwa [← mul_assoc, mul_inv_cancel₀ hΛ0.ne', one_mul] at hz
 
-theorem unifRicSup
+theorem uniformRicSup
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) (hΛ2 : Λ < 2)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -86,13 +86,13 @@ theorem unifRicSup
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-noncomputable def connDiffZeroC (Λ : ℝ) : ℝ :=
+noncomputable def connectionDifferenceZeroC (Λ : ℝ) : ℝ :=
   3 / 2 * Λ ^ 3 * Λ
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem connDiffSup_le
+theorem connectionDifferenceSup_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -100,21 +100,21 @@ theorem connDiffSup_le
     (hjet1 : MetricCovDerivOrderBoundOn Set.univ 1 g₀ gBase Λ) :
     ∀ (x : M) (v w : TangentSpace I x),
       Real.sqrt (gBase.inner x
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x v w)
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x v w)) ≤
-        connDiffZeroC Λ * Real.sqrt (gBase.inner x v v) *
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x v w)
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x v w)) ≤
+        connectionDifferenceZeroC Λ * Real.sqrt (gBase.inner x v v) *
           Real.sqrt (gBase.inner x w w) := by
   have hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ :=
     ⟨hΛ, fun x _ => hcomp x⟩
   intro x v w
-  have h := connDiff_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
-  simpa [connDiffZeroC, DifferentialGeometry.PDE.DeTurck.connDiff,
+  have h := connectionDifference_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
+  simpa [connectionDifferenceZeroC, DifferentialGeometry.PDE.DeTurck.connectionDifference,
     mul_assoc, mul_left_comm, mul_comm] using h
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem unifConnDiffSup
+theorem uniformConnectionDifferenceSup
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -123,23 +123,23 @@ theorem unifConnDiffSup
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (x : M) (v w : TangentSpace I x),
         Real.sqrt (gBase.inner x
-            (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x v w)
-            (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x v w)) ≤
+            (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x v w)
+            (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x v w)) ≤
           C * Real.sqrt (gBase.inner x v v) * Real.sqrt (gBase.inner x w w) := by
-  refine ⟨connDiffZeroC Λ, ?_, ?_⟩
-  · dsimp [connDiffZeroC]
+  refine ⟨connectionDifferenceZeroC Λ, ?_, ?_⟩
+  · dsimp [connectionDifferenceZeroC]
     positivity
-  · exact connDiffSup_le (I := I) (M := M) gBase g₀ hΛ hcomp hjet1
+  · exact connectionDifferenceSup_le (I := I) (M := M) gBase g₀ hΛ hcomp hjet1
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
-noncomputable def connDiffOneC (Λ : ℝ) : ℝ :=
+noncomputable def connectionDifferenceOneC (Λ : ℝ) : ℝ :=
   3 / 2 * Λ ^ 4 * (Λ + Λ * Λ ^ 2)
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem covConnDiff_le
+theorem covConnectionDifference_le
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -148,27 +148,27 @@ theorem covConnDiff_le
     (hjet2 : MetricCovDerivOrderBoundOn Set.univ 2 g₀ gBase Λ) :
     ∀ (x : M) (v w u : TangentSpace I x),
       Real.sqrt (gBase.inner x
-          (covDerivConnDiff (I := I) gBase g₀
+          (covDerivConnectionDifference (I := I) gBase g₀
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w)
               (smoothExtensionTangent (I := I) x u) x)
-          (covDerivConnDiff (I := I) gBase g₀
+          (covDerivConnectionDifference (I := I) gBase g₀
               (smoothExtensionTangent (I := I) x v)
               (smoothExtensionTangent (I := I) x w)
               (smoothExtensionTangent (I := I) x u) x)) ≤
-        connDiffOneC Λ * Real.sqrt (gBase.inner x v v) *
+        connectionDifferenceOneC Λ * Real.sqrt (gBase.inner x v v) *
           Real.sqrt (gBase.inner x w w) * Real.sqrt (gBase.inner x u u) := by
   have hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ :=
     ⟨hΛ, fun x _ => hcomp x⟩
   intro x v w u
-  simpa [connDiffOneC] using
-    covDerivConnDiff_gJet_le (I := I) hEq hjet1 hjet2
+  simpa [connectionDifferenceOneC] using
+    covDerivConnectionDifference_gJet_le (I := I) hEq hjet1 hjet2
       (Set.mem_univ x) v w u
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem unifCovConnDiffSup
+theorem uniformCovConnectionDifferenceSup
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -178,20 +178,20 @@ theorem unifCovConnDiffSup
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (x : M) (v w u : TangentSpace I x),
         Real.sqrt (gBase.inner x
-            (covDerivConnDiff (I := I) gBase g₀
+            (covDerivConnectionDifference (I := I) gBase g₀
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w)
                 (smoothExtensionTangent (I := I) x u) x)
-            (covDerivConnDiff (I := I) gBase g₀
+            (covDerivConnectionDifference (I := I) gBase g₀
                 (smoothExtensionTangent (I := I) x v)
                 (smoothExtensionTangent (I := I) x w)
                 (smoothExtensionTangent (I := I) x u) x)) ≤
           C * Real.sqrt (gBase.inner x v v) * Real.sqrt (gBase.inner x w w) *
             Real.sqrt (gBase.inner x u u) := by
-  refine ⟨connDiffOneC Λ, ?_, ?_⟩
-  · dsimp [connDiffOneC]
+  refine ⟨connectionDifferenceOneC Λ, ?_, ?_⟩
+  · dsimp [connectionDifferenceOneC]
     positivity
-  · exact covConnDiff_le (I := I) (M := M) gBase g₀
+  · exact covConnectionDifference_le (I := I) (M := M) gBase g₀
       hΛ hcomp hjet1 hjet2
 
 
@@ -224,7 +224,7 @@ theorem ricciBilin_of
     positivity
   have hF0 : 0 ≤ F :=
     mul_nonneg (sq_nonneg _) (add_nonneg hCd0 (Real.sqrt_nonneg _))
-  have hF := unifCurvSup_of (I := I) (M := M) gBase g₀ hΛ
+  have hF := uniformCurvSup_of (I := I) (M := M) gBase g₀ hΛ
     hKb0 hKb hcomp hjet1 hjet2
   intro x v w
   let B : Fin (Module.finrank ℝ E) → TangentSpace I x :=
@@ -293,7 +293,7 @@ theorem ricciBilin_of
       ring
 
 
-theorem unifRicBilin
+theorem uniformRicBilin
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧

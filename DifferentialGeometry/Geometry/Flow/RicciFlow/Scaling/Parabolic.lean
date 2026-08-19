@@ -835,11 +835,11 @@ theorem para_paraBack_ricci
       DifferentialGeometry.Geometry.Connection.lcConn_scaleMetric,
     paraBack_time (τ := τ) (R := R) (s := s) (ne_of_gt hR)]
 
-def ParaScalarDisplay
+def ParabolicScalarCurvatureScaling
     (scalar scalarR : Real -> M -> Real) (τ R : Real) : Prop :=
   forall s x, scalarR s x = R⁻¹ * scalar (paraTime τ R s) x
 
-def ParaTracefreeNormSqDisplay
+def ParabolicTraceFreeRicciNormSqScaling
     (q qR : Real -> M -> Real) (τ R : Real) : Prop :=
   forall s x, qR s x = (R⁻¹) ^ 2 * q (paraTime τ R s) x
 
@@ -847,8 +847,8 @@ omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
 theorem para_tracefree_ratio_invariant
     {scalar scalarR q qR : Real -> M -> Real}
     {τ R : Real} (hR : 0 < R)
-    (hscalar : ParaScalarDisplay (M := M) scalar scalarR τ R)
-    (hq : ParaTracefreeNormSqDisplay (M := M) q qR τ R)
+    (hscalar : ParabolicScalarCurvatureScaling (M := M) scalar scalarR τ R)
+    (hq : ParabolicTraceFreeRicciNormSqScaling (M := M) q qR τ R)
     (s : Real) (x : M) :
     qR s x / (scalarR s x) ^ 2 =
       q (paraTime τ R s) x / (scalar (paraTime τ R s) x) ^ 2 := by

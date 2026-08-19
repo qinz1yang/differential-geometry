@@ -612,7 +612,8 @@ theorem ricci_quad_of_curv
           Λ * (S.base.metric s).inner y v v := by
     intro s hs y v
     simpa only [Λ, d, dNat] using
-      (ricci_quad_sol (I := I) S y v (hcurv0 s hs y))
+      (ricci_quadratic_form_bound_of_solution_curvature_bound
+        (I := I) S y v (hcurv0 s hs y))
   simpa only [Λ, d, dNat] using And.intro hΛ hricQuad
 
 private structure CalabiFlowCore
@@ -652,7 +653,7 @@ private structure CalabiFlowCore
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [InnerProductSpace ℝ E] in
-private theorem calabi_core_of_sol
+private theorem calabi_core_of_solution
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E
@@ -1193,7 +1194,7 @@ theorem scaled_of_quad
       n = ((Module.finrank Real E - 1 : Nat) : Real) := by
     rfl
   obtain ⟨core⟩ :=
-    calabi_core_of_sol
+    calabi_core_of_solution
       (I := I) S hS O hreg hricQuad ht htpos x hfinite' hOx
         hEnorm hq hRicLower hr hnDim
   have hcoef :

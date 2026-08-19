@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.C2JetTower
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.C01JetTower
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderPrincipalArmFibreSmallness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderCoefficientJetBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LowOrderCoefficientJetBounds
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderPrincipalArm.FibreSmallness
 
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
@@ -33,7 +33,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-theorem appCc_cap_hs_affine_le
+theorem operatorFieldApplication_cap_hs_affine_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : max 2 (Module.finrank ℝ E / 2 * 2 + 1) ≤ a)
     (εC : ℝ) (hεC_nn : 0 ≤ εC) (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i) :
@@ -50,7 +50,7 @@ theorem appCc_cap_hs_affine_le
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2)) →
         ∀ m : ℕ,
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
-              (appCc (I := I) (M := M) g₀ (2 + 2) 2 C₂
+              (operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂
                 (iteratedCovGrad (I := I) g₀ 0 2 2 T₀))‖ ≤
             εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T₀‖ +
               Cop m * (1 + R₀) *
@@ -75,7 +75,7 @@ theorem appCc_cap_hs_affine_le
         (I := I) (M := M) g₀ (m : ℝ) T₀) hεC_nn
   exact le_trans h (add_le_add hmul (le_refl _))
 
-theorem appCc_cap_hs_le
+theorem operatorFieldApplication_cap_hs_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : max 2 (Module.finrank ℝ E / 2 * 2 + 1) ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (εC : ℝ) (hεC_nn : 0 ≤ εC) (Kc : ℕ → ℝ) (hKc_nn : ∀ i, 0 ≤ Kc i) :
@@ -91,7 +91,7 @@ theorem appCc_cap_hs_le
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2)) →
         ∀ m : ℕ,
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
-              (appCc (I := I) (M := M) g₀ (2 + 2) 2 C₂
+              (operatorFieldApply (I := I) (M := M) g₀ (2 + 2) 2 C₂
                 (iteratedCovGrad (I := I) g₀ 0 2 2 T₀))‖ ≤
             εC * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T₀‖ +
               Cop m *
@@ -129,7 +129,7 @@ private lemma hsMono (g₀ : SmoothRiemannianMetric I M)
   rw [hbσ, hbτ]
   exact ccSpectralEmbed_norm_mono (I := I) (M := M) g₀ hστ w
 
-theorem c2JetTowerSharp
+theorem secondOrderCoefficient_jet_tower_sharp
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
@@ -145,8 +145,8 @@ theorem c2JetTowerSharp
             (0 : SmoothCcTensor g 0 2)) δ)
         (i : ℕ),
           ‖iteratedCovGrad (I := I) g 4 2 i
-              (lowBaseData (I := I) (M := M) g g_bg T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2‖ ^ 2 ≤
+              (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient‖ ^ 2 ≤
             Kc i * (1 + ∑ j ∈ Finset.range (i + 1),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
   classical
@@ -160,35 +160,35 @@ theorem c2JetTowerSharp
   have hΛ : 0 ≤ Kk i * (1 + ∑ j ∈ Finset.range (i + 1),
       ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) :=
     mul_nonneg (hKk_nn i) (by linarith only [hsum])
-  have hSI : Set.uIcc (0 : ℝ) 1 ⊆ realizedSmallSet (δ := δ) (δ' := δ) := by
+  have hSI : Set.uIcc (0 : ℝ) 1 ⊆ metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
     rw [Set.uIcc_of_le zero_le_one]
-    exact Icc_subset_realizedSmallSet hδ_lt hδ_lt
+    exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   obtain ⟨X, hXdef, hXjet⟩ :
       ∃ X : SmoothCcTensor g 4 2,
-        (lowBaseData (I := I) (M := M) g g_bg T
-            (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2 = X ∧
-          lowJetSq (I := I) (M := M) g i X ≤
+        (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+            (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient = X ∧
+          covariantJetNormSq (I := I) (M := M) g i X ≤
             Kk i * (1 + ∑ j ∈ Finset.range (i + 1),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) :=
-    ⟨rhsRefoldTopInt (I := I) (M := M) g g_bg T hδ_lt hδg hδZ +
-        LowBaseInternal.selfTopInt (I := I) (M := M) g T hδ_lt hδg hδZ -
-        deTurckPhiMetTotal (I := I) (M := M) g g_bg g, rfl,
+    ⟨rhsDecompositionTopInt (I := I) (M := M) g g_bg T hδ_lt hδg hδZ +
+        RicciDeTurckLowOrder.selfTopInt (I := I) (M := M) g T hδ_lt hδg hδZ -
+        deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g, rfl,
       path_add_sub_jet (I := I) (M := M) g 4 i hSI
-        (rhsRefoldTop (I := I) (M := M) g g_bg T hδg hδZ)
-        (LowBaseInternal.rhsSelfTop (I := I) (M := M) g T hδg hδZ)
-        (deTurckPhiMetTotal (I := I) (M := M) g g_bg g)
-        (rhsRefoldTop_joint (I := I) (M := M) g g_bg T hδ_lt hδg hδZ)
-        (LowBaseInternal.selfTop_joint (I := I) (M := M) g T hδg hδZ)
+        (rhsDecompositionTop (I := I) (M := M) g g_bg T hδg hδZ)
+        (RicciDeTurckLowOrder.ricciDeTurckSelfTopOrderCoefficient (I := I) (M := M) g T hδg hδZ)
+        (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g_bg g)
+        (rhsDecompositionTop_joint (I := I) (M := M) g g_bg T hδ_lt hδg hδZ)
+        (RicciDeTurckLowOrder.selfTop_joint (I := I) (M := M) g T hδg hδZ)
         hΛ (hker T hT hδ0 hδ_le hδg hδZ i)⟩
   rw [hXdef]
   clear hXdef
   refine le_trans ?_ hXjet
-  unfold lowJetSq
+  unfold covariantJetNormSq
   exact Finset.single_le_sum
     (fun q _ => sq_nonneg ‖iteratedCovGrad (I := I) g 4 2 q X‖)
     (Finset.mem_range.mpr (Nat.lt_succ_self i))
 
-theorem c2JetTowerQ
+theorem secondOrderCoefficient_jet_tower_quadratic
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
@@ -204,11 +204,11 @@ theorem c2JetTowerQ
             (0 : SmoothCcTensor g 0 2)) δ)
         (i : ℕ),
           ‖iteratedCovGrad (I := I) g 4 2 i
-              (lowBaseData (I := I) (M := M) g g_bg T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2‖ ^ 2 ≤
+              (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient‖ ^ 2 ≤
             Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
-  obtain ⟨Kc, hKc_nn, htower⟩ := c2JetTowerSharp (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kc, hKc_nn, htower⟩ := secondOrderCoefficient_jet_tower_sharp (I := I) (M := M) hDim g g_bg
   refine ⟨Kc, hKc_nn, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ i
   refine (htower T hT hδ0 hδ_le hδg hδZ i).trans ?_
@@ -223,7 +223,7 @@ theorem c2JetTowerQ
     Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => sq_nonneg _)
   exact mul_le_mul_of_nonneg_left (by linarith only [hmono]) (hKc_nn i)
 
-theorem c2_jet_tower
+theorem secondOrderCoefficient_jet_tower
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) (a : ℕ) {R₀ : ℝ} (_hR₀ : 0 ≤ R₀) :
     ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
@@ -240,16 +240,16 @@ theorem c2_jet_tower
         ‖smoothCcToTensorHs (I := I) (M := M) g ((a : ℝ) + 2) T‖ ≤ R₀ →
         ∀ i : ℕ,
           ‖iteratedCovGrad (I := I) g 4 2 i
-              (lowBaseData (I := I) (M := M) g g_bg T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2‖ ^ 2 ≤
+              (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient‖ ^ 2 ≤
             Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
-  obtain ⟨Kc, hKc_nn, h⟩ := c2JetTowerQ (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kc, hKc_nn, h⟩ := secondOrderCoefficient_jet_tower_quadratic (I := I) (M := M) hDim g g_bg
   refine ⟨Kc, hKc_nn, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ _ i
   exact h T hT hδ0 hδ_le hδg hδZ i
 
-theorem a2LadderQBgAffine
+theorem secondOrderAction_ladder_quadratic_background_affine
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ κ : ℝ, 0 ≤ κ ∧
@@ -266,8 +266,8 @@ theorem a2LadderQBgAffine
             (0 : SmoothCcTensor g 0 2)) δ)
         (m : ℕ),
           ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
-              ((lowBaseData (I := I) (M := M) g g_bg T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2
+              ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction
                   (I := I) (M := M) T)‖ ≤
             κ * (δ / (1 - δ) ^ 2) *
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 2) T‖ +
@@ -276,13 +276,13 @@ theorem a2LadderQBgAffine
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ := by
   classical
   obtain ⟨K, hK, hsplit⟩ := lowData_split (I := I) (M := M) g g_bg
-  obtain ⟨Kc, hKc_nn, htower⟩ := c2JetTowerQ (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kc, hKc_nn, htower⟩ := secondOrderCoefficient_jet_tower_quadratic (I := I) (M := M) hDim g g_bg
   refine ⟨K, hK, ?_⟩
   intro δ hδ0 hδ_le
   have hεC_nn : (0 : ℝ) ≤ K * (δ / (1 - δ) ^ 2) :=
     mul_nonneg hK (div_nonneg hδ0 (sq_nonneg _))
   obtain ⟨Cop, hCop_nn, hop⟩ :=
-    appCc_cap_hs_affine_le (I := I) (M := M) g 3 (by omega)
+    operatorFieldApplication_cap_hs_affine_le (I := I) (M := M) g 3 (by omega)
       (K * (δ / (1 - δ) ^ 2)) hεC_nn Kc hKc_nn
   refine ⟨Cop, hCop_nn, ?_⟩
   intro T hT hδg hδZ m
@@ -291,29 +291,29 @@ theorem a2LadderQBgAffine
     exact le_of_eq (smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g
       (by push_cast; norm_num) T)
   obtain ⟨A, hAdef, hc2pt, hc2jet⟩ :
-      ∃ A : LowBaseActionData g,
-        lowBaseData (I := I) (M := M) g g_bg T
+      ∃ A : LowerScaleActionCoefficients g,
+        lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
             (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ = A ∧
           (∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-              (A.C2.toSection x) ≤ (K * (δ / (1 - δ) ^ 2)) ^ 2) ∧
+              (A.secondOrderCoefficient.toSection x) ≤ (K * (δ / (1 - δ) ^ 2)) ^ 2) ∧
           (∀ i : ℕ,
-            ‖iteratedCovGrad (I := I) g 4 2 i A.C2‖ ^ 2 ≤
+            ‖iteratedCovGrad (I := I) g 4 2 i A.secondOrderCoefficient‖ ^ 2 ≤
               Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2)) :=
-    ⟨lowBaseData (I := I) (M := M) g g_bg T
+    ⟨lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
         (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ, rfl,
       (hsplit T hT hδ_le hδ0 hδg hδZ).2,
       htower T hT hδ0 hδ_le hδg hδZ⟩
   rw [hAdef]
   clear hAdef
-  have hshape : A.a2 (I := I) (M := M) T =
-      appCc (I := I) (M := M) g (2 + 2) 2 A.C2
+  have hshape : A.secondOrderAction (I := I) (M := M) T =
+      operatorFieldApply (I := I) (M := M) g (2 + 2) 2 A.secondOrderCoefficient
         (iteratedCovGrad (I := I) g 0 2 2 T) := rfl
   rw [hshape]
-  exact le_trans (hop (norm_nonneg _) A.C2 T hball hc2pt hc2jet m) (le_of_eq (by ring))
+  exact le_trans (hop (norm_nonneg _) A.secondOrderCoefficient T hball hc2pt hc2jet m) (le_of_eq (by ring))
 
-theorem a2LadderQBg
+theorem secondOrderAction_ladder_quadratic_background
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ κ : ℝ, 0 ≤ κ ∧
@@ -332,8 +332,8 @@ theorem a2LadderQBg
         (hR : ‖smoothCcToTensorHs (I := I) (M := M) g (5 : ℝ) T‖ ≤ R)
         (m : ℕ),
           ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
-              ((lowBaseData (I := I) (M := M) g g_bg T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2
+              ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction
                   (I := I) (M := M) T)‖ ≤
             κ * (δ / (1 - δ) ^ 2) *
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 2) T‖ +
@@ -341,13 +341,13 @@ theorem a2LadderQBg
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ := by
   classical
   obtain ⟨K, hK, hsplit⟩ := lowData_split (I := I) (M := M) g g_bg
-  obtain ⟨Kc, hKc_nn, htower⟩ := c2JetTowerQ (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kc, hKc_nn, htower⟩ := secondOrderCoefficient_jet_tower_quadratic (I := I) (M := M) hDim g g_bg
   refine ⟨K, hK, ?_⟩
   intro δ hδ0 hδ_le
   have hεC_nn : (0 : ℝ) ≤ K * (δ / (1 - δ) ^ 2) :=
     mul_nonneg hK (div_nonneg hδ0 (sq_nonneg _))
   choose Cop hCop_nn hop using fun R : ℝ =>
-    appCc_cap_hs_le (I := I) (M := M) g 3 (by omega) (abs_nonneg R)
+    operatorFieldApplication_cap_hs_le (I := I) (M := M) g 3 (by omega) (abs_nonneg R)
       (K * (δ / (1 - δ) ^ 2)) hεC_nn Kc hKc_nn
   refine ⟨Cop, hCop_nn, ?_⟩
   intro T hT hδg hδZ R hR m
@@ -356,29 +356,29 @@ theorem a2LadderQBg
     exact smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g
       (by push_cast; norm_num) T
   obtain ⟨A, hAdef, hc2pt, hc2jet⟩ :
-      ∃ A : LowBaseActionData g,
-        lowBaseData (I := I) (M := M) g g_bg T
+      ∃ A : LowerScaleActionCoefficients g,
+        lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
             (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ = A ∧
           (∀ x : M,
             riemannianFiberNormSq (I := I) (M := M) g 4 2 x
-              (A.C2.toSection x) ≤ (K * (δ / (1 - δ) ^ 2)) ^ 2) ∧
+              (A.secondOrderCoefficient.toSection x) ≤ (K * (δ / (1 - δ) ^ 2)) ^ 2) ∧
           (∀ i : ℕ,
-            ‖iteratedCovGrad (I := I) g 4 2 i A.C2‖ ^ 2 ≤
+            ‖iteratedCovGrad (I := I) g 4 2 i A.secondOrderCoefficient‖ ^ 2 ≤
               Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2)) :=
-    ⟨lowBaseData (I := I) (M := M) g g_bg T
+    ⟨lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
         (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ, rfl,
       (hsplit T hT hδ_le hδ0 hδg hδZ).2,
       htower T hT hδ0 hδ_le hδg hδZ⟩
   rw [hAdef]
   clear hAdef
-  have hshape : A.a2 (I := I) (M := M) T =
-      appCc (I := I) (M := M) g (2 + 2) 2 A.C2
+  have hshape : A.secondOrderAction (I := I) (M := M) T =
+      operatorFieldApply (I := I) (M := M) g (2 + 2) 2 A.secondOrderCoefficient
         (iteratedCovGrad (I := I) g 0 2 2 T) := rfl
   rw [hshape]
-  exact le_trans (hop R A.C2 T hball hc2pt hc2jet m) (le_of_eq (by ring))
+  exact le_trans (hop R A.secondOrderCoefficient T hball hc2pt hc2jet m) (le_of_eq (by ring))
 
-theorem a2LadderQ
+theorem secondOrderAction_ladder_quadratic
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ κ : ℝ, 0 ≤ κ ∧
@@ -397,16 +397,16 @@ theorem a2LadderQ
         (hR : ‖smoothCcToTensorHs (I := I) (M := M) g (5 : ℝ) T‖ ≤ R)
         (m : ℕ),
           ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
-              ((lowBaseData (I := I) (M := M) g g T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2
+              ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction
                   (I := I) (M := M) T)‖ ≤
             κ * (δ / (1 - δ) ^ 2) *
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 2) T‖ +
               Clower R m *
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ :=
-  a2LadderQBg (I := I) (M := M) hDim g g
+  secondOrderAction_ladder_quadratic_background (I := I) (M := M) hDim g g
 
-theorem a2_ladder
+theorem secondOrderAction_ladder
     (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : 3 ≤ a) {R₀ : ℝ} (_hR₀ : 0 ≤ R₀) :
@@ -425,15 +425,15 @@ theorem a2_ladder
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ ≤ R₀ →
         ∀ m : ℕ,
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ)
-              ((lowBaseData (I := I) (M := M) g₀ g₀ T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2
+              ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀ T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction
                   (I := I) (M := M) T)‖ ≤
             κ * (δ / (1 - δ) ^ 2) *
                 ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 2) T‖ +
               Clower m *
                 ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T‖ := by
   classical
-  obtain ⟨κ, hκ, hQ⟩ := a2LadderQ (I := I) (M := M) hDim g₀
+  obtain ⟨κ, hκ, hQ⟩ := secondOrderAction_ladder_quadratic (I := I) (M := M) hDim g₀
   refine ⟨κ, hκ, ?_⟩
   intro δ hδ0 hδ_le
   obtain ⟨C, hC_nn, hC⟩ := hQ hδ0 hδ_le
@@ -515,7 +515,7 @@ private theorem coeffCap
       (le_trans hjets (mul_le_mul_of_nonneg_left hball hC2_nn)) 2
   linarith only [hwin, hball_sq]
 
-theorem a1_ladder_bg
+theorem firstOrderAction_ladder_background
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : 2 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀) :
@@ -533,16 +533,16 @@ theorem a1_ladder_bg
         ‖smoothCcToTensorHs (I := I) (M := M) g ((a : ℝ) + 2) T‖ ≤ R₀ →
         ∀ m : ℕ,
           ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
-              ((lowBaseData (I := I) (M := M) g g_bg T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a1
+              ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderAction
                   (I := I) (M := M) T)‖ ≤
             Clower m *
               ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ := by
   classical
   obtain ⟨Kc0, hKc0_nn, htow0⟩ :=
-    c0_jet_tower_bg (I := I) (M := M) hDim g g_bg a (by omega) hR₀
+    zeroOrderCoefficient_jet_tower_background (I := I) (M := M) hDim g g_bg a (by omega) hR₀
   obtain ⟨Kc1, hKc1_nn, htow1⟩ :=
-    c1_jet_tower_bg (I := I) (M := M) hDim g g_bg a hR₀
+    firstOrderCoefficient_jet_tower_background (I := I) (M := M) hDim g g_bg a hR₀
   obtain ⟨Λ0, hΛ0_nn, hcap0⟩ :=
     coeffCap (I := I) (M := M) g 2 a (by omega) (R₀ := R₀) Kc0 hKc0_nn
   obtain ⟨Λ1, hΛ1_nn, hcap1⟩ :=
@@ -564,35 +564,35 @@ theorem a1_ladder_bg
       (hCjet_nn _), ?_⟩
   intro δ hδ0 hδ_le T hT hδg hδZ hball m
   obtain ⟨A, hAdef, hc0jet, hc1jet⟩ :
-      ∃ A : LowBaseActionData g,
-        lowBaseData (I := I) (M := M) g g_bg T
+      ∃ A : LowerScaleActionCoefficients g,
+        lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
             (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ = A ∧
           (∀ i : ℕ,
-            ‖iteratedCovGrad (I := I) g 2 2 i A.C0‖ ^ 2 ≤
+            ‖iteratedCovGrad (I := I) g 2 2 i A.zeroOrderCoefficient‖ ^ 2 ≤
               Kc0 i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2)) ∧
           (∀ i : ℕ,
-            ‖iteratedCovGrad (I := I) g 3 2 i A.C1‖ ^ 2 ≤
+            ‖iteratedCovGrad (I := I) g 3 2 i A.firstOrderCoefficient‖ ^ 2 ≤
               Kc1 i * (1 + ∑ j ∈ Finset.range (i + 2),
                 ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2)) :=
-    ⟨lowBaseData (I := I) (M := M) g g_bg T
+    ⟨lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
         (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ, rfl,
       htow0 T hT hδ0 hδ_le hδg hδZ hball,
       htow1 T hT hδ0 hδ_le hδg hδZ hball⟩
   rw [hAdef]
   clear hAdef
   have hq : ∀ q : ℕ,
-      ‖iteratedCovGrad (I := I) g 0 2 q (A.a1 (I := I) (M := M) T)‖ ≤
+      ‖iteratedCovGrad (I := I) g 0 2 q (A.firstOrderAction (I := I) (M := M) T)‖ ≤
         (Cm0 q + Cm1 q) * Real.sqrt (∑ i ∈ Finset.range (q + 1 + 1),
           ‖iteratedCovGrad (I := I) g 0 2 i T‖ ^ 2) := by
     intro q
-    have h0 := heng0 0 (by norm_num) A.C0 T hball
-      (hcap0 A.C0 T hball hc0jet) hc0jet q
-    have h1 := heng1 1 (by norm_num) A.C1 T hball
-      (hcap1 A.C1 T hball hc1jet) hc1jet q
-    have hsplitArm : A.a1 (I := I) (M := M) T =
-        appCc (I := I) (M := M) g 2 2 A.C0 T +
-          appCc (I := I) (M := M) g 3 2 A.C1
+    have h0 := heng0 0 (by norm_num) A.zeroOrderCoefficient T hball
+      (hcap0 A.zeroOrderCoefficient T hball hc0jet) hc0jet q
+    have h1 := heng1 1 (by norm_num) A.firstOrderCoefficient T hball
+      (hcap1 A.firstOrderCoefficient T hball hc1jet) hc1jet q
+    have hsplitArm : A.firstOrderAction (I := I) (M := M) T =
+        operatorFieldApply (I := I) (M := M) g 2 2 A.zeroOrderCoefficient T +
+          operatorFieldApply (I := I) (M := M) g 3 2 A.firstOrderCoefficient
             (iteratedCovGrad (I := I) g 0 2 1 T) := rfl
     rw [hsplitArm, iteratedCovGrad_add, add_mul]
     exact le_trans (norm_add_le _ _) (add_le_add h0 h1)
@@ -608,9 +608,9 @@ theorem a1_ladder_bg
       (fun i hi => Finset.mem_range.mpr
         (by have := Finset.mem_range.mp hi; omega))
       (fun i _ _ => norm_nonneg _)) (hjet (m + 1) T)
-  refine le_trans (hhs m (A.a1 (I := I) (M := M) T)) ?_
+  refine le_trans (hhs m (A.firstOrderAction (I := I) (M := M) T)) ?_
   have hsum : ∑ q ∈ Finset.range (m + 1),
-      ‖iteratedCovGrad (I := I) g 0 2 q (A.a1 (I := I) (M := M) T)‖ ≤
+      ‖iteratedCovGrad (I := I) g 0 2 q (A.firstOrderAction (I := I) (M := M) T)‖ ≤
       (∑ q ∈ Finset.range (m + 1), (Cm0 q + Cm1 q)) *
         (Cjet (m + 1) * ‖smoothCcToTensorHs (I := I) (M := M) g
           ((m + 1 : ℕ) : ℝ) T‖) := by
@@ -625,7 +625,7 @@ theorem a1_ladder_bg
   rw [← hcast]
   refine le_trans (mul_le_mul_of_nonneg_left hsum (hChs_nn m)) (le_of_eq (by ring))
 
-theorem a1_ladder
+theorem firstOrderAction_ladder
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (a : ℕ)
     (ha : 2 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀) :
@@ -643,14 +643,14 @@ theorem a1_ladder
         ‖smoothCcToTensorHs (I := I) (M := M) g ((a : ℝ) + 2) T‖ ≤ R₀ →
         ∀ m : ℕ,
           ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
-              ((lowBaseData (I := I) (M := M) g g T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a1
+              ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderAction
                   (I := I) (M := M) T)‖ ≤
             Clower m *
               ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ :=
-  a1_ladder_bg (I := I) (M := M) hDim g g a ha hR₀
+  firstOrderAction_ladder_background (I := I) (M := M) hDim g g a ha hR₀
 
-theorem a1LadderQBg
+theorem firstOrderAction_ladder_quadratic_background
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ Clower : ℝ → ℕ → ℝ, (∀ R m, 0 ≤ Clower R m) ∧
@@ -668,14 +668,14 @@ theorem a1LadderQBg
         (_hR : ‖smoothCcToTensorHs (I := I) (M := M) g (4 : ℝ) T‖ ≤ R)
         (m : ℕ),
           ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
-              ((lowBaseData (I := I) (M := M) g g_bg T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a1
+              ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderAction
                   (I := I) (M := M) T)‖ ≤
             Clower R m *
               ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ := by
   classical
   choose C hC_nn hC using fun R : ℝ =>
-    a1_ladder_bg (I := I) (M := M) hDim g g_bg 2 le_rfl
+    firstOrderAction_ladder_background (I := I) (M := M) hDim g g_bg 2 le_rfl
       (R₀ := |R|) (abs_nonneg R)
   refine ⟨C, hC_nn, ?_⟩
   intro δ hδ0 hδ_le T hT hδg hδZ R hR m
@@ -684,7 +684,7 @@ theorem a1LadderQBg
   exact smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g
     (by push_cast; norm_num) T
 
-theorem a1LadderQ
+theorem firstOrderAction_ladder_quadratic
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ Clower : ℝ → ℕ → ℝ, (∀ R m, 0 ≤ Clower R m) ∧
@@ -702,12 +702,12 @@ theorem a1LadderQ
         (_hR : ‖smoothCcToTensorHs (I := I) (M := M) g (4 : ℝ) T‖ ≤ R)
         (m : ℕ),
           ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
-              ((lowBaseData (I := I) (M := M) g g T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a1
+              ((lowerScaleActionCoefficients (I := I) (M := M) g g T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).firstOrderAction
                   (I := I) (M := M) T)‖ ≤
             Clower R m *
               ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ :=
-  a1LadderQBg (I := I) (M := M) hDim g g
+  firstOrderAction_ladder_quadratic_background (I := I) (M := M) hDim g g
 
 theorem n_diff_hm_rung
     (hDim : Module.finrank ℝ E = 3)
@@ -738,9 +738,9 @@ theorem n_diff_hm_rung
               Clower m *
                 ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((m : ℝ) + 1) T‖ := by
   classical
-  obtain ⟨κ, hκ, h2⟩ := a2_ladder (I := I) (M := M) hDim g₀ a ha hR₀
+  obtain ⟨κ, hκ, h2⟩ := secondOrderAction_ladder (I := I) (M := M) hDim g₀ a ha hR₀
   obtain ⟨C1low, hC1low_nn, h1⟩ :=
-    a1_ladder (I := I) (M := M) hDim g₀ a (by omega) hR₀
+    firstOrderAction_ladder (I := I) (M := M) hDim g₀ a (by omega) hR₀
   obtain ⟨_, _, hsplit⟩ := lowData_split (I := I) (M := M) g₀ g₀
   refine ⟨κ, hκ, ?_⟩
   intro δ hδ0 hδ_le
@@ -755,7 +755,7 @@ theorem n_diff_hm_rung
       (h1 hδ0 hδ_le T hT hδg hδZ hball m))
     (le_of_eq (by ring))
 
-theorem nDiffHmQBg
+theorem exists_deTurckRemainder_allOrder_ladder_bound_background
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ κ : ℝ, 0 ≤ κ ∧
@@ -784,8 +784,8 @@ theorem nDiffHmQBg
               Clower R m *
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ := by
   classical
-  obtain ⟨κ, hκ, h2⟩ := a2LadderQBg (I := I) (M := M) hDim g g_bg
-  obtain ⟨C1low, hC1low_nn, h1⟩ := a1LadderQBg (I := I) (M := M) hDim g g_bg
+  obtain ⟨κ, hκ, h2⟩ := secondOrderAction_ladder_quadratic_background (I := I) (M := M) hDim g g_bg
+  obtain ⟨C1low, hC1low_nn, h1⟩ := firstOrderAction_ladder_quadratic_background (I := I) (M := M) hDim g g_bg
   obtain ⟨_, _, hsplit⟩ := lowData_split (I := I) (M := M) g g_bg
   refine ⟨κ, hκ, ?_⟩
   intro δ hδ0 hδ_le
@@ -802,7 +802,7 @@ theorem nDiffHmQBg
       (h1 hδ0 hδ_le T hT hδg hδZ hR4 m))
     (le_of_eq (by ring))
 
-theorem nDiffHmQ
+theorem exists_deTurckRemainder_allOrder_ladder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ κ : ℝ, 0 ≤ κ ∧
@@ -830,9 +830,9 @@ theorem nDiffHmQ
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 2) T‖ +
               Clower R m *
                 ‖smoothCcToTensorHs (I := I) (M := M) g ((m : ℝ) + 1) T‖ :=
-  nDiffHmQBg (I := I) (M := M) hDim g g
+  exists_deTurckRemainder_allOrder_ladder_bound_background (I := I) (M := M) hDim g g
 
-def IsHmRungOrdBg (g g_bg : SmoothRiemannianMetric I M) (κ : ℝ) : Prop :=
+def HasDeTurckRemainderAllOrderLadderBoundBackground (g g_bg : SmoothRiemannianMetric I M) (κ : ℝ) : Prop :=
   0 ≤ κ ∧
     ∀ {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3),
       ∃ Clower : ℝ → ℕ → ℝ, (∀ R m, 0 ≤ Clower R m) ∧
@@ -861,22 +861,22 @@ def IsHmRungOrdBg (g g_bg : SmoothRiemannianMetric I M) (κ : ℝ) : Prop :=
                 ‖smoothCcToTensorHs (I := I) (M := M) g
                   ((m : ℝ) + 1) T‖
 
-def IsHmRungOrd (g : SmoothRiemannianMetric I M) (κ : ℝ) : Prop :=
-  IsHmRungOrdBg (I := I) (M := M) g g κ
+def HasDeTurckRemainderAllOrderLadderBound (g : SmoothRiemannianMetric I M) (κ : ℝ) : Prop :=
+  HasDeTurckRemainderAllOrderLadderBoundBackground (I := I) (M := M) g g κ
 
-theorem lowregHmPackBg
+theorem exists_deTurck_remainder_all_order_ladder_bound_parameters_background
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
-    ∃ κ : ℝ, IsHmRungOrdBg (I := I) (M := M) g g_bg κ := by
-  obtain ⟨κ, hκ, hord⟩ := nDiffHmQBg (I := I) (M := M) hDim g g_bg
+    ∃ κ : ℝ, HasDeTurckRemainderAllOrderLadderBoundBackground (I := I) (M := M) g g_bg κ := by
+  obtain ⟨κ, hκ, hord⟩ := exists_deTurckRemainder_allOrder_ladder_bound_background (I := I) (M := M) hDim g g_bg
   exact ⟨κ, hκ, hord⟩
 
-theorem lowregHmPack
+theorem exists_deTurck_remainder_all_order_ladder_bound_parameters
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
-    ∃ κ : ℝ, IsHmRungOrd (I := I) (M := M) g κ := by
-  simpa only [IsHmRungOrd] using
-    (lowregHmPackBg (I := I) (M := M) hDim g g)
+    ∃ κ : ℝ, HasDeTurckRemainderAllOrderLadderBound (I := I) (M := M) g κ := by
+  simpa only [HasDeTurckRemainderAllOrderLadderBound] using
+    (exists_deTurck_remainder_all_order_ladder_bound_parameters_background (I := I) (M := M) hDim g g)
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

@@ -328,7 +328,7 @@ theorem tensorL2NormSq_pathIntegralCoeffField_le_intervalIntegral_normSq
       ((Set.univ : Set M) ×ˢ S))
     (hcont : ∀ x : M, ContinuousOn (fun t : ℝ => TensorRSSpace.toModel ((Φ t).toSection x))
       (Set.Icc (0 : ℝ) 1))
-    (hjrfns : ContinuousOn
+    (hjriemannianFiberNormSq : ContinuousOn
       (fun p : ℝ × M =>
         riemannianFiberNormSq (I := I) (M := M) g₀ r s p.2 ((Φ p.1).toSection p.2))
       (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M))) :
@@ -367,7 +367,7 @@ theorem tensorL2NormSq_pathIntegralCoeffField_le_intervalIntegral_normSq
   have hFnn : ∀ t x, 0 ≤ F t x := fun t x =>
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ r s x ((Φ t).toSection x)
   have hFcont : ContinuousOn (Function.uncurry F)
-      (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) := hjrfns
+      (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) := hjriemannianFiberNormSq
   have hcompact : IsCompact (Set.Icc (0 : ℝ) 1 ×ˢ (Set.univ : Set M)) :=
     isCompact_Icc.prod isCompact_univ
   obtain ⟨Cb, hCb⟩ := (hcompact.image_of_continuousOn hFcont.norm).bddAbove

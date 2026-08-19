@@ -11,14 +11,14 @@ namespace Analysis
 namespace Parabolic
 namespace Euclidean
 
-section Refold
+section Decomposition
 
 variable {V U F : Type*}
   [NormedAddCommGroup V] [NormedSpace ℝ V]
   [NormedAddCommGroup U] [NormedSpace ℝ U]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-theorem coeffD2_refold
+theorem coeffD2_decomposition
     (c : U → ℝ) (u : V → U) (w : V → F) (x p q : V)
     (hc : DifferentiableAt ℝ c (u x))
     (hu : DifferentiableAt ℝ u x)
@@ -36,7 +36,7 @@ theorem coeffD2_refold
   rw [happ]
   abel
 
-end Refold
+end Decomposition
 
 section CoefficientFlux
 

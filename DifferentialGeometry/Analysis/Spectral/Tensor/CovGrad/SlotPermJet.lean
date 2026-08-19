@@ -29,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem slotIcgSq (g : SmoothRiemannianMetric I M) (r s i : ℕ)
+theorem slotIteratedCovGradSq (g : SmoothRiemannianMetric I M) (r s i : ℕ)
     (A : SmoothCcTensor g r s) :
     ‖iteratedCovGrad (I := I) g (r + 1) (s + 1) i
         (slotExtend (I := I) (M := M) g r s A)‖ ^ 2 ≤
@@ -53,7 +53,7 @@ theorem slotIcgSq (g : SmoothRiemannianMetric I M) (r s i : ℕ)
         F x := by
     intro x
     simpa only [F, Nat.add_assoc] using
-      rfns_iteratedCovGrad_slotExtend_le
+      riemannianFiberNormSq_iteratedCovGrad_slotExtend_le
         (I := I) (M := M) g r s A i x
   have hsq := normSq_le_integral_of_pointwise_fiberNormSq_le_rs
     (I := I) (M := M) g (r + 1) ((s + 1) + i)
@@ -88,7 +88,7 @@ theorem slotJet (g : SmoothRiemannianMetric I M) (r s m : ℕ)
         ∑ j ∈ Finset.range (m + 1), (Module.finrank ℝ E : ℝ) *
           ‖iteratedCovGrad (I := I) g r s j A‖ ^ 2 :=
       Finset.sum_le_sum fun j _ =>
-        slotIcgSq (I := I) (M := M) g r s j A
+        slotIteratedCovGradSq (I := I) (M := M) g r s j A
     _ = (Module.finrank ℝ E : ℝ) *
         ∑ j ∈ Finset.range (m + 1),
           ‖iteratedCovGrad (I := I) g r s j A‖ ^ 2 := by
@@ -132,7 +132,7 @@ theorem slotIterJet (g : SmoothRiemannianMetric I M) (r s m w : ℕ)
               ‖iteratedCovGrad (I := I) g r s j A‖ ^ 2 := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem slotIterSub (g : SmoothRiemannianMetric I M) (r s w : ℕ)
+theorem slotExtendIter_sub (g : SmoothRiemannianMetric I M) (r s w : ℕ)
     (A B : SmoothCcTensor g r s) :
     slotExtendIter (I := I) (M := M) g r s w (A - B) =
       slotExtendIter (I := I) (M := M) g r s w A -
@@ -159,7 +159,7 @@ theorem rspermSq (g : SmoothRiemannianMetric I M) {r s : ℕ}
     tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs]
   refine MeasureTheory.integral_congr_ae
     (Filter.Eventually.of_forall fun x => ?_)
-  exact rfns_iteratedCovGrad_rs_eq_of_section_domDomCongr
+  exact riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr
     (I := I) (M := M) g r s σ A
       (rsDomDomCongrSection (I := I) (M := M) g r s σ A)
       (fun y d => by
@@ -188,7 +188,7 @@ theorem monoExtSub (g : SmoothRiemannianMetric I M) (r s w : ℕ)
     monoExt (I := I) (M := M) g r s w τ (A - B) =
       monoExt (I := I) (M := M) g r s w τ A -
         monoExt (I := I) (M := M) g r s w τ B := by
-  rw [monoExt, slotIterSub,
+  rw [monoExt, slotExtendIter_sub,
     CurvatureCoefficientDifferenceJetTower.rsDomDomCongrSection_sub_cc]
   rfl
 

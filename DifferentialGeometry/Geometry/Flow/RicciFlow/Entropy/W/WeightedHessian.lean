@@ -181,7 +181,7 @@ private theorem norm_sq_shift
       inner0S (I := I) g x 2 A (metricTensor0S (I := I) g x) = r := by
     rw [inner0S_symm (I := I) g x A (metricTensor0S (I := I) g x)]
     exact hA
-  have hBg :
+  have hBackground :
       inner0S (I := I) g x 2 B (metricTensor0S (I := I) g x) = l := by
     rw [inner0S_symm (I := I) g x B (metricTensor0S (I := I) g x)]
     exact hB
@@ -202,7 +202,7 @@ private theorem norm_sq_shift
           inner0S (I := I) g x 2 B (metricTensor0S (I := I) g x) -
           a * inner0S (I := I) g x 2
             (metricTensor0S (I := I) g x) (metricTensor0S (I := I) g x)) = _
-  rw [hBA, hAg, hBg]
+  rw [hBA, hAg, hBackground]
   rw [show inner0S (I := I) g x 2 (metricTensor0S (I := I) g x) A = r from hA]
   rw [show inner0S (I := I) g x 2 (metricTensor0S (I := I) g x) B = l from hB]
   rw [show inner0S (I := I) g x 2 A B = inner02 (I := I) g x A B from rfl]

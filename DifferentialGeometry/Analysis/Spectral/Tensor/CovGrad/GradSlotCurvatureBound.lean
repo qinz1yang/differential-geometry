@@ -224,7 +224,7 @@ private lemma gradSlot_comp1_le
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gradSlot_rfns_zero
+theorem gradSlot_riemannianFiberNormSq_zero
     (g : SmoothRiemannianMetric I M) {C : ℝ} (hC : 0 ≤ C)
     (hR : ∀ (x : M) (v w u : TangentSpace I x),
       g.inner x (riemannOp (LeviCivita (I := I) g) x v w u)
@@ -239,7 +239,7 @@ theorem gradSlot_rfns_zero
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [rfns_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 2 4 x
+  rw [riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 2 4 x
     (show TensorRSSpace 2 4 I x from
       (gradSlotCurvCoeff (I := I) (M := M) g).toSection x)
     e bse hnE hbse horth]
@@ -264,7 +264,7 @@ theorem gradSlot_rfns_zero
       ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gradSlot_rfns_one
+theorem gradSlot_riemannianFiberNormSq_one
     (g : SmoothRiemannianMetric I M) {C : ℝ} (hC : 0 ≤ C)
     (hR : ∀ (x : M) (D X Y Z : TangentSpace I x),
       Real.sqrt (g.inner x
@@ -284,7 +284,7 @@ theorem gradSlot_rfns_one
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
-  rw [rfns_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 2 5 x
+  rw [riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 2 5 x
     (show TensorRSSpace 2 5 I x from
       (covGrad (I := I) (M := M) g 2 4
         (gradSlotCurvCoeff (I := I) (M := M) g)).toSection x)

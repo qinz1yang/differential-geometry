@@ -858,7 +858,7 @@ private theorem nablaRicciNorm_basis
   simp [nablaRicciNormSqInFrame, hbasis, hnabla', mul_left_comm, mul_comm]
 
 omit [SigmaCompactSpace M] in
-theorem nablaRicciNorm_can
+theorem nabla_ricci_norm_sq_in_frame_eq_gradient_norm_sq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [DecidableEq Idx]
     (S : SolutionOn (I := I) (M := M) D)

@@ -306,7 +306,7 @@ theorem solOfMetric_metric {D : DifferentialGeometry.Geometry.Curvature.RealTime
     (solOfMetric (I := I) (D := D) g).base.metric s = g s := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I 2 M] [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-theorem christoffelInFrame_solOfMetric
+theorem christoffel_symbol_in_frame_eq_solution_metric_christoffel
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {Idx : Type*} {u : Set M}
     (g : Real -> SmoothRiemannianMetric I M)

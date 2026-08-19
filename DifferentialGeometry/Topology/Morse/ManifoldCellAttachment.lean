@@ -10873,7 +10873,7 @@ theorem morseHandlePoint_f_mem {m k : ℕ} (hk : k ≤ m + 1) (c ε r : ℝ)
     exact hmem
   · exact modelHandleMap_f_le hk c ε r (le_of_lt hε) d
 
-noncomputable def morseCollarFlowBase {m : ℕ} (c ε r η : ℝ)
+noncomputable def morseCollarFlowerScale {m : ℕ} (c ε r η : ℝ)
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
     {I : ModelWithCorners ℝ (MorseModel (m + 1)) H} [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] {f : M → ℝ}
@@ -10916,7 +10916,7 @@ theorem morseCollarTopLevel_ge_flowTime_of_handlePoint {m k : ℕ} (hk : k ≤ m
     (w : MorseModel (m + 1)) (hw : w ∈ modelHandle hk ε r)
     (hwneg : 2 * ε ≤ ‖negPart hk w‖ ^ 2) :
     morseCollarTopLevel hk c ε r data
-      (morseCollarFlowBase c ε r η hf hε hη v hv hsupp hdfOn hrate (data.χ w)
+      (morseCollarFlowerScale c ε r η hf hε hη v hv hsupp hdfOn hrate (data.χ w)
         (by
           have hmem := morseHandlePoint_f_mem hk c ε r data hε hr hεr' w hw
           constructor
@@ -10949,14 +10949,14 @@ theorem morseCollarTopLevel_ge_flowTime_of_handlePoint {m k : ℕ} (hk : k ≤ m
     rw [hσ'eq]
     nlinarith only [hwneg]
   let x : LevelSetSpace f (c - ε) :=
-    morseCollarFlowBase c ε r η hf hε hη v hv hsupp hdfOn hrate (data.χ w)
+    morseCollarFlowerScale c ε r η hf hε hη v hv hsupp hdfOn hrate (data.χ w)
       (by
         have hmem := morseHandlePoint_f_mem hk c ε r data hε hr hεr' w hw
         constructor
         · nlinarith only [hmem.1, hη]
         · exact hmem.2)
   have hxeq : x.1 = data.χ (modelFlow hk σ' w) := by
-    dsimp [x, morseCollarFlowBase, σ']
+    dsimp [x, morseCollarFlowerScale, σ']
     exact hflowChart w hsrcw (f (data.χ w) - c + ε)
   have hflowle : morseNorm (m + 1) (modelFlow hk σ' w) ≤ morseNorm (m + 1) w :=
     modelFlow_norm_le hk σ' w hσ0 hσposle

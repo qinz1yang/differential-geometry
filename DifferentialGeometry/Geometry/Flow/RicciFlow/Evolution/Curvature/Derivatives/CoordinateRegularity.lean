@@ -39,7 +39,7 @@ theorem coordTowerSmooth
       (modelWithCornersSelf Real Real) ∞
       (fun p : Real × M =>
         iteratedRmComp (I := I) (coordinateFrameAt (I := I) x0)
-          (realizedChr (I := I) S x0) (realizedRmBase (I := I) S x0)
+          (solutionChristoffelComponents (I := I) S x0) (solutionCurvatureComponents (I := I) S x0)
           k p.1 p.2 idx)
       ((t : Real), x) := by
   have hxframe : x ∈ coordinateFrameSet (I := I) x0 :=
@@ -48,10 +48,10 @@ theorem coordTowerSmooth
     (frame := coordinateFrameAt (I := I) x0)
     (hframe := coordinateFrameAt_isLocalFrame (I := I) x0)
     (hu := coordinateFrameSet_open (I := I) x0) hxframe
-    (chr := realizedChr (I := I) S x0)
-    (base := realizedRmBase (I := I) S x0) ?_ ?_ k idx
+    (chr := solutionChristoffelComponents (I := I) S x0)
+    (base := solutionCurvatureComponents (I := I) S x0) ?_ ?_ k idx
   · intro i j l
-    simpa [realizedChr] using
+    simpa [solutionChristoffelComponents] using
       coordGammaSmoothInf (I := I) S hS x0 t x hxframe i j l
   · intro slots
     exact coordRmFinSmooth (I := I) hS x0 t x hx slots

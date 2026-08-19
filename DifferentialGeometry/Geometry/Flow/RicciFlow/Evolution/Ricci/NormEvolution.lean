@@ -28,7 +28,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [IsManifold I 1 M]
 
-structure TFLapReg
+structure TraceFreeRicciNormSqLaplacianRegularity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) : Prop where
@@ -67,12 +67,12 @@ structure TFLapReg
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (S.family.metric t)
           (fun z : M => S.scalar t z ^ 2 / 3) y) x
 
-theorem tfLapReg
+theorem trace_free_ricci_norm_sq_laplacian_regularity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S) :
-    TFLapReg (I := I) S := by
+    TraceFreeRicciNormSqLaplacianRegularity (I := I) S := by
   exact
     { ricci_space := hS.ricciRegular.ricci_norm_space
       ricci_grad := hS.ricciRegular.ricci_norm_grad
@@ -83,7 +83,7 @@ theorem tfLapReg
       scalar_sq_div_space := hS.scalarRegular.scalar_sq_div_space
       scalar_sq_div_grad := hS.scalarRegular.scalar_sq_div_grad }
 
-theorem tfLapCore
+theorem trace_free_ricci_norm_sq_laplacian_identity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -104,7 +104,7 @@ theorem tfLapCore
   intro t ht x
   let G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real :=
     flowG (I := I) S
-  have hreg := tfLapReg (I := I) S hS
+  have hreg := trace_free_ricci_norm_sq_laplacian_regularity (I := I) S hS
   have hsq :
       DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) G t
           (fun y : M => S.scalar t y ^ 2) x =

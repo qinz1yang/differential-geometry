@@ -23,12 +23,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
-def deTurckPhiMetTotal (g₀ g_bg g : SmoothRiemannianMetric I M) :
+def deTurckMetricPrincipalDefectTotal (g₀ g_bg g : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 4 2 :=
   deTurckLieArm2PrincipalCoeff (I := I) g₀ g g_bg
     + traceHessianCoeff (I := I) (M := M) g₀ g
-    - (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g
-        + ricciArmPrincipalCoeff (I := I) (M := M) g₀ g)
+    - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
+        + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g)
 
 private theorem trace_perm_comp (σ : Equiv.Perm (Fin 4)) (j : Fin 4) :
     traceHessianSlotPerm ((traceHessianSlotPerm⁻¹ * σ) j) = σ j := by
@@ -66,23 +66,23 @@ private theorem lieTrace_reindex (g₀ g₁ : SmoothRiemannianMetric I M)
   rw [harg]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem phiMet_reindex (g₀ g_bg g : SmoothRiemannianMetric I M) :
-    deTurckPhiMetTotal (I := I) (M := M) g₀ g_bg g =
+theorem metricPrincipalDefect_reindex (g₀ g_bg g : SmoothRiemannianMetric I M) :
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g =
       reindexCoeffGen (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ g)
           (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
         + reindexCoeffGen (I := I) (M := M) g₀ 4 2
           (traceHessianCoeff (I := I) (M := M) g₀ g)
           (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermAT)
-        - (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g
-            + ricciArmPrincipalCoeff (I := I) (M := M) g₀ g) := by
-  have hPhi : deTurckPhiMetTotal (I := I) (M := M) g₀ g_bg g =
+        - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
+            + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g) := by
+  have hPhi : deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg g =
       (deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermA
         + deTurckLieTraceCoeff (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermAT
         - traceHessianCoeff (I := I) (M := M) g₀ g)
       + traceHessianCoeff (I := I) (M := M) g₀ g
-      - (ricciArmPrincipalCoeff (I := I) (M := M) g₀ g
-          + ricciArmPrincipalCoeff (I := I) (M := M) g₀ g) := rfl
+      - (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g
+          + ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g) := rfl
   rw [hPhi,
     lieTrace_reindex (I := I) (M := M) g₀ g deTurckLieArm2DivSlotPermA
       (traceHessianSlotPerm⁻¹ * deTurckLieArm2DivSlotPermA)
@@ -100,19 +100,19 @@ theorem phi_realized_eq
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ T') δ')
     (s : ℝ) :
-    deTurckPhiMetTotal (I := I) (M := M) g₀ g_bg
-        (realizedFam (I := I) g₀ T T' hδ hδ' s) =
+    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g_bg
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) =
       deTurckLieArm2PrincipalCoeff (I := I) g₀
-          (realizedFam (I := I) g₀ T T' hδ hδ' s) g_bg
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg
         - (linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s
             + linearizedRicciArm2FieldLichnerowicz (I := I) g₀ T T' hδ hδ' s) := by
-  rw [deTurckPhiMetTotal, linearizedRicciArm2FieldLichnerowicz]
+  rw [deTurckMetricPrincipalDefectTotal, linearizedRicciArm2FieldLichnerowicz]
   set X : SmoothCcTensor g₀ 4 2 :=
-    ricciArmPrincipalCoeff (I := I) (M := M) g₀
-      (realizedFam (I := I) g₀ T T' hδ hδ' s)
+    ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
   set Y : SmoothCcTensor g₀ 4 2 :=
     traceHessianCoeff (I := I) (M := M) g₀
-      (realizedFam (I := I) g₀ T T' hδ hδ' s)
+      (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
   have hhalf : (1 / 2 : ℝ) • Y + (1 / 2 : ℝ) • Y = Y := by
     rw [← add_smul]
     norm_num

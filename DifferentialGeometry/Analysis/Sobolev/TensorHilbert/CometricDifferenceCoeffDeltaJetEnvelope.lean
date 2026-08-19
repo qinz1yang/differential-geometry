@@ -15,7 +15,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (ricciArmPrincipalCoeffPure deTurckPrincipalCometricCoeff
+  (cometricDoubleTraceCoefficient deTurckPrincipalCometricCoeff
     riemannianFiberNormSq_deTurckPrincipalCometricCoeff_le)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 

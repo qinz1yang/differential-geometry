@@ -82,7 +82,7 @@ theorem exists_framePairs_diag
       metricCovDerivNorm (I := I) q ((gSeq ∘ φ) k) gRef z ≤ C := by
     intro q K hK; obtain ⟨C, hC⟩ := hbdd q K hK; exact ⟨C, fun k z hz => hC (φ k) z hz⟩
   obtain ⟨χ, hχcd, htsupp, hχ1, hfam⟩ :=
-    exists_chart_engineInput_family (I := I) gRef (gSeq ∘ φ) hbdd' x₀ Vfam hK₀ hK₀chart
+    exists_chart_component_precompactness_family_of_indexed_sections (I := I) gRef (gSeq ∘ φ) hbdd' x₀ Vfam hK₀ hK₀chart
   set Φ : (Fin (Module.finrank Real E) × Fin (Module.finrank Real E)) → ℕ → E → Real :=
     fun p k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
       (fun w : M => (covDerivOfField (I := I) gRef
@@ -131,7 +131,7 @@ theorem exists_pairs_refs
     obtain ⟨C, hC⟩ := hbdd r q hqr K hK
     exact ⟨C, fun k z hz => hC (φ k) z hz⟩
   obtain ⟨χ, hχcd, htsupp, hχ1, hfam⟩ :=
-    engine_input_refs (I := I) gBase gRef (gSeq ∘ φ) hbdd' x₀ Vfam hK₀ hK₀chart
+    exists_chart_component_precompactness_family_of_reference_sequence (I := I) gBase gRef (gSeq ∘ φ) hbdd' x₀ Vfam hK₀ hK₀chart
   set Φ : (Fin (Module.finrank Real E) × Fin (Module.finrank Real E)) → ℕ → E → Real :=
     fun p k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
       (fun w : M => (covDerivOfField (I := I) gBase

@@ -23,7 +23,6 @@ open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -35,16 +34,16 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-structure CurvActionData where
+structure CurvatureActionParameters where
   rankTwo : ℝ
   rankThree : ℝ
 
-noncomputable def classCurvActions (d : ℕ) (Λ Kb₀ Kb₁ : ℝ) : CurvActionData where
-  rankTwo := unifPtCurvZeroC d Λ Kb₀ Kb₁
-  rankThree := unifPtCurvThreeC d Λ Kb₀ Kb₁
+noncomputable def curvatureActionParameters (d : ℕ) (Λ Kb₀ Kb₁ : ℝ) : CurvatureActionParameters where
+  rankTwo := uniformPtCurvZeroC d Λ Kb₀ Kb₁
+  rankThree := uniformPtCurvThreeC d Λ Kb₀ Kb₁
 
-structure IsCurvActionUnif
-    (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (K : CurvActionData) : Prop where
+structure HasUniformCurvatureActionBounds
+    (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (K : CurvatureActionParameters) : Prop where
   bounds : ∀ (g : SmoothRiemannianMetric I M),
     MetricUniformEquivalentOn (I := I) Set.univ gBase g Λ →
     (∀ a : ℕ, a ≤ 3 →
@@ -52,7 +51,7 @@ structure IsCurvActionUnif
     IsCurvAction0 (I := I) (M := M) g 2 K.rankTwo ∧
       IsCurvAction0 (I := I) (M := M) g 3 K.rankThree
 
-theorem class_curv_actions
+theorem has_uniform_curvature_action_bounds
     (gBase : SmoothRiemannianMetric I M) {Λ Kb₀ Kb₁ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hKb₀_nonneg : 0 ≤ Kb₀)
@@ -65,8 +64,8 @@ theorem class_curv_actions
       Real.sqrt (normSq0S (I := I) gBase x 5
         (iterCov (I := I) gBase 4
           (metricRm04 (I := I) (M := M) gBase) 1 x)) ≤ Kb₁) :
-    IsCurvActionUnif (I := I) (M := M) gBase Λ
-      (classCurvActions (Module.finrank ℝ E) Λ Kb₀ Kb₁) := by
+    HasUniformCurvatureActionBounds (I := I) (M := M) gBase Λ
+      (curvatureActionParameters (Module.finrank ℝ E) Λ Kb₀ Kb₁) := by
   refine ⟨?_⟩
   intro g hEq hjet
   have hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -77,16 +76,16 @@ theorem class_curv_actions
   have hjet2 := hjet 2 (by norm_num)
   have hjet3 := hjet 3 (by norm_num)
   constructor
-  · simpa only [classCurvActions] using
-      (unifCurvAction0_of (I := I) (M := M) gBase g hΛ
+  · simpa only [curvatureActionParameters] using
+      (uniformCurvAction0_of (I := I) (M := M) gBase g hΛ
         hKb₀_nonneg hKb₀ hKb₁_nonneg hKb₁ hcomp hjet1 hjet2 hjet3)
-  · simpa only [classCurvActions] using
-      (unifCurvAction3_of (I := I) (M := M) gBase g hΛ
+  · simpa only [curvatureActionParameters] using
+      (uniformCurvAction3_of (I := I) (M := M) gBase g hΛ
         hKb₀_nonneg hKb₀ hKb₁_nonneg hKb₁ hcomp hjet1 hjet2 hjet3)
 
-theorem exists_curv_actions
+theorem exists_uniform_curvature_action_parameters
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) :
-    ∃ K : CurvActionData, IsCurvActionUnif (I := I) (M := M) gBase Λ K := by
+    ∃ K : CurvatureActionParameters, HasUniformCurvatureActionBounds (I := I) (M := M) gBase Λ K := by
   obtain ⟨Kb₀, hKb₀_nonneg, hKb₀⟩ :=
     exists_uniform_riemannOp_LeviCivita_gNorm_bound (I := I) (M := M) gBase
   obtain ⟨Kb₁, hKb₁_nonneg, hKb₁⟩ :=
@@ -97,26 +96,26 @@ theorem exists_curv_actions
           (metricRm04 (I := I) (M := M) gBase) 1 x)) ≤ Kb₁ := by
     intro x
     simpa using hKb₁ x
-  exact ⟨classCurvActions (Module.finrank ℝ E) Λ Kb₀ Kb₁,
-    class_curv_actions (I := I) (M := M) gBase hΛ
+  exact ⟨curvatureActionParameters (Module.finrank ℝ E) Λ Kb₀ Kb₁,
+    has_uniform_curvature_action_bounds (I := I) (M := M) gBase hΛ
       hKb₀_nonneg hKb₀ hKb₁_nonneg hKb₁'⟩
 
-noncomputable def convexH2C (K : CurvActionData) : ℝ :=
+noncomputable def convexH2C (K : CurvatureActionParameters) : ℝ :=
   h2CovsumC K.rankTwo
 
-noncomputable def convexH3C (K : CurvActionData) : ℝ :=
+noncomputable def convexH3C (K : CurvatureActionParameters) : ℝ :=
   h3CovsumC K.rankTwo K.rankThree
 
-structure ConvexJetData where
+structure ConvexJetConstants where
   h2C : ℝ
   h3C : ℝ
 
-noncomputable def convexJetData (K : CurvActionData) : ConvexJetData where
+noncomputable def convexJetConstants (K : CurvatureActionParameters) : ConvexJetConstants where
   h2C := convexH2C K
   h3C := convexH3C K
 
-structure IsConvexJetUnif
-    (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (C : ConvexJetData) : Prop where
+structure HasUniformConvexPerturbationJetBounds
+    (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (C : ConvexJetConstants) : Prop where
   h2_nonneg : 0 ≤ C.h2C
   h3_nonneg : 0 ≤ C.h3C
   bounds : ∀ (g : SmoothRiemannianMetric I M),
@@ -168,9 +167,9 @@ private theorem convex_hs_norm_le
     _ = R := by ring
 
 theorem convex_h23_of_act
-    (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (K : CurvActionData)
-    (hK : IsCurvActionUnif (I := I) (M := M) gBase Λ K) :
-    IsConvexJetUnif (I := I) (M := M) gBase Λ (convexJetData K) := by
+    (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (K : CurvatureActionParameters)
+    (hK : HasUniformCurvatureActionBounds (I := I) (M := M) gBase Λ K) :
+    HasUniformConvexPerturbationJetBounds (I := I) (M := M) gBase Λ (convexJetConstants K) := by
   refine ⟨h2CovsumC_nonneg K.rankTwo,
     h3CovsumC_nonneg K.rankTwo K.rankThree, ?_⟩
   intro g hEq hjet
@@ -215,12 +214,12 @@ theorem convex_h23_of_act
             (convexPerturbation (I := I) g T T' s))) hsum' 2)
 
 theorem convex_jets_of_act
-    (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (K : CurvActionData)
-    (hK : IsCurvActionUnif (I := I) (M := M) gBase Λ K) :
-    ∃ C : ConvexJetData, IsConvexJetUnif (I := I) (M := M) gBase Λ C :=
-  ⟨convexJetData K, convex_h23_of_act (I := I) (M := M) gBase Λ K hK⟩
+    (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (K : CurvatureActionParameters)
+    (hK : HasUniformCurvatureActionBounds (I := I) (M := M) gBase Λ K) :
+    ∃ C : ConvexJetConstants, HasUniformConvexPerturbationJetBounds (I := I) (M := M) gBase Λ C :=
+  ⟨convexJetConstants K, convex_h23_of_act (I := I) (M := M) gBase Λ K hK⟩
 
-theorem convex_h23_unif
+theorem uniform_convex_perturbation_sobolev_two_three_bounds
     (gBase : SmoothRiemannianMetric I M) {Λ Kb₀ Kb₁ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hKb₀_nonneg : 0 ≤ Kb₀)
@@ -233,18 +232,18 @@ theorem convex_h23_unif
       Real.sqrt (normSq0S (I := I) gBase x 5
         (iterCov (I := I) gBase 4
           (metricRm04 (I := I) (M := M) gBase) 1 x)) ≤ Kb₁) :
-    IsConvexJetUnif (I := I) (M := M) gBase Λ
-      (convexJetData
-        (classCurvActions (Module.finrank ℝ E) Λ Kb₀ Kb₁)) := by
+    HasUniformConvexPerturbationJetBounds (I := I) (M := M) gBase Λ
+      (convexJetConstants
+        (curvatureActionParameters (Module.finrank ℝ E) Λ Kb₀ Kb₁)) := by
   exact convex_h23_of_act (I := I) (M := M) gBase Λ
-    (classCurvActions (Module.finrank ℝ E) Λ Kb₀ Kb₁)
-    (class_curv_actions (I := I) (M := M) gBase hΛ
+    (curvatureActionParameters (Module.finrank ℝ E) Λ Kb₀ Kb₁)
+    (has_uniform_curvature_action_bounds (I := I) (M := M) gBase hΛ
       hKb₀_nonneg hKb₀ hKb₁_nonneg hKb₁)
 
 theorem exists_convex_jets
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) :
-    ∃ C : ConvexJetData, IsConvexJetUnif (I := I) (M := M) gBase Λ C := by
-  obtain ⟨K, hK⟩ := exists_curv_actions (I := I) (M := M) gBase hΛ
+    ∃ C : ConvexJetConstants, HasUniformConvexPerturbationJetBounds (I := I) (M := M) gBase Λ C := by
+  obtain ⟨K, hK⟩ := exists_uniform_curvature_action_parameters (I := I) (M := M) gBase hΛ
   exact convex_jets_of_act (I := I) (M := M) gBase Λ K hK
 
 end RicciFlow

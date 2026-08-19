@@ -478,7 +478,7 @@ structure IsConjGalTime
     (T : D.RegularTime) (G : ConjGalTime) : Prop where
   pos : 0 < G.tau
   le_one : G.tau ≤ 1
-  exists_sol :
+  exists_solution :
     ∀ (u0 : tensorHs (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0 0)
       (F : Finset (TensorEigenIdx (I := I) (M := M)
@@ -675,7 +675,7 @@ theorem scalarGalCoefficients_isConjGalSol
   · intro t i hi
     exact hV_not_mem t i hi
 
-theorem galPert_bdd_on
+theorem scalar_galerkin_perturbation_uniform_bound_on
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) {tau : Real}
     (hpert : ContinuousOn
@@ -708,8 +708,8 @@ theorem gal_exists_on
       (Set.Icc (0 : Real) tau)) :
     IsConjGalTime (I := I) (M := M) S T ⟨tau⟩ := by
   classical
-  obtain ⟨Cp, hCp⟩ := galPert_bdd_on (I := I) (M := M) S T hpert
-  refine { pos := htau, le_one := htau_one, exists_sol := ?_ }
+  obtain ⟨Cp, hCp⟩ := scalar_galerkin_perturbation_uniform_bound_on (I := I) (M := M) S T hpert
+  refine { pos := htau, le_one := htau_one, exists_solution := ?_ }
   intro u0 F
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   let Emb :
@@ -809,9 +809,9 @@ theorem gal_time_mono
     (hG : IsConjGalTime (I := I) (M := M) S T G)
     {tau : Real} (htau : 0 < tau) (hle : tau ≤ G.tau) :
     IsConjGalTime (I := I) (M := M) S T ⟨tau⟩ := by
-  refine { pos := htau, le_one := hle.trans hG.le_one, exists_sol := ?_ }
+  refine { pos := htau, le_one := hle.trans hG.le_one, exists_solution := ?_ }
   intro u0 F
-  obtain ⟨V, hV⟩ := hG.exists_sol u0 F
+  obtain ⟨V, hV⟩ := hG.exists_solution u0 F
   refine ⟨V, ?_⟩
   refine
     { cont := ?_

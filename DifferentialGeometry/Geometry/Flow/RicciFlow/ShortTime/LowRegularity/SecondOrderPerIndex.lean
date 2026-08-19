@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Ladder
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricAppCcJetBound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
 
 noncomputable section
 
@@ -32,24 +32,24 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-theorem appCcPerIdxL2 (g₀ : SmoothRiemannianMetric I M) (b₀ s₀ q : ℕ) :
+theorem operatorFieldApplicationPerIdxL2 (g₀ : SmoothRiemannianMetric I M) (b₀ s₀ q : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (Φ : SmoothCcTensor g₀ b₀ s₀) (W : SmoothCcTensor g₀ 0 b₀) (Λ : ℕ → ℝ),
         (∀ (i : ℕ) (x : M),
           riemannianFiberNormSq (I := I) (M := M) g₀ b₀ (s₀ + i) x
             ((iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ).toSection x) ≤ Λ i ^ 2) →
         ‖iteratedCovGrad (I := I) g₀ 0 s₀ q
-            (appCc (I := I) (M := M) g₀ b₀ s₀ Φ W)‖ ^ 2 ≤
+            (operatorFieldApply (I := I) (M := M) g₀ b₀ s₀ Φ W)‖ ^ 2 ≤
           C * ∑ i ∈ Finset.range (q + 1), Λ i ^ 2 *
             ∑ l ∈ Finset.range (q + 1 - i),
               ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2 := by
-  refine ⟨appCcGdiag (E := E) q, appCcGdiag_nonneg (E := E) q, ?_⟩
+  refine ⟨operatorFieldApplicationGdiag (E := E) q, operatorFieldApplicationGdiag_nonneg (E := E) q, ?_⟩
   intro Φ W Λ hsup
   exact app_jet_sq_le (I := I) (M := M) g₀ b₀ s₀ q Φ W (fun i => Λ i ^ 2)
     (fun i _ => sq_nonneg (Λ i)) (fun i _ x => hsup i x)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem icgWinShift (g : SmoothRiemannianMetric I M) (r s m p : ℕ)
+theorem iteratedCovGradWinShift (g : SmoothRiemannianMetric I M) (r s m p : ℕ)
     (Ψ : SmoothCcTensor g r s) :
     (∑ l ∈ Finset.range (p + 1),
       ‖iteratedCovGrad (I := I) g r (s + m) l
@@ -63,7 +63,8 @@ theorem icgWinShift (g : SmoothRiemannianMetric I M) (r s m p : ℕ)
       ∑ l ∈ Finset.range (p + 1),
         ‖iteratedCovGrad (I := I) g r s (m + l) Ψ‖ ^ 2 from
     Finset.sum_congr rfl (fun l _ => by
-      rw [icgNormComp (I := I) (M := M) g r s m l Ψ])]
+      rw [DifferentialGeometry.Integral.Connection.iteratedCovGrad_norm_comp
+        (I := I) (M := M) g r s m l Ψ])]
   set f : ℕ → ℝ := fun j => ‖iteratedCovGrad (I := I) g r s j Ψ‖ ^ 2 with hf_def
   have hinj : ∀ l₁ ∈ Finset.range (p + 1), ∀ l₂ ∈ Finset.range (p + 1),
       m + l₁ = m + l₂ → l₁ = l₂ := fun l₁ _ l₂ _ h => by omega
@@ -118,12 +119,12 @@ private theorem c2SupJet (hDim : Module.finrank ℝ E = 3)
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g (2 + 2) (2 + i) x
             ((iteratedCovGrad (I := I) g (2 + 2) 2 i
-              (lowBaseData (I := I) (M := M) g g_bg T
-                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2).toSection x) ≤
+              (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+                (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient).toSection x) ≤
           Ks i * (1 + ∑ j ∈ Finset.range (i + 3),
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
   classical
-  obtain ⟨Kc, hKc_nn, htower⟩ := c2JetTowerSharp (I := I) (M := M) hDim g g_bg
+  obtain ⟨Kc, hKc_nn, htower⟩ := secondOrderCoefficient_jet_tower_sharp (I := I) (M := M) hDim g g_bg
   choose Csh hCsh_nn hCsh using fun i : ℕ =>
     exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
       (I := I) (M := M) g (2 + 2) (2 + i)
@@ -131,8 +132,8 @@ private theorem c2SupJet (hDim : Module.finrank ℝ E = 3)
     fun i => mul_nonneg (sq_nonneg _)
       (Finset.sum_nonneg (fun j _ => hKc_nn (i + j))), ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ i x
-  set C₂ := (lowBaseData (I := I) (M := M) g g_bg T
-    (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2 with hC₂
+  set C₂ := (lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+    (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient with hC₂
   set J : ℕ → ℝ := fun n => ∑ j ∈ Finset.range (n + 1),
     ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2 with hJ
   have hJ_nn : ∀ n, 0 ≤ J n := fun n =>
@@ -153,7 +154,8 @@ private theorem c2SupJet (hDim : Module.finrank ℝ E = 3)
         Kc (i + j) * (1 + J (i + 2)) := by
     intro j hj
     rw [Finset.mem_range] at hj
-    rw [icgNormComp (I := I) (M := M) g (2 + 2) 2 i j C₂]
+    rw [DifferentialGeometry.Integral.Connection.iteratedCovGrad_norm_comp
+      (I := I) (M := M) g (2 + 2) 2 i j C₂]
     refine (htower T hT hδ0 hδ_le hδg hδZ (i + j)).trans ?_
     refine mul_le_mul_of_nonneg_left ?_ (hKc_nn (i + j))
     have := hJ_mono (a := i + j) (b := i + 2) (by omega)
@@ -166,7 +168,7 @@ private theorem c2SupJet (hDim : Module.finrank ℝ E = 3)
     _ = Csh i ^ 2 * (∑ j ∈ Finset.range 3, Kc (i + j)) * (1 + J (i + 2)) := by
         rw [← Finset.sum_mul]; ring
 
-theorem a2PerIdxJet (hDim : Module.finrank ℝ E = 3)
+theorem secondOrderAction_perIndex_jet_bound (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ Cq K : ℕ → ℝ, (∀ q, 0 ≤ Cq q) ∧ (∀ i, 0 ≤ K i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -182,13 +184,13 @@ theorem a2PerIdxJet (hDim : Module.finrank ℝ E = 3)
         {Cδ : ℝ}
         (hfib : ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g (2 + 2) 2 x
-            ((lowBaseData (I := I) (M := M) g g_bg T
-              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2.toSection x) ≤
+            ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient.toSection x) ≤
             Cδ ^ 2)
         (q : ℕ),
         ‖iteratedCovGrad (I := I) g 0 2 q
-            ((lowBaseData (I := I) (M := M) g g_bg T
-              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2
+            ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction
                 (I := I) (M := M) T)‖ ^ 2 ≤
           Cq q * (Cδ ^ 2 * ∑ j ∈ Finset.range (q + 3),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2 +
@@ -199,10 +201,10 @@ theorem a2PerIdxJet (hDim : Module.finrank ℝ E = 3)
                 ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) := by
   classical
   obtain ⟨Ks, hKs_nn, hsup⟩ := c2SupJet (I := I) (M := M) hDim g g_bg
-  choose Cq hCq_nn hCq using fun q : ℕ => appCcPerIdxL2 (I := I) (M := M) g (2 + 2) 2 q
+  choose Cq hCq_nn hCq using fun q : ℕ => operatorFieldApplicationPerIdxL2 (I := I) (M := M) g (2 + 2) 2 q
   refine ⟨Cq, Ks, hCq_nn, hKs_nn, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ Cδ hfib q
-  set A := lowBaseData (I := I) (M := M) g g_bg T
+  set A := lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
     (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ with hA
   set J : ℕ → ℝ := fun n => ∑ j ∈ Finset.range (n + 1),
     ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2 with hJ
@@ -212,7 +214,7 @@ theorem a2PerIdxJet (hDim : Module.finrank ℝ E = 3)
     if i = 0 then |Cδ| else Real.sqrt (Ks i * (1 + J (i + 2))) with hΛ
   have hΛsup : ∀ (i : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g (2 + 2) (2 + i) x
-        ((iteratedCovGrad (I := I) g (2 + 2) 2 i A.C2).toSection x) ≤ Λ i ^ 2 := by
+        ((iteratedCovGrad (I := I) g (2 + 2) 2 i A.secondOrderCoefficient).toSection x) ≤ Λ i ^ 2 := by
     intro i x
     rcases Nat.eq_zero_or_pos i with hi | hi
     · subst hi
@@ -224,11 +226,11 @@ theorem a2PerIdxJet (hDim : Module.finrank ℝ E = 3)
       simp only [if_neg hne]
       rw [Real.sq_sqrt (mul_nonneg (hKs_nn i) (by linarith only [hJ_nn (i + 2)]))]
       exact hsup T hT hδ0 hδ_le hδg hδZ i x
-  have hshape : A.a2 (I := I) (M := M) T =
-      appCc (I := I) (M := M) g (2 + 2) 2 A.C2
+  have hshape : A.secondOrderAction (I := I) (M := M) T =
+      operatorFieldApply (I := I) (M := M) g (2 + 2) 2 A.secondOrderCoefficient
         (iteratedCovGrad (I := I) g 0 2 2 T) := rfl
   rw [hshape]
-  refine (hCq q A.C2 (iteratedCovGrad (I := I) g 0 2 2 T) Λ hΛsup).trans ?_
+  refine (hCq q A.secondOrderCoefficient (iteratedCovGrad (I := I) g 0 2 2 T) Λ hΛsup).trans ?_
   refine mul_le_mul_of_nonneg_left ?_ (hCq_nn q)
   have hdata : ∀ i ∈ Finset.range (q + 1),
       (∑ l ∈ Finset.range (q + 1 - i),
@@ -239,7 +241,7 @@ theorem a2PerIdxJet (hDim : Module.finrank ℝ E = 3)
     have hq : q + 1 - i = (q - i) + 1 := by omega
     rw [hq]
     simp only [hJ]
-    exact icgWinShift (I := I) g 0 2 2 (q - i) T
+    exact iteratedCovGradWinShift (I := I) g 0 2 2 (q - i) T
   have hsplit : Finset.range (q + 1) = insert 0 (Finset.Icc 1 q) := by
     ext i
     simp only [Finset.mem_range, Finset.mem_insert, Finset.mem_Icc]
@@ -272,7 +274,7 @@ theorem a2PerIdxJet (hDim : Module.finrank ℝ E = 3)
       Finset.sum_nonneg (fun _ _ => sq_nonneg _)
     linarith only [this]
 
-theorem a2PerIdxLin (hDim : Module.finrank ℝ E = 3)
+theorem secondOrderAction_perIndex_linear_bound (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ Cq K : ℕ → ℝ, (∀ q, 0 ≤ Cq q) ∧ (∀ i, 0 ≤ K i) ∧
       ∀ (T : SmoothCcTensor g 0 2)
@@ -288,13 +290,13 @@ theorem a2PerIdxLin (hDim : Module.finrank ℝ E = 3)
         {Cδ : ℝ} (hCδ : 0 ≤ Cδ)
         (hfib : ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g (2 + 2) 2 x
-            ((lowBaseData (I := I) (M := M) g g_bg T
-              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).C2.toSection x) ≤
+            ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderCoefficient.toSection x) ≤
             Cδ ^ 2)
         (q : ℕ),
         ‖iteratedCovGrad (I := I) g 0 2 q
-            ((lowBaseData (I := I) (M := M) g g_bg T
-              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2
+            ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+              (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction
                 (I := I) (M := M) T)‖ ≤
           Cq q * (Cδ * Real.sqrt (∑ j ∈ Finset.range (q + 3),
               ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) +
@@ -304,7 +306,7 @@ theorem a2PerIdxLin (hDim : Module.finrank ℝ E = 3)
               Real.sqrt (∑ j ∈ Finset.range (q - i + 3),
                 ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2)) := by
   classical
-  obtain ⟨Cq, K, hCq_nn, hK_nn, hsq⟩ := a2PerIdxJet (I := I) (M := M) hDim g g_bg
+  obtain ⟨Cq, K, hCq_nn, hK_nn, hsq⟩ := secondOrderAction_perIndex_jet_bound (I := I) (M := M) hDim g g_bg
   refine ⟨fun q => Real.sqrt (Cq q), fun i => Real.sqrt (K i),
     fun q => Real.sqrt_nonneg _, fun i => Real.sqrt_nonneg _, ?_⟩
   intro T hT δ hδ0 hδ_le hδg hδZ Cδ hCδ hfib q
@@ -318,15 +320,15 @@ theorem a2PerIdxLin (hDim : Module.finrank ℝ E = 3)
     Finset.sum_nonneg (fun i _ => hterm_nn i)
   have hbase_nn : (0 : ℝ) ≤ Cδ ^ 2 * J q := mul_nonneg (sq_nonneg _) (hJ_nn q)
   have h : ‖iteratedCovGrad (I := I) g 0 2 q
-      ((lowBaseData (I := I) (M := M) g g_bg T
-        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2
+      ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction
           (I := I) (M := M) T)‖ ^ 2 ≤
       Cq q * (Cδ ^ 2 * J q +
         ∑ i ∈ Finset.Icc 1 q, K i * (1 + J i) * J (q - i)) :=
     hsq T hT hδ0 hδ_le hδg hδZ hfib q
   have hroot : ‖iteratedCovGrad (I := I) g 0 2 q
-      ((lowBaseData (I := I) (M := M) g g_bg T
-        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).a2 (I := I) (M := M) T)‖ ≤
+      ((lowerScaleActionCoefficients (I := I) (M := M) g g_bg T
+        (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ).secondOrderAction (I := I) (M := M) T)‖ ≤
       Real.sqrt (Cq q) * Real.sqrt (Cδ ^ 2 * J q +
         ∑ i ∈ Finset.Icc 1 q, K i * (1 + J i) * J (q - i)) := by
     have hs := Real.sqrt_le_sqrt h

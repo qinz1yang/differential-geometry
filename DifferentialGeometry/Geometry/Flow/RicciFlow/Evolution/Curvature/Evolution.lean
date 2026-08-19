@@ -631,9 +631,9 @@ private theorem rmCompBase
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M) (t : Real)
     (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
-    realizedRmBase (I := I) S x₀ t x₀ m
+    solutionCurvatureComponents (I := I) S x₀ t x₀ m
       = rmComp (I := I) S x₀ t x₀ (m 0) (m 1) (m 2) (m 3) := by
-  rw [realizedRmBase_apply]
+  rw [solutionCurvatureComponents_apply]
   unfold rmComp
   congr 1
   funext q
@@ -662,7 +662,7 @@ theorem rmRaise
               metricCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀)
                 (t : Real) x₀ e p := by
     intro e
-    have h := realizedRmBase_eq_curvCoeff_lower (I := I) S x₀ (t : Real)
+    have h := solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients (I := I) S x₀ (t : Real)
       (rm13OfSol (I := I) S (t : Real) (D.regular_subset t.2))
       (connCurvOfSol (I := I) S hS x₀ (t : Real) (D.regular_subset t.2))
       (fun q : Fin 4 => if q = 0 then a else if q = 1 then b else if q = 2 then c else e)
@@ -948,7 +948,7 @@ theorem rm04Evol_at
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
-      (fun s : Real ↦ realizedRmBase (I := I) S x₀ s x₀ m)
+      (fun s : Real ↦ solutionCurvatureComponents (I := I) S x₀ s x₀ m)
       (rmLap (coordInv (I := I) S x₀ (t : Real) x₀)
             (nab2RmComp (I := I) S x₀ (t : Real) x₀) (m 0) (m 1) (m 2) (m 3)
         - 2 * (uhlenbeckBTensorInFrame (coordInv (I := I) S x₀) (rmComp (I := I) S x₀)
@@ -969,7 +969,8 @@ theorem rm04Evol_at
       (coordGammaEvol (I := I) S hS x₀
         (coordMetricMix (I := I) S hS x₀ (coordMetricDeriv (I := I) S hS x₀)))
   have hbase :=
-    rm04Var_of_sol (I := I) S hS x₀ gInvDt (coordNab2Ric (I := I) S x₀)
+    riemann_covariant_variation_of_solution
+      (I := I) S hS x₀ gInvDt (coordNab2Ric (I := I) S x₀)
       hmetricReg (coordNab2Reg (I := I) S x₀) hmix
       (fun s hs => rm13OfSol (I := I) S s hs)
       (fun s hs => connCurvOfSol (I := I) S hS x₀ s hs) t m

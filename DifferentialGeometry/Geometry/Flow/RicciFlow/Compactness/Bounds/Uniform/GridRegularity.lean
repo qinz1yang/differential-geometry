@@ -104,7 +104,7 @@ theorem grid_rs_const_le
       (gnClassC_nonneg (E := E) (I := I) (M := M) gBase Λ m)
   · positivity
 
-theorem grid_rs_unif
+theorem grid_rs_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
     {Λ : ℝ} (hΛ : 1 ≤ Λ) (r₁ r₂ s₁ s₂ : ℕ) :
@@ -136,9 +136,9 @@ theorem grid_rs_unif
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤
               C * A ^ 2 * B ^ 2 := by
   obtain ⟨CS, hCS, hMorS⟩ :=
-    morreyRS_unif (I := I) (M := M) hDim gBase hΛ r₁ s₁
+    morreyRS_uniform (I := I) (M := M) hDim gBase hΛ r₁ s₁
   obtain ⟨CT, hCT, hMorT⟩ :=
-    morreyRS_unif (I := I) (M := M) hDim gBase hΛ r₂ s₂
+    morreyRS_uniform (I := I) (M := M) hDim gBase hΛ r₂ s₂
   refine ⟨gridRSClassC (E := E) (I := I) (M := M) gBase Λ 2 *
       (CT ^ 2 + CS ^ 2),
     mul_nonneg (gridRSClassC_nonneg (E := E) (I := I) (M := M) gBase Λ 2)

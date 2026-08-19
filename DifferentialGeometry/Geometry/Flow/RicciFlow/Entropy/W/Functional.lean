@@ -182,7 +182,7 @@ theorem wEntropyFirstVariation_eq_of_hasFirstVariationAt [MeasurableSpace M]
   unfold wEntropyFirstVariation WEntropyHasFirstVariationAt at *
   exact h.deriv
 
-def wEntropyFirstVariationPreIBPIntegrand (n : Nat) (tau tauVariation : Real)
+def wEntropyFirstVariationBeforeIntegrationByPartsIntegrand (n : Nat) (tau tauVariation : Real)
     (scalarCurvature lapPotential gradPotentialNormSq potential
       potentialVariation metricVariationTrace metricVariationRicciHess : M -> Real) :
     M -> Real :=
@@ -197,7 +197,7 @@ def wEntropyFirstVariationPreIBPIntegrand (n : Nat) (tau tauVariation : Real)
         ((n : Real) * tauVariation) / (2 * tau) *
           (potential x - (n : Real)))
 
-def wEntropyFirstVariationLemma61Integrand (n : Nat) (tau tauVariation : Real)
+def wEntropyFirstVariationIntegratedByPartsIntegrand (n : Nat) (tau tauVariation : Real)
     (scalarCurvature lapPotential gradPotentialNormSq potential
       potentialVariation metricVariationTrace metricVariationRicciHess
       metricRicciHess : M -> Real) : M -> Real :=
@@ -211,7 +211,7 @@ def wEntropyFirstVariationLemma61Integrand (n : Nat) (tau tauVariation : Real)
         (scalarCurvature x + 2 * lapPotential x - gradPotentialNormSq x +
           (potential x - (n : Real) - 1) / tau)
 
-private theorem wEntropyFirstVariationPreIBPIntegrand_eq_lemma61_add_ibp
+private theorem wEntropyFirstVariationBeforeIntegrationByPartsIntegrand_eq_integrated_add_remainder
     {n : Nat} {tau tauVariation : Real}
     {scalarCurvature lapPotential gradPotentialNormSq potential
       potentialVariation metricVariationTrace metricVariationRicciHess
@@ -219,21 +219,21 @@ private theorem wEntropyFirstVariationPreIBPIntegrand_eq_lemma61_add_ibp
     (htau : tau ≠ 0) {x : M}
     (hmetricRicciHess :
       metricRicciHess x = scalarCurvature x + lapPotential x) :
-    wEntropyFirstVariationPreIBPIntegrand n tau tauVariation scalarCurvature
+    wEntropyFirstVariationBeforeIntegrationByPartsIntegrand n tau tauVariation scalarCurvature
         lapPotential gradPotentialNormSq potential potentialVariation
         metricVariationTrace metricVariationRicciHess x =
-      wEntropyFirstVariationLemma61Integrand n tau tauVariation scalarCurvature
+      wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation scalarCurvature
           lapPotential gradPotentialNormSq potential potentialVariation
           metricVariationTrace metricVariationRicciHess metricRicciHess x +
         (((n : Real) - 1) * tauVariation) *
           (lapPotential x - gradPotentialNormSq x) := by
-  unfold wEntropyFirstVariationPreIBPIntegrand
-    wEntropyFirstVariationLemma61Integrand
+  unfold wEntropyFirstVariationBeforeIntegrationByPartsIntegrand
+    wEntropyFirstVariationIntegratedByPartsIntegrand
   rw [hmetricRicciHess]
   field_simp [htau]
   ring
 
-theorem wEntropyFirstVariation_lemma61_of_preIBP [MeasurableSpace M]
+theorem w_entropy_first_variation_eq_integrated_by_parts [MeasurableSpace M]
     {weightedMeasure : Measure M} {n : Nat} {tau tauVariation firstVariation : Real}
     {scalarCurvature lapPotential gradPotentialNormSq potential
       potentialVariation metricVariationTrace metricVariationRicciHess
@@ -241,7 +241,7 @@ theorem wEntropyFirstVariation_lemma61_of_preIBP [MeasurableSpace M]
     (htau : tau ≠ 0)
     (hpre :
       firstVariation =
-        ∫ x, wEntropyFirstVariationPreIBPIntegrand n tau tauVariation
+        ∫ x, wEntropyFirstVariationBeforeIntegrationByPartsIntegrand n tau tauVariation
           scalarCurvature lapPotential gradPotentialNormSq potential
           potentialVariation metricVariationTrace metricVariationRicciHess x
           ∂weightedMeasure)
@@ -251,7 +251,7 @@ theorem wEntropyFirstVariation_lemma61_of_preIBP [MeasurableSpace M]
     (hfinal_int :
       Integrable
         (fun x =>
-          wEntropyFirstVariationLemma61Integrand n tau tauVariation
+          wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
             scalarCurvature lapPotential gradPotentialNormSq potential
             potentialVariation metricVariationTrace metricVariationRicciHess
             metricRicciHess x)
@@ -265,35 +265,35 @@ theorem wEntropyFirstVariation_lemma61_of_preIBP [MeasurableSpace M]
     (hibp :
       ∫ x, (lapPotential x - gradPotentialNormSq x) ∂weightedMeasure = 0) :
     firstVariation =
-      ∫ x, wEntropyFirstVariationLemma61Integrand n tau tauVariation
+      ∫ x, wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
         scalarCurvature lapPotential gradPotentialNormSq potential
         potentialVariation metricVariationTrace metricVariationRicciHess
         metricRicciHess x ∂weightedMeasure := by
   rw [hpre]
   have hpoint :
       (fun x =>
-        wEntropyFirstVariationPreIBPIntegrand n tau tauVariation
+        wEntropyFirstVariationBeforeIntegrationByPartsIntegrand n tau tauVariation
           scalarCurvature lapPotential gradPotentialNormSq potential
           potentialVariation metricVariationTrace metricVariationRicciHess x)
         =ᵐ[weightedMeasure]
       fun x =>
-        wEntropyFirstVariationLemma61Integrand n tau tauVariation
+        wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
           scalarCurvature lapPotential gradPotentialNormSq potential
           potentialVariation metricVariationTrace metricVariationRicciHess
           metricRicciHess x +
         (((n : Real) - 1) * tauVariation) *
           (lapPotential x - gradPotentialNormSq x) := by
     filter_upwards [hmetricRicciHess] with x hx
-    exact wEntropyFirstVariationPreIBPIntegrand_eq_lemma61_add_ibp
+    exact wEntropyFirstVariationBeforeIntegrationByPartsIntegrand_eq_integrated_add_remainder
       (M := M) (n := n) (tauVariation := tauVariation) htau hx
   calc
-    (∫ x, wEntropyFirstVariationPreIBPIntegrand n tau tauVariation
+    (∫ x, wEntropyFirstVariationBeforeIntegrationByPartsIntegrand n tau tauVariation
           scalarCurvature lapPotential gradPotentialNormSq potential
           potentialVariation metricVariationTrace metricVariationRicciHess x
         ∂weightedMeasure)
         =
       ∫ x,
-        wEntropyFirstVariationLemma61Integrand n tau tauVariation
+        wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
           scalarCurvature lapPotential gradPotentialNormSq potential
           potentialVariation metricVariationTrace metricVariationRicciHess
           metricRicciHess x +
@@ -301,7 +301,7 @@ theorem wEntropyFirstVariation_lemma61_of_preIBP [MeasurableSpace M]
           (lapPotential x - gradPotentialNormSq x)
         ∂weightedMeasure := integral_congr_ae hpoint
     _ =
-      (∫ x, wEntropyFirstVariationLemma61Integrand n tau tauVariation
+      (∫ x, wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
           scalarCurvature lapPotential gradPotentialNormSq potential
           potentialVariation metricVariationTrace metricVariationRicciHess
           metricRicciHess x ∂weightedMeasure) +
@@ -309,7 +309,7 @@ theorem wEntropyFirstVariation_lemma61_of_preIBP [MeasurableSpace M]
           (lapPotential x - gradPotentialNormSq x) ∂weightedMeasure := by
         rw [integral_add hfinal_int hibp_int]
     _ =
-      (∫ x, wEntropyFirstVariationLemma61Integrand n tau tauVariation
+      (∫ x, wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
           scalarCurvature lapPotential gradPotentialNormSq potential
           potentialVariation metricVariationTrace metricVariationRicciHess
           metricRicciHess x ∂weightedMeasure) +
@@ -317,13 +317,13 @@ theorem wEntropyFirstVariation_lemma61_of_preIBP [MeasurableSpace M]
           ∫ x, (lapPotential x - gradPotentialNormSq x) ∂weightedMeasure := by
         rw [integral_const_mul]
     _ =
-      ∫ x, wEntropyFirstVariationLemma61Integrand n tau tauVariation
+      ∫ x, wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
         scalarCurvature lapPotential gradPotentialNormSq potential
         potentialVariation metricVariationTrace metricVariationRicciHess
         metricRicciHess x ∂weightedMeasure := by
         rw [hibp, mul_zero, add_zero]
 
-theorem wEntropyFirstVariation_eq_lemma61_of_hasFirstVariationAt_preIBP
+theorem w_entropy_first_variation_eq_integrated_by_parts_of_has_first_variation_at
     [MeasurableSpace M]
     {muPath : Real -> Measure M} {n : Nat} {tauPath : Real -> Real}
     {scalarCurvaturePath gradPotentialNormSqPath potentialPath :
@@ -338,7 +338,7 @@ theorem wEntropyFirstVariation_eq_lemma61_of_hasFirstVariationAt_preIBP
     (htau : tau ≠ 0)
     (hpre :
       firstVariation =
-        ∫ x, wEntropyFirstVariationPreIBPIntegrand n tau tauVariation
+        ∫ x, wEntropyFirstVariationBeforeIntegrationByPartsIntegrand n tau tauVariation
           scalarCurvature lapPotential gradPotentialNormSq potential
           potentialVariation metricVariationTrace metricVariationRicciHess x
           ∂weightedMeasure)
@@ -348,7 +348,7 @@ theorem wEntropyFirstVariation_eq_lemma61_of_hasFirstVariationAt_preIBP
     (hfinal_int :
       Integrable
         (fun x =>
-          wEntropyFirstVariationLemma61Integrand n tau tauVariation
+          wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
             scalarCurvature lapPotential gradPotentialNormSq potential
             potentialVariation metricVariationTrace metricVariationRicciHess
             metricRicciHess x)
@@ -363,12 +363,12 @@ theorem wEntropyFirstVariation_eq_lemma61_of_hasFirstVariationAt_preIBP
       ∫ x, (lapPotential x - gradPotentialNormSq x) ∂weightedMeasure = 0) :
     wEntropyFirstVariation muPath n tauPath scalarCurvaturePath
         gradPotentialNormSqPath potentialPath s0 =
-      ∫ x, wEntropyFirstVariationLemma61Integrand n tau tauVariation
+      ∫ x, wEntropyFirstVariationIntegratedByPartsIntegrand n tau tauVariation
         scalarCurvature lapPotential gradPotentialNormSq potential
         potentialVariation metricVariationTrace metricVariationRicciHess
         metricRicciHess x ∂weightedMeasure := by
   rw [wEntropyFirstVariation_eq_of_hasFirstVariationAt hderiv]
-  exact wEntropyFirstVariation_lemma61_of_preIBP
+  exact w_entropy_first_variation_eq_integrated_by_parts
     (M := M) (weightedMeasure := weightedMeasure) htau hpre
     hmetricRicciHess hfinal_int hibp_int hibp
 

@@ -154,9 +154,9 @@ theorem riemannDiff_gJet_le
     riemannSec_difference (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
       hX_sm hY_sm hZ_sm htor x
   set A1 : TangentSpace I x :=
-    covDerivConnDiff (I := I) g₂ g₁ X Y Z x with hA1
+    covDerivConnectionDifference (I := I) g₂ g₁ X Y Z x with hA1
   set A2 : TangentSpace I x :=
-    covDerivConnDiff (I := I) g₂ g₁ Y X Z x with hA2
+    covDerivConnectionDifference (I := I) g₂ g₁ Y X Z x with hA2
   set S1 : TangentSpace I x :=
     diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁) Y Z x with hS1
   set S2 : TangentSpace I x :=
@@ -181,12 +181,12 @@ theorem riemannDiff_gJet_le
   have hSwnn : (0 : ℝ) ≤ Sw := by rw [hSw]; positivity
   have hSunn : (0 : ℝ) ≤ Su := by rw [hSu]; positivity
   have hA1_bd : Real.sqrt (g₂.inner x A1 A1) ≤ C1 * Sv * Sw * Su := by
-    have h := covDerivConnDiff_gJet_le (I := I) hEq hJet1 hJet2 hx v w u
+    have h := covDerivConnectionDifference_gJet_le (I := I) hEq hJet1 hJet2 hx v w u
     rw [← hX, ← hY, ← hZ, ← hSv, ← hSw, ← hSu] at h
     rw [hA1, hC1]
     exact h
   have hA2_bd : Real.sqrt (g₂.inner x A2 A2) ≤ C1 * Sw * Sv * Su := by
-    have h := covDerivConnDiff_gJet_le (I := I) hEq hJet1 hJet2 hx w v u
+    have h := covDerivConnectionDifference_gJet_le (I := I) hEq hJet1 hJet2 hx w v u
     rw [← hX, ← hY, ← hZ, ← hSv, ← hSw, ← hSu] at h
     rw [hA2, hC1]
     exact h
@@ -206,20 +206,20 @@ theorem riemannDiff_gJet_le
     rw [hZx, hXx]
   have hS1_bd : Real.sqrt (g₂.inner x S1 S1) ≤ C0 * Sw * Su := by
     rw [hS1_eq, hC0, hSw, hSu]
-    exact connDiff_gJet_le (I := I) hEq hJet1 hx w u
+    exact connectionDifference_gJet_le (I := I) hEq hJet1 hx w u
   have hS2_bd : Real.sqrt (g₂.inner x S2 S2) ≤ C0 * Sv * Su := by
     rw [hS2_eq, hC0, hSv, hSu]
-    exact connDiff_gJet_le (I := I) hEq hJet1 hx v u
+    exact connectionDifference_gJet_le (I := I) hEq hJet1 hx v u
   have hQ1_raw :
       Real.sqrt (g₂.inner x Q1 Q1) ≤
         C0 * Sv * Real.sqrt (g₂.inner x S1 S1) := by
     rw [hQ1, hXx, hC0, hSv]
-    exact connDiff_gJet_le (I := I) hEq hJet1 hx v S1
+    exact connectionDifference_gJet_le (I := I) hEq hJet1 hx v S1
   have hQ2_raw :
       Real.sqrt (g₂.inner x Q2 Q2) ≤
         C0 * Sw * Real.sqrt (g₂.inner x S2 S2) := by
     rw [hQ2, hYx, hC0, hSw]
-    exact connDiff_gJet_le (I := I) hEq hJet1 hx w S2
+    exact connectionDifference_gJet_le (I := I) hEq hJet1 hx w S2
   have hQ1_bd :
       Real.sqrt (g₂.inner x Q1 Q1) ≤ C0 ^ 2 * Sv * Sw * Su := by
     calc
@@ -397,7 +397,7 @@ private theorem curvSup_of_diff
           g₀.inner x v v * g₀.inner x w w * g₀.inner x u u := by ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem unifCurvSup_of
+theorem uniformCurvSup_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Kb : ℝ} (hΛ : 1 ≤ Λ)
     (hKb0 : 0 ≤ Kb)
     (hKb : ∀ (x : M) (v w u : TangentSpace I x),
@@ -427,7 +427,7 @@ theorem unifCurvSup_of
           hEq hjet1 hjet2 (Set.mem_univ x) v w u)
 
 omit [SigmaCompactSpace M] in
-theorem unifCurvSup
+theorem uniformCurvSup
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -446,7 +446,7 @@ theorem unifCurvSup
   have hCd : 0 ≤ riemannDiffC Λ Λ Λ := by
     unfold riemannDiffC
     positivity
-  exact unifCurvatureSup_singleLink_of_diff (I := I) (M := M)
+  exact uniformCurvatureSup_singleLink_of_diff (I := I) (M := M)
     gBase g₀ hΛ hcomp hCd
       (fun x v w u =>
         riemannDiff_gJet_le (I := I) (M := M) gBase g₀

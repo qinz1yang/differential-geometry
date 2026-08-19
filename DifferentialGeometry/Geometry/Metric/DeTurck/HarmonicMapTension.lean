@@ -26,17 +26,17 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
   [BoundarylessManifold I M] in
-theorem connDiff_neg (g h : SmoothRiemannianMetric I M) (x : M)
+theorem connectionDifference_neg (g h : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
-    connDiff (I := I) h g x u v = -connDiff (I := I) g h x u v := by
-  have hcycle := connDiff_cocycle (I := I) g h h x u v
-  rw [connDiff_self] at hcycle
+    connectionDifference (I := I) h g x u v = -connectionDifference (I := I) g h x u v := by
+  have hcycle := connectionDifference_cocycle (I := I) g h h x u v
+  rw [connectionDifference_self] at hcycle
   exact eq_neg_of_add_eq_zero_left hcycle.symm
 
 def idTension (g h : SmoothRiemannianMetric I M) :
     ∀ x : M, TangentSpace I x := fun x =>
   ∑ i : Fin (Module.finrank ℝ E),
-    connDiff (I := I) h g x
+    connectionDifference (I := I) h g x
       (smoothOrthoFrame (I := I) g x i x)
       (smoothOrthoFrame (I := I) g x i x)
 
@@ -50,7 +50,7 @@ theorem idTension_eq (g h : SmoothRiemannianMetric I M) (x : M) :
   rw [idTension, ← Finset.sum_neg_distrib]
   apply Finset.sum_congr rfl
   intro i _hi
-  exact connDiff_neg (I := I) g h x
+  exact connectionDifference_neg (I := I) g h x
     (smoothOrthoFrame (I := I) g x i x)
     (smoothOrthoFrame (I := I) g x i x)
 

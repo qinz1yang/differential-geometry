@@ -89,7 +89,7 @@ theorem iteratedRmComp_eq_nablaKRm04Field
     ∀ (k : ℕ) {x : M}, x ∈ coordinateFrameSet (I := I) x₀ →
       ∀ n : Fin (4 + k) → CoordinateIdx (𝕜 := Real) E,
         iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
-            (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) k t x n =
+            (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k t x n =
           nablaKRm04Field (I := I) S t k x
             (frameTuple (I := I) (coordinateFrameAt (I := I) x₀) x n) := by
   classical
@@ -98,14 +98,14 @@ theorem iteratedRmComp_eq_nablaKRm04Field
   induction k with
   | zero =>
       intro x hx n
-      simp only [iteratedRmComp_zero, nablaKRm04Field_zero, realizedRmBase,
+      simp only [iteratedRmComp_zero, nablaKRm04Field_zero, solutionCurvatureComponents,
         frameComp0S, hframe_def]
   | succ k ih =>
       intro x hx n
       have hlevelk :
           (fun y : M =>
               iteratedRmComp (I := I) frame
-                (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) k t y) =ᶠ[nhds x]
+                (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k t y) =ᶠ[nhds x]
             fun y : M =>
               frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame y := by
         refine Filter.eventually_of_mem
@@ -118,7 +118,7 @@ theorem iteratedRmComp_eq_nablaKRm04Field
           frameExtData (I := I) frame
               (fun y : M =>
                 iteratedRmComp (I := I) frame
-                  (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) k t y) x =
+                  (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k t y) x =
             frameExtData (I := I) frame
               (frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame) x := by
         funext m d
@@ -127,7 +127,7 @@ theorem iteratedRmComp_eq_nablaKRm04Field
         exact hlevelk.mono fun y hy => congrFun hy m
       have hbase :
           iteratedRmComp (I := I) frame
-              (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) k t x =
+              (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k t x =
             frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame x :=
         hlevelk.self_of_nhds
       rw [hext, hbase]
@@ -139,7 +139,7 @@ theorem iteratedRmComp_eq_nablaKRm04Field
           frame
           (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
           (coordinateFrameSet_open (I := I) x₀) hx n
-      simpa [realizedChr, hframe_def] using hstep
+      simpa [solutionChristoffelComponents, hframe_def] using hstep
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -149,7 +149,7 @@ theorem iteratedRmComp_one_eq_nablaKRm04Field
     {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (n : Fin (4 + 1) → CoordinateIdx (𝕜 := Real) E) :
     iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
-        (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) 1 t x n =
+        (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 t x n =
       nablaKRm04Field (I := I) S t 1 x
         (frameTuple (I := I) (coordinateFrameAt (I := I) x₀) x n) :=
   iteratedRmComp_eq_nablaKRm04Field (I := I) S x₀ t 1 hx n

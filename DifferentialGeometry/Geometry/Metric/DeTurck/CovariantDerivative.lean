@@ -124,12 +124,12 @@ theorem deTurckVF_frame_trace (g g_bg : SmoothRiemannianMetric I M) (x : M)
       g.inner x (B i) (B j) = if i = j then (1 : ℝ) else 0) :
     (deTurckVF (I := I) g g_bg :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
-      ∑ i : Fin (Module.finrank ℝ E), connDiff (I := I) g g_bg x (B i) (B i) := by
+      ∑ i : Fin (Module.finrank ℝ E), connectionDifference (I := I) g g_bg x (B i) (B i) := by
   rw [deTurckVF_eq_orthoFrame_trace (I := I) g g_bg x]
   exact frameDiag_indep (I := I) g x
     (fun i => smoothOrthoFrame (I := I) g x i x) B
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j) hB
-    (connDiff (I := I) g g_bg x)
+    (connectionDifference (I := I) g g_bg x)
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private theorem skewDiag_zero (g : SmoothRiemannianMetric I M) (x : M)
@@ -176,7 +176,7 @@ omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] in
 theorem frameCorr_vanish (g g_bg : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     ∑ i : Fin (Module.finrank ℝ E),
-        connDiff (I := I) g g_bg x
+        connectionDifference (I := I) g g_bg x
           ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v)
           (smoothOrthoFrame (I := I) g x i x) = 0 :=
   skewDiag_zero (I := I) g x
@@ -186,8 +186,8 @@ theorem frameCorr_vanish (g g_bg : SmoothRiemannianMetric I M) (x : M)
     (fun i j => by
       rw [smoothOrthoFrame_cov_skew (I := I) g x i j v]
       exact congrArg Neg.neg (g.symm x _ _))
-    (connDiff (I := I) g g_bg x)
-    (fun u w => connDiff_symm (I := I) g g_bg x u w)
+    (connectionDifference (I := I) g g_bg x)
+    (fun u w => connectionDifference_symm (I := I) g g_bg x u w)
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private theorem cov_sum (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -215,15 +215,15 @@ theorem deTurckVF_covDeriv_eq (g g_bg : SmoothRiemannianMetric I M) (x : M)
     (LeviCivita (I := I) g).toFun
         (fun b : M => (deTurckVF (I := I) g g_bg : Π b : M, TangentSpace I b) b) x v =
       ∑ i : Fin (Module.finrank ℝ E),
-        (covDerivConnDiff (I := I) g_bg g (smoothExtensionTangent (I := I) x v)
+        (covDerivConnectionDifference (I := I) g_bg g (smoothExtensionTangent (I := I) x v)
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i) x
-          + (connDiff (I := I) g g_bg x
-                (connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
+          + (connectionDifference (I := I) g g_bg x
+                (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
                   (smoothOrthoFrame (I := I) g x i x)) v
-              - connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
-                  (connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
-              - connDiff (I := I) g g_bg x
-                  (connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
+              - connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
+                  (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
+              - connectionDifference (I := I) g g_bg x
+                  (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
                   (smoothOrthoFrame (I := I) g x i x))) := by
   classical
   haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
@@ -272,23 +272,23 @@ theorem deTurckVF_covDeriv_eq (g g_bg : SmoothRiemannianMetric I M) (x : M)
       (LeviCivita (I := I) g).toFun
           (diffSec (LeviCivita (I := I) g_bg) (LeviCivita (I := I) g)
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)) x v =
-        (covDerivConnDiff (I := I) g_bg g (smoothExtensionTangent (I := I) x v)
+        (covDerivConnectionDifference (I := I) g_bg g (smoothExtensionTangent (I := I) x v)
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i) x
-          + (connDiff (I := I) g g_bg x
-                (connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
+          + (connectionDifference (I := I) g g_bg x
+                (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
                   (smoothOrthoFrame (I := I) g x i x)) v
-              - connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
-                  (connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
-              - connDiff (I := I) g g_bg x
-                  (connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
+              - connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
+                  (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
+              - connectionDifference (I := I) g g_bg x
+                  (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
                   (smoothOrthoFrame (I := I) g x i x)))
-        + (connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
+        + (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
               ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v)
-            + connDiff (I := I) g g_bg x
+            + connectionDifference (I := I) g g_bg x
                 ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v)
                 (smoothOrthoFrame (I := I) g x i x)) := by
     intro i
-    have hkey := connDiff_outerCovDeriv_eq (I := I) g g_bg
+    have hkey := connectionDifference_outerCovDeriv_eq (I := I) g g_bg
       (X := smoothExtensionTangent (I := I) x v)
       (Y := smoothOrthoFrame (I := I) g x i) (Z := smoothOrthoFrame (I := I) g x i)
       (hBsm i) (hBsm i) x
@@ -300,21 +300,21 @@ theorem deTurckVF_covDeriv_eq (g g_bg : SmoothRiemannianMetric I M) (x : M)
     rw [hcov] at hkey
     linear_combination (norm := abel) hkey
   have hcorr2 : ∑ i : Fin (Module.finrank ℝ E),
-      connDiff (I := I) g g_bg x
+      connectionDifference (I := I) g g_bg x
         ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v)
         (smoothOrthoFrame (I := I) g x i x) = 0 :=
     frameCorr_vanish (I := I) g g_bg x v
   have hcorr1 : ∑ i : Fin (Module.finrank ℝ E),
-      connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
+      connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
         ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v) = 0 := by
     rw [Finset.sum_congr rfl
-      (fun i _ => connDiff_symm (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
+      (fun i _ => connectionDifference_symm (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
         ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v))]
     exact hcorr2
   have hcorr : ∑ i : Fin (Module.finrank ℝ E),
-      (connDiff (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
+      (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
             ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v)
-          + connDiff (I := I) g g_bg x
+          + connectionDifference (I := I) g g_bg x
               ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v)
               (smoothOrthoFrame (I := I) g x i x)) = 0 := by
     rw [Finset.sum_add_distrib, hcorr1, hcorr2, add_zero]

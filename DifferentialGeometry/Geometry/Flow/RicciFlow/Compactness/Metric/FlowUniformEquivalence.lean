@@ -35,7 +35,7 @@ theorem ricciFlow_metric_hasDerivAt
   have hwithin := hS.equation ⟨t, ht⟩ x v v
   exact hwithin.hasDerivAt (D.regular_mem_nhds ht)
 omit [SigmaCompactSpace M] in
-theorem log_integrable_of_sol
+theorem ricci_directional_quotient_interval_integrable_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
     (hS : DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) S)
@@ -119,7 +119,7 @@ theorem metricLogDerivativeInput_of_solutions
   log_integrable := fun i x hx v hv t ht => hint i x hx v hv t ht
 
 omit [SigmaCompactSpace M] in
-theorem metricUniformEquivalentOnWindow_of_solutions
+theorem metric_uniform_equivalent_on_window_of_solutions_of_interval_integrable
     [SigmaCompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
@@ -156,7 +156,7 @@ theorem metricUniformEquivalentOnWindow_of_solutions
     (metricLogDerivativeInput_of_solutions (I := I) S hS K β ψ t0 A hwin hA hquad hint)
 
 omit [SigmaCompactSpace M] in
-theorem metricUniformEquivalentOnWindow_of_solutions'
+theorem metric_uniform_equivalent_on_window_of_solutions
     [SigmaCompactSpace M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : Nat -> DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
@@ -178,8 +178,10 @@ theorem metricUniformEquivalentOnWindow_of_solutions'
     MetricUniformEquivalentOnWindow (I := I) K β ψ gRef
       (fun i s => (S i).family.metric s)
       (fun t : Real => metricEquivalenceFactor C A t t0) :=
-  metricUniformEquivalentOnWindow_of_solutions S hS K β ψ t0 C A gRef hwin ht0 hC hA hequiv0 hquad
-    (fun i _x _hx v hv t ht => log_integrable_of_sol (S i) (hS i) _x v hv t0 t
+  metric_uniform_equivalent_on_window_of_solutions_of_interval_integrable S hS K β ψ t0 C A gRef hwin ht0 hC hA hequiv0 hquad
+    (fun i _x _hx v hv t ht =>
+      ricci_directional_quotient_interval_integrable_of_solution
+        (S i) (hS i) _x v hv t0 t
       ((Set.uIcc_subset_Icc ht0 ht).trans (hwin.trans D.regular_subset)))
 
 end FixedDomain

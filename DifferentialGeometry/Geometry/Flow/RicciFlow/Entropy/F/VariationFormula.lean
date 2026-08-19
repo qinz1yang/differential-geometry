@@ -18,7 +18,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-section GeometryFormula510
+section GeometricFirstVariationFormula
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
@@ -28,7 +28,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem firstVariationIntegral_eq_pre510
+theorem first_variation_integral_eq_pre_integration_by_parts
     [T2Space M] [SigmaCompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {scalarCurvaturePath gradPotentialNormSqPath potentialPath :
@@ -63,7 +63,7 @@ theorem firstVariationIntegral_eq_pre510
             gradPotentialNormSqVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
-        fFunctionalPre510Integrand scalarCurvature lapPotential
+        fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
@@ -81,7 +81,7 @@ theorem firstVariationIntegral_eq_pre510
         =
       ∫ x,
         expNegPotentialDensity potential x *
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) := by
@@ -89,11 +89,11 @@ theorem firstVariationIntegral_eq_pre510
         riemannianMeasureFamily, hscalar0, hgrad0, hpotential0]
       apply integral_congr_ae
       exact Filter.Eventually.of_forall
-        (expWeightedIntegralVariation_eq_pre510 (M := M)
+        (expWeightedIntegralVariationIntegrand_eq_preIntegrationByParts (M := M)
           (hvariation := hvariation))
     _ =
       ∫ x,
-        fFunctionalPre510Integrand scalarCurvature lapPotential
+        fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
@@ -103,12 +103,12 @@ theorem firstVariationIntegral_eq_pre510
         (mu := riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
         (potential := potential)
         (integrand :=
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace)
         hmeas).symm
 
-theorem closedIntegral_eq_pre510
+theorem closed_integral_eq_pre_integration_by_parts
     [T2Space M] [SigmaCompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {s0 : Real}
@@ -131,7 +131,7 @@ theorem closedIntegral_eq_pre510
           closedBracketVariation x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
-        fFunctionalPre510Integrand scalarCurvature lapPotential
+        fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
@@ -147,7 +147,7 @@ theorem closedIntegral_eq_pre510
         =
       ∫ x,
         expNegPotentialDensity potential x *
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)) := by
@@ -155,11 +155,11 @@ theorem closedIntegral_eq_pre510
         riemannianMeasureFamily]
       apply integral_congr_ae
       exact Filter.Eventually.of_forall
-        (expWeightedClosedVariation_eq_pre510 (M := M)
+        (expWeightedClosedVariationIntegrand_eq_preIntegrationByParts (M := M)
           (hvariation := hvariation))
     _ =
       ∫ x,
-        fFunctionalPre510Integrand scalarCurvature lapPotential
+        fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
@@ -169,12 +169,12 @@ theorem closedIntegral_eq_pre510
         (mu := riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
         (potential := potential)
         (integrand :=
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace)
         hmeas).symm
 
-theorem firstVar_pre510_closed
+theorem first_variation_eq_pre_integration_by_parts_of_closed_bracket
     [T2Space M] [SigmaCompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {scalarCurvaturePath gradPotentialNormSqPath potentialPath :
@@ -217,14 +217,14 @@ theorem firstVar_pre510_closed
             gradPotentialNormSqVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
-        fFunctionalPre510Integrand scalarCurvature lapPotential
+        fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
   rw [hclosed_compare]
-  exact closedIntegral_eq_pre510 (I := I) (M := M) G hmeas hclosed_variation
+  exact closed_integral_eq_pre_integration_by_parts (I := I) (M := M) G hmeas hclosed_variation
 
 theorem bracketClosed_eventually
     {muPath : Real -> Measure M}
@@ -428,7 +428,7 @@ theorem closedCompare
         ∂(volumeMeasureFamily (I := I) (M := M) G s0) := by
         simp [hpotential0, hscalar0, hlap0]
 
-theorem firstVar_pre510_weighted
+theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
@@ -509,19 +509,19 @@ theorem firstVar_pre510_weighted
             gradPotentialNormSqVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
-        fFunctionalPre510Integrand scalarCurvature lapPotential
+        fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
-  apply firstVar_pre510_closed (I := I) (M := M) G hmeas
+  apply first_variation_eq_pre_integration_by_parts_of_closed_bracket (I := I) (M := M) G hmeas
   · exact closedCompare (I := I) (M := M) G hbase_eq
       hscalar_deriv hgrad_deriv hlap_deriv hpotential_deriv htrace
       hmetric_reg horig_reg hclosed_reg hpotential0 hscalar0 hlap0
   · exact hclosed_variation
 
-theorem firstVar_pre510_ibp
+theorem first_variation_eq_pre_integration_by_parts
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {scalarCurvaturePath lapPotentialPath gradPotentialNormSqPath
@@ -609,13 +609,13 @@ theorem firstVar_pre510_ibp
             gradPotentialNormSqVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
-        fFunctionalPre510Integrand scalarCurvature lapPotential
+        fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
-  apply firstVar_pre510_weighted (I := I) (M := M) G hmeas0
+  apply first_variation_eq_pre_integration_by_parts_of_weighted_divergence (I := I) (M := M) G hmeas0
   · exact bracketClosed_eventually
       (M := M)
       (muPath := volumeMeasureFamily (I := I) (M := M) G)
@@ -638,7 +638,7 @@ theorem firstVar_pre510_ibp
   · exact hlap0
   · exact hclosed_variation
 
-theorem formula510_of_connTrace
+theorem fFunctionalFirstVariationFormula_of_trace_vector
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {firstVariation : Real}
@@ -655,14 +655,14 @@ theorem formula510_of_connTrace
     (hfirst :
       firstVariation =
         ∫ x,
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
           ∂(expNegPotentialWeightedMeasure
               (riemannianVolumeMeasure (I := I) (M := M) g) potential))
     (hfinal_int :
       Integrable
-        (fFunctionalFormula510Integrand scalarCurvature lapPotential
+        (fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess)
         (expNegPotentialWeightedMeasure
@@ -719,7 +719,7 @@ theorem formula510_of_connTrace
     (hqeq :
       ∀ x : M,
         q x = potentialVariation x - metricVariationTrace x / 2) :
-    FFunctionalFormula510
+    FFunctionalFirstVariationFormula
       (expNegPotentialWeightedMeasure
         (riemannianVolumeMeasure (I := I) (M := M) g) potential)
       firstVariation scalarCurvature lapPotential gradPotentialNormSq
@@ -787,13 +787,13 @@ theorem formula510_of_connTrace
         refine Filter.Eventually.of_forall ?_
         intro x
         simp [hlap x, hgradSq x]
-  exact formula510_of_ints
+  exact fFunctionalFirstVariationFormula_of_integration_by_parts
     (weightedMeasure :=
       expNegPotentialWeightedMeasure
         (riemannianVolumeMeasure (I := I) (M := M) g) potential)
     hfirst hfinal_int hdiv_int hshift_int hcorr_int hdiv_zero hshift_final
 
-end GeometryFormula510
+end GeometricFirstVariationFormula
 
 end
 

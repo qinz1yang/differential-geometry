@@ -47,7 +47,7 @@ def limitPointedCoc
     PointedRiemannianManifold.{u, uE, uH} (I := I) :=
   limitPointed S O₀ (S.limitMetric g hg)
 
-section StepD4a
+section
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -100,9 +100,9 @@ noncomputable def limitCGMaps (S : SmoothSeqSystem I A) (O₀ : A 0)
       (subseq := id) :=
   limitCGMapsOf S O₀ g g hg
 
-end StepD4a
+end
 
-section StepD4bc
+section
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
@@ -287,9 +287,9 @@ def limitCGConverges
             targetSigma targetT2 (F '' metricSourceCompactSet (I := I) Φ k K) p
     _ < ε := hkConv k hkC stageSet hKstage
 
-end StepD4bc
+end
 
-section StepD5
+section
 
 open Bundle
 
@@ -722,7 +722,7 @@ theorem limitComplete [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     exact h
   exact (complete_of_proper : CompleteSpace S.toSeqSystem.Lim)
 
-end StepD5
+end
 
 end HCGCompactness
 end DifferentialGeometry

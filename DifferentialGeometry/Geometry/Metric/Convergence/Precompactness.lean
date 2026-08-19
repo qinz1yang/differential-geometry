@@ -801,16 +801,16 @@ theorem bumpMul_contDiff {χ g : E → Real} {U : Set E} (hU : IsOpen U)
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem norm_iteratedFDeriv_bumpMul_le {χ gg : E → Real} (r : ℕ)
     (hχ : ContDiff Real (∞ : WithTop ℕ∞) χ) (hgg : ContDiff Real (∞ : WithTop ℕ∞) gg)
-    {Bχ Bg : Real} (hBχ0 : 0 ≤ Bχ) (hBg0 : 0 ≤ Bg)
+    {Bχ Background : Real} (hBχ0 : 0 ≤ Bχ) (hBackground0 : 0 ≤ Background)
     (hχbd : ∀ x ∈ tsupport χ, ∀ i : ℕ, i ≤ r → ‖iteratedFDeriv Real i χ x‖ ≤ Bχ)
-    (hgbd : ∀ x ∈ tsupport χ, ∀ j : ℕ, j ≤ r → ‖iteratedFDeriv Real j gg x‖ ≤ Bg)
+    (hgbd : ∀ x ∈ tsupport χ, ∀ j : ℕ, j ≤ r → ‖iteratedFDeriv Real j gg x‖ ≤ Background)
     (x : E) :
-    ‖iteratedFDeriv Real r (fun y : E => χ y * gg y) x‖ ≤ 2 ^ r * Bχ * Bg := by
+    ‖iteratedFDeriv Real r (fun y : E => χ y * gg y) x‖ ≤ 2 ^ r * Bχ * Background := by
   refine le_trans (norm_iteratedFDeriv_mul_le hχ hgg x (by exact_mod_cast le_top)) ?_
   have hterm : ∀ i ∈ Finset.range (r + 1),
       (r.choose i : Real) * ‖iteratedFDeriv Real i χ x‖
           * ‖iteratedFDeriv Real (r - i) gg x‖
-        ≤ (r.choose i : Real) * (Bχ * Bg) := by
+        ≤ (r.choose i : Real) * (Bχ * Background) := by
     intro i hi
     have hir : i ≤ r := Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)
     by_cases hx : x ∈ tsupport χ
@@ -1585,7 +1585,7 @@ theorem metricComp_iter_refs
       rw [show 0 + r + 1 = r + 1 by omega, hsum]
 
 omit [IsManifold I 2 M] in
-theorem exists_chart_engineInput
+theorem exists_chart_component_precompactness_family
     (gRef : SmoothRiemannianMetric I M)
     (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
@@ -1727,7 +1727,7 @@ theorem exists_chart_cInfConv
               (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ k))) 0) w
                 (fun a => V a w)) x) Φinf := by
   obtain ⟨Φ, χ, hΦcd, hΦbd, hχ1, hΦrel⟩ :=
-    exists_chart_engineInput (I := I) gRef gSeq hbdd x₀ V hK₀ hK₀chart
+    exists_chart_component_precompactness_family (I := I) gRef gSeq hbdd x₀ V hK₀ hK₀chart
   obtain ⟨φ, Φinf, hφ, hΦinf, hconv⟩ :=
     exists_cInf_subseq Φ hΦcd
       (fun r K _ => by obtain ⟨M, hM⟩ := hΦbd r; exact ⟨M, fun k x _ => hM k x⟩)

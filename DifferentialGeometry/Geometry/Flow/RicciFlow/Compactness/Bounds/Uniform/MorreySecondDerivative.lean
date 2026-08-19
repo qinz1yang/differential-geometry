@@ -71,7 +71,7 @@ theorem morreyTwoC_spec
   intro g hEq hjet1 hjet2 T x
   obtain ⟨hL₁, hL₂, hfwd1, hrev1, hrev2⟩ :=
     reverseJetPack (I := I) gBase g hEq hjet1 hjet2
-  have hmorrey := fibreMorrey_unif_class (I := I) gBase g hEq
+  have hmorrey := fibreMorrey_uniform_class (I := I) gBase g hEq
     hfwd1 hrev1 hrev2 hL₁ hL₂ hdim 2 T x
   simpa only [morreyTwoC] using hmorrey
 

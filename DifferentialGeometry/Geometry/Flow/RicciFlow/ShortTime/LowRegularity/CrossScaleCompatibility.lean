@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.LiftTwo
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RHSSymm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.SecondOrderLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RemainderSymmetry
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.NonautonomousL2Realize
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.OperatorTime
 
@@ -72,7 +72,7 @@ theorem congrOp_norm_le {g : SmoothRiemannianMetric I M} {p q b T C : ℝ}
   filter_upwards [hC] with t ht
   exact (opNorm_comp_congr_le (I := I) (M := M) hpq (A t)).trans ht
 
-def liftA2Two (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
+def liftSecondOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
@@ -89,12 +89,12 @@ def liftA2Two (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     ℝ → (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t =>
-    (lowRegA2Total (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f hR hball
+    (lowRegularitySecondOrderActionTotal (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f hR hball
       t).comp
       (tensorHsCongrL (I := I) (M := M) g 0 2
         (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num))
 
-theorem liftA2Two_data
+theorem liftSecondOrderActionToH2_data
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) {ρ₀ δ : ℝ}
     (hρ₀ : 0 < ρ₀) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
@@ -118,21 +118,21 @@ theorem liftA2Two_data
                 (0 : tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
                 f t)‖ ≤ R),
           AEStronglyMeasurable
-              (liftA2Two (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT hT1 f hR
+              (liftSecondOrderActionToH2 (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT hT1 f hR
                 hball)
               (timeMeasure T) ∧
             (∀ᵐ t ∂timeMeasure T,
-              ‖liftA2Two (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT hT1 f hR
+              ‖liftSecondOrderActionToH2 (I := I) (M := M) g hρ0 hδ0 hδ_le hreal' hT hT1 f hR
                 hball t‖ ≤ C * ρ) := by
   obtain ⟨ρ, C, hρ, hρle, hC, hdata⟩ :=
-    lowRegA2Total_data (I := I) (M := M) hDim g hρ₀ hδ0 hδ_le hreal
+    lowRegularitySecondOrderActionTotal_data (I := I) (M := M) hDim g hρ₀ hδ0 hδ_le hreal
   refine ⟨ρ, C, hρ, hρle, hC, ?_⟩
   intro hρ0 hreal' R hR hRρ T hT hT1 f hball
   obtain ⟨hmeas, hbd⟩ := hdata hρ0 hreal' hR hRρ hT hT1 f hball
   exact ⟨congrOp_aemeas (I := I) (M := M) _ _ hmeas,
     congrOp_norm_le (I := I) (M := M) _ _ hbd⟩
 
-def liftA1Two (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
+def liftFirstOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
@@ -143,37 +143,37 @@ def liftA1Two (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     ℝ → (tensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t =>
-    (lowRegA1Time (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f t).comp
+    (lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f t).comp
       (tensorHsCongrL (I := I) (M := M) g 0 2
         (show (2 : ℝ) + 1 = (3 : ℝ) by norm_num))
 
-theorem liftA1Two_data
+theorem liftFirstOrderActionToH2_data
     (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (hcont : Continuous (lowA1Hi (I := I) (M := M) g hρ hδ0 hδ_le hreal))
+    (hcont : Continuous (lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal))
     {Φ : ℝ} (hΦ : 0 ≤ Φ)
     (hlin : ∀ v : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
       ‖show tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
           tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) from
-        lowA1Hi (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤ Φ * (1 + ‖v‖))
+        lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤ Φ * (1 + ‖v‖))
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (tensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) T) :
     AEStronglyMeasurable
-        (liftA1Two (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f)
+        (liftFirstOrderActionToH2 (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f)
         (timeMeasure T) ∧
-      MemLp (liftA1Two (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f) 2
+      MemLp (liftFirstOrderActionToH2 (I := I) (M := M) g hρ hδ0 hδ_le hreal hT hT1 f) 2
         (timeMeasure T) := by
   obtain ⟨hmeas, -, hmem⟩ :=
-    lowRegA1_memLp (I := I) (M := M) g hρ hδ0 hδ_le hreal hcont hΦ hlin hT hT1 f
+    lowRegularityFirstOrderActionTime_memLp (I := I) (M := M) g hρ hδ0 hδ_le hreal hcont hΦ hlin hT hT1 f
   exact ⟨congrOp_aemeas (I := I) (M := M) _ _ hmeas,
     congrOp_memLp (I := I) (M := M) _ _ hmem⟩
 
 omit [BoundarylessManifold I M] in
-theorem lowreg_realize_two
+theorem exists_compatible_cross_scale_field_realization
     {g : SmoothRiemannianMetric I M} {T aLo aHi : ℝ}
     (hlo : aLo = aHi - 1) (hOrd : aLo ≤ aHi)
     (hOrdA1 : aLo + 1 ≤ aHi + 1) (hOrdSt : aLo + 2 ≤ aHi + 2)
@@ -253,7 +253,7 @@ theorem lowreg_realize_two
               aLo hT hT1 0 fLo t := by
   subst hlo
   obtain ⟨uHi, fHi, huHi, hfHi, htrace, hderiv, hforce, hfield, hforce_ae, -⟩ :=
-    lowreg_lift_two (I := I) (M := M) (g := g) rfl hOrd hOrdA1 hOrdSt hT hT1
+    exists_compatible_cross_scale_solution (I := I) (M := M) (g := g) rfl hOrd hOrdA1 hOrdSt hT hT1
       A2Hi hA2Hi C2Hi hC2Hi A1Hi hA1Hi f0Hi hsmallHi
       A2Lo hA2Lo C2Lo hC2Lo A1Lo hA1Lo f0Lo hsmallLo
       hA2compat hA1compat hf0 fLo hfLo
@@ -277,7 +277,7 @@ theorem norm_incl_congr (g : SmoothRiemannianMetric I M)
   rw [← tensorHsCongr_incl (I := I) (M := M) hac hbd hab hcd u,
     norm_tensorHsCongr]
 
-theorem lowRadial_eq_self_sol
+theorem low_radial_retractions_fix_maximal_regularity_solution
     (g₀ g_bg : SmoothRiemannianMetric I M) {R δ T ρ : ℝ}
     (hR : 0 < R) (hδ : δ < 1)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
@@ -285,13 +285,13 @@ theorem lowRadial_eq_self_sol
         (((1 : ℕ) : ℝ) + 1) S‖ ≤ R →
         gFibreOpBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ S) δ)
-    (hcont : Continuous (lowRegN (I := I) (M := M) g₀ g_bg hR hδ hreal))
-    (hcore : Continuous (coreN (I := I) (M := M) g₀ g_bg hδ hreal))
+    (hcont : Continuous (deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal))
+    (hcore : Continuous (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal))
     (hρ : 0 < ρ) (hRρ : R ≤ ρ) (hT : 0 < T) (hT1 : T ≤ 1)
     (u : ℝ → lowerState (I := I) (M := M) g₀ 1 R)
     (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
-      fun t => lowRegN (I := I) (M := M) g₀ g_bg hR hδ hreal (u t))
+      fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t))
     (hball : ∀ᵐ t ∂timeMeasure T,
       maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
           (0 : tensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
@@ -324,7 +324,7 @@ theorem lowRadial_eq_self_sol
               (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
                 (0 : tensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) gforce t))) := by
-  have hsymm := lowreg_sol_symm_h3 (I := I) (M := M) g₀ g_bg hR hδ hreal
+  have hsymm := duhamel_solution_of_deTurck_remainder_symmetric_h3_ae (I := I) (M := M) g₀ g_bg hR hδ hreal
     hcont hcore (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     hT hT1 u gforce hforce
   have hballT : ∀ᵐ t ∂timeMeasure T,
@@ -342,9 +342,10 @@ theorem lowRadial_eq_self_sol
       (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
       (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)]
     exact ht
-  exact lowRadial_eq_self_along_sol (I := I) (M := M) g₀ hρ hRρ hsymm hballT
+  exact low_radial_retractions_eq_self_almost_everywhere
+    (I := I) (M := M) g₀ hρ hRρ hsymm hballT
 
-def coreNAt (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) {R δ : ℝ}
+def deTurckRemainderOnSmoothCoreAt (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) {R δ : ℝ}
     (hδ : δ < 1)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) S‖ ≤ R →
@@ -356,14 +357,14 @@ def coreNAt (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ) {R δ : ℝ}
     (symmS (I := I) (M := M) g₀ (coreRep g₀ x)) hδ
     (hreal _ (coreSymm_h2 (I := I) (M := M) g₀ x))
 
-theorem coreNAt_one (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
+theorem deTurckRemainderOnSmoothCoreAt_one (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hδ : δ < 1)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) S‖ ≤ R →
         gFibreOpBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ S) δ) :
-    coreNAt (I := I) (M := M) g₀ g_bg 1 hδ hreal =
-      coreN (I := I) (M := M) g₀ g_bg hδ hreal :=
+    deTurckRemainderOnSmoothCoreAt (I := I) (M := M) g₀ g_bg 1 hδ hreal =
+      deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal :=
   rfl
 
 theorem deTurckSmoothN_incl (g₀ g_bg : SmoothRiemannianMetric I M)
@@ -386,11 +387,11 @@ theorem coreNAt_incl (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
           (ccTensorBilinSymm (I := I) g₀ S) δ)
     (x : smoothCore (I := I) (M := M) g₀ R) :
     tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hab
-        (coreNAt (I := I) (M := M) g₀ g_bg b hδ hreal x) =
-      coreNAt (I := I) (M := M) g₀ g_bg a hδ hreal x :=
+        (deTurckRemainderOnSmoothCoreAt (I := I) (M := M) g₀ g_bg b hδ hreal x) =
+      deTurckRemainderOnSmoothCoreAt (I := I) (M := M) g₀ g_bg a hδ hreal x :=
   deTurckSmoothN_incl (I := I) (M := M) g₀ g_bg hab _ hδ _
 
-theorem lowreg_force_lo
+theorem included_high_order_forcing_eq_deTurck_remainder_ae
     (g₀ g_bg : SmoothRiemannianMetric I M) {R δ T σ : ℝ}
     (hR : 0 < R) (hδ : δ < 1)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
@@ -406,15 +407,15 @@ theorem lowreg_force_lo
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         hOrd (fHi t) = fLo t)
     (hforce : fLo =ᵐ[timeMeasure T]
-      fun t => lowRegN (I := I) (M := M) g₀ g_bg hR hδ hreal (state t)) :
+      fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (state t)) :
     ∀ᵐ t ∂timeMeasure T,
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           hOrd (fHi t) =
-        lowRegN (I := I) (M := M) g₀ g_bg hR hδ hreal (state t) := by
+        deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (state t) := by
   filter_upwards [hincl, hforce] with t h1 h2
   rw [h1, h2]
 
-theorem lowreg_force_id
+theorem high_order_forcing_eq_lifted_deTurck_remainder_ae
     (g₀ g_bg : SmoothRiemannianMetric I M) {R δ T σ : ℝ}
     (hR : 0 < R) (hδ : δ < 1)
     (hreal : ∀ S : SmoothCcTensor g₀ 0 2,
@@ -431,14 +432,14 @@ theorem lowreg_force_id
     (hN2 : ∀ v : lowerState (I := I) (M := M) g₀ 1 R,
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           hOrd (N2 v) =
-        lowRegN (I := I) (M := M) g₀ g_bg hR hδ hreal v)
+        deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal v)
     (hincl : ∀ᵐ t ∂timeMeasure T,
       tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         hOrd (fHi t) = fLo t)
     (hforce : fLo =ᵐ[timeMeasure T]
-      fun t => lowRegN (I := I) (M := M) g₀ g_bg hR hδ hreal (state t)) :
+      fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (state t)) :
     (fun t => fHi t) =ᵐ[timeMeasure T] fun t => N2 (state t) := by
-  filter_upwards [lowreg_force_lo (I := I) (M := M) g₀ g_bg hR hδ hreal hOrd
+  filter_upwards [included_high_order_forcing_eq_deTurck_remainder_ae (I := I) (M := M) g₀ g_bg hR hδ hreal hOrd
     state fHi fLo hincl hforce] with t ht
   exact tensorHsInclusion_injective (I := I) (M := M) (g := g₀)
     (r := 0) (s := 2) hOrd (ht.trans (hN2 (state t)).symm)

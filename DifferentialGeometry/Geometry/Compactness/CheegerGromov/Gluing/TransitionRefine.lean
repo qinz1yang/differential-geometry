@@ -28,7 +28,7 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-theorem existsTransRefH6
+theorem exists_normal_transition_limit_subsequence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
     (phi0 : Nat -> Nat) (hphi0 : StrictMono phi0)
@@ -109,7 +109,7 @@ theorem existsTransRefH6
         (∀ w ∈ V, Jbarinf w ∈ U -> Jinf (Jbarinf w) = w) := by
   obtain ⟨φ, Jinf, Jbarinf, hφ, hJinf, hJbarinf, hconv, hconvbar,
       hleft, hright⟩ :=
-    exists_trans_h6 (I := I) (X := X.subseq phi0)
+    exists_normal_transition_subsequence (I := I) (X := X.subseq phi0)
       (NormalCoordMetricBoundInput.subseq (I := I) metricInput phi0)
       x y hU hV hUa hVa hUanorm hVanorm
       hUmetric hVmetric hUametric hVametric hUexp hVexp hUaexp hVaexp
@@ -119,7 +119,7 @@ theorem existsTransRefH6
   · simpa [PointedRiemannianSeq.subseq] using hconv
   · simpa [PointedRiemannianSeq.subseq] using hconvbar
 
-theorem existsTransFinite
+theorem exists_finite_normal_transition_limit_subsequence
     {ι : Type*} (s : Finset ι)
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
@@ -236,7 +236,7 @@ theorem existsTransFinite
           (fun i hi => hRight i (Finset.mem_insert_of_mem hi))
       obtain ⟨phi1, Jinf, Jbarinf, hphi1, hcomp, hJinf, hJbarinf, hJ, hJbar,
           hleft, hright⟩ :=
-        existsTransRefH6 (I := I) metricInput phi0 hphi0
+        exists_normal_transition_limit_subsequence (I := I) metricInput phi0 hphi0
           (fun k => x a (phi0 k)) (fun k => y a (phi0 k))
           (hU a (Finset.mem_insert_self a s)) (hV a (Finset.mem_insert_self a s))
           (hUa a (Finset.mem_insert_self a s)) (hVa a (Finset.mem_insert_self a s))
@@ -269,7 +269,7 @@ theorem existsTransFinite
         · simpa [Function.comp_apply] using hconv.comp_subseq hphi1
         · simpa [Function.comp_apply] using hconvbar.comp_subseq hphi1
 
-theorem existsTransUniv
+theorem exists_normal_transition_limit_subsequence_of_finite
     {ι : Type*} [Finite ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (metricInput : NormalCoordMetricBoundInput (I := I) X)
@@ -353,7 +353,7 @@ theorem existsTransUniv
   classical
   letI : Fintype ι := Fintype.ofFinite ι
   obtain ⟨phi, hphi, hlim⟩ :=
-    existsTransFinite (I := I) (Finset.univ : Finset ι) metricInput x y U V Ua Va
+    exists_finite_normal_transition_limit_subsequence (I := I) (Finset.univ : Finset ι) metricInput x y U V Ua Va
       (fun i _ => hU i) (fun i _ => hV i)
       (fun i _ => hUa i) (fun i _ => hVa i)
       (fun i _ => hUanorm i) (fun i _ => hVanorm i)
@@ -509,7 +509,7 @@ theorem existsTransTail
   let yt : ι → ∀ k : Nat, ((X.subseq tau).obj k).M :=
     fun i k => y i (tau k)
   obtain ⟨phi1, hphi1, Jinf, Jbarinf, hspec⟩ :=
-    existsTransUniv (I := I) (X := X.subseq tau)
+    exists_normal_transition_limit_subsequence_of_finite (I := I) (X := X.subseq tau)
       (NormalCoordMetricBoundInput.subseq (I := I) metricInput tau)
       xt yt U V Ua Va hU hV hUa hVa hUanorm hVanorm
       (fun i k => by

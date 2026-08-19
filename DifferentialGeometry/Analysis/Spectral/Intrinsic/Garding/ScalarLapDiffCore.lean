@@ -360,7 +360,7 @@ theorem scalarLapDiff_eq
     hessianSec (I := I) (LeviCivita (I := I) q) hcovq f hf x
   let CD : Tensor0SSpace 2 I x :=
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-      connDiffFib (I := I) h q x) D1
+      connectionDifferenceFib (I := I) h q x) D1
   let Corr : Tensor0SSpace 2 I x :=
     connectionDifferenceOutput (I := I)
       (CovariantDerivative.difference
@@ -387,7 +387,7 @@ theorem scalarLapDiff_eq
     dsimp only [CD, D1, Corr]
     change
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-          connDiffFib (I := I) h q x)
+          connectionDifferenceFib (I := I) h q x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
             (iteratedCovGrad (I := I) (M := M) q 0 0 1 U).toSection x)
           (unitZeroSec (I := I) (M := M) x)))
@@ -401,7 +401,7 @@ theorem scalarLapDiff_eq
           (vec2 (I := I)
             (smoothOrthoFrame (I := I) h x i x)
             (smoothOrthoFrame (I := I) h x i x))
-    rw [connDiffFib_apply_eval]
+    rw [connectionDifferenceFib_apply_eval]
     rw [show vec2 (I := I)
           (smoothOrthoFrame (I := I) h x i x)
           (smoothOrthoFrame (I := I) h x i x) 0 =
@@ -411,14 +411,14 @@ theorem scalarLapDiff_eq
           (smoothOrthoFrame (I := I) h x i x) 1 =
         smoothOrthoFrame (I := I) h x i x by simp only [vec2, ite_self]]
     change Tensor0SSpace.toModel D1
-        (fun _ : Fin 1 => connDiff (I := I) h q x
+        (fun _ : Fin 1 => connectionDifference (I := I) h q x
           (smoothOrthoFrame (I := I) h x i x)
           (smoothOrthoFrame (I := I) h x i x)) = _
     rw [grad_cc_apply (I := I) (M := M) q U x
-      (connDiff (I := I) h q x
+      (connectionDifference (I := I) h q x
         (smoothOrthoFrame (I := I) h x i x)
         (smoothOrthoFrame (I := I) h x i x))]
-    rw [← connDiff_eq_difference (I := I) q h]
+    rw [← connectionDifference_eq_difference (I := I) q h]
     rw [connectionDifferenceOutput_apply]
     congr 2
   rw [TensorRSField.scalar0, Tensor0SField.toScalarField,

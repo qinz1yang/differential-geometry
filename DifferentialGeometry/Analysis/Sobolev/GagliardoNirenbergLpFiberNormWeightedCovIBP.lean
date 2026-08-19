@@ -177,8 +177,8 @@ private theorem covDerivCrossLeft_weight_bound_rs
     exact mul_le_mul_of_nonneg_left hkato hcoeff_nn
   have hrP_bound : rP ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) * A ^ 2 := by
     rw [hrP_eq]
-    have hrfnsw_le : riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) ≤ A ^ 2 := hAsq
-    have hrfnsw_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) :=
+    have hriemannianFiberNormSqw_le : riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) ≤ A ^ 2 := hAsq
+    have hriemannianFiberNormSqw_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) :=
       riemannianFiberNormSq_nonneg (I := I) (M := M) g r m x (w.toSection x)
     have hsum_nn : (0 : ℝ) ≤ ∑ a : Fin n,
         (extDerivFun (I := I) (ζ : M → ℝ) x
@@ -193,9 +193,9 @@ private theorem covDerivCrossLeft_weight_bound_rs
             riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x)
         ≤ (((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c)) *
             riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) :=
-          mul_le_mul_of_nonneg_right hdζsum hrfnsw_nn
+          mul_le_mul_of_nonneg_right hdζsum hriemannianFiberNormSqw_nn
       _ ≤ (((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c)) * A ^ 2 :=
-          mul_le_mul_of_nonneg_left hrfnsw_le hbound_nn
+          mul_le_mul_of_nonneg_left hriemannianFiberNormSqw_le hbound_nn
       _ = ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) * A ^ 2 := by ring
   have hk1 : (0 : ℝ) ≤ (k : ℝ) - 1 := by
     have : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast _hk

@@ -185,7 +185,7 @@ end Expansion
 
 section Speed
 
-def connDiffDot (g₁ g₂ : Real → SmoothRiemannianMetric I M)
+def connectionDifferenceDot (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Adot : (x : M) →
       TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
     (t : Real) (x : M) :
@@ -197,18 +197,18 @@ def connDiffDot (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x) (Adot x)
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffDot_apply (g₁ g₂ : Real → SmoothRiemannianMetric I M)
+theorem connectionDifferenceDot_apply (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Adot : (x : M) →
       TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
     (t : Real) (x : M) (v : Fin 3 -> TangentSpace I x) :
-    connDiffDot (I := I) g₁ g₂ Adot t x v =
+    connectionDifferenceDot (I := I) g₁ g₂ Adot t x v =
       (-2 : Real) * metricRicciAt (I := I) (g₁ t) x
           (fun a : Fin 2 => if a = 0 then
             CovariantDerivative.difference (metricCov (I := I) (g₁ t))
               (metricCov (I := I) (g₂ t)) x (v 1) (v 0) else v 2) +
         (g₁ t).inner x ((Adot x (v 1)) (v 0)) (v 2) := by
   have hadd :
-      connDiffDot (I := I) g₁ g₂ Adot t x v =
+      connectionDifferenceDot (I := I) g₁ g₂ Adot t x v =
         ((-2 : Real) •
             lowerBilin (I := I) (metricRicciAt (I := I) (g₁ t) x)
               (CovariantDerivative.difference (metricCov (I := I) (g₁ t))
@@ -231,12 +231,12 @@ theorem connDiffDot_apply (g₁ g₂ : Real → SmoothRiemannianMetric I M)
 
 end Speed
 
-section Adapter
+section
 
 variable {x : M}
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffLow_hasDerivAt
+theorem connectionDifferenceLow_hasDerivAt
     (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Adot : (x : M) →
       TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
@@ -252,8 +252,8 @@ theorem connDiffLow_hasDerivAt
             (metricCov (I := I) (g₂ r)) x Y X)
         ((Adot x Y) X) t)
     (v : Fin 3 -> TangentSpace I x) :
-    HasDerivAt (fun r : Real => connDiffLowAt (I := I) (g₁ r) (g₂ r) x v)
-      (connDiffDot (I := I) g₁ g₂ Adot t x v) t := by
+    HasDerivAt (fun r : Real => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v)
+      (connectionDifferenceDot (I := I) g₁ g₂ Adot t x v) t := by
   classical
   set b : Module.Basis
       (Fin (Module.finrank Real (TangentSpace I x))) Real (TangentSpace I x) :=
@@ -275,10 +275,10 @@ theorem connDiffLow_hasDerivAt
       ((-2 : Real) * metricRicciAt (I := I) (g₁ t) x
         (fun a : Fin 2 => if a = 0 then b k else v 2)) t := fun k => hPDE₁ (b k) (v 2)
   have hsum : ∀ r : Real,
-      connDiffLowAt (I := I) (g₁ r) (g₂ r) x v =
+      connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v =
         ∑ k, b.repr (F r) k * (g₁ r).inner x (b k) (v 2) := by
     intro r
-    rw [connDiffLowAt_apply]
+    rw [connectionDifferenceLowAt_apply]
     have h1 : (g₁ r).inner x (F r) (v 2) =
         metricTensorField (I := I) (g₁ r) x
           (fun a : Fin 2 => if a = 0 then F r else v 2) := by
@@ -304,8 +304,8 @@ theorem connDiffLow_hasDerivAt
       (∑ k, (b.repr Fdot k * (g₁ t).inner x (b k) (v 2) +
         b.repr (F t) k * ((-2 : Real) * metricRicciAt (I := I) (g₁ t) x
           (fun a : Fin 2 => if a = 0 then b k else v 2)))) =
-        connDiffDot (I := I) g₁ g₂ Adot t x v := by
-    rw [Finset.sum_add_distrib, connDiffDot_apply]
+        connectionDifferenceDot (I := I) g₁ g₂ Adot t x v := by
+    rw [Finset.sum_add_distrib, connectionDifferenceDot_apply]
     have hg : (∑ k, b.repr Fdot k * (g₁ t).inner x (b k) (v 2)) =
         (g₁ t).inner x Fdot (v 2) := by
       have h1 : ∀ k : Fin (Module.finrank Real (TangentSpace I x)),
@@ -331,14 +331,14 @@ theorem connDiffLow_hasDerivAt
   have := hderiv.congr_deriv hval
   simpa only [hsum] using this
 
-end Adapter
+end
 
 section Frame
 
 variable {Idx : Type*} [Fintype Idx] {u : Set M} {x : M}
 
 omit [Fintype Idx] [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffVec_hasDerivAt [Finite Idx]
+theorem connectionDifferenceVec_hasDerivAt [Finite Idx]
     (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (frame : Idx -> (y : M) -> TangentSpace I y)
     (hframe : IsLocalFrameOn I E 1 frame u) (hu : IsOpen u) (hx : x ∈ u) {t : Real}
@@ -451,7 +451,7 @@ theorem connDiffVec_hasDerivAt [Finite Idx]
   simpa only [← hexp] using hstep
 
 omit [Fintype Idx] [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffLow_hasDerivAt_frame [Finite Idx]
+theorem connectionDifferenceLow_hasDerivAt_frame [Finite Idx]
     (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (frame : Idx -> (y : M) -> TangentSpace I y)
     (hframe : IsLocalFrameOn I E 1 frame u) (hu : IsOpen u) (hx : x ∈ u) {t : Real}
@@ -470,12 +470,12 @@ theorem connDiffLow_hasDerivAt_frame [Finite Idx]
               (metricCov (I := I) (g₂ r)) frame hframe x i j k)
         (hframe.coeff k x ((Adot x (frame j x)) (frame i x))) t)
     (v : Fin 3 -> TangentSpace I x) :
-    HasDerivAt (fun r : Real => connDiffLowAt (I := I) (g₁ r) (g₂ r) x v)
-      (connDiffDot (I := I) g₁ g₂ Adot t x v) t := by
+    HasDerivAt (fun r : Real => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v)
+      (connectionDifferenceDot (I := I) g₁ g₂ Adot t x v) t := by
   classical
   haveI : Fintype Idx := Fintype.ofFinite Idx
-  exact connDiffLow_hasDerivAt (I := I) g₁ g₂ Adot hPDE₁
-    (fun X Y => connDiffVec_hasDerivAt (I := I) g₁ g₂ frame hframe hu hx Adot hΓ X Y) v
+  exact connectionDifferenceLow_hasDerivAt (I := I) g₁ g₂ Adot hPDE₁
+    (fun X Y => connectionDifferenceVec_hasDerivAt (I := I) g₁ g₂ frame hframe hu hx Adot hΓ X Y) v
 
 def bilinOfComp (b : Module.Basis Idx Real (TangentSpace I x))
     (c : Idx -> Idx -> Idx -> Real) :
@@ -523,7 +523,7 @@ section SolutionBridge
 variable {Idx : Type*} {u : Set M}
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem christoffelInFrame_sol
+theorem christoffel_symbol_in_frame_eq_solution_metric_connection
     {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (y : M) -> TangentSpace I y)

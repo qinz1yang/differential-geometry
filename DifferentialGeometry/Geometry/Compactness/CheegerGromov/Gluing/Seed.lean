@@ -174,14 +174,14 @@ theorem MetricCompactBase.exists_stage_seed
   let c0 :=
     (8 * Real.exp b.decay.C / aMin) * b.normalRadius.gpRatio
   obtain ⟨D, hD_one, _hmuD, hc0, h8, _h16, hradD, hradRatio, hcap⟩ :=
-    b.exists_item3D c0
+    b.exists_large_divisor_for_exponential_scales c0
   have hD : 0 < D := zero_lt_one.trans hD_one
   let inp := MetricCompactnessInputs.ofBase b D hD hcap
   have h8' : (8 : Real) < inp.normalRadius.gpRatio * inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using h8
-  have hradD' : 2 * item3RadiusFactor inp.decay inp.D < inp.D := by
+  have hradD' : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using hradD
-  have hradRatio' : 2 * item3RadiusFactor inp.decay inp.D <
+  have hradRatio' : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using hradRatio
   have hc0' :
@@ -420,8 +420,8 @@ theorem MetricCompactBase.exists_stage_seed
       deltaInf e eInf (fun alpha => (hpair alpha).1)
       (fun alpha n => (hpair alpha).2 n)
   obtain ⟨hgp, _hrad⟩ :=
-    inp.item3ScaleTails h8' hradD' hradRatio' P L r
-  have hgpTheta : Item3GpScaleTail (I := I) inp.decay inp.D P
+    inp.exponential_scale_tails h8' hradD' hradRatio' P L r
+  have hgpTheta : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       (L.subseq htheta) inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r htheta
   have hbase : HasStageBaseTail (I := I) inp P L hr theta htheta hconn := by

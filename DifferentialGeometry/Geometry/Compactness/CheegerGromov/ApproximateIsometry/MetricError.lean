@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.ApproxIsoDataMono
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationMonotonicity
 
 import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
 open DifferentialGeometry.Geometry.Curvature
@@ -70,7 +70,7 @@ variable [T2Space M] [SigmaCompactSpace M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N]
 variable [IsManifold I ∞ N]
 
-noncomputable def PreApproxIsoDataOn.of_metric
+noncomputable def MapMetricApproximationOn.of_metric
     {K : Set M} {eps : Real} {p : Nat} {F : M → N}
     (G g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
     (heps : 0 < eps) (heps1 : eps < 1)
@@ -81,7 +81,7 @@ noncomputable def PreApproxIsoDataOn.of_metric
           (mfderiv I I F x (v 0)) (mfderiv I I F x (v 1)))
     (hderiv : ∀ a : Nat, a ≤ p → ∀ x ∈ K,
       metricDerivNorm (I := I) a G g g x ≤ eps) :
-    PreApproxIsoDataOn (I := I) K eps p F g h where
+    MapMetricApproximationOn (I := I) K eps p F g h where
   eps_pos := heps
   eps_lt_one := heps1
   smoothOn := hsmooth

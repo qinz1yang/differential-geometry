@@ -201,8 +201,8 @@ theorem stageCompare_eq_cm
 theorem HasSuppConvData.pts_target_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P)
@@ -258,14 +258,14 @@ theorem HasSuppConvData.pts_target_tail
         exact hab)
   have hpts := hdata.pts_eq_ne inp h8 hradD hradRatio P L hstable hr
     phi hphi U C0 C1 aInf Jinf Jbarinf
-  obtain ⟨hgp, hrad⟩ := inp.item3ScaleTails h8 hradD hradRatio P L r
-  have hgpPhi : Item3GpScaleTail (I := I) inp.decay inp.D P
+  obtain ⟨hgp, hrad⟩ := inp.exponential_scale_tails h8 hradD hradRatio P L r
+  have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       Lphi inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r hphi
-  have hradPhi : Item3RadiusTail (I := I) inp.decay inp.D P
-      Lphi inp.pack r (item3RadiusFactor inp.decay inp.D) :=
+  have hradPhi : ExponentialBallRadiusTail (I := I) inp.decay inp.D P
+      Lphi inp.pack r (exponentialBallRadiusFactor inp.decay inp.D) :=
     hrad.subseq inp.decay inp.D P L inp.pack r
-      (item3RadiusFactor inp.decay inp.D) hphi
+      (exponentialBallRadiusFactor inp.decay inp.D) hphi
   have hcenters : ∀ᶠ k in Filter.atTop,
       ∀ beta : LiveSlot L inp.pack r,
         seqCenter inp.decay inp.D P (Lphi.φ k) (beta.1 : Nat) =
@@ -273,14 +273,14 @@ theorem HasSuppConvData.pts_target_tail
     Filter.eventually_all.mpr fun beta =>
       seqCenterD_live inp.decay P Lphi (beta.1 : Nat) (by
         simpa only [Lphi, NetLimitData.subseq] using beta.2)
-  have hfactor : (8 : Real) ≤ item3RadiusFactor inp.decay inp.D := by
+  have hfactor : (8 : Real) ≤ exponentialBallRadiusFactor inp.decay inp.D := by
     have hExp : (1 : Real) ≤
         Real.exp (inp.decay.C * (20 * inp.decay.lambda inp.D 0)) := by
       rw [show (1 : Real) = Real.exp 0 from Real.exp_zero.symm]
       exact Real.exp_le_exp.mpr
         (mul_nonneg inp.decay.C_nonneg
           (by nlinarith [(inp.decay.lambda_pos inp.hD 0).le]))
-    rw [item3RadiusFactor]
+    rw [exponentialBallRadiusFactor]
     nlinarith
   have hrev : ∀ᶠ l in Filter.atTop,
       ∀ (alpha : LiveSlot L inp.pack r)
@@ -329,7 +329,7 @@ theorem HasSuppConvData.pts_target_tail
       expMapC2Radius (I := I) Yk.metric
         (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)) := by
     have hscale : 8 * Lphi.lamInf (target.1.1 : Nat) ≤
-        item3RadiusFactor inp.decay inp.D *
+        exponentialBallRadiusFactor inp.decay inp.D *
           Lphi.lamInf (target.1.1 : Nat) :=
       mul_le_mul_of_nonneg_right hfactor
         (inp.decay.lambda_pos inp.hD
@@ -400,8 +400,8 @@ theorem HasSuppConvData.pts_target_tail
 theorem HasSuppConvData.pts_target_dist
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P)
@@ -469,8 +469,8 @@ theorem HasSuppConvData.actual_cm_tail
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P)
@@ -608,7 +608,7 @@ theorem HasSuppConvData.actual_cm_tail
       (div_pos (mul_pos haMin (inp.decay.mu_pos _)) (by norm_num))).2 (by
         simpa only [rhoBase] using hcageReal)
   obtain ⟨hgp, _hradTail⟩ :=
-    inp.item3ScaleTails h8 hradD hradRatio P L r
+    inp.exponential_scale_tails h8 hradD hradRatio P L r
   have hweightEv := hdata.weightSub_ev inp P L hr hgp phi hphi
     U C0 C1 aInf Jinf Jbarinf
   rw [Filter.eventually_atTop] at hweightEv
@@ -863,12 +863,12 @@ theorem HasSuppConvData.actual_cm_tail
   · simpa only [mu, stagePts, qstar, pts, p, join] using hout
   · simpa only [mu, stagePts, qstar, pts, p, join, c] using hcoord
 
-namespace H6NormalData
+namespace BoundedGeometryNormalData
 
 
 theorem ratio_gt_48
     {hd : InjRadiusDecayInput (I := I) X}
-    (d : H6NormalData (I := I) X hd) {aMin R : Real} {q : NNReal}
+    (d : BoundedGeometryNormalData (I := I) X hd) {aMin R : Real} {q : NNReal}
     (hρq : 2 * (aMin * hd.mu R) < (q : Real))
     (hqRadius : 6 * (q : Real) < d.phaseRadius R) :
     48 * aMin < d.ratio := by
@@ -879,7 +879,7 @@ theorem ratio_gt_48
 
 theorem pair_lam_lt_three
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -986,7 +986,7 @@ theorem pair_lam_lt_three
 
 theorem stage_radius_gt
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1047,7 +1047,7 @@ theorem stage_radius_gt
 
 theorem stage_rho_le
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P)
@@ -1107,7 +1107,7 @@ theorem stage_rho_le
 
 theorem target_mem
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1261,7 +1261,7 @@ theorem target_mem
       ENNReal.ofReal chiAlpha.radius := by
     rw [hed]
     exact (ENNReal.ofReal_lt_ofReal_iff chiAlpha.radius_pos).2 hdist
-  have hread := d.toH6ChartData.readout_mem
+  have hread := d.toNormalChartData.readout_mem
     (L.φ k) (hcomplete.complete (L.φ k)) (hconn (L.φ k))
       cAlpha y hedRad
   rcases hread.1 with ⟨v, hv, hvy⟩
@@ -1271,7 +1271,7 @@ theorem target_mem
 
 theorem weight_trans_mem
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1394,7 +1394,7 @@ theorem weight_trans_mem
     rw [hed]
     exact (ENNReal.ofReal_lt_ofReal_iff
       (d.chart (Lphi.φ k) c).radius_pos).2 hdistRad
-  have hread := d.toH6ChartData.readout_mem
+  have hread := d.toNormalChartData.readout_mem
     (Lphi.φ k) (hcomplete.complete (Lphi.φ k)) (hconn (Lphi.φ k))
     c x hedRad
   have hnorm : ‖(d.chart (Lphi.φ k) c).inv x‖ <
@@ -1416,7 +1416,7 @@ theorem weight_trans_mem
 
 theorem pts_target_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1668,7 +1668,7 @@ theorem pts_target_tail
 
 theorem actual_cm_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1783,7 +1783,7 @@ theorem actual_cm_tail
         let p := qstar z
         let pts := centerAverage.activeFill mu stagePts qstar z
         ∃ hcm : CenterInput (I := I) Yl.metric (mu z) pts join p rad,
-          HasH6HatSol (I := I) d P L inp.pack r (phi l) hcomplete hconn
+          HasLiveChartCenterSolution (I := I) d P L inp.pack r (phi l) hcomplete hconn
             q δ alpha (mu z) pts join p rad hcm ∧
           dist
               (chiL.inv (centerOfMass (I := I) Yl.metric (mu z)
@@ -2000,7 +2000,7 @@ theorem actual_cm_tail
       rw [hriem]
       exact (ENNReal.ofReal_lt_ofReal_iff hradPos).2
         (hxtRho.trans hhalfChart)
-    have hyControl := d.toH6ChartData.readout_mem
+    have hyControl := d.toNormalChartData.readout_mem
       (Lphi.φ l) (hcomplete.complete (Lphi.φ l))
         (hconn (Lphi.φ l)) x0 (join p c t) hyRad
     obtain ⟨w, hw, hwy⟩ := hyControl.1
@@ -2044,7 +2044,7 @@ theorem actual_cm_tail
       NetLimitData.subseq, Function.comp_apply, seqCenterD_subseq] using hout
   · simpa only [mu, stagePts, qstar, pts, p, join, c] using hcoord
 
-end H6NormalData
+end BoundedGeometryNormalData
 
 def HasStageRootReadout
     (inp : MetricCompactCore (I := I) X)
@@ -2095,8 +2095,8 @@ theorem HasSuppConvData.stage_root_tail
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P)
@@ -2755,8 +2755,8 @@ theorem HasSuppConvData.exists_stage_tail
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
     (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
-    (hradD : 2 * item3RadiusFactor inp.decay inp.D < inp.D)
-    (hradRatio : 2 * item3RadiusFactor inp.decay inp.D <
+    (hradD : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D)
+    (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -3328,8 +3328,8 @@ theorem MetricCompactBase.exists_stage_data
       (fun alpha => (hpairFence alpha).1)
       (fun alpha n => (hpairFence alpha).2 n)
   obtain ⟨hgp, _hrad⟩ :=
-    inp.item3ScaleTails h8 hradD hradRatio P L r
-  have hgpPhi : Item3GpScaleTail (I := I) inp.decay inp.D P
+    inp.exponential_scale_tails h8 hradD hradRatio P L r
+  have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       (L.subseq hphi) inp.pack r :=
     hgp.subseq inp.decay inp.D P L inp.pack r hphi
   have hbase : HasStageBaseTail (I := I) inp P L hr phi hphi hconn := by

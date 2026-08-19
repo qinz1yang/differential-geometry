@@ -1,14 +1,14 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientRefold
+import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientDecomposition
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmCorrectionFieldBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureRefoldMonomialFibreNormBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficients
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureDecompositionMonomialFibreNormBound
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnectionDifferenceCoefficients
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldInputSlotSymmetrization
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Geometry.Curvature
@@ -246,29 +246,29 @@ def sharpGradKoszulKernelBilin (g₀ g₁ : SmoothRiemannianMetric I M)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun v0 =>
-        (g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x p
+        (g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p
             (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q v0))
           + (g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q v0)).comp
-              (PDE.DeTurck.connDiff (I := I) g₁ g₀ x p))
-        - (g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x v0
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p))
+        - (g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0
             (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q p))
           + (g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q p)).comp
-              (PDE.DeTurck.connDiff (I := I) g₁ g₀ x v0))
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0))
       map_add' := fun v0 v0' => by
         rw [sharpRaisedKoszulVec_add_snd, map_add, map_add, map_add,
           ContinuousLinearMap.add_comp,
-          show PDE.DeTurck.connDiff (I := I) g₁ g₀ x (v0 + v0') =
-            PDE.DeTurck.connDiff (I := I) g₁ g₀ x v0 +
-              PDE.DeTurck.connDiff (I := I) g₁ g₀ x v0' from
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x).map_add v0 v0',
+          show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v0 + v0') =
+            PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 +
+              PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0' from
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).map_add v0 v0',
           ContinuousLinearMap.add_apply, map_add, ContinuousLinearMap.comp_add]
         abel
       map_smul' := fun c v0 => by
         rw [RingHom.id_apply, sharpRaisedKoszulVec_smul_snd, map_smul, map_smul, map_smul,
           ContinuousLinearMap.smul_comp,
-          show PDE.DeTurck.connDiff (I := I) g₁ g₀ x (c • v0) =
-            c • PDE.DeTurck.connDiff (I := I) g₁ g₀ x v0 from
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x).map_smul c v0,
+          show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (c • v0) =
+            c • PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 from
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).map_smul c v0,
           ContinuousLinearMap.smul_apply, map_smul, ContinuousLinearMap.comp_smul]
         rw [smul_sub, smul_add, smul_add] }
 
@@ -277,14 +277,14 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma sharpGradKoszulKernelBilin_apply (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (p q v0 v1 : TangentSpace I x) :
     sharpGradKoszulKernelBilin (I := I) g₀ g₁ S x p q v0 v1 =
-      (g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x p
+      (g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p
           (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q v0)) v1
         + g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q v0)
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x p v1))
-      - (g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x v0
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p v1))
+      - (g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0
           (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q p)) v1
         + g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x q p)
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x v0 v1)) := by
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v0 v1)) := by
   rw [sharpGradKoszulKernelBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk, ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply,
     ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
@@ -319,10 +319,10 @@ def frameSharpGradKoszulKernel (g₀ g₁ : SmoothRiemannianMetric I M)
         simp only [LinearMap.coe_mk, AddHom.coe_mk]
         rw [sharpGradKoszulKernelBilin_apply, sharpGradKoszulKernelBilin_apply,
           sharpGradKoszulKernelBilin_apply, sharpRaisedKoszulVec_add_snd,
-          show PDE.DeTurck.connDiff (I := I) g₁ g₀ x (p + p') =
-            PDE.DeTurck.connDiff (I := I) g₁ g₀ x p +
-              PDE.DeTurck.connDiff (I := I) g₁ g₀ x p' from
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x).map_add p p']
+          show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (p + p') =
+            PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p +
+              PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p' from
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).map_add p p']
         simp only [map_add, ContinuousLinearMap.add_apply]
         ring
       map_smul' := fun c p => by
@@ -333,9 +333,9 @@ def frameSharpGradKoszulKernel (g₀ g₁ : SmoothRiemannianMetric I M)
         simp only [LinearMap.coe_mk, AddHom.coe_mk]
         rw [sharpGradKoszulKernelBilin_apply, sharpGradKoszulKernelBilin_apply,
           sharpRaisedKoszulVec_smul_snd,
-          show PDE.DeTurck.connDiff (I := I) g₁ g₀ x (c • p) =
-            c • PDE.DeTurck.connDiff (I := I) g₁ g₀ x p from
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x).map_smul c p]
+          show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (c • p) =
+            c • PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p from
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).map_smul c p]
         simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
         ring }
 
@@ -565,54 +565,54 @@ theorem sharpGradKoszulKernelBilin_homSection_contMDiff
       ⟨fun b => q b, hq⟩ ⟨fun b => p b, hp⟩
     exact h
   have hApΨ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun b : M => PDE.DeTurck.connDiff (I := I) g₁ g₀ b (p b)
+      (T% (fun b : M => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ b (p b)
         (sharpRaisedKoszulVec (I := I) g₀ g₁ S b (q b) (V0 b)))) :=
-    PDE.DeTurck.connDiff_contMDiff (I := I) g₁ g₀ hp hΨqV
+    PDE.DeTurck.connectionDifference_contMDiff (I := I) g₁ g₀ hp hΨqV
   have hApW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun b : M => PDE.DeTurck.connDiff (I := I) g₁ g₀ b (p b) (W b))) :=
-    PDE.DeTurck.connDiff_contMDiff (I := I) g₁ g₀ hp W.contMDiff
+      (T% (fun b : M => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ b (p b) (W b))) :=
+    PDE.DeTurck.connectionDifference_contMDiff (I := I) g₁ g₀ hp W.contMDiff
   have hAVΨ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun b : M => PDE.DeTurck.connDiff (I := I) g₁ g₀ b (V0 b)
+      (T% (fun b : M => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ b (V0 b)
         (sharpRaisedKoszulVec (I := I) g₀ g₁ S b (q b) (p b)))) :=
-    PDE.DeTurck.connDiff_contMDiff (I := I) g₁ g₀ V0.contMDiff hΨqp
+    PDE.DeTurck.connectionDifference_contMDiff (I := I) g₁ g₀ V0.contMDiff hΨqp
   have hAVW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun b : M => PDE.DeTurck.connDiff (I := I) g₁ g₀ b (V0 b) (W b))) :=
-    PDE.DeTurck.connDiff_contMDiff (I := I) g₁ g₀ V0.contMDiff W.contMDiff
+      (T% (fun b : M => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ b (V0 b) (W b))) :=
+    PDE.DeTurck.connectionDifference_contMDiff (I := I) g₁ g₀ V0.contMDiff W.contMDiff
   have hs1 : ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (p x)
+      (fun x : M => g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (p x)
         (sharpRaisedKoszulVec (I := I) g₀ g₁ S x (q x) (V0 x))) (W x)) :=
     contMDiff_g_inner_of_smooth_sections (I := I) g₁
-      ⟨fun b => PDE.DeTurck.connDiff (I := I) g₁ g₀ b (p b)
+      ⟨fun b => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ b (p b)
         (sharpRaisedKoszulVec (I := I) g₀ g₁ S b (q b) (V0 b)), hApΨ⟩
       ⟨fun b => W b, W.contMDiff⟩
   have hs2 : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun x : M => g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x (q x) (V0 x))
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (p x) (W x))) :=
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (p x) (W x))) :=
     contMDiff_g_inner_of_smooth_sections (I := I) g₁
       ⟨fun b => sharpRaisedKoszulVec (I := I) g₀ g₁ S b (q b) (V0 b), hΨqV⟩
-      ⟨fun b => PDE.DeTurck.connDiff (I := I) g₁ g₀ b (p b) (W b), hApW⟩
+      ⟨fun b => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ b (p b) (W b), hApW⟩
   have hs3 : ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (V0 x)
+      (fun x : M => g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (V0 x)
         (sharpRaisedKoszulVec (I := I) g₀ g₁ S x (q x) (p x))) (W x)) :=
     contMDiff_g_inner_of_smooth_sections (I := I) g₁
-      ⟨fun b => PDE.DeTurck.connDiff (I := I) g₁ g₀ b (V0 b)
+      ⟨fun b => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ b (V0 b)
         (sharpRaisedKoszulVec (I := I) g₀ g₁ S b (q b) (p b)), hAVΨ⟩
       ⟨fun b => W b, W.contMDiff⟩
   have hs4 : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun x : M => g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x (q x) (p x))
-        (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (V0 x) (W x))) :=
+        (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (V0 x) (W x))) :=
     contMDiff_g_inner_of_smooth_sections (I := I) g₁
       ⟨fun b => sharpRaisedKoszulVec (I := I) g₀ g₁ S b (q b) (p b), hΨqp⟩
-      ⟨fun b => PDE.DeTurck.connDiff (I := I) g₁ g₀ b (V0 b) (W b), hAVW⟩
+      ⟨fun b => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ b (V0 b) (W b), hAVW⟩
   have h_scalar : ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => (g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (p x)
+      (fun x : M => (g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (p x)
           (sharpRaisedKoszulVec (I := I) g₀ g₁ S x (q x) (V0 x))) (W x)
         + g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x (q x) (V0 x))
-            (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (p x) (W x)))
-        - (g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (V0 x)
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (p x) (W x)))
+        - (g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (V0 x)
             (sharpRaisedKoszulVec (I := I) g₀ g₁ S x (q x) (p x))) (W x)
           + g₁.inner x (sharpRaisedKoszulVec (I := I) g₀ g₁ S x (q x) (p x))
-              (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (V0 x) (W x)))) :=
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (V0 x) (W x)))) :=
     (hs1.add hs2).sub (hs3.add hs4)
   intro x
   rw [contMDiffAt_section]

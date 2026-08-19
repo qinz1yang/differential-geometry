@@ -109,16 +109,16 @@ private lemma unitModel_rawTensorConnLapSmooth_eq_frame_sum
   exact secondCovDeriv_frame_unitEval_eq_iteratedCovGrad (I := I) g₀ S x v i
 
 
-theorem rawTensorConnLapSmooth_eq_appCc_cometricDoubleTrace
+theorem rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x : M)
     (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2 (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v =
       unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
-          (ricciArmPrincipalCoeffPure (I := I) (M := M) g₀ g₀)
+          (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₀)
           (iteratedCovGrad (I := I) g₀ 0 2 2 S)) x v := by
   classical
-  rw [ricciArmPrincipalCoeffPure_appCc_eq_roughLaplacian (I := I) (M := M) g₀ g₀
+  rw [cometricDoubleTraceCoefficient_operatorFieldApplication_eq_roughLaplacian (I := I) (M := M) g₀ g₀
     (iteratedCovGrad (I := I) g₀ 0 2 2 S) x v]
   rw [unitModel_rawTensorConnLapSmooth_eq_frame_sum (I := I) g₀ S x v]
   exact

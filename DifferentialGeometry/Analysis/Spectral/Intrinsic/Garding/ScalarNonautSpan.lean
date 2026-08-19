@@ -450,7 +450,7 @@ theorem cc_lap_span
     apply eq_of_heq
     exact HEq.trans
       (iteratedCovGrad_covGrad_comm_heq' (I := I) (M := M) q 0 0 n U)
-      (castRankCc_db_heq (I := I) (M := M) q 0
+      (castCcTensorRank_heq (I := I) (M := M) q 0
         (by omega : 0 + (n + 1) = 1 + n)
         (iteratedCovGrad (I := I) q 0 0 (n + 1) U)).symm
   have hcomm : |P + Htop| ≤ Cp * J := by

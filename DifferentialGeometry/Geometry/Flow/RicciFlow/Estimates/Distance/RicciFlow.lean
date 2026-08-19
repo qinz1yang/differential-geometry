@@ -579,7 +579,8 @@ private theorem ricci_quad_of_curv
           Λ * (S.base.metric s).inner y v v := by
     intro s hs y v
     simpa only [Λ, d, dNat] using
-      (ricci_quad_sol (I := I) S y v (hcurv0 s hs y))
+      (ricci_quadratic_form_bound_of_solution_curvature_bound
+        (I := I) S y v (hcurv0 s hs y))
   exact ⟨hΛ, hricQuad⟩
 
 private structure CalabiFlowCore
@@ -619,7 +620,7 @@ private structure CalabiFlowCore
 omit [IsManifold I 2 M] in
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-private theorem calabi_core_of_sol
+private theorem calabi_core_of_solution
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E
@@ -1130,7 +1131,7 @@ private theorem scaled_of_quad
       n = ((Module.finrank Real E - 1 : Nat) : Real) := by
     rfl
   obtain ⟨core⟩ :=
-    calabi_core_of_sol
+    calabi_core_of_solution
       (I := I) S hS O hreg hricQuad ht htpos x hfinite' hOx
         hEnorm hq hRicLower hr hnDim
   have hcoef :
@@ -1184,7 +1185,7 @@ private theorem scaledDist_support
       (Λ := (Module.finrank Real E : Real) ^ 2 * Real.sqrt K)
       S hS O hT hreg hΛ hricQuad hcomplete_t ht htpos x hfinite hOx
 
-theorem scaledDist_calabiUpperSupport_of_sol
+theorem exists_scaled_distance_calabi_upper_support_of_solution
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)

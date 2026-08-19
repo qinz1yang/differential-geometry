@@ -293,7 +293,7 @@ theorem rmDiffDot_apply (g₁ g₂ : Real → SmoothRiemannianMetric I M)
 
 end Speed
 
-section Adapter
+section
 
 variable {x : M}
 
@@ -370,7 +370,7 @@ theorem rmDiffLow_hasDerivAt
   have := hderiv.congr_deriv hval
   simpa only [hsum] using this
 
-end Adapter
+end
 
 section DivergenceForm
 

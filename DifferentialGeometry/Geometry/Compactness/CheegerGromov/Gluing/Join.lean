@@ -28,23 +28,23 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-noncomputable local instance stepCJoinModelDualNormedAddCommGroup :
+noncomputable local instance centerAverageModelDualNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance stepCJoinModelDualNormedSpace :
+noncomputable local instance centerAverageModelDualNormedSpace :
     NormedSpace ℝ (E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance stepCJoinModelBilinearNormedAddCommGroup :
+noncomputable local instance centerAverageModelBilinearNormedAddCommGroup :
     NormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance stepCJoinModelBilinearNormedSpace :
+noncomputable local instance centerAverageModelBilinearNormedSpace :
     NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
-theorem stepCJoinFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem uniform_center_average_convergence (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -82,7 +82,7 @@ theorem stepCJoinFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hX : SeqMetricComplete (I := I) X)
     (hcenter : forall gamma : Fin (pb.A r),
       seqCenter hd D P (L.φ n) (gamma : Nat) = some (center gamma))
-    (hgp : Item3GpScaleAt (I := I) hd D P L pb r n)
+    (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r n)
     (hrad : forall a b : Nat, forall x : (X.obj (L.φ n)).M,
       x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n -> 0 < radSeq a b x)
     (hactive_mem :
@@ -206,7 +206,7 @@ theorem stepCJoinFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       hV'sub gamma (binfMemClosed (hB gamma) (hKU gamma hv) (hV'closed gamma)
         (Filter.Eventually.of_forall (hKV0 gamma v hv))))
 
-theorem stepCJoinDataFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem uniform_center_average_convergence_of_weight_data (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -239,7 +239,7 @@ theorem stepCJoinDataFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (hX : SeqMetricComplete (I := I) X)
     (hcenter : forall gamma : Fin (pb.A r),
       seqCenter hd D P (L.φ n) (gamma : Nat) = some (center gamma))
-    (hgp : Item3GpScaleAt (I := I) hd D P L pb r n)
+    (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r n)
     (hrad : forall a b : Nat, forall x : (X.obj (L.φ n)).M,
       x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n -> 0 < radSeq a b x)
     (hactive_mem :
@@ -355,7 +355,7 @@ theorem stepCJoinDataFixed (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       hV'sub gamma (binfMemClosed (hB gamma) (hKU gamma hv) (hV'closed gamma)
         (Filter.Eventually.of_forall (hKV0 gamma v hv))))
 
-theorem stepCJoin (hd : InjRadiusDecayInput (I := I) X) {D : Real}
+theorem exists_center_average_identity_convergence_subsequence (hd : InjRadiusDecayInput (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
@@ -388,7 +388,7 @@ theorem stepCJoin (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       ConnectedSpace (X.obj (L.φ n)).M)
     (hX : SeqMetricComplete (I := I) X)
-    (hgp : Item3GpScaleAt (I := I) hd D P L pb r n)
+    (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r n)
     (hcenter : forall gamma : Fin (pb.A r),
       seqCenter hd D P (L.φ n) (gamma : Nat) = some (x gamma n))
     (hrad : forall a b : Nat, forall xx : (X.obj (L.φ n)).M,
@@ -628,7 +628,7 @@ theorem stepCJoin (hd : InjRadiusDecayInput (I := I) X) {D : Real}
       (NormalCoordMetricBoundInput.subseq (I := I) metricInput L.φ)
       x y U V Ua Va hU hVopen hUa hVa hUanorm hVanorm htail
   refine ⟨phi, hphi, ?_⟩
-  exact stepCJoinFixed hd P L pb r n rho hrho join
+  exact uniform_center_average_convergence hd P L pb r n rho hrho join
     (fun a b => radSeq (phi a) (phi b))
     (fun gamma => x gamma n) U V
     (fun gamma a => normalTransition (I := I) (X.obj (L.φ (phi a))) (x gamma (phi a))

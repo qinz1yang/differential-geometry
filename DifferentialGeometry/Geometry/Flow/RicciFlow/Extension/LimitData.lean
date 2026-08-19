@@ -73,7 +73,8 @@ def cinftyLimitData_of_solution
     simpa [SolutionOn.family, SolutionFamily.connection] using
       hRm (⟨t, ht⟩ : RealTimeInterval.FlowTime
         (RealTimeInterval.closedOpen alpha omega hαω))
-  have hCan := rm04_bound_can (I := I) Rm04 hRmRaw hbound
+  have hCan := canonical_curvature_norm_sq_bounded_of_realization
+    (I := I) Rm04 hRmRaw hbound
   have hK := hbound.choose_spec
   have hRic := ric_quad_le_of_soln (I := I) hRmRaw hK
   have hRicConst :

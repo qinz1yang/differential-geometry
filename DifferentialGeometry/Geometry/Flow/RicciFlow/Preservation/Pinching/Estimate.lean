@@ -39,7 +39,7 @@ def pinchQuotient
     (S : SolutionOn (I := I) (M := M) D) (epsilon : Real) :
     Real -> M -> Real :=
   quotField (M := M)
-    (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+    (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
     S.scalar (1 : Real) (2 - epsilon)
 
 def pinchDriftVector
@@ -60,7 +60,7 @@ theorem pinchDriftTerm_eq_inner_drift
       (G.metric t).inner x
         (pinchDriftVector (I := I) G scalar epsilon t x)
         (DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) G t
-          (quotField (M := M) (tfRicNormSq scalar ricciNormSq)
+          (quotField (M := M) (traceFreeRicciNormSq scalar ricciNormSq)
             scalar (1 : Real) (2 - epsilon) t) x) := by
   simp [pinchDriftTerm, pinchDriftVector]
 
@@ -116,7 +116,7 @@ theorem pinchGradTerm_nonpos
     (scalar ricciNormSq gradScalarNormSq : Real -> M -> Real)
     (epsilon t : Real) (x : M)
     (hR : 0 < scalar t x) (heps0 : 0 < epsilon) (heps1 : epsilon < 1)
-    (htf : 0 <= tfRicNormSq scalar ricciNormSq t x)
+    (htf : 0 <= traceFreeRicciNormSq scalar ricciNormSq t x)
     (hgrad : 0 <= gradScalarNormSq t x) :
     pinchGradTerm scalar ricciNormSq gradScalarNormSq epsilon t x <= 0 := by
   have hden : 0 <= scalar t x ^ (4 - epsilon) :=
@@ -129,16 +129,16 @@ theorem pinchGradTerm_nonpos
       nlinarith
     exact div_nonpos_of_nonpos_of_nonneg hneg hden
   have htfgrad :
-      0 <= tfRicNormSq scalar ricciNormSq t x * gradScalarNormSq t x :=
+      0 <= traceFreeRicciNormSq scalar ricciNormSq t x * gradScalarNormSq t x :=
     mul_nonneg htf hgrad
   have hmain :
       (-epsilon * (1 - epsilon) / scalar t x ^ (4 - epsilon)) *
-          (tfRicNormSq scalar ricciNormSq t x * gradScalarNormSq t x) <= 0 :=
+          (traceFreeRicciNormSq scalar ricciNormSq t x * gradScalarNormSq t x) <= 0 :=
     mul_nonpos_of_nonpos_of_nonneg hcoef htfgrad
   have hterm :
       pinchGradTerm scalar ricciNormSq gradScalarNormSq epsilon t x =
         (-epsilon * (1 - epsilon) / scalar t x ^ (4 - epsilon)) *
-          (tfRicNormSq scalar ricciNormSq t x * gradScalarNormSq t x) := by
+          (traceFreeRicciNormSq scalar ricciNormSq t x * gradScalarNormSq t x) := by
     simp [pinchGradTerm, mul_assoc]
   rw [hterm]
   exact hmain
@@ -150,7 +150,7 @@ theorem pinchReactTerm_nonpos
     (hR : 0 < scalar t x)
     (hreact :
       0 <= Q t x -
-        epsilon * ricciNormSq t x * tfRicNormSq scalar ricciNormSq t x) :
+        epsilon * ricciNormSq t x * traceFreeRicciNormSq scalar ricciNormSq t x) :
     pinchReactTerm scalar ricciNormSq Q epsilon t x <= 0 := by
   have hden : 0 <= scalar t x ^ (3 - epsilon) :=
     le_of_lt (Real.rpow_pos_of_pos hR (3 - epsilon))
@@ -160,7 +160,7 @@ theorem pinchReactTerm_nonpos
     mul_nonpos_of_nonpos_of_nonneg hcoef hreact
 
 omit [Module.Finite ℝ E] in
-theorem cubicQ_sub_nonneg_of_section9
+theorem cubic_reaction_sub_pinching_term_nonneg
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
@@ -183,19 +183,19 @@ theorem cubicQ_sub_nonneg_of_section9
     0 <=
       cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S) t x
         - epsilon * ricciNorm (I := I) S t x *
-          tfRicNormSq S.scalar (ricciNorm (I := I) S) t x := by
-  exact cubicQ_sub_nonneg_of_section9_point (I := I) S
+          traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) t x := by
+  exact cubic_reaction_sub_pinching_term_nonneg_at (I := I) S
     (hdim x) hscalar (le_of_lt hdelta0) hepsilon
     (hric t ht x) (hpinch t ht x)
 
 omit [Module.Finite ℝ E] in
-theorem scalGradSq_nonneg
+theorem scalar_gradient_norm_sq_nonneg
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
-    0 <= scalGradSq (I := I) S t x := by
+    0 <= scalarGradientNormSq (I := I) S t x := by
   let v :=
     DifferentialGeometry.Geometry.Curvature.gradientAt (I := I) (flowG (I := I) S) t (S.scalar t) x
   change 0 <= (S.family.metric t).inner x v v
@@ -204,22 +204,22 @@ theorem scalGradSq_nonneg
   · exact le_of_lt ((S.family.metric t).pos x v hv)
 
 omit [Module.Finite ℝ E] in
-theorem pinchCoupleSol_nonneg
+theorem ricci_gradient_coupling_norm_sq_nonneg
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
-    0 <= pinchCoupleSol (I := I) S t x := by
-  simpa [pinchCoupleSol, ricciGradCoupleSq, normSq0S, inner0S] using
+    0 <= ricciGradientCouplingNormSq (I := I) S t x := by
+  simpa [ricciGradientCouplingNormSq, ricciGradCoupleSq, normSq0S, inner0S] using
     (tensor0SMetricData (I := I) (S.family.metric t) x 3).inner_nonneg
       (ricciGradCoupleAt (I := I)
         (S.scalar t x) (S.ricci t x)
-        (ricciNablaSec (I := I) S t x)
+        (ricciCovariantDerivativeSection (I := I) S t x)
         (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (S.scalar t) x))
 
 omit [Module.Finite ℝ E] [IsManifold I 1 M] in
-theorem pinchBookRHS_le_drift
+theorem pinch_evolution_rhs_le_drift
     [Module.Finite ℝ E]
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (scalar ricciNormSq gradScalarNormSq coupleSq Q : Real -> M -> Real)
@@ -227,11 +227,11 @@ theorem pinchBookRHS_le_drift
     (hR : 0 < scalar t x) (heps0 : 0 < epsilon) (heps1 : epsilon < 1)
     (hcouple : 0 <= coupleSq t x)
     (hgrad : 0 <= gradScalarNormSq t x)
-    (htf : 0 <= tfRicNormSq scalar ricciNormSq t x)
+    (htf : 0 <= traceFreeRicciNormSq scalar ricciNormSq t x)
     (hreact :
       0 <= Q t x -
-        epsilon * ricciNormSq t x * tfRicNormSq scalar ricciNormSq t x) :
-    pinchBookRHS (I := I) G scalar ricciNormSq gradScalarNormSq
+        epsilon * ricciNormSq t x * traceFreeRicciNormSq scalar ricciNormSq t x) :
+    pinchEvolutionRHS (I := I) G scalar ricciNormSq gradScalarNormSq
         coupleSq Q epsilon t x <=
       pinchDriftTerm (I := I) G scalar ricciNormSq epsilon t x := by
   have hsquare :=
@@ -241,11 +241,11 @@ theorem pinchBookRHS_le_drift
       epsilon t x hR heps0 heps1 htf hgrad
   have hreactTerm :=
     pinchReactTerm_nonpos (M := M) scalar ricciNormSq Q epsilon t x hR hreact
-  unfold pinchBookRHS
+  unfold pinchEvolutionRHS
   nlinarith
 
 omit [Module.Finite ℝ E] in
-theorem pinchBookRHS_le_drift_sol
+theorem pinch_evolution_rhs_le_drift_of_solution
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -267,22 +267,22 @@ theorem pinchBookRHS_le_drift_sol
         (fun t : Real => S.base.metric t)
         (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M) S.ricci)
         S.scalar T delta) :
-    pinchBookRHS (I := I) (flowG (I := I) S)
-        S.scalar (ricciNorm (I := I) S) (scalGradSq (I := I) S)
-        (pinchCoupleSol (I := I) S)
+    pinchEvolutionRHS (I := I) (flowG (I := I) S)
+        S.scalar (ricciNorm (I := I) S) (scalarGradientNormSq (I := I) S)
+        (ricciGradientCouplingNormSq (I := I) S)
         (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
         epsilon t x <=
       pinchDriftTerm (I := I) (flowG (I := I) S)
         S.scalar (ricciNorm (I := I) S) epsilon t x := by
-  exact pinchBookRHS_le_drift (I := I) (M := M)
+  exact pinch_evolution_rhs_le_drift (I := I) (M := M)
     (flowG (I := I) S) S.scalar (ricciNorm (I := I) S)
-    (scalGradSq (I := I) S) (pinchCoupleSol (I := I) S)
+    (scalarGradientNormSq (I := I) S) (ricciGradientCouplingNormSq (I := I) S)
     (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
     epsilon t x hR heps0 heps1
-    (pinchCoupleSol_nonneg (I := I) S t x)
-    (scalGradSq_nonneg (I := I) S t x)
-    (tfNonneg_sol (I := I) S (fun tt y => hdim y) t x)
-    (cubicQ_sub_nonneg_of_section9 (I := I) S hdim hR hdelta0
+    (ricci_gradient_coupling_norm_sq_nonneg (I := I) S t x)
+    (scalar_gradient_norm_sq_nonneg (I := I) S t x)
+    (trace_free_ricci_norm_sq_nonneg (I := I) S (fun tt y => hdim y) t x)
+    (cubic_reaction_sub_pinching_term_nonneg (I := I) S hdim hR hdelta0
       hepsilon ht hric hpinch)
 
 omit [Module.Finite ℝ E] in
@@ -328,7 +328,7 @@ theorem pinchQuotient_parabolic_nonpos
     rw [hD]
     exact ⟨hs.1, lt_of_le_of_lt hs.2 hTω⟩
   have hderivD :=
-    pinchEvol_book (I := I) (M := M) S hS.isSolution
+    pinch_quotient_evolution_of_solution (I := I) (M := M) S hS.isSolution
       (fun _ x => hdim x) heps0 heps1
       (fun τ y => hscalar (τ : Real) (D.regular_subset τ.2) y) τ x
   have hderivIcc := hderivD.mono hIcc_subset
@@ -338,11 +338,11 @@ theorem pinchQuotient_parabolic_nonpos
       derivWithin (fun s : Real => pinchQuotient (I := I) S epsilon s x)
           (Set.Icc 0 T) t =
         quotLap (I := I) (flowG (I := I) S)
-          (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+          (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
           S.scalar (1 : Real) (2 - epsilon) t x +
-        pinchBookRHS (I := I) (flowG (I := I) S)
-          S.scalar (ricciNorm (I := I) S) (scalGradSq (I := I) S)
-          (pinchCoupleSol (I := I) S)
+        pinchEvolutionRHS (I := I) (flowG (I := I) S)
+          S.scalar (ricciNorm (I := I) S) (scalarGradientNormSq (I := I) S)
+          (ricciGradientCouplingNormSq (I := I) S)
           (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
           epsilon t x := by
     simpa [pinchQuotient, τ] using hderivIcc.derivWithin huniq
@@ -351,7 +351,7 @@ theorem pinchQuotient_parabolic_nonpos
           (pinchDriftVector (I := I) (flowG (I := I) S) S.scalar epsilon t)
           (pinchQuotient (I := I) S epsilon t) x =
         quotLap (I := I) (flowG (I := I) S)
-          (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+          (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
           S.scalar (1 : Real) (2 - epsilon) t x +
         pinchDriftTerm (I := I) (flowG (I := I) S)
           S.scalar (ricciNorm (I := I) S) epsilon t x := by
@@ -361,7 +361,7 @@ theorem pinchQuotient_parabolic_nonpos
     rw [← pinchDriftTerm_eq_inner_drift (I := I) (M := M)
       (flowG (I := I) S) S.scalar (ricciNorm (I := I) S) epsilon t x]
   have hbook :=
-    pinchBookRHS_le_drift_sol (I := I) (M := M) S hdim
+    pinch_evolution_rhs_le_drift_of_solution (I := I) (M := M) S hdim
       (hscalar t (hIcc_subset ht) x) hdelta0 heps0 heps1 hepsilon
       ht hric hpinch
   unfold DifferentialGeometry.Analysis.Parabolic.parabolicOperatorWithDrift
@@ -387,8 +387,8 @@ theorem pinchQuotient_initial_continuous
   have hscalarAt : ContinuousAt (fun y : M => S.scalar 0 y) x :=
     (hS.scalarRegular.scalar_space 0 h0D x).continuousAt
   have htf : ContinuousAt
-      (fun y : M => tfRicNormSq S.scalar (ricciNorm (I := I) S) 0 y) x := by
-    simpa [tfRicNormSq, tracefreeRicciNormSqOf, tracefreeRicciNormSqAtOf,
+      (fun y : M => traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) 0 y) x := by
+    simpa [traceFreeRicciNormSq, traceFreeRicciNormSqOf, traceFreeRicciNormSqAtOf,
       div_eq_mul_inv] using
       hnorm.sub ((hscalarAt.pow 2).mul continuousAt_const)
   have hpow : ContinuousAt (fun y : M => S.scalar 0 y ^ (-(2 - epsilon))) x :=
@@ -633,10 +633,10 @@ theorem pinchQuotient_slab_continuous_of_ricciNorm
     exact Or.inl (ne_of_gt (hscalar p.1 hpD p.2))
   have htf_cont : ContinuousOn
       (fun p : Real × M =>
-        tfRicNormSq S.scalar (ricciNorm (I := I) S) p.1 p.2)
+        traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) p.1 p.2)
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
-    simpa [tfRicNormSq, tracefreeRicciNormSqOf,
-      tracefreeRicciNormSqAtOf, div_eq_mul_inv] using
+    simpa [traceFreeRicciNormSq, traceFreeRicciNormSqOf,
+      traceFreeRicciNormSqAtOf, div_eq_mul_inv] using
       hricciNorm_cont.sub ((hscalar_cont.pow 2).mul continuousOn_const)
   have hpow_cont : ContinuousOn
       (fun p : Real × M => S.scalar p.1 p.2 ^ (-(2 - epsilon)))
@@ -665,7 +665,7 @@ theorem pinchQuotient_space_pos
         (pinchQuotient (I := I) S epsilon (t : Real)) x := by
   intro t x
   let p : Real := -(2 - epsilon)
-  have htf := tfDiff_sol (I := I) S hS.isSolution t x
+  have htf := trace_free_ricci_norm_sq_mdifferentiable (I := I) S hS.isSolution t x
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
   have hscalarDiff :
       MDifferentiableAt I 𝓘(Real, Real) (S.scalar (t : Real)) x :=
@@ -677,7 +677,7 @@ theorem pinchQuotient_space_pos
       (hscalar t x)
   have hprod :
       MDifferentiableAt I 𝓘(Real, Real)
-        (fun y : M => tfRicNormSq S.scalar (ricciNorm (I := I) S) (t : Real) y *
+        (fun y : M => traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real) y *
           S.scalar (t : Real) y ^ p) x :=
     htf.mul hpow
   convert hprod using 1
@@ -703,11 +703,11 @@ theorem pinchQuotient_grad_pos
           ((flowG (I := I) S).metric (t : Real))
           (pinchQuotient (I := I) S epsilon (t : Real)) y) x := by
   intro t x
-  let f : M -> Real := tfRicNormSq S.scalar (ricciNorm (I := I) S) (t : Real)
+  let f : M -> Real := traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real)
   let h : M -> Real := fun y : M => S.scalar (t : Real) y ^ (-(2 - epsilon))
   have hfDiff : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) f y := by
     intro y
-    simpa [f] using tfDiff_sol (I := I) S hS.isSolution t y
+    simpa [f] using trace_free_ricci_norm_sq_mdifferentiable (I := I) S hS.isSolution t y
   have hhDiff : ∀ y : M, MDifferentiableAt I 𝓘(Real, Real) h y := by
     intro y
     have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
@@ -716,11 +716,11 @@ theorem pinchQuotient_grad_pos
   have hgradf : MDiffAt (T% fun y : M =>
       DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
         ((flowG (I := I) S).metric (t : Real)) f y) x := by
-    simpa [f] using tfGrad_sol (I := I) S hS.isSolution t x
+    simpa [f] using gradient_trace_free_ricci_norm_sq (I := I) S hS.isSolution t x
   have hgradh : MDiffAt (T% fun y : M =>
       DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
         ((flowG (I := I) S).metric (t : Real)) h y) x := by
-    simpa [h] using scalarPowGrad_sol (I := I) S hS.isSolution epsilon hscalar t x
+    simpa [h] using gradient_scalar_rpow (I := I) S hS.isSolution epsilon hscalar t x
   have hterm1 : MDiffAt (T% (f • fun y : M =>
       DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
         ((flowG (I := I) S).metric (t : Real)) h y)) x :=
@@ -816,7 +816,7 @@ theorem pinchQuot_slab_bound
       exact ⟨htpos, lt_of_le_of_lt ht.2 hTω⟩
     let τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D := ⟨t, htreg⟩
     have hderivD :=
-      pinchEvol_book (I := I) (M := M) S hS.isSolution
+      pinch_quotient_evolution_of_solution (I := I) (M := M) S hS.isSolution
         (fun _ x => hdim x) heps0 heps1
         (fun τ y => hscalar (τ : Real) (D.regular_subset τ.2) y) τ x
     have hderivIcc := hderivD.mono hIcc_subset
@@ -917,7 +917,7 @@ theorem pinchQuot_slab_bound
       exact ⟨htpos, lt_of_le_of_lt ht.2 hTω⟩
     let τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D := ⟨t, htreg⟩
     have hderivD :=
-      pinchEvol_book (I := I) (M := M) S hS.isSolution
+      pinch_quotient_evolution_of_solution (I := I) (M := M) S hS.isSolution
         (fun _ x => hdim x) heps0 heps1
         (fun τ y => hscalar (τ : Real) (D.regular_subset τ.2) y) τ x
     have hu_time :
@@ -986,7 +986,7 @@ theorem pinchEstimate_ext
   · simp [carrierZeroExt, carrierScalarExt, carrierWeightExt, htD]
 
 omit [Module.Finite ℝ E] in
-theorem pinchEstimate_sol
+theorem exists_pinching_estimate_of_smooth_solution
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
@@ -1020,7 +1020,7 @@ theorem pinchEstimate_sol
     ∃ epsilon C : Real,
       0 < epsilon ∧ epsilon < 1 ∧ 0 ≤ C ∧
         PinchEstimateOn (M := M)
-          (tfRicNormSq S.scalar (ricciNorm (I := I) S))
+          (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
           S.scalar (pinchWeight (M := M) S.scalar epsilon) C D.carrier := by
   classical
   rcases hpinch with ⟨delta, hdelta0, _hdelta13, hpinchAll⟩
@@ -1044,7 +1044,7 @@ theorem pinchEstimate_sol
       (hscalar 0 h0D)
   refine ⟨epsilon, C, heps0, heps1, hC0, ?_⟩
   apply pinchEstimateOn_of_pinchQuotient_bound (M := M)
-    (tracefreeRicciNormSq := tfRicNormSq S.scalar (ricciNorm (I := I) S))
+    (tracefreeRicciNormSq := traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
     (scalar := S.scalar) (epsilon := epsilon) (C := C)
     (U := D.carrier) hscalar
   intro t htD x
@@ -1077,7 +1077,7 @@ theorem pinchEstimate_sol
     simpa [pinchQuotient] using hCinit x
 
 omit [Module.Finite ℝ E] in
-theorem pinchEstimate_display_sol
+theorem exists_global_pinching_estimate_fields_of_smooth_solution
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
@@ -1111,11 +1111,11 @@ theorem pinchEstimate_display_sol
     ∃ tracefreeRicciNormSq scalar weight : Real -> M -> Real, ∃ C : Real,
       PinchEstimateOn (M := M) tracefreeRicciNormSq scalar weight C Set.univ := by
   classical
-  rcases pinchEstimate_sol (I := I) (M := M) S hS h0ω hD hdim hscalar
+  rcases exists_pinching_estimate_of_smooth_solution (I := I) (M := M) S hS h0ω hD hdim hscalar
       hpinch hric with
     ⟨epsilon, C, _heps0, _heps1, _hC, hest⟩
   refine ⟨
-    carrierZeroExt (M := M) D (tfRicNormSq S.scalar (ricciNorm (I := I) S)),
+    carrierZeroExt (M := M) D (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S)),
     carrierScalarExt (M := M) D S.scalar,
     carrierWeightExt (M := M) D S.scalar epsilon,
     C, ?_⟩

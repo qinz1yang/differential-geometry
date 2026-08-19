@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Geometry.Curvature.Bianchi
 
@@ -38,28 +38,28 @@ private local instance :
     ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I :=
   TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
 
-noncomputable def covDerivConnDiff2 (gB g₀ : SmoothRiemannianMetric I M)
+noncomputable def covDerivConnectionDifference2 (gB g₀ : SmoothRiemannianMetric I M)
     (D X Y Z : Π b : M, TangentSpace I b) (x : M) : TangentSpace I x :=
   covApply (LeviCivita (I := I) gB) D
-      (fun p => covDerivConnDiff (I := I) gB g₀ X Y Z p) x -
-    covDerivConnDiff (I := I) gB g₀
+      (fun p => covDerivConnectionDifference (I := I) gB g₀ X Y Z p) x -
+    covDerivConnectionDifference (I := I) gB g₀
       (covApply (LeviCivita (I := I) gB) D X) Y Z x -
-    covDerivConnDiff (I := I) gB g₀ X
+    covDerivConnectionDifference (I := I) gB g₀ X
       (covApply (LeviCivita (I := I) gB) D Y) Z x -
-    covDerivConnDiff (I := I) gB g₀ X Y
+    covDerivConnectionDifference (I := I) gB g₀ X Y
       (covApply (LeviCivita (I := I) gB) D Z) x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem covDerivConnDiff2_eq (gB g₀ : SmoothRiemannianMetric I M)
+theorem covDerivConnectionDifference2_eq (gB g₀ : SmoothRiemannianMetric I M)
     (D X Y Z : Π b : M, TangentSpace I b) (x : M) :
-    covDerivConnDiff2 (I := I) gB g₀ D X Y Z x =
+    covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x =
       covApply (LeviCivita (I := I) gB) D
-          (fun p => covDerivConnDiff (I := I) gB g₀ X Y Z p) x -
-        covDerivConnDiff (I := I) gB g₀
+          (fun p => covDerivConnectionDifference (I := I) gB g₀ X Y Z p) x -
+        covDerivConnectionDifference (I := I) gB g₀
           (covApply (LeviCivita (I := I) gB) D X) Y Z x -
-        covDerivConnDiff (I := I) gB g₀ X
+        covDerivConnectionDifference (I := I) gB g₀ X
           (covApply (LeviCivita (I := I) gB) D Y) Z x -
-        covDerivConnDiff (I := I) gB g₀ X Y
+        covDerivConnectionDifference (I := I) gB g₀ X Y
           (covApply (LeviCivita (I := I) gB) D Z) x :=
   rfl
 
@@ -77,8 +77,8 @@ private noncomputable def palQuad (gB g₀ : SmoothRiemannianMetric I M)
 private noncomputable def palRhs (gB g₀ : SmoothRiemannianMetric I M)
     (X Y Z : Π b : M, TangentSpace I b) : Π b : M, TangentSpace I b :=
   fun p =>
-    covDerivConnDiff (I := I) gB g₀ X Y Z p -
-        covDerivConnDiff (I := I) gB g₀ Y X Z p +
+    covDerivConnectionDifference (I := I) gB g₀ X Y Z p -
+        covDerivConnectionDifference (I := I) gB g₀ Y X Z p +
       (palQuad (I := I) gB g₀ X Y Z p - palQuad (I := I) gB g₀ Y X Z p)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -102,7 +102,7 @@ private theorem palSec_eq_rhs
         riemannSec (LeviCivita (I := I) gB) X Y Z p =
       _
   rw [hpal]
-  simp only [palRhs, palQuad, covDerivConnDiff_eq]
+  simp only [palRhs, palQuad, covDerivConnectionDifference_eq]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -126,12 +126,12 @@ private theorem palQuad_smooth
   · simpa [htop] using hinner
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem covDConnDiff_smooth
+private theorem covDConnectionDifference_smooth
     (gB g₀ : SmoothRiemannianMetric I M)
     (D X Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
-      (T% (fun p => covDerivConnDiff (I := I) gB g₀
+      (T% (fun p => covDerivConnectionDifference (I := I) gB g₀
         (fun b => D b) (fun b => X b) (fun b => Y b) p)) := by
   haveI : CovariantDerivative.ContMDiffCovariantDerivative
       (LeviCivita (I := I) gB) (∞ : WithTop ℕ∞) :=
@@ -256,12 +256,12 @@ private theorem cov_palQuad
           (fun p => Z p) x -
       palQuad (I := I) gB g₀ (fun p => X p) (fun p => Y p)
           (fun p => ((LeviCivita (I := I) gB) (fun q => Z q) p) (D p)) x =
-      covDerivConnDiff (I := I) gB g₀ D X
+      covDerivConnectionDifference (I := I) gB g₀ D X
           (fun p => diffSec (LeviCivita (I := I) gB) (LeviCivita (I := I) g₀)
             (fun q => Y q) (fun q => Z q) p) x +
         diffSec (LeviCivita (I := I) gB) (LeviCivita (I := I) g₀)
           (fun p => X p)
-          (fun p => covDerivConnDiff (I := I) gB g₀ D Y Z p) x := by
+          (fun p => covDerivConnectionDifference (I := I) gB g₀ D Y Z p) x := by
   have hYZ :
       diffSec (LeviCivita (I := I) gB) (LeviCivita (I := I) g₀)
           (fun p => Y p) (fun p => Z p) =
@@ -269,7 +269,7 @@ private theorem cov_palQuad
           CovariantDerivative.difference
             (LeviCivita (I := I) g₀) (LeviCivita (I := I) gB) p (Z p) (Y p)) :=
     rfl
-  unfold palQuad covDerivConnDiff covDerivDiff covApply
+  unfold palQuad covDerivConnectionDifference covDerivDiff covApply
   rw [diffSec_sub (I := I), diffSec_sub (I := I)]
   rw [hYZ]
   simp only [diffSec]
@@ -357,20 +357,20 @@ theorem covDerivPal_eq
     (D X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) (x : M) :
     covDerivPalatini (I := I) gB g₀ D X Y Z x =
-      covDerivConnDiff2 (I := I) gB g₀ D X Y Z x -
-          covDerivConnDiff2 (I := I) gB g₀ D Y X Z x +
-        (covDerivConnDiff (I := I) gB g₀ D X
+      covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x -
+          covDerivConnectionDifference2 (I := I) gB g₀ D Y X Z x +
+        (covDerivConnectionDifference (I := I) gB g₀ D X
             (fun p => diffSec (LeviCivita (I := I) gB) (LeviCivita (I := I) g₀)
               (fun q => Y q) (fun q => Z q) p) x +
           diffSec (LeviCivita (I := I) gB) (LeviCivita (I := I) g₀)
             (fun p => X p)
-            (fun p => covDerivConnDiff (I := I) gB g₀ D Y Z p) x) -
-        (covDerivConnDiff (I := I) gB g₀ D Y
+            (fun p => covDerivConnectionDifference (I := I) gB g₀ D Y Z p) x) -
+        (covDerivConnectionDifference (I := I) gB g₀ D Y
             (fun p => diffSec (LeviCivita (I := I) gB) (LeviCivita (I := I) g₀)
               (fun q => X q) (fun q => Z q) p) x +
           diffSec (LeviCivita (I := I) gB) (LeviCivita (I := I) g₀)
             (fun p => Y p)
-            (fun p => covDerivConnDiff (I := I) gB g₀ D X Z p) x) := by
+            (fun p => covDerivConnectionDifference (I := I) gB g₀ D X Z p) x) := by
   have htop : ((∞ : WithTop ℕ∞) + 1) = (∞ : WithTop ℕ∞) := by
     rw [ENat.coe_top_add_one]
   have hDX : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
@@ -394,14 +394,14 @@ theorem covDerivPal_eq
     apply covApply_contMDiffOn
     · exact D.contMDiff
     · simpa [htop] using Z.contMDiff
-  have hCXY := covDConnDiff_smooth (I := I) gB g₀ X Y Z
-  have hCYX := covDConnDiff_smooth (I := I) gB g₀ Y X Z
+  have hCXY := covDConnectionDifference_smooth (I := I) gB g₀ X Y Z
+  have hCYX := covDConnectionDifference_smooth (I := I) gB g₀ Y X Z
   have hQXY := palQuad_smooth (I := I) gB g₀ X Y Z
   have hQYX := palQuad_smooth (I := I) gB g₀ Y X Z
   have hCsub : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
       (T% (fun p =>
-        covDerivConnDiff (I := I) gB g₀ X Y Z p -
-          covDerivConnDiff (I := I) gB g₀ Y X Z p)) := by
+        covDerivConnectionDifference (I := I) gB g₀ X Y Z p -
+          covDerivConnectionDifference (I := I) gB g₀ Y X Z p)) := by
     simpa only [Pi.sub_apply] using hCXY.sub_section hCYX
   have hQsub : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
       (T% (fun p =>
@@ -422,8 +422,8 @@ theorem covDerivPal_eq
     hCsub hQsub (D x)]
   rw [cov_sub_apply (I := I) (LeviCivita (I := I) gB) hCXY hCYX (D x)]
   rw [cov_sub_apply (I := I) (LeviCivita (I := I) gB) hQXY hQYX (D x)]
-  rw [covDerivConnDiff2_eq (I := I) gB g₀ D X Y Z x,
-    covDerivConnDiff2_eq (I := I) gB g₀ D Y X Z x]
+  rw [covDerivConnectionDifference2_eq (I := I) gB g₀ D X Y Z x,
+    covDerivConnectionDifference2_eq (I := I) gB g₀ D Y X Z x]
   rw [← cov_palQuad (I := I) gB g₀ D X Y Z x,
     ← cov_palQuad (I := I) gB g₀ D Y X Z x]
   unfold covApply

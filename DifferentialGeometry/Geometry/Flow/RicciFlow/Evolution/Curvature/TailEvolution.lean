@@ -36,7 +36,7 @@ theorem rm04EvolTail_at
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen t0 omega hT0Omega))
     (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
-      (fun s : Real ↦ realizedRmBase (I := I) St x₀ s x₀ m)
+      (fun s : Real ↦ solutionCurvatureComponents (I := I) St x₀ s x₀ m)
       (rmLap (coordInv (I := I) St x₀ (t : Real) x₀)
             (nab2RmComp (I := I) St x₀ (t : Real) x₀) (m 0) (m 1) (m 2) (m 3)
         - 2 * (uhlenbeckBTensorInFrame (coordInv (I := I) St x₀) (rmComp (I := I) St x₀)

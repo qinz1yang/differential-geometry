@@ -3,7 +3,7 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.TotalNabla0S
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -27,7 +27,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_koszul_nabla
+theorem connectionDifference_koszul_nabla
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
@@ -171,17 +171,17 @@ private theorem koszul_field
     rw [hslot a b, Tensor0SBundle.totalNabla0S_apply]
     exact (Tensor0SBundle.totalNabla0SFun_apply_section (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
       2 (LeviCivita (I := I) g₂) S (Tensor0SBundle.metricTensorField (I := I) g₁) x ![a, b]).symm
-  rw [connDiff_koszul_nabla (I := I) g₁ g₂ Q P R,
+  rw [connectionDifference_koszul_nabla (I := I) g₁ g₂ Q P R,
     hbr Q (P x) (R x), hbr P (Q x) (R x), hbr R (Q x) (P x)]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem connDiff_koszul_deriv
+theorem connectionDifference_koszul_deriv
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (W X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) :
-    2 * g₁.inner x (covDerivConnDiff (I := I) g₂ g₁ W X Y x) (Z x) =
+    2 * g₁.inner x (covDerivConnectionDifference (I := I) g₂ g₁ W X Y x) (Z x) =
       Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
           (LeviCivita (I := I) g₂) W
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
@@ -269,7 +269,7 @@ theorem connDiff_koszul_deriv
     change g₁.inner p
         ((CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) p)
           (Y p) (X p)) (Z p) = _
-    rw [connDiff_koszul_nabla (I := I) g₁ g₂ X Y Z]
+    rw [connectionDifference_koszul_nabla (I := I) g₁ g₂ X Y Z]
   have hmaster := congrArg (fun f : M → ℝ => extDerivFun (I := I) f x (W x)) hfun
   simp only [] at hmaster
   rw [hLHS] at hmaster
@@ -395,12 +395,12 @@ theorem connDiff_koszul_deriv
   have hAx : Adiff x = (CovariantDerivative.difference (LeviCivita (I := I) g₁)
       (LeviCivita (I := I) g₂) x) (Y x) (X x) := rfl
   have hB : ((LeviCivita (I := I) g₂) (fun p : M => Adiff p) x) (W x)
-      = covDerivConnDiff (I := I) g₂ g₁ W X Y x
+      = covDerivConnectionDifference (I := I) g₂ g₁ W X Y x
         + (CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x)
             (Y x) (DWX x)
         + (CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x)
             (DWY x) (X x) := by
-    have hcd : covDerivConnDiff (I := I) g₂ g₁ W X Y x
+    have hcd : covDerivConnectionDifference (I := I) g₂ g₁ W X Y x
         = ((LeviCivita (I := I) g₂) (fun p : M => Adiff p) x) (W x)
           - (CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x)
               (Y x) (DWX x)

@@ -91,7 +91,7 @@ def IsSphericalSpaceFormQuotient
 def SphericalSpaceForm : Prop :=
   IsSphericalSpaceFormQuotient I M
 
-def ham3RealFamilyCore
+def hamiltonMetricConnectionFamilyCore
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
     (g0 : SmoothRiemannianMetric I M) :
@@ -113,7 +113,7 @@ def ham3RealFamilyCore
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
           (I := I) g0)
 
-structure Ham3FiniteTimeFlow (g0 : SmoothRiemannianMetric I M) where
+structure HamiltonFiniteTimeFlow (g0 : SmoothRiemannianMetric I M) where
   D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval
   S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D
   isSmooth : DifferentialGeometry.PDE.RicciFlow.IsSmoothSolutionOn (I := I) (M := M) S
@@ -123,71 +123,71 @@ structure Ham3FiniteTimeFlow (g0 : SmoothRiemannianMetric I M) where
       K < Tensor0SBundle.normSq0S (I := I) (S.family.metric t) x 4
         (S.base.rm04 t x)
 
-abbrev ham3Solution
+abbrev hamiltonSolution
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) :
     DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) P.D :=
   P.S
 
-def ham3Scalar
+def hamiltonScalar
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) :
     Real -> M -> Real :=
-  DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar (I := I) (ham3Solution (I := I) P)
+  DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar (I := I) (hamiltonSolution (I := I) P)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalarSTCont
+theorem hamilton_scalar_space_time_continuous
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) :
     DifferentialGeometry.PDE.RicciFlow.ScalarSTContOn
-      (I := I) (M := M) (ham3Solution (I := I) (M := M) P) := by
+      (I := I) (M := M) (hamiltonSolution (I := I) (M := M) P) := by
   exact P.isSmooth.scalarSTCont
 
-def ham3RmNormSq
+def hamiltonRiemannNormSq
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) :
     Real -> M -> Real :=
   fun t x =>
     Tensor0SBundle.normSq0S (I := I)
-      ((ham3Solution (I := I) (M := M) P).family.metric t) x 4
-      (((ham3Solution (I := I) (M := M) P).base.rm04 t) x)
+      ((hamiltonSolution (I := I) (M := M) P).family.metric t) x 4
+      (((hamiltonSolution (I := I) (M := M) P).base.rm04 t) x)
 
-structure Ham3Blowup (M : Type*) where
+structure HamiltonBlowup (M : Type*) where
   point : Nat -> M
   time : Nat -> Real
 
-def ham3BlowupScale
+def hamiltonBlowupScale
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (i : Nat) : Real :=
-  ham3Scalar (I := I) P (Q.time i) (Q.point i)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (i : Nat) : Real :=
+  hamiltonScalar (I := I) P (Q.time i) (Q.point i)
 
-def ham3RescaledTime
+def hamiltonRescaledTime
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (i : Nat) (s : Real) : Real :=
-  Q.time i + s / ham3BlowupScale (I := I) P Q i
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (i : Nat) (s : Real) : Real :=
+  Q.time i + s / hamiltonBlowupScale (I := I) P Q i
 
-def ham3RescaledScalar
+def hamiltonRescaledScalar
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (i : Nat) (s : Real) (x : M) : Real :=
-  (ham3BlowupScale (I := I) P Q i)⁻¹ *
-    ham3Scalar (I := I) P (ham3RescaledTime (I := I) P Q i s) x
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (i : Nat) (s : Real) (x : M) : Real :=
+  (hamiltonBlowupScale (I := I) P Q i)⁻¹ *
+    hamiltonScalar (I := I) P (hamiltonRescaledTime (I := I) P Q i s) x
 
-def ham3_r0 : Real := (1 : Real) / 10
+def hamilton_reference_radius : Real := (1 : Real) / 10
 
-theorem ham3_r0_pos : 0 < ham3_r0 := by
-  norm_num [ham3_r0]
+theorem hamilton_reference_radius_pos : 0 < hamilton_reference_radius := by
+  norm_num [hamilton_reference_radius]
 
-theorem r0_le_one : ham3_r0 ≤ (1 : Real) := by
-  norm_num [ham3_r0]
+theorem hamilton_reference_radius_le_one : hamilton_reference_radius ≤ (1 : Real) := by
+  norm_num [hamilton_reference_radius]
 
-theorem ham3_hundred_eq : (100 : Real) = (ham3_r0⁻¹) ^ 2 := by
-  norm_num [ham3_r0]
+theorem hamilton_reference_radius_inverse_sq : (100 : Real) = (hamilton_reference_radius⁻¹) ^ 2 := by
+  norm_num [hamilton_reference_radius]
 
-structure Ham3CGHLimit (I : ModelWithCorners Real E H) (M : Type u)
+structure HamiltonCGHLimit (I : ModelWithCorners Real E H) (M : Type u)
     [TopologicalSpace M] [ChartedSpace H M] where
   N : Type u
   [topology : TopologicalSpace N]
@@ -226,45 +226,45 @@ structure Ham3CGHLimit (I : ModelWithCorners Real E H) (M : Type u)
         t2TangentBundle := t2TangentBundle, basepoint := basepoint,
         metric := S.base.metric t }
 
-namespace Ham3CGHLimit
+namespace HamiltonCGHLimit
 
-abbrev source (L : Ham3CGHLimit (I := I) M) :
+abbrev source (L : HamiltonCGHLimit (I := I) M) :
     DifferentialGeometry.HCGCompactness.PointedFlowSeq.{u} (I := I) :=
   { D := L.D, term := L.sourceTerm }
 
-abbrev limit (L : Ham3CGHLimit (I := I) M) :
+abbrev limit (L : HamiltonCGHLimit (I := I) M) :
     DifferentialGeometry.HCGCompactness.PointedFlowData.{u} (I := I) L.D :=
   { M := L.N, topology := L.topology, charted := L.charted, smooth := L.smooth,
     sigmaCompact := L.sigmaCompact, t2 := L.t2,
     t2TangentBundle := L.t2TangentBundle, basepoint := L.basepoint,
     S := L.S, isSolution := L.isSolution }
 
-def subseq (L : Ham3CGHLimit (I := I) M) : Nat -> Nat :=
+def subseq (L : HamiltonCGHLimit (I := I) M) : Nat -> Nat :=
   fun k => L.origIndex (L.cghSubseq k)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
-theorem subseq_strict (L : Ham3CGHLimit (I := I) M) :
+theorem subseq_strict (L : HamiltonCGHLimit (I := I) M) :
     StrictMono L.subseq :=
   L.origStrict.comp L.cghStrict
 
-end Ham3CGHLimit
+end HamiltonCGHLimit
 
-def Ham3LimitSubseq (L : Ham3CGHLimit (I := I) M) : Prop :=
+def HamiltonLimitSubsequence (L : HamiltonCGHLimit (I := I) M) : Prop :=
   StrictMono L.subseq
 
-def Ham3LimitWindow (L : Ham3CGHLimit (I := I) M) : Prop :=
-  Set.Icc (-(ham3_r0 ^ 2)) 0 ⊆ L.D.carrier
+def HamiltonLimitWindow (L : HamiltonCGHLimit (I := I) M) : Prop :=
+  Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ⊆ L.D.carrier
 
-def Ham3LimitRegWin (L : Ham3CGHLimit (I := I) M) : Prop :=
-  Set.Ioo (-(ham3_r0 ^ 2)) 0 ⊆ L.D.regular
+def HamiltonLimitRegularWindow (L : HamiltonCGHLimit (I := I) M) : Prop :=
+  Set.Ioo (-(hamilton_reference_radius ^ 2)) 0 ⊆ L.D.regular
 
-def Ham3LimitConnected (L : Ham3CGHLimit (I := I) M) : Prop :=
+def HamiltonLimitConnected (L : HamiltonCGHLimit (I := I) M) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   ConnectedSpace L.N
 
-def Ham3LimitBoundaryless : Prop := I.Boundaryless
+def HamiltonLimitBoundaryless : Prop := I.Boundaryless
 
-def Ham3LimitFlow (L : Ham3CGHLimit (I := I) M) : Prop :=
+def HamiltonLimitFlow (L : HamiltonCGHLimit (I := I) M) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -273,10 +273,10 @@ def Ham3LimitFlow (L : Ham3CGHLimit (I := I) M) : Prop :=
   letI : T2Space L.N := L.t2
   DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) L.S
 
-def Ham3LimitBaseScalarConv
+def HamiltonLimitBaseScalarConvergence
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (L : Ham3CGHLimit (I := I) M) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (L : HamiltonCGHLimit (I := I) M) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -285,10 +285,10 @@ def Ham3LimitBaseScalarConv
   letI : T2Space L.N := L.t2
   Filter.Tendsto
     (fun k : Nat =>
-      ham3RescaledScalar (I := I) P Q (L.subseq k) 0 (Q.point (L.subseq k)))
+      hamiltonRescaledScalar (I := I) P Q (L.subseq k) 0 (Q.point (L.subseq k)))
     Filter.atTop (nhds (L.S.scalar 0 L.basepoint))
 
-def LimitRicNonneg (L : Ham3CGHLimit (I := I) M) : Prop :=
+def LimitRicNonneg (L : HamiltonCGHLimit (I := I) M) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -299,7 +299,7 @@ def LimitRicNonneg (L : Ham3CGHLimit (I := I) M) : Prop :=
     forall v : TangentSpace I x,
       0 <= L.S.ricciAt t x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)
 
-def LimitBaseScalarOne (L : Ham3CGHLimit (I := I) M) : Prop :=
+def LimitBaseScalarOne (L : HamiltonCGHLimit (I := I) M) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -308,7 +308,7 @@ def LimitBaseScalarOne (L : Ham3CGHLimit (I := I) M) : Prop :=
   letI : T2Space L.N := L.t2
   L.S.scalar 0 L.basepoint = 1
 
-def LimitScalarPosAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
+def LimitScalarPosAt (L : HamiltonCGHLimit (I := I) M) (t : Real) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -317,10 +317,10 @@ def LimitScalarPosAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
   letI : T2Space L.N := L.t2
   forall x : L.N, 0 < L.S.scalar t x
 
-def LimitScalarPos (L : Ham3CGHLimit (I := I) M) : Prop :=
+def LimitScalarPos (L : HamiltonCGHLimit (I := I) M) : Prop :=
   forall t : Real, t ∈ L.D.regular -> LimitScalarPosAt (I := I) L t
 
-def LimitScalarNonneg (L : Ham3CGHLimit (I := I) M) : Prop :=
+def LimitScalarNonneg (L : HamiltonCGHLimit (I := I) M) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -330,7 +330,7 @@ def LimitScalarNonneg (L : Ham3CGHLimit (I := I) M) : Prop :=
   forall t : Real, t ∈ L.D.carrier -> forall x : L.N,
     0 <= L.S.scalar t x
 
-def LimitTracefreeZeroAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
+def LimitTracefreeZeroAt (L : HamiltonCGHLimit (I := I) M) (t : Real) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -338,13 +338,13 @@ def LimitTracefreeZeroAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
   letI : SigmaCompactSpace L.N := L.sigmaCompact
   letI : T2Space L.N := L.t2
   forall x : L.N,
-    DifferentialGeometry.PDE.RicciFlow.tfRicNormSq L.S.scalar
+    DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq L.S.scalar
       (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I) L.S) t x = 0
 
-def LimitTracefreeZero (L : Ham3CGHLimit (I := I) M) : Prop :=
+def LimitTracefreeZero (L : HamiltonCGHLimit (I := I) M) : Prop :=
   forall t : Real, t ∈ L.D.regular -> LimitTracefreeZeroAt (I := I) L t
 
-def LimitTracefreeDecayAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
+def LimitTracefreeDecayAt (L : HamiltonCGHLimit (I := I) M) (t : Real) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -352,13 +352,13 @@ def LimitTracefreeDecayAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
   letI : SigmaCompactSpace L.N := L.sigmaCompact
   letI : T2Space L.N := L.t2
   forall x : L.N, forall η : Real, 0 < η ->
-    DifferentialGeometry.PDE.RicciFlow.tfRicNormSq L.S.scalar
+    DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq L.S.scalar
       (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I) L.S) t x <= η
 
-def LimitTracefreeDecay (L : Ham3CGHLimit (I := I) M) : Prop :=
+def LimitTracefreeDecay (L : HamiltonCGHLimit (I := I) M) : Prop :=
   forall t : Real, t ∈ L.D.regular -> LimitTracefreeDecayAt (I := I) L t
 
-def LimitEinsteinAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
+def LimitEinsteinAt (L : HamiltonCGHLimit (I := I) M) (t : Real) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -369,7 +369,7 @@ def LimitEinsteinAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
     L.S.ricciAt t x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) =
       (L.S.scalar t x / 3) * (L.S.base.metric t).inner x v w
 
-def LimitConstPosSec (L : Ham3CGHLimit (I := I) M) : Prop :=
+def LimitConstPosSec (L : HamiltonCGHLimit (I := I) M) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -379,7 +379,7 @@ def LimitConstPosSec (L : Ham3CGHLimit (I := I) M) : Prop :=
   exists gInf : SmoothRiemannianMetric I L.N,
     ConstPosSecMetric (I := I) (M := L.N) gInf
 
-def LimitRoundAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
+def LimitRoundAt (L : HamiltonCGHLimit (I := I) M) (t : Real) : Prop :=
   letI : TopologicalSpace L.N := L.topology
   letI : ChartedSpace H L.N := L.charted
   letI : IsManifold I ∞ L.N := L.smooth
@@ -394,7 +394,7 @@ def LimitRoundAt (L : Ham3CGHLimit (I := I) M) (t : Real) : Prop :=
           (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)) /\
     ConstPosSecMetric (I := I) (M := L.N) g
 
-theorem ham3_short_exists
+theorem hamilton_short_time_exists
     {E0 : Type*} [NormedAddCommGroup E0] [InnerProductSpace Real E0]
     [FiniteDimensional Real E0] [NeZero (Module.finrank Real E0)]
     {H0 : Type*} [TopologicalSpace H0] {I0 : ModelWithCorners Real E0 H0}
@@ -433,7 +433,7 @@ theorem ham3_short_exists
   · intro x0 i j
     exact (hsmooth x0 i j).continuousOn
 
-theorem ham3_short_solution_candidate
+theorem hamilton_short_time_solution_candidate
     [BoundarylessManifold I M]
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M) :
@@ -459,7 +459,7 @@ theorem ham3_short_solution_candidate
               DifferentialGeometry.Geometry.Curvature.ricciTensor
                 (I := I) (S.family.metric t) x v w) (Set.Ici 0) t) := by
   obtain ⟨T, hT, g_fam, hg0, hsmooth, hcont, hpde⟩ :=
-    ham3_short_exists hM g0
+    hamilton_short_time_exists hM g0
   refine ⟨T, hT, ⟨⟨g_fam⟩⟩, ?_, ?_, ?_, ?_⟩
   · change g_fam 0 = g0
     exact hg0
@@ -471,7 +471,7 @@ theorem ham3_short_solution_candidate
     exact hpde t ht x v w
 
 omit [SigmaCompactSpace M] in
-theorem ham3_short_isSolution
+theorem hamilton_short_time_is_solution
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M) :
     ∃ T : Real, ∃ hT : 0 < T,
@@ -485,14 +485,15 @@ theorem ham3_short_isSolution
   letI : CompactSpace M := hM.1
   haveI : I.Boundaryless := hM.2.2.1
   obtain ⟨T, hT, g, hstart, hjoint, hpde⟩ :=
-    DifferentialGeometry.PDE.RicciFlow.short_time_joint (I := I) (M := M) g0
+    DifferentialGeometry.PDE.RicciFlow.ricci_flow_short_time_existence
+      (I := I) (M := M) g0
   refine ⟨T, hT, ⟨⟨g⟩⟩, ?_, ?_⟩
   · change g 0 = g0
     exact hstart
   · exact DifferentialGeometry.PDE.RicciFlow.solutionOn_of_joint
       (I := I) (M := M) hT g hjoint hpde
 
-theorem ham3_short_smooth_solution
+theorem hamilton_short_time_smooth_solution
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M) :
     ∃ T : Real, ∃ hT : 0 < T,
@@ -504,16 +505,16 @@ theorem ham3_short_smooth_solution
           DifferentialGeometry.PDE.RicciFlow.IsSmoothSolutionOn (I := I) (M := M) S := by
   haveI : I.Boundaryless := hM.2.2.1
   obtain ⟨T, hT, S, hstart, hSol⟩ :=
-    ham3_short_isSolution (I := I) (M := M) hM g0
+    hamilton_short_time_is_solution (I := I) (M := M) hM g0
   exact ⟨T, hT, S, hstart,
     DifferentialGeometry.PDE.RicciFlow.smoothOfSol (I := I) S hSol⟩
 
-theorem ham3_flow_exists_normalized
+theorem hamilton_flow_exists_normalized
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0) :
     exists omega : Real, exists h0ω : 0 < omega,
-      exists P : Ham3FiniteTimeFlow (I := I) (M := M) g0,
+      exists P : HamiltonFiniteTimeFlow (I := I) (M := M) g0,
         P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω := by
   letI : CompactSpace M := hM.1
   letI : ConnectedSpace M := hM.2.1
@@ -527,7 +528,7 @@ theorem ham3_flow_exists_normalized
   have hcurv : Rm04NormSqUnboundedAt (I := I) Smax Smax.base.rm04 :=
     rmUnbounded_of_maximal (I := I) hdim hSmax hmax
       (rm04Realizes_metric (I := I) Smax)
-  let P : Ham3FiniteTimeFlow (I := I) (M := M) g0 :=
+  let P : HamiltonFiniteTimeFlow (I := I) (M := M) g0 :=
     { D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω
       S := Smax
       isSmooth := smoothOfSol (I := I) Smax hSmax
@@ -538,127 +539,127 @@ theorem ham3_flow_exists_normalized
         exact ⟨t, x, ⟨ht0, htω⟩, by simpa [curvatureNormSq] using hK⟩ }
   exact ⟨omega, h0ω, P, rfl⟩
 
-theorem ham3_flow_exists
+theorem hamilton_flow_exists
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0) :
-    Nonempty (Ham3FiniteTimeFlow (I := I) (M := M) g0) := by
-  rcases ham3_flow_exists_normalized (I := I) (M := M) hM g0 hpos with
+    Nonempty (HamiltonFiniteTimeFlow (I := I) (M := M) g0) := by
+  rcases hamilton_flow_exists_normalized (I := I) (M := M) hM g0 hpos with
     ⟨_omega, _h0ω, P, _hD⟩
   exact ⟨P⟩
 
-noncomputable def ham3_flow_box
+noncomputable def hamiltonFiniteTimeFlowChoice
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0) :
-  Ham3FiniteTimeFlow (I := I) (M := M) g0 :=
-  Classical.choice (ham3_flow_exists (I := I) (M := M) hM g0 hpos)
+  HamiltonFiniteTimeFlow (I := I) (M := M) g0 :=
+  Classical.choice (hamilton_flow_exists (I := I) (M := M) hM g0 hpos)
 
-def ham3RealFamily
+def hamiltonMetricConnectionFamily
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) :
     DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real :=
-  ham3RealFamilyCore (I := I) P.S g0
+  hamiltonMetricConnectionFamilyCore (I := I) P.S g0
 
-def ham3RicNormSq
+def hamiltonRicciNormSq
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) :
     Real -> M -> Real :=
   fun t x =>
     Tensor0SBundle.normSq0S (I := I) (P.S.family.metric t) x 2 (P.S.ricciAt t x)
 
-def ham3ScalarLap
+def hamiltonScalarLaplacian
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) :
     Real -> M -> Real :=
   fun t x =>
-    DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (ham3RealFamily (I := I) P) t
-      (ham3Scalar (I := I) P t) x
+    DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (hamiltonMetricConnectionFamily (I := I) P) t
+      (hamiltonScalar (I := I) P t) x
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalarRegular
+theorem hamilton_scalar_weak_maximum_principle_regularity_on_interval
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (c0 : Real) (K : Real -> NNReal) (T : Real)
     (hsubset : ∀ t : Real, t ∈ Set.Icc 0 T -> t ∈ P.D.carrier)
     (hden : ∀ t : Real, t ∈ Set.Icc 0 T ->
       1 - (2 / (3 : Real)) * c0 * t ≠ 0) :
     DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWMPRegularity
-      (I := I) (ham3RealFamily (I := I) P) T 3 c0
-      (ham3Scalar (I := I) P) (K T) := by
-  simpa [ham3Scalar, ham3Solution] using
+      (I := I) (hamiltonMetricConnectionFamily (I := I) P) T 3 c0
+      (hamiltonScalar (I := I) P) (K T) := by
+  simpa [hamiltonScalar, hamiltonSolution] using
     (DifferentialGeometry.PDE.RicciFlow.scalarRegOfSmooth (I := I) (M := M)
-      P.S P.isSmooth (ham3RealFamily (I := I) P) T 3 c0 (K T)
+      P.S P.isSmooth (hamiltonMetricConnectionFamily (I := I) P) T 3 c0 (K T)
       hsubset
       (by
         intro t ht
         have htD : t ∈ P.D.carrier := hsubset t ht
-        simp [ham3RealFamily, ham3RealFamilyCore, htD])
+        simp [hamiltonMetricConnectionFamily, hamiltonMetricConnectionFamilyCore, htD])
       hden)
 
-def Ham3ScalarBlowup
+def HamiltonScalarBlowup
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) : Prop :=
   forall A : Real, exists t : Real, exists x : M,
-    t ∈ P.D.carrier /\ A < ham3Scalar (I := I) P t x
+    t ∈ P.D.carrier /\ A < hamiltonScalar (I := I) P t x
 
-def Ham3PointSel
+def HamiltonBlowupPointSelection
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) : Prop :=
-  (forall i : Nat, 0 < ham3BlowupScale (I := I) P Q i) /\
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) : Prop :=
+  (forall i : Nat, 0 < hamiltonBlowupScale (I := I) P Q i) /\
     (forall i : Nat, 0 < Q.time i) /\
     (forall i : Nat, Q.time i ∈ P.D.carrier) /\
     (forall A : Real, exists N : Nat,
       forall i : Nat, N <= i ->
-        A <= ham3BlowupScale (I := I) P Q i * Q.time i) /\
-    (forall i : Nat, ham3RescaledScalar (I := I) P Q i 0 (Q.point i) = 1) /\
+        A <= hamiltonBlowupScale (I := I) P Q i * Q.time i) /\
+    (forall i : Nat, hamiltonRescaledScalar (I := I) P Q i 0 (Q.point i) = 1) /\
     (forall (i : Nat) (s : Real) (x : M),
-      -(ham3BlowupScale (I := I) P Q i * Q.time i) <= s -> s <= 0 ->
-        ham3RescaledScalar (I := I) P Q i s x <= 1)
+      -(hamiltonBlowupScale (I := I) P Q i * Q.time i) <= s -> s <= 0 ->
+        hamiltonRescaledScalar (I := I) P Q i s x <= 1)
 
-noncomputable def ham3RescaledSol
+noncomputable def hamiltonRescaledSolution
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q) (i : Nat) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q) (i : Nat) :
     SolutionOn (I := I) (M := M)
-      (paraInterval P.D (Q.time i) (ham3BlowupScale (I := I) P Q i)
+      (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
         (hsel.1 i) (hsel.2.2.1 i)) :=
-  paraSolution (I := I) P.S (Q.time i) (ham3BlowupScale (I := I) P Q i)
+  paraSolution (I := I) P.S (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
     (hsel.1 i) (hsel.2.2.1 i)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_tracefree_display
+theorem hamilton_rescaled_tracefree_ricci_norm_sq_identity
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q) (i : Nat) :
-    DifferentialGeometry.PDE.RicciFlow.ParaTracefreeNormSqDisplay (M := M)
-      (DifferentialGeometry.PDE.RicciFlow.tfRicNormSq P.S.scalar
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q) (i : Nat) :
+    DifferentialGeometry.PDE.RicciFlow.ParabolicTraceFreeRicciNormSqScaling (M := M)
+      (DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq P.S.scalar
         (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I) P.S))
-      (DifferentialGeometry.PDE.RicciFlow.tfRicNormSq
-        (ham3RescaledSol (I := I) P Q hsel i).scalar
+      (DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
+        (hamiltonRescaledSolution (I := I) P Q hsel i).scalar
         (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-          (ham3RescaledSol (I := I) P Q hsel i)))
-      (Q.time i) (ham3BlowupScale (I := I) P Q i) := by
+          (hamiltonRescaledSolution (I := I) P Q hsel i)))
+      (Q.time i) (hamiltonBlowupScale (I := I) P Q i) := by
   intro s x
-  simp only [ham3RescaledSol,
-    DifferentialGeometry.PDE.RicciFlow.tfRicNormSq,
-    DifferentialGeometry.PDE.RicciFlow.tracefreeRicciNormSqOf,
-    DifferentialGeometry.PDE.RicciFlow.tracefreeRicciNormSqAtOf,
+  simp only [hamiltonRescaledSolution,
+    DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq,
+    DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqOf,
+    DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqAtOf,
     DifferentialGeometry.PDE.RicciFlow.paraSolution_scalar,
     DifferentialGeometry.PDE.RicciFlow.paraSolution_ricciNorm]
   ring
 
-structure Ham3SourceRealizes
+structure HamiltonSourceRealization
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q)
-    (L : Ham3CGHLimit (I := I) M) : Prop where
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (L : HamiltonCGHLimit (I := I) M) : Prop where
   time_mem : forall (i : Nat) (t : Real), t ∈ L.D.carrier ->
     t ∈ (paraInterval P.D (Q.time (L.origIndex i))
-      (ham3BlowupScale (I := I) P Q (L.origIndex i))
+      (hamiltonBlowupScale (I := I) P Q (L.origIndex i))
       (hsel.1 (L.origIndex i)) (hsel.2.2.1 (L.origIndex i))).carrier
   basepoint_map : forall i : Nat,
     letI : TopologicalSpace (L.sourceTerm i).M := (L.sourceTerm i).topology
@@ -676,21 +677,21 @@ structure Ham3SourceRealizes
     forall t : Real, t ∈ L.D.carrier ->
       (L.sourceTerm i).S.base.metric t =
         Diffeomorph.pullbackMetricCross
-          ((ham3RescaledSol (I := I) P Q hsel (L.origIndex i)).base.metric t)
+          ((hamiltonRescaledSolution (I := I) P Q hsel (L.origIndex i)).base.metric t)
           (L.sourceToOrig i)
 
-def Ham3RescaledRicNonneg
+def HamiltonRescaledRicciNonnegative
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) : Prop :=
   forall (i : Nat) (s : Real) (x : M) (v : TangentSpace I x),
-    -(ham3BlowupScale (I := I) P Q i * Q.time i) <= s -> s <= 0 ->
-      0 <= P.S.ricciAt (ham3RescaledTime (I := I) P Q i s) x
+    -(hamiltonBlowupScale (I := I) P Q i * Q.time i) <= s -> s <= 0 ->
+      0 <= P.S.ricciAt (hamiltonRescaledTime (I := I) P Q i s) x
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)
 
-def Ham3Pinching
+def HamiltonPinching
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) (omega : Real) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) (omega : Real) : Prop :=
   forall T : Real, 0 <= T -> T < omega ->
     exists delta : Real,
       0 < delta /\ delta < (1 : Real) / 3 /\
@@ -700,9 +701,9 @@ def Ham3Pinching
             P.S.ricci)
           P.S.scalar T delta
 
-def Ham3PinchingFixed
+def HamiltonFixedPinching
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) (omega : Real) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) (omega : Real) : Prop :=
   exists delta : Real,
     0 < delta /\ delta < (1 : Real) / 3 /\
       forall T : Real, 0 <= T -> T < omega ->
@@ -713,39 +714,39 @@ def Ham3PinchingFixed
           P.S.scalar T delta
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem Ham3PinchingFixed.toVarying
+theorem HamiltonFixedPinching.toVarying
     {g0 : SmoothRiemannianMetric I M}
-    {P : Ham3FiniteTimeFlow (I := I) (M := M) g0} {omega : Real}
-    (h : Ham3PinchingFixed (I := I) P omega) :
-    Ham3Pinching (I := I) P omega := by
+    {P : HamiltonFiniteTimeFlow (I := I) (M := M) g0} {omega : Real}
+    (h : HamiltonFixedPinching (I := I) P omega) :
+    HamiltonPinching (I := I) P omega := by
   rcases h with ⟨delta, hdelta0, hdelta13, hpres⟩
   intro T hT hTω
   exact ⟨delta, hdelta0, hdelta13, hpres T hT hTω⟩
 
-def Ham3RicciNonneg
+def HamiltonRicciNonnegative
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) (omega : Real) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) (omega : Real) : Prop :=
   forall T : Real, 0 <= T -> T < omega ->
     DifferentialGeometry.PDE.RicciFlow.TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M) P.S.ricci)
       (Set.Icc 0 T)
 
-def Ham3RicNonnegTransfer
+def HamiltonRicciNonnegativeTransfer
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q)
-    (L : Ham3CGHLimit (I := I) M) : Prop :=
-  Ham3SourceRealizes (I := I) P Q hsel L ->
-    Ham3RescaledRicNonneg (I := I) P Q ->
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (L : HamiltonCGHLimit (I := I) M) : Prop :=
+  HamiltonSourceRealization (I := I) P Q hsel L ->
+    HamiltonRescaledRicciNonnegative (I := I) P Q ->
     LimitRicNonneg (I := I) L
 
-def Ham3PinchEstimate
+def HamiltonPinchingEstimate
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) : Prop :=
   exists epsilon C : Real,
     0 < epsilon /\ epsilon < 1 /\ 0 <= C /\
       DifferentialGeometry.PDE.RicciFlow.PinchEstimateOn (M := M)
-        (DifferentialGeometry.PDE.RicciFlow.tfRicNormSq P.S.scalar
+        (DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq P.S.scalar
           (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I) P.S))
         P.S.scalar
         (DifferentialGeometry.PDE.RicciFlow.pinchWeight (M := M) P.S.scalar epsilon)
@@ -782,31 +783,31 @@ private theorem scaled_pinch_le
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_tracefree_bound0
+theorem hamilton_rescaled_tracefree_ricci_norm_sq_at_zero_bound
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
     (hscalar :
       ∀ t : Real, t ∈ P.D.carrier -> ∀ x : M, 0 < P.S.scalar t x)
-    (hpinch : Ham3PinchEstimate (I := I) P) :
+    (hpinch : HamiltonPinchingEstimate (I := I) P) :
     ∃ epsilon C : Real,
       0 < epsilon ∧ epsilon < 1 ∧ 0 ≤ C ∧
         ∀ i : Nat, ∀ x : M,
-          DifferentialGeometry.PDE.RicciFlow.tfRicNormSq
-              (ham3RescaledSol (I := I) P Q hsel i).scalar
+          DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
+              (hamiltonRescaledSolution (I := I) P Q hsel i).scalar
               (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-                (ham3RescaledSol (I := I) P Q hsel i)) 0 x ≤
-            C * ham3BlowupScale (I := I) P Q i ^ (-epsilon) := by
+                (hamiltonRescaledSolution (I := I) P Q hsel i)) 0 x ≤
+            C * hamiltonBlowupScale (I := I) P Q i ^ (-epsilon) := by
   rcases hpinch with ⟨epsilon, C, hepsilon0, hepsilon1, hC, hest⟩
   refine ⟨epsilon, C, hepsilon0, hepsilon1, hC, ?_⟩
   intro i x
-  let R : Real := ham3BlowupScale (I := I) P Q i
-  let r : Real := (ham3RescaledSol (I := I) P Q hsel i).scalar 0 x
+  let R : Real := hamiltonBlowupScale (I := I) P Q i
+  let r : Real := (hamiltonRescaledSolution (I := I) P Q hsel i).scalar 0 x
   let q : Real :=
-    DifferentialGeometry.PDE.RicciFlow.tfRicNormSq
-      (ham3RescaledSol (I := I) P Q hsel i).scalar
+    DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
+      (hamiltonRescaledSolution (I := I) P Q hsel i).scalar
       (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-        (ham3RescaledSol (I := I) P Q hsel i)) 0 x
+        (hamiltonRescaledSolution (I := I) P Q hsel i)) 0 x
   have hR : 0 < R := hsel.1 i
   have htime : 0 < Q.time i := hsel.2.1 i
   have htimeMem : Q.time i ∈ P.D.carrier := hsel.2.2.1 i
@@ -814,7 +815,7 @@ theorem ham3_tracefree_bound0
     hscalar (Q.time i) htimeMem x
   have hr_eq :
       r = R⁻¹ * P.S.scalar (Q.time i) x := by
-    simp only [r, R, ham3RescaledSol,
+    simp only [r, R, hamiltonRescaledSolution,
       DifferentialGeometry.PDE.RicciFlow.paraSolution_scalar,
       DifferentialGeometry.PDE.RicciFlow.paraTime_zero]
   have hr : 0 < r := by
@@ -827,20 +828,20 @@ theorem ham3_tracefree_bound0
     have hmax := hsel.2.2.2.2.2 i 0 x
       (by simpa only [R] using hleft) le_rfl
     have hr_display :
-        r = ham3RescaledScalar (I := I) P Q i 0 x := by
-      simpa only [R, ham3RescaledScalar, ham3RescaledTime, ham3Scalar,
-        ham3Solution, zero_div, add_zero] using hr_eq
+        r = hamiltonRescaledScalar (I := I) P Q i 0 x := by
+      simpa only [R, hamiltonRescaledScalar, hamiltonRescaledTime, hamiltonScalar,
+        hamiltonSolution, zero_div, add_zero] using hr_eq
     rwa [← hr_display] at hmax
   have hscalarOld_eq : P.S.scalar (Q.time i) x = R * r := by
     rw [hr_eq]
     field_simp [ne_of_gt hR]
   have hscalarDisplay :
-      DifferentialGeometry.PDE.RicciFlow.ParaScalarDisplay (M := M)
+      DifferentialGeometry.PDE.RicciFlow.ParabolicScalarCurvatureScaling (M := M)
         P.S.scalar
-        (ham3RescaledSol (I := I) P Q hsel i).scalar
+        (hamiltonRescaledSolution (I := I) P Q hsel i).scalar
         (Q.time i) R := by
     intro s y
-    simpa only [R, ham3RescaledSol] using
+    simpa only [R, hamiltonRescaledSolution] using
       congrFun
         (congrFun
           (DifferentialGeometry.PDE.RicciFlow.paraSolution_scalar
@@ -849,15 +850,15 @@ theorem ham3_tracefree_bound0
     DifferentialGeometry.PDE.RicciFlow.para_tracefree_ratio_invariant
       (M := M)
       (scalar := P.S.scalar)
-      (scalarR := (ham3RescaledSol (I := I) P Q hsel i).scalar)
-      (q := DifferentialGeometry.PDE.RicciFlow.tfRicNormSq P.S.scalar
+      (scalarR := (hamiltonRescaledSolution (I := I) P Q hsel i).scalar)
+      (q := DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq P.S.scalar
         (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I) P.S))
-      (qR := DifferentialGeometry.PDE.RicciFlow.tfRicNormSq
-        (ham3RescaledSol (I := I) P Q hsel i).scalar
+      (qR := DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq
+        (hamiltonRescaledSolution (I := I) P Q hsel i).scalar
         (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-          (ham3RescaledSol (I := I) P Q hsel i)))
+          (hamiltonRescaledSolution (I := I) P Q hsel i)))
       (τ := Q.time i) (R := R) hR hscalarDisplay
-      (by simpa only [R] using ham3_tracefree_display (I := I) P Q hsel i)
+      (by simpa only [R] using hamilton_rescaled_tracefree_ricci_norm_sq_identity (I := I) P Q hsel i)
       0 x
   have hratio_le :
       q / r ^ 2 ≤ C * (R * r) ^ (-epsilon) := by
@@ -868,105 +869,105 @@ theorem ham3_tracefree_bound0
       hest (Q.time i) htimeMem x
   exact scaled_pinch_le hR hr hr1 hC hepsilon0 hepsilon1 hratio_le
 
-def Ham3PinchTransfer
+def HamiltonPinchingTransfer
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q)
-    (L : Ham3CGHLimit (I := I) M) : Prop :=
-  Ham3SourceRealizes (I := I) P Q hsel L ->
-    Ham3PinchEstimate (I := I) P ->
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (L : HamiltonCGHLimit (I := I) M) : Prop :=
+  HamiltonSourceRealization (I := I) P Q hsel L ->
+    HamiltonPinchingEstimate (I := I) P ->
     LimitScalarPos (I := I) L ->
       LimitTracefreeDecay (I := I) L
 
-def Ham3CGHLimitExists
+def HamiltonCGHLimitExistence
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q) : Prop :=
-  exists L : Ham3CGHLimit (I := I) M,
-    Ham3SourceRealizes (I := I) P Q hsel L /\
-      Ham3LimitSubseq (I := I) L /\
-      Ham3LimitWindow (I := I) L /\
-      Ham3LimitRegWin (I := I) L /\
-      Ham3LimitConnected (I := I) L /\
-      Ham3LimitBoundaryless (I := I) /\
-      Ham3LimitFlow (I := I) L /\
-      Ham3RicNonnegTransfer (I := I) P Q hsel L /\
-      Ham3LimitBaseScalarConv (I := I) P Q L /\
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q) : Prop :=
+  exists L : HamiltonCGHLimit (I := I) M,
+    HamiltonSourceRealization (I := I) P Q hsel L /\
+      HamiltonLimitSubsequence (I := I) L /\
+      HamiltonLimitWindow (I := I) L /\
+      HamiltonLimitRegularWindow (I := I) L /\
+      HamiltonLimitConnected (I := I) L /\
+      HamiltonLimitBoundaryless (I := I) /\
+      HamiltonLimitFlow (I := I) L /\
+      HamiltonRicciNonnegativeTransfer (I := I) P Q hsel L /\
+      HamiltonLimitBaseScalarConvergence (I := I) P Q L /\
       LimitScalarPos (I := I) L /\
-      Ham3PinchTransfer (I := I) P Q hsel L
+      HamiltonPinchingTransfer (I := I) P Q hsel L
 
-def Ham3Window
+def HamiltonWindow
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (r : Real) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (r : Real) : Prop :=
   exists N : Nat, forall i : Nat, N <= i ->
     forall s : Real, -(r ^ 2) <= s -> s <= 0 ->
-      -(ham3BlowupScale (I := I) P Q i * Q.time i) <= s /\ s <= 0
+      -(hamiltonBlowupScale (I := I) P Q i * Q.time i) <= s /\ s <= 0
 
-def Ham3RmBound
+def HamiltonRiemannCurvatureBound
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) : Prop :=
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) : Prop :=
   forall (i : Nat) (s : Real) (x : M),
-    -(ham3BlowupScale (I := I) P Q i * Q.time i) <= s -> s <= 0 ->
-      ham3RmNormSq (I := I) (M := M) P
-          (ham3RescaledTime (I := I) P Q i s) x <=
-        (100 : Real) ^ 2 * (ham3BlowupScale (I := I) P Q i) ^ 2
+    -(hamiltonBlowupScale (I := I) P Q i * Q.time i) <= s -> s <= 0 ->
+      hamiltonRiemannNormSq (I := I) (M := M) P
+          (hamiltonRescaledTime (I := I) P Q i s) x <=
+        (100 : Real) ^ 2 * (hamiltonBlowupScale (I := I) P Q i) ^ 2
 
-def ham3RescaledZero
+def hamiltonRescaledInitialTime
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q) (i : Nat) :
-    (paraInterval P.D (Q.time i) (ham3BlowupScale (I := I) P Q i)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q) (i : Nat) :
+    (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
       (hsel.1 i) (hsel.2.2.1 i)).FlowTime :=
-  ⟨0, (paraInterval P.D (Q.time i) (ham3BlowupScale (I := I) P Q i)
+  ⟨0, (paraInterval P.D (Q.time i) (hamiltonBlowupScale (I := I) P Q i)
     (hsel.1 i) (hsel.2.2.1 i)).initial_mem⟩
 
-def ham3RescaledBall
+def hamiltonRescaledBall
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
     (i : Nat) (r : Real) (hr : 0 < r) :
-    Perelman.FlowMetricBall (ham3RescaledSol (I := I) P Q hsel i)
-      (ham3RescaledZero (I := I) P Q hsel i) where
+    Perelman.FlowMetricBall (hamiltonRescaledSolution (I := I) P Q hsel i)
+      (hamiltonRescaledInitialTime (I := I) P Q hsel i) where
   center := Q.point i
   radius := r
   radius_pos := hr
 
-def Ham3RmControl
+def HamiltonRiemannCurvatureControl
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
     (r : Real) : Prop :=
   exists hr : 0 < r, exists N : Nat, forall i : Nat, N <= i ->
-    let B := ham3RescaledBall (I := I) P Q hsel i r hr
+    let B := hamiltonRescaledBall (I := I) P Q hsel i r hr
     B.IsRmControlled
 
-def Ham3Noncollapse
+def HamiltonNoncollapse
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q)
     (kappa r : Real) : Prop :=
   0 < kappa /\
     exists hr : 0 < r, exists N : Nat, forall i : Nat, N <= i ->
-      let B := ham3RescaledBall (I := I) P Q hsel i r hr
+      let B := hamiltonRescaledBall (I := I) P Q hsel i r hr
       B.IsRmControlled /\ B.IsKappaNoncollapsed kappa
 
-structure Ham3Compactness
+structure HamiltonCompactness
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M) (hsel : Ham3PointSel (I := I) P Q) where
-  rmBound : Ham3RmBound (I := I) P Q
-  window : Ham3Window (I := I) P Q ham3_r0
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M) (hsel : HamiltonBlowupPointSelection (I := I) P Q) where
+  rmBound : HamiltonRiemannCurvatureBound (I := I) P Q
+  window : HamiltonWindow (I := I) P Q hamilton_reference_radius
   kappa : Real
-  noncollapse : Ham3Noncollapse (I := I) P Q hsel kappa ham3_r0
+  noncollapse : HamiltonNoncollapse (I := I) P Q hsel kappa hamilton_reference_radius
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_initial_continuous
+theorem hamilton_initial_scalar_continuous
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) :
-    Continuous (fun x : M => ham3Scalar (I := I) P 0 x) := by
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) :
+    Continuous (fun x : M => hamiltonScalar (I := I) P 0 x) := by
   rw [continuous_iff_continuousAt]
   intro x
   haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
@@ -986,7 +987,7 @@ theorem ham3_scalar_initial_continuous
           Tensor0SBundle.inner0S (I := I) (P.S.family.metric 0) y 2
             (Tensor0SBundle.metricTensorField (I := I) (P.S.family.metric 0) y)
             (P.S.ricci 0 y)) =
-        fun y : M => ham3Scalar (I := I) P 0 y := by
+        fun y : M => hamiltonScalar (I := I) P 0 y := by
     funext y
     have hmetric :
         Tensor0SBundle.metricTensorField (I := I) (P.S.family.metric 0) y =
@@ -999,7 +1000,7 @@ theorem ham3_scalar_initial_continuous
       Tensor0SBundle.inner0S (I := I) (P.S.family.metric 0) y 2
           (Tensor0SBundle.metricTensorField (I := I) (P.S.family.metric 0) y)
           (P.S.ricci 0 y) =
-        DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar (I := I) (ham3Solution (I := I) P) 0 y
+        DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar (I := I) (hamiltonSolution (I := I) P) 0 y
     rw [DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar_eq_metricTrace,
       DifferentialGeometry.Geometry.Operator.metricTracePair0SAt, hmetric]
     simp [DifferentialGeometry.PDE.RicciFlow.SolutionOn.ricci,
@@ -1009,11 +1010,11 @@ theorem ham3_scalar_initial_continuous
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_ricci_pos0
+theorem hamilton_initial_ricci_positive
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     DifferentialGeometry.PDE.RicciFlow.RicciPosInit (I := I) (M := M)
       (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M)
@@ -1037,14 +1038,14 @@ theorem ham3_ricci_pos0
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_initial_pos
+theorem hamilton_initial_scalar_positive
     (hdim : Module.finrank Real E = 3)
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
-    forall x : M, 0 < ham3Scalar (I := I) P 0 x := by
+    forall x : M, 0 < hamiltonScalar (I := I) P 0 x := by
   intro x
   have hmetric0 : P.S.family.metric 0 = g0 := by
     have hinit : P.D.initial = 0 := by
@@ -1069,42 +1070,42 @@ theorem ham3_scalar_initial_pos
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_initial_scalar_minimum
+theorem hamilton_initial_scalar_minimum
     [CompactSpace M] [Nonempty M]
     (hdim : Module.finrank Real E = 3)
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     exists c0 : Real,
-      DifferentialGeometry.PDE.RicciFlow.InitialScalarMinimum (M := M) (ham3Scalar (I := I) P) c0 ∧
-        forall x : M, 0 < ham3Scalar (I := I) P 0 x := by
-  have hcont : Continuous (fun x : M => ham3Scalar (I := I) P 0 x) :=
-    ham3_scalar_initial_continuous (I := I) (M := M) P
+      DifferentialGeometry.PDE.RicciFlow.InitialScalarMinimum (M := M) (hamiltonScalar (I := I) P) c0 ∧
+        forall x : M, 0 < hamiltonScalar (I := I) P 0 x := by
+  have hcont : Continuous (fun x : M => hamiltonScalar (I := I) P 0 x) :=
+    hamilton_initial_scalar_continuous (I := I) (M := M) P
   rcases DifferentialGeometry.PDE.RicciFlow.exists_initialScalarMinimum_of_continuous
-      (M := M) (ham3Scalar (I := I) P) hcont with
+      (M := M) (hamiltonScalar (I := I) P) hcont with
     ⟨c0, hmin⟩
-  exact ⟨c0, hmin, ham3_scalar_initial_pos (I := I) (M := M) hdim h0ω hpos P hD⟩
+  exact ⟨c0, hmin, hamilton_initial_scalar_positive (I := I) (M := M) hdim h0ω hpos P hD⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_slab_continuousOn
+theorem hamilton_scalar_slab_continuous_on
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
     (T : Real) (hTω : T < omega) :
     ContinuousOn
-      (fun p : Real × M => ham3Scalar (I := I) P p.1 p.2)
+      (fun p : Real × M => hamiltonScalar (I := I) P p.1 p.2)
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
   have hreg :
       DifferentialGeometry.PDE.RicciFlow.ScalarSTContOn
-        (I := I) (M := M) (ham3Solution (I := I) P) :=
-    ham3_scalarSTCont (I := I) (M := M) P
-  simpa [ham3Scalar, DifferentialGeometry.Analysis.Parabolic.spacetimeSlab] using
+        (I := I) (M := M) (hamiltonSolution (I := I) P) :=
+    hamilton_scalar_space_time_continuous (I := I) (M := M) P
+  simpa [hamiltonScalar, DifferentialGeometry.Analysis.Parabolic.spacetimeSlab] using
     DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar_continuousOn
-      (I := I) (M := M) (ham3Solution (I := I) P)
+      (I := I) (M := M) (hamiltonSolution (I := I) P)
       hreg
       T
       (by
@@ -1114,72 +1115,72 @@ theorem ham3_scalar_slab_continuousOn
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_evolution_equation
+theorem hamilton_scalar_evolution_equation
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     DifferentialGeometry.PDE.RicciFlow.ScalarEvolutionEquationOn
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
-      (ham3Scalar (I := I) P)
-      (ham3ScalarLap (I := I) P)
-      (ham3RicNormSq (I := I) P) := by
+      (hamiltonScalar (I := I) P)
+      (hamiltonScalarLaplacian (I := I) P)
+      (hamiltonRicciNormSq (I := I) P) := by
   rw [← hD]
   have h :
       DifferentialGeometry.PDE.RicciFlow.ScalarEvolutionEquationOn
         (D := P.D)
-        (ham3Solution (I := I) P).scalar
+        (hamiltonSolution (I := I) P).scalar
         (fun t x =>
-          DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (ham3RealFamily (I := I) P)
+          DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (hamiltonMetricConnectionFamily (I := I) P)
             t
-            ((ham3Solution (I := I) P).scalar t) x)
+            ((hamiltonSolution (I := I) P).scalar t) x)
         (fun t x =>
           Tensor0SBundle.normSq0S (I := I)
-            ((ham3Solution (I := I) P).family.metric t) x 2
-            ((ham3Solution (I := I) P).ricci t x)) := by
+            ((hamiltonSolution (I := I) P).family.metric t) x 2
+            ((hamiltonSolution (I := I) P).ricci t x)) := by
     refine
       DifferentialGeometry.PDE.RicciFlow.scalarEvolOfSmooth
-        (I := I) (M := M) (ham3Solution (I := I) P) P.isSmooth
-        (ham3RealFamily (I := I) P) ?_ ?_
+        (I := I) (M := M) (hamiltonSolution (I := I) P) P.isSmooth
+        (hamiltonMetricConnectionFamily (I := I) P) ?_ ?_
     · intro t
       have ht : (t : Real) ∈ P.D.carrier := P.D.regular_subset t.2
-      simp [ham3RealFamily, ham3RealFamilyCore, ht]
+      simp [hamiltonMetricConnectionFamily, hamiltonMetricConnectionFamilyCore, ht]
     · intro t
       have ht : (t : Real) ∈ P.D.carrier := P.D.regular_subset t.2
-      simp [ham3RealFamily, ham3RealFamilyCore, ht]
-  simpa [ham3Scalar, ham3ScalarLap, ham3RicNormSq, ham3Solution] using h
+      simp [hamiltonMetricConnectionFamily, hamiltonMetricConnectionFamilyCore, ht]
+  simpa [hamiltonScalar, hamiltonScalarLaplacian, hamiltonRicciNormSq, hamiltonSolution] using h
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_laplacian_realizes_heat
+theorem hamilton_scalar_laplacian_realizes_heat
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0) (T : Real) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0) (T : Real) :
     DifferentialGeometry.PDE.RicciFlow.ScalarLaplacianRealizesHeatOperatorOn
-      (I := I) (ham3RealFamily (I := I) P) T
-      (ham3Scalar (I := I) P)
-      (ham3ScalarLap (I := I) P) := by
+      (I := I) (hamiltonMetricConnectionFamily (I := I) P) T
+      (hamiltonScalar (I := I) P)
+      (hamiltonScalarLaplacian (I := I) P) := by
   exact
     DifferentialGeometry.PDE.RicciFlow.ScalarLaplacianRealizesHeatOperatorOn.of_laplacianAt
-      (I := I) (G := ham3RealFamily (I := I) P)
-      (T := T) (scalar := ham3Scalar (I := I) P)
-      (scalarLap := ham3ScalarLap (I := I) P)
+      (I := I) (G := hamiltonMetricConnectionFamily (I := I) P)
+      (T := T) (scalar := hamiltonScalar (I := I) P)
+      (scalarLap := hamiltonScalarLaplacian (I := I) P)
       (by
         intro t _ht x
         rfl)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_wmp_regularity
+theorem hamilton_scalar_weak_maximum_principle_regularity
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
     (c0 : Real) (hc0 : 0 < c0) (K : Real -> NNReal) :
     forall T : Real, 0 < T -> T < omega ->
       T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
         DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWMPRegularity
-          (I := I) (ham3RealFamily (I := I) P) T 3 c0
-          (ham3Scalar (I := I) P) (K T) := by
+          (I := I) (hamiltonMetricConnectionFamily (I := I) P) T 3 c0
+          (hamiltonScalar (I := I) P) (K T) := by
   intro T _hT hTω hPole
   have hsubset : ∀ t : Real, t ∈ Set.Icc 0 T -> t ∈ P.D.carrier := by
     intro t ht
@@ -1195,18 +1196,18 @@ theorem ham3_scalar_wmp_regularity
         1 - (2 / (3 : Real)) * c0 * t ≠ 0 := by
     intro t ht
     exact ne_of_gt (hden_pos t ht)
-  simpa [ham3RealFamily, ham3Scalar, ham3Solution] using
-    ham3_scalarRegular (I := I) (M := M) P c0 K T hsubset hden
+  simpa [hamiltonMetricConnectionFamily, hamiltonScalar, hamiltonSolution] using
+    hamilton_scalar_weak_maximum_principle_regularity_on_interval (I := I) (M := M) P c0 K T hsubset hden
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_sq_le_three_ric_normSq
+theorem hamilton_scalar_sq_le_three_ricci_norm_sq
     (hdim : Module.finrank Real E = 3)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (t : Real) (x : M) :
-    (1 / 3 : Real) * (ham3Scalar (I := I) P t x) ^ 2 <=
-      ham3RicNormSq (I := I) P t x := by
+    (1 / 3 : Real) * (hamiltonScalar (I := I) P t x) ^ 2 <=
+      hamiltonRicciNormSq (I := I) P t x := by
   classical
   letI : Nonempty (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :=
     ⟨⟨0, by simp [hdim]⟩⟩
@@ -1237,21 +1238,21 @@ theorem ham3_scalar_sq_le_three_ric_normSq
     simp [DifferentialGeometry.Tensor.Coordinates.CoordinateIdx, hdim]
   have hcoef : ((Module.finrank Real E : Real)⁻¹) = (3⁻¹ : Real) := by
     simp [hdim]
-  simpa [ham3Scalar, ham3RicNormSq, DifferentialGeometry.Tensor.Coordinates.CoordinateIdx, hcard,
+  simpa [hamiltonScalar, hamiltonRicciNormSq, DifferentialGeometry.Tensor.Coordinates.CoordinateIdx, hcard,
     hcoef]
     using h
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_slab_lipschitz
+theorem hamilton_scalar_slab_lipschitz
     [CompactSpace M]
     {omega : Real}
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (c0 : Real)
     (hc0 : 0 < c0)
     (hcont : forall T : Real, 0 <= T -> T < omega ->
-      ContinuousOn (fun p : Real × M => ham3Scalar (I := I) P p.1 p.2)
+      ContinuousOn (fun p : Real × M => hamiltonScalar (I := I) P p.1 p.2)
         (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T)) :
     exists K : Real -> NNReal,
       forall T : Real, 0 < T -> T < omega ->
@@ -1260,7 +1261,7 @@ theorem ham3_scalar_slab_lipschitz
             LipschitzOnWith (K T)
               (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a t)
               (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) T
-                (ham3Scalar (I := I) P)
+                (hamiltonScalar (I := I) P)
                 (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0)) := by
   classical
   have hExists :
@@ -1271,12 +1272,12 @@ theorem ham3_scalar_slab_lipschitz
             LipschitzOnWith K
               (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a t)
               (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) T
-                (ham3Scalar (I := I) P)
+                (hamiltonScalar (I := I) P)
                 (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0)) := by
     intro T hT hTω hPole
     have hscalar_cont_T :
         ContinuousOn
-          (fun p : Real × M => ham3Scalar (I := I) P p.1 p.2)
+          (fun p : Real × M => hamiltonScalar (I := I) P p.1 p.2)
           (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) :=
       hcont T (le_of_lt hT) hTω
     have hden :
@@ -1296,14 +1297,14 @@ theorem ham3_scalar_slab_lipschitz
     have hcompact :
         IsCompact
           (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) T
-            (ham3Scalar (I := I) P)
+            (hamiltonScalar (I := I) P)
             (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0)) :=
       DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet_isCompact
-        (M := M) T (ham3Scalar (I := I) P)
+        (M := M) T (hamiltonScalar (I := I) P)
         (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0) hscalar_cont_T hbar_cont
     exact
       DifferentialGeometry.PDE.RicciFlow.exists_scalarLowerReaction_lipschitzOn_valueSet
-        (M := M) 3 T (ham3Scalar (I := I) P)
+        (M := M) 3 T (hamiltonScalar (I := I) P)
         (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0) hcompact
   let K : Real -> NNReal := fun T =>
     if h : 0 < T ∧ T < omega ∧
@@ -1318,12 +1319,12 @@ theorem ham3_scalar_slab_lipschitz
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_family_package
+theorem hamilton_scalar_evolution_data
     {omega : Real} (h0ω : 0 < omega)
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     exists G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real,
       exists c0 : Real,
@@ -1360,39 +1361,39 @@ theorem ham3_scalar_family_package
   rcases hM with ⟨hcompact, _hconnected, _hboundaryless, hdim⟩
   letI : CompactSpace M := hcompact
   letI : Nonempty M := inferInstance
-  rcases ham3_initial_scalar_minimum (I := I) (M := M) hdim h0ω hpos P hD with
+  rcases hamilton_initial_scalar_minimum (I := I) (M := M) hdim h0ω hpos P hD with
     ⟨c0, hinit_min, hinit_pos⟩
   have hcont :
       forall T : Real, 0 <= T -> T < omega ->
-        ContinuousOn (fun p : Real × M => ham3Scalar (I := I) P p.1 p.2)
+        ContinuousOn (fun p : Real × M => hamiltonScalar (I := I) P p.1 p.2)
           (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
     intro T _hT hTω
-    exact ham3_scalar_slab_continuousOn (I := I) (M := M) h0ω P hD T hTω
+    exact hamilton_scalar_slab_continuous_on (I := I) (M := M) h0ω P hD T hTω
   have hc0 : 0 < c0 :=
     DifferentialGeometry.PDE.RicciFlow.InitialScalarMinimum.pos_of_forall_pos
       (M := M) hinit_min hinit_pos
-  rcases ham3_scalar_slab_lipschitz (I := I) (M := M) (omega := omega) P c0 hc0 hcont with
+  rcases hamilton_scalar_slab_lipschitz (I := I) (M := M) (omega := omega) P c0 hc0 hcont with
     ⟨K, hK⟩
-  refine ⟨ham3RealFamily (I := I) P, c0,
-    ham3Scalar (I := I) P, ham3ScalarLap (I := I) P,
-    ham3RicNormSq (I := I) P, K, hinit_min, hinit_pos, hcont, ?_, ?_, ?_, ?_, ?_⟩
-  · exact ham3_scalar_wmp_regularity (I := I) (M := M) h0ω P hD c0 hc0 K
-  · exact ham3_scalar_evolution_equation (I := I) (M := M) h0ω P hD
+  refine ⟨hamiltonMetricConnectionFamily (I := I) P, c0,
+    hamiltonScalar (I := I) P, hamiltonScalarLaplacian (I := I) P,
+    hamiltonRicciNormSq (I := I) P, K, hinit_min, hinit_pos, hcont, ?_, ?_, ?_, ?_, ?_⟩
+  · exact hamilton_scalar_weak_maximum_principle_regularity (I := I) (M := M) h0ω P hD c0 hc0 K
+  · exact hamilton_scalar_evolution_equation (I := I) (M := M) h0ω P hD
   · intro T _hT _hTω _hPole
-    exact ham3_scalar_laplacian_realizes_heat (I := I) (M := M) P T
+    exact hamilton_scalar_laplacian_realizes_heat (I := I) (M := M) P T
   · intro _T _hT _hTω _hPole t _ht x
-    exact ham3_scalar_sq_le_three_ric_normSq (I := I) (M := M) hdim P t x
+    exact hamilton_scalar_sq_le_three_ricci_norm_sq (I := I) (M := M) hdim P t x
   · intro T hT hTω hPole
     exact hK T hT hTω hPole
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_finite_time
+theorem hamilton_extinction_time_bound
     {omega : Real} (h0ω : 0 < omega)
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     exists c0 : Real, 0 < c0 /\ omega <= 3 / (2 * c0) := by
   have hMcopy := hM
@@ -1401,7 +1402,7 @@ theorem ham3_finite_time
   letI : ConnectedSpace M := hconnected
   letI : I.Boundaryless := hboundaryless
   letI : Nonempty M := inferInstance
-  rcases ham3_scalar_family_package (I := I) (M := M) h0ω hMcopy g0 hpos P hD with
+  rcases hamilton_scalar_evolution_data (I := I) (M := M) h0ω hMcopy g0 hpos P hD with
     ⟨G, c0, scalar, scalarLap, ricciNormSq, K,
       hinit_min, hinit_pos, hscalar_cont, hreg, hevol, hlap, hricci, hF_lip⟩
   have hfinite :
@@ -1412,17 +1413,17 @@ theorem ham3_finite_time
   exact ⟨c0, hfinite.1, hfinite.2⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem ham3_rm_scalar_ctl
+private theorem hamilton_rm_scalar_ctl
     {omega : Real} (h0ω : 0 < omega)
     (hM : Closed3Manifold (I := I) (M := M))
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
-    (hsec9 : Ham3RicciNonneg (I := I) P omega)
+    (hsec9 : HamiltonRicciNonnegative (I := I) P omega)
     {t : Real} {x : M} (htD : t ∈ P.D.carrier) :
-    0 <= ham3Scalar (I := I) P t x ∧
-      ham3RmNormSq (I := I) (M := M) P t x <=
-        (100 : Real) ^ 2 * (ham3Scalar (I := I) P t x) ^ 2 := by
+    0 <= hamiltonScalar (I := I) P t x ∧
+      hamiltonRiemannNormSq (I := I) (M := M) P t x <=
+        (100 : Real) ^ 2 * (hamiltonScalar (I := I) P t x) ^ 2 := by
   classical
   rcases hM with ⟨_hcompact, _hconnected, _hboundaryless, hdim⟩
   have htD' : t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega
@@ -1441,19 +1442,19 @@ private theorem ham3_rm_scalar_ctl
       hricOn t ⟨ht0, le_rfl⟩ x v
   have hricSym :
       DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (P.S.ricciAt t x) :=
-    DifferentialGeometry.PDE.RicciFlow.ricciSym_can (I := I) (M := M) P.S t x
+    DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := M) P.S t x
   have hRmScalar :
-      ham3RmNormSq (I := I) (M := M) P t x <=
-        (100 : Real) ^ 2 * (ham3Scalar (I := I) P t x) ^ 2 := by
+      hamiltonRiemannNormSq (I := I) (M := M) P t x <=
+        (100 : Real) ^ 2 * (hamiltonScalar (I := I) P t x) ^ 2 := by
     have hpoint :=
       DifferentialGeometry.Geometry.Curvature.normSqLeOfFirstTrace
         (I := I) (M := M) (g := P.S.base.metric t)
         (Ric := P.S.ricciAt t x) (scalar := P.S.scalar t x)
         (Rm04 := P.S.base.rm04 t x) hdimT hricSym hricNonneg
         (fun basis horth =>
-          DifferentialGeometry.PDE.RicciFlow.traceData_can (I := I) (M := M) P.S horth)
-    simpa [ham3RmNormSq, ham3Scalar, ham3Solution] using hpoint
-  have hscalarNonneg : 0 <= ham3Scalar (I := I) P t x := by
+          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := M) P.S horth)
+    simpa [hamiltonRiemannNormSq, hamiltonScalar, hamiltonSolution] using hpoint
+  have hscalarNonneg : 0 <= hamiltonScalar (I := I) P t x := by
     rcases DifferentialGeometry.Geometry.Curvature.ricciEigenBasis3
         (I := I) (M := M) (P.S.base.metric t) (P.S.ricciAt t x)
         hdimT hricSym hricNonneg with
@@ -1501,18 +1502,18 @@ private theorem scalar_gt_of_rm {A R rm : Real}
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem ham3_scalar_cont_slab
+private theorem hamilton_scalar_cont_slab
     {omega : Real} (h0ω : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
     (T : Real) :
     T < omega ->
     ContinuousOn
-      (fun p : Real × M => ham3Scalar (I := I) P p.1 p.2)
+      (fun p : Real × M => hamiltonScalar (I := I) P p.1 p.2)
       (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
   intro hTω
-  exact ham3_scalar_slab_continuousOn (I := I) (M := M) h0ω P hD T hTω
+  exact hamilton_scalar_slab_continuous_on (I := I) (M := M) h0ω P hD T hTω
 
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem slab_max_of_continuousOn
@@ -1537,38 +1538,38 @@ private theorem slab_max_of_continuousOn
   intro s hs y
   exact hmax ⟨hs, trivial⟩
 
-private def ham3PointLevel (B : Real) (i : Nat) : Real :=
+private def hamiltonPointLevel (B : Real) (i : Nat) : Real :=
   max B 0 + ((i : Real) + 1)
 
-private theorem ham3PointLevel_pos (B : Real) (i : Nat) :
-    0 < ham3PointLevel B i := by
-  unfold ham3PointLevel
+private theorem hamiltonPointLevel_pos (B : Real) (i : Nat) :
+    0 < hamiltonPointLevel B i := by
+  unfold hamiltonPointLevel
   have hmax0 : 0 <= max B 0 := le_max_right B 0
   have hi : 0 < (i : Real) + 1 := by positivity
   linarith
 
-private theorem ham3PointLevel_gt_bound (B : Real) (i : Nat) :
-    B < ham3PointLevel B i := by
-  unfold ham3PointLevel
+private theorem hamiltonPointLevel_gt_bound (B : Real) (i : Nat) :
+    B < hamiltonPointLevel B i := by
+  unfold hamiltonPointLevel
   have hB : B <= max B 0 := le_max_left B 0
   have hi : 0 < (i : Real) + 1 := by positivity
   linarith
 
-private theorem ham3PointLevel_ge_index (B : Real) (i : Nat) :
-    ((i : Real) + 1) <= ham3PointLevel B i := by
-  unfold ham3PointLevel
+private theorem hamiltonPointLevel_ge_index (B : Real) (i : Nat) :
+    ((i : Real) + 1) <= hamiltonPointLevel B i := by
+  unfold hamiltonPointLevel
   have hmax0 : 0 <= max B 0 := le_max_right B 0
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_scalar_blowup
+theorem hamilton_scalar_blowup
     {omega : Real} (h0ω : 0 < omega)
     (hM : Closed3Manifold (I := I) (M := M))
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
-    (hsec9 : Ham3RicciNonneg (I := I) P omega) :
-    Ham3ScalarBlowup (I := I) P := by
+    (hsec9 : HamiltonRicciNonnegative (I := I) P omega) :
+    HamiltonScalarBlowup (I := I) P := by
   intro A
   by_cases hA : 0 < A
   · rcases P.curvUnbounded ((100 : Real) ^ 2 * A ^ 2) with
@@ -1576,35 +1577,35 @@ theorem ham3_scalar_blowup
     refine ⟨t, x, htD, ?_⟩
     have hRm' :
         (100 : Real) ^ 2 * A ^ 2 <
-          ham3RmNormSq (I := I) (M := M) P t x := by
-      simpa [ham3RmNormSq, ham3Solution] using hRm
+          hamiltonRiemannNormSq (I := I) (M := M) P t x := by
+      simpa [hamiltonRiemannNormSq, hamiltonSolution] using hRm
     have hctl :=
-      ham3_rm_scalar_ctl (I := I) (M := M) h0ω hM P hD hsec9
+      hamilton_rm_scalar_ctl (I := I) (M := M) h0ω hM P hD hsec9
         (t := t) (x := x) htD
     exact scalar_gt_of_rm hA hctl.1 hctl.2 hRm'
   · rcases P.curvUnbounded 0 with ⟨t, x, htD, hRm⟩
     refine ⟨t, x, htD, ?_⟩
-    have hRm' : 0 < ham3RmNormSq (I := I) (M := M) P t x := by
-      simpa [ham3RmNormSq, ham3Solution] using hRm
+    have hRm' : 0 < hamiltonRiemannNormSq (I := I) (M := M) P t x := by
+      simpa [hamiltonRiemannNormSq, hamiltonSolution] using hRm
     have hctl :=
-      ham3_rm_scalar_ctl (I := I) (M := M) h0ω hM P hD hsec9
+      hamilton_rm_scalar_ctl (I := I) (M := M) h0ω hM P hD hsec9
         (t := t) (x := x) htD
     have hRpos :
-        0 < ham3Scalar (I := I) P t x :=
+        0 < hamiltonScalar (I := I) P t x :=
       scalar_pos_of_rm hctl.1 hctl.2 hRm'
     exact lt_of_le_of_lt (le_of_not_gt hA) hRpos
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_point_select
+theorem hamilton_exists_blowup_point_sequence
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hfinite : exists omega c0 : Real, exists h0ω : 0 < omega,
       P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω /\
         0 < c0 /\ omega <= 3 / (2 * c0))
-    (hscalarBlowup : Ham3ScalarBlowup (I := I) P) :
-    exists Q : Ham3Blowup M, Ham3PointSel (I := I) P Q := by
+    (hscalarBlowup : HamiltonScalarBlowup (I := I) P) :
+    exists Q : HamiltonBlowup M, HamiltonBlowupPointSelection (I := I) P Q := by
   classical
   rcases hM with ⟨hcompact, _hconnected, _hboundaryless, _hdim⟩
   letI : CompactSpace M := hcompact
@@ -1619,18 +1620,18 @@ theorem ham3_point_select
     linarith
   have hcont_half :
       ContinuousOn
-        (fun p : Real × M => ham3Scalar (I := I) P p.1 p.2)
+        (fun p : Real × M => hamiltonScalar (I := I) P p.1 p.2)
         (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) half) :=
-    ham3_scalar_cont_slab (I := I) (M := M) h0ω P hD half hhalf_lt_omega
+    hamilton_scalar_cont_slab (I := I) (M := M) h0ω P hD half hhalf_lt_omega
   have hbounded_half :
       DifferentialGeometry.PDE.RicciFlow.ScalarBoundedAboveOnSlab
-        (M := M) (ham3Scalar (I := I) P) half :=
+        (M := M) (hamiltonScalar (I := I) P) half :=
     DifferentialGeometry.PDE.RicciFlow.ScalarBoundedAboveOnSlab.of_continuousOn
       (M := M) hcont_half
   rcases hbounded_half with ⟨Bhalf, hBhalf⟩
-  let level : Nat -> Real := fun i => ham3PointLevel Bhalf i
+  let level : Nat -> Real := fun i => hamiltonPointLevel Bhalf i
   have hraw : ∀ i : Nat, ∃ t : Real, ∃ x : M,
-      t ∈ P.D.carrier /\ level i < ham3Scalar (I := I) P t x := by
+      t ∈ P.D.carrier /\ level i < hamiltonScalar (I := I) P t x := by
     intro i
     exact hscalarBlowup (level i)
   let rawTime : Nat -> Real := fun i => Classical.choose (hraw i)
@@ -1638,7 +1639,7 @@ theorem ham3_point_select
     Classical.choose (Classical.choose_spec (hraw i))
   have hraw_spec : ∀ i : Nat,
       rawTime i ∈ P.D.carrier /\
-        level i < ham3Scalar (I := I) P (rawTime i) (rawPoint i) := by
+        level i < hamiltonScalar (I := I) P (rawTime i) (rawPoint i) := by
     intro i
     simpa [rawTime, rawPoint] using
       Classical.choose_spec (Classical.choose_spec (hraw i))
@@ -1659,13 +1660,13 @@ theorem ham3_point_select
   have hmax_exists : ∀ i : Nat, ∃ tmax : Real, ∃ xmax : M,
       tmax ∈ Set.Icc 0 (rawTime i) ∧
         ∀ s : Real, s ∈ Set.Icc 0 (rawTime i) -> ∀ y : M,
-          ham3Scalar (I := I) P s y <=
-            ham3Scalar (I := I) P tmax xmax := by
+          hamiltonScalar (I := I) P s y <=
+            hamiltonScalar (I := I) P tmax xmax := by
     intro i
     exact slab_max_of_continuousOn (M := M)
-      (f := fun p : Real × M => ham3Scalar (I := I) P p.1 p.2)
+      (f := fun p : Real × M => hamiltonScalar (I := I) P p.1 p.2)
       (T := rawTime i) (t := rawTime i) (x := rawPoint i)
-      (ham3_scalar_cont_slab (I := I) (M := M) h0ω P hD (rawTime i) (hraw_lt_omega i))
+      (hamilton_scalar_cont_slab (I := I) (M := M) h0ω P hD (rawTime i) (hraw_lt_omega i))
       ⟨hraw_nonneg i, le_rfl⟩
   let qTime : Nat -> Real := fun i => Classical.choose (hmax_exists i)
   let qPoint : Nat -> M := fun i =>
@@ -1673,22 +1674,22 @@ theorem ham3_point_select
   have hq_spec : ∀ i : Nat,
       qTime i ∈ Set.Icc 0 (rawTime i) ∧
         ∀ s : Real, s ∈ Set.Icc 0 (rawTime i) -> ∀ y : M,
-          ham3Scalar (I := I) P s y <=
-            ham3Scalar (I := I) P (qTime i) (qPoint i) := by
+          hamiltonScalar (I := I) P s y <=
+            hamiltonScalar (I := I) P (qTime i) (qPoint i) := by
     intro i
     simpa [qTime, qPoint] using
       Classical.choose_spec (Classical.choose_spec (hmax_exists i))
-  let Q : Ham3Blowup M := ⟨qPoint, qTime⟩
+  let Q : HamiltonBlowup M := ⟨qPoint, qTime⟩
   refine ⟨Q, ?_⟩
   have hscale_lower : ∀ i : Nat,
-      level i < ham3BlowupScale (I := I) P Q i := by
+      level i < hamiltonBlowupScale (I := I) P Q i := by
     intro i
     have hraw_le :=
       (hq_spec i).2 (rawTime i) ⟨hraw_nonneg i, le_rfl⟩ (rawPoint i)
     exact lt_of_lt_of_le (hraw_spec i).2 hraw_le
-  have hscale_pos : ∀ i : Nat, 0 < ham3BlowupScale (I := I) P Q i := by
+  have hscale_pos : ∀ i : Nat, 0 < hamiltonBlowupScale (I := I) P Q i := by
     intro i
-    exact lt_trans (ham3PointLevel_pos Bhalf i) (hscale_lower i)
+    exact lt_trans (hamiltonPointLevel_pos Bhalf i) (hscale_lower i)
   have hq_gt_half : ∀ i : Nat, half < Q.time i := by
     intro i
     by_contra hnot
@@ -1697,7 +1698,7 @@ theorem ham3_point_select
       ⟨(hq_spec i).1.1, hle⟩
     have hupper := hBhalf (Q.time i) hmem_half (Q.point i)
     have hB_lt_level : Bhalf < level i :=
-      ham3PointLevel_gt_bound Bhalf i
+      hamiltonPointLevel_gt_bound Bhalf i
     exact not_lt_of_ge hupper (lt_trans hB_lt_level (hscale_lower i))
   have htime_pos : ∀ i : Nat, 0 < Q.time i := by
     intro i
@@ -1723,11 +1724,11 @@ theorem ham3_point_select
     have hi1half_le_levelhalf :
         ((i : Real) + 1) * half <= level i * half :=
       mul_le_mul_of_nonneg_right
-        (ham3PointLevel_ge_index Bhalf i) hhalf_nonneg
+        (hamiltonPointLevel_ge_index Bhalf i) hhalf_nonneg
     have hprod_gt : level i * half <
-        ham3BlowupScale (I := I) P Q i * Q.time i := by
+        hamiltonBlowupScale (I := I) P Q i * Q.time i := by
       nlinarith [hscale_lower i, hq_gt_half i,
-        le_of_lt (ham3PointLevel_pos Bhalf i), hhalf_pos]
+        le_of_lt (hamiltonPointLevel_pos Bhalf i), hhalf_pos]
     exact le_of_lt
       (lt_of_le_of_lt
         (le_trans hA_le_Nhalf
@@ -1735,64 +1736,64 @@ theorem ham3_point_select
             (le_trans hihalf_le_i1half hi1half_le_levelhalf)))
         hprod_gt)
   · intro i
-    have hscale_ne : ham3BlowupScale (I := I) P Q i ≠ 0 :=
+    have hscale_ne : hamiltonBlowupScale (I := I) P Q i ≠ 0 :=
       ne_of_gt (hscale_pos i)
-    have htime0 : ham3RescaledTime (I := I) P Q i 0 = Q.time i := by
-      dsimp [ham3RescaledTime]
+    have htime0 : hamiltonRescaledTime (I := I) P Q i 0 = Q.time i := by
+      dsimp [hamiltonRescaledTime]
       field_simp [hscale_ne]
       ring
     have hscalar0 :
-        ham3Scalar (I := I) P
-            (ham3RescaledTime (I := I) P Q i 0) (Q.point i) =
-          ham3BlowupScale (I := I) P Q i := by
+        hamiltonScalar (I := I) P
+            (hamiltonRescaledTime (I := I) P Q i 0) (Q.point i) =
+          hamiltonBlowupScale (I := I) P Q i := by
       rw [htime0]
       rfl
-    dsimp [ham3RescaledScalar]
+    dsimp [hamiltonRescaledScalar]
     rw [hscalar0]
     field_simp [hscale_ne]
   · intro i s x hsleft hsright
-    have hscale_ne : ham3BlowupScale (I := I) P Q i ≠ 0 :=
+    have hscale_ne : hamiltonBlowupScale (I := I) P Q i ≠ 0 :=
       ne_of_gt (hscale_pos i)
-    have htau_mem : ham3RescaledTime (I := I) P Q i s ∈
+    have htau_mem : hamiltonRescaledTime (I := I) P Q i s ∈
         Set.Icc 0 (Q.time i) := by
       constructor
-      · dsimp [ham3RescaledTime]
+      · dsimp [hamiltonRescaledTime]
         have hdiv :
-            -Q.time i <= s / ham3BlowupScale (I := I) P Q i := by
+            -Q.time i <= s / hamiltonBlowupScale (I := I) P Q i := by
           have hdiv' :
-              -(ham3BlowupScale (I := I) P Q i * Q.time i) /
-                  ham3BlowupScale (I := I) P Q i <=
-                s / ham3BlowupScale (I := I) P Q i :=
+              -(hamiltonBlowupScale (I := I) P Q i * Q.time i) /
+                  hamiltonBlowupScale (I := I) P Q i <=
+                s / hamiltonBlowupScale (I := I) P Q i :=
             div_le_div_of_nonneg_right hsleft (le_of_lt (hscale_pos i))
           have hleft :
-              -(ham3BlowupScale (I := I) P Q i * Q.time i) /
-                  ham3BlowupScale (I := I) P Q i = -Q.time i := by
+              -(hamiltonBlowupScale (I := I) P Q i * Q.time i) /
+                  hamiltonBlowupScale (I := I) P Q i = -Q.time i := by
             field_simp [hscale_ne]
           simpa [hleft] using hdiv'
         linarith
-      · dsimp [ham3RescaledTime]
-        have hdiv : s / ham3BlowupScale (I := I) P Q i <= 0 := by
+      · dsimp [hamiltonRescaledTime]
+        have hdiv : s / hamiltonBlowupScale (I := I) P Q i <= 0 := by
           exact div_nonpos_of_nonpos_of_nonneg hsright (le_of_lt (hscale_pos i))
         linarith
-    have htau_raw : ham3RescaledTime (I := I) P Q i s ∈
+    have htau_raw : hamiltonRescaledTime (I := I) P Q i s ∈
         Set.Icc 0 (rawTime i) :=
       ⟨htau_mem.1, le_trans htau_mem.2 (hq_spec i).1.2⟩
     have hscalar_le :
-        ham3Scalar (I := I) P (ham3RescaledTime (I := I) P Q i s) x <=
-          ham3BlowupScale (I := I) P Q i :=
-      (hq_spec i).2 (ham3RescaledTime (I := I) P Q i s) htau_raw x
-    dsimp [ham3RescaledScalar]
+        hamiltonScalar (I := I) P (hamiltonRescaledTime (I := I) P Q i s) x <=
+          hamiltonBlowupScale (I := I) P Q i :=
+      (hq_spec i).2 (hamiltonRescaledTime (I := I) P Q i s) htau_raw x
+    dsimp [hamiltonRescaledScalar]
     have hmul :=
       mul_le_mul_of_nonneg_left hscalar_le
         (inv_nonneg.mpr (le_of_lt (hscale_pos i)))
     have hone :
-        (ham3BlowupScale (I := I) P Q i)⁻¹ *
-            ham3BlowupScale (I := I) P Q i = 1 := by
+        (hamiltonBlowupScale (I := I) P Q i)⁻¹ *
+            hamiltonBlowupScale (I := I) P Q i = 1 := by
       field_simp [hscale_ne]
     simpa [hone] using hmul
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_pinching_fixed
+theorem hamilton_fixed_pinching
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1800,9 +1801,9 @@ theorem ham3_pinching_fixed
     (hM : Closed3Manifold (I := I) (M := M))
     {g0 : SmoothRiemannianMetric I M}
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
-    Ham3PinchingFixed (I := I) P omega := by
+    HamiltonFixedPinching (I := I) P omega := by
   rcases hM with ⟨hcompact, hconnected, hboundaryless, hdim⟩
   letI : CompactSpace M := hcompact
   letI : ConnectedSpace M := hconnected
@@ -1812,7 +1813,7 @@ theorem ham3_pinching_fixed
       DifferentialGeometry.PDE.RicciFlow.RicciPosInit (I := I) (M := M)
         (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M)
           P.S.ricci) :=
-    ham3_ricci_pos0 (I := I) (M := M) h0ω hpos P hD
+    hamilton_initial_ricci_positive (I := I) (M := M) h0ω hpos P hD
   have hinit : DifferentialGeometry.PDE.RicciFlow.PinchInitLt (I := I) (M := M)
       (fun t : Real => P.S.base.metric t)
       (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M) P.S.ricci)
@@ -1822,9 +1823,12 @@ theorem ham3_pinching_fixed
       (Ric := DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M)
         P.S.ricci)
       (scalar := P.S.scalar)
-      (DifferentialGeometry.PDE.RicciFlow.metricData_sol0 (I := I) (M := M) P.S)
-      (DifferentialGeometry.PDE.RicciFlow.metricData_sol0_pos (I := I) (M := M) P.S hpos0)
-      (DifferentialGeometry.PDE.RicciFlow.scalar0_cont_sol (I := I) (M := M) P.S
+      (DifferentialGeometry.PDE.RicciFlow.initialMetricRicciDataOfSolution
+        (I := I) (M := M) P.S)
+      (DifferentialGeometry.PDE.RicciFlow.initial_metric_ricci_data_positive
+        (I := I) (M := M) P.S hpos0)
+      (DifferentialGeometry.PDE.RicciFlow.initial_scalar_curvature_continuous_of_solution
+        (I := I) (M := M) P.S
         P.isSmooth.isSolution
         (by
           rw [hD]
@@ -1847,7 +1851,7 @@ theorem ham3_pinching_fixed
     P.isSmooth hT hdelta0 hdelta13 hdimT hTsub hTreg hpinch0
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_pinching
+theorem hamilton_pinching
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1855,13 +1859,13 @@ theorem ham3_pinching
     (hM : Closed3Manifold (I := I) (M := M))
     {g0 : SmoothRiemannianMetric I M}
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
-    Ham3Pinching (I := I) P omega := by
-  exact (ham3_pinching_fixed (I := I) (M := M) h0ω hM hpos P hD).toVarying
+    HamiltonPinching (I := I) P omega := by
+  exact (hamilton_fixed_pinching (I := I) (M := M) h0ω hM hpos P hD).toVarying
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_ricci_nonneg
+theorem hamilton_ricci_nonnegative
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1869,15 +1873,15 @@ theorem ham3_ricci_nonneg
     (hM : Closed3Manifold (I := I) (M := M))
     {g0 : SmoothRiemannianMetric I M}
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
-    Ham3RicciNonneg (I := I) P omega := by
+    HamiltonRicciNonnegative (I := I) P omega := by
   rcases hM with ⟨hcompact, hconnected, hboundaryless, hdim⟩
   letI : CompactSpace M := hcompact
   letI : ConnectedSpace M := hconnected
   letI : I.Boundaryless := hboundaryless
   letI : Nonempty M := inferInstance
-  have hpos0 := ham3_ricci_pos0 (I := I) (M := M) h0ω hpos P hD
+  have hpos0 := hamilton_initial_ricci_positive (I := I) (M := M) h0ω hpos P hD
   have hinit : DifferentialGeometry.PDE.RicciFlow.TwoTensorFamilyNonnegativeAtTime
       (I := I) (M := M)
       (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M) P.S.ricci)
@@ -1908,11 +1912,12 @@ theorem ham3_ricci_nonneg
     intro t ht
     rw [hD]
     exact ⟨ht.1, lt_of_le_of_lt ht.2 hTω⟩
-  exact DifferentialGeometry.PDE.RicciFlow.ricci_nonneg_sol_closed (I := I) (M := M) (S := P.S)
+  exact DifferentialGeometry.PDE.RicciFlow.ricci_nonnegative_of_closed_solution_wmp_data
+    (I := I) (M := M) (S := P.S)
     P.isSmooth hT hdimT hTsub hTreg hinit
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_rescaled_ric_nonneg
+theorem hamilton_rescaled_ricci_nonnegative
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1920,14 +1925,14 @@ theorem ham3_rescaled_ric_nonneg
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q) :
-    Ham3RescaledRicNonneg (I := I) P Q := by
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q) :
+    HamiltonRescaledRicciNonnegative (I := I) P Q := by
   rcases hsel with ⟨hscale, htime, htimeMem, _hprod, _hbase, _hscalarMax⟩
-  have hricOn : Ham3RicciNonneg (I := I) P omega :=
-    ham3_ricci_nonneg (I := I) (M := M) h0ω hM hpos P hD
+  have hricOn : HamiltonRicciNonnegative (I := I) P omega :=
+    hamilton_ricci_nonnegative (I := I) (M := M) h0ω hM hpos P hD
   intro i s x v hsleft hsright
   have hQiω : Q.time i < omega := by
     have hmem := htimeMem i
@@ -1935,30 +1940,30 @@ theorem ham3_rescaled_ric_nonneg
     exact hmem.2
   have hnonneg :=
     hricOn (Q.time i) (le_of_lt (htime i)) hQiω
-  have hscale_ne : ham3BlowupScale (I := I) P Q i ≠ 0 :=
+  have hscale_ne : hamiltonBlowupScale (I := I) P Q i ≠ 0 :=
     ne_of_gt (hscale i)
   have hsdiv :
-      -Q.time i <= s / ham3BlowupScale (I := I) P Q i := by
+      -Q.time i <= s / hamiltonBlowupScale (I := I) P Q i := by
     have hdiv := div_le_div_of_nonneg_right hsleft (le_of_lt (hscale i))
     have hcancel :
-        -(ham3BlowupScale (I := I) P Q i * Q.time i) /
-            ham3BlowupScale (I := I) P Q i = -Q.time i := by
+        -(hamiltonBlowupScale (I := I) P Q i * Q.time i) /
+            hamiltonBlowupScale (I := I) P Q i = -Q.time i := by
       field_simp [hscale_ne]
     rwa [hcancel] at hdiv
   have htau0 :
-      0 <= ham3RescaledTime (I := I) P Q i s := by
-    dsimp [ham3RescaledTime]
+      0 <= hamiltonRescaledTime (I := I) P Q i s := by
+    dsimp [hamiltonRescaledTime]
     linarith
   have htauT :
-      ham3RescaledTime (I := I) P Q i s <= Q.time i := by
-    dsimp [ham3RescaledTime]
+      hamiltonRescaledTime (I := I) P Q i s <= Q.time i := by
+    dsimp [hamiltonRescaledTime]
     have hsdiv_nonpos :
-        s / ham3BlowupScale (I := I) P Q i <= 0 := by
+        s / hamiltonBlowupScale (I := I) P Q i <= 0 := by
       exact div_nonpos_of_nonpos_of_nonneg hsright (le_of_lt (hscale i))
     linarith
-  have htau : ham3RescaledTime (I := I) P Q i s ∈ Set.Icc 0 (Q.time i) :=
+  have htau : hamiltonRescaledTime (I := I) P Q i s ∈ Set.Icc 0 (Q.time i) :=
     ⟨htau0, htauT⟩
-  have hraw := hnonneg (ham3RescaledTime (I := I) P Q i s) htau x v
+  have hraw := hnonneg (hamiltonRescaledTime (I := I) P Q i s) htau x v
   simpa [DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily,
     DifferentialGeometry.PDE.RicciFlow.SolutionOn.ricci,
     DifferentialGeometry.PDE.RicciFlow.SolutionOn.ricciAt,
@@ -1967,13 +1972,13 @@ theorem ham3_rescaled_ric_nonneg
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scalar_pos
+theorem hamilton_scalar_positive
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     {omega : Real} (h0ω : 0 < omega)
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     ∀ t : Real, t ∈ P.D.carrier -> ∀ x : M, 0 < P.S.scalar t x := by
   classical
@@ -1981,50 +1986,50 @@ theorem ham3_scalar_pos
   letI : CompactSpace M := hcompact
   letI : I.Boundaryless := hboundaryless
   letI : Nonempty M := inferInstance
-  rcases ham3_initial_scalar_minimum (I := I) (M := M) hdim h0ω hpos P hD with
+  rcases hamilton_initial_scalar_minimum (I := I) (M := M) hdim h0ω hpos P hD with
     ⟨c0, hinit_min, hinit_pos⟩
   have hcont :
       forall T : Real, 0 <= T -> T < omega ->
-        ContinuousOn (fun p : Real × M => ham3Scalar (I := I) P p.1 p.2)
+        ContinuousOn (fun p : Real × M => hamiltonScalar (I := I) P p.1 p.2)
           (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
     intro T _hT hTω
-    exact ham3_scalar_slab_continuousOn (I := I) (M := M) h0ω P hD T hTω
+    exact hamilton_scalar_slab_continuous_on (I := I) (M := M) h0ω P hD T hTω
   have hc0 : 0 < c0 :=
     DifferentialGeometry.PDE.RicciFlow.InitialScalarMinimum.pos_of_forall_pos
       (M := M) hinit_min hinit_pos
-  rcases ham3_scalar_slab_lipschitz (I := I) (M := M) (omega := omega) P c0 hc0 hcont with
+  rcases hamilton_scalar_slab_lipschitz (I := I) (M := M) (omega := omega) P c0 hc0 hcont with
     ⟨K, hK⟩
   have hreg :
       ∀ T : Real, 0 < T -> T < omega ->
         T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
           DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWMPRegularity
-            (I := I) (ham3RealFamily (I := I) P) T 3 c0
-            (ham3Scalar (I := I) P) (K T) :=
-    ham3_scalar_wmp_regularity (I := I) (M := M) h0ω P hD c0 hc0 K
+            (I := I) (hamiltonMetricConnectionFamily (I := I) P) T 3 c0
+            (hamiltonScalar (I := I) P) (K T) :=
+    hamilton_scalar_weak_maximum_principle_regularity (I := I) (M := M) h0ω P hD c0 hc0 K
   have hevol :
       DifferentialGeometry.PDE.RicciFlow.ScalarEvolutionEquationOn
         (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
-        (ham3Scalar (I := I) P)
-        (ham3ScalarLap (I := I) P)
-        (ham3RicNormSq (I := I) P) :=
-    ham3_scalar_evolution_equation (I := I) (M := M) h0ω P hD
+        (hamiltonScalar (I := I) P)
+        (hamiltonScalarLaplacian (I := I) P)
+        (hamiltonRicciNormSq (I := I) P) :=
+    hamilton_scalar_evolution_equation (I := I) (M := M) h0ω P hD
   have hlap :
       ∀ T : Real, 0 < T -> T < omega ->
         T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
           DifferentialGeometry.PDE.RicciFlow.ScalarLaplacianRealizesHeatOperatorOn
-            (I := I) (ham3RealFamily (I := I) P) T
-            (ham3Scalar (I := I) P)
-            (ham3ScalarLap (I := I) P) := by
+            (I := I) (hamiltonMetricConnectionFamily (I := I) P) T
+            (hamiltonScalar (I := I) P)
+            (hamiltonScalarLaplacian (I := I) P) := by
     intro T _hT _hTω _hPole
-    exact ham3_scalar_laplacian_realizes_heat (I := I) (M := M) P T
+    exact hamilton_scalar_laplacian_realizes_heat (I := I) (M := M) P T
   have hricci :
       ∀ T : Real, 0 < T -> T < omega ->
         T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
           ∀ t : Real, t ∈ Set.Icc 0 T -> ∀ x : M,
-            (1 / 3 : Real) * (ham3Scalar (I := I) P t x) ^ 2 <=
-              ham3RicNormSq (I := I) P t x := by
+            (1 / 3 : Real) * (hamiltonScalar (I := I) P t x) ^ 2 <=
+              hamiltonRicciNormSq (I := I) P t x := by
     intro _T _hT _hTω _hPole t _ht x
-    exact ham3_scalar_sq_le_three_ric_normSq (I := I) (M := M) hdim P t x
+    exact hamilton_scalar_sq_le_three_ricci_norm_sq (I := I) (M := M) hdim P t x
   have hF :
       ∀ T : Real, 0 < T -> T < omega ->
         T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
@@ -2032,25 +2037,25 @@ theorem ham3_scalar_pos
             LipschitzOnWith (K T)
               (fun a : Real => DifferentialGeometry.PDE.RicciFlow.scalarLowerReaction 3 a t)
               (DifferentialGeometry.Analysis.Parabolic.scalarWeakMaximumPrincipleValueSet (M := M) T
-                (ham3Scalar (I := I) P)
+                (hamiltonScalar (I := I) P)
                 (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0)) := by
     intro T hT hTω hPole
     exact hK T hT hTω hPole
   have hfinite :
       omega <= DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 := by
     have hfin := DifferentialGeometry.PDE.RicciFlow.finiteTime3D (I := I) (M := M)
-      h0ω (ham3RealFamily (I := I) P) c0
-      (ham3Scalar (I := I) P) (ham3ScalarLap (I := I) P)
-      (ham3RicNormSq (I := I) P) K hinit_min hinit_pos hcont
+      h0ω (hamiltonMetricConnectionFamily (I := I) P) c0
+      (hamiltonScalar (I := I) P) (hamiltonScalarLaplacian (I := I) P)
+      (hamiltonRicciNormSq (I := I) P) K hinit_min hinit_pos hcont
       hreg hevol hlap hricci hF
     simpa [DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime] using hfin.2
   have hlower :
       DifferentialGeometry.PDE.RicciFlow.ScalarLowerBarrierBoundUpToPole
-        (M := M) (ham3Scalar (I := I) P) 3 c0 omega :=
+        (M := M) (hamiltonScalar (I := I) P) 3 c0 omega :=
     DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrierBoundUpToPole_of_scalarEvolution_closedOpen
-      (I := I) h0ω (ham3RealFamily (I := I) P) 3 c0 (by norm_num)
-      hc0 (ham3Scalar (I := I) P) (ham3ScalarLap (I := I) P)
-      (ham3RicNormSq (I := I) P) K hreg hevol hlap hricci
+      (I := I) h0ω (hamiltonMetricConnectionFamily (I := I) P) 3 c0 (by norm_num)
+      hc0 (hamiltonScalar (I := I) P) (hamiltonScalarLaplacian (I := I) P)
+      (hamiltonRicciNormSq (I := I) P) K hreg hevol hlap hricci
       (DifferentialGeometry.PDE.RicciFlow.InitialScalarMinimum.lowerBound (M := M) hinit_min) hF
   intro t htD x
   have ht_closed :
@@ -2060,26 +2065,26 @@ theorem ham3_scalar_pos
   rcases ht_closed with ⟨ht0, htω⟩
   by_cases ht_zero : t = 0
   · have h0 := hinit_pos x
-    simpa [ham3Scalar, ham3Solution, ht_zero] using h0
+    simpa [hamiltonScalar, hamiltonSolution, ht_zero] using h0
   · have htpos : 0 < t := lt_of_le_of_ne ht0 (Ne.symm ht_zero)
     have htblow : t < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 :=
       lt_of_lt_of_le htω hfinite
     have hbound :
         DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0 t <=
-          ham3Scalar (I := I) P t x :=
+          hamiltonScalar (I := I) P t x :=
       hlower t htpos htω htblow x
     have hden :
         0 < 1 - (2 / (3 : Real)) * c0 * t :=
       DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier_denominator_pos_of_lt_blowup
         (n := 3) (c0 := c0) (by norm_num) hc0 (le_of_lt htpos) htblow
     have hpos_t :
-        0 < ham3Scalar (I := I) P t x :=
+        0 < hamiltonScalar (I := I) P t x :=
       DifferentialGeometry.PDE.RicciFlow.scalar_curvature_positive_of_lower_barrier
         (n := 3) (c0 := c0) (t := t) hbound hc0 hden
-    simpa [ham3Scalar, ham3Solution] using hpos_t
+    simpa [hamiltonScalar, hamiltonSolution] using hpos_t
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_pinching_implies_pinch_estimate
+theorem hamilton_pinching_implies_pinch_estimate
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -2087,9 +2092,9 @@ theorem ham3_pinching_implies_pinch_estimate
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
-    Ham3PinchEstimate (I := I) P := by
+    HamiltonPinchingEstimate (I := I) P := by
   rcases hM with ⟨hcompact, hconnected, hboundaryless, hdim⟩
   letI : CompactSpace M := hcompact
   letI : ConnectedSpace M := hconnected
@@ -2098,23 +2103,23 @@ theorem ham3_pinching_implies_pinch_estimate
   have hdimT : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3 := by
     intro x
     simpa using hdim
-  have hfixed : Ham3PinchingFixed (I := I) P omega :=
-    ham3_pinching_fixed (I := I) (M := M) h0ω
+  have hfixed : HamiltonFixedPinching (I := I) P omega :=
+    hamilton_fixed_pinching (I := I) (M := M) h0ω
       ⟨hcompact, hconnected, hboundaryless, hdim⟩ hpos P hD
-  have hnonneg : Ham3RicciNonneg (I := I) P omega :=
-    ham3_ricci_nonneg (I := I) (M := M) h0ω
+  have hnonneg : HamiltonRicciNonnegative (I := I) P omega :=
+    hamilton_ricci_nonnegative (I := I) (M := M) h0ω
       ⟨hcompact, hconnected, hboundaryless, hdim⟩ hpos P hD
   have hscalar :
       ∀ t : Real, t ∈ P.D.carrier -> ∀ x : M, 0 < P.S.scalar t x :=
-    ham3_scalar_pos (I := I) (M := M) h0ω
+    hamilton_scalar_positive (I := I) (M := M) h0ω
       ⟨hcompact, hconnected, hboundaryless, hdim⟩ g0 hpos P hD
-  rcases DifferentialGeometry.PDE.RicciFlow.pinchEstimate_sol (I := I) (M := M)
+  rcases DifferentialGeometry.PDE.RicciFlow.exists_pinching_estimate_of_smooth_solution (I := I) (M := M)
       P.S P.isSmooth h0ω hD hdimT hscalar hfixed hnonneg with
     ⟨epsilon, C, heps0, heps1, hC0, hest⟩
   exact ⟨epsilon, C, heps0, heps1, hC0, hest⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_pinching_implies_tracefree_pinch_estimate
+theorem hamilton_pinching_implies_tracefree_pinch_estimate
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -2122,16 +2127,16 @@ theorem ham3_pinching_implies_tracefree_pinch_estimate
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
     (hpos : PosRicciMetric (I := I) (M := M) g0)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     exists tracefreeRmNormSq scalar weight : Real -> M -> Real, exists C : Real,
       DifferentialGeometry.PDE.RicciFlow.HamiltonTracefreePinchingEstimateOn
         tracefreeRmNormSq scalar weight C := by
-  rcases ham3_pinching_implies_pinch_estimate (I := I) (M := M) h0ω hM g0 hpos P hD with
+  rcases hamilton_pinching_implies_pinch_estimate (I := I) (M := M) h0ω hM g0 hpos P hD with
     ⟨epsilon, C, _heps0, _heps1, _hC0, hest⟩
   let tracefreeRmNormSq : Real -> M -> Real :=
     DifferentialGeometry.PDE.RicciFlow.carrierZeroExt (M := M) P.D
-      (DifferentialGeometry.PDE.RicciFlow.tfRicNormSq P.S.scalar
+      (DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq P.S.scalar
         (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I) P.S))
   let scalar : Real -> M -> Real :=
     DifferentialGeometry.PDE.RicciFlow.carrierScalarExt (M := M) P.D P.S.scalar
@@ -2147,19 +2152,19 @@ theorem ham3_pinching_implies_tracefree_pinch_estimate
   exact hdisplay t trivial x
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_rm_bound
+theorem hamilton_rescaled_curvature_bound
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    (hric : Ham3RescaledRicNonneg (I := I) P Q) :
-    Ham3RmBound (I := I) P Q := by
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (hric : HamiltonRescaledRicciNonnegative (I := I) P Q) :
+    HamiltonRiemannCurvatureBound (I := I) P Q := by
   classical
   rcases hM with ⟨_hcompact, _hconnected, _hboundaryless, hdim⟩
   rcases hsel with ⟨hscale, _htime, _htimeMem, _hprod, _hbase, hscalarMax⟩
   intro i s x hsleft hsright
-  let τ : Real := ham3RescaledTime (I := I) P Q i s
+  let τ : Real := hamiltonRescaledTime (I := I) P Q i s
   have hdimT : Module.finrank Real (TangentSpace I x) = 3 := by
     simpa using hdim
   have hricNonneg :
@@ -2170,19 +2175,19 @@ theorem ham3_rm_bound
       hric i s x v hsleft hsright
   have hricSym :
       DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (P.S.ricciAt τ x) :=
-    DifferentialGeometry.PDE.RicciFlow.ricciSym_can (I := I) (M := M) P.S τ x
+    DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := M) P.S τ x
   have hRmScalar :
-      ham3RmNormSq (I := I) (M := M) P τ x <=
-        (100 : Real) ^ 2 * (ham3Scalar (I := I) P τ x) ^ 2 := by
+      hamiltonRiemannNormSq (I := I) (M := M) P τ x <=
+        (100 : Real) ^ 2 * (hamiltonScalar (I := I) P τ x) ^ 2 := by
     have hpoint :=
       DifferentialGeometry.Geometry.Curvature.normSqLeOfFirstTrace
         (I := I) (M := M) (g := P.S.base.metric τ)
         (Ric := P.S.ricciAt τ x) (scalar := P.S.scalar τ x)
         (Rm04 := P.S.base.rm04 τ x) hdimT hricSym hricNonneg
         (fun basis horth =>
-          DifferentialGeometry.PDE.RicciFlow.traceData_can (I := I) (M := M) P.S horth)
-    simpa [ham3RmNormSq, ham3Scalar, ham3Solution, τ] using hpoint
-  have hscalarNonneg : 0 <= ham3Scalar (I := I) P τ x := by
+          DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := M) P.S horth)
+    simpa [hamiltonRiemannNormSq, hamiltonScalar, hamiltonSolution, τ] using hpoint
+  have hscalarNonneg : 0 <= hamiltonScalar (I := I) P τ x := by
     rcases DifferentialGeometry.Geometry.Curvature.ricciEigenBasis3
         (I := I) (M := M) (P.S.base.metric τ) (P.S.ricciAt τ x)
         hdimT hricSym hricNonneg with
@@ -2203,75 +2208,75 @@ theorem ham3_rm_bound
     unfold DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3
     nlinarith
   have hscalarUpper :
-      ham3Scalar (I := I) P τ x <= ham3BlowupScale (I := I) P Q i := by
+      hamiltonScalar (I := I) P τ x <= hamiltonBlowupScale (I := I) P Q i := by
     have hraw := hscalarMax i s x hsleft hsright
     have hmul :=
       mul_le_mul_of_nonneg_left hraw (le_of_lt (hscale i))
     have hleft :
-        ham3BlowupScale (I := I) P Q i *
-            ham3RescaledScalar (I := I) P Q i s x =
-          ham3Scalar (I := I) P τ x := by
-      dsimp [ham3RescaledScalar, τ]
+        hamiltonBlowupScale (I := I) P Q i *
+            hamiltonRescaledScalar (I := I) P Q i s x =
+          hamiltonScalar (I := I) P τ x := by
+      dsimp [hamiltonRescaledScalar, τ]
       field_simp [ne_of_gt (hscale i)]
     have hright :
-        ham3BlowupScale (I := I) P Q i * (1 : Real) =
-          ham3BlowupScale (I := I) P Q i := by
+        hamiltonBlowupScale (I := I) P Q i * (1 : Real) =
+          hamiltonBlowupScale (I := I) P Q i := by
       ring
     simpa [hleft, hright] using hmul
   have hscalarSq :
-      (ham3Scalar (I := I) P τ x) ^ 2 <=
-        (ham3BlowupScale (I := I) P Q i) ^ 2 := by
+      (hamiltonScalar (I := I) P τ x) ^ 2 <=
+        (hamiltonBlowupScale (I := I) P Q i) ^ 2 := by
     have hdiff :
-        0 <= ham3BlowupScale (I := I) P Q i -
-          ham3Scalar (I := I) P τ x := by
+        0 <= hamiltonBlowupScale (I := I) P Q i -
+          hamiltonScalar (I := I) P τ x := by
       linarith
     have hsum :
-        0 <= ham3BlowupScale (I := I) P Q i +
-          ham3Scalar (I := I) P τ x := by
+        0 <= hamiltonBlowupScale (I := I) P Q i +
+          hamiltonScalar (I := I) P τ x := by
       nlinarith [hscalarNonneg, le_of_lt (hscale i)]
     have hprod :
         0 <=
-          (ham3BlowupScale (I := I) P Q i -
-              ham3Scalar (I := I) P τ x) *
-            (ham3BlowupScale (I := I) P Q i +
-              ham3Scalar (I := I) P τ x) :=
+          (hamiltonBlowupScale (I := I) P Q i -
+              hamiltonScalar (I := I) P τ x) *
+            (hamiltonBlowupScale (I := I) P Q i +
+              hamiltonScalar (I := I) P τ x) :=
       mul_nonneg hdiff hsum
     nlinarith
   have hscaled :
-      (100 : Real) ^ 2 * (ham3Scalar (I := I) P τ x) ^ 2 <=
-        (100 : Real) ^ 2 * (ham3BlowupScale (I := I) P Q i) ^ 2 :=
+      (100 : Real) ^ 2 * (hamiltonScalar (I := I) P τ x) ^ 2 <=
+        (100 : Real) ^ 2 * (hamiltonBlowupScale (I := I) P Q i) ^ 2 :=
     mul_le_mul_of_nonneg_left hscalarSq (by norm_num)
   exact le_trans hRmScalar hscaled
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_r0_window
+theorem hamilton_reference_radius_window
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q) :
-    Ham3Window (I := I) P Q ham3_r0 := by
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q) :
+    HamiltonWindow (I := I) P Q hamilton_reference_radius := by
   rcases hsel with ⟨_hscale, _htime, _htimeMem, hprod, _hbase, _hscalarMax⟩
-  rcases hprod (ham3_r0 ^ 2) with ⟨N, hN⟩
+  rcases hprod (hamilton_reference_radius ^ 2) with ⟨N, hN⟩
   refine ⟨N, ?_⟩
   intro i hi s hsleft hsright
   have hprod_i :
-      ham3_r0 ^ 2 <= ham3BlowupScale (I := I) P Q i * Q.time i := hN i hi
+      hamilton_reference_radius ^ 2 <= hamiltonBlowupScale (I := I) P Q i * Q.time i := hN i hi
   constructor
   · linarith
   · exact hsright
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scale_atTop
+theorem hamilton_blowup_scale_tendsto_atTop
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
       0 omega h0omega)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q) :
-    Filter.Tendsto (ham3BlowupScale (I := I) P Q)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q) :
+    Filter.Tendsto (hamiltonBlowupScale (I := I) P Q)
       Filter.atTop Filter.atTop := by
   rcases hsel with ⟨hscale, _htime, htimeMem, hprod, _hbase, _hscalarMax⟩
   rw [Filter.tendsto_atTop]
@@ -2279,129 +2284,129 @@ theorem ham3_scale_atTop
   rcases hprod (A * omega) with ⟨N, hN⟩
   filter_upwards [Filter.eventually_atTop.2 ⟨N, fun i hi => hi⟩] with i hi
   have hprod_i :
-      A * omega ≤ ham3BlowupScale (I := I) P Q i * Q.time i :=
+      A * omega ≤ hamiltonBlowupScale (I := I) P Q i * Q.time i :=
     hN i hi
   have htime_i := htimeMem i
   rw [hD] at htime_i
   have hlt :
-      ham3BlowupScale (I := I) P Q i * Q.time i <
-        ham3BlowupScale (I := I) P Q i * omega :=
+      hamiltonBlowupScale (I := I) P Q i * Q.time i <
+        hamiltonBlowupScale (I := I) P Q i * omega :=
     mul_lt_mul_of_pos_left htime_i.2 (hscale i)
   exact le_of_lt
     (lt_of_mul_lt_mul_right (lt_of_le_of_lt hprod_i hlt) h0omega.le)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_scale_decay
+theorem hamilton_rescaled_pinching_error_tendsto_zero
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
       0 omega h0omega)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    (L : Ham3CGHLimit (I := I) M)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (L : HamiltonCGHLimit (I := I) M)
     {epsilon C : Real} (hepsilon : 0 < epsilon) :
     Filter.Tendsto
       (fun k : Nat =>
-        C * ham3BlowupScale (I := I) P Q (L.subseq k) ^ (-epsilon))
+        C * hamiltonBlowupScale (I := I) P Q (L.subseq k) ^ (-epsilon))
       Filter.atTop (nhds 0) := by
   have hscale :
       Filter.Tendsto
-        (fun k : Nat => ham3BlowupScale (I := I) P Q (L.subseq k))
+        (fun k : Nat => hamiltonBlowupScale (I := I) P Q (L.subseq k))
         Filter.atTop Filter.atTop :=
-    (ham3_scale_atTop (I := I) h0omega P hD Q hsel).comp
+    (hamilton_blowup_scale_tendsto_atTop (I := I) h0omega P hD Q hsel).comp
       L.subseq_strict.tendsto_atTop
   have hpow :
       Filter.Tendsto
         (fun k : Nat =>
-          ham3BlowupScale (I := I) P Q (L.subseq k) ^ (-epsilon))
+          hamiltonBlowupScale (I := I) P Q (L.subseq k) ^ (-epsilon))
         Filter.atTop (nhds 0) :=
     (tendsto_rpow_neg_atTop hepsilon).comp hscale
   simpa only [mul_zero] using tendsto_const_nhds.mul hpow
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_radius_event
+theorem hamilton_eventually_rescaled_radius_ge
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
       0 omega h0omega)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
     (r rho : Real) (hr : 0 < r) (hrho : 0 < rho) :
     exists N : Nat, forall i : Nat, N <= i ->
-      r <= Real.sqrt (ham3BlowupScale (I := I) P Q i) * rho := by
+      r <= Real.sqrt (hamiltonBlowupScale (I := I) P Q i) * rho := by
   rcases hsel with ⟨hscale, _htime, htimeMem, hprod, _hbase, _hscalarMax⟩
   let C : Real := (r / rho) ^ 2
   rcases hprod (C * omega) with ⟨N, hN⟩
   refine ⟨N, ?_⟩
   intro i hi
   have hprod_i :
-      C * omega <= ham3BlowupScale (I := I) P Q i * Q.time i := hN i hi
+      C * omega <= hamiltonBlowupScale (I := I) P Q i * Q.time i := hN i hi
   have htime_i := htimeMem i
   rw [hD] at htime_i
   have hprod_lt :
-      ham3BlowupScale (I := I) P Q i * Q.time i <
-        ham3BlowupScale (I := I) P Q i * omega :=
+      hamiltonBlowupScale (I := I) P Q i * Q.time i <
+        hamiltonBlowupScale (I := I) P Q i * omega :=
     mul_lt_mul_of_pos_left htime_i.2 (hscale i)
-  have hscale_lower : C < ham3BlowupScale (I := I) P Q i := by
+  have hscale_lower : C < hamiltonBlowupScale (I := I) P Q i := by
     exact lt_of_mul_lt_mul_right (lt_of_le_of_lt hprod_i hprod_lt) h0omega.le
   have hsqrt :
-      Real.sqrt C <= Real.sqrt (ham3BlowupScale (I := I) P Q i) :=
+      Real.sqrt C <= Real.sqrt (hamiltonBlowupScale (I := I) P Q i) :=
     Real.sqrt_le_sqrt (le_of_lt hscale_lower)
   have hquot_nonneg : 0 <= r / rho := (div_pos hr hrho).le
   have hsqrt' :
-      r / rho <= Real.sqrt (ham3BlowupScale (I := I) P Q i) := by
+      r / rho <= Real.sqrt (hamiltonBlowupScale (I := I) P Q i) := by
     simpa only [C, Real.sqrt_sq hquot_nonneg] using hsqrt
   have hmul := mul_le_mul_of_nonneg_right hsqrt' hrho.le
   calc
     r = (r / rho) * rho := (div_mul_cancel₀ r (ne_of_gt hrho)).symm
-    _ <= Real.sqrt (ham3BlowupScale (I := I) P Q i) * rho := hmul
+    _ <= Real.sqrt (hamiltonBlowupScale (I := I) P Q i) * rho := hmul
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ham3_rm_control
+theorem hamilton_rescaled_curvature_control
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
       0 omega h0omega)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    (hrm : Ham3RmBound (I := I) P Q)
-    (hwindow : Ham3Window (I := I) P Q ham3_r0) :
-    Ham3RmControl (I := I) P Q hsel ham3_r0 := by
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (hrm : HamiltonRiemannCurvatureBound (I := I) P Q)
+    (hwindow : HamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    HamiltonRiemannCurvatureControl (I := I) P Q hsel hamilton_reference_radius := by
   rcases hwindow with ⟨N, hN⟩
-  refine ⟨ham3_r0_pos, N, ?_⟩
+  refine ⟨hamilton_reference_radius_pos, N, ?_⟩
   intro i hi
-  let B := ham3RescaledBall (I := I) P Q hsel i ham3_r0 ham3_r0_pos
+  let B := hamiltonRescaledBall (I := I) P Q hsel i hamilton_reference_radius hamilton_reference_radius_pos
   change B.IsRmControlled
   unfold Perelman.FlowMetricBall.IsRmControlled
-  dsimp [B, ham3RescaledBall, ham3RescaledZero]
+  dsimp [B, hamiltonRescaledBall, hamiltonRescaledInitialTime]
   constructor
   · intro s hs
     have hw := hN i hi s (by simpa using hs.1) (by simpa using hs.2)
     rw [DifferentialGeometry.PDE.RicciFlow.paraInterval_carrier]
-    change ham3RescaledTime (I := I) P Q i s ∈ P.D.carrier
+    change hamiltonRescaledTime (I := I) P Q i s ∈ P.D.carrier
     rw [hD]
     have hscale := hsel.1 i
     have htimeMem := hsel.2.2.1 i
     rw [hD] at htimeMem
-    have hnum : 0 <= ham3BlowupScale (I := I) P Q i * Q.time i + s := by
+    have hnum : 0 <= hamiltonBlowupScale (I := I) P Q i * Q.time i + s := by
       linarith [hw.1]
-    have hlo : 0 <= ham3RescaledTime (I := I) P Q i s := by
-      rw [show ham3RescaledTime (I := I) P Q i s =
-          (ham3BlowupScale (I := I) P Q i * Q.time i + s) /
-            ham3BlowupScale (I := I) P Q i by
-        unfold ham3RescaledTime
+    have hlo : 0 <= hamiltonRescaledTime (I := I) P Q i s := by
+      rw [show hamiltonRescaledTime (I := I) P Q i s =
+          (hamiltonBlowupScale (I := I) P Q i * Q.time i + s) /
+            hamiltonBlowupScale (I := I) P Q i by
+        unfold hamiltonRescaledTime
         field_simp [ne_of_gt hscale]]
       exact div_nonneg hnum (le_of_lt hscale)
-    have hsdiv : s / ham3BlowupScale (I := I) P Q i <= 0 :=
+    have hsdiv : s / hamiltonBlowupScale (I := I) P Q i <= 0 :=
       div_nonpos_of_nonpos_of_nonneg hw.2 (le_of_lt hscale)
-    have hhi : ham3RescaledTime (I := I) P Q i s < omega := by
-      unfold ham3RescaledTime
+    have hhi : hamiltonRescaledTime (I := I) P Q i s < omega := by
+      unfold hamiltonRescaledTime
       linarith [htimeMem.2, hsdiv]
     exact ⟨hlo, hhi⟩
   · intro s hs x _hx
@@ -2411,78 +2416,78 @@ theorem ham3_rm_control
     have hold' :
         Tensor0SBundle.normSq0S (I := I)
             (P.S.base.metric (DifferentialGeometry.PDE.RicciFlow.paraTime
-              (Q.time i) (ham3BlowupScale (I := I) P Q i) s)) x 4
+              (Q.time i) (hamiltonBlowupScale (I := I) P Q i) s)) x 4
             (P.S.base.rm04 (DifferentialGeometry.PDE.RicciFlow.paraTime
-              (Q.time i) (ham3BlowupScale (I := I) P Q i) s) x) <=
-          (100 : Real) ^ 2 * (ham3BlowupScale (I := I) P Q i) ^ 2 := by
-      simpa [ham3RmNormSq, ham3Solution, ham3RescaledTime] using hold
-    unfold Perelman.FlowMetricBall.rmNormSq ham3RescaledSol
+              (Q.time i) (hamiltonBlowupScale (I := I) P Q i) s) x) <=
+          (100 : Real) ^ 2 * (hamiltonBlowupScale (I := I) P Q i) ^ 2 := by
+      simpa [hamiltonRiemannNormSq, hamiltonSolution, hamiltonRescaledTime] using hold
+    unfold Perelman.FlowMetricBall.rmNormSq hamiltonRescaledSolution
     rw [DifferentialGeometry.PDE.RicciFlow.paraRmNormSq]
     have hmul := mul_le_mul_of_nonneg_left hold'
-      (mul_nonneg (by positivity : 0 <= ham3_r0 ^ 4)
-        (sq_nonneg (ham3BlowupScale (I := I) P Q i)⁻¹))
+      (mul_nonneg (by positivity : 0 <= hamilton_reference_radius ^ 4)
+        (sq_nonneg (hamiltonBlowupScale (I := I) P Q i)⁻¹))
     calc
-      ham3_r0 ^ 4 *
-          ((ham3BlowupScale (I := I) P Q i)⁻¹ ^ 2 *
+      hamilton_reference_radius ^ 4 *
+          ((hamiltonBlowupScale (I := I) P Q i)⁻¹ ^ 2 *
             Tensor0SBundle.normSq0S (I := I)
               (P.S.base.metric (DifferentialGeometry.PDE.RicciFlow.paraTime
-                (Q.time i) (ham3BlowupScale (I := I) P Q i) s)) x 4
+                (Q.time i) (hamiltonBlowupScale (I := I) P Q i) s)) x 4
               (P.S.base.rm04 (DifferentialGeometry.PDE.RicciFlow.paraTime
-                (Q.time i) (ham3BlowupScale (I := I) P Q i) s) x)) =
-          (ham3_r0 ^ 4 * (ham3BlowupScale (I := I) P Q i)⁻¹ ^ 2) *
+                (Q.time i) (hamiltonBlowupScale (I := I) P Q i) s) x)) =
+          (hamilton_reference_radius ^ 4 * (hamiltonBlowupScale (I := I) P Q i)⁻¹ ^ 2) *
             Tensor0SBundle.normSq0S (I := I)
               (P.S.base.metric (DifferentialGeometry.PDE.RicciFlow.paraTime
-                (Q.time i) (ham3BlowupScale (I := I) P Q i) s)) x 4
+                (Q.time i) (hamiltonBlowupScale (I := I) P Q i) s)) x 4
               (P.S.base.rm04 (DifferentialGeometry.PDE.RicciFlow.paraTime
-                (Q.time i) (ham3BlowupScale (I := I) P Q i) s) x) := by ring
-      _ <= (ham3_r0 ^ 4 * (ham3BlowupScale (I := I) P Q i)⁻¹ ^ 2) *
-          ((100 : Real) ^ 2 * (ham3BlowupScale (I := I) P Q i) ^ 2) := hmul
+                (Q.time i) (hamiltonBlowupScale (I := I) P Q i) s) x) := by ring
+      _ <= (hamilton_reference_radius ^ 4 * (hamiltonBlowupScale (I := I) P Q i)⁻¹ ^ 2) *
+          ((100 : Real) ^ 2 * (hamiltonBlowupScale (I := I) P Q i) ^ 2) := hmul
       _ = 1 := by
         field_simp [ne_of_gt hscale]
-        norm_num [ham3_r0]
+        norm_num [hamilton_reference_radius]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_noncollapse_of
+theorem hamilton_noncollapse_of_no_local_collapsing
     {omega : Real} (h0omega : 0 < omega)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
       0 omega h0omega)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    (hrm : Ham3RmControl (I := I) P Q hsel ham3_r0)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (hrm : HamiltonRiemannCurvatureControl (I := I) P Q hsel hamilton_reference_radius)
     {rho : Real} (hnlc : Perelman.NoLocalCollapsing P.S rho) :
     exists kappa : Real,
-      Ham3Noncollapse (I := I) P Q hsel kappa ham3_r0 := by
+      HamiltonNoncollapse (I := I) P Q hsel kappa hamilton_reference_radius := by
   rcases hnlc with ⟨kappa, hkappa, hbelow⟩
   rcases hrm with ⟨hr, Nrm, hRm⟩
-  rcases ham3_radius_event (I := I) h0omega P hD Q hsel
-      ham3_r0 rho hr hbelow.1 with ⟨Nscale, hscale⟩
+  rcases hamilton_eventually_rescaled_radius_ge (I := I) h0omega P hD Q hsel
+      hamilton_reference_radius rho hr hbelow.1 with ⟨Nscale, hscale⟩
   refine ⟨kappa, hkappa, hr, Nat.max Nrm Nscale, ?_⟩
   intro i hi
   have hiRm : Nrm <= i := le_trans (Nat.le_max_left Nrm Nscale) hi
   have hiScale : Nscale <= i := le_trans (Nat.le_max_right Nrm Nscale) hi
-  let B := ham3RescaledBall (I := I) P Q hsel i ham3_r0 hr
+  let B := hamiltonRescaledBall (I := I) P Q hsel i hamilton_reference_radius hr
   have hRm_i : B.IsRmControlled := hRm i hiRm
   have hbelow_i := Perelman.para_noncollapse (I := I) P.S (Q.time i)
-    (ham3BlowupScale (I := I) P Q i) (hsel.1 i) (hsel.2.2.1 i)
+    (hamiltonBlowupScale (I := I) P Q i) (hsel.1 i) (hsel.2.2.1 i)
     kappa rho hbelow
   have hkappa_i : B.IsKappaNoncollapsed kappa :=
-    hbelow_i.2 (ham3RescaledZero (I := I) P Q hsel i) B
+    hbelow_i.2 (hamiltonRescaledInitialTime (I := I) P Q hsel i) B
       (hscale i hiScale) hRm_i
   exact ⟨hRm_i, hkappa_i⟩
 
-theorem ham3_noncollapse
+theorem hamilton_noncollapse
     {omega : Real} (h0omega : 0 < omega)
     (hM : Closed3Manifold (I := I) (M := M))
     (g0 : SmoothRiemannianMetric I M)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
       0 omega h0omega)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    (_hrm : Ham3RmControl (I := I) P Q hsel ham3_r0) :
-    exists kappa : Real, Ham3Noncollapse (I := I) P Q hsel kappa ham3_r0 := by
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (_hrm : HamiltonRiemannCurvatureControl (I := I) P Q hsel hamilton_reference_radius) :
+    exists kappa : Real, HamiltonNoncollapse (I := I) P Q hsel kappa hamilton_reference_radius := by
   classical
   letI : CompactSpace M := hM.1
   letI : ConnectedSpace M := hM.2.1
@@ -2490,7 +2495,7 @@ theorem ham3_noncollapse
   have hsol :
       DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) P.S :=
     P.isSmooth.isSolution
-  have hnlc : Perelman.NoLocalCollapsing P.S ham3_r0 := by
+  have hnlc : Perelman.NoLocalCollapsing P.S hamilton_reference_radius := by
     have htransport :
         ∀ (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
           (hD' : D =
@@ -2499,35 +2504,35 @@ theorem ham3_noncollapse
           (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn
             (I := I) (M := M) D),
           DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) S →
-            Perelman.NoLocalCollapsing S ham3_r0 := by
+            Perelman.NoLocalCollapsing S hamilton_reference_radius := by
       intro D hD' S hS
       subst D
       exact Perelman.no_local_open (I := I) (M := M) h0omega
-        S hS hM.2.2.2 ham3_r0_pos
+        S hS hM.2.2.2 hamilton_reference_radius_pos
     exact htransport P.D hD P.S hsol
-  exact ham3_noncollapse_of
+  exact hamilton_noncollapse_of_no_local_collapsing
     (I := I) h0omega P hD Q hsel _hrm hnlc
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
 theorem limit_mid_regular
-    {L : Ham3CGHLimit (I := I) M}
-    (hreg : Ham3LimitRegWin (I := I) L) :
-    -(ham3_r0 ^ 2) / 2 ∈ L.D.regular := by
+    {L : HamiltonCGHLimit (I := I) M}
+    (hreg : HamiltonLimitRegularWindow (I := I) L) :
+    -(hamilton_reference_radius ^ 2) / 2 ∈ L.D.regular := by
   apply hreg
-  have hsq : 0 < ham3_r0 ^ 2 := sq_pos_of_ne_zero ham3_r0_pos.ne'
+  have hsq : 0 < hamilton_reference_radius ^ 2 := sq_pos_of_ne_zero hamilton_reference_radius_pos.ne'
   constructor <;> nlinarith
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem limit_ric_nonneg
     (g0 : SmoothRiemannianMetric I M)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    (hric : Ham3RescaledRicNonneg (I := I) P Q)
-    {L : Ham3CGHLimit (I := I) M}
-    (hreal : Ham3SourceRealizes (I := I) P Q hsel L)
-    (htransfer : Ham3RicNonnegTransfer (I := I) P Q hsel L) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (hric : HamiltonRescaledRicciNonnegative (I := I) P Q)
+    {L : HamiltonCGHLimit (I := I) M}
+    (hreal : HamiltonSourceRealization (I := I) P Q hsel L)
+    (htransfer : HamiltonRicciNonnegativeTransfer (I := I) P Q hsel L) :
     LimitRicNonneg (I := I) L := by
   exact htransfer hreal hric
 
@@ -2535,11 +2540,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem limit_base_scalar_one
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    {L : Ham3CGHLimit (I := I) M}
-    (hconv : Ham3LimitBaseScalarConv (I := I) P Q L) :
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    {L : HamiltonCGHLimit (I := I) M}
+    (hconv : HamiltonLimitBaseScalarConvergence (I := I) P Q L) :
     LimitBaseScalarOne (I := I) L := by
   classical
   letI : TopologicalSpace L.N := L.topology
@@ -2551,10 +2556,10 @@ theorem limit_base_scalar_one
   rcases hsel with ⟨_hscale, _htime, _htimeMem, _hprod, hbase, _hscalarMax⟩
   let f : Nat -> Real :=
     fun k : Nat =>
-      ham3RescaledScalar (I := I) P Q (L.subseq k) 0 (Q.point (L.subseq k))
+      hamiltonRescaledScalar (I := I) P Q (L.subseq k) 0 (Q.point (L.subseq k))
   have hconv' : Filter.Tendsto f Filter.atTop
       (nhds (L.S.scalar 0 L.basepoint)) := by
-    simpa [Ham3LimitBaseScalarConv, f] using hconv
+    simpa [HamiltonLimitBaseScalarConvergence, f] using hconv
   have hconst : Filter.Tendsto f Filter.atTop (nhds (1 : Real)) := by
     have hf : f = fun _ : Nat => (1 : Real) := by
       funext k
@@ -2568,7 +2573,7 @@ theorem limit_base_scalar_one
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
 theorem limit_scalar_nonneg
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
     (hnonneg : LimitRicNonneg (I := I) L) :
     LimitScalarNonneg (I := I) L := by
@@ -2584,7 +2589,7 @@ theorem limit_scalar_nonneg
   rcases DifferentialGeometry.Geometry.Curvature.ricciEigen3 (I := I) (M := L.N)
       (L.S.base.metric t) (L.S.ricciAt t x)
       (by simpa using hdim)
-      (DifferentialGeometry.PDE.RicciFlow.ricciSym_can (I := I) (M := L.N) L.S t x) with
+      (DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := L.N) L.S t x) with
     ⟨basis, l1, l2, l3, horth, hdiag⟩
   have hl1 : 0 <= l1 := by
     have h := hnonneg t ht x (basis 0)
@@ -2632,21 +2637,21 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem limit_inherit
     (g0 : SmoothRiemannianMetric I M)
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    (_hric : Ham3RescaledRicNonneg (I := I) P Q)
-    (_hcgh : Ham3CGHLimitExists (I := I) P Q hsel) :
-    exists L : Ham3CGHLimit (I := I) M,
-      Ham3SourceRealizes (I := I) P Q hsel L /\
-      Ham3LimitSubseq (I := I) L /\
-      Ham3LimitWindow (I := I) L /\
-        Ham3LimitRegWin (I := I) L /\
-        Ham3LimitConnected (I := I) L /\
-        Ham3LimitBoundaryless (I := I) /\
-        Ham3LimitFlow (I := I) L /\
-        Ham3RicNonnegTransfer (I := I) P Q hsel L /\
-        Ham3PinchTransfer (I := I) P Q hsel L /\
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    (_hric : HamiltonRescaledRicciNonnegative (I := I) P Q)
+    (_hcgh : HamiltonCGHLimitExistence (I := I) P Q hsel) :
+    exists L : HamiltonCGHLimit (I := I) M,
+      HamiltonSourceRealization (I := I) P Q hsel L /\
+      HamiltonLimitSubsequence (I := I) L /\
+      HamiltonLimitWindow (I := I) L /\
+        HamiltonLimitRegularWindow (I := I) L /\
+        HamiltonLimitConnected (I := I) L /\
+        HamiltonLimitBoundaryless (I := I) /\
+        HamiltonLimitFlow (I := I) L /\
+        HamiltonRicciNonnegativeTransfer (I := I) P Q hsel L /\
+        HamiltonPinchingTransfer (I := I) P Q hsel L /\
         LimitRicNonneg (I := I) L /\
         LimitBaseScalarOne (I := I) L /\
         LimitScalarPos (I := I) L := by
@@ -2654,12 +2659,12 @@ theorem limit_inherit
     ⟨L, hreal, hsubseq, hwindow, hregwin, hconn, hbdry, hflow,
       hricTransfer, hbaseconv, hscalarPos, hpinchTransfer⟩
   have hlimit :
-      Ham3LimitSubseq (I := I) L /\
-      Ham3LimitWindow (I := I) L /\
-        Ham3LimitRegWin (I := I) L /\
-        Ham3LimitConnected (I := I) L /\
-        Ham3LimitBoundaryless (I := I) /\
-        Ham3LimitFlow (I := I) L :=
+      HamiltonLimitSubsequence (I := I) L /\
+      HamiltonLimitWindow (I := I) L /\
+        HamiltonLimitRegularWindow (I := I) L /\
+        HamiltonLimitConnected (I := I) L /\
+        HamiltonLimitBoundaryless (I := I) /\
+        HamiltonLimitFlow (I := I) L :=
     ⟨hsubseq, hwindow, hregwin, hconn, hbdry, hflow⟩
   have hnonneg : LimitRicNonneg (I := I) L :=
     limit_ric_nonneg (I := I) (M := M) g0 P Q hsel _hric
@@ -2673,13 +2678,13 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem limit_tracefree_decay
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    {L : Ham3CGHLimit (I := I) M}
-    (hreal : Ham3SourceRealizes (I := I) P Q hsel L)
-    (htransfer : Ham3PinchTransfer (I := I) P Q hsel L)
-    (hpinch : Ham3PinchEstimate (I := I) P)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    {L : HamiltonCGHLimit (I := I) M}
+    (hreal : HamiltonSourceRealization (I := I) P Q hsel L)
+    (htransfer : HamiltonPinchingTransfer (I := I) P Q hsel L)
+    (hpinch : HamiltonPinchingEstimate (I := I) P)
     (hscalarPos : LimitScalarPos (I := I) L) :
     LimitTracefreeDecay (I := I) L := by
   exact htransfer hreal hpinch hscalarPos
@@ -2689,7 +2694,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M]
   [T2Space M] in
 theorem tracefree_zero_of_decay
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
     {t : Real}
     (hdecay : LimitTracefreeDecayAt (I := I) L t) :
@@ -2703,7 +2708,7 @@ theorem tracefree_zero_of_decay
   letI : T2Space L.N := L.t2
   intro x
   let q : Real :=
-    DifferentialGeometry.PDE.RicciFlow.tfRicNormSq L.S.scalar
+    DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq L.S.scalar
       (DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I) L.S) t x
   have hnonneg : 0 <= q := by
     have hdimT :
@@ -2712,7 +2717,7 @@ theorem tracefree_zero_of_decay
       intro _ y
       simpa using hdim
     simpa [q] using
-      (DifferentialGeometry.PDE.RicciFlow.tfNonneg_sol (I := I) (M := L.N) L.S hdimT t x)
+      (DifferentialGeometry.PDE.RicciFlow.trace_free_ricci_norm_sq_nonneg (I := I) (M := L.N) L.S hdimT t x)
   have hle0 : q <= 0 := by
     have hforall : forall ε : Real, 0 < ε -> q <= 0 + ε := by
       intro ε hε
@@ -2725,7 +2730,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M]
   [T2Space M] in
 theorem limit_tracefree_zero_of_decay
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
     (hdecay : LimitTracefreeDecay (I := I) L) :
     LimitTracefreeZero (I := I) L := by
@@ -2737,13 +2742,13 @@ omit [SigmaCompactSpace M] in
 theorem limit_tracefree_zero
     (hdim : Module.finrank Real E = 3)
     {g0 : SmoothRiemannianMetric I M}
-    (P : Ham3FiniteTimeFlow (I := I) (M := M) g0)
-    (Q : Ham3Blowup M)
-    (hsel : Ham3PointSel (I := I) P Q)
-    {L : Ham3CGHLimit (I := I) M}
-    (hreal : Ham3SourceRealizes (I := I) P Q hsel L)
-    (htransfer : Ham3PinchTransfer (I := I) P Q hsel L)
-    (hpinch : Ham3PinchEstimate (I := I) P)
+    (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
+    (Q : HamiltonBlowup M)
+    (hsel : HamiltonBlowupPointSelection (I := I) P Q)
+    {L : HamiltonCGHLimit (I := I) M}
+    (hreal : HamiltonSourceRealization (I := I) P Q hsel L)
+    (htransfer : HamiltonPinchingTransfer (I := I) P Q hsel L)
+    (hpinch : HamiltonPinchingEstimate (I := I) P)
     (_hscalarPos : LimitScalarPos (I := I) L) :
     LimitTracefreeZero (I := I) L := by
   exact limit_tracefree_zero_of_decay (I := I) (M := M) hdim
@@ -2752,7 +2757,7 @@ theorem limit_tracefree_zero
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
 theorem limitEinstein_of_tf0
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
     {t0 : Real} (htf : LimitTracefreeZeroAt (I := I) L t0) :
     LimitEinsteinAt (I := I) L t0 := by
@@ -2769,7 +2774,7 @@ theorem limitEinstein_of_tf0
   have hdimT : Module.finrank Real (TangentSpace I x) = 3 := by
     simpa using hdim
   have hsym : DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (M := L.N) Ric :=
-    DifferentialGeometry.PDE.RicciFlow.ricciSym_can (I := I) (M := L.N) L.S t0 x
+    DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := L.N) L.S t0 x
   rcases DifferentialGeometry.Geometry.Curvature.ricciEigen3 (I := I) (M := L.N) g Ric hdimT
     hsym with
     ⟨basis, l1, l2, l3, horth, hdiag⟩
@@ -2805,12 +2810,12 @@ theorem limitEinstein_of_tf0
   have htf_eigen :
       DifferentialGeometry.Geometry.Curvature.tracefreeRicciEigenNormSq3 l1 l2 l3 = 0 := by
     have htf_x := htf x
-    rw [DifferentialGeometry.PDE.RicciFlow.tfRicNormSq,
-      DifferentialGeometry.PDE.RicciFlow.tracefreeRicciNormSqOf,
+    rw [DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSq,
+      DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqOf,
       hscalar, hnorm,
       DifferentialGeometry.PDE.RicciFlow.ricciNormAt_diag (I := I) (M := L.N) hdiag] at htf_x
-    simpa [DifferentialGeometry.PDE.RicciFlow.tfRicNormSqAt,
-      DifferentialGeometry.PDE.RicciFlow.tfRic_eigen] using htf_x
+    simpa [DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqAt,
+      DifferentialGeometry.PDE.RicciFlow.trace_free_ricci_norm_sq_eigenvalues] using htf_x
   have heq :=
     (DifferentialGeometry.Geometry.Curvature.tracefreeRicciEigenNormSq3_eq_zero_iff l1 l2 l3).1
       htf_eigen
@@ -2863,10 +2868,10 @@ theorem limitEinstein_of_tf0
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] in
 theorem limit_round_base
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
-    (hconn : Ham3LimitConnected (I := I) L)
-    (hbdry : Ham3LimitBoundaryless (I := I))
+    (hconn : HamiltonLimitConnected (I := I) L)
+    (hbdry : HamiltonLimitBoundaryless (I := I))
     {t0 : Real}
     (hbase :
       letI : TopologicalSpace L.N := L.topology
@@ -2887,9 +2892,9 @@ theorem limit_round_base
   letI : SigmaCompactSpace L.N := L.sigmaCompact
   letI : T2Space L.N := L.t2
   haveI : ConnectedSpace L.N := by
-    simpa [Ham3LimitConnected] using hconn
+    simpa [HamiltonLimitConnected] using hconn
   haveI : I.Boundaryless := by
-    simpa [Ham3LimitBoundaryless] using hbdry
+    simpa [HamiltonLimitBoundaryless] using hbdry
   let g : SmoothRiemannianMetric I L.N := L.S.base.metric t0
   have hEinStatic :
       ∀ y : L.N, ∀ v w : TangentSpace I y,
@@ -2916,7 +2921,7 @@ theorem limit_round_base
       simpa using hdim
     have hsym : DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I)
         (L.S.ricciAt t0 x) :=
-      DifferentialGeometry.PDE.RicciFlow.ricciSym_can (I := I) (M := L.N) L.S t0 x
+      DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := L.N) L.S t0 x
     rcases DifferentialGeometry.Geometry.Curvature.ricciEigen3 (I := I) (M := L.N) g
         (L.S.ricciAt t0 x) hdimT hsym with
       ⟨basis, _l1, _l2, _l3, horth, _hdiag⟩
@@ -2955,12 +2960,12 @@ theorem limit_round_base
     simpa using hdim
   have hsym : DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I)
       (L.S.ricciAt t0 x) :=
-    DifferentialGeometry.PDE.RicciFlow.ricciSym_can (I := I) (M := L.N) L.S t0 x
+    DifferentialGeometry.PDE.RicciFlow.ricci_is_symmetric (I := I) (M := L.N) L.S t0 x
   rcases DifferentialGeometry.Geometry.Curvature.ricciEigen3 (I := I) (M := L.N) g
       (L.S.ricciAt t0 x) hdimT hsym with
     ⟨basis, _l1, _l2, _l3, horth, _hdiag⟩
   have htrace :=
-    DifferentialGeometry.PDE.RicciFlow.traceData_can (I := I) (M := L.N) L.S
+    DifferentialGeometry.PDE.RicciFlow.riemann_from_ricci_trace_data (I := I) (M := L.N) L.S
       (t := t0) (x := x) (basis := basis) horth
   have hEinCompNeg : ∀ i j : Fin 3,
       DifferentialGeometry.Geometry.Curvature.ricciCompAt (I := I) basis (-(L.S.ricciAt t0 x)) i j
@@ -2995,10 +3000,10 @@ theorem limit_round_base
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] in
 theorem limit_round_of_ein
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
-    (hconn : Ham3LimitConnected (I := I) L)
-    (hbdry : Ham3LimitBoundaryless (I := I))
+    (hconn : HamiltonLimitConnected (I := I) L)
+    (hbdry : HamiltonLimitBoundaryless (I := I))
     {t0 : Real}
     (hscalar : LimitScalarPosAt (I := I) L t0)
     (heinstein : LimitEinsteinAt (I := I) L t0) :
@@ -3009,10 +3014,10 @@ theorem limit_round_of_ein
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M] in
 theorem limit_const_sec_of_einstein
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
-    (hconn : Ham3LimitConnected (I := I) L)
-    (hbdry : Ham3LimitBoundaryless (I := I))
+    (hconn : HamiltonLimitConnected (I := I) L)
+    (hbdry : HamiltonLimitBoundaryless (I := I))
     {t0 : Real}
     (hscalar : LimitScalarPosAt (I := I) L t0)
     (heinstein : LimitEinsteinAt (I := I) L t0) :
@@ -3030,10 +3035,10 @@ theorem limit_const_sec_of_einstein
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
 theorem const_pos_of_tf0
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
-    (hconn : Ham3LimitConnected (I := I) L)
-    (hbdry : Ham3LimitBoundaryless (I := I))
+    (hconn : HamiltonLimitConnected (I := I) L)
+    (hbdry : HamiltonLimitBoundaryless (I := I))
     {t0 : Real}
     (hscalar : LimitScalarPosAt (I := I) L t0)
     (htf : LimitTracefreeZeroAt (I := I) L t0) :
@@ -3046,15 +3051,15 @@ theorem const_pos_of_tf0
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
 theorem limit_const_pos
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     (hdim : Module.finrank Real E = 3)
-    (hreg : Ham3LimitRegWin (I := I) L)
-    (hconn : Ham3LimitConnected (I := I) L)
-    (hbdry : Ham3LimitBoundaryless (I := I))
+    (hreg : HamiltonLimitRegularWindow (I := I) L)
+    (hconn : HamiltonLimitConnected (I := I) L)
+    (hbdry : HamiltonLimitBoundaryless (I := I))
     (hscalarPos : LimitScalarPos (I := I) L)
     (htf : LimitTracefreeZero (I := I) L) :
     LimitConstPosSec (I := I) L := by
-  let t0 : Real := -(ham3_r0 ^ 2) / 2
+  let t0 : Real := -(hamilton_reference_radius ^ 2) / 2
   have ht0 : t0 ∈ L.D.regular := by
     simpa [t0] using limit_mid_regular (I := I) (M := M) hreg
   exact const_pos_of_tf0 (I := I) (M := M) hdim hconn hbdry
@@ -3062,9 +3067,9 @@ theorem limit_const_pos
 
 theorem limit_to_orig
     (hM : Closed3Manifold (I := I) (M := M))
-    {L : Ham3CGHLimit (I := I) M}
+    {L : HamiltonCGHLimit (I := I) M}
     {t : Real} (_ht : t ∈ L.D.carrier)
-    (_hconn : Ham3LimitConnected (I := I) L)
+    (_hconn : HamiltonLimitConnected (I := I) L)
     (_hround : LimitRoundAt (I := I) L t) :
     exists gInf : SmoothRiemannianMetric I M,
       ConstPosSecMetric (I := I) (M := M) gInf := by
@@ -3077,7 +3082,7 @@ theorem limit_to_orig
   letI : T2Space L.N := L.t2
   letI : T2Space (TangentBundle I L.N) := L.t2TangentBundle
   haveI : ConnectedSpace L.N := by
-    simpa [Ham3LimitConnected] using _hconn
+    simpa [HamiltonLimitConnected] using _hconn
   haveI : ConnectedSpace M := hM.2.1
   haveI : I.Boundaryless := hM.2.2.1
   let g : SmoothRiemannianMetric I L.N := L.S.base.metric t
@@ -3097,15 +3102,15 @@ theorem limit_to_orig
   have hcomplete :
       DifferentialGeometry.HCGCompactness.MetricComplete
         (I := I) (L.limit.atTime (I := I) t) := by
-    simpa [Ham3CGHLimit.limit, g] using L.limitComplete t _ht
+    simpa [HamiltonCGHLimit.limit, g] using L.limitComplete t _ht
   have hdim : 2 <= Module.finrank Real E := by
     have hdim3 : Module.finrank Real E = 3 := hM.2.2.2
     omega
   letI : CompactSpace L.N :=
     DifferentialGeometry.HCGCompactness.PointedRiemannianManifold.compact_of_ricci
       (I := I) (P := L.limit.atTime (I := I) t) (by
-        simpa [Ham3CGHLimit.limit, Ham3LimitConnected] using _hconn)
-      hdim hK (by simpa [Ham3CGHLimit.limit, g] using hRicBM) hcomplete
+        simpa [HamiltonCGHLimit.limit, HamiltonLimitConnected] using _hconn)
+      hdim hK (by simpa [HamiltonCGHLimit.limit, g] using hRicBM) hcomplete
   let Phi := L.cgh.spatial.maps
   obtain ⟨k, hk⟩ :=
     DifferentialGeometry.HCGCompactness.PointedCGHMaps.exists_source_univ
@@ -3134,7 +3139,7 @@ theorem limit_to_orig
     ← Diffeomorph.pullbackMetricCross_inner g limitToOrig.symm x X Y]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_space_box
+theorem constant_positive_sectional_curvature_implies_spherical_space_form
     (hM : Closed3Manifold (I := I) (M := M))
     (hconst : AdmitsConstPosSec (I := I) (M := M)) :
     SphericalSpaceForm (I := I) (M := M) := by
@@ -3164,19 +3169,19 @@ theorem spaceForm_const_metric
     ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x X Y]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_const_box
+theorem spherical_space_form_implies_constant_positive_sectional_curvature
     (hM : Closed3Manifold (I := I) (M := M))
     (hsph : SphericalSpaceForm (I := I) (M := M)) :
     AdmitsConstPosSec (I := I) (M := M) :=
   spaceForm_const_metric (I := I) (M := M) hM hsph
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem ham3_equiv
+theorem constant_positive_sectional_curvature_iff_spherical_space_form
     (hM : Closed3Manifold (I := I) (M := M)) :
     AdmitsConstPosSec (I := I) (M := M) <-> SphericalSpaceForm (I := I) (M := M) := by
   constructor
-  · exact ham3_space_box (I := I) (M := M) hM
-  · exact ham3_const_box (I := I) (M := M) hM
+  · exact constant_positive_sectional_curvature_implies_spherical_space_form (I := I) (M := M) hM
+  · exact spherical_space_form_implies_constant_positive_sectional_curvature (I := I) (M := M) hM
 
 end HamiltonPositiveRicci
 end DifferentialGeometry.PDE.RicciFlow

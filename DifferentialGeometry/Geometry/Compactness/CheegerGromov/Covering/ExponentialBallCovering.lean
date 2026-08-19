@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.ExpBallDiffeo
+import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
 
 
 
@@ -21,7 +21,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-section GeneralItem3
+section
 
 variable {E : Type uE} [NormedAddCommGroup E]
 variable [InnerProductSpace Real E] [FiniteDimensional Real E]
@@ -30,7 +30,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-theorem PointedRiemannianManifold.exists_expBall_diffeo
+theorem PointedRiemannianManifold.exists_exponential_ball_partial_diffeomorph
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (c : Y.M) {ρ : Real} :
     letI := Y.topology
     letI := Y.charted
@@ -55,19 +55,19 @@ theorem PointedRiemannianManifold.exists_expBall_diffeo
   letI := Y.t2
   letI := Y.t2TangentBundle
   intro hinj hC2
-  exact exists_expBall_diffeo_of_lt (I := I) Y.metric c hinj hC2
+  exact exists_exponential_ball_partial_diffeomorph_of_lt (I := I) Y.metric c hinj hC2
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-def item3RadiusFactor (hd : InjRadiusDecayInput (I := I) X) (D : Real) : Real :=
+def exponentialBallRadiusFactor (hd : InjRadiusDecayInput (I := I) X) (D : Real) : Real :=
   205 * Real.exp (hd.C * (20 * hd.lambda D 0))
 
 omit [CompleteSpace E] in
-theorem item3Factor_pos (hd : InjRadiusDecayInput (I := I) X) (D : Real) :
-    0 < item3RadiusFactor hd D := by
+theorem exponential_ball_radius_factor_pos (hd : InjRadiusDecayInput (I := I) X) (D : Real) :
+    0 < exponentialBallRadiusFactor hd D := by
   exact mul_pos (by norm_num) (Real.exp_pos _)
 
-def Item3RadiusInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def ExponentialBallRadiusInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real) : Prop :=
   ∀ k α : Nat, ∀ c : (X.obj k).M, c ∈ seqCenter hd D P k α →
     letI := (X.obj k).topology
@@ -79,7 +79,7 @@ def Item3RadiusInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     ENNReal.ofReal (ρ k α) < injRadius (I := I) (X.obj k).metric c ∧
       ρ k α ≤ expMapC2Radius (I := I) (X.obj k).metric c
 
-def Item3RadiusAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def ExponentialBallRadiusAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r a : Real)
     (n : Nat) : Prop :=
@@ -95,27 +95,27 @@ def Item3RadiusAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
         a * L.lamInf (γ : Nat) ≤
           expMapC2Radius (I := I) (X.obj (L.φ n)).metric c
 
-def Item3RadiusTail (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def ExponentialBallRadiusTail (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r a : Real) : Prop :=
-  ∀ᶠ n in Filter.atTop, Item3RadiusAt (I := I) hd D P L pb r a n
+  ∀ᶠ n in Filter.atTop, ExponentialBallRadiusAt (I := I) hd D P L pb r a n
 
-theorem Item3RadiusTail.subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+theorem ExponentialBallRadiusTail.subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r a : Real)
-    (hrad : Item3RadiusTail (I := I) hd D P L pb r a)
+    (hrad : ExponentialBallRadiusTail (I := I) hd D P L pb r a)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
-    Item3RadiusTail (I := I) hd D P (L.subseq hψ) pb r a := by
+    ExponentialBallRadiusTail (I := I) hd D P (L.subseq hψ) pb r a := by
   filter_upwards [hψ.tendsto_atTop.eventually hrad] with n hn
   intro γ c hc
   exact hn γ c hc
 
-namespace Item3RadiusInput
+namespace ExponentialBallRadiusInput
 
 theorem subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real)
-    (hrad : Item3RadiusInput (I := I) hd D P ρ) (f : Nat -> Nat) :
-    Item3RadiusInput (I := I) (hd.subseq f) D (fun k => P (f k))
+    (hrad : ExponentialBallRadiusInput (I := I) hd D P ρ) (f : Nat -> Nat) :
+    ExponentialBallRadiusInput (I := I) (hd.subseq f) D (fun k => P (f k))
       (fun k α => ρ (f k) α) := by
   intro k α c hc
   have hc' : c ∈ seqCenter hd D P (f k) α := by
@@ -124,12 +124,12 @@ theorem subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
   simpa [InjRadiusDecayInput.subseq, PointedRiemannianSeq.subseq] using
     hrad (f k) α c hc'
 
-end Item3RadiusInput
+end ExponentialBallRadiusInput
 
-theorem exists_seqItem3Diffeo
+theorem exists_sequence_exponential_ball_partial_diffeomorph
     (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real)
-    (hrad : Item3RadiusInput (I := I) hd D P ρ)
+    (hrad : ExponentialBallRadiusInput (I := I) hd D P ρ)
     (k α : Nat) (c : (X.obj k).M) (hc : c ∈ seqCenter hd D P k α) :
     letI := (X.obj k).topology
     letI := (X.obj k).charted
@@ -146,13 +146,13 @@ theorem exists_seqItem3Diffeo
           (expMap (I := I) (X.obj k).metric c (show TangentSpace I c from v) :
             (X.obj k).M))
           (Metric.ball (0 : E) (ρ k α)) :=
-  (X.obj k).exists_expBall_diffeo c (hrad k α c hc).1 (hrad k α c hc).2
+  (X.obj k).exists_exponential_ball_partial_diffeomorph c (hrad k α c hc).1 (hrad k α c hc).2
 
-theorem exists_item3Diffeo
+theorem exists_exponential_ball_partial_diffeomorph
     (hd : InjRadiusDecayInput (I := I) X) {D a r : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (n : Nat)
-    (hrad : Item3RadiusAt (I := I) hd D P L pb r a n)
+    (hrad : ExponentialBallRadiusAt (I := I) hd D P L pb r a n)
     (γ : Fin (pb.A r)) (c : (X.obj (L.φ n)).M)
     (hc : seqCenter hd D P (L.φ n) (γ : Nat) = some c) :
     letI := (X.obj (L.φ n)).topology
@@ -173,10 +173,10 @@ theorem exists_item3Diffeo
         (expMap (I := I) (X.obj (L.φ n)).metric c
           (show TangentSpace I c from v) : (X.obj (L.φ n)).M))
         (Metric.ball (0 : E) (a * L.lamInf (γ : Nat))) :=
-  fun hinj => (X.obj (L.φ n)).exists_expBall_diffeo c
+  fun hinj => (X.obj (L.φ n)).exists_exponential_ball_partial_diffeomorph c
     hinj (hrad γ c hc).2
 
-def Item3GpScaleInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def ExponentialRadiusScaleInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) : Prop :=
   ∀ n γ : Nat, ∀ c : (X.obj (L.φ n)).M,
@@ -189,7 +189,7 @@ def Item3GpScaleInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
         (X.obj (L.φ n)).t2TangentBundle
       4 * L.lamInf γ < expRadiusGp (I := I) (X.obj (L.φ n)).metric c
 
-def Item3GpScaleAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def ExponentialRadiusScaleAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r : Real)
     (n : Nat) : Prop :=
@@ -203,50 +203,50 @@ def Item3GpScaleAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
         (X.obj (L.φ n)).t2TangentBundle
       4 * L.lamInf (γ : Nat) < expRadiusGp (I := I) (X.obj (L.φ n)).metric c
 
-def Item3GpScaleTail (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def ExponentialRadiusScaleTail (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r : Real) : Prop :=
-  ∀ᶠ n in Filter.atTop, Item3GpScaleAt (I := I) hd D P L pb r n
+  ∀ᶠ n in Filter.atTop, ExponentialRadiusScaleAt (I := I) hd D P L pb r n
 
-theorem Item3GpScaleInput.at (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+theorem ExponentialRadiusScaleInput.at (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P)
-    (hgp : Item3GpScaleInput (I := I) hd D P L)
+    (hgp : ExponentialRadiusScaleInput (I := I) hd D P L)
     (pb : hd.PackingBound D) (r : Real) (n : Nat) :
-    Item3GpScaleAt (I := I) hd D P L pb r n := by
+    ExponentialRadiusScaleAt (I := I) hd D P L pb r n := by
   intro γ c hc
   exact hgp n (γ : Nat) c hc
 
-theorem Item3GpScaleInput.to_tail (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+theorem ExponentialRadiusScaleInput.to_tail (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P)
-    (hgp : Item3GpScaleInput (I := I) hd D P L)
+    (hgp : ExponentialRadiusScaleInput (I := I) hd D P L)
     (pb : hd.PackingBound D) (r : Real) :
-    Item3GpScaleTail (I := I) hd D P L pb r :=
+    ExponentialRadiusScaleTail (I := I) hd D P L pb r :=
   Filter.Eventually.of_forall fun n => hgp.at hd D P L pb r n
 
-theorem Item3GpScaleInput.subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+theorem ExponentialRadiusScaleInput.subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P)
-    (hgp : Item3GpScaleInput (I := I) hd D P L)
+    (hgp : ExponentialRadiusScaleInput (I := I) hd D P L)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
-    Item3GpScaleInput (I := I) hd D P (L.subseq hψ) := by
+    ExponentialRadiusScaleInput (I := I) hd D P (L.subseq hψ) := by
   intro n γ c hc
   exact hgp (ψ n) γ c hc
 
-theorem Item3GpScaleTail.subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+theorem ExponentialRadiusScaleTail.subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r : Real)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
-    Item3GpScaleTail (I := I) hd D P (L.subseq hψ) pb r := by
+    ExponentialRadiusScaleTail (I := I) hd D P (L.subseq hψ) pb r := by
   filter_upwards [hψ.tendsto_atTop.eventually hgp] with n hn
   intro γ c hc
   exact hn γ c hc
 
-end GeneralItem3
+end
 
-section FramedItem3
+section
 
 variable {E : Type uE} [NormedAddCommGroup E]
 variable [InnerProductSpace Real E] [FiniteDimensional Real E]
@@ -255,7 +255,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-theorem PointedRiemannianManifold.exists_framedExpBall_diffeo
+theorem PointedRiemannianManifold.exists_framed_exponential_ball_partial_diffeomorph
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (c : Y.M) {ρ : Real} :
     letI := Y.topology
     letI := Y.charted
@@ -277,11 +277,11 @@ theorem PointedRiemannianManifold.exists_framedExpBall_diffeo
   letI := Y.t2
   letI := Y.t2TangentBundle
   intro hinj hC2
-  exact exists_framedExpBall_diffeo_of_lt (I := I) Y.metric c hinj hC2
+  exact exists_framed_exponential_ball_partial_diffeomorph_of_lt (I := I) Y.metric c hinj hC2
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-def FramedItem3RadiusInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def FramedExponentialBallRadiusInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real) : Prop :=
   ∀ k α : Nat, ∀ c : (X.obj k).M, c ∈ seqCenter hd D P k α →
     letI := (X.obj k).topology
@@ -293,7 +293,7 @@ def FramedItem3RadiusInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     ENNReal.ofReal (ρ k α) < framedInjRadius (I := I) (X.obj k).metric c ∧
       ρ k α ≤ expRadiusGp (I := I) (X.obj k).metric c
 
-def FramedItem3RadiusAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def FramedExponentialBallRadiusAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r a : Real)
     (n : Nat) : Prop :=
@@ -310,28 +310,28 @@ def FramedItem3RadiusAt (hd : InjRadiusDecayInput (I := I) X) (D : Real)
         a * L.lamInf (γ : Nat) ≤
           expRadiusGp (I := I) (X.obj (L.φ n)).metric c
 
-def FramedItem3RadiusTail (hd : InjRadiusDecayInput (I := I) X) (D : Real)
+def FramedExponentialBallRadiusTail (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r a : Real) : Prop :=
-  ∀ᶠ n in Filter.atTop, FramedItem3RadiusAt (I := I) hd D P L pb r a n
+  ∀ᶠ n in Filter.atTop, FramedExponentialBallRadiusAt (I := I) hd D P L pb r a n
 
-theorem FramedItem3RadiusTail.subseq
+theorem FramedExponentialBallRadiusTail.subseq
     (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (r a : Real)
-    (hrad : FramedItem3RadiusTail (I := I) hd D P L pb r a)
+    (hrad : FramedExponentialBallRadiusTail (I := I) hd D P L pb r a)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
-    FramedItem3RadiusTail (I := I) hd D P (L.subseq hψ) pb r a := by
+    FramedExponentialBallRadiusTail (I := I) hd D P (L.subseq hψ) pb r a := by
   filter_upwards [hψ.tendsto_atTop.eventually hrad] with n hn
   intro γ c hc
   exact hn γ c hc
 
-namespace FramedItem3RadiusInput
+namespace FramedExponentialBallRadiusInput
 
 theorem subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real)
-    (hrad : FramedItem3RadiusInput (I := I) hd D P ρ) (f : Nat → Nat) :
-    FramedItem3RadiusInput (I := I) (hd.subseq f) D (fun k => P (f k))
+    (hrad : FramedExponentialBallRadiusInput (I := I) hd D P ρ) (f : Nat → Nat) :
+    FramedExponentialBallRadiusInput (I := I) (hd.subseq f) D (fun k => P (f k))
       (fun k α => ρ (f k) α) := by
   intro k α c hc
   have hc' : c ∈ seqCenter hd D P (f k) α := by
@@ -340,12 +340,12 @@ theorem subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
   simpa [InjRadiusDecayInput.subseq, PointedRiemannianSeq.subseq] using
     hrad (f k) α c hc'
 
-end FramedItem3RadiusInput
+end FramedExponentialBallRadiusInput
 
-theorem exists_seqFramedItem3Diffeo
+theorem exists_sequence_framed_exponential_ball_partial_diffeomorph
     (hd : InjRadiusDecayInput (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)) (ρ : Nat → Nat → Real)
-    (hrad : FramedItem3RadiusInput (I := I) hd D P ρ)
+    (hrad : FramedExponentialBallRadiusInput (I := I) hd D P ρ)
     (k α : Nat) (c : (X.obj k).M) (hc : c ∈ seqCenter hd D P k α) :
     letI := (X.obj k).topology
     letI := (X.obj k).charted
@@ -359,13 +359,13 @@ theorem exists_seqFramedItem3Diffeo
           Metric.ball (0 : E) (ρ k α) ∧
         Set.EqOn Φ (framedExpMap (I := I) (X.obj k).metric c)
           (Metric.ball (0 : E) (ρ k α)) :=
-  (X.obj k).exists_framedExpBall_diffeo c (hrad k α c hc).1 (hrad k α c hc).2
+  (X.obj k).exists_framed_exponential_ball_partial_diffeomorph c (hrad k α c hc).1 (hrad k α c hc).2
 
-theorem exists_framedItem3Diffeo
+theorem exists_framed_exponential_ball_partial_diffeomorph
     (hd : InjRadiusDecayInput (I := I) X) {D a r : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData (I := I) hd D P) (pb : hd.PackingBound D) (n : Nat)
-    (hrad : FramedItem3RadiusAt (I := I) hd D P L pb r a n)
+    (hrad : FramedExponentialBallRadiusAt (I := I) hd D P L pb r a n)
     (γ : Fin (pb.A r)) (c : (X.obj (L.φ n)).M)
     (hc : seqCenter hd D P (L.φ n) (γ : Nat) = some c) :
     letI := (X.obj (L.φ n)).topology
@@ -380,10 +380,10 @@ theorem exists_framedItem3Diffeo
           Metric.ball (0 : E) (a * L.lamInf (γ : Nat)) ∧
         Set.EqOn Φ (framedExpMap (I := I) (X.obj (L.φ n)).metric c)
           (Metric.ball (0 : E) (a * L.lamInf (γ : Nat))) :=
-  (X.obj (L.φ n)).exists_framedExpBall_diffeo c
+  (X.obj (L.φ n)).exists_framed_exponential_ball_partial_diffeomorph c
     (hrad γ c hc).1 (hrad γ c hc).2
 
-end FramedItem3
+end
 
 end HCGCompactness
 end DifferentialGeometry

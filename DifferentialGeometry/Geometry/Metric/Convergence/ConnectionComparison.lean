@@ -314,7 +314,7 @@ theorem iterCov_chr_convert {q : ℕ}
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem claim2core {u : Set M} (hu : IsOpen u)
+theorem exists_iterated_covariant_component_bound_of_connection_change {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrR chrK : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -445,7 +445,7 @@ set_option backward.isDefEq.respectTransparency false in
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem claim2_geom
+theorem exists_iterated_covariant_component_bound_under_metric_connection_change
     (e₀ : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))
     [MemTrivializationAtlas e₀]
     (gK gRef : SmoothRiemannianMetric I M) (basisE : Module.Basis Idx Real E)
@@ -493,7 +493,7 @@ theorem claim2_geom
         (fun z (m : Fin (2 + 1) → Idx) =>
           chrKf z (m 0) (m 1) (m 2) - chrRf z (m 0) (m 1) (m 2)) c y) ≤ Cc := by
     intro c hcL
-    obtain ⟨Cc, hCc0, hCc⟩ := claim1_geom e₀ gK gRef basisE C0 K hGinv c
+    obtain ⟨Cc, hCc0, hCc⟩ := exists_connection_difference_component_bound_in_trivialization e₀ gK gRef basisE C0 K hGinv c
       (fun y' hy' j h1 h2 => hgK y' hy' j h1 (by omega))
     refine ⟨Cc * (1 + K), mul_nonneg hCc0 (by linarith), fun y hy => ?_⟩
     refine le_trans (hCc y hy) ?_
@@ -501,7 +501,7 @@ theorem claim2_geom
     have hgkc := hgK y hy (c + 1) (by omega) (by omega)
     linarith
   choose! CA hCA0 hCA using hCAex
-  exact claim2core e₀.open_baseSet frame chrRf chrKf hframeSm hchrRsm hchrKsm
+  exact exists_iterated_covariant_component_bound_of_connection_change e₀.open_baseSet frame chrRf chrKf hframeSm hchrRsm hchrKsm
     L (fun c => max (CA c) 0) (fun c => le_max_right _ _)
     (fun c hc y hy => le_trans (hCA c hc y hy) (le_max_left _ _)) a haL B hB S hBk
 

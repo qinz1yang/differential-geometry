@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.Construction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationConstruction
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.LocalMetrics
@@ -328,7 +328,7 @@ theorem quadNormal_readout
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem stepCAtom_readout
+theorem gluing_atom_readout
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
     (lam : Real) (hlam : 0 < lam) {z : E}
     (hsrc :
@@ -344,14 +344,14 @@ theorem stepCAtom_readout
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space Y.M := Y.t2
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    stepCAtom Y gamma lam hlam (expMapDiffeo (I := I) Y.metric beta z) =
-      stepCBump lam hlam
+    gluingAtom Y gamma lam hlam (expMapDiffeo (I := I) Y.metric beta z) =
+      gluingBump lam hlam
         (normalCoordMetric (I := I) Y gamma 0
           (normalTransition (I := I) Y beta gamma z)
           (normalTransition (I := I) Y beta gamma z)) := by
-  exact quadNormal_readout (I := I) Y beta gamma (stepCBump lam hlam) hsrc
+  exact quadNormal_readout (I := I) Y beta gamma (gluingBump lam hlam) hsrc
 
-noncomputable def stepCAtomOn
+noncomputable def gluingAtomOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
     (lam : Real) (hlam : 0 < lam) (c : NormalChartAt (I := I) Y beta)
     (z : E) : Real :=
@@ -360,12 +360,12 @@ noncomputable def stepCAtomOn
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space Y.M := Y.t2
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  stepCAtom Y gamma lam hlam (c.hom z)
+  gluingAtom Y gamma lam hlam (c.hom z)
 
-noncomputable def stepCAtomChart
+noncomputable def gluingAtomChart
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (beta gamma : Y.M)
     (lam : Real) (hlam : 0 < lam) (z : E) : Real :=
-  stepCAtomOn (I := I) Y beta gamma lam hlam
+  gluingAtomOn (I := I) Y beta gamma lam hlam
     (legacyBallChart (I := I) Y beta) z
 
 noncomputable def seqAtomOn
@@ -430,7 +430,7 @@ theorem seqAtomOn_smooth
     (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (hgp : Item3GpScaleAt (I := I) hd D P L pb r k)
+    (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
     {U : Set E}
     (hUx :
@@ -458,7 +458,7 @@ theorem seqAtomChart_smooth
     (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real) (k : Nat)
-    (hgp : Item3GpScaleAt (I := I) hd D P L pb r k)
+    (hgp : ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
     {U : Set E}
     (hUx :
@@ -487,12 +487,12 @@ theorem seqAtom_live_conv
     (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
-    (hgp : ∀ k, Item3GpScaleAt (I := I) hd D P L pb r k)
+    (hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
     {U : Set E} (hU : IsOpen U) {ainf : E -> Real}
     (hgamma : L.alive (gamma : Nat) = true)
     (hconv : MapCInfConvOnCompacts U
-      (fun k => stepCAtomChart (I := I) (X.obj (L.φ k)) (beta k)
+      (fun k => gluingAtomChart (I := I) (X.obj (L.φ k)) (beta k)
         (seqCenterD hd P L k (gamma : Nat)) (L.lamInf (gamma : Nat))
         (hd.lambda_pos hD (L.rInf (gamma : Nat)))) ainf) :
     MapCInfConvOnCompacts U
@@ -513,11 +513,11 @@ theorem seqAtom_live_conv
         (seqCenterD hd P L k (gamma : Nat)) :=
     hgp k gamma (seqCenterD hd P L k (gamma : Nat)) hk
   change seqAtom hd hD P L pb r k gamma q =
-    stepCAtom (X.obj (L.φ k)) (seqCenterD hd P L k (gamma : Nat))
+    gluingAtom (X.obj (L.φ k)) (seqCenterD hd P L k (gamma : Nat))
       (L.lamInf (gamma : Nat))
       (hd.lambda_pos hD (L.rInf (gamma : Nat))) q
   rw [seqAtom_some hd hD P L pb r k gamma hk]
-  exact (stepCAtom_eq_dist (I := I) (X.obj (L.φ k)) (P (L.φ k))
+  exact (gluing_atom_eq_dist (I := I) (X.obj (L.φ k)) (P (L.φ k))
     (L.lamInf (gamma : Nat))
     (hd.lambda_pos hD (L.rInf (gamma : Nat))) hR).symm
 
@@ -545,7 +545,7 @@ theorem atom_disjoint_conv
     (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (alpha gamma : Fin (pb.A r))
     {U : Set E} (hU : IsOpen U)
     (hsource : ∀ᶠ k in Filter.atTop,
@@ -579,12 +579,12 @@ theorem seqAtoms_conv
     (hd : InjRadiusDecayInput (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
-    (hgp : ∀ k, Item3GpScaleAt (I := I) hd D P L pb r k)
+    (hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) {U : Set E} (hU : IsOpen U)
     (ainf : Fin (pb.A r) -> E -> Real)
     (hlive : ∀ gamma : Fin (pb.A r), L.alive (gamma : Nat) = true ->
       MapCInfConvOnCompacts U
-        (fun k => stepCAtomChart (I := I) (X.obj (L.φ k)) (beta k)
+        (fun k => gluingAtomChart (I := I) (X.obj (L.φ k)) (beta k)
           (seqCenterD hd P L k (gamma : Nat)) (L.lamInf (gamma : Nat))
           (hd.lambda_pos hD (L.rInf (gamma : Nat)))) (ainf gamma)) :
     ∀ gamma : Fin (pb.A r),
@@ -601,7 +601,7 @@ theorem seqAtoms_conv
         seqAtom_live_conv (I := I) hd hD P L pb r hgp beta gamma hU hgamma
           (hlive gamma hgamma)
 
-theorem stepCAtom_conv {ι : Type*} [Fintype ι]
+theorem gluing_atom_converges {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (center : ι -> forall k : Nat, (X.obj k).M)
     (beta : forall k : Nat, (X.obj k).M)
@@ -628,16 +628,16 @@ theorem stepCAtom_conv {ι : Type*} [Fintype ι]
         (normalChartAt (I := I) (X.obj k).metric (center i k)).source)
     (i : ι) :
     MapCInfConvOnCompacts U
-      (fun k => stepCAtomChart (I := I) (X.obj k) (beta k) (center i k)
+      (fun k => gluingAtomChart (I := I) (X.obj k) (beta k) (center i k)
         (lam i) (hlam i))
-      (fun z => stepCBump (lam i) (hlam i)
+      (fun z => gluingBump (lam i) (hlam i)
         (gInf z i (Jinf i z) (Jinf i z))) := by
   have hraw := quadPiBump_conv hU hg (hJ i)
     (fun _ => contDiffOn_const) hginf (hJc i) (hJinfc i)
-    i (stepCBump (lam i) (hlam i)) (stepCBump (lam i) (hlam i)).contDiff
+    i (gluingBump (lam i) (hlam i)) (gluingBump (lam i) (hlam i)).contDiff
   refine hraw.congr hU (fun k z hz => ?_) (fun _ _ => rfl)
-  simpa only [stepCAtomChart, stepCAtomOn, legacyChart_apply] using
-    (stepCAtom_readout (I := I) (X.obj k) (beta k) (center i k)
+  simpa only [gluingAtomChart, gluingAtomOn, legacyChart_apply] using
+    (gluing_atom_readout (I := I) (X.obj k) (beta k) (center i k)
       (lam i) (hlam i) (hsrc i k z hz))
 
 omit [NeZero (Module.finrank ℝ E)] in

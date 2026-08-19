@@ -459,7 +459,7 @@ theorem quotHeat1_of_nonneg
     ring_nf
 
 omit [Module.Finite ℝ E] in
-theorem quotHeat_book
+theorem quotient_evolution_of_laplacian_identities
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -526,7 +526,7 @@ theorem quotHeat_book
     hphiPos hpsiPos hgradPhi hgradPsi hgradPhiPow hgradPsiPow
 
 omit [Module.Finite ℝ E] in
-theorem quotHeat1_book
+theorem quotient_evolution_of_nonnegative_numerator_and_laplacian_identities
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
@@ -650,7 +650,7 @@ theorem quotHeatDiv
     QuotEvolDivOn (I := I) (D := D) G
       phi psi phiHeat psiHeat alpha beta := by
   have hstable :=
-    quotHeat_book (I := I) (D := D) G
+    quotient_evolution_of_laplacian_identities (I := I) (D := D) G
       phi psi phiLap psiLap phiHeat psiHeat alpha beta
       hphiDt hpsiDt hphiLap hpsiLap hphiDiff hpsiDiff
       hphiPos hpsiPos hgradPhi hgradPsi hgradPhiPow hgradPsiPow

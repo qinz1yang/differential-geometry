@@ -18,9 +18,9 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (linearizedRicciArm0BaseCoeff linearizedRicciArm1BaseCoeff ricciArmPrincipalCoeff
+  (linearizedRicciArm0BaseCoeff linearizedRicciArm1BaseCoeff ricciDeTurckPrincipalCoefficient
     traceHessianCoeff)
-open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedFam)
+open DifferentialGeometry.PDE.DeTurck.RicciLinearization (metricPerturbationPath)
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -47,7 +47,7 @@ theorem coeffPerOrderJetBound_nonneg (R δ₀ : ℝ) (hR : 0 ≤ R) (hδ₀ : δ
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem l2_of_pointwise_rfns_iteratedCovGrad_perOrder
+theorem l2_of_pointwise_riemannianFiberNormSq_iteratedCovGrad_perOrder
     (g₀ : SmoothRiemannianMetric I M) (r i : ℕ)
     (C : SmoothCcTensor g₀ r 2) (Ki : ℝ)
     (hpt : ∀ x : M,

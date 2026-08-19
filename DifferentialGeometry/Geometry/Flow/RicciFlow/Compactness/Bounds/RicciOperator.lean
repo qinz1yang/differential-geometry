@@ -25,7 +25,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M]
 
 omit [I.Boundaryless] in
-theorem ricciAt_unitQuad_le_of_sol
+theorem ricci_quadratic_form_on_unit_vector_le_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
     {t : Real} (ht : t ∈ D.carrier) (x : M) (u : TangentSpace I x)
@@ -77,7 +77,7 @@ theorem twoTensorQuadBound_of_solutions
   calc |(S i).ricciAt t x (vec2 (I := I) u u)|
       ≤ (Module.finrank Real (TangentSpace I x) : Real) ^ 2
           * Real.sqrt (normSq0S (I := I) ((S i).base.metric t) x 4 ((S i).base.rm04 t x)) :=
-        ricciAt_unitQuad_le_of_sol (S i) (hwin ht) x u hu
+        ricci_quadratic_form_on_unit_vector_le_of_solution (S i) (hwin ht) x u hu
     _ ≤ (Module.finrank Real E : Real) ^ 2 * Real.sqrt C := by
         have hfr : Module.finrank Real (TangentSpace I x) = Module.finrank Real E := rfl
         rw [hfr]

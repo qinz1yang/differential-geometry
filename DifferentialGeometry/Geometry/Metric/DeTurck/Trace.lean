@@ -28,7 +28,7 @@ def deTurckChartLocal (g g' : SmoothRiemannianMetric I M) (α : M) (x : M) :
     TangentSpace I x :=
   ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
     chartInvGramMatrix (I := I) g α x j k •
-      connDiff (I := I) g g' x
+      connectionDifference (I := I) g g' x
         (chartBasisVecFiber (I := I) α j x)
         (chartBasisVecFiber (I := I) α k x)
 
@@ -38,7 +38,7 @@ lemma deTurckChartLocal_def (g g' : SmoothRiemannianMetric I M) (α : M) (x : M)
     deTurckChartLocal (I := I) g g' α x =
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x j k •
-          connDiff (I := I) g g' x
+          connectionDifference (I := I) g g' x
             (chartBasisVecFiber (I := I) α j x)
             (chartBasisVecFiber (I := I) α k x) := rfl
 
@@ -190,7 +190,7 @@ private def deTurckModelTrace (g g' : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x :=
   ∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
     (chartGramMatrix (I := I) g x x)⁻¹ p q •
-      connDiff (I := I) g g' x
+      connectionDifference (I := I) g g' x
         ((chartModelBasis E) p : TangentSpace I x)
         ((chartModelBasis E) q : TangentSpace I x)
 
@@ -221,7 +221,7 @@ private lemma deTurckChartLocal_eq_modelTrace (g g' : SmoothRiemannianMetric I M
   set P := deTurckCobMatrix (I := I) α x with hP_def
   set Gx := chartGramMatrix (I := I) g x x with hGx_def
   set Gα := chartGramMatrix (I := I) g α x with hGα_def
-  set A := connDiff (I := I) g g' x with hA_def
+  set A := connectionDifference (I := I) g g' x with hA_def
   set e := fun k : Fin n => ((chartModelBasis E) k : TangentSpace I x) with he_def
   have hP_unit : IsUnit P := deTurckCobMatrix_isUnit (I := I) α hx
   have hGα_eq : Gα = P * Gx * Pᵀ := chartGramMatrix_eq_cob_conj (I := I) g α x
@@ -346,7 +346,7 @@ lemma deTurckChartLocal_self (g : SmoothRiemannianMetric I M) (α : M) (x : M) :
   classical
   rw [deTurckChartLocal_def]
   refine Finset.sum_eq_zero (fun j _ => Finset.sum_eq_zero (fun k _ => ?_))
-  rw [connDiff_self (I := I) g]
+  rw [connectionDifference_self (I := I) g]
   simp
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in

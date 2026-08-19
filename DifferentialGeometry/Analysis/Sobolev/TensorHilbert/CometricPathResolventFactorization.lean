@@ -21,7 +21,7 @@ variable
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-theorem sqrt_inner_gInvDiffRaisedEndo_sub_le
+theorem sqrt_inner_metricComparisonDifferenceEndomorphism_sub_le
     (g₀ ga gb : SmoothRiemannianMetric I M)
     (ha hb : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie_a : ∀ (y : M) (v w : TangentSpace I y),
@@ -34,15 +34,15 @@ theorem sqrt_inner_gInvDiffRaisedEndo_sub_le
     (hδab : metricCauchySchwarzBound (I := I) g₀ (fun y => ha y - hb y) δab)
     (x : M) (v : TangentSpace I x) :
     Real.sqrt (g₀.inner x
-        (metricComparisonDiffEndo (I := I) g₀ ga x v - metricComparisonDiffEndo (I := I) g₀ gb x v)
-        (metricComparisonDiffEndo (I := I) g₀ ga x v - metricComparisonDiffEndo (I := I) g₀ gb x v))
+        (metricComparisonDifferenceEndomorphism (I := I) g₀ ga x v - metricComparisonDifferenceEndomorphism (I := I) g₀ gb x v)
+        (metricComparisonDifferenceEndomorphism (I := I) g₀ ga x v - metricComparisonDifferenceEndomorphism (I := I) g₀ gb x v))
           ≤
       (δab / ((1 - δa) * (1 - δb))) * Real.sqrt (g₀.inner x v v) := by
   classical
   have hcoeff_a : 0 < 1 - δa := by linarith
   have hcoeff_b : 0 < 1 - δb := by linarith
-  set Da : TangentSpace I x := metricComparisonDiffEndo (I := I) g₀ ga x v with hDa
-  set Db : TangentSpace I x := metricComparisonDiffEndo (I := I) g₀ gb x v with hDb
+  set Da : TangentSpace I x := metricComparisonDifferenceEndomorphism (I := I) g₀ ga x v with hDa
+  set Db : TangentSpace I x := metricComparisonDifferenceEndomorphism (I := I) g₀ gb x v with hDb
   set z : TangentSpace I x := Da - Db with hz
   set N : ℝ := Real.sqrt (g₀.inner x z z) with hN
   set Nv : ℝ := Real.sqrt (g₀.inner x v v) with hNv
@@ -54,11 +54,11 @@ theorem sqrt_inner_gInvDiffRaisedEndo_sub_le
     rw [hN, ← Real.sqrt_mul hg0z_nn, Real.sqrt_mul_self hg0z_nn]
   have h_ga_Da : ∀ w : TangentSpace I x, ga.inner x Da w = -(ha x v w) := by
     intro w
-    rw [hDa, inner_g1_gInvDiffRaisedEndo (I := I) g₀ ga x v w, htie_a x v w]
+    rw [hDa, inner_g1_metricComparisonDifferenceEndomorphism (I := I) g₀ ga x v w, htie_a x v w]
     ring
   have h_gb_Db : ∀ w : TangentSpace I x, gb.inner x Db w = -(hb x v w) := by
     intro w
-    rw [hDb, inner_g1_gInvDiffRaisedEndo (I := I) g₀ gb x v w, htie_b x v w]
+    rw [hDb, inner_g1_metricComparisonDifferenceEndomorphism (I := I) g₀ gb x v w, htie_b x v w]
     ring
   have h_g0_Db : ∀ w : TangentSpace I x,
       g₀.inner x Db w = -(hb x v w) - hb x Db w := by
@@ -82,11 +82,11 @@ theorem sqrt_inner_gInvDiffRaisedEndo_sub_le
       rw [map_add (hb x) Db v, ContinuousLinearMap.add_apply]
     rw [hha, hhb]
     ring
-  have hraised : Db + v = metricComparisonEndo (I := I) g₀ gb x v := by
-    rw [hDb, gInvRaisedEndo_eq_diff_add_id (I := I) g₀ gb x v]
+  have hraised : Db + v = metricComparisonEndomorphism (I := I) g₀ gb x v := by
+    rw [hDb, metricComparisonEndomorphism_eq_diff_add_id (I := I) g₀ gb x v]
   have hbound_rb : Real.sqrt (g₀.inner x (Db + v) (Db + v)) ≤ (1 / (1 - δb)) * Nv := by
     rw [hraised, hNv]
-    exact sqrt_inner_gInvRaisedEndo_le (I := I) g₀ gb hb htie_b hδb_lt hδb_nn hδb x v
+    exact sqrt_inner_metricComparisonEndomorphism_le (I := I) g₀ gb hb htie_b hδb_lt hδb_nn hδb x v
   have habs : |ha x (Db + v) z - hb x (Db + v) z| ≤
       δab * Real.sqrt (g₀.inner x (Db + v) (Db + v)) * N := by
     have h := hδab x (Db + v) z

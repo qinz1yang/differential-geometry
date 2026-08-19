@@ -37,10 +37,10 @@ theorem metricCovDeriv_self_eq_zero (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_koszul (g₁ g₀ : SmoothRiemannianMetric I M)
+theorem connectionDifference_koszul (g₁ g₀ : SmoothRiemannianMetric I M)
     {X Y Z : Π x : M, TangentSpace I x} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
-    2 * g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y x) (X x)) (Z x) =
+    2 * g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Y x) (X x)) (Z x) =
       metricCovDeriv (I := I) g₁ (LeviCivita (I := I) g₀) X Y Z x
       + metricCovDeriv (I := I) g₁ (LeviCivita (I := I) g₀) Y X Z x
       - metricCovDeriv (I := I) g₁ (LeviCivita (I := I) g₀) Z X Y x := by
@@ -62,7 +62,7 @@ theorem connDiff_koszul (g₁ g₀ : SmoothRiemannianMetric I M)
   set nZX := (LeviCivita (I := I) g₀).toFun X x (Z x) with hnZX
   set nYZ := (LeviCivita (I := I) g₀).toFun Z x (Y x) with hnYZ
   set nZY := (LeviCivita (I := I) g₀).toFun Y x (Z x) with hnZY
-  rw [PDE.DeTurck.connDiff_apply (I := I) g₁ g₀ hY (X x)]
+  rw [PDE.DeTurck.connectionDifference_apply (I := I) g₁ g₀ hY (X x)]
   unfold metricCovDeriv
   simp only [directionalDeriv_eq, ← hnXY, ← hnYX, ← hnXZ, ← hnZX, ← hnYZ, ← hnZY]
   rw [← tf_XY, ← tf_XZ, ← tf_YZ] at hK1
@@ -92,17 +92,17 @@ theorem metricDiffCovDeriv_eq_metricCovDeriv (g₁ g₀ : SmoothRiemannianMetric
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_koszul_metricDiff (g₁ g₀ : SmoothRiemannianMetric I M)
+theorem connectionDifference_koszul_metricDiff (g₁ g₀ : SmoothRiemannianMetric I M)
     {X Y Z : Π x : M, TangentSpace I x} {x : M}
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) (hZ : MDiffAt (T% Z) x) :
-    2 * g₁.inner x (PDE.DeTurck.connDiff (I := I) g₁ g₀ x (Y x) (X x)) (Z x) =
+    2 * g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (Y x) (X x)) (Z x) =
       metricDiffCovDeriv (I := I) g₁ g₀ X Y Z x
       + metricDiffCovDeriv (I := I) g₁ g₀ Y X Z x
       - metricDiffCovDeriv (I := I) g₁ g₀ Z X Y x := by
   rw [metricDiffCovDeriv_eq_metricCovDeriv (I := I) g₁ g₀ hY hZ,
       metricDiffCovDeriv_eq_metricCovDeriv (I := I) g₁ g₀ hX hZ,
       metricDiffCovDeriv_eq_metricCovDeriv (I := I) g₁ g₀ hX hY]
-  exact connDiff_koszul (I := I) g₁ g₀ hX hY hZ
+  exact connectionDifference_koszul (I := I) g₁ g₀ hX hY hZ
 
 end Connection
 end Geometry

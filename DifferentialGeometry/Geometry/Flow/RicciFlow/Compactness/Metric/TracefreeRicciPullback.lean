@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.PullbackCross
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.GradientQuantities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciNorm
 
 open DifferentialGeometry.Geometry.Curvature
 
@@ -24,13 +24,13 @@ variable {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N
 
 omit [NeZero (Module.finrank ℝ E)]
   [NeZero (Module.finrank ℝ F)] in
-theorem tfRicNormSq_cross
+theorem trace_free_ricci_norm_sq_cross
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N) (x : M) :
-    DifferentialGeometry.PDE.RicciFlow.tracefreeRicciNormSqAtOf
+    DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqAtOf
         (metricScalarAt (I := I)
           (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x)
         (normSq0S (I := I)
@@ -38,7 +38,7 @@ theorem tfRicNormSq_cross
           x 2
           (metricRicci (I := I)
             (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x)) =
-      DifferentialGeometry.PDE.RicciFlow.tracefreeRicciNormSqAtOf
+      DifferentialGeometry.PDE.RicciFlow.traceFreeRicciNormSqAtOf
         (metricScalarAt (I := J) g (Phi x))
         (normSq0S (I := J) g (Phi x) 2
           (metricRicci (I := J) g (Phi x))) := by

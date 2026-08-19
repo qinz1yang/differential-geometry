@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.MovingInverse
 
 
-import DifferentialGeometry.Geometry.Comparison.ExpBallDiffeo
+import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricLocal
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Injectivity
 open DifferentialGeometry.Geometry.Curvature
@@ -48,7 +48,7 @@ theorem exists_inv_seq
         Φ.source = W ∧ Φ.target = A n '' W ∧
           Set.EqOn Φ (A n) W := by
     intro n hn
-    exact exists_diffeo_of_injOn (hN n hn).1 hW (hN n hn).2.1
+    exact exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on (hN n hn).1 hW (hN n hn).2.1
   let Φ : (n : Nat) → N ≤ n →
       PartialDiffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E)
         E E (∞ : WithTop ℕ∞) := fun n hn ↦ Classical.choose (hex n hn)

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.C0Difference
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.RemainderDifferenceBounds
 
 noncomputable section
 
@@ -13,6 +13,7 @@ open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Sobolev (covariantJetNormSq)
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Spectral (ccTensorToHs)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -20,7 +21,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
-private theorem a1PairArith
+private theorem firstOrderPairing_arithmetic_bound
     (c0 c1 e0 e1 a a4 d2 d3 d4 n nrm : ℝ)
     (hc0 : 0 ≤ c0) (hc1 : 0 ≤ c1) (he0 : 0 ≤ e0) (he1 : 0 ≤ e1)
     (ha : 0 ≤ a) (ha4 : 0 ≤ a4) (hd2 : 0 ≤ d2) (hd3 : 0 ≤ d3)
@@ -79,7 +80,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-theorem c1_pair_lip
+theorem lowOrderCoefficient_pairing_lipschitz_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ K : ℝ → ℝ,
@@ -101,29 +102,29 @@ theorem c1_pair_lip
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A A4 D2 D3 D4 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ A4 → 0 ≤ D2 → 0 ≤ D3 → 0 ≤ D4 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
-      let AT := lowBaseData (I := I) (M := M) g g T
+      let AT := lowerScaleActionCoefficients (I := I) (M := M) g g T
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδT hδZ
-      let AU := lowBaseData (I := I) (M := M) g g U
+      let AU := lowerScaleActionCoefficients (I := I) (M := M) g g U
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδU hδZ
-      lowJetSq (I := I) (M := M) g 2 (AT.C0 - AU.C0) +
-          lowJetSq (I := I) (M := M) g 2 (AT.C1 - AU.C1) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (AT.zeroOrderCoefficient - AU.zeroOrderCoefficient) +
+          covariantJetNormSq (I := I) (M := M) g 2 (AT.firstOrderCoefficient - AU.firstOrderCoefficient) ≤
         (K R * (1 + A + A4) * (D4 + D3 + D2 + N)) ^ 2 := by
   obtain ⟨ρ0, C0f, C1f, hρ0, hC0f, hC1f, hc0⟩ :=
-    low_c0_diff_h2_tame (I := I) (M := M) hDim g
+    exists_ricciDeTurckLowOrderDifference_covariantJetNormSq_tame_bound (I := I) (M := M) hDim g
   obtain ⟨ρ1, E0, E1, hρ1, hE0, hE1, hc1⟩ :=
-    c1Diff_tame (I := I) (M := M) hDim g
+    firstOrderCoefficientDifference_tame (I := I) (M := M) hDim g
   refine ⟨min ρ0 ρ1, fun R => C0f R + C1f R + E0 + 2 * E1,
     lt_min hρ0 hρ1, ?_, ?_⟩
   · intro R hR
@@ -141,9 +142,9 @@ theorem c1_pair_lip
   have hM1 := hc1 T U hT hU hδ_le hδ0 hδT hδU hδZ
     (hTn.trans (min_le_right _ _)) (hUn.trans (min_le_right _ _))
     A D3 hA hD3 hT3 hTU3
-  have hC0eq := lowC0_sub (I := I) (M := M) g T U
+  have hC0eq := lowerScaleActionCoefficients_zeroOrderCoefficient_sub (I := I) (M := M) g T U
     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδT hδU hδZ
-  have hC1eq := lowC1_sub (I := I) (M := M) g T U
+  have hC1eq := lowerScaleActionCoefficients_firstOrderCoefficient_sub (I := I) (M := M) g T U
     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδT hδU hδZ
   have hNrm : (0 : ℝ) ≤
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ :=
@@ -170,8 +171,8 @@ theorem c1_pair_lip
     have h1 := mul_le_mul_of_nonneg_left hTUn hE1
     have h2 := mul_le_mul_of_nonneg_left hTUn (mul_nonneg hE1 hA)
     linarith
-  have hM1' : lowJetSq (I := I) (M := M) g 2
-      (lowC1Diff (I := I) (M := M) g T U
+  have hM1' : covariantJetNormSq (I := I) (M := M) g 2
+      (firstOrderCoefficientDifference (I := I) (M := M) g T U
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
         hδT hδU hδZ) ≤ (E0 * D3 + E1 * N + E1 * A * N) ^ 2 :=
     hM1.trans (pow_le_pow_left₀ hYraw hYle 2)
@@ -180,7 +181,7 @@ theorem c1_pair_lip
           (E0 * D3 + E1 * N + E1 * A * N) ≤
         (C0f R + C1f R + E0 + 2 * E1) * (1 + A + A4) *
           (D4 + D3 + D2 + N) :=
-    a1PairArith (C0f R) (C1f R) E0 E1 A A4 D2 D3 D4 N N
+    firstOrderPairing_arithmetic_bound (C0f R) (C1f R) E0 E1 A A4 D2 D3 D4 N N
       (hC0f R hR) (hC1f R hR) hE0 hE1 hA hA4 hD2 hD3 hD4 hN hN le_rfl
   refine sqSumLe
     (C0f R * (1 + A) * (D4 + D3 + D2 + N) + C1f R * A4 * (D3 + N))
@@ -192,7 +193,7 @@ theorem c1_pair_lip
   · rw [hC1eq]
     exact hM1'
 
-theorem a1_pair_lip
+theorem firstOrderAction_pairing_lipschitz_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ K : ℝ → ℝ,
@@ -214,28 +215,28 @@ theorem a1_pair_lip
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A A4 D2 D3 D4 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ A4 → 0 ≤ D2 → 0 ≤ D3 → 0 ≤ D4 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
-      let AT := lowBaseData (I := I) (M := M) g g T
+      let AT := lowerScaleActionCoefficients (I := I) (M := M) g g T
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδT hδZ
-      let AU := lowBaseData (I := I) (M := M) g g U
+      let AU := lowerScaleActionCoefficients (I := I) (M := M) g g U
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδU hδZ
-      ‖AT.a1Hi (I := I) (M := M) - AU.a1Hi (I := I) (M := M)‖ ≤
+      ‖AT.firstOrderActionThirdToSecondOrder (I := I) (M := M) - AU.firstOrderActionThirdToSecondOrder (I := I) (M := M)‖ ≤
           K R * (1 + A + A4) * (D4 + D3 + D2 + N) ∧
-        ‖AT.a1Lo (I := I) (M := M) - AU.a1Lo (I := I) (M := M)‖ ≤
+        ‖AT.firstOrderActionSecondToFirstOrder (I := I) (M := M) - AU.firstOrderActionSecondToFirstOrder (I := I) (M := M)‖ ≤
           K R * (1 + A + A4) * (D4 + D3 + D2 + N) := by
-  obtain ⟨ρ, K1, hρ, hK1, hjet⟩ := c1_pair_lip (I := I) (M := M) hDim g
-  obtain ⟨Ca, hCa, hdiff⟩ := a1_diff (I := I) (M := M) hDim g
+  obtain ⟨ρ, K1, hρ, hK1, hjet⟩ := lowOrderCoefficient_pairing_lipschitz_bound (I := I) (M := M) hDim g
+  obtain ⟨Ca, hCa, hdiff⟩ := exists_firstOrderAction_spectralSobolev_difference_bounds (I := I) (M := M) hDim g
   refine ⟨ρ, fun R => Ca * K1 R, hρ, fun R hR => mul_nonneg hCa (hK1 R hR), ?_⟩
   intro T U hT hU δ hδ_le hδ0 hδT hδU hδZ R A A4 D2 D3 D4 N
     hR hA hA4 hD2 hD3 hD4 hN hT2 hU2 hT3 hU3 hT4 hU4
@@ -248,14 +249,14 @@ theorem a1_pair_lip
     hT2 hU2 hT3 hU3 hT4 hU4 hTU2 hTU3 hTU4 hTn hUn hTUn
   obtain ⟨hHi, hLo⟩ :=
     hdiff
-      (lowBaseData (I := I) (M := M) g g T
+      (lowerScaleActionCoefficients (I := I) (M := M) g g T
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδT hδZ)
-      (lowBaseData (I := I) (M := M) g g U
+      (lowerScaleActionCoefficients (I := I) (M := M) g g U
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδU hδZ)
       (K1 R * (1 + A + A4) * (D4 + D3 + D2 + N)) hK hin
   exact ⟨hHi.trans_eq (by ring), hLo.trans_eq (by ring)⟩
 
-private theorem c0RootSq
+private theorem zeroOrderCoefficient_sqrt_bound
     (b p d n : ℝ) (hb : 0 ≤ b) (hd : 0 ≤ d) (hn : 0 ≤ n) :
     b * (p ^ 4 * (d ^ 2 + n ^ 2)) ≤
       (Real.sqrt b * p ^ 2 * (d + n)) ^ 2 := by
@@ -347,7 +348,7 @@ private theorem loPairArith
       simp only [f, p, s]
       ring
 
-theorem a1Lo_pair_lip
+theorem firstOrderActionSecondToFirstOrder_pairing_lipschitz_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ K : ℝ → ℝ,
@@ -369,26 +370,26 @@ theorem a1Lo_pair_lip
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A D2 D3 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ D2 → 0 ≤ D3 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
-      let AT := lowBaseData (I := I) (M := M) g g T
+      let AT := lowerScaleActionCoefficients (I := I) (M := M) g g T
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδT hδZ
-      let AU := lowBaseData (I := I) (M := M) g g U
+      let AU := lowerScaleActionCoefficients (I := I) (M := M) g g U
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδU hδZ
-      ‖AT.a1Lo (I := I) (M := M) - AU.a1Lo (I := I) (M := M)‖ ≤
+      ‖AT.firstOrderActionSecondToFirstOrder (I := I) (M := M) - AU.firstOrderActionSecondToFirstOrder (I := I) (M := M)‖ ≤
         K R * (1 + A + A ^ 2) ^ 2 * (D3 + D2 + N) := by
   obtain ⟨ρ0, Bq, hρ0, hBq, hc0⟩ :=
-    c0Diff_tame (I := I) (M := M) hDim g
+    zeroOrderCoefficientDifference_tame (I := I) (M := M) hDim g
   obtain ⟨ρ1, B0, B1, hρ1, hB0, hB1, hc1⟩ :=
-    c1Diff_tame (I := I) (M := M) hDim g
-  obtain ⟨Ca, hCa, hop⟩ := a1Lo_diff (I := I) (M := M) hDim g
+    firstOrderCoefficientDifference_tame (I := I) (M := M) hDim g
+  obtain ⟨Ca, hCa, hop⟩ := exists_firstOrderActionSecondToFirstOrder_difference_bound (I := I) (M := M) hDim g
   let K : ℝ → ℝ := fun R =>
     Ca * (Real.sqrt (Bq R) + B0 + 2 * B1)
   refine ⟨min ρ0 ρ1, K, lt_min hρ0 hρ1, ?_, ?_⟩
@@ -401,9 +402,9 @@ theorem a1Lo_pair_lip
     R A D2 D3 N hR hA hD2 hD3 hN hT2 hU2 hT3 hU3
     hTU2 hTU3 hTn hUn hTUn
   dsimp only
-  let AT := lowBaseData (I := I) (M := M) g g T
+  let AT := lowerScaleActionCoefficients (I := I) (M := M) g g T
     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδT hδZ
-  let AU := lowBaseData (I := I) (M := M) g g U
+  let AU := lowerScaleActionCoefficients (I := I) (M := M) g g U
     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) hδU hδZ
   let P : ℝ := 1 + A + A ^ 2
   let R0 : ℝ := Real.sqrt (Bq R) * P ^ 2 * (D2 + N)
@@ -414,18 +415,18 @@ theorem a1Lo_pair_lip
   have hM1 := hc1 T U hT hU hδ_le hδ0 hδT hδU hδZ
     (hTn.trans (min_le_right _ _)) (hUn.trans (min_le_right _ _))
     A D3 hA hD3 hT3 hTU3
-  have hC0eq : AT.C0 - AU.C0 =
-      lowC0Diff (I := I) (M := M) g T U
+  have hC0eq : AT.zeroOrderCoefficient - AU.zeroOrderCoefficient =
+      ricciDeTurckLowOrderDifference (I := I) (M := M) g T U
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
         hδT hδU hδZ := by
     simp only [AT, AU]
-    exact lowC0_sub (I := I) (M := M) g T U _ hδT hδU hδZ
-  have hC1eq : AT.C1 - AU.C1 =
-      lowC1Diff (I := I) (M := M) g T U
+    exact lowerScaleActionCoefficients_zeroOrderCoefficient_sub (I := I) (M := M) g T U _ hδT hδU hδZ
+  have hC1eq : AT.firstOrderCoefficient - AU.firstOrderCoefficient =
+      firstOrderCoefficientDifference (I := I) (M := M) g T U
         (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
         hδT hδU hδZ := by
     simp only [AT, AU]
-    exact lowC1_sub (I := I) (M := M) g T U _ hδT hδU hδZ
+    exact lowerScaleActionCoefficients_firstOrderCoefficient_sub (I := I) (M := M) g T U _ hδT hδU hδZ
   have hR0 : 0 ≤ R0 := by
     exact mul_nonneg
       (mul_nonneg (Real.sqrt_nonneg _) (sq_nonneg P))
@@ -435,13 +436,13 @@ theorem a1Lo_pair_lip
       (add_nonneg (mul_nonneg hB0 hD3) (mul_nonneg hB1 hN))
       (mul_nonneg (mul_nonneg hB1 hA) hN)
   have hj0 :
-      lowJetSq (I := I) (M := M) g 1 (AT.C0 - AU.C0) ≤ R0 ^ 2 := by
+      covariantJetNormSq (I := I) (M := M) g 1 (AT.zeroOrderCoefficient - AU.zeroOrderCoefficient) ≤ R0 ^ 2 := by
     rw [hC0eq]
     refine hM0.trans ?_
     simpa only [R0, P] using
-      c0RootSq (Bq R) (1 + A + A ^ 2) D2 N (hBq R hR) hD2 hN
+      zeroOrderCoefficient_sqrt_bound (Bq R) (1 + A + A ^ 2) D2 N (hBq R hR) hD2 hN
   have hj1 :
-      lowJetSq (I := I) (M := M) g 2 (AT.C1 - AU.C1) ≤ R1 ^ 2 := by
+      covariantJetNormSq (I := I) (M := M) g 2 (AT.firstOrderCoefficient - AU.firstOrderCoefficient) ≤ R1 ^ 2 := by
     rw [hC1eq]
     refine hM1.trans ?_
     have hraw0 : 0 ≤
@@ -471,7 +472,7 @@ theorem a1Lo_pair_lip
       loPairArith (Bq R) B0 B1 A D2 D3 N
         hB0 hB1 hA hD2 hD3 hN
   calc
-    ‖AT.a1Lo (I := I) (M := M) - AU.a1Lo (I := I) (M := M)‖ ≤
+    ‖AT.firstOrderActionSecondToFirstOrder (I := I) (M := M) - AU.firstOrderActionSecondToFirstOrder (I := I) (M := M)‖ ≤
         Ca * (R0 + R1) := hpair
     _ ≤ Ca *
         ((Real.sqrt (Bq R) + B0 + 2 * B1) *

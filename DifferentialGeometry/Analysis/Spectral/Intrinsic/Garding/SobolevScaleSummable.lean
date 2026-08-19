@@ -172,18 +172,6 @@ theorem tensorParseval_l2Coeff_ofCompact_sq
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorL2Coeff_ofCompact_summable_sq'
-    {g : SmoothRiemannianMetric I M} {r s : ℕ}
-    (h_compact : IsCompactOperator (tensorResolventL2
-      (I := I) (M := M) g r s))
-    (u : TensorL2 r s g) :
-    Summable (fun i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g r
-      s =>
-      (tensorL2Coeff (I := I) (M := M) h_compact u i) ^ 2) :=
-  tensorL2Coeff_summable_sq (I := I) (M := M) h_compact u
-
-omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
 theorem summable_tensorSobolevWeight_of_even
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (c : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g r s → ℝ)

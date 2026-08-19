@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.ApproxIso
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximateIsometry
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.ApproxIsoDataMono
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationMonotonicity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Distances
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -331,7 +331,7 @@ theorem data_image_metric_ball
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (h.inner y w w)))
     (hr : 0 < r) (hrr₂ : r ≤ r₂) (hε0 : 0 ≤ ε)
     (hR : Real.sqrt (1 + ε) * r < R)
-    (hdata : PreApproxIsoDataOn (I := I)
+    (hdata : MapMetricApproximationOn (I := I)
       (Metric.closedEBall O (ENNReal.ofReal r₂)) ε p (Φ : M → N) g h)
     (hsub : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ Φ.source) :
     (Φ : M → N) '' Metric.ball O r ⊆ Metric.ball ((Φ : M → N) O) R := by
@@ -366,7 +366,7 @@ theorem data_image_metric_ball_of_superset
     (hr : 0 < r) (hrr₂ : r ≤ r₂) (hε0 : 0 ≤ ε)
     (hR : Real.sqrt (1 + ε) * r < R)
     (hK : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ K)
-    (hdata : PreApproxIsoDataOn (I := I) K ε p (Φ : M → N) g h)
+    (hdata : MapMetricApproximationOn (I := I) K ε p (Φ : M → N) g h)
     (hsub : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ Φ.source) :
     (Φ : M → N) '' Metric.ball O r ⊆ Metric.ball ((Φ : M → N) O) R :=
   data_image_metric_ball (I := I) Φ hgnorm hhnorm hr hrr₂ hε0 hR
@@ -400,17 +400,17 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsMan
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N] [T2Space N] [IsManifold I ∞ N]
   [SigmaCompactSpace N]
 
-noncomputable def PreApproxIsoDataOn.congr_eq {K : Set M} {ε : ℝ} {p : ℕ} {F F' : M → N}
+noncomputable def MapMetricApproximationOn.congr_eq {K : Set M} {ε : ℝ} {p : ℕ} {F F' : M → N}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
-    (D : PreApproxIsoDataOn (I := I) K ε p F g h) (hEq : F' = F) :
-    PreApproxIsoDataOn (I := I) K ε p F' g h :=
+    (D : MapMetricApproximationOn (I := I) K ε p F g h) (hEq : F' = F) :
+    MapMetricApproximationOn (I := I) K ε p F' g h :=
   D.congr (fun _ _ => Filter.EventuallyEq.of_eq hEq)
 
-noncomputable def PreApproxIsoSep.congr {K : Set M} {c0 cov : ℝ} {p : ℕ} {F F' : M → N}
+noncomputable def MapMetricApproximationBoundsOn.congr {K : Set M} {c0 cov : ℝ} {p : ℕ} {F F' : M → N}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
-    (D : PreApproxIsoSep (I := I) K c0 cov p F g h)
+    (D : MapMetricApproximationBoundsOn (I := I) K c0 cov p F g h)
     (hev : ∀ x ∈ K, F' =ᶠ[nhds x] F) :
-    PreApproxIsoSep (I := I) K c0 cov p F' g h where
+    MapMetricApproximationBoundsOn (I := I) K c0 cov p F' g h where
   c0_nonneg := D.c0_nonneg
   cov_nonneg := D.cov_nonneg
   smoothOn := D.smoothOn.congr (fun x hx => (hev x hx).self_of_nhds)
@@ -422,46 +422,46 @@ noncomputable def PreApproxIsoSep.congr {K : Set M} {c0 cov : ℝ} {p : ℕ} {F 
   c0_small := D.c0_small
   cov_small := D.cov_small
 
-noncomputable def PreApproxIsoSep.congr_eq {K : Set M} {c0 cov : ℝ} {p : ℕ} {F F' : M → N}
+noncomputable def MapMetricApproximationBoundsOn.congr_eq {K : Set M} {c0 cov : ℝ} {p : ℕ} {F F' : M → N}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
-    (D : PreApproxIsoSep (I := I) K c0 cov p F g h) (hEq : F' = F) :
-    PreApproxIsoSep (I := I) K c0 cov p F' g h :=
+    (D : MapMetricApproximationBoundsOn (I := I) K c0 cov p F g h) (hEq : F' = F) :
+    MapMetricApproximationBoundsOn (I := I) K c0 cov p F' g h :=
   D.congr (fun _ _ => Filter.EventuallyEq.of_eq hEq)
 
-noncomputable def PreApproxIsoSep.congr_set {K K' : Set M} {c0 cov : ℝ} {p : ℕ}
+noncomputable def MapMetricApproximationBoundsOn.congr_set {K K' : Set M} {c0 cov : ℝ} {p : ℕ}
     {F : M → N} {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
-    (D : PreApproxIsoSep (I := I) K c0 cov p F g h) (hK : K' = K) :
-    PreApproxIsoSep (I := I) K' c0 cov p F g h := by
+    (D : MapMetricApproximationBoundsOn (I := I) K c0 cov p F g h) (hK : K' = K) :
+    MapMetricApproximationBoundsOn (I := I) K' c0 cov p F g h := by
   subst hK
   exact D
 
-noncomputable def BookApproxIsoPartialData.ofParts {K : Set M} {ε : ℝ} {p : ℕ}
+noncomputable def PartialDiffeomorphMetricApproximation.ofParts {K : Set M} {ε : ℝ} {p : ℕ}
     {Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (hsrc : K ⊆ Φ.source)
-    (forward : PreApproxIsoDataOn (I := I) K ε p (Φ : M → N) g h)
-    (reverse : PreApproxIsoDataOn (I := I) ((Φ : M → N) '' K) ε p (Φ.symm : N → M) h g) :
-    BookApproxIsoPartialData (I := I) K ε p Φ g h where
+    (forward : MapMetricApproximationOn (I := I) K ε p (Φ : M → N) g h)
+    (reverse : MapMetricApproximationOn (I := I) ((Φ : M → N) '' K) ε p (Φ.symm : N → M) h g) :
+    PartialDiffeomorphMetricApproximation (I := I) K ε p Φ g h where
   source_sub := hsrc
   forward := forward
   reverse := reverse
 
-noncomputable def BookApproxIsoSep.ofParts {K : Set M} {c0 cov : ℝ} {p : ℕ}
+noncomputable def PartialDiffeomorphMetricApproximationBounds.ofParts {K : Set M} {c0 cov : ℝ} {p : ℕ}
     {Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
     (hsrc : K ⊆ Φ.source)
-    (forward : PreApproxIsoSep (I := I) K c0 cov p (Φ : M → N) g h)
-    (reverse : PreApproxIsoSep (I := I) ((Φ : M → N) '' K) c0 cov p (Φ.symm : N → M) h g) :
-    BookApproxIsoSep (I := I) K c0 cov p Φ g h where
+    (forward : MapMetricApproximationBoundsOn (I := I) K c0 cov p (Φ : M → N) g h)
+    (reverse : MapMetricApproximationBoundsOn (I := I) ((Φ : M → N) '' K) c0 cov p (Φ.symm : N → M) h g) :
+    PartialDiffeomorphMetricApproximationBounds (I := I) K c0 cov p Φ g h where
   source_sub := hsrc
   forward := forward
   reverse := reverse
 
-noncomputable def BookApproxIsoSep.congr_set {K K' : Set M} {c0 cov : ℝ} {p : ℕ}
+noncomputable def PartialDiffeomorphMetricApproximationBounds.congr_set {K K' : Set M} {c0 cov : ℝ} {p : ℕ}
     {Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞)}
     {g : SmoothRiemannianMetric I M} {h : SmoothRiemannianMetric I N}
-    (D : BookApproxIsoSep (I := I) K c0 cov p Φ g h) (hK : K' = K) :
-    BookApproxIsoSep (I := I) K' c0 cov p Φ g h := by
+    (D : PartialDiffeomorphMetricApproximationBounds (I := I) K c0 cov p Φ g h) (hK : K' = K) :
+    PartialDiffeomorphMetricApproximationBounds (I := I) K' c0 cov p Φ g h := by
   subst hK
   exact D
 
@@ -510,11 +510,11 @@ theorem tensor02CovDeriv_metric_zero {M' : Type u} [TopologicalSpace M'] [Charte
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
-theorem reflBookData {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
+theorem partial_diffeomorph_metric_approximation_refl {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
     [IsManifold I ∞ M'] [T2Space M'] [SigmaCompactSpace M']
     [IsManifold I 1 M'] [IsManifold I 2 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (K : Set M') (g : SmoothRiemannianMetric I M') (ε : ℝ) (hε : 0 < ε) (hε1 : ε < 1) (p : ℕ) :
-    Nonempty (BookApproxIsoPartialData (I := I) K ε p
+    Nonempty (PartialDiffeomorphMetricApproximation (I := I) K ε p
       (PartialDiffeomorph.refl (I := I) M') g g) := by
   classical
   have hcoe : ∀ x : M', (PartialDiffeomorph.refl (I := I) M' : M' → M') x = x := fun _ => rfl
@@ -540,7 +540,7 @@ theorem reflBookData {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
       (hΦ : ∀ x, Φcoe x = x) (hΦd : ∀ x, mfderiv I I Φcoe x
         = ContinuousLinearMap.id ℝ (TangentSpace I x))
       (hsm : ContMDiffOn I I (∞ : WithTop ℕ∞) Φcoe K'),
-      PreApproxIsoDataOn (I := I) K' ε p Φcoe g g := by
+      MapMetricApproximationOn (I := I) K' ε p Φcoe g g := by
     intro K' Φcoe hΦ hΦd hsm
     refine
       { eps_pos := hε
@@ -588,7 +588,7 @@ theorem reflSepData {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
     [IsManifold I ∞ M'] [T2Space M'] [SigmaCompactSpace M']
     [IsManifold I 1 M'] [IsManifold I 2 M'] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M']
     (K : Set M') (g : SmoothRiemannianMetric I M') (p : ℕ) :
-    Nonempty (BookApproxIsoSep (I := I) K 0 0 p
+    Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I) K 0 0 p
       (PartialDiffeomorph.refl (I := I) M') g g) := by
   classical
   have hcoe : ∀ x : M', (PartialDiffeomorph.refl (I := I) M' : M' → M') x = x := fun _ => rfl
@@ -614,7 +614,7 @@ theorem reflSepData {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M']
       (hΦ : ∀ x, Φcoe x = x) (hΦd : ∀ x, mfderiv I I Φcoe x
         = ContinuousLinearMap.id ℝ (TangentSpace I x))
       (hsm : ContMDiffOn I I (∞ : WithTop ℕ∞) Φcoe K'),
-      PreApproxIsoSep (I := I) K' 0 0 p Φcoe g g := by
+      MapMetricApproximationBoundsOn (I := I) K' 0 0 p Φcoe g g := by
     intro K' Φcoe hΦ hΦd hsm
     refine
       { c0_nonneg := le_rfl
@@ -1100,8 +1100,8 @@ theorem exists_strictMono_ge (T : ℕ → ℕ) :
 
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
-    (B : StepB1RawInput (X := X) P) :
+theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
+    (B : PairwiseApproximateIsometryInput (X := X) P) :
     ∃ σ : ℕ → ℕ, StrictMono σ ∧
       (letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
        letI : ∀ j, ChartedSpace H (X.obj (σ j)).M := fun j => (X.obj (σ j)).charted
@@ -1114,7 +1114,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
         (∀ j, (Ψ j : (X.obj (σ j)).M → (X.obj (σ (j + 1))).M) ((X.obj (σ j)).basepoint)
             = (X.obj (σ (j + 1))).basepoint) ∧
         ∀ ε : ℝ, 0 < ε → ε < 1 → ∀ p : ℕ, ∃ j₀ : ℕ, ∀ j : ℕ, j₀ ≤ j → ∀ l : ℕ,
-          Nonempty (BookApproxIsoPartialData (I := I)
+          Nonempty (PartialDiffeomorphMetricApproximation (I := I)
             (Metric.closedBall ((X.obj (σ j)).basepoint) ((2 : ℝ) ^ j)) ε p
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ j l)
             (X.obj (σ j)).metric (X.obj (σ (j + l))).metric)) := by
@@ -1124,7 +1124,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
   have helt : ∀ j : ℕ, (1 / 2 : ℝ) ^ (j + 1) < 1 :=
     fun j => pow_lt_one₀ (by norm_num) (by norm_num) (by omega)
   set T : ℕ → ℕ := fun j =>
-    (stepB1_of_raw P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
+    (PairwiseApproximateIsometryInput.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
       (helt j) j).choose with hT
   obtain ⟨σ, hσmono, hσge⟩ := exists_strictMono_ge T
   refine ⟨σ, hσmono, ?_⟩
@@ -1154,10 +1154,10 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
         Metric.closedBall ((X.obj (σ j)).basepoint) ((2 : ℝ) ^ (j + 1)) ⊆ Φ.source ∧
         (Φ : (X.obj (σ j)).M → (X.obj (σ (j + 1))).M) ((X.obj (σ j)).basepoint)
           = (X.obj (σ (j + 1))).basepoint ∧
-        Nonempty (BookApproxIsoPartialData (I := I)
+        Nonempty (PartialDiffeomorphMetricApproximation (I := I)
           (Metric.closedBall ((X.obj (σ j)).basepoint) ((2 : ℝ) ^ (j + 1)))
           ((1 / 2 : ℝ) ^ (j + 1)) j Φ (X.obj (σ j)).metric (X.obj (σ (j + 1))).metric) :=
-    fun j => (stepB1_of_raw P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
+    fun j => (PairwiseApproximateIsometryInput.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
       (helt j) j).choose_spec (σ j) (σ (j + 1)) (hstep j).1 (hstep j).2
   choose Ψ hΨsrc hΨbase hΨdata using hΨex
   refine ⟨Ψ, hΨbase, ?_⟩
@@ -1177,11 +1177,11 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
   suffices hacc : ∀ (l s : ℕ), j ≤ s → ∃ c0 cov : ℝ,
       0 ≤ c0 ∧ 0 ≤ cov ∧ c0 ≤ ε ∧ cov ≤ ε ∧ c0 ≤ 1 / 2 ∧ cov ≤ 1 / 2 ∧
       c0 ≤ 2 * sepTail s l ∧ cov ≤ sepBeta B * sepTail s l ∧
-      Nonempty (BookApproxIsoSep (I := I)
+      Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I)
         (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (l + 1)))) c0 cov p
         (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l)
         (X.obj (σ s)).metric (X.obj (σ (s + l))).metric) ∧
-      (∀ m (hm : s + l = m), Nonempty (BookApproxIsoSep (I := I)
+      (∀ m (hm : s + l = m), Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I)
         (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (l + 1)))) c0 cov p
         (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l s m hm)
         (X.obj (σ s)).metric (X.obj (σ m)).metric)) by
@@ -1191,7 +1191,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
     have hlt : (2 : ℝ) ^ j < (2 : ℝ) ^ j * (1 + (1 / 2 : ℝ) ^ (l + 1)) := by
       have : (0 : ℝ) < (2 : ℝ) ^ j * (1 / 2 : ℝ) ^ (l + 1) := by positivity
       nlinarith [this]
-    exact ⟨(D.mono (Metric.closedBall_subset_ball hlt) le_rfl le_rfl).toBook hε hε1 hc0e hcove⟩
+    exact ⟨(D.mono (Metric.closedBall_subset_ball hlt) le_rfl le_rfl).toMetricApproximation hε hε1 hc0e hcove⟩
   intro l
   induction l with
   | zero =>
@@ -1362,30 +1362,30 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
       have hK₂_src : (K₂ : Set (X.obj (σ (s + l))).M) ⊆ (Ψ (s + l)).source := by
         intro y hy
         exact hΨsrc (s + l) (Metric.ball_subset_closedBall hy)
-      have D₁mid : BookApproxIsoSep (I := I) (U₁ : Set (X.obj (σ s)).M) c0F covF p
+      have D₁mid : PartialDiffeomorphMetricApproximationBounds (I := I) (U₁ : Set (X.obj (σ s)).M) c0F covF p
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l)
           (X.obj (σ s)).metric (X.obj (σ (s + l))).metric :=
         DforAcc.mono (Metric.ball_subset_ball hRmid_lt_Rcur.le) le_rfl le_rfl
       obtain ⟨DstepF⟩ := hΨdata (s + l)
       have hp_stepF : p ≤ s + l :=
         le_trans hpj (le_trans hs (Nat.le_add_right s l))
-      have D₂openF : BookApproxIsoSep (I := I) (K₂ : Set (X.obj (σ (s + l))).M)
+      have D₂openF : PartialDiffeomorphMetricApproximationBounds (I := I) (K₂ : Set (X.obj (σ (s + l))).M)
           δF δF p (Ψ (s + l))
           (X.obj (σ (s + l))).metric (X.obj (σ (s + l + 1))).metric := by
         dsimp [δF]
         exact ((DstepF.monoP hp_stepF).mono Metric.ball_subset_closedBall le_rfl
-          DstepF.forward.eps_lt_one).toSep
+          DstepF.forward.eps_lt_one).toSeparateBounds
       have hclosed_mid_sub :
           Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid) ⊆
             Metric.ball ((X.obj (σ s)).basepoint) Rcur :=
         closedEBall_ofReal_subset_ball ((X.obj (σ s)).basepoint)
           (le_of_lt hRmid_pos) hRmid_lt_Rcur
-      have hdata_mid : PreApproxIsoDataOn (I := I)
+      have hdata_mid : MapMetricApproximationOn (I := I)
           (Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid)) (1 / 2) p
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l :
             (X.obj (σ s)).M → (X.obj (σ (s + l))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + l))).metric :=
-        (DforAcc.forward.mono hclosed_mid_sub le_rfl le_rfl).toBook
+        (DforAcc.forward.mono hclosed_mid_sub le_rfl le_rfl).toMetricApproximation
           (by norm_num) (by norm_num) hc0F2 hcovF2
       have hsrc_mid :
           Metric.closedEBall ((X.obj (σ s)).basepoint) (ENNReal.ofReal Rmid) ⊆
@@ -1461,7 +1461,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
           _ ≤ covNext := by
             dsimp [covNext]
             exact le_max_left _ _
-      have hFclosedSep : PreApproxIsoSep (I := I)
+      have hFclosedSep : MapMetricApproximationBoundsOn (I := I)
           (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
           (PartialDiffeomorph.trans (I := I)
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l) (Ψ (s + l)) :
@@ -1493,11 +1493,11 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
             Metric.closedBall ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ (s + 1)) := by
         intro x hx
         exact Metric.closedBall_subset_closedBall hRmid_le_step (Metric.ball_subset_closedBall hx)
-      have DstepRopen : BookApproxIsoSep (I := I) (U₁ : Set (X.obj (σ s)).M)
+      have DstepRopen : PartialDiffeomorphMetricApproximationBounds (I := I) (U₁ : Set (X.obj (σ s)).M)
           δR δR p (Ψ s)
           (X.obj (σ s)).metric (X.obj (σ (s + 1))).metric := by
         dsimp [δR]
-        exact (DstepR_p.mono hU₁_sub_step le_rfl DstepR.forward.eps_lt_one).toSep
+        exact (DstepR_p.mono hU₁_sub_step le_rfl DstepR.forward.eps_lt_one).toSeparateBounds
       let Ktail : TopologicalSpace.Opens (X.obj (σ (s + 1))).M :=
         ⟨Metric.ball ((X.obj (σ (s + 1))).basepoint)
             ((2 : ℝ) ^ (s + 1) * (1 + (1 / 2 : ℝ) ^ (l + 1))),
@@ -1508,7 +1508,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
         dsimp [Ktail]
         exact properMetric_ball_nonempty (I := I) (X.obj (σ (s + 1))) (P (σ (s + 1)))
           ((X.obj (σ (s + 1))).basepoint) (openRad_pos (s + 1) l)
-      have DtailR_Ktail : BookApproxIsoSep (I := I) (Ktail : Set (X.obj (σ (s + 1))).M)
+      have DtailR_Ktail : PartialDiffeomorphMetricApproximationBounds (I := I) (Ktail : Set (X.obj (σ (s + 1))).M)
           c0R covR p
           (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
             htail_index)
@@ -1572,7 +1572,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
           _ ≤ covNext := by
             dsimp [covNext]
             exact le_max_right _ _
-      have hRclosedSep : PreApproxIsoSep (I := I)
+      have hRclosedSep : MapMetricApproximationBoundsOn (I := I)
           ((PartialDiffeomorph.trans (I := I) (Ψ s)
               (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
                 htail_index) :
@@ -1640,13 +1640,13 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
               (s + 1) (s + (l + 1)) htail_index)).symm :
               (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M) := by
         rfl
-      have hFclosed : PreApproxIsoSep (I := I)
+      have hFclosed : MapMetricApproximationBoundsOn (I := I)
           (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
             (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
         hFclosedSep.congr_eq hfoldF_eq
-      have hRclosed : PreApproxIsoSep (I := I)
+      have hRclosed : MapMetricApproximationBoundsOn (I := I)
           ((chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
@@ -1665,7 +1665,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) :=
         (chainComp_eq_right (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s).symm
-      have hRightForward : PreApproxIsoSep (I := I)
+      have hRightForward : MapMetricApproximationBoundsOn (I := I)
           (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
           (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
             (s + (l + 1)) rfl :
@@ -1673,12 +1673,12 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
           (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
         hFclosed.congr_eq hLR_eq
       have hRightClosed :
-          BookApproxIsoSep (I := I)
+          PartialDiffeomorphMetricApproximationBounds (I := I)
             (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
             (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl)
             (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
-        BookApproxIsoSep.ofParts hsrcRchain hRightForward hRclosed
+        PartialDiffeomorphMetricApproximationBounds.ofParts hsrcRchain hRightForward hRclosed
       have hU₁_srcRchain : (U₁ : Set (X.obj (σ s)).M) ⊆
           (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
             (s + (l + 1)) rfl).source := by
@@ -1708,7 +1708,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
             hU₁_srcFchain hU₁_srcRchain hLR_eq
         intro y hy
         exact hgermU y (Set.image_mono hKU₁F hy)
-      have hR_on_left_zone : PreApproxIsoSep (I := I)
+      have hR_on_left_zone : MapMetricApproximationBoundsOn (I := I)
           ((chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
             Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
@@ -1717,7 +1717,7 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
             (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric := by
         simpa [image_eq_of_fun_eq hLR_eq] using hRclosed
-      have hLeftReverse : PreApproxIsoSep (I := I)
+      have hLeftReverse : MapMetricApproximationBoundsOn (I := I)
           ((chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
             Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
@@ -1726,19 +1726,19 @@ theorem directed_of_b1 (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric :=
         hR_on_left_zone.congr (fun y hy => (hrev_germ_final y hy).symm)
       have hLeftClosed :
-          BookApproxIsoSep (I := I)
+          PartialDiffeomorphMetricApproximationBounds (I := I)
             (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1))
             (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
-        BookApproxIsoSep.ofParts hsrcFchain hFclosed hLeftReverse
+        PartialDiffeomorphMetricApproximationBounds.ofParts hsrcFchain hFclosed hLeftReverse
       have hLeftOpen :
-          BookApproxIsoSep (I := I)
+          PartialDiffeomorphMetricApproximationBounds (I := I)
             (Metric.ball ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
             (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1))
             (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
         hLeftClosed.mono Metric.ball_subset_closedBall le_rfl le_rfl
       have hRightOpen :
-          BookApproxIsoSep (I := I)
+          PartialDiffeomorphMetricApproximationBounds (I := I)
             (Metric.ball ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
             (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl)

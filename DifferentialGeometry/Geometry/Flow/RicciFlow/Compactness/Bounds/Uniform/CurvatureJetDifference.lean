@@ -59,7 +59,7 @@ theorem curvJet1_diff_eq (g₀ gBase : SmoothRiemannianMetric I M) :
   abel
 
 
-theorem unifRm04Sup
+theorem uniformRm04Sup
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) (_hΛ2 : Λ < 2)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -72,7 +72,7 @@ theorem unifRm04Sup
           (metricRm04 (I := I) (M := M) g₀ x)) ≤ C := by
   classical
   obtain ⟨F, hF0, hF⟩ :=
-    unifCurvSup (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2
+    uniformCurvSup (I := I) (M := M) gBase g₀ hΛ hcomp hjet1 hjet2
   refine ⟨(Module.finrank ℝ E : ℝ) ^ 2 * F, by positivity, fun x => ?_⟩
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
   have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
@@ -131,7 +131,7 @@ theorem unifRm04Sup
     _ = (Module.finrank ℝ E : ℝ) ^ 2 * F := Real.sqrt_sq (by positivity)
 
 
-theorem unifCurvJet1Conn
+theorem uniformCurvJet1Conn
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) (hΛ2 : Λ < 2)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -146,7 +146,7 @@ theorem unifCurvJet1Conn
   classical
   have hΛ0 : (0 : ℝ) < Λ := lt_of_lt_of_le one_pos hΛ
   obtain ⟨C0, hC00, hC0⟩ :=
-    unifRm04Sup (I := I) (M := M) gBase g₀ hΛ hΛ2 hcomp hjet1 hjet2
+    uniformRm04Sup (I := I) (M := M) gBase g₀ hΛ hΛ2 hcomp hjet1 hjet2
   have hEq : MetricUniformEquivalentOn (I := I) Set.univ gBase g₀ Λ :=
     ⟨hΛ, fun x _ v => hcomp x v⟩
   refine ⟨(4 : ℝ) * Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5) *

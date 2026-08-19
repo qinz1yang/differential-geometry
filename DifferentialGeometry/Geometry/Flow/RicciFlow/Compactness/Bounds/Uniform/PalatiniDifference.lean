@@ -16,10 +16,10 @@ open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.HCGCompactness
 open DifferentialGeometry.Geometry.Connection
-  (LeviCivita connDiff_koszul_deriv
+  (LeviCivita connectionDifference_koszul_deriv
    leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally)
 open DifferentialGeometry.Geometry.Curvature
-  (connectionRiemannCurvatureField covDerivConnDiff curvCovDerivOpAt
+  (connectionRiemannCurvatureField covDerivConnectionDifference curvCovDerivOpAt
    exists_gOrthonormalBasis metricInverseInBasis_of_orthonormal metricRm04
    smoothExtensionTangent smoothExtensionTangent_contMDiff smoothExtensionTangent_eq vec5)
 
@@ -115,13 +115,13 @@ theorem curvJet1_normSq_le_of_op
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem covDerivConnDiff_congr
+theorem covDerivConnectionDifference_congr
     (g₂ g₁ : SmoothRiemannianMetric I M)
     (W X Y W' X' Y' : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
     {x : M} (hW : W x = W' x) (hX : X x = X' x) (hY : Y x = Y' x) :
-    covDerivConnDiff (I := I) g₂ g₁ W X Y x =
-      covDerivConnDiff (I := I) g₂ g₁ W' X' Y' x := by
+    covDerivConnectionDifference (I := I) g₂ g₁ W X Y x =
+      covDerivConnectionDifference (I := I) g₂ g₁ W' X' Y' x := by
   classical
   haveI : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
@@ -137,17 +137,17 @@ theorem covDerivConnDiff_congr
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
   have hpair : ∀ Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _),
-      g₁.inner x (covDerivConnDiff (I := I) g₂ g₁ W X Y x) (Z x) =
-        g₁.inner x (covDerivConnDiff (I := I) g₂ g₁ W' X' Y' x) (Z x) := by
+      g₁.inner x (covDerivConnectionDifference (I := I) g₂ g₁ W X Y x) (Z x) =
+        g₁.inner x (covDerivConnectionDifference (I := I) g₂ g₁ W' X' Y' x) (Z x) := by
     intro Z
-    have h1 := connDiff_koszul_deriv (I := I) g₁ g₂ W X Y Z x
-    have h2 := connDiff_koszul_deriv (I := I) g₁ g₂ W' X' Y' Z x
+    have h1 := connectionDifference_koszul_deriv (I := I) g₁ g₂ W X Y Z x
+    have h2 := connectionDifference_koszul_deriv (I := I) g₁ g₂ W' X' Y' Z x
     simp only [← Tensor0SBundle.totalNabla0SFun_apply_section] at h1 h2
     rw [hW, hX, hY] at h1
     have h3 := h1.trans h2.symm
     linarith [h3]
-  set a : TangentSpace I x := covDerivConnDiff (I := I) g₂ g₁ W X Y x with ha
-  set b : TangentSpace I x := covDerivConnDiff (I := I) g₂ g₁ W' X' Y' x with hb
+  set a : TangentSpace I x := covDerivConnectionDifference (I := I) g₂ g₁ W X Y x with ha
+  set b : TangentSpace I x := covDerivConnectionDifference (I := I) g₂ g₁ W' X' Y' x with hb
   have hZ := hpair (ContMDiffSection.mk (smoothExtensionTangent (I := I) x (a - b))
     (smoothExtensionTangent_contMDiff (I := I) x (a - b)))
   rw [ContMDiffSection.coeFn_mk, smoothExtensionTangent_eq] at hZ
@@ -162,16 +162,16 @@ theorem covDerivConnDiff_congr
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem covDerivConnDiff_eq_ext
+theorem covDerivConnectionDifference_eq_ext
     (g₂ g₁ : SmoothRiemannianMetric I M)
     (W X Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) (x : M) :
-    covDerivConnDiff (I := I) g₂ g₁ W X Y x =
-      covDerivConnDiff (I := I) g₂ g₁
+    covDerivConnectionDifference (I := I) g₂ g₁ W X Y x =
+      covDerivConnectionDifference (I := I) g₂ g₁
         (smoothExtensionTangent (I := I) x (W x))
         (smoothExtensionTangent (I := I) x (X x))
         (smoothExtensionTangent (I := I) x (Y x)) x := by
-  refine covDerivConnDiff_congr (I := I) g₂ g₁ W X Y
+  refine covDerivConnectionDifference_congr (I := I) g₂ g₁ W X Y
     (ContMDiffSection.mk (smoothExtensionTangent (I := I) x (W x))
       (smoothExtensionTangent_contMDiff (I := I) x (W x)))
     (ContMDiffSection.mk (smoothExtensionTangent (I := I) x (X x))

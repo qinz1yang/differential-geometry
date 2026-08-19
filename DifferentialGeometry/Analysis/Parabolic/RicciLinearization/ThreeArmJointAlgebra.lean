@@ -50,7 +50,7 @@ theorem threeArmJoint_add
       (fun s => A s + B s) (δ := δ) (δ' := δ') := by
   rw [linearizedRicciThreeArmHjoint] at hA hB ⊢
   have h := joint_rs_add (I := I) (r := r) (s := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (A p.2).toSection p.1)
     (fun p : M × ℝ => (B p.2).toSection p.1) hA hB
   refine h.congr (fun p _ => ?_)
@@ -71,7 +71,7 @@ theorem threeArmJoint_sub
       (fun s => A s - B s) (δ := δ) (δ' := δ') := by
   rw [linearizedRicciThreeArmHjoint] at hA hB ⊢
   have h := joint_rs_sub (I := I) (r := r) (s := 2)
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun p : M × ℝ => (A p.2).toSection p.1)
     (fun p : M × ℝ => (B p.2).toSection p.1) hA hB
   refine h.congr (fun p _ => ?_)
@@ -103,10 +103,10 @@ theorem threeArmJoint_smul
   refine ((contMDiffWithinAt_const (c := c)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ p : M × ℝ in
         nhdsWithin p₀ ((Set.univ : Set M) ×ˢ
-          realizedSmallSet (δ := δ) (δ' := δ')),
+          metricPerturbationPathDomain (δ := δ) (δ' := δ')),
         p.1 ∈ e.baseSet :=
       (continuousWithinAt_fst
-        (s := (Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ'))
+        (s := (Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
         (p := p₀))
         (e.open_baseSet.mem_nhds
           (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
@@ -124,7 +124,7 @@ theorem threeArmJoint_comp
     (hA : linearizedRicciThreeArmHjoint (I := I) (M := M) g b A
       (δ := δ) (δ' := δ')) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g a
-      (fun t => appCcRS (I := I) (M := M) g a b 2 (A t) B)
+      (fun t => ccOperatorFieldComp (I := I) (M := M) g a b 2 (A t) B)
       (δ := δ) (δ' := δ') := by
   rw [linearizedRicciThreeArmHjoint] at hA ⊢
   apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
@@ -134,8 +134,8 @@ theorem threeArmJoint_comp
     (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × ℝ =>
       (show Tensor0SSpace a I p.1 →L[ℝ] Tensor0SSpace 2 I p.1 from
-        (appCcRS (I := I) (M := M) g a b 2 (A p.2) B).toSection p.1))
-    (S := realizedSmallSet (δ := δ) (δ' := δ'))
+        (ccOperatorFieldComp (I := I) (M := M) g a b 2 (A p.2) B).toSection p.1))
+    (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
   intro Y
   have hBY₀ : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel b ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel b ℝ E)
@@ -149,13 +149,13 @@ theorem threeArmJoint_comp
         (E := fun z : M => Tensor0SSpace b I z) p.1
         ((show Tensor0SSpace a I p.1 →L[ℝ] Tensor0SSpace b I p.1 from
           B.toSection p.1) (Y p.1)))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) :=
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
     (hBY₀.comp_contMDiffOn contMDiffOn_fst).mono (Set.subset_univ _)
   have happ := ContMDiffOn.clm_bundle_apply (b := Prod.fst) hA hBY
   refine happ.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SSpace 2 I z) p.1 t) ?_
-  rw [appCcRS_toSection]
+  rw [operatorFieldComposition_toSection]
   rfl
 
 end DifferentialGeometry.Analysis.Parabolic.TensorSpectral

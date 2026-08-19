@@ -29,7 +29,7 @@ theorem compactnessSol_cond
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (inp : MetricCompactnessInputs (I := I) (X.atZero (I := I)))
     (hcomplete0 : SeqMetricComplete (I := I) (X.atZero (I := I)))
-    (hflowInj : FlowBaseInjBound (I := I) X)
+    (hflowInj : FlowerScaleInjBound (I := I) X)
     (hconn : forall k : Nat,
       letI : TopologicalSpace ((X.atZero (I := I)).obj k).M :=
         ((X.atZero (I := I)).obj k).topology
@@ -49,7 +49,7 @@ theorem compactnessSol
         α b 0 h0)
     (hcomplete : CompleteInput (I := I) X)
     (hcurv : CurvBoundInput (I := I) X)
-    (hinj : FlowBaseInjBound (I := I) X)
+    (hinj : FlowerScaleInjBound (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.term k).M := (X.term k).topology
       ConnectedSpace (X.term k).M) :
@@ -75,15 +75,15 @@ theorem compactnessSol
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
     metricSeedOfBG (I := I) (X.atZero (I := I))
       hcomplete0 hgeom0 hinj hconn0
-  have hd : Nonempty (H6NormalData (I := I) (X.atZero (I := I)) seed.decay) :=
-    exists_h6NormalData (I := I) (X.atZero (I := I))
+  have hd : Nonempty (BoundedGeometryNormalData (I := I) (X.atZero (I := I)) seed.decay) :=
+    exists_bounded_geometry_normal_data (I := I) (X.atZero (I := I))
       hcomplete0 hconn0 hgeom0 seed.decay seed.realizes
-  let canon : StepDCanon (I := I) (X.atZero (I := I)) :=
-    seed.metricCanonH6 (Classical.choice hd) hcomplete0 hconn0
+  let canon : CanonicalMetricCompactness (I := I) (X.atZero (I := I)) :=
+    seed.higherRegularityCanonicalMetricCompactness (Classical.choice hd) hcomplete0 hconn0
   obtain ⟨d, hcompleteL⟩ :=
-    open_upgrade_canon (I := I) canon h0 hD hcomplete hcurv
+    open_upgrade_of_canonical_metric_compactness (I := I) canon h0 hD hcomplete hcurv
   let mc' : MetricCompactnessConclusion (I := I) (X.atZero (I := I)) :=
-    canon.mc.compSubseq d.φ d.hφ
+    canon.compactness.compSubseq d.φ d.hφ
   refine ⟨d.data.L, mc'.subseq, mc'.strictMono, ?_, hcompleteL⟩
   exact ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
     d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc d.data.hσtgt

@@ -175,8 +175,8 @@ theorem deTurck_rem_repr
         (symmS (I := I) (M := M) g₀ S) = R := by
     rw [deTurckSmoothRemainder, sub_add_cancel]
   rw [hsum_eq,
-    bilinSymm_sec_congr R (deTurckRHSSectionBg (I := I) g_bg gDT)
-      (by rw [hR_def, deTurckRHSSectionBg_toSection]) x v w]
+    bilinSymm_sec_congr R (deTurckRHSSectionBackground (I := I) g_bg gDT)
+      (by rw [hR_def, deTurckRHSSectionBackground_toSection]) x v w]
   have hreal : gDT = tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ :=
     tensorSectionRealizeMetric_symmS_eq (I := I) g₀ S hδ_lt hδ hδ_lt
       (gFibreOpBound_symmS (I := I) (M := M) g₀ S hδ)

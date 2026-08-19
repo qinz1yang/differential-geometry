@@ -48,7 +48,8 @@ theorem bbsAllMBounds
     intro t ht
     have h := hRm ⟨t, ht⟩
     simpa [SolutionOn.family, SolutionFamily.connection, metricCov] using h
-  have hboundCan := rm04_bound_can (I := I) Rm04 hRmRaw hbound
+  have hboundCan := canonical_curvature_norm_sq_bounded_of_realization
+    (I := I) Rm04 hRmRaw hbound
   obtain ⟨C, _hC, hC⟩ := movingRmBoundSol (I := I)
     ((alpha + omega) / 2) hBeta m hdim hS hboundCan
   refine ⟨C, ?_⟩

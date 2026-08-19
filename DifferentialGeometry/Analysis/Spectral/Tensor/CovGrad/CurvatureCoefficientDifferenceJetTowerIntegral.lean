@@ -1,7 +1,0 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower
-
-namespace DifferentialGeometry.Analysis.Spectral
-
-alias grid_prod_int_le := DifferentialGeometry.Integral.Connection.grid_prod_int_le
-
-end DifferentialGeometry.Analysis.Spectral

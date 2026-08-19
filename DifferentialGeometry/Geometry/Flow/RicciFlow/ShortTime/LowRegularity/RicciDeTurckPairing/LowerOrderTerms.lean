@@ -1,4 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.MetricDifference
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.CovariantDerivativeTerm
+import DifferentialGeometry.Analysis.Estimates.QuarticInterpolation
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetInterpolation
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ReindexedPureTraceCovariantJet
 
 noncomputable section
 
@@ -7,8 +11,10 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.Analysis.Spectral (appCcRS ccTensorToHs ccTensorToHs_smul edgeLiePairFam
-  lc0AMix lc0Riem lc0VB pureTrace slotExtend slotExtendIter slotExtend_sub)
+open DifferentialGeometry.Analysis (quartic_product_sum_le_interpolation_square
+  three_term_sq_le_weighted_product)
+open DifferentialGeometry.Analysis.Spectral (ccOperatorFieldComp ccTensorToHs ccTensorToHs_smul deTurckLieTopOrderPairingFamily
+  lieCorrectionZeroMixedConnection lieCorrectionZeroRiemann lieCorrectionZeroVectorBundle pureTrace slotExtend slotExtendIter slotExtend_sub)
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -24,7 +30,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-private theorem amix_half_pair_h2
+private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B0 B1 : ℝ → ℝ,
@@ -47,50 +53,50 @@ private theorem amix_half_pair_h2
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A A4 D2 D3 D4 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ A4 → 0 ≤ D2 → 0 ≤ D3 → 0 ≤ D4 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
         ∀ (σlast : Equiv.Perm (Fin 4)),
-      lowJetSq (I := I) (M := M) g 2
-          (lc0AMixHalfRF (I := I) (M := M) g
-              (realizedFam (I := I) g T 0 hδT hδZ s) g σlast -
-            lc0AMixHalfRF (I := I) (M := M) g
-              (realizedFam (I := I) g U 0 hδU hδZ s) g σlast) ≤
+      covariantJetNormSq (I := I) (M := M) g 2
+          (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g σlast -
+            lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g σlast) ≤
         (B0 R * (1 + A) * (D4 + D3 + D2 + N) +
           B1 R * A4 * (D3 + N)) ^ 2 := by
-  obtain ⟨Ca1, hCa1, happ1⟩ := appH2 (I := I) (M := M) hDim g 2 4 2
-  obtain ⟨Ca2, hCa2, happ2⟩ := appH2 (I := I) (M := M) hDim g 2 6 4
-  obtain ⟨Ca3, hCa3, happ3⟩ := appH2 (I := I) (M := M) hDim g 2 3 6
-  obtain ⟨Ca4, hCa4, happ4⟩ := appH2 (I := I) (M := M) hDim g 2 5 3
+  obtain ⟨Ca1, hCa1, happ1⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 4 2
+  obtain ⟨Ca2, hCa2, happ2⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 6 4
+  obtain ⟨Ca3, hCa3, happ3⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 3 6
+  obtain ⟨Ca4, hCa4, happ4⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 5 3
   obtain ⟨ρt2, Ct2, hρt2, hCt2, htp2⟩ :=
-    LowBaseInternal.trace2_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace2_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρt3, Ct3, hρt3, hCt3, htp3⟩ :=
-    LowBaseInternal.trace3_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace3_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρt4, Ct4, hρt4, hCt4, htp4⟩ :=
-    LowBaseInternal.trace4_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace4_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρb2, Bt2, hρb2, hBt2, htb2⟩ :=
-    LowBaseInternal.trace2_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_two_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨ρb3, Bt3, hρb3, hBt3, htb3⟩ :=
-    LowBaseInternal.trace3_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_three_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨ρb4, Bt4, hρb4, hBt4, htb4⟩ :=
-    LowBaseInternal.trace4_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_four_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨B0m, B1m, hB0m, hB1m, hmcdp⟩ :=
-    LowBaseInternal.mcd_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.mcd_pair_h2 (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Bm, hBm, hmcdb⟩ :=
-    LowBaseInternal.mcd_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.metric_connection_difference_coefficient_sobolev_two_bound (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
-  obtain ⟨Cip, hCip, hinterp⟩ := jetInterp3 (I := I) (M := M) g 2
+  obtain ⟨Cip, hCip, hinterp⟩ := covariantJetNormSq_three_interpolation (I := I) (M := M) g 2
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfrdef
   have hfr : 0 ≤ fr := Nat.cast_nonneg _
   have hfr2 : (0 : ℝ) ≤ fr ^ 2 := sq_nonneg _
@@ -172,13 +178,13 @@ private theorem amix_half_pair_h2
     hT2 hU2 hT3 hU3 hT4 hU4 hTU2 hTU3 hTU4 hTn hUn hTUn s hs σlast
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
   set gmT : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g T 0 hδT hδZ s with hgmT
+    metricPerturbationPath (I := I) g T 0 hδT hδZ s with hgmT
   set gmU : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g U 0 hδU hδZ s with hgmU
+    metricPerturbationPath (I := I) g U 0 hδU hδZ s with hgmU
   set P : SmoothCcTensor g 0 2 := s • T with hcP
   set Q : SmoothCcTensor g 0 2 := s • U with hcQ
-  have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ) :=
-    Icc_subset_realizedSmallSet hδ_lt hδ_lt hs
+  have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
   have hsabs : ‖s‖ ≤ (1 : ℝ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg hs.1]
     exact hs.2
@@ -205,14 +211,14 @@ private theorem amix_half_pair_h2
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v := by
     intro x u v
     simpa only [hgmT, hcP, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem
+      metricPerturbationPath_inner_of_mem
         (I := I) g T 0 hδT hδZ hs_mem x u v
   have hQtie : ∀ (x : M) (u v : TangentSpace I x),
       gmU.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g Q x u v := by
     intro x u v
     simpa only [hgmU, hcQ, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem
+      metricPerturbationPath_inner_of_mem
         (I := I) g U 0 hδU hδZ hs_mem x u v
   have hδP : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g P) δ := by
@@ -236,30 +242,30 @@ private theorem amix_half_pair_h2
         abs_of_nonneg hs.1]
       ring
     simpa only [hcQ, convexPerturbation, smul_zero, zero_add, heq] using hraw
-  have hP2 : lowJetSq (I := I) (M := M) g 2 P ≤ R ^ 2 := by
-    rw [hcP, jetSmul]
+  have hP2 : covariantJetNormSq (I := I) (M := M) g 2 P ≤ R ^ 2 := by
+    rw [hcP, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 2) g T) hs2).trans hT2
-  have hQ2 : lowJetSq (I := I) (M := M) g 2 Q ≤ R ^ 2 := by
-    rw [hcQ, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g T) hs2).trans hT2
+  have hQ2 : covariantJetNormSq (I := I) (M := M) g 2 Q ≤ R ^ 2 := by
+    rw [hcQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 2) g U) hs2).trans hU2
-  have hP4 : lowJetSq (I := I) (M := M) g 4 P ≤ A4 ^ 2 := by
-    rw [hcP, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g U) hs2).trans hU2
+  have hP4 : covariantJetNormSq (I := I) (M := M) g 4 P ≤ A4 ^ 2 := by
+    rw [hcP, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 4) g T) hs2).trans hT4
-  have hQ4 : lowJetSq (I := I) (M := M) g 4 Q ≤ A4 ^ 2 := by
-    rw [hcQ, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 4) g T) hs2).trans hT4
+  have hQ4 : covariantJetNormSq (I := I) (M := M) g 4 Q ≤ A4 ^ 2 := by
+    rw [hcQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 4) g U) hs2).trans hU4
-  have hPQ3 : lowJetSq (I := I) (M := M) g 3 (P - Q) ≤ D3 ^ 2 := by
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 4) g U) hs2).trans hU4
+  have hPQ3 : covariantJetNormSq (I := I) (M := M) g 3 (P - Q) ≤ D3 ^ 2 := by
     have hPQ : P - Q = s • (T - U) := by
       rw [hcP, hcQ, smul_sub]
-    rw [hPQ, jetSmul]
+    rw [hPQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 3) g (T - U)) hs2).trans hTU3
-  have hPQ2 : lowJetSq (I := I) (M := M) g 2 (P - Q) ≤ D3 ^ 2 :=
-    (jetMono (I := I) (M := M) g (by norm_num : (2 : ℕ) ≤ 3) (P - Q)).trans hPQ3
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 3) g (T - U)) hs2).trans hTU3
+  have hPQ2 : covariantJetNormSq (I := I) (M := M) g 2 (P - Q) ≤ D3 ^ 2 :=
+    (covariantJetNormSq_mono (I := I) (M := M) g (by norm_num : (2 : ℕ) ≤ 3) (P - Q)).trans hPQ3
   have hball : ∀ ρ' : ℝ, ρ ≤ ρ' →
       (‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) P‖ ≤ ρ' ∧
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) Q‖ ≤ ρ') := by
@@ -281,10 +287,10 @@ private theorem amix_half_pair_h2
   have ha0 : 0 ≤ a := Real.sqrt_nonneg _
   have hasq : a ^ 2 = Cip * (R * A4) :=
     Real.sq_sqrt (mul_nonneg hCip (mul_nonneg hR hA4))
-  have hP3i : lowJetSq (I := I) (M := M) g 3 P ≤ a ^ 2 := by
+  have hP3i : covariantJetNormSq (I := I) (M := M) g 3 P ≤ a ^ 2 := by
     rw [hasq]
     exact hinterp P R A4 hR hA4 hP2 hP4
-  have hQ3i : lowJetSq (I := I) (M := M) g 3 Q ≤ a ^ 2 := by
+  have hQ3i : covariantJetNormSq (I := I) (M := M) g 3 Q ≤ a ^ 2 := by
     rw [hasq]
     exact hinterp Q R A4 hR hA4 hQ2 hQ4
   set pl2 : ℝ := (1 + a) ^ 2 with hpl2
@@ -311,22 +317,22 @@ private theorem amix_half_pair_h2
     rw [hu]
     exact le_add_of_nonneg_left (sq_nonneg D3)
   set mcdT : SmoothCcTensor g 0 3 :=
-    metricConnDiffLoweredCc (I := I) (M := M) g gmT g with hmT
+    metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmT g with hmT
   set mcdU : SmoothCcTensor g 0 3 :=
-    metricConnDiffLoweredCc (I := I) (M := M) g gmU g with hmU
-  have hmbT : lowJetSq (I := I) (M := M) g 2 mcdT ≤ (Bm R) ^ 2 * pl2 := by
+    metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmU g with hmU
+  have hmbT : covariantJetNormSq (I := I) (M := M) g 2 mcdT ≤ (Bm R) ^ 2 * pl2 := by
     have h := hmcdb gmT P hPsymm hPtie hδ_le hδ0 hδP R a hR ha0 hP2 hP3i
     rw [hmT]
     refine h.trans (le_of_eq ?_)
     rw [hpl2]
     ring
-  have hmbU : lowJetSq (I := I) (M := M) g 2 mcdU ≤ (Bm R) ^ 2 * pl2 := by
+  have hmbU : covariantJetNormSq (I := I) (M := M) g 2 mcdU ≤ (Bm R) ^ 2 * pl2 := by
     have h := hmcdb gmU Q hQsymm hQtie hδ_le hδ0 hδQ R a hR ha0 hQ2 hQ3i
     rw [hmU]
     refine h.trans (le_of_eq ?_)
     rw [hpl2]
     ring
-  have hmpd : lowJetSq (I := I) (M := M) g 2 (mcdT - mcdU) ≤
+  have hmpd : covariantJetNormSq (I := I) (M := M) g 2 (mcdT - mcdU) ≤
       M5 R * (pl2 * u) := by
     have h := hmcdp gmT gmU P Q hPsymm hQsymm hPtie hQtie
       hδ_le hδ0 hδP hδ_le hδ0 hδQ R a D3 D3 hR ha0 hD3 hD3 hQ2 hP3i hPQ2 hPQ3
@@ -338,7 +344,11 @@ private theorem amix_half_pair_h2
       have hre : B0m R * D3 + B1m R * D3 + B1m R * a * D3 =
           (B0m R + B1m R) * D3 + B1m R * a * D3 := by ring
       rw [hre]
-      refine (sqTwo ((B0m R + B1m R) * D3) (B1m R * a * D3)).trans (le_of_eq ?_)
+      have hsq : ((B0m R + B1m R) * D3 + B1m R * a * D3) ^ 2 ≤
+          2 * (((B0m R + B1m R) * D3) ^ 2 + (B1m R * a * D3) ^ 2) :=
+        add_sq_le
+      rw [mul_add] at hsq
+      refine hsq.trans (le_of_eq ?_)
       ring
     refine hstep.trans ?_
     have hA2D : a ^ 2 * D3 ^ 2 ≤ pl2 * u := by
@@ -385,13 +395,13 @@ private theorem amix_half_pair_h2
             g.inner y v w + ccTensorBilinSymm (I := I) g U' y v w) →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ ρp' →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U'‖ ≤ ρp' →
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
             (pureTrace (I := I) (M := M) g gT' p -
               pureTrace (I := I) (M := M) g gU' p) ≤
           (Cp * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
             (T' - U')‖) ^ 2) →
       0 ≤ Cp → ρ ≤ ρp' →
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmT p -
             pureTrace (I := I) (M := M) g gmU p) ≤
         Cp ^ 2 * u := by
@@ -416,12 +426,12 @@ private theorem amix_half_pair_h2
           gT'.inner y v w =
             g.inner y v w + ccTensorBilinSymm (I := I) g T' y v w) →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ ρp' →
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
             (pureTrace (I := I) (M := M) g gT' p) ≤ Bp ^ 2) →
       ρ ≤ ρp' →
-      (lowJetSq (I := I) (M := M) g 2
+      (covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmT p) ≤ Bp ^ 2 ∧
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmU p) ≤ Bp ^ 2) := by
     intro p Bp ρp' hbdd hρp'
     obtain ⟨hPn, hQn⟩ := hball ρp' hρp'
@@ -437,58 +447,58 @@ private theorem amix_half_pair_h2
   set S5U : SmoothCcTensor g 2 5 :=
     slotExtendIter (I := I) (M := M) g 0 3 2 mcdU with hS5Udef
   set S4T : SmoothCcTensor g 2 3 :=
-    appCcRS (I := I) (M := M) g 2 5 3
-      (lc0TraceRF (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ) S5T
+    ccOperatorFieldComp (I := I) (M := M) g 2 5 3
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5T
     with hS4Tdef
   set S4U : SmoothCcTensor g 2 3 :=
-    appCcRS (I := I) (M := M) g 2 5 3
-      (lc0TraceRF (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ) S5U
+    ccOperatorFieldComp (I := I) (M := M) g 2 5 3
+      (reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5U
     with hS4Udef
   set E3T : SmoothCcTensor g 3 6 :=
     slotExtendIter (I := I) (M := M) g 0 3 3 mcdT with hE3Tdef
   set E3U : SmoothCcTensor g 3 6 :=
     slotExtendIter (I := I) (M := M) g 0 3 3 mcdU with hE3Udef
   set S3T : SmoothCcTensor g 2 6 :=
-    appCcRS (I := I) (M := M) g 2 3 6 E3T S4T with hS3Tdef
+    ccOperatorFieldComp (I := I) (M := M) g 2 3 6 E3T S4T with hS3Tdef
   set S3U : SmoothCcTensor g 2 6 :=
-    appCcRS (I := I) (M := M) g 2 3 6 E3U S4U with hS3Udef
+    ccOperatorFieldComp (I := I) (M := M) g 2 3 6 E3U S4U with hS3Udef
   set S2T : SmoothCcTensor g 2 4 :=
-    appCcRS (I := I) (M := M) g 2 6 4
-      (lc0TraceRF (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1) S3T
+    ccOperatorFieldComp (I := I) (M := M) g 2 6 4
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3T
     with hS2Tdef
   set S2U : SmoothCcTensor g 2 4 :=
-    appCcRS (I := I) (M := M) g 2 6 4
-      (lc0TraceRF (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1) S3U
+    ccOperatorFieldComp (I := I) (M := M) g 2 6 4
+      (reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3U
     with hS2Udef
-  have hHalfT : lc0AMixHalfRF (I := I) (M := M) g gmT g σlast =
-      appCcRS (I := I) (M := M) g 2 4 2
-        (lc0TraceRF (I := I) (M := M) g gmT 2 σlast) S2T := rfl
-  have hHalfU : lc0AMixHalfRF (I := I) (M := M) g gmU g σlast =
-      appCcRS (I := I) (M := M) g 2 4 2
-        (lc0TraceRF (I := I) (M := M) g gmU 2 σlast) S2U := rfl
-  have hS5T2 : lowJetSq (I := I) (M := M) g 2 S5T ≤ S5b R * pl2 := by
+  have hHalfT : lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast =
+      ccOperatorFieldComp (I := I) (M := M) g 2 4 2
+        (reindexedPureTrace (I := I) (M := M) g gmT 2 σlast) S2T := rfl
+  have hHalfU : lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmU g σlast =
+      ccOperatorFieldComp (I := I) (M := M) g 2 4 2
+        (reindexedPureTrace (I := I) (M := M) g gmU 2 σlast) S2U := rfl
+  have hS5T2 : covariantJetNormSq (I := I) (M := M) g 2 S5T ≤ S5b R * pl2 := by
     rw [hS5Tdef]
     have h0 : slotExtendIter (I := I) (M := M) g 0 3 2 mcdT =
         slotExtend (I := I) (M := M) g 1 4
           (slotExtend (I := I) (M := M) g 0 3 mcdT) := rfl
     rw [h0]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 mcdT)) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 mcdT) :=
-        slotH2 (I := I) (M := M) g 1 4 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2 mcdT) :=
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 mcdT) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 0 3 _) hfr
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr
       _ ≤ fr * (fr * ((Bm R) ^ 2 * pl2)) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left hmbT hfr) hfr
       _ = S5b R * pl2 := by
         simp only [S5b]
         ring
-  have hE3T2 : lowJetSq (I := I) (M := M) g 2 E3T ≤ E3b R * pl2 := by
+  have hE3T2 : covariantJetNormSq (I := I) (M := M) g 2 E3T ≤ E3b R * pl2 := by
     rw [hE3Tdef]
     have h0 : slotExtendIter (I := I) (M := M) g 0 3 3 mcdT =
         slotExtend (I := I) (M := M) g 2 5
@@ -496,22 +506,22 @@ private theorem amix_half_pair_h2
             (slotExtend (I := I) (M := M) g 0 3 mcdT)) := rfl
     rw [h0]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 2 5
             (slotExtend (I := I) (M := M) g 1 4
               (slotExtend (I := I) (M := M) g 0 3 mcdT))) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 mcdT)) :=
-        slotH2 (I := I) (M := M) g 2 5 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 2 5 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 mcdT)) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 1 4 _) hfr
-      _ ≤ fr * (fr * (fr * lowJetSq (I := I) (M := M) g 2 mcdT)) :=
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _) hfr
+      _ ≤ fr * (fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 mcdT)) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
-            (slotH2 (I := I) (M := M) g 0 3 _) hfr) hfr
+            (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr) hfr
       _ ≤ fr * (fr * (fr * ((Bm R) ^ 2 * pl2))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
@@ -519,7 +529,7 @@ private theorem amix_half_pair_h2
       _ = E3b R * pl2 := by
         simp only [E3b]
         ring
-  have hE3U2 : lowJetSq (I := I) (M := M) g 2 E3U ≤ E3b R * pl2 := by
+  have hE3U2 : covariantJetNormSq (I := I) (M := M) g 2 E3U ≤ E3b R * pl2 := by
     rw [hE3Udef]
     have h0 : slotExtendIter (I := I) (M := M) g 0 3 3 mcdU =
         slotExtend (I := I) (M := M) g 2 5
@@ -527,22 +537,22 @@ private theorem amix_half_pair_h2
             (slotExtend (I := I) (M := M) g 0 3 mcdU)) := rfl
     rw [h0]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 2 5
             (slotExtend (I := I) (M := M) g 1 4
               (slotExtend (I := I) (M := M) g 0 3 mcdU))) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 mcdU)) :=
-        slotH2 (I := I) (M := M) g 2 5 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 2 5 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 mcdU)) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 1 4 _) hfr
-      _ ≤ fr * (fr * (fr * lowJetSq (I := I) (M := M) g 2 mcdU)) :=
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _) hfr
+      _ ≤ fr * (fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 mcdU)) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
-            (slotH2 (I := I) (M := M) g 0 3 _) hfr) hfr
+            (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr) hfr
       _ ≤ fr * (fr * (fr * ((Bm R) ^ 2 * pl2))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
@@ -551,52 +561,52 @@ private theorem amix_half_pair_h2
         simp only [E3b]
         ring
   have hpl2u : 0 ≤ pl2 * u := mul_nonneg hpl20 hu0
-  have hS4T2 : lowJetSq (I := I) (M := M) g 2 S4T ≤ S4b R * pl2 := by
+  have hS4T2 : covariantJetNormSq (I := I) (M := M) g 2 S4T ≤ S4b R * pl2 := by
     rw [hS4Tdef]
     refine (happ4 _ S5T).trans ?_
-    have htr := (trJet (I := I) (M := M) g gmT 3 2
-      DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ).le.trans htb3'.1
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 3 2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
     calc
-      Ca4 * lowJetSq (I := I) (M := M) g 2
-          (lc0TraceRF (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ) *
-        lowJetSq (I := I) (M := M) g 2 S5T ≤
+      Ca4 * covariantJetNormSq (I := I) (M := M) g 2
+          (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
+        covariantJetNormSq (I := I) (M := M) g 2 S5T ≤
         Ca4 * Bt3 ^ 2 * (S5b R * pl2) := by
         exact mul_le_mul
           (mul_le_mul_of_nonneg_left htr hCa4) hS5T2
-          (jetNn (I := I) (M := M) (m := 2) g _)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
           (mul_nonneg hCa4 (sq_nonneg _))
       _ = S4b R * pl2 := by
         simp only [S4b]
         ring
-  have hS3T2 : lowJetSq (I := I) (M := M) g 2 S3T ≤
+  have hS3T2 : covariantJetNormSq (I := I) (M := M) g 2 S3T ≤
       S3b R * (pl2 * pl2) := by
     rw [hS3Tdef]
     refine (happ3 E3T S4T).trans ?_
     calc
-      Ca3 * lowJetSq (I := I) (M := M) g 2 E3T *
-        lowJetSq (I := I) (M := M) g 2 S4T ≤
+      Ca3 * covariantJetNormSq (I := I) (M := M) g 2 E3T *
+        covariantJetNormSq (I := I) (M := M) g 2 S4T ≤
         Ca3 * (E3b R * pl2) * (S4b R * pl2) := by
         exact mul_le_mul
           (mul_le_mul_of_nonneg_left hE3T2 hCa3) hS4T2
-          (jetNn (I := I) (M := M) (m := 2) g _)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
           (mul_nonneg hCa3 (mul_nonneg (hE3b R hR) hpl20))
       _ = S3b R * (pl2 * pl2) := by
         simp only [S3b]
         ring
-  have hS2T2 : lowJetSq (I := I) (M := M) g 2 S2T ≤
+  have hS2T2 : covariantJetNormSq (I := I) (M := M) g 2 S2T ≤
       S2b R * (pl2 * pl2) := by
     rw [hS2Tdef]
     refine (happ2 _ S3T).trans ?_
-    have htr := (trJet (I := I) (M := M) g gmT 4 2
-      DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1).le.trans htb4'.1
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 4 2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.1
     calc
-      Ca2 * lowJetSq (I := I) (M := M) g 2
-          (lc0TraceRF (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1) *
-        lowJetSq (I := I) (M := M) g 2 S3T ≤
+      Ca2 * covariantJetNormSq (I := I) (M := M) g 2
+          (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) *
+        covariantJetNormSq (I := I) (M := M) g 2 S3T ≤
         Ca2 * Bt4 ^ 2 * (S3b R * (pl2 * pl2)) := by
         exact mul_le_mul
           (mul_le_mul_of_nonneg_left htr hCa2) hS3T2
-          (jetNn (I := I) (M := M) (m := 2) g _)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
           (mul_nonneg hCa2 (sq_nonneg _))
       _ = S2b R * (pl2 * pl2) := by
         simp only [S2b]
@@ -612,41 +622,41 @@ private theorem amix_half_pair_h2
         slotExtend (I := I) (M := M) g 1 4
           (slotExtend (I := I) (M := M) g 0 3 mcdU) from rfl,
       slotExtend_sub, slotExtend_sub]
-  have hd5 : lowJetSq (I := I) (M := M) g 2 (S5T - S5U) ≤
+  have hd5 : covariantJetNormSq (I := I) (M := M) g 2 (S5T - S5U) ≤
       D5c R * (pl2 * u) := by
     rw [hdel5]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU))) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU)) :=
-        slotH2 (I := I) (M := M) g 1 4 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2 (mcdT - mcdU)) :=
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 (mcdT - mcdU)) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 0 3 _) hfr
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr
       _ ≤ fr * (fr * (M5 R * (pl2 * u))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left hmpd hfr) hfr
       _ = D5c R * (pl2 * u) := by
         simp only [D5c]
         ring
-  have htrd3 : lowJetSq (I := I) (M := M) g 2
-      (lc0TraceRF (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ -
-        lc0TraceRF (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ) ≤
+  have htrd3 : covariantJetNormSq (I := I) (M := M) g 2
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
+        reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
       Ct3 ^ 2 * u := by
-    rw [trSub, reindexJet]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
     exact htp3'
-  have hd4 : lowJetSq (I := I) (M := M) g 2 (S4T - S4U) ≤
+  have hd4 : covariantJetNormSq (I := I) (M := M) g 2 (S4T - S4U) ≤
       2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
     rw [hS4Tdef, hS4Udef]
-    have htr := (trJet (I := I) (M := M) g gmU 3 2
-      DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ).le.trans htb3'.2
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 3 2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.2
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca4 * (Ct3 ^ 2 * u) * (S5b R * pl2) +
             Ca4 * Bt3 ^ 2 * (D5c R * (pl2 * u))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 5 3
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 5 3
           Ca4 (Ct3 ^ 2 * u) (S5b R * pl2) (Bt3 ^ 2)
           (D5c R * (pl2 * u)) hCa4 _ _ _ _ happ4 htrd3 hS5T2 htr hd5
       _ = 2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
@@ -666,27 +676,27 @@ private theorem amix_half_pair_h2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 mcdU)) from rfl,
       slotExtend_sub, slotExtend_sub, slotExtend_sub]
-  have hdE32 : lowJetSq (I := I) (M := M) g 2 (E3T - E3U) ≤
+  have hdE32 : covariantJetNormSq (I := I) (M := M) g 2 (E3T - E3U) ≤
       E3d R * (pl2 * u) := by
     rw [hdelE3]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 2 5
             (slotExtend (I := I) (M := M) g 1 4
               (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU)))) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU))) :=
-        slotH2 (I := I) (M := M) g 2 5 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 2 5 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU))) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 1 4 _) hfr
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _) hfr
       _ ≤ fr * (fr * (fr *
-          lowJetSq (I := I) (M := M) g 2 (mcdT - mcdU))) :=
+          covariantJetNormSq (I := I) (M := M) g 2 (mcdT - mcdU))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
-            (slotH2 (I := I) (M := M) g 0 3 _) hfr) hfr
+            (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr) hfr
       _ ≤ fr * (fr * (fr * (M5 R * (pl2 * u)))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
@@ -694,15 +704,15 @@ private theorem amix_half_pair_h2
       _ = E3d R * (pl2 * u) := by
         simp only [E3d]
         ring
-  have hd3 : lowJetSq (I := I) (M := M) g 2 (S3T - S3U) ≤
+  have hd3 : covariantJetNormSq (I := I) (M := M) g 2 (S3T - S3U) ≤
       2 * (K3 R * ((pl2 * pl2) * u) + K34 R * ((pl2 * pl2) * u)) := by
     rw [hS3Tdef, hS3Udef]
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca3 * (E3d R * (pl2 * u)) * (S4b R * pl2) +
             Ca3 * (E3b R * pl2) *
               (2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 3 6
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 3 6
           Ca3 (E3d R * (pl2 * u)) (S4b R * pl2) (E3b R * pl2)
           (2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)))
           hCa3 _ _ _ _ happ3 hdE32 hS4T2 hE3U2 hd4
@@ -710,23 +720,23 @@ private theorem amix_half_pair_h2
           K34 R * ((pl2 * pl2) * u)) := by
         simp only [K3, K34]
         ring
-  have htrd4 : lowJetSq (I := I) (M := M) g 2
-      (lc0TraceRF (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1 -
-        lc0TraceRF (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1) ≤
+  have htrd4 : covariantJetNormSq (I := I) (M := M) g 2
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
+        reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
       Ct4 ^ 2 * u := by
-    rw [trSub, reindexJet]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
     exact htp4'
-  have hd2 : lowJetSq (I := I) (M := M) g 2 (S2T - S2U) ≤
+  have hd2 : covariantJetNormSq (I := I) (M := M) g 2 (S2T - S2U) ≤
       2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)) := by
     rw [hS2Tdef, hS2Udef]
-    have htr := (trJet (I := I) (M := M) g gmU 4 2
-      DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1).le.trans htb4'.2
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 4 2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.2
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca2 * (Ct4 ^ 2 * u) * (S3b R * (pl2 * pl2)) +
             Ca2 * Bt4 ^ 2 * (2 * (K3 R * ((pl2 * pl2) * u) +
               K34 R * ((pl2 * pl2) * u)))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 6 4
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 6 4
           Ca2 (Ct4 ^ 2 * u) (S3b R * (pl2 * pl2)) (Bt4 ^ 2)
           (2 * (K3 R * ((pl2 * pl2) * u) + K34 R * ((pl2 * pl2) * u)))
           hCa2 _ _ _ _ happ2 htrd4 hS3T2 htr hd3
@@ -734,25 +744,25 @@ private theorem amix_half_pair_h2
           K23 R * ((pl2 * pl2) * u)) := by
         simp only [K2, K23]
         ring
-  have htrd2 : lowJetSq (I := I) (M := M) g 2
-      (lc0TraceRF (I := I) (M := M) g gmT 2 σlast -
-        lc0TraceRF (I := I) (M := M) g gmU 2 σlast) ≤
+  have htrd2 : covariantJetNormSq (I := I) (M := M) g 2
+      (reindexedPureTrace (I := I) (M := M) g gmT 2 σlast -
+        reindexedPureTrace (I := I) (M := M) g gmU 2 σlast) ≤
       Ct2 ^ 2 * u := by
-    rw [trSub, reindexJet]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
     exact htp2'
-  have hhalf : lowJetSq (I := I) (M := M) g 2
-      (lc0AMixHalfRF (I := I) (M := M) g gmT g σlast -
-        lc0AMixHalfRF (I := I) (M := M) g gmU g σlast) ≤
+  have hhalf : covariantJetNormSq (I := I) (M := M) g 2
+      (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast -
+        lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmU g σlast) ≤
       Bh R * ((pl2 * pl2) * u) := by
     rw [hHalfT, hHalfU]
-    have htr := (trJet (I := I) (M := M) g gmU 2 2
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 2 2
       σlast).le.trans htb2'.2
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca1 * (Ct2 ^ 2 * u) * (S2b R * (pl2 * pl2)) +
             Ca1 * Bt2 ^ 2 * (2 * (K2 R * ((pl2 * pl2) * u) +
               K23 R * ((pl2 * pl2) * u)))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 4 2
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 4 2
           Ca1 (Ct2 ^ 2 * u) (S2b R * (pl2 * pl2)) (Bt2 ^ 2)
           (2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)))
           hCa1 _ _ _ _ happ1 htrd2 hS2T2 htr hd2
@@ -762,9 +772,9 @@ private theorem amix_half_pair_h2
   refine hhalf.trans ?_
   rw [hpl2, hu]
   simp only [B0, B1]
-  exact amixScalar (hBhnn R hR) hCip hR hA hA4 hD2 hD3 hD4 hN hasq
+  exact quartic_product_sum_le_interpolation_square (hBhnn R hR) hCip hR hA hA4 hD2 hD3 hD4 hN hasq
 
-theorem LowBaseInternal.amix_pair_h2
+theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroMixedConnection_covariantJetNormSq_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B0 B1 : ℝ → ℝ,
@@ -787,29 +797,29 @@ theorem LowBaseInternal.amix_pair_h2
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A A4 D2 D3 D4 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ A4 → 0 ≤ D2 → 0 ≤ D3 → 0 ≤ D4 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
-      lowJetSq (I := I) (M := M) g 2
-          (lc0AMix (I := I) (M := M) g
-              (realizedFam (I := I) g T 0 hδT hδZ s) g -
-            lc0AMix (I := I) (M := M) g
-              (realizedFam (I := I) g U 0 hδU hδZ s) g) ≤
+      covariantJetNormSq (I := I) (M := M) g 2
+          (lieCorrectionZeroMixedConnection (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
+            lieCorrectionZeroMixedConnection (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g) ≤
         (B0 R * (1 + A) * (D4 + D3 + D2 + N) +
           B1 R * A4 * (D3 + N)) ^ 2 :=
  by
   obtain ⟨ρ, Bp0, Bp1, hρ, hBp0, hBp1, hhalf⟩ :=
-    amix_half_pair_h2 (I := I) (M := M) hDim g
+    exists_lieCorrectionZeroMixedConnectionHalfRF_fourthOrder_tame_difference_bound (I := I) (M := M) hDim g
   refine ⟨ρ, fun R => 4 * Bp0 R, fun R => 4 * Bp1 R, hρ,
     fun R hR => by
       have := hBp0 R hR
@@ -823,53 +833,53 @@ theorem LowBaseInternal.amix_pair_h2
   have hh1 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A A4 D2 D3 D4 N hR hA hA4 hD2 hD3 hD4 hN
     hT2 hU2 hT3 hU3 hT4 hU4 hTU2 hTU3 hTU4 hTn hUn hTUn hs
-    DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2
+    DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   have hh2 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A A4 D2 D3 D4 N hR hA hA4 hD2 hD3 hD4 hN
     hT2 hU2 hT3 hU3 hT4 hU4 hTU2 hTU3 hTU4 hTn hUn hTUn hs
-    (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2)
-  rw [amix_refold_rf (I := I) (M := M) g
-      (realizedFam (I := I) g T 0 hδT hδZ s) g,
-    amix_refold_rf (I := I) (M := M) g
-      (realizedFam (I := I) g U 0 hδU hδZ s) g]
+    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+  rw [lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
+      (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g,
+    lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
+      (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g]
   have hform :
-      lc0AMixFormRF (I := I) (M := M) g
-          (realizedFam (I := I) g T 0 hδT hδZ s) g -
-        lc0AMixFormRF (I := I) (M := M) g
-          (realizedFam (I := I) g U 0 hδU hδZ s) g =
+      lieCorrectionZeroMixedConnectionExpansion (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
+        lieCorrectionZeroMixedConnectionExpansion (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g =
       (2 : ℝ) •
-        ((lc0AMixHalfRF (I := I) (M := M) g
-            (realizedFam (I := I) g T 0 hδT hδZ s) g
-              DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2 -
-          lc0AMixHalfRF (I := I) (M := M) g
-            (realizedFam (I := I) g U 0 hδU hδZ s) g
-              DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2) +
-        (lc0AMixHalfRF (I := I) (M := M) g
-            (realizedFam (I := I) g T 0 hδT hδZ s) g
-              (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2) -
-          lc0AMixHalfRF (I := I) (M := M) g
-            (realizedFam (I := I) g U 0 hδU hδZ s) g
-              (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2))) := by
-    simp only [lc0AMixFormRF]
+        ((lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
+              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+          lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
+              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) +
+        (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+          lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) := by
+    simp only [lieCorrectionZeroMixedConnectionExpansion]
     module
-  rw [hform, jetSmul]
-  have hadd := jetAdd (I := I) (M := M) g 2
-    (lc0AMixHalfRF (I := I) (M := M) g
-        (realizedFam (I := I) g T 0 hδT hδZ s) g
-          DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2 -
-      lc0AMixHalfRF (I := I) (M := M) g
-        (realizedFam (I := I) g U 0 hδU hδZ s) g
-          DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2)
-    (lc0AMixHalfRF (I := I) (M := M) g
-        (realizedFam (I := I) g T 0 hδT hδZ s) g
-          (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2) -
-      lc0AMixHalfRF (I := I) (M := M) g
-        (realizedFam (I := I) g U 0 hδU hδZ s) g
-          (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2))
+  rw [hform, covariantJetNormSq_smul]
+  have hadd := covariantJetNormSq_add_le (I := I) (M := M) g 2
+    (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+        (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+      lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+        (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+        (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+      lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+        (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
   calc
-    (2 : ℝ) ^ 2 * lowJetSq (I := I) (M := M) g 2 (_ + _) ≤
-      (2 : ℝ) ^ 2 * (2 * (lowJetSq (I := I) (M := M) g 2 _ +
-        lowJetSq (I := I) (M := M) g 2 _)) :=
+    (2 : ℝ) ^ 2 * covariantJetNormSq (I := I) (M := M) g 2 (_ + _) ≤
+      (2 : ℝ) ^ 2 * (2 * (covariantJetNormSq (I := I) (M := M) g 2 _ +
+        covariantJetNormSq (I := I) (M := M) g 2 _)) :=
       mul_le_mul_of_nonneg_left hadd (by positivity)
     _ ≤ (2 : ℝ) ^ 2 * (2 *
         ((Bp0 R * (1 + A) * (D4 + D3 + D2 + N) +
@@ -882,7 +892,7 @@ theorem LowBaseInternal.amix_pair_h2
         4 * Bp1 R * A4 * (D3 + N)) ^ 2 := by
       ring
 
-theorem LowBaseInternal.riemann_pair_h2
+theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroRiemann_covariantJetNormSq_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B0 B1 : ℝ → ℝ,
@@ -905,28 +915,30 @@ theorem LowBaseInternal.riemann_pair_h2
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A A4 D2 D3 D4 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ A4 → 0 ≤ D2 → 0 ≤ D3 → 0 ≤ D4 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
-        lowJetSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 T ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 U ≤ A4 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 (T - U) ≤ D2 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 4 (T - U) ≤ D4 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
-      lowJetSq (I := I) (M := M) g 2
-          (lc0Riem (I := I) (M := M) g
-              (realizedFam (I := I) g T 0 hδT hδZ s) -
-            lc0Riem (I := I) (M := M) g
-              (realizedFam (I := I) g U 0 hδU hδZ s)) ≤
+      covariantJetNormSq (I := I) (M := M) g 2
+          (lieCorrectionZeroRiemann (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hδT hδZ s) -
+            lieCorrectionZeroRiemann (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g U 0 hδU hδZ s)) ≤
         (B0 R * (1 + A) * (D4 + D3 + D2 + N) +
           B1 R * A4 * (D3 + N)) ^ 2 :=
  by
-  obtain ⟨ρ, C, hρ, hC, hriem⟩ := riem_pair_h2 (I := I) (M := M) hDim g
+  obtain ⟨ρ, C, hρ, hC, hriem⟩ :=
+    DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.exists_lieCorrectionZeroRiemann_covariantJetNormSq_difference_bound
+      (I := I) (M := M) hDim g
   refine ⟨ρ, fun _ => C, fun _ => 0, hρ,
     fun _ _ => hC, fun _ _ => le_refl 0, ?_⟩
   intro T U hT hU δ hδ_le hδ0 hδT hδU hδZ
@@ -934,13 +946,13 @@ theorem LowBaseInternal.riemann_pair_h2
     hTn hUn hTUn s hs
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
   set gmT : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g T 0 hδT hδZ s with hgmT
+    metricPerturbationPath (I := I) g T 0 hδT hδZ s with hgmT
   set gmU : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g U 0 hδU hδZ s with hgmU
+    metricPerturbationPath (I := I) g U 0 hδU hδZ s with hgmU
   set P : SmoothCcTensor g 0 2 := s • T with hcP
   set Q : SmoothCcTensor g 0 2 := s • U with hcQ
-  have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ) :=
-    Icc_subset_realizedSmallSet hδ_lt hδ_lt hs
+  have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
   have hsabs : ‖s‖ ≤ (1 : ℝ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg hs.1]
     exact hs.2
@@ -949,13 +961,13 @@ theorem LowBaseInternal.riemann_pair_h2
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v := by
     intro x u v
     simpa only [hgmT, hcP, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem (I := I) g T 0 hδT hδZ hs_mem x u v
+      metricPerturbationPath_inner_of_mem (I := I) g T 0 hδT hδZ hs_mem x u v
   have hQtie : ∀ (x : M) (u v : TangentSpace I x),
       gmU.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g Q x u v := by
     intro x u v
     simpa only [hgmU, hcQ, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem (I := I) g U 0 hδU hδZ hs_mem x u v
+      metricPerturbationPath_inner_of_mem (I := I) g U 0 hδU hδZ hs_mem x u v
   have hPn : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) P‖ ≤ ρ := by
     rw [hcP, ccTensorToHs_smul, norm_smul]
     exact (mul_le_mul_of_nonneg_right hsabs (norm_nonneg _)).trans
@@ -1014,7 +1026,7 @@ private theorem pair_sum_sq_le
       rw [mul_pow, mul_pow, hsqrt]
       ring
 
-theorem LowBaseInternal.lie_covariant_pair_h3
+theorem RicciDeTurckLowOrder.exists_deTurckLieCovariantDerivative_covariantJetNormSq_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B : ℝ → ℝ,
@@ -1036,32 +1048,32 @@ theorem LowBaseInternal.lie_covariant_pair_h3
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A D3 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ D3 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
-      lowJetSq (I := I) (M := M) g 2
-          ((deTurckLieCovDerivArmField (I := I) (M := M) g
-              (realizedFam (I := I) g T 0 hδT hδZ s) g -
-            edgeLiePairFam (I := I) (M := M) g T hδT hδZ
-              lieRefoldQ lieRefoldEps s) -
-          (deTurckLieCovDerivArmField (I := I) (M := M) g
-              (realizedFam (I := I) g U 0 hδU hδZ s) g -
-            edgeLiePairFam (I := I) (M := M) g U hδU hδZ
-              lieRefoldQ lieRefoldEps s)) ≤
+      covariantJetNormSq (I := I) (M := M) g 2
+          ((deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
+            deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδT hδZ
+              lieDecompositionQ lieDecompositionEps s) -
+          (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g -
+            deTurckLieTopOrderPairingFamily (I := I) (M := M) g U hδU hδZ
+              lieDecompositionQ lieDecompositionEps s)) ≤
         (B R * (1 + A) ^ 2 * (D3 + N)) ^ 2 := by
-  obtain ⟨Ca, hCa, happ⟩ := appH2 (I := I) (M := M) hDim g 2 6 2
+  obtain ⟨Ca, hCa, happ⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 6 2
   obtain ⟨ρp, Cp, hρp, hCp, hlcvp⟩ :=
-    LowBaseInternal.pairTrace_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.pairTrace_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρb, Bp, hρb, hBp, hlcvb⟩ :=
-    LowBaseInternal.pairTrace_bdd_h2 (I := I) (M := M) hDim g
-  obtain ⟨Dx, hDx, hcovb⟩ := covXBddH2 (I := I) (M := M) hDim g
-  obtain ⟨Cx, hCx, hcovp⟩ := covXPairH2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.pair_trace_sobolev_two_bound (I := I) (M := M) hDim g
+  obtain ⟨Dx, hDx, hcovb⟩ := exists_deTurckLieCovariantDerivativeRemainderPairTrace_covariantJetNormSq_bound (I := I) (M := M) hDim g
+  obtain ⟨Cx, hCx, hcovp⟩ := exists_deTurckLieCovariantDerivativeRemainderPairTrace_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g
   let Bh : ℝ → ℝ := fun R =>
     2 * (Ca * Cp ^ 2 * Dx R + Ca * Bp ^ 2 * Cx R)
   let B : ℝ → ℝ := fun R => Real.sqrt (2 * Bh R)
@@ -1082,13 +1094,13 @@ theorem LowBaseInternal.lie_covariant_pair_h3
     hTn hUn hTUn s hs
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
   set gmT : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g T 0 hδT hδZ s with hgmT
+    metricPerturbationPath (I := I) g T 0 hδT hδZ s with hgmT
   set gmU : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g U 0 hδU hδZ s with hgmU
+    metricPerturbationPath (I := I) g U 0 hδU hδZ s with hgmU
   set P : SmoothCcTensor g 0 2 := s • T with hcP
   set Q : SmoothCcTensor g 0 2 := s • U with hcQ
-  have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ) :=
-    Icc_subset_realizedSmallSet hδ_lt hδ_lt hs
+  have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
   have hsabs : ‖s‖ ≤ (1 : ℝ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg hs.1]
     exact hs.2
@@ -1097,13 +1109,13 @@ theorem LowBaseInternal.lie_covariant_pair_h3
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v := by
     intro x u v
     simpa only [hgmT, hcP, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem (I := I) g T 0 hδT hδZ hs_mem x u v
+      metricPerturbationPath_inner_of_mem (I := I) g T 0 hδT hδZ hs_mem x u v
   have hQtie : ∀ (x : M) (u v : TangentSpace I x),
       gmU.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g Q x u v := by
     intro x u v
     simpa only [hgmU, hcQ, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem (I := I) g U 0 hδU hδZ hs_mem x u v
+      metricPerturbationPath_inner_of_mem (I := I) g U 0 hδU hδZ hs_mem x u v
   have hPn : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) P‖ ≤ ρp := by
     rw [hcP, ccTensorToHs_smul, norm_smul]
     exact (mul_le_mul_of_nonneg_right hsabs (norm_nonneg _)).trans
@@ -1129,93 +1141,93 @@ theorem LowBaseInternal.lie_covariant_pair_h3
   have hD3le : D3 ^ 2 ≤ u := by simp only [u]; linarith [sq_nonneg N]
   have hNu : N ^ 2 ≤ u := by simp only [u]; linarith [sq_nonneg D3]
   have hUT :
-      deTurckLieCovDerivArmField (I := I) (M := M) g gmT g -
-        deTurckLieCovDerivRefoldPairTraceFamily (I := I) (M := M)
+      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmT g -
+        deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M)
           g T hδT hδZ
             ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
               Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
                 Equiv.swap (0 : Fin 4) 1,
               Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3]
             ![(-1 : ℝ), -1, 1] s =
-      (-1 : ℝ) • appCcRS (I := I) (M := M) g 2 6 2
-        (lieCovPair (I := I) (M := M) g gmT)
-        (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+      (-1 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+        (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmT)
+        (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
           (slotExtendIter (I := I) (M := M) g 0 4 2
-            (lieCovR4 (I := I) (M := M) g T hδT hδZ s))) := by
+            (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s))) := by
     rw [hgmT]
     exact lieCov_residual (I := I) (M := M) g T hδ_lt hδT hδZ hT hs
   have hUU :
-      deTurckLieCovDerivArmField (I := I) (M := M) g gmU g -
-        deTurckLieCovDerivRefoldPairTraceFamily (I := I) (M := M)
+      deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmU g -
+        deTurckLieCovariantDerivativeDecompositionPairTraceFamily (I := I) (M := M)
           g U hδU hδZ
             ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
               Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
                 Equiv.swap (0 : Fin 4) 1,
               Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3]
             ![(-1 : ℝ), -1, 1] s =
-      (-1 : ℝ) • appCcRS (I := I) (M := M) g 2 6 2
-        (lieCovPair (I := I) (M := M) g gmU)
-        (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+      (-1 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+        (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU)
+        (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
           (slotExtendIter (I := I) (M := M) g 0 4 2
-            (lieCovR4 (I := I) (M := M) g U hδU hδZ s))) := by
+            (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g U hδU hδZ s))) := by
     rw [hgmU]
     exact lieCov_residual (I := I) (M := M) g U hδ_lt hδU hδZ hU hs
-  rw [edgeEq (I := I) (M := M) g T hδT hδZ s,
-    edgeEq (I := I) (M := M) g U hδU hδZ s, hUT, hUU]
+  rw [deTurckLieEdgePairingFamily_eq_deTurckLieCovariantDerivativeExpansionPairTraceFamily (I := I) (M := M) g T hδT hδZ s,
+    deTurckLieEdgePairingFamily_eq_deTurckLieCovariantDerivativeExpansionPairTraceFamily (I := I) (M := M) g U hδU hδZ s, hUT, hUU]
   have htel :
-      (-1 : ℝ) • appCcRS (I := I) (M := M) g 2 6 2
-          (lieCovPair (I := I) (M := M) g gmT)
-          (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+      (-1 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmT)
+          (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
             (slotExtendIter (I := I) (M := M) g 0 4 2
-              (lieCovR4 (I := I) (M := M) g T hδT hδZ s))) -
-        (-1 : ℝ) • appCcRS (I := I) (M := M) g 2 6 2
-          (lieCovPair (I := I) (M := M) g gmU)
-          (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+              (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s))) -
+        (-1 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU)
+          (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
             (slotExtendIter (I := I) (M := M) g 0 4 2
-              (lieCovR4 (I := I) (M := M) g U hδU hδZ s))) =
-      (-1 : ℝ) • (appCcRS (I := I) (M := M) g 2 6 2
-          (lieCovPair (I := I) (M := M) g gmT -
-            lieCovPair (I := I) (M := M) g gmU)
-          (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+              (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g U hδU hδZ s))) =
+      (-1 : ℝ) • (ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmT -
+            cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU)
+          (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
             (slotExtendIter (I := I) (M := M) g 0 4 2
-              (lieCovR4 (I := I) (M := M) g T hδT hδZ s))) +
-        appCcRS (I := I) (M := M) g 2 6 2
-          (lieCovPair (I := I) (M := M) g gmU)
-          (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+              (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s))) +
+        ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU)
+          (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
               (slotExtendIter (I := I) (M := M) g 0 4 2
-                (lieCovR4 (I := I) (M := M) g T hδT hδZ s)) -
-            rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+                (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s)) -
+            rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
               (slotExtendIter (I := I) (M := M) g 0 4 2
-                (lieCovR4 (I := I) (M := M) g U hδU hδZ s)))) := by
+                (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g U hδU hδZ s)))) := by
     simpa only [smul_sub] using
       congrArg (fun Z => (-1 : ℝ) • Z)
-        (app_cc_rs_sub (I := I) (M := M) g 2 6 2 _ _ _ _)
-  rw [htel, jetSmul, neg_one_sq, one_mul]
-  have hPairD : lowJetSq (I := I) (M := M) g 2
-      (lieCovPair (I := I) (M := M) g gmT -
-        lieCovPair (I := I) (M := M) g gmU) ≤ (Cp * N) ^ 2 := by
+        (operatorFieldComposition_sub (I := I) (M := M) g 2 6 2 _ _ _ _)
+  rw [htel, covariantJetNormSq_smul, neg_one_sq, one_mul]
+  have hPairD : covariantJetNormSq (I := I) (M := M) g 2
+      (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmT -
+        cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU) ≤ (Cp * N) ^ 2 := by
     refine (hlcvp P Q gmT gmU hPtie hQtie hPn hQn).trans ?_
     exact pow_le_pow_left₀ (mul_nonneg hCp (norm_nonneg _))
       (mul_le_mul_of_nonneg_left hPQn hCp) 2
-  have hPairU : lowJetSq (I := I) (M := M) g 2
-      (lieCovPair (I := I) (M := M) g gmU) ≤ Bp ^ 2 :=
+  have hPairU : covariantJetNormSq (I := I) (M := M) g 2
+      (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU) ≤ Bp ^ 2 :=
     hlcvb Q gmU hQtie hQnb
-  have hXT : lowJetSq (I := I) (M := M) g 2
-      (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+  have hXT : covariantJetNormSq (I := I) (M := M) g 2
+      (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
         (slotExtendIter (I := I) (M := M) g 0 4 2
-          (lieCovR4 (I := I) (M := M) g T hδT hδZ s))) ≤
+          (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s))) ≤
       Dx R * (pl2 * pl2) := by
     refine (hcovb T hT hδ_le hδ0 hδT hδZ R A hR hA hT2 hT3 hs).trans
       (le_of_eq ?_)
     simp only [pl2]
     ring
-  have hXD : lowJetSq (I := I) (M := M) g 2
-      (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+  have hXD : covariantJetNormSq (I := I) (M := M) g 2
+      (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
           (slotExtendIter (I := I) (M := M) g 0 4 2
-            (lieCovR4 (I := I) (M := M) g T hδT hδZ s)) -
-        rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+            (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s)) -
+        rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
           (slotExtendIter (I := I) (M := M) g 0 4 2
-            (lieCovR4 (I := I) (M := M) g U hδU hδZ s))) ≤
+            (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g U hδU hδZ s))) ≤
       Cx R * ((pl2 * pl2) * D3 ^ 2) := by
     refine (hcovp T U hT hU hδ_le hδ0 hδT hδU hδZ R A D3 hR hA hD3
       hT2 hU2 hT3 hU3 hTU3 hs).trans (le_of_eq ?_)
@@ -1225,17 +1237,17 @@ theorem LowBaseInternal.lie_covariant_pair_h3
     mul_nonneg (mul_nonneg hCa (sq_nonneg _)) (hDx R hR)
   have hc2 : (0 : ℝ) ≤ Ca * Bp ^ 2 * Cx R :=
     mul_nonneg (mul_nonneg hCa (sq_nonneg _)) (hCx R hR)
-  have hT1 : lowJetSq (I := I) (M := M) g 2
-      (appCcRS (I := I) (M := M) g 2 6 2
-        (lieCovPair (I := I) (M := M) g gmT -
-          lieCovPair (I := I) (M := M) g gmU)
-        (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+  have hT1 : covariantJetNormSq (I := I) (M := M) g 2
+      (ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+        (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmT -
+          cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU)
+        (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
           (slotExtendIter (I := I) (M := M) g 0 4 2
-            (lieCovR4 (I := I) (M := M) g T hδT hδZ s)))) ≤
+            (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s)))) ≤
       Ca * Cp ^ 2 * Dx R * ((pl2 * pl2) * u) := by
     refine (happ _ _).trans ?_
     have hstep := mul_le_mul (mul_le_mul_of_nonneg_left hPairD hCa) hXT
-      (jetNn (I := I) (M := M) (m := 2) g _)
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
       (mul_nonneg hCa (sq_nonneg _))
     refine hstep.trans ?_
     calc
@@ -1244,19 +1256,19 @@ theorem LowBaseInternal.lie_covariant_pair_h3
       _ ≤ Ca * Cp ^ 2 * Dx R * ((pl2 * pl2) * u) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left hNu hpl4) hc1
-  have hT2b : lowJetSq (I := I) (M := M) g 2
-      (appCcRS (I := I) (M := M) g 2 6 2
-        (lieCovPair (I := I) (M := M) g gmU)
-        (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+  have hT2b : covariantJetNormSq (I := I) (M := M) g 2
+      (ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+        (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU)
+        (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
             (slotExtendIter (I := I) (M := M) g 0 4 2
-              (lieCovR4 (I := I) (M := M) g T hδT hδZ s)) -
-          rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+              (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s)) -
+          rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
             (slotExtendIter (I := I) (M := M) g 0 4 2
-              (lieCovR4 (I := I) (M := M) g U hδU hδZ s)))) ≤
+              (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g U hδU hδZ s)))) ≤
       Ca * Bp ^ 2 * Cx R * ((pl2 * pl2) * u) := by
     refine (happ _ _).trans ?_
     have hstep := mul_le_mul (mul_le_mul_of_nonneg_left hPairU hCa) hXD
-      (jetNn (I := I) (M := M) (m := 2) g _)
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
       (mul_nonneg hCa (sq_nonneg _))
     refine hstep.trans ?_
     calc
@@ -1265,27 +1277,27 @@ theorem LowBaseInternal.lie_covariant_pair_h3
       _ ≤ Ca * Bp ^ 2 * Cx R * ((pl2 * pl2) * u) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left hD3le hpl4) hc2
-  have hwhole : lowJetSq (I := I) (M := M) g 2
-      (appCcRS (I := I) (M := M) g 2 6 2
-          (lieCovPair (I := I) (M := M) g gmT -
-            lieCovPair (I := I) (M := M) g gmU)
-          (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+  have hwhole : covariantJetNormSq (I := I) (M := M) g 2
+      (ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmT -
+            cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU)
+          (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
             (slotExtendIter (I := I) (M := M) g 0 4 2
-              (lieCovR4 (I := I) (M := M) g T hδT hδZ s))) +
-        appCcRS (I := I) (M := M) g 2 6 2
-          (lieCovPair (I := I) (M := M) g gmU)
-          (rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+              (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s))) +
+        ccOperatorFieldComp (I := I) (M := M) g 2 6 2
+          (cometricDoublePairTraceCoefficient (I := I) (M := M) g gmU)
+          (rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
               (slotExtendIter (I := I) (M := M) g 0 4 2
-                (lieCovR4 (I := I) (M := M) g T hδT hδZ s)) -
-            rsDomDomCongrSection (I := I) (M := M) g 2 6 lieCovSigma
+                (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g T hδT hδZ s)) -
+            rsDomDomCongrSection (I := I) (M := M) g 2 6 deTurckLieCovariantDerivativePairTracePermutation
               (slotExtendIter (I := I) (M := M) g 0 4 2
-                (lieCovR4 (I := I) (M := M) g U hδU hδZ s)))) ≤
+                (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g U hδU hδZ s)))) ≤
       Bh R * ((pl2 * pl2) * u) := by
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ + _) ≤
-          2 * (lowJetSq (I := I) (M := M) g 2 _ +
-            lowJetSq (I := I) (M := M) g 2 _) :=
-        jetAdd (I := I) (M := M) g 2 _ _
+      covariantJetNormSq (I := I) (M := M) g 2 (_ + _) ≤
+          2 * (covariantJetNormSq (I := I) (M := M) g 2 _ +
+            covariantJetNormSq (I := I) (M := M) g 2 _) :=
+        covariantJetNormSq_add_le (I := I) (M := M) g 2 _ _
       _ ≤ 2 * (Ca * Cp ^ 2 * Dx R * ((pl2 * pl2) * u) +
           Ca * Bp ^ 2 * Cx R * ((pl2 * pl2) * u)) := by
         linarith [hT1, hT2b]
@@ -1296,7 +1308,7 @@ theorem LowBaseInternal.lie_covariant_pair_h3
   simp only [pl2, u, B]
   exact pair_sum_sq_le (hBhnn R hR) hD3 hN
 
-theorem LowBaseInternal.riemann_pair_h3
+theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroRiemann_covariantJetNormSq_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
@@ -1321,25 +1333,27 @@ theorem LowBaseInternal.riemann_pair_h3
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
-      lowJetSq (I := I) (M := M) g 2
-          (lc0Riem (I := I) (M := M) g
-              (realizedFam (I := I) g T 0 hδT hδZ s) -
-            lc0Riem (I := I) (M := M) g
-              (realizedFam (I := I) g U 0 hδU hδZ s)) ≤
+      covariantJetNormSq (I := I) (M := M) g 2
+          (lieCorrectionZeroRiemann (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hδT hδZ s) -
+            lieCorrectionZeroRiemann (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g U 0 hδU hδZ s)) ≤
         (C * (D3 + D2 + N)) ^ 2 := by
-  obtain ⟨ρ, C, hρ, hC, hriem⟩ := riem_pair_h2 (I := I) (M := M) hDim g
+  obtain ⟨ρ, C, hρ, hC, hriem⟩ :=
+    DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.exists_lieCorrectionZeroRiemann_covariantJetNormSq_difference_bound
+      (I := I) (M := M) hDim g
   refine ⟨ρ, C, hρ, hC, ?_⟩
   intro T U hT hU δ hδ_le hδ0 hδT hδU hδZ
     D2 D3 N hD2 hD3 hN hTn hUn hTUn s hs
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
   let gmT : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g T 0 hδT hδZ s
+    metricPerturbationPath (I := I) g T 0 hδT hδZ s
   let gmU : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g U 0 hδU hδZ s
+    metricPerturbationPath (I := I) g U 0 hδU hδZ s
   let P : SmoothCcTensor g 0 2 := s • T
   let Q : SmoothCcTensor g 0 2 := s • U
-  have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ) :=
-    Icc_subset_realizedSmallSet hδ_lt hδ_lt hs
+  have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
   have hsabs : ‖s‖ ≤ (1 : ℝ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg hs.1]
     exact hs.2
@@ -1348,13 +1362,13 @@ theorem LowBaseInternal.riemann_pair_h3
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v := by
     intro x u v
     simpa only [gmT, P, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem (I := I) g T 0 hδT hδZ hs_mem x u v
+      metricPerturbationPath_inner_of_mem (I := I) g T 0 hδT hδZ hs_mem x u v
   have hQtie : ∀ (x : M) (u v : TangentSpace I x),
       gmU.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g Q x u v := by
     intro x u v
     simpa only [gmU, Q, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem (I := I) g U 0 hδU hδZ hs_mem x u v
+      metricPerturbationPath_inner_of_mem (I := I) g U 0 hδU hδZ hs_mem x u v
   have hPn : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) P‖ ≤ ρ := by
     rw [show P = s • T by rfl, ccTensorToHs_smul, norm_smul]
     exact (mul_le_mul_of_nonneg_right hsabs (norm_nonneg _)).trans
@@ -1377,7 +1391,7 @@ theorem LowBaseInternal.riemann_pair_h3
   exact pow_le_pow_left₀ (mul_nonneg hC hN)
     (mul_le_mul_of_nonneg_left hNle hC) 2
 
-theorem LowBaseInternal.vector_bundle_pair_h3
+theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroVectorBundle_covariantJetNormSq_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B : ℝ → ℝ,
@@ -1399,49 +1413,49 @@ theorem LowBaseInternal.vector_bundle_pair_h3
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A D3 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ D3 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
-      lowJetSq (I := I) (M := M) g 2
-          (lc0VB (I := I) (M := M) g
-              (realizedFam (I := I) g T 0 hδT hδZ s) -
-            lc0VB (I := I) (M := M) g
-              (realizedFam (I := I) g U 0 hδU hδZ s)) ≤
+      covariantJetNormSq (I := I) (M := M) g 2
+          (lieCorrectionZeroVectorBundle (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hδT hδZ s) -
+            lieCorrectionZeroVectorBundle (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g U 0 hδU hδZ s)) ≤
         (B R * (1 + A) ^ 2 * (D3 + N)) ^ 2 := by
-  obtain ⟨Cout, hCout, happOut⟩ := appH2 (I := I) (M := M) hDim g 2 4 2
-  obtain ⟨Cin, hCin, happIn⟩ := appH2 (I := I) (M := M) hDim g 2 1 4
-  obtain ⟨Cipp, hCipp, happIp⟩ := appH2 (I := I) (M := M) hDim g 2 3 1
-  obtain ⟨Cw, hCw, happW⟩ := appH2 (I := I) (M := M) hDim g 0 3 1
+  obtain ⟨Cout, hCout, happOut⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 4 2
+  obtain ⟨Cin, hCin, happIn⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 1 4
+  obtain ⟨Cipp, hCipp, happIp⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 3 1
+  obtain ⟨Cw, hCw, happW⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 0 3 1
   obtain ⟨ρt1, Ct1, hρt1, hCt1, htp1⟩ :=
-    LowBaseInternal.trace1_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace1_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρb1, Bt1, hρb1, hBt1, htb1⟩ :=
-    LowBaseInternal.trace1_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_one_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨ρt2, Ct2, hρt2, hCt2, htp2⟩ :=
-    LowBaseInternal.trace2_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace2_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρb2, Bt2, hρb2, hBt2, htb2⟩ :=
-    LowBaseInternal.trace2_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_two_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨B0m, B1m, hB0m, hB1m, hmcdp⟩ :=
-    LowBaseInternal.mcd_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.mcd_pair_h2 (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Bm, hBm, hmcdb⟩ :=
-    LowBaseInternal.mcd_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.metric_connection_difference_coefficient_sobolev_two_bound (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨W0, W1, hW0, hW1, hwxip⟩ :=
-    wXi_sub_tame (I := I) (M := M) hDim g
+    exists_metricLoweredConnectionDifference_covariantJetNormSq_two_sub_tame_bound (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
-  obtain ⟨Bs, hBs, hwxib⟩ := wXiSelfTame (I := I) (M := M) hDim g
+  obtain ⟨Bs, hBs, hwxib⟩ := exists_metricLoweredConnectionDifference_covariantJetNormSq_bound (I := I) (M := M) hDim g
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfrdef
   have hfr : 0 ≤ fr := Nat.cast_nonneg _
   have hfr2 : (0 : ℝ) ≤ fr ^ 2 := sq_nonneg _
-  set Jp : ℝ := lowJetSq (I := I) (M := M) g 2 (ipHead (I := I) (M := M) g)
+  set Jp : ℝ := covariantJetNormSq (I := I) (M := M) g 2 (ipLowCoeff (I := I) (M := M) g)
     with hJpdef
-  have hJp : 0 ≤ Jp := jetNn (I := I) (M := M) (m := 2) g _
+  have hJp : 0 ≤ Jp := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _
   set ρ : ℝ := min (min ρt1 ρb1) (min ρt2 ρb2) with hρdef
   have hρ0 : 0 < ρ :=
     lt_min (lt_min hρt1 hρb1) (lt_min hρt2 hρb2)
@@ -1514,13 +1528,13 @@ theorem LowBaseInternal.vector_bundle_pair_h3
     hTn hUn hTUn s hs
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
   set gmT : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g T 0 hδT hδZ s with hgmT
+    metricPerturbationPath (I := I) g T 0 hδT hδZ s with hgmT
   set gmU : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g U 0 hδU hδZ s with hgmU
+    metricPerturbationPath (I := I) g U 0 hδU hδZ s with hgmU
   set P : SmoothCcTensor g 0 2 := s • T with hcP
   set Q : SmoothCcTensor g 0 2 := s • U with hcQ
-  have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ) :=
-    Icc_subset_realizedSmallSet hδ_lt hδ_lt hs
+  have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
   have hsabs : ‖s‖ ≤ (1 : ℝ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg hs.1]
     exact hs.2
@@ -1547,14 +1561,14 @@ theorem LowBaseInternal.vector_bundle_pair_h3
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v := by
     intro x u v
     simpa only [hgmT, hcP, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem
+      metricPerturbationPath_inner_of_mem
         (I := I) g T 0 hδT hδZ hs_mem x u v
   have hQtie : ∀ (x : M) (u v : TangentSpace I x),
       gmU.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g Q x u v := by
     intro x u v
     simpa only [hgmU, hcQ, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem
+      metricPerturbationPath_inner_of_mem
         (I := I) g U 0 hδU hδZ hs_mem x u v
   have hδP : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g P) δ := by
@@ -1578,30 +1592,30 @@ theorem LowBaseInternal.vector_bundle_pair_h3
         abs_of_nonneg hs.1]
       ring
     simpa only [hcQ, convexPerturbation, smul_zero, zero_add, heq] using hraw
-  have hP2 : lowJetSq (I := I) (M := M) g 2 P ≤ R ^ 2 := by
-    rw [hcP, jetSmul]
+  have hP2 : covariantJetNormSq (I := I) (M := M) g 2 P ≤ R ^ 2 := by
+    rw [hcP, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 2) g T) hs2).trans hT2
-  have hQ2 : lowJetSq (I := I) (M := M) g 2 Q ≤ R ^ 2 := by
-    rw [hcQ, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g T) hs2).trans hT2
+  have hQ2 : covariantJetNormSq (I := I) (M := M) g 2 Q ≤ R ^ 2 := by
+    rw [hcQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 2) g U) hs2).trans hU2
-  have hP3 : lowJetSq (I := I) (M := M) g 3 P ≤ A ^ 2 := by
-    rw [hcP, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g U) hs2).trans hU2
+  have hP3 : covariantJetNormSq (I := I) (M := M) g 3 P ≤ A ^ 2 := by
+    rw [hcP, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 3) g T) hs2).trans hT3
-  have hQ3 : lowJetSq (I := I) (M := M) g 3 Q ≤ A ^ 2 := by
-    rw [hcQ, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 3) g T) hs2).trans hT3
+  have hQ3 : covariantJetNormSq (I := I) (M := M) g 3 Q ≤ A ^ 2 := by
+    rw [hcQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 3) g U) hs2).trans hU3
-  have hPQ3 : lowJetSq (I := I) (M := M) g 3 (P - Q) ≤ D3 ^ 2 := by
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 3) g U) hs2).trans hU3
+  have hPQ3 : covariantJetNormSq (I := I) (M := M) g 3 (P - Q) ≤ D3 ^ 2 := by
     have hPQ : P - Q = s • (T - U) := by
       rw [hcP, hcQ, smul_sub]
-    rw [hPQ, jetSmul]
+    rw [hPQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 3) g (T - U)) hs2).trans hTU3
-  have hPQ2 : lowJetSq (I := I) (M := M) g 2 (P - Q) ≤ D3 ^ 2 :=
-    (jetMono (I := I) (M := M) g (by norm_num : (2 : ℕ) ≤ 3) (P - Q)).trans hPQ3
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 3) g (T - U)) hs2).trans hTU3
+  have hPQ2 : covariantJetNormSq (I := I) (M := M) g 2 (P - Q) ≤ D3 ^ 2 :=
+    (covariantJetNormSq_mono (I := I) (M := M) g (by norm_num : (2 : ℕ) ≤ 3) (P - Q)).trans hPQ3
   have hball : ∀ ρ' : ℝ, ρ ≤ ρ' →
       (‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) P‖ ≤ ρ' ∧
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) Q‖ ≤ ρ') := by
@@ -1621,10 +1635,10 @@ theorem LowBaseInternal.vector_bundle_pair_h3
       (by simpa using hTUn)
   set a : ℝ := A with hadef
   have ha0 : 0 ≤ a := by rw [hadef]; exact hA
-  have hP3i : lowJetSq (I := I) (M := M) g 3 P ≤ a ^ 2 := by
+  have hP3i : covariantJetNormSq (I := I) (M := M) g 3 P ≤ a ^ 2 := by
     rw [hadef]
     exact hP3
-  have hQ3i : lowJetSq (I := I) (M := M) g 3 Q ≤ a ^ 2 := by
+  have hQ3i : covariantJetNormSq (I := I) (M := M) g 3 Q ≤ a ^ 2 := by
     rw [hadef]
     exact hQ3
   set pl2 : ℝ := (1 + a) ^ 2 with hpl2
@@ -1653,33 +1667,33 @@ theorem LowBaseInternal.vector_bundle_pair_h3
     exact le_add_of_nonneg_left (sq_nonneg D3)
   have hpl2u : 0 ≤ pl2 * u := mul_nonneg hpl20 hu0
   set mcdT : SmoothCcTensor g 0 3 :=
-    metricConnDiffLoweredCc (I := I) (M := M) g gmT g with hmT
+    metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmT g with hmT
   set mcdU : SmoothCcTensor g 0 3 :=
-    metricConnDiffLoweredCc (I := I) (M := M) g gmU g with hmU
+    metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmU g with hmU
   set cdT : SmoothCcTensor g 0 3 :=
-    connDiffLoweredCc (I := I) g gmT with hcdT
+    metricLoweredConnectionDifferenceCoefficient (I := I) g gmT with hcdT
   set cdU : SmoothCcTensor g 0 3 :=
-    connDiffLoweredCc (I := I) g gmU with hcdU
+    metricLoweredConnectionDifferenceCoefficient (I := I) g gmU with hcdU
   set Tr1T : SmoothCcTensor g 3 1 :=
-    lc0TraceRF (I := I) (M := M) g gmT 1 (Equiv.refl (Fin 3)) with hTr1T
+    reindexedPureTrace (I := I) (M := M) g gmT 1 (Equiv.refl (Fin 3)) with hTr1T
   set Tr1U : SmoothCcTensor g 3 1 :=
-    lc0TraceRF (I := I) (M := M) g gmU 1 (Equiv.refl (Fin 3)) with hTr1U
+    reindexedPureTrace (I := I) (M := M) g gmU 1 (Equiv.refl (Fin 3)) with hTr1U
   set WT : SmoothCcTensor g 0 1 :=
-    wOmega (I := I) (M := M) g gmT g with hWTdef
+    deTurckVectorFieldCovector (I := I) (M := M) g gmT g with hWTdef
   set WU : SmoothCcTensor g 0 1 :=
-    wOmega (I := I) (M := M) g gmU g with hWUdef
+    deTurckVectorFieldCovector (I := I) (M := M) g gmU g with hWUdef
   set IpT : SmoothCcTensor g 2 1 := ipLowCc (I := I) (M := M) g WT with hIpT
   set IpU : SmoothCcTensor g 2 1 := ipLowCc (I := I) (M := M) g WU with hIpU
-  set VmT : SmoothCcTensor g 1 4 := vbMcdArm (I := I) (M := M) g gmT with hVmT
-  set VmU : SmoothCcTensor g 1 4 := vbMcdArm (I := I) (M := M) g gmU with hVmU
+  set VmT : SmoothCcTensor g 1 4 := lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g gmT with hVmT
+  set VmU : SmoothCcTensor g 1 4 := lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g gmU with hVmU
   set LvT : SmoothCcTensor g 4 2 :=
-    lc0RiemLive (I := I) (M := M) g gmT with hLvT
+    reindexedCometricDoubleTrace (I := I) (M := M) g gmT with hLvT
   set LvU : SmoothCcTensor g 4 2 :=
-    lc0RiemLive (I := I) (M := M) g gmU with hLvU
+    reindexedCometricDoubleTrace (I := I) (M := M) g gmU with hLvU
   set InT : SmoothCcTensor g 2 4 :=
-    appCcRS (I := I) (M := M) g 2 1 4 VmT IpT with hInT
+    ccOperatorFieldComp (I := I) (M := M) g 2 1 4 VmT IpT with hInT
   set InU : SmoothCcTensor g 2 4 :=
-    appCcRS (I := I) (M := M) g 2 1 4 VmU IpU with hInU
+    ccOperatorFieldComp (I := I) (M := M) g 2 1 4 VmU IpU with hInU
   have hρc : ρ ≤ ρt1 ∧ ρ ≤ ρb1 ∧ ρ ≤ ρt2 ∧ ρ ≤ ρb2 := by
     rw [hρdef]
     exact ⟨
@@ -1698,13 +1712,13 @@ theorem LowBaseInternal.vector_bundle_pair_h3
             g.inner y v w + ccTensorBilinSymm (I := I) g U' y v w) →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ ρp' →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U'‖ ≤ ρp' →
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
             (pureTrace (I := I) (M := M) g gT' p -
               pureTrace (I := I) (M := M) g gU' p) ≤
           (Cp * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
             (T' - U')‖) ^ 2) →
       0 ≤ Cp → ρ ≤ ρp' →
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmT p -
             pureTrace (I := I) (M := M) g gmU p) ≤
         Cp ^ 2 * u := by
@@ -1729,12 +1743,12 @@ theorem LowBaseInternal.vector_bundle_pair_h3
           gT'.inner y v w =
             g.inner y v w + ccTensorBilinSymm (I := I) g T' y v w) →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ ρp' →
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
             (pureTrace (I := I) (M := M) g gT' p) ≤ Bp ^ 2) →
       ρ ≤ ρp' →
-      (lowJetSq (I := I) (M := M) g 2
+      (covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmT p) ≤ Bp ^ 2 ∧
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmU p) ≤ Bp ^ 2) := by
     intro p Bp ρp' hbdd hρp'
     obtain ⟨hPn, hQn⟩ := hball ρp' hρp'
@@ -1743,29 +1757,29 @@ theorem LowBaseInternal.vector_bundle_pair_h3
   have htb1' := htrb 1 Bt1 ρb1 htb1 hρc.2.1
   have htp2' := htrp 2 Ct2 ρt2 htp2 hCt2 hρc.2.2.1
   have htb2' := htrb 2 Bt2 ρb2 htb2 hρc.2.2.2
-  have hmbT : lowJetSq (I := I) (M := M) g 2 mcdT ≤ (Bm R) ^ 2 * pl2 := by
+  have hmbT : covariantJetNormSq (I := I) (M := M) g 2 mcdT ≤ (Bm R) ^ 2 * pl2 := by
     have h := hmcdb gmT P hPsymm hPtie hδ_le hδ0 hδP R a hR ha0 hP2 hP3i
     rw [hmT]
     refine h.trans (le_of_eq ?_)
     rw [hpl2]
     ring
-  have hmbU : lowJetSq (I := I) (M := M) g 2 mcdU ≤ (Bm R) ^ 2 * pl2 := by
+  have hmbU : covariantJetNormSq (I := I) (M := M) g 2 mcdU ≤ (Bm R) ^ 2 * pl2 := by
     have h := hmcdb gmU Q hQsymm hQtie hδ_le hδ0 hδQ R a hR ha0 hQ2 hQ3i
     rw [hmU]
     refine h.trans (le_of_eq ?_)
     rw [hpl2]
     ring
-  have hmpd : lowJetSq (I := I) (M := M) g 2 (mcdT - mcdU) ≤
+  have hmpd : covariantJetNormSq (I := I) (M := M) g 2 (mcdT - mcdU) ≤
       M5 R * (pl2 * u) := by
     have h := hmcdp gmT gmU P Q hPsymm hQsymm hPtie hQtie
       hδ_le hδ0 hδP hδ_le hδ0 hδQ R a D3 D3 hR ha0 hD3 hD3 hQ2 hP3i hPQ2 hPQ3
     rw [hmT, hmU]
     refine h.trans ?_
-    refine (pairFold3 (b0 := B0m R) (b1 := B1m R) (a := a) (pl2 := pl2)
-      (u := u) (D3 := D3) hpl21 hplA2 hu0 hD3le).trans (le_of_eq ?_)
+    refine (three_term_sq_le_weighted_product (b0 := B0m R) (b1 := B1m R) (a := a)
+      (p := pl2) (u := u) (d := D3) hpl21 hplA2 hu0 hD3le).trans (le_of_eq ?_)
     simp only [M5]
-  have hcdT2 : lowJetSq (I := I) (M := M) g 2 cdT ≤ Cs R * pl2 := by
-    rw [hcdT, ← wXi_self_eq (I := I) (M := M) g gmT]
+  have hcdT2 : covariantJetNormSq (I := I) (M := M) g 2 cdT ≤ Cs R * pl2 := by
+    rw [hcdT, ← metricLoweredConnectionDifference_eq_connectionDifferenceLoweredCc (I := I) (M := M) g gmT]
     refine (hwxib gmT P hPsymm hPtie hδ_le hδ0 hδP hδZ R a hR ha0
       hP2 hP3i).trans ?_
     have he : (Bs R * a) ^ 2 = (Bs R) ^ 2 * a ^ 2 := by ring
@@ -1773,68 +1787,68 @@ theorem LowBaseInternal.vector_bundle_pair_h3
     refine (mul_le_mul_of_nonneg_left hplA2 (sq_nonneg (Bs R))).trans
       (le_of_eq ?_)
     simp only [Cs]
-  have hcdd2 : lowJetSq (I := I) (M := M) g 2 (cdT - cdU) ≤
+  have hcdd2 : covariantJetNormSq (I := I) (M := M) g 2 (cdT - cdU) ≤
       M5w R * (pl2 * u) := by
-    rw [hcdT, hcdU, ← wXi_self_eq (I := I) (M := M) g gmT,
-      ← wXi_self_eq (I := I) (M := M) g gmU]
+    rw [hcdT, hcdU, ← metricLoweredConnectionDifference_eq_connectionDifferenceLoweredCc (I := I) (M := M) g gmT,
+      ← metricLoweredConnectionDifference_eq_connectionDifferenceLoweredCc (I := I) (M := M) g gmU]
     refine (hwxip gmT gmU g P Q hPsymm hQsymm hPtie hQtie
       hδ_le hδ0 hδP hδ_le hδ0 hδQ R a D3 D3 hR ha0 hD3 hD3
       hQ2 hP3i hPQ2 hPQ3).trans ?_
-    refine (pairFold3 (b0 := W0 R) (b1 := W1 R) (a := a) (pl2 := pl2)
-      (u := u) (D3 := D3) hpl21 hplA2 hu0 hD3le).trans (le_of_eq ?_)
+    refine (three_term_sq_le_weighted_product (b0 := W0 R) (b1 := W1 R) (a := a)
+      (p := pl2) (u := u) (d := D3) hpl21 hplA2 hu0 hD3le).trans (le_of_eq ?_)
     simp only [M5w]
-  have hTr1T2 : lowJetSq (I := I) (M := M) g 2 Tr1T ≤ Bt1 ^ 2 := by
-    rw [hTr1T, trJet]
+  have hTr1T2 : covariantJetNormSq (I := I) (M := M) g 2 Tr1T ≤ Bt1 ^ 2 := by
+    rw [hTr1T, covariantJetNormSq_reindexedPureTrace]
     exact htb1'.1
-  have hTr1U2 : lowJetSq (I := I) (M := M) g 2 Tr1U ≤ Bt1 ^ 2 := by
-    rw [hTr1U, trJet]
+  have hTr1U2 : covariantJetNormSq (I := I) (M := M) g 2 Tr1U ≤ Bt1 ^ 2 := by
+    rw [hTr1U, covariantJetNormSq_reindexedPureTrace]
     exact htb1'.2
-  have hTr1d2 : lowJetSq (I := I) (M := M) g 2 (Tr1T - Tr1U) ≤
+  have hTr1d2 : covariantJetNormSq (I := I) (M := M) g 2 (Tr1T - Tr1U) ≤
       Ct1 ^ 2 * u := by
-    rw [hTr1T, hTr1U, trSub, reindexJet]
+    rw [hTr1T, hTr1U, reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
     exact htp1'
-  have hWTform : WT = appCcRS (I := I) (M := M) g 0 3 1 Tr1T cdT := by
-    rw [hWTdef, hTr1T, hcdT, wOmega_refold]
-  have hWUform : WU = appCcRS (I := I) (M := M) g 0 3 1 Tr1U cdU := by
-    rw [hWUdef, hTr1U, hcdU, wOmega_refold]
-  have hWT2 : lowJetSq (I := I) (M := M) g 2 WT ≤ Wb R * pl2 := by
+  have hWTform : WT = ccOperatorFieldComp (I := I) (M := M) g 0 3 1 Tr1T cdT := by
+    rw [hWTdef, hTr1T, hcdT, deTurckVectorFieldCovector_eq_reindexedPureTrace_ccOperatorFieldComp]
+  have hWUform : WU = ccOperatorFieldComp (I := I) (M := M) g 0 3 1 Tr1U cdU := by
+    rw [hWUdef, hTr1U, hcdU, deTurckVectorFieldCovector_eq_reindexedPureTrace_ccOperatorFieldComp]
+  have hWT2 : covariantJetNormSq (I := I) (M := M) g 2 WT ≤ Wb R * pl2 := by
     rw [hWTform]
     refine (happW Tr1T cdT).trans ?_
     calc
-      Cw * lowJetSq (I := I) (M := M) g 2 Tr1T *
-          lowJetSq (I := I) (M := M) g 2 cdT ≤
+      Cw * covariantJetNormSq (I := I) (M := M) g 2 Tr1T *
+          covariantJetNormSq (I := I) (M := M) g 2 cdT ≤
           Cw * Bt1 ^ 2 * (Cs R * pl2) :=
         mul_le_mul (mul_le_mul_of_nonneg_left hTr1T2 hCw) hcdT2
-          (jetNn (I := I) (M := M) (m := 2) g cdT)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g cdT)
           (mul_nonneg hCw (sq_nonneg _))
       _ = Wb R * pl2 := by
         simp only [Wb]
         ring
-  have hWd2 : lowJetSq (I := I) (M := M) g 2 (WT - WU) ≤ Wm R * (pl2 * u) := by
+  have hWd2 : covariantJetNormSq (I := I) (M := M) g 2 (WT - WU) ≤ Wm R * (pl2 * u) := by
     rw [hWTform, hWUform]
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Cw * (Ct1 ^ 2 * u) * (Cs R * pl2) +
             Cw * Bt1 ^ 2 * (M5w R * (pl2 * u))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 0 3 1
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 0 3 1
           Cw (Ct1 ^ 2 * u) (Cs R * pl2) (Bt1 ^ 2)
           (M5w R * (pl2 * u)) hCw _ _ _ _ happW
           hTr1d2 hcdT2 hTr1U2 hcdd2
       _ = Wm R * (pl2 * u) := by
         simp only [Wm]
         ring
-  have hIpT2 : lowJetSq (I := I) (M := M) g 2 IpT ≤ Ib R * pl2 := by
-    rw [hIpT, ipForm]
-    refine (happIp (ipHead (I := I) (M := M) g) _).trans ?_
-    have hslot : lowJetSq (I := I) (M := M) g 2
+  have hIpT2 : covariantJetNormSq (I := I) (M := M) g 2 IpT ≤ Ib R * pl2 := by
+    rw [hIpT, ipLowCc_eq_ccOperatorFieldComp]
+    refine (happIp (ipLowCoeff (I := I) (M := M) g) _).trans ?_
+    have hslot : covariantJetNormSq (I := I) (M := M) g 2
         (slotExtend (I := I) (M := M) g 1 2
           (slotExtend (I := I) (M := M) g 0 1 WT)) ≤
-        fr * (fr * lowJetSq (I := I) (M := M) g 2 WT) :=
-      le_trans (slotH2 (I := I) (M := M) g 1 2 _)
-        (mul_le_mul_of_nonneg_left (slotH2 (I := I) (M := M) g 0 1 _) hfr)
+        fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 WT) :=
+      le_trans (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 2 _)
+        (mul_le_mul_of_nonneg_left (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 1 _) hfr)
     calc
-      Cipp * lowJetSq (I := I) (M := M) g 2 (ipHead (I := I) (M := M) g) *
-          lowJetSq (I := I) (M := M) g 2
+      Cipp * covariantJetNormSq (I := I) (M := M) g 2 (ipLowCoeff (I := I) (M := M) g) *
+          covariantJetNormSq (I := I) (M := M) g 2
             (slotExtend (I := I) (M := M) g 1 2
               (slotExtend (I := I) (M := M) g 0 1 WT)) ≤
           Cipp * Jp * (fr * (fr * (Wb R * pl2))) := by
@@ -1842,24 +1856,24 @@ theorem LowBaseInternal.vector_bundle_pair_h3
           (le_trans hslot
             (mul_le_mul_of_nonneg_left
               (mul_le_mul_of_nonneg_left hWT2 hfr) hfr))
-          (jetNn (I := I) (M := M) (m := 2) g _)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
           (mul_nonneg hCipp hJp)
       _ = Ib R * pl2 := by
         simp only [Ib]
         ring
-  have hIpd2 : lowJetSq (I := I) (M := M) g 2 (IpT - IpU) ≤
+  have hIpd2 : covariantJetNormSq (I := I) (M := M) g 2 (IpT - IpU) ≤
       Im R * (pl2 * u) := by
-    rw [hIpT, hIpU, ← ipSub, ipForm]
-    refine (happIp (ipHead (I := I) (M := M) g) _).trans ?_
-    have hslot : lowJetSq (I := I) (M := M) g 2
+    rw [hIpT, hIpU, ← ipLowCc_sub, ipLowCc_eq_ccOperatorFieldComp]
+    refine (happIp (ipLowCoeff (I := I) (M := M) g) _).trans ?_
+    have hslot : covariantJetNormSq (I := I) (M := M) g 2
         (slotExtend (I := I) (M := M) g 1 2
           (slotExtend (I := I) (M := M) g 0 1 (WT - WU))) ≤
-        fr * (fr * lowJetSq (I := I) (M := M) g 2 (WT - WU)) :=
-      le_trans (slotH2 (I := I) (M := M) g 1 2 _)
-        (mul_le_mul_of_nonneg_left (slotH2 (I := I) (M := M) g 0 1 _) hfr)
+        fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 (WT - WU)) :=
+      le_trans (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 2 _)
+        (mul_le_mul_of_nonneg_left (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 1 _) hfr)
     calc
-      Cipp * lowJetSq (I := I) (M := M) g 2 (ipHead (I := I) (M := M) g) *
-          lowJetSq (I := I) (M := M) g 2
+      Cipp * covariantJetNormSq (I := I) (M := M) g 2 (ipLowCoeff (I := I) (M := M) g) *
+          covariantJetNormSq (I := I) (M := M) g 2
             (slotExtend (I := I) (M := M) g 1 2
               (slotExtend (I := I) (M := M) g 0 1 (WT - WU))) ≤
           Cipp * Jp * (fr * (fr * (Wm R * (pl2 * u)))) := by
@@ -1867,17 +1881,17 @@ theorem LowBaseInternal.vector_bundle_pair_h3
           (le_trans hslot
             (mul_le_mul_of_nonneg_left
               (mul_le_mul_of_nonneg_left hWd2 hfr) hfr))
-          (jetNn (I := I) (M := M) (m := 2) g _)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
           (mul_nonneg hCipp hJp)
       _ = Im R * (pl2 * u) := by
         simp only [Im]
         ring
-  have hVmT2 : lowJetSq (I := I) (M := M) g 2 VmT ≤ Vb R * pl2 := by
+  have hVmT2 : covariantJetNormSq (I := I) (M := M) g 2 VmT ≤ Vb R * pl2 := by
     rw [hVmT]
-    refine (vbmcdH2 (I := I) (M := M) g gmT).trans ?_
+    refine (covariantJetNormSq_lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_le (I := I) (M := M) g gmT).trans ?_
     calc
-      fr * lowJetSq (I := I) (M := M) g 2
-          (metricConnDiffLoweredCc (I := I) (M := M) g gmT g) ≤
+      fr * covariantJetNormSq (I := I) (M := M) g 2
+          (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmT g) ≤
           fr * ((Bm R) ^ 2 * pl2) := by
         have h := hmbT
         rw [hmT] at h
@@ -1885,12 +1899,12 @@ theorem LowBaseInternal.vector_bundle_pair_h3
       _ = Vb R * pl2 := by
         simp only [Vb]
         ring
-  have hVmU2 : lowJetSq (I := I) (M := M) g 2 VmU ≤ Vb R * pl2 := by
+  have hVmU2 : covariantJetNormSq (I := I) (M := M) g 2 VmU ≤ Vb R * pl2 := by
     rw [hVmU]
-    refine (vbmcdH2 (I := I) (M := M) g gmU).trans ?_
+    refine (covariantJetNormSq_lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_le (I := I) (M := M) g gmU).trans ?_
     calc
-      fr * lowJetSq (I := I) (M := M) g 2
-          (metricConnDiffLoweredCc (I := I) (M := M) g gmU g) ≤
+      fr * covariantJetNormSq (I := I) (M := M) g 2
+          (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmU g) ≤
           fr * ((Bm R) ^ 2 * pl2) := by
         have h := hmbU
         rw [hmU] at h
@@ -1898,14 +1912,14 @@ theorem LowBaseInternal.vector_bundle_pair_h3
       _ = Vb R * pl2 := by
         simp only [Vb]
         ring
-  have hVmd2 : lowJetSq (I := I) (M := M) g 2 (VmT - VmU) ≤
+  have hVmd2 : covariantJetNormSq (I := I) (M := M) g 2 (VmT - VmU) ≤
       Vd R * (pl2 * u) := by
     rw [hVmT, hVmU]
-    refine (vbmcdSub (I := I) (M := M) g gmT gmU).trans ?_
+    refine (covariantJetNormSq_lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_sub_le (I := I) (M := M) g gmT gmU).trans ?_
     calc
-      fr * lowJetSq (I := I) (M := M) g 2
-          (metricConnDiffLoweredCc (I := I) (M := M) g gmT g -
-            metricConnDiffLoweredCc (I := I) (M := M) g gmU g) ≤
+      fr * covariantJetNormSq (I := I) (M := M) g 2
+          (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmT g -
+            metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmU g) ≤
           fr * (M5 R * (pl2 * u)) := by
         have h := hmpd
         rw [hmT, hmU] at h
@@ -1913,27 +1927,27 @@ theorem LowBaseInternal.vector_bundle_pair_h3
       _ = Vd R * (pl2 * u) := by
         simp only [Vd]
         ring
-  have hInT2 : lowJetSq (I := I) (M := M) g 2 InT ≤ Sin R * (pl2 * pl2) := by
+  have hInT2 : covariantJetNormSq (I := I) (M := M) g 2 InT ≤ Sin R * (pl2 * pl2) := by
     rw [hInT]
     refine (happIn VmT IpT).trans ?_
     calc
-      Cin * lowJetSq (I := I) (M := M) g 2 VmT *
-          lowJetSq (I := I) (M := M) g 2 IpT ≤
+      Cin * covariantJetNormSq (I := I) (M := M) g 2 VmT *
+          covariantJetNormSq (I := I) (M := M) g 2 IpT ≤
           Cin * (Vb R * pl2) * (Ib R * pl2) :=
         mul_le_mul (mul_le_mul_of_nonneg_left hVmT2 hCin) hIpT2
-          (jetNn (I := I) (M := M) (m := 2) g IpT)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g IpT)
           (mul_nonneg hCin (mul_nonneg (hVb R hR) hpl20))
       _ = Sin R * (pl2 * pl2) := by
         simp only [Sin]
         ring
-  have hInd2 : lowJetSq (I := I) (M := M) g 2 (InT - InU) ≤
+  have hInd2 : covariantJetNormSq (I := I) (M := M) g 2 (InT - InU) ≤
       2 * (Kv R * ((pl2 * pl2) * u) + Ki R * ((pl2 * pl2) * u)) := by
     rw [hInT, hInU]
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Cin * (Vd R * (pl2 * u)) * (Ib R * pl2) +
             Cin * (Vb R * pl2) * (Im R * (pl2 * u))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 1 4
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 1 4
           Cin (Vd R * (pl2 * u)) (Ib R * pl2) (Vb R * pl2)
           (Im R * (pl2 * u)) hCin _ _ _ _ happIn
           hVmd2 hIpT2 hVmU2 hIpd2
@@ -1941,31 +1955,31 @@ theorem LowBaseInternal.vector_bundle_pair_h3
           Ki R * ((pl2 * pl2) * u)) := by
         simp only [Kv, Ki]
         ring
-  have hLvd2 : lowJetSq (I := I) (M := M) g 2 (LvT - LvU) ≤ Ct2 ^ 2 * u := by
-    rw [hLvT, hLvU, riemLiveEq, riemLiveEq]
+  have hLvd2 : covariantJetNormSq (I := I) (M := M) g 2 (LvT - LvU) ≤ Ct2 ^ 2 * u := by
+    rw [hLvT, hLvU, reindexedCometricDoubleTrace_eq_pureTrace, reindexedCometricDoubleTrace_eq_pureTrace]
     exact htp2'
-  have hLvU2 : lowJetSq (I := I) (M := M) g 2 LvU ≤ Bt2 ^ 2 := by
-    rw [hLvU, riemLiveEq]
+  have hLvU2 : covariantJetNormSq (I := I) (M := M) g 2 LvU ≤ Bt2 ^ 2 := by
+    rw [hLvU, reindexedCometricDoubleTrace_eq_pureTrace]
     exact htb2'.2
-  have hFormT : lc0VB (I := I) (M := M) g gmT =
-      (2 : ℝ) • appCcRS (I := I) (M := M) g 2 4 2 LvT InT := by
-    rw [hLvT, hInT, hVmT, hIpT, hWTdef, vb_refold_rf, lc0VBFormRF]
-  have hFormU : lc0VB (I := I) (M := M) g gmU =
-      (2 : ℝ) • appCcRS (I := I) (M := M) g 2 4 2 LvU InU := by
-    rw [hLvU, hInU, hVmU, hIpU, hWUdef, vb_refold_rf, lc0VBFormRF]
-  have hwhole : lowJetSq (I := I) (M := M) g 2
-      (lc0VB (I := I) (M := M) g gmT - lc0VB (I := I) (M := M) g gmU) ≤
+  have hFormT : lieCorrectionZeroVectorBundle (I := I) (M := M) g gmT =
+      (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g 2 4 2 LvT InT := by
+    rw [hLvT, hInT, hVmT, hIpT, hWTdef, lieCorrectionZeroVectorBundle_eq_expansion, lieCorrectionZeroVectorBundleExpansion]
+  have hFormU : lieCorrectionZeroVectorBundle (I := I) (M := M) g gmU =
+      (2 : ℝ) • ccOperatorFieldComp (I := I) (M := M) g 2 4 2 LvU InU := by
+    rw [hLvU, hInU, hVmU, hIpU, hWUdef, lieCorrectionZeroVectorBundle_eq_expansion, lieCorrectionZeroVectorBundleExpansion]
+  have hwhole : covariantJetNormSq (I := I) (M := M) g 2
+      (lieCorrectionZeroVectorBundle (I := I) (M := M) g gmT - lieCorrectionZeroVectorBundle (I := I) (M := M) g gmU) ≤
       Bh R * ((pl2 * pl2) * u) := by
-    rw [hFormT, hFormU, ← smul_sub, jetSmul]
+    rw [hFormT, hFormU, ← smul_sub, covariantJetNormSq_smul]
     have h4 : ((2 : ℝ)) ^ 2 = 4 := by norm_num
     rw [h4]
     calc
-      (4 : ℝ) * lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      (4 : ℝ) * covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           4 * (2 * (Cout * (Ct2 ^ 2 * u) * (Sin R * (pl2 * pl2)) +
             Cout * Bt2 ^ 2 * (2 * (Kv R * ((pl2 * pl2) * u) +
               Ki R * ((pl2 * pl2) * u))))) :=
         mul_le_mul_of_nonneg_left
-          (low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 4 2
+          (covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 4 2
             Cout (Ct2 ^ 2 * u) (Sin R * (pl2 * pl2)) (Bt2 ^ 2)
             (2 * (Kv R * ((pl2 * pl2) * u) + Ki R * ((pl2 * pl2) * u)))
             hCout _ _ _ _ happOut hLvd2 hInT2 hLvU2 hInd2)
@@ -1978,7 +1992,7 @@ theorem LowBaseInternal.vector_bundle_pair_h3
   simp only [B]
   exact pair_sum_sq_le (hBhnn R hR) hD3 hN
 
-private theorem amix_half_pair_h3
+private theorem exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B : ℝ → ℝ,
@@ -2000,43 +2014,43 @@ private theorem amix_half_pair_h3
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A D3 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ D3 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
         ∀ (σlast : Equiv.Perm (Fin 4)),
-      lowJetSq (I := I) (M := M) g 2
-          (lc0AMixHalfRF (I := I) (M := M) g
-              (realizedFam (I := I) g T 0 hδT hδZ s) g σlast -
-            lc0AMixHalfRF (I := I) (M := M) g
-              (realizedFam (I := I) g U 0 hδU hδZ s) g σlast) ≤
+      covariantJetNormSq (I := I) (M := M) g 2
+          (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g σlast -
+            lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g σlast) ≤
         (B R * (1 + A) ^ 2 * (D3 + N)) ^ 2 := by
-  obtain ⟨Ca1, hCa1, happ1⟩ := appH2 (I := I) (M := M) hDim g 2 4 2
-  obtain ⟨Ca2, hCa2, happ2⟩ := appH2 (I := I) (M := M) hDim g 2 6 4
-  obtain ⟨Ca3, hCa3, happ3⟩ := appH2 (I := I) (M := M) hDim g 2 3 6
-  obtain ⟨Ca4, hCa4, happ4⟩ := appH2 (I := I) (M := M) hDim g 2 5 3
+  obtain ⟨Ca1, hCa1, happ1⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 4 2
+  obtain ⟨Ca2, hCa2, happ2⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 6 4
+  obtain ⟨Ca3, hCa3, happ3⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 3 6
+  obtain ⟨Ca4, hCa4, happ4⟩ := exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g 2 5 3
   obtain ⟨ρt2, Ct2, hρt2, hCt2, htp2⟩ :=
-    LowBaseInternal.trace2_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace2_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρt3, Ct3, hρt3, hCt3, htp3⟩ :=
-    LowBaseInternal.trace3_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace3_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρt4, Ct4, hρt4, hCt4, htp4⟩ :=
-    LowBaseInternal.trace4_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace4_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨ρb2, Bt2, hρb2, hBt2, htb2⟩ :=
-    LowBaseInternal.trace2_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_two_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨ρb3, Bt3, hρb3, hBt3, htb3⟩ :=
-    LowBaseInternal.trace3_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_three_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨ρb4, Bt4, hρb4, hBt4, htb4⟩ :=
-    LowBaseInternal.trace4_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.trace_four_sobolev_two_bound (I := I) (M := M) hDim g
   obtain ⟨B0m, B1m, hB0m, hB1m, hmcdp⟩ :=
-    LowBaseInternal.mcd_pair_h2 (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.mcd_pair_h2 (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Bm, hBm, hmcdb⟩ :=
-    LowBaseInternal.mcd_h2_bdd (I := I) (M := M) hDim g
+    RicciDeTurckLowOrder.metric_connection_difference_coefficient_sobolev_two_bound (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfrdef
   have hfr : 0 ≤ fr := Nat.cast_nonneg _
@@ -2115,13 +2129,13 @@ private theorem amix_half_pair_h3
     hTn hUn hTUn s hs σlast
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
   set gmT : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g T 0 hδT hδZ s with hgmT
+    metricPerturbationPath (I := I) g T 0 hδT hδZ s with hgmT
   set gmU : SmoothRiemannianMetric I M :=
-    realizedFam (I := I) g U 0 hδU hδZ s with hgmU
+    metricPerturbationPath (I := I) g U 0 hδU hδZ s with hgmU
   set P : SmoothCcTensor g 0 2 := s • T with hcP
   set Q : SmoothCcTensor g 0 2 := s • U with hcQ
-  have hs_mem : s ∈ realizedSmallSet (δ := δ) (δ' := δ) :=
-    Icc_subset_realizedSmallSet hδ_lt hδ_lt hs
+  have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
+    Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
   have hsabs : ‖s‖ ≤ (1 : ℝ) := by
     rw [Real.norm_eq_abs, abs_of_nonneg hs.1]
     exact hs.2
@@ -2148,14 +2162,14 @@ private theorem amix_half_pair_h3
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v := by
     intro x u v
     simpa only [hgmT, hcP, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem
+      metricPerturbationPath_inner_of_mem
         (I := I) g T 0 hδT hδZ hs_mem x u v
   have hQtie : ∀ (x : M) (u v : TangentSpace I x),
       gmU.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g Q x u v := by
     intro x u v
     simpa only [hgmU, hcQ, convexPerturbation, smul_zero, zero_add] using
-      realizedFam_inner_of_mem
+      metricPerturbationPath_inner_of_mem
         (I := I) g U 0 hδU hδZ hs_mem x u v
   have hδP : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g P) δ := by
@@ -2179,30 +2193,30 @@ private theorem amix_half_pair_h3
         abs_of_nonneg hs.1]
       ring
     simpa only [hcQ, convexPerturbation, smul_zero, zero_add, heq] using hraw
-  have hP2 : lowJetSq (I := I) (M := M) g 2 P ≤ R ^ 2 := by
-    rw [hcP, jetSmul]
+  have hP2 : covariantJetNormSq (I := I) (M := M) g 2 P ≤ R ^ 2 := by
+    rw [hcP, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 2) g T) hs2).trans hT2
-  have hQ2 : lowJetSq (I := I) (M := M) g 2 Q ≤ R ^ 2 := by
-    rw [hcQ, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g T) hs2).trans hT2
+  have hQ2 : covariantJetNormSq (I := I) (M := M) g 2 Q ≤ R ^ 2 := by
+    rw [hcQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 2) g U) hs2).trans hU2
-  have hP3 : lowJetSq (I := I) (M := M) g 3 P ≤ A ^ 2 := by
-    rw [hcP, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g U) hs2).trans hU2
+  have hP3 : covariantJetNormSq (I := I) (M := M) g 3 P ≤ A ^ 2 := by
+    rw [hcP, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 3) g T) hs2).trans hT3
-  have hQ3 : lowJetSq (I := I) (M := M) g 3 Q ≤ A ^ 2 := by
-    rw [hcQ, jetSmul]
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 3) g T) hs2).trans hT3
+  have hQ3 : covariantJetNormSq (I := I) (M := M) g 3 Q ≤ A ^ 2 := by
+    rw [hcQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 3) g U) hs2).trans hU3
-  have hPQ3 : lowJetSq (I := I) (M := M) g 3 (P - Q) ≤ D3 ^ 2 := by
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 3) g U) hs2).trans hU3
+  have hPQ3 : covariantJetNormSq (I := I) (M := M) g 3 (P - Q) ≤ D3 ^ 2 := by
     have hPQ : P - Q = s • (T - U) := by
       rw [hcP, hcQ, smul_sub]
-    rw [hPQ, jetSmul]
+    rw [hPQ, covariantJetNormSq_smul]
     exact (mul_le_of_le_one_left
-      (jetNn (I := I) (M := M) (m := 3) g (T - U)) hs2).trans hTU3
-  have hPQ2 : lowJetSq (I := I) (M := M) g 2 (P - Q) ≤ D3 ^ 2 :=
-    (jetMono (I := I) (M := M) g (by norm_num : (2 : ℕ) ≤ 3) (P - Q)).trans hPQ3
+      (covariantJetNormSq_nonneg (I := I) (M := M) (m := 3) g (T - U)) hs2).trans hTU3
+  have hPQ2 : covariantJetNormSq (I := I) (M := M) g 2 (P - Q) ≤ D3 ^ 2 :=
+    (covariantJetNormSq_mono (I := I) (M := M) g (by norm_num : (2 : ℕ) ≤ 3) (P - Q)).trans hPQ3
   have hball : ∀ ρ' : ℝ, ρ ≤ ρ' →
       (‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) P‖ ≤ ρ' ∧
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) Q‖ ≤ ρ') := by
@@ -2222,10 +2236,10 @@ private theorem amix_half_pair_h3
       (by simpa using hTUn)
   set a : ℝ := A with hadef
   have ha0 : 0 ≤ a := by rw [hadef]; exact hA
-  have hP3i : lowJetSq (I := I) (M := M) g 3 P ≤ a ^ 2 := by
+  have hP3i : covariantJetNormSq (I := I) (M := M) g 3 P ≤ a ^ 2 := by
     rw [hadef]
     exact hP3
-  have hQ3i : lowJetSq (I := I) (M := M) g 3 Q ≤ a ^ 2 := by
+  have hQ3i : covariantJetNormSq (I := I) (M := M) g 3 Q ≤ a ^ 2 := by
     rw [hadef]
     exact hQ3
   set pl2 : ℝ := (1 + a) ^ 2 with hpl2
@@ -2253,22 +2267,22 @@ private theorem amix_half_pair_h3
     rw [hu]
     exact le_add_of_nonneg_left (sq_nonneg D3)
   set mcdT : SmoothCcTensor g 0 3 :=
-    metricConnDiffLoweredCc (I := I) (M := M) g gmT g with hmT
+    metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmT g with hmT
   set mcdU : SmoothCcTensor g 0 3 :=
-    metricConnDiffLoweredCc (I := I) (M := M) g gmU g with hmU
-  have hmbT : lowJetSq (I := I) (M := M) g 2 mcdT ≤ (Bm R) ^ 2 * pl2 := by
+    metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g gmU g with hmU
+  have hmbT : covariantJetNormSq (I := I) (M := M) g 2 mcdT ≤ (Bm R) ^ 2 * pl2 := by
     have h := hmcdb gmT P hPsymm hPtie hδ_le hδ0 hδP R a hR ha0 hP2 hP3i
     rw [hmT]
     refine h.trans (le_of_eq ?_)
     rw [hpl2]
     ring
-  have hmbU : lowJetSq (I := I) (M := M) g 2 mcdU ≤ (Bm R) ^ 2 * pl2 := by
+  have hmbU : covariantJetNormSq (I := I) (M := M) g 2 mcdU ≤ (Bm R) ^ 2 * pl2 := by
     have h := hmcdb gmU Q hQsymm hQtie hδ_le hδ0 hδQ R a hR ha0 hQ2 hQ3i
     rw [hmU]
     refine h.trans (le_of_eq ?_)
     rw [hpl2]
     ring
-  have hmpd : lowJetSq (I := I) (M := M) g 2 (mcdT - mcdU) ≤
+  have hmpd : covariantJetNormSq (I := I) (M := M) g 2 (mcdT - mcdU) ≤
       M5 R * (pl2 * u) := by
     have h := hmcdp gmT gmU P Q hPsymm hQsymm hPtie hQtie
       hδ_le hδ0 hδP hδ_le hδ0 hδQ R a D3 D3 hR ha0 hD3 hD3 hQ2 hP3i hPQ2 hPQ3
@@ -2280,7 +2294,11 @@ private theorem amix_half_pair_h3
       have hre : B0m R * D3 + B1m R * D3 + B1m R * a * D3 =
           (B0m R + B1m R) * D3 + B1m R * a * D3 := by ring
       rw [hre]
-      refine (sqTwo ((B0m R + B1m R) * D3) (B1m R * a * D3)).trans (le_of_eq ?_)
+      have hsq : ((B0m R + B1m R) * D3 + B1m R * a * D3) ^ 2 ≤
+          2 * (((B0m R + B1m R) * D3) ^ 2 + (B1m R * a * D3) ^ 2) :=
+        add_sq_le
+      rw [mul_add] at hsq
+      refine hsq.trans (le_of_eq ?_)
       ring
     refine hstep.trans ?_
     have hA2D : a ^ 2 * D3 ^ 2 ≤ pl2 * u := by
@@ -2327,13 +2345,13 @@ private theorem amix_half_pair_h3
             g.inner y v w + ccTensorBilinSymm (I := I) g U' y v w) →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ ρp' →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U'‖ ≤ ρp' →
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
             (pureTrace (I := I) (M := M) g gT' p -
               pureTrace (I := I) (M := M) g gU' p) ≤
           (Cp * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
             (T' - U')‖) ^ 2) →
       0 ≤ Cp → ρ ≤ ρp' →
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmT p -
             pureTrace (I := I) (M := M) g gmU p) ≤
         Cp ^ 2 * u := by
@@ -2358,12 +2376,12 @@ private theorem amix_half_pair_h3
           gT'.inner y v w =
             g.inner y v w + ccTensorBilinSymm (I := I) g T' y v w) →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T'‖ ≤ ρp' →
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
             (pureTrace (I := I) (M := M) g gT' p) ≤ Bp ^ 2) →
       ρ ≤ ρp' →
-      (lowJetSq (I := I) (M := M) g 2
+      (covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmT p) ≤ Bp ^ 2 ∧
-        lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq (I := I) (M := M) g 2
           (pureTrace (I := I) (M := M) g gmU p) ≤ Bp ^ 2) := by
     intro p Bp ρp' hbdd hρp'
     obtain ⟨hPn, hQn⟩ := hball ρp' hρp'
@@ -2379,58 +2397,58 @@ private theorem amix_half_pair_h3
   set S5U : SmoothCcTensor g 2 5 :=
     slotExtendIter (I := I) (M := M) g 0 3 2 mcdU with hS5Udef
   set S4T : SmoothCcTensor g 2 3 :=
-    appCcRS (I := I) (M := M) g 2 5 3
-      (lc0TraceRF (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ) S5T
+    ccOperatorFieldComp (I := I) (M := M) g 2 5 3
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5T
     with hS4Tdef
   set S4U : SmoothCcTensor g 2 3 :=
-    appCcRS (I := I) (M := M) g 2 5 3
-      (lc0TraceRF (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ) S5U
+    ccOperatorFieldComp (I := I) (M := M) g 2 5 3
+      (reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) S5U
     with hS4Udef
   set E3T : SmoothCcTensor g 3 6 :=
     slotExtendIter (I := I) (M := M) g 0 3 3 mcdT with hE3Tdef
   set E3U : SmoothCcTensor g 3 6 :=
     slotExtendIter (I := I) (M := M) g 0 3 3 mcdU with hE3Udef
   set S3T : SmoothCcTensor g 2 6 :=
-    appCcRS (I := I) (M := M) g 2 3 6 E3T S4T with hS3Tdef
+    ccOperatorFieldComp (I := I) (M := M) g 2 3 6 E3T S4T with hS3Tdef
   set S3U : SmoothCcTensor g 2 6 :=
-    appCcRS (I := I) (M := M) g 2 3 6 E3U S4U with hS3Udef
+    ccOperatorFieldComp (I := I) (M := M) g 2 3 6 E3U S4U with hS3Udef
   set S2T : SmoothCcTensor g 2 4 :=
-    appCcRS (I := I) (M := M) g 2 6 4
-      (lc0TraceRF (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1) S3T
+    ccOperatorFieldComp (I := I) (M := M) g 2 6 4
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3T
     with hS2Tdef
   set S2U : SmoothCcTensor g 2 4 :=
-    appCcRS (I := I) (M := M) g 2 6 4
-      (lc0TraceRF (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1) S3U
+    ccOperatorFieldComp (I := I) (M := M) g 2 6 4
+      (reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) S3U
     with hS2Udef
-  have hHalfT : lc0AMixHalfRF (I := I) (M := M) g gmT g σlast =
-      appCcRS (I := I) (M := M) g 2 4 2
-        (lc0TraceRF (I := I) (M := M) g gmT 2 σlast) S2T := rfl
-  have hHalfU : lc0AMixHalfRF (I := I) (M := M) g gmU g σlast =
-      appCcRS (I := I) (M := M) g 2 4 2
-        (lc0TraceRF (I := I) (M := M) g gmU 2 σlast) S2U := rfl
-  have hS5T2 : lowJetSq (I := I) (M := M) g 2 S5T ≤ S5b R * pl2 := by
+  have hHalfT : lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast =
+      ccOperatorFieldComp (I := I) (M := M) g 2 4 2
+        (reindexedPureTrace (I := I) (M := M) g gmT 2 σlast) S2T := rfl
+  have hHalfU : lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmU g σlast =
+      ccOperatorFieldComp (I := I) (M := M) g 2 4 2
+        (reindexedPureTrace (I := I) (M := M) g gmU 2 σlast) S2U := rfl
+  have hS5T2 : covariantJetNormSq (I := I) (M := M) g 2 S5T ≤ S5b R * pl2 := by
     rw [hS5Tdef]
     have h0 : slotExtendIter (I := I) (M := M) g 0 3 2 mcdT =
         slotExtend (I := I) (M := M) g 1 4
           (slotExtend (I := I) (M := M) g 0 3 mcdT) := rfl
     rw [h0]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 mcdT)) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 mcdT) :=
-        slotH2 (I := I) (M := M) g 1 4 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2 mcdT) :=
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 mcdT) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 0 3 _) hfr
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr
       _ ≤ fr * (fr * ((Bm R) ^ 2 * pl2)) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left hmbT hfr) hfr
       _ = S5b R * pl2 := by
         simp only [S5b]
         ring
-  have hE3T2 : lowJetSq (I := I) (M := M) g 2 E3T ≤ E3b R * pl2 := by
+  have hE3T2 : covariantJetNormSq (I := I) (M := M) g 2 E3T ≤ E3b R * pl2 := by
     rw [hE3Tdef]
     have h0 : slotExtendIter (I := I) (M := M) g 0 3 3 mcdT =
         slotExtend (I := I) (M := M) g 2 5
@@ -2438,22 +2456,22 @@ private theorem amix_half_pair_h3
             (slotExtend (I := I) (M := M) g 0 3 mcdT)) := rfl
     rw [h0]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 2 5
             (slotExtend (I := I) (M := M) g 1 4
               (slotExtend (I := I) (M := M) g 0 3 mcdT))) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 mcdT)) :=
-        slotH2 (I := I) (M := M) g 2 5 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 2 5 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 mcdT)) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 1 4 _) hfr
-      _ ≤ fr * (fr * (fr * lowJetSq (I := I) (M := M) g 2 mcdT)) :=
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _) hfr
+      _ ≤ fr * (fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 mcdT)) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
-            (slotH2 (I := I) (M := M) g 0 3 _) hfr) hfr
+            (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr) hfr
       _ ≤ fr * (fr * (fr * ((Bm R) ^ 2 * pl2))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
@@ -2461,7 +2479,7 @@ private theorem amix_half_pair_h3
       _ = E3b R * pl2 := by
         simp only [E3b]
         ring
-  have hE3U2 : lowJetSq (I := I) (M := M) g 2 E3U ≤ E3b R * pl2 := by
+  have hE3U2 : covariantJetNormSq (I := I) (M := M) g 2 E3U ≤ E3b R * pl2 := by
     rw [hE3Udef]
     have h0 : slotExtendIter (I := I) (M := M) g 0 3 3 mcdU =
         slotExtend (I := I) (M := M) g 2 5
@@ -2469,22 +2487,22 @@ private theorem amix_half_pair_h3
             (slotExtend (I := I) (M := M) g 0 3 mcdU)) := rfl
     rw [h0]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 2 5
             (slotExtend (I := I) (M := M) g 1 4
               (slotExtend (I := I) (M := M) g 0 3 mcdU))) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 mcdU)) :=
-        slotH2 (I := I) (M := M) g 2 5 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 2 5 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 mcdU)) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 1 4 _) hfr
-      _ ≤ fr * (fr * (fr * lowJetSq (I := I) (M := M) g 2 mcdU)) :=
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _) hfr
+      _ ≤ fr * (fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 mcdU)) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
-            (slotH2 (I := I) (M := M) g 0 3 _) hfr) hfr
+            (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr) hfr
       _ ≤ fr * (fr * (fr * ((Bm R) ^ 2 * pl2))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
@@ -2493,52 +2511,52 @@ private theorem amix_half_pair_h3
         simp only [E3b]
         ring
   have hpl2u : 0 ≤ pl2 * u := mul_nonneg hpl20 hu0
-  have hS4T2 : lowJetSq (I := I) (M := M) g 2 S4T ≤ S4b R * pl2 := by
+  have hS4T2 : covariantJetNormSq (I := I) (M := M) g 2 S4T ≤ S4b R * pl2 := by
     rw [hS4Tdef]
     refine (happ4 _ S5T).trans ?_
-    have htr := (trJet (I := I) (M := M) g gmT 3 2
-      DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ).le.trans htb3'.1
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 3 2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.1
     calc
-      Ca4 * lowJetSq (I := I) (M := M) g 2
-          (lc0TraceRF (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ) *
-        lowJetSq (I := I) (M := M) g 2 S5T ≤
+      Ca4 * covariantJetNormSq (I := I) (M := M) g 2
+          (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) *
+        covariantJetNormSq (I := I) (M := M) g 2 S5T ≤
         Ca4 * Bt3 ^ 2 * (S5b R * pl2) := by
         exact mul_le_mul
           (mul_le_mul_of_nonneg_left htr hCa4) hS5T2
-          (jetNn (I := I) (M := M) (m := 2) g _)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
           (mul_nonneg hCa4 (sq_nonneg _))
       _ = S4b R * pl2 := by
         simp only [S4b]
         ring
-  have hS3T2 : lowJetSq (I := I) (M := M) g 2 S3T ≤
+  have hS3T2 : covariantJetNormSq (I := I) (M := M) g 2 S3T ≤
       S3b R * (pl2 * pl2) := by
     rw [hS3Tdef]
     refine (happ3 E3T S4T).trans ?_
     calc
-      Ca3 * lowJetSq (I := I) (M := M) g 2 E3T *
-        lowJetSq (I := I) (M := M) g 2 S4T ≤
+      Ca3 * covariantJetNormSq (I := I) (M := M) g 2 E3T *
+        covariantJetNormSq (I := I) (M := M) g 2 S4T ≤
         Ca3 * (E3b R * pl2) * (S4b R * pl2) := by
         exact mul_le_mul
           (mul_le_mul_of_nonneg_left hE3T2 hCa3) hS4T2
-          (jetNn (I := I) (M := M) (m := 2) g _)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
           (mul_nonneg hCa3 (mul_nonneg (hE3b R hR) hpl20))
       _ = S3b R * (pl2 * pl2) := by
         simp only [S3b]
         ring
-  have hS2T2 : lowJetSq (I := I) (M := M) g 2 S2T ≤
+  have hS2T2 : covariantJetNormSq (I := I) (M := M) g 2 S2T ≤
       S2b R * (pl2 * pl2) := by
     rw [hS2Tdef]
     refine (happ2 _ S3T).trans ?_
-    have htr := (trJet (I := I) (M := M) g gmT 4 2
-      DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1).le.trans htb4'.1
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmT 4 2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.1
     calc
-      Ca2 * lowJetSq (I := I) (M := M) g 2
-          (lc0TraceRF (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1) *
-        lowJetSq (I := I) (M := M) g 2 S3T ≤
+      Ca2 * covariantJetNormSq (I := I) (M := M) g 2
+          (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) *
+        covariantJetNormSq (I := I) (M := M) g 2 S3T ≤
         Ca2 * Bt4 ^ 2 * (S3b R * (pl2 * pl2)) := by
         exact mul_le_mul
           (mul_le_mul_of_nonneg_left htr hCa2) hS3T2
-          (jetNn (I := I) (M := M) (m := 2) g _)
+          (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
           (mul_nonneg hCa2 (sq_nonneg _))
       _ = S2b R * (pl2 * pl2) := by
         simp only [S2b]
@@ -2554,41 +2572,41 @@ private theorem amix_half_pair_h3
         slotExtend (I := I) (M := M) g 1 4
           (slotExtend (I := I) (M := M) g 0 3 mcdU) from rfl,
       slotExtend_sub, slotExtend_sub]
-  have hd5 : lowJetSq (I := I) (M := M) g 2 (S5T - S5U) ≤
+  have hd5 : covariantJetNormSq (I := I) (M := M) g 2 (S5T - S5U) ≤
       D5c R * (pl2 * u) := by
     rw [hdel5]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU))) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU)) :=
-        slotH2 (I := I) (M := M) g 1 4 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2 (mcdT - mcdU)) :=
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 (mcdT - mcdU)) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 0 3 _) hfr
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr
       _ ≤ fr * (fr * (M5 R * (pl2 * u))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left hmpd hfr) hfr
       _ = D5c R * (pl2 * u) := by
         simp only [D5c]
         ring
-  have htrd3 : lowJetSq (I := I) (M := M) g 2
-      (lc0TraceRF (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ -
-        lc0TraceRF (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ) ≤
+  have htrd3 : covariantJetNormSq (I := I) (M := M) g 2
+      (reindexedPureTrace (I := I) (M := M) g gmT 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour -
+        reindexedPureTrace (I := I) (M := M) g gmU 3 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour) ≤
       Ct3 ^ 2 * u := by
-    rw [trSub, reindexJet]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
     exact htp3'
-  have hd4 : lowJetSq (I := I) (M := M) g 2 (S4T - S4U) ≤
+  have hd4 : covariantJetNormSq (I := I) (M := M) g 2 (S4T - S4U) ≤
       2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
     rw [hS4Tdef, hS4Udef]
-    have htr := (trJet (I := I) (M := M) g gmU 3 2
-      DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPermQ).le.trans htb3'.2
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 3 2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).le.trans htb3'.2
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca4 * (Ct3 ^ 2 * u) * (S5b R * pl2) +
             Ca4 * Bt3 ^ 2 * (D5c R * (pl2 * u))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 5 3
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 5 3
           Ca4 (Ct3 ^ 2 * u) (S5b R * pl2) (Bt3 ^ 2)
           (D5c R * (pl2 * u)) hCa4 _ _ _ _ happ4 htrd3 hS5T2 htr hd5
       _ = 2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)) := by
@@ -2608,27 +2626,27 @@ private theorem amix_half_pair_h3
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 mcdU)) from rfl,
       slotExtend_sub, slotExtend_sub, slotExtend_sub]
-  have hdE32 : lowJetSq (I := I) (M := M) g 2 (E3T - E3U) ≤
+  have hdE32 : covariantJetNormSq (I := I) (M := M) g 2 (E3T - E3U) ≤
       E3d R * (pl2 * u) := by
     rw [hdelE3]
     calc
-      lowJetSq (I := I) (M := M) g 2
+      covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 2 5
             (slotExtend (I := I) (M := M) g 1 4
               (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU)))) ≤
-        fr * lowJetSq (I := I) (M := M) g 2
+        fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 1 4
             (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU))) :=
-        slotH2 (I := I) (M := M) g 2 5 _
-      _ ≤ fr * (fr * lowJetSq (I := I) (M := M) g 2
+        covariantJetNormSq_slotExtend_le (I := I) (M := M) g 2 5 _
+      _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2
           (slotExtend (I := I) (M := M) g 0 3 (mcdT - mcdU))) :=
         mul_le_mul_of_nonneg_left
-          (slotH2 (I := I) (M := M) g 1 4 _) hfr
+          (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 1 4 _) hfr
       _ ≤ fr * (fr * (fr *
-          lowJetSq (I := I) (M := M) g 2 (mcdT - mcdU))) :=
+          covariantJetNormSq (I := I) (M := M) g 2 (mcdT - mcdU))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
-            (slotH2 (I := I) (M := M) g 0 3 _) hfr) hfr
+            (covariantJetNormSq_slotExtend_le (I := I) (M := M) g 0 3 _) hfr) hfr
       _ ≤ fr * (fr * (fr * (M5 R * (pl2 * u)))) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left
@@ -2636,15 +2654,15 @@ private theorem amix_half_pair_h3
       _ = E3d R * (pl2 * u) := by
         simp only [E3d]
         ring
-  have hd3 : lowJetSq (I := I) (M := M) g 2 (S3T - S3U) ≤
+  have hd3 : covariantJetNormSq (I := I) (M := M) g 2 (S3T - S3U) ≤
       2 * (K3 R * ((pl2 * pl2) * u) + K34 R * ((pl2 * pl2) * u)) := by
     rw [hS3Tdef, hS3Udef]
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca3 * (E3d R * (pl2 * u)) * (S4b R * pl2) +
             Ca3 * (E3b R * pl2) *
               (2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 3 6
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 3 6
           Ca3 (E3d R * (pl2 * u)) (S4b R * pl2) (E3b R * pl2)
           (2 * (K4 R * (pl2 * u) + K5 R * (pl2 * u)))
           hCa3 _ _ _ _ happ3 hdE32 hS4T2 hE3U2 hd4
@@ -2652,23 +2670,23 @@ private theorem amix_half_pair_h3
           K34 R * ((pl2 * pl2) * u)) := by
         simp only [K3, K34]
         ring
-  have htrd4 : lowJetSq (I := I) (M := M) g 2
-      (lc0TraceRF (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1 -
-        lc0TraceRF (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1) ≤
+  have htrd4 : covariantJetNormSq (I := I) (M := M) g 2
+      (reindexedPureTrace (I := I) (M := M) g gmT 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne -
+        reindexedPureTrace (I := I) (M := M) g gmU 4 DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne) ≤
       Ct4 ^ 2 * u := by
-    rw [trSub, reindexJet]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
     exact htp4'
-  have hd2 : lowJetSq (I := I) (M := M) g 2 (S2T - S2U) ≤
+  have hd2 : covariantJetNormSq (I := I) (M := M) g 2 (S2T - S2U) ≤
       2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)) := by
     rw [hS2Tdef, hS2Udef]
-    have htr := (trJet (I := I) (M := M) g gmU 4 2
-      DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm1).le.trans htb4'.2
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 4 2
+      DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).le.trans htb4'.2
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca2 * (Ct4 ^ 2 * u) * (S3b R * (pl2 * pl2)) +
             Ca2 * Bt4 ^ 2 * (2 * (K3 R * ((pl2 * pl2) * u) +
               K34 R * ((pl2 * pl2) * u)))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 6 4
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 6 4
           Ca2 (Ct4 ^ 2 * u) (S3b R * (pl2 * pl2)) (Bt4 ^ 2)
           (2 * (K3 R * ((pl2 * pl2) * u) + K34 R * ((pl2 * pl2) * u)))
           hCa2 _ _ _ _ happ2 htrd4 hS3T2 htr hd3
@@ -2676,25 +2694,25 @@ private theorem amix_half_pair_h3
           K23 R * ((pl2 * pl2) * u)) := by
         simp only [K2, K23]
         ring
-  have htrd2 : lowJetSq (I := I) (M := M) g 2
-      (lc0TraceRF (I := I) (M := M) g gmT 2 σlast -
-        lc0TraceRF (I := I) (M := M) g gmU 2 σlast) ≤
+  have htrd2 : covariantJetNormSq (I := I) (M := M) g 2
+      (reindexedPureTrace (I := I) (M := M) g gmT 2 σlast -
+        reindexedPureTrace (I := I) (M := M) g gmU 2 σlast) ≤
       Ct2 ^ 2 * u := by
-    rw [trSub, reindexJet]
+    rw [reindexedPureTrace_sub, covariantJetNormSq_reindexCoeffGen]
     exact htp2'
-  have hhalf : lowJetSq (I := I) (M := M) g 2
-      (lc0AMixHalfRF (I := I) (M := M) g gmT g σlast -
-        lc0AMixHalfRF (I := I) (M := M) g gmU g σlast) ≤
+  have hhalf : covariantJetNormSq (I := I) (M := M) g 2
+      (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmT g σlast -
+        lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g gmU g σlast) ≤
       Bh R * ((pl2 * pl2) * u) := by
     rw [hHalfT, hHalfU]
-    have htr := (trJet (I := I) (M := M) g gmU 2 2
+    have htr := (covariantJetNormSq_reindexedPureTrace (I := I) (M := M) g gmU 2 2
       σlast).le.trans htb2'.2
     calc
-      lowJetSq (I := I) (M := M) g 2 (_ - _) ≤
+      covariantJetNormSq (I := I) (M := M) g 2 (_ - _) ≤
           2 * (Ca1 * (Ct2 ^ 2 * u) * (S2b R * (pl2 * pl2)) +
             Ca1 * Bt2 ^ 2 * (2 * (K2 R * ((pl2 * pl2) * u) +
               K23 R * ((pl2 * pl2) * u)))) :=
-        low_jet_sq_app_cc_rs_sub_le (I := I) (M := M) g 2 2 4 2
+        covariantJetNormSq_operatorFieldComposition_sub_le (I := I) (M := M) g 2 2 4 2
           Ca1 (Ct2 ^ 2 * u) (S2b R * (pl2 * pl2)) (Bt2 ^ 2)
           (2 * (K2 R * ((pl2 * pl2) * u) + K23 R * ((pl2 * pl2) * u)))
           hCa1 _ _ _ _ happ1 htrd2 hS2T2 htr hd2
@@ -2706,7 +2724,7 @@ private theorem amix_half_pair_h3
   simp only [B]
   exact pair_sum_sq_le (hBhnn R hR) hD3 hN
 
-theorem LowBaseInternal.amix_pair_h3
+theorem RicciDeTurckLowOrder.exists_lieCorrectionZeroMixedConnection_covariantJetNormSq_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B : ℝ → ℝ,
@@ -2728,23 +2746,23 @@ theorem LowBaseInternal.amix_pair_h3
             (0 : SmoothCcTensor g 0 2)) δ)
         (R A D3 N : ℝ),
         0 ≤ R → 0 ≤ A → 0 ≤ D3 → 0 ≤ N →
-        lowJetSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
-        lowJetSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 T ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 2 U ≤ R ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 T ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 U ≤ A ^ 2 →
+        covariantJetNormSq (I := I) (M := M) g 3 (T - U) ≤ D3 ^ 2 →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ ≤ ρ →
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ ≤ N →
         ∀ {s : ℝ}, s ∈ Set.Icc (0 : ℝ) 1 →
-      lowJetSq (I := I) (M := M) g 2
-          (lc0AMix (I := I) (M := M) g
-              (realizedFam (I := I) g T 0 hδT hδZ s) g -
-            lc0AMix (I := I) (M := M) g
-              (realizedFam (I := I) g U 0 hδU hδZ s) g) ≤
+      covariantJetNormSq (I := I) (M := M) g 2
+          (lieCorrectionZeroMixedConnection (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
+            lieCorrectionZeroMixedConnection (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g) ≤
         (B R * (1 + A) ^ 2 * (D3 + N)) ^ 2 := by
   obtain ⟨ρ, Bp, hρ, hBp, hhalf⟩ :=
-    amix_half_pair_h3 (I := I) (M := M) hDim g
+    exists_lieCorrectionZeroMixedConnectionHalfRF_thirdOrder_tame_difference_bound (I := I) (M := M) hDim g
   refine ⟨ρ, fun R => 4 * Bp R, hρ,
     fun R hR => by
       have := hBp R hR
@@ -2754,53 +2772,53 @@ theorem LowBaseInternal.amix_pair_h3
     hTn hUn hTUn s hs
   have hh1 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A D3 N hR hA hD3 hN hT2 hU2 hT3 hU3 hTU3
-    hTn hUn hTUn hs DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2
+    hTn hUn hTUn hs DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
   have hh2 := hhalf T U hT hU hδ_le hδ0 hδT hδU hδZ
     R A D3 N hR hA hD3 hN hT2 hU2 hT3 hU3 hTU3
     hTn hUn hTUn hs
-    (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2)
-  rw [amix_refold_rf (I := I) (M := M) g
-      (realizedFam (I := I) g T 0 hδT hδZ s) g,
-    amix_refold_rf (I := I) (M := M) g
-      (realizedFam (I := I) g U 0 hδU hδZ s) g]
+    (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+  rw [lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
+      (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g,
+    lieCorrectionZeroMixedConnection_eq_expansion (I := I) (M := M) g
+      (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g]
   have hform :
-      lc0AMixFormRF (I := I) (M := M) g
-          (realizedFam (I := I) g T 0 hδT hδZ s) g -
-        lc0AMixFormRF (I := I) (M := M) g
-          (realizedFam (I := I) g U 0 hδU hδZ s) g =
+      lieCorrectionZeroMixedConnectionExpansion (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g -
+        lieCorrectionZeroMixedConnectionExpansion (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g =
       (2 : ℝ) •
-        ((lc0AMixHalfRF (I := I) (M := M) g
-            (realizedFam (I := I) g T 0 hδT hδZ s) g
-              DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2 -
-          lc0AMixHalfRF (I := I) (M := M) g
-            (realizedFam (I := I) g U 0 hδU hδZ s) g
-              DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2) +
-        (lc0AMixHalfRF (I := I) (M := M) g
-            (realizedFam (I := I) g T 0 hδT hδZ s) g
-              (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2) -
-          lc0AMixHalfRF (I := I) (M := M) g
-            (realizedFam (I := I) g U 0 hδU hδZ s) g
-              (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2))) := by
-    simp only [lc0AMixFormRF]
+        ((lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
+              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+          lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
+              DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) +
+        (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+          lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+            (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
+              (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) := by
+    simp only [lieCorrectionZeroMixedConnectionExpansion]
     module
-  rw [hform, jetSmul]
-  have hadd := jetAdd (I := I) (M := M) g 2
-    (lc0AMixHalfRF (I := I) (M := M) g
-        (realizedFam (I := I) g T 0 hδT hδZ s) g
-          DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2 -
-      lc0AMixHalfRF (I := I) (M := M) g
-        (realizedFam (I := I) g U 0 hδU hδZ s) g
-          DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2)
-    (lc0AMixHalfRF (I := I) (M := M) g
-        (realizedFam (I := I) g T 0 hδT hδZ s) g
-          (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2) -
-      lc0AMixHalfRF (I := I) (M := M) g
-        (realizedFam (I := I) g U 0 hδU hδZ s) g
-          (lc0SwapPermRF * DifferentialGeometry.Analysis.Spectral.LieCorr0Core.lieCorr0AMixPerm2))
+  rw [hform, covariantJetNormSq_smul]
+  have hadd := covariantJetNormSq_add_le (I := I) (M := M) g 2
+    (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+        (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne -
+      lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+        (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
+          DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)
+    (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+        (metricPerturbationPath (I := I) g T 0 hδT hδZ s) g
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) -
+      lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g
+        (metricPerturbationPath (I := I) g U 0 hδU hδZ s) g
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore.lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))
   calc
-    (2 : ℝ) ^ 2 * lowJetSq (I := I) (M := M) g 2 (_ + _) ≤
-      (2 : ℝ) ^ 2 * (2 * (lowJetSq (I := I) (M := M) g 2 _ +
-        lowJetSq (I := I) (M := M) g 2 _)) :=
+    (2 : ℝ) ^ 2 * covariantJetNormSq (I := I) (M := M) g 2 (_ + _) ≤
+      (2 : ℝ) ^ 2 * (2 * (covariantJetNormSq (I := I) (M := M) g 2 _ +
+        covariantJetNormSq (I := I) (M := M) g 2 _)) :=
       mul_le_mul_of_nonneg_left hadd (by positivity)
     _ ≤ (2 : ℝ) ^ 2 * (2 *
         ((Bp R * (1 + A) ^ 2 * (D3 + N)) ^ 2 +

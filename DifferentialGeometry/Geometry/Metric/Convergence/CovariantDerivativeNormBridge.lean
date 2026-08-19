@@ -138,7 +138,7 @@ private lemma lowerAllUpper_zero_eq_unit
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] in
-private lemma rfns_eq_normSq0S_unit
+private lemma riemannianFiberNormSq_eq_normSq0S_unit
     (gBase : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (W : SmoothCcTensor gBase 0 s) :
     riemannianFiberNormSq (I := I) (M := M) gBase 0 s x (W.toSection x) =
       Tensor0SBundle.normSq0S (I := I) gBase x s
@@ -195,7 +195,7 @@ theorem normBridge (h gBase : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     metricInverseInBasis_of_orthonormal (I := I) gBase basis hON
   rw [norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) gBase 0 (2 + j) x
     (iteratedCovGrad gBase 0 2 j (metricCcTensor (I := I) (M := M) gBase h))]
-  rw [rfns_eq_normSq0S_unit (I := I) gBase (2 + j) x
+  rw [riemannianFiberNormSq_eq_normSq0S_unit (I := I) gBase (2 + j) x
     (iteratedCovGrad gBase 0 2 j (metricCcTensor (I := I) (M := M) gBase h))]
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (2 + j) I x from
         (iteratedCovGrad gBase 0 2 j

@@ -44,7 +44,7 @@ def metricSeedOfBG
       dist_eq := out.2
       realizes := hreal }
 
-def metricCompactnessH6
+def metricCompactnessOfBoundedGeometry
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hgeom : SeqBoundedGeometry (I := I) X)
@@ -54,20 +54,9 @@ def metricCompactnessH6
       ConnectedSpace (X.obj k).M) :
     MetricCompactnessConclusion (I := I) X := by
   let b := metricSeedOfBG (I := I) X hcomplete hgeom hinj hconn
-  have hd : Nonempty (H6NormalData (I := I) X b.decay) :=
-    exists_h6NormalData (I := I) X hcomplete hconn hgeom b.decay b.realizes
-  exact b.metricCompactH6 (Classical.choice hd) hcomplete hconn
-
-def metricCompactness_of_connected
-    (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
-    (hcomplete : SeqMetricComplete (I := I) X)
-    (hgeom : SeqBoundedGeometry (I := I) X)
-    (hinj : BaseInjBound (I := I) X)
-    (hconn : ∀ k : Nat,
-      letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-      ConnectedSpace (X.obj k).M) :
-    MetricCompactnessConclusion (I := I) X :=
-  metricCompactnessH6 (I := I) X hcomplete hgeom hinj hconn
+  have hd : Nonempty (BoundedGeometryNormalData (I := I) X b.decay) :=
+    exists_bounded_geometry_normal_data (I := I) X hcomplete hconn hgeom b.decay b.realizes
+  exact b.higherRegularityMetricCompactness (Classical.choice hd) hcomplete hconn
 
 end HCGCompactness
 end DifferentialGeometry

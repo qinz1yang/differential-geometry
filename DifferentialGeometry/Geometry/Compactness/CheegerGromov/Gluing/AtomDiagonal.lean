@@ -55,7 +55,7 @@ theorem HasAtomWeightLim.of_atoms
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : ∀ k, Item3GpScaleAt (I := I) hd D P L pb r k)
+    (hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hcoverU : ∀ k,
@@ -145,7 +145,7 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLim (I := I) hd hD P L hre pb r hr beta U aInf)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (hcoverU : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -248,7 +248,7 @@ theorem HasAtomWeightLim.weight_data
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLim (I := I) hd hD P L hre pb r hr beta U aInf)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (hsource : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -294,7 +294,7 @@ theorem HasAtomWeightLim.binter_of_weight
     {beta : ∀ k : Nat, (X.obj (L.φ k)).M} {U : Set E}
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLim (I := I) hd hD P L hre pb r hr beta U aInf)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (alpha gamma : Fin (pb.A r)) {z : E} (hz : z ∈ U)
     (hsource : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -347,7 +347,7 @@ theorem exists_atom_lim
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (rho : Real) (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hovlJ : ∀ gamma : LiveSlot L pb r, ∀ᶠ k in Filter.atTop,
@@ -403,7 +403,7 @@ theorem exists_atom_lim
       HasAtomWeightLim (I := I) hd hD P (L.subseq hψ) hre pb r hr
         (fun k => beta (ψ k)) U aInf := by
   simpa only [HasAtomWeightLim] using
-    existsAtomWeightH6 (I := I) metricInput hD P L hre pb r hr hgp rho
+    exists_smooth_atom_weight_limit (I := I) metricInput hD P L hre pb r hr hgp rho
       beta U hU hovlJ hUmetric hUexp hmapsJ hVmetric hVexp hbetaU
 
 theorem exists_atom_fin
@@ -414,7 +414,7 @@ theorem exists_atom_fin
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (rho : Real) (beta : ι → ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : ι → Set E)
     (hU : ∀ i, i ∈ s → IsOpen (U i))
@@ -486,7 +486,7 @@ theorem exists_atom_fin
         (fun i hi => hmapsJ i (Finset.mem_insert_of_mem hi))
         (fun i hi => hbetaU i (Finset.mem_insert_of_mem hi))
       let L₀ := L.subseq hψ₀
-      have hgp₀ : Item3GpScaleTail (I := I) hd D P L₀ pb r :=
+      have hgp₀ : ExponentialRadiusScaleTail (I := I) hd D P L₀ pb r :=
         hgp.subseq hd D P L pb r hψ₀
       have hovl₀ (gamma : LiveSlot L₀ pb r) : ∀ᶠ k in Filter.atTop,
           NormalOverlapOn (I := I) (X.obj (L₀.φ k)) (beta a (ψ₀ k))
@@ -641,7 +641,7 @@ theorem HasAtomWeightLimOn.of_atoms
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (hre : hd.RealizesEdist)
     (pb : hd.PackingBound D) (r : Real) (hr : 0 ≤ r)
-    (_hgp : ∀ k, Item3GpScaleAt (I := I) hd D P L pb r k)
+    (_hgp : ∀ k, ExponentialRadiusScaleAt (I := I) hd D P L pb r k)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M)
     (U : Set E) (hU : IsOpen U)
     (hcoverU : ∀ k,
@@ -842,7 +842,7 @@ theorem HasAtomWeightLimOn.weight_data_of_innerCover
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLimOn (I := I) chart
       hd hD P L hre pb r hr beta U aInf)
-    (_hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (_hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (hcoverU : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -869,7 +869,7 @@ theorem HasAtomWeightLimOn.weight_data
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLimOn (I := I) chart
       hd hD P L hre pb r hr beta U aInf)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (hsource : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
       letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -917,7 +917,7 @@ theorem HasAtomWeightLimOn.binter_of_weight
     {aInf : Fin (pb.A r) → E → Real}
     (hlim : HasAtomWeightLimOn (I := I) chart
       hd hD P L hre pb r hr beta U aInf)
-    (hgp : Item3GpScaleTail (I := I) hd D P L pb r)
+    (hgp : ExponentialRadiusScaleTail (I := I) hd D P L pb r)
     (alpha gamma : Fin (pb.A r)) {z : E} (hz : z ∈ U)
     (hsource : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology

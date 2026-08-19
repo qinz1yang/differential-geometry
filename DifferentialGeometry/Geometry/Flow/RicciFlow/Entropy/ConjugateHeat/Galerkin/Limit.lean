@@ -298,7 +298,7 @@ theorem gal_subseq_on
         (Real.sqrt_sq_eq_abs (V N t i)).symm
       _ ≤ Real.sqrt B0 := Real.sqrt_le_sqrt (hcoord_sq N t ht i)
   obtain ⟨Cp, hCp⟩ :=
-    galPert_bdd_on (I := I) (M := M) S T hpert_cont
+    scalar_galerkin_perturbation_uniform_bound_on (I := I) (M := M) S T hpert_cont
   let Kpert : Real := Cp
   have hKpert : 0 ≤ Kpert := by
     dsimp only [Kpert]

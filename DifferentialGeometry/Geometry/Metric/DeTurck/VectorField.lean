@@ -47,7 +47,7 @@ theorem deTurckVF_apply_eq (g g' : SmoothRiemannianMetric I M) (x : M) :
     (deTurckVF (I := I) g g' : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x j k •
-          connDiff (I := I) g g' x
+          connectionDifference (I := I) g g' x
             (chartBasisVecFiber (I := I) x j x)
             (chartBasisVecFiber (I := I) x k x) := by
   rw [deTurckVF_apply, deTurckFun_def, deTurckChartLocal_def]

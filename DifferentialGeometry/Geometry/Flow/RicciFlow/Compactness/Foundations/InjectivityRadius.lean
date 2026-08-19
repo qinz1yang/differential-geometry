@@ -15,7 +15,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-abbrev FlowBaseInjBound
+abbrev FlowerScaleInjBound
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) :=
   BaseInjBound (I := I) (X.atZero (I := I))
 

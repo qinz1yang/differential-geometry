@@ -95,7 +95,7 @@ structure ParallelTensorProduct (g : SmoothRiemannianMetric I M) (r₁ s₁ r₂
     SmoothCcTensor g r₀ (s₀ + a + b)
   opNorm : ℝ
   opNorm_nonneg : 0 ≤ opNorm
-  rfns_prod_le : ∀ {a b : ℕ} (S : SmoothCcTensor g r₁ (s₁ + a)) (T : SmoothCcTensor g r₂ (s₂ + b))
+  riemannianFiberNormSq_prod_le : ∀ {a b : ℕ} (S : SmoothCcTensor g r₁ (s₁ + a)) (T : SmoothCcTensor g r₂ (s₂ + b))
     (x : M),
     riemannianFiberNormSq (I := I) (M := M) g r₀ (s₀ + a + b) x ((prod S T).toSection x) ≤
       opNorm * riemannianFiberNormSq (I := I) (M := M) g r₁ (s₁ + a) x (S.toSection x) *
@@ -132,7 +132,7 @@ theorem prod_zero_left (Φ : ParallelTensorProduct g r₁ s₁ r₂ s₂ r₀ s�
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  have hle := Φ.rfns_prod_le (0 : SmoothCcTensor g r₁ (s₁ + a)) T x
+  have hle := Φ.riemannianFiberNormSq_prod_le (0 : SmoothCcTensor g r₁ (s₁ + a)) T x
   have hzero : ((0 : SmoothCcTensor g r₁ (s₁ + a)).toSection x) = 0 := by
     rw [SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero]; rfl
   rw [hzero, riemannianFiberNormSq_zero, mul_zero, zero_mul] at hle
@@ -151,7 +151,7 @@ theorem prod_zero_right (Φ : ParallelTensorProduct g r₁ s₁ r₂ s₂ r₀ s
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  have hle := Φ.rfns_prod_le S (0 : SmoothCcTensor g r₂ (s₂ + b)) x
+  have hle := Φ.riemannianFiberNormSq_prod_le S (0 : SmoothCcTensor g r₂ (s₂ + b)) x
   have hzero : ((0 : SmoothCcTensor g r₂ (s₂ + b)).toSection x) = 0 := by
     rw [SmoothCcTensor.toSection_zero, ContMDiffSection.coe_zero]; rfl
   rw [hzero, riemannianFiberNormSq_zero, mul_zero] at hle

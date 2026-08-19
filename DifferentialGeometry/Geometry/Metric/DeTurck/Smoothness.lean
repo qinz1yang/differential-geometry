@@ -33,13 +33,13 @@ private lemma exists_bump_tsupport_subset {U : Set M} (hU : IsOpen U) {x₀ : M}
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_contMDiffOn_local (g g' : SmoothRiemannianMetric I M)
+theorem connectionDifference_contMDiffOn_local (g g' : SmoothRiemannianMetric I M)
     {U : Set M} (hU : IsOpen U) {σ τ : Π x : M, TangentSpace I x}
     (hσ : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% σ) U)
     (hτ : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% τ) U) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x (σ x) (τ x)⟩ :
+        (⟨x, connectionDifference (I := I) g g' x (σ x) (τ x)⟩ :
           TotalSpace E (TangentSpace I))) U := by
   classical
   intro x₀ hx₀
@@ -52,44 +52,44 @@ theorem connDiff_contMDiffOn_local (g g' : SmoothRiemannianMetric I M)
       (V := fun x : M => TangentSpace I x) hψ_smooth hU hχ_tsupport hσ
   have hConn : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x ((ψ • σ) x) (τ x)⟩ :
+        (⟨x, connectionDifference (I := I) g g' x ((ψ • σ) x) (τ x)⟩ :
           TotalSpace E (TangentSpace I))) U :=
-    connDiff_contMDiffOn (I := I) g g' hcut hτ
+    connectionDifference_contMDiffOn (I := I) g g' hcut hτ
   have hConnAt : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x ((ψ • σ) x) (τ x)⟩ :
+        (⟨x, connectionDifference (I := I) g g' x ((ψ • σ) x) (τ x)⟩ :
           TotalSpace E (TangentSpace I))) x₀ :=
     (hConn x₀ hx₀).contMDiffAt (hU.mem_nhds hx₀)
   have hψ_one : ψ =ᶠ[𝓝 x₀] (1 : M → ℝ) := χ.eventuallyEq_one
   have heventuallyEq :
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x (σ x) (τ x)⟩ :
+        (⟨x, connectionDifference (I := I) g g' x (σ x) (τ x)⟩ :
           TotalSpace E (TangentSpace I))) =ᶠ[𝓝 x₀]
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x ((ψ • σ) x) (τ x)⟩ :
+        (⟨x, connectionDifference (I := I) g g' x ((ψ • σ) x) (τ x)⟩ :
           TotalSpace E (TangentSpace I))) := by
     refine hψ_one.mono (fun x hx => ?_)
     have hx1 : ψ x = 1 := by simpa using hx
     have hσx : (ψ • σ) x = σ x := by
       change ψ x • σ x = σ x
       rw [hx1, one_smul]
-    change (⟨x, connDiff (I := I) g g' x (σ x) (τ x)⟩ : TotalSpace E (TangentSpace I)) =
-      ⟨x, connDiff (I := I) g g' x ((ψ • σ) x) (τ x)⟩
+    change (⟨x, connectionDifference (I := I) g g' x (σ x) (τ x)⟩ : TotalSpace E (TangentSpace I)) =
+      ⟨x, connectionDifference (I := I) g g' x ((ψ • σ) x) (τ x)⟩
     rw [hσx]
   have hGoalAt : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x (σ x) (τ x)⟩ :
+        (⟨x, connectionDifference (I := I) g g' x (σ x) (τ x)⟩ :
           TotalSpace E (TangentSpace I))) x₀ :=
     hConnAt.congr_of_eventuallyEq heventuallyEq
   exact hGoalAt.contMDiffWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma connDiff_chartBasis_contMDiffOn (g g' : SmoothRiemannianMetric I M)
+private lemma connectionDifference_chartBasis_contMDiffOn (g g' : SmoothRiemannianMetric I M)
     (α : M) (j k : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x
+        (⟨x, connectionDifference (I := I) g g' x
             (chartBasisVecFiber (I := I) α j x)
             (chartBasisVecFiber (I := I) α k x)⟩ :
           TotalSpace E (TangentSpace I)))
@@ -105,7 +105,7 @@ private lemma connDiff_chartBasis_contMDiffOn (g g' : SmoothRiemannianMetric I M
     have h := chartBasisVec_contMDiffOn (I := I) α i
     rw [hbase] at h
     exact h
-  exact connDiff_contMDiffOn_local (I := I) g g' hopen (hframe j) (hframe k)
+  exact connectionDifference_contMDiffOn_local (I := I) g g' hopen (hframe j) (hframe k)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma chartInvGramMatrix_entry_contMDiffOn_source
@@ -132,17 +132,17 @@ theorem deTurckChartLocal_contMDiffOn (g g' : SmoothRiemannianMetric I M) (α : 
   have hterm : ∀ j k : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M =>
-          (⟨x, connDiff (I := I) g g' x
+          (⟨x, connectionDifference (I := I) g g' x
               (chartBasisVecFiber (I := I) α j x)
               (chartBasisVecFiber (I := I) α k x)⟩ :
             TotalSpace E (TangentSpace I)))
         (chartAt H α).source :=
-    fun j k => connDiff_chartBasis_contMDiffOn (I := I) g g' α j k
+    fun j k => connectionDifference_chartBasis_contMDiffOn (I := I) g g' α j k
   have hsmul : ∀ j k : Fin (Module.finrank ℝ E),
       ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
         (fun x : M => TotalSpace.mk' E x
           (chartInvGramMatrix (I := I) g α x j k •
-            connDiff (I := I) g g' x
+            connectionDifference (I := I) g g' x
               (chartBasisVecFiber (I := I) α j x)
               (chartBasisVecFiber (I := I) α k x)))
         (chartAt H α).source :=
@@ -152,7 +152,7 @@ theorem deTurckChartLocal_contMDiffOn (g g' : SmoothRiemannianMetric I M) (α : 
         (fun x : M => TotalSpace.mk' E x
           (∑ k : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g α x j k •
-              connDiff (I := I) g g' x
+              connectionDifference (I := I) g g' x
                 (chartBasisVecFiber (I := I) α j x)
                 (chartBasisVecFiber (I := I) α k x)))
         (chartAt H α).source :=
@@ -162,7 +162,7 @@ theorem deTurckChartLocal_contMDiffOn (g g' : SmoothRiemannianMetric I M) (α : 
         (∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g α x j k •
-              connDiff (I := I) g g' x
+              connectionDifference (I := I) g g' x
                 (chartBasisVecFiber (I := I) α j x)
                 (chartBasisVecFiber (I := I) α k x)))
       (chartAt H α).source :=

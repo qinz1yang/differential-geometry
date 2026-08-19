@@ -264,7 +264,7 @@ theorem ricciSymmOfSol
   simpa [ricciCompInFrame, SolutionOn.ricciAt, SolutionFamily.ricciAt] using hsym
 
 omit [SigmaCompactSpace M] in
-theorem coordNab2_can
+theorem coordinate_second_ricci_covariant_derivative_of_realization
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x0 : M)
@@ -543,7 +543,7 @@ theorem coordNab2_can
           ring
 
 omit [SigmaCompactSpace M] in
-theorem coordRough_can
+theorem rough_laplacian_ricci_component_of_coordinate_realization
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M)
@@ -789,11 +789,13 @@ theorem ricciLapOfSol
       simp [nablaA, derivs, nablaRicComp,
         CanonicalSpatialDerivs0S.of_smooth_connection]
     have hnab2 :=
-      coordNab2_can (I := I) S t x (nablaA t) (nabla2A t)
+      coordinate_second_ricci_covariant_derivative_of_realization
+        (I := I) S t x (nablaA t) (nabla2A t)
         (by simpa [G, flowG] using h2 t)
         hnablaFixed
     simpa [roughA, roughLapRic, frame] using
-      coordRough_can (I := I) S t x (nabla2A t) hnab2 i j
+      rough_laplacian_ricci_component_of_coordinate_realization
+        (I := I) S t x (nabla2A t) hnab2 i j
   have h_lap :
       DifferentialGeometry.Geometry.Curvature.RicciNormScalarLaplacianExpansionInFrame
         (I := I) (M := M) (Time := Real) (ricciNormLap (I := I) S)
@@ -810,7 +812,8 @@ theorem ricciLapOfSol
       (I := I) S gInv frame roughLapRic (ricciNormLap (I := I) S)
       (nablaRicComp (I := I) S frame) h_lap
   have hnabla :=
-    nablaRicciNorm_can (I := I) S gInv frame (basis x) (hinv t x)
+    nabla_ricci_norm_sq_in_frame_eq_gradient_norm_sq
+      (I := I) S gInv frame (basis x) (hinv t x)
       (hframe x)
   have hval := hcomp t x
   rw [hnabla] at hval

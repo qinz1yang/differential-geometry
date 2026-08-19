@@ -26,7 +26,7 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem realizedChr_hasDerivWithinAt
+theorem solutionChristoffelComponents_hasDerivWithinAt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -53,7 +53,7 @@ theorem realizedChr_hasDerivWithinAt
     (x : M) (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i a p : CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
-      (fun s : Real => realizedChr (I := I) S x₀ s x i a p)
+      (fun s : Real => solutionChristoffelComponents (I := I) S x₀ s x i a p)
       (christoffelEvolutionRHSInFrame (M := M) (coordInv (I := I) S x₀)
         (fun t x d a b => ricciCovDerivCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t x d
           a b)
@@ -93,7 +93,7 @@ theorem nablaKRm_timeDeriv_of_solution
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (hrm : ∀ m : Fin 4 -> CoordinateIdx (𝕜 := Real) E,
       HasDerivWithinAt
-        (fun s : Real => realizedRmBase (I := I) S x₀ s x₀ m)
+        (fun s : Real => solutionCurvatureComponents (I := I) S x₀ s x₀ m)
         (rm04Dt (t : Real) x₀ m) D.carrier (t : Real))
     (hswap : ∀ (k : ℕ) (d : CoordinateIdx (𝕜 := Real) E)
         (m : Fin (4 + k) -> CoordinateIdx (𝕜 := Real) E),
@@ -101,36 +101,36 @@ theorem nablaKRm_timeDeriv_of_solution
         (fun s : Real =>
           extDerivFun (I := I)
             (fun y : M => iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
-              (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) k s y m) x₀
+              (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k s y m) x₀
             (coordinateFrameAt (I := I) x₀ d x₀))
         (extDerivFun (I := I)
           (fun y : M => iteratedRmCompDt (I := I) (coordinateFrameAt (I := I) x₀)
-            (realizedChr (I := I) S x₀)
+            (solutionChristoffelComponents (I := I) S x₀)
             (christoffelEvolutionRHSInFrame (M := M) (coordInv (I := I) S x₀)
               (fun t x d a b => ricciCovDerivCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀)
                 t x d a b))
-            (realizedRmBase (I := I) S x₀) rm04Dt k (t : Real) y m) x₀
+            (solutionCurvatureComponents (I := I) S x₀) rm04Dt k (t : Real) y m) x₀
           (coordinateFrameAt (I := I) x₀ d x₀))
         D.carrier (t : Real))
     (k : ℕ) (n : Fin (4 + k) -> CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
       (fun s : Real => iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
-        (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) k s x₀ n)
+        (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) k s x₀ n)
       (iteratedRmCompDt (I := I) (coordinateFrameAt (I := I) x₀)
-        (realizedChr (I := I) S x₀)
+        (solutionChristoffelComponents (I := I) S x₀)
         (christoffelEvolutionRHSInFrame (M := M) (coordInv (I := I) S x₀)
           (fun t x d a b => ricciCovDerivCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t x
             d a b))
-        (realizedRmBase (I := I) S x₀) rm04Dt k (t : Real) x₀ n)
+        (solutionCurvatureComponents (I := I) S x₀) rm04Dt k (t : Real) x₀ n)
       D.carrier
       (t : Real) :=
   iteratedRmComp_hasDerivWithinAt (I := I) (coordinateFrameAt (I := I) x₀)
-    (realizedChr (I := I) S x₀)
+    (solutionChristoffelComponents (I := I) S x₀)
     (christoffelEvolutionRHSInFrame (M := M) (coordInv (I := I) S x₀)
       (fun t x d a b => ricciCovDerivCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t x d a
         b))
-    (realizedRmBase (I := I) S x₀) rm04Dt x₀ hrm
-    (fun i a p => realizedChr_hasDerivWithinAt (I := I) S hS x₀ gInvDt hmetricFrame
+    (solutionCurvatureComponents (I := I) S x₀) rm04Dt x₀ hrm
+    (fun i a p => solutionChristoffelComponents_hasDerivWithinAt (I := I) S hS x₀ gInvDt hmetricFrame
       hSmooth hFdiff hFtdiff t x₀ (coordinateFrameAt_mem (I := I) x₀) i a p)
     hswap k n
 

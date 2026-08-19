@@ -823,7 +823,7 @@ theorem movingRm_of_bound
           A * (F.S.base.metric s).inner x v v := by
     intro s hs x v
     simpa only [A, d] using
-      (ricci_quad_sol (I := I) F.S x v
+      (ricci_quadratic_form_bound_of_solution_curvature_bound (I := I) F.S x v
         (by simpa only [PointedFlowData.rmNormSq] using hcurv s hs x))
   have hpde := metric_pde_start (I := I) F.S F.isSolution
     halphaPsi hslab hreg
@@ -1004,7 +1004,8 @@ theorem movingRm_of_bound
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
       Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
-    exact shiBarrierCutoff_of_sol (I := I) (S := S0) hS0 hT hSlab hreg0
+    exact exists_shi_barrier_cutoff_data_of_solution
+      (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0
   intro k hk t ht x
   have htShiftMem : t - t0 ∈ Set.Icc 0 T := by
@@ -1194,7 +1195,7 @@ theorem movingShi_of_bound
           A * (F.S.base.metric s).inner x v v := by
     intro s hs x v
     simpa only [A, d] using
-      (ricci_quad_sol (I := I) F.S x v
+      (ricci_quadratic_form_bound_of_solution_curvature_bound (I := I) F.S x v
         (by simpa only [PointedFlowData.rmNormSq] using hcurv s hs x))
   have hpde := metric_pde_start (I := I) F.S F.isSolution
     halphaPsi hslab hreg
@@ -1375,7 +1376,8 @@ theorem movingShi_of_bound
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
       Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
-    exact shiBarrierCutoff_of_sol (I := I) (S := S0) hS0 hT hSlab hreg0
+    exact exists_shi_barrier_cutoff_data_of_solution
+      (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0
   intro k hk _i t ht x _hx
   have htShiftMem : t - t0 ∈ Set.Icc 0 T := by

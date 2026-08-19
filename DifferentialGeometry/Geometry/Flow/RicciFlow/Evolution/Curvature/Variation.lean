@@ -46,7 +46,7 @@ def rm04VarRHS
             t x₀ (m 3) p))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rm04Var_of_sol
+theorem riemann_covariant_variation_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -83,7 +83,7 @@ theorem rm04Var_of_sol
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     HasDerivWithinAt
-      (fun s : Real ↦ realizedRmBase (I := I) S x₀ s x₀ m)
+      (fun s : Real ↦ solutionCurvatureComponents (I := I) S x₀ s x₀ m)
       (rm04VarRHS (I := I) S x₀ nabla2Ric (t : Real) m)
       D.carrier (t : Real) := by
   classical
@@ -177,7 +177,7 @@ theorem rm04Var_of_sol
     intro a b s _hs x hx
     simpa [frame, u] using coordRicciMdiff (I := I) S x₀ s x hx a b
   have hbase :=
-    realizedRmBase_timeDeriv
+    solutionCurvatureComponents_hasDerivWithinAt
       (I := I) S hS x₀ gInvDt hmetricFrame hSmooth hFdiff hFtdiff hmixLegacy
       hRm hcurv t m
   have hgamma

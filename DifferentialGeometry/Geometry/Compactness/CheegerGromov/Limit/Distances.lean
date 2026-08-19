@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.ApproxIsometryDefs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximationDefs
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 
 
@@ -329,7 +329,7 @@ theorem data_image_ball
     (hhnorm : ∀ (y : N) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (h.inner y w w)))
     (hr : 0 < r) (hrr₂ : r ≤ r₂) (hε0 : 0 ≤ ε)
-    (hdata : PreApproxIsoDataOn (I := I)
+    (hdata : MapMetricApproximationOn (I := I)
       (Metric.closedEBall O (ENNReal.ofReal r₂)) ε p (Φ : M → N) g h)
     (hsub : Metric.closedEBall O (ENNReal.ofReal r₂) ⊆ Φ.source) :
     (Φ : M → N) '' Metric.eball O (ENNReal.ofReal r) ⊆

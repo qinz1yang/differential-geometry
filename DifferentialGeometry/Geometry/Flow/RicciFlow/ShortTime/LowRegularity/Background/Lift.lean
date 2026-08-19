@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.BgLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.BackgroundLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.Time
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.A1Refold
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.A2Time
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.FirstOrderDecomposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.SecondOrderAffineTimeRegularity
 
 noncomputable section
 
@@ -26,18 +26,18 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-structure BgLiftOps (g : SmoothRiemannianMetric I M) where
-  a1Hi : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+structure BackgroundLiftOps (g : SmoothRiemannianMetric I M) where
+  firstOrderActionThirdToSecondOrder : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
     (tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
-  a1Lo : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
+  firstOrderActionSecondToFirstOrder : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →
     (tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 (1 : ℝ))
 
-theorem IsLowBoundsAt.realizeCc
+theorem HasLowRegularityBoundsAt.realizeCc
     {g gB : SmoothRiemannianMetric I M}
-    {K : LowRegBoundData}
-    (hK : IsLowBoundsAt (I := I) (M := M) g gB K)
+    {K : LowRegularityBoundParameters}
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gB K)
     (S : SmoothCcTensor g 0 2)
     (hS : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ K.realize) :
     gFibreOpBound (I := I) (M := M) g
@@ -51,12 +51,12 @@ theorem IsLowBoundsAt.realizeCc
   rw [← heq]
   exact hS
 
-namespace BgLiftData
+namespace BackgroundLiftParameters
 
 theorem realize
     {g gB : SmoothRiemannianMetric I M}
-    {K : LowRegBoundData} (D : BgLiftData K)
-    (hK : IsLowBoundsAt (I := I) (M := M) g gB K)
+    {K : LowRegularityBoundParameters} (D : BackgroundLiftParameters K)
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gB K)
     (S : SmoothCcTensor g 0 2)
     (hS : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤
       D.coeffRadius) :
@@ -64,98 +64,98 @@ theorem realize
       (ccTensorBilinSymm (I := I) g S) K.threshold :=
   hK.realizeCc S (hS.trans D.coeffRadius_le_realize)
 
-end BgLiftData
+end BackgroundLiftParameters
 
-structure IsBgA2At
+structure IsBackgroundSecondOrderActionAt
     (g gB : SmoothRiemannianMetric I M)
-    (K : LowRegBoundData)
-    (hK : IsLowBoundsAt (I := I) (M := M) g gB K)
-    (D : BgLiftData K) : Prop where
-  a2Hi_cont : Continuous
-    (lowA2HiBg (I := I) (M := M) g gB D.coeffRadius_pos.le
+    (K : LowRegularityBoundParameters)
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gB K)
+    (D : BackgroundLiftParameters K) : Prop where
+  secondOrderActionFourthToSecondOrder_continuous : Continuous
+    (lowerScaleSecondOrderActionFourthToSecondOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
       hK.threshold_nonneg hK.threshold_le_third (D.realize hK))
-  a2Lo_cont : Continuous
-    (lowA2LoBg (I := I) (M := M) g gB D.coeffRadius_pos.le
+  secondOrderActionThirdToFirstOrder_continuous : Continuous
+    (lowerScaleSecondOrderActionThirdToFirstOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
       hK.threshold_nonneg hK.threshold_le_third (D.realize hK))
-  a2Hi_bound : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
-    ‖lowA2HiBg (I := I) (M := M) g gB D.coeffRadius_pos.le
+  secondOrderActionFourthToSecondOrder_norm_le : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+    ‖lowerScaleSecondOrderActionFourthToSecondOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
       hK.threshold_nonneg hK.threshold_le_third (D.realize hK) v‖ ≤ D.contract
-  a2Lo_bound : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
-    ‖lowA2LoBg (I := I) (M := M) g gB D.coeffRadius_pos.le
+  secondOrderActionThirdToFirstOrder_norm_le : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+    ‖lowerScaleSecondOrderActionThirdToFirstOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
       hK.threshold_nonneg hK.threshold_le_third (D.realize hK) v‖ ≤ D.contract
-  a2Hi_core : ∀ S : SmoothCcTensor g 0 2,
-    lowA2HiBg (I := I) (M := M) g gB D.coeffRadius_pos.le
+  secondOrderActionFourthToSecondOrder_ccTensorToHs : ∀ S : SmoothCcTensor g 0 2,
+    lowerScaleSecondOrderActionFourthToSecondOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
         hK.threshold_nonneg hK.threshold_le_third (D.realize hK)
         (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) S) =
-      (lowCoreDataBg (I := I) (M := M) g gB D.coeffRadius_pos.le
-        hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).a2Hi
+      (lowCoreActionCoefficientsBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
+        hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).secondOrderActionFourthToSecondOrder
           (I := I) (M := M)
-  a2Lo_core : ∀ S : SmoothCcTensor g 0 2,
-    lowA2LoBg (I := I) (M := M) g gB D.coeffRadius_pos.le
+  secondOrderActionThirdToFirstOrder_ccTensorToHs : ∀ S : SmoothCcTensor g 0 2,
+    lowerScaleSecondOrderActionThirdToFirstOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
         hK.threshold_nonneg hK.threshold_le_third (D.realize hK)
         (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) S) =
-      (lowCoreDataBg (I := I) (M := M) g gB D.coeffRadius_pos.le
-        hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).a2Lo
+      (lowCoreActionCoefficientsBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
+        hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).secondOrderActionThirdToFirstOrder
           (I := I) (M := M)
-  a2_square : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
+  secondOrderAction_extensions_commute : ∀ v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ),
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show (1 : ℝ) ≤ 2 by norm_num)).comp
-        (lowA2HiBg (I := I) (M := M) g gB D.coeffRadius_pos.le
+        (lowerScaleSecondOrderActionFourthToSecondOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
           hK.threshold_nonneg hK.threshold_le_third (D.realize hK) v) =
-      (lowA2LoBg (I := I) (M := M) g gB D.coeffRadius_pos.le
+      (lowerScaleSecondOrderActionThirdToFirstOrderBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
         hK.threshold_nonneg hK.threshold_le_third (D.realize hK) v).comp
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (3 : ℝ) ≤ 4 by norm_num))
 
-structure IsBgA1At
+structure IsBackgroundFirstOrderActionAt
     (g gB : SmoothRiemannianMetric I M)
-    (K : LowRegBoundData)
-    (hK : IsLowBoundsAt (I := I) (M := M) g gB K)
-    (D : BgLiftData K) (F : BgLiftOps (I := I) (M := M) g) : Prop where
-  a1Hi_cont : Continuous F.a1Hi
-  a1Lo_cont : Continuous F.a1Lo
-  a1Hi_bound : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
-    ‖F.a1Hi x‖ ≤ D.zero + D.slope * ‖x‖
-  a1Lo_bound : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
-    ‖F.a1Lo x‖ ≤ D.zero + D.slope * ‖x‖
-  a1Hi_core : ∀ S : SmoothCcTensor g 0 2,
-    F.a1Hi (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) =
-      (refoldCoreBg (I := I) (M := M) g gB D.coeffRadius_pos.le
-        hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).a1Hi
+    (K : LowRegularityBoundParameters)
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gB K)
+    (D : BackgroundLiftParameters K) (F : BackgroundLiftOps (I := I) (M := M) g) : Prop where
+  firstOrderActionThirdToSecondOrder_continuous : Continuous F.firstOrderActionThirdToSecondOrder
+  firstOrderActionSecondToFirstOrder_continuous : Continuous F.firstOrderActionSecondToFirstOrder
+  firstOrderActionThirdToSecondOrder_norm_le : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+    ‖F.firstOrderActionThirdToSecondOrder x‖ ≤ D.zero + D.slope * ‖x‖
+  firstOrderActionSecondToFirstOrder_norm_le : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+    ‖F.firstOrderActionSecondToFirstOrder x‖ ≤ D.zero + D.slope * ‖x‖
+  firstOrderActionThirdToSecondOrder_ccTensorToHs : ∀ S : SmoothCcTensor g 0 2,
+    F.firstOrderActionThirdToSecondOrder (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) =
+      (combinedLowerScaleActionCoefficientsBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
+        hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).firstOrderActionThirdToSecondOrder
           (I := I) (M := M)
-  a1Lo_core : ∀ S : SmoothCcTensor g 0 2,
-    F.a1Lo (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) =
-      (refoldCoreBg (I := I) (M := M) g gB D.coeffRadius_pos.le
-        hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).a1Lo
+  firstOrderActionSecondToFirstOrder_ccTensorToHs : ∀ S : SmoothCcTensor g 0 2,
+    F.firstOrderActionSecondToFirstOrder (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) =
+      (combinedLowerScaleActionCoefficientsBackground (I := I) (M := M) g gB D.coeffRadius_pos.le
+        hK.threshold_nonneg hK.threshold_le_third (D.realize hK) S).firstOrderActionSecondToFirstOrder
           (I := I) (M := M)
-  a1_square : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
+  firstOrderAction_extensions_commute : ∀ x : tensorHs (I := I) (M := M) g 0 2 (3 : ℝ),
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
-      (show (1 : ℝ) ≤ 2 by norm_num)).comp (F.a1Hi x) =
-      (F.a1Lo x).comp
+      (show (1 : ℝ) ≤ 2 by norm_num)).comp (F.firstOrderActionThirdToSecondOrder x) =
+      (F.firstOrderActionSecondToFirstOrder x).comp
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (2 : ℝ) ≤ 3 by norm_num))
 
-structure IsBgLiftAt
+structure IsBackgroundLiftAt
     (g gB : SmoothRiemannianMetric I M)
-    (K : LowRegBoundData)
-    (hK : IsLowBoundsAt (I := I) (M := M) g gB K)
-    (D : BgLiftData K) (F : BgLiftOps (I := I) (M := M) g) : Prop extends
-  IsBgA2At (I := I) (M := M) g gB K hK D,
-  IsBgA1At (I := I) (M := M) g gB K hK D F
+    (K : LowRegularityBoundParameters)
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gB K)
+    (D : BackgroundLiftParameters K) (F : BackgroundLiftOps (I := I) (M := M) g) : Prop extends
+  IsBackgroundSecondOrderActionAt (I := I) (M := M) g gB K hK D,
+  IsBackgroundFirstOrderActionAt (I := I) (M := M) g gB K hK D F
 
-theorem bgA1_of_refold
+theorem background_first_order_operator_of_decomposition
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M)
-    {K : LowRegBoundData}
-    (hK : IsLowBoundsAt (I := I) (M := M) g gB K) :
+    {K : LowRegularityBoundParameters}
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gB K) :
     ∃ ρ0 : ℝ, 0 < ρ0 ∧
-      ∀ D : BgLiftData K, D.coeffRadius ≤ ρ0 →
+      ∀ D : BackgroundLiftParameters K, D.coeffRadius ≤ ρ0 →
         ∃ Z L : ℝ, 0 ≤ Z ∧ 0 ≤ L ∧
           (Z ≤ D.zero → L ≤ D.slope →
-            ∃ F : BgLiftOps (I := I) (M := M) g,
-              IsBgA1At (I := I) (M := M) g gB K hK D F) := by
-  obtain ⟨ρ1, hρ1, hpack⟩ := refold_aff_bg (I := I) (M := M) hDim g gB
-  obtain ⟨ρ2, hρ2, hdel⟩ := c0bg_pack (I := I) (M := M) hDim g gB
+            ∃ F : BackgroundLiftOps (I := I) (M := M) g,
+              IsBackgroundFirstOrderActionAt (I := I) (M := M) g gB K hK D F) := by
+  obtain ⟨ρ1, hρ1, hpack⟩ := exists_background_first_order_continuous_operator_extensions (I := I) (M := M) hDim g gB
+  obtain ⟨ρ2, hρ2, hdel⟩ := hasBackgroundDifferenceContinuousOperatorExtensions (I := I) (M := M) hDim g gB
   refine ⟨min ρ1 ρ2, lt_min hρ1 hρ2, ?_⟩
   intro D hD
   obtain ⟨Z1, L1, hZ1, hL1, FHi, FLo, hFHi, hFLo, hHiCore, hLoCore,
@@ -169,13 +169,13 @@ theorem bgA1_of_refold
   refine ⟨Z1 + Z0, L1 + L0, add_nonneg hZ1 hZ0, add_nonneg hL1 hL0,
     fun hZD hLD => ⟨⟨fun x => FHi x + GHi x, fun x => FLo x + GLo x⟩, ?_⟩⟩
   refine
-    { a1Hi_cont := hFHi.add hGHi
-      a1Lo_cont := hFLo.add hGLo
-      a1Hi_bound := ?_
-      a1Lo_bound := ?_
-      a1Hi_core := ?_
-      a1Lo_core := ?_
-      a1_square := ?_ }
+    { firstOrderActionThirdToSecondOrder_continuous := hFHi.add hGHi
+      firstOrderActionSecondToFirstOrder_continuous := hFLo.add hGLo
+      firstOrderActionThirdToSecondOrder_norm_le := ?_
+      firstOrderActionSecondToFirstOrder_norm_le := ?_
+      firstOrderActionThirdToSecondOrder_ccTensorToHs := ?_
+      firstOrderActionSecondToFirstOrder_ccTensorToHs := ?_
+      firstOrderAction_extensions_commute := ?_ }
   · intro x
     have hsum := norm_add_le (FHi x) (GHi x)
     have hx : ‖FHi x‖ + ‖GHi x‖ ≤ D.zero + D.slope * ‖x‖ := by
@@ -200,14 +200,14 @@ theorem bgA1_of_refold
     change FHi (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) +
         GHi (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) = _
     rw [hHiCore S, hGHiCore S]
-    exact (refoldBg_a1Hi_split (I := I) (M := M) hDim g gB
+    exact (combinedLowerScaleActionCoefficientsBackground_firstOrderActionThirdToSecondOrder_decomposition (I := I) (M := M) hDim g gB
       D.coeffRadius_pos.le hK.threshold_nonneg hK.threshold_le_third
       (D.realize hK) S).symm
   · intro S
     change FLo (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) +
         GLo (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S) = _
     rw [hLoCore S, hGLoCore S]
-    exact (refoldBg_a1Lo_split (I := I) (M := M) hDim g gB
+    exact (combinedLowerScaleActionCoefficientsBackground_firstOrderActionSecondToFirstOrder_decomposition (I := I) (M := M) hDim g gB
       D.coeffRadius_pos.le hK.threshold_nonneg hK.threshold_le_third
       (D.realize hK) S).symm
   · intro x
@@ -223,20 +223,20 @@ theorem bgA1_of_refold
           (show (2 : ℝ) ≤ 3 by norm_num) v)
     simp only [ContinuousLinearMap.add_apply, map_add, h1, h2]
 
-theorem bgA2_of_radial
+theorem isBackgroundSecondOrderActionAt_of_radial
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M)
-    {K : LowRegBoundData}
-    (hK : IsLowBoundsAt (I := I) (M := M) g gB K) :
+    {K : LowRegularityBoundParameters}
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gB K) :
     ∃ ρ0 C : ℝ, 0 < ρ0 ∧ 0 ≤ C ∧
-      ∀ D : BgLiftData K, D.coeffRadius ≤ ρ0 →
+      ∀ D : BackgroundLiftParameters K, D.coeffRadius ≤ ρ0 →
         (C * D.coeffRadius ≤ D.contract →
-          IsBgA2At (I := I) (M := M) g gB K hK D) := by
+          IsBackgroundSecondOrderActionAt (I := I) (M := M) g gB K hK D) := by
   obtain ⟨ρL, _CL, hρL, _hρL_le, hlip⟩ :=
-    radialA2Bg_lip (I := I) (M := M) hDim g gB K.realize_pos
+    radialSecondOrderActionBackground_lipschitz (I := I) (M := M) hDim g gB K.realize_pos
       hK.threshold_nonneg hK.threshold_le_third hK.realizeCc
   obtain ⟨ρS, C, hρS, _hρS_le, hC, hsmall⟩ :=
-    lowA2Bg_small (I := I) (M := M) hDim g gB K.realize_pos
+    lowerScaleSecondOrderActionBackground_small (I := I) (M := M) hDim g gB K.realize_pos
       hK.threshold_nonneg hK.threshold_le_third hK.realizeCc
   refine ⟨min ρL ρS, C, lt_min hρL hρS, hC, ?_⟩
   intro D hD hdom
@@ -246,36 +246,36 @@ theorem bgA2_of_radial
   obtain ⟨-, -, hcoreHi, hcoreLo, -⟩ := hlip hr0 hrL
   obtain ⟨hcontHi, hcontLo, hbdHi, hbdLo, hsq⟩ := hsmall hr0 hrS
   exact
-    { a2Hi_cont := hcontHi
-      a2Lo_cont := hcontLo
-      a2Hi_bound := fun v => (hbdHi v).trans hdom
-      a2Lo_bound := fun v => (hbdLo v).trans hdom
-      a2Hi_core := hcoreHi
-      a2Lo_core := hcoreLo
-      a2_square := hsq }
+    { secondOrderActionFourthToSecondOrder_continuous := hcontHi
+      secondOrderActionThirdToFirstOrder_continuous := hcontLo
+      secondOrderActionFourthToSecondOrder_norm_le := fun v => (hbdHi v).trans hdom
+      secondOrderActionThirdToFirstOrder_norm_le := fun v => (hbdLo v).trans hdom
+      secondOrderActionFourthToSecondOrder_ccTensorToHs := hcoreHi
+      secondOrderActionThirdToFirstOrder_ccTensorToHs := hcoreLo
+      secondOrderAction_extensions_commute := hsq }
 
 theorem bgLift_of_radial
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M)
-    {K : LowRegBoundData}
-    (hK : IsLowBoundsAt (I := I) (M := M) g gB K) :
+    {K : LowRegularityBoundParameters}
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gB K) :
     ∃ ρ0 C : ℝ, 0 < ρ0 ∧ 0 ≤ C ∧
-      ∀ D : BgLiftData K, D.coeffRadius ≤ ρ0 →
+      ∀ D : BackgroundLiftParameters K, D.coeffRadius ≤ ρ0 →
         ∃ Z L : ℝ, 0 ≤ Z ∧ 0 ≤ L ∧
           (Z ≤ D.zero → L ≤ D.slope → C * D.coeffRadius ≤ D.contract →
-            ∃ F : BgLiftOps (I := I) (M := M) g,
-              IsBgLiftAt (I := I) (M := M) g gB K hK D F) := by
-  obtain ⟨ρ1, hρ1, hA1⟩ := bgA1_of_refold (I := I) (M := M) hDim g gB hK
+            ∃ F : BackgroundLiftOps (I := I) (M := M) g,
+              IsBackgroundLiftAt (I := I) (M := M) g gB K hK D F) := by
+  obtain ⟨ρ1, hρ1, hA1⟩ := background_first_order_operator_of_decomposition (I := I) (M := M) hDim g gB hK
   obtain ⟨ρ2, C, hρ2, hC, hA2⟩ :=
-    bgA2_of_radial (I := I) (M := M) hDim g gB hK
+    isBackgroundSecondOrderActionAt_of_radial (I := I) (M := M) hDim g gB hK
   refine ⟨min ρ1 ρ2, C, lt_min hρ1 hρ2, hC, ?_⟩
   intro D hD
   obtain ⟨Z, L, hZ, hL, hF⟩ := hA1 D (hD.trans (min_le_left _ _))
   refine ⟨Z, L, hZ, hL, fun hZD hLD hdom => ?_⟩
   obtain ⟨F, hF1⟩ := hF hZD hLD
   exact ⟨F,
-    { toIsBgA2At := hA2 D (hD.trans (min_le_right _ _)) hdom
-      toIsBgA1At := hF1 }⟩
+    { toIsBackgroundSecondOrderActionAt := hA2 D (hD.trans (min_le_right _ _)) hdom
+      toIsBackgroundFirstOrderActionAt := hF1 }⟩
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

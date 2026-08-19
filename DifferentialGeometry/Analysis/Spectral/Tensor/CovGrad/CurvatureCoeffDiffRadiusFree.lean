@@ -102,13 +102,13 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨KtCr, hKtCr_nn, KcCr, hKcCr_nn, hCr⟩ :=
-    rfns_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_topSeparated_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_topOrderSeparated_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨KtCu, hKtCu_nn, KcCu, hKcCu_nn, hCu⟩ :=
-    rfns_iteratedCovGrad_ricciArmOrder0CurvCoeff_backgroundDifference_topSeparated_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0CurvCoeff_backgroundDifference_topOrderSeparated_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Klg, hKlg_nn, Ktg, hKtg_nn, hgate⟩ :=
-    boundedFactorGridWindow_integral_radiusFree_topSeparated (I := I) (M := M) g₀ hΛ₀0
+    boundedFactorGridWindow_integral_radiusFree_topOrderSeparated (I := I) (M := M) g₀ hΛ₀0
   refine ⟨fun i => 5 * KcCr i * Ktg i + 5 * KtCr + 5 * KcCu i * Ktg i + 5 * KtCu,
     fun i => by have := hKcCr_nn i; have := hKcCu_nn i; have := hKtg_nn i; positivity, ?_⟩
   refine ⟨fun i => 5 * KcCr i * Klg i + 5 * KcCu i * Klg i +
@@ -308,7 +308,7 @@ theorem ricciArmOrder0BaseCoeff_summed_l2_radiusFree
         (max 0 ((Module.finrank ℝ E : ℝ) * δ₀)) ^ 2 := by
       intro x
       rw [hmaxeq]
-      exact rfns_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
+      exact riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
     have hper' : ∀ i, i ≤ a →
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -

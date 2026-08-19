@@ -82,7 +82,7 @@ theorem gateWitness_zero_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Classical.choose (h_mem 0 (le_refl (0 : ℝ))))
     (Classical.choose_spec (h_mem 0 (le_refl (0 : ℝ)))) i
 
-theorem spectralSmooth_realizesAsSmooth_of_finite_support'
+theorem spectral_smooth_realizes_as_smooth_of_mem_all_and_finite_support
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (u : TensorL2 r s g)
     (h_mem : MemAllTensorHs (I := I) (M := M) g r s u)
     (hu_fs : (Function.support (spectralCoeff (I := I) (M := M) g r s u)).Finite) :

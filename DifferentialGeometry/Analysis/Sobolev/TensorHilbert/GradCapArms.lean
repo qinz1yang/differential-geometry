@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GradCapAtgw
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantDerivativePointwiseBounds
 
 noncomputable section
 
@@ -32,37 +32,37 @@ def HasCapWin (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     riemannianFiberNormSq (I := I) (M := M) g₀ r (c + i) x
         ((iteratedCovGrad (I := I) g₀ r c i X).toSection x) ≤
       K i * Combinatorics.antidiagonalTupleGridWindow
-        (gridBase (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1)
+        (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma oneLeCapW (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) (i : ℕ) :
     (1 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow
-      (gridBase (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) :=
+      (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) :=
   Combinatorics.one_le_antidiagonalTupleGridWindow _
-    (gridBase_nn (I := I) (M := M) g₀ _ x) (by omega)
+    (covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ _ x) (by omega)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma nnCapW (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) (i : ℕ) :
     (0 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow
-      (gridBase (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) :=
+      (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) :=
   le_trans zero_le_one (oneLeCapW (I := I) (M := M) g₀ P x i)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capOfArm (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
-    (hP0 : ∀ x : M, gridBase (I := I) (M := M) g₀ P x 0 ≤ Λ)
-    (hP1 : ∀ x : M, gridBase (I := I) (M := M) g₀ P x 1 ≤ Λ)
+    (hP0 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 0 ≤ Λ)
+    (hP1 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 1 ≤ Λ)
     {r c : ℕ} (X : SmoothCcTensor g₀ r c) {K : ℕ → ℝ} (hK : ∀ i, 0 ≤ K i)
     (hX : ∀ (i : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ r (c + i) x
           ((iteratedCovGrad (I := I) g₀ r c i X).toSection x) ≤
         K i * Combinatorics.antidiagonalTupleGridWindow
-          (gridBase (I := I) (M := M) g₀ P x) (i + 2)) :
-    HasCapWin (I := I) (M := M) g₀ P X (fun i => K i * shiftConst Λ (i + 1)) := by
+          (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (i + 2)) :
+    HasCapWin (I := I) (M := M) g₀ P X (fun i => K i * antidiagonalTupleGridWindowShiftConstant Λ (i + 1)) := by
   intro i x
-  simpa using armShift (I := I) (M := M) g₀ P hΛ1 hP0 hP1 X hK 0
+  simpa using antidiagonalTupleGridWindow_covariantDerivative_shift (I := I) (M := M) g₀ P hΛ1 hP0 hP1 X hK 0
     (fun j y => by simpa using hX j y) i x
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -79,34 +79,34 @@ theorem capOfBnd (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma capBaseLe (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) {i j : ℕ} (hj : 1 ≤ j) (hji : j ≤ i) :
-    gridBase (I := I) (M := M) g₀ P x (j + 1) ≤
+    covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x (j + 1) ≤
       Combinatorics.antidiagonalTupleGridWindow
-        (gridBase (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) := by
+        (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) := by
   classical
-  set b : ℕ → ℝ := gridBase (I := I) (M := M) g₀ P x with hb_def
-  have hb : ∀ k, 0 ≤ b k := gridBase_nn (I := I) (M := M) g₀ P x
+  set b : ℕ → ℝ := covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x with hb_def
+  have hb : ∀ k, 0 ≤ b k := covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ P x
   have hb' : ∀ k, 0 ≤ (fun k => b (k + 1)) k := fun k => hb _
   have hsingle := Combinatorics.single_factor_mul_antidiagonalTupleGrid_le
     (fun k => b (k + 1)) hb' 0 j hj
   rw [Combinatorics.antidiagonalTupleGrid_zero, mul_one, zero_add] at hsingle
   refine le_trans hsingle ?_
-  rw [← gradBase_fun (I := I) (M := M) g₀ P x]
+  rw [← covariantDerivative_grid (I := I) (M := M) g₀ P x]
   exact Combinatorics.antidiagonalTupleGrid_le_window _ hb' (by omega)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capOfP (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
-    (hP0 : ∀ x : M, gridBase (I := I) (M := M) g₀ P x 0 ≤ Λ)
-    (hP1 : ∀ x : M, gridBase (I := I) (M := M) g₀ P x 1 ≤ Λ) :
+    (hP0 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 0 ≤ Λ)
+    (hP1 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 1 ≤ Λ) :
     HasCapWin (I := I) (M := M) g₀ P P (fun _ => Λ) := by
   classical
   intro i x
   have hone := oneLeCapW (I := I) (M := M) g₀ P x i
   have hnn := nnCapW (I := I) (M := M) g₀ P x i
   have hΛ0 : (0 : ℝ) ≤ Λ := le_trans zero_le_one hΛ1
-  have hgoal : gridBase (I := I) (M := M) g₀ P x i ≤
+  have hgoal : covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x i ≤
       Λ * Combinatorics.antidiagonalTupleGridWindow
-        (gridBase (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) := by
+        (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) := by
     match i with
     | 0 => exact le_trans (hP0 x) (le_mul_of_one_le_right hΛ0 hone)
     | 1 => exact le_trans (hP1 x) (le_mul_of_one_le_right hΛ0 hone)
@@ -119,17 +119,17 @@ theorem capOfP (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capOfDP (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
-    (hP1 : ∀ x : M, gridBase (I := I) (M := M) g₀ P x 1 ≤ Λ) :
+    (hP1 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 1 ≤ Λ) :
     HasCapWin (I := I) (M := M) g₀ P (covGrad (I := I) (M := M) g₀ 0 2 P) (fun _ => Λ) := by
   classical
   intro i x
   have hone := oneLeCapW (I := I) (M := M) g₀ P x i
   have hnn := nnCapW (I := I) (M := M) g₀ P x i
   have hΛ0 : (0 : ℝ) ≤ Λ := le_trans zero_le_one hΛ1
-  rw [rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 0 2 i P x]
-  have hgoal : gridBase (I := I) (M := M) g₀ P x (i + 1) ≤
+  rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 0 2 i P x]
+  have hgoal : covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x (i + 1) ≤
       Λ * Combinatorics.antidiagonalTupleGridWindow
-        (gridBase (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) := by
+        (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) := by
     match i with
     | 0 => exact le_trans (hP1 x) (le_mul_of_one_le_right hΛ0 hone)
     | (k + 1) =>
@@ -143,10 +143,10 @@ theorem capApp (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {KΦ KW : ℕ → ℝ} (hKΦ : ∀ i, 0 ≤ KΦ i) (hKW : ∀ l, 0 ≤ KW l)
     (hΦ : HasCapWin (I := I) (M := M) g₀ P Φ KΦ)
     (hW : HasCapWin (I := I) (M := M) g₀ P W KW) :
-    HasCapWin (I := I) (M := M) g₀ P (appCcRS (I := I) (M := M) g₀ p a b Φ W)
-      (foldConst (E := E) 0 0 KΦ KW) := by
+    HasCapWin (I := I) (M := M) g₀ P (ccOperatorFieldComp (I := I) (M := M) g₀ p a b Φ W)
+      (operatorFieldCompositionGridConstant (E := E) 0 0 KΦ KW) := by
   intro n x
-  simpa using atgwFold (I := I) (M := M) g₀ (u := 0) (v := 0) Φ W
+  simpa using operatorFieldComposition_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ (u := 0) (v := 0) Φ W
     (iteratedCovGrad (I := I) g₀ 0 2 1 P) hKΦ hKW
     (fun i' y => by simpa using hΦ i' y) (fun l y => by simpa using hW l y) n x
 
@@ -200,7 +200,7 @@ theorem capSmul (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2
     rw [DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real
       (I := I) (M := M) g₀ r c i t X,
       SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-      riemannianFiberNormSq_smul (I := I) (M := M) g₀ r (c + i) x t _]
+      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ r (c + i) x t _]
   rw [heq, mul_assoc]
   exact mul_le_mul_of_nonneg_left (hX i x) (sq_nonneg t)
 
@@ -231,7 +231,7 @@ theorem capReindex (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 
     HasCapWin (I := I) (M := M) g₀ P
       (reindexCoeffGen (I := I) (M := M) g₀ r c X ρ) K := by
   intro i x
-  rw [rfns_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r c X ρ i x]
+  rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r c X ρ i x]
   exact hX i x
 
 theorem capDdc (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -240,7 +240,7 @@ theorem capDdc (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     HasCapWin (I := I) (M := M) g₀ P
       (rsDomDomCongrSection (I := I) (M := M) g₀ r c σ X) K := by
   intro i x
-  rw [rfns_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g₀ r c σ X
+  rw [riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g₀ r c σ X
     (rsDomDomCongrSection (I := I) (M := M) g₀ r c σ X)
     (fun y d => by rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) i x]
   exact hX i x
@@ -261,7 +261,7 @@ theorem capSlotExt (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 
       (fun i => (Module.finrank ℝ E : ℝ) * K i) := by
   intro i x
   have hfr : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
-  refine le_trans (rfns_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ r c X i x) ?_
+  refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ r c X i x) ?_
   rw [mul_assoc]
   exact mul_le_mul_of_nonneg_left (hX i x) hfr
 
@@ -286,7 +286,7 @@ theorem capIter (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2
 theorem capJet (g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ0 : 0 ≤ Λ) :
     ∃ Kint : ℕ → ℝ, (∀ k, 0 ≤ Kint k) ∧
       ∀ (P : SmoothCcTensor g₀ 0 2),
-        (∀ x : M, gridBase (I := I) (M := M) g₀ P x 1 ≤ Λ) →
+        (∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x 1 ≤ Λ) →
         ∀ {r c : ℕ} (X : SmoothCcTensor g₀ r c) {K : ℕ → ℝ}, (∀ i, 0 ≤ K i) →
           HasCapWin (I := I) (M := M) g₀ P X K →
           ∀ n : ℕ,
@@ -296,7 +296,7 @@ theorem capJet (g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ0 : 0 ≤ Λ) 
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Kint, hKint_nn, hint⟩ :=
-    atgwCapToJet (I := I) (M := M) g₀ (Λ₁ := Real.sqrt Λ) (Real.sqrt_nonneg Λ)
+    antidiagonalTupleGridWindow_bound_to_jet_bound (I := I) (M := M) g₀ (Λ₁ := Real.sqrt Λ) (Real.sqrt_nonneg Λ)
   refine ⟨Kint, hKint_nn, ?_⟩
   intro P hP1 r c X K hK hX n
   have hcap : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x

@@ -4,7 +4,7 @@ import Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
-import DifferentialGeometry.Geometry.Comparison.ExpBallDiffeo
+import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
 import DifferentialGeometry.Geometry.Exponential.NormalBallChart
 import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
@@ -908,7 +908,7 @@ theorem normalChartAt_contMDiffAt_infty
   have hmem_ball : v₀ ∈ Metric.ball (0 : E) (expMapC2Radius (I := I) g p) := by
     rw [Metric.mem_ball, dist_zero_right]; exact hv₀
   have hf_diffeo : IsLocalDiffeomorphAt 𝓘(ℝ, E) I 1 fexp v₀ :=
-    exp_isLocalDiffeomorphOn_ball (I := I) g p (le_refl _) ⟨v₀, hmem_ball⟩
+    exponential_map_is_local_diffeomorph_on_ball (I := I) g p (le_refl _) ⟨v₀, hmem_ball⟩
   have hD1_inv : (mfderiv 𝓘(ℝ, E) I fexp v₀).IsInvertible :=
     ⟨hf_diffeo.mfderivToContinuousLinearEquiv one_ne_zero,
       hf_diffeo.mfderivToContinuousLinearEquiv_coe one_ne_zero⟩

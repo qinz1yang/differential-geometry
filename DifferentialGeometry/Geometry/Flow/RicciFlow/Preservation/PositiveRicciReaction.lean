@@ -610,7 +610,7 @@ theorem shiftRic3At_comp_of_shiftBlock
   simp [Tensor0SBundle.Tensor0SSpace.add_apply, Tensor0SBundle.Tensor0SSpace.smul_apply,
     hreal (basis i) (basis j), hblock.components i j, hmetric, smul_eq_mul]
 
-def perm0213 : Equiv.Perm (Fin 4) where
+def tensorPairPermutationZeroTwoOneThree : Equiv.Perm (Fin 4) where
   toFun := fun i =>
     if i = (0 : Fin 4) then 0
     else if i = (1 : Fin 4) then 2
@@ -628,7 +628,7 @@ def perm0213 : Equiv.Perm (Fin 4) where
     intro i
     fin_cases i <;> simp
 
-def perm0312 : Equiv.Perm (Fin 4) where
+def tensorPairPermutationZeroThreeOneTwo : Equiv.Perm (Fin 4) where
   toFun := fun i =>
     if i = (0 : Fin 4) then 0
     else if i = (1 : Fin 4) then 3
@@ -646,7 +646,7 @@ def perm0312 : Equiv.Perm (Fin 4) where
     intro i
     fin_cases i <;> simp
 
-def perm1203 : Equiv.Perm (Fin 4) where
+def tensorPairPermutationOneTwoZeroThree : Equiv.Perm (Fin 4) where
   toFun := fun i =>
     if i = (0 : Fin 4) then 1
     else if i = (1 : Fin 4) then 2
@@ -664,7 +664,7 @@ def perm1203 : Equiv.Perm (Fin 4) where
     intro i
     fin_cases i <;> simp
 
-def perm1302 : Equiv.Perm (Fin 4) where
+def tensorPairPermutationOneThreeZeroTwo : Equiv.Perm (Fin 4) where
   toFun := fun i =>
     if i = (0 : Fin 4) then 1
     else if i = (1 : Fin 4) then 3
@@ -704,50 +704,50 @@ theorem tensor04Pair_apply
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
 @[simp]
-theorem tensor04Pair_perm0213_vec4
+theorem tensor04Pair_zero_two_one_three_apply
     {x : M} (A B : Tensor02At (I := I) (M := M) x)
     (W X Y Z : TangentSpace I x) :
-    tensor04Pair (I := I) (M := M) A B perm0213 (vec4 (I := I) W X Y Z) =
+    tensor04Pair (I := I) (M := M) A B tensorPairPermutationZeroTwoOneThree (vec4 (I := I) W X Y Z) =
       A (vec2 (I := I) W Y) * B (vec2 (I := I) X Z) := by
   rw [tensor04Pair_apply]
   congr <;> funext q <;> fin_cases q <;>
-    simp [perm0213, vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
+    simp [tensorPairPermutationZeroTwoOneThree, vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
       DifferentialGeometry.Geometry.Curvature.vec4, Function.comp_def]
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
 @[simp]
-theorem tensor04Pair_perm0312_vec4
+theorem tensor04Pair_zero_three_one_two_apply
     {x : M} (A B : Tensor02At (I := I) (M := M) x)
     (W X Y Z : TangentSpace I x) :
-    tensor04Pair (I := I) (M := M) A B perm0312 (vec4 (I := I) W X Y Z) =
+    tensor04Pair (I := I) (M := M) A B tensorPairPermutationZeroThreeOneTwo (vec4 (I := I) W X Y Z) =
       A (vec2 (I := I) W Z) * B (vec2 (I := I) X Y) := by
   rw [tensor04Pair_apply]
   congr <;> funext q <;> fin_cases q <;>
-    simp [perm0312, vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
+    simp [tensorPairPermutationZeroThreeOneTwo, vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
       DifferentialGeometry.Geometry.Curvature.vec4, Function.comp_def]
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
 @[simp]
-theorem tensor04Pair_perm1203_vec4
+theorem tensor04Pair_one_two_zero_three_apply
     {x : M} (A B : Tensor02At (I := I) (M := M) x)
     (W X Y Z : TangentSpace I x) :
-    tensor04Pair (I := I) (M := M) A B perm1203 (vec4 (I := I) W X Y Z) =
+    tensor04Pair (I := I) (M := M) A B tensorPairPermutationOneTwoZeroThree (vec4 (I := I) W X Y Z) =
       A (vec2 (I := I) X Y) * B (vec2 (I := I) W Z) := by
   rw [tensor04Pair_apply]
   congr <;> funext q <;> fin_cases q <;>
-    simp [perm1203, vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
+    simp [tensorPairPermutationOneTwoZeroThree, vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
       DifferentialGeometry.Geometry.Curvature.vec4, Function.comp_def]
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
 @[simp]
-theorem tensor04Pair_perm1302_vec4
+theorem tensor04Pair_one_three_zero_two_apply
     {x : M} (A B : Tensor02At (I := I) (M := M) x)
     (W X Y Z : TangentSpace I x) :
-    tensor04Pair (I := I) (M := M) A B perm1302 (vec4 (I := I) W X Y Z) =
+    tensor04Pair (I := I) (M := M) A B tensorPairPermutationOneThreeZeroTwo (vec4 (I := I) W X Y Z) =
       A (vec2 (I := I) X Z) * B (vec2 (I := I) W Y) := by
   rw [tensor04Pair_apply]
   congr <;> funext q <;> fin_cases q <;>
-    simp [perm1302, vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
+    simp [tensorPairPermutationOneThreeZeroTwo, vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
       DifferentialGeometry.Geometry.Curvature.vec4, Function.comp_def]
 
 def rm04OfRic3At
@@ -756,13 +756,13 @@ def rm04OfRic3At
     Tensor04At (I := I) (M := M) x :=
   let G := metricTensorField (I := I) g x
   let R := metricTracePair0SAt (I := I) g Ric
-  tensor04Pair (I := I) (M := M) G Ric perm0213 -
-    tensor04Pair (I := I) (M := M) G Ric perm0312 -
-    tensor04Pair (I := I) (M := M) G Ric perm1203 +
-    tensor04Pair (I := I) (M := M) G Ric perm1302 -
+  tensor04Pair (I := I) (M := M) G Ric tensorPairPermutationZeroTwoOneThree -
+    tensor04Pair (I := I) (M := M) G Ric tensorPairPermutationZeroThreeOneTwo -
+    tensor04Pair (I := I) (M := M) G Ric tensorPairPermutationOneTwoZeroThree +
+    tensor04Pair (I := I) (M := M) G Ric tensorPairPermutationOneThreeZeroTwo -
     ((1 / 2 : Real) * R) •
-      (tensor04Pair (I := I) (M := M) G G perm0213 -
-        tensor04Pair (I := I) (M := M) G G perm0312)
+      (tensor04Pair (I := I) (M := M) G G tensorPairPermutationZeroTwoOneThree -
+        tensor04Pair (I := I) (M := M) G G tensorPairPermutationZeroThreeOneTwo)
 
 omit [IsManifold I 2 M] in
 theorem rm04OfRic3At_comp_orthonormal
@@ -843,7 +843,7 @@ def rm04Mid02At
     Tensor02At (I := I) (M := M) x :=
   (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
     ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x
-      (Rm04.domDomCongr perm0213)) X)) Y
+      (Rm04.domDomCongr tensorPairPermutationZeroTwoOneThree)) X)) Y
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
 @[simp]
@@ -869,7 +869,7 @@ def rm04MidCLMAt
         Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x :=
   ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x).toContinuousLinearMap).comp
     ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x)
-      (Rm04.domDomCongr perm0213))
+      (Rm04.domDomCongr tensorPairPermutationZeroTwoOneThree))
 
 omit [FiniteDimensional ℝ E] [IsManifold I 2 M] in
 @[simp]

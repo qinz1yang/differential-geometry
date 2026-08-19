@@ -98,14 +98,14 @@ theorem nablaMetric_combo_extDeriv2
 
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_koszul_deriv2
+theorem connectionDifference_koszul_deriv2
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (V W X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
     (x : M) :
     extDerivFun (I := I)
-        (fun p : M => 2 * g₁.inner p (covDerivConnDiff (I := I) g₂ g₁ W X Y p) (Z p)) x (V x) =
+        (fun p : M => 2 * g₁.inner p (covDerivConnectionDifference (I := I) g₂ g₁ W X Y p) (Z p)) x (V x) =
       (Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
           (LeviCivita (I := I) g₂) V
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
@@ -233,7 +233,7 @@ theorem connDiff_koszul_deriv2
       Function.update (![a, b, c] : Fin 3 → TangentSpace I x) 2 v = ![a, b, v] := by
     intro v a b c; funext i; fin_cases i <;> simp
   have hmaster := congrArg (fun f : M → ℝ => extDerivFun (I := I) f x (V x))
-    (funext (fun p => connDiff_koszul_deriv (I := I) g₁ g₂ W X Y Z p))
+    (funext (fun p => connectionDifference_koszul_deriv (I := I) g₁ g₂ W X Y Z p))
   simp only [hDA] at hmaster
   have hMDgen4 : ∀ (Vt : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _)),

@@ -50,7 +50,7 @@ def connSpeed (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Avec : Real → (y : M) →
       TangentSpace I y →L[Real] TangentSpace I y →L[Real] TangentSpace I y) :
     Real → (x : M) → Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x :=
-  fun t x => connDiffDot (I := I) g₁ g₂ (Avec t) t x
+  fun t x => connectionDifferenceDot (I := I) g₁ g₂ (Avec t) t x
 
 def rmSpeed (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Svec : Real → (y : M) →
@@ -78,9 +78,9 @@ theorem connSpeed_hasDerivAt (g₁ g₂ : Real → SmoothRiemannianMetric I M)
         ((chartFrame_isFrame I x).coeff k x
           ((Avec t x (chartFrame I x j x)) (chartFrame I x i x))) t)
     (v : Fin 3 → TangentSpace I x) :
-    HasDerivAt (fun r : Real => connDiffLowAt (I := I) (g₁ r) (g₂ r) x v)
+    HasDerivAt (fun r : Real => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v)
       (connSpeed (I := I) g₁ g₂ Avec t x v) t :=
-  connDiffLow_hasDerivAt_frame (I := I) g₁ g₂ (chartFrame I x) (chartFrame_isFrame I x)
+  connectionDifferenceLow_hasDerivAt_frame (I := I) g₁ g₂ (chartFrame I x) (chartFrame_isFrame I x)
     (trivializationAt E (TangentSpace I) x).open_baseSet (chartFrame_mem I x) (Avec t)
     hPDE₁ hgamma v
 
@@ -145,7 +145,7 @@ structure ForwardUniqueSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     movingReact0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x)
         (metricDiffAt (I := I) (g₁ t) (g₂ t) x) +
       movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-        (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+        (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
       movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
         (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
     C_R * forwardUniqueDensity (I := I) g₁ g₂ t x
@@ -239,7 +239,7 @@ structure ForwardUniqueInputs (g₁ g₂ : Real → SmoothRiemannianMetric I M)
 
 end Inputs
 
-section Assembly
+section
 
 
 theorem forward_unique_of_inputs
@@ -309,7 +309,7 @@ theorem forward_unique_of_inputs
           (fun i : Fin 2 => if i = 0 then X else Y)) t :=
     fun s hs x X Y => pde_hasDerivAt (I := I) g₂ h2pde (hsub hs) x X Y
   have hA : ∀ t ∈ Ioo a c, ∀ (x : M) (v : Fin 3 → TangentSpace I x),
-      HasDerivAt (fun r : Real => connDiffLowAt (I := I) (g₁ r) (g₂ r) x v)
+      HasDerivAt (fun r : Real => connectionDifferenceLowAt (I := I) (g₁ r) (g₂ r) x v)
         (connSpeed (I := I) g₁ g₂ Avec t x v) t := fun s hs x v =>
     connSpeed_hasDerivAt (I := I) g₁ g₂ Avec (fun X Y => hPDE₁ s hs x X Y)
       (fun i j k => hin.gamma s (hsub hs) x i j k) v
@@ -340,7 +340,7 @@ theorem forward_unique_of_inputs
     (fun s hs => hin.densCont s (hsubIcc hs)) h0
     (hin.energyCont.mono hsubIcc) t ht
 
-end Assembly
+end
 
 end DifferentialGeometry.PDE.RicciFlow
 

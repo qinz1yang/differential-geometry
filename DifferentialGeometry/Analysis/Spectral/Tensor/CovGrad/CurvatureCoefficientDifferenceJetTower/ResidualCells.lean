@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricRaisedEndomorphismJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomFieldActionIteratedCovGradWindow
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
@@ -15,9 +15,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulCovariantJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulParallelRaiseJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRfnsBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRiemannianFiberNormSqBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
@@ -63,7 +63,7 @@ end CurvatureCoefficientDifferenceJetTower
 
 open CurvatureCoefficientDifferenceJetTower
 
-section TopSeparatedResidualIntegrator
+section TopOrderSeparatedResidualIntegrator
 
 
 set_option backward.isDefEq.respectTransparency false
@@ -617,7 +617,7 @@ theorem cappedTopLayerCell_integral_le
               ((iteratedCovGrad (I := I) g₀ 0 2 (e ↑m) P).toSection x))]
       refine Finset.prod_congr rfl (fun m' _ => ?_)
       symm
-      rw [rfns_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 2 (e' m') P x]
+      rw [riemannianFiberNormSq_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 2 (e' m') P x]
       exact hcongr_local x (2 + e' m') (e ((ι m' : Fin n))) (by
         have := hge3' m'; simp only [he']; omega)
     have hΛsup_v2 : ∀ x : M,
@@ -668,7 +668,7 @@ theorem cappedTopLayerCell_integral_le
             ((iteratedCovGrad (I := I) g₀ 0 2 (2 + i₀) P).toSection x) ∂μ := by
         apply MeasureTheory.integral_congr_ae
         refine Filter.Eventually.of_forall (fun x => ?_)
-        exact rfns_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 2 i₀ P x
+        exact riemannianFiberNormSq_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 2 i₀ P x
       have e3 : (∫ x, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (2 + i₀)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (2 + i₀) P).toSection x) ∂μ) =
           ‖iteratedCovGrad (I := I) g₀ 0 2 (2 + i₀) P‖ ^ 2 :=
@@ -809,7 +809,7 @@ theorem cappedTopLayerCell_integral_le
 
 end CurvatureCoefficientDifferenceJetTower
 
-end TopSeparatedResidualIntegrator
+end TopOrderSeparatedResidualIntegrator
 
 end Spectral
 end Analysis

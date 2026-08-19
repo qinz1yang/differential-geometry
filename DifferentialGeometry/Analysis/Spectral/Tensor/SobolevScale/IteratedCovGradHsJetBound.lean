@@ -75,7 +75,7 @@ private theorem ccWeight_even
     unfold tensorSobolevWeight
     rw [Real.rpow_natCast, mul_comm 2 k, pow_mul, sq]
   rw [hterm]
-  exact tensorL2Coeff_ofCompact_summable_sq' (I := I) (M := M) h_compact
+  exact tensorL2Coeff_summable_sq (I := I) (M := M) h_compact
     (SmoothCcTensor.toL2 (oneMinusConnLapSmoothIter (I := I) g₀ 0 s k S))
 
 private theorem ccWeight_sum
@@ -421,7 +421,7 @@ theorem rawIter_even
       rw [hweight_eq]
       exact mul_le_mul_of_nonneg_right
         (pow_le_pow_left₀ hbase_nn hbase_le (2 * i)) (sq_nonneg c)
-    · exact tensorL2Coeff_ofCompact_summable_sq' (I := I) (M := M) h_compact
+    · exact tensorL2Coeff_summable_sq (I := I) (M := M) h_compact
         (SmoothCcTensor.toL2 (rawTensorConnLapIter (I := I) g₀ 0 s i S))
     · exact (ccTensorToHs (I := I) (M := M) g₀ s
         ((2 * i : ℕ) : ℝ) S).weighted_summable
@@ -558,7 +558,7 @@ private theorem mode_summable
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem icg_comp_norm
+theorem iteratedCovGrad_comp_norm
     (g₀ : SmoothRiemannianMetric I M) (s j i : ℕ) (S : SmoothCcTensor g₀ 0 s) :
     ‖iteratedCovGrad (I := I) g₀ 0 (s + j) i (iteratedCovGrad (I := I) g₀ 0 s j S)‖ =
       ‖iteratedCovGrad (I := I) g₀ 0 s (j + i) S‖ := by
@@ -761,7 +761,7 @@ private theorem jet_odd
     have hbridge : ‖iteratedCovGrad (I := I) g₀ 0 s (2 * k + 1) S‖ =
         ‖iteratedCovGrad (I := I) g₀ 0 (s + 1) (2 * k)
           (covGrad (I := I) (M := M) g₀ 0 s S)‖ := by
-      have h := icg_comp_norm (I := I) (M := M) g₀ s 1 (2 * k) S
+      have h := iteratedCovGrad_comp_norm (I := I) (M := M) g₀ s 1 (2 * k) S
       have hcov : covGrad (I := I) (M := M) g₀ 0 s S =
           iteratedCovGrad (I := I) g₀ 0 s 1 S := rfl
       have horder : ‖iteratedCovGrad (I := I) g₀ 0 s (2 * k + 1) S‖ =
@@ -968,7 +968,7 @@ theorem ccGrad_le
       ‖iteratedCovGrad (I := I) g₀ 0 (s + j) a
           (iteratedCovGrad (I := I) g₀ 0 s j S)‖ ≤ Full := by
     intro a ha
-    rw [icg_comp_norm (I := I) (M := M) g₀ s j a S, hFull_def]
+    rw [iteratedCovGrad_comp_norm (I := I) (M := M) g₀ s j a S, hFull_def]
     refine Finset.single_le_sum
       (f := fun b => ‖iteratedCovGrad (I := I) g₀ 0 s b S‖)
       (fun _ _ => norm_nonneg _) ?_

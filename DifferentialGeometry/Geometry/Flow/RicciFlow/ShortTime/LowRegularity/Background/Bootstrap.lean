@@ -1,8 +1,9 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.DirectJet
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.AllMass
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.UnifBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.LowSolveAllMass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.DirectJetRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.AllOrderMassBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.UniformSolutionBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.SolutionAllOrderMassBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRHSRepresentation
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
 
 noncomputable section
 
@@ -25,7 +26,6 @@ open DifferentialGeometry.Analysis.Spectral
   (deTurckSmoothRemainder gFibreOpBound_symmS
     maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
     smoothCcToTensorHs tensorResolventL2_isCompactOperator)
-open DifferentialGeometry.Analysis.Elliptic (rawTensorConnLapSmooth)
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -36,7 +36,7 @@ variable
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (symmS) in
-noncomputable def lowregNsecBg (g g_bg : SmoothRiemannianMetric I M)
+noncomputable def deTurckRemainderSectionBackground (g g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g S) δ) :
@@ -46,8 +46,8 @@ noncomputable def lowregNsecBg (g g_bg : SmoothRiemannianMetric I M)
     (gFibreOpBound_symmS (I := I) (M := M) g S hδ)
 
 
-structure BgSmoothPacket (g g_bg : SmoothRiemannianMetric I M)
-    (K : LowRegBoundData) (T : ℝ) where
+structure BackgroundSmoothRicciDeTurckSolution (g g_bg : SmoothRiemannianMetric I M)
+    (K : LowRegularityBoundParameters) (T : ℝ) where
   carrier : MaxRegSolutionSpace (I := I) (M := M)
     (g := g) (r := 0) (s := 2) (2 : ℝ) T
   modePath : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ
@@ -67,7 +67,7 @@ structure BgSmoothPacket (g g_bg : SmoothRiemannianMetric I M)
           (show (0 : ℝ) ≤ (2 : ℝ) by norm_num) (timeH1.toFun carrier t)) i =
       perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (modePath i) t
   state_bound : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun carrier t‖ ≤
-    lowregStateRad K.top K.slope K.outer K.realize
+    lowRegularityStateRadius K.top K.slope K.outer K.realize
   radius_pos : 0 < radius
   realize_bound : ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ S : SmoothCcTensor g 0 2,
     SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2) S =
@@ -90,16 +90,16 @@ structure BgSmoothPacket (g g_bg : SmoothRiemannianMetric I M)
       modePath i t = tensorL2Coeff (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
         (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2)
-          (lowregNsecBg (I := I) (M := M) g g_bg (F t) hδ_lt (hδ t))) i
+          (deTurckRemainderSectionBackground (I := I) (M := M) g g_bg (F t) hδ_lt (hδ t))) i
 
-theorem bg_packet_of_mass
-    (g g_bg : SmoothRiemannianMetric I M) (K : LowRegBoundData)
-    (hK : IsLowBoundsAt (I := I) (M := M) g g_bg K)
+theorem exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds
+    (g g_bg : SmoothRiemannianMetric I M) (K : LowRegularityBoundParameters)
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g g_bg K)
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (uLo : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
-    (hsol : IsLowSolveBg (I := I) (M := M)
+    (hsol : IsBackgroundLowRegularitySolution (I := I) (M := M)
       g g_bg K hK hT hT1 uLo gforce)
     (hmass : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
@@ -108,22 +108,22 @@ theorem bg_packet_of_mass
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
             (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ Cσ) :
-    Nonempty (BgSmoothPacket (I := I) (M := M) g g_bg K T) := by
-  let R := lowregStateRad K.top K.slope K.outer K.realize
+    Nonempty (BackgroundSmoothRicciDeTurckSolution (I := I) (M := M) g g_bg K T) := by
+  let R := lowRegularityStateRadius K.top K.slope K.outer K.realize
   have hR : 0 < R :=
-    lowregStateRad_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos
+    lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos
   let hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1) S‖ ≤ R →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) K.threshold :=
-    lowregRealRad (I := I) (M := M) g K.realize_pos.le hK.hreal
+    lowRegularityMetricRealization (I := I) (M := M) g K.realize_pos.le hK.hreal
   have hforce : gforce =ᵐ[timeMeasure T]
-      fun t => lowRegN (I := I) (M := M) g g_bg hR K.threshold_lt hreal
+      fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g_bg hR K.threshold_lt hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT hT1
             (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) t) := by
-    simpa only [R, hreal, lowregNfun] using hsol.force_eq
+    simpa only [R, hreal, boundedDeTurckRemainderOnLowerState] using hsol.force_eq
   obtain ⟨carrier, _fHi, modePath, radius, htrace, _hmap, _hpin,
       hsmooth, hjet, hmode, hradius, hrealize, hforceCoeff, hstate⟩ :=
     direct_jet_of_mass (I := I) (M := M) g g_bg hR K.threshold_lt hreal
@@ -144,13 +144,13 @@ theorem bg_packet_of_mass
   · intro t ht
     simpa only [R] using hstate t ht
   · intro F δ hδ_lt hδ hpin _hball
-    simpa only [lowregNsecBg] using hforceCoeff F hδ_lt hδ hpin
+    simpa only [deTurckRemainderSectionBackground] using hforceCoeff F hδ_lt hδ hpin
 
-theorem dt_of_bg_packet (g g_bg : SmoothRiemannianMetric I M)
-    (K : LowRegBoundData)
-    (hK : IsLowBoundsAt (I := I) (M := M) g g_bg K) {T : ℝ}
+theorem exists_jointly_smooth_ricciDeTurck_metric_solution_of_spectral_solution (g g_bg : SmoothRiemannianMetric I M)
+    (K : LowRegularityBoundParameters)
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g g_bg K) {T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (P : BgSmoothPacket (I := I) (M := M) g g_bg K T) :
+    (P : BackgroundSmoothRicciDeTurckSolution (I := I) (M := M) g g_bg K T) :
     ∃ g_DT : ℝ → SmoothRiemannianMetric I M,
       IsQuasilinearMetricParabolicSolution (I := I)
         (deTurckRicciRHS (I := I) g_bg) g T g_DT ∧
@@ -160,12 +160,13 @@ theorem dt_of_bg_packet (g g_bg : SmoothRiemannianMetric I M)
         (ccTensorBilinSymm (I := I) g S) δ)
       (x : M) (v w : TangentSpace I x),
     ccTensorBilinSymm (I := I) g
-        (lowregNsecBg (I := I) (M := M) g g_bg S hδ_lt hδ +
-          rawTensorConnLapSmooth (I := I) g 0 2 S) x v w =
+        (deTurckRemainderSectionBackground (I := I) (M := M) g g_bg S hδ_lt hδ +
+          _root_.DifferentialGeometry.Analysis.Elliptic.rawTensorConnLapSmooth
+            (I := I) g 0 2 S) x v w =
       deTurckRicciRHS (I := I) g_bg
         (tensorSectionRealizeMetric (I := I) g S hδ_lt hδ) x v w := by
     intro S δ hδ_lt hδ x v w
-    simpa only [lowregNsecBg] using
+    simpa only [deTurckRemainderSectionBackground] using
       deTurck_rem_repr (I := I) (M := M) g g_bg S hδ_lt hδ x v w
   have hthreshold : K.threshold ≤ 1 :=
     hK.threshold_le_third.trans (by norm_num)
@@ -182,13 +183,13 @@ theorem dt_of_bg_packet (g g_bg : SmoothRiemannianMetric I M)
       ‖timeH1.toFun P.carrier t‖ ≤ 1 / (2 * C) := by
     intro t ht
     exact (P.state_bound t ht).trans
-      ((stateRad_le_P4 (Ctop := K.top) (B1 := K.slope)
+      ((lowRegularityStateRadius_le_quarter_realization_radius (Ctop := K.top) (B1 := K.slope)
         (ρ := K.outer) (P := K.realize)).trans hcap)
   obtain ⟨F, δ, hδ_lt, hδ, hF0, _hpin, hflow, hJ⟩ :=
     maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
       (I := I) (M := M) g 2
       (deTurckRicciRHS (I := I) g_bg)
-      (lowregNsecBg (I := I) (M := M) g g_bg) hrepr hT hT1
+      (deTurckRemainderSectionBackground (I := I) (M := M) g g_bg) hrepr hT hT1
       P.carrier P.trace_zero P.modePath P.mode_smooth P.mode_mass P.mode_eq
       C hC_pos hC hstate P.radius_pos P.realize_bound P.force_coeff
   refine ⟨fun t : ℝ => tensorSectionRealizeMetric (I := I) g
@@ -207,15 +208,15 @@ theorem dt_of_bg_packet (g g_bg : SmoothRiemannianMetric I M)
     rw [heq]
     exact (hflow t ht x v w).const_add (g.inner x v w)
 
-theorem lowSolve_cross
+theorem exists_cross_scale_field_of_background_lowRegularity_solution
     (g g_bg : SmoothRiemannianMetric I M)
-    (K : LowRegBoundData)
-    (hK : IsLowBoundsAt (I := I) (M := M) g g_bg K)
+    (K : LowRegularityBoundParameters)
+    (hK : HasLowRegularityBoundsAt (I := I) (M := M) g g_bg K)
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
     (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
-    (hsol : IsLowSolveBg (I := I) (M := M) g g_bg K hK hT hT1 u gforce) :
+    (hsol : IsBackgroundLowRegularitySolution (I := I) (M := M) g g_bg K hK hT hT1 u gforce) :
     ∃ v : CrossScaleField (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) T,
       v.lo = u ∧
         v.hiL2 = maxRegDuhamelSolField (I := I) (M := M)
@@ -225,7 +226,7 @@ theorem lowSolve_cross
               (show ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1 by linarith)
               (v.repr t) = u.toFun t) ∧
         ∀ t ∈ Set.Icc (0 : ℝ) T, ‖v.repr t‖ ≤
-          lowregStateRad K.top K.slope K.outer K.realize := by
+          lowRegularityStateRadius K.top K.slope K.outer K.realize := by
   let v := duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
     hT hT1 0 gforce
   have hvlo : v.lo = u := by
@@ -237,33 +238,33 @@ theorem lowSolve_cross
           (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
           (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ)
             hT hT1 0 gforce t)‖ ≤
-        lowregStateRad K.top K.slope K.outer K.realize := by
+        lowRegularityStateRadius K.top K.slope K.outer K.realize := by
     filter_upwards [hsol.field_mem] with t ht
     simpa only [lowerState, lowerBall] using ht
   refine ⟨v, hvlo, rfl, ?_, ?_⟩
   · intro t ht
     rw [crossRepr_toFun (I := I) (M := M) v hT ht, hvlo]
   · exact crossRepr_ball (I := I) (M := M) v hT
-      (lowregStateRad_pos K.top_nonneg K.slope_nonneg K.outer_pos
+      (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos
         K.realize_pos).le hfield
 
-theorem bg_packet_of_adapt (hDim : Module.finrank ℝ E = 3)
-    (g g_bg : SmoothRiemannianMetric I M) (K : LowRegBoundData)
+theorem exists_background_smooth_ricciDeTurck_solution_of_adapted_solution
+    (g g_bg : SmoothRiemannianMetric I M) (K : LowRegularityBoundParameters)
     {T Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
     (uLo : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
-    (hlo : IsAdaptedLowSolveBg (I := I) (M := M) g g_bg K hT hT1
+    (hlo : IsAdaptedBackgroundLowRegularitySolution (I := I) (M := M) g g_bg K hT hT1
       uLo gforce Rcap Ctop₂ Kr2 Kr1 Kcap) :
-    Nonempty (BgSmoothPacket (I := I) (M := M) g g_bg K T) := by
-  have hsolve := hlo.toIsBgSolveAt
-  exact bg_packet_of_mass (I := I) (M := M) g g_bg K hsolve.bounds
+    Nonempty (BackgroundSmoothRicciDeTurckSolution (I := I) (M := M) g g_bg K T) := by
+  have hsolve := hlo.toIsBackgroundLowRegularitySolutionAt
+  exact exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds (I := I) (M := M) g g_bg K hsolve.bounds
     hT hT1 uLo gforce hsolve.solve
-      (fun σ => lowreg_loMassBg (I := I) (M := M) hDim g g_bg K
-        hT hT1 uLo gforce hlo σ)
+      (per_mode_limit_weighted_energy_bound_all_orders_background (I := I) (M := M)
+        g g_bg K hT hT1 uLo gforce hlo)
 
-theorem lowreg_dt_unif (hDim : Module.finrank ℝ E = 3)
+theorem exists_uniform_jointly_smooth_ricciDeTurck_metric_solution (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ) :
     ∃ T : ℝ, 0 < T ∧
       ∀ (g : SmoothRiemannianMetric I M),
@@ -275,13 +276,13 @@ theorem lowreg_dt_unif (hDim : Module.finrank ℝ E = 3)
             (deTurckRicciRHS (I := I) gBase) g T g_DT ∧
       JointChartGramSmooth (I := I) T g_DT := by
   obtain ⟨K, _hKunif, T, hT, hT1, hsolve⟩ :=
-    lowreg_solve_all_mass_unif (I := I) (M := M) hDim gBase hΛ
+    exists_uniform_background_lowRegularity_solution_with_all_order_weighted_energy_bounds (I := I) (M := M) hDim gBase hΛ
   refine ⟨T, hT, ?_⟩
   intro g hEq hjet
   obtain ⟨u, gforce, hsolveAt, hmass⟩ := hsolve g hEq hjet
-  obtain ⟨P⟩ := bg_packet_of_mass (I := I) (M := M) g gBase K
+  obtain ⟨P⟩ := exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds (I := I) (M := M) g gBase K
     hsolveAt.bounds hT hT1 u gforce hsolveAt.solve hmass
-  exact dt_of_bg_packet (I := I) (M := M) g gBase K
+  exact exists_jointly_smooth_ricciDeTurck_metric_solution_of_spectral_solution (I := I) (M := M) g gBase K
     hsolveAt.bounds hT hT1 P
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

@@ -42,7 +42,7 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private theorem mixed_continuous_rfns
+private theorem mixed_continuous_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Integral.L2.SmoothCcTensor g r s) :
     Continuous (fun x => riemannianFiberNormSq (I := I) (M := M) g r s x (S.toSection x)) := by
@@ -149,7 +149,7 @@ private theorem mixed_young_arm_split
         mul_le_mul_of_nonneg_left hyoung (by positivity)
 
 open DifferentialGeometry.Analysis.Sobolev.Tensor in
-private theorem appCc_integrated_grid_twoArm_mixed
+private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
     (g : SmoothRiemannianMetric I M) (r s₁ s₂ k : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : Integral.L2.SmoothCcTensor g r s₁) (T : Integral.L2.SmoothCcTensor g 0 s₂)
@@ -252,9 +252,9 @@ private theorem appCc_integrated_grid_twoArm_mixed
         exact tensorL2Norm_sq_eq_integral_riemannianFiberNormSq (I := I) (M := M) g 0 (s₂ + b) _),
       ← Integral.L2.SmoothCcTensor.norm_def (iteratedCovGrad (I := I) g 0 s₂ b T)]
   have hSj_cont : ∀ a, Continuous (Sj a) := fun a => by
-    rw [hSj]; exact mixed_continuous_rfns g r (s₁ + a) _
+    rw [hSj]; exact mixed_continuous_riemannianFiberNormSq g r (s₁ + a) _
   have hTj_cont : ∀ b, Continuous (Tj b) := fun b => by
-    rw [hTj]; exact mixed_continuous_rfns g 0 (s₂ + b) _
+    rw [hTj]; exact mixed_continuous_riemannianFiberNormSq g 0 (s₂ + b) _
   have hSj_nn : ∀ a x, 0 ≤ Sj a x := fun a x => by
     rw [hSj]; exact riemannianFiberNormSq_nonneg (I := I) (M := M) g r (s₁ + a) x _
   have hTj_nn : ∀ b x, 0 ≤ Tj b x := fun b x => by
@@ -545,9 +545,9 @@ theorem ccTensorContract_topOrder_l2_twoArm_mixed_le
   haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Cgrid, hCgrid_nn, hCgrid⟩ :=
-    appCc_integrated_grid_twoArm_mixed (I := I) g₀ b₀ s₀ b₀ q
+    operatorFieldApplication_integrated_grid_twoArm_mixed (I := I) g₀ b₀ s₀ b₀ q
   set Gk : ℝ := diagonalGridGrowthFactor (E := E) q with hGk
-  have hGk_nn : 0 ≤ Gk := appCcGdiag_nonneg (E := E) q
+  have hGk_nn : 0 ≤ Gk := operatorFieldApplicationGdiag_nonneg (E := E) q
   refine ⟨Gk * Cgrid, by positivity, ?_⟩
   intro Φ W ΛΦ ΛW hΛΦ hΛW hΦsup hWsup
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
@@ -577,8 +577,8 @@ theorem ccTensorContract_topOrder_l2_twoArm_mixed_le
       x
   have hgrid_cont : Continuous grid := by
     rw [hgrid]
-    refine continuous_finset_sum _ (fun i _ => (mixed_continuous_rfns g₀ b₀ (s₀ + i) _).mul ?_)
-    exact continuous_finset_sum _ (fun l _ => mixed_continuous_rfns g₀ 0 (b₀ + l) _)
+    refine continuous_finset_sum _ (fun i _ => (mixed_continuous_riemannianFiberNormSq g₀ b₀ (s₀ + i) _).mul ?_)
+    exact continuous_finset_sum _ (fun l _ => mixed_continuous_riemannianFiberNormSq g₀ 0 (b₀ + l) _)
   have hgrid_int : Integrable grid μ := by
     rw [hμ]; exact hgrid_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hmono : ∫ x, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s₀ + q) x

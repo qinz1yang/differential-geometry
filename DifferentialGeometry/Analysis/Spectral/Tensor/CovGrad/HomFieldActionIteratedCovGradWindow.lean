@@ -236,15 +236,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_comp (g : SmoothRiemannianMetric I
     (by omega : (s + j) + i = s + (j + i))
     (iteratedCovGrad_comp_heq (I := I) (M := M) g r s j S i) x
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem rfns_iteratedCovGrad_comp (g : SmoothRiemannianMetric I M) (r s j i : ℕ)
-    (S : SmoothCcTensor g r s) (x : M) :
-    riemannianFiberNormSq (I := I) (M := M) g r ((s + j) + i) x
-        ((iteratedCovGrad g r (s + j) i (iteratedCovGrad g r s j S)).toSection x) =
-      riemannianFiberNormSq (I := I) (M := M) g r (s + (j + i)) x
-        ((iteratedCovGrad g r s (j + i) S).toSection x) :=
-  riemannianFiberNormSq_iteratedCovGrad_comp (I := I) (M := M) g r s j i S x
-
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem riemannianFiberNormSq_iteratedCovGrad_order_congr (g : SmoothRiemannianMetric I M)

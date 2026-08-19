@@ -16,7 +16,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-section Formula510
+section FirstVariationFormula
 
 variable {Idx : Type*} [Fintype Idx]
 
@@ -167,9 +167,9 @@ theorem inverseMetricVariationContractionTerm_eq_neg
       fun x => -metricVariationRicciHessContractInFrame metricVariation
         ricciHessian x := rfl
 
-end Formula510
+end FirstVariationFormula
 
-def fFunctionalFormula510Integrand
+def fFunctionalFirstVariationIntegrand
     (scalarCurvature lapPotential gradPotentialNormSq
       potentialVariation metricVariationTrace metricVariationRicciHess :
       M -> Real) :
@@ -179,18 +179,18 @@ def fFunctionalFormula510Integrand
       (metricVariationTrace x / 2 - potentialVariation x) *
         (2 * lapPotential x - gradPotentialNormSq x + scalarCurvature x)
 
-def FFunctionalFormula510 [MeasurableSpace M] (weightedMeasure : Measure M)
+def FFunctionalFirstVariationFormula [MeasurableSpace M] (weightedMeasure : Measure M)
     (firstVariation : Real)
     (scalarCurvature lapPotential gradPotentialNormSq potentialVariation
       metricVariationTrace metricVariationRicciHess : M -> Real) : Prop :=
   firstVariation =
     ∫ x,
-      fFunctionalFormula510Integrand scalarCurvature lapPotential
+      fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
         gradPotentialNormSq potentialVariation metricVariationTrace
         metricVariationRicciHess x
       ∂weightedMeasure
 
-def fFunctionalPre510Integrand
+def fFunctionalPreIntegrationByPartsIntegrand
     (scalarCurvature lapPotential _gradPotentialNormSq
       potentialVariation metricVariationTrace metricVariationRicciHess
       weightedDivergenceTrace shiftedTrace : M -> Real) :
@@ -202,7 +202,7 @@ def fFunctionalPre510Integrand
           expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x
 
-def fFunctional510Remainder
+def fFunctionalIntegrationByPartsRemainder
     (lapPotential gradPotentialNormSq potentialVariation metricVariationTrace
       weightedDivergenceTrace shiftedTrace : M -> Real) :
     M -> Real :=
@@ -213,26 +213,26 @@ def fFunctional510Remainder
           metricVariationTrace x *
           (lapPotential x - gradPotentialNormSq x))
 
-theorem pre510_eq_final_add_rem
+theorem fFunctionalPreIntegrationByPartsIntegrand_eq_firstVariationIntegrand_add_remainder
     (scalarCurvature lapPotential gradPotentialNormSq
       potentialVariation metricVariationTrace metricVariationRicciHess
       weightedDivergenceTrace shiftedTrace : M -> Real) :
-    fFunctionalPre510Integrand scalarCurvature lapPotential
+    fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
         gradPotentialNormSq potentialVariation metricVariationTrace
         metricVariationRicciHess weightedDivergenceTrace shiftedTrace =
       fun x : M =>
-        fFunctionalFormula510Integrand scalarCurvature lapPotential
+        fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess x +
-        fFunctional510Remainder lapPotential gradPotentialNormSq
+        fFunctionalIntegrationByPartsRemainder lapPotential gradPotentialNormSq
           potentialVariation metricVariationTrace weightedDivergenceTrace
           shiftedTrace x := by
   funext x
-  unfold fFunctionalPre510Integrand fFunctionalFormula510Integrand
-    fFunctional510Remainder expWeightedMeasureVariationFactor
+  unfold fFunctionalPreIntegrationByPartsIntegrand fFunctionalFirstVariationIntegrand
+    fFunctionalIntegrationByPartsRemainder expWeightedMeasureVariationFactor
   ring
 
-theorem expWeightedIntegralVariation_eq_pre510
+theorem expWeightedIntegralVariationIntegrand_eq_preIntegrationByParts
     {scalarCurvature lapPotential gradPotentialNormSq potential
       potentialVariation metricVariationTrace metricVariationRicciHess
       weightedDivergenceTrace shiftedTrace scalarCurvatureVariation
@@ -253,17 +253,17 @@ theorem expWeightedIntegralVariation_eq_pre510
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x =
       expNegPotentialDensity potential x *
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x := by
   intro x
-  unfold expWeightedIntegralVariationIntegrand fFunctionalPre510Integrand
+  unfold expWeightedIntegralVariationIntegrand fFunctionalPreIntegrationByPartsIntegrand
     fFunctionalBracket
   rw [hvariation x]
   unfold expWeightedMeasureVariationFactor
   ring
 
-theorem expWeightedClosedVariation_eq_pre510
+theorem expWeightedClosedVariationIntegrand_eq_preIntegrationByParts
     {scalarCurvature lapPotential gradPotentialNormSq potential
       potentialVariation metricVariationTrace metricVariationRicciHess
       weightedDivergenceTrace shiftedTrace closedBracketVariation :
@@ -279,15 +279,15 @@ theorem expWeightedClosedVariation_eq_pre510
           (fFunctionalClosedBracket scalarCurvature lapPotential)
           closedBracketVariation x =
       expNegPotentialDensity potential x *
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x := by
   intro x
-  unfold expWeightedIntegralVariationIntegrand fFunctionalPre510Integrand
+  unfold expWeightedIntegralVariationIntegrand fFunctionalPreIntegrationByPartsIntegrand
     fFunctionalClosedBracket
   rw [hvariation x]
 
-theorem rem510_integral_zero [MeasurableSpace M]
+theorem fFunctionalIntegrationByPartsRemainder_integral_eq_zero [MeasurableSpace M]
     {weightedMeasure : Measure M}
     {lapPotential gradPotentialNormSq potentialVariation metricVariationTrace
       weightedDivergenceTrace shiftedTrace : M -> Real}
@@ -310,7 +310,7 @@ theorem rem510_integral_zero [MeasurableSpace M]
             (lapPotential x - gradPotentialNormSq x)
           ∂weightedMeasure) :
     ∫ x,
-      fFunctional510Remainder lapPotential gradPotentialNormSq
+      fFunctionalIntegrationByPartsRemainder lapPotential gradPotentialNormSq
         potentialVariation metricVariationTrace weightedDivergenceTrace
         shiftedTrace x
       ∂weightedMeasure = 0 := by
@@ -324,7 +324,7 @@ theorem rem510_integral_zero [MeasurableSpace M]
       ∫ x, shiftedTrace x ∂weightedMeasure =
         ∫ x, corr x ∂weightedMeasure := by
     simpa [corr] using hshift
-  unfold fFunctional510Remainder
+  unfold fFunctionalIntegrationByPartsRemainder
   change
     ∫ x, weightedDivergenceTrace x + (shiftedTrace - corr) x
       ∂weightedMeasure = 0
@@ -336,7 +336,7 @@ theorem rem510_integral_zero [MeasurableSpace M]
   rw [hdiv_zero, hshift']
   ring
 
-theorem formula510_of_rem_zero [MeasurableSpace M]
+theorem fFunctionalFirstVariationFormula_of_remainder_integral_eq_zero [MeasurableSpace M]
     {weightedMeasure : Measure M}
     {firstVariation : Real}
     {scalarCurvature lapPotential gradPotentialNormSq potentialVariation
@@ -345,72 +345,72 @@ theorem formula510_of_rem_zero [MeasurableSpace M]
     (hfirst :
       firstVariation =
         ∫ x,
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
           ∂weightedMeasure)
     (hfinal_int :
       Integrable
-        (fFunctionalFormula510Integrand scalarCurvature lapPotential
+        (fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess)
         weightedMeasure)
     (hrem_int :
       Integrable
-        (fFunctional510Remainder lapPotential gradPotentialNormSq
+        (fFunctionalIntegrationByPartsRemainder lapPotential gradPotentialNormSq
           potentialVariation metricVariationTrace weightedDivergenceTrace
           shiftedTrace)
         weightedMeasure)
     (hrem_zero :
       ∫ x,
-        fFunctional510Remainder lapPotential gradPotentialNormSq
+        fFunctionalIntegrationByPartsRemainder lapPotential gradPotentialNormSq
           potentialVariation metricVariationTrace weightedDivergenceTrace
           shiftedTrace x
         ∂weightedMeasure = 0) :
-    FFunctionalFormula510 weightedMeasure firstVariation scalarCurvature
+    FFunctionalFirstVariationFormula weightedMeasure firstVariation scalarCurvature
       lapPotential gradPotentialNormSq potentialVariation metricVariationTrace
       metricVariationRicciHess := by
-  unfold FFunctionalFormula510
+  unfold FFunctionalFirstVariationFormula
   rw [hfirst]
   calc
     ∫ x,
-        fFunctionalPre510Integrand scalarCurvature lapPotential
+        fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
         ∂weightedMeasure =
       ∫ x,
-        (fFunctionalFormula510Integrand scalarCurvature lapPotential
+        (fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess x +
-          fFunctional510Remainder lapPotential gradPotentialNormSq
+          fFunctionalIntegrationByPartsRemainder lapPotential gradPotentialNormSq
             potentialVariation metricVariationTrace weightedDivergenceTrace
             shiftedTrace x)
         ∂weightedMeasure := by
       apply integral_congr_ae
       refine Filter.Eventually.of_forall ?_
       intro x
-      rw [pre510_eq_final_add_rem]
+      rw [fFunctionalPreIntegrationByPartsIntegrand_eq_firstVariationIntegrand_add_remainder]
     _ =
       ∫ x,
-        fFunctionalFormula510Integrand scalarCurvature lapPotential
+        fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess x
         ∂weightedMeasure +
       ∫ x,
-        fFunctional510Remainder lapPotential gradPotentialNormSq
+        fFunctionalIntegrationByPartsRemainder lapPotential gradPotentialNormSq
           potentialVariation metricVariationTrace weightedDivergenceTrace
           shiftedTrace x
         ∂weightedMeasure := by
       rw [integral_add hfinal_int hrem_int]
     _ =
       ∫ x,
-        fFunctionalFormula510Integrand scalarCurvature lapPotential
+        fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess x
         ∂weightedMeasure := by
       rw [hrem_zero, add_zero]
 
-theorem formula510_of_ints [MeasurableSpace M]
+theorem fFunctionalFirstVariationFormula_of_integration_by_parts [MeasurableSpace M]
     {weightedMeasure : Measure M}
     {firstVariation : Real}
     {scalarCurvature lapPotential gradPotentialNormSq potentialVariation
@@ -419,13 +419,13 @@ theorem formula510_of_ints [MeasurableSpace M]
     (hfirst :
       firstVariation =
         ∫ x,
-          fFunctionalPre510Integrand scalarCurvature lapPotential
+          fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
           ∂weightedMeasure)
     (hfinal_int :
       Integrable
-        (fFunctionalFormula510Integrand scalarCurvature lapPotential
+        (fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess)
         weightedMeasure)
@@ -447,16 +447,16 @@ theorem formula510_of_ints [MeasurableSpace M]
             metricVariationTrace x *
             (lapPotential x - gradPotentialNormSq x)
           ∂weightedMeasure) :
-    FFunctionalFormula510 weightedMeasure firstVariation scalarCurvature
+    FFunctionalFirstVariationFormula weightedMeasure firstVariation scalarCurvature
       lapPotential gradPotentialNormSq potentialVariation metricVariationTrace
       metricVariationRicciHess := by
-  apply formula510_of_rem_zero
+  apply fFunctionalFirstVariationFormula_of_remainder_integral_eq_zero
     (weightedDivergenceTrace := weightedDivergenceTrace)
     (shiftedTrace := shiftedTrace)
     hfirst hfinal_int
-  · unfold fFunctional510Remainder
+  · unfold fFunctionalIntegrationByPartsRemainder
     exact hdiv_int.add (hshift_int.sub hcorr_int)
-  · exact rem510_integral_zero hdiv_int hshift_int hcorr_int
+  · exact fFunctionalIntegrationByPartsRemainder_integral_eq_zero hdiv_int hshift_int hcorr_int
       hdiv_zero hshift
 
 end

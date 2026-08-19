@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.TimeDependent
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LowRegBaseForce
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.TimeDependentLowOrderOperators
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.ZeroStateForcing
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.TameForcingFixedPoint
 
 noncomputable section
@@ -36,11 +36,11 @@ private abbrev metricH1 (g : SmoothRiemannianMetric I M) :=
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
   tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
-private abbrev metricH3 (g : SmoothRiemannianMetric I M) :=
+private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
   tensorHs (I := I) (M := M) g 0 2 (3 : ℝ)
 
 private noncomputable abbrev incl32 (g : SmoothRiemannianMetric I M) :
-    metricH3 (I := I) (M := M) g →L[ℝ]
+    metricThirdOrderSobolev (I := I) (M := M) g →L[ℝ]
       metricH2 (I := I) (M := M) g :=
   tensorHsInclusion (I := I) (M := M) (g := g)
     (r := 0) (s := 2) (by norm_num)
@@ -62,87 +62,87 @@ private theorem clm_apply_sub_le
   exact (norm_add_le _ _).trans
     (add_le_add ((A - B).le_opNorm x) (B.le_opNorm (x - y)))
 
-noncomputable def lowBaseForce (g : SmoothRiemannianMetric I M) :
+noncomputable def lowerScaleForce (g : SmoothRiemannianMetric I M) :
     metricH1 (I := I) (M := M) g :=
   incl21 (I := I) (M := M) g
-    (baseForceH2 (I := I) (M := M) g g)
+    (zeroStateDeTurckRemainderH2 (I := I) (M := M) g g)
 
-theorem lowBaseForce_core (g : SmoothRiemannianMetric I M) :
-    lowBaseForce (I := I) (M := M) g =
+theorem lowerScaleForce_core (g : SmoothRiemannianMetric I M) :
+    lowerScaleForce (I := I) (M := M) g =
       ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
         (deTurckSmoothRemainder (I := I) g g
           (0 : SmoothCcTensor g 0 2) (by norm_num)
           (gFibreOpBound_ccTensorBilinSymm_zero (I := I) (M := M) g)) := by
   apply tensorHs.ext
   funext i
-  simp only [lowBaseForce, incl21, baseForceH2,
+  simp only [lowerScaleForce, incl21, zeroStateDeTurckRemainderH2,
     tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
 
-noncomputable def lowBaseN
+noncomputable def lowerScaleN
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (u : metricH3 (I := I) (M := M) g) :
+    (u : metricThirdOrderSobolev (I := I) (M := M) g) :
     metricH1 (I := I) (M := M) g :=
-  lowBaseForce (I := I) (M := M) g +
-    lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+  lowerScaleForce (I := I) (M := M) g +
+    lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
       (incl32 (I := I) (M := M) g u)
       (lowRadialH3 (I := I) (M := M) g ρ u) +
-    lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal u
+    lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal u
       (lowRadialHs (I := I) (M := M) g ρ
         (incl32 (I := I) (M := M) g u))
 
-noncomputable def lowBaseA
+noncomputable def lowerScaleA
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (u : metricH3 (I := I) (M := M) g) :
-    metricH3 (I := I) (M := M) g →L[ℝ]
+    (u : metricThirdOrderSobolev (I := I) (M := M) g) :
+    metricThirdOrderSobolev (I := I) (M := M) g →L[ℝ]
       metricH1 (I := I) (M := M) g :=
-  (lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+  (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
       (incl32 (I := I) (M := M) g u)).comp
       (radialCLM (I := I) (M := M) g (by norm_num) ρ
         (incl32 (I := I) (M := M) g u)) +
-    (lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal u).comp
+    (lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal u).comp
       ((radialCLM (I := I) (M := M) g (by norm_num) ρ
         (incl32 (I := I) (M := M) g u)).comp
           (incl32 (I := I) (M := M) g))
 
-theorem lowBaseN_frozen
+theorem lowerScaleN_frozen
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 < ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (u : metricH3 (I := I) (M := M) g) :
-    lowBaseN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u =
-      lowBaseForce (I := I) (M := M) g +
-        lowBaseA (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u u := by
-  simp only [lowBaseN, lowBaseA, ContinuousLinearMap.add_apply,
+    (u : metricThirdOrderSobolev (I := I) (M := M) g) :
+    lowerScaleN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u =
+      lowerScaleForce (I := I) (M := M) g +
+        lowerScaleA (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u u := by
+  simp only [lowerScaleN, lowerScaleA, ContinuousLinearMap.add_apply,
     ContinuousLinearMap.comp_apply]
   rw [radialCLM_h3 (I := I) (M := M) g hρ,
     radialCLM_h2 (I := I) (M := M) g hρ.le]
   module
 
-theorem lowBaseA_le
+theorem lowerScaleA_le
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (u : metricH3 (I := I) (M := M) g) :
-    ‖lowBaseA (I := I) (M := M) g hρ hδ0 hδ_le hreal u‖ ≤
-      ‖lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    (u : metricThirdOrderSobolev (I := I) (M := M) g) :
+    ‖lowerScaleA (I := I) (M := M) g hρ hδ0 hδ_le hreal u‖ ≤
+      ‖lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (incl32 (I := I) (M := M) g u)‖ +
-      ‖lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal u‖ := by
+      ‖lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal u‖ := by
   let R3 :=
     radialCLM (I := I) (M := M) g (show (0 : ℝ) ≤ 3 by norm_num) ρ
       (incl32 (I := I) (M := M) g u)
@@ -150,9 +150,9 @@ theorem lowBaseA_le
     radialCLM (I := I) (M := M) g (show (0 : ℝ) ≤ 2 by norm_num) ρ
       (incl32 (I := I) (M := M) g u)
   let J := incl32 (I := I) (M := M) g
-  let A2 := lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+  let A2 := lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
     (incl32 (I := I) (M := M) g u)
-  let A1 := lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal u
+  let A1 := lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal u
   have hR3 : ‖R3‖ ≤ 1 :=
     radialCLM_norm (I := I) (M := M) g (by norm_num) hρ _
   have hR2 : ‖R2‖ ≤ 1 :=
@@ -182,7 +182,7 @@ theorem lowBaseA_le
         (mul_le_mul_of_nonneg_left hR2J (norm_nonneg A1))
     _ = ‖A2‖ + ‖A1‖ := by ring
 
-theorem lowBaseA_aemeas
+theorem lowerScaleA_aemeas
     {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
@@ -190,16 +190,16 @@ theorem lowBaseA_aemeas
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    {u : Ω → metricH3 (I := I) (M := M) g}
+    {u : Ω → metricThirdOrderSobolev (I := I) (M := M) g}
     (hu : AEStronglyMeasurable u μ)
     (hA2 : AEStronglyMeasurable
-      (fun x => lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+      (fun x => lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (incl32 (I := I) (M := M) g (u x))) μ)
     (hA1 : AEStronglyMeasurable
-      (fun x => lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+      (fun x => lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
         (u x)) μ) :
     AEStronglyMeasurable
-      (fun x => lowBaseA (I := I) (M := M)
+      (fun x => lowerScaleA (I := I) (M := M)
         g hρ hδ0 hδ_le hreal (u x)) μ := by
   have hv :
       AEStronglyMeasurable
@@ -229,134 +229,134 @@ theorem lowBaseA_aemeas
               (incl32 (I := I) (M := M) g (u x))).comp
             (incl32 (I := I) (M := M) g)) μ :=
     (ContinuousLinearMap.compL ℝ
-      (metricH3 (I := I) (M := M) g)
+      (metricThirdOrderSobolev (I := I) (M := M) g)
       (metricH2 (I := I) (M := M) g)
       (metricH2 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hR2 hJ
   have h2 :
       AEStronglyMeasurable
         (fun x =>
-          (lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+          (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
             (incl32 (I := I) (M := M) g (u x))).comp
             (radialCLM (I := I) (M := M) g
               (show (0 : ℝ) ≤ 3 by norm_num) ρ
                 (incl32 (I := I) (M := M) g (u x)))) μ :=
     (ContinuousLinearMap.compL ℝ
-      (metricH3 (I := I) (M := M) g)
-      (metricH3 (I := I) (M := M) g)
+      (metricThirdOrderSobolev (I := I) (M := M) g)
+      (metricThirdOrderSobolev (I := I) (M := M) g)
       (metricH1 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hA2 hR3
   have h1 :
       AEStronglyMeasurable
         (fun x =>
-          (lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+          (lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
             (u x)).comp
             ((radialCLM (I := I) (M := M) g
               (show (0 : ℝ) ≤ 2 by norm_num) ρ
                 (incl32 (I := I) (M := M) g (u x))).comp
                   (incl32 (I := I) (M := M) g))) μ :=
     (ContinuousLinearMap.compL ℝ
-      (metricH3 (I := I) (M := M) g)
+      (metricThirdOrderSobolev (I := I) (M := M) g)
       (metricH2 (I := I) (M := M) g)
       (metricH1 (I := I) (M := M) g)).continuous₂
         |>.comp_aestronglyMeasurable₂ hA1 hR2J
-  simpa only [lowBaseA] using h2.add h1
+  simpa only [lowerScaleA] using h2.add h1
 
-private theorem lowBaseN_sub_eq
+private theorem lowerScaleN_sub_eq
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (u v : metricH3 (I := I) (M := M) g) :
-    let A2 := lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
-    let A1 := lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    (u v : metricThirdOrderSobolev (I := I) (M := M) g) :
+    let A2 := lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    let A1 := lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
     let Ru := lowRadialH3 (I := I) (M := M) g ρ u
     let Rv := lowRadialH3 (I := I) (M := M) g ρ v
     let Su := lowRadialHs (I := I) (M := M) g ρ
       (incl32 (I := I) (M := M) g u)
     let Sv := lowRadialHs (I := I) (M := M) g ρ
       (incl32 (I := I) (M := M) g v)
-    lowBaseN (I := I) (M := M) g hρ hδ0 hδ_le hreal u -
-        lowBaseN (I := I) (M := M) g hρ hδ0 hδ_le hreal v =
+    lowerScaleN (I := I) (M := M) g hρ hδ0 hδ_le hreal u -
+        lowerScaleN (I := I) (M := M) g hρ hδ0 hδ_le hreal v =
       (A2 (incl32 (I := I) (M := M) g u) -
           A2 (incl32 (I := I) (M := M) g v)) Ru +
         A2 (incl32 (I := I) (M := M) g v) (Ru - Rv) +
         (A1 u - A1 v) Su + A1 v (Su - Sv) := by
   dsimp only
-  simp only [lowBaseN, ContinuousLinearMap.sub_apply, map_sub]
+  simp only [lowerScaleN, ContinuousLinearMap.sub_apply, map_sub]
   module
 
-private theorem lowBaseN_sub_le
+private theorem lowerScaleN_sub_le
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (u v : metricH3 (I := I) (M := M) g) :
-    let A2 := lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
-    let A1 := lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    (u v : metricThirdOrderSobolev (I := I) (M := M) g) :
+    let A2 := lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    let A1 := lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
     let Ru := lowRadialH3 (I := I) (M := M) g ρ u
     let Rv := lowRadialH3 (I := I) (M := M) g ρ v
     let Su := lowRadialHs (I := I) (M := M) g ρ
       (incl32 (I := I) (M := M) g u)
     let Sv := lowRadialHs (I := I) (M := M) g ρ
       (incl32 (I := I) (M := M) g v)
-    ‖lowBaseN (I := I) (M := M) g hρ hδ0 hδ_le hreal u -
-        lowBaseN (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤
+    ‖lowerScaleN (I := I) (M := M) g hρ hδ0 hδ_le hreal u -
+        lowerScaleN (I := I) (M := M) g hρ hδ0 hδ_le hreal v‖ ≤
       (‖A2 (incl32 (I := I) (M := M) g u) -
           A2 (incl32 (I := I) (M := M) g v)‖ * ‖Ru‖ +
         ‖A2 (incl32 (I := I) (M := M) g v)‖ * ‖Ru - Rv‖) +
       (‖A1 u - A1 v‖ * ‖Su‖ + ‖A1 v‖ * ‖Su - Sv‖) := by
   dsimp only
   rw [show
-    lowBaseN (I := I) (M := M) g hρ hδ0 hδ_le hreal u -
-        lowBaseN (I := I) (M := M) g hρ hδ0 hδ_le hreal v =
-      (lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    lowerScaleN (I := I) (M := M) g hρ hδ0 hδ_le hreal u -
+        lowerScaleN (I := I) (M := M) g hρ hδ0 hδ_le hreal v =
+      (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
           (incl32 (I := I) (M := M) g u)
             (lowRadialH3 (I := I) (M := M) g ρ u) -
-        lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+        lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
           (incl32 (I := I) (M := M) g v)
             (lowRadialH3 (I := I) (M := M) g ρ v)) +
-      (lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal u
+      (lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal u
           (lowRadialHs (I := I) (M := M) g ρ
             (incl32 (I := I) (M := M) g u)) -
-        lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal v
+        lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v
           (lowRadialHs (I := I) (M := M) g ρ
             (incl32 (I := I) (M := M) g v))) by
-      simp only [lowBaseN]
+      simp only [lowerScaleN]
       module]
   exact (norm_add_le _ _).trans
     (add_le_add
       (clm_apply_sub_le
-        (lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+        (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
           (incl32 (I := I) (M := M) g u))
-        (lowA2Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal
+        (lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
           (incl32 (I := I) (M := M) g v))
         (lowRadialH3 (I := I) (M := M) g ρ u)
         (lowRadialH3 (I := I) (M := M) g ρ v))
       (clm_apply_sub_le
-        (lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal u)
-        (lowA1Lo (I := I) (M := M) g hρ hδ0 hδ_le hreal v)
+        (lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal u)
+        (lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal v)
         (lowRadialHs (I := I) (M := M) g ρ
           (incl32 (I := I) (M := M) g u))
         (lowRadialHs (I := I) (M := M) g ρ
           (incl32 (I := I) (M := M) g v))))
 
-private theorem lowBaseN_radial_le
+private theorem lowerScaleN_radial_le
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 < ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ)
-    (u v : metricH3 (I := I) (M := M) g) :
-    let A2 := lowA2Lo (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
-    let A1 := lowA1Lo (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
-    ‖lowBaseN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u -
-        lowBaseN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal v‖ ≤
+    (u v : metricThirdOrderSobolev (I := I) (M := M) g) :
+    let A2 := lowerScaleSecondOrderActionThirdToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
+    let A1 := lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ.le hδ0 hδ_le hreal
+    ‖lowerScaleN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal u -
+        lowerScaleN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal v‖ ≤
       (‖A2 (incl32 (I := I) (M := M) g u) -
           A2 (incl32 (I := I) (M := M) g v)‖ * ‖u‖ +
         ‖A2 (incl32 (I := I) (M := M) g v)‖ *
@@ -367,7 +367,7 @@ private theorem lowBaseN_radial_le
         ‖A1 v‖ * ‖incl32 (I := I) (M := M) g u -
           incl32 (I := I) (M := M) g v‖) := by
   dsimp only
-  have htel := lowBaseN_sub_le (I := I) (M := M)
+  have htel := lowerScaleN_sub_le (I := I) (M := M)
     g hρ.le hδ0 hδ_le hreal u v
   dsimp only at htel
   have hRu := lowRadialH3_le (I := I) (M := M) g hρ u
@@ -382,7 +382,7 @@ private theorem lowBaseN_radial_le
   refine htel.trans ?_
   gcongr
 
-noncomputable def lowBaseNBall
+noncomputable def lowerScaleNBall
     (g : SmoothRiemannianMetric I M)
     {ρ δ R : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -392,22 +392,22 @@ noncomputable def lowBaseNBall
   lowerState (I := I) (M := M) g 1 R →
       metricH1 (I := I) (M := M) g :=
   fun u =>
-    lowBaseN (I := I) (M := M) g hρ hδ0 hδ_le hreal
+    lowerScaleN (I := I) (M := M) g hρ hδ0 hδ_le hreal
       (by
         have hu := u.1
         norm_num at hu ⊢
         exact hu)
 
-@[simp] theorem lowBaseN_zero
+@[simp] theorem lowerScaleN_zero
     (g : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} (hρ : 0 < ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) δ) :
-    lowBaseN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal 0 =
-      lowBaseForce (I := I) (M := M) g := by
-  simp only [lowBaseN, map_zero, lowRadialH3_zero (I := I) (M := M) g hρ,
+    lowerScaleN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal 0 =
+      lowerScaleForce (I := I) (M := M) g := by
+  simp only [lowerScaleN, map_zero, lowRadialH3_zero (I := I) (M := M) g hρ,
     lowRadialHs_zero (I := I) (M := M) g hρ.le, add_zero]
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

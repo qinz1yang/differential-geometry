@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Formula510
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.GeometricFirstVariation
 
 set_option autoImplicit false
 
@@ -14,7 +14,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-theorem formula510_of_steps [MeasurableSpace M]
+theorem fFunctionalFirstVariationFormula_of_pointwise_identity [MeasurableSpace M]
     {weightedMeasure : Measure M}
     {firstVariation : Real}
     {preIntegrand scalarCurvature lapPotential gradPotentialNormSq
@@ -25,18 +25,18 @@ theorem formula510_of_steps [MeasurableSpace M]
     (hpoint :
       ∀ x : M,
         preIntegrand x =
-          fFunctionalFormula510Integrand scalarCurvature lapPotential
+          fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
             gradPotentialNormSq potentialVariation metricVariationTrace
             metricVariationRicciHess x) :
-    FFunctionalFormula510 weightedMeasure firstVariation scalarCurvature
+    FFunctionalFirstVariationFormula weightedMeasure firstVariation scalarCurvature
       lapPotential gradPotentialNormSq potentialVariation metricVariationTrace
       metricVariationRicciHess := by
-  unfold FFunctionalFormula510
+  unfold FFunctionalFirstVariationFormula
   rw [hfirst]
   apply integral_congr_ae
   exact Filter.Eventually.of_forall hpoint
 
-theorem fFunctionalFirstVariation_eq_formula510_of_hasFirstVariationAt
+theorem fFunctionalFirstVariation_eq_integral_of_formula
     [MeasurableSpace M]
     {muPath : Real -> Measure M}
     {scalarCurvaturePath gradPotentialNormSqPath potentialPath :
@@ -48,13 +48,13 @@ theorem fFunctionalFirstVariation_eq_formula510_of_hasFirstVariationAt
       FFunctionalHasFirstVariationAt muPath scalarCurvaturePath
         gradPotentialNormSqPath potentialPath s0 firstVariation)
     (hformula :
-      FFunctionalFormula510 weightedMeasure firstVariation scalarCurvature
+      FFunctionalFirstVariationFormula weightedMeasure firstVariation scalarCurvature
         lapPotential gradPotentialNormSq potentialVariation
         metricVariationTrace metricVariationRicciHess) :
     fFunctionalFirstVariation muPath scalarCurvaturePath
         gradPotentialNormSqPath potentialPath s0 =
       ∫ x,
-        fFunctionalFormula510Integrand scalarCurvature lapPotential
+        fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess x
         ∂weightedMeasure := by

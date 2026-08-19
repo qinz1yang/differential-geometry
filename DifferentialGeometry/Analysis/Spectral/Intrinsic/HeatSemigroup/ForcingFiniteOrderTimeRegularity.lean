@@ -1187,11 +1187,11 @@ private lemma reconFO_raw_eq_chartRHS
     exact hx
   have hcongr := tensorChartComponentRaw_congr_toSection
     (deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg S hδ_lt hδS)
-    (DifferentialGeometry.PDE.RicciFlow.deTurckRHSSectionBg (I := I) g_bg
+    (DifferentialGeometry.PDE.RicciFlow.deTurckRHSSectionBackground (I := I) g_bg
       (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδS))
     (fun z => rfl) α ![] Jdx x
   rw [hcongr,
-    tensorChartComponentRaw_deTurckRHSSectionBg_eq_chartRicciLie (I := I) (M := M)
+    tensorChartComponentRaw_deTurckRHSSectionBackground_eq_chartRicciLie (I := I) (M := M)
       g_bg (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδS) α hgood ![] Jdx,
     chartDeTurckRicciRHS_def]
 
@@ -2354,7 +2354,7 @@ private theorem deTurckRHSRecon_pathCoeff_finiteOrder_timeContDiff_withinMass
         unfold tensorSobolevWeight
         rw [Real.rpow_natCast, mul_comm 2 κ, pow_mul, sq]
       rw [hweq]
-      have hsummable := tensorL2Coeff_ofCompact_summable_sq' (I := I) (M := M) hc
+      have hsummable := tensorL2Coeff_summable_sq (I := I) (M := M) hc
         (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
           (oneMinusConnLapSmoothIter (I := I) g₀ 0 2 κ (Rjt t)))
       have hle_tsum : (tensorL2Coeff (I := I) (M := M) hc
@@ -2944,7 +2944,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
       rw [h0, smoothCcToTensorHs_smul, zero_smul]
     refine ⟨(Classical.choose (deTurckSobolevNHa2_exists_of_super
       (I := I) (M := M) g₀ a ha_super)).2,
-      lt_of_le_of_lt hp_lt (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E)), fun t
+      lt_of_le_of_lt hp_lt (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)), fun t
         => ?_⟩
     by_cases ht : t ∈ Set.Icc (0 : ℝ) d₂
     · exact hp_ball (F t) (hball_pt t ht)

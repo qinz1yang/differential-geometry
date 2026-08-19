@@ -73,7 +73,7 @@ private theorem tensor0S_one_apply_smul
   rw [← hleft, ← hX]
   exact h
 
-private noncomputable def connDiffSlotCLM
+private noncomputable def connectionDifferenceSlotCLM
     (A :
       TangentSpace I x →L[Real]
         TangentSpace I x →L[Real] TangentSpace I x)
@@ -106,7 +106,7 @@ noncomputable def connectionDifferenceOutput
     (LinearMap.toContinuousLinearMap
       { toFun := fun X =>
           (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
-            (connDiffSlotCLM (I := I) A α X)
+            (connectionDifferenceSlotCLM (I := I) A α X)
         map_add' := by
           intro X Y
           apply (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).injective
@@ -137,7 +137,7 @@ theorem connectionDifferenceOutput_apply
   rw [ContinuousLinearMap.uncurryLeft_apply]
   change
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
-        (connDiffSlotCLM (I := I) A α (v 0))) (fun i : Fin 1 => v i.succ) =
+        (connectionDifferenceSlotCLM (I := I) A α (v 0))) (fun i : Fin 1 => v i.succ) =
       α (fun _ : Fin 1 => (A (v 1)) (v 0))
   have htail : (fun i : Fin 1 => v i.succ) = fun _ : Fin 1 => v 1 := by
     funext i

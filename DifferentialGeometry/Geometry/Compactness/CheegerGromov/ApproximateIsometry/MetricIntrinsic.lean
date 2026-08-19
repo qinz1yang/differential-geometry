@@ -1718,7 +1718,7 @@ theorem HasStageJetData.inv_norm_tail
   have hinjBall : Set.InjOn F (Metric.ball Yk.basepoint T) :=
     hinjKL.mono Metric.ball_subset_closedBall
   obtain ⟨Phi, hPhiSrc, hPhiTgt, hPhiEq⟩ :=
-    exists_diffeo_of_injOn hlocBall hBallOpen hinjBall
+    exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on hlocBall hBallOpen hinjBall
   have hsymmEq : Set.EqOn (Phi.symm : Yl.M → Yk.M) Hinv Phi.target := by
     intro q hq
     rw [hPhiTgt] at hq

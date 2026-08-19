@@ -173,7 +173,7 @@ open DifferentialGeometry.Integral.Connection
 variable [T2Space M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem covStep_zero' (gRef : SmoothRiemannianMetric I M) (s : ℕ) :
+private theorem covariant_derivative_step_zero (gRef : SmoothRiemannianMetric I M) (s : ℕ) :
     covStep (I := I) gRef s 0 = 0 := by
   have h := covStep_add (I := I) gRef s 0 0
   rw [add_zero] at h
@@ -192,7 +192,7 @@ private theorem iterCov_one_eq
   congr 1
   change telescAccum (I := I) g₁ g₂ r T 1 = diffStep (I := I) g₁ g₂ r T
   simp only [telescAccum]
-  rw [covStep_zero', zero_add]
+  rw [covariant_derivative_step_zero, zero_add]
   rfl
 
 omit
@@ -280,7 +280,7 @@ theorem diffStep_norm_le
                 (leviCivitaConnectionOfMetric (I := I) g₁)
                 (leviCivitaConnectionOfMetric (I := I) g₂) x)
               (basis (φ a.succ))) (basis (φ 0)))) ≤ NA := by
-        have h := connDiffVec_norm_le (I := I) g₂
+        have h := connectionDifferenceVec_norm_le (I := I) g₂
           (leviCivitaConnectionOfMetric (I := I) g₁)
           (leviCivitaConnectionOfMetric (I := I) g₂)
           (basis (φ 0)) (basis (φ a.succ))
@@ -396,7 +396,7 @@ private theorem diff_swap
   rw [h1, h2]; abel
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem connDiffTensor_normSqRS_swap
+private theorem connectionDifferenceTensor_normSqRS_swap
     (g₀ : SmoothRiemannianMetric I M)
     (cov cov' : CovariantDerivative I E (TangentSpace I : M → Type _)) (x : M) :
     normSqRS (I := I) (g := g₀) (x := x) 1 2 (connectionDifferenceTensorAt (I := I) cov cov' x)
@@ -487,7 +487,7 @@ theorem diffStep_jet_one_le
             (leviCivitaConnectionOfMetric (I := I) g₁)
             (leviCivitaConnectionOfMetric (I := I) g₂) x)) ≤
         (3 / 2 : Real) * (Real.sqrt (Λ ^ 3) * Λ') := by
-    rw [connDiffTensor_normSqRS_swap g₂ (leviCivitaConnectionOfMetric (I := I) g₁)
+    rw [connectionDifferenceTensor_normSqRS_swap g₂ (leviCivitaConnectionOfMetric (I := I) g₁)
       (leviCivitaConnectionOfMetric (I := I) g₂) x]
     calc
       Real.sqrt (normSqRS (I := I) (g := g₂) (x := x) 1 2
@@ -515,11 +515,11 @@ theorem covStepDiff_norm_le
     (x : M) {CA : ℝ} (hCA : 0 ≤ CA)
     (hA1 : ∀ (v w u : TangentSpace I x),
       Real.sqrt (g₂.inner x
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w)
             (smoothExtensionTangent (I := I) x u) x)
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w)
             (smoothExtensionTangent (I := I) x u) x)) ≤
@@ -607,25 +607,25 @@ theorem covStepDiff_norm_le
     rw [htuple, diffStep_leibniz_eval (I := I) g₁ g₂ s S Wsec Vsec Zsec x]
     have hX : ∀ a : Fin s,
         |(S x) (Function.update (fun b : Fin s => Zsec b x) a
-            (covDerivConnDiff (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
+            (covDerivConnectionDifference (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
               (fun y : M => Zsec a y) x))| ≤ NS * CA := by
       intro a
       have hcs := abs_apply_le_sqrt_normSq0S (I := I) g₂ x s basis hON (S x)
         (Function.update (fun b : Fin s => Zsec b x) a
-          (covDerivConnDiff (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
+          (covDerivConnectionDifference (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
             (fun y : M => Zsec a y) x))
       have hprodX :
           (∏ b : Fin s, Real.sqrt (g₂.inner x
               ((Function.update (fun b' : Fin s => Zsec b' x) a
-                  (covDerivConnDiff (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
+                  (covDerivConnectionDifference (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
                     (fun y : M => Zsec a y) x)) b)
               ((Function.update (fun b' : Fin s => Zsec b' x) a
-                  (covDerivConnDiff (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
+                  (covDerivConnectionDifference (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
                     (fun y : M => Zsec a y) x)) b)))
             = Real.sqrt (g₂.inner x
-                (covDerivConnDiff (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
+                (covDerivConnectionDifference (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
                   (fun y : M => Zsec a y) x)
-                (covDerivConnDiff (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
+                (covDerivConnectionDifference (I := I) g₂ g₁ (fun y : M => Wsec y) (fun y : M => Vsec y)
                   (fun y : M => Zsec a y) x)) := by
         rw [Finset.prod_eq_single a
           (fun b _ hb => by rw [Function.update_of_ne hb, hZval b]; exact hbnorm (φ b.succ.succ))
@@ -667,7 +667,7 @@ theorem covStepDiff_norm_le
           (fun ha => absurd (Finset.mem_univ a) ha), Function.update_self]
       rw [hprodY, ← hNcovS] at hcs
       refine le_trans hcs (mul_le_mul_of_nonneg_left ?_ hNcovS_nn)
-      have h := connDiffVec_norm_le (I := I) g₂
+      have h := connectionDifferenceVec_norm_le (I := I) g₂
         (leviCivitaConnectionOfMetric (I := I) g₁)
         (leviCivitaConnectionOfMetric (I := I) g₂)
         (basis (φ (Fin.succ 0))) (basis (φ a.succ.succ))
@@ -713,11 +713,11 @@ theorem covStepDiff_jet_le
     (x : M) {CA Λ Λ' : ℝ} (hCA : 0 ≤ CA)
     (hA1 : ∀ (v w u : TangentSpace I x),
       Real.sqrt (g₂.inner x
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w)
             (smoothExtensionTangent (I := I) x u) x)
-          (covDerivConnDiff (I := I) g₂ g₁
+          (covDerivConnectionDifference (I := I) g₂ g₁
             (smoothExtensionTangent (I := I) x v)
             (smoothExtensionTangent (I := I) x w)
             (smoothExtensionTangent (I := I) x u) x)) ≤
@@ -745,7 +745,7 @@ theorem covStepDiff_jet_le
             (leviCivitaConnectionOfMetric (I := I) g₁)
             (leviCivitaConnectionOfMetric (I := I) g₂) x)) ≤
         (3 / 2 : Real) * (Real.sqrt (Λ ^ 3) * Λ') := by
-    rw [connDiffTensor_normSqRS_swap g₂ (leviCivitaConnectionOfMetric (I := I) g₁)
+    rw [connectionDifferenceTensor_normSqRS_swap g₂ (leviCivitaConnectionOfMetric (I := I) g₁)
       (leviCivitaConnectionOfMetric (I := I) g₂) x]
     calc
       Real.sqrt (normSqRS (I := I) (g := g₂) (x := x) 1 2
@@ -809,7 +809,7 @@ theorem covStepDiff_of_jets
   have hLnn : (0 : ℝ) ≤ Λ := le_trans zero_le_one hEq.1
   have hCA : (0 : ℝ) ≤ 3 / 2 * Λ ^ 4 * (Λ'' + Λ * Λ' ^ 2) := by positivity
   exact covStepDiff_jet_le (I := I) g₁ g₂ s S x hCA
-    (fun v w u => DifferentialGeometry.Geometry.Curvature.covDerivConnDiff_gJet_le
+    (fun v w u => DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference_gJet_le
       (I := I) hEq hJet1 hJet2 hx v w u)
     (metricUniformEquivalentOn_symm (I := I) hEq) hJet1' hx
 
@@ -844,7 +844,7 @@ private theorem exists_g_onbasis (g : SmoothRiemannianMetric I M) (x : M) :
   exact ⟨basis, hON, hinv⟩
 
 omit [T2Space M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem sqrt_normSq0S_zero (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ) :
+private theorem sqrt_covariant_tensor_norm_sq_zero (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ) :
     Real.sqrt (normSq0S (I := I) g x s (0 : Tensor0SBundle.Tensor0SSpace s I x)) = 0 := by
   classical
   obtain ⟨basis, _, hinv⟩ := exists_g_onbasis (I := I) g x
@@ -1002,14 +1002,14 @@ theorem iterCovG1_le
             (SN + Real.sqrt (normSq0S (I := I) g₂ x (r + N + 1) a)) := hmain
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem telescAccum_one (g₁ g₂ : SmoothRiemannianMetric I M) (r : ℕ)
+private theorem telescoping_covariant_derivative_difference_accumulation_one (g₁ g₂ : SmoothRiemannianMetric I M) (r : ℕ)
     (T : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) r) :
     telescAccum (I := I) g₁ g₂ r T 1 = diffStep (I := I) g₁ g₂ r T := by
   have hunfold : telescAccum (I := I) g₁ g₂ r T 1
       = covStep (I := I) g₁ r (telescAccum (I := I) g₁ g₂ r T 0)
         + diffStep (I := I) g₁ g₂ r T := rfl
-  rw [hunfold, show telescAccum (I := I) g₁ g₂ r T 0 = 0 from rfl, covStep_zero', zero_add]
+  rw [hunfold, show telescAccum (I := I) g₁ g₂ r T 0 = 0 from rfl, covariant_derivative_step_zero, zero_add]
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1046,10 +1046,10 @@ theorem iterCovG1_two
   intro m hm
   interval_cases m
   · simp only [if_neg (by norm_num : (0 : ℕ) ≠ 1), zero_mul]
-    rw [show telescAccum (I := I) g₁ g₂ r T 0 = 0 from rfl, covStep_zero']
-    simp only [ContMDiffSection.coe_zero, Pi.zero_apply, sqrt_normSq0S_zero, le_refl]
+    rw [show telescAccum (I := I) g₁ g₂ r T 0 = 0 from rfl, covariant_derivative_step_zero]
+    simp only [ContMDiffSection.coe_zero, Pi.zero_apply, sqrt_covariant_tensor_norm_sq_zero, le_refl]
   · simp only [reduceIte]
-    rw [telescAccum_one (I := I) g₁ g₂ r T]
+    rw [telescoping_covariant_derivative_difference_accumulation_one (I := I) g₁ g₂ r T]
     refine le_trans (covStepDiff_of_jets (I := I) g₁ g₂ r T x
       (metricUniformEquivalentOn_symm (I := I) hEq) hJet1 hJet2 hjet hx) ?_
     rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]

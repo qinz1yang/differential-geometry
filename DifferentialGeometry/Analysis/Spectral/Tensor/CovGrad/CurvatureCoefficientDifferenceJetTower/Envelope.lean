@@ -1,11 +1,11 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerCurvDiffGridWindow
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Grid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Palatini
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerRiemannMixedBiContraction
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerPairTraceRepresentation
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TraceGrid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.InverseMetricRaisedEndomorphismJetBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CometricDoubleTraceField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RecoveryEndomorphismJetBound
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -17,9 +17,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulCovariantJetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RaisedKoszulParallelRaiseJetBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRfnsBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnDiffPalatini
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenceArmRiemannianFiberNormSqBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
@@ -70,7 +70,7 @@ end CurvatureCoefficientDifferenceJetTower
 
 open CurvatureCoefficientDifferenceJetTower
 
-theorem rfns_iteratedCovGrad_riemannCoeff_metricFactorTelescope_diagonalProductGrid_le
+theorem riemannianFiberNormSq_iteratedCovGrad_riemannCoeff_metricFactorTelescope_diagonalProductGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -91,15 +91,15 @@ theorem rfns_iteratedCovGrad_riemannCoeff_metricFactorTelescope_diagonalProductG
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   classical
   obtain ⟨CC, hCC_nn, hCC⟩ :=
-    rfns_iteratedCovGrad_riemannCoeff_metricFactorTelescope_traceConversion_le
+    riemannianFiberNormSq_iteratedCovGrad_riemannCoeff_metricFactorTelescope_traceConversion_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨C1, hC1_nn, hC1⟩ :=
-    rfns_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CA, hCA_nn, hCA⟩ :=
-    rfns_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_riemannLoweredBackgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_rfns_bound (I := I) (M := M) g₀ 0 4
+  obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 0 4
     (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)
   refine ⟨fun i => CC i * ∑ j ∈ Finset.range (i + 1), ∑ l ∈ Finset.range (i + 1),
       (2 * cbg l + (2 * CA l + C1 l) * CurvatureCoefficientDifferenceJetTower.tWindowMulConst l j),
@@ -268,7 +268,7 @@ theorem rfns_iteratedCovGrad_riemannCoeff_metricFactorTelescope_diagonalProductG
         rw [← Finset.sum_mul]
         ring
 
-theorem rfns_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_diagonalProductGrid_le
+theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_diagonalProductGrid_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -289,10 +289,10 @@ theorem rfns_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_dia
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   classical
   obtain ⟨Ca, hCa_nn, hCa⟩ :=
-    rfns_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_riemannMixedCoeff_backgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    rfns_iteratedCovGrad_riemannCoeff_metricFactorTelescope_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_riemannCoeff_metricFactorTelescope_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   refine ⟨fun i => 2 * Cb i + 2 * Ca i,
     fun i => by have := hCa_nn i; have := hCb_nn i; linarith, ?_⟩
@@ -362,7 +362,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_ballUnifor
             (slotInsertEndoCc (I := I) (M := M) g₀ 0
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))‖ ^ 2 ≤ K i := by
   obtain ⟨C, hC_nn, hgrid⟩ :=
-    rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     curvDiffGrid_integral_ballUniform_window (I := I) (M := M) g₀ a ha_super hR
@@ -445,7 +445,7 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
             (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
               ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤ K i := by
   obtain ⟨C, hC_nn, hgrid⟩ :=
-    rfns_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     curvDiffGrid_integral_ballUniform_window (I := I) (M := M) g₀ a ha_super hR
@@ -581,7 +581,7 @@ theorem ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_ballUniform
           ((iteratedCovGrad (I := I) g₀ 2 2 i
             (slotInsertEndoCc (I := I) (M := M) g₀ 1
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))).toSection x) :=
-      rfns_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 2
+      riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 2
         (Equiv.swap (0 : Fin 2) 1) (Equiv.swap (0 : Fin 2) 1)
         (slotInsertEndoCc (I := I) (M := M) g₀ 1
           (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)) i x
@@ -595,7 +595,7 @@ theorem ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_ballUniform
             ((iteratedCovGrad (I := I) g₀ 1 1 i
               (slotInsertEndoCc (I := I) (M := M) g₀ 0
                 (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))).toSection x) := by
-      have h := rfns_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 1
+      have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 1
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁) i x
       rw [pow_one] at h
       exact h
@@ -883,7 +883,7 @@ theorem raisedKoszul_perOrder_l2_le_iteratedCovGrad_succ
         10 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (n + 1)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (n + 1) T).toSection x) := by
     intro x
-    exact rfns_iteratedCovGrad_raisedKoszul_pointwise (I := I) (M := M) g₀ g₁ T htie n x
+    exact riemannianFiberNormSq_iteratedCovGrad_raisedKoszul_pointwise (I := I) (M := M) g₀ g₁ T htie n x
   have hF_int : MeasureTheory.Integrable
       (fun x => 10 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (n + 1)) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (n + 1) T).toSection x))
@@ -919,7 +919,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_tameEnvelo
             K i * (1 + ∑ j ∈ Finset.range (i + 3),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   obtain ⟨C, hC_nn, hgrid⟩ :=
-    rfns_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     antidiagonalTupleGrid_integral_ballUniform_tameWindow (I := I) (M := M) g₀ a ha_super hR
@@ -1036,7 +1036,7 @@ theorem ricciArmOrder0RiemannCoeff_backgroundDifference_perOrder_l2_tameEnvelope
             K i * (1 + ∑ j ∈ Finset.range (i + 3),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   obtain ⟨C, hC_nn, hgrid⟩ :=
-    rfns_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_diagonalProductGrid_le
+    riemannianFiberNormSq_iteratedCovGrad_ricciArmOrder0RiemannCoeff_backgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     antidiagonalTupleGrid_integral_ballUniform_tameWindow (I := I) (M := M) g₀ a ha_super hR
@@ -1206,7 +1206,7 @@ theorem ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_tameEnvelope
           ((iteratedCovGrad (I := I) g₀ 2 2 i
             (slotInsertEndoCc (I := I) (M := M) g₀ 1
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))).toSection x) :=
-      rfns_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 2
+      riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 2
         (Equiv.swap (0 : Fin 2) 1) (Equiv.swap (0 : Fin 2) 1)
         (slotInsertEndoCc (I := I) (M := M) g₀ 1
           (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)) i x
@@ -1220,7 +1220,7 @@ theorem ricciArmOrder0CurvCoeff_backgroundDifference_perOrder_l2_tameEnvelope
             ((iteratedCovGrad (I := I) g₀ 1 1 i
               (slotInsertEndoCc (I := I) (M := M) g₀ 0
                 (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))).toSection x) := by
-      have h := rfns_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 1
+      have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 1
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁) i x
       rw [pow_one] at h
       exact h

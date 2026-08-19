@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalTimeH2
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.BootstrapOne
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.TimeDependentPrincipalOperatorH2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.DuhamelBootstrap
 
 noncomputable section
 
@@ -27,7 +27,7 @@ private abbrev metricH1 (g : SmoothRiemannianMetric I M) :=
 private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
   tensorHs (I := I) (M := M) g 0 2 (2 : ℝ)
 
-private abbrev metricH3 (g : SmoothRiemannianMetric I M) :=
+private abbrev metricThirdOrderSobolev (g : SmoothRiemannianMetric I M) :=
   tensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)
 
 private abbrev metricH4 (g : SmoothRiemannianMetric I M) :=
@@ -39,7 +39,7 @@ def orderOneH2Iso (g : SmoothRiemannianMetric I M) :
   rw [show (1 : ℝ) + 1 = 2 by norm_num]
   exact LinearIsometryEquiv.refl ℝ _
 
-def lowRegStateL2
+def lowRegularityStateL2
     (g : SmoothRiemannianMetric I M) {T R : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (metricH1 (I := I) (M := M) g) T)
@@ -50,7 +50,7 @@ def lowRegStateL2
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
           (1 : ℝ) hT hT1
-          (0 : metricH3 (I := I) (M := M) g) f t)‖ ≤ R) :
+          (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
     timeL2 (metricH2 (I := I) (M := M) g) T :=
   (orderOneH2Iso (I := I) (M := M) g).toLinearIsometry.toContinuousLinearMap.compLpL
     2 (timeMeasure T)
@@ -58,7 +58,7 @@ def lowRegStateL2
         g 0 2 (1 : ℝ) hT hT1 0 f hR hball)
 
 omit [BoundarylessManifold I M] in
-theorem lowRegState_ae
+theorem lowRegularityState_ae
     (g : SmoothRiemannianMetric I M) {T R : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (metricH1 (I := I) (M := M) g) T)
@@ -69,8 +69,8 @@ theorem lowRegState_ae
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
           (1 : ℝ) hT hT1
-          (0 : metricH3 (I := I) (M := M) g) f t)‖ ≤ R) :
-    lowRegStateL2 (I := I) (M := M)
+          (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
+    lowRegularityStateL2 (I := I) (M := M)
         g hT hT1 f hR hball =ᵐ[timeMeasure T]
       fun t => orderOneH2Iso (I := I) (M := M) g
         (tensorHsInclusion (I := I) (M := M)
@@ -78,7 +78,7 @@ theorem lowRegState_ae
           (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
           (maxRegDuhamelSolField (I := I) (M := M)
             (1 : ℝ) hT hT1
-            (0 : metricH3 (I := I) (M := M) g) f t)) := by
+            (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)) := by
   have hmap :=
     (orderOneH2Iso (I := I) (M := M) g).toLinearIsometry.toContinuousLinearMap.coeFn_compLpL
       (p := 2) (μ := timeMeasure T)
@@ -89,12 +89,12 @@ theorem lowRegState_ae
   have hfield := duhRepr_field_ae (I := I) (M := M)
     g 0 2 (1 : ℝ) hT hT1 0 f
   filter_upwards [hmap, hcoe, hfield] with t hm hc hf
-  simpa only [lowRegStateL2] using
+  simpa only [lowRegularityStateL2] using
     hm.trans (congrArg
       (orderOneH2Iso (I := I) (M := M) g) (hc.trans hf))
 
 omit [BoundarylessManifold I M] in
-theorem lowRegState_ae_le
+theorem lowRegularityState_ae_le
     (g : SmoothRiemannianMetric I M) {T R : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (metricH1 (I := I) (M := M) g) T)
@@ -105,18 +105,18 @@ theorem lowRegState_ae_le
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
           (1 : ℝ) hT hT1
-          (0 : metricH3 (I := I) (M := M) g) f t)‖ ≤ R) :
+          (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
     ∀ᵐ t ∂timeMeasure T,
-      ‖lowRegStateL2 (I := I) (M := M)
+      ‖lowRegularityStateL2 (I := I) (M := M)
         g hT hT1 f hR hball t‖ ≤ R := by
   filter_upwards [
-    lowRegState_ae (I := I) (M := M)
+    lowRegularityState_ae (I := I) (M := M)
       g hT hT1 f hR hball,
     hball] with t ht hbound
   rw [ht, LinearIsometryEquiv.norm_map]
   exact hbound
 
-def lowRegA2Time
+def lowRegularityPrincipalSecondOrderActionTime
     (g : SmoothRiemannianMetric I M) {T R : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (metricH1 (I := I) (M := M) g) T)
@@ -127,14 +127,14 @@ def lowRegA2Time
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
           (1 : ℝ) hT hT1
-          (0 : metricH3 (I := I) (M := M) g) f t)‖ ≤ R) :
+          (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
     ℝ → (metricH4 (I := I) (M := M) g →L[ℝ]
       metricH2 (I := I) (M := M) g) :=
-  principalTime (I := I) (M := M) g hR
-    (lowRegStateL2 (I := I) (M := M)
+  timeDependentPrincipalOperatorH2 (I := I) (M := M) g hR
+    (lowRegularityStateL2 (I := I) (M := M)
       g hT hT1 f hR hball)
 
-theorem lowRegA2_ae
+theorem lowRegularityPrincipalSecondOrderActionTime_ae
     (g : SmoothRiemannianMetric I M) {T R : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (metricH1 (I := I) (M := M) g) T)
@@ -145,30 +145,30 @@ theorem lowRegA2_ae
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
         (maxRegDuhamelSolField (I := I) (M := M)
           (1 : ℝ) hT hT1
-          (0 : metricH3 (I := I) (M := M) g) f t)‖ ≤ R) :
-    lowRegA2Time (I := I) (M := M)
+          (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
+    lowRegularityPrincipalSecondOrderActionTime (I := I) (M := M)
         g hT hT1 f hR hball =ᵐ[timeMeasure T]
-      fun t => lowRegPrincipal (I := I) (M := M) g
+      fun t => lowRegularityPrincipalOperatorH2 (I := I) (M := M) g
         (orderOneH2Iso (I := I) (M := M) g
           (tensorHsInclusion (I := I) (M := M)
             (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
             (maxRegDuhamelSolField (I := I) (M := M)
               (1 : ℝ) hT hT1
-              (0 : metricH3 (I := I) (M := M) g) f t))) := by
-  have hstate := lowRegState_ae_le (I := I) (M := M)
+              (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t))) := by
+  have hstate := lowRegularityState_ae_le (I := I) (M := M)
     g hT hT1 f hR hball
-  have hprincipal := principalTime_ae (I := I) (M := M)
+  have hprincipal := timeDependentPrincipalOperatorH2_ae_eq (I := I) (M := M)
     g hR
-      (lowRegStateL2 (I := I) (M := M)
+      (lowRegularityStateL2 (I := I) (M := M)
         g hT hT1 f hR hball) hstate
-  have hfield := lowRegState_ae (I := I) (M := M)
+  have hfield := lowRegularityState_ae (I := I) (M := M)
     g hT hT1 f hR hball
   filter_upwards [hprincipal, hfield] with t hp hf
-  simpa only [lowRegA2Time] using hp.trans (congrArg
-    (lowRegPrincipal (I := I) (M := M) g) hf)
+  simpa only [lowRegularityPrincipalSecondOrderActionTime] using hp.trans (congrArg
+    (lowRegularityPrincipalOperatorH2 (I := I) (M := M) g) hf)
 
-theorem lowRegA2_data
+theorem lowRegularityPrincipalSecondOrderActionTime_data
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ (ρ : ℝ) (C : NNReal), 0 < ρ ∧
@@ -181,38 +181,38 @@ theorem lowRegA2_data
               (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
               (maxRegDuhamelSolField (I := I) (M := M)
                 (1 : ℝ) hT hT1
-                (0 : metricH3 (I := I) (M := M) g) f t)‖ ≤ R),
+                (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R),
           AEStronglyMeasurable
-              (lowRegA2Time (I := I) (M := M)
+              (lowRegularityPrincipalSecondOrderActionTime (I := I) (M := M)
                 g hT hT1 f hR hball)
               (timeMeasure T) ∧
             (∀ᵐ t ∂timeMeasure T,
-              ‖lowRegA2Time (I := I) (M := M)
+              ‖lowRegularityPrincipalSecondOrderActionTime (I := I) (M := M)
                 g hT hT1 f hR hball t‖ ≤ (C : ℝ) * R) ∧
-            lowRegA2Time (I := I) (M := M)
+            lowRegularityPrincipalSecondOrderActionTime (I := I) (M := M)
                 g hT hT1 f hR hball =ᵐ[timeMeasure T]
-              fun t => lowRegPrincipal (I := I) (M := M) g
+              fun t => lowRegularityPrincipalOperatorH2 (I := I) (M := M) g
                 (orderOneH2Iso (I := I) (M := M) g
                   (tensorHsInclusion (I := I) (M := M)
                     (g := g) (r := 0) (s := 2)
                     (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
                     (maxRegDuhamelSolField (I := I) (M := M)
                       (1 : ℝ) hT hT1
-                      (0 : metricH3 (I := I) (M := M) g) f t))) := by
+                      (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t))) := by
   obtain ⟨ρ, C, hρ, hdata⟩ :=
-    principalTime_data (I := I) (M := M) hDim g
+    exists_timeDependentPrincipalOperatorH2_bounds (I := I) (M := M) hDim g
   refine ⟨ρ, C, hρ, ?_⟩
   intro R hR hRρ T hT hT1 f hball
-  have hstate := lowRegState_ae_le (I := I) (M := M)
+  have hstate := lowRegularityState_ae_le (I := I) (M := M)
     g hT hT1 f hR hball
   obtain ⟨hmeas, hbound, _⟩ := hdata hR hRρ
-    (lowRegStateL2 (I := I) (M := M)
+    (lowRegularityStateL2 (I := I) (M := M)
       g hT hT1 f hR hball) hstate
   exact ⟨by
-      simpa only [lowRegA2Time] using hmeas,
+      simpa only [lowRegularityPrincipalSecondOrderActionTime] using hmeas,
     by
-      simpa only [lowRegA2Time] using hbound,
-    lowRegA2_ae (I := I) (M := M)
+      simpa only [lowRegularityPrincipalSecondOrderActionTime] using hbound,
+    lowRegularityPrincipalSecondOrderActionTime_ae (I := I) (M := M)
       g hT hT1 f hR hball⟩
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

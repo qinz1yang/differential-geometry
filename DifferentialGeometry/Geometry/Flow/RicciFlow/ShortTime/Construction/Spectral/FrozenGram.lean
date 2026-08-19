@@ -41,8 +41,8 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
 theorem frozenGram_posDef {index : Type*}
     (gBase : SmoothRiemannianMetric I M)
-    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegCoeff)
-    (hD : IsLowRegCoeff (I := I) gBase gSeq D)
+    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds)
+    (hD : HasLowRegularityCoefficientBounds (I := I) gBase gSeq D)
     (alpha : M) (hAlpha : alpha ∈ chartAtlasPOU_finset (I := I) (M := M))
     (k : index) (b : M)
     (hb : b ∈ tsupport
@@ -81,8 +81,8 @@ theorem frozenGram_posDef {index : Type*}
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem frozenGram_bounds {index : Type*}
     (gBase : SmoothRiemannianMetric I M)
-    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegCoeff)
-    (hD : IsLowRegCoeff (I := I) gBase gSeq D)
+    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds)
+    (hD : HasLowRegularityCoefficientBounds (I := I) gBase gSeq D)
     (alpha : M) (hAlpha : alpha ∈ chartAtlasPOU_finset (I := I) (M := M))
     (k : index) (b : M)
     (hb : b ∈ tsupport
@@ -105,8 +105,8 @@ theorem frozenGram_bounds {index : Type*}
 
 def frozenGramEquiv {index : Type*}
     (gBase : SmoothRiemannianMetric I M)
-    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegCoeff)
-    (hD : IsLowRegCoeff (I := I) gBase gSeq D)
+    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds)
+    (hD : HasLowRegularityCoefficientBounds (I := I) gBase gSeq D)
     (alpha : M) (hAlpha : alpha ∈ chartAtlasPOU_finset (I := I) (M := M))
     (k : index) (b : M)
     (hb : b ∈ tsupport
@@ -120,8 +120,8 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
 theorem frozenGram_comp {index : Type*}
     (gBase : SmoothRiemannianMetric I M)
-    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegCoeff)
-    (hD : IsLowRegCoeff (I := I) gBase gSeq D)
+    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds)
+    (hD : HasLowRegularityCoefficientBounds (I := I) gBase gSeq D)
     (alpha : M) (hAlpha : alpha ∈ chartAtlasPOU_finset (I := I) (M := M))
     (k : index) (b : M)
     (hb : b ∈ tsupport
@@ -136,8 +136,8 @@ theorem frozenGram_comp {index : Type*}
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem frozenGram_norm_le {index : Type*}
     (gBase : SmoothRiemannianMetric I M)
-    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegCoeff)
-    (hD : IsLowRegCoeff (I := I) gBase gSeq D)
+    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds)
+    (hD : HasLowRegularityCoefficientBounds (I := I) gBase gSeq D)
     (alpha : M) (hAlpha : alpha ∈ chartAtlasPOU_finset (I := I) (M := M))
     (k : index) (b : M)
     (hb : b ∈ tsupport
@@ -152,8 +152,8 @@ theorem frozenGram_norm_le {index : Type*}
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem frozenGram_inv_le {index : Type*}
     (gBase : SmoothRiemannianMetric I M)
-    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegCoeff)
-    (hD : IsLowRegCoeff (I := I) gBase gSeq D)
+    (gSeq : index → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds)
+    (hD : HasLowRegularityCoefficientBounds (I := I) gBase gSeq D)
     (alpha : M) (hAlpha : alpha ∈ chartAtlasPOU_finset (I := I) (M := M))
     (k : index) (b : M)
     (hb : b ∈ tsupport

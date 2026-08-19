@@ -73,7 +73,7 @@ private lemma lowerAllUpper_zero_unit
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma rfns0_eq_normSq0S
+private lemma riemannianFiberNormSq0_eq_normSq0S
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (W : SmoothCcTensor g 0 s) :
     riemannianFiberNormSq (I := I) (M := M) g 0 s x (W.toSection x) =
       normSq0S (I := I) g x s
@@ -119,8 +119,8 @@ theorem fibreNormSq_cross_le
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x (T.toSection x) ≤
       Λ ^ s * riemannianFiberNormSq (I := I) (M := M) gBase 0 s x
         ((T.recast (g' := gBase)).toSection x) := by
-  rw [rfns0_eq_normSq0S (I := I) g₀ s x T,
-    rfns0_eq_normSq0S (I := I) gBase s x (T.recast (g' := gBase))]
+  rw [riemannianFiberNormSq0_eq_normSq0S (I := I) g₀ s x T,
+    riemannianFiberNormSq0_eq_normSq0S (I := I) gBase s x (T.recast (g' := gBase))]
   have h := (normSq0S_le_of_metric_equiv (I := I) gBase g₀ x s hΛ (hequiv x)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T.toSection x)
       (unitZeroSec (I := I) (M := M) x))).2

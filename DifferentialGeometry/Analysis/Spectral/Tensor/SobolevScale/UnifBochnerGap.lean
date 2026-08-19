@@ -1393,7 +1393,7 @@ theorem rawConnLapCovComm_unif
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem norm_icg_order_eq
+private theorem norm_iteratedCovGrad_order_eq
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) {n n' : ℕ} (h : n = n')
     (S : SmoothCcTensor g₀ 0 s) :
     ‖iteratedCovGrad (I := I) g₀ 0 s n S‖ = ‖iteratedCovGrad (I := I) g₀ 0 s n' S‖ := by
@@ -1509,12 +1509,12 @@ theorem jetOdd_unif
     have hbridge : ‖iteratedCovGrad (I := I) g₀ 0 s (2 * k + 1) S‖ =
         ‖iteratedCovGrad (I := I) g₀ 0 (s + 1) (2 * k)
           (covGrad (I := I) (M := M) g₀ 0 s S)‖ := by
-      have h := icg_comp_norm (I := I) (M := M) g₀ s 1 (2 * k) S
+      have h := iteratedCovGrad_comp_norm (I := I) (M := M) g₀ s 1 (2 * k) S
       have hcov : covGrad (I := I) (M := M) g₀ 0 s S =
           iteratedCovGrad (I := I) g₀ 0 s 1 S := rfl
       have horder : ‖iteratedCovGrad (I := I) g₀ 0 s (2 * k + 1) S‖ =
           ‖iteratedCovGrad (I := I) g₀ 0 s (1 + 2 * k) S‖ :=
-        norm_icg_order_eq (I := I) (M := M) g₀ s (by omega) S
+        norm_iteratedCovGrad_order_eq (I := I) (M := M) g₀ s (by omega) S
       rw [horder, ← h, hcov]
     rw [hbridge]
     have hgard' := hCgard (2 * k) (le_refl _) (covGrad (I := I) (M := M) g₀ 0 s S)
@@ -1579,9 +1579,8 @@ end Analysis
 end DifferentialGeometry
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
-namespace IntrinsicSpectral
+namespace Analysis
+namespace Spectral
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -3415,12 +3414,12 @@ theorem jetOdd_const
     have hbridge : ‖iteratedCovGrad (I := I) g₀ 0 s (2 * k + 1) S‖ =
         ‖iteratedCovGrad (I := I) g₀ 0 (s + 1) (2 * k)
           (covGrad (I := I) (M := M) g₀ 0 s S)‖ := by
-      have h := icg_comp_norm (I := I) (M := M) g₀ s 1 (2 * k) S
+      have h := iteratedCovGrad_comp_norm (I := I) (M := M) g₀ s 1 (2 * k) S
       have hcov : covGrad (I := I) (M := M) g₀ 0 s S =
           iteratedCovGrad (I := I) g₀ 0 s 1 S := rfl
       have horder : ‖iteratedCovGrad (I := I) g₀ 0 s (2 * k + 1) S‖ =
           ‖iteratedCovGrad (I := I) g₀ 0 s (1 + 2 * k) S‖ :=
-        norm_icg_order_eq (I := I) (M := M) g₀ s (by omega) S
+        norm_iteratedCovGrad_order_eq (I := I) (M := M) g₀ s (by omega) S
       rw [horder, ← h, hcov]
     rw [hbridge]
     have hgard' := ellipticLapSum_const (I := I) (M := M) g₀ Fc hFc hcurv (s + 1) k
@@ -3488,7 +3487,6 @@ theorem covsum_hs_unif_const
     subst hn
     exact jetOdd_const (I := I) (M := M) g₀ Fc hFc hcurv s k S
 
-end IntrinsicSpectral
-end RicciFlow
-end PDE
+end Spectral
+end Analysis
 end DifferentialGeometry

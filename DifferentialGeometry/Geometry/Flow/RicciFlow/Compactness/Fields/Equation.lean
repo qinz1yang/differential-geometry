@@ -742,7 +742,7 @@ theorem ConvOut.gInf_pde
           ricciTensor (I := I) (co.gInf u) x v w| < ε :=
     ricciConv_of_dnConv (I := I) R x gTail co.gInf β ψ lam B0 hlam hB0
       hlowSeq hlowInf hbddSeq hbddInf (hconvTail 2) v w
-  refine metricLimit_pde' (I := I) gTail β ψ co.gInf x v w ?_
+  refine metric_limit_pde_of_metric_sequence (I := I) gTail β ψ co.gInf x v w ?_
     (fun u hu ↦ hinner u hu v w) hRicConv ht
   refine ⟨0, fun k _hk u hu ↦ ?_⟩
   simpa only [gTail] using

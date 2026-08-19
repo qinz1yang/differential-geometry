@@ -205,12 +205,12 @@ theorem lapDiffFlux_eval (g₁ g₂ : SmoothRiemannianMetric I M)
   rw [hflux, key]
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connDiffVec_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
+theorem connectionDifferenceVec_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (X Y : TangentSpace I x) :
     Real.sqrt (g₁.inner x
         (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x Y X)
         (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x Y X))
-      ≤ Real.sqrt (connDiffSq (I := I) g₁ g₂ x) *
+      ≤ Real.sqrt (connectionDifferenceSq (I := I) g₁ g₂ x) *
           Real.sqrt (g₁.inner x X X) * Real.sqrt (g₁.inner x Y Y) := by
   classical
   set w : TangentSpace I x :=
@@ -220,11 +220,11 @@ theorem connDiffVec_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
   have h0 : v 0 = X := by simp [hv]
   have h1 : v 1 = Y := by simp [hv]
   have h2 : v 2 = w := by simp [hv]
-  have hval : connDiffLowAt (I := I) g₁ g₂ x v = g₁.inner x w w := by
-    rw [connDiffLowAt_apply, h0, h1, h2, ← hw]
+  have hval : connectionDifferenceLowAt (I := I) g₁ g₂ x v = g₁.inner x w w := by
+    rw [connectionDifferenceLowAt_apply, h0, h1, h2, ← hw]
   have habs := abs_apply_le_sqrt_normSq0S (I := I) g₁ x 3 basis hON
-    (connDiffLowAt (I := I) g₁ g₂ x) v
-  rw [← connDiffSq_def] at habs
+    (connectionDifferenceLowAt (I := I) g₁ g₂ x) v
+  rw [← connectionDifferenceSq_def] at habs
   have hprod :
       (∏ a : Fin 3, Real.sqrt (g₁.inner x (v a) (v a))) =
         Real.sqrt (g₁.inner x X X) * Real.sqrt (g₁.inner x Y Y) *
@@ -233,7 +233,7 @@ theorem connDiffVec_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
   rw [hval, hprod] at habs
   have hwnn : 0 ≤ g₁.inner x w w := innerSelfNonneg (I := I) g₁ x w
   have habs' : g₁.inner x w w ≤
-      Real.sqrt (connDiffSq (I := I) g₁ g₂ x) *
+      Real.sqrt (connectionDifferenceSq (I := I) g₁ g₂ x) *
         (Real.sqrt (g₁.inner x X X) * Real.sqrt (g₁.inner x Y Y)) *
         Real.sqrt (g₁.inner x w w) := by
     calc g₁.inner x w w ≤ |g₁.inner x w w| := le_abs_self _
@@ -241,7 +241,7 @@ theorem connDiffVec_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
           refine le_trans habs (le_of_eq ?_); ring
   have hsq : Real.sqrt (g₁.inner x w w) ^ 2 = g₁.inner x w w := Real.sq_sqrt hwnn
   have hnn0 : 0 ≤ Real.sqrt (g₁.inner x w w) := Real.sqrt_nonneg _
-  have hC : 0 ≤ Real.sqrt (connDiffSq (I := I) g₁ g₂ x) *
+  have hC : 0 ≤ Real.sqrt (connectionDifferenceSq (I := I) g₁ g₂ x) *
       (Real.sqrt (g₁.inner x X X) * Real.sqrt (g₁.inner x Y Y)) := by positivity
   rcases eq_or_lt_of_le hnn0 with h0 | hpos
   · rw [← h0]
@@ -257,13 +257,13 @@ theorem fluxNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
     (x : M) :
     normSq0S (I := I) g₁ x (s + 1) (lapDiffFlux (I := I) g₁ g₂ T x) ≤
       (s : Real) ^ 2 * (Module.finrank Real E : Real) ^ (s + 1) *
-        connDiffSq (I := I) g₁ g₂ x * normSq0S (I := I) g₁ x s (T x) := by
+        connectionDifferenceSq (I := I) g₁ g₂ x * normSq0S (I := I) g₁ x s (T x) := by
   classical
   obtain ⟨basis, hON⟩ := exists_onFrame (I := I) g₁ x
   have hinv := onFrame_inv (I := I) g₁ basis hON
   have hbnorm : ∀ i, Real.sqrt (g₁.inner x (basis i) (basis i)) = 1 := by
     intro i; rw [hON i i]; simp
-  set NA := Real.sqrt (connDiffSq (I := I) g₁ g₂ x) with hNA
+  set NA := Real.sqrt (connectionDifferenceSq (I := I) g₁ g₂ x) with hNA
   set NT := Real.sqrt (normSq0S (I := I) g₁ x s (T x)) with hNT
   have hNAnn : 0 ≤ NA := Real.sqrt_nonneg _
   have hNTnn : 0 ≤ NT := Real.sqrt_nonneg _
@@ -290,7 +290,7 @@ theorem fluxNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
         ((CovariantDerivative.difference (metricCov (I := I) g₁)
             (metricCov (I := I) g₂) x) (basis (φ a.succ))) (basis (φ 0)) with hwa
       have hins : Real.sqrt (g₁.inner x wa wa) ≤ NA := by
-        have h := connDiffVec_le (I := I) g₁ g₂ x (basis (φ 0)) (basis (φ a.succ))
+        have h := connectionDifferenceVec_le (I := I) g₁ g₂ x (basis (φ 0)) (basis (φ a.succ))
         rw [hbnorm (φ 0), hbnorm (φ a.succ), mul_one, mul_one, ← hNA, ← hwa] at h
         exact h
       have hcs := abs_apply_le_sqrt_normSq0S (I := I) g₁ x s basis hON (T x)
@@ -327,7 +327,7 @@ theorem fluxNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
   rw [hcard_eq] at hcard
   refine hcard.trans (le_of_eq ?_)
   rw [hB]
-  have hA2 : NA ^ 2 = connDiffSq (I := I) g₁ g₂ x :=
+  have hA2 : NA ^ 2 = connectionDifferenceSq (I := I) g₁ g₂ x :=
     Real.sq_sqrt (normSq0S_nonneg (I := I) g₁ x 3 _)
   have hT2 : NT ^ 2 = normSq0S (I := I) g₁ x s (T x) :=
     Real.sq_sqrt (normSq0S_nonneg (I := I) g₁ x s _)
@@ -702,7 +702,7 @@ theorem remNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
       (metricNabla0S (I := I) g₂ (metricNabla0S (I := I) g₂ T) x) ≤ B₂) :
     normSq0S (I := I) g₁ x s (lapDiffRem (I := I) g₁ g₂ T x) ≤
       2 * ((s : Real) + 1) ^ 2 * (Module.finrank Real E : Real) ^ (2 * s + 4) *
-          connDiffSq (I := I) g₁ g₂ x * B₁ +
+          connectionDifferenceSq (I := I) g₁ g₂ x * B₁ +
         2 * (Module.finrank Real E : Real) ^ (s + 6) * Λ ^ 2 *
           metricDiffSq (I := I) g₁ g₂ x * B₂ := by
   classical
@@ -724,18 +724,18 @@ theorem remNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
   have hfirst : normSq0S (I := I) g₁ x s
       (metricTraceFirstTwo0STensor (I := I) g₁ (U x)) ≤
         ((s : Real) + 1) ^ 2 * (Module.finrank Real E : Real) ^ (2 * s + 4) *
-          connDiffSq (I := I) g₁ g₂ x * B₁ := by
+          connectionDifferenceSq (I := I) g₁ g₂ x * B₁ := by
     refine le_trans (traceNormSq_le (I := I) g₁ x (U x)) ?_
     have hflux := fluxNormSq_le (I := I) g₁ g₂ (metricNabla0S (I := I) g₂ T) x
     rw [← hU] at hflux
-    have hcd : 0 ≤ connDiffSq (I := I) g₁ g₂ x := by
-      rw [connDiffSq_def]; exact normSq0S_nonneg (I := I) g₁ x 3 _
+    have hcd : 0 ≤ connectionDifferenceSq (I := I) g₁ g₂ x := by
+      rw [connectionDifferenceSq_def]; exact normSq0S_nonneg (I := I) g₁ x 3 _
     have hchain : normSq0S (I := I) g₁ x (s + 2) (U x) ≤
         ((s : Real) + 1) ^ 2 * (Module.finrank Real E : Real) ^ (s + 2) *
-          connDiffSq (I := I) g₁ g₂ x * B₁ := by
+          connectionDifferenceSq (I := I) g₁ g₂ x * B₁ := by
       refine le_trans hflux ?_
       have hfac : (0 : Real) ≤ ((s : Real) + 1) ^ 2 *
-          (Module.finrank Real E : Real) ^ (s + 2) * connDiffSq (I := I) g₁ g₂ x := by
+          (Module.finrank Real E : Real) ^ (s + 2) * connectionDifferenceSq (I := I) g₁ g₂ x := by
         positivity
       have hcast : (((s : ℕ) + 1 : ℕ) : Real) = (s : Real) + 1 := by push_cast; ring
       rw [hcast]
@@ -760,7 +760,7 @@ theorem remNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
           (metricTraceFirstTwo0STensor (I := I) g₁ (W x) -
             metricTraceFirstTwo0STensor (I := I) g₂ (W x))
       ≤ 2 * (((s : Real) + 1) ^ 2 * (Module.finrank Real E : Real) ^ (2 * s + 4) *
-            connDiffSq (I := I) g₁ g₂ x * B₁) +
+            connectionDifferenceSq (I := I) g₁ g₂ x * B₁) +
           2 * ((Module.finrank Real E : Real) ^ (s + 6) * Λ ^ 2 *
             metricDiffSq (I := I) g₁ g₂ x * B₂) :=
         add_le_add (by linarith [hfirst]) (by linarith [hsecond])
@@ -776,12 +776,12 @@ theorem rmFluxNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (x : M) {B : Real} (hB : normSq0S (I := I) g₁ x 4 (Rm2 x) ≤ B) :
     normSq0S (I := I) g₁ x 5 (rmDiffFlux (I := I) g₁ g₂ Rm2 x) ≤
-      16 * (Module.finrank Real E : Real) ^ 5 * connDiffSq (I := I) g₁ g₂ x * B := by
+      16 * (Module.finrank Real E : Real) ^ 5 * connectionDifferenceSq (I := I) g₁ g₂ x * B := by
   have hmain := fluxNormSq_le (I := I) g₁ g₂ (s := 4) Rm2 x
   have hfac : (0 : Real) ≤ (4 : Real) ^ 2 * (Module.finrank Real E : Real) ^ 5 *
-      connDiffSq (I := I) g₁ g₂ x := by
-    have := normSq0S_nonneg (I := I) g₁ x 3 (connDiffLowAt (I := I) g₁ g₂ x)
-    rw [connDiffSq_def]
+      connectionDifferenceSq (I := I) g₁ g₂ x := by
+    have := normSq0S_nonneg (I := I) g₁ x 3 (connectionDifferenceLowAt (I := I) g₁ g₂ x)
+    rw [connectionDifferenceSq_def]
     positivity
   refine hmain.trans ?_
   have : (16 : Real) = (4 : Real) ^ 2 := by norm_num
@@ -798,7 +798,7 @@ theorem rmRemNormSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
     (hB₂ : normSq0S (I := I) g₁ x 6
       (metricNabla0S (I := I) g₂ (metricNabla0S (I := I) g₂ Rm2) x) ≤ B₂) :
     normSq0S (I := I) g₁ x 4 (lapDiffRem (I := I) g₁ g₂ Rm2 x) ≤
-      50 * (Module.finrank Real E : Real) ^ 12 * connDiffSq (I := I) g₁ g₂ x * B₁ +
+      50 * (Module.finrank Real E : Real) ^ 12 * connectionDifferenceSq (I := I) g₁ g₂ x * B₁ +
         2 * (Module.finrank Real E : Real) ^ 10 * Λ ^ 2 *
           metricDiffSq (I := I) g₁ g₂ x * B₂ := by
   have h := remNormSq_le (I := I) g₁ g₂ (s := 4) Rm2 x hΛ0 hΛ hB₁ hB₂

@@ -144,15 +144,15 @@ theorem reLowerPairSq_le (g : SmoothRiemannianMetric I M) {s : ℕ}
       normSq0S (I := I) g x (s + 1) (T x) * normSq0S (I := I) g x 3 (K x) :=
     normSq0S_product (I := I) g x basis hinv T K
   have hcongr : normSq0S (I := I) g x (s + 1 + 3)
-      (ContinuousMultilinearMap.domDomCongr (reLowerPerm2 s)
+      (ContinuousMultilinearMap.domDomCongr (reLowerPermutationWithThreeInputs s)
         (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
           (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 3) T K x)) =
       normSq0S (I := I) g x (s + 1 + 3)
         (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
           (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 3) T K x) :=
-    normSq0S_domDomCongr (I := I) g x basis hinv (reLowerPerm2 s) _
+    normSq0S_domDomCongr (I := I) g x basis hinv (reLowerPermutationWithThreeInputs s) _
   have htr := traceNormSq_le (I := I) (s := s + 2) g x
-    (ContinuousMultilinearMap.domDomCongr (reLowerPerm2 s)
+    (ContinuousMultilinearMap.domDomCongr (reLowerPermutationWithThreeInputs s)
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := s + 1) (q := 3) T K x))
   rw [hcongr, hprod] at htr
@@ -162,16 +162,16 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem sdecFluxSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
     (Rm2 P : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
-    (x : M) {B₂ BP Bg : Real}
+    (x : M) {B₂ BP Background : Real}
     (hB₂ : normSq0S (I := I) g₁ x 4 (Rm2 x) ≤ B₂)
     (hBP : normSq0S (I := I) g₁ x 4 (P x) ≤ BP)
-    (hBg : normSq0S (I := I) g₁ x 2 (metricTensorField (I := I) g₂ x) ≤ Bg) :
+    (hBackground : normSq0S (I := I) g₁ x 2 (metricTensorField (I := I) g₂ x) ≤ Background) :
     normSq0S (I := I) g₁ x 5 (sdecFlux (I := I) g₁ g₂ Rm2 P x) ≤
-      32 * (Module.finrank Real E : Real) ^ 5 * connDiffSq (I := I) g₁ g₂ x * B₂ +
-        8 * (Module.finrank Real E : Real) ^ 10 * connDiffSq (I := I) g₁ g₂ x * (BP * Bg) := by
+      32 * (Module.finrank Real E : Real) ^ 5 * connectionDifferenceSq (I := I) g₁ g₂ x * B₂ +
+        8 * (Module.finrank Real E : Real) ^ 10 * connectionDifferenceSq (I := I) g₁ g₂ x * (BP * Background) := by
   classical
-  have hcd : 0 ≤ connDiffSq (I := I) g₁ g₂ x := by
-    rw [connDiffSq_def]; exact normSq0S_nonneg (I := I) g₁ x 3 _
+  have hcd : 0 ≤ connectionDifferenceSq (I := I) g₁ g₂ x := by
+    rw [connectionDifferenceSq_def]; exact normSq0S_nonneg (I := I) g₁ x 3 _
   have hn : (0 : Real) ≤ (Module.finrank Real E : Real) := by positivity
   have hsplit : sdecFlux (I := I) g₁ g₂ Rm2 P x =
       lapDiffFlux (I := I) g₁ g₂ Rm2 x -
@@ -180,28 +180,28 @@ theorem sdecFluxSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
   rw [hsplit]
   refine (normSq0S_sub_le (I := I) g₁ x 5 _ _).trans ?_
   have hfirst : normSq0S (I := I) g₁ x 5 (lapDiffFlux (I := I) g₁ g₂ Rm2 x) ≤
-      16 * (Module.finrank Real E : Real) ^ 5 * connDiffSq (I := I) g₁ g₂ x * B₂ := by
+      16 * (Module.finrank Real E : Real) ^ 5 * connectionDifferenceSq (I := I) g₁ g₂ x * B₂ := by
     refine (fluxNormSq_le (I := I) g₁ g₂ (s := 4) Rm2 x).trans ?_
     have hfac : (0 : Real) ≤ (4 : Real) ^ 2 * (Module.finrank Real E : Real) ^ 5 *
-        connDiffSq (I := I) g₁ g₂ x := by positivity
+        connectionDifferenceSq (I := I) g₁ g₂ x := by positivity
     have h := mul_le_mul_of_nonneg_left hB₂ hfac
     calc (4 : Real) ^ 2 * (Module.finrank Real E : Real) ^ 5 *
-            connDiffSq (I := I) g₁ g₂ x * normSq0S (I := I) g₁ x 4 (Rm2 x)
+            connectionDifferenceSq (I := I) g₁ g₂ x * normSq0S (I := I) g₁ x 4 (Rm2 x)
         ≤ (4 : Real) ^ 2 * (Module.finrank Real E : Real) ^ 5 *
-            connDiffSq (I := I) g₁ g₂ x * B₂ := h
+            connectionDifferenceSq (I := I) g₁ g₂ x * B₂ := h
       _ = _ := by norm_num
   have hK : normSq0S (I := I) g₁ x 3
       (lapDiffFlux (I := I) g₁ g₂ (metricTensorField (I := I) g₂) x) ≤
-      4 * (Module.finrank Real E : Real) ^ 3 * connDiffSq (I := I) g₁ g₂ x * Bg := by
+      4 * (Module.finrank Real E : Real) ^ 3 * connectionDifferenceSq (I := I) g₁ g₂ x * Background := by
     refine (fluxNormSq_le (I := I) g₁ g₂ (s := 2) (metricTensorField (I := I) g₂) x).trans ?_
     have hfac : (0 : Real) ≤ (2 : Real) ^ 2 * (Module.finrank Real E : Real) ^ 3 *
-        connDiffSq (I := I) g₁ g₂ x := by positivity
-    have h := mul_le_mul_of_nonneg_left hBg hfac
+        connectionDifferenceSq (I := I) g₁ g₂ x := by positivity
+    have h := mul_le_mul_of_nonneg_left hBackground hfac
     calc (2 : Real) ^ 2 * (Module.finrank Real E : Real) ^ 3 *
-            connDiffSq (I := I) g₁ g₂ x *
+            connectionDifferenceSq (I := I) g₁ g₂ x *
             normSq0S (I := I) g₁ x 2 (metricTensorField (I := I) g₂ x)
         ≤ (2 : Real) ^ 2 * (Module.finrank Real E : Real) ^ 3 *
-            connDiffSq (I := I) g₁ g₂ x * Bg := h
+            connectionDifferenceSq (I := I) g₁ g₂ x * Background := h
       _ = _ := by norm_num
   have hPnn : 0 ≤ normSq0S (I := I) g₁ x 4 (P x) := normSq0S_nonneg (I := I) g₁ x 4 _
   have hKnn : 0 ≤ normSq0S (I := I) g₁ x 3
@@ -212,7 +212,7 @@ theorem sdecFluxSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
         (lapDiffFlux (I := I) g₁ g₂ (metricTensorField (I := I) g₂)) x) ≤
       (Module.finrank Real E : Real) ^ 7 *
         (BP * (4 * (Module.finrank Real E : Real) ^ 3 *
-          connDiffSq (I := I) g₁ g₂ x * Bg)) := by
+          connectionDifferenceSq (I := I) g₁ g₂ x * Background)) := by
     refine (reLowerPairSq_le (I := I) (s := 3) g₁ P
       (lapDiffFlux (I := I) g₁ g₂ (metricTensorField (I := I) g₂)) x).trans ?_
     have hpow : (0 : Real) ≤ (Module.finrank Real E : Real) ^ 7 := by positivity
@@ -233,30 +233,30 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem fluxSlabLe (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Rm2 P : Real → Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
-    (t : Real) (x : M) {B₂ BP Bg : Real}
-    (hB₂0 : 0 ≤ B₂) (hBP0 : 0 ≤ BP) (hBg0 : 0 ≤ Bg)
+    (t : Real) (x : M) {B₂ BP Background : Real}
+    (hB₂0 : 0 ≤ B₂) (hBP0 : 0 ≤ BP) (hBackground0 : 0 ≤ Background)
     (hB₂ : normSq0S (I := I) (g₁ t) x 4 (Rm2 t x) ≤ B₂)
     (hBP : normSq0S (I := I) (g₁ t) x 4 (P t x) ≤ BP)
-    (hBg : normSq0S (I := I) (g₁ t) x 2 (metricTensorField (I := I) (g₂ t) x) ≤ Bg) :
+    (hBackground : normSq0S (I := I) (g₁ t) x 2 (metricTensorField (I := I) (g₂ t) x) ≤ Background) :
     normSq0S (I := I) (g₁ t) x 5 (sdecFlux (I := I) (g₁ t) (g₂ t) (Rm2 t) (P t) x) ≤
       (32 * (Module.finrank Real E : Real) ^ 5 * B₂ +
-          8 * (Module.finrank Real E : Real) ^ 10 * (BP * Bg)) *
+          8 * (Module.finrank Real E : Real) ^ 10 * (BP * Background)) *
         forwardUniqueDensity (I := I) g₁ g₂ t x := by
   have hbr : (0 : Real) ≤ 32 * (Module.finrank Real E : Real) ^ 5 * B₂ +
-      8 * (Module.finrank Real E : Real) ^ 10 * (BP * Bg) := by
+      8 * (Module.finrank Real E : Real) ^ 10 * (BP * Background) := by
     have h1 : (0 : Real) ≤ 32 * (Module.finrank Real E : Real) ^ 5 := by positivity
     have h2 : (0 : Real) ≤ 8 * (Module.finrank Real E : Real) ^ 10 := by positivity
     have h3 := mul_nonneg h1 hB₂0
-    have h4 := mul_nonneg h2 (mul_nonneg hBP0 hBg0)
+    have h4 := mul_nonneg h2 (mul_nonneg hBP0 hBackground0)
     linarith
-  refine (sdecFluxSq_le (I := I) (g₁ t) (g₂ t) (Rm2 t) (P t) x hB₂ hBP hBg).trans ?_
-  calc 32 * (Module.finrank Real E : Real) ^ 5 * connDiffSq (I := I) (g₁ t) (g₂ t) x * B₂ +
+  refine (sdecFluxSq_le (I := I) (g₁ t) (g₂ t) (Rm2 t) (P t) x hB₂ hBP hBackground).trans ?_
+  calc 32 * (Module.finrank Real E : Real) ^ 5 * connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x * B₂ +
         8 * (Module.finrank Real E : Real) ^ 10 *
-          connDiffSq (I := I) (g₁ t) (g₂ t) x * (BP * Bg)
+          connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x * (BP * Background)
       = (32 * (Module.finrank Real E : Real) ^ 5 * B₂ +
-          8 * (Module.finrank Real E : Real) ^ 10 * (BP * Bg)) *
-        connDiffSq (I := I) (g₁ t) (g₂ t) x := by ring
-    _ ≤ _ := mul_le_mul_of_nonneg_left (connDiffSq_le_dens (I := I) g₁ g₂ t x) hbr
+          8 * (Module.finrank Real E : Real) ^ 10 * (BP * Background)) *
+        connectionDifferenceSq (I := I) (g₁ t) (g₂ t) x := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (connectionDifferenceSq_le_dens (I := I) g₁ g₂ t x) hbr
 
 end FluxField
 
@@ -888,7 +888,7 @@ theorem reactSlabLe (g₁ g₂ : Real → SmoothRiemannianMetric I M) {Λric : R
       movingReact0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₁ t) x)
           (metricDiffAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 3 (metricRicciAt (I := I) (g₁ t) x)
-          (connDiffLowAt (I := I) (g₁ t) (g₂ t) x) +
+          (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x) +
         movingReact0S (I := I) (g₁ t) x 4 (metricRicciAt (I := I) (g₁ t) x)
           (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x) ≤
       C_R * forwardUniqueDensity (I := I) g₁ g₂ t x := by
@@ -917,8 +917,8 @@ theorem reactSlabLe (g₁ g₂ : Real → SmoothRiemannianMetric I M) {Λric : R
       (le_trans (mul_le_mul_of_nonneg_left hprod hcoef) (le_of_eq (by ring)))
   have h2 := hstep 2 (metricDiffAt (I := I) (g₁ t) (g₂ t) x)
     (by simpa [metricDiffSq_def] using metricDiffSq_le_dens (I := I) g₁ g₂ t x)
-  have h3 := hstep 3 (connDiffLowAt (I := I) (g₁ t) (g₂ t) x)
-    (by simpa [connDiffSq_def] using connDiffSq_le_dens (I := I) g₁ g₂ t x)
+  have h3 := hstep 3 (connectionDifferenceLowAt (I := I) (g₁ t) (g₂ t) x)
+    (by simpa [connectionDifferenceSq_def] using connectionDifferenceSq_le_dens (I := I) g₁ g₂ t x)
   have h4 := hstep 4 (rmDiffLowAt (I := I) (g₁ t) (g₂ t) x)
     (by simpa [rmDiffSq_def] using rmDiffSq_le_dens (I := I) g₁ g₂ t x)
   norm_num at h2 h3 h4

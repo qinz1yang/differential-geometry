@@ -27,7 +27,7 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem claim1_LC_bound {u : Set M} (hu : IsOpen u)
+theorem connection_difference_component_bound_in_frame {u : Set M} (hu : IsOpen u)
     (gRef : SmoothRiemannianMetric I M)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u)
@@ -69,7 +69,7 @@ theorem claim1_LC_bound {u : Set M} (hu : IsOpen u)
           (fun z => christoffelSymbolInFrame
             (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z)) m x) ≤
-        claim1Const C0 (3 / 2) K m * (1 + compL2 (iterCovComp (I := I) frame
+        inverseContractionAffineRecurrenceConstant C0 (3 / 2) K m * (1 + compL2 (iterCovComp (I := I) frame
           (fun z => christoffelSymbolInFrame
             (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z)
@@ -85,7 +85,7 @@ theorem claim1_LC_bound {u : Set M} (hu : IsOpen u)
           (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
           frame hframe z) y k) u :=
     fun k => (hchrG _ _ _).sub (hchrH _ _ _)
-  have hmain := claim1_bound hu frame
+  have hmain := iterated_covariant_tensor_bound_of_koszul_contraction hu frame
     (fun z => christoffelSymbolInFrame
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
       frame hframe z) hframeS hchrH
@@ -106,7 +106,7 @@ theorem claim1_LC_bound {u : Set M} (hu : IsOpen u)
   simpa only [hKR] using hmain
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-theorem claim1_LC {u : Set M} (hu : IsOpen u)
+theorem exists_connection_difference_component_bound_in_frame {u : Set M} (hu : IsOpen u)
     (gRef : SmoothRiemannianMetric I M)
     (frame : Idx → (x : M) → TangentSpace I x)
     (hframe : IsLocalFrameOn I E (1 : WithTop ℕ∞) frame u)
@@ -154,8 +154,8 @@ theorem claim1_LC {u : Set M} (hu : IsOpen u)
             (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef)
             frame hframe z)
           (frameComp0S (I := I) (metricTensorField (I := I) g) frame) (m + 1) x)) := by
-  exact ⟨claim1Const C0 (3 / 2) K m, claim1Const_nonneg C0 (3 / 2) K m,
-    claim1_LC_bound hu gRef frame hframe hframeS hchrH C0 K m⟩
+  exact ⟨inverseContractionAffineRecurrenceConstant C0 (3 / 2) K m, inverse_contraction_affine_recurrence_constant_nonneg C0 (3 / 2) K m,
+    connection_difference_component_bound_in_frame hu gRef frame hframe hframeS hchrH C0 K m⟩
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [IsManifold I 1 M]
     [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -548,7 +548,7 @@ theorem mixed_oneStep_top {r : ℕ} {u : Set M} (hu : IsOpen u)
             compL2 (iterCovComp (I := I) frame chrH X j x) := by
         linarith [hcorrBound]
 
-private theorem claim2DoubleAux (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A n)
+private theorem exists_uniform_bound_of_two_index_recurrence (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A n)
     (K : Real) (hK0 : 0 ≤ K) :
     ∀ k : ℕ, ∃ Ck : Real, 0 ≤ Ck ∧
       ∀ W : ℕ → ℕ → Real, (∀ i' k', 0 ≤ W i' k') →
@@ -596,7 +596,7 @@ private theorem claim2DoubleAux (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 
         mul_le_mul_of_nonneg_left h3 (hA k')
       linarith
 
-theorem claim2Double (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A n)
+theorem exists_joint_uniform_bound_of_two_index_recurrence (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A n)
     (K : Real) (hK0 : 0 ≤ K) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ W : ℕ → ℕ → Real, (∀ i k, 0 ≤ W i k) →
@@ -604,7 +604,7 @@ theorem claim2Double (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A n)
         (∀ i k, i + k + 1 ≤ L →
           W i (k + 1) ≤ W (i + 1) k + A k * ∑ j ∈ Finset.range (k + 1), W i j) →
         ∀ i k, i + k ≤ L → W i k ≤ C := by
-  choose Ck hCk0 hCkB using claim2DoubleAux L A hA K hK0
+  choose Ck hCk0 hCkB using exists_uniform_bound_of_two_index_recurrence L A hA K hK0
   refine ⟨∑ k ∈ Finset.range (L + 1), Ck k,
     Finset.sum_nonneg fun k _ => hCk0 k, ?_⟩
   intro W hW0 hBase hOne i k hik
@@ -614,24 +614,24 @@ theorem claim2Double (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A n)
       (Finset.mem_range.mpr (by omega))
   linarith
 
-noncomputable def claim2Const (L : ℕ) (A : ℕ → Real) (K : Real) : Real :=
+noncomputable def twoIndexRecurrenceUniformBound (L : ℕ) (A : ℕ → Real) (K : Real) : Real :=
   Classical.choose <|
-    claim2Double L (fun n => max (A n) 0) (fun n => le_max_right (A n) 0)
+    exists_joint_uniform_bound_of_two_index_recurrence L (fun n => max (A n) 0) (fun n => le_max_right (A n) 0)
       (max K 0) (le_max_right K 0)
 
-theorem claim2Const_nonneg (L : ℕ) (A : ℕ → Real) (K : Real) :
-    0 ≤ claim2Const L A K :=
+theorem two_index_recurrence_uniform_bound_nonneg (L : ℕ) (A : ℕ → Real) (K : Real) :
+    0 ≤ twoIndexRecurrenceUniformBound L A K :=
   (Classical.choose_spec <|
-    claim2Double L (fun n => max (A n) 0) (fun n => le_max_right (A n) 0)
+    exists_joint_uniform_bound_of_two_index_recurrence L (fun n => max (A n) 0) (fun n => le_max_right (A n) 0)
       (max K 0) (le_max_right K 0)).1
 
-theorem claim2Const_spec (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A n)
+theorem two_index_recurrence_uniform_bound_spec (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A n)
     (K : Real) (hK0 : 0 ≤ K)
     (W : ℕ → ℕ → Real) (hW0 : ∀ i k, 0 ≤ W i k)
     (hBase : ∀ i, i ≤ L → W i 0 ≤ K)
     (hOne : ∀ i k, i + k + 1 ≤ L →
       W i (k + 1) ≤ W (i + 1) k + A k * ∑ j ∈ Finset.range (k + 1), W i j) :
-    ∀ i k, i + k ≤ L → W i k ≤ claim2Const L A K := by
+    ∀ i k, i + k ≤ L → W i k ≤ twoIndexRecurrenceUniformBound L A K := by
   have hAmax : ∀ n, max (A n) 0 = A n := fun n => max_eq_left (hA n)
   have hKmax : max K 0 = K := max_eq_left hK0
   have hBase' : ∀ i, i ≤ L → W i 0 ≤ max K 0 := by
@@ -642,14 +642,14 @@ theorem claim2Const_spec (L : ℕ) (A : ℕ → Real) (hA : ∀ n : ℕ, 0 ≤ A
         W (i + 1) k + max (A k) 0 * ∑ j ∈ Finset.range (k + 1), W i j := by
     intro i k hik
     simpa only [hAmax] using hOne i k hik
-  simpa only [claim2Const] using
+  simpa only [twoIndexRecurrenceUniformBound] using
     (Classical.choose_spec <|
-      claim2Double L (fun n => max (A n) 0) (fun n => le_max_right (A n) 0)
+      exists_joint_uniform_bound_of_two_index_recurrence L (fun n => max (A n) 0) (fun n => le_max_right (A n) 0)
         (max K 0) (le_max_right K 0)).2 W hW0 hBase' hOne'
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem claim2_component_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem mixed_covariant_component_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrH : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -668,7 +668,7 @@ theorem claim2_component_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       ∀ x ∈ u, ∀ b a : ℕ, a + b ≤ L →
         compL2 (iterCovComp (I := I) frame chrH
           (iterCovComp (I := I) frame chrG T b) a x) ≤
-            claim2Const L (fun k => oneStepConst B k (r₀ + L)) K := by
+            twoIndexRecurrenceUniformBound L (fun k => oneStepConst B k (r₀ + L)) K := by
   classical
   intro chrG hchrG T hT hDbound hShi x hx b a hab
   have hX_sm : ∀ i : ℕ, ∀ kk : Fin (r₀ + i) → Idx,
@@ -726,7 +726,7 @@ theorem claim2_component_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
       rw [one_mul]
       exact mul_le_mul_of_nonneg_right hmono hSig0
     linarith
-  exact claim2Const_spec L (fun k => oneStepConst B k (r₀ + L))
+  exact two_index_recurrence_uniform_bound_spec L (fun k => oneStepConst B k (r₀ + L))
     (fun k => oneStepConst_nonneg hB k (r₀ + L)) K hK0
     (fun i k => compL2 (iterCovComp (I := I) frame chrH
       (iterCovComp (I := I) frame chrG T i) k x))
@@ -734,7 +734,7 @@ theorem claim2_component_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
 
 omit [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M]
     [DecidableEq Idx] in
-theorem claim2_component {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
+theorem exists_mixed_covariant_component_bound {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
     (frame : Idx → (x : M) → TangentSpace I x)
     (chrH : M → Idx → Idx → Idx → Real)
     (hframe : ∀ d : Idx, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
@@ -754,9 +754,9 @@ theorem claim2_component {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
         ∀ x ∈ u, ∀ b a : ℕ, a + b ≤ L →
           compL2 (iterCovComp (I := I) frame chrH
             (iterCovComp (I := I) frame chrG T b) a x) ≤ C := by
-  exact ⟨claim2Const L (fun k => oneStepConst B k (r₀ + L)) K,
-    claim2Const_nonneg L (fun k => oneStepConst B k (r₀ + L)) K,
-    claim2_component_bound hu frame chrH hframe hchrH B hB L K hK0⟩
+  exact ⟨twoIndexRecurrenceUniformBound L (fun k => oneStepConst B k (r₀ + L)) K,
+    two_index_recurrence_uniform_bound_nonneg L (fun k => oneStepConst B k (r₀ + L)) K,
+    mixed_covariant_component_bound hu frame chrH hframe hchrH B hB L K hK0⟩
 
 private theorem chain_le (V Q : ℕ → Real) (N : ℕ)
     (hstep : ∀ i, i < N → V i ≤ V (i + 1) + Q i) :
@@ -997,7 +997,7 @@ theorem mixed_descent {r₀ : ℕ} {u : Set M} (hu : IsOpen u)
 
 noncomputable def aNConst (r₀ N : ℕ) (B : ℕ → Real) (Ctop KShi : Real) :
     Real × Real :=
-  let C₂ := claim2Const (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi
+  let C₂ := twoIndexRecurrenceUniformBound (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi
   let Cdesc := mixedDescentConst r₀ N B C₂ KShi
   (Cdesc * Ctop, Cdesc * (1 + Ctop))
 
@@ -1007,7 +1007,7 @@ theorem aNConst_fst_nonneg {r₀ N : ℕ} {B : ℕ → Real} {Ctop KShi : Real}
   rw [aNConst]
   exact mul_nonneg
     (mixedDescentConst_nonneg hB
-      (claim2Const_nonneg (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi)
+      (two_index_recurrence_uniform_bound_nonneg (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi)
       hKShi)
     hCtop
 
@@ -1017,7 +1017,7 @@ theorem aNConst_snd_nonneg {r₀ N : ℕ} {B : ℕ → Real} {Ctop KShi : Real}
   rw [aNConst]
   exact mul_nonneg
     (mixedDescentConst_nonneg hB
-      (claim2Const_nonneg (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi)
+      (two_index_recurrence_uniform_bound_nonneg (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi)
       hKShi)
     (by linarith)
 
@@ -1051,13 +1051,13 @@ theorem aN_component_bound {r₀ rg : ℕ} {u : Set M} (hu : IsOpen u)
               compL2 (iterCovComp (I := I) frame chrH gComp N x) +
             (aNConst r₀ N B Ctop KShi).2 := by
   classical
-  let C₂ := claim2Const (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi
+  let C₂ := twoIndexRecurrenceUniformBound (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi
   have hC₂0 : 0 ≤ C₂ :=
-    claim2Const_nonneg (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi
+    two_index_recurrence_uniform_bound_nonneg (N - 1) (fun k => oneStepConst B k (r₀ + (N - 1))) KShi
   let Cdesc := mixedDescentConst r₀ N B C₂ KShi
   have hCdesc0 : 0 ≤ Cdesc := mixedDescentConst_nonneg hB0 hC₂0 hKShi0
   intro chrG hchrG T hT hDlow gComp hDtop hShi x hx
-  have hmixU := claim2_component_bound (r₀ := r₀) hu frame chrH hframe hchrH
+  have hmixU := mixed_covariant_component_bound (r₀ := r₀) hu frame chrH hframe hchrH
     B hB0 (N - 1) KShi hKShi0
   have hdescU := mixed_descent_bound (r₀ := r₀) hu frame chrH hframe hchrH
     B hB0 N hN C₂ hC₂0 KShi hKShi0

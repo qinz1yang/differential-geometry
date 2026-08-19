@@ -461,7 +461,7 @@ theorem stageCompare_base
       letI : TopologicalSpace (X.obj j).M := (X.obj j).topology
       ConnectedSpace (X.obj j).M)
     (k l : Nat)
-    (_hgp : Item3GpScaleAt (I := I) inp.decay inp.D P L inp.pack s k)
+    (_hgp : ExponentialRadiusScaleAt (I := I) inp.decay inp.D P L inp.pack s k)
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) :
     stageComparisonMap inp P L s hs hconn k l

@@ -12,7 +12,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open LieCorr0Core
+open LieCorrectionZeroCore
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 
@@ -21,26 +21,26 @@ open DifferentialGeometry.Integral.DivergenceTheorem
   (chartRiemannTensor extChartAt_target_subset_interior_of_boundaryless)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_appCc_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
+  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciThreeArmHjoint
   linearizedRicciThreeArmHcont linearizedRicciThreeArmHjoint_zero
-  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_appCc
+  exists_linearizedRicci_threeArm_coeffFields ricciTensor_realize_sub_eq_threeArm_operatorFieldApply
   linearizedRicciArm0Field linearizedRicciArm1Field linearizedRicciArm2FieldLichnerowicz
   linearizedRicciArm0BaseCoeff linearizedRicciArm0CorrField linearizedRicciArm1BaseCoeff
-  linearizedRicciArm1CorrField ricciArmPrincipalCoeff traceHessianCoeff
+  linearizedRicciArm1CorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_arm0Field_jointSmooth linearizedRicci_arm1Field_jointSmooth
   linearizedRicci_arm2FieldLichnerowicz_jointSmooth ricciArmOrder1KoszulCoeff
-  exists_arm1Koszul_realizedFam_rfns_ballUniform continuousBilinearMap_basis_expand
-  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local appCc_zero_left_local ccTensor02Symm
+  exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
+  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
   symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-  (realizedSmallSet realizedSmallSet_isOpen Icc_subset_realizedSmallSet linearizedRicciAt
+  (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum jointContMDiff_toModel_continuous_slice
-  hasDerivAt_realizedRicciChartSum_general realizedFam)
+  hasDerivAt_realizedRicciChartSum_general metricPerturbationPath)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (symmAbsorbedCoeff symmAbsorbedCoeff_appCc_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
+  (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
   symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -52,19 +52,19 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instCompleteSpaceE_tame : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-section LieCorr0BoundsAll
+section LieCorrectionZeroBoundsAll
 
 set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieWEndo deTurckLieWEndo_apply deTurckLieWEndo_homSection_contMDiff deTurckVFCovDeriv
-  connDiffOp_homSection_contMDiff metricConnDiffLoweredFib metricConnDiffLoweredFib_toModel
-  metricConnDiffLoweredFib_contMDiff domDomCongrFibRank domDomCongrFibRank_apply
+  (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
+  connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel
+  metricConnectionDifferenceLoweredFib_contMDiff domDomCongrFibRank domDomCongrFibRank_apply
   tensor0SProdKappaFib tensor0SProdKappaFib_apply)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
-section LieCorr0BoundsE1
+section LieCorrectionZeroBoundsE1
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
@@ -72,14 +72,14 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck (modelDoubleTrace_apply
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma lc0b_unitTensor_toModel (x : M) (m : Fin 0 → E) :
+private lemma lieCorrectionZerob_unitTensor_toModel (x : M) (m : Fin 0 → E) :
     Tensor0SSpace.toModel (unitTensor (I := I) (M := M) x) m = 1 := by
   rw [unitTensor, Tensor0SSpace.toModel_ofModel]
   rfl
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma lc0b_curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v0 : E) :
+private lemma lieCorrectionZerob_curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v0 : E) :
     tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D v0 =
       (Tensor0SSpace.toModel D (fun _ : Fin 1 => v0)) • unitTensor (I := I) (M := M) x := by
   apply Tensor0SSpace.toModel_injective
@@ -93,7 +93,7 @@ private lemma lc0b_curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v0 : E) :
       (T := D) (v0 := v0) (vs := m)
   rw [h1]
   rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    lc0b_unitTensor_toModel (I := I) (M := M) x m, smul_eq_mul, mul_one]
+    lieCorrectionZerob_unitTensor_toModel (I := I) (M := M) x m, smul_eq_mul, mul_one]
   congr 1
   funext k
   refine Fin.cases ?_ (fun j => j.elim0) k
@@ -101,14 +101,14 @@ private lemma lc0b_curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v0 : E) :
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma lc0b_clm_unit_smul (x : M) (s : ℕ)
+private lemma lieCorrectionZerob_clm_unit_smul (x : M) (s : ℕ)
     (A : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x) (c : ℝ) :
     A (c • unitTensor (I := I) (M := M) x) = c • A (unitTensor (I := I) (M := M) x) :=
   A.map_smul c _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma lc0b_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
+lemma lieCorrectionZerob_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 1 I x) :
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 1 K).toSection x) D =
@@ -133,8 +133,8 @@ lemma lc0b_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from K.toSection x) D from rfl]
     rw [show m = Fin.cons (m 0) (Fin.tail m) from (Fin.cons_self_tail m).symm]
     rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 0 3 x _ D (m 0) (Fin.tail m)]
-    rw [lc0b_curry_zero (I := I) (M := M) x D (m 0)]
-    rw [lc0b_clm_unit_smul (I := I) (M := M) x 3 _ _]
+    rw [lieCorrectionZerob_curry_zero (I := I) (M := M) x D (m 0)]
+    rw [lieCorrectionZerob_clm_unit_smul (I := I) (M := M) x 3 _ _]
     rw [← hκ, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
     rfl
   rw [hLHS]
@@ -150,7 +150,7 @@ lemma lc0b_KLift_fiber_13 (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma lc0b_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
+lemma lieCorrectionZerob_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 1) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 1 2 K).toSection x) D =
@@ -188,8 +188,8 @@ lemma lc0b_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
       fin_cases k <;> rfl]
     rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 0 1 x _ D1 (m 1)
       (fun _ : Fin 1 => m 2)]
-    rw [lc0b_curry_zero (I := I) (M := M) x D1 (m 1)]
-    rw [lc0b_clm_unit_smul (I := I) (M := M) x 1 _ _]
+    rw [lieCorrectionZerob_curry_zero (I := I) (M := M) x D1 (m 1)]
+    rw [lieCorrectionZerob_clm_unit_smul (I := I) (M := M) x 1 _ _]
     rw [← hκ, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
     have hD1val : Tensor0SSpace.toModel D1 (fun _ : Fin 1 => m 1) =
         Tensor0SSpace.toModel D ![m 0, m 1] := by
@@ -214,7 +214,7 @@ lemma lc0b_KLift_fiber_21 (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma lc0b_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
+lemma lieCorrectionZerob_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 2 K).toSection x) D =
@@ -252,8 +252,8 @@ lemma lc0b_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
       fin_cases k <;> rfl]
     rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 0 3 x _ D1 (m 1)
       (fun j : Fin 3 => m (Fin.natAdd 2 j))]
-    rw [lc0b_curry_zero (I := I) (M := M) x D1 (m 1)]
-    rw [lc0b_clm_unit_smul (I := I) (M := M) x 3 _ _]
+    rw [lieCorrectionZerob_curry_zero (I := I) (M := M) x D1 (m 1)]
+    rw [lieCorrectionZerob_clm_unit_smul (I := I) (M := M) x 3 _ _]
     rw [← hκ, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
     have hD1val : Tensor0SSpace.toModel D1 (fun _ : Fin 1 => m 1) =
         Tensor0SSpace.toModel D ![m 0, m 1] := by
@@ -285,7 +285,7 @@ lemma lc0b_KLift_fiber_23 (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma lc0b_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
+lemma lieCorrectionZerob_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 3 I x) :
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 3 K).toSection x) D =
@@ -313,7 +313,7 @@ lemma lc0b_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
     rw [slotExtendFib_apply_eval (I := I) (M := M) g₀ 2 5 x _ D (m 0) (Fin.tail m)]
     set D2 : Tensor0SSpace 2 I x :=
       tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (m 0) with hD2
-    rw [lc0b_KLift_fiber_23 (I := I) (M := M) g₀ K x D2]
+    rw [lieCorrectionZerob_KLift_fiber_23 (I := I) (M := M) g₀ K x D2]
     rw [← hκ]
     rw [tensor0SProdKappaFib_apply (I := I) x κ D2, Tensor0SSpace.toModel_ofModel]
     rw [Bundle.continuousMultilinearMap.modelProduct_apply]
@@ -346,16 +346,16 @@ lemma lc0b_KLift_fiber_33 (g₀ : SmoothRiemannianMetric I M)
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma lc0b_kappa_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M) :
+lemma lieCorrectionZerob_kappa_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
-      (lc0Kappa (I := I) (M := M) g₀ g₁ gB).toSection x)
+      (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gB).toSection x)
       (unitTensor (I := I) (M := M) x) =
-      metricConnDiffLoweredFib (I := I) g₁ g₁ gB x := by
+      metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ gB x := by
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
-      (lc0Kappa (I := I) (M := M) g₀ g₁ gB).toSection x)
+      (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ gB).toSection x)
       (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
-          (lc0KappaField (I := I) (M := M) g₁ gB x)
+          (lieCorrectionZeroKappaField (I := I) (M := M) g₁ gB x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
       from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
@@ -364,34 +364,34 @@ lemma lc0b_kappa_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x : M) :
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma lc0b_traceStep_fiber (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
+lemma lieCorrectionZerob_traceStep_fiber (g₀ g₁ : SmoothRiemannianMetric I M) (p : ℕ)
     (σ : Equiv.Perm (Fin (p + 2))) (x : M) :
     (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
       (reindexCoeffGen (I := I) (M := M) g₀ (p + 2) p
-        (lc0PureDT (I := I) (M := M) g₀ g₁ p) σ).toSection x) =
-    lieCorr0TraceStep (I := I) g₁ p σ x := by
+        (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ).toSection x) =
+    lieCorrectionZeroTraceStep (I := I) g₁ p σ x := by
   apply ContinuousLinearMap.ext
   intro D
   rw [show ((show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
       (reindexCoeffGen (I := I) (M := M) g₀ (p + 2) p
-        (lc0PureDT (I := I) (M := M) g₀ g₁ p) σ).toSection x) D) =
+        (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p) σ).toSection x) D) =
       reindexCoeffFibGen (I := I) (p + 2) p σ x
         (show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
-          (lc0PureDT (I := I) (M := M) g₀ g₁ p).toSection x) D from rfl]
+          (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p).toSection x) D from rfl]
   rw [reindexCoeffFibGen_apply (I := I) (p + 2) p σ x _ D]
   rw [show ((show Tensor0SSpace (p + 2) I x →L[ℝ] Tensor0SSpace p I x from
-      (lc0PureDT (I := I) (M := M) g₀ g₁ p).toSection x)
+      (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ p).toSection x)
       (Tensor0SSpace.ofModel (ContinuousMultilinearMap.domDomCongr σ
         (Tensor0SSpace.toModel D)))) =
       cometricDoubleTraceFib (I := I) g₁ p x
         (Tensor0SSpace.ofModel (ContinuousMultilinearMap.domDomCongr σ
           (Tensor0SSpace.toModel D))) from rfl]
-  rw [lieCorr0TraceStep, ContinuousLinearMap.comp_apply]
+  rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply]
   congr 1
 
-end LieCorr0BoundsE1
+end LieCorrectionZeroBoundsE1
 
-end LieCorr0BoundsAll
+end LieCorrectionZeroBoundsAll
 
 end DifferentialGeometry.Analysis.Spectral
 

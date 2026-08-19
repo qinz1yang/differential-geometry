@@ -63,9 +63,9 @@ theorem liveCenters_core
   have hl' := abs_lt.mp (hN l hl alpha)
   linarith
 
-theorem H6NormalData.mapsTo_tail
+theorem BoundedGeometryNormalData.mapsTo_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)
@@ -283,9 +283,9 @@ theorem H6NormalData.mapsTo_tail
   change dist (F x) Yl.basepoint ≤ R1
   exact hfinal.le
 
-theorem H6NormalData.return_tail
+theorem BoundedGeometryNormalData.return_tail
     (inp : MetricCompactCore (I := I) X)
-    (d : H6NormalData (I := I) X inp.decay)
+    (d : BoundedGeometryNormalData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {s : Real} (hs : 0 ≤ s)
     (phi : Nat → Nat) (hphi : StrictMono phi)

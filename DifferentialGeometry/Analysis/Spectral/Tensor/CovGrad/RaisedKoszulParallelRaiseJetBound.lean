@@ -43,7 +43,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma iteratedCovGrad_smul' (g : SmoothRiemannianMetric I M) (r s j : ℕ)
+private lemma iteratedCovGrad_smul (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (c : ℝ) (w : SmoothCcTensor g r s) :
     iteratedCovGrad (I := I) g r s j (c • w) = c • iteratedCovGrad (I := I) g r s j w := by
   induction j with
@@ -53,7 +53,7 @@ private lemma iteratedCovGrad_smul' (g : SmoothRiemannianMetric I M) (r s j : �
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_smul' (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+private lemma DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul' (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
       c ^ 2 * riemannianFiberNormSq (I := I) (M := M) g r s x v := by
@@ -64,7 +64,7 @@ private lemma riemannianFiberNormSq_smul' (g : SmoothRiemannianMetric I M) (r s 
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rfns_iteratedCovGrad_symmS_le
+theorem riemannianFiberNormSq_iteratedCovGrad_symmS_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (T : SmoothCcTensor g₀ 0 2)
     {R : ℝ}
     (hTjet : ∀ j : ℕ, j ≤ a + 1 → ∀ y : M,
@@ -111,7 +111,7 @@ theorem rfns_iteratedCovGrad_symmS_le
         riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (2 + k) x _ _
     _ = (1 / 2 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x (A.toSection x) +
           (1 / 2 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x (B.toSection x) := by
-        rw [riemannianFiberNormSq_smul', riemannianFiberNormSq_smul']; ring
+        rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul', DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul']; ring
     _ ≤ (1 / 2 : ℝ) * R ^ 2 + (1 / 2 : ℝ) * R ^ 2 := by
         apply add_le_add
         · exact mul_le_mul_of_nonneg_left hRA (by norm_num)
@@ -119,7 +119,7 @@ theorem rfns_iteratedCovGrad_symmS_le
     _ = R ^ 2 := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma rfns_iteratedCovGrad_domDomCongr_symmSCovGrad3_le
+private lemma riemannianFiberNormSq_iteratedCovGrad_domDomCongr_symmSCovGrad3_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (T : SmoothCcTensor g₀ 0 2)
     {R : ℝ}
     (hTjet : ∀ j : ℕ, j ≤ a + 1 → ∀ y : M,
@@ -132,13 +132,13 @@ private lemma rfns_iteratedCovGrad_domDomCongr_symmSCovGrad3_le
       R ^ 2 := by
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀ σ
     (symmSCovGrad3 (I := I) g₀ T) i x]
-  have hcomm := rfns_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 0 2 i
+  have hcomm := riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 0 2 i
     (ccTensor02Symm (I := I) g₀ T) x
-  have hbnd := rfns_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ a T hTjet (i + 1) (by omega) x
+  have hbnd := riemannianFiberNormSq_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ a T hTjet (i + 1) (by omega) x
   exact le_trans (le_of_eq hcomm) hbnd
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem rfns_iteratedCovGrad_koszulCovecCc_le
+theorem riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (T : SmoothCcTensor g₀ 0 2)
     {R : ℝ}
     (hTjet : ∀ j : ℕ, j ≤ a + 1 → ∀ y : M,
@@ -158,7 +158,7 @@ theorem rfns_iteratedCovGrad_koszulCovecCc_le
     rw [koszulCovecCc, hDA, hDB, hDC, hW]
   have hiter : iteratedCovGrad (I := I) g₀ 0 3 i (koszulCovecCc (I := I) g₀ T) =
       (1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 3 i (DA + DB - DC) := by
-    rw [hkos, iteratedCovGrad_smul']
+    rw [hkos, iteratedCovGrad_smul]
   have hsub : iteratedCovGrad (I := I) g₀ 0 3 i (DA + DB - DC) =
       iteratedCovGrad (I := I) g₀ 0 3 i DA + iteratedCovGrad (I := I) g₀ 0 3 i DB -
         iteratedCovGrad (I := I) g₀ 0 3 i DC := by
@@ -177,18 +177,18 @@ theorem rfns_iteratedCovGrad_koszulCovecCc_le
   set PB := (iteratedCovGrad (I := I) g₀ 0 3 i DB).toSection x with hPB
   set PC := (iteratedCovGrad (I := I) g₀ 0 3 i DC).toSection x with hPC
   have hbA : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PA ≤ R ^ 2 :=
-    rfns_iteratedCovGrad_domDomCongr_symmSCovGrad3_le (I := I) (M := M) g₀ a T hTjet
+    riemannianFiberNormSq_iteratedCovGrad_domDomCongr_symmSCovGrad3_le (I := I) (M := M) g₀ a T hTjet
       (Equiv.swap (0 : Fin 3) 2) i hi x
   have hbB : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PB ≤ R ^ 2 :=
-    rfns_iteratedCovGrad_domDomCongr_symmSCovGrad3_le (I := I) (M := M) g₀ a T hTjet
+    riemannianFiberNormSq_iteratedCovGrad_domDomCongr_symmSCovGrad3_le (I := I) (M := M) g₀ a T hTjet
       (finRotate 3) i hi x
   have hbC : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PC ≤ R ^ 2 :=
-    rfns_iteratedCovGrad_domDomCongr_symmSCovGrad3_le (I := I) (M := M) g₀ a T hTjet
+    riemannianFiberNormSq_iteratedCovGrad_domDomCongr_symmSCovGrad3_le (I := I) (M := M) g₀ a T hTjet
       (Equiv.swap (1 : Fin 3) 2) i hi x
-  rw [htoSec, riemannianFiberNormSq_smul']
+  rw [htoSec, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul']
   have hnegC : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x (-PC) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PC := by
-    have hh := riemannianFiberNormSq_smul' (I := I) (M := M) g₀ 0 (3 + i) x (-1 : ℝ) PC
+    have hh := DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul' (I := I) (M := M) g₀ 0 (3 + i) x (-1 : ℝ) PC
     rw [neg_one_smul] at hh
     rw [hh]; norm_num
   have hsum : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x (PA + PB - PC) ≤

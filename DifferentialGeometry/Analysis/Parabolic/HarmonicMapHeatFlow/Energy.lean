@@ -297,7 +297,7 @@ noncomputable def hmfDirDensity
     ∑ i : Fin (Module.finrank ℝ E),
       q.inner (Phi x)
         (mfderiv I I Phi x
-          (metricComparisonEndo (I := I) q h x
+          (metricComparisonEndomorphism (I := I) q h x
             (smoothOrthoFrame (I := I) q x i x)))
         (mfderiv I I Phi x (smoothOrthoFrame (I := I) q x i x))
 
@@ -309,7 +309,7 @@ omit [BoundarylessManifold I M] [ConnectedSpace M] in
       (1 / 2 : ℝ) *
         ∑ i : Fin (Module.finrank ℝ E),
           q.inner x
-            (metricComparisonEndo (I := I) q h x
+            (metricComparisonEndomorphism (I := I) q h x
               (smoothOrthoFrame (I := I) q x i x))
             (smoothOrthoFrame (I := I) q x i x) := by
   rw [hmfDirDensity, hmfAdd_zero]

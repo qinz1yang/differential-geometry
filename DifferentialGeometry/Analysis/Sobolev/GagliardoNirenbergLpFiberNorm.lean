@@ -89,14 +89,14 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le
         ∑ K : Fin 0 → Fin n, ∑ J : Fin m → Fin n,
           DifferentialGeometry.Analysis.Elliptic.fiberNormSqSummand (I := I)
             (M := M) g x 0 m S n e K J :=
-    fun S => DifferentialGeometry.Analysis.Elliptic.rfns_eq_sum_fiberNormSqSummand_of_orthoFrame
+    fun S => DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
       (I := I) (M := M) g m x S e hnTan horth
   have hreprT2 : ∀ S : Tensor0SBundle.TensorRSSpace 0 (m + 1 + 1) I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 (m + 1 + 1) x S =
         ∑ K : Fin 0 → Fin n, ∑ J : Fin (m + 1 + 1) → Fin n,
           DifferentialGeometry.Analysis.Elliptic.fiberNormSqSummand (I := I) (M := M) g x 0
             (m + 1 + 1) S n e K J :=
-    fun S => DifferentialGeometry.Analysis.Elliptic.rfns_eq_sum_fiberNormSqSummand_of_orthoFrame
+    fun S => DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
       (I := I) (M := M) g (m + 1 + 1) x S e hnTan horth
   have hcomp : ∀ (i : Fin n) (J : Fin m → Fin n),
       DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x 0 m
@@ -354,14 +354,14 @@ private theorem prependCovGradSlot_fiberNormSq_frame_sum
         ∑ K : Fin 0 → Fin n, ∑ J : Fin t → Fin n,
           DifferentialGeometry.Analysis.Elliptic.fiberNormSqSummand (I := I)
             (M := M) g x 0 t U n e K J :=
-    fun U => DifferentialGeometry.Analysis.Elliptic.rfns_eq_sum_fiberNormSqSummand_of_orthoFrame
+    fun U => DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
       (I := I) (M := M) g t x U e hnTan horth
   have hreprSucc : ∀ U : Tensor0SBundle.TensorRSSpace 0 (t + 1) I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 (t + 1) x U =
         ∑ K : Fin 0 → Fin n, ∑ J : Fin (t + 1) → Fin n,
           DifferentialGeometry.Analysis.Elliptic.fiberNormSqSummand (I := I) (M := M) g x 0
             (t + 1) U n e K J :=
-    fun U => DifferentialGeometry.Analysis.Elliptic.rfns_eq_sum_fiberNormSqSummand_of_orthoFrame
+    fun U => DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
       (I := I) (M := M) g (t + 1) x U e hnTan horth
   rw [prependCovGradSlot_toSection_apply (I := I) (M := M) g 0 t ζ S x]
   rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame
@@ -518,14 +518,14 @@ private theorem kato_mfderiv_riemannianFiberNormSq_frame_sum_le
           ∑ K : Fin 0 → Fin n, ∑ J : Fin p → Fin n,
             DifferentialGeometry.Analysis.Elliptic.fiberNormSqSummand (I := I)
               (M := M) g x 0 p U n e K J :=
-      fun U => DifferentialGeometry.Analysis.Elliptic.rfns_eq_sum_fiberNormSqSummand_of_orthoFrame
+      fun U => DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
         (I := I) (M := M) g p x U e hnTan horth
     have hreprSucc : ∀ U : Tensor0SBundle.TensorRSSpace 0 (p + 1) I x,
         riemannianFiberNormSq (I := I) (M := M) g 0 (p + 1) x U =
           ∑ K : Fin 0 → Fin n, ∑ J : Fin (p + 1) → Fin n,
             DifferentialGeometry.Analysis.Elliptic.fiberNormSqSummand (I := I) (M := M) g x 0
               (p + 1) U n e K J :=
-      fun U => DifferentialGeometry.Analysis.Elliptic.rfns_eq_sum_fiberNormSqSummand_of_orthoFrame
+      fun U => DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
         (I := I) (M := M) g (p + 1) x U e hnTan horth
     rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame
       (I := I) (M := M) g p x
@@ -676,8 +676,8 @@ private theorem covDerivCrossLeft_weight_bound
     exact mul_le_mul_of_nonneg_left hkato hcoeff_nn
   have hrP_bound : rP ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) * A ^ 2 := by
     rw [hrP_eq]
-    have hrfnsw_le : riemannianFiberNormSq (I := I) (M := M) g 0 m x (w.toSection x) ≤ A ^ 2 := hAsq
-    have hrfnsw_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g 0 m x (w.toSection x) :=
+    have hriemannianFiberNormSqw_le : riemannianFiberNormSq (I := I) (M := M) g 0 m x (w.toSection x) ≤ A ^ 2 := hAsq
+    have hriemannianFiberNormSqw_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g 0 m x (w.toSection x) :=
       riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 m x (w.toSection x)
     have hsum_nn : (0 : ℝ) ≤ ∑ a : Fin n,
         (extDerivFun (I := I) (ζ : M → ℝ) x
@@ -693,9 +693,9 @@ private theorem covDerivCrossLeft_weight_bound
             riemannianFiberNormSq (I := I) (M := M) g 0 m x (w.toSection x)
         ≤ (((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c)) *
             riemannianFiberNormSq (I := I) (M := M) g 0 m x (w.toSection x) :=
-          mul_le_mul_of_nonneg_right hdζsum hrfnsw_nn
+          mul_le_mul_of_nonneg_right hdζsum hriemannianFiberNormSqw_nn
       _ ≤ (((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c)) * A ^ 2 :=
-          mul_le_mul_of_nonneg_left hrfnsw_le hbound_nn
+          mul_le_mul_of_nonneg_left hriemannianFiberNormSqw_le hbound_nn
       _ = ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) * A ^ 2 := by ring
   have hk1 : (0 : ℝ) ≤ (k : ℝ) - 1 := by
     have : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast _hk

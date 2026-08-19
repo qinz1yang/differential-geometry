@@ -370,7 +370,7 @@ theorem coordRmFinSmooth
     (idx : Fin 4 -> CoordinateIdx (𝕜 := Real) E) :
     ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
       (modelWithCornersSelf Real Real) ∞
-      (fun p : Real × M => realizedRmBase (I := I) S x0 p.1 p.2 idx)
+      (fun p : Real × M => solutionCurvatureComponents (I := I) S x0 p.1 p.2 idx)
       ((t : Real), x) := by
   let coeff : CoordinateIdx (𝕜 := Real) E ->
       Fin (Module.finrank Real E) -> Real :=
@@ -394,7 +394,7 @@ theorem coordRmFinSmooth
         nhds ((t : Real), x) :=
     ((coordinateFrameSet_open (I := I) x0).preimage continuous_snd).mem_nhds hxframe
   filter_upwards [hframeNhd] with p hp
-  simp only [realizedRmBase_apply]
+  simp only [solutionCurvatureComponents_apply]
   let A := S.base.rm04 p.1 p.2
   change A (fun q : Fin 4 => coordinateFrameAt (I := I) x0 (idx q) p.2) = _
   calc

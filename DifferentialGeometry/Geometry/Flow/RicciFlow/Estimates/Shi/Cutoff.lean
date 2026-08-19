@@ -111,7 +111,7 @@ private theorem cutoff_par_bound
     _ ≤ Ccut * a :=
       mul_le_mul_of_nonneg_right hcut ha0
 
-theorem shiBarrierCutoff_of_sol
+theorem exists_shi_barrier_cutoff_data_of_solution
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -169,7 +169,8 @@ theorem shiBarrierCutoff_of_sol
           Λ * (S.base.metric s).inner y v v := by
     intro s hs y v
     simpa only [Λ, d, dNat] using
-      (ricci_quad_sol (I := I) S y v (hcurv0 s hs y))
+      (ricci_quadratic_form_bound_of_solution_curvature_bound
+        (I := I) S y v (hcurv0 s hs y))
   have hpde :=
     metricPDE_Icc (I := I) S hS hT hslab hreg
   have hequiv :=
@@ -532,7 +533,7 @@ theorem shiBarrierCutoff_of_sol
           DifferentialGeometry.Analysis.CutoffProfile.evalue_top]
       linarith
     let hrho_exists :=
-      scaledDist_calabiUpperSupport_of_sol
+      exists_scaled_distance_calabi_upper_support_of_solution
         (I := I) S hS O hT hslab hreg hcomplete hK hcurv
           ht htpos x hdist_fin hOx
     let rho := Classical.choose hrho_exists

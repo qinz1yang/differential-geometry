@@ -176,7 +176,7 @@ theorem gal_bound_on
   intro u0 Fs
   let uInit : tensorHs (I := I) (M := M) q 0 0 0 :=
     ccTensorToHs (I := I) (M := M) q 0 0 u0
-  choose V hV using fun N => hG.exists_sol uInit (Fs N)
+  choose V hV using fun N => hG.exists_solution uInit (Fs N)
   let Fseq : Nat → Real → TensorEigenIdx (I := I) (M := M) q 0 0 → Real :=
     fun N t i =>
       (scalarGalPert (I := I) (M := M) S T t

@@ -157,7 +157,7 @@ private lemma chartFrameVec_eq_chartBasisVecFiber_helper (α : M)
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
-theorem realizedFam_chartDeTurckRicciRHS_jointContMDiffOn
+theorem metricPerturbationPath_chartDeTurckRicciRHS_jointContMDiffOn
     (g_bg g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -165,12 +165,12 @@ theorem realizedFam_chartDeTurckRicciRHS_jointContMDiffOn
     (α : M) (i k : Fin (Module.finrank ℝ E)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => chartDeTurckRicciRHS (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg α i k (extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
-  have hG := realizedFam_genJointGram_free (I := I) g₀ T T' hδ hδ' α
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg α i k (extChartAt I α p.1))
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
+  have hG := metricPerturbationPath_genJointGram_free (I := I) g₀ T T' hδ hδ' α
   have hmove : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine ContMDiffOn.prodMk contMDiffOn_snd ?_
     exact (contMDiffOn_extChartAt (I := I) (x := α)).comp contMDiffOn_fst (fun p hp => hp.1)
   intro p hp
@@ -180,14 +180,14 @@ theorem realizedFam_chartDeTurckRicciRHS_jointContMDiffOn
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hxsrc)
   have hentry := gen_joint_chartDeTurckRicciRHS (I := I)
-    (realizedFam (I := I) g₀ T T' hδ hδ') α hG g_bg i k hs hy
+    (metricPerturbationPath (I := I) g₀ T T' hδ hδ') α hG g_bg i k hs hy
   have hentryM : ContMDiffAt (𝓘(ℝ, ℝ × E)) 𝓘(ℝ) ∞
       (fun r : ℝ × E => chartDeTurckRicciRHS (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' r.1) g_bg α i k r.2) (p.2, extChartAt I α p.1) :=
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' r.1) g_bg α i k r.2) (p.2, extChartAt I α p.1) :=
     hentry.contMDiffAt
   have hmoveAt : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ × E)) ∞
       (fun p : M × ℝ => (p.2, extChartAt I α p.1))
-      ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) p := by
+      ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p := by
     have hm := hmove p ⟨hx, hs⟩
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hm
     exact hm
@@ -205,8 +205,8 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1
         (deTurckRHSField (I := I) g_bg
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1))
-      ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1))
+      ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   refine contMDiffOn_of_locally_contMDiffOn ?_
@@ -214,9 +214,9 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
   refine ⟨(chartAt H x₀).source ×ˢ (Set.univ : Set ℝ),
     (chartAt H x₀).open_source.prod isOpen_univ,
     ⟨mem_chart_source H x₀, Set.mem_univ _⟩, ?_⟩
-  have hinter : ((Set.univ : Set M) ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) ∩
+  have hinter : ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) ∩
       ((chartAt H x₀).source ×ˢ (Set.univ : Set ℝ)) =
-      (chartAt H x₀).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ') := by
+      (chartAt H x₀).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ') := by
     ext ⟨y, u⟩
     simp only [Set.mem_inter_iff, Set.mem_prod, Set.mem_univ, true_and, and_true]
     tauto
@@ -232,23 +232,23 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ => Bb.repr
           (e ⟨p.1, deTurckRHSField (I := I) g_bg
-            (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1⟩).2 σ)
-        ((chartAt H x₀).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) p₀ := by
+            (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1⟩).2 σ)
+        ((chartAt H x₀).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p₀ := by
     intro σ
-    have hP1 := realizedFam_chartDeTurckRicciRHS_jointContMDiffOn (I := I) g_bg g₀ T T' hδ hδ'
+    have hP1 := metricPerturbationPath_chartDeTurckRicciRHS_jointContMDiffOn (I := I) g_bg g₀ T T' hδ hδ'
       α (σ 0) (σ 1)
-    have hp₀_in_α : p₀ ∈ (chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ') := by
+    have hp₀_in_α : p₀ ∈ (chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ') := by
       refine ⟨?_, hp₀.2⟩
       rw [hα]; exact mem_chart_source H p₀.1
     have hP1at : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ => chartDeTurckRicciRHS (I := I)
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg α (σ 0) (σ 1) (extChartAt I α p.1))
-        ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) p₀ := hP1 p₀ hp₀_in_α
-    have hαsrc_nhd : ((chartAt H α).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) ∈
-        nhdsWithin p₀ ((chartAt H x₀).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) := by
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg α (σ 0) (σ 1) (extChartAt I α p.1))
+        ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p₀ := hP1 p₀ hp₀_in_α
+    have hαsrc_nhd : ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) ∈
+        nhdsWithin p₀ ((chartAt H x₀).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
       have h := inter_mem_nhdsWithin
-        ((chartAt H x₀).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ'))
-        (((chartAt H α).open_source.prod realizedSmallSet_isOpen).mem_nhds hp₀_in_α)
+        ((chartAt H x₀).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
+        (((chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen).mem_nhds hp₀_in_α)
       refine Filter.mem_of_superset h ?_
       intro q hq; exact hq.2
     refine (hP1at.mono_of_mem_nhdsWithin hαsrc_nhd).congr_of_eventuallyEq ?_ ?_
@@ -261,14 +261,14 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
       rw [trivializationAt_tensor0SBundle_succ_fibre]
       rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
       change Tensor0SBundle.Tensor0SSpace.toModel
-          (deTurckRHSField (I := I) g_bg (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1)
+          (deTurckRHSField (I := I) g_bg (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ p.1
             ((chartModelBasis E) (σ i))) = _
       rw [deTurckRHSField_toModel_apply]
       rw [chartFrameVec_eq_chartBasisVecFiber_helper,
         chartFrameVec_eq_chartBasisVecFiber_helper]
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) g_bg α (σ 0) (σ 1) hpgood]
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg α (σ 0) (σ 1) hpgood]
     · have hpgood : p₀.1 ∈ chartLeviCivitaGoodSet (I := I) α := by
         rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α, extChartAt_source (I := I)]
         rw [hα]; exact mem_chart_source H p₀.1
@@ -276,21 +276,21 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
       rw [trivializationAt_tensor0SBundle_succ_fibre]
       rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
       change Tensor0SBundle.Tensor0SSpace.toModel
-          (deTurckRHSField (I := I) g_bg (realizedFam (I := I) g₀ T T' hδ hδ' p₀.2) p₀.1)
+          (deTurckRHSField (I := I) g_bg (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p₀.2) p₀.1)
           (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ p₀.1
             ((chartModelBasis E) (σ i))) = _
       rw [deTurckRHSField_toModel_apply]
       rw [chartFrameVec_eq_chartBasisVecFiber_helper,
         chartFrameVec_eq_chartBasisVecFiber_helper]
       rw [deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS (I := I)
-        (realizedFam (I := I) g₀ T T' hδ hδ' p₀.2) g_bg α (σ 0) (σ 1) hpgood]
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p₀.2) g_bg α (σ 0) (σ 1) hpgood]
   have hpi : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) ∞
       (fun p : M × ℝ => (Bb.repr
         (e ⟨p.1, deTurckRHSField (I := I) g_bg
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1⟩).2 :
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1⟩).2 :
           (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ))
-      ((chartAt H x₀).source ×ˢ realizedSmallSet (δ := δ) (δ' := δ')) p₀ :=
+      ((chartAt H x₀).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p₀ :=
     contMDiffWithinAt_pi_space.2 (fun σ => hcoord σ)
   have hsymm : ContMDiff 𝓘(ℝ, (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ)
       𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E) ∞
@@ -300,18 +300,18 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
   · filter_upwards [self_mem_nhdsWithin] with p _
     simp only [Function.comp_apply]
     rw [show ((Bb.repr (e ⟨p.1, deTurckRHSField (I := I) g_bg
-        (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1⟩).2) :
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1⟩).2) :
           (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) =
         Bb.equivFun (e ⟨p.1, deTurckRHSField (I := I) g_bg
-          (realizedFam (I := I) g₀ T T' hδ hδ' p.2) p.1⟩).2 from
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1⟩).2 from
         (Bb.equivFun_apply _).symm]
     exact (Bb.equivFun.symm_apply_apply _).symm
   · simp only [Function.comp_apply]
     rw [show ((Bb.repr (e ⟨p₀.1, deTurckRHSField (I := I) g_bg
-        (realizedFam (I := I) g₀ T T' hδ hδ' p₀.2) p₀.1⟩).2) :
+        (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p₀.2) p₀.1⟩).2) :
           (Fin 2 → Fin (Module.finrank ℝ E)) → ℝ) =
         Bb.equivFun (e ⟨p₀.1, deTurckRHSField (I := I) g_bg
-          (realizedFam (I := I) g₀ T T' hδ hδ' p₀.2) p₀.1⟩).2 from
+          (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p₀.2) p₀.1⟩).2 from
         (Bb.equivFun_apply _).symm]
     exact (Bb.equivFun.symm_apply_apply _).symm
 

@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
 
 
-def bPair (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
+def curvatureQuadraticPairing (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -40,21 +40,21 @@ def bPair (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
           (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
           (s := 4) (q := 4) A B)))
 
-def bPerm : Equiv.Perm (Fin 8) :=
+def curvatureQuadraticPairingPermutationZeroOneTwoThree : Equiv.Perm (Fin 8) :=
   Equiv.ofBijective ![4, 0, 5, 2, 6, 1, 7, 3] (by decide)
 
-def bPerm2 : Equiv.Perm (Fin 8) :=
+def curvatureQuadraticPairingPermutationZeroOneThreeTwo : Equiv.Perm (Fin 8) :=
   Equiv.ofBijective ![4, 0, 5, 2, 7, 1, 6, 3] (by decide)
 
-def bPerm3 : Equiv.Perm (Fin 8) :=
+def curvatureQuadraticPairingPermutationZeroTwoOneThree : Equiv.Perm (Fin 8) :=
   Equiv.ofBijective ![4, 0, 6, 2, 5, 1, 7, 3] (by decide)
 
-def bPerm4 : Equiv.Perm (Fin 8) :=
+def curvatureQuadraticPairingPermutationZeroThreeOneTwo : Equiv.Perm (Fin 8) :=
   Equiv.ofBijective ![4, 0, 7, 2, 5, 1, 6, 3] (by decide)
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bPair_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+theorem curvatureQuadraticPairing_zero_one_two_three_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
@@ -62,14 +62,14 @@ theorem bPair_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
-    component0S (I := I) basis (bPair (I := I) g bPerm A B x) m =
+    component0S (I := I) basis (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneTwoThree A B x) m =
       ∑ f : Idx, ∑ r : Idx, ∑ e : Idx, ∑ q : Idx,
         gInv f r * gInv e q *
           component0S (I := I) basis (A x) ![m 0, e, m 1, f] *
             component0S (I := I) basis (B x) ![m 2, q, m 3, r] := by
   classical
   simp only [component0S_apply]
-  unfold bPair
+  unfold curvatureQuadraticPairing
   rw [metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv]
   unfold metricTrace0S2InBasis
@@ -82,7 +82,7 @@ theorem bPair_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   change gInv f r * (gInv e q *
-    (ContinuousMultilinearMap.domDomCongr bPerm
+    (ContinuousMultilinearMap.domDomCongr curvatureQuadraticPairingPermutationZeroOneTwoThree
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
         (s := 4) (q := 4) A B x))
@@ -94,26 +94,26 @@ theorem bPair_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
           (metricTraceInput (I := I) (basis f) (basis r) (fun p => basis (m p)))
-          (bPerm i)) ∘ Fin.castAdd 4 =
+          (curvatureQuadraticPairingPermutationZeroOneTwoThree i)) ∘ Fin.castAdd 4 =
         fun p => basis (![m 0, e, m 1, f] p) := by
     funext p
     fin_cases p <;>
-      simp [bPerm, Equiv.ofBijective, Fin.castAdd, Fin.castLE, metricTraceInput_apply]
+      simp [curvatureQuadraticPairingPermutationZeroOneTwoThree, Equiv.ofBijective, Fin.castAdd, Fin.castLE, metricTraceInput_apply]
   have hB :
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
           (metricTraceInput (I := I) (basis f) (basis r) (fun p => basis (m p)))
-          (bPerm i)) ∘ Fin.natAdd 4 =
+          (curvatureQuadraticPairingPermutationZeroOneTwoThree i)) ∘ Fin.natAdd 4 =
         fun p => basis (![m 2, q, m 3, r] p) := by
     funext p
     fin_cases p <;>
-      simp [bPerm, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
+      simp [curvatureQuadraticPairingPermutationZeroOneTwoThree, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hA, hB]
   ring
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bPair2_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+theorem curvatureQuadraticPairing_zero_one_three_two_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
@@ -121,14 +121,14 @@ theorem bPair2_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
-    component0S (I := I) basis (bPair (I := I) g bPerm2 A B x) m =
+    component0S (I := I) basis (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneThreeTwo A B x) m =
       ∑ f : Idx, ∑ r : Idx, ∑ e : Idx, ∑ q : Idx,
         gInv f r * gInv e q *
           component0S (I := I) basis (A x) ![m 0, e, m 1, f] *
             component0S (I := I) basis (B x) ![m 3, q, m 2, r] := by
   classical
   simp only [component0S_apply]
-  unfold bPair
+  unfold curvatureQuadraticPairing
   rw [metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv]
   unfold metricTrace0S2InBasis
@@ -141,7 +141,7 @@ theorem bPair2_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   change gInv f r * (gInv e q *
-    (ContinuousMultilinearMap.domDomCongr bPerm2
+    (ContinuousMultilinearMap.domDomCongr curvatureQuadraticPairingPermutationZeroOneThreeTwo
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
         (s := 4) (q := 4) A B x))
@@ -153,26 +153,26 @@ theorem bPair2_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
           (metricTraceInput (I := I) (basis f) (basis r) (fun p => basis (m p)))
-          (bPerm2 i)) ∘ Fin.castAdd 4 =
+          (curvatureQuadraticPairingPermutationZeroOneThreeTwo i)) ∘ Fin.castAdd 4 =
         fun p => basis (![m 0, e, m 1, f] p) := by
     funext p
     fin_cases p <;>
-      simp [bPerm2, Equiv.ofBijective, Fin.castAdd, Fin.castLE, metricTraceInput_apply]
+      simp [curvatureQuadraticPairingPermutationZeroOneThreeTwo, Equiv.ofBijective, Fin.castAdd, Fin.castLE, metricTraceInput_apply]
   have hB :
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
           (metricTraceInput (I := I) (basis f) (basis r) (fun p => basis (m p)))
-          (bPerm2 i)) ∘ Fin.natAdd 4 =
+          (curvatureQuadraticPairingPermutationZeroOneThreeTwo i)) ∘ Fin.natAdd 4 =
         fun p => basis (![m 3, q, m 2, r] p) := by
     funext p
     fin_cases p <;>
-      simp [bPerm2, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
+      simp [curvatureQuadraticPairingPermutationZeroOneThreeTwo, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hA, hB]
   ring
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bPair3_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+theorem curvatureQuadraticPairing_zero_two_one_three_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
@@ -180,14 +180,14 @@ theorem bPair3_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
-    component0S (I := I) basis (bPair (I := I) g bPerm3 A B x) m =
+    component0S (I := I) basis (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroTwoOneThree A B x) m =
       ∑ f : Idx, ∑ r : Idx, ∑ e : Idx, ∑ q : Idx,
         gInv f r * gInv e q *
           component0S (I := I) basis (A x) ![m 0, e, m 2, f] *
             component0S (I := I) basis (B x) ![m 1, q, m 3, r] := by
   classical
   simp only [component0S_apply]
-  unfold bPair
+  unfold curvatureQuadraticPairing
   rw [metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv]
   unfold metricTrace0S2InBasis
@@ -200,7 +200,7 @@ theorem bPair3_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   change gInv f r * (gInv e q *
-    (ContinuousMultilinearMap.domDomCongr bPerm3
+    (ContinuousMultilinearMap.domDomCongr curvatureQuadraticPairingPermutationZeroTwoOneThree
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
         (s := 4) (q := 4) A B x))
@@ -212,26 +212,26 @@ theorem bPair3_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
           (metricTraceInput (I := I) (basis f) (basis r) (fun p => basis (m p)))
-          (bPerm3 i)) ∘ Fin.castAdd 4 =
+          (curvatureQuadraticPairingPermutationZeroTwoOneThree i)) ∘ Fin.castAdd 4 =
         fun p => basis (![m 0, e, m 2, f] p) := by
     funext p
     fin_cases p <;>
-      simp [bPerm3, Equiv.ofBijective, Fin.castAdd, Fin.castLE, metricTraceInput_apply]
+      simp [curvatureQuadraticPairingPermutationZeroTwoOneThree, Equiv.ofBijective, Fin.castAdd, Fin.castLE, metricTraceInput_apply]
   have hB :
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
           (metricTraceInput (I := I) (basis f) (basis r) (fun p => basis (m p)))
-          (bPerm3 i)) ∘ Fin.natAdd 4 =
+          (curvatureQuadraticPairingPermutationZeroTwoOneThree i)) ∘ Fin.natAdd 4 =
         fun p => basis (![m 1, q, m 3, r] p) := by
     funext p
     fin_cases p <;>
-      simp [bPerm3, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
+      simp [curvatureQuadraticPairingPermutationZeroTwoOneThree, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hA, hB]
   ring
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bPair4_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+theorem curvatureQuadraticPairing_zero_three_one_two_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
@@ -239,14 +239,14 @@ theorem bPair4_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
-    component0S (I := I) basis (bPair (I := I) g bPerm4 A B x) m =
+    component0S (I := I) basis (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroThreeOneTwo A B x) m =
       ∑ f : Idx, ∑ r : Idx, ∑ e : Idx, ∑ q : Idx,
         gInv f r * gInv e q *
           component0S (I := I) basis (A x) ![m 0, e, m 3, f] *
             component0S (I := I) basis (B x) ![m 1, q, m 2, r] := by
   classical
   simp only [component0S_apply]
-  unfold bPair
+  unfold curvatureQuadraticPairing
   rw [metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis gInv hinv]
   unfold metricTrace0S2InBasis
@@ -259,7 +259,7 @@ theorem bPair4_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   change gInv f r * (gInv e q *
-    (ContinuousMultilinearMap.domDomCongr bPerm4
+    (ContinuousMultilinearMap.domDomCongr curvatureQuadraticPairingPermutationZeroThreeOneTwo
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (n := (∞ : WithTop ℕ∞))
         (s := 4) (q := 4) A B x))
@@ -271,34 +271,34 @@ theorem bPair4_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
           (metricTraceInput (I := I) (basis f) (basis r) (fun p => basis (m p)))
-          (bPerm4 i)) ∘ Fin.castAdd 4 =
+          (curvatureQuadraticPairingPermutationZeroThreeOneTwo i)) ∘ Fin.castAdd 4 =
         fun p => basis (![m 0, e, m 3, f] p) := by
     funext p
     fin_cases p <;>
-      simp [bPerm4, Equiv.ofBijective, Fin.castAdd, Fin.castLE, metricTraceInput_apply]
+      simp [curvatureQuadraticPairingPermutationZeroThreeOneTwo, Equiv.ofBijective, Fin.castAdd, Fin.castLE, metricTraceInput_apply]
   have hB :
       (fun i : Fin 8 =>
         metricTraceInput (I := I) (basis e) (basis q)
           (metricTraceInput (I := I) (basis f) (basis r) (fun p => basis (m p)))
-          (bPerm4 i)) ∘ Fin.natAdd 4 =
+          (curvatureQuadraticPairingPermutationZeroThreeOneTwo i)) ∘ Fin.natAdd 4 =
         fun p => basis (![m 1, q, m 2, r] p) := by
     funext p
     fin_cases p <;>
-      simp [bPerm4, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
+      simp [curvatureQuadraticPairingPermutationZeroThreeOneTwo, Equiv.ofBijective, Fin.natAdd, metricTraceInput_apply]
   rw [hA, hB]
   ring
 
-def bComb (g : SmoothRiemannianMetric I M)
+def curvatureQuadraticCombination (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4 :=
-  (bPair (I := I) g bPerm A A - bPair (I := I) g bPerm2 A A) +
-    (bPair (I := I) g bPerm3 A A - bPair (I := I) g bPerm4 A A)
+  (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneTwoThree A A - curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneThreeTwo A A) +
+    (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroTwoOneThree A A - curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroThreeOneTwo A A)
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bComb_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+theorem curvatureQuadraticCombination_component {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
@@ -306,7 +306,7 @@ theorem bComb_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (m : Fin 4 → Idx) :
-    component0S (I := I) basis (bComb (I := I) g A x) m =
+    component0S (I := I) basis (curvatureQuadraticCombination (I := I) g A x) m =
       (∑ f : Idx, ∑ r : Idx, ∑ e : Idx, ∑ q : Idx,
         gInv f r * gInv e q *
           component0S (I := I) basis (A x) ![m 0, e, m 1, f] *
@@ -323,19 +323,19 @@ theorem bComb_comp {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
         gInv f r * gInv e q *
           component0S (I := I) basis (A x) ![m 0, e, m 3, f] *
             component0S (I := I) basis (A x) ![m 1, q, m 2, r]) := by
-  have h1 := bPair_comp (I := I) g basis gInv hinv A A m
-  have h2 := bPair2_comp (I := I) g basis gInv hinv A A m
-  have h3 := bPair3_comp (I := I) g basis gInv hinv A A m
-  have h4 := bPair4_comp (I := I) g basis gInv hinv A A m
+  have h1 := curvatureQuadraticPairing_zero_one_two_three_component (I := I) g basis gInv hinv A A m
+  have h2 := curvatureQuadraticPairing_zero_one_three_two_component (I := I) g basis gInv hinv A A m
+  have h3 := curvatureQuadraticPairing_zero_two_one_three_component (I := I) g basis gInv hinv A A m
+  have h4 := curvatureQuadraticPairing_zero_three_one_two_component (I := I) g basis gInv hinv A A m
   change
-    (bPair (I := I) g bPerm A A x) (fun p => basis (m p)) = _ at h1
+    (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneTwoThree A A x) (fun p => basis (m p)) = _ at h1
   change
-    (bPair (I := I) g bPerm2 A A x) (fun p => basis (m p)) = _ at h2
+    (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneThreeTwo A A x) (fun p => basis (m p)) = _ at h2
   change
-    (bPair (I := I) g bPerm3 A A x) (fun p => basis (m p)) = _ at h3
+    (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroTwoOneThree A A x) (fun p => basis (m p)) = _ at h3
   change
-    (bPair (I := I) g bPerm4 A A x) (fun p => basis (m p)) = _ at h4
-  simp only [bComb, component0S_apply, ContMDiffSection.coe_add,
+    (curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroThreeOneTwo A A x) (fun p => basis (m p)) = _ at h4
+  simp only [curvatureQuadraticCombination, component0S_apply, ContMDiffSection.coe_add,
     ContMDiffSection.coe_sub, Pi.add_apply, Pi.sub_apply,
     Tensor0SSpace.add_apply, Tensor0SSpace.sub_apply]
   rw [h1, h2, h3, h4]
@@ -385,10 +385,10 @@ private theorem routeProdSq (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin
   exact normSq0S_product (I := I) g x basis hinv A B
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bPairSq_le (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
+theorem curvatureQuadraticPairing_norm_sq_le (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4) (x : M) :
-    normSq0S (I := I) g x 4 (bPair (I := I) g σ A B x) ≤
+    normSq0S (I := I) g x 4 (curvatureQuadraticPairing (I := I) g σ A B x) ≤
       (Module.finrank Real E : Real) ^ 14 *
         (normSq0S (I := I) g x 4 (A x) * normSq0S (I := I) g x 4 (B x)) := by
   let X : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -437,31 +437,31 @@ theorem bPairSq_le (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bCombSq_le (g : SmoothRiemannianMetric I M)
+theorem curvatureQuadraticCombination_norm_sq_le (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4) (x : M) :
-    normSq0S (I := I) g x 4 (bComb (I := I) g A x) ≤
+    normSq0S (I := I) g x 4 (curvatureQuadraticCombination (I := I) g A x) ≤
       16 * (Module.finrank Real E : Real) ^ 14 *
         normSq0S (I := I) g x 4 (A x) ^ 2 := by
-  let P1 := bPair (I := I) g bPerm A A x
-  let P2 := bPair (I := I) g bPerm2 A A x
-  let P3 := bPair (I := I) g bPerm3 A A x
-  let P4 := bPair (I := I) g bPerm4 A A x
+  let P1 := curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneTwoThree A A x
+  let P2 := curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroOneThreeTwo A A x
+  let P3 := curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroTwoOneThree A A x
+  let P4 := curvatureQuadraticPairing (I := I) g curvatureQuadraticPairingPermutationZeroThreeOneTwo A A x
   let K : Real :=
     (Module.finrank Real E : Real) ^ 14 *
       normSq0S (I := I) g x 4 (A x) ^ 2
   have h1 : normSq0S (I := I) g x 4 P1 ≤ K := by
     simpa only [P1, K, pow_two] using
-      bPairSq_le (I := I) g bPerm A A x
+      curvatureQuadraticPairing_norm_sq_le (I := I) g curvatureQuadraticPairingPermutationZeroOneTwoThree A A x
   have h2 : normSq0S (I := I) g x 4 P2 ≤ K := by
     simpa only [P2, K, pow_two] using
-      bPairSq_le (I := I) g bPerm2 A A x
+      curvatureQuadraticPairing_norm_sq_le (I := I) g curvatureQuadraticPairingPermutationZeroOneThreeTwo A A x
   have h3 : normSq0S (I := I) g x 4 P3 ≤ K := by
     simpa only [P3, K, pow_two] using
-      bPairSq_le (I := I) g bPerm3 A A x
+      curvatureQuadraticPairing_norm_sq_le (I := I) g curvatureQuadraticPairingPermutationZeroTwoOneThree A A x
   have h4 : normSq0S (I := I) g x 4 P4 ≤ K := by
     simpa only [P4, K, pow_two] using
-      bPairSq_le (I := I) g bPerm4 A A x
+      curvatureQuadraticPairing_norm_sq_le (I := I) g curvatureQuadraticPairingPermutationZeroThreeOneTwo A A x
   have h12 : normSq0S (I := I) g x 4 (P1 - P2) ≤ 4 * K := by
     calc
       normSq0S (I := I) g x 4 (P1 - P2)
@@ -485,8 +485,8 @@ theorem bCombSq_le (g : SmoothRiemannianMetric I M)
           (mul_le_mul_of_nonneg_left h4 (by norm_num))
       _ = 4 * K := by ring
   have hsplit :
-      bComb (I := I) g A x = (P1 - P2) + (P3 - P4) := by
-    simp only [bComb, P1, P2, P3, P4, ContMDiffSection.coe_sub,
+      curvatureQuadraticCombination (I := I) g A x = (P1 - P2) + (P3 - P4) := by
+    simp only [curvatureQuadraticCombination, P1, P2, P3, P4, ContMDiffSection.coe_sub,
       ContMDiffSection.coe_add, Pi.sub_apply, Pi.add_apply]
   rw [hsplit]
   calc
@@ -505,11 +505,11 @@ theorem bCombSq_le (g : SmoothRiemannianMetric I M)
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bPair_sub (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
+theorem curvatureQuadraticPairing_sub (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4) :
-    bPair (I := I) g σ A A - bPair (I := I) g σ B B =
-      bPair (I := I) g σ (A - B) A + bPair (I := I) g σ B (A - B) := by
+    curvatureQuadraticPairing (I := I) g σ A A - curvatureQuadraticPairing (I := I) g σ B B =
+      curvatureQuadraticPairing (I := I) g σ (A - B) A + curvatureQuadraticPairing (I := I) g σ B (A - B) := by
   have hroute :
       MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
           (E := TangentSpace I) (∞ : WithTop ℕ∞) σ
@@ -559,7 +559,7 @@ theorem bPair_sub (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
       tensor0SField_product_apply (I := I) B (A - B) y]
     simp only [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.sub_apply]
     ring
-  unfold bPair
+  unfold curvatureQuadraticPairing
   rw [← traceFirstTwo_sub (I := I) (M := M) (s := 4) g]
   rw [← traceFirstTwo_sub (I := I) (M := M) (s := 6) g]
   rw [hroute]
@@ -568,14 +568,14 @@ theorem bPair_sub (g : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bMetSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
+theorem curvatureQuadraticPairing_metric_difference_norm_sq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (x : M) {Λ BH : Real} (hΛ0 : 0 ≤ Λ)
     (hΛ : ∀ v : TangentSpace I x, g₁.inner x v v ≤ Λ * g₂.inner x v v)
     (hH : metricDiffSq (I := I) g₁ g₂ x ≤ BH) :
     normSq0S (I := I) g₁ x 4
-        (bPair (I := I) g₁ σ A B x - bPair (I := I) g₂ σ A B x) ≤
+        (curvatureQuadraticPairing (I := I) g₁ σ A B x - curvatureQuadraticPairing (I := I) g₂ σ A B x) ≤
       (6 * (Module.finrank Real E : Real) ^ 18 * Λ ^ 2 +
           4 * (Module.finrank Real E : Real) ^ 22 * Λ ^ 4 * BH) *
         metricDiffSq (I := I) g₁ g₂ x *
@@ -691,7 +691,7 @@ theorem bMetSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8
       _ = 2 * nR ^ 18 * Λ ^ 2 * H0 * (NA * NB) +
             2 * nR ^ 22 * Λ ^ 4 * H0 ^ 2 * (NA * NB) := by ring
   have hsplit :
-      bPair (I := I) g₁ σ A B - bPair (I := I) g₂ σ A B = Z1 + Z2 := by
+      curvatureQuadraticPairing (I := I) g₁ σ A B - curvatureQuadraticPairing (I := I) g₂ σ A B = Z1 + Z2 := by
     change
       metricTraceFirstTwoField (I := I) (M := M) (s := 4) g₁ Y1 -
           metricTraceFirstTwoField (I := I) (M := M) (s := 4) g₂ Y2 =
@@ -703,7 +703,7 @@ theorem bMetSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8
     dsimp only [Z2]
     abel
   have hsplitx :
-      bPair (I := I) g₁ σ A B x - bPair (I := I) g₂ σ A B x =
+      curvatureQuadraticPairing (I := I) g₁ σ A B x - curvatureQuadraticPairing (I := I) g₂ σ A B x =
         Z1 x + Z2 x := by
     simpa only [ContMDiffSection.coe_sub, ContMDiffSection.coe_add,
       Pi.sub_apply, Pi.add_apply] using DFunLike.congr_fun hsplit x
@@ -744,14 +744,14 @@ theorem bMetSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
+theorem curvatureQuadraticPairing_difference_norm_sq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 8)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (x : M) {Λ BH : Real} (hΛ0 : 0 ≤ Λ)
     (hΛ : ∀ v : TangentSpace I x, g₁.inner x v v ≤ Λ * g₂.inner x v v)
     (hH : metricDiffSq (I := I) g₁ g₂ x ≤ BH) :
     normSq0S (I := I) g₁ x 4
-        (bPair (I := I) g₁ σ A A x - bPair (I := I) g₂ σ B B x) ≤
+        (curvatureQuadraticPairing (I := I) g₁ σ A A x - curvatureQuadraticPairing (I := I) g₂ σ B B x) ≤
       4 * (Module.finrank Real E : Real) ^ 14 *
           normSq0S (I := I) g₁ x 4 (A x - B x) *
             (normSq0S (I := I) g₁ x 4 (A x) +
@@ -767,34 +767,34 @@ theorem bDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 
     6 * (Module.finrank Real E : Real) ^ 18 * Λ ^ 2 +
       4 * (Module.finrank Real E : Real) ^ 22 * Λ ^ 4 * BH
   have hpol :
-      bPair (I := I) g₁ σ A A x - bPair (I := I) g₁ σ B B x =
-        bPair (I := I) g₁ σ (A - B) A x +
-          bPair (I := I) g₁ σ B (A - B) x := by
+      curvatureQuadraticPairing (I := I) g₁ σ A A x - curvatureQuadraticPairing (I := I) g₁ σ B B x =
+        curvatureQuadraticPairing (I := I) g₁ σ (A - B) A x +
+          curvatureQuadraticPairing (I := I) g₁ σ B (A - B) x := by
     simpa only [ContMDiffSection.coe_sub, ContMDiffSection.coe_add,
       Pi.sub_apply, Pi.add_apply] using
-        DFunLike.congr_fun (bPair_sub (I := I) g₁ σ A B) x
-  have hPA := bPairSq_le (I := I) g₁ σ (A - B) A x
-  have hPB := bPairSq_le (I := I) g₁ σ B (A - B) x
+        DFunLike.congr_fun (curvatureQuadraticPairing_sub (I := I) g₁ σ A B) x
+  have hPA := curvatureQuadraticPairing_norm_sq_le (I := I) g₁ σ (A - B) A x
+  have hPB := curvatureQuadraticPairing_norm_sq_le (I := I) g₁ σ B (A - B) x
   have hfixed :
       normSq0S (I := I) g₁ x 4
-          (bPair (I := I) g₁ σ A A x - bPair (I := I) g₁ σ B B x) ≤
+          (curvatureQuadraticPairing (I := I) g₁ σ A A x - curvatureQuadraticPairing (I := I) g₁ σ B B x) ≤
         2 * (Module.finrank Real E : Real) ^ 14 * D * (NA + NB) := by
     rw [hpol]
     refine (normSq0S_add_le (I := I) g₁ x 4 _ _).trans ?_
     change
-      2 * normSq0S (I := I) g₁ x 4 (bPair (I := I) g₁ σ (A - B) A x) +
-          2 * normSq0S (I := I) g₁ x 4 (bPair (I := I) g₁ σ B (A - B) x) ≤ _
+      2 * normSq0S (I := I) g₁ x 4 (curvatureQuadraticPairing (I := I) g₁ σ (A - B) A x) +
+          2 * normSq0S (I := I) g₁ x 4 (curvatureQuadraticPairing (I := I) g₁ σ B (A - B) x) ≤ _
     have hPA' :
-        normSq0S (I := I) g₁ x 4 (bPair (I := I) g₁ σ (A - B) A x) ≤
+        normSq0S (I := I) g₁ x 4 (curvatureQuadraticPairing (I := I) g₁ σ (A - B) A x) ≤
           (Module.finrank Real E : Real) ^ 14 * (D * NA) := by
       simpa only [D, NA, ContMDiffSection.coe_sub, Pi.sub_apply] using hPA
     have hPB' :
-        normSq0S (I := I) g₁ x 4 (bPair (I := I) g₁ σ B (A - B) x) ≤
+        normSq0S (I := I) g₁ x 4 (curvatureQuadraticPairing (I := I) g₁ σ B (A - B) x) ≤
           (Module.finrank Real E : Real) ^ 14 * (NB * D) := by
       simpa only [D, NB, ContMDiffSection.coe_sub, Pi.sub_apply] using hPB
     calc
-      2 * normSq0S (I := I) g₁ x 4 (bPair (I := I) g₁ σ (A - B) A x) +
-          2 * normSq0S (I := I) g₁ x 4 (bPair (I := I) g₁ σ B (A - B) x)
+      2 * normSq0S (I := I) g₁ x 4 (curvatureQuadraticPairing (I := I) g₁ σ (A - B) A x) +
+          2 * normSq0S (I := I) g₁ x 4 (curvatureQuadraticPairing (I := I) g₁ σ B (A - B) x)
           ≤ 2 * ((Module.finrank Real E : Real) ^ 14 * (D * NA)) +
               2 * ((Module.finrank Real E : Real) ^ 14 * (NB * D)) :=
         add_le_add
@@ -803,22 +803,22 @@ theorem bDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 
       _ = 2 * (Module.finrank Real E : Real) ^ 14 * D * (NA + NB) := by ring
   have hmetric :
       normSq0S (I := I) g₁ x 4
-          (bPair (I := I) g₁ σ B B x - bPair (I := I) g₂ σ B B x) ≤
+          (curvatureQuadraticPairing (I := I) g₁ σ B B x - curvatureQuadraticPairing (I := I) g₂ σ B B x) ≤
         C * metricDiffSq (I := I) g₁ g₂ x * NB ^ 2 := by
-    have h := bMetSq_le (I := I) g₁ g₂ σ B B x hΛ0 hΛ hH
+    have h := curvatureQuadraticPairing_metric_difference_norm_sq_le (I := I) g₁ g₂ σ B B x hΛ0 hΛ hH
     simpa only [C, NB, pow_two] using h
   have hsplit :
-      bPair (I := I) g₁ σ A A x - bPair (I := I) g₂ σ B B x =
-        (bPair (I := I) g₁ σ A A x - bPair (I := I) g₁ σ B B x) +
-          (bPair (I := I) g₁ σ B B x - bPair (I := I) g₂ σ B B x) := by
+      curvatureQuadraticPairing (I := I) g₁ σ A A x - curvatureQuadraticPairing (I := I) g₂ σ B B x =
+        (curvatureQuadraticPairing (I := I) g₁ σ A A x - curvatureQuadraticPairing (I := I) g₁ σ B B x) +
+          (curvatureQuadraticPairing (I := I) g₁ σ B B x - curvatureQuadraticPairing (I := I) g₂ σ B B x) := by
     abel
   rw [hsplit]
   refine (normSq0S_add_le (I := I) g₁ x 4 _ _).trans ?_
   calc
     2 * normSq0S (I := I) g₁ x 4
-          (bPair (I := I) g₁ σ A A x - bPair (I := I) g₁ σ B B x) +
+          (curvatureQuadraticPairing (I := I) g₁ σ A A x - curvatureQuadraticPairing (I := I) g₁ σ B B x) +
         2 * normSq0S (I := I) g₁ x 4
-          (bPair (I := I) g₁ σ B B x - bPair (I := I) g₂ σ B B x)
+          (curvatureQuadraticPairing (I := I) g₁ σ B B x - curvatureQuadraticPairing (I := I) g₂ σ B B x)
         ≤ 2 * (2 * (Module.finrank Real E : Real) ^ 14 * D * (NA + NB)) +
             2 * (C * metricDiffSq (I := I) g₁ g₂ x * NB ^ 2) :=
       add_le_add
@@ -830,14 +830,14 @@ theorem bDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M) (σ : Fin 8 ≃ Fin 
 
 
 omit [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
-theorem bCombDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
+theorem curvatureQuadraticCombination_difference_norm_sq_le (g₁ g₂ : SmoothRiemannianMetric I M)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     (x : M) {Λ BH : Real} (hΛ0 : 0 ≤ Λ)
     (hΛ : ∀ v : TangentSpace I x, g₁.inner x v v ≤ Λ * g₂.inner x v v)
     (hH : metricDiffSq (I := I) g₁ g₂ x ≤ BH) :
     normSq0S (I := I) g₁ x 4
-        (bComb (I := I) g₁ A x - bComb (I := I) g₂ B x) ≤
+        (curvatureQuadraticCombination (I := I) g₁ A x - curvatureQuadraticCombination (I := I) g₂ B x) ≤
       16 * (4 * (Module.finrank Real E : Real) ^ 14 *
           normSq0S (I := I) g₁ x 4 (A x - B x) *
             (normSq0S (I := I) g₁ x 4 (A x) +
@@ -847,13 +847,13 @@ theorem bCombDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
           metricDiffSq (I := I) g₁ g₂ x *
             normSq0S (I := I) g₁ x 4 (B x) ^ 2) := by
   let D1 :=
-    bPair (I := I) g₁ bPerm A A x - bPair (I := I) g₂ bPerm B B x
+    curvatureQuadraticPairing (I := I) g₁ curvatureQuadraticPairingPermutationZeroOneTwoThree A A x - curvatureQuadraticPairing (I := I) g₂ curvatureQuadraticPairingPermutationZeroOneTwoThree B B x
   let D2 :=
-    bPair (I := I) g₁ bPerm2 A A x - bPair (I := I) g₂ bPerm2 B B x
+    curvatureQuadraticPairing (I := I) g₁ curvatureQuadraticPairingPermutationZeroOneThreeTwo A A x - curvatureQuadraticPairing (I := I) g₂ curvatureQuadraticPairingPermutationZeroOneThreeTwo B B x
   let D3 :=
-    bPair (I := I) g₁ bPerm3 A A x - bPair (I := I) g₂ bPerm3 B B x
+    curvatureQuadraticPairing (I := I) g₁ curvatureQuadraticPairingPermutationZeroTwoOneThree A A x - curvatureQuadraticPairing (I := I) g₂ curvatureQuadraticPairingPermutationZeroTwoOneThree B B x
   let D4 :=
-    bPair (I := I) g₁ bPerm4 A A x - bPair (I := I) g₂ bPerm4 B B x
+    curvatureQuadraticPairing (I := I) g₁ curvatureQuadraticPairingPermutationZeroThreeOneTwo A A x - curvatureQuadraticPairing (I := I) g₂ curvatureQuadraticPairingPermutationZeroThreeOneTwo B B x
   let K : Real :=
     4 * (Module.finrank Real E : Real) ^ 14 *
         normSq0S (I := I) g₁ x 4 (A x - B x) *
@@ -865,16 +865,16 @@ theorem bCombDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
           normSq0S (I := I) g₁ x 4 (B x) ^ 2
   have h1 : normSq0S (I := I) g₁ x 4 D1 ≤ K := by
     simpa only [D1, K] using
-      bDiffSq_le (I := I) g₁ g₂ bPerm A B x hΛ0 hΛ hH
+      curvatureQuadraticPairing_difference_norm_sq_le (I := I) g₁ g₂ curvatureQuadraticPairingPermutationZeroOneTwoThree A B x hΛ0 hΛ hH
   have h2 : normSq0S (I := I) g₁ x 4 D2 ≤ K := by
     simpa only [D2, K] using
-      bDiffSq_le (I := I) g₁ g₂ bPerm2 A B x hΛ0 hΛ hH
+      curvatureQuadraticPairing_difference_norm_sq_le (I := I) g₁ g₂ curvatureQuadraticPairingPermutationZeroOneThreeTwo A B x hΛ0 hΛ hH
   have h3 : normSq0S (I := I) g₁ x 4 D3 ≤ K := by
     simpa only [D3, K] using
-      bDiffSq_le (I := I) g₁ g₂ bPerm3 A B x hΛ0 hΛ hH
+      curvatureQuadraticPairing_difference_norm_sq_le (I := I) g₁ g₂ curvatureQuadraticPairingPermutationZeroTwoOneThree A B x hΛ0 hΛ hH
   have h4 : normSq0S (I := I) g₁ x 4 D4 ≤ K := by
     simpa only [D4, K] using
-      bDiffSq_le (I := I) g₁ g₂ bPerm4 A B x hΛ0 hΛ hH
+      curvatureQuadraticPairing_difference_norm_sq_le (I := I) g₁ g₂ curvatureQuadraticPairingPermutationZeroThreeOneTwo A B x hΛ0 hΛ hH
   have h12 : normSq0S (I := I) g₁ x 4 (D1 - D2) ≤ 4 * K := by
     calc
       normSq0S (I := I) g₁ x 4 (D1 - D2)
@@ -898,9 +898,9 @@ theorem bCombDiffSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
           (mul_le_mul_of_nonneg_left h4 (by norm_num))
       _ = 4 * K := by ring
   have hsplit :
-      bComb (I := I) g₁ A x - bComb (I := I) g₂ B x =
+      curvatureQuadraticCombination (I := I) g₁ A x - curvatureQuadraticCombination (I := I) g₂ B x =
         (D1 - D2) + (D3 - D4) := by
-    simp only [bComb, D1, D2, D3, D4, ContMDiffSection.coe_sub,
+    simp only [curvatureQuadraticCombination, D1, D2, D3, D4, ContMDiffSection.coe_sub,
       ContMDiffSection.coe_add, Pi.sub_apply, Pi.add_apply]
     abel
   rw [hsplit]

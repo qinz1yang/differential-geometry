@@ -712,7 +712,7 @@ theorem pinchInit_pos
     (pinchInitLt_pos (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) D hpos hscalar)
 
-noncomputable def metricData_sol0
+noncomputable def initialMetricRicciDataOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
@@ -725,19 +725,19 @@ noncomputable def metricData_sol0
     simp [twoTensorSecToFamily, SolutionOn.ricci, SolutionFamily.ricci,
       metricCurvData, DifferentialGeometry.Geometry.Curvature.metricCurvData]
 
-theorem metricData_sol0_pos
+theorem initial_metric_ricci_data_positive
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hpos : RicciPosInit (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci)) :
     MetricRicciPos (I := I) (M := M)
-      (metricData_sol0 (I := I) (M := M) S) := by
+      (initialMetricRicciDataOfSolution (I := I) (M := M) S) := by
   intro x v hv
   have h := hpos x v hv
-  simpa [metricData_sol0] using h
+  simpa [initialMetricRicciDataOfSolution] using h
 
-theorem scalar0_cont_sol
+theorem initial_scalar_curvature_continuous_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -2071,7 +2071,7 @@ theorem ricciRoughTrace_coord
     simp [ricciNablaWMP, ricciDerivsWMP, nablaRicComp,
       CanonicalSpatialDerivs0S.of_smooth_connection]
   have hnab2 :=
-    coordNab2_can (I := I) S t x
+    coordinate_second_ricci_covariant_derivative_of_realization (I := I) S t x
       (ricciNablaWMP (I := I) S t)
       (ricciNabla2WMP (I := I) S t)
       (by
@@ -2086,7 +2086,7 @@ theorem ricciRoughTrace_coord
             t x i j := by
     intro i j
     simpa [roughA, frame, SolutionOn.family] using
-      coordRough_can (I := I) S t x
+      rough_laplacian_ricci_component_of_coordinate_realization (I := I) S t x
         (ricciNabla2WMP (I := I) S t) hnab2 i j
   have hcomp_if :
       ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -2144,7 +2144,7 @@ theorem ricciRoughPair
     simp [ricciNablaWMP, ricciDerivsWMP, nablaRicComp,
       CanonicalSpatialDerivs0S.of_smooth_connection]
   have hnab2 :=
-    coordNab2_can (I := I) S t x
+    coordinate_second_ricci_covariant_derivative_of_realization (I := I) S t x
       (ricciNablaWMP (I := I) S t)
       (ricciNabla2WMP (I := I) S t)
       (by
@@ -2159,7 +2159,7 @@ theorem ricciRoughPair
             t x i j := by
     intro i j
     simpa [roughA, frame, SolutionOn.family] using
-      coordRough_can (I := I) S t x
+      rough_laplacian_ricci_component_of_coordinate_realization (I := I) S t x
         (ricciNabla2WMP (I := I) S t) hnab2 i j
   have hcomp_if :
       ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmAppCc
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmOperatorFieldApplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmAbsorbedCoeffInputReindexBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifferenceKoszulSecondCovGrad
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffPassZero
@@ -35,7 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem cometricTrace_rfns
+theorem cometricTrace_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 4 2 x
         ((cometricDoubleTraceField (I := I) g 2).toSection x) ≤
@@ -195,7 +195,7 @@ private theorem traceSucc_fib
       ((Module.finBasis ℝ E) k) (Fin.cons (m 0) (Fin.tail m)))
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem traceSucc_rfns
+private theorem traceSucc_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (p : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g ((p + 1) + 2) (p + 1) x
         ((cometricDoubleTraceField (I := I) g (p + 1)).toSection x) =
@@ -205,11 +205,11 @@ private theorem traceSucc_rfns
   rw [cometricDoubleTraceField_toSection, cometricDoubleTraceField_toSection,
     ← traceSucc_fib (I := I) (M := M) g p x,
     riemannianFiberNormSq_reindexCoeffFibGen]
-  exact rfns_slotExtendFib_eq (I := I) (M := M) g (p + 2) p x
+  exact riemannianFiberNormSq_slotExtendFib_eq (I := I) (M := M) g (p + 2) p x
     (cometricDoubleTraceFib (I := I) g p x)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem cometricTrace_rfns_p
+theorem cometricTrace_riemannianFiberNormSq_p
     (p : ℕ) (g : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g (p + 2) p x
         ((cometricDoubleTraceField (I := I) g p).toSection x) ≤
@@ -226,8 +226,8 @@ theorem cometricTrace_rfns_p
       ((cometricDoubleTraceField (I := I) g 0).toSection x)
     have h1 := riemannianFiberNormSq_nonneg (I := I) (M := M) g 3 1 x
       ((cometricDoubleTraceField (I := I) g 1).toSection x)
-    have h01 := traceSucc_rfns (I := I) (M := M) g 0 x
-    have h12 := traceSucc_rfns (I := I) (M := M) g 1 x
+    have h01 := traceSucc_riemannianFiberNormSq (I := I) (M := M) g 0 x
+    have h12 := traceSucc_riemannianFiberNormSq (I := I) (M := M) g 1 x
     have h02 :
         riemannianFiberNormSq (I := I) (M := M) g 2 0 x
             ((cometricDoubleTraceField (I := I) g 0).toSection x) ≤
@@ -236,12 +236,12 @@ theorem cometricTrace_rfns_p
       dsimp only [d] at hd h01 h12
       nlinarith
     exact h02.trans (by
-      simpa only [d] using cometricTrace_rfns (I := I) (M := M) g x)
+      simpa only [d] using cometricTrace_riemannianFiberNormSq (I := I) (M := M) g x)
   induction p with
   | zero =>
       simpa only [Nat.zero_add] using hbase
   | succ p ih =>
-      rw [traceSucc_rfns (I := I) (M := M) g p x]
+      rw [traceSucc_riemannianFiberNormSq (I := I) (M := M) g p x]
       calc
         (Module.finrank ℝ E : ℝ) *
             riemannianFiberNormSq (I := I) (M := M) g (p + 2) p x
@@ -303,8 +303,8 @@ omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem ricciSelf_twice_eq
     (g : SmoothRiemannianMetric I M) :
-    ricciArmPrincipalCoeff (I := I) (M := M) g g +
-        ricciArmPrincipalCoeff (I := I) (M := M) g g =
+    ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g +
+        ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g =
       reindexCoeffGen (I := I) (M := M) g 4 2
           (cometricDoubleTraceField (I := I) g 2) koszulSlotPerm
         + reindexCoeffGen (I := I) (M := M) g 4 2
@@ -322,8 +322,8 @@ private theorem ricciSelf_twice_eq
   beta_reduce
   change
     Tensor0SSpace.toModel
-        (ricciArmPrincipalCoeffFib (I := I) g x w +
-          ricciArmPrincipalCoeffFib (I := I) g x w) m =
+        (ricciDeTurckPrincipalCoefficientFiber (I := I) g x w +
+          ricciDeTurckPrincipalCoefficientFiber (I := I) g x w) m =
       Tensor0SSpace.toModel
         (((reindexCoeffGen (I := I) (M := M) g 4 2
               (cometricDoubleTraceField (I := I) g 2) koszulSlotPerm).toSection x) w +
@@ -333,7 +333,7 @@ private theorem ricciSelf_twice_eq
                 (cometricDoubleTraceField (I := I) g 2)) koszulSlotPerm).toSection x) w -
           ((cometricDoubleTraceField (I := I) g 2).toSection x) w) m
   rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply,
-    ricciArmPrincipalCoeffFib_toModel, combinedTrace42Model_apply_symbolic,
+    ricciDeTurckPrincipalCoefficientFiber_toModel, combinedTrace42Model_apply_symbolic,
     Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_add,
     ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.add_apply]
   simp_rw [reindexCoeffGen_toSection, rsDomDomCongrSection_toSection,
@@ -354,7 +354,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricciSelf_eq
     (g : SmoothRiemannianMetric I M) :
-    ricciArmPrincipalCoeff (I := I) (M := M) g g =
+    ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g =
       (1 / 2 : ℝ) •
         (reindexCoeffGen (I := I) (M := M) g 4 2
             (cometricDoubleTraceField (I := I) g 2) koszulSlotPerm
@@ -365,16 +365,16 @@ theorem ricciSelf_eq
           - cometricDoubleTraceField (I := I) g 2) := by
   have htwice := ricciSelf_twice_eq (I := I) (M := M) g
   calc
-    ricciArmPrincipalCoeff (I := I) (M := M) g g =
-        (1 : ℝ) • ricciArmPrincipalCoeff (I := I) (M := M) g g := by simp
+    ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g =
+        (1 : ℝ) • ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g := by simp
     _ = ((1 / 2 : ℝ) + 1 / 2) •
-        ricciArmPrincipalCoeff (I := I) (M := M) g g := by norm_num
-    _ = (1 / 2 : ℝ) • ricciArmPrincipalCoeff (I := I) (M := M) g g +
-        (1 / 2 : ℝ) • ricciArmPrincipalCoeff (I := I) (M := M) g g := by
+        ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g := by norm_num
+    _ = (1 / 2 : ℝ) • ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g +
+        (1 / 2 : ℝ) • ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g := by
           rw [add_smul]
     _ = (1 / 2 : ℝ) •
-        (ricciArmPrincipalCoeff (I := I) (M := M) g g +
-          ricciArmPrincipalCoeff (I := I) (M := M) g g) := by
+        (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g +
+          ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g) := by
           rw [smul_add]
     _ = (1 / 2 : ℝ) •
         (reindexCoeffGen (I := I) (M := M) g 4 2

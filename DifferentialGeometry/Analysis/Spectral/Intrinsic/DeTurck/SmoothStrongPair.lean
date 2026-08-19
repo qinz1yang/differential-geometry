@@ -847,7 +847,7 @@ theorem metricRD_local
     simpa only [R₀, hex] using (Classical.choose_spec hex).1
   have hδ₀_lt : δ₀ < 1 := by
     exact lt_of_le_of_lt (Classical.choose_spec hex).2.1
-      (deTurckArmContractionThreshold''_lt_one' (Module.finrank ℝ E))
+      (de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E))
   obtain ⟨T₁, hT₁, hIcc₁, hball₁⟩ :=
     exists_pathBall (I := I) (M := M) q (a + 2) Phi₁ hS h0S hPhi₁ hPhi₁0 hR₀
   obtain ⟨T₂, hT₂, hIcc₂, hball₂⟩ :=

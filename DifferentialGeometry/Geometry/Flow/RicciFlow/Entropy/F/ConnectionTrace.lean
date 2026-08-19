@@ -18,7 +18,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-section GeometryFormula510
+section GeometricFirstVariationFormula
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -696,7 +696,7 @@ theorem connTraceRaw_of_components
   exact connTraceRaw_eq_gamma (I := I) (cov := cov) g hcov A
     nablaChristoffelVariation x (hzero x) (hNabla x) (hGamma x)
 
-end GeometryFormula510
+end GeometricFirstVariationFormula
 
 end
 

@@ -118,16 +118,16 @@ theorem iteratedRmComp_one_hasDerivWithinAt
     (n : Fin 5 → CoordinateIdx (𝕜 := Real) E)
     (hrm : ∀ m : Fin 4 → CoordinateIdx (𝕜 := Real) E,
       HasDerivWithinAt
-        (fun s : Real => realizedRmBase (I := I) S x₀ s x m)
+        (fun s : Real => solutionCurvatureComponents (I := I) S x₀ s x m)
         (rm04Dt (t : Real) x m) D.carrier (t : Real))
     (hchr : ∀ i a p : CoordinateIdx (𝕜 := Real) E,
       HasDerivWithinAt
-        (fun s : Real => realizedChr (I := I) S x₀ s x i a p)
+        (fun s : Real => solutionChristoffelComponents (I := I) S x₀ s x i a p)
         (chrDt (t : Real) x i a p) D.carrier (t : Real))
     (hswap : ∀ m : Fin 4 → CoordinateIdx (𝕜 := Real) E,
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I) (fun y : M => realizedRmBase (I := I) S x₀ s y m) x
+          extDerivFun (I := I) (fun y : M => solutionCurvatureComponents (I := I) S x₀ s y m) x
             (coordinateFrameAt (I := I) x₀ (n 0) x))
         (extDerivFun (I := I) (fun y : M => rm04Dt (t : Real) y m) x
           (coordinateFrameAt (I := I) x₀ (n 0) x))
@@ -135,33 +135,33 @@ theorem iteratedRmComp_one_hasDerivWithinAt
     HasDerivWithinAt
       (fun s : Real =>
         iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
-          (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) 1 s x n)
+          (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 s x n)
       (covDerivStepComp
           (frameExtData (I := I) (coordinateFrameAt (I := I) x₀)
             (fun y : M => rm04Dt (t : Real) y) x)
-          (realizedChr (I := I) S x₀ (t : Real) x)
+          (solutionChristoffelComponents (I := I) S x₀ (t : Real) x)
           (rm04Dt (t : Real) x) n -
         covDerivStepDt (chrDt (t : Real) x)
-          (realizedRmBase (I := I) S x₀ (t : Real) x) n)
+          (solutionCurvatureComponents (I := I) S x₀ (t : Real) x) n)
       D.carrier (t : Real) := by
   have hunfold :
       (fun s : Real =>
         iteratedRmComp (I := I) (coordinateFrameAt (I := I) x₀)
-          (realizedChr (I := I) S x₀) (realizedRmBase (I := I) S x₀) 1 s x n) =
+          (solutionChristoffelComponents (I := I) S x₀) (solutionCurvatureComponents (I := I) S x₀) 1 s x n) =
         fun s : Real =>
           covDerivStepComp
             (frameExtData (I := I) (coordinateFrameAt (I := I) x₀)
-              (fun y : M => realizedRmBase (I := I) S x₀ s y) x)
-            (realizedChr (I := I) S x₀ s x)
-            (realizedRmBase (I := I) S x₀ s x) n := by
+              (fun y : M => solutionCurvatureComponents (I := I) S x₀ s y) x)
+            (solutionChristoffelComponents (I := I) S x₀ s x)
+            (solutionCurvatureComponents (I := I) S x₀ s x) n := by
     funext s
     rw [iteratedRmComp_succ]
     simp only [iteratedRmComp_zero]
   rw [hunfold]
   exact covDerivStepComp_hasDerivWithinAt
     (I := I) (coordinateFrameAt (I := I) x₀)
-    (realizedRmBase (I := I) S x₀) rm04Dt
-    (realizedChr (I := I) S x₀) chrDt
+    (solutionCurvatureComponents (I := I) S x₀) rm04Dt
+    (solutionChristoffelComponents (I := I) S x₀) chrDt
     x n hrm hchr hswap
 
 end Realized

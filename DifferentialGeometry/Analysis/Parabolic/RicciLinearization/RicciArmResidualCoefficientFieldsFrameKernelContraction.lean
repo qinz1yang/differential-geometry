@@ -1,17 +1,17 @@
-import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientRefold
+import DifferentialGeometry.Geometry.Connection.TensorNabla.OperatorFieldSecondGradientDecomposition
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciThreeArmCorrectionFieldBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationArmFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciPathPalatiniLinearization
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSectionDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTowerIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckRemainderDefs
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureRefoldMonomialFibreNormBound
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnDiffCoefficients
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CurvatureDecompositionMonomialFibreNormBound
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLinearizationConnectionDifferenceCoefficients
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldInputSlotSymmetrization
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsMetricPerturbation
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsConnDiffCommutator
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsConnectionDifferenceCommutator
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsSharpGradientKoszul
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFieldsRicciFold
 open DifferentialGeometry.Geometry.Connection.Realization
@@ -74,7 +74,7 @@ theorem ccTensorFourUnitValueSection_contMDiff (g : SmoothRiemannianMetric I M)
     (v := fun y : M => unitZeroSec (I := I) (M := M) y)
     G.toSection.contMDiff (unitZeroSec (I := I) (M := M)).contMDiff
 
-private def refoldKernelArgumentPairEvalCLM (x : M) (v : Fin 2 → E) :
+private def decompositionKernelArgumentPairEvalCLM (x : M) (v : Fin 2 → E) :
     Tensor0SSpace 2 I x →L[ℝ] ℝ :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace 2 I x) := inferInstance
   LinearMap.toContinuousLinearMap
@@ -87,63 +87,63 @@ private def refoldKernelArgumentPairEvalCLM (x : M) (v : Fin 2 → E) :
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma refoldKernelArgumentPairEvalCLM_apply (x : M) (v : Fin 2 → E)
+private lemma decompositionKernelArgumentPairEvalCLM_apply (x : M) (v : Fin 2 → E)
     (D : Tensor0SSpace 2 I x) :
-    refoldKernelArgumentPairEvalCLM (I := I) (M := M) x v D =
+    decompositionKernelArgumentPairEvalCLM (I := I) (M := M) x v D =
       Tensor0SSpace.toModel (𝕜 := ℝ) D v := rfl
 
-def curvatureRefoldMonomialFrameContraction (Gs : Π b : M, Tensor0SSpace 4 I b)
+def curvatureDecompositionMonomialFrameContraction (Gs : Π b : M, Tensor0SSpace 4 I b)
     (σ : Equiv.Perm (Fin 4))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
   ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-    (refoldKernelArgumentPairEvalCLM (I := I) (M := M) x
+    (decompositionKernelArgumentPairEvalCLM (I := I) (M := M) x
         ![(B a x : E), (B b x : E)]).smulRight
       (tensorLeadingPairSlotEvalCLM (I := I) (M := M) 2 x (B a x) (B b x)
         (tensorRank4PermuteCLM (I := I) (M := M) x σ (Gs x)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma refoldKernelContractionMonomialFibFixedFrame_apply
+lemma decompositionKernelContractionMonomialFibFixedFrame_apply
     (Gs : Π b : M, Tensor0SSpace 4 I b) (σ : Equiv.Perm (Fin 4))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
     (D : Tensor0SSpace 2 I x) :
-    curvatureRefoldMonomialFrameContraction (I := I) (M := M) Gs σ B x D =
+    curvatureDecompositionMonomialFrameContraction (I := I) (M := M) Gs σ B x D =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         curvatureActionMonomialCLM (I := I) (M := M) x
           (Tensor0SSpace.toModel (𝕜 := ℝ) D ![(B a x : E), (B b x : E)]) σ
           (B a x) (B b x) (Gs x) := by
-  rw [curvatureRefoldMonomialFrameContraction, ContinuousLinearMap.sum_apply]
+  rw [curvatureDecompositionMonomialFrameContraction, ContinuousLinearMap.sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [ContinuousLinearMap.sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
-  rw [ContinuousLinearMap.smulRight_apply, refoldKernelArgumentPairEvalCLM_apply,
-    curvatureRefoldMonomialFib_apply]
+  rw [ContinuousLinearMap.smulRight_apply, decompositionKernelArgumentPairEvalCLM_apply,
+    curvatureDecompositionMonomialFib_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma refoldKernelContractionMonomialFibFixedFrame_toModel
+lemma decompositionKernelContractionMonomialFibFixedFrame_toModel
     (Gs : Π b : M, Tensor0SSpace 4 I b) (σ : Equiv.Perm (Fin 4))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
-        (curvatureRefoldMonomialFrameContraction (I := I) (M := M) Gs σ B x D) v =
+        (curvatureDecompositionMonomialFrameContraction (I := I) (M := M) Gs σ B x D) v =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel (𝕜 := ℝ) D ![(B a x : E), (B b x : E)] *
           Tensor0SSpace.toModel (𝕜 := ℝ) (Gs x)
             (fun i => (Fin.cons ((B a x : E)) (Fin.cons ((B b x : E)) v) : Fin 4 → E)
               (σ i)) := by
   classical
-  rw [refoldKernelContractionMonomialFibFixedFrame_apply, ← Tensor0SSpace.toModelL_apply,
+  rw [decompositionKernelContractionMonomialFibFixedFrame_apply, ← Tensor0SSpace.toModelL_apply,
     map_sum, ContinuousMultilinearMap.sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
-  rw [Tensor0SSpace.toModelL_apply, curvatureRefoldMonomialFib_toModel]
+  rw [Tensor0SSpace.toModelL_apply, curvatureDecompositionMonomialFib_toModel]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private theorem refoldKernelContractionMonomialFibFixedFrame_apply_section_contMDiff
+private theorem decompositionKernelContractionMonomialFibFixedFrame_apply_section_contMDiff
     (Gs : Π b : M, Tensor0SSpace 4 I b)
     (hGs : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
@@ -155,7 +155,7 @@ private theorem refoldKernelContractionMonomialFibFixedFrame_apply_section_contM
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x
-        (curvatureRefoldMonomialFrameContraction (I := I) (M := M) Gs σ B x (Y x))) := by
+        (curvatureDecompositionMonomialFrameContraction (I := I) (M := M) Gs σ B x (Y x))) := by
   classical
   letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   set Gσ : Cₛ^∞⟮I; Tensor0SModel 4 ℝ E, fun z : M => Tensor0SSpace 4 I z⟯ :=
@@ -171,7 +171,7 @@ private theorem refoldKernelContractionMonomialFibFixedFrame_apply_section_contM
       ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
         (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
           (E := fun z : M => Tensor0SSpace 2 I z) x
-          ((refoldKernelArgumentPairEvalCLM (I := I) (M := M) x
+          ((decompositionKernelArgumentPairEvalCLM (I := I) (M := M) x
               ![(B a x : E), (B b x : E)]).smulRight
             (tensorLeadingPairSlotEvalCLM (I := I) (M := M) 2 x (B a x) (B b x)
               (tensorRank4PermuteCLM (I := I) (M := M) x σ (Gs x))) (Y x))) := by
@@ -222,7 +222,7 @@ private theorem refoldKernelContractionMonomialFibFixedFrame_apply_section_contM
       Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun z : M => Tensor0SSpace 2 I z⟯ :=
     fun a b =>
       { toFun := fun x : M =>
-          (refoldKernelArgumentPairEvalCLM (I := I) (M := M) x
+          (decompositionKernelArgumentPairEvalCLM (I := I) (M := M) x
               ![(B a x : E), (B b x : E)]).smulRight
             (tensorLeadingPairSlotEvalCLM (I := I) (M := M) 2 x (B a x) (B b x)
               (tensorRank4PermuteCLM (I := I) (M := M) x σ (Gs x))) (Y x)
@@ -234,7 +234,7 @@ private theorem refoldKernelContractionMonomialFibFixedFrame_apply_section_contM
   intro x
   refine congrArg (TotalSpace.mk' (Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SSpace 2 I z) x) ?_
-  rw [curvatureRefoldMonomialFrameContraction, hStot_def]
+  rw [curvatureDecompositionMonomialFrameContraction, hStot_def]
   have hcoeOuter : ((∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), S a b :
       Cₛ^∞⟮I; Tensor0SModel 2 ℝ E, fun z : M => Tensor0SSpace 2 I z⟯) :
         Π z : M, Tensor0SSpace 2 I z) =
@@ -414,25 +414,25 @@ private lemma kcPairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s 
     TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
       (T := G) (v0 := p) (vs := Fin.cons (q : E) v)]
 
-def curvatureRefoldMonomialOrthonormalFrameBiContraction (g₁ : SmoothRiemannianMetric I M)
+def curvatureDecompositionMonomialOrthonormalFrameBiContraction (g₁ : SmoothRiemannianMetric I M)
     (Gs : Π b : M, Tensor0SSpace 4 I b) (σ : Equiv.Perm (Fin 4)) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
-  curvatureRefoldMonomialFrameContraction (I := I) (M := M) Gs σ
+  curvatureDecompositionMonomialFrameContraction (I := I) (M := M) Gs σ
     (smoothOrthoFrame (I := I) g₁ x) x
 
-def refoldKernelContractionMonomialBiContrFib (g₁ : SmoothRiemannianMetric I M)
+def decompositionKernelContractionMonomialBiContrFib (g₁ : SmoothRiemannianMetric I M)
     (Gs : Π b : M, Tensor0SSpace 4 I b) (σ : Equiv.Perm (Fin 4)) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
-  curvatureRefoldMonomialOrthonormalFrameBiContraction (I := I) (M := M) g₁ Gs σ x
+  curvatureDecompositionMonomialOrthonormalFrameBiContraction (I := I) (M := M) g₁ Gs σ x
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem refoldKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd
+theorem decompositionKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd
     (g₁ : SmoothRiemannianMetric I M) (Gs : Π b : M, Tensor0SSpace 4 I b)
     (σ : Equiv.Perm (Fin 4)) (x₀ : M) {y : M}
     (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
-    curvatureRefoldMonomialOrthonormalFrameBiContraction (I := I) (M := M) g₁ Gs σ y =
-      curvatureRefoldMonomialFrameContraction (I := I) (M := M) Gs σ
+    curvatureDecompositionMonomialOrthonormalFrameBiContraction (I := I) (M := M) g₁ Gs σ y =
+      curvatureDecompositionMonomialFrameContraction (I := I) (M := M) Gs σ
         (smoothOrthoFrame (I := I) g₁ x₀) y := by
   classical
   apply ContinuousLinearMap.ext
@@ -440,9 +440,9 @@ theorem refoldKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [curvatureRefoldMonomialOrthonormalFrameBiContraction,
-    refoldKernelContractionMonomialFibFixedFrame_toModel,
-    refoldKernelContractionMonomialFibFixedFrame_toModel]
+  rw [curvatureDecompositionMonomialOrthonormalFrameBiContraction,
+    decompositionKernelContractionMonomialFibFixedFrame_toModel,
+    decompositionKernelContractionMonomialFibFixedFrame_toModel]
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel (𝕜 := ℝ) D ![(Bf a : E), (Bf b : E)] *
@@ -471,7 +471,7 @@ theorem refoldKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem refoldKernelContractionMonomialBiContrFib_contMDiff (g₁ : SmoothRiemannianMetric I M)
+theorem decompositionKernelContractionMonomialBiContrFib_contMDiff (g₁ : SmoothRiemannianMetric I M)
     (Gs : Π b : M, Tensor0SSpace 4 I b)
     (hGs : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
@@ -480,27 +480,27 @@ theorem refoldKernelContractionMonomialBiContrFib_contMDiff (g₁ : SmoothRieman
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
         (E := fun z : M => TensorRSSpace 2 2 I z) x
-        (TensorRSSpace.ofCLM (curvatureRefoldMonomialOrthonormalFrameBiContraction (I := I) (M := M)
+        (TensorRSSpace.ofCLM (curvatureDecompositionMonomialOrthonormalFrameBiContraction (I := I) (M := M)
           g₁ Gs σ x))) := by
   classical
   intro x₀
   have h_fixed : ContMDiffAt I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
         (E := fun z : M => TensorRSSpace 2 2 I z) x
-        (TensorRSSpace.ofCLM (curvatureRefoldMonomialFrameContraction (I := I) (M := M)
+        (TensorRSSpace.ofCLM (curvatureDecompositionMonomialFrameContraction (I := I) (M := M)
           Gs σ (smoothOrthoFrame (I := I) g₁ x₀) x))) x₀ := by
     have h_glob : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 2 2 ℝ E)) ∞
         (fun x : M => TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
           (E := fun z : M => TensorRSSpace 2 2 I z) x
-          (TensorRSSpace.ofCLM (curvatureRefoldMonomialFrameContraction (I := I) (M := M)
+          (TensorRSSpace.ofCLM (curvatureDecompositionMonomialFrameContraction (I := I) (M := M)
             Gs σ (smoothOrthoFrame (I := I) g₁ x₀) x))) := by
       apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
         (F₁ := Tensor0SModel 2 ℝ E) (V₁ := fun z : M => Tensor0SSpace 2 I z)
         (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun z : M => Tensor0SSpace 2 I z)
-        (φ := fun x : M => curvatureRefoldMonomialFrameContraction (I := I) (M := M)
+        (φ := fun x : M => curvatureDecompositionMonomialFrameContraction (I := I) (M := M)
           Gs σ (smoothOrthoFrame (I := I) g₁ x₀) x)
       intro Y
-      exact refoldKernelContractionMonomialFibFixedFrame_apply_section_contMDiff
+      exact decompositionKernelContractionMonomialFibFixedFrame_apply_section_contMDiff
         (I := I) (M := M) Gs hGs σ (smoothOrthoFrame (I := I) g₁ x₀)
         (fun i => smoothOrthoFrame_smooth (I := I) g₁ x₀ i) Y
     exact h_glob x₀
@@ -509,46 +509,46 @@ theorem refoldKernelContractionMonomialBiContrFib_contMDiff (g₁ : SmoothRieman
   exact congrArg (TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (refoldKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd (I := I) (M := M)
+      (decompositionKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd (I := I) (M := M)
         g₁ Gs σ x₀ hy))
 
-def refoldKernelContractionMonomialField (g₀ g₁ : SmoothRiemannianMetric I M)
+def decompositionKernelContractionMonomialField (g₀ g₁ : SmoothRiemannianMetric I M)
     (G : SmoothCcTensor g₀ 0 4) (σ : Equiv.Perm (Fin 4)) : SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (curvatureRefoldMonomialOrthonormalFrameBiContraction (I := I)
+          TensorRSSpace.ofCLM (curvatureDecompositionMonomialOrthonormalFrameBiContraction (I := I)
             (M := M)
             g₁ (ccTensorRank4EvalAtUnitZeroSec (I := I) (M := M) g₀ G) σ x))
-      contMDiff_toFun := refoldKernelContractionMonomialBiContrFib_contMDiff (I := I) (M := M)
+      contMDiff_toFun := decompositionKernelContractionMonomialBiContrFib_contMDiff (I := I) (M := M)
         g₁ (ccTensorRank4EvalAtUnitZeroSec (I := I) (M := M) g₀ G)
         (ccTensorFourUnitValueSection_contMDiff (I := I) (M := M) g₀ G) σ }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-@[simp] theorem refoldKernelContractionMonomialField_toSection
+@[simp] theorem decompositionKernelContractionMonomialField_toSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (G : SmoothCcTensor g₀ 0 4)
     (σ : Equiv.Perm (Fin 4)) (x : M) :
-    (refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ).toSection x =
+    (decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ).toSection x =
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (curvatureRefoldMonomialOrthonormalFrameBiContraction (I := I) (M := M)
+        TensorRSSpace.ofCLM (curvatureDecompositionMonomialOrthonormalFrameBiContraction (I := I) (M := M)
           g₁ (ccTensorRank4EvalAtUnitZeroSec (I := I) (M := M) g₀ G) σ x)) := rfl
 
-def refoldKernelContractionField (g₀ g₁ : SmoothRiemannianMetric I M)
+def decompositionKernelContractionField (g₀ g₁ : SmoothRiemannianMetric I M)
     (G : SmoothCcTensor g₀ 0 4) (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) :
     SmoothCcTensor g₀ 2 2 :=
   (1 / 2 : ℝ) •
-    (refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₁
-      + refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₂
-      - refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₃
-      - refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₄)
+    (decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₁
+      + decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₂
+      - decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₃
+      - decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₄)
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem refoldKernelContractionField_toSection_eq_kernelFib_sum
+theorem decompositionKernelContractionField_toSection_eq_kernelFib_sum
     (g₀ g₁ : SmoothRiemannianMetric I M) (G : SmoothCcTensor g₀ 0 4)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (refoldKernelContractionField (I := I) (M := M)
+        (decompositionKernelContractionField (I := I) (M := M)
           g₀ g₁ G σ₁ σ₂ σ₃ σ₄).toSection x) D =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         curvatureActionKernelCLM (I := I) (M := M) x
@@ -559,7 +559,7 @@ theorem refoldKernelContractionField_toSection_eq_kernelFib_sum
           (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
           (ccTensorRank4EvalAtUnitZeroSec (I := I) (M := M) g₀ G x) := by
   classical
-  rw [refoldKernelContractionField, SmoothCcTensor.toSection_smul,
+  rw [decompositionKernelContractionField, SmoothCcTensor.toSection_smul,
     SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_add,
     ContMDiffSection.coe_smul, Pi.smul_apply, ContMDiffSection.coe_sub, Pi.sub_apply,
     ContMDiffSection.coe_sub, Pi.sub_apply, ContMDiffSection.coe_add, Pi.add_apply]
@@ -575,20 +575,20 @@ theorem refoldKernelContractionField_toSection_eq_kernelFib_sum
       (Gs x) with hF_def
   have happly : ∀ σ : Equiv.Perm (Fin 4),
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ).toSection x) D =
+        (decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ).toSection x) D =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), F σ a b := by
     intro σ
-    exact refoldKernelContractionMonomialFibFixedFrame_apply (I := I) (M := M) Gs σ
+    exact decompositionKernelContractionMonomialFibFixedFrame_apply (I := I) (M := M) Gs σ
       (smoothOrthoFrame (I := I) g₁ x) x D
   change (1 / 2 : ℝ) •
       (((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₁).toSection x)
+          (decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₁).toSection x)
         + (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₂).toSection x)
+            (decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₂).toSection x)
         - (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₃).toSection x)
+            (decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₃).toSection x)
         - (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₄).toSection x))
+            (decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₄).toSection x))
         D) = _
   rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply,
     ContinuousLinearMap.add_apply, happly σ₁, happly σ₂, happly σ₃, happly σ₄]
@@ -662,18 +662,18 @@ theorem refoldKernelContractionField_toSection_eq_kernelFib_sum
   rw [hsplit, hdist]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] in
-theorem refoldKernelContractionField_zero_argument (g₀ g₁ : SmoothRiemannianMetric I M)
+theorem decompositionKernelContractionField_zero_argument (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) :
-    refoldKernelContractionField (I := I) (M := M) g₀ g₁
+    decompositionKernelContractionField (I := I) (M := M) g₀ g₁
       (0 : SmoothCcTensor g₀ 0 4) σ₁ σ₂ σ₃ σ₄ = 0 := by
   classical
   have hmono : ∀ σ : Equiv.Perm (Fin 4),
-      refoldKernelContractionMonomialField (I := I) (M := M) g₀ g₁
+      decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁
         (0 : SmoothCcTensor g₀ 0 4) σ = 0 := by
     intro σ
     refine SmoothCcTensor.ext ?_
     refine ContMDiffSection.ext (fun x => ?_)
-    rw [refoldKernelContractionMonomialField_toSection]
+    rw [decompositionKernelContractionMonomialField_toSection]
     have hGs : ccTensorRank4EvalAtUnitZeroSec (I := I) (M := M) g₀
         (0 : SmoothCcTensor g₀ 0 4) x = 0 := by
       rw [ccTensorRank4EvalAtUnitZeroSec]
@@ -683,7 +683,7 @@ theorem refoldKernelContractionField_zero_argument (g₀ g₁ : SmoothRiemannian
           SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
           zero_smul]]
       rfl
-    have hzero : curvatureRefoldMonomialOrthonormalFrameBiContraction (I := I) (M := M) g₁
+    have hzero : curvatureDecompositionMonomialOrthonormalFrameBiContraction (I := I) (M := M) g₁
         (ccTensorRank4EvalAtUnitZeroSec (I := I) (M := M) g₀ (0 : SmoothCcTensor g₀ 0 4))
         σ x = 0 := by
       apply ContinuousLinearMap.ext
@@ -691,8 +691,8 @@ theorem refoldKernelContractionField_zero_argument (g₀ g₁ : SmoothRiemannian
       apply Tensor0SSpace.toModel_injective
       apply ContinuousMultilinearMap.ext
       intro v
-      rw [curvatureRefoldMonomialOrthonormalFrameBiContraction,
-        refoldKernelContractionMonomialFibFixedFrame_toModel]
+      rw [curvatureDecompositionMonomialOrthonormalFrameBiContraction,
+        decompositionKernelContractionMonomialFibFixedFrame_toModel]
       rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           Tensor0SSpace.toModel (𝕜 := ℝ) D
               ![(smoothOrthoFrame (I := I) g₁ x a x : E),
@@ -710,7 +710,7 @@ theorem refoldKernelContractionField_zero_argument (g₀ g₁ : SmoothRiemannian
         ContinuousMultilinearMap.zero_apply]
     rw [hzero]
     rfl
-  rw [refoldKernelContractionField, hmono σ₁, hmono σ₂, hmono σ₃, hmono σ₄]
+  rw [decompositionKernelContractionField, hmono σ₁, hmono σ₂, hmono σ₃, hmono σ₄]
   rw [show (0 : SmoothCcTensor g₀ 2 2) + 0 - 0 - 0 = 0 from by abel, smul_zero]
 
 omit [BoundarylessManifold I M] in
@@ -732,27 +732,27 @@ private lemma foldIteratedCovGrad_zero_arg (g₀ : SmoothRiemannianMetric I M) (
     foldIteratedCovGrad_smul_real, zero_smul]
 
 omit [BoundarylessManifold I M] in
-theorem refoldKernelContractionField_zero_weight (g₀ g₁ : SmoothRiemannianMetric I M)
+theorem decompositionKernelContractionField_zero_weight (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) :
-    refoldKernelContractionField (I := I) (M := M) g₀ g₁
+    decompositionKernelContractionField (I := I) (M := M) g₀ g₁
       (iteratedCovGrad (I := I) g₀ 0 2 2 (0 : SmoothCcTensor g₀ 0 2)) σ₁ σ₂ σ₃ σ₄ = 0 := by
   rw [foldIteratedCovGrad_zero_arg (I := I) (M := M) g₀ 0 2 2,
-    refoldKernelContractionField_zero_argument]
+    decompositionKernelContractionField_zero_argument]
 
 omit [BoundarylessManifold I M] in
-theorem refoldKernelContractionField_self (g₀ : SmoothRiemannianMetric I M)
+theorem decompositionKernelContractionField_self (g₀ : SmoothRiemannianMetric I M)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) :
-    refoldKernelContractionField (I := I) (M := M) g₀ g₀
+    decompositionKernelContractionField (I := I) (M := M) g₀ g₀
       (iteratedCovGrad (I := I) g₀ 0 2 2
         (metricDifferenceCcTensor (I := I) (M := M) g₀ g₀)) σ₁ σ₂ σ₃ σ₄ = 0 := by
-  rw [metricDifferenceCcTensor_self, refoldKernelContractionField_zero_weight]
+  rw [metricDifferenceCcTensor_self, decompositionKernelContractionField_zero_weight]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem appCc_refoldKernelContractionField
+theorem operatorFieldApplication_decompositionKernelContractionField
     (g₀ g₁ : SmoothRiemannianMetric I M) (G : SmoothCcTensor g₀ 0 4)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) (W : SmoothCcTensor g₀ 0 2) :
     operatorFieldApply (I := I) (M := M) g₀ 2 2
-        (refoldKernelContractionField (I := I) (M := M) g₀ g₁ G σ₁ σ₂ σ₃ σ₄) W =
+        (decompositionKernelContractionField (I := I) (M := M) g₀ g₁ G σ₁ σ₂ σ₃ σ₄) W =
       operatorFieldApply (I := I) (M := M) g₀ 4 2
         (curvatureActionKernelCoeffField (I := I) (M := M) g₀ g₁
           (ccTensorUnitValueSection (I := I) (M := M) g₀ W)
@@ -764,10 +764,10 @@ theorem appCc_refoldKernelContractionField
   refine congrArg Tensor0SSpace.toModel ?_
   rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
       (operatorFieldApply (I := I) (M := M) g₀ 2 2
-        (refoldKernelContractionField (I := I) (M := M) g₀ g₁ G σ₁ σ₂ σ₃ σ₄)
+        (decompositionKernelContractionField (I := I) (M := M) g₀ g₁ G σ₁ σ₂ σ₃ σ₄)
         W).toSection x) (unitTensor (I := I) (M := M) x)) =
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (refoldKernelContractionField (I := I) (M := M) g₀ g₁ G σ₁ σ₂ σ₃ σ₄).toSection x)
+        (decompositionKernelContractionField (I := I) (M := M) g₀ g₁ G σ₁ σ₂ σ₃ σ₄).toSection x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
           (unitTensor (I := I) (M := M) x)) from rfl]
   rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -783,11 +783,11 @@ theorem appCc_refoldKernelContractionField
           σ₁ σ₂ σ₃ σ₄).toSection x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from G.toSection x)
           (unitTensor (I := I) (M := M) x)) from rfl]
-  rw [refoldKernelContractionField_toSection_eq_kernelFib_sum (I := I) (M := M)
+  rw [decompositionKernelContractionField_toSection_eq_kernelFib_sum (I := I) (M := M)
     g₀ g₁ G σ₁ σ₂ σ₃ σ₄ x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
       (unitTensor (I := I) (M := M) x))]
-  rw [curvatureRefoldKernelCoeffField_toSection_eq_kernelFib_sum (I := I) (M := M)
+  rw [curvatureDecompositionKernelCoeffField_toSection_eq_kernelFib_sum (I := I) (M := M)
     g₀ g₁ (ccTensorUnitValueSection (I := I) (M := M) g₀ W)
     (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀ W) σ₁ σ₂ σ₃ σ₄ x]
   rw [ContinuousLinearMap.sum_apply]

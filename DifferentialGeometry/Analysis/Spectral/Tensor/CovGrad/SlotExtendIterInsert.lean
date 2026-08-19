@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.AppCcDropIteratedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 import DifferentialGeometry.Geometry.Connection.TensorNabla.SlotInsertCovariantNaturality
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -89,7 +89,7 @@ theorem app_slotExt_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
         (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)) W).toSection x d =
       slotInsertEndoFib (I := I) (M := M) ((s + 1) + w) ⟨w, by omega⟩ x (Λ x)
         (W.toSection x d) := by
-  rw [appCcRS_toSection, ContinuousLinearMap.comp_apply]
+  rw [operatorFieldComposition_toSection, ContinuousLinearMap.comp_apply]
   exact slotExtIter_apply (I := I) (M := M) g s w Λ x (W.toSection x d)
 
 end Spectral

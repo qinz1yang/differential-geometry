@@ -19,7 +19,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-section GeometryFormula510
+section GeometricFirstVariationFormula
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -91,7 +91,7 @@ theorem connTraceCoeff_one_eventually
         DifferentialGeometry.Tensor.RSTensor.connTraceAt (I := I) g (A y) from rfl]
   exact hcoeff_y
 
-end GeometryFormula510
+end GeometricFirstVariationFormula
 
 end
 

@@ -54,7 +54,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 noncomputable def curvConnAt
     (gBase g₀ : SmoothRiemannianMetric I M) (x : M)
     (D X Y Z : TangentSpace I x) : TangentSpace I x :=
-  let A := DeTurck.connDiff (I := I) g₀ gBase x
+  let A := DeTurck.connectionDifference (I := I) g₀ gBase x
   let R := riemannOp (cov := LeviCivita (I := I) g₀) x
   A (R X Y Z) D -
       R (A X D) Y Z -
@@ -92,36 +92,36 @@ theorem nablaRm_split
       simpa [Rsec] using
         CovariantDerivative.curvField_contMDiffAt
           (I := I) cov₀ hcov₀ Xs Ys Zs p
-  have houter0 := DeTurck.connDiff_apply (I := I) g₀ gBase
+  have houter0 := DeTurck.connectionDifference_apply (I := I) g₀ gBase
     ((hR x).mdifferentiableAt (by simp)) (Ds x)
-  have hX0 := DeTurck.connDiff_apply (I := I) g₀ gBase
+  have hX0 := DeTurck.connectionDifference_apply (I := I) g₀ gBase
     (Xs.contMDiff.contMDiffAt.mdifferentiableAt (by simp)) (Ds x)
-  have hY0 := DeTurck.connDiff_apply (I := I) g₀ gBase
+  have hY0 := DeTurck.connectionDifference_apply (I := I) g₀ gBase
     (Ys.contMDiff.contMDiffAt.mdifferentiableAt (by simp)) (Ds x)
-  have hZ0 := DeTurck.connDiff_apply (I := I) g₀ gBase
+  have hZ0 := DeTurck.connectionDifference_apply (I := I) g₀ gBase
     (Zs.contMDiff.contMDiffAt.mdifferentiableAt (by simp)) (Ds x)
   have houter :
       cov₀.toFun Rsec x (Ds x) =
         covB.toFun Rsec x (Ds x) +
-          DeTurck.connDiff (I := I) g₀ gBase x (Rsec x) (Ds x) := by
+          DeTurck.connectionDifference (I := I) g₀ gBase x (Rsec x) (Ds x) := by
     have h := (sub_eq_iff_eq_add).mp houter0.symm
     simpa [covB, cov₀, add_comm] using h
   have hX :
       covApply cov₀ (fun p => Ds p) (fun p => Xs p) x =
         covApply covB (fun p => Ds p) (fun p => Xs p) x +
-          DeTurck.connDiff (I := I) g₀ gBase x (Xs x) (Ds x) := by
+          DeTurck.connectionDifference (I := I) g₀ gBase x (Xs x) (Ds x) := by
     have h := (sub_eq_iff_eq_add).mp hX0.symm
     simpa [covApply, covB, cov₀, add_comm] using h
   have hY :
       covApply cov₀ (fun p => Ds p) (fun p => Ys p) x =
         covApply covB (fun p => Ds p) (fun p => Ys p) x +
-          DeTurck.connDiff (I := I) g₀ gBase x (Ys x) (Ds x) := by
+          DeTurck.connectionDifference (I := I) g₀ gBase x (Ys x) (Ds x) := by
     have h := (sub_eq_iff_eq_add).mp hY0.symm
     simpa [covApply, covB, cov₀, add_comm] using h
   have hZ :
       covApply cov₀ (fun p => Ds p) (fun p => Zs p) x =
         covApply covB (fun p => Ds p) (fun p => Zs p) x +
-          DeTurck.connDiff (I := I) g₀ gBase x (Zs x) (Ds x) := by
+          DeTurck.connectionDifference (I := I) g₀ gBase x (Zs x) (Ds x) := by
     have h := (sub_eq_iff_eq_add).mp hZ0.symm
     simpa [covApply, covB, cov₀, add_comm] using h
   have houterRaw :
@@ -135,7 +135,7 @@ theorem nablaRm_split
               connectionRiemannCurvatureField (I := I) (LeviCivita (I := I) g₀)
                 (fun q : M => Xs q) (fun q : M => Ys q) (fun q : M => Zs q) p)
             x (Ds x) +
-          DeTurck.connDiff (I := I) g₀ gBase x
+          DeTurck.connectionDifference (I := I) g₀ gBase x
             (connectionRiemannCurvatureField (I := I) (LeviCivita (I := I) g₀)
               (fun q : M => Xs q) (fun q : M => Ys q) (fun q : M => Zs q) x)
             (Ds x) := by
@@ -201,17 +201,17 @@ theorem nablaRm_split
     have hXRaw :
         cov₀.toFun (fun p => Xs p) x (Ds x) =
           covB.toFun (fun p => Xs p) x (Ds x) +
-            DeTurck.connDiff (I := I) g₀ gBase x (Xs x) (Ds x) := by
+            DeTurck.connectionDifference (I := I) g₀ gBase x (Xs x) (Ds x) := by
       simpa only [covApply] using hX
     have hYRaw :
         cov₀.toFun (fun p => Ys p) x (Ds x) =
           covB.toFun (fun p => Ys p) x (Ds x) +
-            DeTurck.connDiff (I := I) g₀ gBase x (Ys x) (Ds x) := by
+            DeTurck.connectionDifference (I := I) g₀ gBase x (Ys x) (Ds x) := by
       simpa only [covApply] using hY
     have hZRaw :
         cov₀.toFun (fun p => Zs p) x (Ds x) =
           covB.toFun (fun p => Zs p) x (Ds x) +
-            DeTurck.connDiff (I := I) g₀ gBase x (Zs x) (Ds x) := by
+            DeTurck.connectionDifference (I := I) g₀ gBase x (Zs x) (Ds x) := by
       simpa only [covApply] using hZ
     unfold curvCovDerivOpAt mixedCurvDeriv curvConnAt
     simp only [cov₀]
@@ -444,24 +444,24 @@ private theorem curvConn_le_of
     positivity
   have hC₀ : ∀ (x : M) (v w : TangentSpace I x),
       Real.sqrt (gBase.inner x
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x v w)
-          (DifferentialGeometry.PDE.DeTurck.connDiff (I := I) g₀ gBase x v w)) ≤
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x v w)
+          (DifferentialGeometry.PDE.DeTurck.connectionDifference (I := I) g₀ gBase x v w)) ≤
         C₀ * Real.sqrt (gBase.inner x v v) * Real.sqrt (gBase.inner x w w) := by
     intro x v w
-    have h := connDiff_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
-    simpa [C₀, DifferentialGeometry.PDE.DeTurck.connDiff,
+    have h := connectionDifference_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
+    simpa [C₀, DifferentialGeometry.PDE.DeTurck.connectionDifference,
       mul_assoc, mul_left_comm, mul_comm] using h
   let F : ℝ := Λ ^ 2 * (riemannDiffC Λ Λ Λ + Real.sqrt Kb)
   have hF0 : 0 ≤ F := by
     dsimp [F, riemannDiffC]
     positivity
-  have hF := unifCurvSup_of (I := I) (M := M) gBase g₀ hΛ
+  have hF := uniformCurvSup_of (I := I) (M := M) gBase g₀ hΛ
     hKb0 hKb hcomp hjet1 hjet2
   let S : ℝ := Real.sqrt Λ
   intro x D X Y Z
   let L₀ : TangentSpace I x → ℝ := fun v => Real.sqrt (g₀.inner x v v)
   let LB : TangentSpace I x → ℝ := fun v => Real.sqrt (gBase.inner x v v)
-  let A := DeTurck.connDiff (I := I) g₀ gBase x
+  let A := DeTurck.connectionDifference (I := I) g₀ gBase x
   let R := riemannOp (cov := LeviCivita (I := I) g₀) x
   let B : ℝ := S ^ 3 * C₀ * F * L₀ D * L₀ X * L₀ Y * L₀ Z
   have hΛ0 : 0 ≤ Λ := le_trans zero_le_one hΛ
@@ -721,7 +721,7 @@ private theorem jet1_norm_le
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem unifRmOpOne_of
+theorem uniformRmOpOne_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     {Kb₀ Kb₁ : ℝ} (hKb₀0 : 0 ≤ Kb₀)
@@ -762,7 +762,7 @@ theorem unifRmOpOne_of
   have hCb0 : 0 ≤ Cb := by simpa [Cb] using hKb₁0
   have hCc := curvConn_le_of (I := I) (M := M) gBase g₀ hΛ
     hKb₀0 hKb₀ hcomp hjet1 hjet2
-  have hCp := unifPalatini1_le (I := I) (M := M) gBase g₀
+  have hCp := uniformPalatini1_le (I := I) (M := M) gBase g₀
     hΛ hcomp hjet1 hjet2 hjet3
   have hCb := fixedRmOpOne_of (I := I) (M := M) gBase hKb₁0 hKb₁
   let S : ℝ := Real.sqrt Λ
@@ -852,7 +852,7 @@ theorem unifRmOpOne_of
           Real.sqrt (g₀.inner x Z Z) := by
       dsimp [rmOneOpC, Cc, Cp, Cb, S]
 
-private theorem unifRmOpOne
+private theorem uniformRmOpOne
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -878,12 +878,12 @@ private theorem unifRmOpOne
   · have hΛ0 : 0 ≤ Λ := le_trans zero_le_one hΛ
     dsimp [rmOneOpC, curvConnC, palatiniOneC, riemannDiffC]
     positivity
-  · exact unifRmOpOne_of (I := I) (M := M) gBase g₀ hΛ
+  · exact uniformRmOpOne_of (I := I) (M := M) gBase g₀ hΛ
       hKb₀0 hKb₀ hKb₁0 hKb₁ hcomp hjet1 hjet2 hjet3
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem unifRmJetOne_of
+theorem uniformRmJetOne_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Kb₀ Kb₁ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hKb₀0 : 0 ≤ Kb₀)
@@ -911,14 +911,14 @@ theorem unifRmJetOne_of
     have hΛ0 : 0 ≤ Λ := le_trans zero_le_one hΛ
     dsimp [rmOneOpC, curvConnC, palatiniOneC, riemannDiffC]
     positivity
-  have hOp := unifRmOpOne_of (I := I) (M := M) gBase g₀ hΛ
+  have hOp := uniformRmOpOne_of (I := I) (M := M) gBase g₀ hΛ
     hKb₀0 hKb₀ hKb₁0 hKb₁ hcomp hjet1 hjet2 hjet3
   intro x
   simpa [rmOneC] using
     jet1_norm_le (I := I) (M := M) g₀ hOp0 hOp x
 
 
-theorem unifRmJetOne
+theorem uniformRmJetOne
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -933,7 +933,7 @@ theorem unifRmJetOne
           (iterCov (I := I) g₀ 4
             (metricRm04 (I := I) (M := M) g₀) 1 x)) ≤ K := by
   obtain ⟨C, hC0, hC⟩ :=
-    unifRmOpOne (I := I) (M := M) gBase g₀
+    uniformRmOpOne (I := I) (M := M) gBase g₀
       hΛ hcomp hjet1 hjet2 hjet3
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5) * C, by positivity, ?_⟩
   intro x
@@ -946,7 +946,7 @@ private theorem sq_le_of_sqrt_le {a K : ℝ}
 
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem unifRmSecOne_of
+theorem uniformRmSecOne_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Kb₀ Kb₁ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hKb₀0 : 0 ≤ Kb₀)
@@ -973,12 +973,12 @@ theorem unifRmSecOne_of
   intro x
   apply sq_le_of_sqrt_le
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + 1) x _)
-  rw [rfns_rmSection_eq (I := I) g₀ 1 x]
-  exact unifRmJetOne_of (I := I) (M := M) gBase g₀ hΛ
+  rw [riemannianFiberNormSq_rmSection_eq (I := I) g₀ 1 x]
+  exact uniformRmJetOne_of (I := I) (M := M) gBase g₀ hΛ
     hKb₀0 hKb₀ hKb₁0 hKb₁ hcomp hjet1 hjet2 hjet3 x
 
 
-theorem unifRmSecOne
+theorem uniformRmSecOne
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -992,12 +992,12 @@ theorem unifRmSecOne
           ((iteratedCovGrad (I := I) g₀ 0 4 1
             (rmSection (I := I) (M := M) g₀)).toSection x) ≤ K ^ 2 := by
   obtain ⟨K, hK0, hK⟩ :=
-    unifRmJetOne (I := I) (M := M) gBase g₀
+    uniformRmJetOne (I := I) (M := M) gBase g₀
       hΛ hcomp hjet1 hjet2 hjet3
   refine ⟨K, hK0, fun x => ?_⟩
   apply sq_le_of_sqrt_le
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + 1) x _)
-  rw [rfns_rmSection_eq (I := I) g₀ 1 x]
+  rw [riemannianFiberNormSq_rmSection_eq (I := I) g₀ 1 x]
   exact hK x
 
 end RicciFlow

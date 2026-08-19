@@ -20,31 +20,31 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-def connDiff (g g' : SmoothRiemannianMetric I M) :
+def connectionDifference (g g' : SmoothRiemannianMetric I M) :
     Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x :=
   CovariantDerivative.difference (LeviCivita (I := I) g) (LeviCivita (I := I) g')
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in
 @[simp]
-theorem connDiff_apply (g g' : SmoothRiemannianMetric I M)
+theorem connectionDifference_apply (g g' : SmoothRiemannianMetric I M)
     {σ : Π x : M, TangentSpace I x} {x : M} (hσ : MDiffAt (T% σ) x)
     (v : TangentSpace I x) :
-    connDiff (I := I) g g' x (σ x) v =
+    connectionDifference (I := I) g g' x (σ x) v =
       (LeviCivita (I := I) g).toFun σ x v - (LeviCivita (I := I) g').toFun σ x v := by
   have h := IsCovariantDerivativeOn.difference_apply
     (LeviCivita (I := I) g).isCovariantDerivativeOnUniv
     (LeviCivita (I := I) g').isCovariantDerivativeOnUniv
     (x := x) (mem_univ x) (σ := σ) hσ
-  simp only [connDiff, CovariantDerivative.difference]
+  simp only [connectionDifference, CovariantDerivative.difference]
   rw [h]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 @[simp]
-theorem connDiff_self (g : SmoothRiemannianMetric I M) :
-    connDiff (I := I) g g = 0 := by
+theorem connectionDifference_self (g : SmoothRiemannianMetric I M) :
+    connectionDifference (I := I) g g = 0 := by
   classical
   funext x
   apply ContinuousLinearMap.ext
@@ -54,10 +54,10 @@ theorem connDiff_self (g : SmoothRiemannianMetric I M) :
   obtain ⟨σ, hσx⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
     (F := E) (V := (TangentSpace I : M → Type _)) x w
   have hσ : MDiffAt (T% fun y => σ y) x := σ.mdifferentiableAt
-  have hval : connDiff (I := I) g g x (σ x) v =
+  have hval : connectionDifference (I := I) g g x (σ x) v =
       (LeviCivita (I := I) g).toFun (fun y => σ y) x v -
         (LeviCivita (I := I) g).toFun (fun y => σ y) x v :=
-    connDiff_apply (I := I) g g hσ v
+    connectionDifference_apply (I := I) g g hσ v
   rw [sub_self] at hval
   simpa [hσx] using hval
 
@@ -80,13 +80,13 @@ private theorem leviCivita_section_contMDiff (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_contMDiff (g g' : SmoothRiemannianMetric I M)
+theorem connectionDifference_contMDiff (g g' : SmoothRiemannianMetric I M)
     {σ τ : Π x : M, TangentSpace I x}
     (hσ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% σ))
     (hτ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% τ)) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x (σ x) (τ x)⟩ :
+        (⟨x, connectionDifference (I := I) g g' x (σ x) (τ x)⟩ :
           TotalSpace E (TangentSpace I))) := by
   have hcovg := leviCivita_section_contMDiff (I := I) g hσ
   have hcovg' := leviCivita_section_contMDiff (I := I) g' hσ
@@ -103,21 +103,21 @@ theorem connDiff_contMDiff (g g' : SmoothRiemannianMetric I M)
   have hdiff := hg.sub_section hg'
   refine hdiff.congr (fun x => ?_)
   have hσ_at : MDiffAt (T% σ) x := (hσ x).mdifferentiableAt (by simp)
-  have hval := connDiff_apply (I := I) g g' hσ_at (τ x)
-  change (⟨x, connDiff (I := I) g g' x (σ x) (τ x)⟩ : TotalSpace E (TangentSpace I)) =
+  have hval := connectionDifference_apply (I := I) g g' hσ_at (τ x)
+  change (⟨x, connectionDifference (I := I) g g' x (σ x) (τ x)⟩ : TotalSpace E (TangentSpace I)) =
       ⟨x, ((fun y => (LeviCivita (I := I) g).toFun σ y (τ y)) -
         (fun y => (LeviCivita (I := I) g').toFun σ y (τ y))) x⟩
   rw [Pi.sub_apply, hval]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem connDiff_contMDiffOn (g g' : SmoothRiemannianMetric I M)
+theorem connectionDifference_contMDiffOn (g g' : SmoothRiemannianMetric I M)
     {U : Set M} {σ τ : Π x : M, TangentSpace I x}
     (hσ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% σ))
     (hτ : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% τ) U) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M =>
-        (⟨x, connDiff (I := I) g g' x (σ x) (τ x)⟩ :
+        (⟨x, connectionDifference (I := I) g g' x (σ x) (τ x)⟩ :
           TotalSpace E (TangentSpace I))) U := by
   have hcovg := (leviCivita_section_contMDiff (I := I) g hσ).contMDiffOn (s := U)
   have hcovg' := (leviCivita_section_contMDiff (I := I) g' hσ).contMDiffOn (s := U)
@@ -134,8 +134,8 @@ theorem connDiff_contMDiffOn (g g' : SmoothRiemannianMetric I M)
   have hdiff := hg.sub_section hg'
   refine hdiff.congr (fun x _hx => ?_)
   have hσ_at : MDiffAt (T% σ) x := (hσ x).mdifferentiableAt (by simp)
-  have hval := connDiff_apply (I := I) g g' hσ_at (τ x)
-  change (⟨x, connDiff (I := I) g g' x (σ x) (τ x)⟩ : TotalSpace E (TangentSpace I)) =
+  have hval := connectionDifference_apply (I := I) g g' hσ_at (τ x)
+  change (⟨x, connectionDifference (I := I) g g' x (σ x) (τ x)⟩ : TotalSpace E (TangentSpace I)) =
       ⟨x, ((fun y => (LeviCivita (I := I) g).toFun σ y (τ y)) -
         (fun y => (LeviCivita (I := I) g').toFun σ y (τ y))) x⟩
   rw [Pi.sub_apply, hval]

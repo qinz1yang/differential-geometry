@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.TraceAlgebr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.RmTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.EvolutionEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.NormEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.GradientQuantities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerTensor
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
@@ -50,7 +50,7 @@ theorem metric02_apply
     metric02 (I := I) G t x v = (G t).inner x (v 0) (v 1) := by
   simp [metric02]
 
-def tfRic
+def traceFreeRicciTensor
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : Tensor02Fam (E := E) (H := H) (I := I) (M := M))
     (scalar : Real -> M -> Real) :
@@ -61,15 +61,15 @@ def tfRic
         metric02 (I := I) G t x
 
 @[simp]
-theorem tfRic_apply
+theorem trace_free_ricci_apply
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : Tensor02Fam (E := E) (H := H) (I := I) (M := M))
     (scalar : Real -> M -> Real)
     (t : Real) (x : M) (v : Fin 2 -> TangentSpace I x) :
-    tfRic (I := I) G Ric scalar t x v =
+    traceFreeRicciTensor (I := I) G Ric scalar t x v =
       Ric t x v - (((1 : Real) / 3) * scalar t x) *
         (G t).inner x (v 0) (v 1) := by
-  unfold tfRic
+  unfold traceFreeRicciTensor
   calc
     (Ric t x - (((1 : Real) / 3) * scalar t x) • metric02 (I := I) G t x) v =
         Ric t x v -
@@ -79,23 +79,23 @@ theorem tfRic_apply
       rw [Tensor0SSpace.smul_apply, metric02_apply]
       simp only [smul_eq_mul]
 
-abbrev tfRicNormSqAt (scalar ricciNormSq : Real) : Real :=
-  tracefreeRicciNormSqAtOf scalar ricciNormSq
+abbrev traceFreeRicciNormSqAt (scalar ricciNormSq : Real) : Real :=
+  traceFreeRicciNormSqAtOf scalar ricciNormSq
 
-abbrev tfRicNormSq
+abbrev traceFreeRicciNormSq
     (scalar ricciNormSq : Real -> M -> Real) : Real -> M -> Real :=
-  tracefreeRicciNormSqOf scalar ricciNormSq
+  traceFreeRicciNormSqOf scalar ricciNormSq
 
 omit [TopologicalSpace M] in
-theorem tfRicNormSq_compat
+theorem trace_free_ricci_norm_sq_compat
     (scalar ricciNormSq : Real -> M -> Real) (t : Real) (x : M) :
-    tfRicNormSq scalar ricciNormSq t x =
-      tracefreeRicciNormSqOf scalar ricciNormSq t x := rfl
+    traceFreeRicciNormSq scalar ricciNormSq t x =
+      traceFreeRicciNormSqOf scalar ricciNormSq t x := rfl
 
 def pinchP
     (scalar ricciNormSq : Real -> M -> Real) (epsilon : Real)
     (t : Real) (x : M) : Real :=
-  tfRicNormSq scalar ricciNormSq t x / Real.rpow (scalar t x) (2 - epsilon)
+  traceFreeRicciNormSq scalar ricciNormSq t x / Real.rpow (scalar t x) (2 - epsilon)
 
 def cubicQAt (scalar ricciNormSq ricciTraceCube : Real) : Real :=
   2 * ricciNormSq ^ 2 + scalar ^ 4 -
@@ -115,12 +115,12 @@ theorem cubicQ_eigen (l1 l2 l3 : Real) :
   unfold cubicQAt DifferentialGeometry.Geometry.Curvature.hamiltonCubicQ3
   ring
 
-theorem tfRic_eigen (l1 l2 l3 : Real) :
-    tfRicNormSqAt
+theorem trace_free_ricci_norm_sq_eigenvalues (l1 l2 l3 : Real) :
+    traceFreeRicciNormSqAt
         (DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3)
         (DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3) =
       DifferentialGeometry.Geometry.Curvature.tracefreeRicciEigenNormSq3 l1 l2 l3 := by
-  unfold tfRicNormSqAt tracefreeRicciNormSqAtOf
+  unfold traceFreeRicciNormSqAt traceFreeRicciNormSqAtOf
     DifferentialGeometry.Geometry.Curvature.tracefreeRicciEigenNormSq3
     DifferentialGeometry.Geometry.Curvature.ricciEigenPairwiseGapSq3
     DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3
@@ -141,10 +141,10 @@ theorem cubicQ_pinch
           (DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3)
           (DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 l1 l2 l3) -
         epsilon * DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3 *
-          tfRicNormSqAt
+          traceFreeRicciNormSqAt
             (DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3)
             (DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3) := by
-  simpa [cubicQ_eigen, tfRic_eigen] using
+  simpa [cubicQ_eigen, trace_free_ricci_norm_sq_eigenvalues] using
     DifferentialGeometry.Geometry.Curvature.PinchEigen3.q_sub_nonneg hctx hepsilon
 
 omit [TopologicalSpace M] in
@@ -161,7 +161,7 @@ theorem cubicQ_pinchOn
               (l3 t x)) -
           epsilon * DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 (l1 t x) (l2 t x)
             (l3 t x) *
-            tfRicNormSqAt
+            traceFreeRicciNormSqAt
               (DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 (l1 t x) (l2 t x)
                 (l3 t x))
               (DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 (l1 t x) (l2 t x)
@@ -239,14 +239,14 @@ theorem diagReact3_eq
       ricciReact3 (l1 t x) (l2 t x) (l3 t x) := by
   exact react3_diag (l1 t x) (l2 t x) (l3 t x)
 
-theorem tfRel_eigen (l1 l2 l3 : Real)
+theorem trace_free_ricci_reaction_relation_eigenvalues (l1 l2 l3 : Real)
     (hR : DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3 ≠ 0) :
     4 * ricciReact3 l1 l2 l3 -
         ((4 : Real) / 3) *
           DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3 *
             DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3 =
       (4 * DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3 *
-          tfRicNormSqAt
+          traceFreeRicciNormSqAt
             (DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3)
             (DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3) -
         2 * cubicQAt
@@ -254,7 +254,7 @@ theorem tfRel_eigen (l1 l2 l3 : Real)
           (DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3 l1 l2 l3)
           (DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 l1 l2 l3)) /
         DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3 := by
-  unfold ricciReact3 tfRicNormSqAt tracefreeRicciNormSqAtOf cubicQAt
+  unfold ricciReact3 traceFreeRicciNormSqAt traceFreeRicciNormSqAtOf cubicQAt
     DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3
       DifferentialGeometry.Geometry.Curvature.ricciEigenNormSq3
     DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3
@@ -263,14 +263,14 @@ theorem tfRel_eigen (l1 l2 l3 : Real)
   field_simp [hR']
   ring_nf
 
-def tfRicReactRel
+def TraceFreeRicciReactionRelation
     (scalar ricciNormSq tfNormSq Q reaction : Real -> M -> Real) : Prop :=
   ∀ t x, scalar t x ≠ 0 ->
     4 * reaction t x - ((4 : Real) / 3) * scalar t x * ricciNormSq t x =
       (4 * ricciNormSq t x * tfNormSq t x - 2 * Q t x) / scalar t x
 
 omit [TopologicalSpace M] in
-theorem tfRel_from_eigen
+theorem trace_free_ricci_reaction_relation_of_eigenvalues
     (scalar ricciNormSq ricciTraceCube reaction : Real -> M -> Real)
     (l1 l2 l3 : Real -> M -> Real)
     (hscalar : ∀ t x,
@@ -284,8 +284,8 @@ theorem tfRel_from_eigen
         DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 (l1 t x) (l2 t x) (l3 t x))
     (hreaction : ∀ t x,
       reaction t x = ricciReact3 (l1 t x) (l2 t x) (l3 t x)) :
-    tfRicReactRel
-      scalar ricciNormSq (tfRicNormSq scalar ricciNormSq)
+    TraceFreeRicciReactionRelation
+      scalar ricciNormSq (traceFreeRicciNormSq scalar ricciNormSq)
       (cubicQ scalar ricciNormSq ricciTraceCube) reaction := by
   intro t x hR
   have hR' :
@@ -293,12 +293,12 @@ theorem tfRel_from_eigen
         0 := by
     simpa [hscalar t x] using hR
   rw [hreaction t x, hscalar t x, hnorm t x]
-  rw [tfRicNormSq, tracefreeRicciNormSqOf, cubicQ, hscalar t x, hnorm t x,
+  rw [traceFreeRicciNormSq, traceFreeRicciNormSqOf, cubicQ, hscalar t x, hnorm t x,
     hcube t x]
-  exact tfRel_eigen (l1 t x) (l2 t x) (l3 t x) hR'
+  exact trace_free_ricci_reaction_relation_eigenvalues (l1 t x) (l2 t x) (l3 t x) hR'
 
 omit [TopologicalSpace M] in
-theorem tfRel_from_diag
+theorem trace_free_ricci_reaction_relation_of_diagonal_data
     (scalar ricciNormSq ricciTraceCube : Real -> M -> Real)
     (l1 l2 l3 : Real -> M -> Real)
     (hscalar : ∀ t x,
@@ -310,10 +310,10 @@ theorem tfRel_from_diag
     (hcube : ∀ t x,
       ricciTraceCube t x =
         DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 (l1 t x) (l2 t x) (l3 t x)) :
-    tfRicReactRel
-      scalar ricciNormSq (tfRicNormSq scalar ricciNormSq)
+    TraceFreeRicciReactionRelation
+      scalar ricciNormSq (traceFreeRicciNormSq scalar ricciNormSq)
       (cubicQ scalar ricciNormSq ricciTraceCube) (diagReact3 l1 l2 l3) := by
-  exact tfRel_from_eigen
+  exact trace_free_ricci_reaction_relation_of_eigenvalues
     (M := M)
     scalar ricciNormSq ricciTraceCube (diagReact3 l1 l2 l3)
     l1 l2 l3 hscalar hnorm hcube
@@ -878,7 +878,7 @@ theorem reactAt_diag {x : M}
   ring
 
 omit [FiniteDimensional ℝ E] [IsManifold I 1 M] in
-theorem tfRel_basis {x : M}
+theorem trace_free_ricci_reaction_relation_in_basis {x : M}
     {Ric : DifferentialGeometry.Geometry.Curvature.Tensor02At (I := I) (M := M) x}
     {Rm04 : DifferentialGeometry.Geometry.Curvature.Tensor04At (I := I) (M := M) x}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
@@ -894,7 +894,7 @@ theorem tfRel_basis {x : M}
     4 * reactAt (I := I) Ric Rm04 basis -
         ((4 : Real) / 3) * scalar * ricciNormAt (I := I) Ric basis =
       (4 * ricciNormAt (I := I) Ric basis *
-          tfRicNormSqAt scalar (ricciNormAt (I := I) Ric basis) -
+          traceFreeRicciNormSqAt scalar (ricciNormAt (I := I) Ric basis) -
         2 * cubicQAt scalar (ricciNormAt (I := I) Ric basis)
           ricciTraceCube) / scalar := by
   have hscalar :
@@ -904,7 +904,7 @@ theorem tfRel_basis {x : M}
     simpa [hscalar] using hR
   rw [reactAt_diag (I := I) hdiag hRm, ricciNormAt_diag (I := I) hdiag,
     hscalar, hcube]
-  exact tfRel_eigen l1 l2 l3 hR'
+  exact trace_free_ricci_reaction_relation_eigenvalues l1 l2 l3 hR'
 
 omit [IsManifold I 1 M] in
 omit [FiniteDimensional ℝ E] in
@@ -928,7 +928,7 @@ theorem diag_neg {x : M}
         congrArg Neg.neg hij
 
 omit [FiniteDimensional ℝ E] [IsManifold I 1 M] in
-theorem tfRel_trace {x : M}
+theorem trace_free_ricci_reaction_relation_of_trace_data {x : M}
     {g : SmoothRiemannianMetric I M}
     {Ric : DifferentialGeometry.Geometry.Curvature.Tensor02At (I := I) (M := M) x}
     {Rm04 : DifferentialGeometry.Geometry.Curvature.Tensor04At (I := I) (M := M) x}
@@ -945,7 +945,7 @@ theorem tfRel_trace {x : M}
     4 * reactAt (I := I) Ric Rm04 basis -
         ((4 : Real) / 3) * scalar * ricciNormAt (I := I) Ric basis =
       (4 * ricciNormAt (I := I) Ric basis *
-          tfRicNormSqAt scalar (ricciNormAt (I := I) Ric basis) -
+          traceFreeRicciNormSqAt scalar (ricciNormAt (I := I) Ric basis) -
         2 * cubicQAt scalar (ricciNormAt (I := I) Ric basis)
           ricciTraceCube) / scalar := by
   have hneg := diag_neg (I := I) hdiag
@@ -957,10 +957,10 @@ theorem tfRel_trace {x : M}
     intro i j k l
     have h := hcomp i k j l
     simpa [DifferentialGeometry.Geometry.Curvature.standardRmCompAt_apply] using h
-  exact tfRel_basis (I := I) (Ric := Ric) (Rm04 := Rm04)
+  exact trace_free_ricci_reaction_relation_in_basis (I := I) (Ric := Ric) (Rm04 := Rm04)
     (basis := basis) hdiag hcube hRm hR
 
-theorem tfRel_point {x : M}
+theorem trace_free_ricci_reaction_relation_at_point {x : M}
     {g : SmoothRiemannianMetric I M}
     {Ric : DifferentialGeometry.Geometry.Curvature.Tensor02At (I := I) (M := M) x}
     {Rm04 : DifferentialGeometry.Geometry.Curvature.Tensor04At (I := I) (M := M) x}
@@ -979,11 +979,11 @@ theorem tfRel_point {x : M}
     4 * reactAt (I := I) Ric Rm04 heatBasis -
         ((4 : Real) / 3) * scalar * ricciNormAt (I := I) Ric heatBasis =
       (4 * ricciNormAt (I := I) Ric heatBasis *
-          tfRicNormSqAt scalar (ricciNormAt (I := I) Ric heatBasis) -
+          traceFreeRicciNormSqAt scalar (ricciNormAt (I := I) Ric heatBasis) -
         2 * cubicQAt scalar (ricciNormAt (I := I) Ric heatBasis)
           ricciTraceCube) / scalar := by
   have hrel :=
-    tfRel_trace (I := I) (g := g) (Ric := Ric) (Rm04 := Rm04)
+    trace_free_ricci_reaction_relation_of_trace_data (I := I) (g := g) (Ric := Ric) (Rm04 := Rm04)
       (basis := eigBasis) htrace hdiag hcube hR
   have hreact :
       reactAt (I := I) Ric Rm04 heatBasis =
@@ -1011,7 +1011,7 @@ private theorem raiseRicci_delta
   unfold raisedRicciCompInFrame
   simp [hInv]
 
-theorem sec6_norm_at
+theorem ricci_norm_sq_in_frame_eq_basis
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1050,7 +1050,7 @@ theorem sec6_norm_at
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [hRicAt i j, hraised i j]
 
-theorem sec6_react_at
+theorem ricci_norm_curvature_reaction_in_frame_eq_basis
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1097,7 +1097,7 @@ theorem sec6_react_at
   unfold curvRicciRicciInFrame curvRicAt
   simp_rw [hraised, hRmAt]
 
-theorem tfRel_point_sec6
+theorem trace_free_ricci_reaction_relation_of_frame_basis
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1128,30 +1128,30 @@ theorem tfRel_point_sec6
         DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 (l1 t x) (l2 t x) (l3 t x))
     (hInv : ∀ (t : Real) (x : M) (i j : Fin 3),
       gInv t x i j = DifferentialGeometry.Geometry.Curvature.delta3 i j) :
-    tfRicReactRel
+    TraceFreeRicciReactionRelation
       scalar
       (ricciNormSqInFrame (I := I) S gInv frame)
-      (tfRicNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
+      (traceFreeRicciNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube)
       (ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame) := by
   intro t x hR
-  have hnorm := sec6_norm_at (I := I) S gInv frame t x (heatBasis t x)
+  have hnorm := ricci_norm_sq_in_frame_eq_basis (I := I) S gInv frame t x (heatBasis t x)
     (hheatBasis t x) (hInv t x)
-  have hreact := sec6_react_at (I := I) S Rm04 gInv frame t x (heatBasis t x)
+  have hreact := ricci_norm_curvature_reaction_in_frame_eq_basis (I := I) S Rm04 gInv frame t x (heatBasis t x)
     (hheatBasis t x) (hInv t x)
-  have hpoint := tfRel_point (I := I) (g := S.base.metric t)
+  have hpoint := trace_free_ricci_reaction_relation_at_point (I := I) (g := S.base.metric t)
     (Ric := S.ricciAt t x) (Rm04 := Rm04 t x)
     (heatBasis := heatBasis t x) (eigBasis := eigBasis t x)
     (scalar := scalar t x) (l1 := l1 t x) (l2 := l2 t x) (l3 := l3 t x)
     (ricciTraceCube := ricciTraceCube t x)
     (hheat t x) (heig t x) (htrace t x) (hdiag t x) (hcube t x) hR
   rw [hreact, hnorm]
-  unfold tfRicNormSq tracefreeRicciNormSqOf cubicQ
+  unfold traceFreeRicciNormSq traceFreeRicciNormSqOf cubicQ
   rw [hnorm]
   exact hpoint
 
-theorem tfRel_pfirst
+theorem trace_free_ricci_reaction_relation_of_first_trace_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1189,14 +1189,14 @@ theorem tfRel_pfirst
         DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 (l1 t x) (l2 t x) (l3 t x))
     (hInv : ∀ (t : Real) (x : M) (i j : Fin 3),
       gInv t x i j = DifferentialGeometry.Geometry.Curvature.delta3 i j) :
-    tfRicReactRel
+    TraceFreeRicciReactionRelation
       scalar
       (ricciNormSqInFrame (I := I) S gInv frame)
-      (tfRicNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
+      (traceFreeRicciNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube)
       (ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame) := by
-  refine tfRel_point_sec6 (I := I) S Rm04 gInv frame heatBasis eigBasis
+  refine trace_free_ricci_reaction_relation_of_frame_basis (I := I) S Rm04 gInv frame heatBasis eigBasis
     scalar ricciTraceCube l1 l2 l3 hheatBasis hheat heig ?_ hdiag hcube hInv
   intro t x
   exact DifferentialGeometry.Geometry.Curvature.traceDataOfFirst (I := I) (M := M) (heig t x)
@@ -1494,7 +1494,7 @@ theorem ricciSym_rm04
       DifferentialGeometry.Geometry.Curvature.ricciSymm_of_rm04 (I := I) basis gInv Ric Rm04 hTrace
         hPair hOutput hInput hInv i j)
 
-theorem tfRel_frame
+theorem trace_free_ricci_reaction_relation_of_diagonal_frame_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1518,15 +1518,15 @@ theorem tfRel_frame
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
         DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-(l1 t x)) (-(l2 t x)) (-(l3 t x))
           i k j l) :
-    tfRicReactRel
+    TraceFreeRicciReactionRelation
       scalar
       (ricciNormSqInFrame (I := I) S gInv frame)
-      (tfRicNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
+      (traceFreeRicciNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube)
       (ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame) := by
   classical
-  refine tfRel_from_eigen
+  refine trace_free_ricci_reaction_relation_of_eigenvalues
     (M := M)
     scalar (ricciNormSqInFrame (I := I) S gInv frame) ricciTraceCube
     (ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame)
@@ -1558,7 +1558,7 @@ theorem tfRel_frame
       (l1 t x) (l2 t x) (l3 t x)
       (hInv t x) (hRic t x) (hRm t x)
 
-theorem tfRel_data
+theorem trace_free_ricci_reaction_relation_of_curvature_trace_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1586,10 +1586,10 @@ theorem tfRel_data
     (hRic : ∀ (t : Real) (x : M) (i j : Fin 3),
       ricciCompInFrame (I := I) S frame t x i j =
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) i j) :
-    tfRicReactRel
+    TraceFreeRicciReactionRelation
       scalar
       (ricciNormSqInFrame (I := I) S gInv frame)
-      (tfRicNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
+      (traceFreeRicciNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube)
       (ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame) := by
@@ -1617,10 +1617,10 @@ theorem tfRel_data
       DifferentialGeometry.Geometry.Curvature.rm04Comp,
         DifferentialGeometry.Geometry.Curvature.rm04CompAt_apply,
       hbasis t x i, hbasis t x k, hbasis t x j, hbasis t x l] using h
-  exact tfRel_frame (I := I) S Rm04 gInv frame scalar ricciTraceCube
+  exact trace_free_ricci_reaction_relation_of_diagonal_frame_data (I := I) S Rm04 gInv frame scalar ricciTraceCube
     l1 l2 l3 hscalar hcube hInv hRic hRm
 
-theorem tfRel_first
+theorem trace_free_ricci_reaction_relation_of_first_trace_frame_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -1658,14 +1658,14 @@ theorem tfRel_first
     (hRic : ∀ (t : Real) (x : M) (i j : Fin 3),
       ricciCompInFrame (I := I) S frame t x i j =
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) i j) :
-    tfRicReactRel
+    TraceFreeRicciReactionRelation
       scalar
       (ricciNormSqInFrame (I := I) S gInv frame)
-      (tfRicNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
+      (traceFreeRicciNormSq scalar (ricciNormSqInFrame (I := I) S gInv frame))
       (cubicQ scalar (ricciNormSqInFrame (I := I) S gInv frame)
         ricciTraceCube)
       (ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame) := by
-  refine tfRel_data (I := I) S Rm04 gInv frame basis scalar
+  refine trace_free_ricci_reaction_relation_of_curvature_trace_data (I := I) S Rm04 gInv frame basis scalar
     ricciTraceCube l1 l2 l3 hbasis ?_ hscalar hcube hInv hRic
   intro t x
   exact DifferentialGeometry.Geometry.Curvature.traceDataOfFirst

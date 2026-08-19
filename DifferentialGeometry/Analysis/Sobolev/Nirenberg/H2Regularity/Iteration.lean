@@ -325,7 +325,7 @@ private lemma principal_summand_integral_zero
         (fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single l 1) *
             (fderiv ℝ u x) (EuclideanSpace.single i 1) *
             (fderiv ℝ ψ x) (EuclideanSpace.single j 1)) := by
-    have h_dla : ContDiff ℝ (⊤ : ℕ∞) (fun x : E =>
+    have h_deTurckLieConnectionDifferenceDerivative : ContDiff ℝ (⊤ : ℕ∞) (fun x : E =>
         (fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single l 1)) :=
       contDiff_partial (B.contDiff_a i j) l
     have h_du : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
@@ -334,7 +334,7 @@ private lemma principal_summand_integral_zero
     have h_dψ : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) :=
       contDiff_partial hψ j
-    exact (h_dla.mul h_du).mul h_dψ
+    exact (h_deTurckLieConnectionDifferenceDerivative.mul h_du).mul h_dψ
   have h_smooth_T2 : ContDiff ℝ (⊤ : ℕ∞) (fun x : E =>
         B.a x i j *
             (fderiv ℝ (fun y : E =>
@@ -585,13 +585,13 @@ private lemma contDiff_perturbedSource
   intro i _
   refine ContDiff.sum ?_
   intro j _
-  have h_dla : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
+  have h_deTurckLieConnectionDifferenceDerivative : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
       (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1)) :=
     contDiff_partial (B.contDiff_a i j) l
   have h_diu : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
       (fderiv ℝ u y) (EuclideanSpace.single i 1)) :=
     contDiff_partial hu i
-  exact contDiff_partial (h_dla.mul h_diu) j
+  exact contDiff_partial (h_deTurckLieConnectionDifferenceDerivative.mul h_diu) j
 
 omit [NeZero d] in
 private lemma ibp_smooth_against_test
@@ -621,7 +621,7 @@ private lemma ibp_principal_correction
           (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
             (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
             (EuclideanSpace.single j 1) * ψ x := by
-  have h_dla : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
+  have h_deTurckLieConnectionDifferenceDerivative : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
       (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1)) :=
     contDiff_partial (B.contDiff_a i j) l
   have h_diu : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
@@ -629,7 +629,7 @@ private lemma ibp_principal_correction
     contDiff_partial hu i
   have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
       (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
-        (fderiv ℝ u y) (EuclideanSpace.single i 1)) := h_dla.mul h_diu
+        (fderiv ℝ u y) (EuclideanSpace.single i 1)) := h_deTurckLieConnectionDifferenceDerivative.mul h_diu
   exact ibp_smooth_against_test (l := j) hg_smooth hΩ hψ hψ_supp hψ_tsub
 
 private lemma bilin_integrand_pieces_integrable
@@ -1039,7 +1039,7 @@ private theorem bilin_partial_eq_integral_perturbed
             (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
           (EuclideanSpace.single j 1) * ψ x) := by
       intro i j
-      have h_dla : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
+      have h_deTurckLieConnectionDifferenceDerivative : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
           (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1)) :=
         contDiff_partial (B.contDiff_a i j) l
       have h_diu : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
@@ -1050,7 +1050,7 @@ private theorem bilin_partial_eq_integral_perturbed
             (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
               (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
             (EuclideanSpace.single j 1)) :=
-        contDiff_partial (h_dla.mul h_diu) j
+        contDiff_partial (h_deTurckLieConnectionDifferenceDerivative.mul h_diu) j
       exact h_pj.mul hψ
     have h_corr_int : ∀ i j : Fin d, Integrable (fun x : E =>
         (fderiv ℝ (fun y : E =>

@@ -17,7 +17,7 @@ open scoped Manifold ContDiff
 
 variable {M : Type*}
 
-section GeometryFormula510
+section GeometricFirstVariationFormula
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
@@ -605,7 +605,7 @@ theorem weightedTrace_of_raw
           connTraceAction (I := I) g A potential x := by
         rw [← hraw x, ← haction]
 
-end GeometryFormula510
+end GeometricFirstVariationFormula
 
 end
 

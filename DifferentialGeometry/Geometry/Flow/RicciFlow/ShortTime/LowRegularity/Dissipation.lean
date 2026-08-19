@@ -11,12 +11,13 @@ namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Sobolev (covariantJetNormSq)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Elliptic (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev (iteratedCovGrad)
 open DifferentialGeometry.Analysis.Spectral
-  (appCc_h2_h3_h1 ccTensorToHs ccTensorToHs_add deTurckSmoothRemainder
+  (operatorFieldApplication_h2_h3_h1 ccTensorToHs ccTensorToHs_add deTurckSmoothRemainder
     hsJet_le hs_le_jet)
 
 variable
@@ -30,11 +31,11 @@ variable
 private theorem jetSq_le_hs
     (g : SmoothRiemannianMetric I M) (s n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ T : SmoothCcTensor g 0 s,
-      lowJetSq (I := I) (M := M) g n T ≤
+      covariantJetNormSq (I := I) (M := M) g n T ≤
         (C * ‖ccTensorToHs (I := I) (M := M) g s (n : ℝ) T‖) ^ 2 := by
   obtain ⟨C, hC, hjet⟩ := hsJet_le (I := I) (M := M) g s n
   refine ⟨C, hC, fun T => ?_⟩
-  simp only [lowJetSq]
+  simp only [covariantJetNormSq]
   refine (Finset.sum_sq_le_sq_sum_of_nonneg (fun _ _ => norm_nonneg _)).trans ?_
   exact pow_le_pow_left₀
     (Finset.sum_nonneg (fun _ _ => norm_nonneg _)) (hjet T) 2
@@ -64,11 +65,11 @@ theorem n_diff_h1_rung
           Cδ₀ * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (3 : ℝ) T‖ +
             C₀ * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖ := by
   classical
-  obtain ⟨ρ2, Cc2, hρ2, hCc2, hc2⟩ := c2_h2_small (I := I) (M := M) hDim g₀
-  obtain ⟨Capp, hCapp, happ⟩ := appCc_h2_h3_h1 (I := I) (M := M) hDim g₀ 2 2
+  obtain ⟨ρ2, Cc2, hρ2, hCc2, hc2⟩ := exists_lowerScaleSecondOrderCoefficient_smallPerturbation_secondOrder_bound (I := I) (M := M) hDim g₀
+  obtain ⟨Capp, hCapp, happ⟩ := operatorFieldApplication_h2_h3_h1 (I := I) (M := M) hDim g₀ 2 2
   obtain ⟨_, _, hsplit⟩ := lowData_split (I := I) (M := M) g₀ g₀
-  obtain ⟨Ka1, hKa1, hcoef⟩ := lowData_a1_coeff (I := I) (M := M) hDim g₀
-  obtain ⟨Ca1, hCa1, ha1⟩ := a1_h2_h1 (I := I) (M := M) hDim g₀
+  obtain ⟨Ka1, hKa1, hcoef⟩ := exists_lowerScaleAction_coefficient_bound (I := I) (M := M) hDim g₀
+  obtain ⟨Ca1, hCa1, ha1⟩ := exists_lowerScaleFirstOrderAction_secondToFirstOrder_bound (I := I) (M := M) hDim g₀
   obtain ⟨Chs2, hChs2, hjet2⟩ := jetSq_le_hs (I := I) (M := M) g₀ 2 2
   obtain ⟨Chs3, hChs3, hjet3⟩ := jetSq_le_hs (I := I) (M := M) g₀ 2 3
   obtain ⟨Csp, hCsp, hsp⟩ := hs_le_jet (I := I) (M := M) g₀ 2 1
@@ -99,21 +100,21 @@ theorem n_diff_h1_rung
   have hN3 : (0 : ℝ) ≤ ‖ccTensorToHs (I := I) (M := M) g₀ 2 (3 : ℝ) T‖ :=
     norm_nonneg _
   obtain ⟨A, hsplitA, hc2pt, hc2jet, hcoefT⟩ :
-      ∃ A : LowBaseActionData g₀,
+      ∃ A : LowerScaleActionCoefficients g₀,
         deTurckSmoothRemainder (I := I) g₀ g₀ T
               (lt_of_le_of_lt hδ_le (by norm_num)) hδ -
             deTurckSmoothRemainder (I := I) g₀ g₀
               (0 : SmoothCcTensor g₀ 0 2)
               (lt_of_le_of_lt hδ_le (by norm_num)) hδZ =
-          A.a2 (I := I) (M := M) T + A.a1 (I := I) (M := M) T ∧
+          A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T ∧
         (∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
-            (A.C2.toSection x) ≤ (Cc2 * ρ) ^ 2) ∧
-        lowJetSq (I := I) (M := M) g₀ 2 A.C2 ≤ (Cc2 * ρ) ^ 2 ∧
-        lowJetSq (I := I) (M := M) g₀ 2 A.C0 +
-            lowJetSq (I := I) (M := M) g₀ 2 A.C1 ≤
-          Ka1 * (1 + lowJetSq (I := I) (M := M) g₀ 3 T) ^ 6 := by
-    refine ⟨lowBaseData (I := I) (M := M) g₀ g₀ T
+            (A.secondOrderCoefficient.toSection x) ≤ (Cc2 * ρ) ^ 2) ∧
+        covariantJetNormSq (I := I) (M := M) g₀ 2 A.secondOrderCoefficient ≤ (Cc2 * ρ) ^ 2 ∧
+        covariantJetNormSq (I := I) (M := M) g₀ 2 A.zeroOrderCoefficient +
+            covariantJetNormSq (I := I) (M := M) g₀ 2 A.firstOrderCoefficient ≤
+          Ka1 * (1 + covariantJetNormSq (I := I) (M := M) g₀ 3 T) ^ 6 := by
+    refine ⟨lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀ T
       (lt_of_le_of_lt hδ_le (by norm_num)) hδ hδZ,
       (hsplit T hT hδ_le hδ0 hδ hδZ).1,
       (hc2 T hT hδ_le hδ0 hδ hδZ (R := ρ) hρpos.le hρ2le hball2).1,
@@ -122,36 +123,36 @@ theorem n_diff_h1_rung
   rw [hsplitA]
   have ha2 :
       ‖ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
-          (A.a2 (I := I) (M := M) T)‖ ≤
+          (A.secondOrderAction (I := I) (M := M) T)‖ ≤
         Capp * Cc2 * ρ *
           ‖ccTensorToHs (I := I) (M := M) g₀ 2 (3 : ℝ) T‖ := by
-    have hb := happ A.C2 T (Cc2 * ρ) (mul_nonneg hCc2 hρpos.le) hc2pt
-      (by simpa only [lowJetSq, Nat.reduceAdd] using hc2jet)
+    have hb := happ A.secondOrderCoefficient T (Cc2 * ρ) (mul_nonneg hCc2 hρpos.le) hc2pt
+      (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hc2jet)
     calc
       ‖ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
-          (A.a2 (I := I) (M := M) T)‖ ≤
+          (A.secondOrderAction (I := I) (M := M) T)‖ ≤
           Capp * (Cc2 * ρ) *
             ‖ccTensorToHs (I := I) (M := M) g₀ 2 (3 : ℝ) T‖ := hb
       _ = Capp * Cc2 * ρ *
             ‖ccTensorToHs (I := I) (M := M) g₀ 2 (3 : ℝ) T‖ := by ring
   have hjet2T :
-      lowJetSq (I := I) (M := M) g₀ 2 T ≤
+      covariantJetNormSq (I := I) (M := M) g₀ 2 T ≤
         (Chs2 * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖) ^ 2 := by
     have h := hjet2 T
     norm_num at h
     exact h
   have hjet3T :
-      lowJetSq (I := I) (M := M) g₀ 3 T ≤ (Chs3 * R₀) ^ 2 := by
+      covariantJetNormSq (I := I) (M := M) g₀ 3 T ≤ (Chs3 * R₀) ^ 2 := by
     have h := hjet3 T
     norm_num at h
     refine h.trans (pow_le_pow_left₀ (mul_nonneg hChs3 hN3) ?_ 2)
     exact mul_le_mul_of_nonneg_left hball3 hChs3
-  have hjnn : (0 : ℝ) ≤ lowJetSq (I := I) (M := M) g₀ 3 T := by
-    simp only [lowJetSq]
+  have hjnn : (0 : ℝ) ≤ covariantJetNormSq (I := I) (M := M) g₀ 3 T := by
+    simp only [covariantJetNormSq]
     exact Finset.sum_nonneg (fun _ _ => sq_nonneg _)
   have hcoefB :
-      lowJetSq (I := I) (M := M) g₀ 2 A.C0 +
-        lowJetSq (I := I) (M := M) g₀ 2 A.C1 ≤ B ^ 2 := by
+      covariantJetNormSq (I := I) (M := M) g₀ 2 A.zeroOrderCoefficient +
+        covariantJetNormSq (I := I) (M := M) g₀ 2 A.firstOrderCoefficient ≤ B ^ 2 := by
     refine hcoefT.trans ?_
     rw [← hBsq]
     refine mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by linarith) ?_ 6) hKa1
@@ -161,43 +162,43 @@ theorem n_diff_h1_rung
     mul_nonneg (mul_nonneg hCa1 hB0) (mul_nonneg hChs2 hN2)
   have ha1norm :
       ‖ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
-          (A.a1 (I := I) (M := M) T)‖ ≤
+          (A.firstOrderAction (I := I) (M := M) T)‖ ≤
         2 * Csp * Ca1 * B * Chs2 *
           ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖ := by
-    have hspY := hsp (A.a1 (I := I) (M := M) T)
+    have hspY := hsp (A.firstOrderAction (I := I) (M := M) T)
     rw [show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num] at hspY
     have hjetY :
-        ‖iteratedCovGrad (I := I) g₀ 0 2 0 (A.a1 (I := I) (M := M) T)‖ ^ 2 +
+        ‖iteratedCovGrad (I := I) g₀ 0 2 0 (A.firstOrderAction (I := I) (M := M) T)‖ ^ 2 +
             ‖iteratedCovGrad (I := I) g₀ 0 2 1
-              (A.a1 (I := I) (M := M) T)‖ ^ 2 ≤
+              (A.firstOrderAction (I := I) (M := M) T)‖ ^ 2 ≤
           (Ca1 * B *
             (Chs2 * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖)) ^ 2 := by
       have h := ha1 A T B
         (Chs2 * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖) hB0
         (mul_nonneg hChs2 hN2) hcoefB hjet2T
-      simp only [lowJetSq, Finset.sum_range_succ, Finset.sum_range_zero,
+      simp only [covariantJetNormSq, Finset.sum_range_succ, Finset.sum_range_zero,
         zero_add] at h
       exact h
     have h0nn : (0 : ℝ) ≤
-        ‖iteratedCovGrad (I := I) g₀ 0 2 0 (A.a1 (I := I) (M := M) T)‖ :=
+        ‖iteratedCovGrad (I := I) g₀ 0 2 0 (A.firstOrderAction (I := I) (M := M) T)‖ :=
       norm_nonneg _
     have h1nn : (0 : ℝ) ≤
-        ‖iteratedCovGrad (I := I) g₀ 0 2 1 (A.a1 (I := I) (M := M) T)‖ :=
+        ‖iteratedCovGrad (I := I) g₀ 0 2 1 (A.firstOrderAction (I := I) (M := M) T)‖ :=
       norm_nonneg _
     have h0 :
-        ‖iteratedCovGrad (I := I) g₀ 0 2 0 (A.a1 (I := I) (M := M) T)‖ ≤
+        ‖iteratedCovGrad (I := I) g₀ 0 2 0 (A.firstOrderAction (I := I) (M := M) T)‖ ≤
           Ca1 * B * (Chs2 * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖) :=
       le_of_sq_le_sq (by
         linarith only [hjetY, sq_nonneg
-          ‖iteratedCovGrad (I := I) g₀ 0 2 1 (A.a1 (I := I) (M := M) T)‖]) hX
+          ‖iteratedCovGrad (I := I) g₀ 0 2 1 (A.firstOrderAction (I := I) (M := M) T)‖]) hX
     have h1 :
-        ‖iteratedCovGrad (I := I) g₀ 0 2 1 (A.a1 (I := I) (M := M) T)‖ ≤
+        ‖iteratedCovGrad (I := I) g₀ 0 2 1 (A.firstOrderAction (I := I) (M := M) T)‖ ≤
           Ca1 * B * (Chs2 * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖) :=
       le_of_sq_le_sq (by
         linarith only [hjetY, sq_nonneg
-          ‖iteratedCovGrad (I := I) g₀ 0 2 0 (A.a1 (I := I) (M := M) T)‖]) hX
+          ‖iteratedCovGrad (I := I) g₀ 0 2 0 (A.firstOrderAction (I := I) (M := M) T)‖]) hX
     have hsum : ∑ j ∈ Finset.range (1 + 1),
-        ‖iteratedCovGrad (I := I) g₀ 0 2 j (A.a1 (I := I) (M := M) T)‖ ≤
+        ‖iteratedCovGrad (I := I) g₀ 0 2 j (A.firstOrderAction (I := I) (M := M) T)‖ ≤
           2 * (Ca1 * B *
             (Chs2 * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖)) := by
       rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_zero,
@@ -205,10 +206,10 @@ theorem n_diff_h1_rung
       linarith only [h0, h1]
     calc
       ‖ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
-          (A.a1 (I := I) (M := M) T)‖ ≤
+          (A.firstOrderAction (I := I) (M := M) T)‖ ≤
           Csp * ∑ j ∈ Finset.range (1 + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j
-              (A.a1 (I := I) (M := M) T)‖ := hspY
+              (A.firstOrderAction (I := I) (M := M) T)‖ := hspY
       _ ≤ Csp * (2 * (Ca1 * B *
             (Chs2 * ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ) T‖))) :=
         mul_le_mul_of_nonneg_left hsum hCsp

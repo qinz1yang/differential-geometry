@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HolderPath
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Holder.Data
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Holder.Defs
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
