@@ -801,7 +801,7 @@ theorem sectionalSum_asymptotic_pinching_of_reactionODE
     ∀ t ∈ Set.Icc a b,
       pinchHeight3 (l3 t) ≤
         2 * δ * sectionalSum3 (l1 t) (l2 t) (l3 t) +
-          2 * δ * K * Real.exp (2 + (2 * δ)⁻¹) := by
+          2 * δ * K * Real.exp (2 + (2 * δ)⁻¹) / (1 + 2 * K * (t - a)) := by
   intro t ht
   have hbar := hamiltonIveyBarrier_le_sectionalSum_of_reactionODE
     h1 h2 h3 hab hK h21 h32 hpinch t ht

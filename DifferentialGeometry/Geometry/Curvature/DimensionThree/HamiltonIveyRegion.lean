@@ -874,114 +874,6 @@ theorem hamiltonIveyBarrier_reaction_derivative_pos_on_boundary
     exact lt_of_lt_of_le hpos hgen
 
 
-private theorem linear_log_lower_bound
-    {a b y : Real} (ha : 0 < a) (hy : 0 < y) :
-    -a * Real.exp (b / a - 1) ≤ y * (a * Real.log y - b) := by
-  let E : Real := Real.exp (b / a - 1)
-  let z : Real := y / E
-  have hE : 0 < E := by
-    dsimp [E]
-    exact Real.exp_pos _
-  have hz : 0 < z := by
-    dsimp [z]
-    exact div_pos hy hE
-  have hlog : 1 - z⁻¹ ≤ Real.log z :=
-    Real.one_sub_inv_le_log_of_pos hz
-  have hzlog : z - 1 ≤ z * Real.log z := by
-    have hm := mul_le_mul_of_nonneg_left hlog (le_of_lt hz)
-    have hcalc : z * (1 - z⁻¹) = z - 1 := by
-      field_simp [hz.ne']
-    rwa [hcalc] at hm
-  have hnonneg : 0 ≤ 1 - z + z * Real.log z := by
-    nlinarith
-  have hscaled : 0 ≤ a * E * (1 - z + z * Real.log z) := by
-    exact mul_nonneg (mul_pos ha hE).le hnonneg
-  have hineq : -a * E ≤ a * E * (z * Real.log z - z) := by
-    nlinarith
-  have hz_eq : E * z = y := by
-    dsimp [z]
-    field_simp [hE.ne']
-  have hlogE : Real.log E = b / a - 1 := by
-    dsimp [E]
-    exact Real.log_exp _
-  have hcalc : a * E * (z * Real.log z - z) = y * (a * Real.log y - b) := by
-    rw [← hz_eq]
-    have hlogmul : Real.log (E * z) = b / a - 1 + Real.log z := by
-      rw [Real.log_mul hE.ne' hz.ne', hlogE]
-    rw [hlogmul]
-    field_simp [ha.ne']
-    ring
-  rwa [hcalc] at hineq
-
-theorem pinchHeight_le_linear_sectionalSum_of_barrier
-    {K τ X S δ : Real} (hK : 0 < K) (hδ : 0 < δ) (hτ : 0 ≤ τ)
-    (hX : 0 ≤ X)
-    (hbarrier : hamiltonIveyBarrier K τ X ≤ S) :
-    X ≤ 2 * δ * S + 2 * δ * K * Real.exp (2 + (2 * δ)⁻¹) := by
-  by_cases hX0 : X = 0
-  · subst hX0
-    have hS : 0 ≤ S := by
-      simpa [hamiltonIveyBarrier] using hbarrier
-    have hC : 0 ≤ 2 * δ * K * Real.exp (2 + (2 * δ)⁻¹) := by
-      positivity
-    nlinarith
-  · have hXpos : 0 < X := lt_of_le_of_ne hX (Ne.symm hX0)
-    let y : Real := X / K
-    have hy : 0 < y := div_pos hXpos hK
-    have hyK : X = K * y := by
-      dsimp [y]
-      field_simp [hK.ne']
-    have hlogD : 0 ≤ Real.log (1 + 2 * K * τ) := by
-      apply Real.log_nonneg
-      nlinarith [mul_nonneg (mul_pos two_pos hK).le hτ]
-    let a : Real := 2 * δ
-    have ha : 0 < a := mul_pos two_pos hδ
-    let B : Real := 6 * δ + 1 - a * Real.log (1 + 2 * K * τ)
-    have hBle : B ≤ 6 * δ + 1 := by
-      dsimp [B, a]
-      nlinarith [mul_nonneg (le_of_lt ha) hlogD]
-    have hlemma := linear_log_lower_bound (a := a) (b := B) ha hy
-    have hexp_le :
-        Real.exp (B / a - 1) ≤ Real.exp (2 + (2 * δ)⁻¹) := by
-      apply Real.exp_le_exp.mpr
-      have h1 : B / a ≤ (6 * δ + 1) / a :=
-        div_le_div_of_nonneg_right hBle (le_of_lt ha)
-      have h2 : (6 * δ + 1) / a = 3 + (2 * δ)⁻¹ := by
-        dsimp [a]
-        field_simp [hδ.ne']
-        ring
-      nlinarith
-    have hlemma_scaled :
-        -K * a * Real.exp (2 + (2 * δ)⁻¹) ≤
-          K * (y * (a * Real.log y - B)) := by
-      have hmul := mul_le_mul_of_nonneg_left hlemma (le_of_lt hK)
-      have hexpmul := mul_le_mul_of_nonneg_left hexp_le
-        (mul_nonneg (le_of_lt hK) (le_of_lt ha))
-      nlinarith [hmul, hexpmul]
-    have hmain : 0 ≤
-        K * (y * (a * Real.log y - B)) +
-          K * a * Real.exp (2 + (2 * δ)⁻¹) := by
-      nlinarith
-    have hbar_scaled :
-        K * (y * (a * Real.log y - B)) ≤ 2 * δ * S - X := by
-      have hE_eq :
-          K * (y * (a * Real.log y - B)) =
-            2 * δ * hamiltonIveyBarrier K τ X - X := by
-        unfold hamiltonIveyBarrier
-        dsimp [y, a, B]
-        have hlogX : Real.log (X / K) = Real.log y := by
-          dsimp [y]
-        rw [hlogX]
-        field_simp [hK.ne', hδ.ne']
-        ring
-      have hbar_mul := mul_le_mul_of_nonneg_left hbarrier
-        (mul_nonneg two_pos.le hδ.le)
-      nlinarith [hE_eq, hbar_mul]
-    have hgoal : X ≤ 2 * δ * S + K * a * Real.exp (2 + (2 * δ)⁻¹) := by
-      nlinarith [hmain, hbar_scaled]
-    dsimp [a] at hgoal
-    nlinarith
-
 def hamiltonIveyTangentLine (K τ a X : Real) : Real :=
   a * X - K * Real.exp (a + 2) / (1 + 2 * K * τ)
 
@@ -1047,6 +939,31 @@ theorem hamiltonIveyTangentLine_le_hamiltonIveyBarrier
       rw [hdiff]
       exact mul_nonneg (div_nonneg hK.le hDpos.le) hbracket
     linarith
+
+theorem pinchHeight_le_linear_sectionalSum_of_barrier
+    {K τ X S δ : Real} (hK : 0 < K) (hδ : 0 < δ) (hτ : 0 ≤ τ)
+    (hX : 0 ≤ X)
+    (hbarrier : hamiltonIveyBarrier K τ X ≤ S) :
+    X ≤ 2 * δ * S +
+      2 * δ * K * Real.exp (2 + (2 * δ)⁻¹) / (1 + 2 * K * τ) := by
+  have htangent := hamiltonIveyTangentLine_le_hamiltonIveyBarrier
+    (K := K) (τ := τ) (a := (2 * δ)⁻¹) (X := X) hK hτ hX
+  have hline :
+      (2 * δ)⁻¹ * X - K * Real.exp (2 + (2 * δ)⁻¹) / (1 + 2 * K * τ) ≤ S := by
+    simpa [hamiltonIveyTangentLine, add_comm] using htangent.trans hbarrier
+  have hlinear :
+      (2 * δ)⁻¹ * X ≤
+        S + K * Real.exp (2 + (2 * δ)⁻¹) / (1 + 2 * K * τ) := by
+    linarith
+  have hmul := mul_le_mul_of_nonneg_left hlinear
+    (mul_nonneg (by norm_num : (0 : Real) ≤ 2) hδ.le)
+  calc
+    X = (2 * δ) * ((2 * δ)⁻¹ * X) := by
+      field_simp [hδ.ne']
+    _ ≤ (2 * δ) *
+        (S + K * Real.exp (2 + (2 * δ)⁻¹) / (1 + 2 * K * τ)) := hmul
+    _ = 2 * δ * S +
+        2 * δ * K * Real.exp (2 + (2 * δ)⁻¹) / (1 + 2 * K * τ) := by ring
 
 theorem hamiltonIveyTangentLine_initial_le_neg_three_mul
     {K a X : Real} (hK : 0 < K) (hX : 0 ≤ X) (hXK : X ≤ K) :
