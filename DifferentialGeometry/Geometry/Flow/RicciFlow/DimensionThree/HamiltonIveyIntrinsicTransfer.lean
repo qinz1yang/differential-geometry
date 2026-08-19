@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyBundleRegion
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyBundleRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckFrameAssembly
 

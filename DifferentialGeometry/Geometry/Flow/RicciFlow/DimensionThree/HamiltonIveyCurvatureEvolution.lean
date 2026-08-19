@@ -1,5 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionReaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionReaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UhlReaction3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.RiemannNormHeatProducer
 
 set_option autoImplicit false
@@ -10,6 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
 open DifferentialGeometry.Analysis.Convex
+open DifferentialGeometry.Analysis.InnerProductSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Dim3Reaction
@@ -36,8 +38,8 @@ lemma uhlenbeckCurvatureOperatorReaction_eq_reactionState
     uhlenbeckCurvatureOperatorReaction
         (fun _ _ a b c d => bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d)
         t x =
-      uhlenbeckCurvatureOperatorReactionState (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
-  unfold uhlenbeckCurvatureOperatorReaction uhlenbeckCurvatureOperatorReactionState
+      hamiltonIveyMatrixReactionEuclid (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
+  unfold uhlenbeckCurvatureOperatorReaction hamiltonIveyMatrixReactionEuclid
     uhlenbeckCurvatureOperatorMatrix
   apply congrArg (WithLp.toLp 2)
   funext ij
@@ -91,7 +93,7 @@ lemma uhlenbeckReaction_eq_reactionState_at
     (hrm : ∀ a b c d, pulledRm t x a b c d = rm R a b c d)
     (hB : ∀ a b c d, B t x a b c d = bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d) :
     uhlenbeckCurvatureOperatorReaction B t x =
-      uhlenbeckCurvatureOperatorReactionState (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
+      hamiltonIveyMatrixReactionEuclid (uhlenbeckCurvatureOperatorMatrix pulledRm t x) := by
   have h := uhlenbeckCurvatureOperatorReaction_eq_reactionState pulledRm t x R hR hrm
   have hB' : uhlenbeckCurvatureOperatorReaction B t x =
       uhlenbeckCurvatureOperatorReaction
@@ -134,7 +136,7 @@ theorem innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator_quadratic
     (hB : ∀ t x a b c d, B t x a b c d = bTensorDown (fun a' b' c' d' => pulledRm t x a' b' c' d') a b c d) :
     IsInnerProductHeatReactionOn (D := D) (G := G)
       (F := EuclideanSpace ℝ (Fin 3 × Fin 3))
-      (fun _t _x A => uhlenbeckCurvatureOperatorReactionState A)
+      (fun _t _x A => hamiltonIveyMatrixReactionEuclid A)
       (uhlenbeckCurvatureOperatorMatrix pulledRm) := by
   have hsolB : IsInnerProductHeatReactionOn (D := D) (G := G)
       (F := EuclideanSpace ℝ (Fin 3 × Fin 3))
@@ -150,14 +152,14 @@ theorem innerProductHeatReactionOn_of_uhlenbeckCurvatureOperator_quadratic
     have hre := uhlenbeckReaction_eq_reactionState_at (pulledRm := pulledRm) (B := B)
       t x (R t x) (hR t x) (hrm t x) (hB t x)
     have hinner : inner ℝ (uhlenbeckCurvatureOperatorReaction B t x) y =
-        inner ℝ (uhlenbeckCurvatureOperatorReactionState
+        inner ℝ (hamiltonIveyMatrixReactionEuclid
           (uhlenbeckCurvatureOperatorMatrix pulledRm t x)) y := by
       rw [hre]
     have hderiv' : HasDerivAt (fun s : Real => innerScalarization
         (uhlenbeckCurvatureOperatorMatrix pulledRm) y s x)
         (laplacianAt (I := I) G t (innerScalarization
           (uhlenbeckCurvatureOperatorMatrix pulledRm) y t) x +
-          inner ℝ (uhlenbeckCurvatureOperatorReactionState
+          inner ℝ (hamiltonIveyMatrixReactionEuclid
             (uhlenbeckCurvatureOperatorMatrix pulledRm t x)) y) t := by
       exact hderiv.congr_deriv (by rw [hinner])
     simpa using hderiv'

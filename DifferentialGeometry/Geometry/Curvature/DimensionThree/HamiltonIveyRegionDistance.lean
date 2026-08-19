@@ -1,14 +1,15 @@
 import DifferentialGeometry.Analysis.Convex.MovingSetDistance
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionReaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionReaction
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open Bundle Filter Set
 open DifferentialGeometry.Analysis.Convex
+open DifferentialGeometry.Analysis.InnerProductSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open scoped Topology RealInnerProductSpace BigOperators
@@ -378,15 +379,15 @@ theorem continuousOn_infDist_hamiltonIveyRegion
     (hgraph := hamiltonIveyRegion_seqClosedGraph hK)
     (happrox := hamiltonIveyRegion_approx hK)
 
-theorem curvatureOperatorInfDist_continuousOn_shifted
+theorem continuousOn_infDist_hamiltonIveyRegion_comp_shift
     {M : Type*} [TopologicalSpace M]
     {t0 T K : ℝ} (hK : 0 < K)
-    (pulledRm : FourComp M (Fin 3))
+    (A : ℝ → M → HI3)
     (hjoint : ContinuousOn
-      (fun q : Real × M => uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2)
+      (fun q : Real × M => A q.1 q.2)
       (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M))) :
     ContinuousOn
-      (fun q : Real × M => Metric.infDist (uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2)
+      (fun q : Real × M => Metric.infDist (A q.1 q.2)
         (hamiltonIveyConvexMatrixRegionEuclid K (q.1 - t0)))
       (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M)) := by
   have hg : ContinuousOn (fun q : ℝ × HI3 =>
@@ -394,13 +395,13 @@ theorem curvatureOperatorInfDist_continuousOn_shifted
       (Set.Icc 0 T ×ˢ (Set.univ : Set HI3)) :=
     continuousOn_infDist_hamiltonIveyRegion hK
   have hh : ContinuousOn
-      (fun q : ℝ × M => (q.1 - t0, uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2))
+      (fun q : ℝ × M => (q.1 - t0, A q.1 q.2))
       (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M)) := by
     have hfst : ContinuousOn (fun q : ℝ × M => q.1 - t0)
         (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M)) := by fun_prop
     exact hfst.prodMk hjoint
   have hmaps : Set.MapsTo
-      (fun q : ℝ × M => (q.1 - t0, uhlenbeckCurvatureOperatorMatrix pulledRm q.1 q.2))
+      (fun q : ℝ × M => (q.1 - t0, A q.1 q.2))
       (Set.Icc t0 (t0 + T) ×ˢ (Set.univ : Set M))
       (Set.Icc 0 T ×ˢ (Set.univ : Set HI3)) := by
     intro q hq
@@ -409,6 +410,6 @@ theorem curvatureOperatorInfDist_continuousOn_shifted
   intro q hq
   rfl
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 end

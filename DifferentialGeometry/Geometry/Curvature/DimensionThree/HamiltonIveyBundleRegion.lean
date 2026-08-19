@@ -1,14 +1,15 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionReaction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyIntrinsicRegion
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionReaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.AlgebraicCurvatureOperatorMetric
 
 set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open Bundle Set
 open DifferentialGeometry.Analysis.Convex
+open DifferentialGeometry.Analysis.InnerProductSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Tensor0SBundle
@@ -402,7 +403,7 @@ theorem fiberOperatorTensor_mem_algebraic
             (∑ p : Fin 3, ∑ q : Fin 3, Rmat p q * D p q)
                 = ∑ ij : Fin 3 × Fin 3, Rmat ij.1 ij.2 * D ij.1 ij.2 := h1
             _ = ∑ ij : Fin 3 × Fin 3, Rmat ij.2 ij.1 * D ij.2 ij.1 := by
-                rw [sum_pair_swap_three (fun ij : Fin 3 × Fin 3 => Rmat ij.1 ij.2 * D ij.1 ij.2)]
+                rw [sum_pair_swap (fun ij : Fin 3 × Fin 3 => Rmat ij.1 ij.2 * D ij.1 ij.2)]
             _ = ∑ p : Fin 3, ∑ q : Fin 3, Rmat q p * D q p := h2.symm
         nth_rewrite 2 [hswap]
         rw [← Finset.sum_add_distrib]
@@ -869,6 +870,6 @@ theorem fiberHamiltonIveyRegion_normal
     exact hle
   exact (le_div_iff₀' (by norm_num : (0 : ℝ) < 4)).mpr hle4
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 end

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ComponentwiseHeatReaction
+import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Uhlenbeck
@@ -11,6 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
 open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.InnerProductSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators
@@ -89,94 +91,6 @@ theorem uhlenbeckCurvatureOperatorMatrixAsMatrix_mem_hamiltonIveyRegion_iff
   rw [uhlenbeckCurvatureOperatorMatrixAsMatrix_eq_curvatureOperatorMatrixAt
     (I := I) (M := M) (x := x) (basis := basis) (A := A) (pulledRm := pulledRm) (t := t) hpull]
 
-
-noncomputable def matrixToEuclid
-    (A : Matrix (Fin 3) (Fin 3) Real) : EuclideanSpace ℝ (Fin 3 × Fin 3) :=
-  WithLp.toLp 2 (fun ij : Fin 3 × Fin 3 => A ij.1 ij.2)
-
-noncomputable def euclidToMatrix
-    (A : EuclideanSpace ℝ (Fin 3 × Fin 3)) : Matrix (Fin 3) (Fin 3) Real :=
-  Matrix.of (fun i j => A (i, j))
-
-theorem matrixToEuclid_euclidToMatrix (A : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
-    matrixToEuclid (euclidToMatrix A) = A := by
-  ext ij
-  simp [matrixToEuclid, euclidToMatrix]
-
-theorem euclidToMatrix_matrixToEuclid (A : Matrix (Fin 3) (Fin 3) Real) :
-    euclidToMatrix (matrixToEuclid A) = A := by
-  ext i j
-  simp [matrixToEuclid, euclidToMatrix]
-
-noncomputable def hamiltonIveyConvexMatrixRegionEuclid (K τ : Real) :
-    Set (EuclideanSpace ℝ (Fin 3 × Fin 3)) :=
-  {A | euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ}
-
-theorem mem_hamiltonIveyConvexMatrixRegionEuclid_iff (K τ : Real)
-    (A : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
-    A ∈ hamiltonIveyConvexMatrixRegionEuclid K τ ↔
-      euclidToMatrix A ∈ hamiltonIveyConvexMatrixRegion K τ := by
-  rfl
-
-theorem nonempty_hamiltonIveyConvexMatrixRegionEuclid {K τ : Real}
-    (hK : 0 < K) (hτ : 0 ≤ τ) :
-    (hamiltonIveyConvexMatrixRegionEuclid K τ).Nonempty := by
-  rcases nonempty_hamiltonIveyConvexMatrixRegion hK hτ with ⟨A, hA⟩
-  refine ⟨matrixToEuclid A, ?_⟩
-  rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
-  simpa [euclidToMatrix_matrixToEuclid] using hA
-
-theorem isClosed_hamiltonIveyConvexMatrixRegionEuclid {K τ : Real}
-    (hK : 0 < K) :
-    IsClosed (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
-  have hf : Continuous euclidToMatrix := by
-    change Continuous (fun A : EuclideanSpace ℝ (Fin 3 × Fin 3) =>
-      fun i : Fin 3 => fun j : Fin 3 => A (i, j))
-    exact continuous_pi (fun i => continuous_pi (fun j =>
-      PiLp.continuous_apply (p := 2) (β := fun _ : Fin 3 × Fin 3 => ℝ) (i, j)))
-  rw [hamiltonIveyConvexMatrixRegionEuclid]
-  change IsClosed (euclidToMatrix ⁻¹' hamiltonIveyConvexMatrixRegion K τ)
-  exact IsClosed.preimage hf (isClosed_hamiltonIveyConvexMatrixRegion hK)
-
-theorem convex_hamiltonIveyConvexMatrixRegionEuclid {K τ : Real}
-    (hK : 0 < K) (hτ : 0 ≤ τ) :
-    Convex Real (hamiltonIveyConvexMatrixRegionEuclid K τ) := by
-  let f : EuclideanSpace ℝ (Fin 3 × Fin 3) →ₗ[ℝ] Matrix (Fin 3) (Fin 3) ℝ :=
-    { toFun := euclidToMatrix
-      map_add' := by
-        intro x y
-        ext i j
-        simp [euclidToMatrix]
-      map_smul' := by
-        intro c x
-        ext i j
-        simp [euclidToMatrix] }
-  have hpre : Convex Real (f ⁻¹' hamiltonIveyConvexMatrixRegion K τ) :=
-    Convex.linear_preimage (convex_hamiltonIveyConvexMatrixRegion hK hτ) f
-  simpa [hamiltonIveyConvexMatrixRegionEuclid, f] using hpre
-
-
-
-
-
-
-
-
-
-theorem inner_matrixToEuclid
-    (ν : EuclideanSpace ℝ (Fin 3 × Fin 3))
-    (A : Matrix (Fin 3) (Fin 3) Real) :
-    inner ℝ ν (matrixToEuclid A) =
-      ∑ ij : Fin 3 × Fin 3, ν ij * A ij.1 ij.2 := by
-  simp only [matrixToEuclid, PiLp.inner_apply]
-  apply Finset.sum_congr rfl
-  intro ij hij
-  have h := RCLike.inner_apply (𝕜 := ℝ) (x := ν.ofLp ij) (y := A ij.1 ij.2)
-  calc
-    inner ℝ (ν.ofLp ij) (A ij.1 ij.2) = A ij.1 ij.2 * (starRingEnd ℝ) (ν.ofLp ij) := h
-    _ = ν.ofLp ij * A ij.1 ij.2 := by
-      simp [starRingEnd]
-      ring
 
 noncomputable def uhlenbeckCurvatureOperatorReaction
     (B : FourComp M (Fin 3)) :

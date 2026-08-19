@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegion
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Convex.SupportFunction
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.UhlenbeckCurvatureOperatorHeatReaction
+import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 
@@ -11,10 +11,11 @@ set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open Bundle Set
 open DifferentialGeometry.Analysis.Convex
+open DifferentialGeometry.Analysis.InnerProductSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Dim3Reaction
@@ -25,79 +26,10 @@ def hamiltonIveyMatrixReaction (A : Matrix (Fin 3) (Fin 3) Real) :
     Matrix (Fin 3) (Fin 3) Real :=
   2 • (A * A + A.adjugate)
 
-def uhlenbeckCurvatureOperatorReactionState
+def hamiltonIveyMatrixReactionEuclid
     (A : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
     EuclideanSpace ℝ (Fin 3 × Fin 3) :=
   matrixToEuclid (hamiltonIveyMatrixReaction (euclidToMatrix A))
-
-lemma matrixTransposeMul_orthogonal
-    {n : Type*} [Fintype n] [DecidableEq n]
-    (O : Matrix n n ℝ) (hO : O * O.transpose = 1) :
-    O.transpose * O = 1 := by
-  have hdet : IsUnit O.det := by
-    have h : O.det * O.transpose.det = 1 := by
-      rw [← Matrix.det_mul, hO, Matrix.det_one]
-    have h' : O.det * O.det = 1 := by simpa [Matrix.det_transpose] using h
-    exact isUnit_iff_exists_inv.mpr ⟨O.det, by rw [h']⟩
-  have h2 : O⁻¹ = O.transpose := by
-    calc
-      O⁻¹ = O⁻¹ * 1 := by rw [mul_one]
-      _ = O⁻¹ * (O * O.transpose) := by rw [hO]
-      _ = (O⁻¹ * O) * O.transpose := by rw [Matrix.mul_assoc]
-      _ = 1 * O.transpose := by rw [Matrix.nonsing_inv_mul O hdet]
-      _ = O.transpose := by rw [one_mul]
-  calc
-    O.transpose * O = O⁻¹ * O := by rw [h2]
-    _ = 1 := Matrix.nonsing_inv_mul O hdet
-
-lemma adjugate_orthogonal_conj (O A : Matrix (Fin 3) (Fin 3) ℝ)
-    (hO : O * O.transpose = 1) :
-    (O * A * O.transpose).adjugate = O * A.adjugate * O.transpose := by
-  have hOadj : O.adjugate = O.det • O.transpose := by
-    have hdet : IsUnit O.det := by
-      have h : O.det * O.transpose.det = 1 := by
-        rw [← Matrix.det_mul, hO, Matrix.det_one]
-      have h' : O.det * O.det = 1 := by simpa [Matrix.det_transpose] using h
-      exact isUnit_iff_exists_inv.mpr ⟨O.det, by rw [h']⟩
-    have h4 : O⁻¹ * (O.det • 1) = O.det • O⁻¹ := by
-      ext i j
-      simp [Matrix.smul_apply, Matrix.mul_apply, Matrix.one_apply, smul_eq_mul, mul_comm]
-    have h5 : O.adjugate = O.det • O⁻¹ := by
-      calc
-        O.adjugate = 1 * O.adjugate := by rw [one_mul]
-        _ = (O⁻¹ * O) * O.adjugate := by rw [Matrix.nonsing_inv_mul O hdet]
-        _ = O⁻¹ * (O * O.adjugate) := by rw [Matrix.mul_assoc]
-        _ = O⁻¹ * (O.det • 1) := by rw [Matrix.mul_adjugate O]
-        _ = O.det • O⁻¹ := h4
-    have h6 : O⁻¹ = O.transpose := by
-      calc
-        O⁻¹ = O⁻¹ * 1 := by rw [mul_one]
-        _ = O⁻¹ * (O * O.transpose) := by rw [hO]
-        _ = (O⁻¹ * O) * O.transpose := by rw [Matrix.mul_assoc]
-        _ = 1 * O.transpose := by rw [Matrix.nonsing_inv_mul O hdet]
-        _ = O.transpose := by rw [one_mul]
-    rw [h6] at h5
-    exact h5
-  have hOt : O.transpose.adjugate = O.det • O := by
-    calc
-      O.transpose.adjugate = (O.adjugate).transpose := by rw [Matrix.adjugate_transpose]
-      _ = (O.det • O.transpose).transpose := by rw [hOadj]
-      _ = O.det • O := by simp [Matrix.transpose_smul]
-  have hdt : O.det * O.det = 1 := by
-    have h : (O * O.transpose).det = 1 := by rw [hO, Matrix.det_one]
-    simpa [Matrix.det_mul, Matrix.det_transpose] using h
-  calc
-    (O * A * O.transpose).adjugate = (O * (A * O.transpose)).adjugate := by rw [Matrix.mul_assoc]
-    _ = (A * O.transpose).adjugate * O.adjugate := Matrix.adjugate_mul_distrib _ _
-    _ = (O.transpose.adjugate * A.adjugate) * O.adjugate := by rw [Matrix.adjugate_mul_distrib]
-    _ = ((O.det • O) * A.adjugate) * (O.det • O.transpose) := by rw [hOt, hOadj]
-    _ = O * A.adjugate * O.transpose := by
-      have hmul : ∀ X : Matrix (Fin 3) (Fin 3) ℝ,
-          ((O.det • O) * X) * (O.det • O.transpose) = (O.det * O.det) • (O * X * O.transpose) := by
-        intro X
-        simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, mul_assoc]
-      rw [hmul, hdt]
-      simp
 
 private lemma diagProduct_erase (l1 l2 l3 : ℝ) (i : Fin 3) :
     (∏ j ∈ (Finset.univ : Finset (Fin 3)).erase i, ![l1, l2, l3] j) =
@@ -239,7 +171,7 @@ theorem sectionalRayleighMin3_diagonal_ge
           exact Finset.sum_le_sum (fun i _ =>
             mul_le_mul_of_nonneg_right (hm i) (sq_nonneg (x i)))
 
-lemma small_order_ge
+private lemma small_order_ge
     (a b a' b' : Real) (hab : b ≤ a)
     (h0 : a = b → a' = b') :
     ∃ ε : Real, 0 < ε ∧ ∀ t : Real, t ∈ Set.Icc 0 ε →
@@ -274,18 +206,18 @@ lemma small_order_ge
       have hcoef : 0 ≤ t := ht.1
       nlinarith
 
-lemma reactionDiag_order0_ge2 (l1 l2 l3 : Real) :
+private lemma reactionDiag_order0_ge2 (l1 l2 l3 : Real) :
     l1 = l3 → 2 * (l1 ^ 2 + l2 * l3) = 2 * (l3 ^ 2 + l1 * l2) := by
   intro h
   rw [h]
   ring
 
-lemma reactionDiag_order1_ge2 (l1 l2 l3 : Real) :
+private lemma reactionDiag_order1_ge2 (l1 l2 l3 : Real) :
     l2 = l3 → 2 * (l2 ^ 2 + l1 * l3) = 2 * (l3 ^ 2 + l1 * l2) := by
   intro h
   rw [h]
 
-lemma reactionDiag_minEig (l1 l2 l3 : Real) (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) :
+private lemma reactionDiag_minEig (l1 l2 l3 : Real) (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) :
     ∃ ε : Real, 0 < ε ∧ ∀ t : Real, t ∈ Set.Icc 0 ε →
       sectionalRayleighMin3 (Matrix.diagonal
         ![l1 + t * (2 * (l1 ^ 2 + l2 * l3)),
@@ -424,7 +356,7 @@ theorem hamiltonIveyMatrixReaction_orthogonal_conj
           rw [← Matrix.smul_mul]
           rw [Matrix.mul_smul]
 
-lemma lip {K tau t : Real} (hK : 0 < K) (htau : 0 <= tau) (ht : 0 <= t) :
+private lemma lip {K tau t : Real} (hK : 0 < K) (htau : 0 <= tau) (ht : 0 <= t) :
     scalarSectionalLowerBarrier3 K (tau + t) <= scalarSectionalLowerBarrier3 K tau + 12 * K ^ 2 * t := by
   unfold scalarSectionalLowerBarrier3
   have hmain : 3 * K / (1 + 4 * K * tau) - 3 * K / (1 + 4 * K * (tau + t)) <= 12 * K ^ 2 * t := by
@@ -450,7 +382,7 @@ lemma lip {K tau t : Real} (hK : 0 < K) (htau : 0 <= tau) (ht : 0 <= t) :
   rw [hconv1, hconv2]
   linarith [hmain]
 
-lemma concave {K tau t : Real} (hK : 0 < K) (htau : 0 <= tau) (ht : 0 <= t) :
+private lemma concave {K tau t : Real} (hK : 0 < K) (htau : 0 <= tau) (ht : 0 <= t) :
     scalarSectionalLowerBarrier3 K (tau + t) <= scalarSectionalLowerBarrier3 K tau + (12 * K ^ 2 / (1 + 4 * K * tau) ^ 2) * t := by
   unfold scalarSectionalLowerBarrier3
   have hmain : 3 * K / (1 + 4 * K * tau) - 3 * K / (1 + 4 * K * (tau + t)) <=
@@ -1029,10 +961,11 @@ theorem hamiltonIveyConvexMatrixRegion_reaction_small_time_diagonal
 
 theorem hamiltonIveyConvexMatrixRegion_reaction_small_time
     {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
-    (A : Matrix (Fin 3) (Fin 3) Real) (hA : A.IsHermitian)
+    (A : Matrix (Fin 3) (Fin 3) Real)
     (hAmem : A ∈ hamiltonIveyConvexMatrixRegion K tau) :
     ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
       A + t • hamiltonIveyMatrixReaction A ∈ hamiltonIveyConvexMatrixRegion K (tau + t) := by
+  have hA : A.IsHermitian := hAmem.choose
   rcases hermitian_orthogonal_diagonalization hA with ⟨O, hOorth, hdiag⟩
   let d0 : ℝ := hA.eigenvalues₀ 0
   let d1 : ℝ := hA.eigenvalues₀ 1
@@ -1098,23 +1031,20 @@ theorem hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time
     (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
     (hAmem : A ∈ hamiltonIveyConvexMatrixRegionEuclid K tau) :
     ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
-      A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+      A + t • hamiltonIveyMatrixReactionEuclid A ∈
         hamiltonIveyConvexMatrixRegionEuclid K (tau + t) := by
   let M : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix A
   have hMmem : M ∈ hamiltonIveyConvexMatrixRegion K tau := by
     simpa [M] using (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K tau A).1 hAmem
-  have hMherm : M.IsHermitian := by
-    rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hMmem
-    exact hMmem.1
-  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time hK htau M hMherm hMmem
+  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time hK htau M hMmem
     with ⟨eps, heps, hstep⟩
   refine ⟨eps, heps, ?_⟩
   intro t ht
   have hstep' : M + t • hamiltonIveyMatrixReaction M ∈
       hamiltonIveyConvexMatrixRegion K (tau + t) := hstep t ht
-  have hsum : A + t • uhlenbeckCurvatureOperatorReactionState A =
+  have hsum : A + t • hamiltonIveyMatrixReactionEuclid A =
       matrixToEuclid (M + t • hamiltonIveyMatrixReaction M) := by
-    dsimp [uhlenbeckCurvatureOperatorReactionState, M]
+    dsimp [hamiltonIveyMatrixReactionEuclid, M]
     ext ij
     simp [matrixToEuclid, euclidToMatrix]
   rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
@@ -1127,11 +1057,11 @@ theorem hamiltonIveyConvexMatrixSlabEuclid_reaction_tangent
     {tau : ℝ} (htau : tau ∈ Set.Ico 0 T)
     (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
     (hAmem : A ∈ hamiltonIveyConvexMatrixRegionEuclid K tau) :
-    WithLp.toLp 2 (uhlenbeckCurvatureOperatorReactionState A, (1 : Real)) ∈
+    WithLp.toLp 2 (hamiltonIveyMatrixReactionEuclid A, (1 : Real)) ∈
       posTangentConeAt (hamiltonIveyConvexMatrixSlabEuclid K T) (WithLp.toLp 2 (A, tau)) := by
   let x : WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ) := WithLp.toLp 2 (A, tau)
   let y : WithLp 2 (EuclideanSpace ℝ (Fin 3 × Fin 3) × ℝ) :=
-    WithLp.toLp 2 (uhlenbeckCurvatureOperatorReactionState A, (1 : Real))
+    WithLp.toLp 2 (hamiltonIveyMatrixReactionEuclid A, (1 : Real))
   rcases hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time hK htau.1 A hAmem
     with ⟨eps, heps, hstep⟩
   let eps' : ℝ := min eps ((T - tau) / 2)
@@ -1147,14 +1077,14 @@ theorem hamiltonIveyConvexMatrixSlabEuclid_reaction_tangent
   have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, x + t • y ∈ hamiltonIveyConvexMatrixSlabEuclid K T := by
     filter_upwards [htbound, self_mem_nhdsWithin] with t ht' htpos
     have htle : t ≤ eps' := le_of_lt ht'
-    have htstep : A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+    have htstep : A + t • hamiltonIveyMatrixReactionEuclid A ∈
         hamiltonIveyConvexMatrixRegionEuclid K (tau + t) :=
       hstep t ⟨htpos.le, le_trans htle (min_le_left _ _)⟩
     have htausmall : tau + t ≤ T := by
       have ht' : t ≤ (T - tau) / 2 := le_trans htle (min_le_right _ _)
       nlinarith [hTminus]
     have htau' : 0 ≤ tau + t := by linarith [htau.1, (show 0 < t from htpos)]
-    have hcurve : x + t • y = WithLp.toLp 2 (A + t • uhlenbeckCurvatureOperatorReactionState A, tau + t) := by
+    have hcurve : x + t • y = WithLp.toLp 2 (A + t • hamiltonIveyMatrixReactionEuclid A, tau + t) := by
       dsimp [x, y]
       rw [← WithLp.toLp_smul, ← WithLp.toLp_add]
       congr 1
@@ -1231,11 +1161,11 @@ theorem hamiltonIveyConvexMatrixRegion_antitone_time
 
 theorem hamiltonIveyConvexMatrixRegion_reaction_small_time_fixed
     {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
-    (A : Matrix (Fin 3) (Fin 3) Real) (hA : A.IsHermitian)
+    (A : Matrix (Fin 3) (Fin 3) Real)
     (hAmem : A ∈ hamiltonIveyConvexMatrixRegion K tau) :
     ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
       A + t • hamiltonIveyMatrixReaction A ∈ hamiltonIveyConvexMatrixRegion K tau := by
-  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time hK htau A hA hAmem
+  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time hK htau A hAmem
     with ⟨eps, heps, hstep⟩
   refine ⟨eps, heps, ?_⟩
   intro t ht
@@ -1248,23 +1178,20 @@ theorem hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time_fixed
     (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
     (hAmem : A ∈ hamiltonIveyConvexMatrixRegionEuclid K tau) :
     ∃ eps : ℝ, 0 < eps ∧ ∀ t : ℝ, t ∈ Set.Icc 0 eps →
-      A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+      A + t • hamiltonIveyMatrixReactionEuclid A ∈
         hamiltonIveyConvexMatrixRegionEuclid K tau := by
   let M : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix A
   have hMmem : M ∈ hamiltonIveyConvexMatrixRegion K tau := by
     simpa [M] using (mem_hamiltonIveyConvexMatrixRegionEuclid_iff K tau A).1 hAmem
-  have hMherm : M.IsHermitian := by
-    rw [hamiltonIveyConvexMatrixRegion_eq_violation] at hMmem
-    exact hMmem.1
-  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time_fixed hK htau M hMherm hMmem
+  rcases hamiltonIveyConvexMatrixRegion_reaction_small_time_fixed hK htau M hMmem
     with ⟨eps, heps, hstep⟩
   refine ⟨eps, heps, ?_⟩
   intro t ht
   have hstep' : M + t • hamiltonIveyMatrixReaction M ∈
       hamiltonIveyConvexMatrixRegion K tau := hstep t ht
-  have hsum : A + t • uhlenbeckCurvatureOperatorReactionState A =
+  have hsum : A + t • hamiltonIveyMatrixReactionEuclid A =
       matrixToEuclid (M + t • hamiltonIveyMatrixReaction M) := by
-    dsimp [uhlenbeckCurvatureOperatorReactionState, M]
+    dsimp [hamiltonIveyMatrixReactionEuclid, M]
     ext ij
     simp [matrixToEuclid, euclidToMatrix]
   rw [mem_hamiltonIveyConvexMatrixRegionEuclid_iff]
@@ -1276,17 +1203,17 @@ theorem hamiltonIveyConvexMatrixRegionEuclid_fiber_tangent
     {K tau : ℝ} (hK : 0 < K) (htau : 0 ≤ tau)
     (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
     (hAmem : A ∈ hamiltonIveyConvexMatrixRegionEuclid K tau) :
-    uhlenbeckCurvatureOperatorReactionState A ∈ posTangentConeAt
+    hamiltonIveyMatrixReactionEuclid A ∈ posTangentConeAt
       (hamiltonIveyConvexMatrixRegionEuclid K tau) A := by
   rcases hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time_fixed hK htau A hAmem
     with ⟨eps, heps, hstep⟩
-  have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+  have hev : ∀ᶠ t : ℝ in 𝓝[>] 0, A + t • hamiltonIveyMatrixReactionEuclid A ∈
       hamiltonIveyConvexMatrixRegionEuclid K tau := by
     rw [eventually_nhdsWithin_iff]
     apply Filter.mem_of_superset (Ioo_mem_nhds (neg_lt_zero.mpr heps) heps)
     intro t ht _htpos
     exact hstep t ⟨_htpos.le, le_of_lt ht.2⟩
-  have hfreq : ∃ᶠ t : ℝ in 𝓝[>] 0, A + t • uhlenbeckCurvatureOperatorReactionState A ∈
+  have hfreq : ∃ᶠ t : ℝ in 𝓝[>] 0, A + t • hamiltonIveyMatrixReactionEuclid A ∈
       hamiltonIveyConvexMatrixRegionEuclid K tau := hev.frequently
   exact mem_posTangentConeAt_of_frequently_mem hfreq
 
@@ -1304,42 +1231,6 @@ lemma curvatureOperatorReactionMatrix_eq_hamiltonIveyMatrixReaction
       Matrix.adjugate_apply, bivectorIndex3, kd, sc, Fin.sum_univ_three,
       Matrix.det_fin_three, Matrix.updateRow_apply,
       hR] <;> ring
-
-lemma euclid_entry_le_norm (a : EuclideanSpace ℝ (Fin 3 × Fin 3)) (ij : Fin 3 × Fin 3) :
-    |a ij| ≤ ‖a‖ := by
-  simpa [abs_of_nonneg] using (PiLp.norm_apply_le a ij)
-
-lemma matrixToEuclid_norm (A : Matrix (Fin 3) (Fin 3) ℝ) : ‖matrixToEuclid A‖ = ‖A‖ := by
-  rw [Matrix.frobenius_norm_def]
-  unfold matrixToEuclid
-  rw [PiLp.norm_eq_of_L2]
-  simp only [Real.sqrt_eq_rpow]
-  congr 1
-  rw [← Finset.sum_product']
-  rw [Finset.univ_product_univ]
-  apply Finset.sum_congr rfl
-  intro x hx
-  simp
-
-lemma matrixToEuclid_mul_norm_le (A B : Matrix (Fin 3) (Fin 3) ℝ) :
-    ‖matrixToEuclid (A * B)‖ ≤ ‖matrixToEuclid A‖ * ‖matrixToEuclid B‖ := by
-  rw [matrixToEuclid_norm, matrixToEuclid_norm, matrixToEuclid_norm]
-  exact Matrix.frobenius_norm_mul A B
-
-lemma matrixToEuclid_sub (A B : Matrix (Fin 3) (Fin 3) ℝ) :
-    matrixToEuclid (A - B) = matrixToEuclid A - matrixToEuclid B := by
-  ext ij
-  rfl
-
-lemma matrixToEuclid_add (A B : Matrix (Fin 3) (Fin 3) ℝ) :
-    matrixToEuclid (A + B) = matrixToEuclid A + matrixToEuclid B := by
-  ext ij
-  rfl
-
-lemma matrixToEuclid_smul (c : ℝ) (A : Matrix (Fin 3) (Fin 3) ℝ) :
-    matrixToEuclid (c • A) = c • matrixToEuclid A := by
-  ext ij
-  rfl
 
 lemma euclid_norm_le_of_entry_le {D : Matrix (Fin 3) (Fin 3) ℝ} {C : ℝ} (hC : 0 ≤ C)
     (hD : ∀ i j, |D i j| ≤ C) : ‖matrixToEuclid D‖ ≤ 3 * C := by
@@ -1464,12 +1355,6 @@ lemma matrix_adjugate_sub_norm_le
         nlinarith
   nlinarith [hnorm]
 
-lemma euclidToMatrix_norm_eq (a : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
-    ‖euclidToMatrix a‖ = ‖a‖ := by
-  have h := matrixToEuclid_norm (euclidToMatrix a)
-  rw [matrixToEuclid_euclidToMatrix] at h
-  exact h.symm
-
 lemma matrix_square_sub_norm_le
     (A B : Matrix (Fin 3) (Fin 3) ℝ) (R : ℝ)
     (hA : ‖matrixToEuclid A‖ ≤ R) (hB : ‖matrixToEuclid B‖ ≤ R) :
@@ -1529,10 +1414,10 @@ lemma hamiltonIveyMatrixReaction_sub_norm_le
       exact mul_le_mul_of_nonneg_left hnorm (by norm_num)
     _ = 28 * R * ‖matrixToEuclid (A - B)‖ := by ring
 
-lemma uhlenbeckCurvatureOperatorReactionState_sub_norm_le
+lemma hamiltonIveyMatrixReactionEuclid_sub_norm_le
     (a b : EuclideanSpace ℝ (Fin 3 × Fin 3))
     (R : ℝ) (hR : 0 ≤ R) (ha : ‖a‖ ≤ R) (hb : ‖b‖ ≤ R) :
-    ‖uhlenbeckCurvatureOperatorReactionState a - uhlenbeckCurvatureOperatorReactionState b‖ ≤
+    ‖hamiltonIveyMatrixReactionEuclid a - hamiltonIveyMatrixReactionEuclid b‖ ≤
       28 * R * ‖a - b‖ := by
   let A : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix a
   let B : Matrix (Fin 3) (Fin 3) ℝ := euclidToMatrix b
@@ -1550,21 +1435,21 @@ lemma uhlenbeckCurvatureOperatorReactionState_sub_norm_le
     rw [matrixToEuclid_sub]
     rw [matrixToEuclid_euclidToMatrix, matrixToEuclid_euclidToMatrix]
   have hlhs : matrixToEuclid (hamiltonIveyMatrixReaction A - hamiltonIveyMatrixReaction B) =
-      uhlenbeckCurvatureOperatorReactionState a - uhlenbeckCurvatureOperatorReactionState b := by
-    dsimp [A, B, uhlenbeckCurvatureOperatorReactionState]
+      hamiltonIveyMatrixReactionEuclid a - hamiltonIveyMatrixReactionEuclid b := by
+    dsimp [A, B, hamiltonIveyMatrixReactionEuclid]
     rw [matrixToEuclid_sub]
   rw [hlhs, hdiff] at hmain
   exact hmain
 
-theorem uhlenbeckCurvatureOperatorReactionState_lipschitzOn_closedBall
+theorem hamiltonIveyMatrixReactionEuclid_lipschitzOn_closedBall
     (R : ℝ) (hR : 0 ≤ R) :
-    ∃ L : NNReal, LipschitzOnWith L uhlenbeckCurvatureOperatorReactionState
+    ∃ L : NNReal, LipschitzOnWith L hamiltonIveyMatrixReactionEuclid
       (Metric.closedBall 0 R) := by
   refine ⟨⟨28 * R, by positivity⟩, ?_⟩
   refine LipschitzOnWith.of_dist_le_mul ?_
   intro a ha b hb
   rw [dist_eq_norm, dist_eq_norm]
-  exact uhlenbeckCurvatureOperatorReactionState_sub_norm_le a b R hR
+  exact hamiltonIveyMatrixReactionEuclid_sub_norm_le a b R hR
     (mem_closedBall_zero_iff.mp ha) (mem_closedBall_zero_iff.mp hb)
 
 noncomputable def symmEuclid (v : EuclideanSpace ℝ (Fin 3 × Fin 3)) :
@@ -1641,29 +1526,6 @@ lemma inner_matrixToEuclid_symm
                   apply Finset.sum_congr rfl
                   intro ij hij
                   ring
-
-lemma sum_pair_swap_three (f : Fin 3 × Fin 3 → ℝ) :
-    (∑ p : Fin 3 × Fin 3, f (p.2, p.1)) = ∑ p : Fin 3 × Fin 3, f p := by
-  refine Finset.sum_bij (fun p _ => (p.2, p.1)) ?_ ?_ ?_ ?_
-  · intro p hp
-    simp
-  · intro a ha b hb h
-    exact Prod.ext (congrArg Prod.snd h) (congrArg Prod.fst h)
-  · intro b hb
-    refine ⟨(b.2, b.1), ⟨by simp, ?_⟩⟩
-    change (b.1, b.2) = b
-    exact Prod.ext rfl rfl
-  · intro p hp
-    rfl
-
-lemma matrixDot_eq_trace_transpose_mul
-    (N A : Matrix (Fin 3) (Fin 3) ℝ) :
-    (∑ ij : Fin 3 × Fin 3, N ij.1 ij.2 * A ij.1 ij.2) =
-      Matrix.trace (N.transpose * A) := by
-  rw [Matrix.trace]
-  simp only [Matrix.diag, Matrix.mul_apply, Matrix.transpose_apply]
-  rw [Fintype.sum_prod_type]
-  rw [Finset.sum_comm]
 
 theorem inner_matrixToEuclid_orthogonal_conj
     (N A O : Matrix (Fin 3) (Fin 3) ℝ) (hOorth : O * O.transpose = 1) :
@@ -2661,7 +2523,8 @@ lemma exists_rotate_preimage_of_mem_region
               rw [← Matrix.mul_assoc]
               rw [hOorth2]
               simp only [Matrix.one_mul]
-            rw [hmat, matrixToEuclid_euclidToMatrix]
+            rw [hmat]
+            congr 1
   exact ⟨A, hA, hinner⟩
 
 lemma mem_finiteSupportDirections_hamiltonIvey_region_iff
@@ -5089,10 +4952,10 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclid_reaction_le_deriv
     (htangent : hamiltonIveyConvexMatrixRegionSupportEuclid K τ₀ v = inner ℝ v p)
     (support' : ℝ)
     (hderiv : HasDerivAt (fun τ : ℝ => hamiltonIveyConvexMatrixRegionSupportEuclid K τ v) support' τ₀) :
-    inner ℝ (uhlenbeckCurvatureOperatorReactionState p) v ≤ support' := by
+    inner ℝ (hamiltonIveyMatrixReactionEuclid p) v ≤ support' := by
   rcases hamiltonIveyConvexMatrixRegionEuclid_reaction_small_time hK hτ₀ p hp with ⟨ε, hε, hstep⟩
   have hmain : ∀ᶠ s in 𝓝[>] (0 : ℝ),
-      inner ℝ (uhlenbeckCurvatureOperatorReactionState p) v ≤
+      inner ℝ (hamiltonIveyMatrixReactionEuclid p) v ≤
         (hamiltonIveyConvexMatrixRegionSupportEuclid K (τ₀ + s) v -
           hamiltonIveyConvexMatrixRegionSupportEuclid K τ₀ v) / s := by
     have hspos : ∀ᶠ s in 𝓝[>] (0 : ℝ), 0 < s := by
@@ -5101,23 +4964,23 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclid_reaction_le_deriv
     have hslt : ∀ᶠ s in 𝓝[>] (0 : ℝ), s < ε :=
       (show ∀ᶠ s in 𝓝 (0 : ℝ), s < ε from Iio_mem_nhds hε).filter_mono nhdsWithin_le_nhds
     filter_upwards [hspos, hslt] with s hs hsε
-    have hstep' : p + s • uhlenbeckCurvatureOperatorReactionState p ∈
+    have hstep' : p + s • hamiltonIveyMatrixReactionEuclid p ∈
         hamiltonIveyConvexMatrixRegionEuclid K (τ₀ + s) := hstep s ⟨hs.le, hsε.le⟩
     have hle := inner_le_supportFunction_of_mem_region hK (by linarith) v hv
-      (p + s • uhlenbeckCurvatureOperatorReactionState p) hstep'
-    have hinner : inner ℝ v (p + s • uhlenbeckCurvatureOperatorReactionState p) =
-        inner ℝ v p + s * inner ℝ v (uhlenbeckCurvatureOperatorReactionState p) := by
+      (p + s • hamiltonIveyMatrixReactionEuclid p) hstep'
+    have hinner : inner ℝ v (p + s • hamiltonIveyMatrixReactionEuclid p) =
+        inner ℝ v p + s * inner ℝ v (hamiltonIveyMatrixReactionEuclid p) := by
       rw [inner_add_right, inner_smul_right]
-    have hle' : inner ℝ v p + s * inner ℝ v (uhlenbeckCurvatureOperatorReactionState p) ≤
+    have hle' : inner ℝ v p + s * inner ℝ v (hamiltonIveyMatrixReactionEuclid p) ≤
         hamiltonIveyConvexMatrixRegionSupportEuclid K (τ₀ + s) v := by
       rwa [hinner] at hle
     rw [← htangent] at hle'
     rw [le_div_iff₀ hs]
-    have hc : inner ℝ (uhlenbeckCurvatureOperatorReactionState p) v * s ≤
+    have hc : inner ℝ (hamiltonIveyMatrixReactionEuclid p) v * s ≤
         hamiltonIveyConvexMatrixRegionSupportEuclid K (τ₀ + s) v -
           hamiltonIveyConvexMatrixRegionSupportEuclid K τ₀ v := by
-      have hc2 : inner ℝ (uhlenbeckCurvatureOperatorReactionState p) v =
-          inner ℝ v (uhlenbeckCurvatureOperatorReactionState p) := real_inner_comm _ _
+      have hc2 : inner ℝ (hamiltonIveyMatrixReactionEuclid p) v =
+          inner ℝ v (hamiltonIveyMatrixReactionEuclid p) := real_inner_comm _ _
       rw [hc2, mul_comm]
       nlinarith [hle']
     exact hc
@@ -5159,11 +5022,11 @@ lemma hamiltonIveyMatrixReaction_isHermitian
   rw [h2x]
   exact hsum'
 
-lemma uhlenbeckCurvatureOperatorReactionState_isHermitian
+lemma hamiltonIveyMatrixReactionEuclid_isHermitian
     (A : EuclideanSpace ℝ (Fin 3 × Fin 3))
     (hA : (euclidToMatrix A).IsHermitian) :
-    (euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A)).IsHermitian := by
-  dsimp [uhlenbeckCurvatureOperatorReactionState]
+    (euclidToMatrix (hamiltonIveyMatrixReactionEuclid A)).IsHermitian := by
+  dsimp [hamiltonIveyMatrixReactionEuclid]
   rw [euclidToMatrix_matrixToEuclid]
   exact hamiltonIveyMatrixReaction_isHermitian hA
 
@@ -5171,18 +5034,18 @@ lemma inner_reactionState_zero_of_symm_zero
     (ν A : EuclideanSpace ℝ (Fin 3 × Fin 3))
     (hν : symmEuclid ν = 0)
     (hA : (euclidToMatrix A).IsHermitian) :
-    inner ℝ (uhlenbeckCurvatureOperatorReactionState A) ν = 0 := by
-  have hAh := uhlenbeckCurvatureOperatorReactionState_isHermitian A hA
-  have h := inner_matrixToEuclid_symm ν (euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A)) hAh
+    inner ℝ (hamiltonIveyMatrixReactionEuclid A) ν = 0 := by
+  have hAh := hamiltonIveyMatrixReactionEuclid_isHermitian A hA
+  have h := inner_matrixToEuclid_symm ν (euclidToMatrix (hamiltonIveyMatrixReactionEuclid A)) hAh
   rw [hν] at h
   have hzero : inner ℝ (matrixToEuclid (0 : Matrix (Fin 3) (Fin 3) ℝ))
-      (matrixToEuclid (euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A))) = 0 := by
+      (matrixToEuclid (euclidToMatrix (hamiltonIveyMatrixReactionEuclid A))) = 0 := by
     rw [inner_matrixToEuclid]
     simp [matrixToEuclid]
-  have hmain : inner ℝ ν (matrixToEuclid (euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A))) = 0 :=
+  have hmain : inner ℝ ν (matrixToEuclid (euclidToMatrix (hamiltonIveyMatrixReactionEuclid A))) = 0 :=
     h.trans hzero
   rw [real_inner_comm]
-  rw [← matrixToEuclid_euclidToMatrix (uhlenbeckCurvatureOperatorReactionState A)]
+  rw [← matrixToEuclid_euclidToMatrix (hamiltonIveyMatrixReactionEuclid A)]
   exact hmain
 
 lemma hamiltonIveyConvexMatrixRegionSupportDeriv_eq_zero_of_symm_zero
@@ -5203,6 +5066,6 @@ lemma hamiltonIveyConvexMatrixRegionSupportDeriv_eq_zero_of_symm_zero
       exact h0
     linarith
   rw [if_neg hnot]
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 end

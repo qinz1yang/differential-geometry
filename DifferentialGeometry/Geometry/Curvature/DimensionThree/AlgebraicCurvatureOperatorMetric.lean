@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRegionReaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIveyRegionReaction
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 
@@ -6,7 +6,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open Bundle Set
 open DifferentialGeometry.Geometry.Curvature
@@ -393,6 +393,6 @@ theorem inner0S_algebraic_eq_four_mul_operatorInner
       ring)
   rw [hmain]
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 end

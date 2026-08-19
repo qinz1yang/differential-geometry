@@ -18,12 +18,14 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set Filter
 open DifferentialGeometry.Analysis.Convex
+open DifferentialGeometry.Analysis.InnerProductSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators
+open scoped Matrix.Norms.Frobenius
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -316,7 +318,7 @@ noncomputable def regionSource
     (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x))
     (x : M) (p ν : Tensor04At (I := I) (M := M) x) : ℝ :=
   4 * inner ℝ
-    (uhlenbeckCurvatureOperatorReactionState (matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) p)))
+    (hamiltonIveyMatrixReactionEuclid (matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) p)))
     (matrixToEuclid (regionProjMatrix (I := I) g (basisAt x) ν))
 
 def regionNormalDirections
@@ -783,7 +785,7 @@ theorem regionSource_le_regionSupportDeriv_of_tangent
       (hamiltonIveyConvexMatrixRegionSupportDeriv K hK t w)
       (hamiltonIveyConvexMatrixRegionSupportEuclid_hasDerivAt hK ht w)
     have hsource : regionSource (I := I) g basisAt x p ν =
-        4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState A) w := by
+        4 * inner ℝ (hamiltonIveyMatrixReactionEuclid A) w := by
       unfold regionSource
       rw [regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hpalg]
     have hderiv : regionSupportDeriv (I := I) g basisAt hK t x ν =
@@ -1028,7 +1030,7 @@ theorem regionSource_at_pulled_eq
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (ν : Tensor04At (I := I) (M := M) x) :
     regionSource g basisAt x (uhlenbeckPulledRm04At S basisAt iota t x) ν =
-      4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState
+      4 * inner ℝ (hamiltonIveyMatrixReactionEuclid
         (uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x))
         (regionSupportVector g basisAt x ν) := by
   have hreg : regionProjMatrix (I := I) g (basisAt x) (uhlenbeckPulledRm04At S basisAt iota t x) =
@@ -1330,7 +1332,7 @@ theorem regionSource_lipschitzOn_closedBall_uniform
         (fun p : Tensor04At (I := I) (M := M) x => regionSource g basisAt x p ν)
         (Metric.closedBall 0 (2 * R)) := by
   classical
-  rcases uhlenbeckCurvatureOperatorReactionState_lipschitzOn_closedBall R hR with ⟨Lst, hLst⟩
+  rcases hamiltonIveyMatrixReactionEuclid_lipschitzOn_closedBall R hR with ⟨Lst, hLst⟩
   refine ⟨Lst, ?_⟩
   intro x ν
   letI : InnerProductSpace.Core ℝ (Tensor04At (I := I) (M := M) x) :=
@@ -1365,21 +1367,21 @@ theorem regionSource_lipschitzOn_closedBall_uniform
   let Aq : EuclideanSpace ℝ (Fin 3 × Fin 3) := regionSupportVector g basisAt x q
   let wν : EuclideanSpace ℝ (Fin 3 × Fin 3) := regionSupportVector g basisAt x ν
   have hsrc : regionSource g basisAt x p ν - regionSource g basisAt x q ν =
-      4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState Ap -
-        uhlenbeckCurvatureOperatorReactionState Aq) wν := by
+      4 * inner ℝ (hamiltonIveyMatrixReactionEuclid Ap -
+        hamiltonIveyMatrixReactionEuclid Aq) wν := by
     dsimp [Ap, Aq, wν]
     unfold regionSource
     simp only [regionSupportVector]
     rw [← mul_sub]
     congr 1
     rw [← inner_sub_left]
-  have h1 : |inner ℝ (uhlenbeckCurvatureOperatorReactionState Ap -
-      uhlenbeckCurvatureOperatorReactionState Aq) wν| ≤
-      ‖uhlenbeckCurvatureOperatorReactionState Ap - uhlenbeckCurvatureOperatorReactionState Aq‖ * ‖wν‖ := by
-    have h := norm_inner_le_norm (𝕜 := ℝ) (uhlenbeckCurvatureOperatorReactionState Ap -
-      uhlenbeckCurvatureOperatorReactionState Aq) wν
+  have h1 : |inner ℝ (hamiltonIveyMatrixReactionEuclid Ap -
+      hamiltonIveyMatrixReactionEuclid Aq) wν| ≤
+      ‖hamiltonIveyMatrixReactionEuclid Ap - hamiltonIveyMatrixReactionEuclid Aq‖ * ‖wν‖ := by
+    have h := norm_inner_le_norm (𝕜 := ℝ) (hamiltonIveyMatrixReactionEuclid Ap -
+      hamiltonIveyMatrixReactionEuclid Aq) wν
     simpa [Real.norm_eq_abs] using h
-  have h2 : ‖uhlenbeckCurvatureOperatorReactionState Ap - uhlenbeckCurvatureOperatorReactionState Aq‖ ≤
+  have h2 : ‖hamiltonIveyMatrixReactionEuclid Ap - hamiltonIveyMatrixReactionEuclid Aq‖ ≤
       (Lst : ℝ) * ‖Ap - Aq‖ := by
     have hLip := hLst.dist_le_mul Ap (hAball p hp) Aq (hAball q hq)
     simpa [dist_eq_norm, Ap, Aq] using hLip
@@ -1395,14 +1397,14 @@ theorem regionSource_lipschitzOn_closedBall_uniform
   have habs : |regionSource g basisAt x p ν - regionSource g basisAt x q ν| ≤ (Lst : ℝ) * ‖ν‖ * ‖p - q‖ := by
     rw [hsrc]
     calc
-      |4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState Ap -
-          uhlenbeckCurvatureOperatorReactionState Aq) wν|
-          = 4 * |inner ℝ (uhlenbeckCurvatureOperatorReactionState Ap -
-              uhlenbeckCurvatureOperatorReactionState Aq) wν| := by
+      |4 * inner ℝ (hamiltonIveyMatrixReactionEuclid Ap -
+          hamiltonIveyMatrixReactionEuclid Aq) wν|
+          = 4 * |inner ℝ (hamiltonIveyMatrixReactionEuclid Ap -
+              hamiltonIveyMatrixReactionEuclid Aq) wν| := by
             rw [abs_mul]
             norm_num
-      _ ≤ 4 * (‖uhlenbeckCurvatureOperatorReactionState Ap -
-          uhlenbeckCurvatureOperatorReactionState Aq‖ * ‖wν‖) := by
+      _ ≤ 4 * (‖hamiltonIveyMatrixReactionEuclid Ap -
+          hamiltonIveyMatrixReactionEuclid Aq‖ * ‖wν‖) := by
             exact mul_le_mul_of_nonneg_left h1 (by norm_num)
       _ ≤ 4 * (((Lst : ℝ) * ‖Ap - Aq‖) * (‖ν‖ / 2)) := by
             exact mul_le_mul_of_nonneg_left (mul_le_mul h2 h3 (norm_nonneg _)
@@ -1803,18 +1805,10 @@ theorem isClosed_fiberHamiltonIveyRegion
       ext c
       rfl
     rw [hpre]
-    have hlin : Continuous euclidToMatrix := by
-      let L : EuclideanSpace ℝ (Fin 3 × Fin 3) →ₗ[ℝ] Matrix (Fin 3) (Fin 3) ℝ :=
-        { toFun := euclidToMatrix
-          map_add' := by
-            intro A B
-            ext i j
-            simp [euclidToMatrix]
-          map_smul' := by
-            intro c A
-            ext i j
-            simp [euclidToMatrix] }
-      exact L.continuous_of_finiteDimensional
+    have hlin : Continuous (euclidToMatrix :
+        EuclideanSpace ℝ (Fin 3 × Fin 3) → Matrix (Fin 3) (Fin 3) ℝ) :=
+      (matrixEuclideanLinearIsometryEquiv
+        (m := Fin 3) (n := Fin 3)).symm.continuous
     exact (isClosed_hamiltonIveyConvexMatrixRegion hK).preimage hlin
   have hfcont : Continuous (fun A : Tensor04At (I := I) (M := M) x =>
       matrixToEuclid (intrinsicFiberCurvatureOperatorMatrix (I := I) (basisAt x) A)) := by
@@ -5804,7 +5798,7 @@ theorem fiberRegion_reaction_eq_reactionState
             (solutionRm04CompInFrame (I := I) S.base.rm04 (fun a x => basisAt x a)))
           t' x' a b c d)
         t x =
-      uhlenbeckCurvatureOperatorReactionState
+      hamiltonIveyMatrixReactionEuclid
         (uhlenbeckCurvatureOperatorMatrix (pulledRmComp S basisAt iota) t x) := by
   let moving : Module.Basis (Fin 3) Real (TangentSpace I x) :=
     uhlenbeckMovingBasis hT S basisAt iota hiota0 hgram t ht x
@@ -6365,20 +6359,20 @@ theorem fiberRegionHeatReactionOn
         _ = 4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x) wv := by
               rw [hmat]
     have hsource : fiberRegionSource hT (I := I) (M := M) S basisAt x (u t x) (ν x) =
-        4 * inner ℝ (uhlenbeckCurvatureOperatorReactionState (A t x)) wv := by
+        4 * inner ℝ (hamiltonIveyMatrixReactionEuclid (A t x)) wv := by
       unfold fiberRegionSource
       have hmain := regionSource_at_pulled_eq (I := I) (S.base.metric 0) S basisAt iota t x
         (hAlg t x) (ν x)
       simpa [A, w, wv, u] using hmain
     have hreaction : uhlenbeckCurvatureOperatorReaction Bpull t x =
-        uhlenbeckCurvatureOperatorReactionState (A t x) := by
+        hamiltonIveyMatrixReactionEuclid (A t x) := by
       simpa [A, Bpull, Borig, uhlenbeckPullbackRmInFrame] using
         (fiberRegion_reaction_eq_reactionState (I := I) (M := M) hT S basisAt iota
           hiota0 hgram hdim horth0 (D.regular_subset ht) x)
     have htarget : laplacianAt (I := I) (flowG (I := I) S) t (bundleInnerScalarization u ν t) x +
           fiberRegionSource hT (I := I) (M := M) S basisAt x (u t x) (ν x) =
         4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
-          uhlenbeckCurvatureOperatorReactionState (A t x)) wv := by
+          hamiltonIveyMatrixReactionEuclid (A t x)) wv := by
       rw [hlapAt, hsource]
       simp [inner_add_left, mul_add]
     have hfun : (fun s : ℝ => bundleInnerScalarization u ν s x) =
@@ -6388,7 +6382,7 @@ theorem fiberRegionHeatReactionOn
       rw [hscalar_eq s x (ν x)]
     have hderiv' : HasDerivAt (fun s : ℝ => 4 * inner ℝ (A s x) wv)
         (4 * inner ℝ (uhlenbeckCurvatureOperatorMatrix roughLapD t x +
-          uhlenbeckCurvatureOperatorReactionState (A t x)) wv) t := by
+          hamiltonIveyMatrixReactionEuclid (A t x)) wv) t := by
       simpa [hreaction] using hscalar_deriv
     simpa [u, hfun] using (hderiv'.congr_deriv htarget.symm)
 end Helpers
