@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyI
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyInnerLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyCurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyFixedFrameEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIveyRadialTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Radial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.SolutionTimeRestrict
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
@@ -21,6 +21,7 @@ open DifferentialGeometry.Analysis.Convex
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff Topology RealInnerProductSpace BigOperators
 

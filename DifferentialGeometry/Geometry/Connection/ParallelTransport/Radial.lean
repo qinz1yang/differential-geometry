@@ -21,8 +21,9 @@ open Set Function Filter Metric Bundle Manifold
 open scoped Topology Manifold ContDiff
 
 namespace DifferentialGeometry
-namespace PDE
-namespace RicciFlow
+namespace Geometry
+namespace Riemannian
+namespace Variation
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -3249,8 +3250,9 @@ theorem exists_localized_radial_transport_sections
 
 end RadialTransportSectionSmooth
 
-end RicciFlow
-end PDE
+end Variation
+end Riemannian
+end Geometry
 end DifferentialGeometry
 
 end
