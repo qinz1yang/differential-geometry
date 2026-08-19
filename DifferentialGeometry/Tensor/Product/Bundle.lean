@@ -1,5 +1,6 @@
 /-
 Authors: Yuan Liao, Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Product.Pretrivialization
 import DifferentialGeometry.Tensor.Product.Fiber

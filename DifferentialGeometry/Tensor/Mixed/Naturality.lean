@@ -1,5 +1,6 @@
 /-
 Authors: Jack McCarthy
+Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Mixed.DualFiber
 open DifferentialGeometry.Tensor.Multilinear
