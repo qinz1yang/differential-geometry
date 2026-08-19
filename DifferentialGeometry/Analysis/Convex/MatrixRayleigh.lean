@@ -1,5 +1,4 @@
 import Mathlib
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false

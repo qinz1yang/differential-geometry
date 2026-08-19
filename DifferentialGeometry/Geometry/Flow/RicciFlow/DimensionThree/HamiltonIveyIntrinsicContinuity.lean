@@ -75,10 +75,6 @@ theorem mem_intrinsicFiberHamiltonIveyRegion
           hamiltonIveyConvexMatrixRegionEuclid K τ := by
   rfl
 
-noncomputable def tensor04FiberNorm (g : SmoothRiemannianMetric I M) (x : M)
-    (A : Tensor04At (I := I) (M := M) x) : ℝ :=
-  Real.sqrt (normSq0S (I := I) g x 4 A)
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem intrinsicFiberCurvatureOperatorMatrix_sub {x : M}
@@ -148,7 +144,7 @@ theorem tensor04FiberNorm_eq_norm
   letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
       inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) g x 4).toCore.toCore
-  unfold tensor04FiberNorm
+  unfold tensor04FiberNorm tensor0SFiberNorm
   rw [← tensor04_fiberNormSq_eq_normSq0S (I := I) g x A]
   exact Real.sqrt_sq (norm_nonneg A)
 
@@ -187,9 +183,8 @@ theorem pulledRm_norm_eq_rm_norm
     {t : ℝ} (ht : t ∈ Set.Icc 0 T) (x : M) :
     tensor04FiberNorm (S.base.metric 0) x (uhlenbeckPulledRm04At S basisAt iota t x) =
       tensor04FiberNorm (S.base.metric t) x (S.base.rm04 t x) := by
-  unfold tensor04FiberNorm
-  congr 1
-  exact pulledRm_normSq_eq_rm_normSq (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht x
+  unfold tensor04FiberNorm tensor0SFiberNorm
+  rw [pulledRm_normSq_eq_rm_normSq (I := I) (M := M) hT S basisAt iota hiota0 hgram horth0 ht x]
 
 private lemma matrixInner_eq_sum
     (M N : Matrix (Fin 3) (Fin 3) ℝ) :

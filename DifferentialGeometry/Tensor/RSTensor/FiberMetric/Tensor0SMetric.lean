@@ -410,6 +410,34 @@ def inner0S
     (A B : Tensor0SSpace s I x) : Real :=
   (tensor0SMetricData (I := I) g x s).inner A B
 
+theorem inner0S_comm
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A B : Tensor0SSpace s I x) :
+    inner0S (I := I) g x s A B = inner0S (I := I) g x s B A :=
+  (tensor0SMetricData (I := I) g x s).inner_comm A B
+
+theorem inner0S_add_left
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A B C : Tensor0SSpace s I x) :
+    inner0S (I := I) g x s (A + B) C =
+      inner0S (I := I) g x s A C + inner0S (I := I) g x s B C := by
+  simp [inner0S, MetricFiberData.inner, map_add]
+
+theorem inner0S_add_right
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A B C : Tensor0SSpace s I x) :
+    inner0S (I := I) g x s A (B + C) =
+      inner0S (I := I) g x s A B + inner0S (I := I) g x s A C := by
+  rw [inner0S_comm, inner0S_add_left, inner0S_comm g x s B A,
+    inner0S_comm g x s C A]
+
+theorem inner0S_sub_left
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A B C : Tensor0SSpace s I x) :
+    inner0S (I := I) g x s (A - B) C =
+      inner0S (I := I) g x s A C - inner0S (I := I) g x s B C := by
+  simp [inner0S, MetricFiberData.inner, map_sub]
+
 def flat0S
     (g : SmoothMetric I M) (x : M) (s : Nat) :
     Tensor0SSpace s I x ≃ₗ[Real] Module.Dual Real (Tensor0SSpace s I x) :=
@@ -419,6 +447,25 @@ def normSq0S
     (g : SmoothMetric I M) (x : M) (s : Nat)
     (A : Tensor0SSpace s I x) : Real :=
   inner0S (I := I) g x s A A
+
+noncomputable def tensor0SFiberNorm
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A : Tensor0SSpace s I x) : Real :=
+  Real.sqrt (normSq0S (I := I) g x s A)
+
+noncomputable def tensor04FiberNorm
+    (g : SmoothMetric I M) (x : M)
+    (A : Tensor0SSpace 4 I x) : Real :=
+  tensor0SFiberNorm (I := I) g x 4 A
+
+theorem tensor0SFiberNorm_sq_eq_normSq0S
+    (g : SmoothMetric I M) (x : M) (s : Nat)
+    (A : Tensor0SSpace s I x) :
+    tensor0SFiberNorm (I := I) g x s A ^ 2 =
+      normSq0S (I := I) g x s A := by
+  unfold tensor0SFiberNorm
+  rw [Real.sq_sqrt]
+  exact (tensor0SMetricData (I := I) g x s).nonneg A
 
 @[simp] theorem normSq0S_eq_inner
     (g : SmoothMetric I M) (x : M) (s : Nat)
