@@ -65,7 +65,7 @@ private lemma real_sq_add_three_le {a b c K0 K1 K2 W : ℝ}
     (h0 : a ^ 2 ≤ K0 * W) (h1 : b ^ 2 ≤ K1 * W) (h2 : c ^ 2 ≤ K2 * W)
     (_hK0 : 0 ≤ K0) (_hK1 : 0 ≤ K1) (_hK2 : 0 ≤ K2) (_hW : 0 ≤ W) :
     (a + b + c) ^ 2 ≤ 3 * (K0 + K1 + K2) * W := by
-  nlinarith [sq_nonneg (a - b), sq_nonneg (b - c), sq_nonneg (a - c),
+  nlinarith only [sq_nonneg (a - b), sq_nonneg (b - c), sq_nonneg (a - c),
     h0, h1, h2, _ha, _hb, _hc, mul_nonneg _hK0 _hW, mul_nonneg _hK1 _hW, mul_nonneg _hK2 _hW]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
@@ -614,7 +614,7 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
     have hexp : 2 * (δ / (1 - δ)) * (1 - δ) ^ 2 = 2 * δ * (1 - δ) := by
       field_simp
     rw [hexp]
-    nlinarith [mul_nonneg hδ0 (by linarith : (0 : ℝ) ≤ 1 - 2 * δ)]
+    nlinarith only [mul_nonneg hδ0 (by linarith : (0 : ℝ) ≤ 1 - 2 * δ)]
   have hstep : 16 * (fC * (δ / (1 - δ) ^ 2)) ^ 2 ≤
       (8 * fC * (δ / (1 - δ))) ^ 2 := by
     have hfr2_nn : (0 : ℝ) ≤ fC * (δ / (1 - δ) ^ 2) :=
@@ -622,11 +622,11 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
     have hle : fC * (δ / (1 - δ) ^ 2) ≤ fC * (2 * (δ / (1 - δ))) :=
       mul_le_mul_of_nonneg_left hrate hfC_nn
     have hsq := pow_le_pow_left₀ hfr2_nn hle 2
-    nlinarith [hsq]
+    nlinarith only [hsq]
   have hmax : max (8 * fC * (δ / (1 - δ))) 0 = 8 * fC * (δ / (1 - δ)) :=
     max_eq_left (mul_nonneg (mul_nonneg (by norm_num) hfC_nn) hr1_nn)
   rw [hmax]
-  have hs2 : s ^ 2 ≤ 1 := by nlinarith [hs0, hs1]
+  have hs2 : s ^ 2 ≤ 1 := by nlinarith only [hs0, hs1]
   have hsum_nn := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 4 2 x
     ((curvatureActionMonomialCoeffField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
@@ -648,7 +648,7 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
       (ccTensorUnitValueSection (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T))
       (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
         (ccTensor02Symm (I := I) (M := M) g₀ T)) (qA 3)).toSection x)
-  nlinarith [hB, hc0, hc1, hc2, hc3, hs2, hsum_nn, hstep, hs0, hs1,
+  nlinarith only [hB, hc0, hc1, hc2, hc3, hs2, hsum_nn, hstep, hs0, hs1,
     sq_nonneg (fC * (δ / (1 - δ) ^ 2)),
     mul_nonneg (mul_nonneg hδ0 hδ0) (sq_nonneg (fC * (δ / (1 - δ) ^ 2)))]
 
@@ -763,7 +763,7 @@ theorem exists_riemannPalatiniDecompositionC2Family_l2JetWindow
     pow_le_pow_left₀ (norm_nonneg _) hnorm1 2
   have hcauchy : (‖G0‖ + ‖G1‖ + ‖G2‖ + ‖G3‖) ^ 2 ≤
       4 * (‖G0‖ ^ 2 + ‖G1‖ ^ 2 + ‖G2‖ ^ 2 + ‖G3‖ ^ 2) := by
-    nlinarith [sq_nonneg (‖G0‖ - ‖G1‖), sq_nonneg (‖G0‖ - ‖G2‖), sq_nonneg (‖G0‖ - ‖G3‖),
+    nlinarith only [sq_nonneg (‖G0‖ - ‖G1‖), sq_nonneg (‖G0‖ - ‖G2‖), sq_nonneg (‖G0‖ - ‖G3‖),
       sq_nonneg (‖G1‖ - ‖G2‖), sq_nonneg (‖G1‖ - ‖G3‖), sq_nonneg (‖G2‖ - ‖G3‖)]
   refine le_trans hsq (le_trans hcauchy ?_)
   have hexp : 4 * (K0 i + K1 i + K2 i + K3 i) *
@@ -930,7 +930,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
       intro c hc σp
       rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
       have h1 := hmono_cap σp
-      have hc2 : c ^ 2 ≤ 1 := by nlinarith [abs_nonneg c, sq_abs c, hc]
+      have hc2 : c ^ 2 ≤ 1 := by nlinarith only [abs_nonneg c, sq_abs c, hc]
       have h0 := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 4 2 x
         ((curvatureActionMonomialCoeffField (I := I) (M := M) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
@@ -938,7 +938,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
             (ccTensor02Symm (I := I) (M := M) g₀ T))
           (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
             (ccTensor02Symm (I := I) (M := M) g₀ T)) σp).toSection x)
-      nlinarith [h1, hc2, h0, sq_nonneg c]
+      nlinarith only [h1, hc2, h0, sq_nonneg c]
     rw [deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight (I := I) (M := M) g₀ T hδ hδZ q ε s]
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
       DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
@@ -964,7 +964,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
         (ccTensorUnitValueSection (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T))
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ T)) (q 2)).toSection x))
-    have hs2 : s ^ 2 ≤ 1 := by nlinarith [hs0, hs1]
+    have hs2 : s ^ 2 ≤ 1 := by nlinarith only [hs0, hs1]
     have hmax : max (3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) 0 =
         3 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2) :=
       max_eq_left (mul_nonneg (mul_nonneg (by norm_num)
@@ -986,7 +986,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
         (ccTensorUnitValueSection (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T))
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ T)) (q 2)).toSection x))
-    nlinarith [hr0, hr1, hr2, h3, hs2, hsum_nn,
+    nlinarith only [hr0, hr1, hr2, h3, hs2, hsum_nn,
       sq_nonneg (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2))]
   · intro i s hs
     rw [deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight (I := I) (M := M) g₀ T hδ hδZ q ε s,
@@ -1183,7 +1183,7 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_perOrder_l2_tameEnvelope_g
     rw [hz]
     have hK_nn : 0 ≤ C i * ∑ k ∈ Finset.range (i + 2), Kg k :=
       mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k)
-    nlinarith [hwin_nn, hK_nn]
+    nlinarith only [hwin_nn, hK_nn]
 
 
 theorem exists_deTurckLieEndoArm_backgroundDifference_l2JetWindow
@@ -1248,8 +1248,8 @@ theorem exists_deTurckLieEndoArm_backgroundDifference_l2JetWindow
   refine add_le_add le_rfl ?_
   refine Finset.sum_le_sum (fun j _ => ?_)
   rw [hcP, iteratedCovGrad_smul_real, norm_smul, Real.norm_eq_abs, mul_pow]
-  have h1 : |s| ^ 2 ≤ 1 := by nlinarith [abs_nonneg s]
-  nlinarith [sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖, h1,
+  have h1 : |s| ^ 2 ≤ 1 := by nlinarith only [abs_nonneg s, habs]
+  nlinarith only [sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖, h1,
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j T)]
 
 

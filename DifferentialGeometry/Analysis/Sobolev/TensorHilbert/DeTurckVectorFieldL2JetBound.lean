@@ -286,7 +286,7 @@ private theorem cometricCastG0_sup_and_jetL2_bound_generic
           (norm_add_le (iteratedCovGrad (I := I) g₀ 3 1 l Φ)
             (iteratedCovGrad (I := I) g₀ 3 1 l
               (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W))) 2
-        nlinarith [hsq, hKDl, haLl,
+        nlinarith only [hsq, hKDl, haLl,
           sq_nonneg (‖iteratedCovGrad (I := I) g₀ 3 1 l Φ‖ -
             ‖iteratedCovGrad (I := I) g₀ 3 1 l
               (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)‖)]
@@ -328,7 +328,7 @@ private theorem exists_window_pointwise_jet_le (g₀ : SmoothRiemannianMetric I 
           apply Finset.sum_le_sum
           intro i hi
           have hile : i ≤ a + 2 := by have := Finset.mem_range.mp hi; omega
-          nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i P), hPball i hile, hR]
+          nlinarith only [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i P), hPball i hile, hR]
       _ = ((a + 1 + 1 : ℕ) : ℝ) * R ^ 2 := by
           rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
   have hwin := hCemb P x
@@ -664,7 +664,7 @@ private theorem sharpFlatEndoCc_lowOrder_jetL2_succ_generic
         rw [hdecomp, iteratedCovGrad_add]
         exact norm_add_le _ _
       have hFIdq : FId q = ‖iteratedCovGrad (I := I) g₀ 1 1 q IdIns‖ ^ 2 := rfl
-      nlinarith [htri, hDq, hFIdq.ge,
+      nlinarith only [htri, hDq, hFIdq.ge,
         norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q DiffIns),
         norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q IdIns),
         norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q (sharpFlatEndoCc (I := I) g₀ g₁)),
@@ -1050,7 +1050,7 @@ private theorem connectionDifferenceLoweredVariation_lowOrder_jetL2_succ_generic
         exact norm_sub_le _ _
       have hFBackgroundq : FBackground q =
           ‖iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ ^ 2 := rfl
-      nlinarith [htri, h1, hFBackgroundq.ge,
+      nlinarith only [htri, h1, hFBackgroundq.ge,
         norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)),
         norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)),
         norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q
@@ -1659,7 +1659,7 @@ private theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsertLowered_o
             (deTurckVectorFieldCovariantDerivativeEndomorphismBilinConnectionDifferenceTerm (I := I) (M := M) g₀ g₁ g_bg)‖ := by
       rw [deTurckVectorFieldCovariantDerivativeEndomorphismBilin, iteratedCovGrad_add]
       exact norm_add_le _ _
-    nlinarith [htri, hAi, hBi,
+    nlinarith only [htri, hAi, hBi,
       norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i
         (deTurckVectorFieldCovariantDerivativeEndomorphismBilinCovGradTerm (I := I) (M := M) g₀ g₁ g_bg)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i
@@ -1911,7 +1911,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
         MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
     rw [hz]
     have := hF_nn i
-    nlinarith [hF_nn i]
+    nlinarith only [hF_nn i]
 
 section DeTurckLieCovariantDerivativeInsertionTopOrder
 
@@ -2142,7 +2142,7 @@ private theorem connectionDifference_L2_topsep
             have hjk : j ≤ a + 2 :=
               le_trans (Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)) hk
             have hb := hPball j hjk
-            nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j P), hb, hR]
+            nlinarith only [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j P), hb, hR]
         _ = ((k : ℝ) + 1) * R ^ 2 := by
             rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, Nat.cast_add, Nat.cast_one]
     exact mul_le_mul_of_nonneg_left (by linarith [hsum]) (hK_nn k)
@@ -2237,7 +2237,7 @@ private theorem wXi_L2_topsep
         ‖iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ := by
     rw [connectionDifferenceLoweredCcDiff, iteratedCovGrad_sub]
     exact norm_sub_le _ _
-  nlinarith [htri, hA,
+  nlinarith only [htri, hA,
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 n (connectionDifferenceLoweredCcDiff (I := I)
       (M := M) g₀ g₁ g_bg)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)),
@@ -2470,7 +2470,7 @@ private theorem wOmega_L2_topsep
             ≤ ∑ k ∈ Finset.range n, A (n - k) * ∑ l ∈ Finset.range (n + 1 - (n - k)), B l := hstep1
           _ = ∑ k ∈ Finset.range n, A (k + 1) * ∑ l ∈ Finset.range (n + 1 - (k + 1)), B l := hstep2
           _ ≤ ∑ i ∈ Finset.range (n + 1), A i * ∑ l ∈ Finset.range (n + 1 - i), B l := hstep3
-    nlinarith [hcorner, hlower,
+    nlinarith only [hcorner, hlower,
       riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (3 + n) x
         ((iteratedCovGrad (I := I) g₀ 0 3 n (connectionDifferenceLoweredCcDiff (I := I)
           (M := M) g₀ g₁ g_bg)).toSection x)]
@@ -2701,7 +2701,7 @@ private theorem wAlpha_L2_topsep
           (M := M) g₀ g₁ g_bg)‖ := by
     rw [deTurckVectorFieldCovariantDerivativeEndomorphismBilin, iteratedCovGrad_add]
     exact norm_add_le _ _
-  nlinarith [htri, hAi, hBi,
+  nlinarith only [htri, hAi, hBi,
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeEndomorphismBilinCovGradTerm (I := I)
       (M := M) g₀ g₁ g_bg)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeEndomorphismBilinConnectionDifferenceTerm (I := I)
@@ -2816,7 +2816,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
                 + s * ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ := by
               rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
                 abs_of_nonneg h1ms, abs_of_nonneg hs0]
-      nlinarith [mul_le_mul hnorm_le hnorm_le (norm_nonneg
+      nlinarith only [mul_le_mul hnorm_le hnorm_le (norm_nonneg
           (iteratedCovGrad (I := I) g₀ 0 2 j (convexPerturbation (I := I) g₀ T T' s))) hy_nn,
         mul_nonneg (mul_nonneg hs0 h1ms)
           (sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ -
@@ -2857,7 +2857,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
     have hrem_le : C_a i ≤ C_a i * (1 + ∑ j ∈ Finset.range (i + 3),
         (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
           ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
-      nlinarith [hC_a_nn i, hsum_nn,
+      nlinarith only [hC_a_nn i, hsum_nn,
         Finset.sum_nonneg (fun j (_ : j ∈ Finset.range (i + 3)) =>
           add_nonneg (sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖))
             (sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖)))]
@@ -2876,7 +2876,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
             ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) :=
       add_nonneg (mul_nonneg hKtop_a_nn (add_nonneg (sq_nonneg _) (sq_nonneg _)))
         (mul_nonneg (hC_a_nn i) hsum_nn)
-    nlinarith [hrhs]
+    nlinarith only [hrhs]
 
 theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_jetL2_summed_topOrderSeparated
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)

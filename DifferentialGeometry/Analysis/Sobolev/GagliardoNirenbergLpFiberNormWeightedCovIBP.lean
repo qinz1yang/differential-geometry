@@ -173,7 +173,8 @@ private theorem covDerivCrossLeft_weight_bound_rs
       rw [hchain (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)]
       ring
     rw [hrw]
-    have hcoeff_nn : (0 : ℝ) ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 := by positivity
+    have hcoeff_nn : (0 : ℝ) ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 :=
+      mul_nonneg (sq_nonneg _) (sq_nonneg _)
     exact mul_le_mul_of_nonneg_left hkato hcoeff_nn
   have hrP_bound : rP ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) * A ^ 2 := by
     rw [hrP_eq]
@@ -801,7 +802,10 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq_rs
           mul_le_mul_of_nonneg_left hrP_bound hbv_nn
       _ = pm1 ^ 2 * (4 * av * cv) * (bv * (bv + ε) ^ (pm1 - 1)) ^ 2 := by ring
       _ ≤ pm1 ^ 2 * (4 * av * cv) * ((bv + ε) ^ pm1) ^ 2 := by
-          apply mul_le_mul_of_nonneg_left _ (by positivity)
+          have hcoef_nn : (0 : ℝ) ≤ pm1 ^ 2 * (4 * av * cv) :=
+            mul_nonneg (sq_nonneg _)
+              (mul_nonneg (mul_nonneg (by norm_num) hav_nn) hcv_nn)
+          apply mul_le_mul_of_nonneg_left _ hcoef_nn
           exact pow_le_pow_left₀ hfac0_nn hfac1 2
   have hA_bound : ∀ x, (ζ : M → ℝ) x * |dw x| ≤
       Real.sqrt (Module.finrank ℝ E : ℝ) * F x := by

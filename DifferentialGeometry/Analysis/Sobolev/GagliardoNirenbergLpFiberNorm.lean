@@ -508,7 +508,7 @@ private theorem kato_mfderiv_riemannianFiberNormSq_frame_sum_le
           (tensorCovDerivAt (I := I) (M := M) g 0 p Q x (e a)) := by
       rw [hV_def]
     rw [hVa_eq] at hsq ⊢
-    nlinarith [hsq]
+    nlinarith only [hsq]
   have hframe : ∑ a : Fin n, s a =
       riemannianFiberNormSq (I := I) (M := M) g 0 (p + 1) x
         ((covGrad (I := I) (M := M) g 0 p Q).toSection x) := by
@@ -672,7 +672,8 @@ private theorem covDerivCrossLeft_weight_bound
       rw [hchain (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)]
       ring
     rw [hrw]
-    have hcoeff_nn : (0 : ℝ) ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 := by positivity
+    have hcoeff_nn : (0 : ℝ) ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 :=
+      mul_nonneg (sq_nonneg _) (sq_nonneg _)
     exact mul_le_mul_of_nonneg_left hkato hcoeff_nn
   have hrP_bound : rP ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) * A ^ 2 := by
     rw [hrP_eq]
@@ -1677,7 +1678,9 @@ private theorem secondOrderInterp_lpFiberJet_fin
     set D : ℝ := 2 * (p - 1) + Real.sqrt (Module.finrank ℝ E : ℝ) with hD_def
     have hsqrt_nn : (0 : ℝ) ≤ Real.sqrt (Module.finrank ℝ E : ℝ) := Real.sqrt_nonneg _
     have hIb_bound : Ib ≤ D * (Aw * (Ib ^ (1 / β) * C)) := by
-      have hcoef_nn : 0 ≤ D := by rw [hD_def]; nlinarith [hp1m, hsqrt_nn]
+      have hcoef_nn : 0 ≤ D := by
+        rw [hD_def]
+        exact add_nonneg (mul_nonneg (by norm_num) (le_of_lt hp1m)) hsqrt_nn
       have hstep : Ib ≤ D * (∫ x, f₁ x * f₂ x * f₃ x ∂μ) := hIBP
       refine le_trans hstep ?_
       apply mul_le_mul_of_nonneg_left _ hcoef_nn
@@ -1707,8 +1710,11 @@ private theorem secondOrderInterp_lpFiberJet_fin
       exact le_trans hDk (le_trans (le_max_left _ _) (le_max_left _ _))
     rw [hLHS_sq]
     rcases eq_or_lt_of_le hIb_nn with hIb0 | hIbpos
-    · rw [← hIb0, Real.zero_rpow (by rw [hinvp]; positivity)]
-      positivity
+    · rw [← hIb0, Real.zero_rpow (by rw [hinvp]; exact ne_of_gt (div_pos hi1R hkR))]
+      have hK'_nn : 0 ≤ K' := by
+        rw [hK'def]
+        exact le_trans zero_le_one (le_max_right _ _)
+      exact mul_nonneg (mul_nonneg hK'_nn hAw_nn) hC_nn
     · have hIbβ_pos : 0 < Ib ^ (1 / β) := Real.rpow_pos_of_pos hIbpos _
       have hIb_split : Ib = Ib ^ ((1 : ℝ) / p) * Ib ^ (1 / β) := by
         rw [← Real.rpow_add hIbpos, hsum_pβ, Real.rpow_one]
@@ -1785,7 +1791,9 @@ private theorem secondOrderInterp_lpFiberJet_sup
   have hkm1_nn : (0 : ℝ) ≤ (k : ℝ) - 1 := by
     have : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast _hk
     linarith
-  have hD_nn : 0 ≤ D := by rw [hD_def]; nlinarith [hkm1_nn, hsqrt_nn]
+  have hD_nn : 0 ≤ D := by
+    rw [hD_def]
+    exact add_nonneg (mul_nonneg (by norm_num) hkm1_nn) hsqrt_nn
   have hIBP' : Ib ≤ D * A * J := by
     rw [hIb_def, hJ_def, hD_def]; exact hIBP
   have hJ_bound : J ≤ Ib ^ (((k : ℝ) - 1) / k) * C := by
@@ -1845,8 +1853,11 @@ private theorem secondOrderInterp_lpFiberJet_sup
   have hsum_k : (1 : ℝ) / k + ((k : ℝ) - 1) / k = 1 := by
     rw [← add_div, show (1 : ℝ) + ((k : ℝ) - 1) = (k : ℝ) from by ring, div_self (ne_of_gt hkR)]
   rcases eq_or_lt_of_le hIb_nn with hIb0 | hIbpos
-  · rw [← hIb0, Real.zero_rpow (by positivity)]
-    positivity
+  · rw [← hIb0, Real.zero_rpow (ne_of_gt (one_div_pos.mpr hkR))]
+    have hK'_nn : 0 ≤ K' := by
+      rw [hK'def]
+      exact le_trans zero_le_one (le_max_right _ _)
+    exact mul_nonneg (mul_nonneg hK'_nn hA) hC_nn
   · have hIbβ_pos : 0 < Ib ^ (((k : ℝ) - 1) / k) := Real.rpow_pos_of_pos hIbpos _
     have hIb_split : Ib = Ib ^ ((1 : ℝ) / k) * Ib ^ (((k : ℝ) - 1) / k) := by
       rw [← Real.rpow_add hIbpos, hsum_k, Real.rpow_one]

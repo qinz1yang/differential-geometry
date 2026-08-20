@@ -281,7 +281,7 @@ theorem cometricCastG0_order0sup_jetL2_radiusFree
           iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)))
         (norm_add_le (iteratedCovGrad (I := I) g₀ 3 1 l Φ)
           (iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W))) 2
-      nlinarith [hsq, hKDl, haLl, hS_nn, hkd_l_nn, haL_l_nn,
+      nlinarith only [hsq, hKDl, haLl, hS_nn, hkd_l_nn, haL_l_nn,
         sq_nonneg (‖iteratedCovGrad (I := I) g₀ 3 1 l Φ‖ -
           ‖iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)‖),
         mul_nonneg hkd_l_nn hS_nn, mul_nonneg haL_l_nn hS_nn]
@@ -509,7 +509,7 @@ theorem sharpFlatEndoCc_lowOrder_jetL2_radiusFree
           iteratedCovGrad (I := I) g₀ 1 1 q IdIns))
         (norm_add_le (iteratedCovGrad (I := I) g₀ 1 1 q DiffIns)
           (iteratedCovGrad (I := I) g₀ 1 1 q IdIns)) 2
-      nlinarith [hsq, hDq, hFIdq, hKW_q_nn, hFId_q_nn, hS_nn, hPqS,
+      nlinarith only [hsq, hDq, hFIdq, hKW_q_nn, hFId_q_nn, hS_nn, hPqS,
         sq_nonneg (‖iteratedCovGrad (I := I) g₀ 1 1 q DiffIns‖ -
           ‖iteratedCovGrad (I := I) g₀ 1 1 q IdIns‖),
         mul_nonneg hKW_q_nn hS_nn, mul_nonneg hFId_q_nn hS_nn]
@@ -625,7 +625,7 @@ theorem connectionDifferenceSection_lowOrder_jetL2_radiusFree
         le_trans heng.2 (mul_le_mul_of_nonneg_left hrem_fold (hKc0_nn q))
       have hgrid_nn : 0 ≤ Combinatorics.antidiagonalTupleGrid b (q + 1) :=
         Combinatorics.antidiagonalTupleGrid_nonneg b hb (q + 1)
-      nlinarith [h1, h2, hgrid_nn, hKc0_nn q, hKt0_nn]
+      nlinarith only [h1, h2, hgrid_nn, hKc0_nn q, hKt0_nn]
     obtain ⟨hAGint, hAGbd⟩ := hAG (q + 1)
     have hFint := hAGint.const_mul (2 * Kt0 + 2 * Kc0 q * (q : ℝ))
     have hkey := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 1 (2 + q)
@@ -703,7 +703,7 @@ theorem metricLoweredConnectionDifference_lowOrder_iteratedCovGrad_norm_sq_le
           ‖iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ := by
       rw [metricLoweredConnectionDifference, iteratedCovGrad_sub]
       exact norm_sub_le _ _
-    nlinarith [htri, norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)),
+    nlinarith only [htri, norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)),
       sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)‖ -
@@ -738,7 +738,7 @@ theorem metricLoweredConnectionDifference_lowOrder_iteratedCovGrad_norm_sq_le
         have hone : (1 : ℝ) ≤ 1 + S' := by linarith
         have hbg_nn : 0 ≤ ∑ q ∈ Finset.range (i + 1), FBackground q :=
           Finset.sum_nonneg (fun q _ => hFBackground_nn q)
-        nlinarith [hg1, hbg_nn, hone, mul_nonneg hbg_nn hS'_nn]
+        nlinarith only [hg1, hbg_nn, hone, mul_nonneg hbg_nn hS'_nn]
     _ = (2 * Flow_cd i + 2 * ∑ q ∈ Finset.range (i + 1), FBackground q) * (1 + S') := by ring
 
 lemma riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGridWindow_rf
@@ -950,7 +950,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_antidiag
       2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + l) x
         ((iteratedCovGrad (I := I) g₀ 1 2 l (connectionDifferenceSection (I := I) g₁ g₀) - Hd).toSection x) ≤
       (2 * Kt0 + 2 * Kc0 l * (l : ℝ)) * Combinatorics.antidiagonalTupleGrid b (l + 1) := by
-    nlinarith [h1, h2, hgrid_nn, hKc0_nn l, hKt0_nn]
+    nlinarith only [h1, h2, hgrid_nn, hKc0_nn l, hKt0_nn]
   refine le_trans hstep ?_
   refine mul_le_mul_of_nonneg_left hgrid_grid ?_
   have := hKt0_nn; have := hKc0_nn l; positivity
@@ -1012,7 +1012,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le
       SBackground l := hSBackground l x
   have hCcd_l_nn : 0 ≤ Ccd l := hCcd_nn l
   have hSBackground_l_nn : 0 ≤ SBackground l := hSBackground_nn l
-  nlinarith [hsplit, h1, h2, hantidiagonalTupleGridWindow_one, hCcd_l_nn, hSBackground_l_nn,
+  nlinarith only [hsplit, h1, h2, hantidiagonalTupleGridWindow_one, hCcd_l_nn, hSBackground_l_nn,
     mul_nonneg hCcd_l_nn (le_trans zero_le_one hantidiagonalTupleGridWindow_one),
     mul_nonneg hSBackground_l_nn (le_trans zero_le_one hantidiagonalTupleGridWindow_one)]
 
@@ -1452,7 +1452,7 @@ theorem metricLoweredConnectionDifference_iteratedCovGrad_norm_sq_topOrderSepara
   have hbg_fold : ‖iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ ^ 2 ≤
       ‖iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ ^ 2 * (1 + S') :=
     le_mul_of_one_le_right (sq_nonneg _) hone
-  nlinarith [htri, hA, hbg_fold,
+  nlinarith only [htri, hA, hbg_fold,
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)),
@@ -1689,7 +1689,7 @@ private lemma exists_riemannianFiberNormSq_wOmega_topsep_rf
         ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) :=
     Combinatorics.antidiagonalTupleGridWindow_nonneg _
       (fun j => riemannianFiberNormSq_nonneg _ _ _ _ _) (n + 2)
-  nlinarith [hcorner, hlower_fold,
+  nlinarith only [hcorner, hlower_fold,
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (3 + n) x
       ((iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection x),
     hgrid_nn]
@@ -2097,7 +2097,7 @@ theorem deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_top
         ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)‖ := by
     rw [deTurckVectorFieldCovariantDerivativeLowered, iteratedCovGrad_add]
     exact norm_add_le _ _
-  nlinarith [htri, hA, hBi,
+  nlinarith only [htri, hA, hBi,
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredBase (I := I) (M := M) g₀ g₁ g_bg)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)),
