@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ParametricJetBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedGramDiff
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
 import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Tensor.RSTensor.Metric
 open DifferentialGeometry.Tensor.RSTensor

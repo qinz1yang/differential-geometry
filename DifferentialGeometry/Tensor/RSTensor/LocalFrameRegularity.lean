@@ -1,6 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.FixedChart.Models
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvalRealized
+import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
 
 set_option autoImplicit false
 

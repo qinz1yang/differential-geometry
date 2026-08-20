@@ -1,6 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvalRealized
+import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Topology.Instances.Matrix
 

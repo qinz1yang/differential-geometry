@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.PerturbedRiemannOpD
 import DifferentialGeometry.Geometry.Metric.Convergence.SelfCovariantDerivative
 
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedGramDiff
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.GramDifference
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeNormBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Inputs

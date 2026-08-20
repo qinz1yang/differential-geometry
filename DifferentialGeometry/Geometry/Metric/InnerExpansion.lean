@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Tensor.RSTensor.TangentRiemannianRealized
+import DifferentialGeometry.Tensor.RSTensor.TangentMetric
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 set_option autoImplicit false

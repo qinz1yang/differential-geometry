@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureDifference
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Comparison
 import DifferentialGeometry.Geometry.Metric.SmoothVectorFieldExtGlobal
-import DifferentialGeometry.Tensor.RSTensor.TangentRiemannianRealized
+import DifferentialGeometry.Tensor.RSTensor.TangentMetric
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
