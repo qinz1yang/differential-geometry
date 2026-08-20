@@ -1007,8 +1007,12 @@ theorem movingMetricDifferenceEnergy_continuousOn
       exact (((continuous_fst.comp continuous_subtype_val).subtype_mk _).prodMk
         (continuous_snd.comp continuous_subtype_val))
     simpa only [pull] using hnormSub.comp hpull
-  simpa only [movingMetricDifferenceEnergy, movingMetricDifferenceNormSq] using
-    integral_family_cont (I := I) (M := M) hK h₀ hnorm
+  change ContinuousOn
+    (fun t : Real ↦
+      ∫ x, normSq0S (I := I) (g₀ t) x 2
+        (metricDiff02Field (I := I) (g₁ t) (g₀ t) x)
+        ∂(riemannianMeasureFamily (I := I) (M := M) g₀ t)) K
+  exact integral_family_cont (I := I) (M := M) hK h₀ hnorm
 
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]

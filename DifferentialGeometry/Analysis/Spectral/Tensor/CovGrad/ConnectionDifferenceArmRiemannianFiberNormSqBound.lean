@@ -257,8 +257,7 @@ theorem sqrt_inner_sharpFlatRaiseEndo_le
   rcases eq_or_lt_of_le hNp_nn with hNp0 | hNppos
   · rw [← hNp0]
     exact mul_nonneg h1delta_nn hNv_nn
-  · have h2 : Np * Np ≤ ((1 + δ) * Nv) * Np := by nlinarith [hchain]
-    exact le_of_mul_le_mul_right h2 hNppos
+  · exact le_of_mul_le_mul_right hchain hNppos
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -367,8 +366,7 @@ theorem riemannianFiberNormSq_raisedKoszul_le_of_lt_one
     have hrhs_nn : 0 ≤ (1 + δ₀) * (C₀ * G) := by positivity
     have huu_le : g₀.inner x u u ≤ ((1 + δ₀) * C₀ * G) ^ 2 := by
       rw [← hsqrt_eq]
-      have := mul_self_le_mul_self hsqrt_nn hu_sqrt_le
-      nlinarith [this, hu_sqrt_le, hrhs_nn]
+      simpa only [pow_two, mul_assoc] using mul_self_le_mul_self hsqrt_nn hu_sqrt_le
     calc (g₀.inner x (e (K 0)) u) ^ 2
         ≤ g₀.inner x u u := hcs
       _ ≤ ((1 + δ₀) * C₀ * G) ^ 2 := huu_le

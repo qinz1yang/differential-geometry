@@ -1126,12 +1126,30 @@ theorem chartLie_pou_lip
   let V : ℝ := n ^ 2 * (D * P + M_b * R)
   let C : ℝ := n * ((Cw * Q₁ + U * 1) +
     (1 * V + Q₀ * Cdw) + (1 * V + Q₀ * Cdw)) + 1
-  have hP_nn : 0 ≤ P := by dsimp [P]; positivity
-  have hR_nn : 0 ≤ R := by dsimp [R]; positivity
-  have hD_nn : 0 ≤ D := by dsimp [D, n]; positivity
-  have hCw_nn : 0 ≤ Cw := by dsimp [Cw, n]; positivity
-  have hU_nn : 0 ≤ U := by dsimp [U, n]; positivity
-  have hC_pos : 0 < C := by dsimp [C, Cw, Cdw, U, V, D, P, R, n]; positivity
+  have hn_nn : 0 ≤ n := by
+    dsimp [n]
+    exact_mod_cast Nat.zero_le (Module.finrank ℝ E)
+  have hP_nn : 0 ≤ P := add_nonneg hMΓ_nn hMΓb_nn
+  have hR_nn : 0 ≤ R := add_nonneg hMdΓ_nn hMdΓb_nn
+  have hD_nn : 0 ≤ D := mul_nonneg (mul_nonneg (sq_nonneg n) (sq_nonneg M_b)) hQ₁_nn
+  have hCw_nn : 0 ≤ Cw := mul_nonneg (sq_nonneg n)
+    (add_nonneg (mul_nonneg hCinv_pos.le hP_nn) (mul_nonneg hM_b_pos.le hCΓ_pos.le))
+  have hCdw_nn : 0 ≤ Cdw := mul_nonneg (sq_nonneg n)
+    (add_nonneg
+      (add_nonneg
+        (add_nonneg (mul_nonneg hCd_pos.le hP_nn) (mul_nonneg hD_nn hCΓ_pos.le))
+        (mul_nonneg hCinv_pos.le hR_nn))
+      (mul_nonneg hM_b_pos.le hCdΓ_pos.le))
+  have hU_nn : 0 ≤ U := mul_nonneg (mul_nonneg (sq_nonneg n) hM_b_pos.le) hP_nn
+  have hV_nn : 0 ≤ V := mul_nonneg (sq_nonneg n)
+    (add_nonneg (mul_nonneg hD_nn hP_nn) (mul_nonneg hM_b_pos.le hR_nn))
+  have hC_pos : 0 < C := by
+    have hfirst : 0 ≤ Cw * Q₁ + U * 1 :=
+      add_nonneg (mul_nonneg hCw_nn hQ₁_nn) (mul_nonneg hU_nn zero_le_one)
+    have hsecond : 0 ≤ 1 * V + Q₀ * Cdw :=
+      add_nonneg (mul_nonneg zero_le_one hV_nn) (mul_nonneg hQ₀_nn hCdw_nn)
+    exact add_pos_of_nonneg_of_pos
+      (mul_nonneg hn_nn (add_nonneg (add_nonneg hfirst hsecond) hsecond)) one_pos
   refine ⟨C, hC_pos, ?_⟩
   intro α hα k₁ k₂ b hb i j
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=

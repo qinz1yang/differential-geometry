@@ -102,8 +102,8 @@ theorem secondOrderInterp_lpFiberJet_fin_rs
       (covGrad (I := I) (M := M) g r (m + 1) (covGrad (I := I) (M := M) g r m w))
   rcases lt_or_ge (i + 1) k with hreg | hreg
   · have hiR : (0 : ℝ) < (i : ℝ) := by exact_mod_cast hi1
-    have hi1R : (0 : ℝ) < (i : ℝ) + 1 := by positivity
-    have hi2R : (0 : ℝ) < (i : ℝ) + 2 := by positivity
+    have hi1R : (0 : ℝ) < (i : ℝ) + 1 := add_pos_of_nonneg_of_pos (Nat.cast_nonneg i) one_pos
+    have hi2R : (0 : ℝ) < (i : ℝ) + 2 := add_pos_of_nonneg_of_pos (Nat.cast_nonneg i) (by norm_num)
     set p : ℝ := (k : ℝ) / (i + 1) with hp_def
     have hp1 : 1 < p := by
       rw [hp_def, lt_div_iff₀ hi1R, one_mul]; exact_mod_cast hreg
@@ -115,9 +115,9 @@ theorem secondOrderInterp_lpFiberJet_fin_rs
     have hkmi : 0 < (k : ℝ) - ((i : ℝ) + 1) := by
       have : ((i : ℝ) + 1) < (k : ℝ) := by exact_mod_cast hreg
       linarith
-    have hα0 : 0 < α := by rw [hα_def]; positivity
-    have hβ0 : 0 < β := by rw [hβ_def]; positivity
-    have hγ0 : 0 < γ := by rw [hγ_def]; positivity
+    have hα0 : 0 < α := by rw [hα_def]; exact div_pos (mul_pos (by norm_num) hkR) hiR
+    have hβ0 : 0 < β := by rw [hβ_def]; exact div_pos hkR hkmi
+    have hγ0 : 0 < γ := by rw [hγ_def]; exact div_pos (mul_pos (by norm_num) hkR) hi2R
     have hbalance : α⁻¹ + β⁻¹ + γ⁻¹ = 1 := by
       rw [hα_def, hβ_def, hγ_def]
       rw [inv_div, inv_div, inv_div]
@@ -209,8 +209,8 @@ theorem secondOrderInterp_lpFiberJet_fin_rs
       exact le_trans hDk (le_max_left _ _)
     rw [hLHS_sq]
     rcases eq_or_lt_of_le hIb_nn with hIb0 | hIbpos
-    · rw [← hIb0, Real.zero_rpow (by rw [hinvp]; positivity)]
-      positivity
+    · rw [← hIb0, Real.zero_rpow (by rw [hinvp]; exact ne_of_gt (div_pos hi1R hkR))]
+      exact mul_nonneg (mul_nonneg hK'_nn hAw_nn) hC_nn
     · have hIbβ_pos : 0 < Ib ^ (1 / β) := Real.rpow_pos_of_pos hIbpos _
       have hIb_split : Ib = Ib ^ ((1 : ℝ) / p) * Ib ^ (1 / β) := by
         rw [← Real.rpow_add hIbpos, hsum_pβ, Real.rpow_one]
@@ -279,7 +279,9 @@ theorem secondOrderInterp_lpFiberJet_sup_rs
     have hexp : (1 : ℝ) / (2 * k) * ((2 : ℕ) : ℝ) = (1 : ℝ) / k := by push_cast; ring
     rw [← Real.rpow_natCast (Ib ^ ((1 : ℝ) / (2 * k))) 2, ← Real.rpow_mul hIb_nn, hexp]
   have hC_eq : C = Ic ^ ((1 : ℝ) / k) := by
-    rw [hC_def]; congr 1; rw [eq_div_iff (by positivity)]; field_simp
+    rw [hC_def]
+    congr 1
+    field_simp [ne_of_gt hkR]
   rw [hLHS_sq]
   set J : ℝ := ∫ x, b x ^ ((k : ℝ) - 1) * c x ^ (1 / 2 : ℝ) ∂μ with hJ_def
   have hJ_nn : 0 ≤ J := MeasureTheory.integral_nonneg (fun x =>
@@ -309,12 +311,12 @@ theorem secondOrderInterp_lpFiberJet_sup_rs
     · have hk2R : (2 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk_gt
       have hkm1 : 0 < (k : ℝ) - 1 := by linarith
       set β : ℝ := (k : ℝ) / ((k : ℝ) - 1) with hβ_def
-      have hβ0 : 0 < β := by rw [hβ_def]; positivity
+      have hβ0 : 0 < β := by rw [hβ_def]; exact div_pos hkR hkm1
       have hconj : β.HolderConjugate (k : ℝ) := by
         refine Real.holderConjugate_iff.mpr ⟨?_, ?_⟩
         · rw [hβ_def, one_lt_div hkm1]; linarith
-        · rw [hβ_def, inv_div, inv_eq_one_div, div_add_div _ _ (ne_of_gt hkR) (ne_of_gt hkR),
-            div_eq_one_iff_eq (by positivity)]
+        · rw [hβ_def, inv_div, inv_eq_one_div]
+          field_simp [ne_of_gt hkR, ne_of_gt hkm1]
           ring
       have hf2c : Continuous (fun x => b x ^ ((k : ℝ) - 1)) :=
         hbc.rpow_const (fun _ => Or.inr (le_of_lt hkm1))
@@ -338,7 +340,7 @@ theorem secondOrderInterp_lpFiberJet_sup_rs
           MeasureTheory.integral_congr_ae (MeasureTheory.ae_of_all _ hpow3)] at hH
       have hinvβ : (1 : ℝ) / β = ((k : ℝ) - 1) / k := by rw [hβ_def, one_div_div]
       have hinvk : (1 : ℝ) / (k : ℝ) = (2 : ℝ) / (2 * k) := by
-        rw [eq_div_iff (by positivity)]; field_simp
+        field_simp [ne_of_gt hkR]
       rw [hinvβ, hinvk] at hH
       rw [show (∫ x, b x ^ ((k : ℝ) / 1) ∂μ) = Ib from hIb_def.symm,
           show (∫ x, c x ^ ((k : ℝ) / 2) ∂μ) = Ic from hIc_def.symm,
@@ -352,8 +354,8 @@ theorem secondOrderInterp_lpFiberJet_sup_rs
   have hsum_k : (1 : ℝ) / k + ((k : ℝ) - 1) / k = 1 := by
     rw [← add_div, show (1 : ℝ) + ((k : ℝ) - 1) = (k : ℝ) from by ring, div_self (ne_of_gt hkR)]
   rcases eq_or_lt_of_le hIb_nn with hIb0 | hIbpos
-  · rw [← hIb0, Real.zero_rpow (by positivity)]
-    positivity
+  · rw [← hIb0, Real.zero_rpow (ne_of_gt (one_div_pos.mpr hkR))]
+    exact mul_nonneg (mul_nonneg hK'_nn hA) hC_nn
   · have hIbβ_pos : 0 < Ib ^ (((k : ℝ) - 1) / k) := Real.rpow_pos_of_pos hIbpos _
     have hIb_split : Ib = Ib ^ ((1 : ℝ) / k) * Ib ^ (((k : ℝ) - 1) / k) := by
       rw [← Real.rpow_add hIbpos, hsum_k, Real.rpow_one]

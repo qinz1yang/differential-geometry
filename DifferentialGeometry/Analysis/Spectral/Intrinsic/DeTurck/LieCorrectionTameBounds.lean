@@ -1460,7 +1460,7 @@ theorem lieCorrectionZerob_sharpFlat_feed (g₀ : SmoothRiemannianMetric I M) (a
           ‖iteratedCovGrad (I := I) g₀ 1 1 q IdIns‖ := by
       rw [hdecomp, iteratedCovGrad_add]
       exact norm_add_le _ _
-    nlinarith [htri, hDq,
+    nlinarith only [htri, hDq,
       norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q DiffIns),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q IdIns),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q (sharpFlatEndoCc (I := I) g₀ g₁)),
@@ -5788,7 +5788,7 @@ theorem lieCorrectionZeroField_metricPerturbationPath_jetL2_perOrder_ballUniform
     rw [abs_of_nonneg h1ms, abs_of_nonneg hs0]
     have h1 : δ' ≤ δ₁ := le_trans hδ'_le (le_max_left _ _)
     have h2 : δ ≤ δ₁ := le_trans hδ_le (le_max_left _ _)
-    nlinarith [h1, h2]
+    nlinarith only [hs0, hs1, h1, h2]
   have htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ Pc y v w := by
     intro y v w
@@ -6028,7 +6028,7 @@ theorem lieCorrectionZeroField_metricPerturbationPath_riemannianFiberNormSq_orde
     rw [abs_of_nonneg h1ms, abs_of_nonneg hs0]
     have h1 : δ' ≤ δ₁ := le_trans hδ'_le (le_max_left _ _)
     have h2 : δ ≤ δ₁ := le_trans hδ_le (le_max_left _ _)
-    nlinarith [h1, h2]
+    nlinarith only [hs0, hs1, h1, h2]
   have htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ Pc y v w := by
     intro y v w
