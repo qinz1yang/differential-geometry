@@ -283,7 +283,7 @@ theorem hamilton_scalar_evolution_equation
             ((hamiltonSolution (I := I) P).family.metric t) x 2
             ((hamiltonSolution (I := I) P).ricci t x)) := by
     refine
-      DifferentialGeometry.PDE.RicciFlow.scalarEvolOfSmooth
+      DifferentialGeometry.PDE.RicciFlow.scalar_evolution_of_smooth_solution
         (I := I) (M := M) (hamiltonSolution (I := I) P) P.isSmooth
         (hamiltonMetricConnectionFamily (I := I) P) ?_ ?_
     · intro t

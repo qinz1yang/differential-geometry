@@ -137,7 +137,8 @@ theorem flow_end_le
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 T hT)
       S.scalar scalarLap (ricciNorm (I := I) S) := by
     simpa [G, scalarLap, ricciNorm] using
-      (scalarEvolOfSmooth (I := I) (M := M) S hSmooth (flowG (I := I) S)
+      (scalar_evolution_of_smooth_solution (I := I) (M := M) S hSmooth
+        (flowG (I := I) S)
         (by intro t; rfl) (by intro t; rfl))
   have hKExists : ∀ U : Real, 0 < U → U < T →
       U < scalarBlowupTime 3 c0 →

@@ -178,27 +178,6 @@ theorem ricciRegOfSol
       ricci_norm_space := hS.ricciNormSpace
       ricci_norm_grad := hS.ricciNormGrad }
 
-theorem scalarEvolOfSol
-    [I.Boundaryless]
-    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S) :
-    ∀ (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real),
-      (∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-        G.metric (t : Real) = S.family.metric (t : Real)) ->
-      (∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-        G.connection (t : Real) = S.family.connection (t : Real)) ->
-      ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
-        HasDerivWithinAt
-          (fun s : Real => S.scalar s x)
-          (DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) G (t : Real)
-              (S.scalar (t : Real)) x +
-            2 * normSq0S (I := I) (S.family.metric (t : Real)) x 2
-              (S.ricci (t : Real) x))
-          D.carrier
-          (t : Real) := by
-  exact scalarEvolution_of_isSolution (I := I) S hS
-
 omit [SigmaCompactSpace M] in
 theorem invEvolOfSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -830,7 +809,7 @@ theorem smoothOfSol
       scalarSTCont := scalarSTContOfSol (I := I) S hS
       scalarRegular := scalarRegOfSol (I := I) S hS
       ricciRegular := ricciRegOfSol (I := I) S hS
-      scalarEvolution := scalarEvolOfSol (I := I) S hS
+      scalarEvolution := scalarEvolution_of_isSolution (I := I) S hS
       invEvol := invEvolOfSol (I := I) S hS
       ricciEvol := ricciEvolOfSol (I := I) S hS
       invSymm := invSymmOfSol (I := I) S hS

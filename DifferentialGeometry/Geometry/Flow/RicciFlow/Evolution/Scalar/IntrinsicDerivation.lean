@@ -729,4 +729,20 @@ theorem scalarEvolution_of_isSolution
   rw [hGcong]
   exact hderiv
 
+theorem scalar_curvature_evolution
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) :
+    ScalarEvolutionEquationOn (D := D)
+      S.scalar
+      (fun t x =>
+        DifferentialGeometry.Geometry.Curvature.laplacianAt
+          (I := I) (flowG (I := I) S) t (S.scalar t) x)
+      (fun t x =>
+        normSq0S (I := I) (S.family.metric t) x 2 (S.ricci t x)) := by
+  intro t x
+  exact scalarEvolution_of_isSolution
+    (I := I) S hS (flowG (I := I) S)
+      (fun _ => rfl) (fun _ => rfl) t x
+
 end DifferentialGeometry.PDE.RicciFlow

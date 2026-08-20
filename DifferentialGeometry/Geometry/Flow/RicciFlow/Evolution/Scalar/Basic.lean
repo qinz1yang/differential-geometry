@@ -87,20 +87,8 @@ theorem scalarEvolutionEquationOn_of_contractedBianchi
   exact (hpre t x).congr_deriv (by
     rw [hbianchi t x])
 
-omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] in
-theorem scalar_curvature_evolution
-    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    (scalar scalarLap contractedRicciHessian ricciNormSq : Real -> M -> Real)
-    (hpre : ScalarPreBianchiEvolutionEquationOn (D := D)
-      scalar scalarLap contractedRicciHessian ricciNormSq)
-    (hbianchi : ScalarContractedBianchiReductionOn (D := D)
-      scalarLap contractedRicciHessian) :
-    ScalarEvolutionEquationOn (D := D) scalar scalarLap ricciNormSq :=
-  scalarEvolutionEquationOn_of_contractedBianchi
-    (M := M) scalar scalarLap contractedRicciHessian ricciNormSq hpre hbianchi
-
 omit [SigmaCompactSpace M] in
-theorem scalarEvolOfSmooth
+theorem scalar_evolution_of_smooth_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)

@@ -518,7 +518,8 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_smooth_solution
       ScalarEvolutionEquationOn (D := D) S.scalar scalarLap
         (ricciNorm (I := I) S) := by
     simpa [scalarLap, ricciNorm] using
-      (scalarEvolOfSmooth (I := I) (M := M) S hS G hmetric hconnection)
+      (scalar_evolution_of_smooth_solution
+        (I := I) (M := M) S hS G hmetric hconnection)
   have hbridge :
       ∃ (ricciNormLap reaction : Real -> M -> Real),
         RicciNormHeatEquationOn
@@ -829,7 +830,7 @@ theorem pinch_quotient_evolution_of_solution_data
       ScalarEvolutionEquationOn (D := D) S.scalar scalarLap
         (ricciNorm (I := I) S) := by
     intro t x
-    have h := scalarEvolOfSol (I := I) S hS (flowG (I := I) S)
+    have h := scalarEvolution_of_isSolution (I := I) S hS (flowG (I := I) S)
       (by intro t; rfl) (by intro t; rfl) t x
     simpa [scalarLap, ricciNorm, flowG] using h
   have hSmooth := smoothOfSol (I := I) S hS

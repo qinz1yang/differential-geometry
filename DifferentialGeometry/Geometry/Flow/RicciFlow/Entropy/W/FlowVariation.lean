@@ -182,7 +182,7 @@ theorem revScalar_time
             x 2 (S.ricci (T - s) x))) s := by
   let G := flowG (I := I) S
   have hbase :=
-    (scalarEvolOfSol (I := I) S hS G
+    (scalarEvolution_of_isSolution (I := I) S hS G
       (fun _ => rfl) (fun _ => rfl) ⟨T - s, hs⟩ x).hasDerivAt
       (D.regular_mem_nhds hs)
   have hsub : HasDerivAt (fun r : Real => T - r) (-1) s := by

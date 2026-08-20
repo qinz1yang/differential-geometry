@@ -1778,7 +1778,7 @@ theorem riemann_component_evolution_in_orthonormal_frame_of_solution
       (ricciNorm (I := I) S) := by
     intro r z
     simpa [scalarLap, ricciNorm] using
-      (scalarEvolOfSol (I := I) S hS (flowG (I := I) S)
+      (scalarEvolution_of_isSolution (I := I) S hS (flowG (I := I) S)
         (by intro _; rfl) (by intro _; rfl) r z)
   have hScDot : HasDerivWithinAt (fun r : Real => S.scalar r y)
       (lapS + 2 * normSq (R (t : Real))) D.carrier (t : Real) := by
