@@ -237,3 +237,12 @@ retaining each opening whose removal prevented elaboration. This is a semantic-p
 scope cleanup; no declaration, statement, or proof was changed.
 
 <!-- Add entries below as modifications occur. -->
+
+### 2026-08-20 — explicit small-ball average estimate
+
+**Files**:
+- `Crossover/ExponentialIntegrability.lean`
+
+**Change**: replaced a broad additive `simpa` in the small-ball average triangle estimate with
+an explicit equality followed by `abs_add_le`. The theorem statement and mathematical argument
+are unchanged.

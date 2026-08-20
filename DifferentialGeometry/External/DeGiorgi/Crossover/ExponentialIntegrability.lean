@@ -1,4 +1,5 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
+-- Modified 2026-08-20: made the small-ball average triangle estimate explicit
 import DifferentialGeometry.External.DeGiorgi.Crossover.LogGradient
 
 /-!
@@ -924,15 +925,16 @@ theorem regularizedLog_smallBallAverage_step_le
             ⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume| +
           |⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume -
             ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume| := by
-            have habs :=
-              abs_add_le
-                (⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
-                  ⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume)
-                (⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume -
-                  ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume)
-            simpa only [sub_eq_add_neg, add_assoc, add_left_comm, add_comm, add_neg_cancel, add_zero,
-              zero_add]
-              using habs
+            calc
+              |⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
+                  ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume| =
+                  |(⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
+                      ⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume) +
+                    (⨍ z in Metric.ball c ((1 / 48 : ℝ) / 2), v z ∂volume -
+                      ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume)| := by
+                    congr 1
+                    ring
+              _ ≤ _ := abs_add_le _ _
     _ ≤ (2 : ℝ) ^ d *
           (⨍ z in Metric.ball x (1 / 48 : ℝ),
             |v z - ⨍ w in Metric.ball x (1 / 48 : ℝ), v w ∂volume| ∂volume) +
