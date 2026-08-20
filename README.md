@@ -16,7 +16,7 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 - [Bonnet–Myers diameter bound](DifferentialGeometry/Geometry/Comparison/BonnetMyers/Headlines.lean#L526) — a positive Ricci lower bound forces a bounded diameter.
 - [Bochner formula](DifferentialGeometry/Analysis/Elliptic/Regularity/Bochner/PolarisedLpSmooth.lean#L65) — the polarised, pointwise form.
 - [Weitzenböck identity](DifferentialGeometry/Analysis/Elliptic/ConnectionLaplacian/GreenIdentityAndIBP/IntegratedOrder2Weitzenbock.lean#L97) — the integrated $L^2$ form.
-- [Lichnerowicz inequality](DifferentialGeometry/Analysis/Elliptic/Lichnerowicz.lean#L67), with the [eigenvalue bound on closed manifolds](DifferentialGeometry/Analysis/Elliptic/Lichnerowicz.lean#L597).
+- [Lichnerowicz eigenvalue bound](DifferentialGeometry/Analysis/Elliptic/Lichnerowicz.lean#L596) on closed manifolds.
 - [Voss–Weyl divergence formula](DifferentialGeometry/Analysis/Integration/DivergenceTheorem/ChartInvariance.lean#L577) — the chart-invariant divergence.
 - [de Rham cohomology](DifferentialGeometry/Tensor/Exterior/Cochain.lean#L77) — intrinsic differential forms with [nilpotent exterior derivative](DifferentialGeometry/Tensor/Exterior/Basic.lean#L598), [graded Leibniz rule](DifferentialGeometry/Tensor/Exterior/Leibniz.lean#L563), and [functorial pullback maps](DifferentialGeometry/Tensor/Exterior/Cochain.lean#L162).
 - [Morse lemma](DifferentialGeometry/Topology/Morse/Manifold.lean#L944), the [no-critical-values theorem](DifferentialGeometry/Topology/Morse/NoCriticalValues.lean#L186), and [single-critical-point cell attachment](DifferentialGeometry/Topology/Morse/SmoothHandleAttachment.lean#L936), with [smooth handle-adjunction diffeomorphisms](DifferentialGeometry/Topology/Morse/SublevelTransport.lean#L962).
@@ -24,8 +24,6 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 - [Strong parabolic maximum principles](DifferentialGeometry/Analysis/Parabolic/MaximumPrinciple/ScalarStrong.lean#L2281) — scalar equations on fixed and moving metrics, [parallel proper cones](DifferentialGeometry/Analysis/Parabolic/MaximumPrinciple/ParallelConeStrong.lean#L102), and [symmetric tensors](DifferentialGeometry/Analysis/Parabolic/MaximumPrinciple/Tensor/Strong.lean#L196), with a [Hopf boundary point theorem](DifferentialGeometry/Analysis/Parabolic/MaximumPrinciple/BoundaryHopf.lean#L246).
 - [Li–Yau Harnack inequality](DifferentialGeometry/Analysis/Parabolic/Harnack/LiYauHarnack.lean#L756) and [Hamilton differential Harnack inequality](DifferentialGeometry/Analysis/Parabolic/Harnack/HamiltonDifferentialHarnack.lean#L1435) for positive heat solutions.
 - [Quasilinear parabolic local existence](DifferentialGeometry/Analysis/Parabolic/QuasiLinear/TensorMaximalRegularity/LocallyLipschitzExistence.lean#L700) for locally Lipschitz Sobolev nonlinearities.
-- [Perelman's $\mathcal{W}$-entropy invariances](DifferentialGeometry/Geometry/Flow/RicciFlow/Entropy/W/Functional.lean#L92) — scale and diffeomorphism invariance.
-- [Perelman's $\mathcal{F}$-functional first variation](DifferentialGeometry/Geometry/Flow/RicciFlow/Entropy/F/GeometricFirstVariation.lean#L386) — Perelman's formula 5.10.
 
 ## Verification
 

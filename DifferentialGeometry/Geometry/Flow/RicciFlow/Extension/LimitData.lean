@@ -60,14 +60,14 @@ def cinftyLimitData_of_solution
     (hdim : Module.finrank ℝ E = 3)
     (Rm04 : ℝ → Tensor04Section (I := I) (M := M))
     (hRm : ∀ t : RealTimeInterval.FlowTime (RealTimeInterval.closedOpen alpha omega hαω),
-      Rm04RealizesConnection (I := I)
+      rm04RealizesConnection (I := I)
         (S.family.metric (t : ℝ)) (S.family.connection (t : ℝ)) (Rm04 (t : ℝ)))
     (hbound : ∃ K : ℝ, ∀ (t : ℝ) (x : M),
         alpha ≤ t → t < omega →
           Tensor0SBundle.normSq0S (I := I) (S.base.metric t) x 4 (Rm04 t x) ≤ K) :
     CinftyLimitData (I := I) S.base.metric alpha omega hαω := by
   have hRmRaw : ∀ t ∈ Set.Ico alpha omega,
-      Rm04RealizesConnection (I := I) (S.base.metric t)
+      rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t) := by
     intro t ht
     simpa [SolutionOn.family, SolutionFamily.connection] using

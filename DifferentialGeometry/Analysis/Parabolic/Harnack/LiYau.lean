@@ -9,8 +9,8 @@ import DifferentialGeometry.Geometry.Operator.HessianTraceInequality
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
 import DifferentialGeometry.Analysis.Calculus.Extrema
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Weak
-import DifferentialGeometry.Geometry.Curvature.Realized.Operators
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Operator.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
 import DifferentialGeometry.Analysis.Integration.Measure.Invariance

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Basic
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
@@ -42,7 +42,7 @@ lemma metricFamilySmoothOn_stationary
     simpa [stationaryMetricFamily] using
       (continuousOn_const : ContinuousOn (fun _ : ℝ => g.inner x X Y) D.carrier)
   metricTensor_cont := by
-    have hconst : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+    have hconst : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x => metricTensorField (I := I) g x) := by
       apply DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet_of_chartBasisComp
         (N := fun x₀ => (trivializationAt E (TangentSpace I) x₀).baseSet)
@@ -73,7 +73,7 @@ lemma metricFamilySmoothOn_stationary
             q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} :=
         (continuous_snd : Continuous (fun q : {t : ℝ // t ∈ D.carrier} × M => q.2)).continuousOn
       exact hcont.comp hproj (fun q hq => hq)
-    exact Tensor0SFamilyContinuousOnSet.congr hconst (by
+    exact tensor0SFamilyContinuousOnSet.congr hconst (by
       intro t _ht x
       simp [stationaryMetricFamily])
   frameCompSmooth := by

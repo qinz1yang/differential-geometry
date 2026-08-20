@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.RealizedMetricForMeasure
+import DifferentialGeometry.Analysis.Integration.Measure.MetricFamily
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyDefs
 import DifferentialGeometry.Analysis.Integration.Measure.Family
 

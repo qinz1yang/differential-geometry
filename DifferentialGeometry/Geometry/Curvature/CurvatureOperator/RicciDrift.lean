@@ -194,7 +194,7 @@ private theorem div_ricGrad [I.Boundaryless] [SigmaCompactSpace M]
             NablaRicTraceAt (I := I) basis delta nablaRm04 nRic0 ∧
               DScalarTraceAt (I := I) basis delta nRic0 dR := by
     simpa [cov, Ric, nRic0, dR, metricCov, metricRicci, metricScalarAt] using
-      (metricBianchiAt (I := I) (M := M) g basis delta hinv)
+      (exists_levi_civita_bianchi_trace_data (I := I) (M := M) g basis delta hinv)
   obtain ⟨nablaRm04, hsecond, hRmSymm, hRicTrace, hScalar⟩ := hpack
   have hNablaSymm : NablaRicSymmAt (I := I) nRic0 := by
     simpa [nRic0, cov, Ric] using metricNablaSymm (I := I) (M := M) g x

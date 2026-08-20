@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Functional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
-import DifferentialGeometry.Analysis.Integration.Measure.RealizedMetricForMeasure
+import DifferentialGeometry.Analysis.Integration.Measure.MetricFamily
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -24,7 +24,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 variable [IsManifold I 1 M]
 variable [T2Space M] [SigmaCompactSpace M]
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 structure FlowMetricBall (S : SolutionOn (I := I) (M := M) D)
     (time : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D) where
@@ -36,7 +36,7 @@ namespace FlowMetricBall
 
 variable {S : SolutionOn (I := I) (M := M) D}
 variable {time : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D}
-variable {time : DifferentialGeometry.Integral.Connection.RealTimeInterval.FlowTime D}
+variable {time : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D}
 
 def setAt (B : FlowMetricBall S time) (t : Real) : Set M :=
   {x : M | DifferentialGeometry.riemannianEDistOf

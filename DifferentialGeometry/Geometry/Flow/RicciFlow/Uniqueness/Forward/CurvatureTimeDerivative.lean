@@ -469,7 +469,7 @@ variable {Idx : Type*} [Fintype Idx]
 
 omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
 theorem rmDiffComp_deriv
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (T₁ T₂ : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
@@ -478,7 +478,7 @@ theorem rmDiffComp_deriv
     (frame : Idx -> (y : M) -> TangentSpace I y)
     (hev₁ : Riemann04BTensorWithRicciDriftEvolutionInFrameOn (D := D) Rm₁ roughLapRm₁ B₁ Ric₁)
     (hev₂ : Riemann04BTensorWithRicciDriftEvolutionInFrameOn (D := D) Rm₂ roughLapRm₂ B₂ Ric₂)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) (i j k l : Idx)
     (hL₁ : roughLapRm₁ (t : Real) x i j k l =
       roughLap0SField (I := I) g₁ T₁ x (frameVec4 (I := I) frame x i j k l))
@@ -508,7 +508,7 @@ theorem rmDiffComp_deriv
 
 omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
 theorem rmLowComp_deriv
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (T₁ T₂ : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
@@ -517,7 +517,7 @@ theorem rmLowComp_deriv
     (frame : Idx -> (y : M) -> TangentSpace I y)
     (hev₁ : Riemann04BTensorWithRicciDriftEvolutionInFrameOn (D := D) Rm₁ roughLapRm₁ B₁ Ric₁)
     (hev₂ : Riemann04BTensorWithRicciDriftEvolutionInFrameOn (D := D) Rm₂ roughLapRm₂ B₂ Ric₂)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) (i j k l : Idx)
     (hL₁ : roughLapRm₁ (t : Real) x i j k l =
       roughLap0SField (I := I) (g₁ (t : Real)) T₁ x (frameVec4 (I := I) frame x i j k l))

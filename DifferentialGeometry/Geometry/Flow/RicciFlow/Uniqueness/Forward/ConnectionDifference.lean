@@ -25,7 +25,7 @@ variable {u : Set M}
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffelEvolutionDiffInFrameOn
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S₁ S₂ : SolutionOn (I := I) (M := M) D)
     (gInv₁ gInv₂ : Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
@@ -35,7 +35,7 @@ theorem christoffelEvolutionDiffInFrameOn
       (I := I) S₁ gInv₁ frame hframe nablaRic₁)
     (h₂ : ChristoffelEvolutionEquationInFrameOn
       (I := I) S₂ gInv₂ frame hframe nablaRic₂) :
-    ∀ (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D) (x : M), x ∈ u →
+    ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M), x ∈ u →
       ∀ i j k : Idx,
         HasDerivWithinAt
           (fun s : Real =>
@@ -53,7 +53,7 @@ theorem christoffelEvolutionDiffInFrameOn
 omit [Fintype Idx] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffelDiff_coeff
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S₁ S₂ : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)

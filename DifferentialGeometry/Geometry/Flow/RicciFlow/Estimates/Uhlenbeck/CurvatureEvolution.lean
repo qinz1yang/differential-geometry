@@ -63,7 +63,7 @@ theorem solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
-    (hRm : DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+    (hRm : DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
       (S.family.connection t) (S.base.rm13 t))
     (hcurv : DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
       (S.family.connection t) x₀)
@@ -132,7 +132,7 @@ theorem solutionCurvatureComponents_hasDerivWithinAt
         (fun t x d a b => ricciCovDerivCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t x d
           a b)))
     (hRm : ∀ s, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (S.base.rm13 s))
     (hcurv : ∀ s, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)

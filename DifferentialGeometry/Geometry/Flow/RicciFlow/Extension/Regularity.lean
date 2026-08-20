@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Pr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciContinuityInMetricTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Analysis.Calculus.TimeJetCommute
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 open DifferentialGeometry.Tensor.RicciIdentity
@@ -720,7 +720,7 @@ theorem metricFamilySmoothOn_of_chartGram
       ({ base := { metric := g } } :
         SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen a b hab)).family.metric := by
   have hcontTensor :
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
         (Set.Ico a b) (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x) := by
     apply metricTensorCont_of_chartGram (K := Set.Ico a b) g
     intro x₀ i j
@@ -791,7 +791,7 @@ theorem ricciCont_of_joint [I.Boundaryless]
         (fun p : ℝ × M =>
           Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       J (fun t x => metricRicciAt (I := I) (g t) x) := by
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp _
     (fun x₀ => chartLeviCivitaGoodSet (I := I) x₀)
@@ -840,7 +840,7 @@ theorem ricciCont_interior_of_chartGram [I.Boundaryless]
         (fun p : ℝ × M =>
           Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       (Set.Ioo a b) (fun t x => metricRicciAt (I := I) (g t) x) :=
   ricciCont_of_joint (I := I) g (Set.Ioo a b) isOpen_Ioo.uniqueDiffOn hsmooth
 
@@ -883,7 +883,7 @@ theorem rm04Cont_of_joint [I.Boundaryless]
         (fun p : ℝ × M =>
           Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
       J
       (fun t x => DifferentialGeometry.Geometry.Curvature.metricRm04At (I := I) (g t) x) := by
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp _
@@ -935,7 +935,7 @@ theorem rm04Cont_interior_of_chartGram [I.Boundaryless]
         (fun p : ℝ × M =>
           Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
       (Set.Ioo a b)
       (fun t x => DifferentialGeometry.Geometry.Curvature.metricRm04At (I := I) (g t) x) :=
   rm04Cont_of_joint (I := I) g (Set.Ioo a b) isOpen_Ioo.uniqueDiffOn hsmooth
@@ -1107,11 +1107,11 @@ theorem solutionOn_of_joint [I.Boundaryless]
     simpa [SolutionOn.scalar, SolutionFamily.scalar] using
       (scalarTime_of_joint (I := I) g (Set.Ico a b) (uniqueDiffOn_Ico a b) hjoint t
         (hK ht) x).mono hK
-  · refine DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.congr
+  · refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
       (ricciCont_of_joint (I := I) g (Set.Ico a b) (uniqueDiffOn_Ico a b) hjoint)
       (fun t _ x => ?_)
     simp only [SolutionOn.ricci, SolutionFamily.ricci_apply, SolutionFamily.ricciAt]
-  · refine DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.congr
+  · refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
       (rm04Cont_of_joint (I := I) g (Set.Ico a b) (uniqueDiffOn_Ico a b) hjoint)
       (fun t _ x => ?_)
     simp only [SolutionFamily.rm04, metricRm04_apply]
@@ -1222,40 +1222,40 @@ theorem isSolutionOn_of_extendData
           ⟨hα, (hKsub htK).2⟩ x
     exact hmain.mono hKsub
   · have hinterior :
-        DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+        DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
           (Set.Ioo α b) (fun t x => metricRicciAt (I := I) (g_ext t) x) :=
       ricciCont_interior_of_chartGram (I := I) g_ext α b hsmooth
     have hhalf :
-        DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+        DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
           (Set.Ico α omega) (fun t x => metricRicciAt (I := I) (g_ext t) x) := by
-      refine DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.congr
+      refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
         hS.ricciCont (fun t ht x => ?_)
       have h : g_ext t = S.base.metric t := hagree t ht.2
       simp only [SolutionOn.ricci, SolutionFamily.ricci_apply, SolutionFamily.ricciAt, h]
     have hglued :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.of_union_closedOpen
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.of_union_closedOpen
         (I := I) (M := M) (a := α) (c := omega) (b := b) hαω hhalf hinterior
-    refine DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.congr
+    refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
       hglued (fun t _ x => ?_)
     simp only [SolutionOn.ricci, SolutionFamily.ricci_apply, SolutionFamily.ricciAt]
   · have hinterior :
-        DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
+        DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
           (Set.Ioo α b)
           (fun t x => DifferentialGeometry.Geometry.Curvature.metricRm04At (I := I) (g_ext t) x) :=
       rm04Cont_interior_of_chartGram (I := I) g_ext α b hsmooth
     have hhalf :
-        DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
+        DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
           (Set.Ico α omega)
           (fun t x => DifferentialGeometry.Geometry.Curvature.metricRm04At (I := I) (g_ext t)
             x) := by
-      refine DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.congr
+      refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
         hS.rm04Cont (fun t ht x => ?_)
       have h : g_ext t = S.base.metric t := hagree t ht.2
       simp only [SolutionFamily.rm04, metricRm04_apply, h]
     have hglued :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.of_union_closedOpen
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.of_union_closedOpen
         (I := I) (M := M) (a := α) (c := omega) (b := b) hαω hhalf hinterior
-    refine DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.congr
+    refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
       hglued (fun t _ x => ?_)
     simp only [SolutionFamily.rm04, metricRm04_apply]
   · intro t ht x

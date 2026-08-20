@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureTensor
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -181,7 +181,7 @@ theorem curvatureAction0SAt_eq_slots_connectionRiemannCurvature
       (TangentSpace I : M → Type _))
     (Vsec : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13) :
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13) :
     curvatureAction0SAt (I := I) Rm13 alpha (Xsec x) (Ysec x)
         (fun q : Fin s => Vsec q x) =
       curvatureAction0SAtSlots (I := I) alpha (fun q : Fin s => Vsec q x)
@@ -210,7 +210,7 @@ theorem curvatureAction0SAt_eq_neg_sum_connectionRiemannCurvature
       (TangentSpace I : M → Type _))
     (Vsec : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13) :
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13) :
     curvatureAction0SAt (I := I) Rm13 alpha (Xsec x) (Ysec x)
         (fun q : Fin s => Vsec q x) =
       -∑ q : Fin s,

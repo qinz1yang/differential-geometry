@@ -26,7 +26,7 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -182,7 +182,7 @@ theorem ricciCovDeriv_trace_nablaRm
   have hinv :=
     metricInverseInBasis_identity_of_orthonormal (I := I) (S.family.metric t) basis horth
   have heq :=
-    (canBianchiCore (I := I) (S.family.metric t) basis identityInvMetric hinv).2.2
+    (levi_civita_bianchi_trace_identities (I := I) (S.family.metric t) basis identityInvMetric hinv).2.2
       (frame d x) (frame a x) (frame b x)
   simp only [hbasis] at heq
   exact heq.trans

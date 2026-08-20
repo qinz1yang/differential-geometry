@@ -219,7 +219,7 @@ theorem canBianchiAt
     simpa [basis, hframe, gInvAt, coordInv,
       IsLocalFrameOn.toBasisAt_coe] using h
   have hmetric :=
-    DifferentialGeometry.Geometry.Connection.metricBianchiAt (I := I) (M := M)
+    DifferentialGeometry.Geometry.Connection.exists_levi_civita_bianchi_trace_data (I := I) (M := M)
       (g := S.family.metric t) basis gInvAt hinv
   simpa [SolutionOn.family, SolutionOn.ricci, SolutionOn.scalar,
     SolutionFamily.connection, SolutionFamily.rm04, SolutionFamily.ricci,
@@ -366,7 +366,7 @@ theorem canHessAt
   have hcan := coordNab2Can (I := I) S t x₀
     derivs.nablaA derivs.nabla2A derivs.second hnabla
   have hmetric :=
-    DifferentialGeometry.Geometry.Connection.canScalHess (I := I) (M := M)
+    DifferentialGeometry.Geometry.Connection.scalar_curvature_hessian_trace_symmetric (I := I) (M := M)
       (g := S.family.metric t) basis gInvAt hinv i j
   have hmetric' :
       (∑ k : CoordinateIdx (𝕜 := Real) E,
@@ -572,13 +572,13 @@ theorem coordCommAt
         simpa [DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt] using htf x
     have hRicTrace13 :
         ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-          DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I)
+          DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
             (S.ricci (t : Real)) (S.base.rm13 (t : Real)) := by
       intro t
       exact ricciTraceOfSol (I := I) S (t : Real)
     have hRm13 :
         ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-          DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+          DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
             (S.family.connection (t : Real)) (S.base.rm13 (t : Real)) := by
       intro t
       exact rm13OfSol (I := I) S (t : Real)
@@ -592,8 +592,8 @@ theorem coordCommAt
         DifferentialGeometry.Geometry.Curvature.rm04LowersRm13At_of_realizes
           (I := I) (S.base.metric (t : Real)) (S.base.connection (t : Real))
           (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real))
-          (metricCurvData (I := I) (M := M) (S.base.metric (t : Real))).h_rm13
-          (metricCurvData (I := I) (M := M) (S.base.metric (t : Real))).h_rm04
+          (metricCurvData (I := I) (M := M) (S.base.metric (t : Real))).rm13Realizes
+          (metricCurvData (I := I) (M := M) (S.base.metric (t : Real))).rm04Realizes
           x
       simpa [SolutionOn.family, SolutionFamily.connection, SolutionFamily.rm13,
         SolutionFamily.rm04, metricCov] using h
@@ -677,10 +677,10 @@ theorem ricciEvolCore
               (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic
               (t : Real) x₀ a b c e)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
@@ -735,10 +735,10 @@ theorem ricciEvolutionEquationInCoordFrameAt_of_christoffelEvolution_nabla2_comm
         (coordinateFrameSet (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
@@ -791,10 +791,10 @@ theorem evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
         (coordinateFrameSet (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)

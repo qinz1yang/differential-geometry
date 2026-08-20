@@ -67,9 +67,9 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
     [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x y : M) :
     edist x y ≤ ENNReal.ofReal (Real.pi / Real.sqrt K) := by
@@ -174,7 +174,7 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
   have hγ_edist : Manifold.riemannianEDist I x y = ENNReal.ofReal L := by
     rw [hL_def]; exact hdist_ofReal
   have hRic' :
-      RicciBoundedBelow (I := I) g ((Module.finrank ℝ E - 1 : ℝ) * K) := _hRic
+      RicciBoundedBelow (I := I) g ((Module.finrank ℝ E - 1 : ℝ) * K) := hRic
   have hγ_min :
       ∀ η : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Set.Icc 0 L) →
         η 0 = γ 0 → η L = γ L →
@@ -517,7 +517,7 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
             (I := I) hγ_smooth hχ_smooth (hEbundle i)
         exact hprod
       exact bonnet_myers_length_le_of_ricci_bound (I := I) g γ hL_pos hEnorm
-        hγ_smooth hγ_C1 hγ_geoOn _hK _hdim hRic' uPrime huPrimeEq hγ_unit
+        hγ_smooth hγ_C1 hγ_geoOn hK hdim hRic' uPrime huPrimeEq hγ_unit
         e heDiff hParallel hON hPerp hIntegrandSum hRicIntegrable hγ_min hVbundle
   exact hL_le
 
@@ -534,15 +534,15 @@ theorem bonnet_myers_diameter_of_ricci_bound
     [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
     (hEnorm : IsMetricNorm (I := I) (M := M) g) :
     Metric.ediam (Set.univ : Set M) ≤
       ENNReal.ofReal (Real.pi / Real.sqrt K) := by
   refine Metric.ediam_le ?_
   intro x _ y _
-  exact bonnet_myers_pairwise_edist_le_of_ricci_bound (E := E) g _hdim _hK _hRic hEnorm x y
+  exact bonnet_myers_pairwise_edist_le_of_ricci_bound (E := E) g hdim hK hRic hEnorm x y
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -554,9 +554,9 @@ theorem bonnet_myers_pairwise_edist_le_of_complete_metric
     [SigmaCompactSpace M] [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
     (x y : M) :
     letI : IsManifold I 1 M :=
       IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
@@ -589,7 +589,7 @@ theorem bonnet_myers_pairwise_edist_le_of_complete_metric
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact bonnet_myers_pairwise_edist_le_of_ricci_bound (I := I) (M := M) g
-    _hdim _hK _hRic hEnorm x y
+    hdim hK hRic hEnorm x y
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -601,9 +601,9 @@ theorem bonnet_myers_diameter_le_of_complete_metric
     [SigmaCompactSpace M] [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K)) :
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K)) :
     letI : IsManifold I 1 M :=
       IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
         (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
@@ -636,7 +636,7 @@ theorem bonnet_myers_diameter_le_of_complete_metric
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact bonnet_myers_diameter_of_ricci_bound (I := I) (M := M) g
-    _hdim _hK _hRic hEnorm
+    hdim hK hRic hEnorm
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -708,9 +708,9 @@ theorem isCompact_univ
     [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
     (hEnorm : IsMetricNorm (I := I) (M := M) g) :
     IsCompact (Set.univ : Set M) := by
   let p : M := Classical.arbitrary M
@@ -720,7 +720,7 @@ theorem isCompact_univ
     have hsqrt_nn : (0 : ℝ) ≤ Real.sqrt K := Real.sqrt_nonneg K
     exact div_nonneg hpi_nn hsqrt_nn
   have hdiam : Metric.ediam (Set.univ : Set M) ≤ ENNReal.ofReal R :=
-    bonnet_myers_diameter_of_ricci_bound (E := E) g _hdim _hK _hRic hEnorm
+    bonnet_myers_diameter_of_ricci_bound (E := E) g hdim hK hRic hEnorm
   have hsurj :=
     expMapIntrinsic_surjective_on_closedBall_of_ediam_le (I := I) (E := E) g hEnorm p hR_nn hdiam
   have himg :=
@@ -740,12 +740,12 @@ theorem bonnet_myers_compactSpace_of_ricci_bound
     [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
     (hEnorm : IsMetricNorm (I := I) (M := M) g) :
     CompactSpace M :=
-  isCompact_univ_iff.mp (isCompact_univ (E := E) g _hdim _hK _hRic hEnorm)
+  isCompact_univ_iff.mp (isCompact_univ (E := E) g hdim hK hRic hEnorm)
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -762,9 +762,9 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
     (g : SmoothRiemannianMetric I M)
     [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
     (hEnormBase : ∀ (xb : M) (v : TangentSpace I xb),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner xb v v)))
     (x : M) :
@@ -810,7 +810,7 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
   have hRicLift :
       RicciBoundedBelow (I := I) gLift (((Module.finrank ℝ E : ℝ) - 1) * K) :=
     Geometry.Riemannian.Topology.UniversalCover.ricciBoundedBelow_liftedMetric_of_base
-      (I := I) (g := g) _hRic hBasisLift hBasisBase
+      (I := I) (g := g) hRic hBasisLift hBasisBase
   haveI hRegUC :
       RegularSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
@@ -852,7 +852,7 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
   haveI hCompactUC :
       CompactSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    bonnet_myers_compactSpace_of_ricci_bound (E := E) gLift _hdim _hK hRicLift hEnormCover
+    bonnet_myers_compactSpace_of_ricci_bound (E := E) gLift hdim hK hRicLift hEnormCover
   haveI hFinFibre :
       Finite
         ((DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.proj :
@@ -893,9 +893,9 @@ theorem bonnet_myers_compactSpace_of_complete_metric
     [SigmaCompactSpace M] [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K)) :
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K)) :
     CompactSpace M := by
   letI : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
@@ -914,7 +914,7 @@ theorem bonnet_myers_compactSpace_of_complete_metric
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact bonnet_myers_compactSpace_of_ricci_bound (I := I) (M := M) g
-    _hdim _hK _hRic hEnorm
+    hdim hK hRic hEnorm
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
@@ -930,9 +930,9 @@ theorem bonnet_myers_finite_fundamentalGroup_of_complete_metric
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M))]
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    {K : ℝ} (_hK : 0 < K)
-    (_hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    {K : ℝ} (hK : 0 < K)
+    (hRic : RicciBoundedBelow (I := I) g (((Module.finrank ℝ E : ℝ) - 1) * K))
     (x : M) :
     Finite (FundamentalGroup M x) := by
   letI : IsManifold I 1 M :=
@@ -952,7 +952,7 @@ theorem bonnet_myers_finite_fundamentalGroup_of_complete_metric
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact bonnet_myers_finite_fundamentalGroup_of_ricci_bound (I := I) (M := M) g
-    _hdim _hK _hRic hEnorm x
+    hdim hK hRic hEnorm x
 
 end BonnetMyers
 end Riemannian

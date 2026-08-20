@@ -522,7 +522,7 @@ theorem curvatureTraceDuEqRicciGradAt_of_metric_dual
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
-    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hSkew : Rm13MetricSkewAt (I := I) g x (Rm13 x)) :
     CurvatureTraceDuEqRicciGradAt (I := I) g Ric Rm13 u basis gInv := by
   exact curvatureTraceOneFormEqRicVectorAt_of_metric_dual (I := I) g Ric Rm13
@@ -1042,8 +1042,8 @@ theorem oneForm_ricci_identity_components
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (_hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
-    (_hRm : Rm13RealizesConnection (I := I) cov Rm13)
-    (_hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (_hRm : rm13RealizesConnection (I := I) cov Rm13)
+    (_hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (_hdu : DuFieldRealizes (I := I) u duSec)
     (_hnabla : NablaOneFormRealizesAt (I := I) cov duSec nablaDu x)
     (_hnabla2 : Nabla2OneFormRealizesAt (I := I) cov duSec nablaDuSec x nabla2Du)
@@ -1091,8 +1091,8 @@ theorem one_form_ricci_trace_comm_of_lc
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (_hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
-    (_hRm : Rm13RealizesConnection (I := I) cov Rm13)
-    (_hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (_hRm : rm13RealizesConnection (I := I) cov Rm13)
+    (_hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (_hdu : DuFieldRealizes (I := I) u duSec)
     (_hnabla : NablaOneFormRealizesAt (I := I) cov duSec nablaDu x)
     (_hnabla2 : Nabla2OneFormRealizesAt (I := I) cov duSec nablaDuSec x nabla2Du)
@@ -1129,8 +1129,8 @@ theorem oneForm_commutator_eval_of_components
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
-    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
+    (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hdu : DuFieldRealizes (I := I) u duSec)
     (hnabla : NablaOneFormRealizesAt (I := I) cov duSec nablaDu x)
     (hnabla2 : Nabla2OneFormRealizesAt (I := I) cov duSec nablaDuSec x nabla2Du)
@@ -1160,8 +1160,8 @@ theorem oneForm_commutator_eval_of_lc
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
-    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
+    (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hdu : DuFieldRealizes (I := I) u duSec)
     (hnabla : NablaOneFormRealizesAt (I := I) cov duSec nablaDu x)
     (hnabla2 : Nabla2OneFormRealizesAt (I := I) cov duSec nablaDuSec x nabla2Du)
@@ -1203,7 +1203,7 @@ theorem half_laplacian_gradNormSq_eq
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (_hRic : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInv frame)
+    (_hRic : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInv frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1241,7 +1241,7 @@ theorem fundamental_bochner
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1312,7 +1312,7 @@ theorem fundamental_bochner_of_terms
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1372,7 +1372,7 @@ theorem fundamental_bochner_of_terms_of_normSecond_realizes
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1451,9 +1451,9 @@ theorem fundamental_bochner_of_components
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1508,10 +1508,10 @@ theorem fundamental_bochner_of_lc
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1586,10 +1586,10 @@ theorem fundamental_bochner_of_lc_terms
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1672,10 +1672,10 @@ theorem fundamental_bochner_of_lc_terms_of_normSecond_realizes
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1782,12 +1782,12 @@ theorem fundamental_bochner_of_lc_terms_of_rm04_skew
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g) Rm04)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)

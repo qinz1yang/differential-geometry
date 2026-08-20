@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.TensorRSModelEvalBasis
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
@@ -35,8 +35,8 @@ theorem tensor0SFamilyContinuousOnSet_of_chartComp
               (trivializationAt E (TangentSpace I) x₀).symmL Real q.2
                 (DifferentialGeometry.Integral.Measure.chartModelBasis E (idx k))))
         {q : {t : Real // t ∈ K} × M | q.2 ∈ N x₀}) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A := by
-  unfold Tensor0SFamilyContinuousOnSet
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A := by
+  unfold tensor0SFamilyContinuousOnSet
   rw [continuous_iff_continuousAt]
   intro q₀
   rw [FiberBundle.continuousAt_totalSpace]
@@ -105,7 +105,7 @@ theorem tensor0SFamilyContinuousOnSet_of_chartBasisComp
               DifferentialGeometry.Integral.Measure.chartBasisVecFiber
                 (I := I) x₀ (idx k) q.2))
         {q : {t : Real // t ∈ K} × M | q.2 ∈ N x₀}) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A := by
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A := by
   apply tensor0SFamilyContinuousOnSet_of_chartComp A N hN
   intro x₀ idx
   have heq :
@@ -133,7 +133,7 @@ theorem metricTensorCont_of_chartGram
             (g q.1.1) x₀ q.2 i j)
         {q : {t : Real // t ∈ K} × M |
           q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet}) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
       (fun t x => metricTensorField (I := I) (g t) x) := by
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp
     (N := fun x₀ => (trivializationAt E (TangentSpace I) x₀).baseSet)
@@ -271,17 +271,17 @@ theorem metricCLMSection_jointContMDiffOn_of_chartGram
 
 end MetricCLMSection
 
-namespace Tensor0SFamilyContinuousOnSet
+namespace tensor0SFamilyContinuousOnSet
 
 theorem pullback
     {s : Nat} {K : Set Real}
     {N : Type*} [TopologicalSpace N] [ChartedSpace H N]
-    [IsManifold I ∞ N] [IsManifold I 1 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [IsManifold I ∞ N] [IsManifold I 1 N]
     (A : (t : Real) → (x : N) →
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := N) s x)
-    (hA : Tensor0SFamilyContinuousOnSet (I := I) (M := N) s K A)
+    (hA : tensor0SFamilyContinuousOnSet (I := I) (M := N) s K A)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => (A t (Φ x)).compContinuousLinearMap
         (fun _ : Fin s => mfderiv I I (Φ : M → N) x)) := by
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp
@@ -329,11 +329,10 @@ theorem restrictOpen
     {s : Nat} {K : Set Real}
     (A : (t : Real) → (x : M) →
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
-    (hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A)
+    (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A)
     (U : TopologicalSpace.Opens M)
-    [SigmaCompactSpace U] [T2Space U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := U) s K
+    [IsManifold I 1 U] :
+    tensor0SFamilyContinuousOnSet (I := I) (M := U) s K
       (fun t (x : U) => A t (x : M)) := by
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp (M := U)
     (N := fun x₀ => (trivializationAt E (TangentSpace I) x₀).baseSet)
@@ -378,6 +377,6 @@ theorem restrictOpen
   simp only [Set.restrict_apply, mfderiv_subtype_val_apply]
   rfl
 
-end Tensor0SFamilyContinuousOnSet
+end tensor0SFamilyContinuousOnSet
 
 end DifferentialGeometry.Geometry.Curvature

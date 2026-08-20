@@ -32,7 +32,7 @@ private theorem tensor_eval_cont
     {A : (t : Real) → (x : M) →
       Tensor0SBundle.Tensor0SSpace
         (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x}
-    (hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
+    (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun s : Real ↦ A s x (vec2 v w)) K := by
   rw [continuousOn_iff_continuous_restrict]

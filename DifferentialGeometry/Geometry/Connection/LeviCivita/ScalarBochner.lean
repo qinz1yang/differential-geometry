@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.ScalarBochner
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Realized
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature
@@ -105,12 +105,12 @@ theorem fundamental_bochner_of_leviCivita_terms
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (Hess nablaDu : (x : M) ->
@@ -182,12 +182,12 @@ theorem fundamental_bochner_of_leviCivita_terms_of_normSecond_realizes
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (Hess nablaDu : (x : M) ->
@@ -269,12 +269,12 @@ theorem lc_bochner_dlap
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (roughDu : (x : M) ->
@@ -360,12 +360,12 @@ theorem lc_bochner_norm
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (roughDu : (x : M) ->
@@ -460,12 +460,12 @@ theorem lc_bochner_rm04
     (Rm04 : Tensor04Section (I := I) (M := M))
     (gInvFrame : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRm13 : Rm13RealizesConnection (I := I)
+    (hRm13 : rm13RealizesConnection (I := I)
       (leviCivitaConnectionOfMetric (I := I) g) Rm13)
-    (hRm04 : Rm04RealizesConnection (I := I) g
+    (hRm04 : rm04RealizesConnection (I := I) g
       (leviCivitaConnectionOfMetric (I := I) g) Rm04)
-    (hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hRic04 : RicciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
+    (hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic04 : ricciTensorRealizesRm04TraceInFrame (I := I) Ric Rm04 gInvFrame frame)
     (u : M -> Real)
     (hu : ContMDiff I 𝓘(Real, Real) ∞ u)
     (roughDu : (x : M) ->

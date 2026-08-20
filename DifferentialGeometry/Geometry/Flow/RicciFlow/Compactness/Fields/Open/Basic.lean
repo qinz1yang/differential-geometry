@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Convergence
 
 import DifferentialGeometry.Geometry.Metric.Convergence.DiagonalCompactness
-import DifferentialGeometry.Geometry.Curvature.Realized.TimeInterval
+import DifferentialGeometry.Analysis.TimeInterval
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

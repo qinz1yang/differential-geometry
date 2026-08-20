@@ -47,7 +47,7 @@ theorem rm04SymmOfSol
     Rm04Symm (rmComp (I := I) S x₀ (t : Real) x) := by
   have hRm13 :
       ∀ τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-        DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+        DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
           (S.family.connection (τ : Real)) (S.base.rm13 (τ : Real)) :=
     fun τ => rm13OfSol (I := I) S (τ : Real)
   have hLower :
@@ -93,7 +93,7 @@ theorem rmSecondAt
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
     DifferentialGeometry.Geometry.Curvature.SecondBianchiAt (I := I)
       (nablaRm04Field (I := I) S t x) := by
-  have h := DifferentialGeometry.Geometry.Connection.canRmSecond
+  have h := DifferentialGeometry.Geometry.Connection.levi_civita_second_bianchi
     (I := I) (M := M) (S.family.metric t) (x := x)
   simpa [nablaRm04Field, SolutionOn.family, SolutionFamily.connection,
     SolutionFamily.rm04, metricCov, metricRm04,
@@ -298,7 +298,7 @@ theorem rm2SymmAt
               (Fin.cons A (DifferentialGeometry.Geometry.Curvature.vec5 (I := I) B X Y Z W)) =
             nabla2Rm04Field (I := I) S t x
               (Fin.cons A (DifferentialGeometry.Geometry.Curvature.vec5 (I := I) B Z W X Y)) := by
-  have h := DifferentialGeometry.Geometry.Connection.canRm2Symm
+  have h := DifferentialGeometry.Geometry.Connection.levi_civita_second_covariant_riemann_symmetries
     (I := I) (M := M) (S.family.metric t) (x := x)
   simpa [nabla2Rm04Field, nablaRm04Field, SolutionOn.family, SolutionFamily.connection,
     SolutionFamily.rm04, metricCov, metricRm04,
@@ -375,7 +375,7 @@ theorem n2RicTr
       (basis i : TangentSpace I x₀) = coordinateFrameAt (I := I) x₀ i x₀ := by
     intro i
     simp [basis, IsLocalFrameOn.toBasisAt_coe]
-  have h := DifferentialGeometry.Geometry.Connection.canNabla2RicTrace
+  have h := DifferentialGeometry.Geometry.Connection.levi_civita_second_covariant_ricci_eq_riemann_trace
     (I := I) (M := M) (S.family.metric t) basis gInvAt hinv
     (coordinateFrameAt (I := I) x₀ a x₀) (coordinateFrameAt (I := I) x₀ b x₀)
     (coordinateFrameAt (I := I) x₀ c x₀) (coordinateFrameAt (I := I) x₀ d x₀)

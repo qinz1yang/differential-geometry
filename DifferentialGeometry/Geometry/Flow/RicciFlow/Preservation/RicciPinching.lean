@@ -175,7 +175,7 @@ theorem pinchSecFamilyContinuousOnSet
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (delta : Real) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
       (fun t x => (pinchSec (I := I) S delta) t x) := by
   have hcoef :
       Continuous (fun q : {t : Real // t ∈ D.carrier} × M =>
@@ -188,39 +188,39 @@ theorem pinchSecFamilyContinuousOnSet
           ScalarSTContOn (I := I) (M := M) S)
     exact continuous_const.mul hscalarSub
   have hmetric :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x => metricTensorField (I := I) (S.base.metric t) x) := by
     simpa [SolutionOn.family] using hS.smoothMetric.metricTensor_cont
   have hscaled :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x =>
           (delta * S.scalar t x) •
             metricTensorField (I := I) (S.base.metric t) x) :=
-    Tensor0SFamilyContinuousOnSet.smul (I := I) (M := M)
+    tensor0SFamilyContinuousOnSet.smul (I := I) (M := M)
       (s := 2) (K := D.carrier)
       (f := fun t x => delta * S.scalar t x)
       (A := fun t x => metricTensorField (I := I) (S.base.metric t) x)
       hcoef hmetric
   have hneg :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x =>
           (-1 : Real) •
             ((delta * S.scalar t x) •
               metricTensorField (I := I) (S.base.metric t) x)) :=
-    Tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
+    tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
       (s := 2) (K := D.carrier)
       (A := fun t x =>
         (delta * S.scalar t x) •
           metricTensorField (I := I) (S.base.metric t) x)
       (-1 : Real) hscaled
   have hsum :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x =>
           S.ricci t x +
             (-1 : Real) •
               ((delta * S.scalar t x) •
                 metricTensorField (I := I) (S.base.metric t) x)) :=
-    Tensor0SFamilyContinuousOnSet.add (I := I) (M := M)
+    tensor0SFamilyContinuousOnSet.add (I := I) (M := M)
       (s := 2) (K := D.carrier)
       (A := fun t x => S.ricci t x)
       (B := fun t x =>
@@ -235,7 +235,7 @@ theorem pinchLipFamilyContinuousOnSet
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
       (fun t x => (pinchLipSec (I := I) S) t x) := by
   have hscalarSub :
       Continuous (fun q : {t : Real // t ∈ D.carrier} × M =>
@@ -244,42 +244,42 @@ theorem pinchLipFamilyContinuousOnSet
       ({ scalar_continuousOn := hS.scalarCont } :
         ScalarSTContOn (I := I) (M := M) S)
   have hmetric :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x => metricTensorField (I := I) (S.base.metric t) x) := by
     simpa [SolutionOn.family] using hS.smoothMetric.metricTensor_cont
   have hscaled :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x =>
           S.scalar t x • metricTensorField (I := I) (S.base.metric t) x) :=
-    Tensor0SFamilyContinuousOnSet.smul (I := I) (M := M)
+    tensor0SFamilyContinuousOnSet.smul (I := I) (M := M)
       (s := 2) (K := D.carrier)
       (f := fun t x => S.scalar t x)
       (A := fun t x => metricTensorField (I := I) (S.base.metric t) x)
       hscalarSub hmetric
   have hneg :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x =>
           (-1 : Real) •
             (S.scalar t x • metricTensorField (I := I) (S.base.metric t) x)) :=
-    Tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
+    tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
       (s := 2) (K := D.carrier)
       (A := fun t x =>
         S.scalar t x • metricTensorField (I := I) (S.base.metric t) x)
       (-1 : Real) hscaled
   have hric3 :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x => (3 : Real) • S.ricci t x) :=
-    Tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
+    tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
       (s := 2) (K := D.carrier)
       (A := fun t x => S.ricci t x) (3 : Real) hS.ricciCont
   have hsum :
-      Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+      tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
         (fun t x =>
           (3 : Real) • S.ricci t x +
             (-1 : Real) •
               (S.scalar t x •
                 metricTensorField (I := I) (S.base.metric t) x)) :=
-    Tensor0SFamilyContinuousOnSet.add (I := I) (M := M)
+    tensor0SFamilyContinuousOnSet.add (I := I) (M := M)
       (s := 2) (K := D.carrier)
       (A := fun t x => (3 : Real) • S.ricci t x)
       (B := fun t x =>
@@ -298,8 +298,8 @@ theorem pinchLip_tangentBundle_cont
       TotalSpace.mk' (Tensor0SModel 2 Real E)
         (E := fun x : M => Tensor0SSpace 2 I x) q.2.proj
         ((pinchLipSec (I := I) S) q.1.1 q.2.proj)) := by
-  exact Tensor0SFamilyContinuousOnSet.tangentBundle (I := I) (M := M)
-    (Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
+  exact tensor0SFamilyContinuousOnSet.tangentBundle (I := I) (M := M)
+    (tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
       (pinchLipFamilyContinuousOnSet (I := I) S hS) hK)
 
 theorem pinchLip_bound_Icc
@@ -358,8 +358,8 @@ theorem pinchSec_tangentBundle_cont
       TotalSpace.mk' (Tensor0SModel 2 Real E)
         (E := fun x : M => Tensor0SSpace 2 I x) q.2.proj
         ((pinchSec (I := I) S delta) q.1.1 q.2.proj)) := by
-  exact Tensor0SFamilyContinuousOnSet.tangentBundle (I := I) (M := M)
-    (Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
+  exact tensor0SFamilyContinuousOnSet.tangentBundle (I := I) (M := M)
+    (tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
       (pinchSecFamilyContinuousOnSet (I := I) S hS delta) hK)
 
 theorem pinchSec_tensorQuadCont
@@ -378,7 +378,7 @@ theorem tensorEval_contOn
     {K : Set Real}
     {A : (t : Real) -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x}
-    (hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
+    (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun t : Real => A t x (vec2 (I := I) v w)) K := by
   rw [continuousOn_iff_continuous_restrict]
@@ -426,7 +426,7 @@ theorem pinchEval_contOn
       (Set.Icc 0 T) := by
   have hcont :=
     tensorEval_contOn (I := I) (M := M)
-      (Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
+      (tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
         (pinchSecFamilyContinuousOnSet (I := I) S hS delta) hTsub)
       x v w
   simpa [twoTensorSecToFamily] using hcont
@@ -508,14 +508,14 @@ theorem pinchMetricGain
               (E := fun x : M => Tensor0SSpace 2 I x) q.2.proj
               (A q.1.1 q.2.proj)) := by
         have hAset :
-            Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+            tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
               (Set.Icc t0 (t0 + deltaRaw)) A :=
-          Tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
+          tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
             (s := 2) (K := Set.Icc t0 (t0 + deltaRaw))
             (A := fun t x => S.ricci t x) (-2 : Real)
-            (Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
+            (tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
               hS.ricciCont hcarrier)
-        exact Tensor0SFamilyContinuousOnSet.tangentBundle
+        exact tensor0SFamilyContinuousOnSet.tangentBundle
           (I := I) (M := M) hAset
       exact ⟨deltaRaw, hdeltaRaw, hdeltaRawT, hcarrier, hregular,
         hAeval, hGcont, hAcont⟩)

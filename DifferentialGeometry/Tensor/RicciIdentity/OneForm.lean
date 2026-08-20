@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.RoughLaplacian
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureTensor
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Tensor.RicciIdentity.MixedComponents
 import DifferentialGeometry.Tensor.Auxiliary.SlotAlgebra
 import DifferentialGeometry.Tensor.RSTensor.CurvatureAction

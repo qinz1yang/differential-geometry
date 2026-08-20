@@ -963,13 +963,13 @@ private theorem ricciUpperBoundSecFamilyContinuousOnSet
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 (Set.Icc 0 T)
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 (Set.Icc 0 T)
       (fun t x => (ricciUpperBoundSec S) t x) := by
   have hP := pinchSecFamilyContinuousOnSet (I := I) (M := M) S hS (1 / 2)
-  have hneg := Tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
+  have hneg := tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M)
     (s := 2) (K := D.carrier)
     (A := fun t x => (pinchSec (I := I) S (1 / 2)) t x) (-1 : Real) hP
-  have hmono := Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M) hneg hTsub
+  have hmono := tensor0SFamilyContinuousOnSet.mono (I := I) (M := M) hneg hTsub
   simpa [ricciUpperBoundSec] using hmono
 
 private theorem ricciUpperBoundSec_tangentBundle_cont
@@ -983,8 +983,8 @@ private theorem ricciUpperBoundSec_tangentBundle_cont
       TotalSpace.mk' (Tensor0SModel 2 Real E)
         (E := fun x : M => Tensor0SSpace 2 I x) q.2.proj
         ((ricciUpperBoundSec S) q.1.1 q.2.proj)) := by
-  exact Tensor0SFamilyContinuousOnSet.tangentBundle (I := I) (M := M)
-    (Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
+  exact tensor0SFamilyContinuousOnSet.tangentBundle (I := I) (M := M)
+    (tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
       (ricciUpperBoundSecFamilyContinuousOnSet (I := I) S hS hTsub) hK)
 
 private theorem ricciUpperBoundBarrierReg

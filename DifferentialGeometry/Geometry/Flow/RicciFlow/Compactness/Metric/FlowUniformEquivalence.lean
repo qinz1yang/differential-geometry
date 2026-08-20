@@ -57,7 +57,7 @@ theorem ricci_directional_quotient_interval_integrable_of_solution
       (Set.uIcc t0 t) := by
     rw [continuousOn_iff_continuous_restrict]
     have hev :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.eval_continuous
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.eval_continuous
       (hA := hS.ricciCont) (P := {s : Real // s ∈ Set.uIcc t0 t})
       (τ := Subtype.val) (b := fun _ => x) continuous_subtype_val
       (fun p => hsub p.2) continuous_const (v := fun _ _ => v) (fun _ => continuous_const)
@@ -71,7 +71,7 @@ theorem ricci_directional_quotient_interval_integrable_of_solution
   have hden : ContinuousOn (fun s : Real => (S.family.metric s).inner x v v) (Set.uIcc t0 t) := by
     rw [continuousOn_iff_continuous_restrict]
     have hev :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.eval_continuous
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.eval_continuous
       (hA := DifferentialGeometry.Geometry.Curvature.metricTensor_cont_of_metricFamilySmoothOn
         S.family.metric hS.smoothMetric)
       (P := {s : Real // s ∈ Set.uIcc t0 t})

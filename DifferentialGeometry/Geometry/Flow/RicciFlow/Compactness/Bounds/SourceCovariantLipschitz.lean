@@ -136,7 +136,7 @@ theorem srcCovLip_of_flow
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
     (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
-    (D : Nat → DifferentialGeometry.Integral.Connection.RealTimeInterval)
+    (D : Nat → DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
     (S : (k : Nat) →
       letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
         sourceDomTop (I := I) Φ k

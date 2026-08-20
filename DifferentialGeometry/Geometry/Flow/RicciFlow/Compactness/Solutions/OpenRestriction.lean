@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullb
 
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
 import DifferentialGeometry.Geometry.Curvature.RestrictOpenRm04
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
@@ -168,7 +168,7 @@ theorem metricRm04_restrictOpen_eval
   exact metricRm04StdAt_restrictOpen (I := I) g U x (slots 0) (slots 1) (slots 2) (slots 3)
 
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 def solutionOn_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (U : TopologicalSpace.Opens M)
@@ -310,8 +310,8 @@ theorem metricFamilySmoothOn_restrictOpen
   coeff x X Y := hS.smoothMetric.coeff (x : M) X Y
   coeff_cont x X Y := hS.smoothMetric.coeff_cont (x : M) X Y
   metricTensor_cont := by
-    apply Tensor0SFamilyContinuousOnSet.congr
-      (Tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
+    apply tensor0SFamilyContinuousOnSet.congr
+      (tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
         (fun t x => Tensor0SBundle.metricTensorField (I := I) (S.family.metric t) x)
         hS.smoothMetric.metricTensor_cont U)
     intro t _ht x
@@ -395,10 +395,10 @@ theorem ricciCont_restrictOpen
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := U) 2 D.carrier
+    tensor0SFamilyContinuousOnSet (I := I) (M := U) 2 D.carrier
       (fun t x => (solutionOn_restrictOpen (I := I) S U).ricci t x) := by
-  apply Tensor0SFamilyContinuousOnSet.congr
-    (Tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
+  apply tensor0SFamilyContinuousOnSet.congr
+    (tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
       (fun t x => S.ricci t x) hS.ricciCont U)
   intro t _ht x
   ext slots
@@ -412,10 +412,10 @@ theorem rm04Cont_restrictOpen
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := U) 4 D.carrier
+    tensor0SFamilyContinuousOnSet (I := I) (M := U) 4 D.carrier
       (fun t x => (solutionOn_restrictOpen (I := I) S U).base.rm04 t x) := by
-  apply Tensor0SFamilyContinuousOnSet.congr
-    (Tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
+  apply tensor0SFamilyContinuousOnSet.congr
+    (tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
       (fun t x => S.base.rm04 t x) hS.rm04Cont U)
   intro t _ht x
   ext slots

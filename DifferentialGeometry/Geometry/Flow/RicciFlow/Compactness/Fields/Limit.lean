@@ -992,9 +992,9 @@ theorem flowLimit_of_reg
       (_hscalarTime : ∀ t ∈ X.D.carrier, ∀ x : mc.limit.M,
         DifferentiableWithinAt Real
           (fun s : Real ↦ metricScalarAt (I := I) (co.gInf s) x) X.D.carrier t)
-      (_hricciCont : Tensor0SFamilyContinuousOnSet (I := I) (M := mc.limit.M) 2
+      (_hricciCont : tensor0SFamilyContinuousOnSet (I := I) (M := mc.limit.M) 2
         X.D.carrier (fun t x ↦ metricRicciAt (I := I) (co.gInf t) x))
-      (_hrm04Cont : Tensor0SFamilyContinuousOnSet (I := I) (M := mc.limit.M) 4
+      (_hrm04Cont : tensor0SFamilyContinuousOnSet (I := I) (M := mc.limit.M) 4
         X.D.carrier (fun t x ↦ metricRm04At (I := I) (co.gInf t) x)),
       CompactnessConclusion (I := I) X := by
   dsimp only

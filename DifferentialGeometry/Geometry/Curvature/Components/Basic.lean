@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureTensor
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Tensor.RicciIdentity.OneForm
 import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Realization
 import DifferentialGeometry.Tensor.RicciIdentity.Tensor0S.Formula

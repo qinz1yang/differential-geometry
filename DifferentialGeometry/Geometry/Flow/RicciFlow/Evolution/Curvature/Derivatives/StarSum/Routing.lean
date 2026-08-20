@@ -24,7 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-variable {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
 private theorem fin_bijective_of_leftInverse {m n : ℕ} (f : Fin m → Fin n) (g : Fin n → Fin m)
     (h : Function.LeftInverse g f) (hcard : m = n) : Function.Bijective f := by

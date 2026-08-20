@@ -516,7 +516,7 @@ theorem ricciLichnerowiczSpecializesInFrame_lc
         (gInv (t : Real) x)
         (hframe.toBasisAt (hcover x)))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -607,7 +607,7 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
         (gInv (t : Real) x)
         (hframe.toBasisAt (hcover x)))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -655,10 +655,10 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
         (coordinateFrameSet (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)

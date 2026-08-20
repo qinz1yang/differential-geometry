@@ -478,7 +478,7 @@ private theorem ricciComp_coordCont
         (continuous_snd.comp continuous_subtype_val) (fun q => q.2.2)
     have hA := hS.ricciRegular.ricciTensorFamilyContinuousOnSet
     have heval :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.eval_continuous
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.eval_continuous
       (I := I) (M := M) (s := 2) (K := K)
       (A := fun t x => S.ricci t x) hA
       (P := P)

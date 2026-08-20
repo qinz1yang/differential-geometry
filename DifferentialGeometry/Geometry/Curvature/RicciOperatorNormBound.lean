@@ -179,7 +179,7 @@ theorem metricRicciComp_le
       (I := I) g (metricCov (I := I) (M := M) g)
       (metricRm13 (I := I) (M := M) g)
       (metricRm04 (I := I) (M := M) g)
-      D.h_rm13 D.h_rm04 x
+      D.rm13Realizes D.rm04Realizes x
   have htrace : ∀ a b,
       metricRicciAt (I := I) (M := M) g x
           (vec2 (I := I) (basis a) (basis b)) =
@@ -192,7 +192,7 @@ theorem metricRicciComp_le
         (metricRicci (I := I) (M := M) g)
         (metricRm13 (I := I) (M := M) g)
         (metricRm04 (I := I) (M := M) g)
-        D.h_ricci13 hLower hON a b)
+        D.ricciRealizes hLower hON a b)
   exact ricciComp_le_rmNorm (I := I) g basis hinv
     (metricRicciAt (I := I) (M := M) g x)
     (metricRm04At (I := I) (M := M) g x) htrace i j
@@ -306,7 +306,7 @@ theorem exists_ricci_bound
       (I := I) g (metricCov (I := I) (M := M) g)
       (metricRm13 (I := I) (M := M) g)
       (metricRm04 (I := I) (M := M) g)
-      D.h_rm13 D.h_rm04 x
+      D.rm13Realizes D.rm04Realizes x
   have htrace : ∀ i j,
       metricRicciAt (I := I) (M := M) g x
           (vec2 (I := I) (basis i) (basis j)) =
@@ -319,7 +319,7 @@ theorem exists_ricci_bound
         (metricRicci (I := I) (M := M) g)
         (metricRm13 (I := I) (M := M) g)
         (metricRm04 (I := I) (M := M) g)
-        D.h_ricci13 hLower hON i j)
+        D.ricciRealizes hLower hON i j)
   have hunit : ∀ u : TangentSpace I x, g.inner x u u = 1 →
       |metricRicciAt (I := I) (M := M) g x (vec2 (I := I) u u)| ≤ C := by
     intro u hu

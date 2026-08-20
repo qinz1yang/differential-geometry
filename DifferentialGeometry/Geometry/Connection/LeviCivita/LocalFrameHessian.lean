@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.LeviCivita
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Realized
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -62,7 +62,7 @@ theorem scalHessFrameSymm
     scalHessFrame (I := I) (M := M) g F hx gInv i j =
       scalHessFrame (I := I) (M := M) g F hx gInv j i := by
   simpa [scalHessFrame] using
-    DifferentialGeometry.Geometry.Connection.canScalHess (I := I) (M := M) (g := g)
+    DifferentialGeometry.Geometry.Connection.scalar_curvature_hessian_trace_symmetric (I := I) (M := M) (g := g)
       (basis := F.basisAt hx) gInv hinv i j
 
 def frameInvMetric

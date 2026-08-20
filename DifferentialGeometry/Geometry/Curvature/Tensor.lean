@@ -230,12 +230,12 @@ def rm13Comp
     (x : M) (a b c d : Idx) : Real :=
   Rm13 x (dualToCotangent_gen (hframe.coeff a x)) (vec3 (frame b x) (frame c x) (frame d x))
 
-structure CurvatureTensorData where
+structure CurvatureSections where
   rm13 : Tensor13Section (I := I) (M := M)
   rm04 : Tensor04Section (I := I) (M := M)
   ricci : Tensor02Section (I := I) (M := M)
   scalar : M -> Real
-  scalar_smooth : ContMDiff I 𝓘(Real) ∞ scalar
+  scalarSmooth : ContMDiff I 𝓘(Real) ∞ scalar
 
 @[simp]
 theorem rm04_comp_eq_eval

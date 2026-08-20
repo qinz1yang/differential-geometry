@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.Curvature
+import DifferentialGeometry.Geometry.Curvature.Sections.Trace
 import DifferentialGeometry.Tensor.RSTensor.MetricCompatibility
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab

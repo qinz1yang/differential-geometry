@@ -37,7 +37,7 @@ theorem canonical_curvature_norm_sq_bounded_of_realization
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
     (Rm04 : Real -> Tensor04Section (I := I) (M := M))
     (hRm : ∀ t ∈ Set.Ico alpha omega,
-      Rm04RealizesConnection (I := I) (S.base.metric t)
+      rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t))
     (hbound : exists K : Real, forall t : Real, forall x : M,
       alpha <= t -> t < omega ->
@@ -48,10 +48,10 @@ theorem canonical_curvature_norm_sq_bounded_of_realization
   obtain ⟨K, hK⟩ := hbound
   refine ⟨K, fun t x htAlpha htOmega => ?_⟩
   have hcan :
-      Rm04RealizesConnection (I := I) (S.base.metric t)
+      rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (S.base.rm04 t) := by
     simpa [SolutionFamily.rm04, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm04
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have heq := rm04_eq_of_realizes (I := I) (S.base.metric t)
     (metricCov (I := I) (M := M) (S.base.metric t)) hcan
     (hRm t ⟨htAlpha, htOmega⟩) x

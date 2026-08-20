@@ -7,8 +7,7 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Pointwise
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerTensor
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureTensor
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureProducers
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.Connection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricCoord
@@ -393,11 +392,11 @@ structure IsSolutionOn
     ∀ {K : Set Real} {t : Real}, t ∈ K -> K ⊆ D.carrier -> ∀ x : M,
       DifferentiableWithinAt Real (fun s : Real => S.scalar s x) K t
   ricciCont :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       D.carrier
       (fun t x => S.ricci t x)
   rm04Cont :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
       D.carrier
       (fun t x => S.base.rm04 t x)
   ricciNormSpace :
@@ -417,12 +416,10 @@ theorem leviCivita
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) :
     DifferentialGeometry.Geometry.Connection.IsLeviCivitaFamilyOn (I := I) S.family := by
-  constructor
-  · intro t
-    exact S.metricCompatible t
-  · intro t
-    exact DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isTorsionFree
-      (I := I) (S.base.metric (t : Real))
+  intro t
+  exact ⟨S.metricCompatible t,
+    DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isTorsionFree
+      (I := I) (S.base.metric (t : Real))⟩
 
 end SolutionOn
 
@@ -521,11 +518,11 @@ structure CanonicalRicciRegularOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) : Prop where
   ricci_cont :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       D.carrier
       (fun t x => S.ricci t x)
   rm04_cont :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
       D.carrier
       (fun t x => S.base.rm04 t x)
   ricci_norm_space :
@@ -545,7 +542,7 @@ theorem ricciTensorFamilyContinuousOnSet
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hreg : CanonicalRicciRegularOn (I := I) (M := M) S) :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       D.carrier
       (fun t x => S.ricci t x) :=
   hreg.ricci_cont
@@ -555,7 +552,7 @@ theorem rm04FamilyContinuousOnSet
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hreg : CanonicalRicciRegularOn (I := I) (M := M) S) :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 4
       D.carrier
       (fun t x => S.base.rm04 t x) :=
   hreg.rm04_cont
@@ -620,7 +617,7 @@ theorem isSolutionOn_timeShift
       have htime : Continuous (fun s : Real => s + τ) :=
         (continuous_id.add continuous_const)
       have hcont :=
-        DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.comp_time (I := I)
+        DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.comp_time (I := I)
           (M := M)
           hS.smoothMetric.metricTensor_cont htime hmaps
       simpa [SolutionOn.family, SolutionOn.timeShift, SolutionFamily.timeShift]
@@ -714,7 +711,7 @@ theorem isSolutionOn_timeShift
     have htime : Continuous (fun s : Real => s + τ) :=
       continuous_id.add continuous_const
     have hcont :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.comp_time (I := I)
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.comp_time (I := I)
         (M := M)
         hS.ricciCont htime hmaps
     simpa [SolutionOn.ricci, SolutionOn.timeShift, SolutionFamily.timeShift] using hcont
@@ -726,7 +723,7 @@ theorem isSolutionOn_timeShift
     have htime : Continuous (fun s : Real => s + τ) :=
       continuous_id.add continuous_const
     have hcont :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.comp_time (I := I)
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.comp_time (I := I)
         (M := M)
         hS.rm04Cont htime hmaps
     simpa [SolutionOn.timeShift, SolutionFamily.timeShift] using hcont

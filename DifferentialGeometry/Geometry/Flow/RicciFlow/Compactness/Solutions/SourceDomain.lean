@@ -32,7 +32,7 @@ noncomputable def sourceFlowOf
       letI : TopologicalSpace (X.term (subseq k)).M :=
         (X.term (subseq k)).topology
       IsSigmaCompact (Φ.target k))
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S :
       letI : TopologicalSpace (X.term (subseq k)).M :=
         (X.term (subseq k)).topology
@@ -188,7 +188,7 @@ theorem isSoln_sourceFlowOf
       letI : TopologicalSpace (X.term (subseq k)).M :=
         (X.term (subseq k)).topology
       IsSigmaCompact (Φ.target k))
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S :
       letI : TopologicalSpace (X.term (subseq k)).M :=
         (X.term (subseq k)).topology

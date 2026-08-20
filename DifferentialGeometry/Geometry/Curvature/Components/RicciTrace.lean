@@ -89,7 +89,7 @@ theorem ricciComp_eq_rm04_trace_of_rm13_section
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x))
     (i j : Idx) :
     ricciCompAt (I := I) basis (Ric x) i j =
@@ -104,7 +104,7 @@ theorem ricci_diag_eq_sum_rm04_diag_of_orthonormal
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x))
     (hON : forall i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0)
     (i j : Idx) :
@@ -125,7 +125,7 @@ theorem ricciCompAt_eq_contractTrace_of_realizes
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
-    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (i j : Idx) :
     ricciCompAt (I := I) basis (Ric x) i j =
       componentRS_gen (I := I) basis
@@ -213,7 +213,7 @@ theorem ricciFirstTraceAt_of_rm13_section
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
+    (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x)) :
     RicciRealizesRm04FirstTraceAt (I := I) (Ric x) (Rm04 x) gInv basis := by
   exact ricciFirstTraceAt_of_rm13 (I := I) g basis gInv hinv

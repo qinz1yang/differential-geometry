@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.LowerOrder
 import DifferentialGeometry.Analysis.Schauder.ParabolicChart
 import DifferentialGeometry.Analysis.Schauder.Scaling
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
-import DifferentialGeometry.Geometry.Curvature.Realized.Operators
+import DifferentialGeometry.Geometry.Operator.MetricFamily
 
 noncomputable section
 

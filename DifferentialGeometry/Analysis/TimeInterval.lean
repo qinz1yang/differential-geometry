@@ -187,18 +187,6 @@ def timeShift (D : RealTimeInterval) (τ : Real) : RealTimeInterval where
     (D.timeShift τ).initial = D.initial - τ := by
   rfl
 
-@[simp] theorem timeShift_initial_self (D : RealTimeInterval) :
-    (D.timeShift D.initial).initial = 0 := by
-  simp [timeShift]
-
-@[simp] theorem timeShift_initialTime_val (D : RealTimeInterval) (τ : Real) :
-    ((D.timeShift τ).initialTime : Real) = D.initial - τ := by
-  rfl
-
-@[simp] theorem timeShift_initialTime_self_val (D : RealTimeInterval) :
-    ((D.timeShift D.initial).initialTime : Real) = 0 := by
-  simp [timeShift]
-
 def ofEndpoints
     (a b : TimeEndpoint) (lowerClosed upperClosed : Bool)
     (initial : Real)
@@ -525,18 +513,3 @@ def univ (t₀ : Real) : RealTimeInterval where
 end RealTimeInterval
 
 end DifferentialGeometry.Geometry.Curvature
-
-namespace DifferentialGeometry.Integral.Connection
-
-abbrev RealTimeInterval := DifferentialGeometry.Geometry.Curvature.RealTimeInterval
-
-namespace RealTimeInterval
-
-abbrev FlowTime (D : RealTimeInterval) :=
-  DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D
-
-abbrev RegularTime (D : RealTimeInterval) :=
-  DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D
-
-end RealTimeInterval
-end DifferentialGeometry.Integral.Connection

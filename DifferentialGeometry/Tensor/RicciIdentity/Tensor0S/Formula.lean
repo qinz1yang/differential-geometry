@@ -43,7 +43,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
       (TangentSpace I : M → Type _))
     (Vsec : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _))
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13)
     (halpha : alphaSec x = alpha)
     (hnablaAlpha : nablaAlphaSec x = nablaAlpha)
     (hnabla2 : Nabla20SRealizesAt (I := I) s cov alphaSec nablaAlphaSec x
@@ -917,7 +917,7 @@ theorem tensor0S_ricciIdentity_with_torsion
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 1) x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2) x)
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13)
     (halpha : alphaSec x = alpha)
     (hnablaAlpha : nablaAlphaSec x = nablaAlpha)
     (hnabla2 : Nabla20SRealizesAt (I := I) s cov alphaSec nablaAlphaSec x
@@ -969,7 +969,7 @@ theorem tensor0S_ricciIdentity_of_torsionFree
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 1) x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2) x)
-    (hRm13 : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm13 : rm13RealizesConnection (I := I) cov Rm13)
     (halpha : alphaSec x = alpha)
     (hnablaAlpha : nablaAlphaSec x = nablaAlpha)
     (hnabla2 : Nabla20SRealizesAt (I := I) s cov alphaSec nablaAlphaSec x

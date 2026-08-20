@@ -75,7 +75,7 @@ theorem riemann_covariant_variation_of_solution
           (M := M) (coordInv (I := I) S x₀)
           (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))))
     (hRm : ∀ s, s ∈ D.carrier →
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection
         (I := I) (S.family.connection s) (S.base.rm13 s))
     (hcurv : ∀ s, s ∈ D.carrier →
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt

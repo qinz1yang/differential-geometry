@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
 import DifferentialGeometry.Geometry.Coordinates.TangentPartialDiffeomorph
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import DifferentialGeometry.Topology.FiberBundleT2
 open DifferentialGeometry.Geometry.Curvature

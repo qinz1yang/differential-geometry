@@ -1240,7 +1240,7 @@ private theorem uniformRicOne_of
         trace04Field (I := I) (M := M) g₀
           (metricRm04 (I := I) (M := M) g₀) := by
     simpa [metricRicci, metricRm04, metricCov] using
-      (canRicField (I := I) (M := M) g₀)
+      (levi_civita_ricci_section_eq_riemann_trace (I := I) (M := M) g₀)
   rw [riemannianFiberNormSq_iterCovGrad_eq (I := I) g₀ 2 1
       (ccOfField (I := I) g₀ 2
         (metricRicci (I := I) (M := M) g₀)) x,

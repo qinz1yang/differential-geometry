@@ -31,7 +31,7 @@ theorem bbsAllMBounds
     (Rm04 : Real -> Tensor04Section (I := I) (M := M))
     (hRm : forall t : RealTimeInterval.FlowTime
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega),
-      Rm04RealizesConnection (I := I)
+      rm04RealizesConnection (I := I)
         (S.family.metric (t : Real)) (S.family.connection (t : Real)) (Rm04 (t : Real)))
     (hbound : exists K : Real, forall (t : Real) (x : M),
       alpha <= t -> t < omega ->
@@ -43,7 +43,7 @@ theorem bbsAllMBounds
   have hBeta : (alpha + omega) / 2 ∈ Set.Ioo alpha omega := by
     constructor <;> linarith
   have hRmRaw : ∀ t ∈ Set.Ico alpha omega,
-      Rm04RealizesConnection (I := I) (S.base.metric t)
+      rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t) := by
     intro t ht
     have h := hRm ⟨t, ht⟩

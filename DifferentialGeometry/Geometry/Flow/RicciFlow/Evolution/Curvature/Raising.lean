@@ -33,8 +33,8 @@ theorem solution_rm04LowersRm13At
       (metricCov (I := I) (M := M) (S.base.metric t))
       (metricRm13 (I := I) (M := M) (S.base.metric t))
       (metricRm04 (I := I) (M := M) (S.base.metric t))
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm13
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm04
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
       x
   simpa [SolutionFamily.rm13, SolutionFamily.rm04] using h
 

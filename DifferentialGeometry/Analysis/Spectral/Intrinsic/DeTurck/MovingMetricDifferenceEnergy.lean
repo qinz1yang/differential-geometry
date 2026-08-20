@@ -114,7 +114,7 @@ theorem deTurckRHSField_continuousOn
     (g_bg : SmoothRiemannianMetric I M) {T : Real}
     (g : Real → SmoothRiemannianMetric I M)
     (hJ : JointChartGramSmooth (I := I) T g) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 (Set.Icc 0 T)
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 (Set.Icc 0 T)
       (fun t x => deTurckRHSField (I := I) g_bg (g t) x) := by
   classical
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp
@@ -168,7 +168,7 @@ theorem exists_uniform_negativeHalfDeTurckRHS_bound
     have hcomp := (hJ α i j).continuousOn.comp hincl.continuousOn
       (fun q hq => ⟨q.1.2, hq⟩)
     simpa only [Function.comp_apply] using hcomp
-  have hmetric : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+  have hmetric : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       (Set.Icc 0 T)
       (fun t x => metricTensorField (I := I) (g t) x) :=
     metricTensorCont_of_chartGram (I := I) (M := M) g hgram
@@ -179,12 +179,12 @@ theorem exists_uniform_negativeHalfDeTurckRHS_bound
   have hcompact := metricUnitTimeSlab_icc_compact_of_bundle
     (I := I) (M := M) g 0 T (g 0) hquad
   have hRHS := deTurckRHSField_continuousOn (I := I) (M := M) g_bg g hJ
-  have hQ : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+  have hQ : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       (Set.Icc 0 T) (negativeHalfDeTurckRHSField (I := I) (M := M) g_bg g) := by
     simpa only [negativeHalfDeTurckRHSField] using
-      (Tensor0SFamilyContinuousOnSet.const_smul
+      (tensor0SFamilyContinuousOnSet.const_smul
         (I := I) (M := M) (-1 / 2 : Real) hRHS)
-  have htotal := Tensor0SFamilyContinuousOnSet.tangentBundle
+  have htotal := tensor0SFamilyContinuousOnSet.tangentBundle
     (I := I) (M := M) hQ
   have habs := timeSlabAbsQuadCont (I := I) (M := M)
     (G := g) (A := negativeHalfDeTurckRHSField (I := I) (M := M) g_bg g)
@@ -217,12 +217,12 @@ theorem normSq0S_family_continuousOn
           chartGramMatrix (I := I) (g q.1.1) x₀ q.2 i j)
         {q : {t : Real // t ∈ K} × M |
           q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet})
-    (hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A) :
+    (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A) :
     Continuous
       (fun q : {t : Real // t ∈ K} × M ↦
         normSq0S (I := I) (g q.1.1) q.2 s (A q.1.1 q.2)) := by
   classical
-  unfold Tensor0SFamilyContinuousOnSet at hA
+  unfold tensor0SFamilyContinuousOnSet at hA
   rw [continuous_iff_continuousAt] at hA ⊢
   intro q₀
   let e := trivializationAt E (TangentSpace I : M → Type _) q₀.2
@@ -980,10 +980,10 @@ theorem movingMetricDifferenceEnergy_continuousOn
   have hmetric₀ := metricTensorCont_of_chartGram (I := I) (M := M) g₀ h₀'
   have hmetric₁ := metricTensorCont_of_chartGram (I := I) (M := M) g₁ h₁'
   have hdiffRaw := hmetric₁.add
-    (Tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M) (-1) hmetric₀)
-  have hdiff : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+    (tensor0SFamilyContinuousOnSet.const_smul (I := I) (M := M) (-1) hmetric₀)
+  have hdiff : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
       (fun t x ↦ metricDiff02Field (I := I) (g₁ t) (g₀ t) x) := by
-    refine Tensor0SFamilyContinuousOnSet.congr (I := I) (M := M) hdiffRaw ?_
+    refine tensor0SFamilyContinuousOnSet.congr (I := I) (M := M) hdiffRaw ?_
     intro t ht x
     apply Tensor0SSpace.toModel_injective
     refine ContinuousMultilinearMap.ext (fun v => ?_)

@@ -459,7 +459,7 @@ private theorem coordScalarRmTrace_center
     simpa [hbasis_def, hgInv_def] using coordInvReal (I := I) S x₀ (t : Real)
   have hRm13 :
       ∀ τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-        DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+        DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
           (S.family.connection (τ : Real)) (S.base.rm13 (τ : Real)) := by
     intro τ
     exact rm13OfSol (I := I) S (τ : Real)
@@ -473,8 +473,8 @@ private theorem coordScalarRmTrace_center
       DifferentialGeometry.Geometry.Curvature.rm04LowersRm13At_of_realizes
         (I := I) (S.base.metric (τ : Real)) (S.base.connection (τ : Real))
         (S.base.rm13 (τ : Real)) (S.base.rm04 (τ : Real))
-        (metricCurvData (I := I) (M := M) (S.base.metric (τ : Real))).h_rm13
-        (metricCurvData (I := I) (M := M) (S.base.metric (τ : Real))).h_rm04
+        (metricCurvData (I := I) (M := M) (S.base.metric (τ : Real))).rm13Realizes
+        (metricCurvData (I := I) (M := M) (S.base.metric (τ : Real))).rm04Realizes
         y
     simpa [SolutionOn.family, SolutionFamily.connection, SolutionFamily.rm13,
       SolutionFamily.rm04, metricCov] using h

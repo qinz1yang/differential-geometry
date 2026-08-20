@@ -356,10 +356,10 @@ private theorem canRmActionSum
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let R := fun P Q S T : TangentSpace I x =>
     Rm04 x (vec4 (I := I) P Q S T)
-  have hRm13 : Rm13RealizesConnection (I := I) cov Rm13 := by
+  have hRm13 : rm13RealizesConnection (I := I) cov Rm13 := by
     simpa [Rm13] using
       (rm13Section_realizes (I := I) (M := M) (cov := cov) (hcov := hcov))
-  have hRm04 : Rm04RealizesConnection (I := I) g cov Rm04 := by
+  have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
   have hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) :=
@@ -437,15 +437,15 @@ private theorem canRic_basis
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let Ric : Tensor02Section (I := I) (M := M) :=
     CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
-  have hRm13 : Rm13RealizesConnection (I := I) cov Rm13 := by
+  have hRm13 : rm13RealizesConnection (I := I) cov Rm13 := by
     simpa [Rm13] using
       (rm13Section_realizes (I := I) (M := M) (cov := cov) (hcov := hcov))
-  have hRm04 : Rm04RealizesConnection (I := I) g cov Rm04 := by
+  have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
   have hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) :=
     rm04LowersRm13At_of_realizes (I := I) g cov Rm13 Rm04 hRm13 hRm04 x
-  have hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13 := by
+  have hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13 := by
     intro y
     simp [Ric, Rm13,
       (CovariantDerivative.ricciSection_eq_trace
@@ -486,7 +486,7 @@ private theorem canRawLowering
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let Ric : Tensor02Section (I := I) (M := M) :=
     CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
-  have hRm04 : Rm04RealizesConnection (I := I) g cov Rm04 := by
+  have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
   have hIn := rm04InputSkewAt_of_leviCivita_realizes
@@ -640,7 +640,7 @@ theorem canRmHessComm
       5 cov nablaRm04 x
   let N := fun U W X Y Z Q : TangentSpace I x =>
     nabla2Rm04 (Fin.cons U (vec5 (I := I) W X Y Z Q))
-  have hSymm := canRm2Symm (I := I) (M := M) g (x := x)
+  have hSymm := levi_civita_second_covariant_riemann_symmetries (I := I) (M := M) g (x := x)
   have hBianchi := canRmSecond_nabla (I := I) (M := M) g (x := x)
   have hRicci := canRmRicci (I := I) (M := M) g (x := x)
   dsimp [cov, hcov, Rm13, Rm04, nablaRm04, nabla2Rm04] at hSymm hRicci
@@ -755,7 +755,7 @@ theorem canRicHessSum
   have trace_eq (U W X Y : TangentSpace I x) :
       nabla2Ric (vec4 (I := I) U W X Y) =
         ∑ i : Idx, N U W (basis i) X Y (basis i) := by
-    have h := canNabla2RicTrace (I := I) (M := M) g basis
+    have h := levi_civita_second_covariant_ricci_eq_riemann_trace (I := I) (M := M) g basis
       (identityInvMetric (Idx := Idx)) hinv U W X Y
     simpa [cov, hcov, Rm04, Ric, nablaRm04, nabla2Rm04, nablaRic,
       nabla2Ric, N, identityInvMetric, diagonalInvMetric] using h

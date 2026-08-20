@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.LaplacianMinimum
 import DifferentialGeometry.Geometry.Operator.GradientRegularity
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Operator.Operators
 open DifferentialGeometry.Geometry.Curvature
 
@@ -452,19 +452,19 @@ theorem driftTerm_eq_zero_at_spatial_min
   driftTerm_eq_zero_at_spatial_min_of_isInteriorPoint
     (I := I) G t X hmin BoundarylessManifold.isInteriorPoint hf
 
-def LaplacianNonnegativeAtSpatialMinFamily
+def laplacianNonnegativeAtSpatialMinFamily
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Time) : Prop :=
   forall t : Time,
     LaplacianNonnegativeAtSpatialMin (I := I) (G.connection t) (G.metric t)
 
-theorem laplacianNonnegativeAtSpatialMinFamily_of_realizedMetricFamily
+theorem laplacian_nonnegative_at_spatial_min_family
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Time) :
-    LaplacianNonnegativeAtSpatialMinFamily (I := I) G := by
+    laplacianNonnegativeAtSpatialMinFamily (I := I) G := by
   intro t
   exact laplacianNonnegativeAtSpatialMin_of_metricCompatible (I := I)
     (G.connection t) (G.metric t) (G.metricCompatible t)

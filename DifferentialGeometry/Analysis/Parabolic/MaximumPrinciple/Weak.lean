@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.Operators
+import DifferentialGeometry.Geometry.Operator.MetricFamily
 import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv

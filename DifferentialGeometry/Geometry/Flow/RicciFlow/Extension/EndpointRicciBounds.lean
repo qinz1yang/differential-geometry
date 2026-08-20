@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RicciJet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 open DifferentialGeometry.PDE.RicciFlow
@@ -42,7 +42,7 @@ theorem ricciEdgeMetric
       ∀ t ∈ Set.Icc a c, ∀ x : M, ∀ v : TangentSpace I x,
         Λ⁻¹ * (g a).inner x v v ≤ (g t).inner x v v ∧
           (g t).inner x v v ≤ Λ * (g a).inner x v v := by
-  have hG : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+  have hG : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       (Set.Ico a b)
       (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x) := by
     apply metricTensorCont_of_chartGram (K := Set.Ico a b) g
@@ -61,15 +61,15 @@ theorem ricciEdgeMetric
   have hK : Set.Icc a c ⊆ Set.Ico a b := by
     intro t ht
     exact ⟨ht.1, lt_of_le_of_lt ht.2 hcb⟩
-  have hGt : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+  have hGt : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       (Set.Icc a c)
       (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x) := by
-    exact Tensor0SFamilyContinuousOnSet.mono (I := I) (M := M) hG hK
+    exact tensor0SFamilyContinuousOnSet.mono (I := I) (M := M) hG hK
   have haD : a ∈ Set.Ico a b := ⟨le_rfl, hab⟩
-  have hGa : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+  have hGa : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       (Set.Icc a c)
       (fun _ x => Tensor0SBundle.metricTensorField (I := I) (g a) x) := by
-    exact Tensor0SFamilyContinuousOnSet.comp_time (I := I) (M := M)
+    exact tensor0SFamilyContinuousOnSet.comp_time (I := I) (M := M)
       (K := Set.Icc a c) (L := Set.Ico a b) hG
       (continuous_const : Continuous (fun _ : Real => a))
       (fun _ _ => haD)
@@ -87,9 +87,9 @@ theorem ricciEdgeMetric
     (I := I) (M := M) g a c (g a) hquadT
   have hcompactA := metricUnitTimeSlab_icc_compact_of_bundle
     (I := I) (M := M) (fun _ => g a) a c (g a) hquadA
-  have htotalT := Tensor0SFamilyContinuousOnSet.tangentBundle
+  have htotalT := tensor0SFamilyContinuousOnSet.tangentBundle
     (I := I) (M := M) hGt
-  have htotalA := Tensor0SFamilyContinuousOnSet.tangentBundle
+  have htotalA := tensor0SFamilyContinuousOnSet.tangentBundle
     (I := I) (M := M) hGa
   have habsT := timeSlabAbsQuadCont (I := I) (M := M)
     (G := fun _ => g a)

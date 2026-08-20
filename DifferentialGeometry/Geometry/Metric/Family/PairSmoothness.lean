@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamily
+import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Bundle.LocalFrameRegularity
 open DifferentialGeometry.Geometry.Curvature
 

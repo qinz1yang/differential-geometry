@@ -10,7 +10,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Compactne
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Limit
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Certification
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Weak
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureProducers
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
@@ -175,7 +175,7 @@ structure MetricRicciData
     [SigmaCompactSpace M] [T2Space M]
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M)) where
-  K : CurvatureSectionProducerData
+  K : ConnectionCurvatureSections
     (I := I) (M := M)
     (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) (G 0)) (G 0)
   ricci_eq :
@@ -1539,23 +1539,23 @@ theorem traceData_metricTrace
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
       (I := I) (M := M) (S.base.metric t)
   have hRm13 :
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm13 t) := by
     simpa [SolutionFamily.rm13, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm13
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 :
-      DifferentialGeometry.Geometry.Curvature.Rm04RealizesConnection (I := I) (S.base.metric t)
+      DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
     simpa [SolutionFamily.rm04, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm04
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 :
       S.ricci t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
     simpa [SolutionOn.ricci, SolutionFamily.ricci, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).h_ricci13 x
+      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hLowerAt :
       DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) (S.base.metric t) x
         (S.base.rm13 t x) (S.base.rm04 t x) :=

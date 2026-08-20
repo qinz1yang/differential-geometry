@@ -59,7 +59,7 @@ theorem isSoln_timeRestrict
       simpa [SolutionOn.timeRestrict, SolutionOn.family] using
         (hS.smoothMetric.coeff_cont x X Y).mono hcar
     · simpa [SolutionOn.timeRestrict, SolutionOn.family] using
-        DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.mono
+        DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.mono
           (I := I) (M := M) hS.smoothMetric.metricTensor_cont hcar
     · intro Idx _ frame u hframe i j
       simpa [SolutionOn.timeRestrict, SolutionOn.family] using
@@ -88,11 +88,11 @@ theorem isSoln_timeRestrict
       hS.scalarTime ht (fun s hs => hcar (hK hs)) x
   ricciCont := by
     simpa [SolutionOn.timeRestrict, SolutionOn.ricci] using
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.mono
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.mono
         (I := I) (M := M) hS.ricciCont hcar
   rm04Cont := by
     simpa [SolutionOn.timeRestrict] using
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.mono
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.mono
         (I := I) (M := M) hS.rm04Cont hcar
   ricciNormSpace := by
     intro t ht x

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Basi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Equation
 import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
 import DifferentialGeometry.Geometry.Connection.ChartBridge.DiffRiemannBasisIdentityOffCentre
 import DifferentialGeometry.Geometry.Metric.ChartGram
@@ -198,7 +198,7 @@ theorem metricTensorContLim
     (hkcont : ∀ (k : ℕ) (x₀ : M) (i j : Fin (Module.finrank Real E)), ContinuousOn
       (fun p : ℝ × M => chartGramMatrix (I := I) (gSeq k p.1) x₀ p.2 i j)
       (Set.Icc β ψ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
-    DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet
+    DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet
       (I := I) (M := M) 2 (Set.Icc β ψ)
       (fun t x => Tensor0SBundle.metricTensorField (I := I) (gInf t) x) := by
   apply metricTensorCont_of_chartGram (I := I) (K := Set.Icc β ψ) gInf
@@ -400,7 +400,7 @@ theorem metric_cont
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
     letI : IsManifold I ∞ P.M := P.smooth
-    Tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2
+    tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2
       (Set.Icc β ψ)
       (fun t x => Tensor0SBundle.metricTensorField (I := I) (co.gInf t) x) := by
   letI : TopologicalSpace P.M := P.topology
@@ -2226,7 +2226,7 @@ theorem metricSmooth
       (Set.Subset.rfl : Set.Icc β ψ ⊆ Set.Icc β ψ)
   have hgram := ConvOut.gramSmooth_regular (I := I) (Φ := Φ) hcar_le co
   have hcontWindow := ConvOut.metric_cont (I := I) (Φ := Φ) hwin co
-  have hcontTensor : Tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2
+  have hcontTensor : tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2
       X.D.carrier
       (fun t x => metricTensorField (I := I) (co.gInf t) x) := by
     simpa only [hcarrier] using hcontWindow
@@ -2329,7 +2329,7 @@ theorem smoothMetric
       prod_mem_nhds (Ioo_mem_nhds htn.1 htn.2)
         ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hp.2)
     exact (hlocal.contMDiffAt hnhds).contMDiffWithinAt
-  have hcontTensor : Tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2
+  have hcontTensor : tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2
       (Set.Ioo a b) (fun t x => metricTensorField (I := I) (co.gInf t) x) := by
     apply metricTensorCont_of_chartGram (I := I) (K := Set.Ioo a b) co.gInf
     intro x₀ i j

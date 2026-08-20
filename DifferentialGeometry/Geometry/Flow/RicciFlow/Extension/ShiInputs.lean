@@ -54,7 +54,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 private theorem tensor2_eval_contOn {K : Set ℝ}
     {A : (t : ℝ) → (x : M) →
       Tensor0SBundle.Tensor0SSpace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2 x}
-    (hA : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
+    (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun s : ℝ => A s x (vec2 v w)) K := by
   rw [continuousOn_iff_continuous_restrict]
@@ -262,7 +262,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem ric_quad_le_of_realizes
     (g : SmoothRiemannianMetric I M) (x : M)
     (Rm04sec : Tensor04Section (I := I) (M := M))
-    (hreal : Rm04RealizesConnection (I := I) g (metricCov (I := I) (M := M) g) Rm04sec)
+    (hreal : rm04RealizesConnection (I := I) g (metricCov (I := I) (M := M) g) Rm04sec)
     {C : ℝ} (hnorm : Tensor0SBundle.normSq0S (I := I) g x 4 (Rm04sec x) ≤ C)
     (v : TangentSpace I x) :
     |ricciTensor (I := I) g x v v|
@@ -374,7 +374,7 @@ theorem ric_quad_le_of_soln
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     {Rm04 : ℝ → Tensor04Section (I := I) (M := M)}
     (hRm : ∀ t ∈ Set.Ico alpha omega,
-      Rm04RealizesConnection (I := I) (S.base.metric t)
+      rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t))
     {K' : ℝ}
     (hbound : ∀ t : ℝ, ∀ x : M, alpha ≤ t → t < omega →

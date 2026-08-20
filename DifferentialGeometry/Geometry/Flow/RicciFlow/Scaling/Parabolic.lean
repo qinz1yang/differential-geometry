@@ -479,11 +479,11 @@ theorem metricFamilySmooth_para
       unfold paraTime
       exact continuous_const.add (continuous_id.div_const R)
     have hcomp :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.comp_time (I := I)
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.comp_time (I := I)
         (M := M)
         hS.smoothMetric.metricTensor_cont htime hmaps
     have hscale :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.const_smul (I := I)
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.const_smul (I := I)
         (M := M)
         R hcomp
     simpa [SolutionOn.family, paraSolution, paraFamily, metricTensorField_scaleMetric]
@@ -549,14 +549,12 @@ theorem leviCivita_para
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier) :
     DifferentialGeometry.Geometry.Connection.IsLeviCivitaFamilyOn (I := I)
       (paraSolution (I := I) S τ R hR hτ).family := by
-  constructor
-  · intro t
-    exact (paraSolution (I := I) S τ R hR hτ).metricCompatible t
-  · intro t
-    simpa [SolutionOn.family, paraSolution, paraFamily, SolutionFamily.connection,
-      DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.connectionAt]
-      using DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isTorsionFree
-        (I := I) ((paraSolution (I := I) S τ R hR hτ).base.metric (t : Real))
+  intro t
+  refine ⟨(paraSolution (I := I) S τ R hR hτ).metricCompatible t, ?_⟩
+  simpa [SolutionOn.family, paraSolution, paraFamily, SolutionFamily.connection,
+    DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.connectionAt]
+    using DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isTorsionFree
+      (I := I) ((paraSolution (I := I) S τ R hR hτ).base.metric (t : Real))
 
 omit [SigmaCompactSpace M] in
 theorem metricVariation_para
@@ -674,7 +672,7 @@ theorem paraSol
       unfold paraTime
       exact continuous_const.add (continuous_id.div_const R)
     have hcont :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.comp_time (I := I)
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.comp_time (I := I)
         (M := M)
         hS.ricciCont htime hmaps
     simpa [SolutionOn.ricci, paraSolution_ricci (I := I) S τ R hR hτ] using hcont
@@ -688,11 +686,11 @@ theorem paraSol
       unfold paraTime
       exact continuous_const.add (continuous_id.div_const R)
     have hcomp :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.comp_time (I := I)
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.comp_time (I := I)
         (M := M)
         hS.rm04Cont htime hmaps
     have hscale :=
-      DifferentialGeometry.Geometry.Curvature.Tensor0SFamilyContinuousOnSet.const_smul (I := I)
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.const_smul (I := I)
         (M := M)
         R hcomp
     simpa [paraSolution_rm04 (I := I) S τ R hR hτ] using hscale

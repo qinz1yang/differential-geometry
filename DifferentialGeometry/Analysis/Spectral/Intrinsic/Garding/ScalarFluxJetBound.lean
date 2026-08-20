@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenc
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciArmResidualCoefficientFields
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.RealizedGramDiff
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyPair
+import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
 import DifferentialGeometry.Tensor.RSTensor.Metric
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Tensor.RSTensor

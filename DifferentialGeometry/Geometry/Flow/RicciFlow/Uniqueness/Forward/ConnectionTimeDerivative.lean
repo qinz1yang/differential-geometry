@@ -524,7 +524,7 @@ variable {Idx : Type*} {u : Set M}
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem christoffel_symbol_in_frame_eq_solution_metric_connection
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx -> (y : M) -> TangentSpace I y)
     (hframe : IsLocalFrameOn I E 1 frame u)

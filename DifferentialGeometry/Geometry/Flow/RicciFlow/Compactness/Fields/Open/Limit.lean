@@ -117,12 +117,12 @@ theorem isSolution
     simpa only [hD, RealTimeInterval.openInterval] using
       (DifferentialGeometry.PDE.RicciFlow.scalarTime_interior_of_chartGram
         (I := I) co.gInf a b hgram t htOpen x)
-  have hricciCont : Tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2 X.D.carrier
+  have hricciCont : tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 2 X.D.carrier
       (fun t x => metricRicciAt (I := I) (co.gInf t) x) := by
     simpa only [hD, RealTimeInterval.openInterval] using
       (DifferentialGeometry.PDE.RicciFlow.ricciCont_interior_of_chartGram
         (I := I) co.gInf a b hgram)
-  have hrm04Cont : Tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 4 X.D.carrier
+  have hrm04Cont : tensor0SFamilyContinuousOnSet (I := I) (M := P.M) 4 X.D.carrier
       (fun t x => metricRm04At (I := I) (co.gInf t) x) := by
     simpa only [hD, RealTimeInterval.openInterval] using
       (DifferentialGeometry.PDE.RicciFlow.rm04Cont_interior_of_chartGram

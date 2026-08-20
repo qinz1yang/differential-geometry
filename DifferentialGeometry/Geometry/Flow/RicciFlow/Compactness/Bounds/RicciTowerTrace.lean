@@ -132,7 +132,7 @@ theorem ricTower_normSq_le
             (I := I) (M := M) (S.base.metric t)) =
         trace04Field (I := I) (M := M) (S.base.metric t) (S.base.rm04 t) := by
     simpa [SolutionFamily.rm04, metricRm04, metricCov] using
-      (canRicField (I := I) (M := M) (S.base.metric t))
+      (levi_civita_ricci_section_eq_riemann_trace (I := I) (M := M) (S.base.metric t))
   simpa [ricCovTower, hbase, nablaKRm_eq_iterCov] using
     (iterRic_normSq_le (I := I) (S.base.metric t) (S.base.rm04 t) k x)
 

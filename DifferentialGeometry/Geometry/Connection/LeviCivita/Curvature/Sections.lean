@@ -28,7 +28,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 omit [I.Boundaryless] in
 omit [IsManifold I 1 M] in
 omit [SigmaCompactSpace M] in
-theorem canScalTrace
+theorem scalar_curvature_differential_eq_ricci_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -70,7 +70,7 @@ theorem canScalTrace
         (I := I) g)
       Ric basis gInv hinv X
 
-theorem canScalHess
+theorem scalar_curvature_hessian_trace_symmetric
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -319,7 +319,7 @@ private theorem slots5_eq_vec5 {x : M}
   fin_cases q <;> rfl
 
 omit [CompleteSpace E] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem nabla4OutSkew
+theorem covariant_derivative_preserves_output_skew
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -346,7 +346,7 @@ theorem nabla4OutSkew
   simpa [σ, vec4, Equiv.swap_apply_def] using h
 
 omit [CompleteSpace E] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem nabla4InSkew
+theorem covariant_derivative_preserves_input_skew
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -375,7 +375,7 @@ theorem nabla4InSkew
   simpa [σ, vec4, Equiv.swap_apply_def] using h
 
 omit [CompleteSpace E] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem nabla4Pair
+theorem covariant_derivative_preserves_pair_symmetry
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -405,7 +405,7 @@ theorem nabla4Pair
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem canRmSymm
+theorem levi_civita_covariant_riemann_symmetries
     (g : SmoothRiemannianMetric I M)
     {x : M} :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
@@ -436,7 +436,7 @@ theorem canRmSymm
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have hsymm :=
-      nabla4OutSkew (I := I) cov Asec Rm04 x
+      covariant_derivative_preserves_output_skew (I := I) cov Asec Rm04 x
         (fun y =>
           DifferentialGeometry.Geometry.Connection.rm04OutputSkewAt_of_leviCivita_realizes
             (I := I) g Rm04
@@ -473,7 +473,7 @@ theorem canRmSymm
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have hsymm :=
-      nabla4InSkew (I := I) cov Asec Rm04 x
+      covariant_derivative_preserves_input_skew (I := I) cov Asec Rm04 x
         (fun y =>
           DifferentialGeometry.Geometry.Connection.rm04InputSkewAt_of_leviCivita_realizes
             (I := I) g Rm04
@@ -512,7 +512,7 @@ theorem canRmSymm
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have hsymm :=
-      nabla4Pair (I := I) cov Asec Rm04 x
+      covariant_derivative_preserves_pair_symmetry (I := I) cov Asec Rm04 x
         (fun y =>
           DifferentialGeometry.Geometry.Connection.rm04PairSymmAt_of_leviCivita_realizes
             (I := I) g Rm04
@@ -539,7 +539,7 @@ theorem canRmSymm
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem canRmSecond
+theorem levi_civita_second_bianchi
     (g : SmoothRiemannianMetric I M)
     {x : M} :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
@@ -918,7 +918,7 @@ theorem canRmSecond
 
 set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
-theorem canRicField
+theorem levi_civita_ricci_section_eq_riemann_trace
     (g : SmoothRiemannianMetric I M) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
@@ -943,15 +943,15 @@ theorem canRicField
   let Ric : Tensor02Section (I := I) (M := M) :=
     DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection (I := I) (M := M) cov
       hcov
-  have hRic13 : RicciTensorRealizesRm13Trace (I := I) Ric Rm13 := by
+  have hRic13 : ricciTensorRealizesRm13Trace (I := I) Ric Rm13 := by
     intro y
     simp [Ric, Rm13,
       (DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection_eq_trace
         (I := I) (M := M) cov hcov y)]
-  have hRm13 : Rm13RealizesConnection (I := I) cov Rm13 := by
+  have hRm13 : rm13RealizesConnection (I := I) cov Rm13 := by
     simpa [Rm13] using
       (rm13Section_realizes (I := I) (M := M) (cov := cov) (hcov := hcov))
-  have hRm04 : Rm04RealizesConnection (I := I) g cov Rm04 := by
+  have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
   letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
@@ -1010,7 +1010,7 @@ theorem canRicField
         (vec2 (I := I) (basis (slots 0)) (basis (slots 1))) := by
         simp [metricTraceFirstTwo0STensor_apply, metricTraceFirstTwo0SAt]
 
-theorem canRicTrace
+theorem levi_civita_covariant_ricci_eq_riemann_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1052,7 +1052,7 @@ theorem canRicTrace
   intro A B C
   have hRicField : Ric = trace04Field (I := I) (M := M) g Rm04 := by
     simpa [cov, hcov, Rm04, Ric] using
-      (canRicField (I := I) (M := M) g)
+      (levi_civita_ricci_section_eq_riemann_trace (I := I) (M := M) g)
   have htrace :=
     nablaTrace04 (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -1062,7 +1062,7 @@ theorem canRicTrace
     finCons_vec4_eq_vec5] using htrace
 
 set_option backward.isDefEq.respectTransparency false in
-theorem canNabla2RicTrace
+theorem levi_civita_second_covariant_ricci_eq_riemann_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1156,7 +1156,7 @@ theorem canNabla2RicTrace
     rfl
   have hRicField : Ric = trace04Field (I := I) (M := M) g Rm04 := by
     simpa [cov, hcov, Rm04, Ric] using
-      (canRicField (I := I) (M := M) g)
+      (levi_civita_ricci_section_eq_riemann_trace (I := I) (M := M) g)
   have hTraceRic : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov Ric traceNablaRm := by
     rw [hRicField, ← hTraceField]
@@ -1218,7 +1218,7 @@ theorem canNabla2RicTrace
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 set_option backward.isDefEq.respectTransparency false in
-theorem canRm2Symm
+theorem levi_civita_second_covariant_riemann_symmetries
     (g : SmoothRiemannianMetric I M)
     {x : M} :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
@@ -1268,7 +1268,7 @@ theorem canRm2Symm
       intro y slots
       rw [slots5_eq_vec5 (I := I) (fun q : Fin 5 => slots (σ q))]
       rw [slots5_eq_vec5 (I := I) slots]
-      have h := (canRmSymm (I := I) (M := M) g (x := y)).1
+      have h := (levi_civita_covariant_riemann_symmetries (I := I) (M := M) g (x := y)).1
         (slots 0) (slots 1) (slots 2) (slots 3) (slots 4)
       simpa [σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
@@ -1299,7 +1299,7 @@ theorem canRm2Symm
       intro y slots
       rw [slots5_eq_vec5 (I := I) (fun q : Fin 5 => slots (σ q))]
       rw [slots5_eq_vec5 (I := I) slots]
-      have h := (canRmSymm (I := I) (M := M) g (x := y)).2.1
+      have h := (levi_civita_covariant_riemann_symmetries (I := I) (M := M) g (x := y)).2.1
         (slots 0) (slots 2) (slots 1) (slots 3) (slots 4)
       simpa [σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
@@ -1329,7 +1329,7 @@ theorem canRm2Symm
       intro y slots
       rw [slots5_eq_vec5 (I := I) (fun q : Fin 5 => slots (σ q))]
       rw [slots5_eq_vec5 (I := I) slots]
-      have h := (canRmSymm (I := I) (M := M) g (x := y)).2.2
+      have h := (levi_civita_covariant_riemann_symmetries (I := I) (M := M) g (x := y)).2.2
         (slots 0) (slots 1) (slots 2) (slots 3) (slots 4)
       simpa [σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
@@ -1351,7 +1351,7 @@ theorem canRm2Symm
     rw [hleft, hright]
     simpa [σ, vec5, Equiv.ofBijective] using h
 
-theorem canBianchiCore
+theorem levi_civita_bianchi_trace_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1393,16 +1393,16 @@ theorem canBianchiCore
       2 cov Ric x
   have hSecond : SecondBianchiAt (I := I) nablaRm04 := by
     simpa [cov, hcov, Rm04, nablaRm04] using
-      canRmSecond (I := I) (M := M) g (x := x)
+      levi_civita_second_bianchi (I := I) (M := M) g (x := x)
   have hSymm : NablaRmSymmAt (I := I) nablaRm04 := by
     simpa [cov, hcov, Rm04, nablaRm04] using
-      canRmSymm (I := I) (M := M) g (x := x)
+      levi_civita_covariant_riemann_symmetries (I := I) (M := M) g (x := x)
   have hTrace : NablaRicTraceAt (I := I) basis gInv nablaRm04 nablaRic := by
     simpa [cov, hcov, Rm04, Ric, nablaRm04, nablaRic] using
-      canRicTrace (I := I) (M := M) g basis gInv hinv
+      levi_civita_covariant_ricci_eq_riemann_trace (I := I) (M := M) g basis gInv hinv
   exact ⟨hSecond, hSymm, hTrace⟩
 
-theorem canSecondBianchi
+theorem levi_civita_bianchi_scalar_trace_identities
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1454,14 +1454,14 @@ theorem canSecondBianchi
         NablaRmSymmAt (I := I) nablaRm04 ∧
           NablaRicTraceAt (I := I) basis gInv nablaRm04 nablaRic := by
     simpa [cov, hcov, Rm04, Ric, nablaRm04, nablaRic] using
-      canBianchiCore (I := I) (M := M) g basis gInv hinv
+      levi_civita_bianchi_trace_identities (I := I) (M := M) g basis gInv hinv
   have hscalar :
       DScalarTraceAt (I := I) basis gInv nablaRic dScalar := by
     simpa [cov, hcov, Ric, scalar, nablaRic, dScalar] using
-      canScalTrace (I := I) (M := M) g basis gInv hinv
+      scalar_curvature_differential_eq_ricci_trace (I := I) (M := M) g basis gInv hinv
   exact ⟨hcore.1, hcore.2.1, hcore.2.2, hscalar⟩
 
-theorem metricBianchiAt
+theorem exists_levi_civita_bianchi_trace_data
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1503,6 +1503,6 @@ theorem metricBianchiAt
       4 cov Rm04 x
   refine ⟨nablaRm04, ?_⟩
   simpa [cov, hcov, Rm04, Ric, scalar, nablaRm04] using
-    canSecondBianchi (I := I) (M := M) g basis gInv hinv
+    levi_civita_bianchi_scalar_trace_identities (I := I) (M := M) g basis gInv hinv
 
 end DifferentialGeometry.Geometry.Connection

@@ -249,14 +249,14 @@ theorem rmVec_deriv
 
 omit [SigmaCompactSpace M] in
 theorem rmVecComp_deriv
-    {D : DifferentialGeometry.Integral.Connection.RealTimeInterval}
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (g : Real -> SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Rm04 roughLapRm04 B : FourComp M Idx) (ricciOneUp : MatrixComp M Idx)
     (Ric : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (hev : Riemann04BTensorWithRicciDriftEvolutionInFrameOn (D := D)
       Rm04 roughLapRm04 B ricciOneUp)
-    (t : DifferentialGeometry.Integral.Connection.RealTimeInterval.RegularTime D)
+    (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (i j k : Idx)
     (hcont : ContinuousWithinAt
       (fun r : Real =>

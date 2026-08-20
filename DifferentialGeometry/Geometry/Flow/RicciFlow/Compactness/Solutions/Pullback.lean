@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Pullback
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -161,8 +161,8 @@ theorem metricFamilySmoothOn_pullback
     exact hS.smoothMetric.coeff_cont (Φ x)
       (mfderiv I I (Φ : M → N) x X) (mfderiv I I (Φ : M → N) x Y)
   metricTensor_cont := by
-    apply Tensor0SFamilyContinuousOnSet.congr
-      (Tensor0SFamilyContinuousOnSet.pullback (I := I)
+    apply tensor0SFamilyContinuousOnSet.congr
+      (tensor0SFamilyContinuousOnSet.pullback (I := I)
         (fun t x => Tensor0SBundle.metricTensorField (I := I) (S.family.metric t) x)
         hS.smoothMetric.metricTensor_cont Φ)
     intro t _ht x
@@ -367,10 +367,10 @@ theorem ricciCont_pullback
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
       (fun t x => (solutionOn_pullback (I := I) S Φ).ricci t x) := by
-  apply Tensor0SFamilyContinuousOnSet.congr
-    (Tensor0SFamilyContinuousOnSet.pullback (I := I)
+  apply tensor0SFamilyContinuousOnSet.congr
+    (tensor0SFamilyContinuousOnSet.pullback (I := I)
       (fun t x => S.ricci t x) hS.ricciCont Φ)
   intro t _ht x
   ext slots
@@ -419,10 +419,10 @@ theorem rm04Cont_pullback
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
-    Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 D.carrier
+    tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 D.carrier
       (fun t x => (solutionOn_pullback (I := I) S Φ).base.rm04 t x) := by
-  apply Tensor0SFamilyContinuousOnSet.congr
-    (Tensor0SFamilyContinuousOnSet.pullback (I := I)
+  apply tensor0SFamilyContinuousOnSet.congr
+    (tensor0SFamilyContinuousOnSet.pullback (I := I)
       (fun t x => S.base.rm04 t x) hS.rm04Cont Φ)
   intro t _ht x
   ext slots

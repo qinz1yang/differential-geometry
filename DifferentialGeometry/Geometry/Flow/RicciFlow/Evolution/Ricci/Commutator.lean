@@ -213,7 +213,7 @@ theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
         (S.ricci (t : Real) x) (nabla2RicTensor (t : Real) x))
     (hRicTrace13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D,
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
         (S.ricci (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -494,7 +494,7 @@ theorem ricciSecCommLocId
         (S.ricci (t : Real) x) (nabla2RicTensor (t : Real) x))
     (hRicTrace13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D,
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
         (S.ricci (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -937,7 +937,7 @@ theorem RicciContractedCommutatorsInFrame_of_differentiatedBianchi_and_tensor0S_
         (S.ricci (t : Real) x) (nabla2RicTensor (t : Real) x))
     (hRicTrace13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D,
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
         (S.ricci (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -994,10 +994,10 @@ theorem RicciContractedCommutatorsInFrame_of_tensor0S_ricciIdentity_lc
         (S.ricci (t : Real) x) (nabla2RicTensor (t : Real) x))
     (hRicTrace13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D,
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
         (S.ricci (t : Real)) (Rm13 (t : Real)))
     (hRm13 : forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection (t : Real)) (Rm13 (t : Real)))
     (hLower : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),

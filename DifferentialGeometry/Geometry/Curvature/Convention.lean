@@ -90,7 +90,7 @@ theorem rm04RealizesConnection_convention
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (h : Rm04RealizesConnection (I := I) g cov Rm04)
+    (h : rm04RealizesConnection (I := I) g cov Rm04)
     (X Y Z W : SmoothTangentSection (I := I) (M := M)) (x : M) :
     Rm04 x (vec4 (X x) (Y x) (Z x) (W x)) =
       g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov X Y Z) x) :=
@@ -100,7 +100,7 @@ theorem rm04StdRealizesConnection_convention
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M))
-    (h : Rm04RealizesConnection (I := I) g cov Rm04)
+    (h : rm04RealizesConnection (I := I) g cov Rm04)
     (X Y Z W : SmoothTangentSection (I := I) (M := M)) (x : M) :
     DifferentialGeometry.Geometry.Curvature.tensor04StdAt (I := I) (M := M) (Rm04 x)
         (X x) (Y x) (Z x) (W x) =

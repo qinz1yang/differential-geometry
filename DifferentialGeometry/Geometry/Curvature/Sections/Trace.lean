@@ -24,7 +24,7 @@ section MetricTrace
 variable {Idx : Type*} [Fintype Idx]
 
 
-def RicciRealizesRm04TraceInFrame
+def ricciRealizesRm04TraceInFrame
     (Ric : RawTwoTensorField (I := I) (M := M))
     (Riemann04 : RawFourTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
@@ -38,7 +38,7 @@ theorem ricci_comp_eq_trace
     (Riemann04 : RawFourTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hRic : RicciRealizesRm04TraceInFrame (I := I) Ric Riemann04 gInv frame)
+    (hRic : ricciRealizesRm04TraceInFrame (I := I) Ric Riemann04 gInv frame)
     (x : M) (i j : Idx) :
     Ric x (frame i x) (frame j x) =
       ∑ k : Idx, ∑ l : Idx,
@@ -64,7 +64,7 @@ theorem scalarCurvatureFromRicciTraceInFrame_apply
   exact scalarFromRicciTraceInFrame_apply (I := I) Ric gInv frame x
 
 
-def ScalarRealizesRicciTraceInFrame
+def scalarRealizesRicciTraceInFrame
     (scalar : M -> Real)
     (Ric : RawTwoTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
@@ -77,7 +77,7 @@ theorem scalar_eq_trace
     (Ric : RawTwoTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hScalar : ScalarRealizesRicciTraceInFrame (I := I) scalar Ric gInv frame)
+    (hScalar : scalarRealizesRicciTraceInFrame (I := I) scalar Ric gInv frame)
     (x : M) :
     scalar x =
       ∑ i : Idx, ∑ j : Idx, gInv x i j * Ric x (frame i x) (frame j x) := by
@@ -89,7 +89,7 @@ theorem scalarCurvatureFromRicciTraceInFrame_realizes
     (Ric : RawTwoTensorField (I := I) (M := M))
     (gInv : InverseMetricComponents M Idx)
     (frame : Idx -> (x : M) -> TangentSpace I x) :
-    ScalarRealizesRicciTraceInFrame (I := I)
+    scalarRealizesRicciTraceInFrame (I := I)
       (scalarCurvatureFromRicciTraceInFrame (I := I) Ric gInv frame)
       Ric gInv frame := by
   intro x

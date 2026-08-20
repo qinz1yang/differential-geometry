@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricDiffJoint
-import DifferentialGeometry.Geometry.Curvature.Realized.MetricFamilyContinuity
+import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
 import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
 open DifferentialGeometry.PDE.RicciFlow
@@ -181,7 +181,7 @@ theorem metricDiff_smallC0
           (ccTensorBilinSymm (I := I) q
             (metricDifferenceCcTensor (I := I) (M := M) q (g t))) δ := by
   let K : Set Real := Set.Ico a b
-  have hG : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
+  have hG : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
       (fun t x => metricTensorField (I := I) (g t) x) := by
     apply metricTensorCont_of_chartGram (K := K) g
     intro x₀ i j

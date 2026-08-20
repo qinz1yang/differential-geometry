@@ -843,11 +843,11 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_levi_ci
     (hdim : ∀ (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3)
     (hRm13 : ∀ t,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (Rm13 t))
     (hRm04 : ∀ t,
-      DifferentialGeometry.Geometry.Curvature.Rm04RealizesConnection (I := I) (S.base.metric t)
+      DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (Rm04 t))
     (hRic13 : ∀ t x,
@@ -975,13 +975,13 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_
     h_inv h_ricci h_lap hheatBasis hheat hdim ?_ ?_ ?_ hInv
   · intro t
     simpa [SolutionFamily.rm13, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm13
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   · intro t
     simpa [SolutionFamily.rm04, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm04
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   · intro t x
     simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).h_ricci13 x
+      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
 
 omit [Module.Finite ℝ E] in
 theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_ricci_norm_heat_equation
@@ -1044,26 +1044,26 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_ricci_n
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
         (I := I) (M := M) (S.base.metric t)
   have hRm13 : ∀ t,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm13 t) := by
     intro t
     simpa [SolutionFamily.rm13, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm13
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 : ∀ t,
-      DifferentialGeometry.Geometry.Curvature.Rm04RealizesConnection (I := I) (S.base.metric t)
+      DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
     intro t
     simpa [SolutionFamily.rm04, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm04
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 : ∀ t x,
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
     intro t x
     simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).h_ricci13 x
+      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hRicSymAt : ∀ (t : Real) (x : M),
       DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (S.ricciAt t x) := by
     intro t x
@@ -1236,26 +1236,26 @@ theorem exists_eigenbasis_with_trace_free_ricci_norm_sq_heat_equation_of_metric_
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
         (I := I) (M := M) (S.base.metric t)
   have hRm13 : ∀ t,
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm13 t) := by
     intro t
     simpa [SolutionFamily.rm13, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm13
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 : ∀ t,
-      DifferentialGeometry.Geometry.Curvature.Rm04RealizesConnection (I := I) (S.base.metric t)
+      DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
     intro t
     simpa [SolutionFamily.rm04, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).h_rm04
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 : ∀ t x,
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
     intro t x
     simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).h_ricci13 x
+      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hRicSymAt : ∀ (t : Real) (x : M),
       DifferentialGeometry.Geometry.Curvature.RicciSymAt (I := I) (S.ricciAt t x) := by
     intro t x

@@ -117,7 +117,7 @@ private theorem rev_trace_eq
     intro y X Y
     have hcomp := (metricDerivAt (I := I) S hS ⟨T - s, hs⟩ y X Y).comp s hsub
     simpa [G, Ric, reverseFamily, flowG] using hcomp
-  have hScalar : ScalarRealizesRicciTraceInFrame (I := I)
+  have hScalar : scalarRealizesRicciTraceInFrame (I := I)
       (scalar s) (Ric s)
       (volumeTraceInvMetricComponents (I := I) (M := M) (G.metric s))
       (volumeTraceFrame (I := I) (M := M)) := by

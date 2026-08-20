@@ -66,7 +66,7 @@ theorem oneFormRicciIdentity_of_connection
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x)
@@ -86,7 +86,7 @@ theorem oneFormRicciIdentity_of_smooth_connection
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (hcov_one : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -108,7 +108,7 @@ theorem oneFormRicciIdentity_of_connection_apply
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
     (hcurv : ConnectionCurvatureCoordAt (I := I) cov x)
@@ -132,7 +132,7 @@ theorem oneFormRicciIdentity_of_smooth_connection_apply
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hRm : Rm13RealizesConnection (I := I) cov Rm13)
+    (hRm : rm13RealizesConnection (I := I) cov Rm13)
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (hcov_one : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov

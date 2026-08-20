@@ -51,9 +51,9 @@ theorem isSolutionOn_of_reg
     (hscalarTime : ∀ t ∈ D.carrier, ∀ x : M,
       DifferentiableWithinAt Real (fun s : Real => metricScalarAt (I := I) (g s) x)
         D.carrier t)
-    (hricciCont : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
+    (hricciCont : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.carrier
       (fun t x => metricRicciAt (I := I) (g t) x))
-    (hrm04Cont : Tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 D.carrier
+    (hrm04Cont : tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 D.carrier
       (fun t x => metricRm04At (I := I) (g t) x)) :
     IsSolutionOn (I := I)
       ({ base := { metric := g } } : SolutionOn (I := I) (M := M) D) := by
@@ -81,9 +81,9 @@ theorem isSolutionOn_of_reg
   · exact hscalarCont.congr (fun q _ => rfl)
   · intro K t htK hKsub x
     exact (hscalarTime t (hKsub htK) x).mono hKsub
-  · refine Tensor0SFamilyContinuousOnSet.congr hricciCont (fun t _ x => ?_)
+  · refine tensor0SFamilyContinuousOnSet.congr hricciCont (fun t _ x => ?_)
     simp only [SolutionOn.ricci, SolutionFamily.ricci_apply, SolutionFamily.ricciAt]
-  · refine Tensor0SFamilyContinuousOnSet.congr hrm04Cont (fun t _ x => ?_)
+  · refine tensor0SFamilyContinuousOnSet.congr hrm04Cont (fun t _ x => ?_)
     simp only [SolutionFamily.rm04, metricRm04_apply]
   · intro t ht x
     have h := (normSq02_smooth (I := I) (M := M)

@@ -68,7 +68,7 @@ def Rm04RealizesSolutionConnectionOn
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M)) :
       Prop :=
   forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D,
-    DifferentialGeometry.Geometry.Curvature.Rm04RealizesConnection (I := I)
+    DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I)
       (S.family.metric (t : Real)) (S.family.connection (t : Real))
       (Rm04 (t : Real))
 
@@ -160,7 +160,7 @@ theorem extends_of_rmBounded
     have h := hK'bound t x ht1 ht2
     simpa [curvatureNormSq, SolutionOn.family] using h
   have hRmRaw : ∀ t ∈ Set.Ico alpha omega,
-      Rm04RealizesConnection (I := I) (S.base.metric t)
+      rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t) := by
     intro t ht
     have h := _hRm ⟨t, ht⟩

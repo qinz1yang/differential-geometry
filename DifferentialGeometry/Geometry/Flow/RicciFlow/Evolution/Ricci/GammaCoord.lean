@@ -59,8 +59,8 @@ private theorem christoffelCoordAt_symm_of_isSolutionOn
   have htf : DifferentialGeometry.Geometry.Connection.IsTorsionFree (I := I)
       (S.family.connection (t : Real)) := by
     simpa [DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.connectionAt] using
-      (SolutionOn.leviCivita (I := I) S).2
-        (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.regularToFlow t)
+      (SolutionOn.leviCivita (I := I) S
+        (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.regularToFlow t)).2
   have hzero :
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff k x₀
           ((S.family.connection (t : Real)).torsion x₀
@@ -337,10 +337,10 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (x₀ : M)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
@@ -718,10 +718,10 @@ theorem ricciVarCore
               (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic
               (t : Real) x₀ a b c e)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)
@@ -840,10 +840,10 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
         (coordinateFrameSet (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic nabla2Ric)
     (hRicTrace : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I) (S.ricci s)
+      DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I) (S.ricci s)
         (Rm13 s))
     (hRm : ∀ s : Real, s ∈ D.carrier ->
-      DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
+      DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (S.family.connection s) (Rm13 s))
     (hcurv : ∀ s : Real, s ∈ D.carrier ->
       DifferentialGeometry.Geometry.Curvature.ConnectionCurvatureCoordAt (I := I)

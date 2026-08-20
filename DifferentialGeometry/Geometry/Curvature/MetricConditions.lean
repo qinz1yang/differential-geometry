@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Realized.CurvatureProducers
+import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Curvature.MetricSectional
 
 set_option autoImplicit false
