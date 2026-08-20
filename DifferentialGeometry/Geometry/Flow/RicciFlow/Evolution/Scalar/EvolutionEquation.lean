@@ -197,7 +197,6 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution_lc
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -227,11 +226,11 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution_lc
       (scalarLaplacianTraceInFrame (M := M) gInv roughLapRic)
       (ricciNormSqInFrame (I := I) S gInv frame) := by
   have hOutput :=
-    rm04OutputSkew_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04OutputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hFirst :=
-    rm04FirstBianchi_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04FirstBianchi_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hPair :=
-    rm04PairSymm_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04PairSymm_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hInput :=
     rm04InputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hRicSym : RicciSymmetricInFrameOnRegular (I := I) S frame :=

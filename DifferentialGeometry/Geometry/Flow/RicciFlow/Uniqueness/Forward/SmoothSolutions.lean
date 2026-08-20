@@ -122,7 +122,7 @@ theorem fuRm04_real (g : Real → SmoothRiemannianMetric I M)
           (coordBasisAt (I := I) y k) (coordBasisAt (I := I) y l)) :=
   rm04Fam_real (I := I) (D := refD) (solOfMetric (I := I) g) r y i j k l
 
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 theorem fuLapRm_real (g : Real → SmoothRiemannianMetric I M)
     (r : Real) (y : M) (i j k l : CoordinateIdx (𝕜 := Real) E) :
     fuLapRm (I := I) g r y i j k l =

@@ -49,7 +49,7 @@ theorem rmResidualField_cost
         (e0Residual (I := I) S hS t (Idx := Idx)).1
   | succ k ih =>
       simpa only [rmResidualField] using
-        resStarNext_cost (I := I) S hS k t
+        resStarNext_cost (I := I) S k t
           (rmResidualField (I := I) S t k) ih
 
 omit [BoundarylessManifold I M] [NeZero (Module.finrank ℝ E)] in
@@ -119,7 +119,7 @@ private theorem rmResidual_local
         (e0Residual (I := I) S hS t (Idx := Idx)).2
           y (hframe.toBasisAt hy) horth I0
   | succ k ih =>
-      have hnext := resStarNext_spec (I := I) S hS k t frame hframe hu horthU
+      have hnext := resStarNext_spec (I := I) S k t frame hframe hu horthU
         baseDt chrDt hrm hchr hchrId hswap
         (rmResidualField (I := I) S t k)
         (rmResidualField_cost (I := I) S hS t k)
@@ -289,7 +289,7 @@ theorem resStarSol [CompactSpace M]
     simpa only [lfChr, lfBase, S', D'] using
       hswap k' m (t : Real) t.2 y hy (frame d y)
   simpa only [S', D'] using
-    resStarBoundLF (I := I) S' hS' k t frame hframe1 hu hdim horthU
+    resStarBoundLF (I := I) S' k t frame hframe1 hu hdim horthU
       hbase baseDt chrDt hrm' hchr' hchrId' hswap'
 
 end DifferentialGeometry.PDE.RicciFlow

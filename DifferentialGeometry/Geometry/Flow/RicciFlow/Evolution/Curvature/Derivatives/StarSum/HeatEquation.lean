@@ -24,7 +24,7 @@ open DifferentialGeometry.Dim3Reaction in
 omit [Module.Finite ℝ E] in
 theorem resStarBoundLF
     [Module.Finite ℝ E]
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
     {u : Set M}
     (frame : Fin 3 → (y : M) → TangentSpace I y)
@@ -99,7 +99,7 @@ theorem resStarBoundLF
               Real.sqrt (stNormSq (I := I) S (t : Real) j y (hframe.toBasisAt hy)) *
                 Real.sqrt (stNormSq (I := I) S (t : Real) (k - j) y (hframe.toBasisAt hy))) := by
   obtain ⟨T, hTcost, hcomp⟩ :=
-    resStarLFU (I := I) S hS k t frame hframe hu hdim horthU hbase baseDt chrDt hrm hchr hchrId
+    resStarLFU (I := I) S k t frame hframe hu hdim horthU hbase baseDt chrDt hrm hchr hchrId
       hswap
   have hT := hTcost.mem
   have hC0 := hTcost.nonneg

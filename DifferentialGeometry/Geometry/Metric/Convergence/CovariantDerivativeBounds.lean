@@ -36,14 +36,15 @@ local instance : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
 omit [CompleteSpace E] [T2Space M] [IsManifold I ∞ M] [SigmaCompactSpace M] in
 private theorem componentRS_eq_gen
     [IsManifold I 1 M]
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {r s : Nat} {x : M}
+    {Idx : Type*} [Fintype Idx] {r s : Nat} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (T : Tensor0SBundle.TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
     Tensor0SBundle.componentRS (I := I) basis T upper lower =
       Tensor0SBundle.componentRS_gen (I := I) basis T upper lower := rfl
 
-def localFrameOneOfInf
+omit [FiniteDimensional Real E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
+theorem localFrameOneOfInf
     {Idx : Type*} {u : Set M}
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u) :
@@ -1871,7 +1872,7 @@ theorem normSqRS12_eq_l2
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem applyCons3
-    {Idx : Type*} [Finite Idx]
+    {Idx : Type*}
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (A : Tensor0SBundle.Tensor0SSpace
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
@@ -2106,7 +2107,7 @@ theorem covOneCompDiff
 
 omit [SigmaCompactSpace M] in
 theorem connectionDifferenceBasisSymm
-    {Idx : Type*} [Finite Idx]
+    {Idx : Type*}
     (h gRef : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (a b : Idx) :
@@ -2208,7 +2209,7 @@ theorem connectionDifferenceBasisSymm
 
 omit [SigmaCompactSpace M] in
 theorem connectionDifferenceCompSymm
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*} [Fintype Idx]
     (h gRef : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (a b e : Idx) :

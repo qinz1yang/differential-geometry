@@ -73,7 +73,7 @@ theorem tensor_first_null_contradiction
         TwoTensorBilinearAt (I := I) (M := M) (S t) x)
     (d : TensorFirstNullData (I := I) (M := M) G S epsilon delta t0)
     (hsigns : TensorFirstNullScalarSigns (I := I) (M := M)
-      G S X N epsilon delta t0 d) :
+      G S X N nabla2Barrier nablaBarrier epsilon delta t0 d) :
     False := by
   rcases hstrict with ⟨timeDeriv, _hderiv, hstrict_eval⟩
   have ht1_mem_slab : d.t1 ∈ Set.Icc t0 (t0 + delta) :=
@@ -118,7 +118,8 @@ theorem tensor_first_null_contradiction
       (tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 d.t1)
       d.x1 hbarrier_symmetric hbarrier_bilinear hbarrier_nonnegative d.v d.null
   rcases hsigns with
-    ⟨timeDeriv, laplacian, drift, reaction,
+    ⟨_signTimeDeriv, laplacian, drift, reaction,
+      _hsignDeriv, _hheat_eq, _hreaction_eq,
       htime_nonpos, hlaplacian_nonneg, hdrift_zero, hreaction_nonneg, hstrict_ineq⟩
   exact firstNullOrder htime_nonpos hlaplacian_nonneg hdrift_zero
     hreaction_nonneg hstrict_ineq
@@ -131,7 +132,6 @@ theorem shortSlab_cert
     {N : TwoTensorReaction (I := I) (M := M)}
     {t0 T : Real}
     (ht0 : t0 ∈ Set.Icc 0 T)
-    (_ht0T : t0 < T)
     (hreg : TensorWMPCore (I := I) (M := M) G S X N T)
     (hcert :
       ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
@@ -194,7 +194,7 @@ theorem tensorBarrier_nonnegative_on_short_slab
       TensorBarrierUniformOnSlab (I := I) (M := M) G S delta t0 := by
   exact shortSlab_cert (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
-    ht0 ht0T hreg.toCore
+    ht0 hreg.toCore
     (certSlab_of_reg (I := I) (M := M)
       (G := G) (S := S) (X := X) (N := N)
       ht0 ht0T hreg hparabolic)
@@ -209,7 +209,6 @@ theorem tensor_wmp_of_barrier_limit
     {nabla2S : TensorNabla2Family (I := I) (M := M)}
     {nablaS : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
-    (_hT : 0 ≤ T)
     (hreg : TensorWMPRegularityOn (I := I) (M := M) G S X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G S X N nabla2S nablaS T)
@@ -217,11 +216,11 @@ theorem tensor_wmp_of_barrier_limit
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) S (Set.Icc 0 T) := by
   exact barrierLimitClosure_of_continuous (I := I) (M := M)
-    (G := G) (S := S) _hT hreg.barrierRegularity.tensor_eval_continuous hinit
+    (G := G) (S := S) hreg.barrierRegularity.tensor_eval_continuous hinit
     (fun t0 ht0 ht0T hinit_t0 =>
       shortSlab_cert (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)
-        ht0 ht0T hreg.toCore
+        ht0 hreg.toCore
         (certSlab_of_reg (I := I) (M := M)
           (G := G) (S := S) (X := X) (N := N)
           ht0 ht0T hreg hparabolic)
@@ -234,7 +233,6 @@ theorem wmp_of_cert
     {X : TimeDependentVectorField (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
     {T : Real}
-    (_hT : 0 ≤ T)
     (hreg : TensorWMPCore (I := I) (M := M) G S X N T)
     (hcert :
       ∀ t0 : Real, t0 ∈ Set.Icc 0 T -> t0 < T ->
@@ -244,11 +242,11 @@ theorem wmp_of_cert
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) S (Set.Icc 0 T) := by
   exact barrierLimitClosure_of_continuous (I := I) (M := M)
-    (G := G) (S := S) _hT hreg.barrierRegularity.tensor_eval_continuous hinit
+    (G := G) (S := S) hreg.barrierRegularity.tensor_eval_continuous hinit
     (fun t0 ht0 ht0T hinit_t0 =>
       shortSlab_cert (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)
-        ht0 ht0T hreg (hcert t0 ht0 ht0T) hnull hinit_t0)
+        ht0 hreg (hcert t0 ht0 ht0T) hnull hinit_t0)
 
 theorem wmp_section_sec
     [I.Boundaryless] [T2Space M]
@@ -263,7 +261,6 @@ theorem wmp_section_sec
     {nabla2S : TensorNabla2SecFamily (I := I) (M := M)}
     {cov : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {T : Real}
-    (_hT : 0 ≤ T)
     (hreg : TensorWMPSectionCore (I := I) (M := M) G S X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G (twoTensorSecToFamily (I := I) (M := M) S) X N
@@ -284,7 +281,7 @@ theorem wmp_section_sec
       (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) := by
   exact wmp_of_cert (I := I) (M := M)
     (G := G) (S := twoTensorSecToFamily (I := I) (M := M) S)
-    (X := X) (N := N) _hT hreg.toRaw
+    (X := X) (N := N) hreg.toRaw
     (fun t0 ht0 ht0T =>
       strictCert_sec (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)
@@ -340,7 +337,7 @@ theorem tensor_wmp
   exact wmp_section_sec (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nablaS := nablaS) (nabla2S := nabla2S) (cov := cov)
-    data.hT data.reg data.parabolic data.null data.initial
+    data.reg data.parabolic data.null data.initial
     data.hcov1 data.hcovInf data.hmc data.spatial
 
 omit [IsManifold I 2 M] in
@@ -352,7 +349,6 @@ theorem hamilton_tensor_wmp
     {nabla2S : TensorNabla2Family (I := I) (M := M)}
     {nablaS : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
-    (_hT : 0 ≤ T)
     (hreg : TensorWMPRegularityOn (I := I) (M := M) G S X N T)
     (_hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G S X N nabla2S nablaS T)
@@ -360,7 +356,7 @@ theorem hamilton_tensor_wmp
     (_hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) S 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) S (Set.Icc 0 T) := by
   exact wmp_of_cert (I := I) (M := M)
-    (G := G) (S := S) (X := X) (N := N) _hT hreg.toCore
+    (G := G) (S := S) (X := X) (N := N) hreg.toCore
     (fun t0 ht0 ht0T =>
       certSlab_of_reg (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)
@@ -376,7 +372,6 @@ theorem hamilton_tensor_wmp_section
     {nabla2S : TensorNabla2Family (I := I) (M := M)}
     {nablaS : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
-    (_hT : 0 ≤ T)
     (hreg : TensorWMPSectionReg (I := I) (M := M) G S X N T)
     (_hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G (twoTensorSecToFamily (I := I) (M := M) S)
@@ -388,7 +383,7 @@ theorem hamilton_tensor_wmp_section
       (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) := by
   exact wmp_of_cert (I := I) (M := M)
     (G := G) (S := twoTensorSecToFamily (I := I) (M := M) S)
-    (X := X) (N := N) _hT hreg.toCore.toRaw
+    (X := X) (N := N) hreg.toCore.toRaw
     (fun t0 ht0 ht0T =>
       certSlab_of_sectionReg (I := I) (M := M)
         (G := G) (S := S) (X := X) (N := N)

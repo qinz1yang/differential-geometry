@@ -602,7 +602,7 @@ private theorem hamilton_win_equiv
   have hquad :=
     DifferentialGeometry.Geometry.Curvature.twoTensorQuadBound_of_solutions
       (I := I)
-      Sseq Set.univ (-(hamilton_reference_radius ^ 2)) 0 C hcarrier
+      Sseq Set.univ (-(hamilton_reference_radius ^ 2)) 0 C
     (fun _ t ht x _hx ↦ by
       simpa only [Sseq, Sraw, C, j] using
         hamilton_shi_rm (I := I) P Q hsel hwindow hrm i t

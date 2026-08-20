@@ -340,7 +340,6 @@ omit [SigmaCompactSpace M] in
 theorem stNablaMtIter
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov1 : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     {s : ℕ} (τ : ℕ) :
     ∀ (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -364,7 +363,7 @@ theorem stNablaMtIter
   | succ τ ih =>
       intro A nablaA h
       have h1 := nablaRealizes_metricTraceFirstTwo (I := I) (M := M) (s := s + 2 * τ)
-        cov hcov1 g hmc A nablaA h
+        cov g hmc A nablaA h
       obtain ⟨ρ', h2⟩ := ih
         (metricTraceFirstTwoField (I := I) (M := M) (s := s + 2 * τ) g A)
         (metricTraceFirstTwoField (I := I) (M := M) (s := (s + 2 * τ) + 1) g
@@ -393,15 +392,10 @@ theorem stNabla_starBase
     = starBaseField (I := I) S t (k + 1) (a + 1) b r σL
         + starBaseField (I := I) S t (k + 1) a (b + 1) r σR := by
   classical
-  have hcov1 : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (S.family.connection t) (1 : WithTop ℕ∞) := by
-    simpa [SolutionFamily.connection, metricCov] using
-      leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-        (I := I) (M := M) (S.base.metric t)
   obtain ⟨e₁, e₂, hP⟩ := starProdNabla (I := I) S t a b r
   have h2 := totalNabla0SRealizes_domDomCongr (I := I) (S.family.connection t) σ _ _ hP
   obtain ⟨ρ, h3⟩ := stNablaMtIter (I := I) (S.family.metric t) (S.family.connection t)
-    hcov1 (stMetricCompat (I := I) S t) (s := 4 + k) (2 + r) _ _ h2
+    (stMetricCompat (I := I) S t) (s := 4 + k) (2 + r) _ _ h2
   have heq := totalNabla0SRealizes_unique (I := I)
     (stNabla_realizes (I := I) S t (starBaseField (I := I) S t k a b r σ)) h3
   refine ⟨e₁.trans ((frontExtendEquiv σ).trans ρ),
@@ -473,7 +467,7 @@ theorem StarSum2Cost.nabla
 set_option backward.isDefEq.respectTransparency false in
 
 def stNormSq (S : SolutionOn (I := I) (M := M) D) (t : Real) (j : ℕ) (x : M)
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    {Idx : Type*} [Fintype Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x)) : Real :=
   compNormSqMulti (fun m : Fin (4 + j) → Idx =>
     nablaKRm04Field (I := I) S t j x (fun p => basis (m p)))

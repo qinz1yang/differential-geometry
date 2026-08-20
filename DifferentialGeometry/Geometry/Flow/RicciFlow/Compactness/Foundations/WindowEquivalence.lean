@@ -107,7 +107,7 @@ theorem metricEquiv_open
   have hSseq : ∀ i : Nat, PDE.RicciFlow.IsSolutionOn (I := I) (Sseq i) :=
     fun _ => (X.term k).isSolution
   have hquad := twoTensorQuadBound_of_solutions (I := I) Sseq Set.univ
-    beta psi C hcarrier (fun _ t ht x _ => by
+    beta psi C (fun _ t ht x _ => by
       simpa only [PointedFlowData.rmNormSq, Sseq] using hcurvC k t ht x)
   have hequiv0 : ∀ i : Nat,
       MetricUniformEquivalentOn (I := I) Set.univ

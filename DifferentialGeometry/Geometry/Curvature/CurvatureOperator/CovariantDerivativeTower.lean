@@ -35,7 +35,7 @@ variable {E : Type uE} [eAdd : NormedAddCommGroup E] [nE : NormedSpace Real E]
   [InnerProductSpace Real E] [fdE : FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
-variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+variable {I : ModelWithCorners Real E H} [boundarylessI : I.Boundaryless]
 
 private theorem update_snoc_last
     {V : Type*} {n : Nat} (v : Fin n -> V) (w z : V) :
@@ -331,7 +331,8 @@ noncomputable def curvOpNForm
         ContMDiffSection I E (∞ : WithTop ℕ∞)
           (TangentSpace I : M -> Type _)) Y 0)
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] theorem curvOpNForm_apply
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (Y : Fin (k + 3) ->
@@ -362,7 +363,8 @@ noncomputable def curvOpNField
         exact oneForm_comp_smooth
           (I := I) (curvOpNForm (I := I) g k Y) a j))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  [SigmaCompactSpace M] in
 @[simp] theorem curvOpNField_apply
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (Y : Fin (k + 3) ->
@@ -376,7 +378,8 @@ omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpac
       (curvOpNForm (I := I) g k Y x) = _
   rw [curvOpNForm_apply]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  [SigmaCompactSpace M] in
 theorem curvOpN_smoothAlong
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (gamma : Real -> M)
@@ -538,7 +541,8 @@ private theorem curvOpNabla_real
           (I := I) (M := M) g)
         (curvOpNForm (I := I) g k Y)))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [SigmaCompactSpace M] in
 private theorem curvOpNabla_eval_raw
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -576,12 +580,6 @@ private theorem curvOpNabla_eval_raw
       (α := fun _ =>
         ContMDiffSection I E (∞ : WithTop ℕ∞)
           (TangentSpace I : M -> Type _)) Y 0
-  have hcov :
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        cov (1 : WithTop ℕ∞) := by
-    simpa [cov] using
-      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-        (I := I) (M := M) g)
   have hBval :
       curvOpNablaForm (I := I) g k Y x
           (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (X x) U) =
@@ -608,7 +606,7 @@ private theorem curvOpNabla_eval_raw
   rw [hBval, hAval]
   simpa [cov, curvOpNForm, Yfull, snoc_section_apply] using
     (DifferentialGeometry.PDE.RicciFlow.freezeNabla_leibniz
-      (I := I) cov hcov
+      (I := I) cov
       (curvCovDeriv (I := I) (M := M) g k) (Fin.last (k + 3))
       X Yfull U)
 
@@ -654,7 +652,8 @@ private noncomputable def curvCorrForm
         (curvSlotCov (I := I) g k X Y x i)) 0)
     (Fin.last (k + 3))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [SigmaCompactSpace M] in
 private theorem curvOpNabla_eval_sum
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -698,7 +697,8 @@ private theorem curvOpNabla_eval_sum
       _
   rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] boundarylessI
+  [SigmaCompactSpace M] in
 private theorem curvOpNabla_curry
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -759,7 +759,8 @@ private theorem curvOpNabla_curry
         ∑ i : Fin (k + 3), curvCorrForm (I := I) g k X Y x i) slots := by
       simp
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [SigmaCompactSpace M] in
 private theorem curvOpNabla_eval
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -788,12 +789,6 @@ private theorem curvOpNabla_eval
       (α := fun _ =>
         ContMDiffSection I E (∞ : WithTop ℕ∞)
           (TangentSpace I : M -> Type _)) Y 0
-  have hcov :
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        cov (1 : WithTop ℕ∞) := by
-    simpa [cov] using
-      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-          (I := I) (M := M) g)
   have hYfull : ∀ i : Fin (k + 4), i ≠ Fin.last (k + 3) ->
       ((cov (fun p : M => Yfull i p) x) (X x)) = 0 := by
     intro i hi
@@ -826,7 +821,7 @@ private theorem curvOpNabla_eval
   rw [hBval, hAval]
   simpa [cov, curvOpNForm, Yfull, snoc_section_apply] using
     (DifferentialGeometry.PDE.RicciFlow.allBut0SFreezeNabla
-      (I := I) cov hcov
+      (I := I) cov
       (curvCovDeriv (I := I) (M := M) g k) (Fin.last (k + 3))
       X Yfull hYfull U)
 
@@ -1028,7 +1023,8 @@ private theorem curvOpNDeriv_congr
     simp only [Function.update_self, hslot]
   · rw [Function.update_of_ne hji, Function.update_of_ne hji, hval j]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  [SigmaCompactSpace M] in
 private theorem curvOpNDeriv_smul
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (gamma : Real -> M)
@@ -1043,6 +1039,8 @@ private theorem curvOpNDeriv_smul
     curvOpNDerivAlong (I := I) g k gamma
         (Function.update Y i (fun s => f s • Y i s)) t =
       f t • curvOpNDerivAlong (I := I) g k gamma Y t := by
+  rcases boundarylessI with ⟨hI⟩
+  letI : I.Boundaryless := ⟨hI⟩
   classical
   let Yf : Fin (k + 3) -> forall s : Real, TangentSpace I (gamma s) :=
     Function.update Y i (fun s => f s • Y i s)
@@ -1178,7 +1176,8 @@ private theorem curvOpNDeriv_smul
   rw [hsumcorr]
   module
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  [SigmaCompactSpace M] in
 private theorem curvOpNDeriv_add
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (gamma : Real -> M)
@@ -1204,6 +1203,8 @@ private theorem curvOpNDeriv_add
           (Function.update Y i A) t +
         curvOpNDerivAlong (I := I) g k gamma
           (Function.update Y i B) t := by
+  rcases boundarylessI with ⟨hI⟩
+  letI : I.Boundaryless := ⟨hI⟩
   classical
   let YA : Fin (k + 3) -> forall s : Real, TangentSpace I (gamma s) :=
     Function.update Y i A
@@ -1396,7 +1397,8 @@ private theorem curvOpNDeriv_add
   rw [hsumcorr]
   abel
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  [SigmaCompactSpace M] in
 private theorem curvOpNDeriv_sum
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (gamma : Real -> M)
@@ -1418,6 +1420,8 @@ private theorem curvOpNDeriv_sum
       ∑ a ∈ S,
         curvOpNDerivAlong (I := I) g k gamma
           (Function.update Y i (V a)) t := by
+  rcases boundarylessI with ⟨hI⟩
+  letI : I.Boundaryless := ⟨hI⟩
   classical
   induction S using Finset.induction_on with
   | empty =>
@@ -1438,7 +1442,8 @@ private theorem curvOpNDeriv_sum
       rw [hsumfun, hadd, ih]
       rw [Finset.sum_insert ha]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  [SigmaCompactSpace M] in
 private theorem curvOpNDeriv_slot
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (gamma : Real -> M)
@@ -1582,7 +1587,8 @@ private theorem curvOpNDeriv_slot
     _ = curvOpNDerivAlong (I := I) g k gamma
           (Function.update Y i B) t := hCongrD.symm
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E]
+  [SigmaCompactSpace M] in
 private theorem curvOpNDeriv_all
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (gamma : Real -> M)

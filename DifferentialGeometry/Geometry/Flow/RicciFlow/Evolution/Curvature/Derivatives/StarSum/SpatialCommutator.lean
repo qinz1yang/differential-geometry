@@ -119,7 +119,6 @@ private theorem slotdiffBasisEq
     [Module.Finite ℝ E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) {x : M}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -149,17 +148,16 @@ private theorem slotdiffBasisEq
               (Fin.cons (basis a)
                 (Function.update (fun i : Fin (4 + k) => basis (m i)) q (basis e))))) := by
   classical
-  have hconn := connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   obtain ⟨Xa, hXa, hXacov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x (basis a)
+    (S.family.connection (t : Real)) x (basis a)
   obtain ⟨Vb, hVb, hVbcov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x (basis b)
+    (S.family.connection (t : Real)) x (basis b)
   obtain ⟨Vc, hVc, hVccov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x (basis c)
+    (S.family.connection (t : Real)) x (basis c)
   choose Vm hVm hVmcov using fun i : Fin (4 + k) =>
     TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-      (S.family.connection (t : Real)) hconn x (basis (m i))
-  have hraw := nablaK_antisym_eq_rm04_raise_leibniz (I := I) S hS t k x Xa Vb Vc Vm
+      (S.family.connection (t : Real)) x (basis (m i))
+  have hraw := nablaK_antisym_eq_rm04_raise_leibniz (I := I) S t k x Xa Vb Vc Vm
     (hVbcov Xa) (hVccov Xa) (fun i => hVmcov i Xa)
   have hq : ∀ q : Fin (4 + k),
       nablaRm04Field (I := I) S (t : Real) x
@@ -242,7 +240,7 @@ private theorem slotdiffBasisEq
             vec2 (I := I) (Xa x) (basis e) := by
         funext p
         fin_cases p <;> rfl
-      rw [hvec, nablaKRmFrozenSlot_eval (I := I) S hS t k q Xa Vm x
+      rw [hvec, nablaKRmFrozenSlot_eval (I := I) S t k q Xa Vm x
         (fun i _ => hVmcov i Xa) (basis e)]
       rw [hVb, hVc, hVm q, hXa]
       have hslot :
@@ -365,7 +363,6 @@ omit [Module.Finite ℝ E] in
 private theorem slotdiffReduce
     [Module.Finite ℝ E]
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) {x : M}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -419,7 +416,7 @@ private theorem slotdiffReduce
                     (basis e))))) := by
     intro i
     simpa [metricTraceInput] using
-      (slotdiffBasisEq (I := I) S hS t k basis horth i i (I0 0)
+      (slotdiffBasisEq (I := I) S t k basis horth i i (I0 0)
         (fun q : Fin (4 + k) => I0 q.succ))
   rw [Finset.sum_congr rfl fun i _ => hterm i]
   rw [Finset.sum_neg_distrib]
@@ -509,7 +506,7 @@ def commStarField
 set_option backward.isDefEq.respectTransparency false in
 
 private theorem commStarField_data
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] :
     StarSum2Cost (I := I) Idx S (t : Real) (k + 1)
@@ -718,28 +715,28 @@ private theorem commStarField_data
                 (nablaKRm04Field (I := I) S (t : Real) (k + 1) x)
                 (basis i) (basis (I0 0))
                 (Fin.cons (basis i) (fun l : Fin (4 + k) => basis (I0 l.succ)))) := by
-      have hraw := spatialComm_nablaKRm_split (I := I) S hS t k basis
+      have hraw := spatialComm_nablaKRm_split (I := I) S t k basis
         (identityInvMetric (Idx := Idx)) hinvId (basis (I0 0)) tail
       rw [sumDiag] at hraw
       simpa [tail, hslots, hslots'] using hraw
     rw [hsplit]
     rw [Finset.sum_add_distrib]
-    rw [slotdiffReduce (I := I) S hS t k basis horth I0]
+    rw [slotdiffReduce (I := I) S t k basis horth I0]
     rw [curvRoute (I := I) S (t : Real) k basis horth I0]
     simp [T, tensor0SComponent_apply, hTAp, hTBp, hTCp, Finset.sum_add_distrib]
     ring_nf
 
 theorem commStarField_cost
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
     {Idx : Type*} [Fintype Idx] :
     StarSum2Cost (I := I) Idx S (t : Real) (k + 1)
       (commStarField (I := I) S t k) (commStarCost (Fintype.card Idx) k) := by
   classical
-  exact (commStarField_data (I := I) S hS t k).1
+  exact (commStarField_data (I := I) S t k).1
 
 theorem commStarField_spec
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
     {Idx : Type*} [Finite Idx] [DecidableEq Idx]
     (x : M) (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -755,10 +752,10 @@ theorem commStarField_spec
       = tensor0SComponent (I := I) (commStarField (I := I) S t k x)
           (fun i => basis i) I0 := by
   letI : Fintype Idx := Fintype.ofFinite Idx
-  exact (commStarField_data (I := I) S hS t k).2 x basis horth I0
+  exact (commStarField_data (I := I) S t k).2 x basis horth I0
 
 theorem spatialCommStarSum
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) (k : ℕ)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] :
     ∃ T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -780,8 +777,8 @@ theorem spatialCommStarSum
                   (nablaKRm04Field (I := I) S (t : Real) (k + 2))) x (fun p => basis (I0 p))
           = tensor0SComponent (I := I) (T x) (fun i => basis i) I0 := by
   refine ⟨commStarField (I := I) S t k,
-    commStarField_cost (I := I) S hS t k, ?_⟩
+    commStarField_cost (I := I) S t k, ?_⟩
   intro x basis _gInv _hinv horth I0
-  exact commStarField_spec (I := I) S hS t k x basis horth I0
+  exact commStarField_spec (I := I) S t k x basis horth I0
 
 end DifferentialGeometry.PDE.RicciFlow

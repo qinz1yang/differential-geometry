@@ -154,15 +154,12 @@ private theorem exists_trace31
   | succ k ih =>
       obtain ⟨e, he⟩ := ih
       let cov := leviCivitaConnectionOfMetric (I := I) g
-      have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1 := by
-        exact leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-          (I := I) (M := M) g
       have hmc : IsMetricCompatible_gen (I := I) cov g := by
         exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
       have hA := iterCov_realizes (I := I) g A k
       have hreindex := totalNabla0SRealizes_domDomCongr (I := I) cov e _ _ hA
       have htrace := nablaRealizes_metricTraceFirstTwo (I := I) (M := M)
-        (s := 1 + k) cov hcov g hmc _ _ hreindex
+        (s := 1 + k) cov g hmc _ _ hreindex
       rw [← he] at htrace
       have hout₀ := iterCov_realizes (I := I) g
         (metricTraceFirstTwoField (I := I) (M := M) g A) k

@@ -464,7 +464,7 @@ def resStarNext
     (-1 : Real) • gammaStarField (I := I) S (t : Real) k
 
 theorem resStarNext_cost
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
     {Idx : Type*} [Fintype Idx]
     (Tk : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -475,7 +475,7 @@ theorem resStarNext_cost
       (resStarNext (I := I) S t k Tk)
       (rmResidualCost (Fintype.card Idx) (k + 1)) := by
   classical
-  have hcomm := commStarField_cost (I := I) S hS t k (Idx := Idx)
+  have hcomm := commStarField_cost (I := I) S t k (Idx := Idx)
   have hgamma := gammaStarField_cost (I := I) S (t : Real) k (Idx := Idx)
   unfold resStarNext
   convert ((hTk.nabla).add (hcomm.smul (-1))).add (hgamma.smul (-1)) using 1
@@ -484,7 +484,7 @@ theorem resStarNext_cost
 set_option backward.isDefEq.respectTransparency false in
 
 theorem resStarNext_spec
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {u : Set M}
@@ -552,7 +552,7 @@ theorem resStarNext_spec
   let Tcomm := commStarField (I := I) S t k
   have hTcomm : StarSum2Cost (I := I) Idx S (t : Real) (k + 1) Tcomm
       (commStarCost (Fintype.card Idx) k) :=
-    commStarField_cost (I := I) S hS t k
+    commStarField_cost (I := I) S t k
   let Tgamma := gammaStarField (I := I) S (t : Real) k
   have hTgamma : StarSum2Cost (I := I) Idx S (t : Real) (k + 1) Tgamma
       (rmGammaCost (Fintype.card Idx) k) :=
@@ -706,7 +706,7 @@ theorem resStarNext_spec
               (metricTraceFirstTwoField (I := I) (S.base.metric (t : Real))
                 (nablaKRm04Field (I := I) S (t : Real) (k + 2))) y) (fun i => frame i y) I0
           = tensor0SComponent (I := I) (Tcomm y) (fun i => frame i y) I0 := by
-        have hc := commStarField_spec (I := I) S hS t k y
+        have hc := commStarField_spec (I := I) S t k y
           (hframe.toBasisAt hy) horth_y I0
         simpa only [tensor0SComponent_apply, hframe.toBasisAt_coe hy] using hc
       have htrace : tensor0SComponent (I := I)
@@ -753,7 +753,7 @@ theorem resStarNext_spec
     exact hderiv.congr_deriv hval.symm
 
 theorem resStarSucc
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {u : Set M}
@@ -820,7 +820,7 @@ theorem resStarSucc
             (fun i => frame i y) I0)
           D.carrier (t : Real) := by
   refine ⟨resStarNext (I := I) S t k Tk, ?_⟩
-  exact resStarNext_spec (I := I) S hS k t frame hframe hu horthU
+  exact resStarNext_spec (I := I) S k t frame hframe hu horthU
     baseDt chrDt hrm hchr hchrId hswap Tk hTk hIH
 
 set_option backward.isDefEq.respectTransparency false in
@@ -845,7 +845,7 @@ open DifferentialGeometry.Dim3Reaction in
 omit [Module.Finite ℝ E] in
 theorem resStarLFU
     [Module.Finite ℝ E]
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (S : SolutionOn (I := I) (M := M) D)
     (k : ℕ) (t : RealTimeInterval.RegularTime D)
     {u : Set M}
     (frame : Fin 3 → (y : M) → TangentSpace I y)
@@ -934,7 +934,7 @@ theorem resStarLFU
         rw [Fintype.card_fin, ← resCost_eq]
         exact hTk
       obtain ⟨T, hT, hderiv⟩ :=
-        resStarSucc (I := I) S hS k t frame hframe hu horthU baseDt chrDt
+        resStarSucc (I := I) S k t frame hframe hu horthU baseDt chrDt
           hrm hchr hchrId hswap Tk hTk' hIH
       refine ⟨T, ?_, hderiv⟩
       rw [resCost_eq]

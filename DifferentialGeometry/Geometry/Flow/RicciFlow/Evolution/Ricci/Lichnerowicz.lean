@@ -502,7 +502,6 @@ theorem ricciLichnerowiczSpecializesInFrame_lc
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -528,9 +527,9 @@ theorem ricciLichnerowiczSpecializesInFrame_lc
     RicciLichnerowiczSpecializesInFrame
       (I := I) S Rm04 gInv frame roughLapRic := by
   have hOutput :=
-    rm04OutputSkew_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04OutputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hPair :=
-    rm04PairSymm_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04PairSymm_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hInput :=
     rm04InputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hRic : RicciSymmetricInFrameOnRegular (I := I) S frame :=
@@ -594,7 +593,6 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -624,7 +622,7 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
   ricciLichnerowiczEquationInFrame_of_ricciEvolution
     (I := I) S Rm04 gInv frame roughLapRic h_ricci
     (ricciLichnerowiczSpecializesInFrame_lc
-      (I := I) S hS Rm13 Rm04 gInv frame roughLapRic hframe hcover
+      (I := I) S Rm13 Rm04 gInv frame roughLapRic hframe hcover
       hTrace hRm13 hLower hinv)
 
 omit [SigmaCompactSpace M] in

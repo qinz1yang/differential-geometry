@@ -543,7 +543,7 @@ theorem coordCommAt
       have hcov :
           CovariantDerivative.ContMDiffCovariantDerivativeLocally
             (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-        connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
+        connSmoothOfSol (I := I) S (t : Real)
       have hfirst :
           DifferentialGeometry.Tensor.RicciIdentity.Nabla0SSectionRealizes (I := I) 2
             (S.family.connection (t : Real)) (S.ricci (t : Real))
@@ -565,7 +565,7 @@ theorem coordCommAt
           (S.ricci (t : Real) x) ((derivs (t : Real)).nablaA x)
           (nabla2Tensor (t : Real) x)
           ?_ rfl rfl h20 ?_
-      · exact rm13OfSol (I := I) S (t : Real) (D.regular_subset t.2)
+      · exact rm13OfSol (I := I) S (t : Real)
       · have htf :=
           DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
             (I := I) (lcAt_regular (I := I) S t)
@@ -575,13 +575,13 @@ theorem coordCommAt
           DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm13Trace (I := I)
             (S.ricci (t : Real)) (S.base.rm13 (t : Real)) := by
       intro t
-      exact ricciTraceOfSol (I := I) S (t : Real) (D.regular_subset t.2)
+      exact ricciTraceOfSol (I := I) S (t : Real)
     have hRm13 :
         ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
           DifferentialGeometry.Geometry.Curvature.Rm13RealizesConnection (I := I)
             (S.family.connection (t : Real)) (S.base.rm13 (t : Real)) := by
       intro t
-      exact rm13OfSol (I := I) S (t : Real) (D.regular_subset t.2)
+      exact rm13OfSol (I := I) S (t : Real)
     have hLower :
         ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
           DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I)
@@ -598,13 +598,13 @@ theorem coordCommAt
       simpa [SolutionOn.family, SolutionFamily.connection, SolutionFamily.rm13,
         SolutionFamily.rm04, metricCov] using h
     have hPair :=
-      rm04PairSymm_regular (I := I) S hS S.base.rm13 S.base.rm04
+      rm04PairSymm_regular (I := I) S S.base.rm13 S.base.rm04
         hRm13 hLower
     have hOutput :=
-      rm04OutputSkew_regular (I := I) S hS S.base.rm13 S.base.rm04
+      rm04OutputSkew_regular (I := I) S S.base.rm13 S.base.rm04
         hRm13 hLower
     have hFirst :=
-      rm04FirstBianchi_regular (I := I) S hS S.base.rm13 S.base.rm04
+      rm04FirstBianchi_regular (I := I) S S.base.rm13 S.base.rm04
         hRm13 hLower
     have hRic :
         ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
@@ -635,7 +635,6 @@ theorem ricciEvolCore
     [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv :
@@ -701,7 +700,7 @@ theorem ricciEvolCore
     (I := I) S Rm04 gInv (coordinateFrameAt (I := I) x₀) ({x₀} : Set M)
     nabla2Ric
     (ricciVarCore
-      (I := I) S hS gInv nablaRic nabla2Ric Rm13 x₀ hGamma
+      (I := I) S gInv nablaRic nabla2Ric Rm13 x₀ hGamma
       hginv_mdiff hN_mdiff hginv_zero hnabla2_at
       hRicTrace hRm hcurv hmix)
     hcomm
@@ -924,11 +923,11 @@ theorem coordRicciEvol
         (I := I) S S.base.rm04 gInv frame ({x₀} : Set M)
         (roughLapRicInFrame (M := M) gInv nabla2Ric) :=
     ricciEvolCore
-      (I := I) S hS S.base.rm13 S.base.rm04 gInv nablaRic nabla2Ric x₀
+      (I := I) S S.base.rm13 S.base.rm04 gInv nablaRic nabla2Ric x₀
       hGamma hginv_mdiff hN_mdiff hginv_zero hnabla2_at
-      (ricciTraceOfSol (I := I) S)
-      (rm13OfSol (I := I) S)
-      (connCurvOfSol (I := I) S hS x₀)
+      (fun s _ => ricciTraceOfSol (I := I) S s)
+      (fun s _ => rm13OfSol (I := I) S s)
+      (fun s _ => connCurvOfSol (I := I) S x₀ s)
       hmix hcomm
   have hAt := hEvol t x₀ (by simp) i j
   simpa [gInv, frame, nabla2Ric, coordRoughRic, ricciEvolutionRHSInFrame] using hAt

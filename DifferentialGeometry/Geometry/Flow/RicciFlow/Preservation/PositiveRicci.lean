@@ -397,7 +397,7 @@ theorem unitLower_raw
     exact hne ⟨⟨(⟨x, v⟩ : TangentBundle I M), hunit⟩, Set.mem_univ _⟩
 
 theorem unitTan_compact
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) :
     IsCompact (Set.univ : Set (UnitTangent (I := I) (M := M) g)) := by
   exact metricUnit_compact (I := I) (M := M) g
@@ -417,7 +417,7 @@ theorem unitRic_cont
   fin_cases i <;> simp [DifferentialGeometry.Geometry.Curvature.vec2]
 
 theorem unitLower_pos
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     (D : MetricRicciData (I := I) (M := M) G Ric)
@@ -428,7 +428,7 @@ theorem unitLower_pos
     (unitRic_cont (I := I) (M := M) D)
 
 theorem metricMin_pos
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
+    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     (D : MetricRicciData (I := I) (M := M) G Ric)
@@ -739,7 +739,7 @@ theorem initial_metric_ricci_data_positive
 
 theorem initial_scalar_curvature_continuous_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (h0 : (0 : Real) ∈ D.carrier) :
@@ -761,7 +761,7 @@ def PinchPres
 
 theorem ricciCov1
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (I := I) (E := E) (M := M) (S.base.connection t)
@@ -772,7 +772,7 @@ theorem ricciCov1
 
 theorem ricciCovInf
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (I := I) (E := E) (M := M) (S.base.connection t)
@@ -782,7 +782,7 @@ theorem ricciCovInf
 
 theorem ricciMetricComp
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen
       (I := I) (S.base.connection t) (S.base.metric t) := by
@@ -792,7 +792,7 @@ theorem ricciMetricComp
 
 noncomputable def ricciDerivsWMP
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     CanonicalSpatialDerivs0S (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (S.base.connection t) (S.ricci t) :=
@@ -802,21 +802,21 @@ noncomputable def ricciDerivsWMP
 
 noncomputable def ricciNablaWMP
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorNabla1SecFamily (I := I) (M := M) :=
   fun t => (ricciDerivsWMP (I := I) S t).nablaA
 
 noncomputable def ricciNabla2WMP
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorNabla2SecFamily (I := I) (M := M) :=
   fun t => (ricciDerivsWMP (I := I) S t).nabla2A
 
 theorem ricciSpatialWMP
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorSpatialDerivs (I := I) (M := M)
       (fun t : Real => S.base.connection t) S.ricci
@@ -831,7 +831,7 @@ theorem ricciSpatialWMP
 
 noncomputable def pinchSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) :
     TwoTensorSecFamily (I := I) (M := M) :=
   fun t =>
@@ -856,7 +856,7 @@ noncomputable def pinchSec
 
 noncomputable def pinchLipSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TwoTensorSecFamily (I := I) (M := M) :=
   fun t =>
@@ -876,7 +876,7 @@ noncomputable def pinchLipSec
 @[simp]
 theorem pinchLipSec_apply
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v w : TangentSpace I x) :
     (pinchLipSec (I := I) S t x) (vec2 (I := I) v w) =
@@ -900,7 +900,7 @@ theorem pinchLipSec_apply
 @[simp]
 theorem pinchSec_eq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) :
     twoTensorSecToFamily (I := I) (M := M) (pinchSec (I := I) S delta) =
       pinchTensor (I := I) (M := M) (fun t : Real => S.base.metric t)
@@ -930,7 +930,7 @@ theorem pinchSec_eq
 
 theorem pinchSec_at_trace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (delta t : Real) (x : M) :
     (pinchSec (I := I) S delta) t x =
@@ -1580,21 +1580,10 @@ theorem traceData_metricTrace
           DifferentialGeometry.Geometry.Curvature.delta3 :=
       DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t)
         basis horth
-    have hInvSym :
-        ∀ i j : Fin 3,
-          DifferentialGeometry.Geometry.Curvature.delta3 i j =
-            DifferentialGeometry.Geometry.Curvature.delta3 j i := by
-      intro i j
-      unfold DifferentialGeometry.Geometry.Curvature.delta3
-      by_cases hij : i = j
-      · subst j
-        simp
-      · have hji : j ≠ i := fun h => hij h.symm
-        simp [hij, hji]
     exact DifferentialGeometry.Geometry.Curvature.ricciFirstTraceAt_of_rm13
       (I := I) (S.base.metric t) basis DifferentialGeometry.Geometry.Curvature.delta3 hinv
       (S.ricci t x) (S.base.rm13 t x) (S.base.rm04 t x)
-      hRic13 hLowerAt hInvSym
+      hRic13 hLowerAt
   have hScalarTrace :
       DifferentialGeometry.Geometry.Curvature.ScalarRealizesRicciTraceAt (I := I)
         (metricTracePair0SAt (I := I) (S.base.metric t) (S.ricci t x))
@@ -1614,19 +1603,20 @@ theorem traceData_metricTrace
 @[simp]
 theorem pinchSec_quad
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real)
     (x : M) (v : TangentSpace I x) :
-    twoTensorSecToFamily (I := I) (M := M)
-        (pinchSec (I := I) S delta) t x v v =
+    (pinchSec (I := I) S delta t x) (vec2 (I := I) v v) =
       S.ricci t x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v) -
         delta * S.scalar t x * (S.family.metric t).inner x v v := by
+  change twoTensorSecToFamily (I := I) (M := M)
+    (pinchSec (I := I) S delta) t x v v = _
   rw [pinchSec_eq (I := I) S delta]
   simp [pinchTensor]
 
 theorem pinchSec_quad_deriv
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) {K : Set Real}
     {delta t ricDt scalarDt metricDt : Real}
     {x : M} {v : TangentSpace I x}
@@ -1671,17 +1661,14 @@ theorem pinchSec_quad_deriv
     hRic.sub hscaled
   refine hsub.congr_of_eventuallyEq ?_ ?_
   · filter_upwards with s
-    simpa [twoTensorSecToFamily, SolutionOn.ricci, SolutionOn.scalar,
-      SolutionOn.family, mul_assoc] using
-      (pinchSec_quad (I := I) (M := M) S delta s x v)
-  · simpa [twoTensorSecToFamily, SolutionOn.ricci, SolutionOn.scalar,
-      SolutionOn.family, mul_assoc] using
-      (pinchSec_quad (I := I) (M := M) S delta t x v)
+    simp [twoTensorSecToFamily, SolutionOn.ricci, SolutionOn.scalar,
+      SolutionOn.family, mul_assoc]
+  · simp [twoTensorSecToFamily, SolutionOn.ricci, SolutionOn.scalar,
+      SolutionOn.family, mul_assoc]
 
 theorem ricciQuadDeriv_coord
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
@@ -1767,9 +1754,8 @@ theorem ricciQuadDeriv_coord
   · exact hsum_eval (t : Real)
 
 theorem pinchQuadDeriv_coord
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {delta : Real}
@@ -1823,7 +1809,7 @@ theorem pinchQuadDeriv_coord
 
 noncomputable def pinchMetricDerivs
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     CanonicalSpatialDerivs0S (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (S.base.connection t)
@@ -1839,7 +1825,7 @@ noncomputable def pinchMetricDerivs
 @[simp]
 theorem pinchMetric_nabla
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (x : M) (slots : Fin 3 -> TangentSpace I x) :
     (pinchMetricDerivs (I := I) S t).nablaA x slots = 0 := by
@@ -1848,7 +1834,7 @@ theorem pinchMetric_nabla
 @[simp]
 theorem pinchMetric_nabla2
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (x : M) (slots : Fin 4 -> TangentSpace I x) :
     (pinchMetricDerivs (I := I) S t).nabla2A x slots = 0 := by
@@ -1856,7 +1842,7 @@ theorem pinchMetric_nabla2
 
 theorem pinchRough_smulMetric
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1893,7 +1879,7 @@ theorem pinchRough_smulMetric
 
 theorem pinchRough_hessMetric
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1937,7 +1923,7 @@ theorem pinchRough_hessMetric
 
 theorem scalarSmoothSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (fun x : M => S.scalar t x) := by
@@ -1946,7 +1932,7 @@ theorem scalarSmoothSec
 
 noncomputable def scalarDuSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     OneFormSection (I := I) (M := M) :=
   duSec (I := I) (fun x : M => S.scalar t x)
@@ -1954,7 +1940,7 @@ noncomputable def scalarDuSec
 
 noncomputable def scalarHessSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TwoTensorSection (I := I) (M := M) :=
   hessianSec (I := I) (S.base.connection t) (ricciCovInf (I := I) S t)
@@ -1962,7 +1948,7 @@ noncomputable def scalarHessSec
 
 noncomputable def scalarMetric1Sec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3 :=
@@ -1973,7 +1959,7 @@ noncomputable def scalarMetric1Sec
 
 noncomputable def scalarMetric2Sec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4 :=
@@ -1985,7 +1971,7 @@ noncomputable def scalarMetric2Sec
 @[simp]
 theorem scalarMetric1Sec_apply
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
     scalarMetric1Sec (I := I) S t x =
       (Bundle.continuousMultilinearMap.product_fun
@@ -1998,7 +1984,7 @@ theorem scalarMetric1Sec_apply
 @[simp]
 theorem scalarMetric2Sec_apply
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
     scalarMetric2Sec (I := I) S t x =
       (Bundle.continuousMultilinearMap.product_fun
@@ -2010,7 +1996,7 @@ theorem scalarMetric2Sec_apply
 
 theorem scalarHessTrace_eq_lap
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
         (scalarHessSec (I := I) S t x) Fin.elim0 =
@@ -2039,7 +2025,7 @@ theorem scalarHessTrace_eq_lap
 
 theorem ricciRoughTrace_coord
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (x : M) (v : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
@@ -2112,7 +2098,7 @@ theorem ricciRoughTrace_coord
 
 theorem ricciRoughPair
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (x : M) (v w : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
@@ -2180,7 +2166,7 @@ theorem ricciRoughPair
 
 theorem scalarMetric_trace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -2231,7 +2217,7 @@ private theorem trace_sub_smul
 
 def pinchNab2Model
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
   ricciNabla2WMP (I := I) S t x -
@@ -2239,7 +2225,7 @@ def pinchNab2Model
 
 theorem pinchNab2Model_trace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -2265,7 +2251,7 @@ theorem pinchNab2Model_trace
 
 theorem scalarHessSec_realizes
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 (S.base.connection t) (scalarDuSec (I := I) S t)
@@ -2279,7 +2265,7 @@ theorem scalarHessSec_realizes
 
 theorem scalarMetric1Sec_realizes
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       2 (S.base.connection t)
@@ -2407,7 +2393,7 @@ theorem scalarMetric1Sec_realizes
 
 theorem scalarMetric2Sec_realizes
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       3 (S.base.connection t) (scalarMetric1Sec (I := I) S t)
@@ -2616,7 +2602,7 @@ theorem scalarMetric2Sec_realizes
 
 noncomputable def pinchNablaModel
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) :
     TensorNabla1SecFamily (I := I) (M := M) :=
   fun t => ricciNablaWMP (I := I) S t -
@@ -2624,7 +2610,7 @@ noncomputable def pinchNablaModel
 
 noncomputable def pinchNab2ModelSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) :
     TensorNabla2SecFamily (I := I) (M := M) :=
   fun t => ricciNabla2WMP (I := I) S t -
@@ -2633,7 +2619,7 @@ noncomputable def pinchNab2ModelSec
 @[simp]
 theorem pinchNablaModel_apply
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real) (x : M) :
     pinchNablaModel (I := I) S delta t x =
       ricciNablaWMP (I := I) S t x -
@@ -2643,7 +2629,7 @@ theorem pinchNablaModel_apply
 @[simp]
 theorem pinchNab2ModelSec_apply
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real) (x : M) :
     pinchNab2ModelSec (I := I) S delta t x =
       pinchNab2Model (I := I) S delta t x := by
@@ -2651,7 +2637,7 @@ theorem pinchNab2ModelSec_apply
 
 theorem pinchHeat_coord
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real)
     (x : M) (v : TangentSpace I x) :
     tensorHeatWithDrift2QuadMetricAt (I := I) (S.base.metric t)
@@ -2681,7 +2667,7 @@ theorem pinchHeat_coord
 
 def ricciCoordQuadRHS
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v : TangentSpace I x) : Real :=
   ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -2696,7 +2682,7 @@ def ricciCoordQuadRHS
 
 def ricciCoordRough
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v : TangentSpace I x) : Real :=
   ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -2707,7 +2693,7 @@ def ricciCoordRough
 
 def ricciCoordReact
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v : TangentSpace I x) : Real :=
   ricciCoordQuadRHS (I := I) S t x v -
@@ -2715,7 +2701,7 @@ def ricciCoordReact
 
 noncomputable def ricciPairReact
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v w : TangentSpace I x) : Real :=
   ricciPairRHS (I := I) S t x v w -
@@ -2727,7 +2713,7 @@ noncomputable def ricciPairReact
 
 def pinchCoordTime
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (delta t : Real) (x : M) (v : TangentSpace I x) : Real :=
   ricciCoordQuadRHS (I := I) S t x v -
@@ -2743,7 +2729,7 @@ def pinchCoordTime
 
 def pinchCoordReact
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (delta t : Real) (x : M) (v : TangentSpace I x) : Real :=
   ricciCoordReact (I := I) S t x v -
@@ -2756,7 +2742,7 @@ def pinchCoordReact
 
 noncomputable def ricciActualReactAt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) : Tensor02At (I := I) (M := M) x :=
   (-2 : Real) •

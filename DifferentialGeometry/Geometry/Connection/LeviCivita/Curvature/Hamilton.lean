@@ -450,13 +450,9 @@ private theorem canRic_basis
     simp [Ric, Rm13,
       (CovariantDerivative.ricciSection_eq_trace
         (I := I) (M := M) cov hcov y)]
-  have hInvSym : ∀ i j : Idx,
-      identityInvMetric i j = identityInvMetric j i := by
-    intro i j
-    simp [identityInvMetric, diagonalInvMetric, eq_comm]
   have hTrace := ricciFirstTraceAt_of_rm13_section
     (I := I) g basis (identityInvMetric (Idx := Idx)) hinv
-    Ric Rm13 Rm04 hRic13 hLower hInvSym
+    Ric Rm13 Rm04 hRic13 hLower
   have h := hTrace a b
   simpa [cov, hcov, Rm04, Ric, identityInvMetric, diagonalInvMetric] using h
 

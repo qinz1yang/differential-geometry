@@ -1516,6 +1516,7 @@ private noncomputable def lapRm04Kn
 
 omit [IsManifold I 1 M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem lapRm04Kn_apply
     [IsManifold I 1 M] [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M)

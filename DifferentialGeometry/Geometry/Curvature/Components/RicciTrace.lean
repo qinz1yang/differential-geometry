@@ -120,6 +120,7 @@ theorem ricci_diag_eq_sum_rm04_diag_of_orthonormal
       Ric Rm13 Rm04 hRic hLower i j
   simpa [ricciCompAt_apply, rm04CompAt_apply] using hcomp
 
+omit [DecidableEq Idx] in
 theorem ricciCompAt_eq_contractTrace_of_realizes
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Ric : Tensor02Section (I := I) (M := M))
@@ -194,8 +195,7 @@ theorem ricciFirstTraceAt_of_rm13
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (hRic : Ric = ricciFromRm13At (I := I) (M := M) Rm13)
-    (hLower : Rm04LowersRm13At (I := I) g x Rm13 Rm04)
-    (_hInvSym : forall i j : Idx, gInv i j = gInv j i) :
+    (hLower : Rm04LowersRm13At (I := I) g x Rm13 Rm04) :
     RicciRealizesRm04FirstTraceAt (I := I) Ric Rm04 gInv basis := by
   intro i j
   have hcomp := ricciComp_eq_rm04_trace_of_rm13
@@ -214,11 +214,10 @@ theorem ricciFirstTraceAt_of_rm13_section
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRic : RicciTensorRealizesRm13Trace (I := I) Ric Rm13)
-    (hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x))
-    (hInvSym : forall i j : Idx, gInv i j = gInv j i) :
+    (hLower : Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x)) :
     RicciRealizesRm04FirstTraceAt (I := I) (Ric x) (Rm04 x) gInv basis := by
   exact ricciFirstTraceAt_of_rm13 (I := I) g basis gInv hinv
-    (Ric x) (Rm13 x) (Rm04 x) (hRic x) hLower hInvSym
+    (Ric x) (Rm13 x) (Rm04 x) (hRic x) hLower
 
 def RicciRealizesRm04TraceAt
     (Ric : Tensor02At (I := I) (M := M) x)

@@ -62,7 +62,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapComm_pointwise
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
@@ -73,7 +72,7 @@ theorem nablaLapComm_pointwise
       nablaLapCommReactionTerm (I := I) S (t : Real) x₀ a b c m := by
   classical
   have hR2 :=
-    nablaRm04_ricciIdentityAt (I := I) S hS t x₀
+    nablaRm04_ricciIdentityAt (I := I) S t x₀
       (coordinateFrameAt (I := I) x₀ a x₀) (coordinateFrameAt (I := I) x₀ c x₀)
       (nabla3InnerSlots (I := I) (coordinateFrameAt (I := I) x₀) x₀ b m)
   rw [nablaLapCommReactionTerm]
@@ -107,7 +106,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapComm_trace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real)
@@ -122,14 +120,13 @@ theorem nablaLapComm_trace
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun b _ => ?_
-  rw [← mul_sub, nablaLapComm_pointwise (I := I) S hS t x₀ a b c m]
+  rw [← mul_sub, nablaLapComm_pointwise (I := I) S t x₀ a b c m]
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaLapComm_orthonormalTrace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real)
@@ -140,7 +137,7 @@ theorem nablaLapComm_orthonormalTrace
       ∑ a : CoordinateIdx (𝕜 := Real) E,
         nablaLapCommReactionTerm (I := I) S (t : Real) x₀ a a c m := by
   classical
-  rw [nablaLapComm_trace (I := I) S hS t x₀ gInv c m]
+  rw [nablaLapComm_trace (I := I) S t x₀ gInv c m]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Finset.sum_eq_single a]
   · rw [horth a a, if_pos rfl, one_mul]
@@ -153,7 +150,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapComm_secondTerm_eq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
@@ -166,7 +162,7 @@ theorem nablaLapComm_secondTerm_eq
         nabla3Rm04Field (I := I) S (t : Real) x₀
           (nabla3FrameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ c a b m) := by
   have hR2 :=
-    nablaRm04_ricciIdentityAt (I := I) S hS t x₀
+    nablaRm04_ricciIdentityAt (I := I) S t x₀
       (coordinateFrameAt (I := I) x₀ a x₀) (coordinateFrameAt (I := I) x₀ c x₀)
       (nabla3InnerSlots (I := I) (coordinateFrameAt (I := I) x₀) x₀ b m)
   simp only [nabla3FrameTuple, nabla3InnerSlots] at hR2 ⊢
@@ -177,7 +173,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapCommReactionTerm_eq_nabla3
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
@@ -186,6 +181,6 @@ theorem nablaLapCommReactionTerm_eq_nabla3
           (nabla3FrameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ a b c m) -
         nabla3Rm04Field (I := I) S (t : Real) x₀
           (nabla3FrameTuple (I := I) (coordinateFrameAt (I := I) x₀) x₀ c a b m) :=
-  (nablaLapComm_pointwise (I := I) S hS t x₀ a b c m).symm
+  (nablaLapComm_pointwise (I := I) S t x₀ a b c m).symm
 
 end DifferentialGeometry.PDE.RicciFlow

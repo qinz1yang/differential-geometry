@@ -17,6 +17,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [T2Space M]
 variable [IsManifold I ∞ M] [SigmaCompactSpace M]
 
+omit [SigmaCompactSpace M] in
 theorem metric_lower_on
     {K : Set M} (hK : IsCompact K)
     (h gRef : SmoothRiemannianMetric I M) :
@@ -111,6 +112,7 @@ theorem metric_lower_on
       exact hne ⟨⟨(⟨x, s⁻¹ • v⟩ : TangentBundle I M), hunit⟩, by
         simpa [MetricUnitTangent.base] using hx⟩
 
+omit [SigmaCompactSpace M] in
 theorem metric_lower_bound_of_compact [CompactSpace M]
     (h gRef : SmoothRiemannianMetric I M) :
     ∃ c : Real, 0 < c ∧

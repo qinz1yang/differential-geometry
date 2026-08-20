@@ -1038,7 +1038,6 @@ theorem ricci_nonneg_wmp_raw
     {nabla2Ric : TensorNabla2Family (I := I) (M := M)}
     {nablaRic : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
-    (hT : 0 <= T)
     (hreg : TensorWMPRegularityOn (I := I) (M := M) G Ric X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G Ric X N nabla2Ric nablaRic T)
@@ -1047,7 +1046,7 @@ theorem ricci_nonneg_wmp_raw
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) Ric (Set.Icc 0 T) := by
   exact hamilton_tensor_wmp (I := I) (M := M) (G := G) (S := Ric)
     (X := X) (N := N) (nabla2S := nabla2Ric) (nablaS := nablaRic)
-    hT hreg hparabolic hnull hinit
+    hreg hparabolic hnull hinit
 
 theorem ricci_nonneg_wmp
     [I.Boundaryless] [T2Space M]
@@ -1100,7 +1099,6 @@ theorem ricci_pinch_wmp_raw
     {nabla2S : TensorNabla2Family (I := I) (M := M)}
     {nablaS : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
-    (hT : 0 <= T)
     (_hdelta0 : 0 <= delta) (_hdelta13 : delta <= (1 : Real) / 3)
     (hreg : TensorWMPRegularityOn (I := I) (M := M) G
       (pinchTensor (I := I) (M := M) G Ric scalar delta) X N T)
@@ -1116,7 +1114,7 @@ theorem ricci_pinch_wmp_raw
   exact hamilton_tensor_wmp (I := I) (M := M) (G := G)
     (S := pinchTensor (I := I) (M := M) G Ric scalar delta)
     (X := X) (N := N) (nabla2S := nabla2S) (nablaS := nablaS)
-    hT hreg hparabolic hnull hinit
+    hreg hparabolic hnull hinit
 
 theorem ricci_pinch_wmp
     [I.Boundaryless] [T2Space M]

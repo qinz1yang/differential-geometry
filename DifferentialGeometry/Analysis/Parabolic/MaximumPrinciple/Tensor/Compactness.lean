@@ -356,16 +356,32 @@ def TensorBarrierUniformStrictOnSlab
 def TensorFirstNullScalarSigns
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorFamily (I := I) (M := M))
-    (_X : TimeDependentVectorField (I := I) (M := M))
-    (_N : TwoTensorReaction (I := I) (M := M))
+    (X : TimeDependentVectorField (I := I) (M := M))
+    (N : TwoTensorReaction (I := I) (M := M))
+    (nabla2Barrier : TensorNabla2Family (I := I) (M := M))
+    (nablaBarrier : TensorNabla1Family (I := I) (M := M))
     (epsilon delta t0 : Real)
-    (_d : TensorFirstNullData (I := I) (M := M) G S epsilon delta t0) : Prop :=
-  ∃ timeDeriv laplacian drift reaction : Real,
-    timeDeriv ≤ 0 ∧
+    (d : TensorFirstNullData (I := I) (M := M) G S epsilon delta t0) : Prop :=
+  ∃ timeDeriv : TensorQuadraticFormFamily (I := I) (M := M),
+  ∃ laplacian drift reaction : Real,
+    (∀ t, t ∈ Set.Ioc t0 (t0 + delta) ->
+      ∀ x, ∀ v : TangentSpace I x,
+        HasDerivWithinAt
+          (fun s : Real =>
+            tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 s x v v)
+          (timeDeriv t x v) (Set.Ioc t0 (t0 + delta)) t) ∧
+    tensorHeatWithDrift2QuadMetricAt (I := I) (G d.t1) (X d.t1)
+        (nabla2Barrier d.t1 d.x1) (nablaBarrier d.t1 d.x1) d.v =
+      laplacian + drift ∧
+    reaction =
+      N d.t1 (G d.t1)
+        (tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 d.t1)
+        d.x1 d.v d.v ∧
+    timeDeriv d.t1 d.x1 d.v ≤ 0 ∧
     0 ≤ laplacian ∧
     drift = 0 ∧
     0 ≤ reaction ∧
-    drift + reaction < timeDeriv - laplacian
+    drift + reaction < timeDeriv d.t1 d.x1 d.v - laplacian
 
 structure TensorStrictCert
     (G : Real -> SmoothRiemannianMetric I M)
@@ -382,7 +398,8 @@ structure TensorStrictCert
     TensorNullEigenvectorCondition (I := I) (M := M) G N
       (Set.Icc t0 (t0 + delta)) ->
     ∀ d : TensorFirstNullData (I := I) (M := M) G S epsilon delta t0,
-      TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d
+      TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+        nabla2Barrier nablaBarrier epsilon delta t0 d
 
 def TensorStrictCertSlab
     (G : Real -> SmoothRiemannianMetric I M)
@@ -430,7 +447,8 @@ theorem scalarSigns_of_eval
       tensorHeatWithDrift2QuadMetricAt (I := I) (G d.t1) (X d.t1)
           (nabla2Barrier d.t1 d.x1) (nablaBarrier d.t1 d.x1) d.v =
         laplacian + drift) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   rcases hstrict with ⟨timeDeriv, hderiv, hstrict_eval⟩
   let reaction : Real :=
     N d.t1 (G d.t1)
@@ -473,7 +491,7 @@ theorem scalarSigns_of_eval
         timeDeriv d.t1 d.x1 d.v := by
     simpa [reaction] using
       hstrict_eval d.t1 d.t1_mem d.x1 d.v d.v_ne_zero
-  refine ⟨timeDeriv d.t1 d.x1 d.v, laplacian, drift, reaction,
+  refine ⟨timeDeriv, laplacian, drift, reaction, hderiv, hheat_eq, rfl,
     htime_nonpos timeDeriv hderiv, hlaplacian_nonneg, hdrift_zero,
     hreaction_nonneg, ?_⟩
   linarith
@@ -516,7 +534,8 @@ theorem scalarSigns_of_parts
     (hdrift :
       (nablaBarrier d.t1 d.x1)
         (Fin.cons (X d.t1 d.x1) (vec2 d.v d.v)) = drift) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   exact scalarSigns_of_eval (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nabla2Barrier := nabla2Barrier) (nablaBarrier := nablaBarrier)
@@ -563,7 +582,8 @@ theorem scalarSigns_of_lap
     (hdrift :
       (nablaBarrier d.t1 d.x1)
         (Fin.cons (X d.t1 d.x1) (vec2 d.v d.v)) = 0) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   exact scalarSigns_of_parts (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nabla2Barrier := nabla2Barrier) (nablaBarrier := nablaBarrier)
@@ -597,7 +617,8 @@ theorem scalarSigns_of_lap_firstNull
     (hdrift :
       (nablaBarrier d.t1 d.x1)
         (Fin.cons (X d.t1 d.x1) (vec2 d.v d.v)) = 0) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   exact scalarSigns_of_lap (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nabla2Barrier := nabla2Barrier) (nablaBarrier := nablaBarrier)
@@ -649,7 +670,8 @@ theorem scalarSigns_of_local
         d.x1 (Xsec d.x1) = 0)
     (hcovV :
       ∀ q : Fin 2, ((cov (fun p : M => V q p) d.x1) (Xsec d.x1)) = 0) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   apply scalarSigns_of_lap_firstNull (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nabla2Barrier := nabla2Barrier) (nablaBarrier := nablaBarrier)
@@ -660,7 +682,6 @@ theorem scalarSigns_of_local
 theorem scalarSigns_of_local_min
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -717,7 +738,8 @@ theorem scalarSigns_of_local_min
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G d.t1)
           (fun p : M => B p (fun q : Fin 2 => V q p)) y) d.x1) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   let phi : M -> Real := fun p => B p (fun q : Fin 2 => V q p)
   have hmin : IsLocalMin phi d.x1 :=
     firstNullLocalMin (I := I) (M := M) d V hV hB
@@ -741,7 +763,6 @@ theorem scalarSigns_of_local_min
 theorem scalarSigns_oneSec
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -800,7 +821,8 @@ theorem scalarSigns_oneSec
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G d.t1)
           (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) y) d.x1) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   let V : Fin 2 ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     fun _ => Vsec
@@ -936,7 +958,8 @@ theorem scalarSigns_hess
       MDiffAt (T% fun y : M =>
         gradientFun (I := I) (G d.t1)
           (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) y) d.x1) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   have hslots :
       ∀ U W : TangentSpace I d.x1,
         (nabla2Barrier d.t1 d.x1)
@@ -1021,9 +1044,10 @@ theorem scalarSigns_covHess
               (twoTensorSecToFamily (I := I) (M := M) S)
               epsilon delta t0 d.t1 p (Vsec p) (Vsec p)) :
     TensorFirstNullScalarSigns (I := I) (M := M) G
-      (twoTensorSecToFamily (I := I) (M := M) S) X N epsilon delta t0 d := by
+      (twoTensorSecToFamily (I := I) (M := M) S) X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   obtain ⟨Vsec, hV, hcovVall⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 d.x1 d.v
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov d.x1 d.v
   let phi : M -> Real := fun p => B p (vec2 (I := I) (Vsec p) (Vsec p))
   have hphi :
       ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) phi := by
@@ -1127,7 +1151,8 @@ theorem scalarSigns_secHess
     (hlapMin : LaplacianNonnegativeAtSpatialMin (I := I) (cov d.t1) (G d.t1))
     (hX : X d.t1 d.x1 = Xsec d.x1) :
     TensorFirstNullScalarSigns (I := I) (M := M) G
-      (twoTensorSecToFamily (I := I) (M := M) S) X N epsilon delta t0 d := by
+      (twoTensorSecToFamily (I := I) (M := M) S) X N
+      (fun t x => nabla2S t x) (fun t x => nablaS t x) epsilon delta t0 d := by
   let B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 :=
     (tensorBarrierSecFamily (I := I) (M := M) G S epsilon delta t0) d.t1
@@ -1196,7 +1221,6 @@ theorem scalarSigns_covZero
       (n := (∞ : WithTop ℕ∞)) 2}
     {nablaB : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3}
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (hstrict : TensorBarrierStrictSupersolutionOn (I := I) (M := M)
       G S X N nabla2Barrier nablaBarrier epsilon delta t0)
     (hnull : TensorNullEigenvectorCondition (I := I) (M := M)
@@ -1263,9 +1287,10 @@ theorem scalarSigns_covZero
         MDiffAt (T% fun y : M =>
           gradientFun (I := I) (G d.t1)
             (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) y) d.x1) :
-    TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d := by
+    TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+      nabla2Barrier nablaBarrier epsilon delta t0 d := by
   obtain ⟨Vsec, hV, hcovVall⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov d.x1 d.v
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov d.x1 d.v
   exact scalarSigns_oneSec (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N)
     (nabla2Barrier := nabla2Barrier) (nablaBarrier := nablaBarrier)

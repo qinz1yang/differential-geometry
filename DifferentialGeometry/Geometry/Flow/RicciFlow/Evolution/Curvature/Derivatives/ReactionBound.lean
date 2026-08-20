@@ -290,7 +290,6 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
@@ -386,7 +385,7 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
     funext y
     rw [nabla2SlotSections_apply (I := I) Vb Vc Vm y,
       nabla2SlotSections_apply (I := I) Vc Vb Vm y]
-    exact rm04_ricciIdentityAt (I := I) S hS t y
+    exact rm04_ricciIdentityAt (I := I) S t y
       (Vb y) (Vc y) (fun i : Fin 4 => Vm i y)
   rw [hfield]
 
@@ -395,7 +394,6 @@ theorem nablaLapComm_T1_eq_rm04_raise_leibniz
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
@@ -423,7 +421,7 @@ theorem nablaLapComm_T1_eq_rm04_raise_leibniz
                 (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀))))) := by
   classical
-  rw [nabla3_antisym_eq_covDeriv_curvatureAction_covConst (I := I) S hS t x₀
+  rw [nabla3_antisym_eq_covDeriv_curvatureAction_covConst (I := I) S t x₀
     X Vb Vc Vm hVb hVc hVm]
   have hKfield :
       (fun y : M =>
@@ -719,7 +717,6 @@ theorem abs_nablaLapComm_T1_covConst_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (basis : Module.Basis (Fin n) Real (TangentSpace I x₀))
@@ -757,7 +754,7 @@ theorem abs_nablaLapComm_T1_covConst_le
   have hNnabnn : 0 ≤ Nnab := Real.sqrt_nonneg _
   have hNRmnn : 0 ≤ NRm := Real.sqrt_nonneg _
   have hcardnn : (0 : Real) ≤ (Fintype.card (Fin n) : Real) := by positivity
-  rw [nablaLapComm_T1_eq_rm04_raise_leibniz (I := I) S hS t x₀ X Vb Vc Vm
+  rw [nablaLapComm_T1_eq_rm04_raise_leibniz (I := I) S t x₀ X Vb Vc Vm
     hVbcov hVccov hVmcov]
   rw [abs_neg]
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
@@ -867,7 +864,7 @@ theorem abs_nablaLapComm_T1_covConst_le
               (Fin.cons (X x₀) (fun _ : Fin 1 => basis e) : Fin 2 → TangentSpace I x₀) =
                 vec2 (I := I) (X x₀) (basis e) := by
             funext p; fin_cases p <;> rfl
-          rw [hcons2, nablaRmFrozenSlot_eval (I := I) S hS t q X Vm x₀
+          rw [hcons2, nablaRmFrozenSlot_eval (I := I) S t q X Vm x₀
             (fun i _ => hVmcov i) (basis e)]
           have htuple :
               (Fin.cons (X x₀)
@@ -919,7 +916,6 @@ theorem abs_nablaLapComm_T1_orthoBasis_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (frame : Fin n → (x : M) → TangentSpace I x)
@@ -939,16 +935,15 @@ theorem abs_nablaLapComm_T1_orthoBasis_le
           Real.sqrt (compNormSqMulti (fun idx : Fin 4 → Fin n =>
             S.base.rm04 (t : Real) x₀ (fun p => basis (idx p))))) := by
   classical
-  have hconn := connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   obtain ⟨Xa, hXa, _⟩ := exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis a)
+    (S.family.connection (t : Real)) x₀ (basis a)
   obtain ⟨Vb, hVb, hVbcov⟩ := exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis b)
+    (S.family.connection (t : Real)) x₀ (basis b)
   obtain ⟨Vc, hVc, hVccov⟩ := exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis c)
+    (S.family.connection (t : Real)) x₀ (basis c)
   choose Vm hVm hVmcov using fun i : Fin 4 =>
     exists_cov_zero_at_apply (I := I)
-      (S.family.connection (t : Real)) hconn x₀ (basis (m i))
+      (S.family.connection (t : Real)) x₀ (basis (m i))
   have hmtail : frameTuple (I := I) frame x₀ m = (fun i : Fin 4 => Vm i x₀) := by
     funext i
     change frame (m i) x₀ = Vm i x₀
@@ -968,7 +963,7 @@ theorem abs_nablaLapComm_T1_orthoBasis_le
     rw [hframe a, hframe c, hframe b, hXa, hVc, hVb, hmtail]
     rfl
   rw [htuple_a, htuple_acb]
-  exact abs_nablaLapComm_T1_covConst_le (I := I) S hS t x₀ basis horth Xa Vb Vc Vm
+  exact abs_nablaLapComm_T1_covConst_le (I := I) S t x₀ basis horth Xa Vb Vc Vm
     a b c m hXa hVb hVc hVm
     (hVbcov Xa) (hVccov Xa) (fun i => hVmcov i Xa)
 
@@ -1028,7 +1023,6 @@ theorem abs_nablaLapCommReactionTermF_orthoBasis_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (frame : Fin n → (x : M) → TangentSpace I x)
@@ -1050,7 +1044,7 @@ theorem abs_nablaLapCommReactionTermF_orthoBasis_le
         if i = j then (1 : Real) else 0 := horth
   rw [nablaLapCommReactionTermF]
   refine le_trans (abs_add_le _ _) ?_
-  have hT1 := abs_nablaLapComm_T1_orthoBasis_le (I := I) S hS t x₀ frame basis hframe
+  have hT1 := abs_nablaLapComm_T1_orthoBasis_le (I := I) S t x₀ frame basis hframe
     horth a b c m
   rw [compNormSqMulti_eq_compNormSq4_basis (I := I) (S.base.rm04 (t : Real) x₀) basis] at hT1
   have hT2 := abs_nablaLapComm_T2_orthoBasis_le (I := I) S (t : Real) x₀ frame basis
@@ -1064,7 +1058,6 @@ theorem abs_nablaLapCommReactionTerm_diag_orthoBasis_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (frame : Fin n → (x : M) → TangentSpace I x)
@@ -1090,7 +1083,7 @@ theorem abs_nablaLapCommReactionTerm_diag_orthoBasis_le
       |nablaLapCommReactionTermF (I := I) S (t : Real) x₀ frame a a c m| ≤
         (13 : Real) * (Fintype.card (Fin n) : Real) * (NRm * Nnab) := by
     intro a
-    have h := abs_nablaLapCommReactionTermF_orthoBasis_le (I := I) S hS t x₀
+    have h := abs_nablaLapCommReactionTermF_orthoBasis_le (I := I) S t x₀
       frame basis hframe horth a a c m
     rw [← hNRm, ← hNnab] at h
     exact h
@@ -1105,7 +1098,6 @@ theorem abs_spatialCommNablaRm_orthoFrame_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M) :
     ∃ (n : ℕ) (frame : Fin n → (x : M) → TangentSpace I x),
@@ -1132,9 +1124,9 @@ theorem abs_spatialCommNablaRm_orthoFrame_le
   refine ⟨n, frame, ?_, deltaInvMetric_orthonormal (M := M) (t : Real) x₀, ?_⟩
   · intro i j; rw [hframe i, hframe j]; exact horth i j
   intro c m
-  rw [nablaLapCommF_orthonormalTrace (I := I) S hS t x₀ frame
+  rw [nablaLapCommF_orthonormalTrace (I := I) S t x₀ frame
     (deltaInvMetric (M := M) (Idx := Fin n) (t : Real) x₀) (fun i j => rfl) c m]
-  have hbnd := abs_nablaLapCommReactionTerm_diag_orthoBasis_le (I := I) S hS t x₀
+  have hbnd := abs_nablaLapCommReactionTerm_diag_orthoBasis_le (I := I) S t x₀
     frame basis hframe horth c m
   have hRm :
       compNormSq4 (fun i j k l : Fin n =>

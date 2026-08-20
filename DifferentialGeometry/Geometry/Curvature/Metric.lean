@@ -533,7 +533,6 @@ theorem metricRicciSymm
         (metricRm13 (I := I) (M := M) g)
         (metricRm04 (I := I) (M := M) g)
         K.h_ricci13 hLower
-        (invMetric_symm (I := I) (M := M) g x basis gInv hinv)
     simpa using hTrace'
   have hcov1 :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally

@@ -261,7 +261,6 @@ omit [SigmaCompactSpace M] in
 theorem rm04_ricciIdentityAt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) :
     DifferentialGeometry.Tensor.RSTensor.Tensor0SRicciIdentityAt (I := I)
@@ -270,7 +269,7 @@ theorem rm04_ricciIdentityAt
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-    connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
+    connSmoothOfSol (I := I) S (t : Real)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -281,7 +280,7 @@ theorem rm04_ricciIdentityAt
     (S.base.rm04 (t : Real)) (nablaRm04Field (I := I) S (t : Real))
     (S.base.rm04 (t : Real) x) (nablaRm04Field (I := I) S (t : Real) x)
     (nabla2Rm04Field (I := I) S (t : Real) x)
-    (rm13OfSol (I := I) S (t : Real) (D.regular_subset t.2)) rfl rfl
+    (rm13OfSol (I := I) S (t : Real)) rfl rfl
     (rm04_nabla20SRealizesAt (I := I) S (t : Real) x) htor
 
 omit [I.Boundaryless] in
@@ -289,7 +288,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaRm04_ricciIdentityAt
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x : M) :
     DifferentialGeometry.Tensor.RSTensor.Tensor0SRicciIdentityAt (I := I)
@@ -298,7 +296,7 @@ theorem nablaRm04_ricciIdentityAt
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-    connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
+    connSmoothOfSol (I := I) S (t : Real)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -310,7 +308,7 @@ theorem nablaRm04_ricciIdentityAt
     (nablaRm04Field (I := I) S (t : Real) x)
     (nabla2Rm04Field (I := I) S (t : Real) x)
     (nabla3Rm04Field (I := I) S (t : Real) x)
-    (rm13OfSol (I := I) S (t : Real) (D.regular_subset t.2)) rfl rfl
+    (rm13OfSol (I := I) S (t : Real)) rfl rfl
     (nablaRm04_nabla20SRealizesAt (I := I) S (t : Real) x) htor
 
 end RicciIdentity

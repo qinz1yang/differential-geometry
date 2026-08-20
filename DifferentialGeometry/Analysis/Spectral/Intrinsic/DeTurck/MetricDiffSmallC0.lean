@@ -163,7 +163,7 @@ theorem gOpBound_unitQuad
       ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [BoundarylessManifold I M] in
+  [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem metricDiff_smallC0
     (g : Real → SmoothRiemannianMetric I M)
     (q : SmoothRiemannianMetric I M) {a b δ : Real}
@@ -357,7 +357,7 @@ theorem pairOpBound
       mul_le_mul_of_nonneg_left hqone (mul_nonneg (by norm_num) hε₀)
     _ = 2 * ε / (1 - ε) := by ring
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
-  [BoundarylessManifold I M] in
+  [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem metricPair_smallC0
     (g₀ g₁ : Real → SmoothRiemannianMetric I M)
     (q : SmoothRiemannianMetric I M) {a b δ : Real}

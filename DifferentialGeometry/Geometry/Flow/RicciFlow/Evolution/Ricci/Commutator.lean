@@ -538,9 +538,6 @@ theorem ricciSecCommLocId
         (fun a b : Idx => gInv (t : Real) x a b) hinvAt
         (S.ricci (t : Real)) (Rm13 (t : Real)) (Rm04 (t : Real))
         (hRicTrace13 t) (hLower t x)
-        (Tensor0SBundle.invMetric_symm
-          (I := I) (M := M) (S.family.metric (t : Real)) x
-          (hframe.toBasisAt hx) (fun a b : Idx => gInv (t : Real) x a b) hinvAt)
   have hIdComp :
       forall k l : Idx,
         nabla2Ric (t : Real) x k i j l -
@@ -972,11 +969,9 @@ theorem RicciContractedCommutatorsInFrame_of_differentiatedBianchi_and_tensor0S_
         hNabla2 hRicciId hRicTrace13 hLower hPair hOutput hFirst hRic))
 
 theorem RicciContractedCommutatorsInFrame_of_tensor0S_ricciIdentity_lc
-    [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
@@ -1012,11 +1007,11 @@ theorem RicciContractedCommutatorsInFrame_of_tensor0S_ricciIdentity_lc
     RicciContractedCommutatorsInFrame
       (I := I) S Rm04 gInv frame nabla2Ric := by
   have hOutput :=
-    rm04OutputSkew_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04OutputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hFirst :=
-    rm04FirstBianchi_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04FirstBianchi_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hPair :=
-    rm04PairSymm_regular (I := I) S hS Rm13 Rm04 hRm13 hLower
+    rm04PairSymm_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hInput :=
     rm04InputSkew_regular (I := I) S Rm13 Rm04 hRm13 hLower
   have hTrace : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)

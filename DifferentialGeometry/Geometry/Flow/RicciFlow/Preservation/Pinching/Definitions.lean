@@ -321,7 +321,6 @@ theorem trace_free_ricci_reaction_relation_of_diagonal_data
 
 theorem curvReact3_frame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -358,7 +357,6 @@ theorem curvReact3_frame
 
 theorem canonReact3_frame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -379,7 +377,6 @@ theorem canonReact3_frame
 
 theorem curv3_frame_neg
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -416,7 +413,6 @@ theorem curv3_frame_neg
 
 theorem canon3_frame_neg
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -590,7 +586,6 @@ theorem ricciCubeInv_diag {x : M}
 
 def ricciCube
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) : Real -> M -> Real :=
   fun t x => ricciCubeInvAt (I := I) (S.base.metric t) (S.ricciAt t x)
 
@@ -695,7 +690,7 @@ theorem curvRic_inner {x : M}
 
 theorem reactAt_eq_react
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {t : Real} {x : M}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
@@ -1252,7 +1247,6 @@ theorem scalarTrace_delta {x : M}
 
 omit [IsManifold I 1 M] in
 theorem firstTrace_delta
-    [SigmaCompactSpace M] [T2Space M]
     {x : M} (g : SmoothRiemannianMetric I M)
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
     (horth : DifferentialGeometry.Geometry.Curvature.OrthonormalBasisAt (I := I) g x basis)
@@ -1268,19 +1262,8 @@ theorem firstTrace_delta
       Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) g basis horth
-  have hInvSym :
-      ∀ i j : Fin 3,
-        DifferentialGeometry.Geometry.Curvature.delta3 i j =
-          DifferentialGeometry.Geometry.Curvature.delta3 j i := by
-    intro i j
-    unfold DifferentialGeometry.Geometry.Curvature.delta3
-    by_cases hij : i = j
-    · subst j
-      simp
-    · have hji : j ≠ i := fun h => hij h.symm
-      simp [hij, hji]
   exact DifferentialGeometry.Geometry.Curvature.ricciFirstTraceAt_of_rm13 (I := I) g basis
-    DifferentialGeometry.Geometry.Curvature.delta3 hinv Ric Rm13 Rm04 hRic hLower hInvSym
+    DifferentialGeometry.Geometry.Curvature.delta3 hinv Ric Rm13 Rm04 hRic hLower
 
 theorem delta3_symm (i j : Fin 3) :
     DifferentialGeometry.Geometry.Curvature.delta3 i j =
@@ -1496,7 +1479,6 @@ theorem ricciSym_rm04
 
 theorem trace_free_ricci_reaction_relation_of_diagonal_frame_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -1560,7 +1542,6 @@ theorem trace_free_ricci_reaction_relation_of_diagonal_frame_data
 
 theorem trace_free_ricci_reaction_relation_of_curvature_trace_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))
@@ -1622,7 +1603,6 @@ theorem trace_free_ricci_reaction_relation_of_curvature_trace_data
 
 theorem trace_free_ricci_reaction_relation_of_first_trace_frame_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M (Fin 3))

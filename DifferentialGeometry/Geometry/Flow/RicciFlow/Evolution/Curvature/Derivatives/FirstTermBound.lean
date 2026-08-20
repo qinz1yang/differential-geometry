@@ -30,7 +30,6 @@ theorem nablaLapComm_T1_eq_covDerivK
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
@@ -51,6 +50,6 @@ theorem nablaLapComm_T1_eq_covDerivK
             (nabla3CorrectedSlots (I := I) S (t : Real) x₀ a b c m q 1)
             (fun r : Fin 4 =>
               nabla3CorrectedSlots (I := I) S (t : Real) x₀ a b c m q (Fin.succ (Fin.succ r))) :=
-  nablaLapComm_T1_eq_covDeriv_curvatureAction (I := I) S hS t x₀ a b c m
+  nablaLapComm_T1_eq_covDeriv_curvatureAction (I := I) S t x₀ a b c m
 
 end DifferentialGeometry.PDE.RicciFlow

@@ -156,7 +156,6 @@ private theorem updateSlots_apply {s : ℕ}
 theorem freezeNabla_leibniz {s : ℕ}
     [T2Space M] [IsManifold I 1 M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (q : Fin s)
@@ -179,7 +178,7 @@ theorem freezeNabla_leibniz {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) 1 :=
     freezeAllBut0SField (I := I) (M := M) A q Y with hB_def
   obtain ⟨Usec, hUsec, hUcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x U
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x U
   set V4 : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) := Function.update Y q Usec with hV4_def
   let V1 : Fin 1 → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -337,7 +336,6 @@ theorem freezeNabla_leibniz {s : ℕ}
 theorem allBut0SFreezeNabla {s : ℕ}
     [T2Space M] [IsManifold I 1 M]
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (q : Fin s)
@@ -351,7 +349,7 @@ theorem allBut0SFreezeNabla {s : ℕ}
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         s cov A x (Fin.cons (X x)
           (Function.update (fun i : Fin s => Y i x) q U)) := by
-  rw [freezeNabla_leibniz (I := I) cov hcov A q X Y U]
+  rw [freezeNabla_leibniz (I := I) cov A q X Y U]
   have hsum :
       (∑ i ∈ Finset.univ.erase q,
           A x

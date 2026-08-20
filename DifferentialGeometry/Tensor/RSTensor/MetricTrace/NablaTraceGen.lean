@@ -161,7 +161,6 @@ private theorem tailFreezeNablaGen {s : ℕ}
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -179,9 +178,9 @@ private theorem tailFreezeNablaGen {s : ℕ}
   set B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := freezeTailField (I := I) (M := M) A Y with hBdef
   obtain ⟨Usec, hUsec, hUcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x U
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x U
   obtain ⟨Vsec, hVsec, hVcov⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x V
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x V
   let V2 : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)
     | ⟨0, _⟩ => Usec
@@ -450,7 +449,6 @@ theorem nabla_metricTraceFirstTwo0S {s : ℕ}
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -472,7 +470,7 @@ theorem nabla_metricTraceFirstTwo0S {s : ℕ}
     ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x X
   choose Vtail hVtailx hVtailcov using fun b : Fin s =>
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov x (tail b)
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x (tail b)
   let B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := freezeTailField (I := I) (M := M) A Vtail
   let traceB : M -> Real := fun y => metricTracePair0SAt (I := I) g (B y)
@@ -535,7 +533,7 @@ theorem nabla_metricTraceFirstTwo0S {s : ℕ}
   refine Finset.sum_congr rfl fun j _ => ?_
   congr 1
   have hfreeze :=
-    tailFreezeNablaGen (I := I) (M := M) cov hcov A Xsec Vtail
+    tailFreezeNablaGen (I := I) (M := M) cov A Xsec Vtail
       (fun b => hVtailcov b Xsec) (basis i) (basis j)
   rw [← hXsec, show tail = (fun b : Fin s => Vtail b x) from (funext hVtailx).symm]
   exact hfreeze
@@ -897,7 +895,6 @@ theorem nablaRealizes_metricTraceFirstTwo {s : ℕ}
     [T2Space M] [CompleteSpace E] [I.Boundaryless] [IsManifold I 1 M]
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov 1)
     (g : SmoothRiemannianMetric I M)
     (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -924,7 +921,7 @@ theorem nablaRealizes_metricTraceFirstTwo {s : ℕ}
       (I := I) g x
   rw [← totalNabla0SFun_apply_section (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         s cov X (metricTraceFirstTwoField (I := I) (M := M) g A) x slots,
-    nabla_metricTraceFirstTwo0S (I := I) (M := M) cov hcov g hmc A basis gInv hinv (X x) slots]
+    nabla_metricTraceFirstTwo0S (I := I) (M := M) cov g hmc A basis gInv hinv (X x) slots]
   rw [metricTraceFirstTwoField_eq_sum (I := I) (M := M) g
         (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
           (E := TangentSpace I) (∞ : WithTop ℕ∞) (traceNablaShuffle s) nablaA) x

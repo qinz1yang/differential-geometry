@@ -327,9 +327,6 @@ private theorem nabla_trace_field [I.Boundaryless] {s : ℕ}
           (E := TangentSpace I) (∞ : WithTop ℕ∞)
           (DifferentialGeometry.Tensor.RSTensor.traceNablaShuffle s)
           (metricNabla0S (I := I) g A)) := by
-  have hcov1 :=
-    DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-      (I := I) (M := M) g
   have hmc :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
       (I := I) g
@@ -339,7 +336,7 @@ private theorem nabla_trace_field [I.Boundaryless] {s : ℕ}
       (DifferentialGeometry.Tensor.RSTensor.metricTraceFirstTwoField
         (I := I) (M := M) g A) _)
     (DifferentialGeometry.Tensor.RSTensor.nablaRealizes_metricTraceFirstTwo
-      (I := I) (M := M) (metricCov (I := I) g) hcov1 g hmc A (metricNabla0S (I := I) g A)
+      (I := I) (M := M) (metricCov (I := I) g) g hmc A (metricNabla0S (I := I) g A)
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2)
         (metricCov (I := I) g) A _))
 

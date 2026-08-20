@@ -329,8 +329,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem rawCoord_eq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
-    (x₀ : M) (t : Real) (ht : t ∈ D.carrier)
+    (x₀ : M) (t : Real)
     (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     (∑ p : CoordinateIdx (𝕜 := Real) E,
         DifferentialGeometry.Geometry.Curvature.christoffelCurvCoeffAt
@@ -347,11 +346,11 @@ private theorem rawCoord_eq
   let Dv := coordinateFrameAt (I := I) x₀ (m 3) x₀
   let β := tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
     (S.base.ricciAt t x₀) Dv
-  have hcov := connSmoothOfSol (I := I) S hS t ht
+  have hcov := connSmoothOfSol (I := I) S t
   have hcoord :=
     DifferentialGeometry.Geometry.Curvature.rm13_eval_eq_christoffelCurvCoord
       (I := I) (S.family.connection t) hcov (S.base.rm13 t) x₀ β
-      (rm13OfSol (I := I) S t ht) (connCurvOfSol (I := I) S hS x₀ t ht)
+      (rm13OfSol (I := I) S t) (connCurvOfSol (I := I) S x₀ t)
       (m 0) (m 1) (m 2)
   have hβ (p : CoordinateIdx (𝕜 := Real) E) :
       β (fun _ : Fin 1 ↦ coordinateFrameAt (I := I) x₀ p x₀) =
@@ -393,8 +392,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem rm04Var_eq_tensor
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
-    (x₀ : M) (t : Real) (ht : t ∈ D.carrier)
+    (x₀ : M) (t : Real)
     (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     rm04VarRHS (I := I) S x₀ (coordNab2Ric (I := I) S x₀) t m =
       varTensor (I := I) (S.base.metric t) (solNabla2Ric (I := I) S t x₀)
@@ -431,7 +429,7 @@ private theorem rm04Var_eq_tensor
     ring
   have hΓA := gammaLower_eq (I := I) S x₀ t (m 0) (m 1) (m 2) (m 3)
   have hΓB := gammaLower_eq (I := I) S x₀ t (m 1) (m 0) (m 2) (m 3)
-  have hraw := rawCoord_eq (I := I) S hS x₀ t ht m
+  have hraw := rawCoord_eq (I := I) S x₀ t m
   have hvec :
       (fun q ↦ coordinateFrameAt (I := I) x₀ (m q) x₀) =
         vec4 (I := I)
@@ -653,8 +651,8 @@ private theorem rm04Var_of_solution
               metricCompInFrame (I := I) S frame s x₀ (m 3) p := by
       intro s hs
       simpa [frame] using solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
-        (I := I) S x₀ s (rm13OfSol (I := I) S s hs)
-        (connCurvOfSol (I := I) S hS x₀ s hs) m
+        (I := I) S x₀ s (rm13OfSol (I := I) S s)
+        (connCurvOfSol (I := I) S x₀ s) m
     have hraw :
         HasDerivWithinAt
           (fun s : Real ↦ solutionCurvatureComponents (I := I) S x₀ s x₀ m)
@@ -724,8 +722,7 @@ private theorem rm04Var_of_solution
       refine Finset.sum_congr rfl fun p _hp ↦ ?_
       rw [hgamma (m 0) p (m 1) (m 2), hgamma (m 1) p (m 0) (m 2)]
     have h := hraw.congr_deriv
-      (hderiv.trans (rm04Var_eq_tensor
-        (I := I) S hS x₀ (t : Real) (D.regular_subset t.2) m))
+      (hderiv.trans (rm04Var_eq_tensor (I := I) S x₀ (t : Real) m))
     simpa only [solutionCurvatureComponents_apply] using h
   have htransport := rm04Deriv_of_coord (I := I) S x₀ t
     (fun m ↦ varTensor (I := I) (S.base.metric (t : Real))

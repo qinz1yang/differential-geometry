@@ -331,7 +331,6 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
     [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (rhs :
       Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
         CoordinateIdx (𝕜 := Real) E -> Real)
@@ -379,7 +378,7 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
     rw [hRicTrace s hs x₀]
     exact
       DifferentialGeometry.Geometry.Curvature.ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
-      (I := I) (S.family.connection s) (connSmoothOfSol (I := I) S hS s hs) (Rm13 s) x₀
+      (I := I) (S.family.connection s) (connSmoothOfSol (I := I) S s) (Rm13 s) x₀
       (hRm s hs) (hcurv s hs) i j
   exact hderiv.congr
     (fun s hs => hricci s hs)
@@ -678,7 +677,6 @@ theorem ricciVarCore
     [IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (gInv :
       Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M
         (CoordinateIdx (𝕜 := Real) E))
@@ -746,7 +744,7 @@ theorem ricciVarCore
       ChristoffelEvolutionEquationInFrameOn] using hGamma
   have hlocal :=
     ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
-      (I := I) S hS (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
+      (I := I) S (christoffelEvolutionRHSInFrame (M := M) gInv nablaRic)
       Rm13 x₀ hRicTrace hRm hcurv hvar hmix
   intro t x hx i j
   have hx_eq : x = x₀ := by
@@ -924,7 +922,7 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
     intro t
     exact hnablaReg.second (t : Real) x₀ hx₀
   exact ricciVarCore
-    (I := I) S hS gInv nablaRic nabla2Ric Rm13 x₀ hGamma
+    (I := I) S gInv nablaRic nabla2Ric Rm13 x₀ hGamma
     hginv_mdiff hN_mdiff hginv_zero hnabla2_at
     hRicTrace hRm hcurv hmix
 

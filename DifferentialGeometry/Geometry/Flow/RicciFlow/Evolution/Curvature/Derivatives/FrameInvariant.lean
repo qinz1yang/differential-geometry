@@ -110,7 +110,6 @@ theorem abs_spatialCommNablaRm_intrinsic_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M) :
     ∃ (n : ℕ) (frame : Fin n → (x : M) → TangentSpace I x),
@@ -131,7 +130,7 @@ theorem abs_spatialCommNablaRm_intrinsic_le
                 (nablaRm04Field (I := I) S (t : Real) x₀))) := by
   classical
   obtain ⟨n, frame, hortho, hinv, hbnd⟩ :=
-    abs_spatialCommNablaRm_orthoFrame_le (I := I) S hS t x₀
+    abs_spatialCommNablaRm_orthoFrame_le (I := I) S t x₀
   obtain ⟨n', frame', basis, hframe', horth'⟩ :=
     exists_orthoBasisFrameAt (I := I) S (t : Real) x₀
   refine ⟨n', frame', ?_, deltaInvMetric_orthonormal (M := M) (t : Real) x₀, ?_⟩
@@ -150,9 +149,9 @@ theorem abs_spatialCommNablaRm_intrinsic_le
                 nablaRm04Field (I := I) S s y (vec5 (I := I)
                   (frame' i y) (frame' j y) (frame' k y) (frame' l y) (frame' p y)))
               (deltaInvMetric (M := M)) (t : Real) x₀)) := by
-    rw [nablaLapCommF_orthonormalTrace (I := I) S hS t x₀ frame'
+    rw [nablaLapCommF_orthonormalTrace (I := I) S t x₀ frame'
       (deltaInvMetric (M := M) (Idx := Fin n') (t : Real) x₀) (fun i j => rfl) c m]
-    have hreact := abs_nablaLapCommReactionTerm_diag_orthoBasis_le (I := I) S hS t x₀
+    have hreact := abs_nablaLapCommReactionTerm_diag_orthoBasis_le (I := I) S t x₀
       frame' basis hframe' horth' c m
     have hRm :
         compNormSq4 (fun i j k l : Fin n' =>

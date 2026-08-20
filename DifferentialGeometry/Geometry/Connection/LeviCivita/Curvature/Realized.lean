@@ -102,12 +102,6 @@ theorem canScalHess
   let hcov :=
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g
-  let hcov1 :
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (I := I) (E := E) (M := M) cov (1 : WithTop ℕ∞) := by
-    simpa [cov] using
-      (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-        (I := I) (M := M) g)
   let Ric : Tensor02Section (I := I) (M := M) :=
     DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection (I := I) (M := M) cov
       hcov
@@ -123,12 +117,12 @@ theorem canScalHess
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       3 cov nablaRic x
   have hleft :=
-    nabla2Trace02 (I := I) (M := M) cov hcov hcov1 g
+    nabla2Trace02 (I := I) (M := M) cov hcov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       Ric basis gInv hinv (basis i) (basis j)
   have hright :=
-    nabla2Trace02 (I := I) (M := M) cov hcov hcov1 g
+    nabla2Trace02 (I := I) (M := M) cov hcov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       Ric basis gInv hinv (basis j) (basis i)
@@ -141,16 +135,16 @@ theorem canScalHess
           (basis k) (basis l)))
         =
       Hess x (vec2 (I := I) (basis i) (basis j)) := by
-        simpa [cov, hcov, hcov1, Ric, scalar, hscalar, Hess, nablaRic, nabla2Ric]
+        simpa [cov, hcov, Ric, scalar, hscalar, Hess, nablaRic, nabla2Ric]
           using hleft.symm
     _ =
       Hess x (vec2 (I := I) (basis j) (basis i)) := by
-        simpa [cov, hcov, hcov1, Ric, scalar, hscalar, Hess] using hsymm
+        simpa [cov, hcov, Ric, scalar, hscalar, Hess] using hsymm
     _ =
       ∑ k : Idx, ∑ l : Idx,
         gInv k l * nabla2Ric (vec4 (I := I) (basis j) (basis i)
           (basis k) (basis l)) := by
-        simpa [cov, hcov, hcov1, Ric, scalar, hscalar, Hess, nablaRic, nabla2Ric]
+        simpa [cov, hcov, Ric, scalar, hscalar, Hess, nablaRic, nabla2Ric]
           using hright
 
 private theorem update_comp_perm {s : ℕ} {β : Type*}
@@ -574,15 +568,15 @@ theorem canRmSecond
   dsimp [SecondBianchiAt]
   intro A X Y Z W
   obtain ⟨Asec, hAsec, hcovA⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x A
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x A
   obtain ⟨Xsec, hXsec, hcovX⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x X
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x X
   obtain ⟨Ysec, hYsec, hcovY⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x Y
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x Y
   obtain ⟨Zsec, hZsec, hcovZ⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x Z
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x Z
   obtain ⟨Wsec, hWsec, hcovW⟩ :=
-    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov hcov1 x W
+    TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x W
   let Rsec : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     ⟨fun p : M =>
@@ -976,18 +970,13 @@ theorem canRicField
     simpa [basis, gInv] using
       (Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) g y)
-  have hInvSym : ∀ i j, gInv i j = gInv j i := by
-    intro i j
-    simpa [gInv] using
-      (DifferentialGeometry.Tensor.Coordinates.gInvChart_symm (I := I) g y
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_mem (I := I) y) i j)
   have hLower :
       Rm04LowersRm13At (I := I) g y (Rm13 y) (Rm04 y) :=
     rm04LowersRm13At_of_realizes (I := I) g cov Rm13 Rm04 hRm13 hRm04 y
   have hTrace :
       RicciRealizesRm04FirstTraceAt (I := I) (Ric y) (Rm04 y) gInv basis := by
     exact ricciFirstTraceAt_of_rm13_section (I := I) g basis gInv hinv
-      Ric Rm13 Rm04 hRic13 hLower hInvSym
+      Ric Rm13 Rm04 hRic13 hLower
   apply ext0S_basis (I := I) basis
   intro slots
   have hslots :
@@ -1064,14 +1053,8 @@ theorem canRicTrace
   have hRicField : Ric = trace04Field (I := I) (M := M) g Rm04 := by
     simpa [cov, hcov, Rm04, Ric] using
       (canRicField (I := I) (M := M) g)
-  have hcov1 :
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (I := I) (E := E) (M := M) cov (1 : WithTop ℕ∞) := by
-    simpa [cov] using
-      (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-        (I := I) (M := M) g)
   have htrace :=
-    nablaTrace04 (I := I) (M := M) cov hcov1 g
+    nablaTrace04 (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       Rm04 basis gInv hinv A B C
@@ -1118,12 +1101,6 @@ theorem canNabla2RicTrace
   let hcov :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g
-  let hcov1 :
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (I := I) (E := E) (M := M) cov (1 : WithTop ℕ∞) := by
-    simpa [cov] using
-      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-        (I := I) (M := M) g)
   let Rm04 : Tensor04Section (I := I) (M := M) :=
     DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section (I := I) g cov hcov
   let Ric : Tensor02Section (I := I) (M := M) :=
@@ -1167,7 +1144,7 @@ theorem canNabla2RicTrace
   have hTrace : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 cov
         (metricTraceFirstTwoField (I := I) (M := M) g rmPerm) traceNablaRm := by
-    exact nablaRealizes_metricTraceFirstTwo (I := I) (M := M) cov hcov1 g
+    exact nablaRealizes_metricTraceFirstTwo (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       rmPerm nablaRmPerm hRmPerm
@@ -1197,7 +1174,7 @@ theorem canNabla2RicTrace
           gInv i j * nabla2Rm04
             (Fin.cons A (vec5 (I := I) B (basis i) C D (basis j))) := by
     rw [hnablaRic]
-    rw [nabla_metricTraceFirstTwo0S (I := I) (M := M) cov hcov1 g
+    rw [nabla_metricTraceFirstTwo0S (I := I) (M := M) cov g
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
         (I := I) g)
       _ basis gInv hinv A (vec3 (I := I) B C D)]

@@ -151,7 +151,7 @@ theorem tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (X t x)
   have hsigns : TensorFirstNullScalarSigns (I := I) (M := M)
-      G Sraw X N 0 t 0 d :=
+      G Sraw X N (fun q y => nabla2S q y) (fun q y => nablaS q y) 0 t 0 d :=
     scalarSigns_secHess (I := I) (M := M)
       (G := G) (S := S) (X := X) (N := N)
       (nablaS := nablaS) (nabla2S := nabla2S) (cov := cov)

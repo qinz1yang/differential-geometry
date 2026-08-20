@@ -577,7 +577,7 @@ theorem nabla_reLower_eval (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
       2 (metricCov (I := I) g₂) (metricTensorField (I := I) g₁) _
   rw [reLower_eq_trace,
     nabla_metricTraceFirstTwo0S (I := I) (M := M) (metricCov (I := I) g₂)
-      (metricCov_one (I := I) g₂) g₂ hmc
+      g₂ hmc
       (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
         (E := TangentSpace I) (∞ : WithTop ℕ∞) (reLowerPermutationWithTwoInputs s)
         (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)

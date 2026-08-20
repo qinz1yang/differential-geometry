@@ -64,7 +64,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapCommF_pointwise
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -76,7 +75,7 @@ theorem nablaLapCommF_pointwise
       nablaLapCommReactionTermF (I := I) S (t : Real) x₀ frame a b c m := by
   classical
   have hR2 :=
-    nablaRm04_ricciIdentityAt (I := I) S hS t x₀
+    nablaRm04_ricciIdentityAt (I := I) S t x₀
       (frame a x₀) (frame c x₀)
       (nabla3InnerSlotsF (I := I) frame x₀ b m)
   rw [nablaLapCommReactionTermF]
@@ -113,7 +112,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapCommF_trace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -129,14 +127,13 @@ theorem nablaLapCommF_trace
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun b _ => ?_
-  rw [← mul_sub, nablaLapCommF_pointwise (I := I) S hS t x₀ frame a b c m]
+  rw [← mul_sub, nablaLapCommF_pointwise (I := I) S t x₀ frame a b c m]
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem nablaLapCommF_orthonormalTrace
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (frame : Idx → (x : M) → TangentSpace I x)
@@ -148,7 +145,7 @@ theorem nablaLapCommF_orthonormalTrace
       ∑ a : Idx,
         nablaLapCommReactionTermF (I := I) S (t : Real) x₀ frame a a c m := by
   classical
-  rw [nablaLapCommF_trace (I := I) S hS t x₀ frame gInv c m]
+  rw [nablaLapCommF_trace (I := I) S t x₀ frame gInv c m]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Finset.sum_eq_single a]
   · rw [horth a a, if_pos rfl, one_mul]
@@ -217,7 +214,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapComm_orthoFrame
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M) :
     ∃ (n : ℕ) (frame : Fin n → (x : M) → TangentSpace I x),
@@ -237,7 +233,7 @@ theorem nablaLapComm_orthoFrame
   obtain ⟨n, frame, horthFrame⟩ := exists_orthoFrameAt (I := I) S (t : Real) x₀
   refine ⟨n, frame, horthFrame, deltaInvMetric_orthonormal (M := M) (t : Real) x₀, ?_⟩
   intro c m
-  exact nablaLapCommF_orthonormalTrace (I := I) S hS t x₀ frame
+  exact nablaLapCommF_orthonormalTrace (I := I) S t x₀ frame
     (deltaInvMetric (M := M) (Idx := Fin n) (t : Real) x₀)
     (fun i j => rfl) c m
 

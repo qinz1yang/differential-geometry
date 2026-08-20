@@ -43,16 +43,11 @@ theorem nabla_roughLap0S_nablaKRm
         gInv i j *
           nablaKRm04Field (I := I) S t (k + 3) x
             (Fin.cons X (metricTraceInput (I := I) (basis i) (basis j) tail)) := by
-  have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally
-      (S.family.connection t) (1 : WithTop ℕ∞) := by
-    simpa [SolutionFamily.connection, metricCov] using
-      leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one
-        (I := I) (M := M) (S.base.metric t)
   have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
       (S.family.connection t) (S.base.metric t) := by
     simpa [SolutionFamily.connection, metricCov] using
       leviCivitaConnectionOfMetric_isMetricCompatible (I := I) (S.base.metric t)
-  refine (nabla_metricTraceFirstTwo0S (I := I) (M := M) (S.family.connection t) hcov
+  refine (nabla_metricTraceFirstTwo0S (I := I) (M := M) (S.family.connection t)
     (S.base.metric t) hmc (nablaKRm04Field (I := I) S t (k + 2)) basis gInv hinv X
     tail).trans ?_
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -101,7 +96,6 @@ theorem spatialComm_nablaKRm_split
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -129,7 +123,7 @@ theorem spatialComm_nablaKRm_split
   refine Finset.sum_congr rfl fun i _ => ?_
   refine Finset.sum_congr rfl fun j _ => ?_
   congr 1
-  have h := (nablaKRm04_ricciIdentityAt (I := I) S hS t (k + 1) x)
+  have h := (nablaKRm04_ricciIdentityAt (I := I) S t (k + 1) x)
     (basis i) X (Fin.cons (basis j) tail)
   have hCC :
       (nablaKRm04Field (I := I) S (t : Real) (k + 3) x)

@@ -166,7 +166,6 @@ omit [SigmaCompactSpace M] in
 theorem nabla2Rm04Field_antisym_eq_curvatureAction_field
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
@@ -184,7 +183,7 @@ theorem nabla2Rm04Field_antisym_eq_curvatureAction_field
           (frameTuple (I := I) (coordinateFrameAt (I := I) x₀) p m) := by
   funext p
   set frame := coordinateFrameAt (I := I) x₀ with hframe_def
-  have hR := rm04_ricciIdentityAt (I := I) S hS t p
+  have hR := rm04_ricciIdentityAt (I := I) S t p
     (frame b p) (frame c p) (frameTuple (I := I) frame p m)
   rw [nabla3SlotFields_eq_metricTraceInput (I := I) frame p b c m,
     nabla3SlotFields_eq_metricTraceInput (I := I) frame p c b m]
@@ -228,14 +227,13 @@ omit [SigmaCompactSpace M] in
 theorem nabla2Rm04Field_slot01_antisym
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M) (W : Fin 6 → TangentSpace I x₀) :
     nabla2Rm04Field (I := I) S (t : Real) x₀ W -
         nabla2Rm04Field (I := I) S (t : Real) x₀ (W ∘ Equiv.swap (0 : Fin 6) 1) =
       curvatureAction0SAt (I := I) (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real) x₀)
         (W 0) (W 1) (fun q : Fin 4 => W (Fin.succ (Fin.succ q))) := by
-  have hR := rm04_ricciIdentityAt (I := I) S hS t x₀
+  have hR := rm04_ricciIdentityAt (I := I) S t x₀
     (W 0) (W 1) (fun q : Fin 4 => W (Fin.succ (Fin.succ q)))
   rw [← fin6_eq_metricTraceInput (I := I) W,
     ← fin6_comp_swap_eq_metricTraceInput (I := I) W] at hR
@@ -320,7 +318,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapComm_T1_eq_covDeriv_curvatureAction
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
@@ -354,7 +351,7 @@ theorem nablaLapComm_T1_eq_covDeriv_curvatureAction
   · rw [← extDerivFun_sub_at (I := I) (frame a x₀)
       (nabla2Rm04Field_slotFields_mdifferentiableAt (I := I) S (t : Real) x₀ b c m)
       (nabla2Rm04Field_slotFields_mdifferentiableAt (I := I) S (t : Real) x₀ c b m)]
-    rw [nabla2Rm04Field_antisym_eq_curvatureAction_field (I := I) S hS t x₀ b c m]
+    rw [nabla2Rm04Field_antisym_eq_curvatureAction_field (I := I) S t x₀ b c m]
   · have hStep1 :
         (∑ q : Fin 6,
             nabla2Rm04Field (I := I) S (t : Real) x₀
@@ -376,7 +373,7 @@ theorem nablaLapComm_T1_eq_covDeriv_curvatureAction
           (nabla3SlotFields (I := I) frame b c m q) x₀) (frame a x₀))]
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun q _ => ?_
-    have hW := nabla2Rm04Field_slot01_antisym (I := I) S hS t x₀
+    have hW := nabla2Rm04Field_slot01_antisym (I := I) S t x₀
       (nabla3CorrectedSlots (I := I) S (t : Real) x₀ a b c m q)
     simp only [nabla3CorrectedSlots, hframe_def, hSbc_def] at hW ⊢
     exact hW
@@ -386,7 +383,6 @@ omit [SigmaCompactSpace M] in
 theorem nablaLapCommReactionTerm_eq_covDeriv_curvatureAction_add_curvatureAction
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (x₀ : M)
     (a b c : CoordinateIdx (𝕜 := Real) E) (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
@@ -409,6 +405,6 @@ theorem nablaLapCommReactionTerm_eq_covDeriv_curvatureAction_add_curvatureAction
           (coordinateFrameAt (I := I) x₀ a x₀) (coordinateFrameAt (I := I) x₀ c x₀)
           (nabla3InnerSlots (I := I) (coordinateFrameAt (I := I) x₀) x₀ b m) := by
   rw [nablaLapCommReactionTerm]
-  rw [nablaLapComm_T1_eq_covDeriv_curvatureAction (I := I) S hS t x₀ a b c m]
+  rw [nablaLapComm_T1_eq_covDeriv_curvatureAction (I := I) S t x₀ a b c m]
 
 end DifferentialGeometry.PDE.RicciFlow

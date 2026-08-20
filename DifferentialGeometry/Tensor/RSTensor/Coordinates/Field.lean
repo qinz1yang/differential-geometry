@@ -125,10 +125,11 @@ noncomputable def Tensor0SField.toScalarField
 
 omit [IsManifold I (n + 1) M] in
 theorem Tensor0SField.toScalarField_contMDiff [CompleteSpace 𝕜]
-    (_hM : IsManifold I (n + 1) M)
+    (hM : IsManifold I (n + 1) M)
     (α : Tensor0SField n 0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     ContMDiff I 𝓘(𝕜) n α.toScalarField := by
-  letI := _hM
+  rcases hM with ⟨⟩
+  letI : IsManifold I (n + 1) M := IsManifold.mk
   letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) 0
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := n)
   let d := Module.finrank 𝕜 E

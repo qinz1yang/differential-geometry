@@ -143,7 +143,6 @@ theorem barrierLimitClosure_of_continuous
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {T : Real}
-    (_hT : 0 ≤ T)
     (hcont : ∀ x, ∀ v w : TangentSpace I x,
       ContinuousOn (fun t : Real => S t x v w) (Set.Icc 0 T)) :
     TensorBarrierLimitClosureOn (I := I) (M := M) G S T := by
@@ -227,11 +226,13 @@ structure TensorWMPRegularityOn
       (hnull : TensorNullEigenvectorCondition (I := I) (M := M)
         G N (Set.Icc t0 (t0 + delta))) ->
       (d : TensorFirstNullData (I := I) (M := M) G S epsilon delta t0) ->
-      TensorFirstNullScalarSigns (I := I) (M := M) G S X N epsilon delta t0 d
+      TensorFirstNullScalarSigns (I := I) (M := M) G S X N
+        nabla2Barrier nablaBarrier epsilon delta t0 d
 
 namespace TensorWMPRegularityOn
 
-def toCore
+omit [IsManifold I 2 M] in
+theorem toCore
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -354,7 +355,8 @@ structure TensorWMPSectionReg
       (d : TensorFirstNullData (I := I) (M := M) G
         (twoTensorSecToFamily (I := I) (M := M) S) epsilon delta t0) ->
       TensorFirstNullScalarSigns (I := I) (M := M) G
-        (twoTensorSecToFamily (I := I) (M := M) S) X N epsilon delta t0 d
+        (twoTensorSecToFamily (I := I) (M := M) S) X N
+        nabla2Barrier nablaBarrier epsilon delta t0 d
 
 namespace TensorWMPSectionCore
 
@@ -545,7 +547,8 @@ end TensorWMPSectionCore
 
 namespace TensorWMPSectionReg
 
-def toCore
+omit [IsManifold I 2 M] in
+theorem toCore
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -615,7 +618,8 @@ theorem ofCompact
         (d : TensorFirstNullData (I := I) (M := M) G
           (twoTensorSecToFamily (I := I) (M := M) S) epsilon delta t0) ->
         TensorFirstNullScalarSigns (I := I) (M := M) G
-          (twoTensorSecToFamily (I := I) (M := M) S) X N epsilon delta t0 d) :
+          (twoTensorSecToFamily (I := I) (M := M) S) X N
+          nabla2Barrier nablaBarrier epsilon delta t0 d) :
     TensorWMPSectionReg (I := I) (M := M) G S X N T where
   symmetric := hsym
   barrierRegularity := hbar
@@ -689,7 +693,8 @@ theorem ofTotal
         (d : TensorFirstNullData (I := I) (M := M) G
           (twoTensorSecToFamily (I := I) (M := M) S) epsilon delta t0) ->
         TensorFirstNullScalarSigns (I := I) (M := M) G
-          (twoTensorSecToFamily (I := I) (M := M) S) X N epsilon delta t0 d) :
+          (twoTensorSecToFamily (I := I) (M := M) S) X N
+          nabla2Barrier nablaBarrier epsilon delta t0 d) :
     TensorWMPSectionReg (I := I) (M := M) G S X N T :=
   ofCompact (I := I) (M := M)
     (G := G) (S := S) (X := X) (N := N) (T := T)
@@ -757,7 +762,8 @@ theorem ofSmoothMetric
         (d : TensorFirstNullData (I := I) (M := M) (fun t => G.metric t)
           (twoTensorSecToFamily (I := I) (M := M) S) epsilon delta t0) ->
         TensorFirstNullScalarSigns (I := I) (M := M) (fun t => G.metric t)
-          (twoTensorSecToFamily (I := I) (M := M) S) X N epsilon delta t0 d) :
+          (twoTensorSecToFamily (I := I) (M := M) S) X N
+          nabla2Barrier nablaBarrier epsilon delta t0 d) :
     TensorWMPSectionReg (I := I) (M := M) (fun t => G.metric t) S X N T :=
   ofTotal (I := I) (M := M)
     (G := fun t => G.metric t) (S := S) (X := X) (N := N) (T := T)

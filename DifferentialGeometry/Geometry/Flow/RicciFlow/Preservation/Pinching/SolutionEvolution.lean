@@ -22,7 +22,6 @@ variable [IsManifold I ∞ M] [IsManifold I 1 M]
 
 def scalarGradientNormSq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     Real -> M -> Real :=
   fun t x =>
@@ -34,7 +33,7 @@ def scalarGradientNormSq
 
 def traceFreeRicciNormLaplacian
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     Real -> M -> Real :=
   fun t x =>
@@ -43,7 +42,7 @@ def traceFreeRicciNormLaplacian
 
 noncomputable def ricciCovariantDerivativeSection
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3 :=
@@ -57,7 +56,7 @@ noncomputable def ricciCovariantDerivativeSection
 
 noncomputable def ricciNormDifferentialSection
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 1 :=
@@ -70,7 +69,7 @@ noncomputable def ricciNormDifferentialSection
 
 def ricciGradientCouplingNormSq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     Real -> M -> Real :=
   ricciGradCoupleSq (I := I)
@@ -82,7 +81,7 @@ omit [Module.Finite ℝ E] in
 theorem pinch_quotient_evolution_of_solution_sections
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (epsilon : Real)
@@ -248,7 +247,7 @@ theorem ricci_is_symmetric
         (S.base.rm04 t x) gInv basis :=
     DifferentialGeometry.Geometry.Curvature.ricciFirstTraceAt_of_rm13 (I := I) (S.base.metric t)
       basis gInv hinv (S.ricciAt t x) (S.base.rm13 t x) (S.base.rm04 t x)
-      hRic13 hLowerAt hInvSym
+      hRic13 hLowerAt
   exact ricciSym_rm04 (I := I) basis gInv
     (S.ricciAt t x) (S.base.rm04 t x) hTrace
     (DifferentialGeometry.Geometry.Connection.rm04PairSymmAt_of_leviCivita_realizes
@@ -337,7 +336,6 @@ theorem trace_free_ricci_reaction_relation_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (hdim : ∀ (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
@@ -396,11 +394,8 @@ theorem ricci_norm_heat_equation_data_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
-    (_hS : IsSmoothSolutionOn (I := I) (M := M) S)
-    (_hdim : ∀ (_t : Real) (x : M),
-      Module.finrank Real (TangentSpace I x) = 3) :
+    (_hS : IsSmoothSolutionOn (I := I) (M := M) S) :
     RicciNormHeatEquationOn
       (D := D) (ricciNorm (I := I) S) (ricciNormLap (I := I) S)
       (ricciGradSq (I := I) S) (ricciReact (I := I) S) ∧
@@ -422,11 +417,8 @@ theorem trace_free_ricci_norm_laplacian_eq
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSmoothSolutionOn (I := I) (M := M) S)
-    (hdim : ∀ (_t : Real) (x : M),
-      Module.finrank Real (TangentSpace I x) = 3) :
+    (hS : IsSmoothSolutionOn (I := I) (M := M) S) :
     ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
       traceFreeRicciNormLaplacian (I := I) S (t : Real) x =
         traceFreeRicciNormSqLaplacian S.scalar
@@ -434,14 +426,13 @@ theorem trace_free_ricci_norm_laplacian_eq
             DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) (flowG (I := I) S) t
               (S.scalar t) x)
           (scalarGradientNormSq (I := I) S) (ricciNormLap (I := I) S) (t : Real) x :=
-  (ricci_norm_heat_equation_data_of_smooth_solution (I := I) S hS hdim).2
+  (ricci_norm_heat_equation_data_of_smooth_solution (I := I) S hS).2
 
 omit [Module.Finite ℝ E] in
 theorem exists_trace_free_ricci_reaction_data_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (_hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (_hdim : ∀ (_t : Real) (x : M),
@@ -462,7 +453,7 @@ theorem exists_trace_free_ricci_reaction_data_of_smooth_solution
         (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S))
         (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
         reaction := by
-  rcases ricci_norm_heat_equation_data_of_smooth_solution (I := I) S _hS _hdim with ⟨hRic, hLap⟩
+  rcases ricci_norm_heat_equation_data_of_smooth_solution (I := I) S _hS with ⟨hRic, hLap⟩
   exact ⟨ricciReact (I := I) S, hRic, hLap, trace_free_ricci_reaction_relation_of_smooth_solution (I := I) S _hdim⟩
 
 omit [Module.Finite ℝ E] in
@@ -470,7 +461,6 @@ theorem exists_trace_free_ricci_norm_sq_heat_equation_data
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (_hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (_hdim : ∀ (_t : Real) (x : M),
@@ -499,7 +489,6 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_smooth_solution
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (hdim : ∀ (_t : Real) (x : M),
@@ -576,7 +565,6 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (hdim : forall (_t : Real) (x : M),
@@ -597,7 +585,6 @@ theorem trace_free_ricci_norm_sq_nonneg
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (hdim : forall (_t : Real) (x : M),
       Module.finrank Real (TangentSpace I x) = 3) :
@@ -655,7 +642,6 @@ theorem trace_free_ricci_norm_sq_mdifferentiable
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
     forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
@@ -674,7 +660,6 @@ theorem gradient_trace_free_ricci_norm_sq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
     forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
@@ -741,7 +726,6 @@ theorem gradient_scalar_rpow
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (epsilon : Real)
@@ -810,7 +794,6 @@ theorem pinch_quotient_evolution_of_solution_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless]
-    [IsManifold I 2 M] [IsManifold I 3 M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)

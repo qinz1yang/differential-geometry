@@ -161,10 +161,10 @@ theorem nablaKRmFrozenSlotSharp_mdiffAt
     (fun α j => nablaKRmFrozenSlot_chartBasis_contMDiffOn (I := I) S t k q Y α j) x
 
 omit [SigmaCompactSpace M] in
+omit [I.Boundaryless] in
 theorem nablaKRmFrozenSlot_eval
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) (q : Fin (4 + k))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
@@ -179,10 +179,6 @@ theorem nablaKRmFrozenSlot_eval
       nablaKRm04Field (I := I) S (t : Real) (k + 1) x₀
         (Fin.cons (X x₀)
           (Function.update (fun i : Fin (4 + k) => Y i x₀) q U)) := by
-  have hcov :
-      CovariantDerivative.ContMDiffCovariantDerivativeLocally
-        (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-    connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   have hBval :
       nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Y x₀
           (vec2 (I := I) (X x₀) U) =
@@ -199,7 +195,7 @@ theorem nablaKRmFrozenSlot_eval
           (Fin.cons (X x₀)
             (Function.update (fun i : Fin (4 + k) => Y i x₀) q U)) := rfl
   rw [hBval, hAval]
-  exact allBut0SFreezeNabla (I := I) (S.family.connection (t : Real)) hcov
+  exact allBut0SFreezeNabla (I := I) (S.family.connection (t : Real))
     (nablaKRm04Field (I := I) S (t : Real) k) q X Y hYzero U
 
 def nablaKRmRaiseSlotSections
@@ -362,7 +358,6 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) (x₀ : M)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
@@ -480,7 +475,7 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
     funext y
     rw [nablaKSlotSections_apply (I := I) (k := k) Vb Vc Vm y,
       nablaKSlotSections_apply (I := I) (k := k) Vc Vb Vm y]
-    exact nablaKRm04_ricciIdentityAt (I := I) S hS t k y
+    exact nablaKRm04_ricciIdentityAt (I := I) S t k y
       (Vb y) (Vc y) (fun i : Fin (4 + k) => Vm i y)
   rw [hfield]
 
@@ -489,7 +484,6 @@ theorem nablaK_antisym_eq_rm04_raise_leibniz
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) (x₀ : M)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
@@ -517,7 +511,7 @@ theorem nablaK_antisym_eq_rm04_raise_leibniz
                 (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaKRmNablaFrozenSlotField (I := I) S (t : Real) k q Vm x₀) (X x₀))))) := by
   classical
-  rw [nablaK_antisym_eq_covDeriv_curvatureAction (I := I) S hS t k x₀ X Vb Vc Vm hVb hVc hVm]
+  rw [nablaK_antisym_eq_covDeriv_curvatureAction (I := I) S t k x₀ X Vb Vc Vm hVb hVc hVm]
   have hKfield :
       (fun y : M =>
           curvatureAction0SAt (I := I) (S.base.rm13 (t : Real))
@@ -590,7 +584,6 @@ theorem abs_nablaK_antisym_covConst_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) (x₀ : M)
     (basis : Module.Basis (Fin n) Real (TangentSpace I x₀))
@@ -638,7 +631,7 @@ theorem abs_nablaK_antisym_covConst_le
   have hNknn : 0 ≤ Nk := Real.sqrt_nonneg _
   have hNk1nn : 0 ≤ Nk1 := Real.sqrt_nonneg _
   have hcardnn : (0 : Real) ≤ (Fintype.card (Fin n) : Real) := by positivity
-  rw [nablaK_antisym_eq_rm04_raise_leibniz (I := I) S hS t k x₀ X Vb Vc Vm
+  rw [nablaK_antisym_eq_rm04_raise_leibniz (I := I) S t k x₀ X Vb Vc Vm
     hVbcov hVccov hVmcov]
   rw [abs_neg]
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
@@ -750,7 +743,7 @@ theorem abs_nablaK_antisym_covConst_le
               (Fin.cons (X x₀) (fun _ : Fin 1 => basis e) : Fin 2 → TangentSpace I x₀) =
                 vec2 (I := I) (X x₀) (basis e) := by
             funext p; fin_cases p <;> rfl
-          rw [hcons2, nablaKRmFrozenSlot_eval (I := I) S hS t k q X Vm x₀
+          rw [hcons2, nablaKRmFrozenSlot_eval (I := I) S t k q X Vm x₀
             (fun i _ => hVmcov i) (basis e)]
           have htuple :
               (Fin.cons (X x₀)
@@ -789,7 +782,6 @@ theorem abs_nablaK_antisym_basis_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) (x₀ : M)
     (basis : Module.Basis (Fin n) Real (TangentSpace I x₀))
@@ -813,21 +805,20 @@ theorem abs_nablaK_antisym_basis_le
             Real.sqrt (compNormSqMulti (fun idx : Fin (4 + (k + 1)) → Fin n =>
               nablaKRm04Field (I := I) S (t : Real) (k + 1) x₀ (fun p => basis (idx p))))) := by
   classical
-  have hconn := connSmoothOfSol (I := I) S hS (t : Real) (D.regular_subset t.2)
   obtain ⟨Xa, hXa, hXacov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis a)
+    (S.family.connection (t : Real)) x₀ (basis a)
   obtain ⟨Vb, hVb, hVbcov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis b)
+    (S.family.connection (t : Real)) x₀ (basis b)
   obtain ⟨Vc, hVc, hVccov⟩ := TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-    (S.family.connection (t : Real)) hconn x₀ (basis c)
+    (S.family.connection (t : Real)) x₀ (basis c)
   choose Vm hVm hVmcov using fun i : Fin (4 + k) =>
     TensorLieDeriv.exists_cov_zero_at_apply (I := I)
-      (S.family.connection (t : Real)) hconn x₀ (basis (m i))
+      (S.family.connection (t : Real)) x₀ (basis (m i))
   rw [show (basis a) = Xa x₀ from hXa.symm, show (basis b) = Vb x₀ from hVb.symm,
     show (basis c) = Vc x₀ from hVc.symm,
     show (fun i : Fin (4 + k) => basis (m i)) = (fun i : Fin (4 + k) => Vm i x₀) from
       funext fun i => (hVm i).symm]
-  exact abs_nablaK_antisym_covConst_le (I := I) S hS t k x₀ basis horth Xa Vb Vc Vm
+  exact abs_nablaK_antisym_covConst_le (I := I) S t k x₀ basis horth Xa Vb Vc Vm
     a b c m hXa hVb hVc hVm (hVbcov Xa) (hVccov Xa) (fun i => hVmcov i Xa)
 
 omit [Module.Finite ℝ E] in
@@ -835,7 +826,6 @@ theorem abs_spatialBracket_nablaKRm_ortho_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) (x₀ : M)
     (basis : Module.Basis (Fin n) Real (TangentSpace I x₀))
@@ -882,7 +872,7 @@ theorem abs_spatialBracket_nablaKRm_ortho_le
           (metricTraceInput (I := I) (basis c') (basis j) (fun p : Fin (4 + k) => basis (m' p)))
       from rfl)
   rw [hAB1, hAB2]
-  refine add_le_add (abs_nablaK_antisym_basis_le (I := I) S hS t k x₀ basis horth i j c' m') ?_
+  refine add_le_add (abs_nablaK_antisym_basis_le (I := I) S t k x₀ basis horth i j c' m') ?_
   have hslot :
       (Fin.cons (basis j) (fun p : Fin (4 + k) => basis (m' p)) :
           Fin (4 + k + 1) → TangentSpace I x₀) =
@@ -904,7 +894,6 @@ theorem abs_spatialComm_nablaKRm_ortho_le
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
     (k : ℕ) (x₀ : M)
     (basis : Module.Basis (Fin n) Real (TangentSpace I x₀))
@@ -951,12 +940,12 @@ theorem abs_spatialComm_nablaKRm_ortho_le
       · rw [hdiag j, mul_one]; exact horth i j
       · intro l _ hl; rw [hoff l j hl, mul_zero]
       · intro h; exact absurd (Finset.mem_univ j) h
-  rw [spatialComm_nablaKRm_split (I := I) S hS t k basis gInv hinv (basis c')
+  rw [spatialComm_nablaKRm_split (I := I) S t k basis gInv hinv (basis c')
     (fun p : Fin (4 + k) => basis (m' p))]
   simp only [hgInv, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   refine le_trans (Finset.sum_le_sum fun i _ =>
-    abs_spatialBracket_nablaKRm_ortho_le (I := I) S hS t k x₀ basis horth i i c' m') ?_
+    abs_spatialBracket_nablaKRm_ortho_le (I := I) S t k x₀ basis horth i i c' m') ?_
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
 end AllKBound
