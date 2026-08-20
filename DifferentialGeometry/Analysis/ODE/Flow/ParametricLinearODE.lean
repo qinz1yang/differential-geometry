@@ -1728,12 +1728,17 @@ private theorem linearODESolution_contDiffOn_one
   have hS_open : IsOpen (U ×ˢ Set.Ioo a b' : Set (F × ℝ)) := hU.prod isOpen_Ioo
   change ContDiffOn ℝ ((0 : WithTop ℕ∞) + 1) _ _
   rw [contDiffOn_succ_iff_fderiv_of_isOpen hS_open]
-  refine ⟨?_, ?_, ?_⟩
-  · intro ⟨x, t⟩ ⟨hx, ht⟩
+  have hdiff : DifferentiableOn ℝ (Function.uncurry Z) (U ×ˢ Set.Ioo a b') := by
+    intro ⟨x, t⟩ ⟨hx, ht⟩
     exact (linearODESolution_hasFDerivAt_joint hab_lt h₀_mem hU hA_cont hDA_cont hA_diff
       hZ₀_cont hDZ₀_cont hZ₀_diff hx ht).differentiableAt.differentiableWithinAt
-  · intro h_absurd; exact absurd h_absurd (by simp)
-  · rw [contDiffOn_zero]
+  have htop : (0 : WithTop ℕ∞) = ⊤ →
+      AnalyticOn ℝ (Function.uncurry Z) (U ×ˢ Set.Ioo a b') := by
+    intro h_absurd
+    exact absurd h_absurd (by simp)
+  have hfderiv_cont : ContDiffOn ℝ 0 (fderiv ℝ (Function.uncurry Z))
+      (U ×ˢ Set.Ioo a b') := by
+    rw [contDiffOn_zero]
     have h_coprod_bilin : Continuous
         (fun (p : (F →L[ℝ] G) × (ℝ →L[ℝ] G)) => p.1.coprod p.2) :=
       (ContinuousLinearMap.coprodEquivL ℝ).continuous
@@ -1752,15 +1757,7 @@ private theorem linearODESolution_contDiffOn_one
         (U ×ˢ Set.Ioo a b') :=
       (ContinuousLinearMap.toSpanSingletonCLE (𝕜 := ℝ) (E := G)).continuous.comp_continuousOn
         (linearODESolution_partial_t_continuousOn hab_lt h₀_mem hU hA_cont hZ₀_cont)
-    have h_formula_cont : ContinuousOn
-        (fun p : F × ℝ =>
-          (if hx : p.1 ∈ U then
-            if ht : p.2 ∈ Set.Ioo a b' then
-              variationalW_clm hab_lt h₀_mem hU hA_cont hDA_cont hZ₀_cont hx ht
-            else 0
-          else 0).coprod
-            (ContinuousLinearMap.toSpanSingleton ℝ (A p.1 p.2 (Z p.1 p.2))))
-        (U ×ˢ Set.Ioo a b') :=
+    have h_formula_cont :=
       h_coprod_bilin.comp_continuousOn (h_clm_cont.prodMk h_toSpan_cont)
     apply h_formula_cont.congr
     intro p hp
@@ -1782,6 +1779,7 @@ private theorem linearODESolution_contDiffOn_one
     conv_lhs => rw [show p = (p.1, p.2) from Prod.mk.eta.symm]
     exact (linearODESolution_hasFDerivAt_joint hab_lt h₀_mem hU hA_cont hDA_cont
       hA_diff hZ₀_cont hDZ₀_cont hZ₀_diff hx ht).fderiv
+  exact ⟨hdiff, htop, hfderiv_cont⟩
 
 omit [CompleteSpace G] in
 private theorem inhomogAugmentedCoeff_contDiffOn

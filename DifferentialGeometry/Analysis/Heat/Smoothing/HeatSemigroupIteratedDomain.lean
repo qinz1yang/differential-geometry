@@ -114,7 +114,8 @@ theorem exists_iteratedResolventL2_preimage_of_weighted_coeff_summable
           ⟪b i, u⟫_ℝ ^ 2 := by
       funext i
       simp only [c]
-      rw [b.repr_apply_apply, mul_pow]
+      rw [b.repr_apply_apply]
+      rw [mul_pow]
       rw [← pow_mul]
       congr 2
       omega
@@ -126,7 +127,9 @@ theorem exists_iteratedResolventL2_preimage_of_weighted_coeff_summable
     have heq : (fun i => ‖c i‖ ^ (2 : ℝ≥0∞).toReal) =
         fun i => (c i) ^ 2 := by
       funext i
-      rw [hpr, Real.norm_eq_abs, ← sq_abs]
+      rw [hpr]
+      rw [Real.norm_eq_abs]
+      rw [← sq_abs]
       norm_num
     rw [heq]
     exact hc_sq
@@ -134,15 +137,18 @@ theorem exists_iteratedResolventL2_preimage_of_weighted_coeff_summable
     b.repr.symm ⟨c, hc_mem⟩
   have hv_coeff : ∀ i, (b.repr v) i = c i := by
     intro i
-    rw [show b.repr v = ⟨c, hc_mem⟩ from LinearIsometryEquiv.apply_symm_apply _ _]
+    have hv_repr : b.repr v = ⟨c, hc_mem⟩ := LinearIsometryEquiv.apply_symm_apply _ _
+    exact congrArg (fun w => w i) hv_repr
   refine ⟨v, map_eq_of_hilbertBasis_diagonal b
     (iteratedResolventL2 (I := I) (M := M) g k) (fun i => i.1.val ^ k) u v
     (iteratedResolventL2_apply_basis (I := I) (M := M) g k) ?_⟩
   intro i
-  rw [hv_coeff i]
-  exact one_add_pow_mul_resolvent_pow_cancel i.1.val
-    (EigenIdx.lambda (I := I) (M := M) i) ((b.repr u) i) k
-    (resolventEigenvalue_mul_one_add_laplacianEigenvalue (I := I) (M := M) g i)
+  calc
+    (b.repr v) i * i.1.val ^ k = c i * i.1.val ^ k :=
+      congrArg (fun z => z * i.1.val ^ k) (hv_coeff i)
+    _ = (b.repr u) i := one_add_pow_mul_resolvent_pow_cancel i.1.val
+      (EigenIdx.lambda (I := I) (M := M) i) ((b.repr u) i) k
+      (resolventEigenvalue_mul_one_add_laplacianEigenvalue (I := I) (M := M) g i)
 
 theorem exists_laplacianDomainPow_succ_lift_of_weighted_coeff_summable
     (g : SmoothRiemannianMetric I M)
@@ -292,7 +298,8 @@ theorem iteratedResolventL2_oneMinusLapHeat_apply
     change b.repr u i • iteratedResolventL2 (I := I) (M := M) g k
         (oneMinusLapHeat (I := I) (M := M) g k t (b i)) =
       b.repr u i • heatSemigroup (I := I) (M := M) g t (b i)
-    rw [iteratedResolventL2_oneMinusLapHeat_basis (I := I) (M := M) g k ht i]
+    exact congrArg (fun z => b.repr u i • z)
+      (iteratedResolventL2_oneMinusLapHeat_basis (I := I) (M := M) g k ht i)
   rw [h_summand_eq] at h_LHS_hsum
   change A (B u) = H u
   exact HasSum.unique h_LHS_hsum h_RHS_hsum
