@@ -263,7 +263,7 @@ theorem fullMetricComparisonCoefficient_norm_bound
       (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (gInvSlotEndo (I := I) g gm x)) ≤ _
   refine hraw.trans ?_
-  nlinarith [mul_nonneg hd hfrac0]
+  simpa [mul_comm] using pow_le_pow_left₀ (mul_nonneg hd hfrac0) hmul 2
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -445,7 +445,14 @@ theorem slotInsertionCoefficient_covariantDerivative_bound (g : SmoothRiemannian
         (mul_le_mul_of_nonneg_left (by simpa only [Y] using hV) (by norm_num))
     _ ≤ K * (X + Y) := by
       dsimp only [K]
-      nlinarith
+      calc
+        2 * (A * X) + 2 * (F * Y) = 2 * (A * X + F * Y) := by ring
+        _ ≤ 2 * ((A + F) * (X + Y)) := mul_le_mul_of_nonneg_left (by
+          calc
+            A * X + F * Y ≤ A * X + F * Y + (A * Y + F * X) :=
+              le_add_of_nonneg_right (add_nonneg (mul_nonneg hA0 hY0) (mul_nonneg hF0 hX0))
+            _ = (A + F) * (X + Y) := by ring) (by norm_num)
+        _ = 2 * (A + F) * (X + Y) := by ring
     _ = _ := by rfl
 
 theorem metricComparisonRaiseCoefficient_iteratedCovGrad_bound (g : SmoothRiemannianMetric I M) :
@@ -507,7 +514,9 @@ theorem metricComparisonRaiseCoefficient_iteratedCovGrad_bound (g : SmoothRieman
   rw [hsymm] at hT0
   have hT0' : T0 ≤ d ^ 2 * delta ^ 2 := by
     simpa only [T0, d] using hT0
-  have hdsq : delta ^ 2 ≤ 1 := by nlinarith [sq_nonneg delta]
+  have hdsq : delta ^ 2 ≤ 1 := by
+    have hdelta1 : delta ≤ 1 := hdelta.trans (by norm_num)
+    simpa using pow_le_pow_left₀ hdelta0 hdelta1 2
   have hT0coarse : T0 ≤ d ^ 2 := by
     calc
       T0 ≤ d ^ 2 * delta ^ 2 := hT0'

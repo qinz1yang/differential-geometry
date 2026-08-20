@@ -1228,7 +1228,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciCometricFourTraceCastG0_diago
       refine le_trans (hSΦ n x) ?_
       exact le_mul_of_one_le_right (hSΦ_nn n) hone
     have hDw := hD
-    nlinarith [hΦw, hDw, hwin_nn, hSΦ_nn n, hCD_nn n]
+    nlinarith only [hΦw, hDw, hwin_nn, hSΦ_nn n, hCD_nn n]
   have hR1 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + n) x
       ((iteratedCovGrad (I := I) g₀ 4 2 n
         (reindexCoeffGen (I := I) (M := M) g₀ 4 2
@@ -1331,7 +1331,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciCometricFourTraceCastG0_diago
   have hpn := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 4 (2 + n) x
     ((iteratedCovGrad (I := I) g₀ 4 2 n
       (cometricDoubleTraceCoefficient (I := I) (M := M) g₀ g₁)).toSection x)
-  nlinarith [c12, c3, c4, hpure, hpn]
+  nlinarith only [c12, c3, c4, hpure, hpn]
 
 theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧

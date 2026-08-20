@@ -215,8 +215,9 @@ theorem riemannianFiberNormSq_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ
                 ((iteratedCovGrad g 0 (r + 1) q (covGrad g 0 r W)).toSection x) =
           kB * sB := by
         rw [hkB_def, hsB_def]
-        congr 1
-        exact Finset.sum_congr rfl fun q _ => riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db g 0 r q W x
+        exact congrArg (fun z : ℝ => gridWindowSum Φ.kappa p (r + 1) j * z)
+          (Finset.sum_congr rfl fun q _ =>
+            riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db g 0 r q W x)
       have hB : riemannianFiberNormSq (I := I) (M := M) g 0 (((r + 1) + p) + j) x
             ((iteratedCovGrad g 0 ((r + 1) + p) j
               (Φ.op p (r + 1) (covGrad g 0 r W))).toSection x) ≤
@@ -257,7 +258,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_grid (Φ : DiffBilinOp g) (j : ℕ
           (4 : ℝ) ^ (j + 1) * (K * S) := by
         have h4 : (4 : ℝ) ^ (j + 1) = 4 * (4 : ℝ) ^ j := by rw [pow_succ]; ring
         rw [h4]
-        nlinarith [hprodA, hprodB, hpow_nn,
+        nlinarith only [hprodA, hprodB, hpow_nn,
           mul_le_mul_of_nonneg_left hprodA hpow_nn,
           mul_le_mul_of_nonneg_left hprodB hpow_nn]
       have htarget : (4 : ℝ) ^ (j + 1) * (K * S) =
@@ -375,8 +376,9 @@ theorem riemannianFiberNormSq_iteratedCovGrad_grid_at
                 ((iteratedCovGrad g 0 (r + 1) q (covGrad g 0 r W)).toSection x₀) =
           kB * sB := by
         rw [hkB_def, hsB_def]
-        congr 1
-        exact Finset.sum_congr rfl fun q _ => riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db g 0 r q W x₀
+        exact congrArg (fun z : ℝ => gridWindowSum kappa p (r + 1) j * z)
+          (Finset.sum_congr rfl fun q _ =>
+            riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_db g 0 r q W x₀)
       have hB : riemannianFiberNormSq (I := I) (M := M) g 0 (((r + 1) + p) + j) x₀
             ((iteratedCovGrad g 0 ((r + 1) + p) j
               (op p (r + 1) (covGrad g 0 r W))).toSection x₀) ≤
@@ -417,7 +419,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_grid_at
           (4 : ℝ) ^ (j + 1) * (K * S) := by
         have h4 : (4 : ℝ) ^ (j + 1) = 4 * (4 : ℝ) ^ j := by rw [pow_succ]; ring
         rw [h4]
-        nlinarith [hprodA, hprodB, hpow_nn,
+        nlinarith only [hprodA, hprodB, hpow_nn,
           mul_le_mul_of_nonneg_left hprodA hpow_nn,
           mul_le_mul_of_nonneg_left hprodB hpow_nn]
       have htarget : (4 : ℝ) ^ (j + 1) * (K * S) =

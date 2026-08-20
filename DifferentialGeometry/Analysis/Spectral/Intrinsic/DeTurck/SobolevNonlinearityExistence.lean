@@ -1808,11 +1808,11 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
     have hSballBig : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S‖ ≤
         (Csym2 + 1) * R₀ := by
       calc ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S‖ ≤ R₀ := hSball
-        _ ≤ (Csym2 + 1) * R₀ := by nlinarith [hCsym2_nn, hR₀.le]
+        _ ≤ (Csym2 + 1) * R₀ := by nlinarith only [hCsym2_nn, hR₀.le]
     have hS'ballBig : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S'‖ ≤
         (Csym2 + 1) * R₀ := by
       calc ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S'‖ ≤ R₀ := hS'ball
-        _ ≤ (Csym2 + 1) * R₀ := by nlinarith [hCsym2_nn, hR₀.le]
+        _ ≤ (Csym2 + 1) * R₀ := by nlinarith only [hCsym2_nn, hR₀.le]
     have hNT := deTurckSobolevNHa2Symm_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha_super T
     have hNT' := deTurckSobolevNHa2Symm_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha_super T'
     have hbase := hK S S' (le_refl _) hSfibre (le_refl _) hS'fibre

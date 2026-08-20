@@ -129,7 +129,7 @@ private theorem exists_norm_covGrad_connectionDifferenceSection_le_of_jetEnvelop
       rw [← hN1_def]
       have : N1 ^ 2 ≤ B ^ 2 := by
         apply pow_le_pow_left₀ hN1_nn hN1_le
-      nlinarith [sq_nonneg Ck0, this, hN1_nn]
+      nlinarith only [sq_nonneg Ck0, this, hN1_nn]
     · have h := hKos1 g₁ P htie hδ_le hδ0 hδ x (R := B) hB (by
         rw [← hN1_def]; exact hN1_le)
       simp only [hBf_def]
@@ -357,7 +357,7 @@ theorem exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
     _ ≤ Cw * Sv * Sw * Su := by
         rw [hNW_def] at hWnorm
         have hprod_nn : 0 ≤ Sv * Sw * Su := by positivity
-        nlinarith [hWnorm, hprod_nn, hSv_nn, hSw_nn, hSu_nn, hNW_nn]
+        nlinarith only [hWnorm, hprod_nn, hSv_nn, hSw_nn, hSu_nn, hNW_nn]
 
 end Curvature
 end Geometry

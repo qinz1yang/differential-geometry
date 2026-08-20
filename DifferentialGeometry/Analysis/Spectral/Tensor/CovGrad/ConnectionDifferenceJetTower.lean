@@ -2040,7 +2040,7 @@ theorem norm_iteratedCovGrad_two_symmS_le
         Tensor0SBundle.TensorRSSpace 0 4 I x)‖ := norm_nonneg _
     have hnn2 : (0 : ℝ) ≤ ‖((iteratedCovGrad (I := I) g₀ 0 2 2 T).toSection x :
         Tensor0SBundle.TensorRSSpace 0 4 I x)‖ := norm_nonneg _
-    nlinarith [hfib, hnn1, hnn2]
+    nlinarith only [hfib, hnn1, hnn2]
   rw [htoSec, norm_smul]
   have habs : ‖(1 / 2 : ℝ)‖ = 1 / 2 := by
     rw [Real.norm_eq_abs]; norm_num
@@ -2051,7 +2051,7 @@ theorem norm_iteratedCovGrad_two_symmS_le
     ((iteratedCovGrad (I := I) g₀ 0 2 2 Tsw).toSection x :
       Tensor0SBundle.TensorRSSpace 0 4 I x)
   rw [hsw_norm] at htri
-  nlinarith [htri, norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 2 T).toSection x :
+  nlinarith only [htri, norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 2 T).toSection x :
     Tensor0SBundle.TensorRSSpace 0 4 I x)]
 
 omit [NeZero (Module.finrank ℝ E)] in

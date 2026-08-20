@@ -107,7 +107,7 @@ theorem galCoordNormLe (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
         (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ ((a : ℝ) + 1) :=
       Real.one_le_rpow (one_le_one_add_lambda (I := I) (M := M) i)
         (by positivity)
-    nlinarith [sq_nonneg (c i)]
+    simpa using mul_le_mul_of_nonneg_right hone (sq_nonneg (c i))
   have hfin := Real.sqrt_le_sqrt hle
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (norm_nonneg _)] at hfin
 
@@ -428,7 +428,7 @@ theorem galTameField_lip (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ}
         ‖Rst‖ * ((K : ℝ) * (Real.sqrt κ * ‖L‖ * ‖w - w'‖)) :=
       mul_le_mul_of_nonneg_left h3 (norm_nonneg Rst)
     have h5 := norm_add_le (Dg (w - w')) (Rst (Nfun uw - Nfun uw'))
-    nlinarith [h1, h2, h4, h5]
+    nlinarith only [h1, h2, h4, h5]
   refine hstep.trans ?_
   refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
   rw [Real.coe_toNNReal']
