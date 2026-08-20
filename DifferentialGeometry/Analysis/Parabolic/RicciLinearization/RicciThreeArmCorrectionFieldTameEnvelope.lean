@@ -192,7 +192,7 @@ theorem linearizedRicciConnectionDifferenceOrder1CoeffField_perOrder_l2_tameEnve
         refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hCnn) hAnn
         have h1 := mul_le_mul_of_nonneg_left hSa (sq_nonneg ΛW)
         have h2 := mul_le_mul_of_nonneg_left hSc (sq_nonneg ΛΦ)
-        nlinarith [h1, h2]
+        nlinarith only [h1, h2]
     _ = diagonalGridGrowthFactor (E := E) i *
           (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
             (I := I) (M := M) g₀ 4 3 2 4 i).choose *
@@ -300,7 +300,7 @@ theorem exists_corrArm1Field_metricPerturbationPath_jetL2_tameEnvelope
               + s * ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ := by
             rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
               abs_of_nonneg h1ms, abs_of_nonneg hs0]
-    nlinarith [mul_le_mul hnorm_le hnorm_le (norm_nonneg
+    nlinarith only [mul_le_mul hnorm_le hnorm_le (norm_nonneg
         (iteratedCovGrad (I := I) g₀ 0 2 j (convexPerturbation (I := I) g₀ T T' s))) hy_nn,
       mul_nonneg (mul_nonneg hs0 h1ms)
         (sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ -
@@ -354,7 +354,7 @@ theorem exists_corrArm1Field_metricPerturbationPath_jetL2_tameEnvelope
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
         (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖ :=
     norm_sub_le _ _
-  nlinarith [htri, hA', hB',
+  nlinarith only [htri, hA', hB',
     norm_nonneg (iteratedCovGrad (I := I) g₀ 3 2 i
       (linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 3 2 i
@@ -754,7 +754,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linRicciConnectionDifferenceOrder0
           (1 / 2 : ℝ) * (diagonalGridGrowthFactor (E := E) i * (∑ i' ∈ Finset.range (i + 1), CL i')
             *
             (∑ l ∈ Finset.range (i + 1), SW l))) * pJetGridWindow b i := by
-      nlinarith [hLi, hApp]
+      nlinarith only [hLi, hApp]
     refine le_trans hmid ?_
     have hC0_nn : 0 ≤ (1 / 2 : ℝ) * CL i +
         (1 / 2 : ℝ) * (diagonalGridGrowthFactor (E := E) i * (∑ i' ∈ Finset.range (i + 1), CL i') *
@@ -1492,8 +1492,8 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
         rw [Finset.sum_range_succ]
       have htop_sq : ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 ≤ R ^ 2 := by
         have := norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P)
-        nlinarith [htopP]
-      nlinarith [hwin_nn, htop_sq, hsub, htail, sq_nonneg R]
+        nlinarith only [htopP, this, hR]
+      nlinarith only [hwin_nn, htop_sq, hsub, htail, sq_nonneg R]
     have hsum_le : ∑ k ∈ Finset.range (i + 3),
         (∫ x, ∑ n ∈ Finset.range (k + 1),
             ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
@@ -1518,12 +1518,12 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
         rw [Finset.sum_range_succ]
       have htop_sq : ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 ≤ R ^ 2 := by
         have := norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P)
-        nlinarith [htopP]
+        nlinarith only [htopP, this, hR]
       have habs : 1 + ∑ j ∈ Finset.range (i + 3),
           ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 ≤
           (1 + R ^ 2) * (1 + ∑ j ∈ Finset.range (i + 2),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
-        nlinarith [hwin_nn, htop_sq, htail, sq_nonneg R]
+        nlinarith only [hwin_nn, htop_sq, htail, sq_nonneg R]
       calc Kflat (i + 1) * (1 + ∑ j ∈ Finset.range (i + 3),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2)
           ≤ Kflat (i + 1) * ((1 + R ^ 2) * (1 + ∑ j ∈ Finset.range (i + 2),
@@ -1542,7 +1542,7 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
           ((1 + R ^ 2) * (1 + ∑ j ∈ Finset.range (i + 2),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2))) :=
       mul_le_mul_of_nonneg_left hsum_le (hCG_nn i)
-    nlinarith [hS_le, hG_le]
+    nlinarith only [hS_le, hG_le]
   · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁
@@ -1555,7 +1555,7 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
     have h2 : (0 : ℝ) ≤ CG i * ((1 + R ^ 2) * ∑ k ∈ Finset.range (i + 3), Kt k) :=
       mul_nonneg (hCG_nn i) (mul_nonneg (by positivity)
         (Finset.sum_nonneg (fun k _ => hKt_nn k)))
-    nlinarith [hwin_nn, h1, h2]
+    nlinarith only [hwin_nn, h1, h2]
 
 
 theorem exists_corrArm0Field_metricPerturbationPath_jetL2_tameEnvelope
@@ -1655,7 +1655,7 @@ theorem exists_corrArm0Field_metricPerturbationPath_jetL2_tameEnvelope
               + s * ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ := by
             rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
               abs_of_nonneg h1ms, abs_of_nonneg hs0]
-    nlinarith [mul_le_mul hnorm_le hnorm_le (norm_nonneg
+    nlinarith only [mul_le_mul hnorm_le hnorm_le (norm_nonneg
         (iteratedCovGrad (I := I) g₀ 0 2 j (convexPerturbation (I := I) g₀ T T' s))) hy_nn,
       mul_nonneg (mul_nonneg hs0 h1ms)
         (sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ -

@@ -556,7 +556,7 @@ private lemma norm_covGrad_symmS_le
     ((covGrad (I := I) (M := M) g₀ 0 2 Tsw).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)
   rw [hsw_norm] at htri
-  nlinarith [htri, norm_nonneg ((covGrad (I := I) (M := M) g₀ 0 2 T).toSection x :
+  nlinarith only [htri, norm_nonneg ((covGrad (I := I) (M := M) g₀ 0 2 T).toSection x :
     Tensor0SBundle.TensorRSSpace 0 3 I x)]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
@@ -660,7 +660,7 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad
         (covGrad3Eval (I := I) (M := M) g₀ T Y X Z x)
       linarith [ht1, ht2]
     refine hsum.trans ?_
-    nlinarith [hbd1, hbd2, hbd3, hGnorm_nn, hNv_nn, hNw_nn, hNp_nn]
+    nlinarith only [hbd1, hbd2, hbd3, hGnorm_nn, hNv_nn, hNw_nn, hNp_nn]
   have hNp_le : Np ≤ (3 / 2) * Gnorm * Nv * Nw := by
     have hpp_nn : 0 ≤ g₀.inner x p p := metric_inner_self_nonneg (I := I) (M := M) g₀ x p
     have hNp_sq : Np ^ 2 = g₀.inner x p p := by
@@ -825,7 +825,7 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one
         (covGrad3Eval (I := I) (M := M) g₀ T Y X Z x)
       linarith [ht1, ht2]
     refine hsum.trans ?_
-    nlinarith [hbd1, hbd2, hbd3, hGnorm_nn, hNv_nn, hNw_nn, hNp_nn]
+    nlinarith only [hbd1, hbd2, hbd3, hGnorm_nn, hNv_nn, hNw_nn, hNp_nn]
   have hNp_le : Np ≤ (3 / 2) * Gnorm * Nv * Nw := by
     have hpp_nn : 0 ≤ g₀.inner x p p := metric_inner_self_nonneg (I := I) (M := M) g₀ x p
     have hNp_sq : Np ^ 2 = g₀.inner x p p := by
@@ -981,7 +981,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad
     have hsq_le : g₀.inner x u u ≤ (C₀ * G) ^ 2 := by
       rw [← hsqrt_eq]
       have := mul_self_le_mul_self hsqrt_nn hsqrt
-      nlinarith [this, hsqrt]
+      nlinarith only [this, hsqrt]
     calc (g₀.inner x (e (K 0)) u) ^ 2
         ≤ g₀.inner x u u := hcs
       _ ≤ (C₀ * G) ^ 2 := hsq_le
@@ -1066,7 +1066,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_
     have hsq_le : g₀.inner x u u ≤ (C₀ * G) ^ 2 := by
       rw [← hsqrt_eq]
       have := mul_self_le_mul_self hsqrt_nn hsqrt
-      nlinarith [this, hsqrt]
+      nlinarith only [this, hsqrt]
     calc (g₀.inner x (e (K 0)) u) ^ 2
         ≤ g₀.inner x u u := hcs
       _ ≤ (C₀ * G) ^ 2 := hsq_le

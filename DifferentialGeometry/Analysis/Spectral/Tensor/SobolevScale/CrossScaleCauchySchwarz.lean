@@ -202,8 +202,8 @@ theorem two_mul_sum_crossScale_le_eps
     have hcross : (sε * sA) * (sεinv * sB) = sA * sB := by
       calc (sε * sA) * (sεinv * sB) = (sε * sεinv) * (sA * sB) := by ring
         _ = sA * sB := by rw [hmix, one_mul]
-    nlinarith [hkey, hsqA, hsqB, hsqε, hsqεinv, hcross]
-  nlinarith [hle, hyoung]
+    nlinarith only [hkey, hsqA, hsqB, hsqε, hsqεinv, hcross]
+  nlinarith only [hle, hyoung]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem two_abs_cross_le_eps
@@ -374,7 +374,7 @@ theorem two_mul_sum_ladder_le
       ring
     have hcancel : sε * (β / sε) = β := by field_simp
     rw [hcancel, hsε2, hsA2, hsE2] at hexpand
-    nlinarith [sq_nonneg (sε * sA - (β / sε) * sE), hexpand]
+    nlinarith only [sq_nonneg (sε * sA - (β / sε) * sE), hexpand]
   have hdiff : 2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
       (2 * α + ε) * A + (β ^ 2 / ε) * Eσ := by
     have hchain : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
@@ -382,7 +382,7 @@ theorem two_mul_sum_ladder_le
       refine le_trans (le_trans hcross hstep) ?_
       have : sA * (α * sA + β * sE) = α * (sA ^ 2) + β * (sA * sE) := by ring
       rw [this, hsA2]
-    nlinarith [hchain, hyoung]
+    nlinarith only [hchain, hyoung]
   have hstatle := two_mul_sum_sameScale_le_sqrt (I := I) (M := M) S σ u fs hD hstat
   rw [← hEdef, ← hsEdef] at hstatle
   rw [hsum]
@@ -443,11 +443,11 @@ theorem two_sum_ladder_add_le
       ring
     have hcancel : sε * (β / sε) = β := by field_simp
     rw [hcancel, hsε2, hsA2, hsE2] at hexpand
-    nlinarith [sq_nonneg (sε * sA - (β / sε) * sE), hexpand]
+    nlinarith only [sq_nonneg (sε * sA - (β / sε) * sE), hexpand]
   have hyoung' : 2 * γ * sA ≤ ε * A + γ ^ 2 / ε := by
     have hkey : ε * (ε * A + γ ^ 2 / ε - 2 * γ * sA) = (ε * sA - γ) ^ 2 := by
       rw [← hsA2]; field_simp; ring
-    nlinarith [sq_nonneg (ε * sA - γ), hkey, hε]
+    nlinarith only [sq_nonneg (ε * sA - γ), hkey, hε]
   have hdiff : 2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
       (2 * α + 2 * ε) * A + (β ^ 2 / ε) * Eσ + γ ^ 2 / ε := by
     have hchain : ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (u i * fd i) ≤
@@ -456,7 +456,7 @@ theorem two_sum_ladder_add_le
       have hexp : sA * (α * sA + β * sE + γ) =
           α * (sA ^ 2) + β * (sA * sE) + γ * sA := by ring
       rw [hexp, hsA2]
-    nlinarith [hchain, hyoung, hyoung']
+    nlinarith only [hchain, hyoung, hyoung']
   have hstatle := two_mul_sum_sameScale_le_sqrt (I := I) (M := M) S σ u fs hD hstat
   rw [← hEdef, ← hsEdef] at hstatle
   rw [hsum]

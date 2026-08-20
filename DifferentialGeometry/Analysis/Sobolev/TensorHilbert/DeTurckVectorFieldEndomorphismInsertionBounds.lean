@@ -194,7 +194,7 @@ private theorem diagonalProductTerm_integral_le
         exact (tensorL2Norm_sq_eq_integral_riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + i)
           ((iteratedCovGrad (I := I) g₀ 0 2 i P).toSection)).symm
       rw [heq]
-      nlinarith [hNi, norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i P), hR]
+      nlinarith only [hNi, norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i P), hR]
     have hΛZ_nn : 0 ≤ Λ ^ (2 * Zset.card) := pow_nonneg hΛ_nn _
     calc (∫ x, ∏ m : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x) ∂μ)
@@ -218,7 +218,7 @@ private theorem diagonalProductTerm_integral_le
             mul_le_mul e1 e2 (by positivity) (by positivity)
           have e5 : Mbar ^ (7 * i) ≤ (i : ℝ) * Mbar ^ (7 * i) := by
             have : (1 : ℝ) ≤ (i : ℝ) := by exact_mod_cast hi1
-            nlinarith [pow_nonneg hMbar_nn (7 * i)]
+            nlinarith only [pow_nonneg hMbar_nn (7 * i), this]
           calc Λ ^ (2 * Zset.card) * R ^ 2 ≤ Mbar ^ (2 * i) * Mbar ^ 2 := e4
             _ ≤ Mbar ^ (7 * i) := e3
             _ ≤ (i : ℝ) * Mbar ^ (7 * i) := e5
@@ -288,11 +288,12 @@ private theorem diagonalProductTerm_integral_le
       have hθ_nn : 0 ≤ (e m : ℝ) / i := by positivity
       have hθ_le1 : (e m : ℝ) / i ≤ 1 := by
         rw [div_le_one hiR_pos]; exact_mod_cast Nat.le_of_lt hem_lt_i
-      have hexp1_nn : 0 ≤ 2 * (1 - (e m : ℝ) / i) := by nlinarith
-      have hexp1_le : 2 * (1 - (e m : ℝ) / i) ≤ 2 := by nlinarith
+      have hexp1_nn : 0 ≤ 2 * (1 - (e m : ℝ) / i) := by linarith only [hθ_le1]
+      have hexp1_le : 2 * (1 - (e m : ℝ) / i) ≤ 2 := by linarith only [hθ_nn]
       have hexp2_nn : 0 ≤ 2 * (e m : ℝ) / i := by positivity
       have hexp2_le : 2 * (e m : ℝ) / i ≤ 2 := by
-        rw [mul_div_assoc]; nlinarith
+        rw [mul_div_assoc]
+        linarith only [hθ_le1]
       have hΛpow : Λ ^ (2 * (1 - (e m : ℝ) / i)) ≤ Mbar ^ (2 : ℕ) := by
         calc Λ ^ (2 * (1 - (e m : ℝ) / i)) ≤ Mbar ^ (2 * (1 - (e m : ℝ) / i)) :=
               Real.rpow_le_rpow hΛ_nn hΛ_le hexp1_nn
@@ -421,7 +422,7 @@ private theorem diagonalProductTerm_integral_le
             mul_le_mul_of_nonneg_right e1 (by positivity)
           have e5 : Mbar ^ (7 * i) ≤ (i : ℝ) * Mbar ^ (7 * i) := by
             have : (1 : ℝ) ≤ (i : ℝ) := by exact_mod_cast hi1
-            nlinarith [pow_nonneg hMbar_nn (7 * i)]
+            nlinarith only [pow_nonneg hMbar_nn (7 * i), this]
           calc Λ ^ (2 * Zset.card) * Mbar ^ (5 * i) ≤ Mbar ^ (2 * i) * Mbar ^ (5 * i) := e4
             _ = Mbar ^ (7 * i) := e3
             _ ≤ (i : ℝ) * Mbar ^ (7 * i) := e5
@@ -851,7 +852,7 @@ theorem cometricCastG0_order0sup_jetL2_succ_generic
             iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)))
           (norm_add_le (iteratedCovGrad (I := I) g₀ 3 1 l Φ)
             (iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W))) 2
-        nlinarith [hsq, hKDl, haLl,
+        nlinarith only [hsq, hKDl, haLl,
           sq_nonneg (‖iteratedCovGrad (I := I) g₀ 3 1 l Φ‖ -
             ‖iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)‖)]
     · haveI hem : IsEmpty M := not_nonempty_iff.mp hMne
@@ -1224,7 +1225,7 @@ private theorem sharpFlatEndoCc_lowOrder_jetL2_succ_generic
         rw [hdecomp, iteratedCovGrad_add]
         exact norm_add_le _ _
       have hFIdq : FId q = ‖iteratedCovGrad (I := I) g₀ 1 1 q IdIns‖ ^ 2 := rfl
-      nlinarith [htri, hDq, hFIdq.ge,
+      nlinarith only [htri, hDq, hFIdq.ge,
         norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q DiffIns),
         norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q IdIns),
         norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q (sharpFlatEndoCc (I := I) g₀ g₁)),
@@ -1604,7 +1605,7 @@ theorem metricLoweredConnectionDifference_lowOrder_iteratedCovGrad_norm_sq_succ_
         exact norm_sub_le _ _
       have hFBackgroundq : FBackground q =
           ‖iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ ^ 2 := rfl
-      nlinarith [htri, h1, hFBackgroundq.ge,
+      nlinarith only [htri, h1, hFBackgroundq.ge,
         norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)),
         norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)),
         norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 q (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)),
@@ -2179,7 +2180,7 @@ theorem deTurckVectorFieldCovariantDerivativeLowered_covariantJetNormSq_zero_bou
           ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)‖ := by
       rw [deTurckVectorFieldCovariantDerivativeLowered, iteratedCovGrad_add]
       exact norm_add_le _ _
-    nlinarith [htri, hAi, hBi,
+    nlinarith only [htri, hAi, hBi,
       norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredBase (I := I) (M := M) g₀ g₁ g_bg)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg)),

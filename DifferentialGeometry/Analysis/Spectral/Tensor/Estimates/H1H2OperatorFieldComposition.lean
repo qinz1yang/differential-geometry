@@ -548,7 +548,7 @@ theorem operator_field_composition_h1_bound_of_embedding_bounds
       mul_nonneg (norm_nonneg _) (norm_nonneg _)
     refine le_of_sq_le_sq ?_ (add_nonneg (norm_nonneg _) (norm_nonneg _))
     rw [hsq]
-    nlinarith
+    nlinarith only [hprod]
   change ‖(⟨Y⟩ : SmoothCcTensorH1 g p c)‖ ≤ _
   calc
     _ ≤ ‖Y‖ + ‖covGrad (I := I) (M := M) g p c Y‖ := hYH1
@@ -720,7 +720,7 @@ theorem operator_field_composition_h1_h2_to_h1_bound
       mul_nonneg (norm_nonneg _) (norm_nonneg _)
     refine le_of_sq_le_sq ?_ (add_nonneg (norm_nonneg _) (norm_nonneg _))
     rw [hsq]
-    nlinarith
+    nlinarith only [hprod]
   change ‖(⟨Y⟩ : SmoothCcTensorH1 g p c)‖ ≤ _
   calc
     _ ≤ ‖Y‖ + ‖covGrad (I := I) (M := M) g p c Y‖ := hYH1
@@ -910,7 +910,7 @@ theorem operator_field_composition_h2_bound_of_embedding_bounds
       h1_norm_sq_jet (I := I) (M := M) g p c Y
     refine le_of_sq_le_sq ?_ (add_nonneg (norm_nonneg _) (norm_nonneg _))
     rw [hsq]
-    nlinarith [mul_nonneg (norm_nonneg Y)
+    nlinarith only [mul_nonneg (norm_nonneg Y)
       (norm_nonneg (covGrad (I := I) (M := M) g p c Y))]
   change ‖(⟨Y⟩ : SmoothCcTensorH1 g p c)‖ ≤ _
   calc
@@ -1109,7 +1109,7 @@ theorem operator_field_composition_h2_h1_to_h1_bound
       h1_norm_sq_jet (I := I) (M := M) g p c Y
     refine le_of_sq_le_sq ?_ (add_nonneg (norm_nonneg _) (norm_nonneg _))
     rw [hsq]
-    nlinarith [mul_nonneg (norm_nonneg Y)
+    nlinarith only [mul_nonneg (norm_nonneg Y)
       (norm_nonneg (covGrad (I := I) (M := M) g p c Y))]
   change ‖(⟨Y⟩ : SmoothCcTensorH1 g p c)‖ ≤ _
   calc

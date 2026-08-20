@@ -96,7 +96,7 @@ private lemma bdWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {B :
     norm_num
   rw [Combinatorics.boundedFactorGridWindow, Finset.sum_range_succ, Finset.sum_range_succ,
     Finset.sum_range_one, hgrid0, hgrid1, hgrid2]
-  nlinarith [hb 1, hB1, hB0, sq_nonneg (b 1 - B)]
+  nlinarith only [hb 1, hB1, hB0, sq_nonneg (b 1 - B)]
 
 
 theorem exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_fiberNormSq_ballUniform
@@ -154,7 +154,7 @@ theorem exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_fiberNormSq
     (convexPerturbation (I := I) g₀ T 0 s) htie hδ_le' hδ0 hδP 0 x
   rw [iteratedCovGrad_zero] at h0
   have hss : 0 ≤ s * s := mul_nonneg hs0 hs0
-  have hs2 : s * s ≤ 1 := by nlinarith
+  have hs2 : s * s ≤ 1 := by nlinarith only [hs0, hs1]
   have hb1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
       ((iteratedCovGrad (I := I) g₀ 0 2 1
         (convexPerturbation (I := I) g₀ T 0 s)).toSection x) ≤ (Csob * R) ^ 2 := by
@@ -165,7 +165,7 @@ theorem exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_fiberNormSq
       rfl]
     rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + 1) x]
     have hT1 := hcap1 T hR hball x
-    nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + 1) x
+    nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + 1) x
       ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x), hT1, hss, hs2, sq_nonneg s]
   have hwin := bdWindowOneThree_le
     (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
@@ -230,7 +230,7 @@ theorem exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_l2JetWindow
     have hcP : convexPerturbation (I := I) g₀ T 0 s = s • T := by
       rw [convexPerturbation, smul_zero, zero_add]
     have hss : 0 ≤ s * s := mul_nonneg hs0 hs0
-    have hs2 : s * s ≤ 1 := by nlinarith
+    have hs2 : s * s ≤ 1 := by nlinarith only [hs0, hs1]
     have hptx : ∀ x : M,
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
@@ -257,7 +257,7 @@ theorem exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_l2JetWindow
         rw [SmoothCcTensor.toSection_smul]
         rfl]
       rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + e m) x]
-      nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e m) x
+      nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e m) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x), hss, hs2]
     obtain ⟨hWint, hWbound⟩ := hKflat T hball i
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀
@@ -280,7 +280,7 @@ theorem exists_ricciArmOrder0AACommCoeffField_metricPerturbationPath_l2JetWindow
       bdNorm_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
     rw [hz]
     have hK_nn : 0 ≤ C i * Kflat i := mul_nonneg (hC_nn i) (hKflat_nn i)
-    nlinarith [hwin_nn, hK_nn]
+    nlinarith only [hwin_nn, hK_nn]
 
 private lemma bdBoundedFactorGridWindow_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
     (hbb : ∀ j, b j ≤ b' j) (K w : ℕ) :
@@ -361,9 +361,9 @@ theorem exists_ricciArmOrder0BackgroundRCommCoeffField_metricPerturbationPath_ba
         rw [SmoothCcTensor.toSection_smul]
         rfl]
       rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
-      have hs2 : s ^ 2 ≤ 1 := by nlinarith
-      nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x
-        ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)]
+      have hs2 : s ^ 2 ≤ 1 := by nlinarith only [hs0, hs1]
+      nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x
+        ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x), hs2]
     have hptx : ∀ x : M,
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
@@ -403,7 +403,7 @@ theorem exists_ricciArmOrder0BackgroundRCommCoeffField_metricPerturbationPath_ba
       bdNorm_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
     rw [hz]
     have hK_nn : 0 ≤ C i * Kflat i := mul_nonneg (hC_nn i) (hKflat_nn i)
-    nlinarith [hwin_nn, hK_nn]
+    nlinarith only [hwin_nn, hK_nn]
 
 private lemma bdTupleWindow_le_boundedWindow (b : ℕ → ℝ) (_hb : ∀ j, 0 ≤ b j)
     {K W : ℕ} (hW : W ≤ K + 1) :
@@ -865,7 +865,7 @@ private lemma sharpGradKoszulComposite_pointwise_boundedWindow (g₀ : SmoothRie
         (16 * CW l) * Combinatorics.boundedFactorGridWindow b (i + 1) (l + 3) := by
       have hWnn : 0 ≤ Combinatorics.boundedFactorGridWindow b (i + 1) (l + 3) :=
         Combinatorics.boundedFactorGridWindow_nonneg b hb (i + 1) (l + 3)
-      nlinarith [hsub, hadd12, hadd34, hW1, hW2, hW3, hW4, hWnn, hCW_nn l,
+      nlinarith only [hsub, hadd12, hadd34, hW1, hW2, hW3, hW4, hWnn, hCW_nn l,
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + l) x
           ((iteratedCovGrad (I := I) g₀ 0 4 l
             (sharpGradKoszulWeightedTerm (I := I) (M := M) g₀ g₁ bdSGKTau1 T T +
@@ -1085,13 +1085,13 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_l2Jet
       rw [smul_smul]
     rw [hfield, iteratedCovGrad_smul_real, norm_smul, Real.norm_eq_abs, mul_pow]
     have hss : 0 ≤ s * s := mul_nonneg hs0 hs0
-    have hs2 : s * s ≤ 1 := by nlinarith
+    have hs2 : s * s ≤ 1 := by nlinarith only [hs0, hs1]
     have habs2 : |(2 : ℝ) * (s * s)| ^ 2 ≤ 4 := by
       rw [abs_mul]
       have h1 : |(2 : ℝ)| = 2 := by norm_num
       have h2 : |s * s| = s * s := abs_of_nonneg hss
       rw [h1, h2]
-      nlinarith [hss, hs2]
+      nlinarith only [hss, hs2]
     have hptx : ∀ x : M,
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 2 i
@@ -1120,7 +1120,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_l2Jet
         rw [SmoothCcTensor.toSection_smul]
         rfl]
       rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') x]
-      nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') x
+      nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') x
         ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection x), hs2, hss]
     obtain ⟨hWint, hWbound⟩ := hKflat T hball i
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀
@@ -1160,7 +1160,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_l2Jet
       refine le_trans key ?_
       rw [MeasureTheory.integral_const_mul]
       exact mul_le_mul_of_nonneg_left hWbound (hC_nn i)
-    nlinarith [key2, habs2, hwin_nn, hC_nn i, hKflat_nn i,
+    nlinarith only [key2, habs2, hwin_nn, hC_nn i, hKflat_nn i,
       sq_nonneg ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
@@ -1184,7 +1184,7 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_l2Jet
     rw [hz]
     have hK_nn : 0 ≤ 4 * (C i * Kflat i) :=
       mul_nonneg (by norm_num) (mul_nonneg (hC_nn i) (hKflat_nn i))
-    nlinarith [hwin_nn, hK_nn]
+    nlinarith only [hwin_nn, hK_nn]
 
 private theorem ricciFoldWeightComposite_pointwise_gridWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (Λ0 : ℝ) (hΛ0 : 0 ≤ Λ0) :
@@ -1286,7 +1286,7 @@ private theorem ricciFoldWeightComposite_pointwise_gridWindow (g₀ : SmoothRiem
         simpa [iteratedCovGrad_zero] using this
       have hone : (1 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (0 + 1) :=
         Combinatorics.one_le_antidiagonalTupleGridWindow b hb (by norm_num)
-      nlinarith [hΛ0, hone, h0, hb 0]
+      nlinarith only [hΛ0, hone, h0, hb 0]
     · have hsingle : b n ≤ Combinatorics.antidiagonalTupleGrid b n :=
         bdSingle_b_le_grid b hb n hn1
       have hgw : Combinatorics.antidiagonalTupleGrid b n ≤
@@ -1294,7 +1294,7 @@ private theorem ricciFoldWeightComposite_pointwise_gridWindow (g₀ : SmoothRiem
         Combinatorics.antidiagonalTupleGrid_le_window b hb (by omega)
       have hwnn : (0 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (n + 1) :=
         Combinatorics.antidiagonalTupleGridWindow_nonneg b hb (n + 1)
-      nlinarith [le_trans hsingle hgw, hΛ0, hwnn]
+      nlinarith only [le_trans hsingle hgw, hΛ0, hwnn]
   have hInner : ∀ m : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (6 + m) x
         ((iteratedCovGrad (I := I) g₀ 0 6 m
@@ -1716,9 +1716,9 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_l2JetWindo
         rw [SmoothCcTensor.toSection_smul]
         rfl]
       rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
-      have hs2 : s ^ 2 ≤ 1 := by nlinarith
-      nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x
-        ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)]
+      have hs2 : s ^ 2 ≤ 1 := by nlinarith only [hs0, hs1]
+      nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x
+        ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x), hs2]
     have hfield : ricciArmRicciFoldRemainderField (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T) =
         ((-(1 / 2) : ℝ) * s) •
@@ -1746,7 +1746,7 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_l2JetWindo
         rw [abs_of_nonneg hs0]
         exact hs1
       rw [h1]
-      nlinarith [abs_nonneg s]
+      nlinarith only [abs_nonneg s, h2]
     have hmain := hKg T hball i (C i) (hC_nn i)
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
@@ -1757,7 +1757,7 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_l2JetWindo
       (fun x => hpt (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
         (convexPerturbation (I := I) g₀ T 0 s) T htie hδ_le' hδ0 hδP hPT
         (fun x' => hTcapAll T hR hball x') i x)
-    nlinarith [hmain, habs2, sq_nonneg ‖iteratedCovGrad (I := I) g₀ 2 2 i
+    nlinarith only [hmain, habs2, sq_nonneg ‖iteratedCovGrad (I := I) g₀ 2 2 i
       (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
@@ -1773,7 +1773,7 @@ theorem exists_ricciArmRicciFoldRemainderField_metricPerturbationPath_l2JetWindo
     rw [hz]
     have hK_nn : 0 ≤ C i * ∑ k ∈ Finset.range (i + 2), Kg k :=
       mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k)
-    nlinarith [hwin_nn, hK_nn]
+    nlinarith only [hwin_nn, hK_nn]
 
 end TensorSpectral
 end Parabolic

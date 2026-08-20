@@ -158,7 +158,7 @@ theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric
     riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 2 x (T.toSection x)
   have hnn : (0 : ℝ) ≤ ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ :=
     norm_nonneg _
-  nlinarith [h0', hb, hnn, mul_nonneg hCsob_nn hR]
+  nlinarith only [h0', hb, hnn, mul_nonneg hCsob_nn hR]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
@@ -211,7 +211,7 @@ theorem exists_sobolev_pointwise_bound_first_order (g₀ : SmoothRiemannianMetri
     riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 1) x _
   have hnn : (0 : ℝ) ≤ ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 (2 + 1) I x)‖ := norm_nonneg _
-  nlinarith [h1', hb, hnn, mul_nonneg hCsob_nn hR]
+  nlinarith only [h1', hb, hnn, mul_nonneg hCsob_nn hR]
 
 
 private theorem riemannCurvatureCoefficientFieldGridWindow (g₀ : SmoothRiemannianMetric I M) (Λ0 : ℝ)
@@ -712,7 +712,7 @@ private theorem connectionDifferenceQuadraticCurvatureTermGridWindow (g₀ : Smo
     have ha4 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2) F3 x
     have ha5 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w F1 F2 x
     have hnn : (0 : ℝ) ≤ CQ w * W := mul_nonneg (hCQ_nn w) hW_nn
-    nlinarith [ha1, ha2, ha3, ha4, ha5, h1, h2, h3, h4, h5, h6,
+    nlinarith only [ha1, ha2, ha3, ha4, ha5, h1, h2, h3, h4, h5, h6,
       riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + w) x
         ((iteratedCovGrad (I := I) g₀ 0 4 w (F1 + F2 + F3 + F4 + F5)).toSection x),
       riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + w) x
@@ -801,7 +801,7 @@ private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetr
   have hcP : convexPerturbation (I := I) g₀ T 0 s = s • T := by
     rw [convexPerturbation, smul_zero, zero_add]
   have hss : 0 ≤ s * s := mul_nonneg hs0 hs0
-  have hs2 : s * s ≤ 1 := by nlinarith
+  have hs2 : s * s ≤ 1 := by nlinarith only [hs0, hs1]
   have hPT : ∀ l', riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
       ((iteratedCovGrad (I := I) g₀ 0 2 l'
         (convexPerturbation (I := I) g₀ T 0 s)).toSection x) ≤ b l' := by
@@ -812,7 +812,7 @@ private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetr
       rw [SmoothCcTensor.toSection_smul]
       rfl]
     rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') x]
-    nlinarith [hb l', hss, hs2]
+    nlinarith only [hb l', hss, hs2]
   have hsub : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
       ((iteratedCovGrad (I := I) g₀ 0 4 w
         (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s)).toSection x) ≤
@@ -842,12 +842,12 @@ private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetr
       refine mul_le_mul_of_nonneg_left ?_ (hCF_nn w)
       rw [hW_def]
       exact Combinatorics.boundedFactorGridWindow_mono b hb (le_refl K) (by omega)
-    have hsq : (-(s / 2) : ℝ) * -(s / 2) ≤ 1 := by nlinarith
-    have hsq0 : (0 : ℝ) ≤ (-(s / 2) : ℝ) * -(s / 2) := by nlinarith
+    have hsq : (-(s / 2) : ℝ) * -(s / 2) ≤ 1 := by nlinarith only [hs0, hs1]
+    have hsq0 : (0 : ℝ) ≤ (-(s / 2) : ℝ) * -(s / 2) := mul_self_nonneg _
     have hriemannianFiberNormSq_nn := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + w) x
       ((iteratedCovGrad (I := I) g₀ 0 4 w
         (riemannCurvatureCoefficientField (I := I) (M := M) g₀ T)).toSection x)
-    nlinarith [le_trans hbase hbase', hriemannianFiberNormSq_nn]
+    nlinarith only [le_trans hbase hbase', hriemannianFiberNormSq_nn, hsq, hsq0]
   have hB : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
       ((iteratedCovGrad (I := I) g₀ 0 4 w
         (connectionDifferenceQuadraticCurvatureTerm (I := I) (M := M) g₀
@@ -934,7 +934,7 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
   have hcP : convexPerturbation (I := I) g₀ T 0 s = s • T := by
     rw [convexPerturbation, smul_zero, zero_add]
   have hss : 0 ≤ s * s := mul_nonneg hs0 hs0
-  have hs2 : s * s ≤ 1 := by nlinarith
+  have hs2 : s * s ≤ 1 := by nlinarith only [hs0, hs1]
   have hPT : ∀ (l' : ℕ) (y : M), riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') y
       ((iteratedCovGrad (I := I) g₀ 0 2 l'
         (convexPerturbation (I := I) g₀ T 0 s)).toSection y) ≤
@@ -947,7 +947,7 @@ theorem deTurckLieCovariantDerivativeArmDifferenceGridWindow (g₀ : SmoothRiema
       rw [SmoothCcTensor.toSection_smul]
       rfl]
     rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') y]
-    nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') y
+    nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') y
       ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection y), hss, hs2]
   have hlift : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i

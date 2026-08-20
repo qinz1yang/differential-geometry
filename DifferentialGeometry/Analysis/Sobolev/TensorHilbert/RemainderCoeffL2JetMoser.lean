@@ -323,7 +323,7 @@ theorem ricciDeTurckPrincipalCoefficient_metricPerturbationPath_jetL2_perOrder_b
   have hp_nn : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 4 2 i B‖ := norm_nonneg _
   have hq_nn : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 4 2 i (A - B)‖ := norm_nonneg _
   have hA_nn : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 4 2 i A‖ := norm_nonneg _
-  nlinarith [htri, hq2, hp_nn, hq_nn, hA_nn,
+  nlinarith only [htri, hq2, hp_nn, hq_nn, hA_nn,
     sq_nonneg (‖iteratedCovGrad (I := I) g₀ 4 2 i B‖
       - ‖iteratedCovGrad (I := I) g₀ 4 2 i (A - B)‖),
     mul_le_mul htri htri hA_nn (add_nonneg hp_nn hq_nn)]
@@ -487,7 +487,7 @@ theorem traceHessianCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
   have hp_nn : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 4 2 i B‖ := norm_nonneg _
   have hq_nn : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 4 2 i (A - B)‖ := norm_nonneg _
   have hA_nn : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 4 2 i A‖ := norm_nonneg _
-  nlinarith [htri, hq2, hp_nn, hq_nn, hA_nn,
+  nlinarith only [htri, hq2, hp_nn, hq_nn, hA_nn,
     sq_nonneg (‖iteratedCovGrad (I := I) g₀ 4 2 i B‖
       - ‖iteratedCovGrad (I := I) g₀ 4 2 i (A - B)‖),
     mul_le_mul htri htri hA_nn (add_nonneg hp_nn hq_nn)]
@@ -585,7 +585,7 @@ theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_perOrder_tameE
               + s * ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ := by
             rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
               abs_of_nonneg h1ms, abs_of_nonneg hs0]
-    nlinarith [mul_le_mul hnorm_le hnorm_le (norm_nonneg
+    nlinarith only [mul_le_mul hnorm_le hnorm_le (norm_nonneg
         (iteratedCovGrad (I := I) g₀ 0 2 j (convexPerturbation (I := I) g₀ T T' s))) hy_nn,
       mul_nonneg (mul_nonneg hs0 h1ms)
         (sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ -
@@ -705,7 +705,7 @@ theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_tameE
               + s * ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ := by
             rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
               abs_of_nonneg h1ms, abs_of_nonneg hs0]
-    nlinarith [mul_le_mul hnorm_le hnorm_le (norm_nonneg
+    nlinarith only [mul_le_mul hnorm_le hnorm_le (norm_nonneg
         (iteratedCovGrad (I := I) g₀ 0 2 j (convexPerturbation (I := I) g₀ T T' s))) hy_nn,
       mul_nonneg (mul_nonneg hs0 h1ms)
         (sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ -
@@ -1202,7 +1202,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topOrderSeparated_generic
             refine Finset.sum_le_sum (fun j hj => ?_)
             rw [Finset.mem_range] at hj
             have hb := hPball j (by omega)
-            nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j P)]
+            nlinarith only [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j P), hb, hR]
         _ = ((a + 1 + 1 : ℕ) : ℝ) * R ^ 2 := by
             rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 2) x
@@ -1635,7 +1635,7 @@ theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOr
       _ ≤ 2 * Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
             (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
-          nlinarith [hKc_i, hsum_nn]
+          nlinarith only [hKc_i, hsum_nn]
 
 theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1768,7 +1768,7 @@ theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOr
       _ ≤ 2 * Kc i * (1 + ∑ j ∈ Finset.range (i + 1),
             (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
-          nlinarith [hKc_i, hsum_nn]
+          nlinarith only [hKc_i, hsum_nn]
 
 theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated_allOrders
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1904,7 +1904,7 @@ theorem linearizedRicciArm0BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOr
       _ ≤ 2 * Kc i * (1 + ∑ j ∈ Finset.range (i + 2),
             (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
-          nlinarith [hKc_i, hsum_nn]
+          nlinarith only [hKc_i, hsum_nn]
 
 theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOrderSeparated_allOrders
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -2055,7 +2055,7 @@ theorem linearizedRicciArm1BaseCoeff_metricPerturbationPath_jetL2_perOrder_topOr
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) +
             2 * Kleak * (‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) T‖ ^ 2 +
               ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) T'‖ ^ 2) := by
-          nlinarith [hKc_i, hsum_nn, hKleak_nn, hleakT_nn]
+          nlinarith only [hKc_i, hsum_nn, hKleak_nn, hleakT_nn]
 
 end TopOrderSeparatedMetricPerturbationPath
 

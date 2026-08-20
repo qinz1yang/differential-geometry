@@ -510,11 +510,11 @@ private lemma mass_le_of_sqrt_split {A B C c d : ℝ}
   have hAle : A ≤ (c * sB + d * sC) ^ 2 := by
     have := mul_le_mul hsplit hsplit (Real.sqrt_nonneg _) hrhs_nn
     rwa [← sq, ← sq, hsqA] at this
-  have hc2_lt : c ^ 2 < 1 := by nlinarith [hc, hc1]
+  have hc2_lt : c ^ 2 < 1 := by nlinarith only [hc, hc1]
   have hden_pos : 0 < 1 - c ^ 2 := by linarith [hc2_lt]
   have hyoung_mul : 2 * c * d * (1 - c ^ 2) * (sB * sC) ≤
       (1 - c ^ 2) ^ 2 / 2 * sB ^ 2 + 2 * c ^ 2 * d ^ 2 * sC ^ 2 := by
-    nlinarith [sq_nonneg ((1 - c ^ 2) * sB - 2 * c * d * sC), hden_pos,
+    nlinarith only [sq_nonneg ((1 - c ^ 2) * sB - 2 * c * d * sC), hden_pos,
       mul_nonneg hc hd]
   have hkey : (c * sB + d * sC) ^ 2 ≤
       ((1 + c ^ 2) / 2) * B + (d ^ 2 * (1 + c ^ 2) / (1 - c ^ 2)) * C := by
@@ -1173,7 +1173,7 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
     intro τ
     rw [galerkinEnergy]
     refine Real.sqrt_le_sqrt ?_
-    have hc2 : c ^ 2 ≤ 1 := by nlinarith [hc_nn, hc_le_one]
+    have hc2 : c ^ 2 ≤ 1 := by nlinarith only [hc_nn, hc_le_one]
     have hstep : (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
         ((smoothCcToTensorHs (I := I) (M := M) g₀ τ T₀).coeff i) ^ 2) ≤
         ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
@@ -1299,11 +1299,11 @@ private theorem deTurckGalerkinForcingSymm_tame_diff_mass_perScale
       (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha2)).2.1
       (Classical.choose_spec (deTurckSobolevNHa2_exists_of_super (I := I) (M := M) g₀ a ha2)).2.2
       (fun T' => deTurckSobolevNHa2_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha2 T') U
-  have hden_pos : 0 < 1 - Cδ₀ ^ 2 := by nlinarith [hCδ₀_nn, hCδ₀_lt]
+  have hden_pos : 0 < 1 - Cδ₀ ^ 2 := by nlinarith only [hCδ₀_nn, hCδ₀_lt]
   refine ⟨Real.sqrt ((1 + Cδ₀ ^ 2) / 2),
     fun k => Real.sqrt (Crem k ^ 2 * (1 + Cδ₀ ^ 2) / (1 - Cδ₀ ^ 2)),
     Real.sqrt_nonneg _,
-    (Real.sqrt_lt' one_pos).mpr (by rw [one_pow]; nlinarith [hCδ₀_nn, hCδ₀_lt]),
+    (Real.sqrt_lt' one_pos).mpr (by rw [one_pow]; nlinarith only [hCδ₀_nn, hCδ₀_lt]),
     fun k => Real.sqrt_nonneg _, ?_⟩
   intro N k t _
   have hEq :
@@ -1417,7 +1417,7 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
   obtain ⟨Cseed, hCseed_nn, hseed⟩ :=
     deTurckGalerkinForcingSymm_seed_mass (I := I) (M := M) g₀ g_bg a ha2
   refine ⟨1 + Cδ₀ ^ 2, fun k => Ctame k ^ 2, fun k => 2 * Cseed k,
-    by nlinarith [hCδ₀_lt, hCδ₀_nn], fun k => by positivity, ?_⟩
+    by nlinarith only [hCδ₀_lt, hCδ₀_nn], fun k => by positivity, ?_⟩
   intro N k t ht
   set S := eigenIdxFinset (I := I) (M := M) g₀ N with hS
   set σ : ℝ := (a : ℝ) + (k : ℝ) with hσ
@@ -1490,7 +1490,7 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
             (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (v.coeff i) ^ 2) +
             Ctame k ^ 2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ *
               (v.coeff i) ^ 2 := by
-          rw [one_mul, inv_one, one_mul]; nlinarith [hmass']
+          rw [one_mul, inv_one, one_mul]; nlinarith only [hmass']
   have hSeed :
       2 * ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ * (v.coeff i * w0.coeff i) ≤
         2 * Cseed k *
@@ -1508,7 +1508,7 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
           2 * Cseed k * Real.sqrt (galerkinEnergy (I := I) (M := M) S (U N) σ t) := by
     rw [hLHS_eq, hsplit, mul_add]
     have hEσ1nn := galerkinEnergy_nonneg (I := I) (M := M) S (U N) (σ + 1) t
-    nlinarith [hTame, hSeed, hEσ1nn]
+    nlinarith only [hTame, hSeed, hEσ1nn]
   exact hfinal
 
 set_option backward.isDefEq.respectTransparency false in
