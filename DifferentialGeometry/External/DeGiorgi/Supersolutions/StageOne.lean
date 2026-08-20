@@ -1,4 +1,5 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
+-- Modified 2026-08-20: made exponent and coefficient comparisons explicit
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.ForwardIteration
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.InverseIteration
 
@@ -381,7 +382,7 @@ private theorem weak_harnack_stage_one_forward_power_upgrade
     exact hstep.trans <|
       mul_le_mul_of_nonneg_right hvol_pow_compare hI_nonneg
   have hp₀_sq_le_p_sq : p₀ ^ 2 ≤ p ^ 2 := by
-    nlinarith [le_of_lt hp₀_lt_p]
+    simpa only [pow_two] using mul_self_le_mul_self hp₀.le hp₀_lt_p.le
   have hX₀_le_X : X₀ ≤ X := by
     dsimp [X₀, X]
     have hdiv :
@@ -391,21 +392,21 @@ private theorem weak_harnack_stage_one_forward_power_upgrade
           A.1.Λ * p₀ ^ 2 ≤ A.1.Λ * p ^ 2 := by
         exact mul_le_mul_of_nonneg_left hp₀_sq_le_p_sq A.1.Λ_pos.le
       exact div_le_div_of_nonneg_right hmul (by positivity)
-    linarith
+    simpa only [add_comm] using add_le_add_right hdiv 1
   have hX₀_nonneg : 0 ≤ X₀ := by
     dsimp [X₀]
     have hfrac_nonneg :
         0 ≤ A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 := by
       exact div_nonneg (mul_nonneg A.1.Λ_pos.le (sq_nonneg p₀))
         (sq_nonneg (1 - q))
-    linarith
+    exact add_nonneg hfrac_nonneg zero_le_one
   have hX_ge_one : 1 ≤ X := by
     dsimp [X]
     have hfrac_nonneg :
         0 ≤ A.1.Λ * p ^ 2 / (1 - q) ^ 2 := by
       exact div_nonneg (mul_nonneg A.1.Λ_pos.le (sq_nonneg p))
         (sq_nonneg (1 - q))
-    linarith
+    exact le_add_of_nonneg_left hfrac_nonneg
   have hCX_compare :
       (C_weakHarnack0 d * X₀ ^ ((d : ℝ) / 2)) ^ (p / p₀) ≤
         (C_weakHarnack0 d) ^ χ * X ^ β := by
@@ -420,7 +421,11 @@ private theorem weak_harnack_stage_one_forward_power_upgrade
       have hexp_nonneg' : 0 ≤ ((d : ℝ) / 2) * (p / p₀) := by positivity
       have hexp_le' : ((d : ℝ) / 2) * (p / p₀) ≤ β := by
         dsimp [β]
-        nlinarith [hratio_le]
+        have hd_half_nonneg : 0 ≤ (d : ℝ) / 2 := by positivity
+        calc
+          (d : ℝ) / 2 * (p / p₀) ≤ (d : ℝ) / 2 * χ :=
+            mul_le_mul_of_nonneg_left hratio_le hd_half_nonneg
+          _ = (d : ℝ) * χ / 2 := by ring
       calc
         X₀ ^ (((d : ℝ) / 2) * (p / p₀))
             ≤ X ^ (((d : ℝ) / 2) * (p / p₀)) := by

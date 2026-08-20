@@ -1,5 +1,6 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
+-- Modified 2026-08-20: made square and energy-coefficient comparisons explicit
 import DifferentialGeometry.External.DeGiorgi.DeGiorgiIteration.Energy
 
 /-!
@@ -382,7 +383,7 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
     have hsq :
         |positivePartSub u lam x| ^ 2 ≤ |positivePartSub u θ x| ^ 2 := by
       rw [abs_of_nonneg hlam_nonneg, abs_of_nonneg hθ_nonneg]
-      nlinarith
+      exact (sq_le_sq₀ hlam_nonneg hθ_nonneg).2 hmono
     have hlam_sq_nonneg : 0 ≤ |positivePartSub u lam x| ^ 2 := by positivity
     simpa [Real.norm_eq_abs, abs_of_nonneg hlam_sq_nonneg] using hsq
   have hg_int :
@@ -406,7 +407,7 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
       have hsq :
           |positivePartSub u lam x| ^ 2 ≤ |v x| ^ 2 := by
         rw [hvx, abs_of_nonneg hlam_nonneg, abs_of_nonneg hθ_nonneg]
-        nlinarith [hmono]
+        exact (sq_le_sq₀ hlam_nonneg hθ_nonneg).2 hmono
       simpa [g, hxT] using hsq
     · have hzero : positivePartSub u lam x = 0 := by
         have hux : u x - lam ≤ 0 := by linarith
@@ -610,7 +611,7 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
         (MeasureTheory.lpNorm v 2 (μ.restrict T)) ^ 2 ≤
           ((C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
             (μ.real S) ^ (1 / (d : ℝ))) ^ 2 := by
-      nlinarith [hmain_lp]
+      exact (sq_le_sq₀ hnonneg_left hnonneg_right).2 hmain_lp
     calc
       ∫ x in T, |v x| ^ 2 ∂μ = (MeasureTheory.lpNorm v 2 (μ.restrict T)) ^ 2 := hT_lp_sq
       _ ≤ ((C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
@@ -1011,8 +1012,9 @@ theorem deGiorgi_preiter_on_concentricBalls_of_ballPosPart
     linarith
   have hRatio_nonneg : 0 ≤ ellipticityRatio A := A.ellipticityRatio_nonneg
   have hCenergy_nonneg : 0 ≤ 8 * (ellipticityRatio A + 1) * Cη ^ 2 := by
-    have hCη_sq_nonneg : 0 ≤ Cη ^ 2 := sq_nonneg Cη
-    nlinarith
+    exact mul_nonneg
+      (mul_nonneg (by norm_num) (add_nonneg hRatio_nonneg zero_le_one))
+      (sq_nonneg Cη)
   have hθ_int :
       Integrable (fun x => |positivePartSub u θ x| ^ 2)
         (volume.restrict (Metric.ball x₀ s)) := by
@@ -1063,8 +1065,7 @@ theorem deGiorgi_preiter_on_concentricBalls_of_ballPosPart
   haveI : IsFiniteMeasure (volume.restrict (Metric.ball x₀ s)) := by
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
-  simpa [mul_assoc, mul_left_comm, mul_comm] using
-    deGiorgi_preiter_of_energy
+  have hpre := deGiorgi_preiter_of_energy
       (μ := volume.restrict (Metric.ball x₀ s))
       (d := d) hd_pos (u := u) (θ := θ) (lam := lam)
       (Ilam := ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume)
@@ -1080,6 +1081,14 @@ theorem deGiorgi_preiter_on_concentricBalls_of_ballPosPart
       hsob
       henergy
       (by rfl)
+  calc
+    ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
+        (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
+          ((((lam - θ) ^ 2)⁻¹ *
+            ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume) ^
+              (2 / (d : ℝ))) *
+            ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume := by
+              convert hpre using 1
 
 /-- Approximation-based version of the PDE-facing De Giorgi pre-iteration
 theorem.

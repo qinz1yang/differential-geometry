@@ -246,3 +246,19 @@ scope cleanup; no declaration, statement, or proof was changed.
 **Change**: replaced a broad additive `simpa` in the small-ball average triangle estimate with
 an explicit equality followed by `abs_add_le`. The theorem statement and mathematical argument
 are unchanged.
+
+### 2026-08-20 — explicit iteration inequalities
+
+**Files**:
+- `DeGiorgiIteration/Linfty.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `Supersolutions/ForwardIteration/OneStep.lean`
+- `Supersolutions/InverseOneStep.lean`
+- `Supersolutions/StageOne.lean`
+- `WeakFormulation/ExistenceTheory.lean`
+
+**Change**: replaced slow nonlinear arithmetic, broad simplification, and multi-rewrite steps
+with direct nonnegativity products, monotonicity lemmas for squares and exponents, explicit factor
+rearrangements, and an explicit inner-product congruence. The theorem statements and mathematical
+arguments are unchanged.

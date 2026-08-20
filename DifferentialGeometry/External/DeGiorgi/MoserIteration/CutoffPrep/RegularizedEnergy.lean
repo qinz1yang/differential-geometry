@@ -1,5 +1,6 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
+-- Modified 2026-08-20: made a regularized-energy factor rearrangement explicit
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.CutoffPrep.RegularizedWitnesses
 
 /-!
@@ -1072,7 +1073,10 @@ theorem moser_exact_regularized_energy_bound
                   Equad x := by
                     exact mul_le_mul hαη hgrad (by positivity) hrhs_nonneg
           _ = (p ^ 2 / (4 * (p - 1))) * leftTerm x := by
-              simp [leftTerm, ψd, hx, mul_assoc, mul_left_comm, mul_comm]
+              rw [show leftTerm x = η x ^ 2 *
+                deriv (moserExactRegTestPow ε N p) (max (u x) 0) * Equad x by
+                  simp [leftTerm, ψd, hx]]
+              ring
       · have hunonpos : u x ≤ 0 := not_lt.mp hux
         have hgrad_zero : hwPos.weakGrad x = 0 := hsublevelx hunonpos
         simp [leftTerm, Equad, bilinFormIntegrandOfCoeff, hgrad_zero]

@@ -1,5 +1,6 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 -- Modified 2026-05-16: style-warning cleanup
+-- Modified 2026-08-20: made the weak-identity inner-product substitution explicit
 import DifferentialGeometry.External.DeGiorgi.WeakFormulation.CoefficientOperator
 import Mathlib.Analysis.InnerProductSpace.LaxMilgram
 import Mathlib.Analysis.Normed.Operator.Extend
@@ -433,7 +434,8 @@ private theorem weakIdentity_on_smoothTests
                         (smoothTestWitness hΩ hφ)
               _ = ⟪coeffMulLpL A (gsol : MeasureTheory.Lp E 2 (volume.restrict Ω)),
                     H.subtypeL gφH⟫_ℝ := by
-                    rw [hwu_gradEq, hφ_gradEq]
+                    exact congrArg₂ (fun a b => ⟪coeffMulLpL A a, b⟫_ℝ)
+                      hwu_gradEq hφ_gradEq.symm
               _ = ⟪coeffMulLpL A (H.subtypeL gsol), H.subtypeL gφH⟫_ℝ := by
                     rfl
               _ = coeffBilinSubmodule A H gsol gφH := by rfl

@@ -1,4 +1,5 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
+-- Modified 2026-08-20: made coefficient nonnegativity explicit
 import DifferentialGeometry.External.DeGiorgi.Supersolutions.ForwardIteration.Energy
 
 /-!
@@ -179,7 +180,7 @@ theorem supersolution_preMoser_forward
         cutoff_sobolev_anchor_le_C_MoserAnchor (d := d))
       (by positivity)
   have hcoeff_nonneg : 0 ≤ A.1.Λ * (p / (1 - p)) ^ 2 + 1 := by
-    nlinarith [A.1.Λ_nonneg, sq_nonneg (p / (1 - p))]
+    exact add_nonneg (mul_nonneg A.1.Λ_nonneg (sq_nonneg (p / (1 - p)))) zero_le_one
   have hIp_nonneg : 0 ≤ ∫ x in Ω, |u x| ^ p ∂volume := integral_nonneg fun x => by positivity
   have hqexp_mul : (1 / qexp : ℝ) * (2 / p) = 1 / (moserChi d * p) := by
     dsimp [qexp, moserChi]; field_simp
@@ -238,7 +239,7 @@ theorem supersolution_preMoser_forward
             apply Real.rpow_le_rpow (by positivity)
             · exact mul_le_mul_of_nonneg_right
                 (mul_le_mul_of_nonneg_right hconst_bound
-                  (by nlinarith [A.1.Λ_nonneg, sq_nonneg (p / (1 - p))]))
+                  hcoeff_nonneg)
                 hIp_nonneg
             · positivity
   refine ⟨hleft_int, ?_⟩
