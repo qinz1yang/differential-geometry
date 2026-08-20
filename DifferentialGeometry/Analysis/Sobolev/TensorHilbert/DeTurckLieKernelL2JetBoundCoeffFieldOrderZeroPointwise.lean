@@ -192,7 +192,7 @@ private theorem connectionDifferenceCovDerivOp_sqrt_le_of_bounds
     linarith [s2]
   refine le_trans hchain ?_
   rw [hCK_def]
-  nlinarith [hA1_le, hA2_le, hQ1_le, hQ2_le, hQ3_le]
+  nlinarith only [hA1_le, hA2_le, hQ1_le, hQ2_le, hQ3_le]
 
 omit [I.Boundaryless] in
 private theorem deTurckLieConnectionDifferenceDerivCoeffField_component_sq_le
@@ -447,11 +447,11 @@ private theorem smoothOrthoFrame_g0Norm_le_of_perturbation
     linarith [htie'.symm]
   have hBB_le : g₀.inner x Ba Ba ≤ 1 / (1 - δ₁) := by
     have hδP1 : 1 - δ₁ ≤ 1 - δP := by linarith [hδP_le]
-    have h2 : (1 - δP) * g₀.inner x Ba Ba ≤ 1 := by nlinarith [hlow]
+    have h2 : (1 - δP) * g₀.inner x Ba Ba ≤ 1 := by nlinarith only [hlow]
     have h3 : (1 - δ₁) * g₀.inner x Ba Ba ≤ (1 - δP) * g₀.inner x Ba Ba :=
       mul_le_mul_of_nonneg_right hδP1 hBB_nn
     rw [le_div_iff₀ hcoeff]
-    nlinarith [h2, h3]
+    nlinarith only [h2, h3]
   calc Real.sqrt (g₀.inner x Ba Ba) ≤ Real.sqrt (1 / (1 - δ₁)) :=
       Real.sqrt_le_sqrt hBB_le
     _ = κ := hκ_def.symm

@@ -54,7 +54,16 @@ theorem abs_g1_inner_le_two_sqrt (g₀ g₁ : SmoothRiemannianMetric I M)
   have h2 := hb x u w
   have hnn : 0 ≤ Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x w w) :=
     mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
-  nlinarith [h1, h2, hnn]
+  have h2' : |ccTensorBilinSymm (I := I) g₀ P x u w| ≤
+      Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x w w) :=
+    h2.trans (by
+      calc
+        δs * Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x w w) =
+            δs * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x w w)) := by ring
+        _ ≤ 1 * (Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x w w)) :=
+          mul_le_mul_of_nonneg_right hδs1 hnn
+        _ = Real.sqrt (g₀.inner x u u) * Real.sqrt (g₀.inner x w w) := one_mul _)
+  linarith only [h1, h2']
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -343,7 +352,7 @@ theorem exists_fixed_connectionDifference_sqrt_bound (g₀ g_bg : SmoothRiemanni
   calc NA ≤ NW * Sv * Sw := hNA_le
     _ ≤ Real.sqrt K * Sv * Sw := by
         have hprod_nn : 0 ≤ Sv * Sw := mul_nonneg hSv_nn hSw_nn
-        nlinarith [hWnorm, hprod_nn, hSv_nn, hSw_nn, hNW_nn]
+        nlinarith only [hWnorm, hprod_nn, hSv_nn, hSw_nn, hNW_nn]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner_local
@@ -475,7 +484,7 @@ theorem exists_fixed_covDerivConnectionDifference_sqrt_bound
   calc NA ≤ NW * Sv * Sw * Su := hNA_le
     _ ≤ Real.sqrt K * Sv * Sw * Su := by
         have hprod_nn : 0 ≤ Sv * Sw * Su := by positivity
-        nlinarith [hWnorm, hprod_nn, hSv_nn, hSw_nn, hSu_nn, hNW_nn]
+        nlinarith only [hWnorm, hprod_nn, hSv_nn, hSw_nn, hSu_nn, hNW_nn]
 
 
 end DifferentialGeometry.Analysis.Sobolev

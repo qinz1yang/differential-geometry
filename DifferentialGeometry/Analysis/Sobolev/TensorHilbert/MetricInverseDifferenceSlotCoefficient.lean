@@ -163,7 +163,7 @@ theorem riemannianFiberNormSq_inverseMetricDifferenceSlotCoefficient_le
           ≤ (Module.finrank ℝ E : ℝ) * 1 := by
             exact mul_le_mul_of_nonneg_left hratio hfr0
         _ = (Module.finrank ℝ E : ℝ) := by rw [mul_one]
-    nlinarith [mul_nonneg hfr0 hratio0]
+    exact pow_le_pow_left₀ (mul_nonneg hfr0 hratio0) this 2
   calc riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x)
       = riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
@@ -365,7 +365,7 @@ theorem riemannianFiberNormSq_covGrad_inverseMetricDifferenceSlotCoefficient_le
         (((endoCovariantDerivative (I := I) (M := M) g₀) Λ x v) a) :=
       metric_inner_self_nonneg (I := I) (M := M) g₀ x _
     have hsq := Real.sq_sqrt haa_nn
-    nlinarith [hbd, Real.sqrt_nonneg (g₀.inner x
+    nlinarith only [hbd, Real.sqrt_nonneg (g₀.inner x
       (((endoCovariantDerivative (I := I) (M := M) g₀) Λ x v) a)
       (((endoCovariantDerivative (I := I) (M := M) g₀) Λ x v) a)), hsq,
       mul_nonneg (mul_nonneg (by norm_num : (0:ℝ) ≤ 4) hC₀0) hG_nn]

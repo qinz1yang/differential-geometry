@@ -98,15 +98,6 @@ private theorem lieCorrectionZeroInsertionBase_metricPerturbationPath_perOrder_t
   rw [lieCorrectionZeroInsertion_base_eq_neg_covariantDerivativeInsertion, iteratedCovGrad_neg, norm_neg]
   exact hb
 
-private theorem sq_le_five_add (t a b c d e : ℝ) (ht : 0 ≤ t)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d) (he : 0 ≤ e)
-    (htri : t ≤ a + b + c + d + e) :
-    t ^ 2 ≤ 5 * (a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 + e ^ 2) := by
-  have hsum : 0 ≤ a + b + c + d + e := by linarith
-  nlinarith [mul_le_mul htri htri ht hsum, sq_nonneg (a - b), sq_nonneg (a - c),
-    sq_nonneg (a - d), sq_nonneg (a - e), sq_nonneg (b - c), sq_nonneg (b - d),
-    sq_nonneg (b - e), sq_nonneg (c - d), sq_nonneg (c - e), sq_nonneg (d - e)]
-
 private def reindexedCometricDoubleTracePerm : Equiv.Perm (Fin 4) :=
   ⟨![1, 2, 0, 3], ![2, 0, 1, 3], by decide, by decide⟩
 
@@ -720,12 +711,12 @@ private theorem lieCorrectionZeroRiem_metricPerturbationPath_perOrder_topOrderSe
       (mul_nonneg (hCint_nn i)
         (add_nonneg (mul_nonneg hKP_nn (mul_nonneg hfr_nn (hF_nn i)))
           (mul_nonneg (mul_nonneg hfr_nn (sq_nonneg Λ)) (hNPass_nn i))))
-  nlinarith [le_trans hnorm hmid, hsum_nn, hKc_nn]
+  nlinarith only [le_trans hnorm hmid, hsum_nn, hKc_nn]
 
 private theorem sq_le_two_add (t u v c1 c2 : ℝ) (ht : 0 ≤ t) (hu : 0 ≤ u) (hv : 0 ≤ v)
     (htri : t ≤ u + v) (h1 : u ^ 2 ≤ c1) (h2 : v ^ 2 ≤ c2) : t ^ 2 ≤ 2 * (c1 + c2) := by
   have huv : 0 ≤ u + v := by linarith
-  nlinarith [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
+  nlinarith only [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem normSq_iteratedCovGrad_le_scaled (g₀ : SmoothRiemannianMetric I M)
@@ -1034,7 +1025,7 @@ private theorem lieCorrectionZeroInsertionDiff_metricPerturbationPath_perOrder_t
       (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2) :=
     Finset.sum_nonneg (fun j _ => add_nonneg (sq_nonneg _) (sq_nonneg _))
-  nlinarith [hb, hK_nn i, hlow_nn, mul_nonneg (hK_nn i) hlow_nn]
+  nlinarith only [hb, hK_nn i, hlow_nn, mul_nonneg (hK_nn i) hlow_nn]
 
 private noncomputable def lieCorrectionZeroVectorBundleLiftFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x :=
@@ -1673,7 +1664,7 @@ private theorem lieCorrectionZeroVectorBundle_metricPerturbationPath_perOrder_to
       (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2) :=
     Finset.sum_nonneg (fun j _ => add_nonneg (sq_nonneg _) (sq_nonneg _))
-  nlinarith [hb, hK_nn i, hlow_nn, mul_nonneg (hK_nn i) hlow_nn]
+  nlinarith only [hb, hK_nn i, hlow_nn, mul_nonneg (hK_nn i) hlow_nn]
 
 
 end DifferentialGeometry.Integral.Connection

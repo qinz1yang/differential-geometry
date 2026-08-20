@@ -167,7 +167,7 @@ theorem pureAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ�
     rw [hbP_def]
     rw [hidx] at hB
     exact hB
-  nlinarith [hA, hAw, hBw]
+  nlinarith only [hA, hAw, hBw]
 
 theorem fourTrAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Kft : ℕ → ℝ, (∀ n, 0 ≤ Kft n) ∧

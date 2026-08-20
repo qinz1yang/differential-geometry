@@ -351,7 +351,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
 private theorem sq_le_two_add (t u v c1 c2 : ℝ) (ht : 0 ≤ t) (hu : 0 ≤ u) (hv : 0 ≤ v)
     (htri : t ≤ u + v) (h1 : u ^ 2 ≤ c1) (h2 : v ^ 2 ≤ c2) : t ^ 2 ≤ 2 * (c1 + c2) := by
   have huv : 0 ≤ u + v := by linarith
-  nlinarith [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
+  nlinarith only [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem
@@ -494,7 +494,7 @@ theorem connectionDifferenceDeTurckVectorFieldInsertDiff_metricPerturbationPath_
     rw [hz]
     have h0 := hF0_nn i
     have hb := hFbg_nn i
-    nlinarith [hF0_nn i, hFbg_nn i]
+    nlinarith only [hF0_nn i, hFbg_nn i]
 
 section DeTurckLieCovariantDerivativeInsertionTopOrder
 
@@ -724,7 +724,7 @@ private theorem connectionDifference_L2_topsep
             have hjk : j ≤ a + 2 :=
               le_trans (Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)) hk
             have hb := hPball j hjk
-            nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j P), hb, hR]
+            nlinarith only [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j P), hb, hR]
         _ = ((k : ℝ) + 1) * R ^ 2 := by
             rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, Nat.cast_add, Nat.cast_one]
     exact mul_le_mul_of_nonneg_left (by linarith [hsum]) (hK_nn k)
@@ -817,7 +817,7 @@ private theorem wXi_L2_topsep
         ‖iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)‖ := by
     rw [metricLoweredConnectionDifference, iteratedCovGrad_sub]
     exact norm_sub_le _ _
-  nlinarith [htri, hA,
+  nlinarith only [htri, hA,
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)),
@@ -1030,7 +1030,7 @@ private theorem wOmega_L2_topsep
             ≤ ∑ k ∈ Finset.range n, A (n - k) * ∑ l ∈ Finset.range (n + 1 - (n - k)), B l := hstep1
           _ = ∑ k ∈ Finset.range n, A (k + 1) * ∑ l ∈ Finset.range (n + 1 - (k + 1)), B l := hstep2
           _ ≤ ∑ i ∈ Finset.range (n + 1), A i * ∑ l ∈ Finset.range (n + 1 - i), B l := hstep3
-    nlinarith [hcorner, hlower,
+    nlinarith only [hcorner, hlower,
       riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (3 + n) x
         ((iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)).toSection x)]
   have hbridge := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 0 (1 + n)
@@ -1236,7 +1236,7 @@ private theorem wAlpha_L2_topsep
         ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)‖ := by
     rw [deTurckVectorFieldCovariantDerivativeLowered, iteratedCovGrad_add]
     exact norm_add_le _ _
-  nlinarith [htri, hAi, hBi,
+  nlinarith only [htri, hAi, hBi,
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredBase (I := I) (M := M) g₀ g₁ g_bg)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)),
     norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg)),

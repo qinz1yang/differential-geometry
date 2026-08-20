@@ -175,14 +175,14 @@ private lemma gridIntGrad_high_tail (Λ₁ Rtop K : ℝ)
     K * (max Λ₁ 1 ^ 2 * Rtop ^ 2) ≤ max K 1 * (1 + Λ₁ ^ 2) * Rtop ^ 2 := by
   have hΛsq : max Λ₁ 1 ^ 2 ≤ 1 + Λ₁ ^ 2 := by
     rcases le_total Λ₁ 1 with h | h
-    · rw [max_eq_right h]; nlinarith [sq_nonneg Λ₁]
+    · rw [max_eq_right h]; nlinarith only [sq_nonneg Λ₁]
     · rw [max_eq_left h]; nlinarith
   have hKmax : K ≤ max K 1 := le_max_left _ _
   have hstep : K * (max Λ₁ 1 ^ 2 * Rtop ^ 2) ≤ K * ((1 + Λ₁ ^ 2) * Rtop ^ 2) :=
     mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hΛsq hRtop) hK
   refine hstep.trans ?_
   have hpos : 0 ≤ (1 + Λ₁ ^ 2) * Rtop ^ 2 := mul_nonneg (by positivity) hRtop
-  nlinarith [mul_le_mul_of_nonneg_right hKmax hpos]
+  nlinarith only [mul_le_mul_of_nonneg_right hKmax hpos]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma gridIntGrad_low
@@ -290,7 +290,7 @@ theorem gridIntGrad (g₀ : SmoothRiemannianMetric I M) :
           Λ ^ 2 := by
         refine le_trans (hcap x) ?_
         have hle : Λ₁ ≤ Λ := le_max_left _ _
-        nlinarith [hΛ₁0, hle, hΛ1]
+        nlinarith only [hΛ₁0, hle, hΛ1]
       have hinv_nn : (0 : ℝ) ≤ (Λ⁻¹) ^ 2 := sq_nonneg _
       have hmul : (Λ⁻¹) ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
           (u.toSection x) ≤ (Λ⁻¹) ^ 2 * Λ ^ 2 :=

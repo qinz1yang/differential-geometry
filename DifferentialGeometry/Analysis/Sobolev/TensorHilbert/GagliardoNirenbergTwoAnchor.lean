@@ -105,12 +105,23 @@ private lemma gnMixCore (F : α → ℝ) (hFnn : ∀ x, 0 ≤ F x)
   rw [h6] at h5
   refine le_trans h5 ?_
   have hcA : KA ^ (pA * lam * θ) ≤ KA := by
-    have hexp : pA * lam * θ ≤ 1 := by nlinarith [mul_nonneg hθ0.le hpA.le]
+    have hθpA0 : 0 ≤ θ * pA := mul_nonneg hθ0.le hpA.le
+    have hexp : pA * lam * θ ≤ 1 := by
+      calc
+        pA * lam * θ = lam * (θ * pA) := by ring
+        _ ≤ 1 * (θ * pA) := mul_le_mul_of_nonneg_right hlam1 hθpA0
+        _ ≤ 1 := by simpa using hθpA
     calc KA ^ (pA * lam * θ) ≤ KA ^ (1 : ℝ) :=
           Real.rpow_le_rpow_of_exponent_le hKA hexp
       _ = KA := Real.rpow_one KA
   have hcB : KB ^ (pB * (1 - lam) * θ) ≤ KB ^ (2 : ℝ) := by
-    have hexp : pB * (1 - lam) * θ ≤ 2 := by nlinarith [mul_nonneg hθ0.le hpB.le]
+    have hθpB0 : 0 ≤ θ * pB := mul_nonneg hθ0.le hpB.le
+    have h1mlam_le : 1 - lam ≤ 1 := by linarith only [hlam0]
+    have hexp : pB * (1 - lam) * θ ≤ 2 := by
+      calc
+        pB * (1 - lam) * θ = (1 - lam) * (θ * pB) := by ring
+        _ ≤ 1 * (θ * pB) := mul_le_mul_of_nonneg_right h1mlam_le hθpB0
+        _ ≤ 2 := by simpa using hθpB
     exact Real.rpow_le_rpow_of_exponent_le hKB hexp
   have hrest : (0 : ℝ) ≤ Λ ^ (2 * (pB - 1) * (1 - lam) * θ) * R ^ (2 * θ) :=
     mul_nonneg (Real.rpow_nonneg hΛ _) (Real.rpow_nonneg hR _)
@@ -219,7 +230,7 @@ private lemma gagliardoNirenbergTwoAnchor_EB
       ← Real.rpow_mul hΛ₁0, ← Real.rpow_mul hRnn,
       show (2 : ℝ) * tB * pB = 2 by rw [mul_assoc, htBpB, mul_one],
       show (2 : ℝ) * (1 - tB) * pB = 2 * (pB - 1) by
-        nlinarith [htBpB]]
+        nlinarith only [htBpB]]
 
 theorem gagliardoNirenbergTwoAnchor (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℕ → ℝ, (∀ m, 0 ≤ C m) ∧
@@ -308,21 +319,21 @@ theorem gagliardoNirenbergTwoAnchor (g₀ : SmoothRiemannianMetric I M) (r s : �
       _ = 1 := htApA
   have htApB : tA * pB ≤ 2 := by
     rw [htAdef, hpBdef, div_mul_div_comm, div_le_iff₀ (by positivity)]
-    nlinarith [mul_nonneg (sub_nonneg.mpr hd1R) hnpos.le]
+    nlinarith only [mul_nonneg (sub_nonneg.mpr hd1R) hnpos.le]
   have hθpB : θ * pB ≤ 2 := by
     calc θ * pB ≤ tA * pB := mul_le_mul_of_nonneg_right hθhi hpBpos.le
       _ ≤ 2 := htApB
   have hpApB : pA < pB := by
     rw [hpAdef, hpBdef, div_lt_div_iff₀ h1dpos hdpos]
-    nlinarith [hdnR]
+    nlinarith only [hdnR]
   have hden : 0 < pB - pA := by linarith
   have hden_ne : pB - pA ≠ 0 := ne_of_gt hden
   have hθ_ne : θ ≠ 0 := ne_of_gt hθ0
   have hinvA : pA ≤ 1 / θ := by
-    rw [le_div_iff₀ hθ0]; nlinarith [hθpA]
+    rw [le_div_iff₀ hθ0]; nlinarith only [hθpA]
   have hinvB : 1 / θ ≤ pB := by
     rw [div_le_iff₀ hθ0]
-    nlinarith [mul_le_mul_of_nonneg_left hθlo hpBpos.le, htBpB]
+    nlinarith only [mul_le_mul_of_nonneg_left hθlo hpBpos.le, htBpB]
   set lam : ℝ := (pB - 1 / θ) / (pB - pA) with hlamdef
   have hlam0 : 0 ≤ lam := by
     rw [hlamdef]; exact div_nonneg (by linarith) hden.le
@@ -393,8 +404,8 @@ private lemma gnFreeWt {ι : Type*} (s : Finset ι) (cf : ι → ℝ) (mR : ℝ)
     have hab : (cf j - 1) / (mR - 1) ≤ cf j / mR := by
       rw [div_le_div_iff₀ hm10 hm0]
       nlinarith
-    refine ⟨by nlinarith [mul_nonneg htt0 (sub_nonneg.mpr hab)], ?_⟩
-    nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 1 - tt) (sub_nonneg.mpr hab)]
+    refine ⟨by nlinarith only [mul_nonneg htt0 (sub_nonneg.mpr hab)], ?_⟩
+    nlinarith only [mul_nonneg (by linarith : (0 : ℝ) ≤ 1 - tt) (sub_nonneg.mpr hab)]
 
 theorem gnProdJet (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ K : ℕ → ℝ, (∀ m, 0 ≤ K m) ∧

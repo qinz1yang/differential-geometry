@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroCoeffL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroCoefficientDecomposition
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldEndomorphismInsertionTopOrderSeparation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldJetRadiusFree
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrectionZeroTraceRadiusFreeBounds
@@ -52,16 +53,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private theorem sq_le_two_add (t u v c1 c2 : ℝ) (ht : 0 ≤ t) (hu : 0 ≤ u) (hv : 0 ≤ v)
     (htri : t ≤ u + v) (h1 : u ^ 2 ≤ c1) (h2 : v ^ 2 ≤ c2) : t ^ 2 ≤ 2 * (c1 + c2) := by
   have huv : 0 ≤ u + v := by linarith
-  nlinarith [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
-
-private theorem sq_le_five_add (t a b c d e : ℝ) (ht : 0 ≤ t)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d) (he : 0 ≤ e)
-    (htri : t ≤ a + b + c + d + e) :
-    t ^ 2 ≤ 5 * (a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 + e ^ 2) := by
-  have hsum : 0 ≤ a + b + c + d + e := by linarith
-  nlinarith [mul_le_mul htri htri ht hsum, sq_nonneg (a - b), sq_nonneg (a - c),
-    sq_nonneg (a - d), sq_nonneg (a - e), sq_nonneg (b - c), sq_nonneg (b - d),
-    sq_nonneg (b - e), sq_nonneg (c - d), sq_nonneg (c - e), sq_nonneg (d - e)]
+  nlinarith only [mul_le_mul htri htri ht huv, sq_nonneg (u - v), h1, h2, hu, hv]
 
 private lemma lieCorrectionZeroBase_perOrder_rf
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -593,7 +585,7 @@ private theorem b4_jet2_add
             pow_le_pow_left₀ (norm_nonneg _) htri 2
           _ ≤ 2 * (‖iteratedCovGrad (I := I) g r s q S‖ ^ 2 +
               ‖iteratedCovGrad (I := I) g r s q T‖ ^ 2) := by
-            nlinarith [sq_nonneg
+            nlinarith only [sq_nonneg
               (‖iteratedCovGrad (I := I) g r s q S‖ -
                 ‖iteratedCovGrad (I := I) g r s q T‖)]
     _ = 2 * ((∑ q ∈ Finset.range 3,
@@ -1705,12 +1697,12 @@ lemma metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (g
         calc bP 0 ≤ Λ₀ ^ 2 := h0
           _ = Λ₀ ^ 2 * 1 := by ring
           _ ≤ Λ₀ ^ 2 * antidiagonalTupleGridWindow := mul_le_mul_of_nonneg_left hantidiagonalTupleGridWindow_one (sq_nonneg Λ₀)
-          _ ≤ (1 + Λ₀ ^ 2) * antidiagonalTupleGridWindow := by nlinarith [hantidiagonalTupleGridWindow_nn]
+          _ ≤ (1 + Λ₀ ^ 2) * antidiagonalTupleGridWindow := by nlinarith only [hantidiagonalTupleGridWindow_nn]
     | succ m =>
         calc bP (m + 1) ≤ Combinatorics.antidiagonalTupleGrid bP (m + 1) :=
               b4_bP_le_grid bP hbP_nn m
           _ ≤ antidiagonalTupleGridWindow := Combinatorics.antidiagonalTupleGrid_le_window bP hbP_nn hq
-          _ ≤ (1 + Λ₀ ^ 2) * antidiagonalTupleGridWindow := by nlinarith [hantidiagonalTupleGridWindow_nn, sq_nonneg Λ₀]
+          _ ≤ (1 + Λ₀ ^ 2) * antidiagonalTupleGridWindow := by nlinarith only [hantidiagonalTupleGridWindow_nn, sq_nonneg Λ₀]
   have hΦarm : ∀ i' : ℕ, riemannianFiberNormSq (I := I) (M := M) g₀ 5 (3 + i') x
       ((iteratedCovGrad (I := I) g₀ 5 3 i'
         (reindexCoeffGen (I := I) (M := M) g₀ 5 3
@@ -3027,16 +3019,19 @@ theorem lieCorrectionZeroField_per_order_l2_radius_free
       (iteratedCovGrad (I := I) g₀ 2 2 i
         (lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg - lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀))
     linarith
-  have hsq := sq_le_five_add
-    ‖iteratedCovGrad (I := I) g₀ 2 2 i (lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg)‖
-    ‖iteratedCovGrad (I := I) g₀ 2 2 i (lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀)‖
-    ‖iteratedCovGrad (I := I) g₀ 2 2 i
-      (lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg - lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀)‖
-    ‖iteratedCovGrad (I := I) g₀ 2 2 i (lieCorrectionZeroVectorBundle (I := I) (M := M) g₀ g₁)‖
-    ‖iteratedCovGrad (I := I) g₀ 2 2 i (lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ g_bg)‖
-    ‖iteratedCovGrad (I := I) g₀ 2 2 i (lieCorrectionZeroRiemann (I := I) (M := M) g₀ g₁)‖
-    (norm_nonneg _) (norm_nonneg _) (norm_nonneg _) (norm_nonneg _) (norm_nonneg _)
-    (norm_nonneg _) htri
+  have hsq := (pow_le_pow_left₀ (norm_nonneg _) htri 2).trans
+    (DifferentialGeometry.Analysis.sq_sum_five_le
+      ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀)‖
+      ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g_bg -
+          lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀)‖
+      ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (lieCorrectionZeroVectorBundle (I := I) (M := M) g₀ g₁)‖
+      ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ g_bg)‖
+      ‖iteratedCovGrad (I := I) g₀ 2 2 i
+        (lieCorrectionZeroRiemann (I := I) (M := M) g₀ g₁)‖)
   have hsplit3 : (∑ j ∈ Finset.range (i + 3), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) =
       (∑ j ∈ Finset.range (i + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) +
         ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 := by

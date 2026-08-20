@@ -258,12 +258,12 @@ theorem cometricCastG0_perOrder_l2_tameEnvelope_generic
         aL l * (1 + ∑ j ∈ Finset.range (l + 1),
           ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
       have h1 : aL l = ‖iteratedCovGrad (I := I) g₀ 3 1 l Φ‖ ^ 2 := by simp only [haL_def]
-      nlinarith [haL_nn l, hwin_nn]
+      nlinarith only [haL_nn l, hwin_nn]
     have hsq := pow_le_pow_left₀ (norm_nonneg (iteratedCovGrad (I := I) g₀ 3 1 l Φ +
         iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)))
       (norm_add_le (iteratedCovGrad (I := I) g₀ 3 1 l Φ)
         (iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W))) 2
-    nlinarith [hsq, hstep3, haLl,
+    nlinarith only [hsq, hstep3, haLl,
       sq_nonneg (‖iteratedCovGrad (I := I) g₀ 3 1 l Φ‖ -
         ‖iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)‖)]
   · haveI hem : IsEmpty M := not_nonempty_iff.mp hMne
@@ -273,7 +273,7 @@ theorem cometricCastG0_perOrder_l2_tameEnvelope_generic
         MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
     rw [hz]
     have hnn : 0 ≤ 2 * aL l + 2 * KD l := by linarith [haL_nn l, hKD_nn l]
-    nlinarith [hwin_nn, hnn]
+    nlinarith only [hwin_nn, hnn]
 
 theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -424,7 +424,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_tameEnvelope_generic
         refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hCnn) hAnn
         have h1 := mul_le_mul_of_nonneg_left hSa (sq_nonneg ΛB)
         have h2 := mul_le_mul_of_nonneg_left hSc (sq_nonneg ΛA)
-        nlinarith [h1, h2]
+        nlinarith only [h1, h2]
     _ = diagonalGridGrowthFactor (E := E) i *
           (exists_integrated_iteratedCovGrad_diagonalProductGrid_twoArm_rs_le
             (I := I) (M := M) g₀ 1 3 2 1 i).choose *

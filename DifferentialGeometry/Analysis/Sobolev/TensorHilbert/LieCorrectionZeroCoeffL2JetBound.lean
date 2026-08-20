@@ -80,15 +80,6 @@ private theorem lieCorrectionZeroInsertionBase_metricPerturbationPath_perOrder_t
   rw [lieCorrectionZeroInsertion_base_eq_neg_covariantDerivativeInsertion, iteratedCovGrad_neg, norm_neg]
   exact hb
 
-private theorem sq_le_five_add (t a b c d e : ℝ) (ht : 0 ≤ t)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d) (he : 0 ≤ e)
-    (htri : t ≤ a + b + c + d + e) :
-    t ^ 2 ≤ 5 * (a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 + e ^ 2) := by
-  have hsum : 0 ≤ a + b + c + d + e := by linarith
-  nlinarith [mul_le_mul htri htri ht hsum, sq_nonneg (a - b), sq_nonneg (a - c),
-    sq_nonneg (a - d), sq_nonneg (a - e), sq_nonneg (b - c), sq_nonneg (b - d),
-    sq_nonneg (b - e), sq_nonneg (c - d), sq_nonneg (c - e), sq_nonneg (d - e)]
-
 end DifferentialGeometry.Analysis.Sobolev
 
 end
