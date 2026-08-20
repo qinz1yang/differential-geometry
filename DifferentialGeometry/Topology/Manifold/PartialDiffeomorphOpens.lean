@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.OpenSubtype
+import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 set_option autoImplicit false
@@ -115,7 +115,7 @@ noncomputable def toOpensDiffeoCross
     exact codRestr_contMDiffAt (I := J) (J := I) hmem hbase
 
 omit [IsManifold I ∞ M] [IsManifold J ∞ N] in
-theorem opensDiffeo_mfd
+theorem mfderiv_toOpensDiffeoCross
     (Φ : PartialDiffeomorph I J M N (∞ : WithTop ℕ∞))
     {U : Opens M} (hU : (U : Set M) ⊆ Φ.source)
     (p : U) (v : TangentSpace I p) :

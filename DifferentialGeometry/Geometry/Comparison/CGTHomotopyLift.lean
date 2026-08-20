@@ -85,7 +85,7 @@ theorem exists_lift_family
     fun z => intrinsicFramedExp (I := I) g hEnorm x z
   have hlocU :
       IsLocalDiffeomorph 𝓘(Real, E) I ∞ expU :=
-    hloc_restrict_open U hloc
+    isLocalDiffeomorph_restrict_open U hloc
   let expUC : C(U, M) :=
     ⟨expU, continuous_iff_continuousAt.mpr fun z =>
       (hlocU z).contMDiffAt.continuousAt⟩
@@ -195,7 +195,7 @@ theorem append_mid_eq
     intro t ht
     constructor <;> linarith [ht.1, ht.2]
   have hA :
-      IsLiftOn F γ (Metric.ball (0 : E) R) 0 0 (1 / 2)
+      isLiftOn F γ (Metric.ball (0 : E) R) 0 0 (1 / 2)
         (fun t => A.toFun (2 * t)) := by
     refine ⟨A.contDiff.continuousOn.comp
       (continuous_const.mul continuous_id).continuousOn hscale, ?_, ?_⟩
@@ -204,7 +204,7 @@ theorem append_mid_eq
       have ht' : 2 * t ∈ Set.Icc (0 : Real) 1 := hscale ht
       exact ⟨A.maps_ball hR hp ht', A.lifts ht'⟩
   have hP :
-      IsLiftOn F γ (Metric.ball (0 : E) R) 0 0 (1 / 2) P.toFun := by
+      isLiftOn F γ (Metric.ball (0 : E) R) 0 0 (1 / 2) P.toFun := by
     refine ⟨P.contDiff.continuousOn.mono ?_, P.start, ?_⟩
     · intro t ht
       exact ⟨ht.1, ht.2.trans (by norm_num)⟩
@@ -246,7 +246,7 @@ theorem cancel_right
     intro t ht
     exact ⟨(by linarith [ht.1]), ht.2⟩
   have hP :
-      IsLiftOn F γ (Metric.ball (0 : E) R)
+      isLiftOn F γ (Metric.ball (0 : E) R)
         (P.toFun (1 / 2)) (1 / 2) 1 P.toFun := by
     refine ⟨P.contDiff.continuousOn.mono hsub, rfl, ?_⟩
     intro t ht
@@ -258,7 +258,7 @@ theorem cancel_right
     rw [← Path.extend_trans_of_half_le p c ht.1]
     exact P.lifts ht'
   have hQ :
-      IsLiftOn F γ (Metric.ball (0 : E) R)
+      isLiftOn F γ (Metric.ball (0 : E) R)
         (Q.toFun (1 / 2)) (1 / 2) 1 Q.toFun := by
     refine ⟨Q.contDiff.continuousOn.mono hsub, rfl, ?_⟩
     intro t ht

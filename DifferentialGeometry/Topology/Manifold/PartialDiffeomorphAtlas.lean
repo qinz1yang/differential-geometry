@@ -5,7 +5,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-namespace DifferentialGeometry.Tensor.Coordinates
+namespace DifferentialGeometry
 
 open scoped Manifold ContDiff Topology
 
@@ -157,4 +157,4 @@ theorem toOpenPartialHomeomorph_mem_maximalAtlas
 
 end PartialDiffeomorph
 
-end DifferentialGeometry.Tensor.Coordinates
+end DifferentialGeometry

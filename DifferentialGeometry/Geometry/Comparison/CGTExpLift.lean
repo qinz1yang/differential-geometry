@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.IntrinsicGauss
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoLift
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphLift
 
 set_option autoImplicit false
 
@@ -143,13 +143,13 @@ theorem eqOn
         (Metric.ball (0 : E) R)) :
     Set.EqOn L.toFun L'.toFun (Set.Icc a b) := by
   let hL :
-      IsLiftOn
+      isLiftOn
         (intrinsicFramedExp (I := I) g hEnorm p)
         γ (Metric.ball (0 : E) R) 0 a b L.toFun :=
     ⟨L.contDiff.continuousOn, L.start,
       fun t ht ↦ ⟨L.maps_ball hR hlen ht, L.lifts ht⟩⟩
   let hL' :
-      IsLiftOn
+      isLiftOn
         (intrinsicFramedExp (I := I) g hEnorm p)
         γ (Metric.ball (0 : E) R) 0 a b L'.toFun :=
     ⟨L'.contDiff.continuousOn, L'.start,
@@ -194,7 +194,7 @@ theorem exists_intr_lift
   have hfence :
       ∀ {t : Real}, t ∈ Set.Icc a b →
         ∀ {η : Real → E},
-          IsLiftOn
+          isLiftOn
             (intrinsicFramedExp (I := I) g hEnorm p)
             γ (Metric.ball (0 : E) R) 0 a t η →
           η t ∈ Metric.closedBall (0 : E) ell := by
@@ -233,7 +233,7 @@ theorem exists_intr_lift
     rw [Metric.mem_closedBall, dist_zero_right]
     simpa only [ell, ENNReal.toReal_ofReal (norm_nonneg _)] using hreal
   obtain ⟨η, hη⟩ :=
-    IsLiftOn.exists_of_compact hab (Metric.isOpen_ball)
+    isLiftOn.exists_of_compact hab (Metric.isOpen_ball)
       hloc hγ.continuousOn hzero hstart hK hKU hfence
   refine ⟨{
     toFun := η

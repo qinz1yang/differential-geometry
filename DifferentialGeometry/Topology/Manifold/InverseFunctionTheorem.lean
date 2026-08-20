@@ -27,7 +27,7 @@ theorem isInvertible_of_norm_id_sub_lt {T : E →L[ℝ] E}
   exact ContinuousLinearMap.invertible_of_id_sub h
 
 omit [CompleteSpace F] in
-theorem isLocalDiffeomorphAt_of_contMDiffOn' (hn : 1 ≤ n) (hn' : n ≠ ∞) {U : Set M} (hU : IsOpen U)
+theorem exists_partialDiffeomorph_of_contMDiffOn (hn : 1 ≤ n) (hn' : n ≠ ∞) {U : Set M} (hU : IsOpen U)
     (hxU : x ∈ U) (hf : ContMDiffOn I J n f U)
     (hinv : (fderiv ℝ (writtenInExtChartAt I J x f) (extChartAt I x x)).IsInvertible) :
     ∃ Φ : PartialDiffeomorph I J M N n, x ∈ Φ.source ∧ Φ.source ⊆ U ∧ EqOn f Φ Φ.source := by
@@ -215,7 +215,7 @@ theorem isLocalDiffeomorphAt_of_contMDiffOn (hn : 1 ≤ n) (hn' : n ≠ ∞) {U 
     (hxU : x ∈ U) (hf : ContMDiffOn I J n f U)
     (hinv : (fderiv ℝ (writtenInExtChartAt I J x f) (extChartAt I x x)).IsInvertible) :
     IsLocalDiffeomorphAt I J n f x := by
-  obtain ⟨Φ, hx, -, hEq⟩ := isLocalDiffeomorphAt_of_contMDiffOn' hn hn' hU hxU hf hinv
+  obtain ⟨Φ, hx, -, hEq⟩ := exists_partialDiffeomorph_of_contMDiffOn hn hn' hU hxU hf hinv
   exact ⟨Φ, hx, hEq⟩
 
 omit [CompleteSpace F] in
@@ -237,7 +237,7 @@ theorem contMDiffAt_isLocalDiffeomorphAt (hn : 1 ≤ n) (hn' : n ≠ ∞)
   exact isLocalDiffeomorphAt_of_contMDiffOn hn hn' hV_open hxV (hfW.mono hVW) hinv
 
 omit [CompleteSpace F] in
-theorem hlocAt_infty'
+theorem exists_partialDiffeomorph_of_contMDiffOn_infty
     [IsManifold I ∞ M] [IsManifold J ∞ N] {f : M → N} {U : Set M} (hU : IsOpen U)
     (hxU : x ∈ U) (hf : ContMDiffOn I J ∞ f U)
     (hinv : ∀ y ∈ U,
@@ -245,7 +245,7 @@ theorem hlocAt_infty'
     ∃ Φ : PartialDiffeomorph I J M N ∞,
       x ∈ Φ.source ∧ Φ.source ⊆ U ∧ EqOn f Φ Φ.source := by
   obtain ⟨Φ, hxΦ, hΦU, hEqΦ⟩ :=
-    isLocalDiffeomorphAt_of_contMDiffOn' (n := 1) le_rfl
+    exists_partialDiffeomorph_of_contMDiffOn (n := 1) le_rfl
       (by exact_mod_cast (WithTop.one_ne_top : (1 : ℕ∞) ≠ ⊤)) hU hxU
       (hf.of_le (by exact_mod_cast le_top)) (hinv x hxU)
   have hsymm_infty : ContMDiffOn J I ∞ (Φ.symm : N → M) Φ.target := by
@@ -303,12 +303,12 @@ theorem contMDiffOn_isLocalDiffeomorphOn_infty
       (fderiv ℝ (writtenInExtChartAt I J y f) (extChartAt I y y)).IsInvertible) :
     IsLocalDiffeomorphOn I J ∞ f U := by
   rintro ⟨x, hxU⟩
-  obtain ⟨Φ, hxΦ, -, hEqΦ⟩ := hlocAt_infty' hU hxU hf hinv
+  obtain ⟨Φ, hxΦ, -, hEqΦ⟩ := exists_partialDiffeomorph_of_contMDiffOn_infty hU hxU hf hinv
   exact ⟨Φ, hxΦ, hEqΦ⟩
 
 omit [I.Boundaryless] [J.Boundaryless] in
 omit [CompleteSpace F] in
-theorem hlocAt_of_coord
+theorem isLocalDiffeomorphAt_of_coordinates
     [IsManifold I ∞ M] [IsManifold J ∞ N]
     (c : PartialDiffeomorph I 𝓘(ℝ, E) M E ∞)
     (d : PartialDiffeomorph J 𝓘(ℝ, F) N F ∞)
@@ -328,7 +328,7 @@ theorem hlocAt_of_coord
     simpa only [G₀, writtenInExtChartAt, extChartAt_self_eq, modelWithCornersSelf_coe,
       modelWithCornersSelf_coe_symm, Function.comp_apply, id_eq] using hinv z hz
   obtain ⟨Ψ, hcxΨ, hΨV, hEqΨ⟩ :=
-    hlocAt_infty' (I := 𝓘(ℝ, E)) (J := 𝓘(ℝ, F)) hV hcxV hGm hinvm
+    exists_partialDiffeomorph_of_contMDiffOn_infty (I := 𝓘(ℝ, E)) (J := 𝓘(ℝ, F)) hV hcxV hGm hinvm
   let cΨ : PartialDiffeomorph I 𝓘(ℝ, F) M F ∞ :=
     { toPartialEquiv := c.toPartialEquiv.trans Ψ.toPartialEquiv
       open_source := by

@@ -73,7 +73,7 @@ private theorem innerDiffeo_mfd {p : M}
         (c.innerDiffeo : c.inner → c.innerImage) z v =
       mfderiv (modelWithCornersSelf Real E) I
         (fun u : E => c.hom u) (z : E) v := by
-  have h := PartialDiffeomorph.opensDiffeo_mfd c.restrictBall
+  have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross c.restrictBall
     (by
       simpa only [restrictBall_source] using c.inner_subset) z v
   simpa only [innerDiffeo, restrictBall_apply] using h

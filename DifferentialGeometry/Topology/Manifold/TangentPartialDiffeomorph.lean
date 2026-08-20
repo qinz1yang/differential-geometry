@@ -86,7 +86,7 @@ def tangentHome (Φ : PartialDiffeomorph I J M N n) (hn : 1 ≤ n) :
     Φ.contMDiffOn_invFun.continuousOn_tangentMapWithin hn
       Φ.open_target.uniqueMDiffOn
 
-theorem mfderiv_cont
+theorem continuous_mfderiv_apply
     (Φ : PartialDiffeomorph I J M N n) (hn : 1 ≤ n)
     {P : Type*} [TopologicalSpace P]
     (q : P → TangentBundle I M) (hq : Continuous q)

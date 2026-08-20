@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoo
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceComp
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoIFT
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 import DifferentialGeometry.Analysis.Calculus.PiDeriv
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

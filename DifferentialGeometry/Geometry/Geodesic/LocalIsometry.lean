@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Geodesic.ChartRegularity
 import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.PullbackCross
@@ -125,8 +125,8 @@ theorem geoEq_map_localIso
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       Diffeomorph.pullbackMetricCross_inner,
       SmoothRiemannianMetric.restrictOpen_inner,
-      PartialDiffeomorph.opensDiffeo_mfd,
-      PartialDiffeomorph.opensDiffeo_mfd,
+      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
+      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
       hΦmfd x]
     change g.inner (x : M) v w =
       g'.inner ((Ψ x : V) : N)
@@ -241,8 +241,8 @@ theorem geoEq_of_map_localIso
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       Diffeomorph.pullbackMetricCross_inner,
       SmoothRiemannianMetric.restrictOpen_inner,
-      PartialDiffeomorph.opensDiffeo_mfd,
-      PartialDiffeomorph.opensDiffeo_mfd,
+      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
+      PartialDiffeomorph.mfderiv_toOpensDiffeoCross,
       hΦmfd x]
     change g.inner (x : M) v w =
       g'.inner ((Ψ x : V) : N)

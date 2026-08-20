@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricKoszul
 import DifferentialGeometry.Geometry.Exponential.NormalBallChart
 import DifferentialGeometry.Geometry.Metric.BumpExtend
@@ -75,7 +75,7 @@ private theorem ballDiffeo_mfd {p : M}
         (c.ballDiffeo : c.ball → c.image) z v =
       mfderiv (modelWithCornersSelf Real E) I
         (fun u : E => c.hom u) (z : E) v := by
-  have h := PartialDiffeomorph.opensDiffeo_mfd
+  have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross
     c.restrictBall (by
       intro q hq
       exact hq) z v

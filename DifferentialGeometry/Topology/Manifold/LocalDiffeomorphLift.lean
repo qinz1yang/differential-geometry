@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoOpen
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 
 set_option autoImplicit false
 
@@ -15,27 +15,27 @@ variable {H : Type*} [TopologicalSpace H]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
-def IsLiftOn
+def isLiftOn
     (F : E → M) (γ : Real → M) (U : Set E)
     (e₀ : E) (a t : Real) (η : Real → E) : Prop :=
   ContinuousOn η (Set.Icc a t) ∧
     η a = e₀ ∧
     ∀ s ∈ Set.Icc a t, η s ∈ U ∧ F (η s) = γ s
 
-namespace IsLiftOn
+namespace isLiftOn
 
 variable {F : E → M} {γ : Real → M} {U : Set E}
   {e₀ : E} {a b : Real} {η ζ : Real → E}
 
 omit [NormedSpace Real E] [TopologicalSpace M] in
 theorem continuousOn
-    (hη : IsLiftOn F γ U e₀ a b η) :
+    (hη : isLiftOn F γ U e₀ a b η) :
     ContinuousOn η (Set.Icc a b) :=
   hη.1
 
 omit [NormedSpace Real E] [TopologicalSpace M] in
 theorem mapsTo
-    (hη : IsLiftOn F γ U e₀ a b η) :
+    (hη : isLiftOn F γ U e₀ a b η) :
     Set.MapsTo η (Set.Icc a b) U :=
   fun s hs ↦ (hη.2.2 s hs).1
 
@@ -44,14 +44,14 @@ theorem extend
     {t u : Real}
     (hat : a ≤ t)
     (hγ : ContinuousOn γ (Set.Icc a u))
-    (hη : IsLiftOn F γ U e₀ a t η)
+    (hη : isLiftOn F γ U e₀ a t η)
     (φ : PartialDiffeomorph 𝓘(Real, E) I E M ∞)
     (htφ : η t ∈ φ.source)
     (hφeq : Set.EqOn F φ φ.source)
     (hγtarget : Set.MapsTo γ (Set.Icc t u) φ.target)
     (hbranchU :
       Set.MapsTo ((φ.symm : M → E) ∘ γ) (Set.Icc t u) U) :
-    ∃ ζ : Real → E, IsLiftOn F γ U e₀ a u ζ := by
+    ∃ ζ : Real → E, isLiftOn F γ U e₀ a u ζ := by
   classical
   let branch : Real → E := (φ.symm : M → E) ∘ γ
   let ζ : Real → E := Set.piecewise (Set.Iic t) η branch
@@ -109,7 +109,7 @@ theorem contDiffOn
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞ F U)
     (hγ :
       ContMDiffOn 𝓘(Real, Real) I 1 γ (Set.Icc a b))
-    (hη : IsLiftOn F γ U e₀ a b η) :
+    (hη : isLiftOn F γ U e₀ a b η) :
     ContDiffOn Real 1 η (Set.Icc a b) := by
   intro x hx
   have hxU : η x ∈ U := hη.mapsTo hx
@@ -142,8 +142,8 @@ theorem eqOn_of_eq
     (hU : IsOpen U)
     (hloc :
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞ F U)
-    (hη : IsLiftOn F γ U e₁ a b η)
-    (hζ : IsLiftOn F γ U e₂ a b ζ)
+    (hη : isLiftOn F γ U e₁ a b η)
+    (hζ : isLiftOn F γ U e₂ a b ζ)
     (ht₀ : t₀ ∈ Set.Icc a b)
     (heq₀ : η t₀ = ζ t₀) :
     Set.EqOn η ζ (Set.Icc a b) := by
@@ -151,7 +151,7 @@ theorem eqOn_of_eq
   let fU : Uo → M := fun x ↦ F x
   have hlocU :
       IsLocalDiffeomorph 𝓘(Real, E) I ∞ fU :=
-    hloc_restrict_open Uo hloc
+    isLocalDiffeomorph_restrict_open Uo hloc
   let ηU : Set.Icc a b → Uo :=
     fun s ↦ ⟨η s, hη.mapsTo s.property⟩
   let ζU : Set.Icc a b → Uo :=
@@ -183,8 +183,8 @@ theorem eqOn
     (hab : a ≤ b) (hU : IsOpen U)
     (hloc :
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞ F U)
-    (hη : IsLiftOn F γ U e₀ a b η)
-    (hζ : IsLiftOn F γ U e₀ a b ζ) :
+    (hη : isLiftOn F γ U e₀ a b η)
+    (hζ : isLiftOn F γ U e₀ a b ζ) :
     Set.EqOn η ζ (Set.Icc a b) :=
   eqOn_of_eq hU hloc hη hζ ⟨le_rfl, hab⟩
     (hη.2.1.trans hζ.2.1.symm)
@@ -201,11 +201,11 @@ theorem exists_of_compact
     (hK : IsCompact K) (hKU : K ⊆ U)
     (hfence :
       ∀ {t : Real}, t ∈ Set.Icc a b →
-        ∀ {η : Real → E}, IsLiftOn F γ U e₀ a t η → η t ∈ K) :
-    ∃ η : Real → E, IsLiftOn F γ U e₀ a b η := by
+        ∀ {η : Real → E}, isLiftOn F γ U e₀ a t η → η t ∈ K) :
+    ∃ η : Real → E, isLiftOn F γ U e₀ a b η := by
   classical
   let S : Set Real :=
-    {t | t ∈ Set.Icc a b ∧ ∃ η : Real → E, IsLiftOn F γ U e₀ a t η}
+    {t | t ∈ Set.Icc a b ∧ ∃ η : Real → E, isLiftOn F γ U e₀ a t η}
   have haS : a ∈ S := by
     refine ⟨⟨le_rfl, hab⟩, fun _ ↦ e₀, continuousOn_const, rfl, ?_⟩
     intro s hs
@@ -225,7 +225,7 @@ theorem exists_of_compact
     · have ht₀cl : t₀ ∈ closure S := csSup_mem_closure hSne hSbdd
       obtain ⟨u, huS, hutend⟩ := mem_closure_iff_seq_limit.mp ht₀cl
       let ηn : Nat → Real → E := fun n ↦ Classical.choose (huS n).2
-      have hηn : ∀ n, IsLiftOn F γ U e₀ a (u n) (ηn n) :=
+      have hηn : ∀ n, isLiftOn F γ U e₀ a (u n) (ηn n) :=
         fun n ↦ Classical.choose_spec (huS n).2
       let zseq : Nat → E := fun n ↦ ηn n (u n)
       have hzseqK : ∀ n, zseq n ∈ K :=
@@ -346,6 +346,6 @@ theorem exists_of_compact
   rw [← ht₀eq]
   exact ht₀S.2
 
-end IsLiftOn
+end isLiftOn
 
 end DifferentialGeometry

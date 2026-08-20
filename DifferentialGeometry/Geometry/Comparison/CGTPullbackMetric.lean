@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.IntrinsicFramedCoordinates
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoOpen
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
 import DifferentialGeometry.Geometry.Curvature.Rm04OperatorBound
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityLocalCross
 import DifferentialGeometry.Geometry.Metric.LocalPullback
@@ -55,7 +55,7 @@ theorem intrExpOn_local
         (Metric.ball (0 : E) R)) :
     IsLocalDiffeomorph 𝓘(Real, E) I ∞
       (intrExpOn (I := I) g hEnorm p R) := by
-  exact hloc_restrict_open (intrPullBall (E := E) R) hloc
+  exact isLocalDiffeomorph_restrict_open (intrPullBall (E := E) R) hloc
 
 theorem intrExpOn_mfderiv
     (g : SmoothRiemannianMetric I M)

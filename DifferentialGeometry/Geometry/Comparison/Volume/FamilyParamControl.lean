@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
-import DifferentialGeometry.Geometry.Coordinates.TangentPartialDiffeomorph
+import DifferentialGeometry.Topology.Manifold.TangentPartialDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
 import DifferentialGeometry.Topology.FiberBundleT2
@@ -58,7 +58,7 @@ private theorem paramDensity_cont
       (tangentBundleModelSpaceHomeomorph 𝓘(Real, E)).symm.continuous.comp
         ((continuous_subtype_val.comp continuous_snd).prodMk continuous_const)
     simpa [b, lift] using
-      (PartialDiffeomorph.mfderiv_cont Ψ (by norm_num) lift hlift
+      (PartialDiffeomorph.continuous_mfderiv_apply Ψ (by norm_num) lift hlift
         (fun q => hB q.2.2))
   have hentry : ∀ i j : Fin (Module.finrank Real E),
       Continuous (fun q : P =>
@@ -174,7 +174,7 @@ theorem exists_param_ctrl
         ((continuous_subtype_val.comp (continuous_snd.comp continuous_fst)).prodMk
           (continuous_subtype_val.comp continuous_snd))
     simpa [lift] using
-      (PartialDiffeomorph.mfderiv_cont Ψ (by norm_num) lift hlift
+      (PartialDiffeomorph.continuous_mfderiv_apply Ψ (by norm_num) lift hlift
         (fun q => hB q.1.2.2))
   have hspeed : Continuous speed := by
     have hquad :=

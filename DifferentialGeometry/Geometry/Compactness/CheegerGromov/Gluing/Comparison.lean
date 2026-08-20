@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.HatReadout
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Support
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalMetricExtend
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.CenterReadout
-import DifferentialGeometry.Geometry.Coordinates.LocalDiffeoIFT
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -3274,7 +3274,7 @@ theorem HasStageJetData.hloc_tail
     have hout := Coordinates.isInvertible_of_norm_id_sub_lt hlt
     simpa only [F, c, d, normalExpPD, chiK, chiL, xk0, xl0, Yk, Yl,
       Lphi] using hout
-  exact Coordinates.hlocAt_of_coord c d hV hxc hcxV hmap hG hinv
+  exact Coordinates.isLocalDiffeomorphAt_of_coordinates c d hV hxc hcxV hmap hG hinv
 
 theorem MetricCompactBase.exists_stage_data
     (b : MetricCompactBase (I := I) X)

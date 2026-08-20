@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 
 
 import DifferentialGeometry.Geometry.Connection.LeviCivita.MetricKoszul
@@ -207,7 +207,7 @@ private theorem ballDiffeo_mfd
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  have h := PartialDiffeomorph.opensDiffeo_mfd
+  have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross
     (normalExpPD (I := I) Y x) (by simp) z v
   simpa only [normalBallDiffeo, normalExpPD] using h
 

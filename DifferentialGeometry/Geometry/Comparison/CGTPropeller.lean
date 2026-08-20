@@ -484,7 +484,7 @@ theorem loopTransport_cont
         ((ENNReal.ofReal_lt_ofReal_iff hR).2 hfit)
   have hlocU :
       IsLocalDiffeomorph 𝓘(Real, E) I ∞ fU :=
-    hloc_restrict_open Uo hloc
+    isLocalDiffeomorph_restrict_open Uo hloc
   let lift : unitInterval × Core → Uo :=
     fun tz =>
       ⟨(loopTransportLift (I := I) g hEnorm p hL ha hfit hloc
@@ -660,7 +660,7 @@ theorem loopTransport_curve
         (by norm_num)
         ).comp_contMDiffOn hγE
   have hηLift :
-      IsLiftOn F β (Metric.ball (0 : E) R) (ηE s) s t ηE := by
+      isLiftOn F β (Metric.ball (0 : E) R) (ηE s) s t ηE := by
     refine ⟨hηcont, rfl, ?_⟩
     intro u hu
     refine ⟨(η u).property, ?_⟩
@@ -1061,7 +1061,7 @@ theorem loopTransport_ne
     intro t ht
     exact ⟨(by linarith [ht.1]), ht.2⟩
   have hP :
-      IsLiftOn F γ (Metric.ball (0 : E) R)
+      isLiftOn F γ (Metric.ball (0 : E) R)
         (P.toFun (1 / 2)) (1 / 2) 1 P.toFun := by
     refine ⟨P.contDiff.continuousOn.mono hsub, rfl, ?_⟩
     intro t ht
@@ -1078,7 +1078,7 @@ theorem loopTransport_ne
     intro t ht
     constructor <;> linarith [ht.1, ht.2]
   have hB :
-      IsLiftOn F γ (Metric.ball (0 : E) R)
+      isLiftOn F γ (Metric.ball (0 : E) R)
         0 (1 / 2) 1 (fun t => B.toFun (2 * t - 1)) := by
     refine ⟨B.contDiff.continuousOn.comp
       ((continuous_const.mul continuous_id).sub continuous_const).continuousOn

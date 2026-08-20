@@ -8,7 +8,6 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullb
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormFlat
 import DifferentialGeometry.Geometry.Metric.Convergence.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Convergence.WindowAllOrders
-import DifferentialGeometry.Topology.DirectLimitManifold
 import DifferentialGeometry.Topology.SigmaCompactOpen
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
 import DifferentialGeometry.Geometry.Curvature.RestrictOpenRm04
 import DifferentialGeometry.Geometry.Metric.LocalPullback
@@ -62,7 +62,7 @@ theorem rm04_localPull
       mfderiv I J (Ψ : U → V) y v =
         mfderiv I J (Φ : M → N) (y : M) v := by
     simpa only [Ψ] using
-      DifferentialGeometry.PartialDiffeomorph.opensDiffeo_mfd Φ hU y v
+      DifferentialGeometry.PartialDiffeomorph.mfderiv_toOpensDiffeoCross Φ hU y v
   have hΨval (y : U) : ((Ψ y : V) : N) = (Φ : M → N) (y : M) := by
     rfl
   have hmetric :

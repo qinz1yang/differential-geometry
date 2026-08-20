@@ -152,7 +152,7 @@ theorem quarterDiffeo_mfd
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  have h := PartialDiffeomorph.opensDiffeo_mfd
+  have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross
     (normalExpPD (I := I) Y x) (normalQuarter_sub (I := I) Y x) z v
   simpa only [normalQuarterDiffeo, normalExpPD] using h
 

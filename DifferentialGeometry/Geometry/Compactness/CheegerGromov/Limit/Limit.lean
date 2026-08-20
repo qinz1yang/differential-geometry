@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.DirectLimitManifold
+import DifferentialGeometry.Geometry.Metric.DirectLimit
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs

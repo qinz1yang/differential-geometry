@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 
 set_option autoImplicit false
 
@@ -17,7 +17,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
 
 omit [IsManifold I ∞ M] [IsManifold J ∞ N] in
-theorem hloc_restrict_open
+theorem isLocalDiffeomorph_restrict_open
     {f : M → N} (U : Opens M)
     (hf : IsLocalDiffeomorphOn I J ∞ f U) :
     IsLocalDiffeomorph I J ∞ (fun x : U => f x) := by
@@ -81,7 +81,7 @@ variable {H'' : Type*} [TopologicalSpace H'']
 variable {P : Type*} [TopologicalSpace P] [ChartedSpace H'' P]
 
 omit [IsManifold I ∞ M] [IsManifold J ∞ N] in
-theorem hloc_comp
+theorem isLocalDiffeomorph_comp
     {k : WithTop ℕ∞} {f : M → N} {g : N → P}
     (hg : IsLocalDiffeomorph J K k g)
     (hf : IsLocalDiffeomorph I J k f) :

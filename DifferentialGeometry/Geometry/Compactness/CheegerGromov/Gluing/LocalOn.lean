@@ -220,7 +220,7 @@ theorem HasStageJetDataOn.hloc_tail
       hneu.trans_lt (by norm_num)
     have hout := Coordinates.isInvertible_of_norm_id_sub_lt hlt
     simpa only [F, hc_symm, hd_apply] using hout
-  exact Coordinates.hlocAt_of_coord c d hVloc hxc hcxV hmap hG hinv
+  exact Coordinates.isLocalDiffeomorphAt_of_coordinates c d hVloc hxc hcxV hmap hG hinv
 
 end HCGCompactness
 end DifferentialGeometry
