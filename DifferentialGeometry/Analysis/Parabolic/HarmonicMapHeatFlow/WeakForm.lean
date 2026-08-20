@@ -1445,7 +1445,7 @@ noncomputable def hmfMassCompl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [BoundarylessManifold I M] in
-@[simp] theorem hmfMassCompl_coe
+theorem hmfMassCompl_coe
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1473,7 +1473,7 @@ noncomputable def hmfFormCompl
       k htie hδ_half hδ_nn hδ)
 
 omit [BoundarylessManifold I M] in
-@[simp] theorem hmfFormCompl_coe
+theorem hmfFormCompl_coe
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤

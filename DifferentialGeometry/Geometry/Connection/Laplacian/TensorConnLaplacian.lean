@@ -65,7 +65,7 @@ omit [NeZero (Module.finrank ℝ E)] in
               (smoothOrthoFrame (I := I) g x i x))) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem rawTensorConnLap_zero [CompleteSpace E]
+theorem rawTensorConnLap_zero [CompleteSpace E]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
     rawTensorConnLap (I := I) g r s
         (fun _ : M => (0 : TensorRSSpace r s I _)) x = 0 := by

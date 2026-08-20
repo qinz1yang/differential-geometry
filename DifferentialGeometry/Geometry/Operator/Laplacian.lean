@@ -98,13 +98,13 @@ theorem Δ_g_add [I.Boundaryless] [T2Space M]
   rw [hsection_eq]
   exact divergence_g_add (I := I) g _ _ x
 
-@[simp] lemma gradFun_const
+lemma gradFun_const
     (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
     gradFun (I := I) g (fun _ : M => c) x = (0 : TangentSpace I x) := by
   apply gradFun_eq_zero_of_mfderiv_eq_zero
   exact mfderiv_const
 
-@[simp] theorem Δ_g_const [I.Boundaryless] [T2Space M]
+theorem Δ_g_const [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
     Δ_g (I := I) g (⟨fun _ : M => c, contMDiff_const⟩ : C^∞⟮I, M; ℝ⟯) x = 0 := by
   classical

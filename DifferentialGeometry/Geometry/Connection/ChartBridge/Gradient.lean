@@ -75,13 +75,13 @@ theorem metricFlat_gradFun_eq_extDerivFun
   rw [metricFlat_gradFun_apply (I := I) g f x v]
   rfl
 
-@[simp] lemma gradFun_const
+lemma gradFun_const
     (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
     gradFun (I := I) g (fun _ : M => c) x = (0 : TangentSpace I x) := by
   apply gradFun_eq_zero_of_mfderiv_eq_zero (I := I) g (f := fun _ : M => c)
   exact mfderiv_const
 
-@[simp] lemma gradFun_zero
+lemma gradFun_zero
     (g : SmoothRiemannianMetric I M) (x : M) :
     gradFun (I := I) g (fun _ : M => (0 : ℝ)) x = (0 : TangentSpace I x) :=
   gradFun_const (I := I) g 0 x

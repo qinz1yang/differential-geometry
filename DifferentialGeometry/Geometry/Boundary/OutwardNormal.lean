@@ -488,7 +488,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
     inwardTangentialPartAt (M := M) g α₀ x =
       boundaryInclusionMfderiv (M := M) x (boundaryComponentOfInwardAt (M := M) g α₀ x) := rfl
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-@[simp] lemma inwardTangentialPartAt_self
+lemma inwardTangentialPartAt_self
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
     inwardTangentialPartAt (M := M) g x x = inwardTangentialPart (M := M) g x := by
   unfold inwardTangentialPartAt inwardTangentialPart
@@ -504,7 +504,7 @@ omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
     outwardDirAt (M := M) g α₀ x =
       inwardTangentialPartAt (M := M) g α₀ x - inwardCoordAt (M := M) α₀ x := rfl
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
-@[simp] lemma outwardDirAt_self
+lemma outwardDirAt_self
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M) :
     outwardDirAt (M := M) g x x = outwardDir (M := M) g x := by
   unfold outwardDirAt outwardDir

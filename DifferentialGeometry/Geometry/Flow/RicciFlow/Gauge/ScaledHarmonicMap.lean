@@ -49,7 +49,7 @@ omit [FiniteDimensional ℝ E]
   [SigmaCompactSpace M]
   [T2Space M]
   [BoundarylessManifold I M] in
-@[simp] theorem trScalar_image
+theorem trScalar_image
     (r : ScalarField (I := I) (M := M)) (Φ : M ≃ₘ⟮I, I⟯ M) (x : M) :
     transportScalar (I := I) r Φ (Φ x) = r x := by
   simp only [trScalar_apply, Diffeomorph.symm_apply_apply]

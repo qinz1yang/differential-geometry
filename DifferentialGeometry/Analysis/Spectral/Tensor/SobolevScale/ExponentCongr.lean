@@ -54,7 +54,7 @@ theorem tensorHsCongrL_apply {a b : ℝ} (h : a = b)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem norm_tensorHsCongr {a b : ℝ} (h : a = b)
+theorem norm_tensorHsCongr {a b : ℝ} (h : a = b)
     (u : tensorHs (I := I) (M := M) g r s a) :
     ‖tensorHsCongr (I := I) (M := M) g r s h u‖ = ‖u‖ :=
   (tensorHsCongr (I := I) (M := M) g r s h).norm_map u

@@ -128,7 +128,7 @@ def tensorRSComponentInFrame {r s : Nat} [Fintype Idx] [DecidableEq Idx]
       Tensor0SBundle.componentRS_gen (I := I) (hframe.toBasisAt hx) (T x) upper lower := by
   rfl
 
-@[simp] theorem tensorRSComponentInFrame_apply {r s : Nat}
+theorem tensorRSComponentInFrame_apply {r s : Nat}
     [Fintype Idx] [DecidableEq Idx]
     (T : FrameTensorRSField (I := I) (M := M) r s)
     (frame : Idx -> (x : M) -> TangentSpace I x)

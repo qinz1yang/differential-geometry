@@ -40,7 +40,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem tangentConstAt_self (x : M) (v : TangentSpace I x) :
+theorem tangentConstAt_self (x : M) (v : TangentSpace I x) :
     tangentConstAt (I := I) x v x = v := by
   unfold tangentConstAt
   rw [TensorLieDeriv.tangentConstInChart_apply]
@@ -921,7 +921,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
   simp [B.constr_basis (S := Real) W i]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem leviCivitaConnectionCandidateAt_basis_agreesWithField
+theorem leviCivitaConnectionCandidateAt_basis_agreesWithField
     (g : SmoothRiemannianMetric I M)
     (Y : (p : M) -> TangentSpace I p) (x : M)
     (i : Fin (Module.finrank Real (TangentSpace I x))) :

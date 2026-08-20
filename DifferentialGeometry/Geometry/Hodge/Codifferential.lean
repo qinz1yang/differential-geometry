@@ -57,7 +57,7 @@ theorem codifferentialOfVectorField_add [I.Boundaryless] [T2Space M]
   ring
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem codifferentialOfVectorField_zero [I.Boundaryless] [T2Space M]
+theorem codifferentialOfVectorField_zero [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (y : M) :
     codifferentialOfVectorField (I := I) g
         (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y = 0 := by
@@ -97,7 +97,7 @@ theorem formLaplacianScalar_contMDiff [I.Boundaryless] [T2Space M]
   codifferentialOfVectorField_contMDiff (I := I) g (grad_g (I := I) g ⟨_, hf⟩)
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem formLaplacianScalar_zero [I.Boundaryless] [T2Space M]
+theorem formLaplacianScalar_zero [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (h0 : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (0 : ℝ))) (y : M) :
     formLaplacianScalar (I := I) g h0 y = 0 := by

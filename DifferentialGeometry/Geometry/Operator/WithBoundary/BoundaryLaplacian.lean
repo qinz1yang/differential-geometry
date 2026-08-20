@@ -70,7 +70,7 @@ theorem boundaryLaplacian_add
 
 omit [InnerProductSpace ℝ E] in
 omit [FiniteDimensional ℝ E] in
-@[simp] theorem boundaryLaplacian_const
+theorem boundaryLaplacian_const
     [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (c : ℝ)
     (x : BoundaryManifold I M) :

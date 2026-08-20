@@ -1596,7 +1596,6 @@ def tensor02FromBasis
     (fun slots : Fin 2 -> Fin 3 => C (slots 0) (slots 1))
 
 omit [IsManifold I 2 M] in
-@[simp]
 theorem tensor02FromBasis_component
     {x : M}
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))

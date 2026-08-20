@@ -41,32 +41,32 @@ variable [T2Space M] [SigmaCompactSpace M]
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
 
-@[simp] theorem toL2_zero :
+theorem toL2_zero :
     (toL2 (g := g) (r := r) (s := s)) 0 = 0 :=
   ContinuousLinearMap.map_zero _
 
 
-@[simp] theorem toL2_add (S T : SmoothCcTensor g r s) :
+theorem toL2_add (S T : SmoothCcTensor g r s) :
     (toL2 (g := g) (r := r) (s := s)) (S + T) =
       (toL2 (g := g) (r := r) (s := s)) S +
         (toL2 (g := g) (r := r) (s := s)) T :=
   ContinuousLinearMap.map_add _ _ _
 
 
-@[simp] theorem toL2_neg (S : SmoothCcTensor g r s) :
+theorem toL2_neg (S : SmoothCcTensor g r s) :
     (toL2 (g := g) (r := r) (s := s)) (-S) =
       -((toL2 (g := g) (r := r) (s := s)) S) :=
   ContinuousLinearMap.map_neg _ _
 
 
-@[simp] theorem toL2_sub (S T : SmoothCcTensor g r s) :
+theorem toL2_sub (S T : SmoothCcTensor g r s) :
     (toL2 (g := g) (r := r) (s := s)) (S - T) =
       (toL2 (g := g) (r := r) (s := s)) S -
         (toL2 (g := g) (r := r) (s := s)) T :=
   ContinuousLinearMap.map_sub _ _ _
 
 
-@[simp] theorem toL2_smul (c : ℝ) (S : SmoothCcTensor g r s) :
+theorem toL2_smul (c : ℝ) (S : SmoothCcTensor g r s) :
     (toL2 (g := g) (r := r) (s := s)) (c • S) =
       c • ((toL2 (g := g) (r := r) (s := s)) S) :=
   ContinuousLinearMap.map_smul _ _ _

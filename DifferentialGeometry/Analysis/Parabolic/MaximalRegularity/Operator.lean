@@ -464,7 +464,7 @@ def maximalRegularityOp (a : ℝ) {T : ℝ} (hT : 0 < T) (_hT1 : T ≤ 1)
     (maximalRegularityDerivField (I := I) (M := M) a hT.le f)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem maximalRegularityOp_trace0_eq
+theorem maximalRegularityOp_trace0_eq
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.trace0 _ T
@@ -473,7 +473,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem maximalRegularityOp_timeDeriv
+theorem maximalRegularityOp_timeDeriv
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (tensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.timeDeriv _ T

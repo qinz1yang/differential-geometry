@@ -41,7 +41,7 @@ noncomputable def gluingBump (lam : Real) (hlam : 0 < lam) : ContDiffBump (0 : R
 @[simp] theorem gluing_bump_outer_radius (lam : Real) (hlam : 0 < lam) :
     (gluingBump lam hlam).rOut = (7 * lam / 2) ^ 2 := rfl
 
-@[simp] theorem gluing_bump_sqrt_outer_radius (lam : Real) (hlam : 0 < lam) :
+theorem gluing_bump_sqrt_outer_radius (lam : Real) (hlam : 0 < lam) :
     Real.sqrt (gluingBump lam hlam).rOut = 7 * lam / 2 := by
   rw [gluing_bump_outer_radius, Real.sqrt_sq_eq_abs, abs_of_pos]
   positivity

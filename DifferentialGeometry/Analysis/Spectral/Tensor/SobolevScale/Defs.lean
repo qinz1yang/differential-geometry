@@ -829,7 +829,7 @@ theorem tensorHsToL2_opNorm_le_one {g : SmoothRiemannianMetric I M}
   LinearMap.mkContinuous_norm_le _ zero_le_one _
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem tensorHsToL2_tensorL2Coeff
+theorem tensorHsToL2_tensorL2Coeff
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)} {σ : ℝ}

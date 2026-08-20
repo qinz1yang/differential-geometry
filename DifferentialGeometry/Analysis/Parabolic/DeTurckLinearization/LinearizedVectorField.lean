@@ -49,7 +49,7 @@ theorem chartLinearizedDeTurckVFPrincipal_background_indep
       chartLinearizedDeTurckVFPrincipal (I := I) g g'' α h k y := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] theorem chartLinearizedDeTurckVFPrincipal_zero
+theorem chartLinearizedDeTurckVFPrincipal_zero
     (g g' : SmoothRiemannianMetric I M) (α : M)
     (k : Fin (Module.finrank ℝ E)) (y : E) :
     chartLinearizedDeTurckVFPrincipal (I := I) g g' α

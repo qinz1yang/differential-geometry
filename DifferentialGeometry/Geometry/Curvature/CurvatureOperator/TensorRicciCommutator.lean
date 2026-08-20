@@ -115,7 +115,7 @@ theorem tensorRicciCommutator_swap
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem tensorRicciCommutator_self
+theorem tensorRicciCommutator_self
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (X : Π b : M, TangentSpace I b) (T : Π b : M, TensorRSSpace r s I b) (x : M) :
     riemannSec (tensorCov (I := I) g r s) X X T x = 0 :=

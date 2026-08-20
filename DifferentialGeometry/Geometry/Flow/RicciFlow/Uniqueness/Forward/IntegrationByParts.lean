@@ -53,7 +53,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
       unitScalarRSLiftSection (I := I) (M := M) (fun y : M => T y) x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-@[simp] theorem ccLift0S_unit (g : SmoothRiemannianMetric I M)
+theorem ccLift0S_unit (g : SmoothRiemannianMetric I M)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) (x : M) :
     (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace s I x from

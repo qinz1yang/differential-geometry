@@ -121,7 +121,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable {x : M}
 
 omit [FiniteDimensional ℝ E] in
-@[simp]
 theorem standardRmCompAt_slot_convention
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (Rm04 : Tensor04At (I := I) (M := M) x)

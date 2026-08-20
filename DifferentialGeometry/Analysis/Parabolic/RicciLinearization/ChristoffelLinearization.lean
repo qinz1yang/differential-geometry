@@ -85,7 +85,7 @@ theorem chartLinearizedChristoffelPrincipal_symm
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartLinearizedChristoffelPrincipal_zero
+lemma chartLinearizedChristoffelPrincipal_zero
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j k : Fin (Module.finrank ℝ E)) (y : E) :
     chartLinearizedChristoffelPrincipal (I := I) g α

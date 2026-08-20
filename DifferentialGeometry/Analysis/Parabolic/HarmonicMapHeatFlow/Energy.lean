@@ -302,7 +302,7 @@ noncomputable def hmfDirDensity
         (mfderiv I I Phi x (smoothOrthoFrame (I := I) q x i x))
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem hmfDirDensity_zero
+theorem hmfDirDensity_zero
     (q h : SmoothRiemannianMetric I M) (x : M) :
     hmfDirDensity (I := I) (M := M) q h
         (hmfAdd (I := I) (M := M) q (0 : SmoothCcTensor q 0 1)) x =

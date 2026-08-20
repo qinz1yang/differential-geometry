@@ -275,7 +275,7 @@ open DifferentialGeometry.PDE.DeTurck
 omit [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-@[simp] theorem gauge_vel_refl
+theorem gauge_vel_refl
     (g g_bg : SmoothRiemannianMetric I M) (x : M) :
     Diffeomorph.pushforward (Diffeomorph.refl I M ∞)
         (deTurckVF (I := I)

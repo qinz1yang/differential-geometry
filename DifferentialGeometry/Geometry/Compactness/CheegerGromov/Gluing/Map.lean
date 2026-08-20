@@ -155,7 +155,7 @@ theorem stageTarget_local
   exact (chart (L.φ l)
     (seqCenterD inp.decay P L l (alpha : Nat))).hom.right_inv hsrc
 
-@[simp] theorem stageTarget_subseq
+theorem stageTarget_subseq
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real)
@@ -282,7 +282,7 @@ theorem stageCompare_default
     · simp only [stageComparisonMap, hx, huniq, dite_true, dite_false]
     · simp only [stageComparisonMap, hx, dite_false]
 
-@[simp] theorem stageCompare_subseq
+theorem stageCompare_subseq
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) (s : Real) (hs : 0 ≤ s)

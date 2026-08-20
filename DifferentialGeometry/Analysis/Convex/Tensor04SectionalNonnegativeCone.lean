@@ -94,7 +94,6 @@ theorem mem_tensor04SectionalNonnegative_dualZeroFace {x : M}
         tensor04SectionalEval (I := I) (M := M) A v w = 0 := by
   simp [ProperCone.mem_dualZeroFace]
 
-@[simp]
 theorem tensor04SectionalEval_pullback {x y : M}
     (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
     (A : Tensor0SSpace 4 I y) (v w : TangentSpace I x) :

@@ -280,7 +280,7 @@ def tangentMetricData (g : SmoothMetric I M) (x : M) :
 
 namespace TangentMetricData
 
-@[simp] theorem inner_eq
+theorem inner_eq
     {g : SmoothMetric I M} {x : M} (D : TangentMetricData (I := I) g x)
     (X Y : TangentSpace I x) :
     D.metric.inner X Y = g.inner x X Y :=

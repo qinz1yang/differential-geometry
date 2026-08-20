@@ -205,7 +205,7 @@ noncomputable def TensorH1ComplToTensorL2
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma TensorH1ComplToTensorL2_smoothToTensorH1Compl
+lemma TensorH1ComplToTensorL2_smoothToTensorH1Compl
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) :
     TensorH1ComplToTensorL2 (I := I) (M := M) g r s

@@ -52,7 +52,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactS
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
-@[simp] lemma radialCurve_one
+lemma radialCurve_one
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
     radialCurve (I := I) g p x 1 =
       expMap (I := I) g p (show TangentSpace I p from x) := by
@@ -60,7 +60,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactS
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma radialCurve_zero
+lemma radialCurve_zero
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
     radialCurve (I := I) g p x 0 = p := by
   unfold radialCurve

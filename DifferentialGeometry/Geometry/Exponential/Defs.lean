@@ -213,7 +213,7 @@ theorem maximalGeodesicWitness_zero_curve_eq_p
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem expMap_zero
+theorem expMap_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
     expMap (I := I) g p (0 : TangentSpace I p) = p := by
   unfold expMap

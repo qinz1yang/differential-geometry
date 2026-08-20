@@ -504,7 +504,7 @@ theorem divergence_g_with_boundary_add [T2Space M]
   rw [Finset.sum_add_distrib, add_div]
 
 omit [InnerProductSpace ℝ E] in
-@[simp] theorem divergence_g_with_boundary_zero [T2Space M]
+theorem divergence_g_with_boundary_zero [T2Space M]
     (g : SmoothRiemannianMetric I M) :
     ∀ x : M, divergence_g_with_boundary (I := I) g
       (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = 0 := by

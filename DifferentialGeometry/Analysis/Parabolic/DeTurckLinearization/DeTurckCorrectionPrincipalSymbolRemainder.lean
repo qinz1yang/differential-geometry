@@ -477,7 +477,7 @@ private lemma partialDeriv_smul_apply
     smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartDeTurckCorrHessBlock_zero
+lemma chartDeTurckCorrHessBlock_zero
     (g g' : SmoothRiemannianMetric I M) (α : M)
     (d a b k : Fin (Module.finrank ℝ E)) (y : E) :
     chartDeTurckCorrHessBlock (I := I) g g' α
@@ -543,7 +543,7 @@ lemma chartDeTurckCorrHessBlock_smul
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartDeTurckCorrGramDerivBlock_zero
+lemma chartDeTurckCorrGramDerivBlock_zero
     (g g' : SmoothRiemannianMetric I M) (α : M)
     (d a b k : Fin (Module.finrank ℝ E)) (y : E) :
     chartDeTurckCorrGramDerivBlock (I := I) g g' α
@@ -605,7 +605,7 @@ lemma chartDeTurckCorrGramDerivBlock_smul
 end BlockLinearity
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartDeTurckCorrPrincipalSymbolExpr_zero
+lemma chartDeTurckCorrPrincipalSymbolExpr_zero
     (g g' : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
     chartDeTurckCorrPrincipalSymbolExpr (I := I) g g' α
@@ -741,7 +741,7 @@ theorem chartDeTurckCorrPrincipalSymbolExpr_smul
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartDeTurckCorrFirstOrderRemainder_zero
+lemma chartDeTurckCorrFirstOrderRemainder_zero
     (g g' : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
     chartDeTurckCorrFirstOrderRemainder (I := I) g g' α

@@ -453,7 +453,7 @@ theorem chartRicciFirstOrderRemainder_eq_first_order_sum
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartRicciSecondOrderPart_zero
+lemma chartRicciSecondOrderPart_zero
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) (y : E) :
     chartRicciSecondOrderPart (I := I) g α
@@ -569,7 +569,7 @@ theorem chartRicciSecondOrderPart_smul
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartRicciSecondOrderPrincipalSymbol_zero
+lemma chartRicciSecondOrderPrincipalSymbol_zero
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) (y : E) :
     chartRicciSecondOrderPrincipalSymbol (I := I) g α
@@ -701,7 +701,7 @@ theorem chartRicciSecondOrderPrincipalSymbol_smul
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartRicciFirstOrderRemainder_zero
+lemma chartRicciFirstOrderRemainder_zero
     (g : SmoothRiemannianMetric I M) (α : M)
     (i k : Fin (Module.finrank ℝ E)) (y : E) :
     chartRicciFirstOrderRemainder (I := I) g α

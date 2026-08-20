@@ -48,7 +48,7 @@ lemma inverseMetricSharpFib_inner (g : SmoothRiemannianMetric I M) (x : M)
   rw [inverseMetricSharpFib_apply]
   exact inner_metricSharp (I := I) g x (cotangentToDualLinear (I := I) (x := x) α) w
 
-@[simp] lemma inverseMetricSharpFib_zero (g : SmoothRiemannianMetric I M) (x : M) :
+lemma inverseMetricSharpFib_zero (g : SmoothRiemannianMetric I M) (x : M) :
     inverseMetricSharpFib (I := I) g x 0 = 0 := by
   rw [inverseMetricSharpFib_apply, map_zero]
   rw [metricSharp_def, map_zero]

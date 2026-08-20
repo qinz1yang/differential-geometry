@@ -167,7 +167,7 @@ lemma partialDeriv_chartLinearizedDeTurckVFPrincipal
         (hG_diff a b) (hΓ_diff a b)]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] theorem chartDeTurckCorrSecondOrderPart_zero
+theorem chartDeTurckCorrSecondOrderPart_zero
     (g g' : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
     chartDeTurckCorrSecondOrderPart (I := I) g g' α

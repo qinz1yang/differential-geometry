@@ -390,7 +390,6 @@ def sigmaDiffA (k : ℕ) (q : Fin (4 + k)) :
       · simp [tfDiffA, inv, *]
     · omega)
 
-@[simp]
 theorem sigmaDiffA_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 1)) :
     ((sigmaDiffA k q) (Fin.castAdd (4 + k) p)).val =
       if p.val = 0 then 0
@@ -403,7 +402,6 @@ theorem sigmaDiffA_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 1)) :
   simp only [sigmaDiffA, Equiv.ofBijective_apply, tfDiffA, Fin.val_castAdd]
   split_ifs <;> first | rfl | omega
 
-@[simp]
 theorem sigmaDiffA_nat_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + k)) :
     ((sigmaDiffA k q) (Fin.natAdd (4 + 1) p)).val =
       if p.val = q.val then 3 else 5 + p.val := by
@@ -563,7 +561,6 @@ def sigmaDiffB (k : ℕ) (q : Fin (4 + k)) :
       · simp [tfDiffB, inv, *]
     · omega)
 
-@[simp]
 theorem sigmaDiffB_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 0)) :
     ((sigmaDiffB k q) (Fin.castAdd (4 + (k + 1)) p)).val =
       if p.val = 0 then 0
@@ -575,7 +572,6 @@ theorem sigmaDiffB_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 0)) :
   simp only [sigmaDiffB, Equiv.ofBijective_apply, tfDiffB, Fin.val_castAdd]
   split_ifs <;> first | rfl | omega
 
-@[simp]
 theorem sigmaDiffB_nat_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + (k + 1))) :
     ((sigmaDiffB k q) (Fin.natAdd (4 + 0) p)).val =
       if p.val = 0 then 1
@@ -747,7 +743,6 @@ def sigmaRic1 (k : ℕ) (q : Fin (4 + k)) :
       · simp [tfRic1, inv, *]
     · omega)
 
-@[simp]
 theorem sigmaRic1_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 1)) :
     ((sigmaRic1 k q) (Fin.castAdd (4 + k) p)).val =
       if p.val = 0 then 4
@@ -760,7 +755,6 @@ theorem sigmaRic1_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 1)) :
   simp only [sigmaRic1, Equiv.ofBijective_apply, tfRic1, Fin.val_castAdd]
   split_ifs <;> first | rfl | omega
 
-@[simp]
 theorem sigmaRic1_nat_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + k)) :
     ((sigmaRic1 k q) (Fin.natAdd (4 + 1) p)).val =
       if p.val = q.val then 3 else 5 + p.val := by
@@ -909,7 +903,6 @@ def sigmaRic2 (k : ℕ) (q : Fin (4 + k)) :
       · simp [tfRic2, inv, *]
     · omega)
 
-@[simp]
 theorem sigmaRic2_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 1)) :
     ((sigmaRic2 k q) (Fin.castAdd (4 + k) p)).val =
       if p.val = 0 then 5 + q.val
@@ -922,7 +915,6 @@ theorem sigmaRic2_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 1)) :
   simp only [sigmaRic2, Equiv.ofBijective_apply, tfRic2, Fin.val_castAdd]
   split_ifs <;> first | rfl | omega
 
-@[simp]
 theorem sigmaRic2_nat_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + k)) :
     ((sigmaRic2 k q) (Fin.natAdd (4 + 1) p)).val =
       if p.val = q.val then 3 else 5 + p.val := by
@@ -1071,7 +1063,6 @@ def sigmaRic3 (k : ℕ) (q : Fin (4 + k)) :
       · simp [tfRic3, inv, *]
     · omega)
 
-@[simp]
 theorem sigmaRic3_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 1)) :
     ((sigmaRic3 k q) (Fin.castAdd (4 + k) p)).val =
       if p.val = 0 then 2
@@ -1084,7 +1075,6 @@ theorem sigmaRic3_cast_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + 1)) :
   simp only [sigmaRic3, Equiv.ofBijective_apply, tfRic3, Fin.val_castAdd]
   split_ifs <;> first | rfl | omega
 
-@[simp]
 theorem sigmaRic3_nat_val (k : ℕ) (q : Fin (4 + k)) (p : Fin (4 + k)) :
     ((sigmaRic3 k q) (Fin.natAdd (4 + 1) p)).val =
       if p.val = q.val then 3 else 5 + p.val := by

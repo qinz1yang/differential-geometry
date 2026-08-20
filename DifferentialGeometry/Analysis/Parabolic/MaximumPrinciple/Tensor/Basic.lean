@@ -203,7 +203,6 @@ noncomputable def tensorBarrierSecFamily
       Tensor0SBundle.metricTensorField (I := I) (G t)
 
 omit [IsManifold I 2 M] in
-@[simp]
 theorem tensorBarrierSec_apply
     (G : Real -> SmoothRiemannianMetric I M)
     (S : TwoTensorSecFamily (I := I) (M := M))

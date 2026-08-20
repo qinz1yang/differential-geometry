@@ -206,7 +206,7 @@ noncomputable def ricciPairingCLMOfBound
       SmoothScalar g →L[ℝ] H1Compl g)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem ricciPairingCLMOfBound_smoothToH1Compl
+theorem ricciPairingCLMOfBound_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (C : ℝ) (hC_nn : 0 ≤ C)
     (hC_bound : ∀ v : SmoothScalar g,
@@ -401,7 +401,7 @@ noncomputable def ricciPairingCLM
       (exists_ricciPairing_lipschitz_bound (I := I) (M := M) g φ)).2
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem ricciPairingCLM_smoothToH1Compl
+theorem ricciPairingCLM_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     ricciPairingCLM (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) =

@@ -34,7 +34,7 @@ noncomputable def normalBump (g : SmoothRiemannianMetric I M) (p : M)
 
 omit [T2Space M] in
 omit [NeZero (Module.finrank Real E)] in
-@[simp] theorem normalBump_of_mem (g : SmoothRiemannianMetric I M) (p : M)
+theorem normalBump_of_mem (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : E)) {q : M}
     (hq : q ∈ (normalChartAt (I := I) g p).source) :
     normalBump g p f q = f (normalChartAt (I := I) g p q) := by
@@ -43,7 +43,7 @@ omit [NeZero (Module.finrank Real E)] in
 
 omit [T2Space M] in
 omit [NeZero (Module.finrank Real E)] in
-@[simp] theorem normalBump_of_notMem (g : SmoothRiemannianMetric I M) (p : M)
+theorem normalBump_of_notMem (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : E)) {q : M}
     (hq : q ∉ (normalChartAt (I := I) g p).source) :
     normalBump g p f q = 0 := by
@@ -155,7 +155,7 @@ noncomputable def quadNormal (g : SmoothRiemannianMetric I M) (p : M)
 
 omit [T2Space M] in
 omit [NeZero (Module.finrank Real E)] in
-@[simp] theorem quadNormal_of_mem (g : SmoothRiemannianMetric I M) (p : M)
+theorem quadNormal_of_mem (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : Real)) {q : M}
     (hq : q ∈ (normalChartAt (I := I) g p).source) :
     quadNormal g p f q =
@@ -166,7 +166,7 @@ omit [NeZero (Module.finrank Real E)] in
 
 omit [T2Space M] in
 omit [NeZero (Module.finrank Real E)] in
-@[simp] theorem quadNormal_of_notMem (g : SmoothRiemannianMetric I M) (p : M)
+theorem quadNormal_of_notMem (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : Real)) {q : M}
     (hq : q ∉ (normalChartAt (I := I) g p).source) :
     quadNormal g p f q = 0 := by

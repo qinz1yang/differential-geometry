@@ -176,7 +176,6 @@ theorem toFun_apply (u : timeH1 X T) (t : ℝ) :
     u.toFun t = u.init + ∫ s in (0 : ℝ)..t, u.deriv s :=
   rfl
 
-@[simp]
 theorem toFun_zero (u : timeH1 X T) : u.toFun 0 = u.init := by
   simp [toFun]
 

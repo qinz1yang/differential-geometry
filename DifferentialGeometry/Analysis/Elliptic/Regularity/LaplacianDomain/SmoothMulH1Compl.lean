@@ -655,7 +655,7 @@ noncomputable def smoothMulH1Compl
       SmoothScalar g →L[ℝ] H1Compl g)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem smoothMulH1Compl_smoothToH1Compl
+theorem smoothMulH1Compl_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     smoothMulH1Compl (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) =

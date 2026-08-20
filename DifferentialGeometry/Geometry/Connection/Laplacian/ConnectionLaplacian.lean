@@ -115,7 +115,7 @@ theorem connLaplacian_function_add [I.Boundaryless]
   exact Δ_g_add (I := I) g ⟨_, hf⟩ ⟨_, hh⟩ x
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-@[simp] theorem connLaplacian_function_const [I.Boundaryless]
+theorem connLaplacian_function_const [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
     connLaplacian_function (I := I) g
       (contMDiff_const : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => c)) x = 0 := by

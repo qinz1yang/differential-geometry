@@ -47,7 +47,7 @@ omit [NeZero (Module.finrank ℝ E)] in
             ((chartModelBasis E).repr ξ i) * ((chartModelBasis E).repr ξ j) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma metricCovectorNormSq_zero (g : SmoothRiemannianMetric I M) (x : M) :
+lemma metricCovectorNormSq_zero (g : SmoothRiemannianMetric I M) (x : M) :
     metricCovectorNormSq (I := I) g x 0 = 0 := by
   simp [metricCovectorNormSq]
 
@@ -171,7 +171,7 @@ omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] in
               ((chartModelBasis E).repr ξ j)) • LinearMap.id := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] in
-@[simp] lemma secondOrderSymbol_apply_apply (F : M → Type*)
+lemma secondOrderSymbol_apply_apply (F : M → Type*)
     [∀ x, AddCommGroup (F x)] [∀ x, Module ℝ (F x)]
     (a : M → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ)
     (x : M) (ξ : E) (v : F x) :

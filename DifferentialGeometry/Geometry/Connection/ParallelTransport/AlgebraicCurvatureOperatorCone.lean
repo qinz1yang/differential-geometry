@@ -50,7 +50,6 @@ private local instance parallelCurvatureOperatorTensor04TopologicalSpace (x : M)
         (@NormedAddCommGroup.toMetricSpace _
           (parallelCurvatureOperatorTensor04NormedAddCommGroup (I := I) x))))
 
-@[simp]
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_curvatureOperatorQuadraticEval
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)

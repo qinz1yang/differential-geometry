@@ -175,7 +175,7 @@ theorem gluedFamily_eq_left
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-@[simp] theorem gluedFamily_at_endpoint
+theorem gluedFamily_at_endpoint
     (g_fam r : ℝ → SmoothRiemannianMetric I M) (omega : ℝ) :
     gluedFamily (I := I) g_fam r omega omega = r 0 := by
   rw [gluedFamily_of_ge (I := I) g_fam r omega (le_refl omega), sub_self]

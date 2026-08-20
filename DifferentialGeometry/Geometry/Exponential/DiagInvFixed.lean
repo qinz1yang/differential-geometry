@@ -100,7 +100,6 @@ theorem fixedPD_center_mem
     expMapIntrinsic_zero (I := I) g hEnorm p
   simpa only [fixedPD_apply, hzero] using hmap
 
-@[simp]
 theorem fixedPD_symm_center
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),

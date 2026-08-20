@@ -270,7 +270,7 @@ abbrev trivFromE (α x : M) : E →L[ℝ] TangentSpace I x :=
 
 variable (I) in
 omit [FiniteDimensional ℝ E] in
-@[simp] lemma trivFromE_trivToE
+lemma trivFromE_trivToE
     (α : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (v : TangentSpace I x) :
@@ -279,7 +279,7 @@ omit [FiniteDimensional ℝ E] in
 
 variable (I) in
 omit [FiniteDimensional ℝ E] in
-@[simp] lemma trivToE_trivFromE
+lemma trivToE_trivFromE
     (α : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (w : E) :

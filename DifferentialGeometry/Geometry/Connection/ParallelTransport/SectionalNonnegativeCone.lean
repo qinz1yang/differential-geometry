@@ -54,7 +54,6 @@ noncomputable def parallelTransportTensor04CLEOnIcc [I.Boundaryless]
   tensor0SPullbackCLE (I := I) (M := M) 4
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
-@[simp]
 theorem parallelTransportTensor04CLEOnIcc_sectionalEval [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M)
     (hgamma : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) gamma)

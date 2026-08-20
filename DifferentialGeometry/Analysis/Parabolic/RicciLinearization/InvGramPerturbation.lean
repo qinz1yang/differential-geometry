@@ -169,7 +169,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
         chartInvGramMatrix (I := I) g x x m n * (chartModelBasis E).repr ξ n := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma raisedCovectorComp_zero (g : SmoothRiemannianMetric I M) (x : M)
+lemma raisedCovectorComp_zero (g : SmoothRiemannianMetric I M) (x : M)
     (m : Fin (Module.finrank ℝ E)) :
     raisedCovectorComp (I := I) g x (0 : E) m = 0 := by
   simp [raisedCovectorComp]
@@ -201,7 +201,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
           chartInvGramMatrix (I := I) g x x m n * h m n (extChartAt I x x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma metricTrace_zero (g : SmoothRiemannianMetric I M) (x : M) :
+lemma metricTrace_zero (g : SmoothRiemannianMetric I M) (x : M) :
     metricTrace (I := I) g x (0 : ChartMetricPerturbation E) = 0 := by
   simp [metricTrace]
 
@@ -244,7 +244,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
             chartInvGramOnE (I := I) g α b m y * h a b y := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma invGramPerturbation_zero (g : SmoothRiemannianMetric I M) (α : M)
+lemma invGramPerturbation_zero (g : SmoothRiemannianMetric I M) (α : M)
     (l m : Fin (Module.finrank ℝ E)) (y : E) :
     invGramPerturbation (I := I) g α (0 : ChartMetricPerturbation E) l m y = 0 := by
   simp [invGramPerturbation]

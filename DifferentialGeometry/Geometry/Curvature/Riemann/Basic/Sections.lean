@@ -380,7 +380,6 @@ theorem rm13Section_apply
       riemannCurvatureAt cov hcov x := by
   rfl
 
-@[simp]
 theorem rm13Section_apply_const
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
@@ -524,7 +523,6 @@ theorem rm04Section_apply
       riemannCurvature04At g cov hcov x := by
   rfl
 
-@[simp]
 theorem rm04Section_apply_const
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -594,7 +592,6 @@ theorem ricciSection_apply
   simp [ricciSection, ricciCurvatureAt, ricciFromRm13At, contract_TensorRSField,
     contract_TensorRSField_fun, hone]
 
-@[simp]
 theorem ricciSection_eq_trace
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)

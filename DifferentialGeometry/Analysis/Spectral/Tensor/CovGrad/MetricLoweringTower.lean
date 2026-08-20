@@ -65,7 +65,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [Sig
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-@[simp] theorem lowerCc_unit (g : SmoothRiemannianMetric I M) (r s : ℕ)
+theorem lowerCc_unit (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (x : M) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (r + s) I x from
       (lowerCc (I := I) (M := M) g r s T).toSection x)

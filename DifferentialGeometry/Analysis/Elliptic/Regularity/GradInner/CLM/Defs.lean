@@ -461,7 +461,7 @@ noncomputable def gradInnerCLM
       SmoothScalar g →L[ℝ] H1Compl g)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem gradInnerCLM_smoothToH1Compl
+theorem gradInnerCLM_smoothToH1Compl
     (g : SmoothRiemannianMetric I M) (ρα : C^∞⟮I, M; ℝ⟯)
     (v : SmoothScalar g) :
     gradInnerCLM (I := I) (M := M) g ρα

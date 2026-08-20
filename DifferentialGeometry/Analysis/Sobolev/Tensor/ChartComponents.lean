@@ -91,7 +91,7 @@ theorem tensorChartComp_smul
   exact tensorChartComponent_smul (I := I) (M := M) g r s c S α Idx Jdx
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-@[simp] theorem tensorChartComp_zero
+theorem tensorChartComp_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :

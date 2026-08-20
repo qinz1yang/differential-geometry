@@ -60,7 +60,6 @@ noncomputable def parallelTransportAlgebraicCurvatureTensorCLEOnIcc
   algebraicCurvatureTensorPullbackCLE (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
-@[simp]
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_sectionalEval
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)

@@ -169,7 +169,7 @@ noncomputable def H1ComplToLp (g : SmoothRiemannianMetric I M) :
   ContinuousLinearMap.extend (smoothToLp (I := I) (M := M) g)
     (UniformSpace.Completion.toComplL : SmoothScalar g →L[ℝ] H1Compl g)
 
-@[simp] lemma H1ComplToLp_smoothToH1Compl (g : SmoothRiemannianMetric I M)
+lemma H1ComplToLp_smoothToH1Compl (g : SmoothRiemannianMetric I M)
     (f : SmoothScalar g) :
     H1ComplToLp (I := I) (M := M) g
         (smoothToH1Compl (I := I) (M := M) g f) =

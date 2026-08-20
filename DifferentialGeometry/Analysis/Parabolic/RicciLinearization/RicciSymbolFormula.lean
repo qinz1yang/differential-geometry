@@ -108,7 +108,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
           chartInvGramMatrix (I := I) g x x m n * formComp (I := I) x t m n := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma formMetricTrace_zero (g : SmoothRiemannianMetric I M) (x : M) :
+lemma formMetricTrace_zero (g : SmoothRiemannianMetric I M) (x : M) :
     formMetricTrace (I := I) g x
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) = 0 := by
   simp [formMetricTrace]
@@ -152,7 +152,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
         raisedCovectorComp (I := I) g x ξ l * formComp (I := I) x t l k := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma raisedFormContraction_zero (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+lemma raisedFormContraction_zero (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (k : Fin (Module.finrank ℝ E)) :
     raisedFormContraction (I := I) g x ξ
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) k = 0 := by
@@ -197,7 +197,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
         raisedCovectorComp (I := I) g x ξ j * formComp (I := I) x t i j := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma raisedFormContractionSnd_zero (g : SmoothRiemannianMetric I M) (x : M)
+lemma raisedFormContractionSnd_zero (g : SmoothRiemannianMetric I M) (x : M)
     (ξ : E) (i : Fin (Module.finrank ℝ E)) :
     raisedFormContractionSnd (I := I) g x ξ
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) i = 0 := by
@@ -557,7 +557,7 @@ theorem ricciSymbolComp_smul (g : SmoothRiemannianMetric I M) (x : M) (ξ : E) (
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] theorem ricciSymbolComp_zero (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+theorem ricciSymbolComp_zero (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (i k : Fin (Module.finrank ℝ E)) :
     ricciSymbolComp (I := I) g x ξ
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) i k = 0 := by

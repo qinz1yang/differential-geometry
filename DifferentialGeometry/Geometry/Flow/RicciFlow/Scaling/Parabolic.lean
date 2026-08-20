@@ -264,7 +264,7 @@ theorem paraRmNormSq
   field_simp [ne_of_gt hR]
 
 omit [SigmaCompactSpace M] in
-@[simp] private theorem paraNablaRic_eq
+private theorem paraNablaRic_eq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier)
@@ -328,7 +328,7 @@ private theorem metricTracePair0SAt_scaleMetric
   ring
 
 omit [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem paraSolution_scalar
+theorem paraSolution_scalar
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (τ R : Real) (hR : 0 < R) (hτ : τ ∈ D.carrier) :

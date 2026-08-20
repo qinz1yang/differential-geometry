@@ -189,7 +189,7 @@ def fibreFieldMulL2
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-@[simp] theorem fibreFieldMulL2_apply_toL2
+theorem fibreFieldMulL2_apply_toL2
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Ψ : Π x : M, TensorRSSpace r s I x →L[ℝ] TensorRSSpace r s I x)
     (hΨ : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)) ∞

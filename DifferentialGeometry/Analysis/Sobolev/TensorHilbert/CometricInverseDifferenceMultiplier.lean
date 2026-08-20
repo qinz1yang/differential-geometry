@@ -89,7 +89,7 @@ lemma inverseMetricSharpFib_g0FlatCLM_eq_metricSharp (g₀ g' : SmoothRiemannian
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma cotangentToDual_g0FlatCLM (g₀ : SmoothRiemannianMetric I M) (x : M)
+lemma cotangentToDual_g0FlatCLM (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     cotangentToDual (I := I) (x := x) (g0FlatCLM (I := I) g₀ x v) w = g₀.inner x v w := by
   rw [g0FlatCLM_apply, cotangentToDual_dualToCotangent]; rfl
@@ -156,7 +156,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
-@[simp] lemma metricComparisonDifferenceEndomorphism_self (g₀ : SmoothRiemannianMetric I M) (x : M)
+lemma metricComparisonDifferenceEndomorphism_self (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     metricComparisonDifferenceEndomorphism (I := I) g₀ g₀ x v = 0 := by
   rw [metricComparisonDifferenceEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM, sub_self]

@@ -132,7 +132,6 @@ theorem tensor04StdAt_pair_swap_of_mem_algebraicCurvatureTensorSubmodule
       tensor04StdAt (I := I) (M := M) A Z W X Y :=
   (mem_algebraicCurvatureTensorSubmodule.mp hA).pair_swap X Y Z W
 
-@[simp]
 theorem tensor04StdAt_pullback {x y : M}
     (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
     (A : Tensor04At (I := I) (M := M) y)

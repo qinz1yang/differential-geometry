@@ -349,7 +349,7 @@ theorem chartFlowGeodesicCurve_eq_of_chartPhase_solution_eventually
 
 omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [I.Boundaryless] [CompleteSpace E] in
-@[simp] theorem chartFlowGeodesicCurve_zero_velocity_eq_const
+theorem chartFlowGeodesicCurve_zero_velocity_eq_const
     (p : M) {Φ : (E × E) × ℝ → E × E}
     (hinit : Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
       (extChartAt I p p, (0 : E))) :

@@ -393,7 +393,7 @@ theorem heatpot_mass_on
   change mass s = mass 0
   exact (hclosed hs).trans (hclosed ⟨le_rfl, htau.le⟩).symm
 
-@[simp] theorem galLimExt_coeff
+theorem galLimExt_coeff
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -413,7 +413,7 @@ theorem heatpot_mass_on
   rw [galLimExt_mem hτ hlim m ht]
   rfl
 
-@[simp] theorem galLimExt_zero
+theorem galLimExt_zero
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}

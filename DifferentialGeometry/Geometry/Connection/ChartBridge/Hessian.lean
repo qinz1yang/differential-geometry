@@ -160,7 +160,7 @@ theorem abstractHessian_eq_inner_cov_gradFun_smooth [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in
-@[simp] lemma traceFun_abstractHessianBilin_def
+lemma traceFun_abstractHessianBilin_def
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
     traceFun (I := I) (M := M) (abstractHessianBilin (I := I) g f) x =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -171,7 +171,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] [T2Space M] in
-@[simp] lemma frobeniusSqFun_abstractHessianBilin_def
+lemma frobeniusSqFun_abstractHessianBilin_def
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
     frobeniusSqFun (I := I) (M := M) (abstractHessianBilin (I := I) g f) x =
       ∑ i : Fin (Module.finrank ℝ E),

@@ -105,7 +105,7 @@ theorem intrFrame_smooth
 
 omit [CompleteSpace E]
   [ConnectedSpace M] in
-@[simp] theorem intrFrame_zero
+theorem intrFrame_zero
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
