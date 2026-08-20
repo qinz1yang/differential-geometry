@@ -354,7 +354,8 @@ lemma DeTurckRemainderPrincipalArm.grid_core (g₀ : SmoothRiemannianMetric I M)
     have h4 : 0 ≤ ∑ l ∈ Finset.range (j + 1), (cDS l) ^ 2 :=
       Finset.sum_nonneg (fun l _ => sq_nonneg _)
     have h5 : (0:ℝ) ≤ (1 + R₀) ^ 2 := sq_nonneg _
-    nlinarith [mul_nonneg h1 h2, mul_nonneg h3 (mul_nonneg h4 h5)]
+    exact mul_nonneg hG (add_nonneg (mul_nonneg h1 h2)
+      (mul_nonneg h3 (mul_nonneg h4 h5)))
   refine le_of_sq_le_sq ?_ (mul_nonneg (Real.sqrt_nonneg _) (hfT_nn γ'))
   rw [mul_pow, Real.sq_sqrt hCB_nn]
   exact htot
@@ -1086,7 +1087,7 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_sobol
   have hu_nn : 0 ≤ u := norm_nonneg _
   have hone_aux : ∀ (X : ℝ), 0 ≤ X → 1 + X * f₁ ≤ (1 + X) * (1 + f₁) := by
     intro X hX
-    nlinarith
+    nlinarith only [hX, hf₁_nn]
   have htopC : ‖iteratedCovGrad (I := I) g₀ 2 2 (2 * p) C₀‖ ≤
       (Real.sqrt (Kc (2 * p)) * (1 + ∑ j ∈ Finset.range (2 * p + 2), CJ j)) *
         (1 + f₁) + εa * u := by
@@ -1103,7 +1104,8 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_sobol
       linarith
     have h2 := mul_le_mul_of_nonneg_left h1 (Real.sqrt_nonneg (Kc (2 * p)))
     have hueq : ‖iteratedCovGrad (I := I) g₀ 0 2 (2 * p + 2) T₀‖ = u := rfl
-    nlinarith [hεa_nn, hu_nn]
+    rw [hueq]
+    simpa only [mul_assoc] using add_le_add h2 (le_refl (εa * u))
   have hlowC : ∑ b ∈ Finset.range (2 * p), ‖iteratedCovGrad (I := I) g₀ 2 2 b C₀‖ ≤
       (∑ b ∈ Finset.range (2 * p),
         (Real.sqrt (Kc b) * (1 + ∑ j ∈ Finset.range (b + 2), CJ j) + εa * CJ (b + 2))) *
@@ -1245,7 +1247,7 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_sobol
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 * p + 1 : ℕ) : ℝ) T₀‖ :=
     mul_nonneg (mul_nonneg (mul_nonneg (hCCS_nn 0 p) (by linarith)) (hCJ_nn 0))
       (norm_nonneg _)
-  nlinarith [hextra]
+  nlinarith only [hextra]
 
 
 end BalLadder
@@ -1599,9 +1601,8 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGr
       refine mul_le_mul_of_nonneg_left ?_ (hCCS_nn 0 p)
       linarith
     refine pow_le_pow_left₀ ?_ h1 2
-    have := hfT_nn (0 + w + 2 * p + 1)
-    have := hCCS_nn 0 p
-    nlinarith
+    exact mul_nonneg (hCCS_nn 0 p)
+      (add_nonneg zero_le_one (hfT_nn (0 + w + 2 * p + 1)))
   have hsupΦ1 : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + 1) x
       ((covGrad (I := I) (M := M) g₀ 2 2 Φp).toSection x) ≤
       (CCS 1 p * (1 + R₀)) ^ 2 := by
@@ -1616,9 +1617,8 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGr
       refine mul_le_mul_of_nonneg_left ?_ (hCCS_nn 1 p)
       linarith
     refine pow_le_pow_left₀ ?_ h1 2
-    have := hfT_nn (1 + w + 2 * p + 1)
-    have := hCCS_nn 1 p
-    nlinarith
+    exact mul_nonneg (hCCS_nn 1 p)
+      (add_nonneg zero_le_one (hfT_nn (1 + w + 2 * p + 1)))
   have hsupSE : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 1) (2 + 1) x
       ((slotExtend (I := I) (M := M) g₀ 2 2 Φp).toSection x) ≤
       (Real.sqrt n * (CCS 0 p * (1 + R₀))) ^ 2 := by
@@ -2060,7 +2060,7 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_covGr
   have hu₃_nn : 0 ≤ u₃ := norm_nonneg _
   have hone_aux : ∀ (X : ℝ), 0 ≤ X → 1 + X * f₂ ≤ (1 + X) * (1 + f₂) := by
     intro X hX
-    nlinarith
+    nlinarith only [hX, hf₂_nn]
   have henvsum : ∀ (k : ℕ), k ≤ 2 * p + 3 →
       ∑ j ∈ Finset.range k, ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ≤
         (∑ j ∈ Finset.range k, CJ j) * f₂ := by
@@ -2780,7 +2780,7 @@ lemma exists_deTurckRemainder_connLapIterate_sobolevHs_bound (g₀ : SmoothRiema
     have hgoalf : ‖smoothCcToTensorHs (I := I) (M := M) g₀
         ((2 * m + 2 * q + 3 : ℕ) : ℝ) T₀‖ = fT (2 * m + 2 * q + 3) := rfl
     rw [hgoalf]
-    nlinarith [htop, h2]
+    nlinarith only [htop, h2, hnn]
   · refine le_trans hcore.2 ?_
     have htop : ‖iteratedCovGrad (I := I) g₀ 0 2 (2 * m + 1) Eq‖ ≤
         CBtot q (2 * m + 1) * fT (2 * m + 2 * q + 4) := by
@@ -2805,7 +2805,7 @@ lemma exists_deTurckRemainder_connLapIterate_sobolevHs_bound (g₀ : SmoothRiema
     have hgoalf : ‖smoothCcToTensorHs (I := I) (M := M) g₀
         ((2 * m + 2 * q + 4 : ℕ) : ℝ) T₀‖ = fT (2 * m + 2 * q + 4) := rfl
     rw [hgoalf]
-    nlinarith [htop, h2]
+    nlinarith only [htop, h2, hnn]
 end BalLadder
 
 end Spectral
@@ -3461,8 +3461,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
               apply Finset.sum_le_sum
               intro j hj
               have hjle : j ≤ a + 2 := by have := Finset.mem_range.mp hj; omega
-              nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j T₀),
-                hPball j hjle, hB_nn]
+              exact (sq_le_sq₀ (norm_nonneg _) hB_nn).2 (hPball j hjle)
           _ = ((a + 1 + 1 : ℕ) : ℝ) * B ^ 2 := by
               rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
       have hsingle : riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x (T₀.toSection x) ≤
@@ -3623,7 +3622,8 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
             rw [← SmoothCcTensor.norm_def] at hbr
             rw [← hbr]
             have h1 : (1 : ℝ) ≤ Cg1 (e m) * L := hCgL_one (e m)
-            nlinarith [sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀‖]
+            simpa only [one_mul] using mul_le_mul_of_nonneg_right h1
+              (sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀‖)
           · have hb := hGNspec T₀ Λ₀ hΛ₀_nn hsup (e m) hem_pos hemi
             rw [hCgn_i] at hb
             refine le_trans hb ?_
@@ -4292,7 +4292,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                   refine mul_le_mul_of_nonneg_right ?_
                     (Finset.prod_nonneg fun m _ =>
                       riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e m) x _)
-                  exact pow_le_one₀ (sq_nonneg s) (by nlinarith)
+                  exact pow_le_one₀ (sq_nonneg s) (by
+                    simpa only [one_pow] using pow_le_pow_left₀ hs0 hs1 2)
               _ = ∏ m : Fin n',
                     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                       ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀).toSection x) := one_mul _
@@ -5043,7 +5044,8 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
   obtain ⟨C₀k, C₁k, C₂r, hidArm, hC₀sup, hC₁sup, hC₂rsup, hC₀env, hC₁env, hC₂renv⟩ :=
     harm T₀ hTsymm hball
   have hsqA : Real.sqrt (2 * Λ₁ ^ 2 + 2 * ΛK) ^ 2 = 2 * Λ₁ ^ 2 + 2 * ΛK :=
-    Real.sq_sqrt (by nlinarith [hΛ₁_nn, hΛK_nn])
+    Real.sq_sqrt (add_nonneg (mul_nonneg (by norm_num) (sq_nonneg Λ₁))
+      (mul_nonneg (by norm_num) hΛK_nn))
   refine ⟨C₀k + K₀, C₁k, C₂r, ?_, hC₂rsup, ?_, ?_, ?_, ?_, ?_⟩
   · have h884 := deTurckSmoothRemainderDiff_eq_armDiff_sub_connLapDiff (I := I) g₀ g_bg T₀
       (0 : SmoothCcTensor g₀ 0 2)
@@ -5188,7 +5190,8 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricArm_endpointResid
     refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ (2 + 0) 2 x _ _) ?_
     have h1 := hC₀sup x
     have h2 := hΛK x
-    nlinarith [Real.sqrt_nonneg (2 * Λ₁ ^ 2 + 2 * ΛK), hΛ₁_nn, hsqA]
+    nlinarith only [h1, h2, Real.sqrt_nonneg (2 * Λ₁ ^ 2 + 2 * ΛK), hΛ₁_nn,
+      hsqA]
   · intro x
     have h1 := hC₁sup x
     have hle : Λ₁ ≤ Real.sqrt (2 * Λ₁ ^ 2 + 2 * ΛK) + Λ₁ :=
@@ -5328,10 +5331,11 @@ theorem
     have hd := hεCD_cap hδ_nn
     have hr := hεCr_cap hδ_nn
     have hsq : (2 * εCD ^ 2 + 2 * εCr ^ 2) ≤ (32 * C ^ 2 * κ) ^ 2 := by
-      have hεCD_sq : εCD ^ 2 ≤ (3 * C * κ) ^ 2 := by nlinarith
-      have hεCr_sq : εCr ^ 2 ≤ (19 * C * κ) ^ 2 := by nlinarith
-      have hC2 : (1 : ℝ) ≤ C ^ 2 := by nlinarith
-      nlinarith [sq_nonneg (C * κ), sq_nonneg κ]
+      have hεCD_sq : εCD ^ 2 ≤ (3 * C * κ) ^ 2 := pow_le_pow_left₀ hεCD_nn hd 2
+      have hεCr_sq : εCr ^ 2 ≤ (19 * C * κ) ^ 2 := pow_le_pow_left₀ hεCr_nn hr 2
+      have hC2 : (1 : ℝ) ≤ C ^ 2 := by
+        simpa only [one_pow] using pow_le_pow_left₀ zero_le_one hC1 2
+      nlinarith only [hεCD_sq, hεCr_sq, hC2, sq_nonneg (C * κ), sq_nonneg κ]
     calc Real.sqrt (2 * εCD ^ 2 + 2 * εCr ^ 2)
         ≤ Real.sqrt ((32 * C ^ 2 * κ) ^ 2) := Real.sqrt_le_sqrt hsq
       _ = 32 * C ^ 2 * κ := Real.sqrt_sq (by positivity)
@@ -5346,7 +5350,10 @@ theorem
         28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) := by positivity
     have hsq : 2 * εCD ^ 2 + 2 * εCr ^ 2 ≤
         (28 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) ^ 2 := by
-      nlinarith [hd, hr, hεCD_nn, hεCr_nn, mul_nonneg hC_nn hκ_nn]
+      have hd_sq := pow_le_pow_left₀ hεCD_nn hd 2
+      have hr_sq := pow_le_pow_left₀ hεCr_nn hr 2
+      nlinarith only [hd_sq, hr_sq,
+        sq_nonneg (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)))]
     calc Real.sqrt (2 * εCD ^ 2 + 2 * εCr ^ 2)
         ≤ Real.sqrt ((28 * deTurckArmFibreConst (Module.finrank ℝ E) *
             (δ / (1 - δ))) ^ 2) := Real.sqrt_le_sqrt hsq
@@ -6338,7 +6345,8 @@ theorem exists_smoothCcToTensorHs_coeffAction_fibreSmallCoeff_opNorm_le_zero
           Real.sqrt Ccross ^ 2 * (nGrad + nT) ^ 2 by ring, hsq]
     rw [hexp]
     have hc1 : 0 ≤ 2 * nLap * (Real.sqrt Ccross * (nGrad + nT)) := by positivity
-    have hc2 : nGrad ^ 2 + nT * nGrad ≤ (nGrad + nT) ^ 2 := by nlinarith
+    have hc2 : nGrad ^ 2 + nT * nGrad ≤ (nGrad + nT) ^ 2 := by
+      nlinarith only [mul_nonneg hnT_nn hnGrad_nn, sq_nonneg nT]
     have hc3 : Ccross * (nGrad ^ 2 + nT * nGrad) ≤ Ccross * (nGrad + nT) ^ 2 :=
       mul_le_mul_of_nonneg_left hc2 hCcross_nn
     linarith [hstep1]
@@ -6686,7 +6694,17 @@ private lemma riemannianFiberNormSq_le_of_ccTensorBilinSymm_gFibreOpBound [Nonem
     rw [hgee, Real.sqrt_one, mul_one, hguu, hval] at hopau
     have hSle : S ≤ δ * Real.sqrt S := le_trans (le_abs_self S) hopau
     have hsqrtS : Real.sqrt S ^ 2 = S := Real.sq_sqrt hS_nn
-    nlinarith [hSle, hsqrtS, sq_nonneg (Real.sqrt S - δ), Real.sqrt_nonneg S]
+    by_cases hz : Real.sqrt S = 0
+    · rw [← hsqrtS, hz]
+      simpa using sq_nonneg δ
+    · have hsqrtS_pos : 0 < Real.sqrt S := lt_of_le_of_ne (Real.sqrt_nonneg S) (Ne.symm hz)
+      have hmul : Real.sqrt S * Real.sqrt S ≤ δ * Real.sqrt S := by
+        calc
+          Real.sqrt S * Real.sqrt S = S := by simpa only [pow_two] using hsqrtS
+          _ ≤ δ * Real.sqrt S := hSle
+      rw [← hsqrtS]
+      exact pow_le_pow_left₀ (Real.sqrt_nonneg S)
+        (le_of_mul_le_mul_right hmul hsqrtS_pos) 2
   calc ∑ a : Fin n, ∑ b : Fin n, (smoothCcTensorBilinForm (I := I) g₀ T₀ x (e a) (e b)) ^ 2
       ≤ ∑ _a : Fin n, δ ^ 2 := Finset.sum_le_sum (fun a _ => hrow a)
     _ = (n : ℝ) * δ ^ 2 := by rw
@@ -6873,7 +6891,7 @@ private lemma coeffAction_arm0_oneMinusConnLapIter_l2_le
       mul_nonneg (hKTo_nn p) (hfT_nn _)
     have hKZ_extra : (0:ℝ) ≤ (∑ q ∈ Finset.range p, KZ q (p - 1 - q)) * fT (2 * p + 1) :=
       mul_nonneg hKZsum_nn (hfT_nn _)
-    nlinarith [hStop, le_trans hsum hsum2]
+    nlinarith only [hStop, le_trans hsum hsum2, hKTo_extra, hKZ_extra]
   · have hgc3 : ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((2 * p : ℕ) : ℝ) + 3) T₀‖ =
         fT (2 * p + 3) :=
       smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g₀ (by push_cast; ring) T₀
@@ -7137,7 +7155,7 @@ private theorem exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le
   · rw [max_eq_left hδ_nn]
     have hnn : 0 ≤ Real.sqrt (Module.finrank ℝ E) * εa * δ :=
       mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) hεa_nn) hδ_nn
-    nlinarith [hnn]
+    nlinarith only [hnn]
   · rcases isEmpty_or_nonempty M with hM | hM
     · have hzero : ∀ (τ : ℝ) (X : SmoothCcTensor g₀ 0 2),
           smoothCcToTensorHs (I := I) (M := M) g₀ τ X = 0 := by
