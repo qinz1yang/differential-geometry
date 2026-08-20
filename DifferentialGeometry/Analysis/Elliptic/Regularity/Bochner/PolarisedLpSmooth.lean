@@ -62,7 +62,7 @@ lemma contMDiff_g_inner_grad_phi_grad_v
   simp only [grad_g_apply]
 
 omit [CompactSpace M] in
-theorem bochner_polarised_pointwise_smoothCase
+theorem bochner_polarised_pointwise
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
     Δ_g (I := I) g ⟨_, (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v)⟩ x =
       g.inner x
@@ -75,13 +75,13 @@ theorem bochner_polarised_pointwise_smoothCase
         2 * ricciTensor (I := I) g x
               (gradFun (I := I) g (φ : M → ℝ) x)
               (gradFun (I := I) g (v : M → ℝ) x) :=
-  bochner_polarised_pointwise (I := I) (M := M) g φ v
+  bochner_polarised_pointwise_of_smoothness (I := I) (M := M) g φ v
     (contMDiff_phi_add_v (I := I) (M := M) φ v)
     (contMDiff_phi_sub_v (I := I) (M := M) φ v)
     (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v) x
 
 omit [CompactSpace M] in
-theorem bochner_polarised_pointwise_oneSubLap_smoothCase
+theorem bochner_polarised_pointwise_oneSubLap
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯) (x : M) :
     g.inner x
         (gradFun (I := I) g (φ : M → ℝ) x)
@@ -100,7 +100,7 @@ theorem bochner_polarised_pointwise_oneSubLap_smoothCase
         - 2 * ricciTensor (I := I) g x
               (gradFun (I := I) g (φ : M → ℝ) x)
               (gradFun (I := I) g (v : M → ℝ) x) :=
-  bochner_polarised_pointwise_oneSubLap (I := I) (M := M) g φ v
+  bochner_polarised_pointwise_oneSubLap_of_smoothness (I := I) (M := M) g φ v
     (contMDiff_phi_add_v (I := I) (M := M) φ v)
     (contMDiff_phi_sub_v (I := I) (M := M) φ v)
     (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ v) x

@@ -400,7 +400,7 @@ theorem bochner_pointwise_grad_normSq_of_boundaryless
     g.symm x _ _]
   ring
 
-theorem bochner_pointwise_concrete_metric_unconditional
+theorem bochner_pointwise_concrete_metric
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
@@ -430,7 +430,7 @@ theorem bochner_pointwise_half_grad_normSq_of_boundaryless
           (gradFun (I := I) g f x) (gradFun (I := I) g f x) +
         g.inner x (gradFun (I := I) g f x)
           (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) := by
-  rw [bochner_pointwise_concrete_metric_unconditional (I := I) g hf x]
+  rw [bochner_pointwise_concrete_metric (I := I) g hf x]
   ring
 
 end Curvature

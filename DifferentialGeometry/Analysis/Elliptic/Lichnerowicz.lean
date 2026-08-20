@@ -571,7 +571,7 @@ theorem chartHessFrobeniusSq_continuous
             ((Gf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
             ((GΔf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) / 2 := by
     intro x
-    have hB := bochner_pointwise_concrete_metric_unconditional (I := I) g hf x
+    have hB := bochner_pointwise_concrete_metric (I := I) g hf x
     have hGf_x : (Gf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
         gradFun (I := I) g f x := by
       rw [hGf_def]; rfl
@@ -635,7 +635,7 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
             ((grad_g (I := I) g ⟨_, (Δ_g_contMDiff (I := I) g ⟨_, hf⟩)⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     intro x
-    have hB := bochner_pointwise_concrete_metric_unconditional (I := I) g hf x
+    have hB := bochner_pointwise_concrete_metric (I := I) g hf x
     have hGf_x : (grad_g (I := I) g ⟨_, hf⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
         gradFun (I := I) g f x := grad_g_apply (I := I) g ⟨_, hf⟩ x

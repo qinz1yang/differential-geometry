@@ -270,7 +270,7 @@ lemma g_inner_grad_lap_polar
   ring
 
 omit [CompactSpace M] in
-theorem bochner_polarised_pointwise
+theorem bochner_polarised_pointwise_of_smoothness
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯)
     (hφv_add : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y))
     (hφv_sub : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y))
@@ -291,9 +291,9 @@ theorem bochner_polarised_pointwise
               (gradFun (I := I) g (φ : M → ℝ) x)
               (gradFun (I := I) g (v : M → ℝ) x) := by
   classical
-  have hΔ_add := bochner_pointwise_concrete_metric_unconditional
+  have hΔ_add := bochner_pointwise_concrete_metric
     (I := I) g hφv_add x
-  have hΔ_sub := bochner_pointwise_concrete_metric_unconditional
+  have hΔ_sub := bochner_pointwise_concrete_metric
     (I := I) g hφv_sub x
   have hpolar_norm := normGradSqFun_polar (I := I) (M := M) g φ v x
   set N1 : M → ℝ := normGradSqFun (I := I) g (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y)
@@ -432,7 +432,7 @@ theorem bochner_polarised_pointwise
   nlinarith [key]
 
 omit [CompactSpace M] in
-theorem bochner_polarised_pointwise_oneSubLap
+theorem bochner_polarised_pointwise_oneSubLap_of_smoothness
     (g : SmoothRiemannianMetric I M) (φ v : C^∞⟮I, M; ℝ⟯)
     (hφv_add : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y + (v : M → ℝ) y))
     (hφv_sub : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (φ : M → ℝ) y - (v : M → ℝ) y))
@@ -458,7 +458,7 @@ theorem bochner_polarised_pointwise_oneSubLap
         - 2 * ricciTensor (I := I) g x
               (gradFun (I := I) g (φ : M → ℝ) x)
               (gradFun (I := I) g (v : M → ℝ) x) := by
-  rw [bochner_polarised_pointwise (I := I) (M := M) g φ v hφv_add hφv_sub
+  rw [bochner_polarised_pointwise_of_smoothness (I := I) (M := M) g φ v hφv_add hφv_sub
     h_gphi_gv_smooth x]
   ring
 

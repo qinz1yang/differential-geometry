@@ -245,10 +245,7 @@ theorem oneSubLapClassical_gradInner_apply
     (I := I) (M := M) g φ v x
   rw [h_Δ_eq]
   have h_polar := bochner_polarised_pointwise_oneSubLap (I := I) (M := M) g
-    φ ⟨v.toFun, v.smooth⟩
-    (contMDiff_phi_add_v (I := I) (M := M) φ ⟨v.toFun, v.smooth⟩)
-    (contMDiff_phi_sub_v (I := I) (M := M) φ ⟨v.toFun, v.smooth⟩)
-    (contMDiff_g_inner_grad_phi_grad_v (I := I) (M := M) g φ ⟨v.toFun, v.smooth⟩) x
+    φ ⟨v.toFun, v.smooth⟩ x
   exact h_polar
 
 theorem gradInnerLaplacianCandidateUnconditional_smoothCase_of_hessHypothesis

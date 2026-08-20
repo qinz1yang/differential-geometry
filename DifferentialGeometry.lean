@@ -2217,7 +2217,6 @@ import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
 import DifferentialGeometry.Geometry.Curvature.Basic
 import DifferentialGeometry.Geometry.Curvature.Bianchi
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
-import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcreteWithBoundary
 import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerTensor
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorBochner

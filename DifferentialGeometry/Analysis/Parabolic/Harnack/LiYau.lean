@@ -973,7 +973,7 @@ theorem liYauQuantity_evolution_identity
           (hlogslice t (D.regular_subset ht))) x :=
       hΔsub.symm.trans hΔnorm
     linarith
-  have hbochner := bochner_pointwise_concrete_metric_unconditional (I := I) g
+  have hbochner := bochner_pointwise_concrete_metric (I := I) g
     (hlogslice t (D.regular_subset ht)) x
   have hvecg : ∀ h : M → ℝ, gradientFun (I := I) g h x = gradFun (I := I) g h x := by
     intro h

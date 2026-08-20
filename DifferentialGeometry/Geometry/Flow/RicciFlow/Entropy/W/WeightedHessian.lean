@@ -440,7 +440,7 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
         dsimp only [cross]
         simp only [grad_g_apply]
         exact g.symm x _ _
-      have hB := bochner_pointwise_concrete_metric_unconditional (I := I) g hf x
+      have hB := bochner_pointwise_concrete_metric (I := I) g hf x
       rw [← hHess, ← hRic, hsymm] at hB
       have hB' :
           Δ_g (I := I) g ⟨_, hq⟩ x =
