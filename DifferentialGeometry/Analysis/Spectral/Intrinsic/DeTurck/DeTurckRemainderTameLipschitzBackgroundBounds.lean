@@ -178,8 +178,9 @@ lemma background_coefficient_le_deTurckArmFibreConst_polynomial (n : ℕ) (hn : 
       _ = 54 * c * f := by ring
   refine le_trans hstep ?_
   have hcore : 27 * c ≤ 32 * f ^ 2 - 28 * f := by
-    nlinarith [hfge, hs2, hs2lb, hs2ub, hf0, sq_nonneg (f - 2 * Real.sqrt 2)]
-  nlinarith [hcore, hf0, mul_nonneg hc0 hf0, hfge, hs2lb, hs2]
+    nlinarith only [hc, hfge, hs2, hs2lb, hs2ub, hf0,
+      sq_nonneg (f - 2 * Real.sqrt 2)]
+  nlinarith only [hcore, hf0, mul_nonneg hc0 hf0, hfge, hs2lb, hs2]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in

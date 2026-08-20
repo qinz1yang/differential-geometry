@@ -3274,14 +3274,14 @@ private theorem exists_oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_jetBo
     rw [hX_toL2]; exact hgap_u
   have hJn_le : Jn ≤ Cjet * Mlow := hjet_u
   have hJn_sq_le : Jn ^ 2 ≤ Cjet ^ 2 * Mlow ^ 2 := by
-    nlinarith [hJn_nn, mul_nonneg hCjet_nn hMlow_nn]
+    simpa only [mul_pow] using pow_le_pow_left₀ hJn_nn hJn_le 2
   have hyoung : C * (Jn * X) ≤ (1 / 4) * X ^ 2 + C ^ 2 * Jn ^ 2 := by
-    nlinarith [sq_nonneg (X / 2 - C * Jn)]
+    nlinarith only [sq_nonneg (X / 2 - C * Jn)]
   have hA : (C + C ^ 2) * Jn ^ 2 ≤ (C + C ^ 2) * (Cjet ^ 2 * Mlow ^ 2) :=
     mul_le_mul_of_nonneg_left hJn_sq_le (by positivity)
   have hB : (1 / 4 : ℝ) * X ^ 2 ≤ (1 / 4) * (Mtop ^ 2 + Cgap * Mlow ^ 2) := by
     linarith [hX_sq_le]
-  nlinarith [hres_u, hyoung, hA, hB]
+  nlinarith only [hres_u, hyoung, hA, hB]
 
 private theorem oneMinusConnLapIter_arm_sub_armPrincipalSlotPairing_le
     [Nonempty M] (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)

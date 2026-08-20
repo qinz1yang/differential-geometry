@@ -711,7 +711,7 @@ theorem lieArm1_sharpFlat_feed (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
           ‖iteratedCovGrad (I := I) g₀ 1 1 q IdIns‖ := by
       rw [hdecomp, iteratedCovGrad_add]
       exact norm_add_le _ _
-    nlinarith [htri, hDq,
+    nlinarith only [htri, hDq,
       norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q DiffIns),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q IdIns),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 1 1 q (sharpFlatEndoCc (I := I) g₀ g₁)),

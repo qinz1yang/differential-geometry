@@ -256,7 +256,9 @@ theorem arm_realize_Hs_norm_zero_le [Nonempty M]
     exists_iteratedCovGrad_l2NormSq_le_smoothCcToTensorHs_succ_add_lower
       (I := I) (M := M) g₀ 1
   refine ⟨deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
-      (Real.sqrt 2 + Real.sqrt Cgap), by positivity, fun T₀ hball => ?_⟩
+      (Real.sqrt 2 + Real.sqrt Cgap),
+    mul_nonneg (mul_nonneg hCE_nn hκ_nn)
+      (add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)), fun T₀ hball => ?_⟩
   set g₁ := tensorSectionRealizeMetric (I := I) g₀ T₀
     (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)) (hδ_fibre T₀ hball) with hg₁_def
   set armT := deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ T₀ with harm_def
@@ -291,7 +293,8 @@ theorem arm_realize_Hs_norm_zero_le [Nonempty M]
   have harm_le : ‖armT‖ ≤ deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
       ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ := by
     have hrhs_nn : 0 ≤ deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
-        ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ := by positivity
+        ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ :=
+      mul_nonneg (mul_nonneg hCE_nn hκ_nn) (norm_nonneg _)
     refine le_of_sq_le_sq ?_ hrhs_nn
     have hexp : (deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ)) *
         ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖) ^ 2 =
@@ -309,9 +312,9 @@ theorem arm_realize_Hs_norm_zero_le [Nonempty M]
     have hc_nn : 0 ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ) T₀‖ :=
       norm_nonneg _
     have hsqrt_nn : 0 ≤ Real.sqrt Cgap := Real.sqrt_nonneg _
-    refine le_of_sq_le_sq ?_ (by positivity)
+    refine le_of_sq_le_sq ?_ (add_nonneg hb_nn (mul_nonneg hsqrt_nn hc_nn))
     have hsC : Real.sqrt Cgap ^ 2 = Cgap := Real.sq_sqrt hCgap_nn
-    nlinarith [hgap1, mul_nonneg (mul_nonneg hsqrt_nn hb_nn) hc_nn]
+    nlinarith only [hgap1, hsC, mul_nonneg (mul_nonneg hsqrt_nn hb_nn) hc_nn]
   have htwo1 : ‖iteratedCovGrad (I := I) g₀ 0 2 2 T₀‖ =
       ‖iteratedCovGrad (I := I) g₀ 0 2 (1 + 1) T₀‖ := rfl
   have hcast2 : ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) T₀‖ =

@@ -1896,7 +1896,8 @@ theorem raisedKoszul_order0sup_jetL2_ballUniform_generic
               Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x))
           (by simp : (1 : ℕ) ∈ Finset.range 3)
-    have hsq : N ^ 2 ≤ (Csob * R) ^ 2 := by nlinarith [hnorm_le, hN_nn]
+    have hsq : N ^ 2 ≤ (Csob * R) ^ 2 :=
+      pow_le_pow_left₀ hN_nn hnorm_le 2
     refine le_trans hriemannianFiberNormSq ?_
     rw [show (C * (Csob * R)) ^ 2 = C ^ 2 * (Csob * R) ^ 2 from by rw [mul_pow]]
     exact mul_le_mul_of_nonneg_left hsq (sq_nonneg C)
@@ -2264,7 +2265,7 @@ theorem cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic
           (norm_add_le (iteratedCovGrad (I := I) g₀ 3 1 l Φ)
             (iteratedCovGrad (I := I) g₀ 3 1 l
               (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W))) 2
-        nlinarith [hsq, hKDl, haLl,
+        nlinarith only [hsq, hKDl, haLl,
           sq_nonneg (‖iteratedCovGrad (I := I) g₀ 3 1 l Φ‖ -
             ‖iteratedCovGrad (I := I) g₀ 3 1 l
               (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)‖)]

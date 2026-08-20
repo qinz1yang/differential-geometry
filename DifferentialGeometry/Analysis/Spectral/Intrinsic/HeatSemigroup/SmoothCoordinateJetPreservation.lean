@@ -311,7 +311,7 @@ private theorem deTurckSmoothN_path_coeff_jetSpectralMass
         refine le_trans hmass ?_
         have hnn : 0 ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ' (Rjet j t)‖ := norm_nonneg _
         have := hKle t ht
-        nlinarith [this, hnn, hK_nn]
+        nlinarith only [this, hnn, hK_nn]
       calc tensorSobolevWeight (I := I) (M := M) i σ * u ^ 2
           = tensorSobolevWeight (I := I) (M := M) i (-(σ' - σ)) *
               (tensorSobolevWeight (I := I) (M := M) i σ' * u ^ 2) := by rw [hsplit]; ring

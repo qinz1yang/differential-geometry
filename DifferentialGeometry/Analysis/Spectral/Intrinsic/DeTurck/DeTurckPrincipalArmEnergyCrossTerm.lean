@@ -481,7 +481,7 @@ private theorem arm_covGrad_coeffLower_l2_tame [Nonempty M]
       have key : riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
           ((iteratedCovGrad (I := I) g₀ 2 2 1 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) ≤
           (Cenv * (1 + R)) ^ 2 := by
-        nlinarith [henv, Real.sq_sqrt hnn, Real.sqrt_nonneg
+        nlinarith only [henv, Real.sq_sqrt hnn, Real.sqrt_nonneg
           (riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
             ((iteratedCovGrad (I := I) g₀ 2 2 1 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x)),
           mul_nonneg hCenv_nn (by linarith [hR_nn] : (0 : ℝ) ≤ 1 + R)]
@@ -507,7 +507,7 @@ private theorem arm_covGrad_coeffLower_l2_tame [Nonempty M]
     rw [← hdrop_congr]; exact hdrop
   have h2jet : ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖ ≤
       (1 + Cj0) * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 : ℕ) : ℝ) S‖ := by
-    nlinarith [hjet, hΔ0, hmono, hCj0_nn,
+    nlinarith only [hjet, hΔ0, hmono, hCj0_nn,
       norm_nonneg (smoothCcToTensorHs (I := I) (M := M) g₀ ((2 : ℕ) : ℝ) S),
       mul_le_mul_of_nonneg_left hmono hCj0_nn]
   calc B * ‖iteratedCovGrad (I := I) g₀ 0 2 2 S‖
@@ -658,7 +658,10 @@ theorem deTurckPrincipalCometricArm_realize_Hs_norm_succ_le [Nonempty M]
         le_trans harm (by
           have := mul_le_mul_of_nonneg_left hjet hCEκ_nn
           rwa [hCEκ_def] at this ⊢)
-      have hMbase_ge : CEκ * Cj0 ≤ Mbase := by rw [hMbase_def]; nlinarith [hCEκ_nn, hCj0_nn]
+      have hMbase_ge : CEκ * Cj0 ≤ Mbase := by
+        rw [hMbase_def]
+        nlinarith only [hCEκ_nn, hCgrad_nn,
+          mul_nonneg hCEκ_nn hCj0_nn, mul_nonneg hCEκ_nn hCj1_nn]
       exact principalArm_zero_order_algebra hstep hMbase_ge hQ1_nn
     have hG1 : ∀ S : SmoothCcTensor g₀ 0 2,
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
@@ -693,7 +696,7 @@ theorem deTurckPrincipalCometricArm_realize_Hs_norm_succ_le [Nonempty M]
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((0 : ℕ) : ℝ)
                 (rawTensorConnLapSmooth (I := I) g₀ 0 2 S)‖ +
               Cj0 * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((0 + 1 : ℕ) : ℝ) S‖ := hA2jet
-        nlinarith [h1, hΔ0_le, hmono01, hCj0_nn, hQ_nn,
+        nlinarith only [h1, hΔ0_le, hmono01, hCj0_nn, hQ_nn,
           mul_le_mul_of_nonneg_left hmono01 hCj0_nn]
       have ha_bound : ‖deTurckPrincipalCometricArm (I := I) (M := M) g₀ g₁ S‖ ≤
           CEκ * (1 + Cj0) * Q := by

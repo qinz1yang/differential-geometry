@@ -131,31 +131,32 @@ private theorem bfg_four_le
         (mul_nonneg (hb 1) (add_nonneg (add_nonneg (hb 1) (hb 2)) (hb 3)))
         (mul_nonneg (hb 2) (add_nonneg (hb 1) (hb 2))))
       (mul_nonneg (hb 3) (hb 1))
-  have hQsq : 1 <= Q ^ 2 := by nlinarith [sq_nonneg (Q - 1)]
+  have hQsq : 1 <= Q ^ 2 := by
+    simpa only [one_pow] using pow_le_pow_left₀ zero_le_one hQ 2
   have hGQ : G <= Q * G := by
     simpa only [one_mul] using mul_le_mul_of_nonneg_right hQ hG0
   have hQG : Q * G <= Q ^ 2 * G := by
-    have := mul_le_mul_of_nonneg_right hQ hG0
-    nlinarith
+    simpa only [one_mul, pow_two, mul_assoc] using
+      mul_le_mul_of_nonneg_right hQ (mul_nonneg hQ0 hG0)
   have hGQ2 : G <= Q ^ 2 * G := hGQ.trans hQG
   have h13 : b 1 * b 3 <= G := by
     dsimp [G]
-    nlinarith [mul_nonneg (hb 1) (hb 1), mul_nonneg (hb 1) (hb 2),
+    nlinarith only [mul_nonneg (hb 1) (hb 1), mul_nonneg (hb 1) (hb 2),
       mul_nonneg (hb 2) (hb 1), mul_nonneg (hb 2) (hb 2),
       mul_nonneg (hb 3) (hb 1)]
   have h22 : b 2 ^ 2 <= G := by
     dsimp [G]
-    nlinarith [mul_nonneg (hb 1) (hb 1), mul_nonneg (hb 1) (hb 2),
+    nlinarith only [mul_nonneg (hb 1) (hb 1), mul_nonneg (hb 1) (hb 2),
       mul_nonneg (hb 1) (hb 3), mul_nonneg (hb 2) (hb 1),
       mul_nonneg (hb 3) (hb 1)]
   have h12 : b 1 * b 2 <= G := by
     dsimp [G]
-    nlinarith [mul_nonneg (hb 1) (hb 1), mul_nonneg (hb 1) (hb 3),
+    nlinarith only [mul_nonneg (hb 1) (hb 1), mul_nonneg (hb 1) (hb 3),
       mul_nonneg (hb 2) (hb 1), mul_nonneg (hb 2) (hb 2),
       mul_nonneg (hb 3) (hb 1)]
   have h11 : b 1 ^ 2 <= G := by
     dsimp [G]
-    nlinarith [mul_nonneg (hb 1) (hb 2), mul_nonneg (hb 1) (hb 3),
+    nlinarith only [mul_nonneg (hb 1) (hb 2), mul_nonneg (hb 1) (hb 3),
       mul_nonneg (hb 2) (hb 1), mul_nonneg (hb 2) (hb 2),
       mul_nonneg (hb 3) (hb 1)]
   have hb0sq : b 0 ^ 2 <= Q ^ 2 :=
@@ -202,7 +203,7 @@ private theorem bfg_four_le
         mul_le_mul hb1sq h11 (sq_nonneg (b 1)) (sq_nonneg Q)
   change Combinatorics.boundedFactorGrid b 3 4 <= 46 * Q ^ 2 * G
   rw [bfg_four_eq]
-  nlinarith
+  nlinarith only [t13, t22, t013, t022, t112, t0013, t0022, t0112, t1111]
 
 private theorem h3_bfg_four_int
     (hDim : Module.finrank Real E = 3)

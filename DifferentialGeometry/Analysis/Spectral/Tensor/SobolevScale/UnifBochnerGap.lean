@@ -222,7 +222,7 @@ theorem bochner_step_unif
         rw [Finset.sum_insert (by simp), Finset.sum_singleton]
       rw [hpairsum] at hsub
       exact hsub
-    nlinarith [hsum_le, hFc 0, hSUM_nn]
+    nlinarith only [hsum_le, hFc 0, hSUM_nn]
   have hpair_bound :
       |tensorL2Inner (I := I) (M := M) g₀ 0 (s + k + 1)
           (pointwiseTensorCurv (I := I) (M := M) g₀ (s + k) P).toFun
@@ -1864,7 +1864,7 @@ theorem bochner_step_action
         rw [Finset.sum_insert (by simp), Finset.sum_singleton]
       rw [hpairsum] at hsub
       exact hsub
-    nlinarith [hsum_le, hact.nonneg, hSUM_nn]
+    nlinarith only [hsum_le, hact.nonneg, hSUM_nn]
   have hpair_bound :
       |tensorL2Inner (I := I) (M := M) g₀ 0 (s + k + 1)
           (pointwiseTensorCurv (I := I) (M := M) g₀ (s + k) P).toFun

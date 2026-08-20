@@ -320,7 +320,7 @@ theorem ricciDeTurckLowOrderAction_pairing_upper_bound [Nonempty M]
     rw [abs_of_pos hs.1]
     exact hs.2.le
   have hrad : |s| * delta ≤ delta := by
-    nlinarith [mul_nonneg (sub_nonneg.mpr hsabs) hdelta0]
+    simpa only [one_mul] using mul_le_mul_of_nonneg_right hsabs hdelta0
   have hPbound : metricCauchySchwarzBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g P) delta :=
     edge_bound_mono (I := I) (M := M) g P hrad
@@ -359,7 +359,7 @@ theorem ricciDeTurckLowOrderAction_pairing_upper_bound [Nonempty M]
   have hs2 : 0 < s ^ 2 := sq_pos_of_pos hs.1
   change tensorL2Inner (I := I) (M := M) g 0 2 W.toFun
       (ricciDeTurckLowOrderAction (I := I) (M := M) g gm C0 C1 W).toFun ≤ _
-  nlinarith
+  nlinarith only [hp, hs2]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem edge_l2_of_riemannianFiberNormSq

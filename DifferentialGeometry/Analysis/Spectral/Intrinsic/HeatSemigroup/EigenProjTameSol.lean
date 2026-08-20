@@ -309,7 +309,7 @@ theorem projFixTame_dist_le
       1 - ((A : ℝ) * R * (1 + T) + (B : ℝ) * (2 * Real.sqrt T) +
         2 * (C : ℝ) * (R / 4) * Real.sqrt (1 + T) * (1 + T)) := by linarith
   rw [inv_mul_eq_div, le_div_iff₀ hpos]
-  nlinarith [htri, hcontr, norm_nonneg (fN - fstar)]
+  nlinarith only [hΛ, htri, hcontr, norm_nonneg (fN - fstar)]
 
 omit [BoundarylessManifold I M] in
 theorem projFixTame_le_two

@@ -259,7 +259,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound
     simpa [δ, N] using hop T
   have hratio : δ / (1 - δ) ≤ 2 * δ := by
     apply (div_le_iff₀ (by linarith : 0 < 1 - δ)).2
-    nlinarith [mul_nonneg hδ (show 0 ≤ 1 - 2 * δ by linarith)]
+    nlinarith only [mul_nonneg hδ (show 0 ≤ 1 - 2 * δ by linarith)]
   have hratio_nn : 0 ≤ δ / (1 - δ) :=
     div_nonneg hδ (by linarith)
   have hinv₀_pt : ∀ x : M,
@@ -391,14 +391,14 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound
     refine (hinv₀_pt x).trans ?_
     rw [mul_pow, Real.sq_sqrt hK]
     dsimp [K]
-    nlinarith [mul_nonneg hKpt (sq_nonneg N),
+    nlinarith only [mul_nonneg hKpt (sq_nonneg N),
       mul_nonneg hK₀ (sq_nonneg N), mul_nonneg hK₁ (sq_nonneg N),
       mul_nonneg hK₂ (sq_nonneg N)]
   refine ⟨by simpa [N] using hpt_final, ?_⟩
   refine hsum.trans ?_
   rw [mul_pow, Real.sq_sqrt hK]
   dsimp [K]
-  nlinarith [mul_nonneg hKpt (sq_nonneg N),
+  nlinarith only [mul_nonneg hKpt (sq_nonneg N),
     mul_nonneg hK₀ (sq_nonneg N), mul_nonneg hK₁ (sq_nonneg N),
     mul_nonneg hK₂ (sq_nonneg N)]
 
