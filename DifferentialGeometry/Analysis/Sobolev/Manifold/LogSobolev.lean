@@ -186,7 +186,7 @@ theorem logSobolev_closed
         3 * Real.log (C0 * (1 + Real.sqrt A)) := by
     exact hentropy'.trans (mul_le_mul_of_nonneg_left hlogSob (by norm_num))
   have hsquare_le : (1 + Real.sqrt A) ^ 2 ≤ 2 * (1 + A) := by
-    nlinarith [Real.sq_sqrt hA0, sq_nonneg (Real.sqrt A - 1)]
+    nlinarith only [Real.sq_sqrt hA0, sq_nonneg (Real.sqrt A - 1)]
   have hlog_square :
       2 * Real.log (1 + Real.sqrt A) ≤
         Real.log 2 + Real.log (1 + A) := by
@@ -205,7 +205,8 @@ theorem logSobolev_closed
     2 * tau * A - ((3 : Real) / 2) * Real.log tau +
       (3 * Real.log C0 + ((3 : Real) / 2) * Real.log 2 +
         ((3 : Real) / 2) * tauMax - (3 : Real) / 2)
-  nlinarith [mul_nonneg htau0.le hA0]
+  nlinarith only [hentropyB, hlog_square, hlog_scale, htau_le,
+    mul_nonneg htau0.le hA0]
 
 end
 

@@ -682,12 +682,12 @@ theorem exists_arm1Base_metricPerturbationPath_riemannianFiberNormSq_ballUniform
           riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
               ((linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x) ≤ Λarm1 := by
   classical
-  obtain ⟨Csob, hCsob_nn, hCsob⟩ :=
+  obtain ⟨Csob, _, hCsob⟩ :=
     DifferentialGeometry.Analysis.Parabolic.exists_Csob_convexPerturbation_pointwise_C2_le
       (I := I) (M := M) g₀ a ha_super
   obtain ⟨Λarm1, hΛarm1_nn, hΛarm1⟩ :=
     exists_arm1Koszul_metricPerturbationPath_pointwise_le_of_jetEnvelope (I := I) (M := M) g₀ hδ₀
-      (Csob * R) (by positivity)
+      (Csob * R)
   refine ⟨Λarm1, hΛarm1_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   rw [linearizedRicciArm1BaseCoeff]

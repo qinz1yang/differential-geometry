@@ -803,10 +803,11 @@ private theorem young_arm_split_scaled
     rw [heq, ← Real.rpow_natCast (1 / t) k]
     exact Real.rpow_le_rpow_of_exponent_le h1t hwk
   have hXY : X ^ wi * Y ^ wl ≤ t * X + (1 / t) ^ k * Y := by
-    have h1 : wi * (t * X) ≤ t * X := by nlinarith [mul_nonneg ht0.le hX_nn]
+    have h1 : wi * (t * X) ≤ t * X := by
+      nlinarith only [mul_nonneg ht0.le hX_nn, hwi1]
     have h2 : wl * (t ^ (-(wi / wl)) * Y) ≤ (1 / t) ^ k * Y := by
       have h2a : wl * (t ^ (-(wi / wl)) * Y) ≤ t ^ (-(wi / wl)) * Y := by
-        nlinarith [mul_nonneg hs_pos.le hY_nn]
+        nlinarith only [mul_nonneg hs_pos.le hY_nn, hwl1]
       exact h2a.trans (mul_le_mul_of_nonneg_right hsk hY_nn)
     linarith [hgm]
   calc Iφp ^ wi * Iψq ^ wl
@@ -870,7 +871,7 @@ theorem exists_integrated_iteratedCovGrad_antiDiagGrid_topArm_scaled_le
     · exact le_refl 0
   set Cbig : ℝ := 1 + CS * CT with hCbig
   have hCbig1 : (1 : ℝ) ≤ Cbig := by
-    rw [hCbig]; nlinarith [mul_nonneg hCS_nn hCT_nn]
+    rw [hCbig]; nlinarith only [mul_nonneg hCS_nn hCT_nn]
   have hCbig_nn : (0 : ℝ) ≤ Cbig := le_trans zero_le_one hCbig1
   have hkC1 : (1 : ℝ) ≤ (k : ℝ) * Cbig + 1 := by
     calc

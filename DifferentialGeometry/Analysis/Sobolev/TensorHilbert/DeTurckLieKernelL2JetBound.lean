@@ -324,7 +324,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
     rw [abs_of_nonneg h1ms, abs_of_nonneg hs0]
     have h1 : δ' ≤ δ₁ := le_trans hδ'_le (le_max_left _ _)
     have h2 : δ ≤ δ₁ := le_trans hδ_le (le_max_left _ _)
-    nlinarith [h1, h2]
+    nlinarith only [h1, h2, hs0, h1ms]
   have htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ Pc y v w := by
     intro y v w
@@ -407,13 +407,13 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
           rw [Finset.mem_range] at hj
           have hjle : j ≤ a + 2 := by omega
           have h := hPball j hjle
-          nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j Pc), h, hR]
+          nlinarith only [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j Pc), h, hR]
       _ = ((k + 1 : ℕ) : ℝ) * R ^ 2 := by
           rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
       _ ≤ ((a + 3 : ℕ) : ℝ) * R ^ 2 := by
           have hcast : ((k + 1 : ℕ) : ℝ) ≤ ((a + 3 : ℕ) : ℝ) := by
             exact_mod_cast (by omega : k + 1 ≤ a + 3)
-          nlinarith [sq_nonneg R]
+          exact mul_le_mul_of_nonneg_right hcast (sq_nonneg R)
   linarith [hsum_le]
 
 namespace DeTurckLieConnectionDifferenceDerivativeUniformInternal

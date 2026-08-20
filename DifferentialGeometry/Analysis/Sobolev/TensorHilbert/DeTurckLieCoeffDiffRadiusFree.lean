@@ -275,7 +275,7 @@ theorem deTurckLieCoeffField_perOrder_l2_radiusFree
       rw [← deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg,
         iteratedCovGrad_add]
     rw [hgrad]
-    nlinarith [norm_add_le
+    nlinarith only [norm_add_le
         (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg))
         (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg)),

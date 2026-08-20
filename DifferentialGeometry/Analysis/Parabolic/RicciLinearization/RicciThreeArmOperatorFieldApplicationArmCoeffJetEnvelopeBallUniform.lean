@@ -89,8 +89,7 @@ private lemma jetEnvelope_covGrad_one_le (g₀ : SmoothRiemannianMetric I M)
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
-    (hB : 0 ≤ B) :
+    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (_hδ_le : δ ≤ max δ₀ 0)
@@ -140,7 +139,7 @@ theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
   set N : ℝ := ‖(iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x‖ with hN_def
   have hN_nn : 0 ≤ N := norm_nonneg _
   have hnorm_le : N ≤ B := jetEnvelope_covGrad_one_le (I := I) g₀ P x B henv
-  have hsq : N ^ 2 ≤ B ^ 2 := by nlinarith [hnorm_le, hN_nn, hB]
+  have hsq : N ^ 2 ≤ B ^ 2 := by nlinarith only [hnorm_le, hN_nn]
   have hkosB : riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
       (raisedKoszulFib (I := I) g₀ g₁ x) ≤ Ckos ^ 2 * B ^ 2 := by
     have hKosx := hKos g₁ P htie hδ'_le_δ₁ hδ'_nn hδ' x
@@ -161,7 +160,7 @@ theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
     have hinv_nn : 0 ≤ 1 / (1 - δ') := by positivity
     have hsq_le : (1 / (1 - δ')) ^ 2 ≤ (1 / (1 - δ₁)) ^ 2 := by
       have hinv₁_nn : 0 ≤ 1 / (1 - δ₁) := by positivity
-      nlinarith [hmono, hinv_nn, hinv₁_nn]
+      nlinarith only [hmono, hinv_nn, hinv₁_nn]
     have hfin_nn : 0 ≤ (Module.finrank ℝ E : ℝ) ^ 3 := by positivity
     exact mul_le_mul_of_nonneg_left hsq_le hfin_nn
   have hriemannianFiberNormSq_kos_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
@@ -183,8 +182,7 @@ theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPath_le_of_jetEnvelope
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
-    (hB : 0 ≤ B) :
+    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
     ∃ Λ : ℝ, 0 ≤ Λ ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (_hδ_le : δ ≤ δ₀)
@@ -203,7 +201,7 @@ theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPa
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x) ≤ Λ := by
   classical
   obtain ⟨Λ, hΛ_nn, hΛ⟩ :=
-    exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope (I := I) (M := M) g₀ hδ₀ B hB
+    exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope (I := I) (M := M) g₀ hδ₀ B
   refine ⟨Λ, hΛ_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' s hs x henv
   set δ₁ : ℝ := max δ₀ 0 with hδ₁_def
@@ -230,7 +228,7 @@ theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPa
     have h2 : s * δ ≤ s * δ₀ :=
       mul_le_mul_of_nonneg_left hδ_le hs0
     have hδ₀_le : δ₀ ≤ δ₁ := le_max_left _ _
-    nlinarith [h1, h2, hδ₀_le]
+    nlinarith only [h1, h2, hδ₀_le]
   have hδs : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s)) δ₁ := by
     intro y v w
@@ -240,14 +238,13 @@ theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPa
     have hprod : 0 ≤ Real.sqrt (g₀.inner y v v) * Real.sqrt (g₀.inner y w w) :=
       mul_nonneg hsv hsw
     have hle' : |1 - s| * δ' + |s| * δ ≤ δ₁ := by rw [habs_eq]; exact hsmall_le
-    nlinarith [hle', hprod]
+    nlinarith only [hle', hprod]
   exact hΛ g₁ (convexPerturbation (I := I) g₀ T T' s) (le_of_eq hδ₁_def) hδs htie x henv
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in
 theorem exists_arm1Koszul_metricPerturbationPath_pointwise_le_of_jetEnvelope
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
-    (hB : 0 ≤ B) :
+    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
     ∃ Λarm1 : ℝ, 0 ≤ Λarm1 ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (_hδ_le : δ ≤ δ₀)
@@ -266,7 +263,7 @@ theorem exists_arm1Koszul_metricPerturbationPath_pointwise_le_of_jetEnvelope
   classical
   obtain ⟨Λarm1, hΛarm1_nn, hΛarm1⟩ :=
     exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPath_le_of_jetEnvelope (I := I)
-      (M := M) g₀ hδ₀ B hB
+      (M := M) g₀ hδ₀ B
   refine ⟨Λarm1, hΛarm1_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' s hs x henv
   rw [ricciArmOrder1KoszulCoeff_toSection]
@@ -290,12 +287,12 @@ theorem exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUnifo
               ((ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ Λarm1 := by
   classical
-  obtain ⟨Csob, hCsob_nn, hCsob⟩ :=
+  obtain ⟨Csob, _, hCsob⟩ :=
     DifferentialGeometry.Analysis.Parabolic.exists_Csob_convexPerturbation_pointwise_C2_le
       (I := I) (M := M) g₀ a ha_super
   obtain ⟨Λarm1, hΛarm1_nn, hΛarm1⟩ :=
     exists_arm1Koszul_metricPerturbationPath_pointwise_le_of_jetEnvelope (I := I) (M := M) g₀ hδ₀
-      (Csob * R) (by positivity)
+      (Csob * R)
   refine ⟨Λarm1, hΛarm1_nn, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   refine hΛarm1 T T' hδ_le hδ hδ'_le hδ' s hs x ?_
@@ -476,7 +473,7 @@ theorem exists_lichnerowicz_cometric_metricPerturbationPath_riemannianFiberNormS
     have h2 : s * δ ≤ s * δ₀ :=
       mul_le_mul_of_nonneg_left hδ_le hs0
     have hδ₀_le : δ₀ ≤ δ₁ := le_max_left _ _
-    nlinarith [h1, h2, hδ₀_le]
+    nlinarith only [h1, h2, hδ₀_le]
   have hδs : metricCauchySchwarzBound (I := I) (M := M) g₀ hpert δ₁ := by
     refine gFibreOpBound_mono_local (I := I) g₀ hpert ?_ hδs_raw
     rw [habs_eq]; exact hsmall_le

@@ -334,7 +334,7 @@ lemma gNormGrad_le_finset_sum_pou_mul
           Real.sq_sqrt h_a_nn
         have h_sqrt_b : Real.sqrt (g.inner x b b)^2 = g.inner x b b :=
           Real.sq_sqrt h_b_nn
-        nlinarith [h_inner_ab_le, h_sqrt_a, h_sqrt_b,
+        nlinarith only [h_inner_ab_le, h_sqrt_a, h_sqrt_b,
           Real.sqrt_nonneg (g.inner x a a), Real.sqrt_nonneg (g.inner x b b)]
       have h_apb_sqrt_le : Real.sqrt (g.inner x (a + b) (a + b)) ≤
           Real.sqrt (g.inner x a a) + Real.sqrt (g.inner x b b) := by

@@ -382,7 +382,7 @@ lemma sqrt_g_inner_gradFun_pou_mul_le
         2 * (Real.sqrt (g.inner x a a) * Real.sqrt (g.inner x b b)) := by
       have h_le_abs : g.inner x a b ≤ |g.inner x a b| := le_abs_self _
       linarith
-    nlinarith [h_2ab_le, h_sqrt_a_sq, h_sqrt_b_sq,
+    nlinarith only [h_2ab_le, h_sqrt_a_sq, h_sqrt_b_sq,
       Real.sqrt_nonneg (g.inner x a a), Real.sqrt_nonneg (g.inner x b b)]
   have h_sum_nn : 0 ≤ Real.sqrt (g.inner x a a) + Real.sqrt (g.inner x b b) :=
     add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)

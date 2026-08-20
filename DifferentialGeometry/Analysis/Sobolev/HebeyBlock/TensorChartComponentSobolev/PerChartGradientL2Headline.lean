@@ -268,7 +268,7 @@ private lemma chartTensorRSSlotCorrection_norm_sq_le
         have h2 : (s : ℝ) * (∑ l : Fin s, ‖c l‖ ^ 2) ≤
             ((r : ℝ) + (s : ℝ)) * (∑ l : Fin s, ‖c l‖ ^ 2) :=
           mul_le_mul_of_nonneg_right h_s_le h_c_sum_nn
-        nlinarith [h1, h2]
+        nlinarith only [h1, h2]
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace

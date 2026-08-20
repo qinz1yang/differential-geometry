@@ -110,7 +110,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_rie
     rw [abs_of_nonneg (by linarith : (0:ℝ) ≤ 1 - s), abs_of_nonneg hs0]
     have h1 : δ' ≤ δ₁ := le_trans hδ'_le (le_max_left _ _)
     have h2 : δ ≤ δ₁ := le_trans hδ_le (le_max_left _ _)
-    nlinarith [h1, h2]
+    nlinarith only [h1, h2, hs0, sub_nonneg.mpr hs1]
   have hδP_lt1 : δP < 1 := lt_of_le_of_lt hδP_le hδ₁_lt
   have henv := hCsob T T' hR hTball hT'ball s ⟨hs0, hs1⟩ x
   rw [← hP_def, ← hB_def] at henv

@@ -90,7 +90,7 @@ theorem exists_moserTameProduct_iteratedCovGrad_l2Norm_le
         calc (k.choose i : ℝ) ≤ ((2 ^ k : ℕ) : ℝ) := by exact_mod_cast this
           _ = (2 : ℝ) ^ k := by push_cast; ring
       have h0 : (0 : ℝ) ≤ (k.choose i : ℝ) := by positivity
-      nlinarith [h1, h0]
+      nlinarith only [h1, h0]
     have hchoose_nn : (0 : ℝ) ≤ ((k.choose i : ℝ)) ^ 2 := by positivity
     calc (k.choose i : ℝ) ^ 2 *
             (riemannianFiberNormSq (I := I) (M := M) g 0 (p + i) x
@@ -272,7 +272,7 @@ theorem exists_moserTameProduct_three_iteratedCovGrad_l2Norm_le
               _ ≤ (2 : ℝ) ^ k := by
                   apply pow_le_pow_right₀ (by norm_num) hi_le
           have h0 : (0 : ℝ) ≤ (i.choose j : ℝ) := by positivity
-          nlinarith [h1, h0]
+          nlinarith only [h1, h0]
         have hprod_le : riemannianFiberNormSq (I := I) (M := M) g 0 (q + (i - j)) x
             ((DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad (I := I) g 0 q
               (i - j) b).toSection x) *
@@ -296,14 +296,14 @@ theorem exists_moserTameProduct_three_iteratedCovGrad_l2Norm_le
         calc ((i + 1 : ℕ) : ℝ) ≤ ((k + 1 : ℕ) : ℝ) := by exact_mod_cast hii
           _ = (k : ℝ) + 1 := by push_cast; ring
       have hrest_nn : 0 ≤ ((2 : ℝ) ^ k) ^ 2 * (Λb ^ 2 * Λc ^ 2) := by positivity
-      nlinarith [hik, hrest_nn]
+      nlinarith only [hik, hrest_nn]
     have hchoose_k : ((k.choose i : ℝ)) ^ 2 ≤ ((2 : ℝ) ^ k) ^ 2 := by
       have h1 : (k.choose i : ℝ) ≤ (2 : ℝ) ^ k := by
         have hle := Nat.choose_le_two_pow (n := k) (k := i)
         calc (k.choose i : ℝ) ≤ ((2 ^ k : ℕ) : ℝ) := by exact_mod_cast hle
           _ = (2 : ℝ) ^ k := by push_cast; ring
       have h0 : (0 : ℝ) ≤ (k.choose i : ℝ) := by positivity
-      nlinarith [h1, h0]
+      nlinarith only [h1, h0]
     have hinner_nn : 0 ≤ (∑ j ∈ Finset.range (i + 1),
         ((i.choose j : ℝ)) ^ 2 *
           (riemannianFiberNormSq (I := I) (M := M) g 0 (q + (i - j)) x
@@ -610,7 +610,7 @@ private lemma slope_spread (Δ : ℕ → ℝ) (d : ℝ) (N : ℕ)
         have hcast : ((n + 1 - i : ℕ) : ℝ) = (n - i : ℕ) + 1 := by
           have hn : n + 1 - i = (n - i) + 1 := by omega
           rw [hn]; push_cast; ring
-        rw [hcast]; nlinarith [hbody]
+        rw [hcast]; nlinarith only [hbody]
       · have hie : i = n + 1 := le_antisymm hii' hge
         subst hie; simp
 
@@ -675,8 +675,8 @@ private lemma chord_bound (Δ : ℕ → ℝ) (d : ℝ) (hd : 0 ≤ d) (j k : ℕ
           have hkd : 0 ≤ (k : ℝ) * d := mul_nonneg (by positivity) hd
           have hknn : (0 : ℝ) ≤ (k : ℝ) := by positivity
           rw [hcast3]
-          nlinarith [hcastjk, hkd, hknn, hd, mul_le_mul_of_nonneg_right hcastjk hkd]
-  nlinarith [key]
+          nlinarith only [hcastjk, hkd, hknn, hd, mul_le_mul_of_nonneg_right hcastjk hkd]
+  nlinarith only [key]
 
 private lemma pos_propagate (a : ℕ → ℝ) (ha : ∀ i, 0 ≤ a i) (M : ℝ)
     (hlc : ∀ i, (a (i + 1)) ^ 2 ≤ M * a i * a (i + 2)) (j : ℕ) (hpos : 0 < a j) :
@@ -689,7 +689,7 @@ private lemma pos_propagate (a : ℕ → ℝ) (ha : ∀ i, 0 ≤ a i) (M : ℝ)
     have hh := hlc i
     rw [hai] at hh
     simp only [mul_zero, zero_mul] at hh
-    nlinarith [hh, hi, sq_nonneg (a (i + 1))]
+    nlinarith only [hh, hi, sq_nonneg (a (i + 1))]
   have key0 : ∀ s, s ≤ j → 0 < a (j - s) := by
     intro s
     induction s with
@@ -717,7 +717,7 @@ private lemma pos_propagate_up (a : ℕ → ℝ) (ha : ∀ i, 0 ≤ a i) (M : �
     have hh := hlc i
     rw [hai] at hh
     simp only [mul_zero] at hh
-    nlinarith [hh, hi, sq_nonneg (a (i + 1))]
+    nlinarith only [hh, hi, sq_nonneg (a (i + 1))]
   intro i hji
   obtain ⟨t, rfl⟩ : ∃ t, i = j + t := ⟨i - j, by omega⟩
   clear hji
@@ -766,7 +766,7 @@ private theorem hlp_real (a : ℕ → ℝ) (ha : ∀ i, 0 ≤ a i) (M : ℝ) (hM
           Real.log_mul (ne_of_gt hM0) (ne_of_gt hi0)] at hlog
       simp only [hΔdef, hLdef]
       push_cast at hlog
-      nlinarith [hlog]
+      nlinarith only [hlog]
     have hchord := chord_bound Δ (Real.log M) hlogM j k hstep hj hjk
     have htel : ∀ n, (∑ i ∈ Finset.range n, Δ i) = L n - L 0 := by
       intro n; simp only [hΔdef]; exact Finset.sum_range_sub L n
@@ -774,7 +774,7 @@ private theorem hlp_real (a : ℕ → ℝ) (ha : ∀ i, 0 ≤ a i) (M : ℝ) (hM
     have hlin : (k : ℝ) * L j ≤
         ((k - j : ℕ) : ℝ) * L 0 + (j : ℝ) * L k + (k ^ 3 : ℕ) * Real.log M := by
       have hcastsub : ((k - j : ℕ) : ℝ) = (k : ℝ) - (j : ℝ) := by rw [Nat.cast_sub (le_of_lt hjk)]
-      rw [hcastsub]; nlinarith [hchord]
+      rw [hcastsub]; nlinarith only [hchord]
     have hLHSpos : 0 < (a j) ^ k := by positivity
     have h0 : 0 < a 0 := hpall 0 (by omega)
     have hk : 0 < a k := hpall k (le_refl k)
@@ -786,7 +786,7 @@ private theorem hlp_real (a : ℕ → ℝ) (ha : ∀ i, 0 ≤ a i) (M : ℝ) (hM
     rw [Real.log_pow, Real.log_pow, Real.log_pow]
     simp only [hLdef] at hlin ⊢
     push_cast at hlin ⊢
-    nlinarith [hlin]
+    nlinarith only [hlin]
 
 end DiscreteLogConvex
 

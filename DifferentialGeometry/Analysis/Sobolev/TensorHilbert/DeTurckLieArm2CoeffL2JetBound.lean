@@ -179,7 +179,7 @@ theorem deTurckLieArm2PrincipalCoeff_metricPerturbationPath_jetL2_perOrder_ballU
     (traceHessianCoeff (I := I) (M := M) g₀ g₁) with hZ
   have htri : ‖X + Y - Z‖ ≤ ‖X‖ + ‖Y‖ + ‖Z‖ :=
     le_trans (norm_sub_le _ _) (add_le_add (norm_add_le _ _) le_rfl)
-  nlinarith [htri, hA, hAT, hH, norm_nonneg X, norm_nonneg Y, norm_nonneg Z,
+  nlinarith only [htri, hA, hAT, hH, norm_nonneg X, norm_nonneg Y, norm_nonneg Z,
     norm_nonneg (X + Y - Z), sq_nonneg (‖X‖ - ‖Y‖), sq_nonneg (‖X‖ - ‖Z‖),
     sq_nonneg (‖Y‖ - ‖Z‖),
     mul_le_mul htri htri (norm_nonneg (X + Y - Z))

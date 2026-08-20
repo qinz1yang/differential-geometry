@@ -416,7 +416,7 @@ theorem recentred_repr_normSq_le (hT : 0 < T) (hT1 : T ≤ 1)
       rw [inv_pow, hssT_sq]
     have hmid : Real.sqrt (Real.sqrt T) * (Real.sqrt (Real.sqrt T))⁻¹ = 1 :=
       mul_inv_cancel₀ (ne_of_gt hssT_pos)
-    nlinarith [hkey, hssT_sq, hinv_sq, hmid,
+    nlinarith only [hkey, hssT_sq, hinv_sq, hmid,
       mul_nonneg (norm_nonneg (u.hiL2 s)) (norm_nonneg (u.lo.deriv s))]
   have hbound_int : IntegrableOn
       (fun s => Real.sqrt T * ‖u.hiL2 s‖ ^ 2 + (Real.sqrt T)⁻¹ * ‖u.lo.deriv s‖ ^ 2)
@@ -496,20 +496,20 @@ theorem recentred_repr_normSq_le_of_smallForcing (hT : 0 < T) (hT1 : T ≤ 1)
     have h1 : (1 + T) * ‖gforce‖ ≤ 2 * (Real.sqrt T * C) := by
       have : (1 + T) ≤ 2 := by linarith
       have hgn : 0 ≤ ‖gforce‖ := norm_nonneg _
-      nlinarith [hgforce, hgn, mul_nonneg (Real.sqrt_nonneg T) hC]
-    nlinarith [h1, Real.sqrt_nonneg T, norm_nonneg u₀, hC]
+      nlinarith only [hgforce, hgn, mul_nonneg (Real.sqrt_nonneg T) hC, this]
+    nlinarith only [h1, Real.sqrt_nonneg T, norm_nonneg u₀, hC]
   have hderiv' : ‖(maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv‖ ≤
       Real.sqrt T * (‖u₀‖ + 2 * C) := by
     refine le_trans hderiv ?_
-    nlinarith [hgforce, Real.sqrt_nonneg T, norm_nonneg u₀, hC]
+    nlinarith only [hgforce, Real.sqrt_nonneg T, norm_nonneg u₀, hC]
   have hhi_sq : ‖recentredHiL2 (I := I) (M := M) hT hT1 u₀ gforce‖ ^ 2 ≤
       (2 * Real.sqrt T * (‖u₀‖ + C)) ^ 2 := by
     have hnn : 0 ≤ 2 * Real.sqrt T * (‖u₀‖ + C) := by positivity
-    nlinarith [hhi', norm_nonneg (recentredHiL2 (I := I) (M := M) hT hT1 u₀ gforce), hnn]
+    nlinarith only [hhi', norm_nonneg (recentredHiL2 (I := I) (M := M) hT hT1 u₀ gforce), hnn]
   have hderiv_sq : ‖(maxRegDuhamelMap (I := I) (M := M) a hT hT1 u₀ gforce).deriv‖ ^ 2 ≤
       (Real.sqrt T * (‖u₀‖ + 2 * C)) ^ 2 := by
     have hnn : 0 ≤ Real.sqrt T * (‖u₀‖ + 2 * C) := by positivity
-    nlinarith [hderiv', norm_nonneg ((maxRegDuhamelMap (I := I) (M := M)
+    nlinarith only [hderiv', norm_nonneg ((maxRegDuhamelMap (I := I) (M := M)
       a hT hT1 u₀ gforce).deriv), hnn]
   refine le_trans henergy ?_
   have hssq : Real.sqrt T ^ 2 = T := Real.sq_sqrt hT.le
@@ -533,8 +533,8 @@ theorem recentred_repr_normSq_le_of_smallForcing (hT : 0 < T) (hT1 : T ≤ 1)
   have hTle : Real.sqrt T * (4 * T * (‖u₀‖ + C) ^ 2) ≤
       Real.sqrt T * (4 * (‖u₀‖ + C) ^ 2) := by
     refine mul_le_mul_of_nonneg_left ?_ hsqrtT_pos.le
-    nlinarith [hT1, hT.le, sq_nonneg (‖u₀‖ + C)]
-  nlinarith [hbound1, hbound2, hTle, hsqrtT_pos.le, sq_nonneg (‖u₀‖ + C),
+    nlinarith only [hT1, hT.le, sq_nonneg (‖u₀‖ + C)]
+  nlinarith only [hbound1, hbound2, hTle, hsqrtT_pos.le, sq_nonneg (‖u₀‖ + C),
     sq_nonneg (‖u₀‖ + 2 * C)]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -558,7 +558,7 @@ theorem maxRegDuhamelSolFieldHa1_stay (hT : 0 < T) (hT1 : T ≤ 1)
   have hsq : ‖(maxRegRecentredCrossScaleField (I := I) (M := M)
       (h_compact := h_compact) hT hT1 u₀ gforce).repr t‖ ^ 2 ≤ R ^ 2 :=
     le_trans hsup hhoriz
-  nlinarith [hsq, norm_nonneg ((maxRegRecentredCrossScaleField (I := I) (M := M)
+  nlinarith only [hsq, norm_nonneg ((maxRegRecentredCrossScaleField (I := I) (M := M)
     (h_compact := h_compact) hT hT1 u₀ gforce).repr t), hR]
 
 omit [NeZero (Module.finrank ℝ E)] in

@@ -148,7 +148,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
     rw [abs_of_nonneg h1ms, abs_of_nonneg hs0]
     have h1 : δ' ≤ δ₁ := le_trans hδ'_le (le_max_left _ _)
     have h2 : δ ≤ δ₁ := le_trans hδ_le (le_max_left _ _)
-    nlinarith [h1, h2]
+    nlinarith only [h1, h2, hs0, h1ms]
   have htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ Pc y v w := by
     intro y v w
@@ -200,7 +200,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
               + s * ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ := by
             rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
               abs_of_nonneg h1ms, abs_of_nonneg hs0]
-    nlinarith [mul_le_mul hnorm_le hnorm_le (norm_nonneg
+    nlinarith only [mul_le_mul hnorm_le hnorm_le (norm_nonneg
         (iteratedCovGrad (I := I) g₀ 0 2 j Pc)) hy_nn,
       mul_nonneg (mul_nonneg hs0 h1ms)
         (sq_nonneg (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ -

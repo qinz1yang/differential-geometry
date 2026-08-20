@@ -432,7 +432,7 @@ theorem kato_mfderiv_riemannianFiberNormSq_frame_sum_le_rs
           (tensorCovDerivAt (I := I) (M := M) g r p Q x (e a)) := by
       rw [hV_def]
     rw [hVa_eq] at hsq ⊢
-    nlinarith [hsq]
+    nlinarith only [hsq]
   have hframe : ∑ a : Fin n, ss a =
       riemannianFiberNormSq (I := I) (M := M) g r (p + 1) x
         ((covGrad (I := I) (M := M) g r p Q).toSection x) := by
