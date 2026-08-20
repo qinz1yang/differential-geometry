@@ -157,7 +157,7 @@ private theorem smoothApproxSeqWkpThree_cauchy_smoothScalar
   rw [h1]
   rw [div_lt_iff₀ hCp1_pos]
   have hC_lt_Cp1 : C < Cp1 := by rw [hCp1_def]; linarith
-  nlinarith [hε_pos]
+  simpa only [mul_comm] using mul_lt_mul_of_pos_right hC_lt_Cp1 hε_pos
 
 private theorem smoothToH1Compl_smoothApproxSeqWkpThree_cauchy
     (g : SmoothRiemannianMetric I M)

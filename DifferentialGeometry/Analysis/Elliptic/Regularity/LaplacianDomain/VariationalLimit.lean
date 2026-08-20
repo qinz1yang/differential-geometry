@@ -648,8 +648,15 @@ private lemma tendsto_inner_integral
   have h_funeq : (fun n => ∫ a, (m : β → ℝ) a * (g n : β → ℝ) a ∂μ) =
       (fun n => ⟪m, g n⟫_ℝ) := funext (fun n => h_inner_eq (g n))
   rw [h_funeq]
-  exact (continuous_inner.tendsto (m, g_lim)).comp
-    (Filter.Tendsto.prodMk_nhds tendsto_const_nhds h_g_tendsto)
+  have h_pair_tendsto :
+      Tendsto (fun p : Lp ℝ 2 μ × Lp ℝ 2 μ => ⟪p.1, p.2⟫_ℝ)
+        (𝓝 (m, g_lim)) (𝓝 ⟪m, g_lim⟫_ℝ) :=
+    continuous_inner.tendsto (m, g_lim)
+  have h_input_tendsto :
+      Tendsto (fun n => (m, g n)) atTop (𝓝 (m, g_lim)) :=
+    Filter.Tendsto.prodMk_nhds tendsto_const_nhds h_g_tendsto
+  have h_comp := h_pair_tendsto.comp h_input_tendsto
+  simpa only [Function.comp_apply] using h_comp
 
 theorem laplacianDomain_variational_identity_smooth_case
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)

@@ -446,7 +446,7 @@ theorem chartHessFrobeniusPairOnChartAlpha_eq_polarization_of_smooth
         G i k * G j l * (Hf i j + Hf' i j) * (Hf k l + Hf' k l)) -
       (∑ i, ∑ j, ∑ k, ∑ l,
         G i k * G j l * (Hf i j - Hf' i j) * (Hf k l - Hf' k l)) := by
-    congr 1
+    refine congrArg₂ (fun a b : ℝ => a - b) ?_ ?_
     · refine Finset.sum_congr rfl ?_
       intro i _
       refine Finset.sum_congr rfl ?_
