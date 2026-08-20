@@ -1304,12 +1304,14 @@ variable {M'' : Type u} [TopologicalSpace M''] [ChartedSpace H M''] [IsManifold 
   [T2Space M''] [T2Space (TangentBundle I M'')] [SigmaCompactSpace M'']
   [ConnectedSpace M''] [T3Space M'']
   [MetricSpace M''] [Nonempty M'']
-variable {N'' : Type u} [TopologicalSpace N''] [ChartedSpace H N''] [IsManifold I ∞ N'']
+variable {N'' : Type u} [TopologicalSpace N''] [ChartedSpace H N'']
+  [nManifold : IsManifold I ∞ N'']
   [T2Space N''] [T2Space (TangentBundle I N'')] [SigmaCompactSpace N'']
-  [ConnectedSpace N''] [T3Space N''] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N'']
+  [ConnectedSpace N''] [T3Space N'']
 
-set_option linter.unusedSectionVars false in
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M'')] [SigmaCompactSpace M''] [ConnectedSpace M''] [T3Space M''] [T2Space (TangentBundle I N'')] [SigmaCompactSpace N''] [ConnectedSpace N''] [T3Space N''] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+  [T2Space (TangentBundle I M'')] [SigmaCompactSpace M''] [ConnectedSpace M''] [T3Space M'']
+  [T2Space (TangentBundle I N'')] [SigmaCompactSpace N''] [ConnectedSpace N''] [T3Space N''] in
 theorem exists_partial_diffeomorph_metric_approximation_of_bounds
     (g : SmoothRiemannianMetric I M'') (h : SmoothRiemannianMetric I N'')
     (Ok : M'') (Oℓ : N'') (r ε : ℝ) (p : ℕ) (U : Set M'')
@@ -1334,12 +1336,17 @@ theorem exists_partial_diffeomorph_metric_approximation_of_bounds
     ∃ Phi : PartialDiffeomorph I I M'' N'' (∞ : WithTop ℕ∞),
       Metric.closedBall Ok r ⊆ Phi.source ∧
       Phi Ok = Oℓ ∧
-      Nonempty (PartialDiffeomorphMetricApproximation (I := I) (Metric.closedBall Ok r) ε p Phi g h) :=
-  exists_partial_diffeomorph_metric_approximation g h Ok Oℓ r ε p U hU hOkU hKU F hloc hinj hbase
-    (mapMetricApproximationOnOfBounds (Metric.closedBall Ok r) ε p F g h hpbF heps heps1 hsmoothF
-      hc0F hcovF)
-    (mapMetricApproximationOnOfBounds (F '' Metric.closedBall Ok r) ε p (Function.invFunOn F U) h g
-      hpbR heps heps1 hsmoothR hc0R hcovR)
+      Nonempty (PartialDiffeomorphMetricApproximation (I := I) (Metric.closedBall Ok r) ε p Phi g h) := by
+  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) N'' := by
+    change IsManifold I ∞ N''
+    exact nManifold
+  exact
+    exists_partial_diffeomorph_metric_approximation g h Ok Oℓ r ε p U hU hOkU hKU F hloc
+      hinj hbase
+      (mapMetricApproximationOnOfBounds (Metric.closedBall Ok r) ε p F g h hpbF heps heps1
+        hsmoothF hc0F hcovF)
+      (mapMetricApproximationOnOfBounds (F '' Metric.closedBall Ok r) ε p
+        (Function.invFunOn F U) h g hpbR heps heps1 hsmoothR hc0R hcovR)
 
 omit [Module.Finite ℝ E] in
 omit [T2Space (TangentBundle I M'')] [ConnectedSpace M''] [T3Space M'']

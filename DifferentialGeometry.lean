@@ -824,7 +824,6 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.BoundedC0Se
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.Contraction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.DuhamelMap
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.MildSolutionExistence
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.BorelSpaceSetup
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DenseLowerState
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DuhamelEstimates
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.DenseMixedBound
@@ -914,7 +913,6 @@ import DifferentialGeometry.Analysis.Parabolic.TensorHeatDuhamelHolderRegularity
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatDuhamelMildSolution
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatDuhamelTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Semigroup
-import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SemigroupLaw
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SemigroupTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SmoothingConst
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SmoothingHs
@@ -1194,7 +1192,6 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedHsNormReverseOrde
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PouWeightedNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorFieldApplicationJetWindowTame
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ArmBaseCoeffJetL2Summed
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricDifferenceCoeffDeltaJetEnvelope
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricDifferenceSlotPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricInverseDifferenceMultiplier
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CometricPathResolventFactorization
@@ -1809,7 +1806,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SpectralPouNor
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.UnifBochnerGap
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.WeylSummability
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.CompactInclusion
-import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.CompactResolvent
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.EigenBasis
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Resolvent
@@ -1848,7 +1844,6 @@ import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.SectionOperations
 import DifferentialGeometry.Bundle.SmoothScalarGerm
 import DifferentialGeometry.Bundle.TangentCoordChange
-import DifferentialGeometry.Bundle.TensorBundles
 import DifferentialGeometry.Bundle.TensorProduct
 import DifferentialGeometry.Bundle.VectorField
 import DifferentialGeometry.Bundle.VectorFieldLieBracket
@@ -3473,7 +3468,6 @@ import DifferentialGeometry.Geometry.Exponential.NormalBallChart
 import DifferentialGeometry.Geometry.Exponential.NormalBallGeodesic
 import DifferentialGeometry.Geometry.Exponential.NormalBallHome
 import DifferentialGeometry.Geometry.Exponential.NormalBallMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Drift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CovariantDerivativeCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.QuadraticTerms

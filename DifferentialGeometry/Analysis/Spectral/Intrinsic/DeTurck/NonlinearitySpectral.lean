@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Inclusion
-import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.CompactResolvent
+import DifferentialGeometry.Analysis.Spectral.Tensor.Rellich.Tensor
+import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.CompactInclusion
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPartMatch
 open DifferentialGeometry.Geometry.Curvature
