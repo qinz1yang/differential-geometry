@@ -229,8 +229,24 @@ theorem riemannianFiberNormSq_sum_le_card_mul
       riemannianFiberNormSq_nonneg (I := I) (M := M) g r s' x (F i)
     have hj_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) :=
       riemannianFiberNormSq_nonneg (I := I) (M := M) g r s' x (F j)
-    nlinarith [hsq, hi_nn, hj_nn, sq_nonneg (riemannianFiberNormSq (I := I) (M := M) g r s' x (F i)
-      - riemannianFiberNormSq (I := I) (M := M) g r s' x (F j)), sq_nonneg bij]
+    have hprod : riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) *
+        riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) ≤
+          ((1 / 2 : ℝ) *
+            (riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) +
+              riemannianFiberNormSq (I := I) (M := M) g r s' x (F j))) ^ 2 := by
+      calc
+        riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) *
+            riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) ≤
+            riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) *
+              riemannianFiberNormSq (I := I) (M := M) g r s' x (F j) +
+              ((riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) -
+                riemannianFiberNormSq (I := I) (M := M) g r s' x (F j)) / 2) ^ 2 :=
+          le_add_of_nonneg_right (sq_nonneg _)
+        _ = ((1 / 2 : ℝ) *
+            (riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) +
+              riemannianFiberNormSq (I := I) (M := M) g r s' x (F j))) ^ 2 := by ring
+    exact le_of_sq_le_sq (hsq.trans hprod)
+      (mul_nonneg (by norm_num) (add_nonneg hi_nn hj_nn))
   calc (∑ i ∈ s, ∑ j ∈ s, tensorInnerPointwise (I := I) (M := M) g r s' x (fm i) (fm j))
       ≤ ∑ i ∈ s, ∑ j ∈ s, (1 / 2 : ℝ) *
           (riemannianFiberNormSq (I := I) (M := M) g r s' x (F i) +

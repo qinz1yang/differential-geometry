@@ -149,7 +149,7 @@ theorem sq_sum_five_le (a b c d e : ℝ) :
 
 theorem five_term_young_bound
     {T e1 e2 b K1 K2 K3 K4 K5 w : ℝ}
-    (hb : 0 ≤ b) (hw : 0 ≤ w) (he1 : 0 ≤ e1) (he2 : 0 ≤ e2)
+    (hb : 0 ≤ b) (hw : 0 ≤ w)
     (hK1 : 0 ≤ K1) (hK2 : 0 ≤ K2) (hK3 : 0 ≤ K3) (hK4 : 0 ≤ K4)
     (hK5 : 0 ≤ K5) (hT0 : 0 ≤ T)
     (hT : Real.sqrt T ≤ (e1 + e2) * Real.sqrt b +
@@ -160,14 +160,6 @@ theorem five_term_young_bound
   set u : ℝ := (e1 + e2) * Real.sqrt b with hu_def
   set v : ℝ := Real.sqrt (K1 * w) + Real.sqrt (K2 * w) + Real.sqrt (K3 * w) +
     Real.sqrt (K4 * w) + Real.sqrt (K5 * w) with hv_def
-  have hu0 : 0 ≤ u := mul_nonneg (by linarith) (Real.sqrt_nonneg _)
-  have hv0 : 0 ≤ v := by
-    have h1 := Real.sqrt_nonneg (K1 * w)
-    have h2 := Real.sqrt_nonneg (K2 * w)
-    have h3 := Real.sqrt_nonneg (K3 * w)
-    have h4 := Real.sqrt_nonneg (K4 * w)
-    have h5 := Real.sqrt_nonneg (K5 * w)
-    linarith
   have hTuv : T ≤ (u + v) ^ 2 := by
     have hsq : Real.sqrt T ^ 2 ≤ (u + v) ^ 2 :=
       pow_le_pow_left₀ (Real.sqrt_nonneg T) (by simpa only [hu_def, hv_def] using hT) 2

@@ -367,8 +367,6 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfC
       rw [hexp]
       linarith [hsq_chain, hsp1, hsp2, hsp3, hsp4, hsp5]
     have hfin := DifferentialGeometry.Analysis.five_term_young_bound (hb_nn (i + 2)) hw_nn
-      (by positivity : (0 : ℝ) ≤ (23 / 20 : ℝ) * (Module.finrank ℝ E : ℝ) * (1 / (1 - δ₀)) ^ 2)
-      (by positivity : (0 : ℝ) ≤ (21 / 4 : ℝ) * (Module.finrank ℝ E : ℝ) * (1 / (1 - δ₀)) ^ 2)
       (hKC_nn i) (hKR_nn i) (hKA_nn i) (hKB_nn i) (hKM_nn i)
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (2 + i) x
         ((((T1 + T2) + T3) + T4) + T5)) hTsum

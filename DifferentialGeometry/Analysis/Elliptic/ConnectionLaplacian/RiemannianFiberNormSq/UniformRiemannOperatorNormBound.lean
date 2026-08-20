@@ -373,7 +373,7 @@ private lemma riemannOp_normSq_le_chartConstants
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hx_good : x ∈ chartLeviCivitaGoodSet (I := I) α)
-    {CR CG cg : ℝ} (hCR : 0 ≤ CR) (hCG : 0 ≤ CG) (hcg : 0 < cg)
+    {CR CG cg : ℝ} (hCG : 0 ≤ CG) (hcg : 0 < cg)
     (hCRbound : ∀ i j k l : Fin (Module.finrank ℝ E),
       |chartRiemannTensor (I := I) g α i j k l (extChartAt I α x)| ≤ CR)
     (hCGbound : ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
@@ -418,9 +418,6 @@ private lemma riemannOp_normSq_le_chartConstants
   set Sa : ℝ := ∑ j, |a j| with hSa_def
   set Sb : ℝ := ∑ k, |b k| with hSb_def
   set Sc : ℝ := ∑ i, |c i| with hSc_def
-  have hSa_nonneg : 0 ≤ Sa := Finset.sum_nonneg (fun _ _ => abs_nonneg _)
-  have hSb_nonneg : 0 ≤ Sb := Finset.sum_nonneg (fun _ _ => abs_nonneg _)
-  have hSc_nonneg : 0 ≤ Sc := Finset.sum_nonneg (fun _ _ => abs_nonneg _)
   have hk_collapse : ∀ i j : Fin n,
       (∑ k, |c i| * |a j| * |b k|) = |c i| * |a j| * Sb := by
     intro i j
@@ -451,7 +448,8 @@ private lemma riemannOp_normSq_le_chartConstants
       refine le_trans (Finset.abs_sum_le_sum_abs _ _) (Finset.sum_le_sum (fun j _ => ?_))
       refine le_trans (Finset.abs_sum_le_sum_abs _ _) (Finset.sum_le_sum (fun k _ => ?_))
       rw [abs_mul, abs_mul, abs_mul]
-      exact mul_le_mul_of_nonneg_left (hCRbound i j k l) (by positivity)
+      exact mul_le_mul_of_nonneg_left (hCRbound i j k l)
+        (mul_nonneg (mul_nonneg (abs_nonneg _) (abs_nonneg _)) (abs_nonneg _))
     refine le_trans hstep ?_
     have heq : (∑ i, ∑ j, ∑ k, |c i| * |a j| * |b k| * CR) =
         (∑ i, ∑ j, ∑ k, |c i| * |a j| * |b k|) * CR := by
@@ -465,8 +463,6 @@ private lemma riemannOp_normSq_le_chartConstants
   have hcoeff_sq : ∀ l, coeff l ^ 2 ≤ CR ^ 2 * (Sc * Sa * Sb) ^ 2 := by
     intro l
     have h1 : |coeff l| ≤ CR * (Sc * Sa * Sb) := hcoeff_abs l
-    have h2 : 0 ≤ CR * (Sc * Sa * Sb) :=
-      mul_nonneg hCR (by positivity)
     calc coeff l ^ 2 = |coeff l| ^ 2 := (sq_abs _).symm
       _ ≤ (CR * (Sc * Sa * Sb)) ^ 2 := by
           exact pow_le_pow_left₀ (abs_nonneg _) h1 2
@@ -533,8 +529,10 @@ private lemma riemannOp_normSq_le_chartConstants
     have hn_nonneg : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
     have hScsq_nn : (0 : ℝ) ≤ Sc ^ 2 := sq_nonneg _
     have hSasq_nn : (0 : ℝ) ≤ Sa ^ 2 := sq_nonneg _
-    have hnQc_nn : (0 : ℝ) ≤ (n : ℝ) * ∑ i, c i ^ 2 := by positivity
-    have hnQa_nn : (0 : ℝ) ≤ (n : ℝ) * ∑ j, a j ^ 2 := by positivity
+    have hnQc_nn : (0 : ℝ) ≤ (n : ℝ) * ∑ i, c i ^ 2 :=
+      mul_nonneg hn_nonneg hQc_nonneg
+    have hnQa_nn : (0 : ℝ) ≤ (n : ℝ) * ∑ j, a j ^ 2 :=
+      mul_nonneg hn_nonneg hQa_nonneg
     calc Sc ^ 2 * Sa ^ 2 * Sb ^ 2
         ≤ ((n : ℝ) * ∑ i, c i ^ 2) * ((n : ℝ) * ∑ j, a j ^ 2) *
             ((n : ℝ) * ∑ k, b k ^ 2) :=
@@ -644,7 +642,7 @@ theorem exists_uniform_riemannOp_LeviCivita_gNorm_bound
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx_good
   have hpt := riemannOp_normSq_le_chartConstants (I := I) g α hx_base hx_good
-    (CR := CR α) (CG := CG α) (cg := cg α) (hCR0 α) (hCG0 α) (hcg0 α)
+    (CR := CR α) (CG := CG α) (cg := cg α) (hCG0 α) (hcg0 α)
     (fun i j k l => hCRbound α x hx_tsupport i j k l)
     (fun ξ => hCGbound α x hx_tsupport ξ)
     (fun ξ => hcgbound α x hx_tsupport ξ) v w u
