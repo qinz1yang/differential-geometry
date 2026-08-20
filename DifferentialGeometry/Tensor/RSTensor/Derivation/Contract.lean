@@ -490,9 +490,9 @@ theorem model_contract_trace_apply_basis
               (model_covectorOfCLM (𝕜 := 𝕜) (E := E)
                 ((Module.finBasis 𝕜 E).cDualBasis j))) T) β tail := by
           refine Finset.sum_congr rfl fun j _ => ?_
-          rw [model_trace_pairing_first_apply,
-            model_contract_covariant_bilinear_apply,
-            model_contract_contravariant_first_bilinear_apply]
+          rw [model_trace_pairing_first_apply]
+          rw [model_contract_covariant_bilinear_apply]
+          rw [model_contract_contravariant_first_bilinear_apply]
           simp [Module.Basis.cDualBasis, Module.Basis.coe_dualBasis]
 
 noncomputable def model_covariantChange (k : ℕ) (L : E →L[𝕜] E) :
@@ -539,8 +539,8 @@ private theorem model_covariantChange_tensorWithCovector_first (r : ℕ)
     (Bundle.continuousMultilinearMap.modelProduct 1 r
       (model_covectorOfCLM (𝕜 := 𝕜) (E := E) (α.comp L))
       (model_covariantChange (𝕜 := 𝕜) (E := E) r L β)) w
-  rw [Bundle.continuousMultilinearMap.modelProduct_apply,
-    Bundle.continuousMultilinearMap.modelProduct_apply]
+  rw [Bundle.continuousMultilinearMap.modelProduct_apply]
+  rw [Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
 
 theorem model_contract_trace_naturality
@@ -575,8 +575,8 @@ theorem model_contract_trace_naturality
           rw [ContinuousLinearMap.sum_apply]
           rw [ContinuousMultilinearMap.sum_apply]
           refine Finset.sum_congr rfl fun i _ => ?_
-          rw [model_contract_covariant_bilinear_apply,
-            model_contract_contravariant_first_bilinear_apply]
+          rw [model_contract_covariant_bilinear_apply]
+          rw [model_contract_contravariant_first_bilinear_apply]
           change (model_interior_product s ((Module.finBasis 𝕜 E) i)
               ((model_covariantChange (𝕜 := 𝕜) (E := E) (s + 1) L)
                 (T ((model_covariantChange (𝕜 := 𝕜) (E := E) (1 + r) Linv)
@@ -607,9 +607,9 @@ theorem model_contract_trace_naturality
           rw [ContinuousLinearMap.sum_apply]
           rw [ContinuousMultilinearMap.sum_apply]
           refine Finset.sum_congr rfl fun i _ => ?_
-          rw [model_trace_pairing_first_apply,
-            model_contract_covariant_bilinear_apply,
-            model_contract_contravariant_first_bilinear_apply]
+          rw [model_trace_pairing_first_apply]
+          rw [model_contract_covariant_bilinear_apply]
+          rw [model_contract_contravariant_first_bilinear_apply]
           rfl
 
 omit [IsManifold I ω M] in
@@ -638,8 +638,8 @@ theorem contract_trace_trivialization_eq
         (Tensor0SSpace k I) x₀).continuousLinearMapAt 𝕜 x U v =
       U (fun i => L (v i)) := by
     intro k U v
-    rw [Trivialization.continuousLinearMapAt_apply,
-      show ⇑((trivializationAt (Tensor0SModel k 𝕜 E)
+    rw [Trivialization.continuousLinearMapAt_apply]
+    rw [show ⇑((trivializationAt (Tensor0SModel k 𝕜 E)
         (Tensor0SSpace k I) x₀).linearMapAt 𝕜 x) =
         fun y => (trivializationAt (Tensor0SModel k 𝕜 E)
           (Tensor0SSpace k I) x₀ ⟨x, y⟩).2 from
@@ -780,8 +780,8 @@ private theorem tensor0STrivialization_continuousLinearMapAt_apply (k : ℕ) (x�
       T (fun i => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 x (u i)) := by
   letI := tensor0SBundle_topology
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) k
-  rw [Trivialization.continuousLinearMapAt_apply,
-    show ⇑((trivializationAt (Tensor0SModel k 𝕜 E)
+  rw [Trivialization.continuousLinearMapAt_apply]
+  rw [show ⇑((trivializationAt (Tensor0SModel k 𝕜 E)
       (fun y => Tensor0SSpace k I y) x₀).linearMapAt 𝕜 x) =
       fun y => (trivializationAt (Tensor0SModel k 𝕜 E)
         (fun y => Tensor0SSpace k I y) x₀ ⟨x, y⟩).2 from
@@ -843,11 +843,11 @@ noncomputable def contract_covariantField (r s : ℕ)
   rw [contMDiffAt_section] at hα
   have hX := X.contMDiff x₀
   rw [contMDiffAt_section] at hX
-  set biop :
+  let biop :
       E →L[𝕜] (TensorRSModel r (s + 1) 𝕜 E →L[𝕜] TensorRSModel r s 𝕜 E) :=
     (ContinuousLinearMap.compL 𝕜
       (Tensor0SModel r 𝕜 E) (Tensor0SModel (s + 1) 𝕜 E) (Tensor0SModel s 𝕜 E)).comp
-      (model_interior_bilinear 𝕜 E s) with hbiop
+      (model_interior_bilinear 𝕜 E s)
   have h_combine :
       ContMDiffAt I 𝓘(𝕜, TensorRSModel r s 𝕜 E) n
         (fun x => biop
@@ -871,8 +871,8 @@ noncomputable def contract_covariantField (r s : ℕ)
         (fun x => Tensor0SSpace s I x) x₀).continuousLinearMapAt 𝕜 x T v =
       T (fun i => sL (v i)) := by
     intro T v
-    rw [Trivialization.continuousLinearMapAt_apply,
-      show ⇑((trivializationAt (Tensor0SModel s 𝕜 E)
+    rw [Trivialization.continuousLinearMapAt_apply]
+    rw [show ⇑((trivializationAt (Tensor0SModel s 𝕜 E)
         (fun x => Tensor0SSpace s I x) x₀).linearMapAt 𝕜 x) =
         fun y => (trivializationAt (Tensor0SModel s 𝕜 E)
           (fun x => Tensor0SSpace s I x) x₀ ⟨x, y⟩).2 from
@@ -883,8 +883,8 @@ noncomputable def contract_covariantField (r s : ℕ)
         (fun x => Tensor0SSpace (s + 1) I x) x₀).continuousLinearMapAt 𝕜 x T v =
       T (fun i => sL (v i)) := by
     intro T v
-    rw [Trivialization.continuousLinearMapAt_apply,
-      show ⇑((trivializationAt (Tensor0SModel (s + 1) 𝕜 E)
+    rw [Trivialization.continuousLinearMapAt_apply]
+    rw [show ⇑((trivializationAt (Tensor0SModel (s + 1) 𝕜 E)
         (fun x => Tensor0SSpace (s + 1) I x) x₀).linearMapAt 𝕜 x) =
         fun y => (trivializationAt (Tensor0SModel (s + 1) 𝕜 E)
           (fun x => Tensor0SSpace (s + 1) I x) x₀ ⟨x, y⟩).2 from
@@ -898,7 +898,8 @@ noncomputable def contract_covariantField (r s : ℕ)
       (fun x => Tensor0SSpace (s + 1) I x) x₀).continuousLinearMapAt 𝕜 x
       ((show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace (s + 1) I x from α x) gtilde)
       (Fin.cons Xtilde w)
-  rw [h_cLMAt_s, h_cLMAt_s1]
+  rw [h_cLMAt_s]
+  rw [h_cLMAt_s1]
   change ((show Tensor0SSpace r I x →L[𝕜] Tensor0SSpace (s + 1) I x from α x) gtilde :
         Tensor0SModel (s + 1) 𝕜 E)
       (@Fin.cons s (fun _ => E) (X x : E) (fun i => sL (w i))) =
@@ -942,11 +943,11 @@ noncomputable def contract_contravariantField (r s : ℕ)
   rw [contMDiffAt_section] at hα
   have hφ := φ.contMDiff x₀
   rw [contMDiffAt_section] at hφ
-  set biop_ctr :
+  let biop_ctr :
       Tensor0SModel 1 𝕜 E →L[𝕜] (TensorRSModel (r + 1) s 𝕜 E →L[𝕜] TensorRSModel r s 𝕜 E) :=
     (ContinuousLinearMap.compL 𝕜
       (Tensor0SModel r 𝕜 E) (Tensor0SModel (r + 1) 𝕜 E) (Tensor0SModel s 𝕜 E)).flip.comp
-      (model_tensorWithCovector_bilinear r) with hbiop
+      (model_tensorWithCovector_bilinear r)
   have h_combine :
       ContMDiffAt I 𝓘(𝕜, TensorRSModel r s 𝕜 E) n
         (fun x => biop_ctr
@@ -977,8 +978,8 @@ noncomputable def contract_contravariantField (r s : ℕ)
         ((trivializationAt (Tensor0SModel (r + 1) 𝕜 E)
           (fun x => Tensor0SSpace (r + 1) I x) x₀).symmL 𝕜 x
           (model_tensorWithCovector r atilde_x β))) v
-  rw [tensor0STrivialization_continuousLinearMapAt_apply (I := I) s x₀ x hx,
-    tensor0STrivialization_continuousLinearMapAt_apply (I := I) s x₀ x hx]
+  rw [tensor0STrivialization_continuousLinearMapAt_apply (I := I) s x₀ x hx]
+  rw [tensor0STrivialization_continuousLinearMapAt_apply (I := I) s x₀ x hx]
   congr 1
   congr 1
   refine ContinuousMultilinearMap.ext fun w => ?_
@@ -995,8 +996,8 @@ noncomputable def contract_contravariantField (r s : ℕ)
       (Tensor0SSpace.toModel (φ x))) w =
     Bundle.continuousMultilinearMap.modelProduct r 1 β atilde_x
       (fun i => (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt 𝕜 x (w i))
-  rw [Bundle.continuousMultilinearMap.modelProduct_apply,
-    Bundle.continuousMultilinearMap.modelProduct_apply]
+  rw [Bundle.continuousMultilinearMap.modelProduct_apply]
+  rw [Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
   · rw [hβ_symm]
     exact tensor0STrivialization_symmL_apply (I := I) r x₀ x hx β

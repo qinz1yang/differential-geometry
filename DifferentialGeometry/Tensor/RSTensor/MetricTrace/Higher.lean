@@ -665,7 +665,7 @@ theorem nablaTrace04
   intro i _
   apply Finset.sum_congr rfl
   intro j _
-  congr 1
+  apply congrArg (fun z : ℝ => gInv i j * z)
   have hfreeze :=
     middleFreezeNabla (I := I) (M := M) cov A Xsec Ysec Zsec
       (hYcov Xsec) (hZcov Xsec) (basis i) (basis j)
