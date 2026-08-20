@@ -17,13 +17,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          clean: true
       - name: Install elan and Lean 4.29
         run: |
           curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh
           chmod +x elan-init.sh
           ./elan-init.sh -y --default-toolchain leanprover/lean4:v4.29.0
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
-      - name: Build project
-        run: |
-          lake exe cache get
-          lake build DifferentialGeometry
+      - name: Build project from source
+        run: lake --no-cache build DifferentialGeometry
