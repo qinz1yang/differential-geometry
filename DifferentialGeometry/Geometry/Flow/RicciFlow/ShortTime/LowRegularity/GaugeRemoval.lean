@@ -178,7 +178,7 @@ theorem ricci_gauge_of_dt
     full_gauge (I := I) g_DT g_bg T hT hsmooth
   obtain ⟨hΦorbit, hΦtotal⟩ :=
     conjugating_flow_orbit_pushforward_continuity_data
-      (I := I) g_DT g_bg T hT Φ_fam hΦode hreg hΦorbit0 hΦmfderiv0
+      (I := I) g_DT g_bg T Φ_fam hΦode hreg hΦorbit0 hΦmfderiv0
   have hgramRF :=
     conjugating_flow_pullback_jointGram_onesided
       (I := I) g_DT T Φ_fam hΦjoint hJ
@@ -197,13 +197,13 @@ theorem ricci_gauge_of_dt
     · subst t
       have hcont :=
         gfam_inner_continuous_on
-          (I := I) g_DT T hT Φ_fam x v w hgramE hΦorbit hΦtotal
+          (I := I) g_DT T Φ_fam x v w hgramE hΦorbit hΦtotal
       have hric : ContinuousOn
           (fun s : ℝ => ricciTensor (I := I)
             (Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)) x v w)
           (Set.Ico 0 T) :=
         ricci_gfam_continuous_on
-          (I := I) g_DT T hT Φ_fam x v w hC2 hΦorbit hΦtotal
+          (I := I) g_DT T Φ_fam x v w hC2 hΦorbit hΦtotal
       have h0mem : (0 : ℝ) ∈ Set.Ico (0 : ℝ) T := ⟨le_rfl, hT⟩
       have hricIoo : ContinuousWithinAt
           (fun s : ℝ => ricciTensor (I := I)

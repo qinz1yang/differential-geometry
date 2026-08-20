@@ -125,7 +125,7 @@ theorem ricci_flow_short_time_existence
         (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
       h_reg.mono (Set.prod_mono_left (Set.Ioo_subset_Ioo_right hT_le))
     obtain ⟨hΦ_orbit, hΦ_total⟩ :=
-      conjugating_flow_orbit_pushforward_continuity_data (I := I) g_DT g₀ T hT0 Φ_fam hΦode'
+      conjugating_flow_orbit_pushforward_continuity_data (I := I) g_DT g₀ T Φ_fam hΦode'
         h_reg_T hΦorbit0 hΦmfderiv0
     have h_gram_fam :=
       conjugating_flow_pullback_jointGram_onesided (I := I) g_DT T Φ_fam hΦjoint h_gramIcc_T
@@ -144,8 +144,8 @@ theorem ricci_flow_short_time_existence
       intro t ht x v w
       rcases eq_or_lt_of_le ht.1 with h0 | h0
       · obtain ⟨h_cont, h_ric_cont⟩ :=
-          conjugating_flow_t0_continuity_data (I := I) g_DT g₀ T hT0 Φ_fam hΦode
-            hΦ0 hDT_init h_gramOnE0_T h_C2_T hΦ_orbit hΦ_total x v w
+          conjugating_flow_t0_continuity_data (I := I) g_DT T hT0 Φ_fam
+            h_gramOnE0_T h_C2_T hΦ_orbit hΦ_total x v w
         subst_vars
         exact DifferentialGeometry.PDE.RicciFlow.ricci_flow_pde_at_zero
           (I := I) (fun s => Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)) hT0 x v w

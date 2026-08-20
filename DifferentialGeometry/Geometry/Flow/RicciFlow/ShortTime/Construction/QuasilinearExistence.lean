@@ -28,7 +28,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M]
 
-theorem quasilinear_strictlyParabolic_2ndOrder_shortTimeExistence
+theorem quasilinear_metric_short_time_existence_of_nemytskii_data
     (F : SmoothRiemannianMetric I M → (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
     (ha_eq : a = 4 * Module.finrank ℝ E + 10)
@@ -36,9 +36,6 @@ theorem quasilinear_strictlyParabolic_2ndOrder_shortTimeExistence
     (Nsec : ∀ (S : SmoothCcTensor g₀ 0 2) {δ : ℝ} (_hδ_lt : δ < 1)
         (_hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ S) δ),
           SmoothCcTensor g₀ 0 2)
-    (_H0 : ∀ (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x), F g x v w = F g x w
-      v)
-    (_H1 : IsStrictlyParabolicMetricRHS (I := I) F g₀)
     {L : ℝ≥0} (hLipN : LipschitzWith L Nfun)
     (H2 : ∃ C₁ C₂ : ℝ≥0, ∀ (u u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖Nfun u - Nfun u'‖ ≤
@@ -49,7 +46,6 @@ theorem quasilinear_strictlyParabolic_2ndOrder_shortTimeExistence
           * ‖u - u'‖ +
         (C₂ : ℝ) * ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                       (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (u - u')‖)
-    (_H3 : IsSmoothQuasilinearMetricRHS (I := I) F)
     (hRepr : ∀ (S : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
         (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ S) δ)
           (x : M) (v w : TangentSpace I x),

@@ -589,7 +589,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem conjugating_flow_orbit_pushforward_continuity_data
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
-    (T : ℝ) (_hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
+    (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
         (Set.Ici (0 : ℝ)) t
@@ -669,15 +669,8 @@ theorem conjugating_flow_orbit_pushforward_continuity_data
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem conjugating_flow_t0_continuity_data
-    (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
+    (g_DT : ℝ → SmoothRiemannianMetric I M)
     (T : ℝ) (hT : 0 < T) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
-    (_hΦode : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
-      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => (Φ_fam s : M → M) x)
-        (Set.Ici (0 : ℝ)) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight
-          (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
-    (_hΦ0 : Φ_fam 0 = _root_.Diffeomorph.refl I M ∞)
-    (_hDT_init : g_DT 0 = g_bg)
     (hg_joint : ∀ (α : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
         (fun q : ℝ × M =>
@@ -704,11 +697,11 @@ theorem conjugating_flow_t0_continuity_data
         (fun s : ℝ => (-2 : ℝ) *
           DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I)
             (Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)) x v w) (Set.Ioi 0) 0 := by
-  refine ⟨gfam_inner_continuous_on (I := I) g_DT T hT Φ_fam x v w hg_joint hΦ_orbit hΦ_total, ?_⟩
+  refine ⟨gfam_inner_continuous_on (I := I) g_DT T Φ_fam x v w hg_joint hΦ_orbit hΦ_total, ?_⟩
   have hric : ContinuousOn
       (fun s : ℝ => ricciTensor (I := I)
         (Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)) x v w) (Set.Ico 0 T) :=
-    ricci_gfam_continuous_on (I := I) g_DT T hT Φ_fam x v w hC2 hΦ_orbit hΦ_total
+    ricci_gfam_continuous_on (I := I) g_DT T Φ_fam x v w hC2 hΦ_orbit hΦ_total
   have h0mem : (0 : ℝ) ∈ Set.Ico (0 : ℝ) T := ⟨le_rfl, hT⟩
   have hcwa_Ioo : ContinuousWithinAt
       (fun s : ℝ => ricciTensor (I := I)

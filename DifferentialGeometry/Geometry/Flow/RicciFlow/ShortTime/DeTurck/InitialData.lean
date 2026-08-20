@@ -127,19 +127,16 @@ theorem deTurckRicci_solution_with_jointReg
         (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ S hδ)
     rw [← hreal]
     exact deTurckRHSSection_ccTensorBilinSymm_eq_deTurckRicciRHS (I := I) g_bg gDT x v w
-  exact quasilinear_strictlyParabolic_2ndOrder_shortTimeExistence (I := I)
+  exact quasilinear_metric_short_time_existence_of_nemytskii_data (I := I)
     (deTurckRicciRHS (I := I) g_bg) g₀ (4 * Module.finrank ℝ E + 10) ha_super rfl
     (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg (4 * Module.finrank ℝ E + 10))
     (fun S {δ} hδ_lt hδ => deTurckSmoothRemainder (I := I) (M := M) g₀ g_bg
       (ccTensor02Symm (I := I) (M := M) g₀ S) hδ_lt
         (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ S hδ))
-    (fun g x v w => deTurckRicciRHS_symm (I := I) g_bg g x v w)
-    (deTurckRicciRHS_isStrictlyParabolic_at_self (I := I) g₀ g_bg)
     (deTurckSobolevNHa2Symm_lipschitzWith_lipConst (I := I) (M := M) (g₀ := g₀) (g_bg := g_bg)
       (4 * Module.finrank ℝ E + 10) ha_super)
     (deTurckSobolevNHa2Symm_mixed_lipschitz_pointwise (I := I) (M := M) (g₀ := g₀)
       (g_bg := g_bg) (4 * Module.finrank ℝ E + 10) ha_super)
-    (deTurckRicciRHS_isSmoothQuasilinear (I := I) g_bg)
     hRepr
     (deTurckRicci_forcingBootstrap_symm (I := I) (M := M) g₀ g_bg
       (4 * Module.finrank ℝ E + 10) (by omega))
