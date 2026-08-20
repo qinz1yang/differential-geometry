@@ -421,7 +421,7 @@ theorem path_add_sub_cap
   apply riemannianFiberNormSq_pathIntegralCoeffField_le_sq
     (I := I) (M := M) g r 2 K
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) metricPerturbationPathDomain_isOpen hSI hK
-      x Λ hΛ (hcK.mono hIcc)
+      x Λ (hcK.mono hIcc)
   intro t ht
   have hsqrt := Real.sqrt_le_sqrt (hcap t ht)
   simpa only [K, Real.sqrt_sq hΛ] using hsqrt
@@ -898,7 +898,7 @@ theorem top_path_dev_h2
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq
       (I := I) (M := M) g₀ 4 2 Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev x
-      (C * R) hCR ((hcdev x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)) hsup
+      (C * R) ((hcdev x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)) hsup
   · rw [heq]
     dsimp [Pdev]
     exact path_jetL2_le (I := I) (M := M) g₀ 4 2 2 Φ

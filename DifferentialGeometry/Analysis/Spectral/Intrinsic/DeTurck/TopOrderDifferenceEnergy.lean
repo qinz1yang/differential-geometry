@@ -228,10 +228,9 @@ private theorem edgePair_point_le
   have hrhs0 : 0 ≤ d * C * δ * q := by positivity
   change |tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
       (TensorRSSpace.toModel S) (TensorRSSpace.toModel U)| ≤ d * C * δ * q
-  nlinarith [sq_abs (tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
-    (TensorRSSpace.toModel S) (TensorRSSpace.toModel U)),
-    abs_nonneg (tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
-      (TensorRSSpace.toModel S) (TensorRSSpace.toModel U))]
+  apply le_of_sq_le_sq
+  · simpa only [sq_abs] using hsq
+  · exact hrhs0
 
 theorem topOrderDifference_remainder_bound (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -359,7 +358,7 @@ theorem topOrderDifference_energy_bound [Nonempty M]
             (iteratedCovGrad (I := I) g₀ 0 2 1 T)‖ ^ 2 :=
     le_trans (le_abs_self _) hres0
   simp only [oneMinusConnLapSmoothIter_zero] at hibp
-  nlinarith [hslot, hresle]
+  linarith only [hibp, hslot, hresle]
 
 theorem principalDifference_pairing_half_bound [Nonempty M]
     (g₀ : SmoothRiemannianMetric I M) :
@@ -439,7 +438,7 @@ theorem principalDifference_pairing_half_bound [Nonempty M]
   have hnorm0 : 0 ≤
       ‖SmoothCcTensor.toL2
         (iteratedCovGrad (I := I) g₀ 0 2 1 T)‖ ^ 2 := sq_nonneg _
-  nlinarith [mul_le_mul_of_nonneg_right hsmall hnorm0]
+  linarith only [ha, hadd, hlap, mul_le_mul_of_nonneg_right hsmall hnorm0]
 
 end Spectral
 end Analysis

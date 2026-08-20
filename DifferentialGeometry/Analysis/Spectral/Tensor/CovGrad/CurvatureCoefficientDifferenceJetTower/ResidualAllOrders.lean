@@ -321,8 +321,20 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
                 Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by
               have hc1 : 2 * cbg i ≤ 2 * cbg i *
                   Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by
-                nlinarith [hcbg_nn i, hW_one]
-              nlinarith [hKcCr_nn i, hKcCu_nn i, hW_nn]
+                nlinarith only [hcbg_nn i, hW_one]
+              calc
+                2 * cbg i + 2 * (2 * (KcCr i *
+                      Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3)) +
+                    2 * (KcCu i *
+                      Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3))) =
+                    2 * cbg i + (4 * KcCr i + 4 * KcCu i) *
+                      Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by ring
+                _ ≤ 2 * cbg i * Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) +
+                      (4 * KcCr i + 4 * KcCu i) *
+                        Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) :=
+                    add_le_add hc1 (le_refl _)
+                _ = (2 * cbg i + 4 * KcCr i + 4 * KcCu i) *
+                      Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by ring
       obtain ⟨hint, hbound_int⟩ := hKI P hPball i
       have hF_int : MeasureTheory.Integrable
           (fun x => (2 * cbg i + 4 * KcCr i + 4 * KcCu i) *
@@ -358,7 +370,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic_allOrders
           MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
       rw [hz]
       have := sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖
-      nlinarith [hKtCr_nn, hKtCu_nn]
+      nlinarith only [hKtCr_nn, hKtCu_nn]
     · have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
           (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁ -
             ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁) -

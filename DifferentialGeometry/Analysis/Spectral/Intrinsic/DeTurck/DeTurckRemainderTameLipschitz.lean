@@ -2679,7 +2679,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
       linarith [hadd1, hsm, hcombo_split, hsm2, hArm0, hRm, hC0fb]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M)
       g₀ 2 2 Φ₀ (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hjΦ₀ x
-      (Real.sqrt (8 * (2 * ΛC ^ 2 + 1 / 2 * Λrl ^ 2) + 4 * Λrl ^ 2)) (Real.sqrt_nonneg _)
+      (Real.sqrt (8 * (2 * ΛC ^ 2 + 1 / 2 * Λrl ^ 2) + 4 * Λrl ^ 2))
       ((hcΦ x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)) hsup
   · intro x
     have hb_nn : (0 : ℝ) ≤
@@ -2699,7 +2699,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
             Real.sqrt_sq hb_nn
     have hPIle := riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M)
       g₀ 4 2 C2f (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hjC2 x
-      (max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0) hb_nn
+      (max (19 * deTurckArmFibreConst (Module.finrank ℝ E) * (δ / (1 - δ))) 0)
       ((hcC2 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)) hsup
     refine le_trans hPIle ?_
     refine pow_le_pow_left₀ hb_nn ?_ 2
@@ -3095,7 +3095,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
       linarith
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M)
       g₀ 3 2 Ψ₁ (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hj1 x
-      (Real.sqrt (8 * ΛCr ^ 2 + 2 * ΛL1)) (Real.sqrt_nonneg _)
+      (Real.sqrt (8 * ΛCr ^ 2 + 2 * ΛL1))
       ((hc1 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt)) hsup
   · intro i
     have hW_nn : (0 : ℝ) ≤ 1 + ∑ j ∈ Finset.range (i + 2),

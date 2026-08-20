@@ -206,7 +206,7 @@ private theorem pathBoth
       (I := I) g 4 2 D (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hD x).mono hIcc
     refine riemannianFiberNormSq_pathIntegralCoeffField_le_sq
       (I := I) (M := M) g 4 2 D (metricPerturbationPathDomain (δ := δ) (δ' := δ))
-      metricPerturbationPathDomain_isOpen hSI hD x Λ hΛ hcont ?_
+      metricPerturbationPathDomain_isOpen hSI hD x Λ hcont ?_
     intro s hs
     have hsqrt := Real.sqrt_le_sqrt (hpt s hs x)
     simpa only [Real.sqrt_sq hΛ] using hsqrt

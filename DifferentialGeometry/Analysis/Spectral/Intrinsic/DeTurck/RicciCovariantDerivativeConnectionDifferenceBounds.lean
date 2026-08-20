@@ -144,7 +144,11 @@ private theorem ric_l2_of_riemannianFiberNormSq
     DifferentialGeometry.Analysis.Sobolev.Tensor.tensorL2Norm_toFun_eq_norm]
     at hsq
   have hright : 0 ≤ c * ‖B‖ := mul_nonneg hc (norm_nonneg B)
-  nlinarith [norm_nonneg A]
+  apply le_of_sq_le_sq
+  · calc
+      ‖A‖ ^ 2 ≤ c ^ 2 * ‖B‖ ^ 2 := hsq
+      _ = (c * ‖B‖) ^ 2 := by ring
+  · exact hright
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem ric_perm_norm_le
@@ -491,7 +495,7 @@ private lemma ric_bound_mono
 private lemma mul_mul_le_sixteenth_sq_add_four_sq (A δ w d : Real) :
     A * δ * w * d ≤
       (1 / 16 : Real) * d ^ 2 + 4 * A ^ 2 * δ ^ 2 * w ^ 2 := by
-  nlinarith [sq_nonneg (d - 8 * (A * δ * w))]
+  nlinarith only [sq_nonneg (d - 8 * (A * δ * w))]
 
 theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le [Nonempty M]
     (g : SmoothRiemannianMetric I M) :
@@ -585,7 +589,7 @@ theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le [Nonempty M
   have hPraw := gFibreOpBound_ccTensorBilinSymm_smul
     (I := I) (M := M) g s W hWbound
   have hrad : |s| * delta ≤ delta := by
-    nlinarith [mul_nonneg (sub_nonneg.mpr hsabs) hdelta0']
+    nlinarith only [mul_nonneg (sub_nonneg.mpr hsabs) hdelta0']
   have hPbound : metricCauchySchwarzBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g P) delta :=
     ric_bound_mono (I := I) (M := M) g P hrad
@@ -737,11 +741,17 @@ theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le [Nonempty M
         ring
       _ ≤ 1 / 16 := by
         apply (div_le_iff₀ hden).2
-        nlinarith
+        calc
+          Hc ≤ 1 + Hc := le_add_of_nonneg_left zero_le_one
+          _ = (1 / 16 : Real) * (16 * (1 + Hc)) := by ring
   have hdeltaOne : delta ≤ 1 := hdeltaHalf.trans (by norm_num)
   have hdeltaFac : 0 ≤ (1 - delta) * (1 + delta) :=
     mul_nonneg (sub_nonneg.mpr hdeltaOne) (by linarith [hdelta0'])
-  have hdeltaSq : delta ^ 2 ≤ 1 := by nlinarith
+  have hdeltaSq : delta ^ 2 ≤ 1 := by
+    calc
+      delta ^ 2 ≤ delta ^ 2 + (1 - delta) * (1 + delta) :=
+        le_add_of_nonneg_right hdeltaFac
+      _ = 1 := by ring
   have hcross : G * delta * ‖W‖ * ‖D‖ ≤
       (1 / 16 : Real) * ‖D‖ ^ 2 +
         4 * G ^ 2 * delta ^ 2 * ‖W‖ ^ 2 := by

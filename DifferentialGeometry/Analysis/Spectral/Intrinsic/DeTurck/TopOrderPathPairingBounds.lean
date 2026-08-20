@@ -62,7 +62,7 @@ private theorem fiber_path_le
       (I := I) g r s Φ S hjoint x).mono hIcc
   have hsq :=
     riemannianFiberNormSq_pathIntegralCoeffField_le_sq
-      (I := I) (M := M) g r s Φ S hS hSI hjoint x A hA hcont
+      (I := I) (M := M) g r s Φ S hS hSI hjoint x A hcont
       (fun t ht => by simpa only [fiberLpFun] using hsup t ht)
   have hroot := Real.sqrt_le_sqrt hsq
   simpa only [fiberLpFun, Real.sqrt_sq hA] using hroot

@@ -679,19 +679,19 @@ private theorem exists_lieArmCoeff_ballUniform_C0_sup
   · intro x
     rw [hP₀]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 2 2 Φ₀
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x ΛL hΛL_nn
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x ΛL
       ((hc0 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
       (fun t ht => hb0 t ht x)
   · intro x
     rw [hP₁]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 3 2 Φ₁
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x ΛL hΛL_nn
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x ΛL
       ((hc1 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
       (fun t ht => hb1 t ht x)
   · intro x
     rw [hP₂]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 4 2 Φ₂
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 x ΛL hΛL_nn
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 x ΛL
       ((hc2 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
       (fun t ht => hb2 t ht x)
 
@@ -1156,7 +1156,7 @@ private theorem deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUnifor
     have hPbound : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x (P₀.toSection x) ≤ ΛR ^ 2 := by
       rw [hP₀]
       exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 2 2 Φ₀
-        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x ΛR hΛR_nn
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x ΛR
         ((hc0 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
         (fun t ht => hb0 t ht x)
     convert four_mul_le_two_mul_sq hPbound using 1 ; norm_num
@@ -1167,7 +1167,7 @@ private theorem deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUnifor
     have hPbound : riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x (P₁.toSection x) ≤ ΛR ^ 2 := by
       rw [hP₁]
       exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 3 2 Φ₁
-        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x ΛR hΛR_nn
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x ΛR
         ((hc1 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
         (fun t ht => hb1 t ht x)
     convert four_mul_le_two_mul_sq hPbound using 1 ; norm_num
@@ -1178,7 +1178,7 @@ private theorem deTurckRicciArm_operatorFieldApplication_graded_jetL2_ballUnifor
     have hPbound : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (P₂.toSection x) ≤ ΛR ^ 2 := by
       rw [hP₂]
       exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 4 2 Φ₂
-        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 x ΛR hΛR_nn
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 x ΛR
         ((hc2 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
         (fun t ht => hb2 t ht x)
     convert four_mul_le_two_mul_sq hPbound using 1 ; norm_num
@@ -1345,19 +1345,19 @@ private theorem deTurckLieArm_operatorFieldApplication_graded_jetL2_ballUniform
   · intro x
     rw [hP₀]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 2 2 Φ₀
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x ΛL hΛL_nn
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x ΛL
       ((hc0 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
       (fun t ht => hb0 t ht x)
   · intro x
     rw [hP₁]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 3 2 Φ₁
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x ΛL hΛL_nn
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x ΛL
       ((hc1 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
       (fun t ht => hb1 t ht x)
   · intro x
     rw [hP₂]
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 4 2 Φ₂
-      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 x ΛL hΛL_nn
+      (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 x ΛL
       ((hc2 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
       (fun t ht => hb2 t ht x)
   · rw [hP₀]

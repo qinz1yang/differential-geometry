@@ -931,7 +931,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalP
         rw [hGj_def, diagonalGridGrowthFactor, diagonalGridGrowthFactor, pow_succ]; ring
       rw [hGdiag_succ]
       have hGj_nn' : (0 : ℝ) ≤ Gj := hGj_nn
-      nlinarith [mul_le_mul_of_nonneg_left hstep (by positivity : (0:ℝ) ≤ 2 * Gj), hGj_nn',
+      nlinarith only [mul_le_mul_of_nonneg_left hstep (by positivity : (0:ℝ) ≤ 2 * Gj), hGj_nn',
         hstep]
 
 omit [CompleteSpace E] in
@@ -1376,7 +1376,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldApplicationLeibnizPsi
                 (c + (j + 1) + m) x]
               exact mul_nonneg hG_nn hR_nn
           rw [operatorFieldApplicationGdiag_succ_eq (E := E) i]
-          nlinarith [hA, hB, hR_nn, hG_nn,
+          nlinarith only [hA, hB, hR_nn, hG_nn,
             mul_le_mul_of_nonneg_left hA (by norm_num : (0 : ℝ) ≤ 2),
             mul_le_mul_of_nonneg_left hB (by norm_num : (0 : ℝ) ≤ 2)]
 
@@ -1911,7 +1911,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalP
         rw [hGj_def, diagonalGridGrowthFactor, diagonalGridGrowthFactor, pow_succ]; ring
       rw [hGdiag_succ]
       have hGj_nn' : (0 : ℝ) ≤ Gj := hGj_nn
-      nlinarith [mul_le_mul_of_nonneg_left hstep (by positivity : (0:ℝ) ≤ 2 * Gj), hGj_nn',
+      nlinarith only [mul_le_mul_of_nonneg_left hstep (by positivity : (0:ℝ) ≤ 2 * Gj), hGj_nn',
         hstep]
 
 

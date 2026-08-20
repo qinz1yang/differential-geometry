@@ -185,13 +185,13 @@ lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
     rw [hfam (l + dd)] at h
     have : ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2 ≤ (Kw l * f (l + dd + 2 * p)) ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) h 2
-    nlinarith [this]
+    nlinarith only [this]
   have hΦl2 : ∀ i, ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2 ≤ (Kc i) ^ 2 * (1 + f (i + dc)) ^
     2 := by
     intro i
     have : ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2 ≤ (Kc i * (1 + f (i + dc))) ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) (hΦ i) 2
-    nlinarith [this]
+    nlinarith only [this]
   have hsupΦ_region1 : ∀ i, i ≤ t → supΦsq i ≤ KballΦ i := by
     intro i hi
     rw [hsupΦsq, hKballΦ]
@@ -379,7 +379,7 @@ lemma coeffContract_iteratedCovGrad_jet_bound [Nonempty M]
         pow_le_pow_left₀ (mul_nonneg (hf_nn _) (hf_nn _)) hinterp 2
       have hBB : f (q - i + 4 * K + dd + 2 * p) ^ 2 ≤ f (q + 3 + 2 * p) ^ 2 :=
         pow_le_pow_left₀ (hf_nn _) hfβγ 2
-      nlinarith [hABB, hABAB, hBB]
+      nlinarith only [hABB, hABAB, hBB]
     calc (∑ l ∈ Finset.range (q + 1 - i), supWsq l) * ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2
         ≤ (DW (q - i) * f (q - i + 4 * K + dd + 2 * p) ^ 2) *
           ((Kc i) ^ 2 * (1 + f (i + dc)) ^ 2) := by

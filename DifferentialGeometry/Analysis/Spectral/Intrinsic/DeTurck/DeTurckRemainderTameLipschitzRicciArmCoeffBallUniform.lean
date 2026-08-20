@@ -1306,7 +1306,7 @@ private theorem exists_ricciArmCoeff_ballUniform_C0_sup
     have hPbound : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x (P₀.toSection x) ≤ ΛR ^ 2 := by
       rw [hP₀]
       exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 2 2 Φ₀
-        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x ΛR hΛR_nn
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x ΛR
         ((hc0 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
         (fun t ht => hb0 t ht x)
     nlinarith [hPbound, sq_nonneg ΛR, riemannianFiberNormSq_nonneg
@@ -1318,7 +1318,7 @@ private theorem exists_ricciArmCoeff_ballUniform_C0_sup
     have hPbound : riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x (P₁.toSection x) ≤ ΛR ^ 2 := by
       rw [hP₁]
       exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 3 2 Φ₁
-        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x ΛR hΛR_nn
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x ΛR
         ((hc1 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
         (fun t ht => hb1 t ht x)
     nlinarith [hPbound, sq_nonneg ΛR, riemannianFiberNormSq_nonneg
@@ -1330,7 +1330,7 @@ private theorem exists_ricciArmCoeff_ballUniform_C0_sup
     have hPbound : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x (P₂.toSection x) ≤ ΛR ^ 2 := by
       rw [hP₂]
       exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 4 2 Φ₂
-        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 x ΛR hΛR_nn
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj2 x ΛR
         ((hc2 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt))
         (fun t ht => hb2 t ht x)
     nlinarith [hPbound, sq_nonneg ΛR, riemannianFiberNormSq_nonneg

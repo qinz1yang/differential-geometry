@@ -530,7 +530,7 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
         _ = Real.sqrt Sco * (dim / (1 - δ₀)) * max βT βT' := Real.sqrt_sq hcb_nn
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 4 2 Ψdev
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev x
-      (Real.sqrt Sco * (dim / (1 - δ₀)) * max βT βT') hcb_nn
+      (Real.sqrt Sco * (dim / (1 - δ₀)) * max βT βT')
       ((hcdev x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)) hsup
   · rw [heq, hPdev_def]
     have hjet : ∀ s ∈ Set.Icc (0 : ℝ) 1,

@@ -716,19 +716,18 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannMixedCoeff_backgroundDiffer
             (phiDtPair (I := I) (M := M) g₀)).toSection x) *
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 6 i WB).toSection x)) := by
-        have := hcomp
-        nlinarith
+        exact mul_le_mul_of_nonneg_left hcomp (sq_nonneg 2)
     _ ≤ (2 : ℝ) ^ 2 * (cB i *
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (6 + i) x
             ((iteratedCovGrad (I := I) g₀ 2 6 i WB).toSection x)) := by
-        have h1 := hcBb i x
-        nlinarith
+        exact mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_right (hcBb i x) hriemannianFiberNormSq_nn) (sq_nonneg 2)
     _ ≤ (2 : ℝ) ^ 2 * (cB i * (((Module.finrank ℝ E : ℝ) * (Module.finrank ℝ E : ℝ)) *
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 4 i
               (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁)).toSection x))) := by
-        have := hcB0 i
-        nlinarith [hWBjets]
+        exact mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_left hWBjets (hcB0 i)) (by norm_num)
     _ = (4 * cB i * ((Module.finrank ℝ E : ℝ) * (Module.finrank ℝ E : ℝ))) *
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 4 i
@@ -952,8 +951,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagon
             ((iteratedCovGrad (I := I) g₀ 0 2 i'
               (symmS (I := I) (M := M) g₀ T)).toSection x) :=
       riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le (I := I) (M := M) g₀ T i' x
-    match i' with
-    | 0 =>
+    cases i' with
+    | zero =>
         have hsym0 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
             ((iteratedCovGrad (I := I) g₀ 0 2 0
               (symmS (I := I) (M := M) g₀ T)).toSection x) ≤
@@ -994,8 +993,11 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagon
               ∑ l ∈ Finset.range (i + 1 - 0),
                 (2 * CAd l * (∑ k ∈ Finset.range (l + 3),
                   Combinatorics.antidiagonalTupleGrid b k) + 2 * cbg l) := by
-              refine mul_le_mul (le_trans hSIsymm ?_) hA2 hprod_nn1 (by positivity)
-              exact mul_le_mul_of_nonneg_left hsym0 (by positivity)
+              refine mul_le_mul (le_trans hSIsymm ?_) hA2 hprod_nn1
+                (mul_nonneg (pow_nonneg (Nat.cast_nonneg _) 3)
+                  (mul_nonneg (sq_nonneg _) (sq_nonneg _)))
+              exact mul_le_mul_of_nonneg_left hsym0
+                (pow_nonneg (Nat.cast_nonneg _) 3)
           _ = (Module.finrank ℝ E : ℝ) ^ 3 *
               (((Module.finrank ℝ E : ℝ) ^ 2 * δ₀ ^ 2) *
                 ∑ l ∈ Finset.range (i + 1 - 0),
@@ -1018,7 +1020,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagon
                 Finset.sum_nonneg fun k _ =>
                   Combinatorics.antidiagonalTupleGrid_nonneg b hb k
               have hgspc_nn := gridSumPairCount_nonneg (0 + 1) (l + 3)
-              nlinarith [mul_le_mul_of_nonneg_left hml (mul_nonneg (by norm_num : (0:ℝ) ≤ 2) hCADl),
+              nlinarith only [mul_le_mul_of_nonneg_left hml (mul_nonneg (by norm_num : (0:ℝ) ≤ 2) hCADl),
                 mul_nonneg hc0nn hcbgl, hWW_ge1, hWW_nn,
                 mul_nonneg (mul_nonneg hc0nn hcbgl) (sub_nonneg.mpr hWW_ge1)]
           _ ≤ ((Module.finrank ℝ E : ℝ) ^ 3 * BB i 0) * WW := by
@@ -1033,7 +1035,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagon
                     ∑ l ∈ Finset.range (i + 1 - 0),
                       (2 * CAd l * gridSumPairCount (0 + 1) (l + 3) + 2 * cbg l)) * WW := by
                 have hsum_nn0 := hBBsum_nn i 0
-                nlinarith [mul_nonneg hsum_nn0 hWW_nn]
+                nlinarith only [mul_nonneg hsum_nn0 hWW_nn]
               calc (Module.finrank ℝ E : ℝ) ^ 3 *
                     ((∑ l ∈ Finset.range (i + 1 - 0),
                       (2 * CAd l * gridSumPairCount (0 + 1) (l + 3) + 2 * cbg l)) *
@@ -1048,7 +1050,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagon
                         ∑ l ∈ Finset.range (i + 1 - 0),
                           (2 * CAd l * gridSumPairCount (0 + 1) (l + 3) + 2 * cbg l))) * WW := by
                     ac_rfl
-    | (i'' + 1) =>
+    | succ i'' =>
         have hb_le_grid : b (i'' + 1) ≤ Combinatorics.antidiagonalTupleGrid b (i'' + 1) := by
           have hmem : (fun _ : Fin 1 => (i'' + 1)) ∈
               Finset.Nat.antidiagonalTuple 1 (i'' + 1) := by
@@ -1110,8 +1112,10 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagon
               ∑ l ∈ Finset.range (i + 1 - (i'' + 1)),
                 (2 * CAd l * (∑ k ∈ Finset.range (l + 3),
                   Combinatorics.antidiagonalTupleGrid b k) + 2 * cbg l) := by
-              refine mul_le_mul (le_trans hSIsymm ?_) hA2 hprod_nn1 (by positivity)
-              exact mul_le_mul_of_nonneg_left hsym_le (by positivity)
+              refine mul_le_mul (le_trans hSIsymm ?_) hA2 hprod_nn1
+                (mul_nonneg (pow_nonneg (Nat.cast_nonneg _) 3) hgsA_nn)
+              exact mul_le_mul_of_nonneg_left hsym_le
+                (pow_nonneg (Nat.cast_nonneg _) 3)
           _ = (Module.finrank ℝ E : ℝ) ^ 3 *
               ((∑ k ∈ Finset.range ((i'' + 1) + 1), Combinatorics.antidiagonalTupleGrid b k) *
                 ∑ l ∈ Finset.range (i + 1 - (i'' + 1)),

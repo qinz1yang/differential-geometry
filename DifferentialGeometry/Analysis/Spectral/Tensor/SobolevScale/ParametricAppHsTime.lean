@@ -420,7 +420,7 @@ private theorem coeffRem_jet
       (I := I) (M := M) g b (c + i)
       (fun θ => iteratedCovGrad (I := I) g b c i (Ψ θ))
       (affineSet S a h) (affineSet_open hS a h) (affine_uIcc hseg)
-      hji x (Real.sqrt η) (Real.sqrt_nonneg η) hcont hsup
+      hji x (Real.sqrt η) hcont hsup
   have hcomm := iteratedCovGrad_path_comm (I := I) (M := M)
     g b c i Ψ (affineSet S a h) (affineSet_open hS a h)
     (affine_uIcc hseg) hΨjoint hji

@@ -140,7 +140,7 @@ theorem operatorFieldApplication_split_env
       have hab : (0 : ℝ) ≤ (A * (Cin (k + 3) * N)) * (B * Λ) :=
         mul_nonneg (mul_nonneg hA (mul_nonneg (hCin (k + 3)) hNnn))
           (mul_nonneg hB hΛ)
-      nlinarith [h1, h2, hab]
+      nlinarith only [h1, h2, hab]
     have hquad :
         ‖iteratedCovGrad (I := I) g 0 c j
             (operatorFieldApply (I := I) (M := M) g (s + 2) c Φ W)‖ ^ 2 ≤
@@ -191,7 +191,7 @@ theorem operatorFieldApplication_split_env
           Real.sqrt (operatorFieldApplicationGdiag (E := E) j * Cg j)) *
         ((Cin (k + 3) + 1) * (A * N + B * Λ)) := by
     refine mul_le_mul_of_nonneg_left ?_ hSnn
-    nlinarith [mul_nonneg hA hNnn,
+    nlinarith only [mul_nonneg hA hNnn,
       mul_nonneg (hCin (k + 3)) (mul_nonneg hB hΛ)]
   calc
     ‖ccTensorToHs (I := I) (M := M) g c ((k + 1 : ℕ) : ℝ)
@@ -293,7 +293,7 @@ theorem operatorFieldApplication_split_hs
         (Cpt * Cj (k + 4) + 1) *
           (A * ‖ccTensorToHs (I := I) (M := M) g s ((k + 5 : ℕ) : ℝ) U‖ +
             B * ‖ccTensorToHs (I := I) (M := M) g s ((k + 4 : ℕ) : ℝ) U‖) := by
-    nlinarith [mul_nonneg (mul_nonneg hCpt (hCj (k + 4)))
+    nlinarith only [mul_nonneg (mul_nonneg hCpt (hCj (k + 4)))
         (mul_nonneg hA hN5), mul_nonneg hB hN4]
   calc
     C0 (k + 2) *

@@ -180,7 +180,7 @@ theorem top_path_dev_uniform
     exact riemannianFiberNormSq_pathIntegralCoeffField_le_sq
       (I := I) (M := M) g 4 2 Φ
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev x
-      (C * R) hCR ((hcdev x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)) hsup
+      (C * R) ((hcdev x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)) hsup
   · rw [heq]
     dsimp [Pdev]
     exact path_jetL2_le (I := I) (M := M) g 4 2 2 Φ

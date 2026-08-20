@@ -404,7 +404,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 lemma sq_bound_of_sqrt_le_fw {r Λv : ℝ} (hr : 0 ≤ r) (h : Real.sqrt r ≤ Λv) :
     r ≤ Λv ^ 2 := by
-  nlinarith [Real.sq_sqrt hr, Real.sqrt_nonneg r]
+  simpa [Real.sq_sqrt hr] using pow_le_pow_left₀ (Real.sqrt_nonneg r) h 2
 
 set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -925,7 +925,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
       linarith
     have htrans := riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 2 2 Ψ₀
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj0 x
-      (Real.sqrt (8 * ΛCr ^ 2 + 4 * ΛL0 + 4 * ΛLc)) (Real.sqrt_nonneg _)
+      (Real.sqrt (8 * ΛCr ^ 2 + 4 * ΛL0 + 4 * ΛLc))
       ((hc0 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)) hsup
     rw [← hC₀def] at htrans
     refine le_trans htrans (pow_le_pow_left₀ (Real.sqrt_nonneg _) (le_max_left _ _) 2)
@@ -956,7 +956,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
       linarith
     have htrans := riemannianFiberNormSq_pathIntegralCoeffField_le_sq (I := I) (M := M) g₀ 3 2 Ψ₁
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hj1 x
-      (Real.sqrt (8 * ΛCr ^ 2 + 2 * ΛL1)) (Real.sqrt_nonneg _)
+      (Real.sqrt (8 * ΛCr ^ 2 + 2 * ΛL1))
       ((hc1 x).mono (Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)) hsup
     rw [← hC₁def] at htrans
     refine le_trans htrans (pow_le_pow_left₀ (Real.sqrt_nonneg _) (le_max_right _ _) 2)
@@ -964,7 +964,7 @@ theorem deTurckRHSArmDiff_threeArm_canonicalTop_coeffC0_jetL2_ballUniform_of_sym
       have hsum : (0 : ℝ) ≤ ∑ i ∈ Finset.range (a + 1), (4 * P0 i + 4 * PL i) :=
         Finset.sum_nonneg fun i _ => by
           have := hP0_nn i; have := hPL_nn i; linarith
-      nlinarith [sq_nonneg Br]
+      exact add_nonneg (mul_nonneg (by norm_num) (sq_nonneg Br)) hsum
     have hjet : ∀ s ∈ Set.Icc (0 : ℝ) 1,
         (∑ i ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 2 2 i (Ψ₀ s)‖ ^ 2) ≤
           Real.sqrt (8 * Br ^ 2 + ∑ i ∈ Finset.range (a + 1), (4 * P0 i + 4 * PL i)) ^ 2 := by
@@ -1376,7 +1376,7 @@ theorem normSq_iteratedCovGrad_sub_le_fw (g : SmoothRiemannianMetric I M) (r s q
       ‖iteratedCovGrad (I := I) g r s q A‖ + ‖iteratedCovGrad (I := I) g r s q B‖ := by
     rw [iteratedCovGrad_sub]
     exact norm_sub_le _ _
-  nlinarith [htri, norm_nonneg (iteratedCovGrad (I := I) g r s q (A - B)),
+  nlinarith only [htri, norm_nonneg (iteratedCovGrad (I := I) g r s q (A - B)),
     norm_nonneg (iteratedCovGrad (I := I) g r s q A),
     norm_nonneg (iteratedCovGrad (I := I) g r s q B),
     sq_nonneg (‖iteratedCovGrad (I := I) g r s q A‖ - ‖iteratedCovGrad (I := I) g r s q B‖)]

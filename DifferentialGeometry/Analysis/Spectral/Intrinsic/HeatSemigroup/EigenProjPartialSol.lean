@@ -193,7 +193,7 @@ private lemma lamHalf {C₁ C₂ : ℝ≥0} {R T : ℝ} (hR : 0 ≤ R)
         have hfrac : (C₂ : ℝ) / ((C₂ : ℝ) + 1) ≤ 1 := by
           rw [div_le_one (by positivity)]
           linarith [C₂.coe_nonneg]
-        nlinarith [hfrac,
+        nlinarith only [hfrac,
           div_nonneg C₂.coe_nonneg (by positivity : (0 : ℝ) ≤ (C₂ : ℝ) + 1)]
   linarith
 
@@ -358,7 +358,7 @@ theorem projFix_dist_le
     have := Real.sqrt_nonneg T
     have h1 : (0 : ℝ) ≤ (C₁ : ℝ) * R * (1 + T) := by
       have : (0 : ℝ) ≤ (C₁ : ℝ) * R := mul_nonneg C₁.coe_nonneg hR.le
-      nlinarith [hT.le]
+      exact mul_nonneg this (add_nonneg zero_le_one hT.le)
     have h2 : (0 : ℝ) ≤ (C₂ : ℝ) * (2 * Real.sqrt T) := by positivity
     linarith
   have htri : ‖fN - fstar‖ ≤
@@ -372,7 +372,7 @@ theorem projFix_dist_le
   have hpos : (0 : ℝ) <
       1 - ((C₁ : ℝ) * R * (1 + T) + (C₂ : ℝ) * (2 * Real.sqrt T)) := by linarith
   rw [inv_mul_eq_div, le_div_iff₀ hpos]
-  nlinarith [htri, hcontr, norm_nonneg (fN - fstar)]
+  nlinarith only [htri, hcontr, norm_nonneg (fN - fstar)]
 
 omit [BoundarylessManifold I M] in
 theorem projFix_le_two
