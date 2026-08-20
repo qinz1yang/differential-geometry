@@ -429,7 +429,31 @@ theorem bochner_polarised_pointwise_of_smoothness
     rw [h_Δ_4ginner_eq_sub]
     rw [hΔN1, hΔN2]
     linarith [h_hessPolar, h_ricciPolar, h_gradLapPolar]
-  nlinarith [key]
+  have h4 : 4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
+      4 * (g.inner x
+            (gradFun (I := I) g (φ : M → ℝ) x)
+            (gradFun (I := I) g (Δ_g (I := I) g v) x) +
+          g.inner x
+            (gradFun (I := I) g (v : M → ℝ) x)
+            (gradFun (I := I) g (Δ_g (I := I) g φ) x) +
+          2 * hessPairingChart (I := I) g φ v x +
+          2 * ricciTensor (I := I) g x
+            (gradFun (I := I) g (φ : M → ℝ) x)
+            (gradFun (I := I) g (v : M → ℝ) x)) := by
+    calc
+      4 * Δ_g (I := I) g ⟨_, h_gphi_gv_smooth⟩ x =
+          8 * hessPairingChart (I := I) g φ v x +
+            8 * ricciTensor (I := I) g x
+              (gradFun (I := I) g (φ : M → ℝ) x)
+              (gradFun (I := I) g (v : M → ℝ) x) +
+            4 * (g.inner x
+                  (gradFun (I := I) g (φ : M → ℝ) x)
+                  (gradFun (I := I) g (Δ_g (I := I) g v) x) +
+                g.inner x
+                  (gradFun (I := I) g (v : M → ℝ) x)
+                  (gradFun (I := I) g (Δ_g (I := I) g φ) x)) := key
+      _ = _ := by ring
+  exact mul_left_cancel₀ (by norm_num : (4 : ℝ) ≠ 0) h4
 
 omit [CompactSpace M] in
 theorem bochner_polarised_pointwise_oneSubLap_of_smoothness

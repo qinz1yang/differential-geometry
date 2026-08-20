@@ -1,5 +1,7 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Real.Sqrt
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Positivity
@@ -140,9 +142,10 @@ theorem sqrt_le_mul_sqrt_add_sqrt_of_le
 
 theorem sq_sum_five_le (a b c d e : ℝ) :
     (a + b + c + d + e) ^ 2 ≤ 5 * (a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 + e ^ 2) := by
-  nlinarith [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (a - d),
-    sq_nonneg (a - e), sq_nonneg (b - c), sq_nonneg (b - d),
-    sq_nonneg (b - e), sq_nonneg (c - d), sq_nonneg (c - e), sq_nonneg (d - e)]
+  have h := sq_sum_le_card_mul_sum_sq
+    (s := (Finset.univ : Finset (Fin 5)))
+    (f := ![a, b, c, d, e])
+  simpa [Fin.sum_univ_succ, add_assoc] using h
 
 theorem five_term_young_bound
     {T e1 e2 b K1 K2 K3 K4 K5 w : ℝ}
@@ -166,8 +169,8 @@ theorem five_term_young_bound
     have h5 := Real.sqrt_nonneg (K5 * w)
     linarith
   have hTuv : T ≤ (u + v) ^ 2 := by
-    have huv0 : 0 ≤ u + v := add_nonneg hu0 hv0
-    have hsq : Real.sqrt T ^ 2 ≤ (u + v) ^ 2 := by nlinarith [hT, Real.sqrt_nonneg T]
+    have hsq : Real.sqrt T ^ 2 ≤ (u + v) ^ 2 :=
+      pow_le_pow_left₀ (Real.sqrt_nonneg T) (by simpa only [hu_def, hv_def] using hT) 2
     rwa [Real.sq_sqrt hT0] at hsq
   have hyoung := add_sq_le_young u v (1 / 100) (by norm_num)
   have hu2 : u ^ 2 = (e1 + e2) ^ 2 * b := by
@@ -185,7 +188,12 @@ theorem five_term_young_bound
   have hone : (1 + (1 / 100 : ℝ)) * u ^ 2 ≤
       ((201 / 200) * (e1 + e2)) ^ 2 * b := by
     rw [hu2]
-    nlinarith [sq_nonneg (e1 + e2), hb]
+    have hcoeff : (1 + (1 / 100 : ℝ)) ≤ (201 / 200 : ℝ) ^ 2 := by norm_num
+    calc
+      (1 + (1 / 100 : ℝ)) * ((e1 + e2) ^ 2 * b) ≤
+          (201 / 200 : ℝ) ^ 2 * ((e1 + e2) ^ 2 * b) :=
+        mul_le_mul_of_nonneg_right hcoeff (mul_nonneg (sq_nonneg _) hb)
+      _ = ((201 / 200) * (e1 + e2)) ^ 2 * b := by ring
   have hinv : ((1 : ℝ) / 100)⁻¹ = 100 := by norm_num
   rw [hinv] at hyoung
   calc

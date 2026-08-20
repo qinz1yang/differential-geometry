@@ -30,7 +30,9 @@ theorem quartic_product_sum_le_interpolation_square
   have hgeu : u ≤ (1 + A) ^ 2 * (D4 + D3 + D2 + N) ^ 2 := by
     have h2 : (D3 + N) ^ 2 ≤ (D4 + D3 + D2 + N) ^ 2 :=
       pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hone : (1 : ℝ) ≤ (1 + A) ^ 2 := by nlinarith [hA]
+    have hone : (1 : ℝ) ≤ (1 + A) ^ 2 := by
+      simpa using
+        (pow_le_pow_left₀ (a := (1 : ℝ)) (b := 1 + A) (by norm_num) (by linarith) 2)
     have h3 : (D4 + D3 + D2 + N) ^ 2 ≤
         (1 + A) ^ 2 * (D4 + D3 + D2 + N) ^ 2 := by
       calc
@@ -86,6 +88,14 @@ theorem quartic_product_sum_le_interpolation_square
   have hstep3 : b * ((8 * (1 + (c * R * A4) ^ 2)) * u) =
       8 * b * u + 8 * b * (c * R * A4) ^ 2 * u := by ring
   have hsum := sq_add_sq_le_sq_add_of_nonneg hXnn hYnn
-  linarith [hX2, hY2, hstep2, hsum]
+  calc
+    b * (((1 + x) ^ 2 * (1 + x) ^ 2) * u) ≤
+        b * ((8 * (1 + (c * R * A4) ^ 2)) * u) := hstep2
+    _ = 8 * b * u + 8 * b * (c * R * A4) ^ 2 * u := hstep3
+    _ ≤ (Real.sqrt (8 * b) * (1 + A) * (D4 + D3 + D2 + N)) ^ 2 +
+        (Real.sqrt (8 * b) * c * R * A4 * (D3 + N)) ^ 2 :=
+      add_le_add hX2 hY2
+    _ ≤ (Real.sqrt (8 * b) * (1 + A) * (D4 + D3 + D2 + N) +
+        Real.sqrt (8 * b) * c * R * A4 * (D3 + N)) ^ 2 := hsum
 
 end DifferentialGeometry.Analysis

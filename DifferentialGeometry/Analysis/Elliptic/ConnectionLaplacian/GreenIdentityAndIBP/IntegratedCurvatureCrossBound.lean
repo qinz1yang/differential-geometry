@@ -189,7 +189,11 @@ theorem exists_integrated_curvatureCrossBound
         mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.sqrt_nonneg _)
       have h2 : K_dR * Real.sqrt rS ≤ max K_R K_dR * Real.sqrt rS :=
         mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.sqrt_nonneg _)
-      nlinarith [h1, h2]
+      calc
+        K_R * Real.sqrt rG + K_dR * Real.sqrt rS ≤
+            max K_R K_dR * Real.sqrt rG + max K_R K_dR * Real.sqrt rS :=
+          add_le_add h1 h2
+        _ = max K_R K_dR * (Real.sqrt rG + Real.sqrt rS) := by ring
     have hrC_eq : rC = Real.sqrt rC ^ 2 := (Real.sq_sqrt hrC_nn).symm
     have hrG_eq : rG = Real.sqrt rG ^ 2 := (Real.sq_sqrt hrG_nn).symm
     have hrS_eq : rS = Real.sqrt rS ^ 2 := (Real.sq_sqrt hrS_nn).symm
