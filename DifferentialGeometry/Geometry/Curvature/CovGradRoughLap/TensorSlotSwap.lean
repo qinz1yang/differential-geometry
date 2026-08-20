@@ -101,27 +101,29 @@ lemma twoSlotPeel_smul (r t : ℕ) (x : M) (c : ℝ) (T : TensorRSSpace r (t + 2
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-@[reducible] def tangentSpaceFiniteDimensional {x : M} :
+omit [IsManifold I ∞ M] in
+lemma tangentSpaceFiniteDimensional {x : M} :
     FiniteDimensional ℝ (TangentSpace I x) := by
   unfold TangentSpace
   infer_instance
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-@[reducible] def tangentSpaceT2 {x : M} : T2Space (TangentSpace I x) := by
+omit [IsManifold I ∞ M] in
+lemma tangentSpaceT2 {x : M} : T2Space (TangentSpace I x) := by
   unfold TangentSpace
   infer_instance
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-@[reducible] def tensorRSSpaceFiniteDimensional {r t : ℕ} {x : M} :
+lemma tensorRSSpaceFiniteDimensional {r t : ℕ} {x : M} :
     FiniteDimensional ℝ (TensorRSSpace r t I x) := by
   unfold TensorRSSpace
   infer_instance
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-@[reducible] def tensorRSSpaceT2 {r t : ℕ} {x : M} : T2Space (TensorRSSpace r t I x) := by
+lemma tensorRSSpaceT2 {r t : ℕ} {x : M} : T2Space (TensorRSSpace r t I x) := by
   unfold TensorRSSpace
   infer_instance
 

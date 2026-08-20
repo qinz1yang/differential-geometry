@@ -3669,8 +3669,6 @@ theorem deTurckLieConnectionDifferenceDerivative_backgroundDifference_eq
   rw [cometricDoublePairTraceCoefficient, deTurckLieCovariantDerivativePairTracePermutation, deTurckLieBackgroundDifferenceCoefficient_eq_canonical]
   exact bdCovDerivArmDiff_eq_pairTrace (I := I) (M := M) g₀ g_bg g₁
 
-abbrev deTurckLieConnectionDifferenceDerivative_backgroundDifference_pointwise_gridWindow := @bdCovDerivArmDiff_pointwise_gridWindow
-
 end TensorSpectral
 end Parabolic
 end Analysis

@@ -900,10 +900,6 @@ def grad_g [I.Boundaryless]
     (grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       gradFun (I := I) g f x := rfl
 
-@[simp] lemma gradFun_coe (g : SmoothRiemannianMetric I M)
-    (f : C^∞⟮I, M; ℝ⟯) (x : M) :
-    gradFun (I := I) g (⇑f) x = gradFun (I := I) g f x := rfl
-
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 @[simp] theorem smoothFun_coe_mk (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :

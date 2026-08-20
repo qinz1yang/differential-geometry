@@ -95,7 +95,8 @@ section SourceZero
 variable {T : ℝ} {A₁ A_q : ℝ≥0} {f : ℝ × V → F}
   [Fact (1 ≤ klQ V)]
 
-def src0L1Mem (h : KLSource0 T A₁ A_q f) (i : KLCylIndex V T) :
+omit [NormedSpace ℝ F] [CompleteSpace F] [Fact (1 ≤ klQ V)] in
+lemma src0L1Mem (h : KLSource0 T A₁ A_q f) (i : KLCylIndex V T) :
     MemLp f 1 (klCylMeasure i) := by
   apply klScaleMemLp (s := klL1ScaleR (V := V) i.radius)
     (A := A₁) (klL1ScaleR_pos i.radius_pos)
@@ -103,7 +104,8 @@ def src0L1Mem (h : KLSource0 T A₁ A_q f) (i : KLCylIndex V T) :
   · simpa [klL1Scale, klCylMeasure] using
       h.local_l1 i.center i.radius i.radius_pos i.time_le
 
-def src0LqMem (h : KLSource0 T A₁ A_q f) (i : KLCylIndex V T) :
+omit [NormedSpace ℝ F] [CompleteSpace F] [Fact (1 ≤ klQ V)] in
+lemma src0LqMem (h : KLSource0 T A₁ A_q f) (i : KLCylIndex V T) :
     MemLp f (klQ V) (klLateMeasure i) := by
   apply klScaleMemLp (s := klLqScaleR (V := V) i.radius)
     (A := A_q) (klLqScaleR_pos i.radius_pos)
@@ -147,7 +149,8 @@ section SourceOne
 variable {T : ℝ} {A₂ Aₚ : ℝ≥0} {f : ℝ × V → F}
   [Fact (1 ≤ klP V)]
 
-def src1L2Mem (h : KLSource1 T A₂ Aₚ f) (i : KLCylIndex V T) :
+omit [NormedSpace ℝ F] [CompleteSpace F] [Fact (1 ≤ klP V)] in
+lemma src1L2Mem (h : KLSource1 T A₂ Aₚ f) (i : KLCylIndex V T) :
     MemLp f 2 (klCylMeasure i) := by
   apply klScaleMemLp (s := klL2ScaleR (V := V) i.radius)
     (A := A₂) (klL2ScaleR_pos i.radius_pos)
@@ -155,7 +158,8 @@ def src1L2Mem (h : KLSource1 T A₂ Aₚ f) (i : KLCylIndex V T) :
   · simpa [klL2Scale, klCylMeasure] using
       h.local_l2 i.center i.radius i.radius_pos i.time_le
 
-def src1LpMem (h : KLSource1 T A₂ Aₚ f) (i : KLCylIndex V T) :
+omit [NormedSpace ℝ F] [CompleteSpace F] [Fact (1 ≤ klP V)] in
+lemma src1LpMem (h : KLSource1 T A₂ Aₚ f) (i : KLCylIndex V T) :
     MemLp f (klP V) (klLateMeasure i) := by
   apply klScaleMemLp (s := klLpScaleR (V := V) i.radius)
     (A := Aₚ) (klLpScaleR_pos i.radius_pos)
@@ -200,7 +204,9 @@ variable {T : ℝ} {A₀ A₂ Aₚ : ℝ≥0}
   {u : ℝ × V → F} {d : ℝ × V → G}
   [Fact (1 ≤ klP V)]
 
-def pathL2Mem (h : KLPath T A₀ A₂ Aₚ u d) (i : KLCylIndex V T) :
+omit [NormedSpace ℝ F] [CompleteSpace F] [NormedSpace ℝ G] [CompleteSpace G]
+    [Fact (1 ≤ klP V)] in
+lemma pathL2Mem (h : KLPath T A₀ A₂ Aₚ u d) (i : KLCylIndex V T) :
     MemLp d 2 (klCylMeasure i) := by
   apply klScaleMemLp (s := klL2ScaleR (V := V) i.radius)
     (A := A₂) (klL2ScaleR_pos i.radius_pos)
@@ -208,7 +214,9 @@ def pathL2Mem (h : KLPath T A₀ A₂ Aₚ u d) (i : KLCylIndex V T) :
   · simpa [klL2Scale, klCylMeasure] using
       h.grad_l2 i.center i.radius i.radius_pos i.time_le
 
-def pathLpMem (h : KLPath T A₀ A₂ Aₚ u d) (i : KLCylIndex V T) :
+omit [NormedSpace ℝ F] [CompleteSpace F] [NormedSpace ℝ G] [CompleteSpace G]
+    [Fact (1 ≤ klP V)] in
+lemma pathLpMem (h : KLPath T A₀ A₂ Aₚ u d) (i : KLCylIndex V T) :
     MemLp d (klP V) (klLateMeasure i) := by
   apply klScaleMemLp (s := klLpScaleR (V := V) i.radius)
     (A := Aₚ) (klLpScaleR_pos i.radius_pos)

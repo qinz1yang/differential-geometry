@@ -65,7 +65,8 @@ variable {H : Type uH} [TopologicalSpace H]
     Y.riemBundle (I := I)
   exact fun _ => inferInstance
 
-@[reducible] def PointedRiemannianManifold.riemBundle_cont
+omit [FiniteDimensional Real E] [CompleteSpace E] in
+theorem PointedRiemannianManifold.riemBundle_cont
     {I : ModelWithCorners Real E H}
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) :
     letI : TopologicalSpace Y.M := Y.topology

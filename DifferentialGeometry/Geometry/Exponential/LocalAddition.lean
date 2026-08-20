@@ -30,12 +30,16 @@ def connCompOpen (p : M) : Opens M := by
 def connCompPt (p : M) : connCompOpen (I := I) p :=
   ⟨p, mem_connectedComponent⟩
 
-@[reducible] noncomputable def connCompConnected (p : M) :
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [T2Space M] [CompactSpace M] in
+theorem connCompConnected (p : M) :
     ConnectedSpace (connCompOpen (I := I) p) := by
   apply Subtype.connectedSpace
   simpa only [connCompOpen] using (isConnected_connectedComponent (x := p))
 
-@[reducible] noncomputable def connCompCompact (p : M) :
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [T2Space M] in
+theorem connCompCompact (p : M) :
     CompactSpace (connCompOpen (I := I) p) := by
   apply isCompact_iff_compactSpace.mp
   simpa only [connCompOpen] using

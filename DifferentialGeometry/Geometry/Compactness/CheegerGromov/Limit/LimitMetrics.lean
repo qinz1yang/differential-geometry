@@ -244,7 +244,9 @@ theorem ballPullback_inner {j l : ℕ}
     PartialDiffeomorph.opensDiffeo_mfderiv Φ hU x w]
   rfl
 
-def ballTransSource {j l m : ℕ}
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [∀ j, SigmaCompactSpace (M j)]
+    [∀ j, T2Space (M j)] [I.Boundaryless] in
+lemma ballTransSource {j l m : ℕ}
     (Φ : PartialDiffeomorph I I (M j) (M l) (∞ : WithTop ℕ∞))
     (Θ : PartialDiffeomorph I I (M l) (M m) (∞ : WithTop ℕ∞))
     (U : Opens (M j)) (hU : (U : Set (M j)) ⊆ Φ.source)

@@ -715,7 +715,7 @@ structure RicciWMPData
 
 namespace RicciWMPData
 
-def toInput
+theorem toInput
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} {T : Real}
@@ -772,7 +772,7 @@ structure PinchWMPData
 
 namespace PinchWMPData
 
-def toInput
+theorem toInput
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}

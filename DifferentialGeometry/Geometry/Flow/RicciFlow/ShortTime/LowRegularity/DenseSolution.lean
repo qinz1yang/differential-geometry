@@ -62,7 +62,7 @@ private theorem realize_at_thr
     (mul_le_mul_of_nonneg_right hdelta (Real.sqrt_nonneg _))
     (Real.sqrt_nonneg _)
 
-def realizeOfLE
+theorem realizeOfLE
     (g₀ : SmoothRiemannianMetric I M) {δ R Q : ℝ} (hRQ : R ≤ Q)
     (hrealQ : ∀ T : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) T‖ ≤ Q →

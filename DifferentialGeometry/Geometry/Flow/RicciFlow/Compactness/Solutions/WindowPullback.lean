@@ -129,7 +129,8 @@ noncomputable def solLip0Data_pullback
     rw [key]
     exact hData.hShi0 i t ht (Φ x) hx
 
-noncomputable def solCovData_pullback
+omit [I.Boundaryless] in
+theorem solCovData_pullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -160,7 +161,8 @@ noncomputable def solCovData_pullback
       rw [metricCovDerivNorm_pullback (I := I) r (gSeq i t0) gRef Φ x]
       exact hinitCbound r hr1 hrn i (Φ x) hx
 
-noncomputable def solLipData_pullback
+omit [I.Boundaryless] in
+theorem solLipData_pullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]

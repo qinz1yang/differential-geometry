@@ -579,8 +579,8 @@ theorem lieBackgroundJet
   classical
   obtain ⟨Ac, Bc, hAc_nn, hBc_nn, hcov⟩ :=
     lieCovJet (I := I) (M := M) hDim g hδ₀
-  obtain ⟨Ca, hCa_nn, hCa⟩ := deTurckLieConnectionDifferenceDerivative_backgroundDifference_pointwise_gridWindow (I := I) (M := M) g g_bg hδ₀
-  obtain ⟨Cb, hCb_nn, hCb⟩ := deTurckLieCovariantDerivativeInsertionDiff_grid (I := I) (M := M) g g_bg hδ₀
+  obtain ⟨Ca, hCa_nn, hCa⟩ := bdCovDerivArmDiff_pointwise_gridWindow (I := I) (M := M) g g_bg hδ₀
+  obtain ⟨Cb, hCb_nn, hCb⟩ := bdEndoArmDiff_pointwise_gridWindow (I := I) (M := M) g g_bg hδ₀
   obtain ⟨Kint, hKint_nn, hint⟩ :=
     antidiagonalTupleGridWindow_bound_to_covariant_jet_bound (I := I) (M := M) g (Λ₀ := 1) zero_le_one
   set Aa : ℕ → ℝ := fun q => Ca q * ∑ k ∈ Finset.range (q + 2), Kint k with hAa_def

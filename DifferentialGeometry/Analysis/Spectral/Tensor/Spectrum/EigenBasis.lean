@@ -127,8 +127,8 @@ theorem TensorNonzeroResolventEigenvalue.countable_ofCompact
   exact (nonzero_tensor_resolvent_eigenvalues_set_countable
     (I := I) (M := M) g r s h_compact).to_subtype
 
-@[reducible]
-def TensorNonzeroResolventEigenvalue.finiteDimensional_ofCompact
+omit [NeZero (Module.finrank ℝ E)] in
+theorem TensorNonzeroResolventEigenvalue.finiteDimensional_ofCompact
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))

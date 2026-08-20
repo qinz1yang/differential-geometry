@@ -1147,8 +1147,6 @@ theorem bdL2_tameEnvelope_of_gridWindow (g₀ : SmoothRiemannianMetric I M) (a :
           (1 + ∑ j ∈ Finset.range (i + 2), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
         ring
 
-abbrev deTurckLieCovariantDerivativeInsertionDiff_grid := @bdEndoArmDiff_pointwise_gridWindow
-
 end TensorSpectral
 end Parabolic
 end Analysis

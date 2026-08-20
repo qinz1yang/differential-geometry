@@ -274,7 +274,8 @@ theorem defaultFrame_frame (x₀ : M) :
 end LocalChartAt
 
 
-def coordinateFrameAt_isLocalFrame_one (x₀ : M) :
+omit [CompleteSpace 𝕜] in
+lemma coordinateFrameAt_isLocalFrame_one (x₀ : M) :
     IsLocalFrameOn I E (1 : WithTop ℕ∞)
       (coordinateFrameAt (I := I) x₀) (coordinateFrameSet (I := I) x₀) :=
   (coordinateTrivializationAt (I := I) x₀).isLocalFrameOn_localFrame_baseSet

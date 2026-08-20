@@ -45,12 +45,14 @@ def TgtSigma : Prop :=
     letI : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
     IsSigmaCompact (Φ.target k)
 
-def SrcSigma.compSubseq (hsrc : SrcSigma Φ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem SrcSigma.compSubseq (hsrc : SrcSigma Φ)
     (ρ : Nat -> Nat) (hρ : StrictMono ρ) :
     SrcSigma (Φ.compSubseq ρ hρ) :=
   fun k => hsrc (ρ k)
 
-def TgtSigma.compSubseq (htgt : TgtSigma Φ)
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem TgtSigma.compSubseq (htgt : TgtSigma Φ)
     (ρ : Nat -> Nat) (hρ : StrictMono ρ) :
     TgtSigma (Φ.compSubseq ρ hρ) :=
   fun k => htgt (ρ k)

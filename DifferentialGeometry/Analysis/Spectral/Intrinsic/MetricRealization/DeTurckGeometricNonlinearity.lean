@@ -99,7 +99,8 @@ def deTurckRemainderSection (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
   else
     0
 
-private def hCompact (g_bg : SmoothRiemannianMetric I M) :
+omit [BoundarylessManifold I M] in
+private lemma hCompact (g_bg : SmoothRiemannianMetric I M) :
     IsCompactOperator (tensorResolventL2 (I := I) (M := M) g_bg 0 2) :=
   tensorResolventL2_isCompactOperator (I := I) (M := M) g_bg 0 2
 

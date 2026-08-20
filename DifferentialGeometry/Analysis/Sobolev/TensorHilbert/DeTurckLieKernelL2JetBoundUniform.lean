@@ -103,7 +103,7 @@ private theorem kernel_grid_of_conn
   have hb : ∀ l, 0 ≤ b l := fun l =>
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
   let W : ℝ := antidiagonalTupleGridPartialSum b (i + 3)
-  have hW_ge1 : 1 ≤ W := grid_one_le b hb (by omega)
+  have hW_ge1 : 1 ≤ W := one_le_antidiagonalTupleGridPartialSum b hb (by omega)
   have harm : ∀ i', i' ≤ i →
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i') x
         ((iteratedCovGrad (I := I) g₀ 1 2 i'
@@ -119,7 +119,8 @@ private theorem kernel_grid_of_conn
       F i' * antidiagonalTupleGridPartialSum b (i' + 2) := by
     intro i' hi'
     refine (hfix i' (by omega) x).trans ?_
-    have hone : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (i' + 2) := grid_one_le b hb (by omega)
+    have hone : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (i' + 2) :=
+      one_le_antidiagonalTupleGridPartialSum b hb (by omega)
     nlinarith [hF i']
   have hQ1 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i
@@ -184,14 +185,28 @@ private theorem kernel_grid_of_conn
   have hP4_le : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (3 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 3 i P4).toSection x) ≤ CQ3 i * W :=
     le_of_eq_of_le (hrs_eq (finRotate 3) Q1bg) hQ3
-  have t1 := riemannianFiberNormSq_sub (I := I) (M := M) g₀ 1 3 i A1 A2 x
-  have t2 := riemannianFiberNormSq_add (I := I) (M := M) g₀ 1 3 i (A1 - A2) Q11 x
-  have t3 := riemannianFiberNormSq_sub (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11) Qbg1 x
-  have t4 := riemannianFiberNormSq_sub (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11 - Qbg1) P1 x
-  have t5 := riemannianFiberNormSq_add (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11 - Qbg1 - P1) P2 x
-  have t6 := riemannianFiberNormSq_sub (I := I) (M := M) g₀ 1 3 i
+  have t1 :=
+    riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative
+      (I := I) (M := M) g₀ 1 3 i A1 A2 x
+  have t2 :=
+    riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative
+      (I := I) (M := M) g₀ 1 3 i (A1 - A2) Q11 x
+  have t3 :=
+    riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative
+      (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11) Qbg1 x
+  have t4 :=
+    riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative
+      (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11 - Qbg1) P1 x
+  have t5 :=
+    riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative
+      (I := I) (M := M) g₀ 1 3 i (A1 - A2 + Q11 - Qbg1 - P1) P2 x
+  have t6 :=
+    riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative
+      (I := I) (M := M) g₀ 1 3 i
     (A1 - A2 + Q11 - Qbg1 - P1 + P2) P3 x
-  have t7 := riemannianFiberNormSq_add (I := I) (M := M) g₀ 1 3 i
+  have t7 :=
+    riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative
+      (I := I) (M := M) g₀ 1 3 i
     (A1 - A2 + Q11 - Qbg1 - P1 + P2 - P3) P4 x
   have hKK : deTurckLieConnectionDifferenceDerivativeKernel (I := I) (M := M) g₀ g₁ g_bg =
       A1 - A2 + Q11 - Qbg1 - P1 + P2 - P3 + P4 := rfl
@@ -304,7 +319,8 @@ private theorem sym_grid_of_conn
           rw [iteratedCovGrad_zero]
           exact symmC0_riemannianFiberNormSq_le (I := I) (M := M) g₀ T hδ_nonneg hbound x
         have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith [hδ_nonneg, hδ_le]
-        have hwin1 : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (0 + 1) := grid_one_le b hb (by omega)
+        have hwin1 : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (0 + 1) :=
+          one_le_antidiagonalTupleGridPartialSum b hb (by omega)
         have hle1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
             ((iteratedCovGrad (I := I) g₀ 0 2 0
               (symmS (I := I) (M := M) g₀ T)).toSection x) ≤ fr ^ 2 * δ₀ ^ 2 :=
@@ -325,11 +341,13 @@ private theorem sym_grid_of_conn
         have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (m + 1)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (m + 1)
               (symmS (I := I) (M := M) g₀ T)).toSection x) ≤ b (m + 1) :=
-          symm_riemannianFiberNormSq (I := I) (M := M) g₀ T (m + 1) x
+          riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative
+            (I := I) (M := M) g₀ T (m + 1) x
         have h2 : b (m + 1) ≤ Combinatorics.antidiagonalTupleGrid b (m + 1) :=
-          grid_single_le b hb (m + 1) (by omega)
+          single_le_antidiagonalTupleGridPartialSum b hb (m + 1) (by omega)
         have h3 : Combinatorics.antidiagonalTupleGrid b (m + 1) ≤
-            antidiagonalTupleGridPartialSum b ((m + 1) + 1) := grid_term_le b hb (by omega)
+            antidiagonalTupleGridPartialSum b ((m + 1) + 1) :=
+          antidiagonalTupleGrid_le_partialSum b hb (by omega)
         have hfac1 : (1 : ℝ) ≤ fr ^ 2 * δ₀ ^ 2 + 1 :=
           le_add_of_nonneg_left (by positivity)
         have hwin_nn : 0 ≤ antidiagonalTupleGridPartialSum b ((m + 1) + 1) := antidiagonalTupleGridPartialSum_nonneg b hb _
@@ -435,7 +453,9 @@ private theorem sym_grid_of_conn
       ((iteratedCovGrad (I := I) g₀ 0 4 i
         (deTurckLieConnectionDifferenceDerivativeLoweredG1 (I := I) (M := M) g₀ T g₁ g_bg)).toSection x) ≤
       2 * (CL i * W) + 2 * (CLT i * W) := by
-    refine (riemannianFiberNormSq_add (I := I) (M := M) g₀ 0 4 i
+    refine
+      (riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative
+        (I := I) (M := M) g₀ 0 4 i
       (deTurckLieConnectionDifferenceDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg)
       (deTurckLieConnectionDifferenceDerivativeLoweredPerturb (I := I) (M := M) g₀ T g₁ g_bg) x).trans ?_
     linarith [hL0, hLT]
@@ -449,7 +469,9 @@ private theorem sym_grid_of_conn
     riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection
       (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 4) 1)
       (deTurckLieConnectionDifferenceDerivativeLoweredG1 (I := I) (M := M) g₀ T g₁ g_bg) i x
-  refine (riemannianFiberNormSq_add (I := I) (M := M) g₀ 0 4 i
+  refine
+    (riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative
+      (I := I) (M := M) g₀ 0 4 i
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
       (deTurckLieConnectionDifferenceDerivativeLoweredG1 (I := I) (M := M) g₀ T g₁ g_bg))
     (deTurckLieConnectionDifferenceDerivativeLoweredG1 (I := I) (M := M) g₀ T g₁ g_bg) x).trans ?_
@@ -706,7 +728,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeKernel_gridBound_of_conne
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (deTurckLieConnectionDifferenceDerivativeSym (I := I) (M := M) g₀ T g₁ g_bg))))).toSection x) := by
     rw [deTurckLieConnectionDifferenceDerivativeCoefficient_eq_pairTrace (I := I) (M := M) g₀ g_bg g₁ T htie]
-    rw [iter_smul]
+    rw [iteratedCovGrad_smul]
     rw [show (((-1 : ℝ) • iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (deTurckLieConnectionDifferenceDerivativePairTrace (I := I) (M := M) g₀ g₁)

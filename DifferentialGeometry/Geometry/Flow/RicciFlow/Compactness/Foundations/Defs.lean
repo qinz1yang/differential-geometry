@@ -119,7 +119,7 @@ structure CompleteInput {I : ModelWithCorners Real E H}
 
 namespace CompleteInput
 
-def at_time {I : ModelWithCorners Real E H}
+theorem at_time {I : ModelWithCorners Real E H}
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}
     (h : CompleteInput (I := I) X) {t : Real} (ht : t ∈ X.D.carrier) :
     SeqMetricComplete (I := I) (X.atTime (I := I) t) where

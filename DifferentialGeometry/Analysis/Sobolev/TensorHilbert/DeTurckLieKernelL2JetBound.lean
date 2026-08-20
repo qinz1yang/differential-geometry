@@ -427,9 +427,6 @@ noncomputable abbrev deTurckLieConnectionDifferenceDerivativeLoweredG1 := @deTur
 noncomputable abbrev deTurckLieConnectionDifferenceDerivativeSym := @deTurckLieConnectionDifferenceDerivativeSymCc
 noncomputable abbrev deTurckLieConnectionDifferenceDerivativePairTrace := @deTurckLieConnectionDifferenceDerivativePairTraceOperator
 abbrev deTurckLieConnectionDifferenceDerivativeSigma := @deTurckLieConnectionDifferenceDerivativeInputPermutation
-abbrev grid_one_le := @one_le_antidiagonalTupleGridPartialSum
-abbrev grid_single_le := @single_le_antidiagonalTupleGridPartialSum
-abbrev grid_term_le := @antidiagonalTupleGrid_le_partialSum
 
 theorem pair_nonneg (m1 m2 : ℕ) : 0 ≤ antidiagonalTuplePairCount m1 m2 :=
   antidiagonalTuplePairCount_nonneg m1 m2
@@ -439,9 +436,6 @@ theorem grid_mul_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (m1 m2 m3 : ℕ)
     antidiagonalTupleGridPartialSum b m1 * antidiagonalTupleGridPartialSum b m2 ≤
       antidiagonalTuplePairCount m1 m2 * antidiagonalTupleGridPartialSum b m3 :=
   antidiagonalTupleGridPartialSum_mul_le b hb m1 m2 m3 h3
-
-abbrev riemannianFiberNormSq_sub := @riemannianFiberNormSq_iteratedCovGrad_sub_le_deTurckLieConnectionDifferenceDerivative
-abbrev riemannianFiberNormSq_add := @riemannianFiberNormSq_iteratedCovGrad_add_le_deTurckLieConnectionDifferenceDerivative
 
 theorem quad_tower
     (g₀ ga gb : SmoothRiemannianMetric I M)
@@ -475,8 +469,6 @@ theorem lower_raise (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
       deTurckLieConnectionDifferenceDerivativeKernel (I := I) (M := M) g₀ g₁ g_bg :=
   deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (I := I) (M := M) g₀ g₁ g_bg
 
-abbrev symm_riemannianFiberNormSq := @riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative
-
 theorem insert_riemannianFiberNormSq (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + j) x
@@ -489,8 +481,15 @@ theorem insert_riemannianFiberNormSq (g₀ : SmoothRiemannianMetric I M)
             (symmS (I := I) (M := M) g₀ T)).toSection x) :=
   riemannianFiberNormSq_iteratedCovGrad_slotInsert3_deTurckLieConnectionDifferenceDerivativePerturb_le (I := I) (M := M) g₀ T j x
 
-abbrev iter_smul := @iteratedCovGrad_smul
-abbrev DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul := @riemannianFiberNormSq_smul_deTurckLieConnectionDifferenceDerivative
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+lemma DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (c : ℝ)
+    (v : TensorRSSpace r s I x) :
+    riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
+      c ^ 2 * riemannianFiberNormSq (I := I) (M := M) g r s x v :=
+  riemannianFiberNormSq_smul_deTurckLieConnectionDifferenceDerivative
+    (I := I) (M := M) g r s x c v
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem pair_trace_def (g₀ g₁ : SmoothRiemannianMetric I M) :

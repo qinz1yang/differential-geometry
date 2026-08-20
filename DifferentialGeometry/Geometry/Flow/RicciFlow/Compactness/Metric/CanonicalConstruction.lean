@@ -484,7 +484,8 @@ noncomputable def tailMemberConv
 
 namespace CanonicalMetricCompactness
 
-noncomputable def canonicalSourceSigmaCompact
+omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+theorem canonicalSourceSigmaCompact
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -496,7 +497,8 @@ noncomputable def canonicalSourceSigmaCompact
   letI : SigmaCompactSpace L.M := L.sigmaCompact
   exact Geometry.isSigmaCompact_of_isOpen I (Phi.source_open k)
 
-noncomputable def canonicalTargetSigmaCompact
+omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
+theorem canonicalTargetSigmaCompact
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}

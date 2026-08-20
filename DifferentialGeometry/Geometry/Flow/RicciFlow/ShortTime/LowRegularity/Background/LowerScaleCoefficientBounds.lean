@@ -280,7 +280,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDif
             (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ gB -
               deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
-  obtain ⟨C, hC, hpt⟩ := deTurckLieConnectionDifferenceDerivative_backgroundDifference_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
+  obtain ⟨C, hC, hpt⟩ := bdCovDerivArmDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
   obtain ⟨B0, B1, hB0, hB1, hgrid⟩ :=
     h2_grid_tame (I := I) (M := M) hDim g₀ C hC
   refine ⟨B0, B1, hB0, hB1, ?_⟩
@@ -319,7 +319,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covar
             (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ gB -
               deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
-  obtain ⟨C, hC, hpt⟩ := deTurckLieCovariantDerivativeInsertionDiff_grid (I := I) (M := M) g₀ gB hδ₀
+  obtain ⟨C, hC, hpt⟩ := bdEndoArmDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
   obtain ⟨B0, B1, hB0, hB1, hgrid⟩ :=
     h2_grid_tame (I := I) (M := M) hDim g₀ C hC
   refine ⟨B0, B1, hB0, hB1, ?_⟩
