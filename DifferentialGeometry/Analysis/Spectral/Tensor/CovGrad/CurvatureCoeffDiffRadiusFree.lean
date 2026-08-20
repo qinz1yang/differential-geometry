@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.ResidualBase
+import DifferentialGeometry.Analysis.Estimates.ProductBounds
 
 noncomputable section
 
@@ -54,12 +55,6 @@ private theorem gFibreOpBound_symmS_rf
   intro x v w
   rw [ccTensorBilinSymm_symmS_app_rf (I := I) (M := M) g₀ T x v w]
   exact hδ x v w
-
-private lemma sq_sum5_le (a b c d e : ℝ) :
-    (a + b + c + d + e) ^ 2 ≤ 5 * (a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 + e ^ 2) := by
-  nlinarith [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (a - d), sq_nonneg (a - e),
-    sq_nonneg (b - c), sq_nonneg (b - d), sq_nonneg (b - e), sq_nonneg (c - d),
-    sq_nonneg (c - e), sq_nonneg (d - e)]
 
 private lemma sum_shift_le_rf (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ) :
     ∑ i ∈ Finset.range m, g (i + c) ≤ ∑ j ∈ Finset.range (m + c), g j := by
@@ -178,7 +173,7 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
             (ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₀ -
               ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 +
           ‖RieDiff - HdCr‖ ^ 2 + ‖HdCr‖ ^ 2 + ‖CuDiff - HdCu‖ ^ 2 + ‖HdCu‖ ^ 2) := by
-    refine le_trans ?_ (sq_sum5_le _ _ _ _ _)
+    refine le_trans ?_ (DifferentialGeometry.Analysis.sq_sum_five_le _ _ _ _ _)
     simp only [pow_two]
     exact mul_self_le_mul_self (norm_nonneg _) hnorm
   have hheadL2 : ∀ (Hd : SmoothCcTensor g₀ 2 (2 + i)) (Kt : ℝ),
@@ -246,7 +241,8 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_radiusFree
     apply mul_le_mul_of_nonneg_left _ h5
     linarith [hRcr, hHcr, hRcu, hHcu]
   refine le_trans hstep ?_
-  have hslack : (0 : ℝ) ≤ 5 * B * low := by positivity
+  have hslack : (0 : ℝ) ≤ 5 * B * low :=
+    mul_nonneg (mul_nonneg (by norm_num) hB_nn) hlow_nn
   have hbal : (5 * KcCr i * Ktg i + 5 * KtCr + 5 * KcCu i * Ktg i + 5 * KtCu) * W +
         (5 * KcCr i * Klg i + 5 * KcCu i * Klg i + 5 * B) * (1 + low) -
       5 * (B + (KcCr i * Klg i * (1 + low) + KcCr i * Ktg i * W) + KtCr * W +

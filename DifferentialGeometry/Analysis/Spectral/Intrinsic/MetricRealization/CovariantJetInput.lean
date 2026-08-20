@@ -803,7 +803,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
       rw [← hN1_def] at h_raw3
       rw [← hN0_def] at h_lo2
       refine (abs_sub _ _).trans ?_
-      nlinarith [h_raw3, h_lo2, hCLO2_nn, hCraw3_nn, hN1_nn, hN0_nn]
+      nlinarith only [h_raw3, h_lo2, hCLO2_nn, hCraw3_nn, hN1_nn, hN0_nn]
     exact mul_le_mul (hCgrd_bd a p.1 Jdx p.2 y' hy') h_draw (abs_nonneg _) hCgrd_nn
   have h_grad_sum : |Dsum| ≤ Npairs * (Cgrd * (Craw3 + CLO2)) * (N1 + N0) := by
     rw [hDsum_def]
@@ -1156,8 +1156,10 @@ theorem partialDeriv_reprDiffChartCompOnE_abs_le
       ≤ (1 / 2 : ℝ) * (2 * (Craw1 * N1) + 2 * (CLO * N0)) :=
         mul_le_mul_of_nonneg_left h_sum (by norm_num)
     _ = Craw1 * N1 + CLO * N0 := by ring
-    _ ≤ (Craw1 + CLO) * R := by nlinarith
-                                  [hCraw1_nn, hCLO_nn, hN1_nn, hN0_nn, hN1_le, hN0_le, hR_nn]
+    _ ≤ Craw1 * R + CLO * R := add_le_add
+      (mul_le_mul_of_nonneg_left hN1_le hCraw1_nn)
+      (mul_le_mul_of_nonneg_left hN0_le hCLO_nn)
+    _ = (Craw1 + CLO) * R := by ring
 
 omit [BoundarylessManifold I M] in
 theorem partialDeriv2_reprDiffChartCompOnE_abs_le

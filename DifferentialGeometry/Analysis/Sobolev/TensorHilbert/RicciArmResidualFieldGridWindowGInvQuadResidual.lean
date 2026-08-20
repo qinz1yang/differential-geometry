@@ -1250,7 +1250,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidualInputSymm_grid
         ≤ (1 / 4 : ℝ) * (2 * (Cq i * W)
             + 2 * (diagonalGridGrowthFactor (E := E) i * ((∑ i' ∈ Finset.range (i + 1), Cq i') *
               ((∑ l ∈ Finset.range (i + 1), SW l) * W)))) := by
-          nlinarith [hQi, hApp]
+          nlinarith only [hQi, hApp]
       _ = ((1 / 2 : ℝ) * Cq i +
             (1 / 2 : ℝ) * (diagonalGridGrowthFactor (E := E) i *
               (∑ i' ∈ Finset.range (i + 1), Cq i') *

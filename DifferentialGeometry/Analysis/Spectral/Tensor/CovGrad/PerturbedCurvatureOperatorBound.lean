@@ -399,14 +399,11 @@ theorem exists_ricEndoRaisedFib_perturbed_gQuadratic_le_of_jetEnvelope
           _ = N * (Kc * Real.sqrt (g₀.inner x v v)) * S := by ring
       exact le_of_mul_le_mul_right hdiv hSpos'
   have hS_final : S ≤ (1 - δ)⁻¹ * (N * (Kc * Real.sqrt (g₀.inner x v v))) := by
-    rw [show (1 - δ)⁻¹ * (N * (Kc * Real.sqrt (g₀.inner x v v))) =
-        ((1 - δ) * S * (1 - δ)⁻¹ + ((1 - δ)⁻¹ * (N * (Kc * Real.sqrt (g₀.inner x v v)))
-          - (1 - δ) * S * (1 - δ)⁻¹)) from by ring]
     have hmono : (1 - δ) * S ≤ N * (Kc * Real.sqrt (g₀.inner x v v)) := hSbound
-    have hkey : S = (1 - δ) * S * (1 - δ)⁻¹ := by
-      field_simp
-    nlinarith [mul_le_mul_of_nonneg_right hmono hm_inv_nn, hkey, hmpos, hδpos,
-      inv_pos.mpr hδpos]
+    calc
+      S = (1 - δ)⁻¹ * ((1 - δ) * S) := by field_simp
+      _ ≤ (1 - δ)⁻¹ * (N * (Kc * Real.sqrt (g₀.inner x v v))) :=
+        mul_le_mul_of_nonneg_left hmono (inv_nonneg.mpr hδpos.le)
   have hSle_m : S ≤ (1 - m)⁻¹ * (N * Kc) * Real.sqrt (g₀.inner x v v) := by
     have hinv_le : (1 - δ)⁻¹ ≤ (1 - m)⁻¹ := inv_le_inv_of_le_of_pos hmpos (by linarith)
     have hrhs_nn : 0 ≤ N * (Kc * Real.sqrt (g₀.inner x v v)) :=

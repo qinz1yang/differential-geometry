@@ -445,7 +445,7 @@ private lemma riemannianFiberNormSq_deTurckPrincipalCometricCoeff_sub_le
       DifferentialGeometry.Analysis.Laplacian.metric_inner_self_nonneg (I := I) (M := M)
         g₀ x (Λ (e b))
     have hsq := Real.sq_sqrt hLnn
-    nlinarith [Real.sqrt_nonneg (g₀.inner x (Λ (e b)) (Λ (e b))), hsqrt, hsq, hr_nn]
+    nlinarith only [Real.sqrt_nonneg (g₀.inner x (Λ (e b)) (Λ (e b))), hsqrt, hsq, hr_nn]
   have hParseval : ∀ b : Fin n,
       (∑ a : Fin n, (g₀.inner x (e a) (Λ (e b))) ^ 2) = g₀.inner x (Λ (e b)) (Λ (e b)) := by
     intro b

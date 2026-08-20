@@ -739,7 +739,7 @@ theorem deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
       riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 2) x
         ((iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x)]
     have hDS_nn : 0 ≤ D * Ssum := mul_nonneg hD_nn hSsum_nn
-    nlinarith [hpt0, hpt1, hpt2,
+    nlinarith only [hpt0, hpt1, hpt2,
       norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 0 W).toSection x),
       norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 1 W).toSection x),
       norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x), hDS_nn]

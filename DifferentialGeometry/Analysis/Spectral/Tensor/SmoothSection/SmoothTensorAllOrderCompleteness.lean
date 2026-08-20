@@ -423,8 +423,10 @@ theorem tensorChartComponent_allOrder_uniformCauchy
         rw [hδ_def]
         have hden_pos : 0 < Cder * Cemb + 1 := by positivity
         rw [mul_div_assoc', div_le_iff₀ hden_pos]
-        have hCC_nn : 0 ≤ Cder * Cemb := by positivity
-        nlinarith [mul_nonneg hCC_nn hε.le]
+        calc
+          Cder * Cemb * ε = ε * (Cder * Cemb) := by ring
+          _ ≤ ε * (Cder * Cemb + 1) :=
+            mul_le_mul_of_nonneg_left (by linarith) hε.le
 
 omit [BoundarylessManifold I M] in
 theorem exists_chartComponent_limit_smooth_compactSupport

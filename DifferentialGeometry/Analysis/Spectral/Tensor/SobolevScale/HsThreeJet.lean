@@ -139,10 +139,15 @@ theorem hs_three_le_jet
       oneMinusConnLapSmoothIter_zero, SmoothCcTensor.norm_toL2] using hodd
   have hroot : N ≤ ‖L‖ +
       ‖covGrad (I := I) (M := M) g 0 2 L‖ := by
-    nlinarith [norm_nonneg L,
-      norm_nonneg (covGrad (I := I) (M := M) g 0 2 L),
-      mul_nonneg (norm_nonneg L)
-        (norm_nonneg (covGrad (I := I) (M := M) g 0 2 L))]
+    refine le_of_sq_le_sq ?_ (add_nonneg (norm_nonneg _) (norm_nonneg _))
+    rw [hsq]
+    calc
+      ‖L‖ ^ 2 + ‖covGrad (I := I) (M := M) g 0 2 L‖ ^ 2 ≤
+          ‖L‖ ^ 2 + ‖covGrad (I := I) (M := M) g 0 2 L‖ ^ 2 +
+            2 * (‖L‖ * ‖covGrad (I := I) (M := M) g 0 2 L‖) :=
+        le_add_of_nonneg_right (mul_nonneg (by norm_num)
+          (mul_nonneg (norm_nonneg _) (norm_nonneg _)))
+      _ = (‖L‖ + ‖covGrad (I := I) (M := M) g 0 2 L‖) ^ 2 := by ring
   change N ≤ (2 + 2 * d + K) * J
   calc
     N ≤ ‖L‖ + ‖covGrad (I := I) (M := M) g 0 2 L‖ := hroot

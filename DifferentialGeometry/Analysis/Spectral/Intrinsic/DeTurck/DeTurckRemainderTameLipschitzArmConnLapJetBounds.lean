@@ -1215,20 +1215,37 @@ theorem deTurckArmDiff_supercritical_pointwise_jet_le
   have hcolsq_le : (∑ q ∈ Finset.range 3,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + q) x
         ((iteratedCovGrad (I := I) g₀ 0 2 q W).toSection x)) ≤ 3 * (Cc * Mn) ^ 2 := by
-    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
-      Finset.sum_range_zero, zero_add,
-      riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 0) x
+    rw [Finset.sum_range_succ]
+    rw [Finset.sum_range_succ]
+    rw [Finset.sum_range_succ]
+    rw [Finset.sum_range_zero]
+    simp only [zero_add]
+    change
+      riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
+          ((iteratedCovGrad (I := I) g₀ 0 2 0 W).toSection x) +
+        riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
+          ((iteratedCovGrad (I := I) g₀ 0 2 1 W).toSection x) +
+        riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 2) x
+          ((iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x) ≤ 3 * (Cc * Mn) ^ 2
+    rw [riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 0) x
         ((iteratedCovGrad (I := I) g₀ 0 2 0 W).toSection x),
       riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 1) x
         ((iteratedCovGrad (I := I) g₀ 0 2 1 W).toSection x),
       riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 2) x
         ((iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x)]
-    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
-      Finset.sum_range_zero, zero_add] at hCol
+    rw [Finset.sum_range_succ] at hCol
+    rw [Finset.sum_range_succ] at hCol
+    rw [Finset.sum_range_succ] at hCol
+    rw [Finset.sum_range_zero] at hCol
+    simp only [zero_add] at hCol
+    change
+      ‖(iteratedCovGrad (I := I) g₀ 0 2 0 W).toSection x‖ +
+        ‖(iteratedCovGrad (I := I) g₀ 0 2 1 W).toSection x‖ +
+        ‖(iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x‖ ≤ Cc * Mn at hCol
     have h0 : 0 ≤ ‖(iteratedCovGrad (I := I) g₀ 0 2 0 W).toSection x‖ := norm_nonneg _
     have h1 : 0 ≤ ‖(iteratedCovGrad (I := I) g₀ 0 2 1 W).toSection x‖ := norm_nonneg _
     have h2 : 0 ≤ ‖(iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x‖ := norm_nonneg _
-    nlinarith [hCol, h0, h1, h2, hMn_nn, hCc_pos.le, mul_nonneg hCc_pos.le hMn_nn]
+    nlinarith only [hCol, h0, h1, h2, hMn_nn, hCc_pos.le, mul_nonneg hCc_pos.le hMn_nn]
   have hsqrt_sq : Real.sqrt (3 * Cc ^ 2 * Ch ^ 2 * ((4 * k + 1 : ℕ) : ℝ)) ^ 2 =
       3 * Cc ^ 2 * Ch ^ 2 * ((4 * k + 1 : ℕ) : ℝ) :=
     Real.sq_sqrt (by positivity)

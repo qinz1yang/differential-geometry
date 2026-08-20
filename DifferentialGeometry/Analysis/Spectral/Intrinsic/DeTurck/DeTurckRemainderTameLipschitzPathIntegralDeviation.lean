@@ -734,7 +734,7 @@ theorem deTurckSmoothRemainderDiff_threeArm_coeffC0_jetL2_fibreWeighted_ballUnif
             Real.sq_sqrt (by positivity)
           have hle : Real.sqrt (2 * ΓA ^ 2 + 2 * ΓK ^ 2) ≤
               max (Real.sqrt (2 * ΓA ^ 2 + 2 * ΓK ^ 2)) (max ΓA ΓD) := le_max_left _ _
-          nlinarith [hs, hle, Real.sqrt_nonneg (2 * ΓA ^ 2 + 2 * ΓK ^ 2)]
+          nlinarith only [hs, hle, Real.sqrt_nonneg (2 * ΓA ^ 2 + 2 * ΓK ^ 2)]
   · exact hC₁jet.trans
       (hsq_mono _ _ hΓA_nn (le_trans (le_max_left ΓA ΓD) (le_max_right _ _)))
   · exact hdevjet.trans
