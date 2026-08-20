@@ -25,6 +25,14 @@ private def strongBarrierPhase
     (rho : M → Real) (kappa tau : Real) (t : Real) (x : M) : Real :=
   rho x + kappa * (t - tau) ^ 2
 
+omit [TopologicalSpace M] [IsManifold I ∞ M] in
+private theorem strongBarrierPhase_time_differentiable
+    (rho : M → Real) (kappa tau : Real) (x : M) :
+    Differentiable Real (fun t => strongBarrierPhase rho kappa tau t x) := by
+  unfold strongBarrierPhase
+  exact (differentiable_const (rho x)).add
+    ((differentiable_const kappa).mul ((differentiable_id.sub_const tau).pow 2))
+
 private def strongBarrier
     (rho : M → Real) (epsilon alpha R kappa tau : Real)
     (t : Real) (x : M) : Real :=
@@ -185,12 +193,12 @@ private theorem exp_strongBarrierPhase_parabolicOperator
       funext s
       exact expNegMulStrong_deriv alpha s
     rw [hd]
-    fun_prop
+    exact (((Real.hasDerivAt_exp (-alpha * _)).comp _
+      ((hasDerivAt_id _).const_mul (-alpha))).const_mul (-alpha)).differentiableAt
   have htime : DifferentiableWithinAt Real
       (fun s => strongBarrierPhase rho kappa tau s x)
       (Set.Icc 0 T) t := by
-    unfold strongBarrierPhase
-    fun_prop
+    exact (strongBarrierPhase_time_differentiable rho kappa tau x t).differentiableWithinAt
   have hphase_grad : MDiffAt (T% fun y : M =>
       gradientFun (I := I) (G.metric t)
         (strongBarrierPhase rho kappa tau t) y) x := by
@@ -252,8 +260,13 @@ private theorem strongBarrier_parabolicOperator
     exact he_smooth.mdifferentiable (by simp) y
   have he_time : DifferentiableWithinAt Real (fun s => e s x)
       (Set.Icc 0 T) t := by
-    dsimp [e, strongBarrierPhase]
-    fun_prop
+    change DifferentiableWithinAt Real
+      (fun s => Real.exp (-alpha * strongBarrierPhase rho kappa tau s x))
+      (Set.Icc 0 T) t
+    exact (Real.differentiable_exp.comp
+      ((differentiable_const (-alpha)).mul
+        (strongBarrierPhase_time_differentiable rho kappa tau x))
+      t).differentiableWithinAt
   have hc_time : DifferentiableWithinAt Real
       (fun _ : Real => Real.exp (-alpha * R)) (Set.Icc 0 T) t :=
     differentiableWithinAt_const _
@@ -1492,7 +1505,7 @@ theorem scalar_strong_maximum_principle_with_potential_of_barrier
   have hz_cont : ContinuousOn (fun p : Real × M => z p.1 p.2)
       (spacetimeSlab (M := M) T) := by
     have hscale : Continuous (fun p : Real × M => Real.exp (-L * p.1)) := by
-      fun_prop
+      exact Real.continuous_exp.comp (continuous_const.mul continuous_fst)
     exact hscale.continuousOn.mul hu_cont
   have hz_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ z t x := by
     intro t ht x
@@ -1501,7 +1514,8 @@ theorem scalar_strong_maximum_principle_with_potential_of_barrier
       DifferentiableWithinAt Real (fun s => Real.exp (-L * s))
         (Set.Icc 0 T) t := by
     intro t
-    fun_prop
+    exact ((Real.hasDerivAt_exp (-L * t)).comp t
+      ((hasDerivAt_id t).const_mul (-L))).differentiableAt.differentiableWithinAt
   have hz_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       DifferentiableWithinAt Real (fun s => z s x) (Set.Icc 0 T) t := by
     intro t ht htpos x
