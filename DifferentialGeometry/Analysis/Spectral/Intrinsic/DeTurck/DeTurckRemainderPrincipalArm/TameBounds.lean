@@ -1441,12 +1441,10 @@ lemma exists_connLapIterate_operatorFieldApplication_sobolevHs_bound (g₀ : Smo
     calc ‖operatorFieldApply (I := I) (M := M) g₀ 2 2 Φp T₀‖
         ≤ CCS 0 p * (1 + R₀) * CJ 0 * fT (2 * p + 1) := htot
       _ ≤ B * εa * fT (2 * p + 2) +
-          (CCS 0 p * (1 + R₀) * CJ 0 +
-            (CDS0 0 * R₀ * εa * Cg (2 * p + 1) +
+            (CCS 0 p * (1 + R₀) * CJ 0 +
+              (CDS0 0 * R₀ * εa * Cg (2 * p + 1) +
               CDS0 0 * (1 + R₀) * KE1 p)) * fT (2 * p + 1) := by
-          have h1 : 0 ≤ (CDS0 0 * R₀ * εa * Cg (2 * p + 1) +
-              CDS0 0 * (1 + R₀) * KE1 p) * fT (2 * p + 1) := hrest_nn
-          nlinarith [hBεa_nn]
+          nlinarith only [htot, hBεa_nn, hrest_nn]
   · exact DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_sobolevHs_bound_of_high_order
       (I := I) (M := M) (g₀ := g₀) (a := a) (ha_super := ha_super)
       (hR₀ := hR₀) (Kc := Kc) (hKc_nn := hKc_nn) (εa := εa)
@@ -4868,11 +4866,14 @@ theorem
             (tensorSectionRealizeMetric (I := I) g₀ T₀
               (lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1))
               (hδ_fibre T₀ hball)))‖ := norm_nonneg _
-    nlinarith [sq_nonneg (nA - nB), mul_le_mul hn hn hlhs_nn (by linarith : (0:ℝ) ≤ nA + nB)]
+    calc
+      _ ≤ (nA + nB) ^ 2 := pow_le_pow_left₀ hlhs_nn hn 2
+      _ ≤ 2 * nA ^ 2 + 2 * nB ^ 2 := by
+        nlinarith only [sq_nonneg (nA - nB)]
   refine le_trans hsq ?_
   have hSig_nn : (0 : ℝ) ≤ 1 + ∑ j ∈ Finset.range (i + 2),
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2 := by positivity
-  nlinarith [hA, hB, hSig_nn, hK1_nn i, hK2_nn i]
+  nlinarith only [hA, hB, hSig_nn, hK1_nn i, hK2_nn i]
 
 theorem
     exists_deTurckPhiTotPathIntegral_sub_bg_sub_principalCometricCoeff_fibreSmall_coeffJetEnvelope
@@ -7648,7 +7649,7 @@ theorem deTurckSmoothRemainderDiff_ballUniform_spectralSplit_of_symm
             (Cthird k + Ctame k + Clower k) *
               ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) T₀‖ := by
           have hε := mul_le_mul_of_nonneg_right hεw_le hnn1
-          nlinarith [hε, norm_nonneg
+          nlinarith only [hε, norm_nonneg
             (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + (k : ℝ)) T₀)]
 
 end Spectral

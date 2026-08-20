@@ -999,7 +999,8 @@ private lemma three_remainder_young_bound {T e btop c1 c2 c3 w : ℝ}
     have h2 : Real.sqrt (c2 * w) ^ 2 = c2 * w := Real.sq_sqrt (by positivity)
     have h3 : Real.sqrt (c3 * w) ^ 2 = c3 * w := Real.sq_sqrt (by positivity)
     rw [hv_def]
-    nlinarith [sq_nonneg (Real.sqrt (c1 * w) - Real.sqrt (c2 * w)),
+    nlinarith only [h1, h2, h3,
+      sq_nonneg (Real.sqrt (c1 * w) - Real.sqrt (c2 * w)),
       sq_nonneg (Real.sqrt (c1 * w) - Real.sqrt (c3 * w)),
       sq_nonneg (Real.sqrt (c2 * w) - Real.sqrt (c3 * w))]
   have hinv : ((1 : ℝ) / 2)⁻¹ = 2 := by norm_num

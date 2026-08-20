@@ -828,7 +828,8 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_jet_bound (g : SmoothRiemannia
             have e2 : cp * ∑ b ∈ Finset.range (2 * p),
                 ‖iteratedCovGrad (I := I) g r s b ΔS‖ ≤ cp * (CL * Big) :=
               mul_le_mul_of_nonneg_left hlow hcp_nn
-            nlinarith [hcE_nn (2 * p + 1), hcp_nn, hCL_nn, hBig_nn, htop, htop_prev]
+            nlinarith only [e1, e2, hcE_nn (2 * p + 1), hcp_nn, hCL_nn, hBig_nn,
+              htop, htop_prev]
       · set Big : ℝ := ∑ b ∈ Finset.range (2 * (p + 1) + 1),
           ‖iteratedCovGrad (I := I) g r s b S‖ with hBig_def
         have hBig_nn : 0 ≤ Big := Finset.sum_nonneg (fun b _ => norm_nonneg _)
@@ -874,7 +875,8 @@ lemma DeTurckRemainderPrincipalArm.connLapIterate_jet_bound (g : SmoothRiemannia
             have e2 : cp * ∑ b ∈ Finset.range (2 * p + 1),
                 ‖iteratedCovGrad (I := I) g r s b ΔS‖ ≤ cp * (CL * Big) :=
               mul_le_mul_of_nonneg_left hlow hcp_nn
-            nlinarith [hcE_nn (2 * p), hcp_nn, hCL_nn, hBig_nn, htop, htop_prev]
+            nlinarith only [e1, e2, hcE_nn (2 * p), hcp_nn, hCL_nn, hBig_nn,
+              htop, htop_prev]
   choose cfun hcfun_nn hcfun using hmain
   exact ⟨cfun, hcfun_nn, fun p S => hcfun p S⟩
 

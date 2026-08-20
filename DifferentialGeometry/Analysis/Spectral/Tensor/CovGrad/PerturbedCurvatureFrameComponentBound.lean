@@ -380,7 +380,9 @@ theorem exists_riemannBiContrFib_perturbed_frameComponentSlice_sq_le_of_jetEnvel
           ≤ ((1 + m) * C0 * (1 - m)⁻¹) ^ 2 := by
         have hpre_nn : (0 : ℝ) ≤ C0 ^ 2 * (1 - m)⁻¹ * (1 - m)⁻¹ :=
           mul_nonneg (mul_nonneg hC0sq_nn hm_inv_nn) hm_inv_nn
-        have hfac : (1 + m) ≤ (1 + m) * (1 + m) := by nlinarith [h1m]
+        have hfac : (1 + m) ≤ (1 + m) * (1 + m) := by
+          simpa only [mul_one] using
+            mul_le_mul_of_nonneg_left h1m (le_trans (by norm_num) h1m)
         calc (1 + m) * (C0 ^ 2 * (1 - m)⁻¹ * (1 - m)⁻¹)
             ≤ ((1 + m) * (1 + m)) * (C0 ^ 2 * (1 - m)⁻¹ * (1 - m)⁻¹) :=
               mul_le_mul_of_nonneg_right hfac hpre_nn
@@ -398,7 +400,9 @@ theorem exists_riemannBiContrFib_perturbed_frameComponentSlice_sq_le_of_jetEnvel
     have hsqrt_1m_le : Real.sqrt (1 + m) ≤ 1 + m := by
       have h1m : (1 : ℝ) ≤ 1 + m := by linarith
       calc Real.sqrt (1 + m) ≤ Real.sqrt ((1 + m) ^ 2) :=
-            Real.sqrt_le_sqrt (by nlinarith [h1m])
+            Real.sqrt_le_sqrt (by
+              simpa only [pow_two, mul_one] using
+                mul_le_mul_of_nonneg_left h1m (le_trans (by norm_num) h1m))
         _ = 1 + m := Real.sqrt_sq (by linarith)
     have hsqrtRR_nn : 0 ≤ Real.sqrt (g₁.inner x R R) := Real.sqrt_nonneg _
     have hsqrtJJ_nn : 0 ≤ Real.sqrt (g₁.inner x (e (J 1)) (e (J 1))) := Real.sqrt_nonneg _
@@ -722,11 +726,11 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
     have hs0sq : s0 ^ 2 ≤ C0 ^ 2 := by
       have h := habs0 J
       rw [← hs0] at h
-      nlinarith [h, abs_nonneg s0, sq_abs s0, neg_le_of_abs_le h, le_of_abs_le h]
+      simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg s0) h 2
     have hs1sq : s1 ^ 2 ≤ C0 ^ 2 := by
       have h := habs1 J
       rw [← hs1] at h
-      nlinarith [h, abs_nonneg s1, sq_abs s1, neg_le_of_abs_le h, le_of_abs_le h]
+      simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg s1) h 2
     have hi0 : (if K 1 = J 1 then (1 : ℝ) else 0) = 0 ∨
         (if K 1 = J 1 then (1 : ℝ) else 0) = 1 := by
       by_cases h : K 1 = J 1 <;> simp [h]
@@ -734,8 +738,8 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
         (if K 0 = J 0 then (1 : ℝ) else 0) = 1 := by
       by_cases h : K 0 = J 0 <;> simp [h]
     rcases hi0 with hi0 | hi0 <;> rcases hi1 with hi1 | hi1 <;>
-      rw [hi0, hi1] <;> nlinarith [hs0sq, hs1sq, sq_nonneg (s0 + s1), sq_nonneg s0, sq_nonneg s1,
-        sq_nonneg (s0 - s1)]
+      rw [hi0, hi1] <;> nlinarith only [hs0sq, hs1sq, sq_nonneg (s0 + s1),
+        sq_nonneg s0, sq_nonneg s1, sq_nonneg (s0 - s1)]
   calc (∑ J : Fin 2 → Fin (Module.finrank ℝ E),
           (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
             (show TensorRSSpace 2 2 I x from
@@ -758,10 +762,13 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
         have hn1 : (1 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := by
           have : 1 ≤ Module.finrank ℝ E := Nat.one_le_iff_ne_zero.mpr (NeZero.ne _)
           exact_mod_cast this
-        have hnn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := by positivity
-        nlinarith [sq_nonneg C0, hC0_nn, hn1, hnn,
-          mul_le_mul_of_nonneg_right hn1
-            (by positivity : (0:ℝ) ≤ 4 * (Module.finrank ℝ E : ℝ) * C0 ^ 2)]
+        calc
+          4 * (Module.finrank ℝ E : ℝ) * C0 ^ 2 =
+              1 * (4 * (Module.finrank ℝ E : ℝ) * C0 ^ 2) := by ring
+          _ ≤ (Module.finrank ℝ E : ℝ) *
+              (4 * (Module.finrank ℝ E : ℝ) * C0 ^ 2) :=
+            mul_le_mul_of_nonneg_right hn1 (by positivity)
+          _ = (2 * (Module.finrank ℝ E : ℝ) * C0) ^ 2 := by ring
 
 attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   Tensor0SBundle.tensorRSSpace_normedSpace in

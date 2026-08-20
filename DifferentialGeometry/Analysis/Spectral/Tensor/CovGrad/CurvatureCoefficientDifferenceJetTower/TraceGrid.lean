@@ -701,8 +701,10 @@ private lemma tracegrid_add_tail
     (x a b A B : ℝ)
     (hx : x ≤ 2 * a + 2 * b) (ha : a ≤ A) (hb : b ≤ B) :
     (2 : ℝ) ^ 2 * x ≤ (2 : ℝ) ^ 2 * (2 * A + 2 * B) := by
-  have hsum : x ≤ 2 * A + 2 * B := by nlinarith
-  nlinarith
+  have hsum : x ≤ 2 * A + 2 * B :=
+    hx.trans (add_le_add (mul_le_mul_of_nonneg_left ha (by norm_num))
+      (mul_le_mul_of_nonneg_left hb (by norm_num)))
+  exact mul_le_mul_of_nonneg_left hsum (sq_nonneg 2)
 
 theorem riemannianFiberNormSq_iteratedCovGrad_riemannCoeff_metricFactorTelescope_traceConversion_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -922,8 +924,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannCoeff_metricFactorTelescope
         ≤ cB i * ((dim * dim) *
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + i) x
               ((iteratedCovGrad (I := I) g₀ 0 4 i Ldiff).toSection x)) := by
-          have hdd : (0 : ℝ) ≤ dim * dim := by positivity
-          nlinarith [mul_le_mul h1 h2 hWB_nn (hcB0 i), hcB0 i]
+          simpa only [mul_assoc] using mul_le_mul h1 h2 hWB_nn (hcB0 i)
       _ ≤ cB i * ((dim * dim) * RHS) := by
           have hdd : (0 : ℝ) ≤ dim * dim := by positivity
           simpa [mul_assoc] using

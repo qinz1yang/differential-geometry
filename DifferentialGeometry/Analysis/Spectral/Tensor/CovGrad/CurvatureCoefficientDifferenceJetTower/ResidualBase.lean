@@ -63,7 +63,7 @@ theorem riemannianFiberNormSq_symmS_zero_le_fibreSmall
   have h := riemannianFiberNormSq_symmS_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x
   rw [mul_pow]
   refine le_trans h ?_
-  have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith [hδ0, hδ_le, hδ₀0]
+  have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := (sq_le_sq₀ hδ0 hδ₀0).2 hδ_le
   exact mul_le_mul_of_nonneg_left hδsq (by positivity)
 
 theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic
@@ -335,8 +335,20 @@ theorem ricciArmOrder0BaseCoeff_perOrder_l2_topOrderSeparated_generic
                 Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by
               have hc1 : 2 * cbg i ≤ 2 * cbg i *
                   Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by
-                nlinarith [hcbg_nn i, hW_one]
-              nlinarith [hKcCr_nn i, hKcCu_nn i, hW_nn]
+                nlinarith only [hcbg_nn i, hW_one]
+              calc
+                2 * cbg i + 2 * (2 * (KcCr i *
+                      Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3)) +
+                    2 * (KcCu i *
+                      Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3))) =
+                    2 * cbg i + (4 * KcCr i + 4 * KcCu i) *
+                      Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by ring
+                _ ≤ 2 * cbg i * Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) +
+                      (4 * KcCr i + 4 * KcCu i) *
+                        Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) :=
+                    add_le_add hc1 (le_refl _)
+                _ = (2 * cbg i + 4 * KcCr i + 4 * KcCu i) *
+                      Combinatorics.boundedFactorGridWindow b (i + 1) (i + 3) := by ring
       obtain ⟨hint, hbound_int⟩ := hKI P hPball i hia
       have hF_int : MeasureTheory.Integrable
           (fun x => (2 * cbg i + 4 * KcCr i + 4 * KcCu i) *
